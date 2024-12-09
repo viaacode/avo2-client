@@ -34,7 +34,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 
 import './LinkedAccounts.scss';
 
-export interface AccountProps extends RouteComponentProps {
+interface AccountProps extends RouteComponentProps {
 	commonUser: Avo.User.CommonUser;
 }
 
@@ -100,8 +100,10 @@ const LinkedAccounts: FC<AccountProps> = ({ location, commonUser }) => {
 		if (!linked && idpType === Idp.VLAAMSEOVERHEID__SUB_ID) {
 			linked = !!commonUser.idps?.VLAAMSEOVERHEID__ACCOUNT_ID;
 		}
-		const currentIdp = idpProps[idpType];
-		const { open: confirmModalOpen, setter: setConfirmModalOpen } = deleteIdpModals[idpType];
+		const baseIdp = idpType.split('__')[0];
+		const currentIdp = idpProps[baseIdp];
+		const { open: confirmModalOpen, setter: setConfirmModalOpen } =
+			deleteIdpModals[baseIdp.split('__')[0]];
 		const className = `c-account-link__column--${currentIdp.iconNames.join('-')}`;
 
 		return (

@@ -7,6 +7,7 @@ import { ContentTypeString } from '../collection/collection.types';
 import { SearchFilter, SearchOrderAndDirectionProperty } from '../search/search.const';
 import { ROUTE_PARTS } from '../shared/constants';
 import { EducationLevelId } from '../shared/helpers/lom';
+import { ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
@@ -106,7 +107,7 @@ const getResponseColumn = (canEditAssignments: boolean | null): AssignmentColumn
 
 const getActionsColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
 	return canEditAssignments
-		? [{ id: 'actions' as AssignmentOverviewTableColumns, label: '' }]
+		? [{ id: ACTIONS_TABLE_COLUMN_ID as AssignmentOverviewTableColumns, label: '' }]
 		: [];
 };
 
@@ -169,53 +170,6 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 	...getActionsColumn(canEditAssignments),
 ];
 
-export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
-	[columnId in AssignmentOverviewTableColumns]: (order: Avo.Search.OrderDirection) => any;
-}> = {
-	author: (order: Avo.Search.OrderDirection) => ({
-		owner: {
-			full_name: order,
-		},
-	}),
-	author_user_group: (order: Avo.Search.OrderDirection) => ({
-		owner: { profile: { profile_user_group: { group: { label: order } } } },
-	}),
-	last_user_edit_profile: (order: Avo.Search.OrderDirection) => ({
-		last_user_edit_profile: { usersByuserId: { last_name: order } },
-	}),
-	status: (order: Avo.Search.OrderDirection) => ({
-		deadline_at: order,
-	}),
-	responses: (order: Avo.Search.OrderDirection) => ({
-		responses_aggregate: {
-			count: order,
-		},
-	}),
-	views: (order: Avo.Search.OrderDirection) => ({
-		view_count: {
-			count: order,
-		},
-	}),
-	bookmarks: (order: Avo.Search.OrderDirection) => ({
-		counts: {
-			bookmarks: order,
-		},
-	}),
-	copies: (order: Avo.Search.OrderDirection) => ({
-		counts: {
-			copies: order,
-		},
-	}),
-	contributors: (order: Avo.Search.OrderDirection) => ({
-		counts: {
-			contributors: order,
-		},
-	}),
-	share_type: (order: Avo.Search.OrderDirection) => ({
-		share_type_order: order,
-	}),
-};
-
 /// Zoek & bouw
 export const ASSIGNMENT_FORM_SCHEMA = (tText: TFunction): Schema<Avo.Assignment.Assignment> => {
 	return object({
@@ -226,6 +180,12 @@ export const ASSIGNMENT_FORM_SCHEMA = (tText: TFunction): Schema<Avo.Assignment.
 				110,
 				tText('assignment/assignment___de-titel-mag-maximum-110-karakters-lang-zijn')
 			),
+		description: string().max(
+			300,
+			tText(
+				'assignment/assignment___de-korte-beschrijving-mag-maximaal-300-karakters-lang-zijn'
+			)
+		),
 		labels: array(
 			object({
 				assignment_label: object()
@@ -298,19 +258,19 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 	...(assignmentTypes.includes(AssignmentType.BOUW)
 		? [
 				{
-					id: 'collection_title' as AssignmentResponseTableColumns,
+					id: 'collection_title' as const,
 					label: tText('assignment/assignment___leerlingencollectie'),
 					sortable: true,
 					dataType: TableColumnDataType.string as ColumnDataType,
 				},
 				{
-					id: 'pupil_collection_block_count' as AssignmentResponseTableColumns,
+					id: 'pupil_collection_block_count' as const,
 					label: tText('assignment/assignment___fragmenten'),
 					sortable: true,
 					dataType: TableColumnDataType.number as ColumnDataType,
 				},
 				{
-					id: 'updated_at' as AssignmentResponseTableColumns,
+					id: 'updated_at' as const,
 					label: tText('assignment/assignment___laatst-bewerkt'),
 					sortable: true,
 					dataType: TableColumnDataType.dateTime as ColumnDataType,
@@ -318,13 +278,13 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 		  ]
 		: [
 				{
-					id: 'updated_at' as AssignmentResponseTableColumns,
+					id: 'updated_at' as const,
 					label: tText('assignment/assignment___laatst-bekeken'),
 					sortable: true,
 					dataType: TableColumnDataType.dateTime as ColumnDataType,
 				},
 		  ]),
-	{ id: 'actions' as AssignmentResponseTableColumns, label: '' },
+	{ id: ACTIONS_TABLE_COLUMN_ID, label: '' },
 ];
 
 export const RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{

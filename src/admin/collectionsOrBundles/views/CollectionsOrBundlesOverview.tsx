@@ -1,12 +1,10 @@
 import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
-import { Button, ButtonToolbar, IconName, type TagInfo } from '@viaa/avo2-components';
+import { type TagInfo } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, noop, partition } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
 
-import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { CollectionService } from '../../../collection/collection.service';
 import { useGetCollectionsEditStatuses } from '../../../collection/hooks/useGetCollectionsEditStatuses';
@@ -17,10 +15,8 @@ import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from '../../../shared/components';
-import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
-import { buildLink, CustomError, getFullNameCommonUser } from '../../../shared/helpers';
-import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
+import { CustomError, getFullNameCommonUser } from '../../../shared/helpers';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
@@ -40,7 +36,8 @@ import FilterTable, {
 } from '../../shared/components/FilterTable/FilterTable';
 import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
 import { NULL_FILTER } from '../../shared/helpers/filters';
-import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { type PickerItem } from '../../shared/types';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import {
@@ -54,9 +51,12 @@ import {
 	CollectionBulkAction,
 	type CollectionsOrBundlesOverviewTableCols,
 	type CollectionsOrBundlesTableState,
+	type CollectionSortProps,
 } from '../collections-or-bundles.types';
-import { generateCollectionWhereObject } from '../helpers/collection-filters';
-import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
+import {
+	renderCollectionsOrBundlesTableCellReact,
+	renderCollectionsOrBundlesTableCellText,
+} from '../helpers/render-collection-columns';
 
 const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
@@ -179,23 +179,6 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 	);
 
 	// methods
-	const generateWhereObject = useCallback(
-		(filters: Partial<CollectionsOrBundlesTableState>) => {
-			const andFilters: any[] = generateCollectionWhereObject(
-				filters,
-				commonUser,
-				isCollection,
-				false,
-				true,
-				'collectionTable',
-				educationLevelsAndDegrees || []
-			);
-
-			return { _and: andFilters };
-		},
-		[commonUser, isCollection, educationLevelsAndDegrees]
-	);
-
 	const getColumnDataType = useCallback(() => {
 		const column = tableColumns.find(
 			(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
@@ -207,15 +190,15 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 		setIsLoading(true);
 
 		try {
-			const [collectionsTemp, collectionsCountTemp] =
+			const { collections: collectionsTemp, total: collectionsCountTemp } =
 				await CollectionsOrBundlesService.getCollections(
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
-					(tableState.sort_column ||
-						'created_at') as CollectionsOrBundlesOverviewTableCols,
+					(tableState.sort_column || 'created_at') as CollectionSortProps,
 					tableState.sort_order || 'desc',
-					getColumnDataType(),
-					generateWhereObject(getFilters(tableState))
+					getFilters(tableState),
+					isCollection,
+					true
 				);
 
 			setCollections(collectionsTemp);
@@ -238,7 +221,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 		}
 
 		setIsLoading(false);
-	}, [tableState, getColumnDataType, generateWhereObject, isCollection, tText]);
+	}, [tableState, getColumnDataType, isCollection, tText]);
 
 	useEffect(() => {
 		if (commonUser && educationLevelsAndDegrees?.length) {
@@ -269,7 +252,8 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 
 		try {
 			const collectionIds = await CollectionsOrBundlesService.getCollectionIds(
-				generateWhereObject(getFilters(tableState))
+				getFilters(tableState),
+				isCollection
 			);
 			ToastService.info(
 				tHtml(
@@ -301,6 +285,13 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 	};
 
 	const handleBulkAction = async (action: CollectionBulkAction): Promise<void> => {
+		if (action === CollectionBulkAction.EXPORT_ALL) {
+			// No selection of rows needed since we export all rows
+			// Also, we don't need to check any edit statuses since we're not editing/deleting anything
+			setIsExportAllToCsvModalOpen(true);
+			return;
+		}
+
 		let selectedCollectionsThatAreBeingEdited: Avo.Share.EditStatus[] = [];
 		let selectedCollectionIdsThatAreNotBeingEdited = selectedCollectionIds;
 		if (isCollection) {
@@ -354,11 +345,6 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 				case CollectionBulkAction.CHANGE_LABELS:
 					if (!hasSelectedRows) return;
 					setAddLabelModalOpen(true);
-					return;
-
-				case CollectionBulkAction.EXPORT_ALL:
-					// No selection of rows needed since we export all rows
-					setIsExportAllToCsvModalOpen(true);
 					return;
 			}
 		}
@@ -523,117 +509,6 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 		}
 	};
 
-	const renderTableCell = (
-		collectionOrBundle: Partial<Avo.Collection.Collection>,
-		columnId: CollectionsOrBundlesOverviewTableCols
-	) => {
-		const editLink = buildLink(
-			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
-			{
-				id: collectionOrBundle.id,
-				tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
-			}
-		);
-		const editLinkOriginal = collectionOrBundle.relations?.[0].object
-			? buildLink(
-					isCollection
-						? APP_PATH.COLLECTION_EDIT_TAB.route
-						: APP_PATH.BUNDLE_EDIT_TAB.route,
-					{
-						id: collectionOrBundle.relations?.[0].object,
-						tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
-					}
-			  )
-			: null;
-
-		switch (columnId) {
-			case 'title': {
-				return (
-					<CollectionOrBundleOrAssignmentTitleAndCopyTag
-						title={collectionOrBundle.title}
-						editLink={editLink}
-						editLinkOriginal={editLinkOriginal}
-					/>
-				);
-			}
-
-			case 'actions': {
-				if (!editStatuses) {
-					return null;
-				}
-				const isCollectionBeingEdited = isContentBeingEdited(
-					editStatuses?.[collectionOrBundle.id as string],
-					commonUser?.profileId
-				);
-				const viewButtonTitle = isCollection
-					? tText(
-							'admin/collections-or-bundles/views/collections-or-bundles-overview___bekijk-de-collectie'
-					  )
-					: tText(
-							'admin/collections-or-bundles/views/collections-or-bundles-overview___bekijk-de-bundel'
-					  );
-				const editButtonTitle = isCollectionBeingEdited
-					? tText(
-							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-collectie-wordt-reeds-bewerkt-door-iemand-anders'
-					  )
-					: isCollection
-					? tText(
-							'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
-					  )
-					: tText(
-							'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
-					  );
-				return (
-					<ButtonToolbar>
-						<Link
-							to={buildLink(
-								isCollection
-									? APP_PATH.COLLECTION_DETAIL.route
-									: APP_PATH.BUNDLE_DETAIL.route,
-								{
-									id: collectionOrBundle.id,
-								}
-							)}
-						>
-							<Button
-								type="secondary"
-								icon={IconName.eye}
-								ariaLabel={viewButtonTitle}
-								title={viewButtonTitle}
-							/>
-						</Link>
-
-						{isCollectionBeingEdited ? (
-							<Button
-								type="secondary"
-								icon={IconName.edit}
-								ariaLabel={editButtonTitle}
-								title={editButtonTitle}
-								disabled={true}
-							/>
-						) : (
-							<Link to={editLink}>
-								<Button
-									type="secondary"
-									icon={IconName.edit}
-									ariaLabel={editButtonTitle}
-									title={editButtonTitle}
-								/>
-							</Link>
-						)}
-					</ButtonToolbar>
-				);
-			}
-
-			default:
-				return renderCollectionOverviewColumns(
-					collectionOrBundle,
-					columnId,
-					collectionLabels
-				);
-		}
-	};
-
 	const renderNoResults = () => {
 		return (
 			<ErrorView
@@ -661,7 +536,18 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 					columns={tableColumns}
 					data={collections}
 					dataCount={collectionCount}
-					renderCell={renderTableCell as any}
+					renderCell={(collection: any, columnId: string) =>
+						renderCollectionsOrBundlesTableCellReact(
+							collection as Avo.Collection.Collection,
+							columnId as CollectionsOrBundlesOverviewTableCols,
+							{
+								isCollection,
+								collectionLabels,
+								editStatuses,
+								commonUser,
+							}
+						)
+					}
 					searchTextPlaceholder={tText(
 						'admin/collections-or-bundles/views/collections-or-bundles-overview___zoek-op-titel-beschrijving-auteur'
 					)}
@@ -678,6 +564,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 					onTableStateChanged={setTableState}
 					renderNoResults={renderNoResults}
 					rowKey="id"
+					showCheckboxes={true}
 					bulkActions={GET_COLLECTION_BULK_ACTIONS(selectedCollectionIds.length > 0)}
 					onSelectBulkAction={handleBulkAction as any}
 					selectedItemIds={selectedCollectionIds}
@@ -774,30 +661,31 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 						const response = await CollectionsOrBundlesService.getCollections(
 							0,
 							0,
-							(tableState.sort_column ||
-								'created_at') as CollectionsOrBundlesOverviewTableCols,
+							(tableState.sort_column || 'created_at') as CollectionSortProps,
 							tableState.sort_order || 'desc',
-							getColumnDataType(),
-							generateWhereObject(getFilters(tableState))
+							getFilters(tableState),
+							isCollection,
+							false
 						);
-						return response[1];
+						return response.total;
 					}}
 					fetchMoreItems={async (offset: number, limit: number) => {
 						const response = await CollectionsOrBundlesService.getCollections(
 							offset,
 							limit,
-							(tableState.sort_column ||
-								'created_at') as CollectionsOrBundlesOverviewTableCols,
+							(tableState.sort_column || 'created_at') as CollectionSortProps,
 							tableState.sort_order || 'desc',
-							getColumnDataType(),
-							generateWhereObject(getFilters(tableState))
+							getFilters(tableState),
+							isCollection,
+							false
 						);
-						return response[0];
+						return response.collections;
 					}}
 					renderValue={(value: any, columnId: string) =>
-						renderTableCell(
+						renderCollectionsOrBundlesTableCellText(
 							value as any,
-							columnId as CollectionsOrBundlesOverviewTableCols
+							columnId as CollectionsOrBundlesOverviewTableCols,
+							{ collectionLabels }
 						)
 					}
 					columns={tableColumnListToCsvColumnList(tableColumns)}

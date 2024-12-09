@@ -108,7 +108,7 @@ import {
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
-import { backToOverview, toAssignmentDetail } from '../helpers/links';
+import { backToOverview } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentForm,
@@ -459,6 +459,16 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 
 		if (assignmentHasResponses) {
 			setIsConfirmSaveActionModalOpen(true);
+			setIsSaving(false);
+			return;
+		}
+
+		if ((assignment?.description?.length || 0) > 300) {
+			ToastService.danger(
+				tHtml(
+					'assignment/views/assignment-edit___de-korte-beschrijving-in-de-publicatie-details-mag-niet-langer-zijn-dan-300-tekens'
+				)
+			);
 			setIsSaving(false);
 			return;
 		}
@@ -909,7 +919,10 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 	const handleDuplicateAssignment = async () => {
 		const duplicatedAssignment = await duplicateAssignment(originalAssignment, commonUser);
 		if (duplicatedAssignment) {
-			window.open(toAssignmentDetail(duplicatedAssignment), '_blank');
+			navigate(history, APP_PATH.ASSIGNMENT_DETAIL.route, {
+				id: duplicatedAssignment.id,
+				tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
+			});
 		}
 	};
 

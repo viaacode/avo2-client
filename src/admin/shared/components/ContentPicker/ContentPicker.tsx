@@ -28,7 +28,7 @@ import {
 import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.helpers';
 import './ContentPicker.scss';
 
-export interface ContentPickerProps {
+interface ContentPickerProps {
 	allowedTypes?: Avo.Core.ContentPickerType[];
 	initialValue: PickerItem | undefined | null;
 	onSelect: (value: PickerItem | null) => void;

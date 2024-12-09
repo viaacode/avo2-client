@@ -1,5 +1,6 @@
 @import "../../styles/settings/index";
 @import "../../styles/utilities";
+@import "../../styles/settings/variables";
 
 .p-my-workspace__action-placeholder {
 	display: inline-block;
@@ -7,6 +8,8 @@
 }
 
 .m-workspace {
+	padding-bottom: $g-spacer-unit * 10;
+
 	@media screen and (max-width: ($g-bp2 - 1)) {
 		.c-navbar .c-toolbar {
 			@include blockifyToolbar();

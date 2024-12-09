@@ -25,7 +25,11 @@ import { PHOTO_TYPES } from '../../../shared/helpers/files';
 import { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
-import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import {
+	AdminLayoutBody,
+	AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { useGetProfileById } from '../hooks/use-get-profile-by-id';
 import { USER_PATH } from '../user.const';
 

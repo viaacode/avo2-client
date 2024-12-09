@@ -11,5 +11,3 @@ export const QUICK_LANE_DEFAULTS = {
 	sort_column: 'created_at',
 	sort_order: 'desc',
 };
-
-export const ITEMS_PER_PAGE = 20;

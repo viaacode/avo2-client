@@ -29,14 +29,13 @@ import useTranslation from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ZendeskService } from '../../shared/services/zendesk-service';
-import { isEducationalUser } from '../helpers/is-educational-user';
 
 import { EDUCATIONAL_AUTHOR_ITEM_REQUEST_FORM_VALIDATION_SCHEMA } from './EducationalAuthorItemRequestForm.consts';
 import { renderAttachment } from './UserItemRequestForm.helpers';
 
 import './ItemRequestForm.scss';
 
-export type EducationalAuthorItemRequestFormProps = DefaultSecureRouteProps;
+type EducationalAuthorItemRequestFormProps = DefaultSecureRouteProps;
 
 interface FormValues {
 	description: string;
@@ -207,71 +206,69 @@ const EducationalAuthorItemRequestForm: FC<EducationalAuthorItemRequestFormProps
 							/>
 						)}
 					</FormGroup>
-					{isEducationalUser(commonUser) && (
-						<>
-							<FormGroup
-								label={tText(
-									'user-item-request-form/views/educational-author-item-request-form___naam-uitgeverij'
-								)}
-								labelFor="organisation"
-								error={formErrors.organisation}
-							>
-								<TextInput
-									className="c-input-react-components"
-									id="organisation"
-									value={formValues.organisation}
-									onChange={(evt) =>
-										setFormValues({
-											...formValues,
-											organisation: evt.currentTarget.value,
-										})
-									}
-								/>
-							</FormGroup>
-							<FormGroup
-								label={tText(
-									'user-item-request-form/views/educational-author-item-request-form___naam-methode'
-								)}
-								labelFor="method"
-								error={formErrors.method}
-							>
-								<TextInput
-									className="c-input-react-components"
-									id="method"
-									value={formValues.method}
-									onChange={(evt) =>
-										setFormValues({
-											...formValues,
-											method: evt.currentTarget.value,
-										})
-									}
-								/>
-							</FormGroup>
-							<FormGroup error={formErrors.educationLevels}>
-								<LomFieldsInput
-									loms={formValues.educationLevels}
-									isEducationRequired={true}
-									showEducation={true}
-									isEducationDegreesRequired={false}
-									showEducationDegrees={false}
-									isSubjectsRequired={false}
-									showSubjects={false}
-									isThemesRequired={false}
-									showThemes={false}
-									onChange={(newLoms) =>
-										setFormValues({
-											...formValues,
-											educationLevels: newLoms || [],
-										})
-									}
-									allowMultiSelect={true}
-									educationLabel={tText(
-										'user-item-request-form/views/educational-author-item-request-form___onderwijsgraden'
-									)}
-								/>
-							</FormGroup>
-						</>
-					)}
+					<FormGroup
+						label={tText(
+							'user-item-request-form/views/educational-author-item-request-form___naam-uitgeverij'
+						)}
+						required
+						labelFor="organisation"
+						error={formErrors.organisation}
+					>
+						<TextInput
+							className="c-input-react-components"
+							id="organisation"
+							value={formValues.organisation}
+							onChange={(evt) =>
+								setFormValues({
+									...formValues,
+									organisation: evt.currentTarget.value,
+								})
+							}
+						/>
+					</FormGroup>
+					<FormGroup
+						label={tText(
+							'user-item-request-form/views/educational-author-item-request-form___naam-methode'
+						)}
+						required
+						labelFor="method"
+						error={formErrors.method}
+					>
+						<TextInput
+							className="c-input-react-components"
+							id="method"
+							value={formValues.method}
+							onChange={(evt) =>
+								setFormValues({
+									...formValues,
+									method: evt.currentTarget.value,
+								})
+							}
+						/>
+					</FormGroup>
+					<FormGroup error={formErrors.educationLevels} required>
+						<LomFieldsInput
+							loms={formValues.educationLevels}
+							isEducationRequired={true}
+							showEducation={true}
+							isEducationDegreesRequired={false}
+							showEducationDegrees={false}
+							isSubjectsRequired={false}
+							showSubjects={false}
+							isThemesRequired={false}
+							showThemes={false}
+							onChange={(newLoms) =>
+								setFormValues({
+									...formValues,
+									educationLevels: newLoms || [],
+								})
+							}
+							allowMultiSelect={true}
+							educationLabel={tText(
+								'user-item-request-form/views/educational-author-item-request-form___onderwijsgraden'
+							)}
+						/>
+					</FormGroup>
 					<Spacer margin={['top', 'bottom-extra-large']}>
 						<FormGroup>
 							{isLoading ? (

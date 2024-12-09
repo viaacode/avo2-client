@@ -1,22 +1,18 @@
 import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
-import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { CollectionCreateUpdateTab } from '../../../collection/collection.types';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
 	type CheckboxOption,
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from '../../../shared/components';
-import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
-import { buildLink, CustomError } from '../../../shared/helpers';
+import { CustomError } from '../../../shared/helpers';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
@@ -31,7 +27,8 @@ import FilterTable, {
 	getFilters,
 } from '../../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../../shared/helpers/filters';
-import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,
@@ -43,10 +40,13 @@ import {
 	CollectionBulkAction,
 	type CollectionOrBundleQualityCheckOverviewTableCols,
 	type CollectionOrBundleQualityCheckTableState,
-	type CollectionsOrBundlesOverviewTableCols,
+	type CollectionSortProps,
+	EditorialType,
 } from '../collections-or-bundles.types';
-import { generateCollectionWhereObject } from '../helpers/collection-filters';
-import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
+import {
+	renderCollectionOrBundleQualityCheckTableCellReact,
+	renderCollectionOrBundleQualityCheckTableCellText,
+} from '../helpers/render-collection-columns';
 
 const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 	location,
@@ -157,23 +157,6 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 		location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_QUALITYCHECK_OVERVIEW;
 
 	// methods
-	const generateWhereObject = useCallback(
-		(filters: Partial<CollectionOrBundleQualityCheckTableState>) => {
-			const andFilters: any[] = generateCollectionWhereObject(
-				filters,
-				commonUser,
-				isCollection,
-				true,
-				false,
-				'view',
-				educationLevelsAndDegrees || []
-			);
-
-			return { _and: andFilters };
-		},
-		[commonUser, isCollection, educationLevelsAndDegrees]
-	);
-
 	const getColumnDataType = useCallback(() => {
 		const column = tableColumns.find(
 			(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
@@ -185,15 +168,16 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 		setIsLoading(true);
 
 		try {
-			const [collectionsTemp, collectionsCountTemp] =
+			const { collections: collectionsTemp, total: collectionsCountTemp } =
 				await CollectionsOrBundlesService.getCollectionEditorial(
-					tableState.page || 0,
-					(tableState.sort_column ||
-						'updated_at') as CollectionOrBundleQualityCheckOverviewTableCols,
+					(tableState.page || 0) * ITEMS_PER_PAGE,
+					ITEMS_PER_PAGE,
+					(tableState.sort_column || 'updated_at') as CollectionSortProps,
 					tableState.sort_order || 'desc',
-					getColumnDataType(),
-					generateWhereObject(getFilters(tableState)),
-					'quality_check'
+					getFilters(tableState),
+					EditorialType.QUALITY_CHECK,
+					isCollection,
+					true
 				);
 
 			setCollections(collectionsTemp);
@@ -222,7 +206,7 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 		}
 
 		setIsLoading(false);
-	}, [tableState, getColumnDataType, generateWhereObject, isCollection, tText]);
+	}, [tableState, getColumnDataType, isCollection, tText]);
 
 	useEffect(() => {
 		if (commonUser && educationLevelsAndDegrees?.length) {
@@ -251,7 +235,8 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 		setIsLoading(true);
 		try {
 			const collectionIds = await CollectionsOrBundlesService.getCollectionIds(
-				generateWhereObject(getFilters(tableState))
+				getFilters(tableState),
+				isCollection
 			);
 			ToastService.info(
 				tHtml(
@@ -277,76 +262,6 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 			);
 		}
 		setIsLoading(false);
-	};
-
-	const renderTableCell = (
-		collectionOrBundle: Partial<Avo.Collection.Collection>,
-		columnId: CollectionOrBundleQualityCheckOverviewTableCols
-	) => {
-		const editLink = buildLink(
-			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
-			{ id: collectionOrBundle.id, tabId: CollectionCreateUpdateTab.QUALITY_CHECK }
-		);
-		const editLinkOriginal = collectionOrBundle.relations?.[0].object
-			? buildLink(
-					isCollection
-						? APP_PATH.COLLECTION_EDIT_TAB.route
-						: APP_PATH.BUNDLE_EDIT_TAB.route,
-					{
-						id: collectionOrBundle.relations?.[0].object,
-						tabId: CollectionCreateUpdateTab.QUALITY_CHECK,
-					}
-			  )
-			: null;
-
-		switch (columnId) {
-			case 'title': {
-				return (
-					<CollectionOrBundleOrAssignmentTitleAndCopyTag
-						title={collectionOrBundle.title}
-						editLink={editLink}
-						editLinkOriginal={editLinkOriginal}
-					/>
-				);
-			}
-
-			case 'actions':
-				return (
-					<ButtonToolbar>
-						<Link to={editLink}>
-							<Button
-								type="secondary"
-								icon={IconName.edit}
-								ariaLabel={
-									isCollection
-										? tText(
-												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
-										  )
-										: tText(
-												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
-										  )
-								}
-								title={
-									isCollection
-										? tText(
-												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
-										  )
-										: tText(
-												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
-										  )
-								}
-							/>
-						</Link>
-					</ButtonToolbar>
-				);
-
-			default:
-				return renderCollectionOverviewColumns(
-					collectionOrBundle,
-					columnId,
-					collectionLabels
-				);
-		}
 	};
 
 	const renderNoResults = () => {
@@ -375,7 +290,16 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 					columns={tableColumns}
 					data={collections}
 					dataCount={collectionCount}
-					renderCell={renderTableCell as any}
+					renderCell={(collection: any, columnId: string): ReactNode =>
+						renderCollectionOrBundleQualityCheckTableCellReact(
+							collection,
+							columnId as CollectionOrBundleQualityCheckOverviewTableCols,
+							{
+								isCollection,
+								collectionLabels,
+							}
+						)
+					}
 					searchTextPlaceholder={tText(
 						'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___zoek-op-titel-beschrijving-auteur'
 					)}
@@ -396,6 +320,7 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 					onSelectionChanged={setSelectedCollectionIds as (ids: ReactNode[]) => void}
 					onSelectAll={setAllCollectionsAsSelected}
 					isLoading={isLoading}
+					showCheckboxes={true}
 					bulkActions={[
 						{
 							label: tText(
@@ -429,33 +354,36 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 						'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bezig-met-genereren-van-de-csv'
 					)}
 					fetchTotalItems={async () => {
-						const response = await CollectionsOrBundlesService.getCollections(
+						const response = await CollectionsOrBundlesService.getCollectionEditorial(
 							0,
 							0,
-							(tableState.sort_column ||
-								'created_at') as CollectionsOrBundlesOverviewTableCols,
+							(tableState.sort_column || 'created_at') as CollectionSortProps,
 							tableState.sort_order || 'desc',
-							getColumnDataType(),
-							generateWhereObject(getFilters(tableState))
+							getFilters(tableState),
+							EditorialType.QUALITY_CHECK,
+							isCollection,
+							false
 						);
-						return response[1];
+						return response.total;
 					}}
 					fetchMoreItems={async (offset: number, limit: number) => {
-						const response = await CollectionsOrBundlesService.getCollections(
+						const response = await CollectionsOrBundlesService.getCollectionEditorial(
 							offset,
 							limit,
-							(tableState.sort_column ||
-								'created_at') as CollectionsOrBundlesOverviewTableCols,
+							(tableState.sort_column || 'created_at') as CollectionSortProps,
 							tableState.sort_order || 'desc',
-							getColumnDataType(),
-							generateWhereObject(getFilters(tableState))
+							getFilters(tableState),
+							EditorialType.QUALITY_CHECK,
+							isCollection,
+							false
 						);
-						return response[0];
+						return response.collections;
 					}}
 					renderValue={(value: any, columnId: string) =>
-						renderTableCell(
+						renderCollectionOrBundleQualityCheckTableCellText(
 							value as any,
-							columnId as CollectionOrBundleQualityCheckOverviewTableCols
+							columnId as CollectionOrBundleQualityCheckOverviewTableCols,
+							{ collectionLabels }
 						)
 					}
 					columns={tableColumnListToCsvColumnList(tableColumns)}

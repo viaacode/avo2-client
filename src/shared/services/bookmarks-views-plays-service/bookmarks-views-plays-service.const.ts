@@ -44,7 +44,7 @@ export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
 	isBookmarked: false,
 };
 
-export interface QueryDefinition {
+interface QueryDefinition {
 	query?: string;
 	get?: string;
 	increment?: string;

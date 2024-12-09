@@ -3,7 +3,7 @@ import React, { type FC } from 'react';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { StickyBar } from '../StickyBar/StickyBar';
 
-export interface StickySaveBarProps {
+interface StickySaveBarProps {
 	isVisible: boolean;
 	isSaving: boolean;
 	onSave: () => void;

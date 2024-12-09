@@ -11,13 +11,18 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, formatTimestamp } from '../../../shared/helpers';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import withUser from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
-import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import {
+	AdminLayoutBody,
+	AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
 import {
@@ -235,7 +240,7 @@ const PublishItemsOverview: FC<DefaultSecureRouteProps> = ({ history }) => {
 				}
 				return tText('admin/items/views/publish-items-overview___nieuw');
 
-			case 'actions': {
+			case ACTIONS_TABLE_COLUMN_ID: {
 				const itemExternalId: string | undefined = get(rowData, 'item_meta.external_id');
 				const itemUid: string | undefined = get(rowData, 'item_meta.uid');
 

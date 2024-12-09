@@ -178,14 +178,14 @@ export function redirectToExternalPage(
 	}
 }
 
-export function getBaseUrl(location: RouteComponentProps['location']): string {
+function getBaseUrl(location: RouteComponentProps['location']): string {
 	if (location.pathname === '/') {
 		return trimEnd(window.location.href, '/');
 	}
 	return trimEnd(decodeURIComponent(window.location.href).split(location.pathname)[0], '/');
 }
 
-export function getFromPath(
+function getFromPath(
 	location: RouteComponentProps['location'],
 	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
 ): string {
@@ -197,7 +197,7 @@ export function getFromPath(
 	return `/${trimStart(fromPath + fromSearch, '/')}`;
 }
 
-export function getRedirectAfterLogin(
+function getRedirectAfterLogin(
 	location: RouteComponentProps['location'],
 	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
 ): string {

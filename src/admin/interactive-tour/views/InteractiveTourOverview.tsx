@@ -14,12 +14,17 @@ import {
 	type LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
-import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import {
+	AdminLayoutBody,
+	AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import {
 	GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS,
 	INTERACTIVE_TOUR_PATH,
@@ -170,7 +175,7 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 			case 'updated_at':
 				return formatDate(rowData[columnId]) || '-';
 
-			case 'actions':
+			case ACTIONS_TABLE_COLUMN_ID:
 				return (
 					<ButtonToolbar>
 						<Button
@@ -272,6 +277,7 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 						'admin/interactive-tour/views/interactive-tour-overview___er-zijn-geen-interactieve-tours-die-voldoen-aan-de-filters'
 					)}
 					isLoading={isLoading}
+					showCheckboxes={false}
 				/>
 				<DeleteObjectModal
 					confirmCallback={handleDelete}

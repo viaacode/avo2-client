@@ -30,6 +30,7 @@ import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graph
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { toggleSortOrder } from '../../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -41,7 +42,11 @@ import {
 	renderDetailRow,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
-import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import {
+	AdminLayoutBody,
+	AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
 import { mapItemUsedByToQuickLane } from '../helpers';
 import { useGetItemUsedBy } from '../hooks/useGetItemUsedBy';
@@ -225,7 +230,7 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 					</div>
 				);
 
-			case 'actions': {
+			case ACTIONS_TABLE_COLUMN_ID: {
 				if (rowData.type === 'QUICK_LANE') {
 					return null; // quick lanes do not have a detail page
 				}

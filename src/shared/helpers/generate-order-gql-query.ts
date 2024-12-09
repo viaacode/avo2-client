@@ -22,10 +22,7 @@ const BOOLEAN_NULLS_LAST_ORDER: Record<
 	desc: 'asc_nulls_last',
 };
 
-export const getSortOrder = (
-	order: Avo.Search.OrderDirection,
-	tableColumnDataType: string
-): string => {
+const getSortOrder = (order: Avo.Search.OrderDirection, tableColumnDataType: string): string => {
 	switch (tableColumnDataType) {
 		case 'string':
 		case 'number':

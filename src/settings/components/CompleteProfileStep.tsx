@@ -41,7 +41,7 @@ import { SettingsService } from '../settings.service';
 
 import './Profile.scss';
 
-export interface CompleteProfileStepProps {
+interface CompleteProfileStepProps {
 	redirectTo?: string;
 }
 
@@ -76,7 +76,7 @@ const CompleteProfileStep: FC<
 
 	// Only show the subscribe checkbox to teachers and only if they are currently unsubscribed
 	const shouldShowSubscribeCheckbox =
-		isTeacher(commonUser.userGroup?.id) &&
+		isTeacher(commonUser?.userGroup?.id) &&
 		!isLoadingExistingEmailPreferences &&
 		!existingEmailPreferences?.newsletter;
 
@@ -140,6 +140,10 @@ const CompleteProfileStep: FC<
 
 	const saveProfileChanges = async () => {
 		try {
+			if (!commonUser) {
+				console.error('trying to save profile changes without a user');
+				return;
+			}
 			setIsSaving(true);
 			const profileId: string = commonUser.profileId;
 			const newProfileInfo: Partial<Avo.User.UpdateProfileValues> = {

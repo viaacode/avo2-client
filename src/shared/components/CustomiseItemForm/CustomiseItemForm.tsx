@@ -21,7 +21,7 @@ export type CustomiseItemFormToggleField = LabeledFormField & ToggleProps;
 export type CustomiseItemFormTitleField = LabeledFormField & TextInputProps;
 export type CustomiseItemFormDescriptionField = LabeledFormField & RichTextEditorWrapperProps;
 
-export interface CustomiseItemFormProps extends DefaultProps {
+interface CustomiseItemFormProps extends DefaultProps {
 	children?: ReactNode;
 	id: string | number;
 	toggle?: CustomiseItemFormToggleField;
@@ -32,7 +32,7 @@ export interface CustomiseItemFormProps extends DefaultProps {
 	preview?: () => ReactNode;
 }
 
-export const CustomiseItemFormIds = {
+const CustomiseItemFormIds = {
 	toggle: 'c-customise-item-form__toggle',
 	title: 'c-customise-item-form__title',
 	description: 'c-customise-item-form__description',

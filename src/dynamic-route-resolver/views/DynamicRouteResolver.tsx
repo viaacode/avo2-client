@@ -7,7 +7,7 @@ import {
 } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { get, keys } from 'lodash-es';
+import { keys } from 'lodash-es';
 import React, { type ComponentType, type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
@@ -182,10 +182,8 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 					additionalInfo: { pathname },
 				});
 				if (JSON.stringify(err).includes('CONTENT_PAGE_DEPUBLISHED')) {
-					const type = get(
-						err,
-						'innerException.additionalInfo.responseContent.additionalInfo.contentPageType'
-					);
+					const type = (err as any)?.innerException?.additionalInfo?.responseContent
+						?.additionalInfo?.contentPageType;
 					setRouteInfo({ type: 'depublishedContentPage', data: { type } });
 				} else {
 					setRouteInfo({ type: 'notFound', data: null });
@@ -284,16 +282,16 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 			}
 
 			const description =
-				get(routeInfo.data, 'seo_description') ||
-				get(routeInfo.data, 'description') ||
-				(get(routeInfo.data, 'description_html')
-					? stripHtml(get(routeInfo.data, 'description_html'))
+				routeInfo.data?.seo_description ||
+				routeInfo.data?.description ||
+				(routeInfo.data?.description_html
+					? stripHtml(routeInfo.data?.description_html)
 					: null) ||
 				'';
 			return (
 				<>
 					<Helmet>
-						<title>{GENERATE_SITE_TITLE(get(routeInfo.data, 'title'))}</title>
+						<title>{GENERATE_SITE_TITLE(routeInfo.data?.title)}</title>
 						<meta name="description" content={description} />
 					</Helmet>
 					<JsonLd

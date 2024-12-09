@@ -130,16 +130,16 @@ export const setLoginSuccess = (data: Avo.Auth.LoginResponse | null): SetLoginSu
 	type: LoginActionTypes.SET_LOGIN_SUCCESS,
 });
 
-export const setLoginError = (): SetLoginErrorAction => ({
+const setLoginError = (): SetLoginErrorAction => ({
 	type: LoginActionTypes.SET_LOGIN_ERROR,
 	error: true,
 });
 
-export const setLoginLoading = (): SetLoginLoadingAction => ({
+const setLoginLoading = (): SetLoginLoadingAction => ({
 	type: LoginActionTypes.SET_LOGIN_LOADING,
 });
 
-export const setAcceptConditions = (): SetAcceptConditionsAction => ({
+const setAcceptConditions = (): SetAcceptConditionsAction => ({
 	type: LoginActionTypes.SET_ACCEPT_CONDITIONS,
 });
 

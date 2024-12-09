@@ -3,6 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 
 import { type CheckboxDropdownModalProps, type CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
@@ -186,7 +187,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		dataType: TableColumnDataType.number,
 	},
 	{
-		id: 'actions',
+		id: ACTIONS_TABLE_COLUMN_ID,
 		tooltip: tText('admin/items/items___acties'),
 		visibleByDefault: true,
 	},
@@ -238,7 +239,7 @@ export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn<Unpubl
 			dataType: TableColumnDataType.string,
 		},
 		{
-			id: 'actions',
+			id: ACTIONS_TABLE_COLUMN_ID,
 			tooltip: tText('admin/items/items___acties'),
 			visibleByDefault: true,
 		},
@@ -270,7 +271,7 @@ export const GET_ITEM_USED_BY_COLLECTIONS_AND_ASSIGNMENTS_COLUMNS = () => [
 	},
 	{
 		tooltip: tText('admin/items/views/item-detail___acties'),
-		id: 'actions',
+		id: ACTIONS_TABLE_COLUMN_ID,
 		sortable: false,
 	},
 ];

@@ -27,6 +27,7 @@ import {
 	isEqual,
 	isNil,
 	isPlainObject,
+	omit,
 	pickBy,
 	set,
 } from 'lodash-es';
@@ -113,14 +114,14 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 		} else {
 			navigate(history, APP_PATH.USER_ITEM_REQUEST_FORM.route);
 		}
+
+		window.scrollTo(0, 0);
 	};
 
 	const defaultOrder = `${filterState.orderProperty || 'relevance'}_${
 		filterState.orderDirection || 'desc'
 	}`;
 	const hasFilters = !isEqual(filterState.filters, DEFAULT_FILTER_STATE);
-	// elasticsearch can only handle 10000 results efficiently
-	const pageCount = Math.ceil(Math.min(resultsCount, 10000) / ITEMS_PER_PAGE);
 	const resultStart = (filterState.page || 0) * ITEMS_PER_PAGE + 1;
 	const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE - 1, resultsCount);
 
@@ -332,12 +333,13 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 		const copiedFilterState = cloneDeep(filterState);
 
 		// Only remove filters that are user-editable
-		for (const key in copiedFilterState) {
-			if (Object.prototype.hasOwnProperty.call(copiedFilterState, key)) {
-				if (enabledFilters === undefined || enabledFilters.map(String).includes(key)) {
-					delete copiedFilterState[key as keyof typeof copiedFilterState];
-				}
-			}
+		if (enabledFilters) {
+			copiedFilterState.filters = omit(copiedFilterState.filters || {}, enabledFilters);
+		} else {
+			copiedFilterState.filters = {};
+		}
+		if (copiedFilterState.filters) {
+			delete copiedFilterState.filters.query;
 		}
 
 		setSearchTerms('');
@@ -435,7 +437,15 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 		}
 		return (
 			<SearchResults
-				currentPage={filterState.page || 0}
+				currentItemIndex={(filterState.page || 0) * ITEMS_PER_PAGE}
+				// elasticsearch can only handle 10000 results efficiently
+				totalItemCount={Math.min(resultsCount, 10000)}
+				setCurrentItemIndex={(newCurrentItemIndex: number) =>
+					setFilterState({
+						...filterState,
+						page: Math.floor(newCurrentItemIndex / ITEMS_PER_PAGE),
+					})
+				}
 				data={searchResults}
 				handleBookmarkToggle={handleBookmarkToggle}
 				handleTagClicked={
@@ -444,13 +454,6 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 						: undefined
 				}
 				loading={searchResultsLoading}
-				pageCount={pageCount}
-				setPage={(page: number) =>
-					setFilterState({
-						...filterState,
-						page,
-					})
-				}
 				bookmarkStatuses={bookmarkStatuses}
 				qualityLabels={qualityLabels}
 				navigateUserRequestForm={navigateToItemRequestForm}

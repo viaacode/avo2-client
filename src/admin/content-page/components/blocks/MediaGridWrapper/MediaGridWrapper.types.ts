@@ -4,7 +4,9 @@ export type ResolvedItemOrCollectionOrAssignment = Partial<
 	Avo.Item.Item | Avo.Collection.Collection | Avo.Assignment.Assignment
 > & {
 	src?: string;
-	view_count?: { count?: number };
 	type: { label: 'audio' | 'video' | 'collectie' | 'bundel' | 'opdracht' };
-	copyrightOrganisation: Avo.Organization.Organization | null;
+	view_count: number;
+	item_count?: number;
+	copyright_organisation: Avo.Organization.Organization | null;
+	copyright_image: string | null;
 };

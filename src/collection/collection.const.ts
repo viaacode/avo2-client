@@ -1,14 +1,9 @@
 import { type SelectOption, type TableColumn } from '@viaa/avo2-components';
 
+import { ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../shared/helpers/translate';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
-export const STILL_DIMENSIONS = {
-	width: 177,
-	height: 100,
-};
-
-export const MAX_TITLE_LENGTH = 110;
 export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;
 export const MAX_LONG_DESCRIPTION_LENGTH = 1200;
 
@@ -82,6 +77,6 @@ export const GET_MARCOM_ENTRY_TABLE_COLUMNS: (isCollection: boolean) => TableCol
 		: []),
 	{
 		label: '',
-		id: 'actions',
+		id: ACTIONS_TABLE_COLUMN_ID,
 	},
 ];

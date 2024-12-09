@@ -22,9 +22,9 @@ export const getProfile = (
 	} as Avo.User.Profile;
 };
 
-export const getInitialChar = (value: string | undefined | null): string => (value ? value[0] : '');
+const getInitialChar = (value: string | undefined | null): string => (value ? value[0] : '');
 
-export const getInitials = (profile: Avo.User.Profile | Avo.User.CommonUser | null): string => {
+const getInitials = (profile: Avo.User.Profile | Avo.User.CommonUser | null): string => {
 	if ((profile as Avo.User.CommonUser)?.profileId) {
 		return (
 			getInitialChar((profile as Avo.User.CommonUser).firstName) +
@@ -97,9 +97,7 @@ export const getFullNameCommonUser = (
 	}`;
 };
 
-export const getAbbreviatedFullName = (
-	profile: Avo.User.Profile | Avo.User.CommonUser | null
-): string => {
+const getAbbreviatedFullName = (profile: Avo.User.Profile | Avo.User.CommonUser | null): string => {
 	if ((profile as Avo.User.CommonUser)?.profileId) {
 		return `${(profile as Avo.User.CommonUser).firstName?.[0] || 'x'}. ${
 			(profile as Avo.User.CommonUser).lastName
@@ -110,10 +108,10 @@ export const getAbbreviatedFullName = (
 	}`;
 };
 
-export const getAvatarImage = (profile: Avo.User.Profile | Avo.User.CommonUser | null): string =>
+const getAvatarImage = (profile: Avo.User.Profile | Avo.User.CommonUser | null): string =>
 	profile?.organisation?.logo_url || profile?.avatar || '';
 
-export const getAvatarProps = (
+const getAvatarProps = (
 	profile: Avo.User.Profile | Avo.User.CommonUser | null,
 	options: {
 		small?: boolean;

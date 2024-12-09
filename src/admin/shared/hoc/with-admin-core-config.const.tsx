@@ -53,7 +53,7 @@ const getAlertIconNames = (): Partial<Record<IconName, string>> => ({
 	[IconName.book]: tText('admin/shared/hoc/with-admin-core-config___boek'),
 });
 
-export const ALERT_ICON_LIST_CONFIG = (): {
+const ALERT_ICON_LIST_CONFIG = (): {
 	key: IconName;
 	value: IconName;
 	label: string;
@@ -124,7 +124,7 @@ export function getAdminCoreConfig(): AdminConfig {
 			componentProps: {
 				add: { name: IconName.plus },
 				angleDown: { name: IconName.caretDown },
-				angleLeft: { name: IconName.chevronsLeft },
+				angleLeft: { name: IconName.chevronLeft },
 				angleRight: { name: IconName.chevronRight },
 				angleUp: { name: IconName.caretUp },
 				anglesLeft: { name: IconName.chevronsLeft },

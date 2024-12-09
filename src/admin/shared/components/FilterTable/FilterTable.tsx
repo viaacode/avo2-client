@@ -125,7 +125,7 @@ const FilterTable: FC<FilterTableProps> = ({
 	isLoading = false,
 	bulkActions,
 	onSelectBulkAction,
-	showCheckboxes,
+	showCheckboxes = false,
 	selectedItemIds,
 	onSelectionChanged,
 	onSelectAll,
@@ -442,9 +442,7 @@ const FilterTable: FC<FilterTableProps> = ({
 										defaultOrderDirection ||
 										undefined) as any // TODO add asc_nulls_first to table sort orders
 								}
-								showCheckboxes={
-									(!!bulkActions && !!bulkActions.length) || showCheckboxes
-								}
+								showCheckboxes={showCheckboxes}
 								selectedItemIds={selectedItemIds || undefined}
 								onSelectionChanged={onSelectionChanged}
 								onSelectAll={onSelectAll}
@@ -462,7 +460,9 @@ const FilterTable: FC<FilterTableProps> = ({
 										const filterTable =
 											document.querySelector('.c-filter-table');
 										const scrollable = filterTable?.closest('.c-scrollable');
+										// Scroll both the window and the scrollable element to the top
 										scrollable?.scrollTo(0, 0);
+										window?.scrollTo(0, 0);
 									}}
 								/>
 							</Spacer>

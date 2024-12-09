@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 
-import { toIsoDate } from '../../helpers/formatters';
+import { toIsoDate } from '../../helpers/formatters/date';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare global {
@@ -9,7 +9,7 @@ declare global {
 	}
 }
 
-export interface JsonLdProps {
+interface JsonLdProps {
 	url: string;
 	title?: string;
 	description?: string | null;

@@ -1,10 +1,8 @@
 import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
-import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { get, isNil, truncate } from 'lodash-es';
+import { get } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
 
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
@@ -15,9 +13,8 @@ import {
 	type LoadingInfo,
 } from '../../../shared/components';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
-import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { buildLink, CustomError } from '../../../shared/helpers';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useCompanies } from '../../../shared/hooks/useCompanies';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -34,7 +31,12 @@ import {
 	getMultiOptionFilters,
 	getQueryFilter,
 } from '../../shared/helpers/filters';
-import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import {
+	renderItemsOverviewTableCell,
+	renderItemsOverviewTableCellText,
+} from '../helpers/render-item-overview-table-cell';
 import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
 import { type ItemsOverviewTableCols, type ItemsTableState } from '../items.types';
@@ -228,94 +230,6 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 		return buildLink(ADMIN_PATH.ITEM_DETAIL, { id: uuid });
 	};
 
-	const renderTableCell = (rowData: Partial<Avo.Item.Item>, columnId: ItemsOverviewTableCols) => {
-		switch (columnId) {
-			case 'external_id':
-				return (
-					<Link to={buildLink(ADMIN_PATH.ITEM_DETAIL, { id: rowData.uid })}>
-						{truncate((rowData as any)[columnId] || '-', { length: 60 })}
-					</Link>
-				);
-
-			case 'updated_at':
-			case 'depublish_at':
-			case 'expiry_date':
-			case 'issued':
-			case 'publish_at':
-			case 'published_at':
-				return !isNil(rowData[columnId]) ? formatDate(rowData[columnId] as any) : '-';
-
-			case 'organisation':
-				return truncateTableValue(get(rowData, 'organisation.name'));
-
-			case 'type':
-				return get(rowData, 'type.label', '-');
-
-			case 'views':
-				return get(rowData, 'item_counts.views') || '0';
-
-			case 'in_collection':
-				return get(rowData, 'item_counts.in_collection') || '0';
-
-			case 'bookmarks':
-				return get(rowData, 'item_counts.bookmarks') || '0';
-
-			case 'in_assignment':
-				return get(rowData, 'item_counts.in_assignment') || '0';
-
-			case 'quick_lane_links':
-				return get(rowData, 'item_counts.quick_lane_links') || '0';
-
-			case 'is_deleted':
-				return rowData[columnId] ? 'Ja' : 'Nee';
-
-			case 'is_published':
-				if (rowData.is_published) {
-					return tText('admin/items/views/items-overview___gepubliceerd');
-				}
-				if (rowData.depublish_reason) {
-					return tText('admin/items/views/items-overview___gedepubliceerd-pancarte');
-				}
-				if (get(rowData, 'relations[0]')) {
-					return tText('admin/items/views/items-overview___gedepubliceerd-merge');
-				}
-				return tText('admin/items/views/items-overview___gedepubliceerd');
-
-			case 'actions':
-				return (
-					<ButtonToolbar>
-						<Link to={getItemDetailLink(rowData.external_id)}>
-							<Button
-								type="secondary"
-								icon={IconName.eye}
-								title={tText(
-									'admin/items/views/items-overview___bekijk-item-in-de-website'
-								)}
-								ariaLabel={tText(
-									'admin/items/views/items-overview___bekijk-item-in-de-website'
-								)}
-							/>
-						</Link>
-						<Link to={getItemAdminDetailLink(rowData.uid)}>
-							<Button
-								type="secondary"
-								icon={IconName.edit}
-								title={tText(
-									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
-								)}
-								ariaLabel={tText(
-									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
-								)}
-							/>
-						</Link>
-					</ButtonToolbar>
-				);
-
-			default:
-				return truncate((rowData as any)[columnId] || '-', { length: 60 });
-		}
-	};
-
 	const renderNoResults = () => {
 		return (
 			<ErrorView
@@ -341,7 +255,10 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 					data={items}
 					dataCount={itemCount}
 					renderCell={(rowData: Partial<Avo.Item.Item>, columnId: string) =>
-						renderTableCell(rowData, columnId as ItemsOverviewTableCols)
+						renderItemsOverviewTableCell(rowData, columnId as ItemsOverviewTableCols, {
+							getItemDetailLink,
+							getItemAdminDetailLink,
+						})
 					}
 					searchTextPlaceholder={tText(
 						'admin/items/views/items-overview___zoek-op-pid-titel-beschrijving-organisatie'
@@ -354,6 +271,7 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 					renderNoResults={renderNoResults}
 					rowKey="uid"
 					isLoading={isLoading}
+					showCheckboxes={false}
 					bulkActions={[
 						{
 							label: tText('admin/items/views/items-overview___exporteer-alles'),
@@ -399,7 +317,10 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 						return response[0];
 					}}
 					renderValue={(value: any, columnId: string) =>
-						renderTableCell(value as any, columnId as ItemsOverviewTableCols)
+						renderItemsOverviewTableCellText(
+							value as Partial<Avo.Item.Item>,
+							columnId as ItemsOverviewTableCols
+						)
 					}
 					columns={tableColumnListToCsvColumnList(tableColumns)}
 					exportFileName={tText('admin/items/views/items-overview___media-items-csv')}

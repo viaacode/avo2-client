@@ -242,7 +242,7 @@ function getError<T>(rule: ValidationRule<T>, object: T) {
 	return rule.error(object);
 }
 
-export const getDuplicateTitleOrDescriptionErrors = async (
+const getDuplicateTitleOrDescriptionErrors = async (
 	assignment: Partial<Avo.Assignment.Assignment>
 ): Promise<string[]> => {
 	const errors = [];

@@ -30,12 +30,12 @@ import { type AppState } from '../../../store';
 import { acceptConditionsAction } from '../../store/actions';
 import { selectLogin } from '../../store/selectors';
 
-export type AcceptElementaryPupilConditionsProps = {
+type AcceptElementaryPupilConditionsProps = {
 	acceptConditions: () => Dispatch;
 	user: Avo.User.CommonUser;
 };
 
-export const ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE = 'ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE';
+const ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE = 'ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE';
 
 const AcceptElementaryPupilConditions: FC<AcceptElementaryPupilConditionsProps> = ({
 	user,

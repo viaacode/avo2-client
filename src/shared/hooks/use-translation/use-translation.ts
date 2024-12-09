@@ -9,7 +9,7 @@ import {
 
 import { tHtml, tText } from '../../helpers/translate';
 
-export type useTranslationsResponse<N extends Namespace = DefaultNamespace> = Omit<
+type useTranslationsResponse<N extends Namespace = DefaultNamespace> = Omit<
 	UseTranslationResponse<N>,
 	't'
 > & {

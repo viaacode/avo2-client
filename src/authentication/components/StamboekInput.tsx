@@ -22,7 +22,7 @@ import { type StamboekValidationStatus } from '../views/registration-flow/r3-sta
 
 import './StamboekInput.scss';
 
-export interface StamboekInputProps {
+interface StamboekInputProps {
 	value?: string;
 	onChange: (validStamboekNumber: string) => void;
 }

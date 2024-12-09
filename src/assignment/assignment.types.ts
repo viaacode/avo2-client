@@ -3,6 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 
 import { type FilterState } from '../search/search.types';
 import { type Lookup_Enum_Colors_Enum } from '../shared/generated/graphql-db-types';
+import { type ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list';
 import type { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import { type AssignmentBlockItemDescriptionType } from './components/AssignmentBlockDescriptionButtons';
@@ -43,16 +44,16 @@ export type AssignmentOverviewTableColumns =
 	| 'copies'
 	| 'is_copy'
 	| 'contributors'
-	| 'actions'
 	| 'share_type'
-	| 'is_public';
+	| 'is_public'
+	| typeof ACTIONS_TABLE_COLUMN_ID;
 
 export type AssignmentResponseTableColumns =
 	| 'pupil'
 	| 'collection_title'
 	| 'pupil_collection_block_count'
 	| 'updated_at'
-	| 'actions';
+	| typeof ACTIONS_TABLE_COLUMN_ID;
 
 export interface AssignmentColumn extends TableColumn {
 	id: AssignmentOverviewTableColumns;
@@ -97,11 +98,6 @@ export enum AssignmentRetrieveError {
 export interface AssignmentLabelColor {
 	label: string; // #FF0000
 	value: Lookup_Enum_Colors_Enum; // BRIGHT_RED
-}
-
-export interface AssignmentLabel {
-	description: string;
-	value: string;
 }
 
 /// Zoek & bouw

@@ -12,7 +12,7 @@ import { ToastService } from '../../services/toast-service';
 
 import './EducationalOrganisationsSelect.scss';
 
-export interface EducationalOrganisationsSelectProps {
+interface EducationalOrganisationsSelectProps {
 	organisations: Avo.EducationOrganization.Organization[];
 	onChange: (organisations: Avo.EducationOrganization.Organization[]) => void;
 	disabled?: boolean;

@@ -56,6 +56,7 @@ import { isItemWithMeta } from '../helpers/is-item-with-meta';
 
 import './AssignmentOverview.scss';
 import './AssignmentResponses.scss';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 
 interface AssignmentResponsesProps
 	extends Omit<DefaultSecureRouteProps<{ id: string }>, 'location'> {
@@ -455,7 +456,7 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 				);
 			}
 
-			case 'actions':
+			case ACTIONS_TABLE_COLUMN_ID:
 				return (
 					<div className="c-assignment-responses__actions">
 						{renderDeleteAction(assignmentResponse)}

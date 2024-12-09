@@ -1,4 +1,5 @@
 import { ROUTE_PARTS } from '../../shared/constants';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate';
 import { generateRandomId } from '../../shared/helpers/uuid';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -51,7 +52,7 @@ export const GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: () => FilterableColumn<In
 			dataType: TableColumnDataType.dateTime,
 		},
 		{
-			id: 'actions',
+			id: ACTIONS_TABLE_COLUMN_ID,
 			tooltip: tText('admin/interactive-tour/interactive-tour___acties'),
 			visibleByDefault: true,
 		},

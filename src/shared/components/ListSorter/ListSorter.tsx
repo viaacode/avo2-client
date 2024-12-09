@@ -35,9 +35,7 @@ export interface ListSorterProps<T> {
 
 // Default renderers
 
-export const ListSorterThumbnail: FC<{ item: ListSorterItem }> = ({ item }) => (
-	<Icon name={item.icon} />
-);
+const ListSorterThumbnail: FC<{ item: ListSorterItem }> = ({ item }) => <Icon name={item.icon} />;
 
 export const ListSorterPosition: FC<{ item: ListSorterItem; i?: number }> = ({ item, i }) => {
 	const isFirst = useMemo(() => i === 0, [i]);
@@ -85,7 +83,7 @@ export const ListSorterColor: FC<{ item: ListSorterItem; options?: ColorOption[]
 
 // Main renderer
 type ListSorterType<T = ListSorterItem & any> = FC<ListSorterProps<T>>;
-export const ListSorter: ListSorterType = ({
+const ListSorter: ListSorterType = ({
 	items = [],
 	thumbnail = ((item) =>
 		item && <ListSorterThumbnail item={item} />) as ListSorterRenderer<unknown>,

@@ -138,7 +138,7 @@ interface ItemDetailProps {
 	renderInteractiveTour?: () => ReactNode;
 }
 
-export const ITEM_ACTIONS = {
+const ITEM_ACTIONS = {
 	createAssignment: 'createAssignment',
 	importToAssignment: 'importToAssignment',
 };

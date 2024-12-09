@@ -24,11 +24,11 @@ import { type SearchResultsProps } from '../search.types';
 import SearchResultItem from './SearchResultItem';
 
 const SearchResults: FC<SearchResultsProps & UserProps> = ({
-	currentPage,
 	loading,
 	data,
-	pageCount,
-	setPage,
+	currentItemIndex,
+	totalItemCount,
+	setCurrentItemIndex,
 	bookmarkStatuses,
 	navigateUserRequestForm,
 	bookmarkButtons,
@@ -93,10 +93,12 @@ const SearchResults: FC<SearchResultsProps & UserProps> = ({
 					<Spacer margin="large">
 						<PaginationBar
 							{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
-							startItem={currentPage * ITEMS_PER_PAGE}
+							startItem={currentItemIndex}
 							itemsPerPage={ITEMS_PER_PAGE}
-							totalItems={pageCount * ITEMS_PER_PAGE}
-							onPageChange={setPage}
+							totalItems={totalItemCount}
+							onPageChange={(newPage: number) =>
+								setCurrentItemIndex(newPage * ITEMS_PER_PAGE)
+							}
 						/>
 					</Spacer>
 				</>

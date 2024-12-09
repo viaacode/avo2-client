@@ -1,23 +1,20 @@
 import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
-import { Button, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
+import { type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
-import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
 import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types';
 import { OrderDirection } from '../../../search/search.const';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
-import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { CustomError } from '../../../shared/helpers';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -29,8 +26,13 @@ import FilterTable, {
 	getFilters,
 } from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getMultiOptionFilters } from '../../shared/helpers/filters';
-import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { type PickerItem } from '../../shared/types';
+import {
+	renderPupilCollectionTableCellReact,
+	renderPupilCollectionTableCellText,
+} from '../helpers/render-pupil-collections-overview-table-cell';
 import {
 	GET_PUPIL_COLLECTION_BULK_ACTIONS,
 	GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS,
@@ -294,78 +296,6 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 		setIsLoading(false);
 	};
 
-	const renderTableCell = (
-		pupilCollection: Partial<Avo.Assignment.Response>,
-		columnId: PupilCollectionOverviewTableColumns
-	) => {
-		const { id, created_at, updated_at, assignment_id, assignment } = pupilCollection;
-
-		switch (columnId) {
-			case 'title':
-				return (
-					<Link
-						to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route, {
-							assignmentId: assignment_id,
-							responseId: id,
-						})}
-					>
-						{truncateTableValue(pupilCollection?.collection_title || '-')}
-					</Link>
-				);
-
-			case 'pupil':
-				return truncateTableValue(pupilCollection?.owner?.full_name);
-
-			case 'assignmentTitle':
-				return (
-					<Link to={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignment_id })}>
-						{truncateTableValue(assignment?.title || '-')}
-					</Link>
-				);
-
-			case 'teacher':
-				return truncateTableValue(pupilCollection?.assignment?.owner?.full_name);
-
-			case 'created_at':
-				return formatDate(created_at) || '-';
-
-			case 'updated_at':
-				return formatDate(updated_at) || '-';
-
-			case 'deadline_at':
-				return formatDate(assignment?.deadline_at) || '-';
-
-			case 'status':
-				return !!assignment?.deadline_at &&
-					new Date(assignment?.deadline_at).getTime() < new Date().getTime()
-					? tText('admin/pupil-collection/views/pupil-collections-overview___afgelopen')
-					: tText('admin/pupil-collection/views/pupil-collections-overview___actief');
-
-			case 'actions':
-			default:
-				// TODO link to correct edit page for pupil collection
-				//localhost:8080/werkruimte/opdrachten/de61d05b-ab4c-4651-a631-d97f76e9f280/antwoorden/6b7ebe33-6cdf-4e7f-b5d4-a38b8e2fa8b8
-				return (
-					<Link
-						to={buildLink(
-							APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route,
-							{
-								assignmentId: assignment?.id,
-								responseId: id,
-							},
-							{ tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION }
-						)}
-					>
-						<Button
-							icon={IconName.edit2}
-							ariaLabel="Bewerk deze opdracht"
-							type="secondary"
-						/>
-					</Link>
-				);
-		}
-	};
-
 	const renderNoResults = () => {
 		return (
 			<ErrorView
@@ -392,8 +322,11 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 					columns={tableColumns}
 					data={pupilCollections}
 					dataCount={pupilCollectionsCount}
-					renderCell={(rowData: Partial<Avo.Assignment.Response>, columnId: string) =>
-						renderTableCell(rowData, columnId as PupilCollectionOverviewTableColumns)
+					renderCell={(rowData: any, columnId: string) =>
+						renderPupilCollectionTableCellReact(
+							rowData as Partial<Avo.Assignment.Response>,
+							columnId as PupilCollectionOverviewTableColumns
+						)
 					}
 					searchTextPlaceholder={tText(
 						'admin/pupil-collection/views/pupil-collections-overview___zoek-op-titel-van-collectie-opdracht-naam-leerling'
@@ -474,9 +407,9 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 						);
 						return response[0];
 					}}
-					renderValue={(value: any, columnId: string) =>
-						renderTableCell(
-							value as any,
+					renderValue={(pupilCollection: any, columnId: string) =>
+						renderPupilCollectionTableCellText(
+							pupilCollection as Partial<Avo.Assignment.Response>,
 							columnId as PupilCollectionOverviewTableColumns
 						)
 					}

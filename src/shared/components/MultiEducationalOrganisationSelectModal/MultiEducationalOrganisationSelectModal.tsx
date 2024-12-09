@@ -19,7 +19,7 @@ import { EducationalOrganisationsSelect } from '../EducationalOrganisationsSelec
 
 import './MultiEducationalOrganisationSelectModal.scss';
 
-export interface MultiEducationalOrganisationSelectModalProps {
+interface MultiEducationalOrganisationSelectModalProps {
 	label: string;
 	id: string;
 	values: Avo.EducationOrganization.Organization[];

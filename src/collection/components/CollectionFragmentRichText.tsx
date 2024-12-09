@@ -5,7 +5,7 @@ import Html, { type HtmlProps } from '../../shared/components/Html/Html';
 import { CollectionBlockType } from '../collection.const';
 import { type BlockItemComponent } from '../collection.types';
 
-export type CollectionFragmentRichTextProps = BlockItemComponent &
+type CollectionFragmentRichTextProps = BlockItemComponent &
 	Omit<HtmlProps, 'content'> &
 	Partial<Pick<HtmlProps, 'content'>> & {
 		ref?: React.MutableRefObject<HTMLDivElement | null>;
