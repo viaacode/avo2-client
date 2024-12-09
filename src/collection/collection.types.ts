@@ -28,6 +28,11 @@ export enum ContentTypeString {
 	searchquery = 'zoekopdracht',
 }
 
+export enum CollectionOrBundle {
+	COLLECTION = 'collection',
+	BUNDLE = 'bundle',
+}
+
 export const CONTENT_TYPE_TRANSLATIONS: Record<Avo.ContentType.Dutch, Avo.ContentType.English> = {
 	item: 'item',
 	audio: 'audio',

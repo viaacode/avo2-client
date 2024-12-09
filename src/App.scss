@@ -16,3 +16,9 @@
 .hide-zendesk-widget iframe#launcher {
 	display: none !important;
 }
+
+.u-mq-switch-main-nav-authentication .c-nav {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}

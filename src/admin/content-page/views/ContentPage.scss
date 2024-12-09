@@ -11,11 +11,37 @@ $c-admin-core-add-content-block-height: 7rem;
 
 .c-admin__content-page-label-overview,
 .c-admin-core__content-page {
-	.c-filter-table .c-table .c-button {
-		height: 3.6rem;
-		width: 3.6rem;
-		padding: 0.6rem !important;
-		margin-left: 0.8rem !important;
+	.c-filter-table .c-table {
+		td,
+		.c-dropdown {
+			> .c-button {
+				height: 3.6rem;
+				width: 3.6rem;
+				padding: 0.6rem !important;
+				margin-left: 0.8rem !important;
+			}
+		}
+
+		.c-menu {
+			border: 1px solid $color-gray-700;
+			border-radius: 0.4rem;
+
+			.c-button {
+				width: 100%;
+				border: 0;
+				padding: $g-spacer-unit;
+
+				.c-button__content {
+					justify-content: flex-start;
+					gap: $g-spacer-unit;
+
+					.o-svg-icon {
+						width: $g-spacer-unit * 2;
+						height: $g-spacer-unit * 2;
+					}
+				}
+			}
+		}
 	}
 }
 

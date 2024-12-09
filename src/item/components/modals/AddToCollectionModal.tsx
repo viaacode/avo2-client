@@ -22,7 +22,7 @@ import { once } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 
 import { CollectionService } from '../../../collection/collection.service';
-import { ContentTypeNumber } from '../../../collection/collection.types';
+import { CollectionOrBundle, ContentTypeNumber } from '../../../collection/collection.types';
 import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
 import { OrderDirection } from '../../../search/search.const';
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
@@ -147,7 +147,7 @@ const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 			setSelectedCollection(
 				await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 					id,
-					'collection',
+					CollectionOrBundle.COLLECTION,
 					undefined
 				)
 			);

@@ -91,7 +91,7 @@ export function getAdminCoreConfig(): AdminConfig {
 				ContentBlockType.CTAs,
 				ContentBlockType.Eventbrite,
 				ContentBlockType.Heading,
-				ContentBlockType.Hero,
+				ContentBlockType.AvoHero,
 				ContentBlockType.IFrame,
 				ContentBlockType.Image,
 				ContentBlockType.ImageGrid,

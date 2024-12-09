@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { CollectionService } from '../../collection/collection.service';
+import { CollectionOrBundle } from '../../collection/collection.types';
 import { CutFragmentForAssignmentModal } from '../../item/components';
 import { type ItemTrimInfo } from '../../item/item.types';
 import {
@@ -195,7 +196,7 @@ export function useBlockListModals(
 							const collection =
 								await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 									id,
-									'collection',
+									CollectionOrBundle.COLLECTION,
 									undefined
 								);
 
