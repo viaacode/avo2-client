@@ -18,15 +18,23 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { cloneDeep, compact, fromPairs, isNil, noop } from 'lodash-es';
-import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, {
+	type FC,
+	type ReactNode,
+	type ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
+import { Link, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import { ArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
 import { type CollectionsOrBundlesOverviewTableCols } from '../../admin/collectionsOrBundles/collections-or-bundles.types';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { AssignmentService } from '../../assignment/assignment.service';
 import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import type { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -34,7 +42,6 @@ import { OrderDirection } from '../../search/search.const';
 import {
 	CheckboxDropdownModal,
 	type CheckboxOption,
-	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from '../../shared/components';
@@ -73,22 +80,19 @@ import { deleteCollection, deleteSelfFromCollection } from '../helpers/delete-co
 
 import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './CollectionOrBundleOverview.consts';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
+import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
 import './CollectionOrBundleOverview.scss';
 
-interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
+interface CollectionOrBundleOverviewProps {
 	numberOfItems: number;
 	type: CollectionOrBundle;
 	onUpdate: () => void | Promise<void>;
 }
 
-const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps> = ({
-	numberOfItems,
-	type,
-	onUpdate = noop,
-	history,
-	commonUser,
-}) => {
+const CollectionOrBundleOverview: FC<
+	CollectionOrBundleOverviewProps & DefaultSecureRouteProps & UserProps
+> = ({ numberOfItems, type, onUpdate = noop, history, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -115,7 +119,11 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 	const [page, setPage] = useState<number>(0);
 	const [activeModalInfo, setActiveModalInfo] = useState<{
 		collectionUuid: string;
-		activeModal: 'DELETE' | 'QUICK_LANE' | 'CREATE_ASSIGNMENT';
+		activeModal:
+			| 'DELETE-COLLECTION'
+			| 'DELETE-CONTRIBUTOR'
+			| 'QUICK_LANE'
+			| 'CREATE_ASSIGNMENT';
 	} | null>(null);
 
 	const [query, setQuery] = useQueryParams({
@@ -466,17 +474,17 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 					PermissionService.hasPerm(commonUser, PermissionName.CREATE_QUICK_LANE)
 			),
 			...createDropdownMenuItem(
-				CollectionMenuAction.delete,
+				CollectionMenuAction.deleteCollection,
 				tText('collection/views/collection-overview___verwijderen'),
-				undefined,
+				'trash',
 				!shouldDeleteSelfFromCollection
 			),
 			...createDropdownMenuItem(
-				CollectionMenuAction.delete,
+				CollectionMenuAction.deleteContributor,
 				tText(
 					'collection/components/collection-or-bundle-overview___verwijder-mij-van-deze-collectie'
 				),
-				undefined,
+				'trash',
 				shouldDeleteSelfFromCollection
 			),
 		];
@@ -508,10 +516,17 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 					});
 					break;
 
-				case CollectionMenuAction.delete:
+				case CollectionMenuAction.deleteCollection:
 					setActiveModalInfo({
 						collectionUuid,
-						activeModal: 'DELETE',
+						activeModal: 'DELETE-COLLECTION',
+					});
+					break;
+
+				case CollectionMenuAction.deleteContributor:
+					setActiveModalInfo({
+						collectionUuid,
+						activeModal: 'DELETE-CONTRIBUTOR',
 					});
 					break;
 
@@ -843,32 +858,41 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 		</ErrorView>
 	);
 
-	const renderDeleteModal = () => {
+	const renderDeleteModal = (): ReactNode | null => {
 		if (isCollection) {
+			// Collection
+			if (activeModalInfo?.activeModal === 'DELETE-COLLECTION') {
+				return (
+					<DeleteCollectionModal
+						isOpen={activeModalInfo?.activeModal === 'DELETE-COLLECTION'}
+						onClose={() => setActiveModalInfo(null)}
+						deleteCallback={handleDeleteCollection}
+						contributorCount={selectedCollectionDetail?.contributors?.length || 0}
+						isCollection={isCollection}
+					/>
+				);
+			} else if (activeModalInfo?.activeModal === 'DELETE-CONTRIBUTOR') {
+				return (
+					<DeleteMyselfFromCollectionContributorsConfirmModal
+						isOpen={activeModalInfo?.activeModal === 'DELETE-CONTRIBUTOR'}
+						onClose={() => setActiveModalInfo(null)}
+						deleteCallback={handleDeleteSelfFromCollection}
+					/>
+				);
+			}
+		} else if (activeModalInfo?.activeModal === 'DELETE-COLLECTION') {
+			// Bundle
 			return (
 				<DeleteCollectionModal
-					isOpen={activeModalInfo?.activeModal === 'DELETE'}
+					isOpen={activeModalInfo?.activeModal === 'DELETE-COLLECTION'}
 					onClose={() => setActiveModalInfo(null)}
-					deleteCollectionCallback={handleDeleteCollection}
-					deleteSelfFromCollectionCallback={handleDeleteSelfFromCollection}
-					contributorCount={selectedCollectionDetail?.contributors?.length || 0}
-					shouldDeleteSelfFromCollection={shouldDeleteSelfFromCollection}
+					deleteCallback={handleDeleteCollection}
+					contributorCount={0}
+					isCollection={isCollection}
 				/>
 			);
 		}
-		return (
-			<DeleteObjectModal
-				title={tText(
-					'collection/components/collection-or-bundle-overview___verwijder-bundel'
-				)}
-				body={tText(
-					'collection/views/collection-overview___bent-u-zeker-deze-actie-kan-niet-worden-ongedaan-gemaakt'
-				)}
-				isOpen={activeModalInfo?.activeModal === 'DELETE'}
-				onClose={() => setActiveModalInfo(null)}
-				confirmCallback={handleDeleteCollection}
-			/>
-		);
+		return null;
 	};
 
 	const renderQuickLaneModal = () => {
@@ -932,6 +956,7 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 	);
 };
 
-export default withUser(CollectionOrBundleOverview) as FC<
-	Omit<CollectionOrBundleOverviewProps, 'user' | 'commonUser'>
->;
+export default compose(
+	withRouter,
+	withUser
+)(CollectionOrBundleOverview) as FC<CollectionOrBundleOverviewProps>;

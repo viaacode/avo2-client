@@ -7,63 +7,53 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 interface DeleteCollectionModalProps {
 	isOpen: boolean;
 	onClose?: () => void;
-	deleteCollectionCallback: () => void;
-	deleteSelfFromCollectionCallback: () => void;
+	deleteCallback: () => void;
 	contributorCount: number;
-	/**
-	 * true: should delete the current user from the contributors of the collection
-	 * false: should delete the collection/bundle itself
-	 */
-	shouldDeleteSelfFromCollection: boolean;
+
+	// true: collection, false: bundle
+	isCollection: boolean;
 }
 
 const DeleteCollectionModal: FC<DeleteCollectionModalProps> = ({
 	isOpen,
 	onClose = noop,
-	deleteCollectionCallback,
-	deleteSelfFromCollectionCallback,
+	deleteCallback,
 	contributorCount,
-	shouldDeleteSelfFromCollection,
+	isCollection,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const handleDelete = async () => {
-		if (shouldDeleteSelfFromCollection) {
-			deleteSelfFromCollectionCallback();
-		} else {
-			deleteCollectionCallback();
-		}
+		deleteCallback();
 		onClose();
 	};
 
 	const renderDeleteMessageParagraph = () => {
-		if (shouldDeleteSelfFromCollection) {
-			return tHtml(
-				'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-jezelf-van-deze-collectie-wil-wissen'
+		let warning = null;
+		if (contributorCount === 1) {
+			// Will never happen for bundels since they cannot be shared
+			warning = tHtml(
+				'collection/components/modals/delete-collection-modal___deze-opdracht-is-met-1-andere-persoon-gedeeld-deze-verliest-dan-toegang'
 			);
-		} else {
-			let warning = null;
-			if (contributorCount === 1) {
-				warning = tHtml(
-					'collection/components/modals/delete-collection-modal___deze-opdracht-is-met-1-andere-persoon-gedeeld-deze-verliest-dan-toegang'
-				);
-			} else if (contributorCount > 1) {
-				warning = tHtml(
-					'collection/components/modals/delete-collection-modal___deze-opdracht-is-met-count-andere-mensen-gedeeld-deze-verliezen-dan-toegang',
-					{ count: contributorCount }
-				);
-			}
-
-			return (
-				<>
-					{warning}
-					{warning && <br />}
-					{tHtml(
-						'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
-					)}
-				</>
+		} else if (contributorCount > 1) {
+			// Will never happen for bundels since they cannot be shared
+			warning = tHtml(
+				'collection/components/modals/delete-collection-modal___deze-opdracht-is-met-count-andere-mensen-gedeeld-deze-verliezen-dan-toegang',
+				{ count: contributorCount }
 			);
 		}
+
+		return (
+			<>
+				{warning}
+				{warning && <br />}
+				{isCollection
+					? tHtml(
+							'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
+					  )
+					: tHtml('Ben je zeker dat je deze bundel wil verwijderen')}
+			</>
+		);
 	};
 
 	const renderDeleteMessage = () => {
@@ -71,9 +61,13 @@ const DeleteCollectionModal: FC<DeleteCollectionModalProps> = ({
 			<p>
 				{renderDeleteMessageParagraph()}
 				<br />
-				{tHtml(
-					'collection/components/modals/delete-collection-modal___deze-operatie-kan-niet-meer-ongedaan-gemaakt-worden'
-				)}
+				{isCollection
+					? tHtml(
+							'collection/components/modals/delete-collection-modal___deze-operatie-kan-niet-meer-ongedaan-gemaakt-worden-collectie'
+					  )
+					: tHtml(
+							'collection/components/modals/delete-collection-modal___deze-operatie-kan-niet-meer-ongedaan-gemaakt-worden-bundel'
+					  )}
 			</p>
 		);
 	};
@@ -82,13 +76,11 @@ const DeleteCollectionModal: FC<DeleteCollectionModalProps> = ({
 		<ConfirmModal
 			isOpen={isOpen}
 			title={
-				shouldDeleteSelfFromCollection
+				isCollection
 					? tHtml(
-							'collection/components/modals/delete-collection-modal___verwijder-mij-van-deze-collectie'
-					  )
-					: tHtml(
 							'collection/components/modals/delete-collection-modal___verwijder-deze-collectie'
 					  )
+					: tHtml('Deze bundel verwijderen')
 			}
 			body={renderDeleteMessage()}
 			cancelLabel={tText('collection/components/modals/delete-collection-modal___annuleer')}

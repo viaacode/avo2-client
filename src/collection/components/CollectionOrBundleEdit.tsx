@@ -97,6 +97,7 @@ import CollectionOrBundleEditQualityCheck from './CollectionOrBundleEditQualityC
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
+import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
 export interface MarcomNoteInfo {
 	id?: string;
@@ -175,6 +176,8 @@ const CollectionOrBundleEdit: FC<
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+	const [isDeleteContributorModalOpen, setIsDeleteContributorModalOpen] =
+		useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isEnterItemIdModalOpen, setEnterItemIdModalOpen] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -867,8 +870,13 @@ const CollectionOrBundleEdit: FC<
 	const executeAction = async (item: CollectionMenuAction) => {
 		setIsOptionsMenuOpen(false);
 		switch (item) {
-			case CollectionMenuAction.delete:
+			case CollectionMenuAction.deleteCollection:
 				onClickDelete();
+				break;
+
+			case CollectionMenuAction.deleteContributor:
+				setIsOptionsMenuOpen(false);
+				setIsDeleteContributorModalOpen(true);
 				break;
 
 			case CollectionMenuAction.save:
@@ -1194,7 +1202,9 @@ const CollectionOrBundleEdit: FC<
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
-				CollectionMenuAction.delete,
+				shouldDeleteSelfFromCollection
+					? CollectionMenuAction.deleteContributor
+					: CollectionMenuAction.deleteCollection,
 				shouldDeleteSelfFromCollection
 					? tText(
 							'collection/components/collection-or-bundle-edit___verwijder-mij-van-deze-collectie'
@@ -1367,7 +1377,9 @@ const CollectionOrBundleEdit: FC<
 				true
 			),
 			...createDropdownMenuItem(
-				CollectionMenuAction.delete,
+				permissions.canDelete || isOwner
+					? CollectionMenuAction.deleteCollection
+					: CollectionMenuAction.deleteContributor,
 				permissions.canDelete || isOwner
 					? tText('collection/components/collection-or-bundle-edit___verwijderen')
 					: tText(
@@ -1531,10 +1543,14 @@ const CollectionOrBundleEdit: FC<
 				<DeleteCollectionModal
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
-					deleteCollectionCallback={handleDeleteCollection}
-					deleteSelfFromCollectionCallback={handleDeleteSelfFromCollection}
+					deleteCallback={handleDeleteCollection}
 					contributorCount={collectionState.currentCollection?.contributors?.length || 0}
-					shouldDeleteSelfFromCollection={shouldDeleteSelfFromCollection}
+					isCollection={isCollection}
+				/>
+				<DeleteMyselfFromCollectionContributorsConfirmModal
+					isOpen={isDeleteContributorModalOpen}
+					onClose={() => setIsDeleteContributorModalOpen(false)}
+					deleteCallback={handleDeleteSelfFromCollection}
 				/>
 
 				<InputModal

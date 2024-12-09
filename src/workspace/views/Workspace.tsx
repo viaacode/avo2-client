@@ -148,9 +148,6 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 								onUpdate={() => {
 									refetchWorkspaceCounts();
 								}}
-								history={history}
-								location={location}
-								match={match}
 							/>
 						),
 				  }
@@ -164,9 +161,6 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 								onUpdate={() => {
 									refetchWorkspaceCounts();
 								}}
-								history={history}
-								location={location}
-								match={match}
 							/>
 						),
 				  }

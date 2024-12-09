@@ -102,6 +102,7 @@ import { deleteCollection, deleteSelfFromCollection } from '../helpers/delete-co
 import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
 
 import './CollectionDetail.scss';
+import { DeleteMyselfFromCollectionContributorsConfirmModal } from '../components/modals/DeleteContributorFromCollectionModal';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -168,6 +169,8 @@ const CollectionDetail: FC<
 	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+	const [isDeleteContributorModalOpen, setIsDeleteContributorModalOpen] =
+		useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
@@ -607,8 +610,12 @@ const CollectionDetail: FC<
 				setIsAddToBundleModalOpen(true);
 				break;
 
-			case CollectionMenuAction.delete:
+			case CollectionMenuAction.deleteCollection:
 				setIsDeleteModalOpen(true);
+				break;
+
+			case CollectionMenuAction.deleteContributor:
+				setIsDeleteContributorModalOpen(true);
 				break;
 
 			case CollectionMenuAction.share:
@@ -893,14 +900,14 @@ const CollectionDetail: FC<
 			),
 
 			...createDropdownMenuItem(
-				CollectionMenuAction.delete,
+				CollectionMenuAction.deleteCollection,
 				tText('collection/views/collection-detail___verwijderen'),
 				IconName.trash,
 				!!permissions?.canDeleteCollections && !shouldDeleteSelfFromCollection
 			),
 
 			...createDropdownMenuItem(
-				CollectionMenuAction.delete,
+				CollectionMenuAction.deleteContributor,
 				tText('collection/views/collection-detail___verwijder-mij-van-deze-collectie'),
 				IconName.trash,
 				shouldDeleteSelfFromCollection
@@ -1144,13 +1151,13 @@ const CollectionDetail: FC<
 				permissions?.canCreateCollections || false
 			),
 			...createDropdownMenuItem(
-				CollectionMenuAction.delete,
+				CollectionMenuAction.deleteCollection,
 				tText('collection/views/collection-detail___verwijderen'),
 				undefined,
 				permissions?.canDeleteCollections || false
 			),
 			...createDropdownMenuItem(
-				CollectionMenuAction.delete,
+				CollectionMenuAction.deleteContributor,
 				tText('collection/views/collection-detail___verwijder-mij-van-deze-collectie'),
 				undefined,
 				!permissions?.canDeleteCollections && isContributor
@@ -1307,10 +1314,14 @@ const CollectionDetail: FC<
 				<DeleteCollectionModal
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
-					deleteCollectionCallback={handleDeleteCollection}
-					deleteSelfFromCollectionCallback={handleDeleteSelfFromCollection}
+					deleteCallback={handleDeleteCollection}
 					contributorCount={collection?.contributors?.length || 0}
-					shouldDeleteSelfFromCollection={shouldDeleteSelfFromCollection}
+					isCollection={true}
+				/>
+				<DeleteMyselfFromCollectionContributorsConfirmModal
+					isOpen={isDeleteContributorModalOpen}
+					onClose={() => setIsDeleteContributorModalOpen(false)}
+					deleteCallback={() => handleDeleteSelfFromCollection()}
 				/>
 				{!!collection_fragments && collection && isAutoplayCollectionModalOpen && (
 					<AutoplayCollectionModal
