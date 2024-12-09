@@ -20,7 +20,8 @@ test.afterEach(async ({ page }, testInfo) => {
 	}
 });
 
-test('T51: Bundel bewerken', async ({ page }) => {
+// Missing account linking entry in users_notifications
+test.skip('T51: Bundel bewerken', async ({ page }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,

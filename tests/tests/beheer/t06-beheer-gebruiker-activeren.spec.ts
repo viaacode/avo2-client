@@ -12,7 +12,8 @@ import { logoutOnderwijsAvo } from '../../helpers/logout-onderwijs-avo';
  *
  */
 
-test('T06: Beheer - Gebruiker activeren', async ({ page }) => {
+// Test user not in seed
+test.skip('T06: Beheer - Gebruiker activeren', async ({ page }) => {
 	await goToAdminPage(page);
 
 	// Click on users tab

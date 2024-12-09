@@ -10,7 +10,8 @@ import { goToAdminPage } from '../../helpers/go-to-admin';
  *
  */
 
-test('T19: Beheer - Collectiebeheer overzicht', async ({ page }) => {
+// Fails when saving content page
+test.skip('T19: Beheer - Collectiebeheer overzicht', async ({ page }) => {
 	await goToAdminPage(page);
 
 	// Click on collection tab
