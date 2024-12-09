@@ -145,6 +145,7 @@ import {
 } from './collection.helpers';
 import {
 	type Collection,
+	CollectionOrBundle,
 	ContentTypeNumber,
 	type MarcomEntry,
 	type QualityLabel,
@@ -757,10 +758,7 @@ export class CollectionService {
 			// update attributes specific to duplicate
 			collectionToInsert.owner_profile_id = commonUser?.profileId;
 			collectionToInsert.is_public = false;
-
-			if (canManageEditorial(commonUser)) {
-				collectionToInsert.is_managed = true;
-			}
+			collectionToInsert.loms = [];
 
 			// remove id from duplicate
 			delete (collectionToInsert as any).id;
@@ -792,9 +790,7 @@ export class CollectionService {
 			// Check is_managed status
 			// Should be copied to new collection if user group is one of [redacteur, eindredacteur, beheerder]
 			// Otherwise should be false
-			if (!canManageEditorial(commonUser)) {
-				collectionToInsert.is_managed = false;
-			}
+			collectionToInsert.is_managed = canManageEditorial(commonUser);
 
 			// insert duplicated collection
 			const duplicatedCollection =
@@ -952,7 +948,7 @@ export class CollectionService {
 	 * @returns Collections or bundles owned by the user.
 	 */
 	static async fetchCollectionsOrBundlesByUser(
-		type: 'collection' | 'bundle',
+		type: CollectionOrBundle,
 		commonUser: Avo.User.CommonUser | undefined
 	): Promise<Partial<Avo.Collection.Collection>[]> {
 		try {
@@ -997,7 +993,7 @@ export class CollectionService {
 	 */
 	public static async fetchCollectionOrBundleByIdOrInviteToken(
 		collectionId: string,
-		type: 'collection' | 'bundle',
+		type: CollectionOrBundle,
 		inviteToken: string | undefined
 	): Promise<Avo.Collection.Collection | null> {
 		try {
@@ -1149,7 +1145,7 @@ export class CollectionService {
 		commonUser: Avo.User.CommonUser
 	): Promise<string> => {
 		const collections = await CollectionService.fetchCollectionsOrBundlesByUser(
-			'collection',
+			CollectionOrBundle.COLLECTION,
 			commonUser
 		);
 		const titles = collections.map((c) => c.title);
@@ -1823,6 +1819,25 @@ export class CollectionService {
 			);
 		} catch (err) {
 			throw new CustomError('Failed to release collection edit status', err, {
+				assignmentId: collectionId,
+			});
+		}
+	}
+
+	public static async incrementAddCollectionToAssignmentCount(
+		collectionId: string
+	): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/collections/${collectionId}/increment-added-to-assignment-count`,
+				}),
+				{ method: 'POST' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to increment collection added to assignment count', err, {
 				assignmentId: collectionId,
 			});
 		}

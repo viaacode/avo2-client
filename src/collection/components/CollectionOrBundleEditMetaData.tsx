@@ -26,11 +26,12 @@ import { stripHtml } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
+import { type CollectionOrBundle } from '../collection.types';
 
 import { type CollectionAction } from './CollectionOrBundleEdit';
 
 interface CollectionOrBundleEditMetaDataProps {
-	type: 'collection' | 'bundle';
+	type: CollectionOrBundle;
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
 	onFocus?: () => void;
@@ -101,9 +102,15 @@ const CollectionOrBundleEditMetaData: FC<CollectionOrBundleEditMetaDataProps> = 
 												collectionPropValue: value,
 											})
 										}
-										placeholder={tText(
-											'collection/components/collection-or-bundle-edit-meta-data___short-description-placeholder'
-										)}
+										placeholder={
+											isCollection
+												? tText(
+														'collection/components/collection-or-bundle-edit-meta-data___korte-beschrijving-placeholder-collectie'
+												  )
+												: tText(
+														'collection/components/collection-or-bundle-edit-meta-data___korte-beschrijving-placeholder-bundel'
+												  )
+										}
 										onFocus={onFocus}
 									/>
 									{!isCollection && (

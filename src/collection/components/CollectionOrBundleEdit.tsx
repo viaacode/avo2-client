@@ -75,7 +75,11 @@ import { type ValueOf } from '../../shared/types';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 import { getFragmentsFromCollection } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
-import { CollectionCreateUpdateTab, CollectionMenuAction } from '../collection.types';
+import {
+	CollectionCreateUpdateTab,
+	CollectionMenuAction,
+	CollectionOrBundle,
+} from '../collection.types';
 import { CollectionOrBundleTitle, PublishCollectionModal } from '../components';
 import {
 	onAddContributor,
@@ -154,7 +158,7 @@ interface CollectionState {
 }
 
 interface CollectionOrBundleEditProps {
-	type: 'collection' | 'bundle';
+	type: CollectionOrBundle;
 }
 
 const CollectionOrBundleEdit: FC<
@@ -975,7 +979,7 @@ const CollectionOrBundleEdit: FC<
 				const collection: Avo.Collection.Collection | null =
 					await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 						id,
-						'collection',
+						CollectionOrBundle.COLLECTION,
 						undefined
 					);
 				if (!collection) {

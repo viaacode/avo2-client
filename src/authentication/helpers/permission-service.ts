@@ -4,6 +4,7 @@ import { isString, some } from 'lodash-es';
 
 import { AssignmentService } from '../../assignment/assignment.service';
 import { CollectionService } from '../../collection/collection.service';
+import { CollectionOrBundle } from '../../collection/collection.types';
 import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
 import { Locale } from '../../shared/translations/translations.types';
 
@@ -134,7 +135,7 @@ export class PermissionService {
 					const collection = isString(obj)
 						? await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 								obj,
-								'collection',
+								CollectionOrBundle.COLLECTION,
 								undefined
 						  )
 						: obj;
@@ -170,7 +171,7 @@ export class PermissionService {
 					const bundle = isString(obj)
 						? await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 								obj,
-								'bundle',
+								CollectionOrBundle.BUNDLE,
 								undefined
 						  )
 						: obj;

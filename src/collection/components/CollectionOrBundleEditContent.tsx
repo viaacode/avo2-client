@@ -7,6 +7,7 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
+import { type CollectionOrBundle } from '../collection.types';
 import { FragmentAdd, FragmentEdit } from '../components';
 import { showReplacementWarning } from '../helpers/fragment';
 
@@ -14,7 +15,7 @@ import { type CollectionAction } from './CollectionOrBundleEdit';
 import './CollectionOrBundleEditContent.scss';
 
 interface CollectionOrBundleEditContentProps {
-	type: 'collection' | 'bundle';
+	type: CollectionOrBundle;
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
 	onFocus?: () => void;

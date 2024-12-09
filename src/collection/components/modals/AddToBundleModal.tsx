@@ -25,7 +25,7 @@ import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { CollectionService } from '../../collection.service';
-import { ContentTypeNumber } from '../../collection.types';
+import { CollectionOrBundle, ContentTypeNumber } from '../../collection.types';
 import { canManageEditorial } from '../../helpers/can-manage-editorial';
 
 import './AddToBundleModal.scss';
@@ -55,7 +55,7 @@ const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
 
 	const fetchBundles = useCallback(
 		() =>
-			CollectionService.fetchCollectionsOrBundlesByUser('bundle', commonUser)
+			CollectionService.fetchCollectionsOrBundlesByUser(CollectionOrBundle.BUNDLE, commonUser)
 				.then((bundleTitles: Partial<Avo.Collection.Collection>[]) => {
 					setBundles(bundleTitles);
 					if (!bundleTitles.length) {
@@ -94,7 +94,7 @@ const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
 			setSelectedBundleId(id);
 			const collection = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 				id,
-				'bundle',
+				CollectionOrBundle.BUNDLE,
 				undefined
 			);
 			setSelectedBundle(collection);

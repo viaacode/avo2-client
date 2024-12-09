@@ -52,6 +52,7 @@ import {
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -64,6 +65,7 @@ import {
 	type Collection,
 	CollectionCreateUpdateTab,
 	CollectionMenuAction,
+	CollectionOrBundle,
 	CollectionShareType,
 	ContentTypeNumber,
 } from '../collection.types';
@@ -73,11 +75,10 @@ import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
 import './CollectionOrBundleOverview.scss';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 
 interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
-	type: 'collection' | 'bundle';
+	type: CollectionOrBundle;
 	onUpdate: () => void | Promise<void>;
 }
 
@@ -275,7 +276,7 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 		if (activeModalInfo?.collectionUuid) {
 			CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 				activeModalInfo?.collectionUuid,
-				isCollection ? 'collection' : 'bundle',
+				isCollection ? CollectionOrBundle.COLLECTION : CollectionOrBundle.BUNDLE,
 				undefined
 			).then((res) => setSelectedCollectionDetail(res || undefined));
 			setSelectedCollection(
@@ -376,7 +377,7 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 	const onCreateAssignmentFromCollection = async (withDescription: boolean): Promise<void> => {
 		const collection = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 			activeModalInfo?.collectionUuid as string,
-			'collection',
+			CollectionOrBundle.COLLECTION,
 			undefined
 		);
 		if (collection) {

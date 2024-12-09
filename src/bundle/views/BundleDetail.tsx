@@ -16,6 +16,7 @@ import {
 	MetaDataItem,
 	MoreOptionsDropdown,
 	Spacer,
+	Spinner,
 	Thumbnail,
 	ToggleButton,
 	Toolbar,
@@ -25,14 +26,13 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import { compact, get, isNil, noop } from 'lodash-es';
-import React, { type FC, useEffect, useState } from 'react';
+import { compact, get, noop } from 'lodash-es';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 import { Link, type RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
 
-import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { renderRelatedItems } from '../../collection/collection.helpers';
@@ -40,6 +40,7 @@ import { CollectionService } from '../../collection/collection.service';
 import {
 	blockTypeToContentType,
 	CollectionCreateUpdateTab,
+	CollectionOrBundle,
 } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
@@ -50,8 +51,6 @@ import {
 	CommonMetaData,
 	DeleteObjectModal,
 	InteractiveTour,
-	LoadingErrorLoadedComponent,
-	type LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
@@ -89,6 +88,8 @@ import { ToastService } from '../../shared/services/toast-service';
 import { BundleAction } from '../bundle.types';
 
 import './BundleDetail.scss';
+import { useGetCollectionOrBundleByIdOrInviteToken } from '../../collection/hooks/useGetCollectionOrBundleByIdOrInviteToken';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 
 type BundleDetailProps = {
 	id?: string;
@@ -106,7 +107,6 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 
 	// State
 	const [bundleId, setBundleId] = useState(id || match.params.id);
-	const [bundle, setBundle] = useState<Avo.Collection.Collection | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
@@ -125,213 +125,167 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 			canViewItems: boolean;
 		}>
 	>({});
-	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [viewCountsById, setViewCountsById] = useState<{ [id: string]: number }>({});
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
 	const [showLoginPopup, setShowLoginPopup] = useState<boolean | null>(null);
+	const {
+		data: bundleObj,
+		isError: isErrorBundle,
+		isLoading: isLoadingBundle,
+		refetch: refetchBundle,
+	} = useGetCollectionOrBundleByIdOrInviteToken(bundleId, CollectionOrBundle.BUNDLE, undefined);
+
+	// Computed
 	const isOwner =
-		!!bundle?.owner_profile_id && bundle?.owner_profile_id === commonUser?.profileId;
+		!!bundleObj?.owner_profile_id && bundleObj?.owner_profile_id === commonUser?.profileId;
 
-	useEffect(() => {
-		const checkPermissionsAndGetBundle = async () => {
-			let showPopup = false;
-			let permissionObj = undefined;
+	// Get view counts for each fragment
+	const getViewCounts = useCallback(async () => {
+		if (!bundleObj) {
+			return;
+		}
+		try {
+			setViewCountsById(
+				await BookmarksViewsPlaysService.getMultipleViewCounts(
+					bundleObj.collection_fragments.map((fragment) => fragment.external_id),
+					'collection'
+				)
+			);
+		} catch (err) {
+			console.error(new CustomError('Failed to get counts for bundle fragments', err, {}));
+		}
+	}, [bundleObj]);
 
-			if (!commonUser) {
-				showPopup = true;
-			} else {
-				permissionObj = await PermissionService.checkPermissions(
+	const checkPermissions = useCallback(async () => {
+		if (!bundleObj) {
+			return;
+		}
+		let showPopup = false;
+		const permissionObj = await PermissionService.checkPermissions(
+			{
+				canViewBundle: [{ name: PermissionName.VIEW_OWN_BUNDLES, obj: bundleId }],
+				canViewPublishedBundles: [
 					{
-						canViewBundle: [{ name: PermissionName.VIEW_OWN_BUNDLES, obj: bundleId }],
-						canViewPublishedBundles: [
-							{
-								name: PermissionName.VIEW_ANY_PUBLISHED_BUNDLES,
-							},
-						],
-						canViewUnpublishedBundles: [
-							{
-								name: PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES,
-							},
-						],
-						canEditBundle: [
-							{ name: PermissionName.EDIT_OWN_BUNDLES, obj: bundleId },
-							{ name: PermissionName.EDIT_ANY_BUNDLES },
-						],
-						canPublishBundle: [
-							{ name: PermissionName.PUBLISH_OWN_BUNDLES, obj: bundleId },
-							{ name: PermissionName.PUBLISH_ANY_BUNDLES },
-						],
-						canDeleteBundle: [
-							{ name: PermissionName.DELETE_OWN_BUNDLES, obj: bundleId },
-							{ name: PermissionName.DELETE_ANY_BUNDLES },
-						],
-						canCreateBundles: [{ name: PermissionName.CREATE_BUNDLES }],
-						canViewItems: [{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
+						name: PermissionName.VIEW_ANY_PUBLISHED_BUNDLES,
 					},
-					commonUser
-				);
+				],
+				canViewUnpublishedBundles: [
+					{
+						name: PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES,
+					},
+				],
+				canEditBundle: [
+					{ name: PermissionName.EDIT_OWN_BUNDLES, obj: bundleId },
+					{ name: PermissionName.EDIT_ANY_BUNDLES },
+				],
+				canPublishBundle: [
+					{ name: PermissionName.PUBLISH_OWN_BUNDLES, obj: bundleId },
+					{ name: PermissionName.PUBLISH_ANY_BUNDLES },
+				],
+				canDeleteBundle: [
+					{ name: PermissionName.DELETE_OWN_BUNDLES, obj: bundleId },
+					{ name: PermissionName.DELETE_ANY_BUNDLES },
+				],
+				canCreateBundles: [{ name: PermissionName.CREATE_BUNDLES }],
+				canViewItems: [{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
+			},
+			commonUser
+		);
 
-				if (
-					!permissionObj.canViewBundle &&
-					!permissionObj.canViewPublishedBundles &&
-					!permissionObj.canViewUnpublishedBundles
-				) {
-					showPopup = true;
-				}
-			}
-
-			let bundleObj: Avo.Collection.Collection | null = null;
-			try {
-				bundleObj = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
-					bundleId,
-					'bundle',
-					undefined
-				);
-			} catch (err) {
-				// Ignore errors during fetch
-			}
-
-			if (!commonUser) {
-				setBundle(bundleObj);
-				setLoadingInfo({
-					state: 'loaded',
-				});
-				setShowLoginPopup(showPopup);
-				return;
-			}
-
-			if (!bundleObj) {
-				setLoadingInfo({
-					state: 'error',
-					message: tHtml(
-						'bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'
-					),
-					icon: IconName.search,
-				});
-				return;
-			}
-
+		if (!commonUser) {
+			showPopup = true;
+		} else {
 			if (
-				permissionObj &&
-				((!permissionObj.canViewBundle &&
-					bundleObj.is_public &&
-					!permissionObj.canViewPublishedBundles) ||
-					(!permissionObj.canViewBundle &&
-						!bundleObj.is_public &&
-						!permissionObj.canViewUnpublishedBundles))
+				!permissionObj.canViewBundle &&
+				!permissionObj.canViewPublishedBundles &&
+				!permissionObj.canViewUnpublishedBundles
 			) {
 				showPopup = true;
 			}
+		}
 
-			// Do not trigger events when a search engine loads this page
-			if (!showPopup) {
-				BookmarksViewsPlaysService.action('view', 'bundle', bundleId, commonUser).then(
-					noop
+		if (!commonUser) {
+			setShowLoginPopup(showPopup);
+			return;
+		}
+
+		if (
+			permissionObj &&
+			((!permissionObj.canViewBundle &&
+				bundleObj.is_public &&
+				!permissionObj.canViewPublishedBundles) ||
+				(!permissionObj.canViewBundle &&
+					!bundleObj.is_public &&
+					!permissionObj.canViewUnpublishedBundles))
+		) {
+			showPopup = true;
+		}
+
+		// Do not trigger events when a search engine loads this page
+		if (!showPopup) {
+			BookmarksViewsPlaysService.action('view', 'bundle', bundleId, commonUser).then(noop);
+			trackEvents(
+				{
+					object: bundleId,
+					object_type: 'bundle',
+					action: 'view',
+				},
+				commonUser
+			);
+
+			try {
+				commonUser &&
+					setBookmarkViewPlayCounts(
+						await BookmarksViewsPlaysService.getCollectionCounts(bundleId, commonUser)
+					);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to get getCollectionCounts for bundle', err, {
+						uuid: bundleId,
+					})
 				);
-				trackEvents(
-					{
-						object: bundleId,
-						object_type: 'bundle',
-						action: 'view',
-					},
-					commonUser
+				ToastService.danger(
+					tHtml(
+						'bundle/views/bundle-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+					)
 				);
+			}
 
-				// Get view counts for each fragment
-				try {
-					setViewCountsById(
-						await BookmarksViewsPlaysService.getMultipleViewCounts(
-							bundleObj.collection_fragments.map((fragment) => fragment.external_id),
-							'collection'
-						)
-					);
-				} catch (err) {
-					console.error(
-						new CustomError('Failed to get counts for bundle fragments', err, {})
-					);
-				}
-
-				try {
-					commonUser &&
-						setBookmarkViewPlayCounts(
-							await BookmarksViewsPlaysService.getCollectionCounts(
-								bundleId,
-								commonUser
-							)
-						);
-				} catch (err) {
-					console.error(
-						new CustomError('Failed to get getCollectionCounts for bundle', err, {
-							uuid: bundleId,
-						})
-					);
+			getRelatedItems(bundleId, ObjectTypes.bundles, ObjectTypesAll.all, 4)
+				.then((relatedItems) => {
+					setRelatedBundles(relatedItems);
+				})
+				.catch((err) => {
+					console.error('Failed to get related items', err, {
+						bundleId,
+						type: 'bundles',
+						limit: 4,
+					});
 					ToastService.danger(
 						tHtml(
-							'bundle/views/bundle-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+							'bundle/views/bundle-detail___het-ophalen-van-de-gerelateerde-bundels-is-mislukt'
 						)
 					);
-				}
-
-				getRelatedItems(bundleId, ObjectTypes.bundles, ObjectTypesAll.all, 4)
-					.then((relatedItems) => {
-						setRelatedBundles(relatedItems);
-					})
-					.catch((err) => {
-						console.error('Failed to get related items', err, {
-							bundleId,
-							type: 'bundles',
-							limit: 4,
-						});
-						ToastService.danger(
-							tHtml(
-								'bundle/views/bundle-detail___het-ophalen-van-de-gerelateerde-bundels-is-mislukt'
-							)
-						);
-					});
-			}
-
-			setShowLoginPopup(showPopup);
-			setPermissions(permissionObj || {});
-			setBundle(bundleObj || null);
-		};
-
-		checkPermissionsAndGetBundle().catch((err) => {
-			if ((err as CustomError)?.innerException?.statusCode === 404 && !commonUser) {
-				// If not logged in and the bundle is not found => the bundle might be private and the user might need to login to see it
-				setShowLoginPopup(true);
-				setLoadingInfo({
-					state: 'loaded',
 				});
-				return;
-			}
-			console.error(
-				new CustomError(
-					'Failed to check permissions or get bundle from the database',
-					err,
-					{
-						bundleId,
-					}
-				)
-			);
-			setLoadingInfo({
-				state: 'error',
-				message: tHtml(
-					'bundle/views/bundle-detail___er-ging-iets-mis-tijdens-het-ophalen-van-de-bundel'
-				),
-				icon: IconName.alertTriangle,
-			});
-		});
-	}, [commonUser, bundleId, setLoadingInfo, setShowLoginPopup, tText, tHtml]);
+		}
+
+		setShowLoginPopup(showPopup);
+		setPermissions(permissionObj || {});
+	}, [bundleId, commonUser, tHtml]);
 
 	useEffect(() => {
-		if (bundle && !isNil(showLoginPopup)) {
-			setLoadingInfo({
-				state: 'loaded',
-			});
+		if (bundleObj) {
+			checkPermissions();
 		}
-	}, [permissions, bundle, setLoadingInfo, showLoginPopup]);
+	}, [checkPermissions]);
+
+	useEffect(() => {
+		if (bundleObj) {
+			getViewCounts();
+		}
+	}, [bundleObj, getViewCounts]);
 
 	// Listeners
 	const onEditBundle = () => {
@@ -372,7 +326,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 
 	const onDuplicateBundle = async () => {
 		try {
-			if (!bundle) {
+			if (!bundleObj) {
 				ToastService.danger(
 					tHtml(
 						'bundle/views/bundle-detail___de-bundel-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
@@ -389,7 +343,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 				return;
 			}
 			const duplicateBundle = await CollectionService.duplicateCollection(
-				bundle,
+				bundleObj,
 				commonUser,
 				COLLECTION_COPY,
 				COLLECTION_COPY_REGEX
@@ -397,7 +351,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 
 			trackEvents(
 				{
-					object: String(bundle.id),
+					object: String(bundleObj.id),
 					object_type: 'bundle',
 					action: 'copy',
 				},
@@ -412,7 +366,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 				)
 			);
 		} catch (err) {
-			console.error('Failed to copy bundle', err, { originalBundle: bundle });
+			console.error('Failed to copy bundle', err, { originalBundle: bundleObj });
 			ToastService.danger(
 				tHtml('bundle/views/bundle-detail___het-kopieren-van-de-bundel-is-mislukt')
 			);
@@ -499,11 +453,11 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 	};
 
 	// Render functions
-	function renderCollectionFragments() {
-		if (!bundle) {
+	function renderChildCollections() {
+		if (!bundleObj) {
 			return null;
 		}
-		return (bundle.collection_fragments || []).map((fragment: Avo.Collection.Fragment) => {
+		return (bundleObj.collection_fragments || []).map((fragment: Avo.Collection.Fragment) => {
 			const collection = fragment.item_meta as Avo.Collection.Collection;
 			if (!collection) {
 				return null;
@@ -603,7 +557,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 					BundleAction.share,
 					tText('bundle/views/bundle-detail___share-bundel'),
 					'share-2',
-					!!bundle && bundle.is_public
+					!!bundleObj && bundleObj.is_public
 				),
 				...createDropdownMenuItem(
 					BundleAction.duplicate,
@@ -629,7 +583,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 				/>
 			);
 		}
-		const isPublic = bundle && bundle.is_public;
+		const isPublic = bundleObj && bundleObj.is_public;
 		return (
 			<ButtonToolbar>
 				{permissions.canPublishBundle && (
@@ -681,7 +635,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 	};
 
 	const renderMetaDataAndRelated = () => {
-		if (!bundle) {
+		if (!bundleObj) {
 			return null;
 		}
 		return (
@@ -692,7 +646,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 					</BlockHeading>
 					<Grid>
 						<CommonMetaData
-							subject={bundle}
+							subject={bundleObj}
 							enabledMetaData={enabledMetaData}
 							renderSearchLink={defaultRenderSearchLink}
 						/>
@@ -705,12 +659,12 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 	};
 
 	const renderBundle = () => {
-		if (!bundle && showLoginPopup) {
+		if (!bundleObj && showLoginPopup) {
 			return <RegisterOrLogin />;
 		}
 
 		const { is_public, thumbnail_path, title, description_long } =
-			bundle as Avo.Collection.Collection;
+			bundleObj as Avo.Collection.Collection;
 
 		if (!isFirstRender) {
 			setIsFirstRender(true);
@@ -722,24 +676,24 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 					<title>
 						{GENERATE_SITE_TITLE(
 							get(
-								bundle,
+								bundleObj,
 								'title',
 								tText('bundle/views/bundle-detail___bundel-detail-titel-fallback')
 							)
 						)}
 					</title>
-					<meta name="description" content={get(bundle, 'description') || ''} />
+					<meta name="description" content={get(bundleObj, 'description') || ''} />
 				</Helmet>
 				<JsonLd
 					url={window.location.href}
-					title={bundle?.title}
-					description={bundle?.description}
-					image={bundle?.thumbnail_path}
-					isOrganisation={!!bundle?.profile?.organisation}
-					author={getFullName(bundle?.profile, true, false)}
-					publishedAt={bundle?.published_at}
-					updatedAt={bundle?.updated_at}
-					keywords={compact(bundle?.loms?.map((lom) => lom.lom?.label))}
+					title={bundleObj?.title}
+					description={bundleObj?.description}
+					image={bundleObj?.thumbnail_path}
+					isOrganisation={!!bundleObj?.profile?.organisation}
+					author={getFullName(bundleObj?.profile, true, false)}
+					publishedAt={bundleObj?.published_at}
+					updatedAt={bundleObj?.updated_at}
+					keywords={compact(bundleObj?.loms?.map((lom) => lom.lom?.label))}
 				/>
 				<div
 					className={classnames(
@@ -825,9 +779,9 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 									/>
 									<Flex spaced="regular" wrap>
 										<FlexItem className="c-avatar-and-text">
-											{!!bundle &&
-												!!bundle.profile &&
-												renderAvatar(bundle.profile, { dark: true })}
+											{!!bundleObj &&
+												!!bundleObj.profile &&
+												renderAvatar(bundleObj.profile, { dark: true })}
 										</FlexItem>
 									</Flex>
 								</Column>
@@ -836,19 +790,19 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 						<Container mode="vertical">
 							<Container mode="horizontal">
 								<div className="c-media-card-list">
-									<Grid>{renderCollectionFragments()}</Grid>
+									<Grid>{renderChildCollections()}</Grid>
 								</div>
 							</Container>
 						</Container>
 						{renderMetaDataAndRelated()}
-						{!!bundle && !!commonUser && (
+						{!!bundleObj && !!commonUser && (
 							<PublishCollectionModal
-								collection={bundle}
+								collection={bundleObj}
 								isOpen={isPublishModalOpen}
 								onClose={(newBundle: Avo.Collection.Collection | undefined) => {
 									setIsPublishModalOpen(false);
 									if (newBundle) {
-										setBundle(newBundle);
+										refetchBundle();
 									}
 								}}
 							/>
@@ -872,7 +826,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 							modalTitle={tText('bundle/views/bundle-detail___deel-deze-bundel')}
 							type="bundle"
 							emailLinkHref={window.location.href}
-							emailLinkTitle={(bundle as Avo.Collection.Collection).title}
+							emailLinkTitle={(bundleObj as Avo.Collection.Collection).title}
 							isOpen={isShareThroughEmailModalOpen}
 							onClose={() => setIsShareThroughEmailModalOpen(false)}
 						/>
@@ -883,25 +837,29 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 		);
 	};
 
-	if (loadingInfo.state === 'error') {
-		return (
-			<ErrorView
-				icon={IconName.alertTriangle}
-				message={tHtml('bundle/views/bundle-detail___het-laden-van-de-bundel-is-mislukt')}
-				actionButtons={['home']}
-			/>
-		);
-	}
-	return (
-		<>
-			<LoadingErrorLoadedComponent
-				render={renderBundle}
-				dataObject={permissions}
-				loadingInfo={loadingInfo}
-				showSpinner={true}
-			/>
-		</>
-	);
+	const renderPageContent = () => {
+		if (isLoadingBundle) {
+			return (
+				<Flex center>
+					<Spinner size="large" />
+				</Flex>
+			);
+		}
+		if (isErrorBundle) {
+			return (
+				<ErrorView
+					icon={IconName.alertTriangle}
+					message={tHtml(
+						'bundle/views/bundle-detail___het-laden-van-de-bundel-is-mislukt'
+					)}
+					actionButtons={['home']}
+				/>
+			);
+		}
+		return renderBundle();
+	};
+
+	return renderPageContent();
 };
 
 export default compose(withRouter, withUser)(BundleDetail) as FC<BundleDetailProps>;

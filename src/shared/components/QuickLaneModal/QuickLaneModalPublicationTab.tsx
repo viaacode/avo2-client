@@ -22,13 +22,14 @@ const QuickLaneModalPublicationTab: FC<
 	const { tText } = useTranslation();
 
 	const [model, setModel] = useState(content);
+	const isCollection = content_label === 'COLLECTIE';
 
 	useEffect(() => {
 		setModel(content);
 	}, [content]);
 
 	const onSubmit = async () => {
-		if (commonUser && content && model && content_label === 'COLLECTIE') {
+		if (commonUser && content && model && isCollection) {
 			try {
 				const result = await CollectionService.updateCollection(
 					content as Avo.Collection.Collection,
@@ -62,7 +63,7 @@ const QuickLaneModalPublicationTab: FC<
 		setModel({ ...model, loms: newLoms } as Avo.Collection.Collection);
 	};
 
-	return model && content && content_label && content_label === 'COLLECTIE' ? (
+	return model && content && content_label && isCollection ? (
 		<>
 			{(model as Avo.Collection.Collection)?.loms ? (
 				<LomFieldsInput
@@ -109,9 +110,15 @@ const QuickLaneModalPublicationTab: FC<
 							description,
 						});
 					}}
-					placeholder={tText(
-						'collection/components/collection-or-bundle-edit-meta-data___short-description-placeholder'
-					)}
+					placeholder={
+						isCollection
+							? tText(
+									'collection/components/collection-or-bundle-edit-meta-data___korte-beschrijving-placeholder-collectie'
+							  )
+							: tText(
+									'collection/components/collection-or-bundle-edit-meta-data___korte-beschrijving-placeholder-bundel'
+							  )
+					}
 				/>
 			</Spacer>
 			<Button

@@ -1,9 +1,9 @@
 {
   "name": "avo2-client",
-  "version": "1.28.18",
+  "version": "1.29.1",
   "private": true,
   "scripts": {
-    "prepare": "husky install",
+    "__prepare": "husky install",
     "prestart": "npm run env",
     "start": "vite",
     "dev": "dotenv -e .env.qas vite",
@@ -36,14 +36,14 @@
     "@hookform/resolvers": "2.9.11",
     "@iframe-resizer/child": "^5.3.2",
     "@iframe-resizer/parent": "^5.3.2",
-    "@meemoo/admin-core-ui": "4.2.21",
-    "@meemoo/react-components": "4.0.26",
+    "@meemoo/admin-core-ui": "4.3.6",
+    "@meemoo/react-components": "4.0.28",
     "@popperjs/core": "2.11.6",
     "@studiohyperdrive/pagination": "1.0.0",
     "@tanstack/react-query": "4.36.1",
     "@uidotdev/usehooks": "^2.4.1",
-    "@viaa/avo2-components": "5.0.10",
-    "@viaa/avo2-types": "3.0.8",
+    "@viaa/avo2-components": "5.0.12",
+    "@viaa/avo2-types": "3.0.9",
     "autosize": "6.0.1",
     "capture-stack-trace": "1.0.1",
     "clsx": "2.0.0",
@@ -95,6 +95,7 @@
     "to-camel-case": "1.0.0",
     "to-slug-case": "1.0.0",
     "use-query-params": "1.2.3",
+    "ts-retry-promise": "0.8.1",
     "yup": "1.4.0"
   },
   "devDependencies": {

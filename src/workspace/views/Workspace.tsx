@@ -59,6 +59,7 @@ import OrganisationContentOverview from './OrganisationContentOverview';
 import QuickLaneOverview from './QuickLaneOverview';
 
 import './Workspace.scss';
+import { CollectionOrBundle } from '../../collection/collection.types';
 
 interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;
@@ -143,7 +144,7 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 						component: (
 							<CollectionOrBundleOverview
 								numberOfItems={workspaceCounts?.collections || 0}
-								type="collection"
+								type={CollectionOrBundle.COLLECTION}
 								onUpdate={() => {
 									refetchWorkspaceCounts();
 								}}
@@ -159,7 +160,7 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 						component: (
 							<CollectionOrBundleOverview
 								numberOfItems={workspaceCounts?.bundles || 0}
-								type="bundle"
+								type={CollectionOrBundle.BUNDLE}
 								onUpdate={() => {
 									refetchWorkspaceCounts();
 								}}

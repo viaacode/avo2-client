@@ -1,6 +1,5 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type IconName } from '@viaa/avo2-components';
-import { memoize } from 'lodash-es';
 
 import { CustomError, getEnv } from '../helpers';
 
@@ -30,12 +29,10 @@ export type NavItemMap = { [navBarName: string]: AppContentNavElement[] };
  *    -2 is a special group: logged in users
  *        since you can have a user that isn't a member of any userGroups
  */
-async function getNavItems(): Promise<NavItemMap> {
+export async function getAllNavItems(): Promise<NavItemMap> {
 	try {
 		return fetchWithLogoutJson<NavItemMap>(`${getEnv('PROXY_URL')}/navigation/items`);
 	} catch (err) {
 		throw new CustomError('Failed to get all user groups', err);
 	}
 }
-
-export const getNavigationItems: () => Promise<NavItemMap> = memoize(getNavItems);
