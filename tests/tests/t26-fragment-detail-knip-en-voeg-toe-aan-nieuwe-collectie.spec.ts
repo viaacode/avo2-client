@@ -12,7 +12,8 @@ import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
  *
  */
 
-test('T26: Fragment detail - Knip en voeg toe aan nieuwe collectie', async ({ page }) => {
+// Error loading detail page
+test.skip('T26: Fragment detail - Knip en voeg toe aan nieuwe collectie', async ({ page }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,

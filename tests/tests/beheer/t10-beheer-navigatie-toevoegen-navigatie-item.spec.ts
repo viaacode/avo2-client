@@ -10,7 +10,7 @@ import { goToAdminPage } from '../../helpers/go-to-admin';
  *
  */
 
-test.skip('T10: Beheer - Navigatie, toevoegen navigatie item', async ({ page }) => {
+test('T10: Beheer - Navigatie, toevoegen navigatie item', async ({ page }) => {
 	await goToAdminPage(page);
 
 	// Click on Navigation menu
@@ -44,7 +44,7 @@ test.skip('T10: Beheer - Navigatie, toevoegen navigatie item', async ({ page }) 
 	await page.waitForTimeout(1000);
 	await page.locator('div.c-select__control', { hasText: 'Selecteer een content-item' }).click();
 	await page.waitForTimeout(1000);
-	await page.getByText('/accepteer-voorwaarden', { exact: true }).click();
+	await page.getByText('nl - /accepteer-voorwaarden', { exact: true }).click();
 
 	// Select users
 	await page.getByText('Ingelogde gebruikers', { exact: true }).click();

@@ -38,8 +38,8 @@ export async function loginOnderwijsAvo(
 	await expect(page.getByRole('heading', { name: 'Inloggen' })).toBeVisible();
 
 	// Fill in credentials
-	await page.fill('#emailId', username);
-	await page.fill('#passwordId', password);
+	await page.fill('#username', username);
+	await page.fill('#password', password);
 
 	// Click the login button
 	await page.click('button[type="submit"]');

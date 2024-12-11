@@ -29,7 +29,8 @@ test('T05: Beheer - Navigeer naar bewerkpagina', async ({ page }) => {
 	await page.waitForTimeout(1000);
 
 	// Click on a user
-	await page.getByRole('link', { name: 'Meemoo admin Test' }).click();
+	// See: seeds/028___shared_users.sql:11
+	await page.getByRole('link', { name: 'Admin Meemoo Testje' }).click();
 
 	// Check we are on admin user detail page
 	await expect(
