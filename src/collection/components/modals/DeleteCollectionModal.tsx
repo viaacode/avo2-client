@@ -51,7 +51,9 @@ const DeleteCollectionModal: FC<DeleteCollectionModalProps> = ({
 					? tHtml(
 							'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
 					  )
-					: tHtml('Ben je zeker dat je deze bundel wil verwijderen')}
+					: tHtml(
+							'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-deze-bundel-wil-verwijderen'
+					  )}
 			</>
 		);
 	};
@@ -80,7 +82,9 @@ const DeleteCollectionModal: FC<DeleteCollectionModalProps> = ({
 					? tHtml(
 							'collection/components/modals/delete-collection-modal___verwijder-deze-collectie'
 					  )
-					: tHtml('Deze bundel verwijderen')
+					: tHtml(
+							'collection/components/modals/delete-collection-modal___deze-bundel-verwijderen'
+					  )
 			}
 			body={renderDeleteMessage()}
 			cancelLabel={tText('collection/components/modals/delete-collection-modal___annuleer')}
