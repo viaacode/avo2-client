@@ -21,7 +21,10 @@ export function useDraggableListModal(config?: {
 			icon={IconName.shuffle}
 			{...config?.button}
 			type="secondary"
-			label={tText('collection/components/collection-or-bundle-edit___herorden-fragmenten')}
+			label={
+				config?.button?.label ||
+				tText('collection/components/collection-or-bundle-edit___herorden-fragmenten')
+			}
 			title={tText(
 				'shared/hooks/use-draggable-list-modal___herorden-de-onderdelen-via-drag-and-drop'
 			)}

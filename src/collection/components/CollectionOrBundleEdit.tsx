@@ -411,17 +411,52 @@ const CollectionOrBundleEdit: FC<
 		}
 	}, [commonUser, collectionState.currentCollection, contributors]);
 
-	const [draggableListButton, draggableListModal] = useDraggableListModal({
+	const [draggableListCollectionsButton, draggableListCollectionsModal] = useDraggableListModal({
 		button: {
 			icon: undefined,
+			label: tText('Herorden collecties'),
 		},
 		modal: {
-			items: getFragmentsFromCollection(collectionState.currentCollection),
+			items: getFragmentsFromCollection(collectionState.currentCollection).filter(
+				(f) => f.type === 'COLLECTION'
+			),
 			onClose: (reorderedFragments?: Avo.Collection.Fragment[]) => {
 				if (reorderedFragments) {
-					const blocks = setBlockPositionToIndex(
-						reorderedFragments
-					) as Avo.Collection.Fragment[];
+					const blocks = setBlockPositionToIndex([
+						...reorderedFragments,
+						...getFragmentsFromCollection(collectionState.currentCollection).filter(
+							(f) => f.type === 'ASSIGNMENT'
+						),
+					]) as Avo.Collection.Fragment[];
+
+					changeCollectionState({
+						type: 'UPDATE_COLLECTION_PROP',
+						updateInitialCollection: false,
+						collectionProp: 'collection_fragments',
+						collectionPropValue: blocks,
+					});
+				}
+			},
+		},
+	});
+
+	const [draggableListAssignmentsButton, draggableListAssignmentsModal] = useDraggableListModal({
+		button: {
+			icon: undefined,
+			label: tText('Herorden opdrachten'),
+		},
+		modal: {
+			items: getFragmentsFromCollection(collectionState.currentCollection).filter(
+				(f) => f.type === 'ASSIGNMENT'
+			),
+			onClose: (reorderedFragments?: Avo.Collection.Fragment[]) => {
+				if (reorderedFragments) {
+					const blocks = setBlockPositionToIndex([
+						...getFragmentsFromCollection(collectionState.currentCollection).filter(
+							(f) => f.type === 'COLLECTION'
+						),
+						...reorderedFragments,
+					]) as Avo.Collection.Fragment[];
 
 					changeCollectionState({
 						type: 'UPDATE_COLLECTION_PROP',
@@ -1279,7 +1314,8 @@ const CollectionOrBundleEdit: FC<
 					}
 					onClick={() => executeAction(CollectionMenuAction.redirectToDetail)}
 				/>
-				{draggableListButton}
+				{draggableListCollectionsButton}
+				{draggableListAssignmentsButton}
 				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
 					onOpen={() => setIsOptionsMenuOpen(true)}
@@ -1592,7 +1628,8 @@ const CollectionOrBundleEdit: FC<
 					/>
 				)}
 
-				{draggableListModal}
+				{draggableListCollectionsModal}
+				{draggableListAssignmentsModal}
 				<BeforeUnloadPrompt when={unsavedChanges && !isForcedExit} />
 			</div>
 		);

@@ -1,3 +1,5 @@
+@use "sass:math";
+
 /* ==========================================================================
    Utility: Spacing
    ========================================================================== */
@@ -37,6 +39,10 @@ $g-spacer-unit: 0.8rem !default;
 /* All
    ========================================================================== */
 
+.u-spacer-xs {
+	margin: math.div($g-spacer-unit, 2) !important;
+}
+
 .u-spacer-s {
 	margin: $g-spacer-unit !important;
 }
@@ -51,6 +57,10 @@ $g-spacer-unit: 0.8rem !default;
 
 .u-spacer-xl {
 	margin: $g-spacer-unit * 6 !important;
+}
+
+.u-padding-s {
+	padding: math.div($g-spacer-unit, 2) !important;
 }
 
 .u-padding-s {
@@ -72,6 +82,10 @@ $g-spacer-unit: 0.8rem !default;
 /* Left
    ========================================================================== */
 
+.u-spacer-left-xs {
+	margin-left: math.div($g-spacer-unit, 2) !important;
+}
+
 .u-spacer-left-s {
 	margin-left: $g-spacer-unit !important;
 }
@@ -86,6 +100,10 @@ $g-spacer-unit: 0.8rem !default;
 
 .u-spacer-left-xl {
 	margin-left: $g-spacer-unit * 6 !important;
+}
+
+.u-padding-left-xs {
+	padding-left: math.div($g-spacer-unit, 2) !important;
 }
 
 .u-padding-left-s {
@@ -107,6 +125,10 @@ $g-spacer-unit: 0.8rem !default;
 /* Right
    ========================================================================== */
 
+.u-spacer-right-xs {
+	margin-right: math.div($g-spacer-unit, 2) !important;
+}
+
 .u-spacer-right-s {
 	margin-right: $g-spacer-unit !important;
 }
@@ -121,6 +143,10 @@ $g-spacer-unit: 0.8rem !default;
 
 .u-spacer-right-xl {
 	margin-right: $g-spacer-unit * 6 !important;
+}
+
+.u-padding-right-xs {
+	padding-right: math.div($g-spacer-unit, 2) !important;
 }
 
 .u-padding-right-s {
@@ -142,6 +168,10 @@ $g-spacer-unit: 0.8rem !default;
 /* Top
    ========================================================================== */
 
+.u-spacer-top-xs {
+	margin-top: math.div($g-spacer-unit, 2) !important;
+}
+
 .u-spacer-top-s {
 	margin-top: $g-spacer-unit !important;
 }
@@ -156,6 +186,10 @@ $g-spacer-unit: 0.8rem !default;
 
 .u-spacer-top-xl {
 	margin-top: $g-spacer-unit * 6 !important;
+}
+
+.u-padding-top-xs {
+	padding-top: math.div($g-spacer-unit, 2) !important;
 }
 
 .u-padding-top-s {
@@ -177,6 +211,10 @@ $g-spacer-unit: 0.8rem !default;
 /* Bottom
    ========================================================================== */
 
+.u-spacer-bottom-xs {
+	margin-bottom: math.div($g-spacer-unit, 2) !important;
+}
+
 .u-spacer-bottom-s {
 	margin-bottom: $g-spacer-unit !important;
 }
@@ -191,6 +229,10 @@ $g-spacer-unit: 0.8rem !default;
 
 .u-spacer-bottom-xl {
 	margin-bottom: $g-spacer-unit * 6 !important;
+}
+
+.u-padding-bottom-xs {
+	padding-bottom: math.div($g-spacer-unit, 2) !important;
 }
 
 .u-padding-bottom-s {

@@ -26,7 +26,7 @@ import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { CollectionService } from '../../collection.service';
 import {
-	type CollectionFragmentType,
+	CollectionFragmentType,
 	CollectionOrBundle,
 	ContentTypeNumber,
 } from '../../collection.types';
@@ -149,9 +149,11 @@ const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
 			await CollectionService.insertFragments(bundle.id, [fragment]);
 
 			ToastService.success(
-				tHtml(
-					'collection/components/modals/add-to-bundle-modal___de-collectie-is-toegevoegd-aan-de-bundel'
-				)
+				fragmentType === CollectionFragmentType.COLLECTION
+					? tHtml(
+							'collection/components/modals/add-to-bundle-modal___de-collectie-is-toegevoegd-aan-de-bundel'
+					  )
+					: tHtml('De opdracht is toegevoegd aan de bundel')
 			);
 			onClose();
 			trackEvents(
@@ -165,9 +167,11 @@ const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
-				tHtml(
-					'collection/components/modals/add-to-bundle-modal___de-collectie-kon-niet-worden-toegevoegd-aan-de-bundel'
-				)
+				fragmentType === CollectionFragmentType.COLLECTION
+					? tHtml(
+							'collection/components/modals/add-to-bundle-modal___de-collectie-kon-niet-worden-toegevoegd-aan-de-bundel'
+					  )
+					: tHtml('De opdracht kon niet worden toegevoegd aan de bundel')
 			);
 		}
 

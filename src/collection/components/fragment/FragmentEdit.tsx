@@ -41,11 +41,14 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { CollectionBlockType } from '../../collection.const';
-import { CollectionFragmentType } from '../../collection.types';
 import { type CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
 
 import FragmentAdd from './FragmentAdd';
+import {
+	COLLECTION_FRAGMENT_TYPE_TO_EVENT_OBJECT_TYPE,
+	GET_FRAGMENT_DELETE_SUCCESS_MESSAGES,
+} from './FragmentEdit.const';
 
 interface FragmentEditProps {
 	index: number;
@@ -75,15 +78,13 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 	user,
 	onFocus,
 }) => {
-	const { tText, tHtml } = useTranslation();
+	const { tText } = useTranslation();
 
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [descriptionRichEditorState, setDescriptionRichEditorState] = useState<
 		RichEditorState | undefined
 	>(undefined);
-
-	const isThisFragmentACollection = fragment.type === CollectionFragmentType.COLLECTION;
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (fragmentIndex: number) => fragmentIndex === 0;
@@ -153,40 +154,20 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 			type: 'DELETE_FRAGMENT',
 		});
 
-		const objectType = isThisFragmentACollection ? 'bundle' : 'collection';
-		trackEvents(
-			{
-				object: collectionId,
-				object_type: objectType,
-				action: 'delete',
-			},
-			user
-		);
-
-		if (!isThisFragmentACollection) {
-			if (fragment.type === 'TEXT') {
-				// Text block
-				ToastService.success(
-					tHtml(
-						'collection/components/fragment/fragment-edit___tekst-is-succesvol-verwijderd-uit-de-collectie'
-					)
-				);
-			} else {
-				// video/audio fragment
-				ToastService.success(
-					tHtml(
-						'collection/components/fragment/fragment-edit___fragment-is-succesvol-verwijderd-uit-de-collectie'
-					)
-				);
-			}
-		} else {
-			// Delete collection from bundle
-			ToastService.success(
-				tHtml(
-					'collection/components/fragment/fragment-edit___collectie-is-succesvol-verwijderd-uit-de-bundel'
-				)
+		const eventObjectType = COLLECTION_FRAGMENT_TYPE_TO_EVENT_OBJECT_TYPE[fragment.type];
+		if (eventObjectType) {
+			// We don't have to track the deletion of TEXT, ZOEK, BOUW blocks, only ITEM, COLLECTION, ASSIGNMENT
+			trackEvents(
+				{
+					object: collectionId,
+					object_type: eventObjectType,
+					action: 'delete',
+				},
+				user
 			);
 		}
+
+		ToastService.success(GET_FRAGMENT_DELETE_SUCCESS_MESSAGES()[fragment.type]);
 	};
 
 	// TODO: DISABLED FEATURE
@@ -308,7 +289,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 						onFocus={onFocus}
 					/>
 				</FormGroup>
-				{!isThisFragmentACollection && (
+				{fragment.type !== 'COLLECTION' && (
 					<FormGroup
 						label={tText(
 							'collection/components/fragment/fragment-edit___tekstblok-beschrijving'
@@ -379,7 +360,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 								<div className="c-button-toolbar">
 									{!isFirst(index) && renderReorderButton(index, 'up')}
 									{!isLast(index) && renderReorderButton(index, 'down')}
-									{itemMetaData && !isThisFragmentACollection && (
+									{itemMetaData && fragment.type === 'ITEM' && (
 										<Button
 											icon={IconName.scissors}
 											label={tText(
@@ -414,7 +395,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 					{fragment.type !== CollectionBlockType.TEXT && itemMetaData ? (
 						<Grid>
 							<Column size="3-6">
-								{!isThisFragmentACollection ? (
+								{fragment.type === 'ITEM' ? (
 									<FlowPlayerWrapper
 										item={itemMetaData}
 										poster={getFlowPlayerPoster(
@@ -450,14 +431,12 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 				</div>
 			</div>
 
-			{!isThisFragmentACollection && (
-				<FragmentAdd
-					index={index}
-					collectionId={collectionId}
-					numberOfFragments={numberOfFragments}
-					changeCollectionState={changeCollectionState}
-				/>
-			)}
+			<FragmentAdd
+				index={index}
+				collectionId={collectionId}
+				numberOfFragments={numberOfFragments}
+				changeCollectionState={changeCollectionState}
+			/>
 
 			<DeleteObjectModal
 				title={getDeleteFragmentModalTitle()}
@@ -469,7 +448,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 				confirmCallback={() => onDeleteFragment()}
 			/>
 
-			{itemMetaData && !isThisFragmentACollection && (
+			{itemMetaData && fragment.type !== 'COLLECTION' && (
 				<CutFragmentModal
 					isOpen={isCutModalOpen}
 					onClose={() => setIsCutModalOpen(false)}

@@ -1,4 +1,4 @@
-import { Alert, Container, Spacer } from '@viaa/avo2-components';
+import { Alert, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
@@ -12,7 +12,9 @@ import { FragmentAdd, FragmentEdit } from '../components';
 import { showReplacementWarning } from '../helpers/fragment';
 
 import { type CollectionAction } from './CollectionOrBundleEdit';
+
 import './CollectionOrBundleEditContent.scss';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 
 interface CollectionOrBundleEditContentProps {
 	type: CollectionOrBundle;
@@ -63,6 +65,38 @@ const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & Use
 	};
 
 	const collectionFragments = collection.collection_fragments || [];
+
+	const renderFragmentEditor = (fragment: Avo.Collection.Fragment, index: number) => (
+		<FragmentEdit
+			// If the parent is a collection then the fragment is an ITEM or TEXT
+			// If the parent is a bundle then the fragment is a COLLECTION
+			key={getFragmentKey(fragment)}
+			index={index}
+			collectionId={collection.id}
+			numberOfFragments={collectionFragments.length}
+			changeCollectionState={changeCollectionState}
+			openOptionsId={openOptionsId}
+			setOpenOptionsId={setOpenOptionsId}
+			isParentACollection={isCollection}
+			fragment={fragment}
+			allowedToAddLinks={allowedToAddLinks as boolean}
+			renderWarning={() => {
+				if (showReplacementWarning(collection, fragment, commonUser?.profileId)) {
+					return (
+						<Spacer margin="bottom">
+							<Alert type="danger">
+								{tText(
+									'collection/components/fragment/fragment-list___dit-item-is-recent-vervangen-door-een-nieuwe-versie-je-controleert-best-of-je-knippunten-nog-correct-zijn'
+								)}
+							</Alert>
+						</Spacer>
+					);
+				}
+				return null;
+			}}
+			onFocus={onFocus}
+		/>
+	);
 
 	// // TODO: DISABLE BELOW UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED
 	//
@@ -272,6 +306,8 @@ const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & Use
 		return null;
 	}
 
+	const fragmentCollections = collectionFragments.filter((f) => f.type === 'COLLECTION');
+	const fragmentAssignments = collectionFragments.filter((f) => f.type === 'ASSIGNMENT');
 	return (
 		<Container mode="vertical" className="m-collection-or-bundle-edit-content">
 			{/*/!* TODO: DISABLE BELOW UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED *!/*/}
@@ -292,48 +328,35 @@ const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & Use
 			{/*/!* TODO: DISABLE ABOVE UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED *!/*/}
 
 			<Container mode="horizontal" key={collectionFragments.map(getFragmentKey).join('_')}>
-				{isCollection && (
-					<FragmentAdd
-						index={-1}
-						collectionId={collection.id}
-						numberOfFragments={collectionFragments.length}
-						changeCollectionState={changeCollectionState}
+				<BlockHeading type="h3" className="u-spacer-top-xl u-spacer-bottom-l">
+					<Icon
+						name={IconName.collection}
+						className="u-spacer-right-s u-spacer-bottom-xs u-color-ocean-green"
 					/>
-				)}
+					{tHtml('Collecties in deze bundel')}
+				</BlockHeading>
+				<FragmentAdd
+					index={-1}
+					collectionId={collection.id}
+					numberOfFragments={fragmentCollections.length}
+					changeCollectionState={changeCollectionState}
+				/>
+				{fragmentCollections.map(renderFragmentEditor)}
 
-				{collectionFragments.map((fragment: Avo.Collection.Fragment, index: number) => (
-					<FragmentEdit
-						// If the parent is a collection then the fragment is an ITEM or TEXT
-						// If the parent is a bundle then the fragment is a COLLECTION
-						key={getFragmentKey(fragment)}
-						index={index}
-						collectionId={collection.id}
-						numberOfFragments={collectionFragments.length}
-						changeCollectionState={changeCollectionState}
-						openOptionsId={openOptionsId}
-						setOpenOptionsId={setOpenOptionsId}
-						isParentACollection={isCollection}
-						fragment={fragment}
-						allowedToAddLinks={allowedToAddLinks as boolean}
-						renderWarning={() => {
-							if (
-								showReplacementWarning(collection, fragment, commonUser?.profileId)
-							) {
-								return (
-									<Spacer margin="bottom">
-										<Alert type="danger">
-											{tText(
-												'collection/components/fragment/fragment-list___dit-item-is-recent-vervangen-door-een-nieuwe-versie-je-controleert-best-of-je-knippunten-nog-correct-zijn'
-											)}
-										</Alert>
-									</Spacer>
-								);
-							}
-							return null;
-						}}
-						onFocus={onFocus}
+				<BlockHeading type="h3" className="u-spacer-top-xl u-spacer-bottom-l">
+					<Icon
+						name={IconName.clipboard}
+						className="u-spacer-right-s u-spacer-bottom-xs u-color-french-rose"
 					/>
-				))}
+					{tHtml('Opdrachten in deze bundel')}
+				</BlockHeading>
+				<FragmentAdd
+					index={fragmentCollections.length}
+					collectionId={collection.id}
+					numberOfFragments={fragmentCollections.length + fragmentAssignments.length}
+					changeCollectionState={changeCollectionState}
+				/>
+				{fragmentAssignments.map(renderFragmentEditor)}
 			</Container>
 		</Container>
 	);

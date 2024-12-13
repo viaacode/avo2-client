@@ -5,9 +5,9 @@ import {
 	Column,
 	Container,
 	Flex,
-	FlexItem,
 	Grid,
 	HeaderContentType,
+	Icon,
 	IconName,
 	MediaCard,
 	MediaCardMetaData,
@@ -91,6 +91,7 @@ import { ToastService } from '../../shared/services/toast-service';
 import { BundleAction } from '../bundle.types';
 
 import './BundleDetail.scss';
+import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
 
 type BundleDetailProps = {
 	id?: string;
@@ -274,13 +275,13 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 
 		setShowLoginPopup(showPopup);
 		setPermissions(permissionObj || {});
-	}, [bundleId, commonUser, tHtml]);
+	}, [bundleId, bundleObj, commonUser, tHtml]);
 
 	useEffect(() => {
 		if (bundleObj) {
 			checkPermissions();
 		}
-	}, [checkPermissions]);
+	}, [bundleObj, checkPermissions]);
 
 	useEffect(() => {
 		if (bundleObj) {
@@ -454,11 +455,11 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 	};
 
 	// Render functions
-	function renderChildCollectionsOrAssignments() {
+	const renderChildFragments = (bundleFragments: CollectionFragment[]) => {
 		if (!bundleObj) {
 			return null;
 		}
-		return (bundleObj.collection_fragments || []).map((fragment: Avo.Collection.Fragment) => {
+		return bundleFragments.map((fragment: Avo.Collection.Fragment) => {
 			const collectionOrAssignment = fragment.item_meta as
 				| Avo.Collection.Collection
 				| (Avo.Assignment.Assignment & { type_id: number });
@@ -516,7 +517,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 				</Column>
 			);
 		});
-	}
+	};
 
 	const renderActionDropdown = () => {
 		const BUNDLE_DROPDOWN_ITEMS = [
@@ -667,8 +668,12 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 							renderSearchLink={defaultRenderSearchLink}
 						/>
 					</Grid>
-					<hr className="c-hr" />
-					{renderRelatedItems(relatedItems, defaultRenderDetailLink)}
+					{(relatedItems?.length || 0) > 0 && (
+						<>
+							<hr className="c-hr" />
+							{renderRelatedItems(relatedItems, defaultRenderDetailLink)}
+						</>
+					)}
 				</Container>
 			</Container>
 		);
@@ -686,6 +691,12 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 			setIsFirstRender(true);
 		}
 
+		const collectionFragments = (bundleObj?.collection_fragments || []).filter(
+			(f) => f.type === 'COLLECTION'
+		);
+		const assignmentFragments = (bundleObj?.collection_fragments || []).filter(
+			(f) => f.type === 'ASSIGNMENT'
+		);
 		return (
 			<>
 				<Helmet>
@@ -723,20 +734,18 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 								<Column size="3-2">
 									{renderMobileDesktop({
 										mobile: (
-											<Spacer>
-												<Thumbnail
-													category="bundle"
-													src={thumbnail_path || undefined}
-												/>
-											</Spacer>
+											<Thumbnail
+												className="u-spacer"
+												category="bundle"
+												src={thumbnail_path || undefined}
+											/>
 										),
 										desktop: (
-											<Spacer margin="right-large">
-												<Thumbnail
-													category="bundle"
-													src={thumbnail_path || undefined}
-												/>
-											</Spacer>
+											<Thumbnail
+												className="u-spacer-right-l"
+												category="bundle"
+												src={thumbnail_path || undefined}
+											/>
 										),
 									})}
 								</Column>
@@ -793,21 +802,48 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 										className="c-body-1 c-content"
 										content={description_long || ''}
 									/>
-									<Flex spaced="regular" wrap>
-										<FlexItem className="c-avatar-and-text">
-											{!!bundleObj &&
-												!!bundleObj.profile &&
-												renderAvatar(bundleObj.profile, { dark: true })}
-										</FlexItem>
-									</Flex>
+									<div className="c-avatar-and-text u-spacer-bottom-l u-spacer-top-l">
+										{!!bundleObj &&
+											!!bundleObj.profile &&
+											renderAvatar(bundleObj.profile, { dark: true })}
+									</div>
 								</Column>
 							</Grid>
 						</Container>
-						<Container mode="vertical">
+						<Container mode="vertical" background="white">
 							<Container mode="horizontal">
-								<div className="c-media-card-list">
-									<Grid>{renderChildCollectionsOrAssignments()}</Grid>
-								</div>
+								{collectionFragments.length > 0 && (
+									<>
+										{assignmentFragments.length > 0 && (
+											<BlockHeading type="h3" className="u-spacer-bottom-l">
+												<Icon
+													name={IconName.collection}
+													className="u-spacer-right-s u-spacer-bottom-xs u-color-ocean-green"
+												/>
+												{tText('Collecties in deze bundel')}
+											</BlockHeading>
+										)}
+										<div className="c-media-card-list u-spacer-bottom-l">
+											<Grid>{renderChildFragments(collectionFragments)}</Grid>
+										</div>
+									</>
+								)}
+								{assignmentFragments.length > 0 && (
+									<>
+										{collectionFragments.length > 0 && (
+											<BlockHeading type="h3" className="u-spacer-bottom-l">
+												<Icon
+													name={IconName.clipboard}
+													className="u-spacer-right-s u-spacer-bottom-xs u-color-french-rose"
+												/>
+												{tText('Opdrachten in deze bundel')}
+											</BlockHeading>
+										)}
+										<div className="c-media-card-list">
+											<Grid>{renderChildFragments(assignmentFragments)}</Grid>
+										</div>
+									</>
+								)}
 							</Container>
 						</Container>
 						{renderMetaDataAndRelated()}
