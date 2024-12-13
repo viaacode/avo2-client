@@ -11,8 +11,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
-import React, { type Dispatch, type FC, type SetStateAction } from 'react';
-import { type UseFormSetValue } from 'react-hook-form';
+import React, { type FC } from 'react';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../admin/shared/types';
@@ -25,14 +24,12 @@ import useTranslation from '../../shared/hooks/useTranslation';
 
 interface AssignmentAdminFormEditableProps {
 	assignment: Avo.Assignment.Assignment;
-	setAssignment: Dispatch<SetStateAction<Avo.Assignment.Assignment>>;
-	setValue: UseFormSetValue<Avo.Assignment.Assignment>;
+	setAssignment: (newAssignment: Avo.Assignment.Assignment) => void;
 }
 
 const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserProps> = ({
 	assignment,
 	setAssignment,
-	setValue,
 	commonUser,
 }) => {
 	const { tText } = useTranslation();
@@ -75,30 +72,20 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 				}) as Avo.Assignment.QualityLabel
 		);
 
-		(setValue as any)('quality_labels', newQualityLabels, {
-			shouldDirty: true,
-			shouldTouch: true,
-		});
-		setAssignment((prev) => ({
-			...prev,
+		setAssignment({
+			...assignment,
 			quality_labels: newQualityLabels,
-			blocks: (prev as Avo.Assignment.Assignment)?.blocks || [],
-		}));
+		});
 	};
 
 	const handleOwnerChange = (newOwner: PickerItem | null) => {
 		if (isNil(newOwner)) {
 			return;
 		}
-		(setValue as any)('owner_profile_id', newOwner, {
-			shouldDirty: true,
-			shouldTouch: true,
-		});
-		setAssignment((prev) => ({
-			...prev,
+		setAssignment({
+			...assignment,
 			owner_profile_id: newOwner.value,
-			blocks: (prev as Avo.Assignment.Assignment)?.blocks || [],
-		}));
+		});
 	};
 
 	return (

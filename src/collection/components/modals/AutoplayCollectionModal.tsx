@@ -28,7 +28,7 @@ const AutoplayCollectionModal: FC<AutoplayCollectionModalProps> = ({
 
 	const fetchPlayableUrls = useCallback(async () => {
 		const playableFragments = collectionFragments.filter(
-			(fragment) => !!fragment.item_meta?.external_id
+			(fragment) => !!(fragment.item_meta as Avo.Item.Item)?.external_id
 		);
 		const playableUrls = await fetchPlayerTickets(
 			playableFragments.map((frag) => frag.external_id)
@@ -36,6 +36,7 @@ const AutoplayCollectionModal: FC<AutoplayCollectionModalProps> = ({
 		setSourceList({
 			type: 'flowplayer/playlist',
 			items: playableFragments.map((frag, fragIndex): FlowplayerSourceItem => {
+				const itemMeta = frag.item_meta as Avo.Item.Item;
 				const title =
 					(frag.use_custom_fields ? frag.custom_title : frag.item_meta?.title) ||
 					frag.item_meta?.title ||
@@ -48,9 +49,9 @@ const AutoplayCollectionModal: FC<AutoplayCollectionModalProps> = ({
 				return {
 					src: playableUrls[fragIndex],
 					title,
-					poster: getFlowPlayerPoster(frag.thumbnail_path, frag.item_meta) || '',
+					poster: getFlowPlayerPoster(frag.thumbnail_path, itemMeta) || '',
 					category: 'video',
-					provider: frag.item_meta?.organisation?.name || '',
+					provider: itemMeta?.organisation?.name || '',
 					cuepoints: start && end ? [{ startTime: start, endTime: end }] : undefined,
 				};
 			}),

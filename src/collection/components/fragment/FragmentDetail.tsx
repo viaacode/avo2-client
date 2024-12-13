@@ -7,6 +7,7 @@ import { APP_PATH } from '../../../constants';
 import { ItemVideoDescription } from '../../../item/components';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { buildLink, isMobileWidth } from '../../../shared/helpers';
+import { ContentTypeNumber } from '../../collection.types';
 import { getFragmentProperty } from '../../helpers';
 
 import './FragmentDetail.scss';
@@ -40,9 +41,9 @@ const FragmentDetail: FC<FragmentDetailProps> = ({
 		if (
 			linkToItems &&
 			collectionFragment.item_meta &&
-			collectionFragment.item_meta.type &&
-			(collectionFragment.item_meta.type.label === 'video' ||
-				collectionFragment.item_meta.type.label === 'audio')
+			[ContentTypeNumber.video, ContentTypeNumber.audio].includes(
+				collectionFragment.item_meta.type_id
+			)
 		) {
 			return buildLink(APP_PATH.ITEM_DETAIL.route, {
 				id: (collectionFragment.item_meta as Avo.Item.Item).external_id,

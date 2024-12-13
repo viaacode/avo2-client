@@ -14,8 +14,7 @@ import {
 } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { isAfter, isPast } from 'date-fns';
-import React, { type Dispatch, type FC, type SetStateAction, useCallback } from 'react';
-import { type UseFormSetValue } from 'react-hook-form';
+import React, { type FC, useCallback } from 'react';
 import { compose } from 'redux';
 
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -40,14 +39,13 @@ const AssignmentDetailsFormIds = {
 
 interface AssignmentDetailsFormEditableProps {
 	assignment: Partial<AssignmentFields>;
-	setAssignment: Dispatch<SetStateAction<AssignmentFields>>;
-	setValue: UseFormSetValue<AssignmentFields>;
+	setAssignment: (newAssignmentFields: Partial<AssignmentFields>) => void;
 	onFocus?: () => void;
 }
 
 const AssignmentDetailsFormEditable: FC<
 	AssignmentDetailsFormEditableProps & UserProps & DefaultProps
-> = ({ assignment, setAssignment, setValue, className, style, commonUser, onFocus }) => {
+> = ({ assignment, setAssignment, className, style, commonUser, onFocus }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const getId = useCallback(
@@ -113,17 +111,10 @@ const AssignmentDetailsFormEditable: FC<
 													'CLASS'
 												);
 
-												(setValue as any)('labels', newLabels, {
-													shouldDirty: true,
-													shouldTouch: true,
-												});
-
-												setAssignment((prev) => ({
-													...prev,
+												setAssignment({
+													...assignment,
 													labels: newLabels,
-													blocks:
-														(prev as AssignmentFields)?.blocks || [],
-												}));
+												});
 											}}
 										/>
 									</FormGroup>
@@ -149,20 +140,14 @@ const AssignmentDetailsFormEditable: FC<
 												),
 											}}
 											onChange={(changed) => {
-												(setValue as any)('labels', changed, {
-													shouldDirty: true,
-													shouldTouch: true,
-												});
-												setAssignment((prev) => ({
-													...prev,
+												setAssignment({
+													...assignment,
 													labels: mergeWithOtherLabels(
-														prev.labels || [],
+														assignment.labels || [],
 														changed,
 														'LABEL'
 													),
-													blocks:
-														(prev as AssignmentFields)?.blocks || [],
-												}));
+												});
 											}}
 										/>
 									</FormGroup>
@@ -178,20 +163,12 @@ const AssignmentDetailsFormEditable: FC<
 											minDate={new Date()}
 											maxDate={endOfAcademicYear()}
 											onChange={(value: Date | null) => {
-												(setValue as any)(
-													'available_at',
-													value?.toISOString(),
-													{
-														shouldDirty: true,
-														shouldTouch: true,
-													}
-												);
-												setAssignment((prev) => ({
-													...prev,
+												setAssignment({
+													...assignment,
 													available_at: value
 														? value.toISOString()
 														: null,
-												}));
+												});
 											}}
 										/>
 									</FormGroup>
@@ -207,18 +184,10 @@ const AssignmentDetailsFormEditable: FC<
 											minDate={new Date()}
 											maxDate={endOfAcademicYear()}
 											onChange={(value) => {
-												(setValue as any)(
-													'deadline_at',
-													value?.toISOString(),
-													{
-														shouldDirty: true,
-														shouldTouch: true,
-													}
-												);
-												setAssignment((prev) => ({
-													...prev,
+												setAssignment({
+													...assignment,
 													deadline_at: value ? value.toISOString() : null,
-												}));
+												});
 											}}
 											defaultTime="23:59"
 										/>
@@ -259,10 +228,6 @@ const AssignmentDetailsFormEditable: FC<
 										<TextInput
 											id={getId(AssignmentDetailsFormIds.answer_url)}
 											onChange={(answerUrl) => {
-												(setValue as any)('answer_url', answerUrl, {
-													shouldDirty: true,
-													shouldTouch: true,
-												});
 												setAssignment({
 													...assignment,
 													answer_url: answerUrl,

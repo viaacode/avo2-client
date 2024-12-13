@@ -18,13 +18,13 @@ import { stripHtml } from '../shared/helpers';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { type Positioned } from '../shared/types';
 
-import {
-	CollectionBlockType,
-	MAX_LONG_DESCRIPTION_LENGTH,
-	MAX_SEARCH_DESCRIPTION_LENGTH,
-} from './collection.const';
+import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from './collection.const';
 import { CollectionService } from './collection.service';
-import { CONTENT_TYPE_TRANSLATIONS, ContentTypeNumber } from './collection.types';
+import {
+	CollectionFragmentType,
+	CONTENT_TYPE_TRANSLATIONS,
+	ContentTypeNumber,
+} from './collection.types';
 
 export const getValidationFeedbackForDescription = (
 	description: string | null,
@@ -141,7 +141,9 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 			!collection.collection_fragments ||
 			validateFragments(
 				collection.collection_fragments,
-				collection.type_id === ContentTypeNumber.collection ? 'video' : 'collection'
+				collection.type_id === ContentTypeNumber.collection
+					? CollectionFragmentType.ITEM
+					: CollectionFragmentType.COLLECTION
 			),
 	},
 	{
@@ -152,7 +154,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 			return (
 				collection.type_id === ContentTypeNumber.bundle ||
 				!collection.collection_fragments ||
-				validateFragments(collection.collection_fragments, 'text')
+				validateFragments(collection.collection_fragments, CollectionFragmentType.TEXT)
 			);
 		},
 	},
@@ -188,7 +190,7 @@ const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRul
 
 const validateFragments = (
 	fragments: Avo.Collection.Fragment[],
-	type: 'text' | 'video' | 'collection'
+	type: CollectionFragmentType
 ): boolean => {
 	if (!fragments || !fragments.length) {
 		return false;
@@ -197,7 +199,7 @@ const validateFragments = (
 	let isValid = true;
 
 	switch (type) {
-		case 'video':
+		case CollectionFragmentType.ITEM:
 			// Check if video fragment has custom_title and custom_description if necessary.
 			fragments.forEach((fragment) => {
 				if (
@@ -210,11 +212,11 @@ const validateFragments = (
 			});
 			break;
 
-		case 'collection':
+		case CollectionFragmentType.COLLECTION:
 			// Check if video fragment has custom_title and custom_description if necessary.
 			fragments.forEach((fragment) => {
 				if (
-					fragment.type === 'COLLECTION' &&
+					fragment.type === CollectionFragmentType.COLLECTION &&
 					fragment.use_custom_fields &&
 					!fragment.custom_title
 				) {
@@ -223,11 +225,11 @@ const validateFragments = (
 			});
 			break;
 
-		case 'text':
+		case CollectionFragmentType.TEXT:
 			// Check if text fragment has custom_title or custom_description.
 			fragments.forEach((fragment) => {
 				if (
-					fragment.type === CollectionBlockType.TEXT &&
+					fragment.type === CollectionFragmentType.TEXT &&
 					!stripHtml(fragment.custom_title || '').trim() &&
 					!stripHtml(fragment.custom_description || '').trim()
 				) {

@@ -16,6 +16,7 @@ export enum ContentTypeNumber {
 	video = 2,
 	collection = 3,
 	bundle = 4,
+	assignment = 5,
 }
 
 export enum ContentTypeString {
@@ -31,6 +32,17 @@ export enum ContentTypeString {
 export enum CollectionOrBundle {
 	COLLECTION = 'collection',
 	BUNDLE = 'bundle',
+}
+
+/**
+ * A collection in the database can represent a collection or a bundle
+ * A collection fragment in the database can be of type: TEXT, ITEM, COLLECTION, ASSIGNMENT
+ */
+export enum CollectionFragmentType {
+	TEXT = 'TEXT',
+	ITEM = 'ITEM',
+	COLLECTION = 'COLLECTION',
+	ASSIGNMENT = 'ASSIGNMENT',
 }
 
 export const CONTENT_TYPE_TRANSLATIONS: Record<Avo.ContentType.Dutch, Avo.ContentType.English> = {

@@ -8,9 +8,8 @@ import React, { type FC } from 'react';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { stripHtml } from '../../helpers';
 
-import { DRAGGABLE_BLOCK_ICONS } from './DraggableBlock.const';
-
 import './DraggableBlock.scss';
+import { BLOCK_ITEM_ICONS } from '../BlockList/BlockList.consts';
 
 interface DraggableBlockProps extends DefaultProps {
 	block?: Avo.Core.BlockItemBase;
@@ -40,7 +39,7 @@ const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
 				{thumbnail ? (
 					<div style={{ backgroundImage: `url(${thumbnail})` }} />
 				) : (
-					<Icon name={DRAGGABLE_BLOCK_ICONS[block.type]} />
+					<Icon name={BLOCK_ITEM_ICONS()[block.type]()} />
 				)}
 			</FlexItem>
 			<FlexItem>

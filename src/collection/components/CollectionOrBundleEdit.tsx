@@ -77,6 +77,7 @@ import { getFragmentsFromCollection } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import {
 	CollectionCreateUpdateTab,
+	CollectionFragmentType,
 	CollectionMenuAction,
 	CollectionOrBundle,
 } from '../collection.types';
@@ -1014,7 +1015,7 @@ const CollectionOrBundleEdit: FC<
 					custom_description: null,
 					collection_uuid: bundleId,
 					item_meta: collection,
-					type: 'COLLECTION',
+					type: CollectionFragmentType.COLLECTION,
 					created_at: new Date().toISOString(),
 				};
 				changeCollectionState({

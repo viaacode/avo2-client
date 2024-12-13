@@ -1,6 +1,7 @@
 import { IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 
+import { ContentTypeNumber } from '../../../collection/collection.types';
 import { tText } from '../../helpers/translate';
 
 export const BLOCK_ITEM_ICONS: () => Record<
@@ -9,10 +10,10 @@ export const BLOCK_ITEM_ICONS: () => Record<
 > = () => ({
 	ITEM: (block: Avo.Core.BlockItemBase | undefined): IconName => {
 		if (block?.item_meta) {
-			switch (block?.item_meta?.type?.label) {
-				case 'audio':
+			switch (block?.item_meta?.type_id) {
+				case ContentTypeNumber.audio:
 					return IconName.headphone;
-				case 'video':
+				case ContentTypeNumber.video:
 					return IconName.video; // TODO: add custom icon
 			}
 		}
@@ -22,6 +23,7 @@ export const BLOCK_ITEM_ICONS: () => Record<
 	ZOEK: () => IconName.search,
 	BOUW: () => IconName.search,
 	COLLECTION: () => IconName.collection,
+	ASSIGNMENT: () => IconName.clipboard,
 });
 
 export const BLOCK_ITEM_LABELS = (
@@ -34,4 +36,5 @@ export const BLOCK_ITEM_LABELS = (
 	ZOEK: tText('shared/components/block-list/block-list___zoekoefening'),
 	BOUW: tText('shared/components/block-list/block-list___zoekoefening'),
 	COLLECTION: tText('shared/components/block-list/block-list___collectie'),
+	ASSIGNMENT: tText('Opdracht'),
 });

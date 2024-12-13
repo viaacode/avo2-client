@@ -33,6 +33,7 @@ import { withRouter } from 'react-router';
 import { Link, type RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
 
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { renderRelatedItems } from '../../collection/collection.helpers';
@@ -41,8 +42,10 @@ import {
 	blockTypeToContentType,
 	CollectionCreateUpdateTab,
 	CollectionOrBundle,
+	ContentTypeNumber,
 } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components';
+import { useGetCollectionOrBundleByIdOrInviteToken } from '../../collection/hooks/useGetCollectionOrBundleByIdOrInviteToken';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -88,8 +91,6 @@ import { ToastService } from '../../shared/services/toast-service';
 import { BundleAction } from '../bundle.types';
 
 import './BundleDetail.scss';
-import { useGetCollectionOrBundleByIdOrInviteToken } from '../../collection/hooks/useGetCollectionOrBundleByIdOrInviteToken';
-import { PermissionService } from '../../authentication/helpers/permission-service';
 
 type BundleDetailProps = {
 	id?: string;
@@ -453,19 +454,27 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 	};
 
 	// Render functions
-	function renderChildCollections() {
+	function renderChildCollectionsOrAssignments() {
 		if (!bundleObj) {
 			return null;
 		}
 		return (bundleObj.collection_fragments || []).map((fragment: Avo.Collection.Fragment) => {
-			const collection = fragment.item_meta as Avo.Collection.Collection;
-			if (!collection) {
+			const collectionOrAssignment = fragment.item_meta as
+				| Avo.Collection.Collection
+				| (Avo.Assignment.Assignment & { type_id: number });
+			if (!collectionOrAssignment) {
 				return null;
 			}
+			const category =
+				collectionOrAssignment.type_id === ContentTypeNumber.collection
+					? 'collection'
+					: 'assignment';
 			return (
 				<Column size="3-4" key={`bundle-fragment-${fragment.id}`}>
 					<Link
-						to={buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: collection.id })}
+						to={buildLink(APP_PATH.COLLECTION_DETAIL.route, {
+							id: collectionOrAssignment.id,
+						})}
 						className="a-link__no-styles"
 					>
 						<MediaCard
@@ -473,26 +482,33 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 							category={blockTypeToContentType(fragment.type)}
 							orientation="vertical"
 							title={
-								fragment.use_custom_fields
-									? fragment.custom_title || ''
-									: collection.title
+								(fragment.use_custom_fields
+									? fragment.custom_title
+									: collectionOrAssignment.title) || ''
 							}
 						>
 							<MediaCardThumbnail>
 								<Thumbnail
-									category="collection"
-									src={collection.thumbnail_path || undefined}
-									meta={`${collection?.item_count || 0} items`}
-									label="collectie"
+									category={category}
+									src={collectionOrAssignment.thumbnail_path || undefined}
+									meta={`${collectionOrAssignment?.item_count || 0} items`}
+									label={
+										collectionOrAssignment.type_id ===
+										ContentTypeNumber.collection
+											? tText('admin/shared/constants/index___collectie')
+											: tText('admin/shared/constants/index___opdracht')
+									}
 								/>
 							</MediaCardThumbnail>
 							<MediaCardMetaData>
-								<MetaData category="collection">
+								<MetaData category={category}>
 									<MetaDataItem
 										label={String(viewCountsById[fragment.external_id] || 0)}
 										icon={IconName.eye}
 									/>
-									<MetaDataItem label={formatDate(collection.updated_at)} />
+									<MetaDataItem
+										label={formatDate(collectionOrAssignment.updated_at)}
+									/>
 								</MetaData>
 							</MediaCardMetaData>
 						</MediaCard>
@@ -790,7 +806,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 						<Container mode="vertical">
 							<Container mode="horizontal">
 								<div className="c-media-card-list">
-									<Grid>{renderChildCollections()}</Grid>
+									<Grid>{renderChildCollectionsOrAssignments()}</Grid>
 								</div>
 							</Container>
 						</Container>

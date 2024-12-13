@@ -17,7 +17,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentBlockType } from '../assignment.types';
 
 export interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-	responses?: Avo.Assignment.Assignment[];
+	responses?: Avo.Assignment.Response[];
 	block?: Pick<Avo.Assignment.Block, 'type'>;
 	isPupilCollection: boolean;
 	onConfirm?: () => void;

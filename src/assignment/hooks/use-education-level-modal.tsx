@@ -10,7 +10,6 @@ export function useEducationLevelModal(
 	assignmentLoading = false
 ): [boolean, Dispatch<SetStateAction<boolean>>] {
 	const [isOpen, setOpen] = useState<boolean>(false);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 	useEffect(() => {
 		if (!assignment || assignmentLoading || assignment.education_level_id) return;

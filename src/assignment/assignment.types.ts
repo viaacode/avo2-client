@@ -133,6 +133,7 @@ export enum AssignmentAction {
 	edit = 'edit',
 	share = 'share',
 	publish = 'publish',
+	addToBundle = 'addToBundle',
 }
 
 export interface FetchAssignmentsParams {

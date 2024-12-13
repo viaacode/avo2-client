@@ -78,7 +78,8 @@ export const AssignmentBlockEditItem: FC<
 	if (editableBlock.editMode === AssignmentBlockItemDescriptionType.original) {
 		title =
 			(editableBlock as unknown as Avo.Assignment.Block).original_title ||
-			editableBlock.item_meta?.title;
+			editableBlock.item_meta?.title ||
+			undefined;
 	} else if (editableBlock.editMode === AssignmentBlockItemDescriptionType.custom) {
 		title = editableBlock.ownTitle;
 	} else if (editableBlock.editMode === AssignmentBlockItemDescriptionType.none) {

@@ -3,6 +3,7 @@ import { type Avo, LomSchemeType } from '@viaa/avo2-types';
 import { compact, orderBy } from 'lodash-es';
 import { type ReactNode } from 'react';
 
+import { CollectionFragmentType } from '../collection/collection.types';
 import { OrderDirection } from '../search/search.const';
 import { stripHtml } from '../shared/helpers';
 import { EducationLevelId } from '../shared/helpers/lom';
@@ -221,7 +222,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 
 const areCollectionBlocksValid = (blocks: Avo.Assignment.Block[] | undefined): boolean => {
 	return (blocks || [])
-		.filter((block) => block.type === 'COLLECTION')
+		.filter((block) => block.type === CollectionFragmentType.COLLECTION)
 		.every((block) => !block.use_custom_fields || !block.custom_title);
 };
 

@@ -85,6 +85,7 @@ import { renderRelatedItems } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import {
 	CollectionCreateUpdateTab,
+	CollectionFragmentType,
 	CollectionMenuAction,
 	CollectionOrBundle,
 	ContentTypeString,
@@ -1305,8 +1306,9 @@ const CollectionDetail: FC<
 				)}
 				{collectionId !== undefined && !!commonUser && (
 					<AddToBundleModal
-						collection={collection as Avo.Collection.Collection}
-						collectionId={collectionId as string}
+						fragmentId={collectionId as string}
+						fragmentInfo={collection as Avo.Collection.Collection}
+						fragmentType={CollectionFragmentType.COLLECTION}
 						isOpen={isAddToBundleModalOpen}
 						onClose={() => setIsAddToBundleModalOpen(false)}
 					/>

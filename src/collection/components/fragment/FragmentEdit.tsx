@@ -41,6 +41,7 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { CollectionBlockType } from '../../collection.const';
+import { CollectionFragmentType } from '../../collection.types';
 import { type CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
 
@@ -82,7 +83,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 		RichEditorState | undefined
 	>(undefined);
 
-	const isThisFragmentACollection = fragment.type === 'COLLECTION';
+	const isThisFragmentACollection = fragment.type === CollectionFragmentType.COLLECTION;
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (fragmentIndex: number) => fragmentIndex === 0;
@@ -92,7 +93,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 		if (fragment.use_custom_fields) {
 			return fragment.custom_title || '';
 		}
-		return get(fragment.item_meta, 'title', '');
+		return fragment.item_meta?.title || '';
 	}, [fragment.use_custom_fields, fragment.custom_title, fragment.item_meta]);
 
 	// Cache title until the text field blurs, then pass title to collection edit reducer

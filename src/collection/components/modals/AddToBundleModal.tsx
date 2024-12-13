@@ -25,21 +25,27 @@ import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { CollectionService } from '../../collection.service';
-import { CollectionOrBundle, ContentTypeNumber } from '../../collection.types';
+import {
+	type CollectionFragmentType,
+	CollectionOrBundle,
+	ContentTypeNumber,
+} from '../../collection.types';
 import { canManageEditorial } from '../../helpers/can-manage-editorial';
 
 import './AddToBundleModal.scss';
 
 interface AddToBundleModalProps {
-	collectionId: string;
-	collection: Avo.Collection.Collection;
+	fragmentId: string;
+	fragmentInfo: Avo.Collection.Collection | Avo.Assignment.Assignment;
+	fragmentType: CollectionFragmentType;
 	isOpen: boolean;
 	onClose: () => void;
 }
 
 const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
-	collectionId,
-	collection,
+	fragmentId,
+	fragmentInfo,
+	fragmentType,
 	isOpen,
 	onClose,
 	commonUser,
@@ -114,18 +120,23 @@ const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
 			use_custom_fields: false,
 			start_oc: null,
 			position: (bundle.collection_fragments || []).length,
-			external_id: collectionId,
+			external_id: fragmentId,
 			end_oc: null,
 			custom_title: null,
 			custom_description: null,
 			collection_uuid: bundle.id,
-			item_meta: collection,
-			type: 'COLLECTION',
+			item_meta: {
+				...fragmentInfo,
+				type_id: ContentTypeNumber.assignment,
+			},
+			type: fragmentType,
 		};
 	};
 
-	const addCollectionToExistingBundle = async (bundle: Partial<Avo.Collection.Collection>) => {
-		// Disable "Toepassen" button
+	const addCollectionOrAssignmentToExistingBundle = async (
+		bundle: Partial<Avo.Collection.Collection>
+	) => {
+		// Disable apply button
 		setIsProcessing(true);
 
 		try {
@@ -145,7 +156,7 @@ const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
 			onClose();
 			trackEvents(
 				{
-					object: String(collection.id),
+					object: String(fragmentId),
 					object_type: 'bundle',
 					action: 'add_to',
 				},
@@ -164,7 +175,7 @@ const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
 		setIsProcessing(false);
 	};
 
-	const addCollectionToNewBundle = async () => {
+	const addCollectionOrAssignmentToNewBundle = async () => {
 		// Disable "Toepassen" button
 		setIsProcessing(true);
 
@@ -207,7 +218,7 @@ const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
 			);
 
 			// Add collection to bundle
-			await addCollectionToExistingBundle(insertedBundle);
+			await addCollectionOrAssignmentToExistingBundle(insertedBundle);
 			await fetchBundles();
 			onClose();
 
@@ -231,8 +242,11 @@ const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
 	};
 
 	const onApply = createNewBundle
-		? addCollectionToNewBundle
-		: () => addCollectionToExistingBundle(selectedBundle as Partial<Avo.Collection.Collection>);
+		? addCollectionOrAssignmentToNewBundle
+		: () =>
+				addCollectionOrAssignmentToExistingBundle(
+					selectedBundle as Partial<Avo.Collection.Collection>
+				);
 
 	const handleBundleTitleChange = (title: string) => {
 		// AVO-2827: add max title length

@@ -36,7 +36,8 @@ import { type DefaultSecureRouteProps } from '../../authentication/components/Se
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { renderRelatedItems } from '../../collection/collection.helpers';
-import { type Relation } from '../../collection/collection.types';
+import { CollectionFragmentType, type Relation } from '../../collection/collection.types';
+import AddToBundleModal from '../../collection/components/modals/AddToBundleModal';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { type ErrorViewQueryParams } from '../../error/views/ErrorView';
@@ -103,6 +104,7 @@ type AssignmentDetailPermissions = Partial<{
 	canEditAssignments: boolean;
 	canPublishAssignments: boolean;
 	canDeleteAnyAssignments: boolean;
+	canEditBundles: boolean;
 }>;
 
 type AssignmentDetailProps = {
@@ -143,6 +145,7 @@ const AssignmentDetail: FC<
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 
 	const [query, setQuery] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
@@ -207,6 +210,10 @@ const AssignmentDetail: FC<
 					],
 
 					canDeleteAnyAssignments: [{ name: PermissionName.DELETE_ANY_ASSIGNMENTS }],
+					canEditBundles: [
+						{ name: PermissionName.EDIT_OWN_BUNDLES },
+						{ name: PermissionName.EDIT_ANY_BUNDLES },
+					],
 				},
 				commonUser
 			);
@@ -492,6 +499,9 @@ const AssignmentDetail: FC<
 	const executeAction = async (item: ReactText) => {
 		setIsOptionsMenuOpen(false);
 		switch (item) {
+			case AssignmentAction.addToBundle:
+				await setIsAddToBundleModalOpen(true);
+				break;
 			case AssignmentAction.duplicate:
 				await onDuplicateAssignment();
 				break;
@@ -523,7 +533,13 @@ const AssignmentDetail: FC<
 	// Render
 
 	const renderHeaderButtons = () => {
-		const COLLECTION_DROPDOWN_ITEMS = [
+		const ASSIGNMENT_DROPDOWN_ITEMS = [
+			...createDropdownMenuItem(
+				AssignmentAction.addToBundle,
+				tText('Voeg toe aan bundel'),
+				IconName.plus,
+				permissions?.canEditBundles || false
+			),
 			...createDropdownMenuItem(
 				AssignmentAction.duplicate,
 				tText('collection/views/collection-detail___dupliceer'),
@@ -644,7 +660,7 @@ const AssignmentDetail: FC<
 						onOpen={() => setIsOptionsMenuOpen(true)}
 						onClose={() => setIsOptionsMenuOpen(false)}
 						label={getMoreOptionsLabel()}
-						menuItems={COLLECTION_DROPDOWN_ITEMS}
+						menuItems={ASSIGNMENT_DROPDOWN_ITEMS}
 						onOptionClicked={executeAction}
 					/>
 				)}
@@ -670,12 +686,18 @@ const AssignmentDetail: FC<
 	};
 
 	const renderHeaderButtonsMobile = () => {
-		const COLLECTION_DROPDOWN_ITEMS_MOBILE = [
+		const ASSIGNMENT_DROPDOWN_ITEMS_MOBILE = [
 			...createDropdownMenuItem(
 				AssignmentAction.edit,
 				tText('assignment/views/assignment-detail___bewerken'),
 				IconName.edit2,
 				permissions?.canEditAssignments || isOwner || false
+			),
+			...createDropdownMenuItem(
+				AssignmentAction.addToBundle,
+				tText('Voeg toe aan bundel'),
+				IconName.plus,
+				permissions?.canEditBundles || false
 			),
 			...createDropdownMenuItem(
 				AssignmentAction.duplicate,
@@ -720,7 +742,7 @@ const AssignmentDetail: FC<
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
 					label={getMoreOptionsLabel()}
-					menuItems={COLLECTION_DROPDOWN_ITEMS_MOBILE}
+					menuItems={ASSIGNMENT_DROPDOWN_ITEMS_MOBILE}
 					onOptionClicked={executeAction}
 				/>
 			</ButtonToolbar>
@@ -1069,6 +1091,17 @@ const AssignmentDetail: FC<
 					assignment={assignment}
 				/>
 			)}
+
+			{!!assignment?.id && permissions?.canEditBundles && (
+				<AddToBundleModal
+					fragmentId={assignment.id}
+					fragmentInfo={assignment}
+					fragmentType={CollectionFragmentType.ASSIGNMENT}
+					isOpen={isAddToBundleModalOpen}
+					onClose={() => setIsAddToBundleModalOpen(false)}
+				/>
+			)}
+
 			<DeleteAssignmentModal
 				isOpen={isDeleteModalOpen}
 				onClose={() => setIsDeleteModalOpen(false)}

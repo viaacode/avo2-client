@@ -15,7 +15,7 @@ export const BlockItemMetadata: FC<BlockItemMetadataProps> = ({
 }) => {
 	const { tHtml } = useTranslation();
 
-	const organisation = block.item_meta?.organisation?.name;
+	const organisation = (block.item_meta as Avo.Item.Item)?.organisation?.name;
 	const broadcastDate = (block.item_meta as Avo.Item.Item)?.issued;
 	const series = (block.item_meta as Avo.Item.Item)?.series;
 

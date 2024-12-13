@@ -8,7 +8,7 @@ import {
 } from '@meemoo/react-components';
 import { Icon, IconName, MediaCard, MediaCardThumbnail, Thumbnail } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { get, isNil, isString, noop, throttle } from 'lodash-es';
+import { get, isNil, isString, throttle } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 import React, {
 	type FC,
@@ -424,13 +424,15 @@ const FlowPlayerWrapper: FC<
 	);
 };
 
+const mapStateToProps = () => ({});
+
 const mapDispatchToProps = (dispatch: Dispatch) => ({
 	setLastVideoPlayedAt: (lastVideoPlayedAt: Date | null) =>
 		dispatch(setLastVideoPlayedAtAction(lastVideoPlayedAt) as any),
 });
 
 export default compose(
-	connect(noop, mapDispatchToProps),
+	connect(mapStateToProps, mapDispatchToProps),
 	withRouter,
 	withUser
 )(FlowPlayerWrapper) as FC<FlowPlayerWrapperProps>;

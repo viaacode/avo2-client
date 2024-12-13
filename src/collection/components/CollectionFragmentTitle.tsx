@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers';
 import { CollectionBlockType } from '../collection.const';
-import { type BlockItemComponent } from '../collection.types';
+import { type BlockItemComponent, ContentTypeNumber } from '../collection.types';
 
 import './CollectionFragmentTitle.scss';
 
@@ -27,11 +27,11 @@ const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({ block, canC
 		canClickHeading &&
 		block &&
 		block.type === 'ITEM' &&
-		block.item_meta?.type?.label &&
-		['video', 'audio'].includes(block.item_meta?.type?.label)
+		block.item_meta?.type_id &&
+		[ContentTypeNumber.video, ContentTypeNumber.audio].includes(block.item_meta?.type_id)
 	) {
 		const link = buildLink(APP_PATH.ITEM_DETAIL.route, {
-			id: block.item_meta.external_id || '',
+			id: (block.item_meta as Avo.Item.Item).external_id || '',
 		});
 
 		return <Link to={link}>{heading}</Link>;

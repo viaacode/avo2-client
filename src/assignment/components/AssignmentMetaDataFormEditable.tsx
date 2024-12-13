@@ -12,8 +12,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { intersection } from 'lodash-es';
-import React, { type Dispatch, type FC, type SetStateAction, useState } from 'react';
-import { type UseFormSetValue } from 'react-hook-form';
+import React, { type FC, useState } from 'react';
 
 import { ShortDescriptionField, ThumbnailStillsModal } from '../../shared/components';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
@@ -24,15 +23,13 @@ import useTranslation from '../../shared/hooks/useTranslation';
 
 type AssignmentMetaDataFormEditableProps = {
 	assignment: Avo.Assignment.Assignment;
-	setAssignment: Dispatch<SetStateAction<Avo.Assignment.Assignment>>;
-	setValue: UseFormSetValue<Avo.Assignment.Assignment>;
+	setAssignment: (newAssignment: Partial<Avo.Assignment.Assignment>) => void;
 	onFocus?: () => void;
 };
 
 const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = ({
 	assignment,
 	setAssignment,
-	setValue,
 	onFocus,
 }) => {
 	const { tText } = useTranslation();
@@ -52,16 +49,10 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 			lom,
 		}));
 
-		(setValue as any)('loms', mappedLoms, {
-			shouldDirty: true,
-			shouldTouch: true,
-		});
-
-		setAssignment((prev) => ({
-			...prev,
+		setAssignment({
+			...assignment,
 			loms: mappedLoms,
-			blocks: (prev as Avo.Assignment.Assignment)?.blocks || [],
-		}));
+		});
 	};
 
 	const filterSubjects = (subject: Avo.Lom.LomField & { related?: string[] }) => {
@@ -99,17 +90,10 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 										)}
 										onChange={(value: string) => {
 											{
-												(setValue as any)('description', value, {
-													shouldDirty: true,
-													shouldTouch: true,
-												});
-												setAssignment((prev) => ({
-													...prev,
+												setAssignment({
+													...assignment,
 													description: value,
-													blocks:
-														(prev as Avo.Assignment.Assignment)
-															?.blocks || [],
-												}));
+												});
 											}
 										}}
 										onFocus={onFocus}
@@ -131,17 +115,10 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 											)}
 											onChange={(value: string) => {
 												{
-													(setValue as any)('note', value, {
-														shouldDirty: true,
-														shouldTouch: true,
-													});
-													setAssignment((prev) => ({
-														...prev,
+													setAssignment({
+														...assignment,
 														note: value,
-														blocks:
-															(prev as Avo.Assignment.Assignment)
-																?.blocks || [],
-													}));
+													});
 												}
 											}}
 											onFocus={onFocus}
@@ -193,15 +170,10 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 					setIsAssignmentStillsModalOpen(false);
 
 					if (assignment.thumbnail_path !== updated.thumbnail_path) {
-						(setValue as any)('thumbnail_path', updated.thumbnail_path, {
-							shouldDirty: true,
-							shouldTouch: true,
-						});
-						setAssignment((prev) => ({
-							...prev,
+						setAssignment({
+							...assignment,
 							thumbnail_path: updated.thumbnail_path,
-							blocks: (prev as Avo.Assignment.Assignment)?.blocks || [],
-						}));
+						});
 					}
 				}}
 				subject={assignment}

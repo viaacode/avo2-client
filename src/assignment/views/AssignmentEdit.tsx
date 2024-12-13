@@ -1,7 +1,5 @@
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
-
-import { yupResolver } from '@hookform/resolvers/yup';
 import {
 	Alert,
 	Button,
@@ -21,17 +19,8 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isAfter, isPast } from 'date-fns';
 import { noop } from 'lodash-es';
-import React, {
-	type Dispatch,
-	type FC,
-	type SetStateAction,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { useForm } from 'react-hook-form';
 import { matchPath, Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -55,7 +44,7 @@ import {
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { buildLink, CustomError, navigate } from '../../shared/helpers';
+import { buildLink, CustomError, isMobileWidth, navigate } from '../../shared/helpers';
 import {
 	getContributorType,
 	transformContributorsToSimpleContributors,
@@ -78,7 +67,7 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import {
 	ASSIGNMENT_CREATE_UPDATE_TABS,
-	ASSIGNMENT_FORM_SCHEMA,
+	ASSIGNMENT_FORM_DEFAULT,
 	GET_EDUCATION_LEVEL_DICT,
 	GET_EDUCATION_LEVEL_TOOLTIP_DICT,
 } from '../assignment.const';
@@ -106,15 +95,11 @@ import {
 	onEditContributor,
 } from '../helpers/assignment-share-with-collegue-handlers';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
+import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { backToOverview } from '../helpers/links';
-import {
-	useAssignmentBlockChangeHandler,
-	useAssignmentForm,
-	useBlockListModals,
-	useEditBlocks,
-} from '../hooks';
+import { useAssignmentBlockChangeHandler, useBlockListModals, useEditBlocks } from '../hooks';
 import { type AssignmentFields } from '../hooks/assignment-form';
 import { useEducationLevelModal } from '../hooks/use-education-level-modal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
@@ -146,11 +131,18 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 	const [assignmentError, setAssignmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
 	);
-	const [assignment, setAssignment] = useAssignmentForm(undefined);
+	const [assignmentFormValues, setAssignmentFormValues] =
+		useState<Partial<AssignmentFields> | null>(null);
+	const [formErrors, setFormErrors] = useState<Partial<Record<keyof AssignmentFields, string>>>(
+		{}
+	);
+
 	const [contributors, setContributors] = useState<Avo.Assignment.Contributor[]>();
 	const [bookmarkViewCounts, setBookmarkViewCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
+
+	const assignment = assignmentFormValues as unknown as Avo.Assignment.Assignment;
 
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
@@ -169,6 +161,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 
 	// Computed
 	const assignmentId = match.params.id;
+	const isCreatingAssignment = !assignmentId;
 	const isPublic = assignment?.is_public || false;
 
 	const fetchContributors = useCallback(async () => {
@@ -179,26 +172,27 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 		setContributors((response || []) as Avo.Assignment.Contributor[]);
 	}, [assignmentId]);
 
-	const {
-		control,
-		formState: { isDirty: unsavedChanges },
-		handleSubmit,
-		reset: resetForm,
-		setValue,
-		trigger,
-	} = useForm<AssignmentFields>({
-		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(tText)),
-	});
-
 	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
-		setAssignment((prev) => ({ ...prev, blocks: newBlocks as Avo.Assignment.Block[] }));
-		(setValue as any)('blocks', newBlocks as Avo.Assignment.Block[], { shouldDirty: true });
+		setAssignmentFormValues({
+			...assignmentFormValues,
+			blocks: newBlocks as Avo.Assignment.Block[],
+		});
+		setHasUnsavedChanges(true);
 	};
 
 	const setBlock = useAssignmentBlockChangeHandler(
 		assignment?.blocks || [],
 		updateBlocksInAssignmentState
 	);
+
+	const resetForm = useCallback(() => {
+		if (!originalAssignment) {
+			return;
+		}
+		setFormErrors({});
+		setAssignmentFormValues(originalAssignment as any);
+		setHasUnsavedChanges(false);
+	}, [originalAssignment]);
 
 	const releaseAssignmentEditStatus = useCallback(async () => {
 		try {
@@ -254,16 +248,20 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 	}, [match]);
 
 	useEffect(() => {
-		updateAssignmentEditorWithLoading();
-	}, [updateAssignmentEditorWithLoading]);
+		if (!isCreatingAssignment) {
+			updateAssignmentEditorWithLoading();
+		}
+	}, [isCreatingAssignment, updateAssignmentEditorWithLoading]);
 
 	useEffect(() => {
-		fetchContributors();
-	}, [fetchContributors]);
+		if (!isCreatingAssignment) {
+			fetchContributors();
+		}
+	}, [fetchContributors, isCreatingAssignment]);
 
 	// UI
 	useWarningBeforeUnload({
-		when: unsavedChanges && !isForcedExit,
+		when: hasUnsavedChanges && !isForcedExit,
 	});
 
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>(false);
@@ -405,8 +403,9 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 			}
 
 			setOriginalAssignment(tempAssignment);
-			setAssignment(tempAssignment as any);
+			setAssignmentFormValues(tempAssignment as any);
 			setAssignmentHasResponses((tempAssignment.responses?.length || 0) > 0);
+			setHasUnsavedChanges(false);
 		} catch (err) {
 			setAssignmentError({
 				message: tHtml(
@@ -416,7 +415,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 			});
 		}
 		setIsAssignmentLoading(false);
-	}, [match.params.id, assignmentId, commonUser, setAssignment, tHtml]);
+	}, [match.params.id, assignmentId, commonUser, setAssignmentFormValues, tHtml]);
 
 	// Events
 
@@ -473,75 +472,138 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 			return;
 		}
 
-		await handleSubmit(submit, (...args) => console.error(args))();
+		await saveAssignment();
 		setIsSaving(false);
 	};
 
-	const submit = async () => {
+	const saveAssignment = async () => {
 		try {
-			if (!commonUser?.profileId || !originalAssignment || !assignment) {
-				return;
-			}
-
-			if (assignment.is_public) {
-				const validationErrors = await getValidationErrorsForPublishAssignment(assignment);
-				if (validationErrors && validationErrors.length) {
-					ToastService.danger(validationErrors);
+			setIsSaving(true);
+			if (isCreatingAssignment) {
+				// Create assignment
+				if (!commonUser?.profileId) {
+					ToastService.danger(
+						tText(
+							'assignment/views/assignment-create___je-moet-ingelogd-zijn-om-een-opdracht-te-kunnen-aanmaken'
+						)
+					);
+					setIsSaving(false);
 					return;
 				}
-			}
-
-			// Deal with the owner changing
-			if (originalAssignment?.owner_profile_id !== assignment.owner_profile_id) {
-				await AssignmentService.transferAssignmentOwnerShip(
-					originalAssignment.id,
-					assignment.owner_profile_id as string
-				);
-			}
-
-			const updated = await AssignmentService.updateAssignment(
-				{
-					...originalAssignment,
-					...assignment,
-					id: originalAssignment.id,
-				},
-				commonUser?.profileId
-			);
-
-			if (updated && assignment?.id) {
-				const isAdmin = commonUser.permissions?.includes(
-					PermissionName.EDIT_ANY_ASSIGNMENTS
-				);
-				const contributorType = isAdmin
-					? 'ADMIN'
-					: getContributorType(
-							commonUser?.profileId,
-							assignment as Avo.Assignment.Assignment,
-							(originalAssignment.contributors || []) as Avo.Assignment.Contributor[]
-					  ).toLowerCase();
-				trackEvents(
+				const created = await AssignmentService.insertAssignment(
 					{
-						object: String(assignment.id),
-						object_type: 'avo_assignment',
-						action: 'edit',
-						resource: {
-							is_public: assignment.is_public || false,
-							role: contributorType,
-							education_level: String(assignment?.education_level_id),
+						...assignment,
+						blocks: cleanupTitleAndDescriptions(
+							assignment?.blocks || []
+						) as Avo.Assignment.Block[],
+						owner_profile_id: commonUser?.profileId,
+					} as Partial<Avo.Assignment.Assignment>,
+					commonUser?.profileId
+				);
+
+				if (created) {
+					trackEvents(
+						{
+							object: String(created.id),
+							object_type: 'avo_assignment',
+							action: 'create',
+							resource: created.education_level_id
+								? {
+										education_level: created.education_level_id,
+								  }
+								: {},
 						},
+						commonUser
+					);
+
+					ToastService.success(
+						tHtml(
+							'assignment/views/assignment-create___de-opdracht-is-succesvol-aangemaakt-je-vindt-deze-in-je-werkruimte'
+						)
+					);
+
+					resetForm();
+					setIsSaving(false);
+
+					// Delay navigation, until isDirty state becomes false, otherwise the "unsaved changes" modal will popup
+					setTimeout(() => {
+						navigate(history, APP_PATH.ASSIGNMENT_DETAIL.route, { id: created.id });
+					}, 100);
+				}
+			} else {
+				// Update assignment
+				if (!commonUser?.profileId || !originalAssignment || !assignment) {
+					setIsSaving(false);
+					return;
+				}
+
+				if (assignment.is_public) {
+					const validationErrors =
+						await getValidationErrorsForPublishAssignment(assignment);
+					if (validationErrors && validationErrors.length) {
+						ToastService.danger(validationErrors);
+						setIsSaving(false);
+						return;
+					}
+				}
+
+				// Deal with the owner changing
+				if (originalAssignment?.owner_profile_id !== assignment.owner_profile_id) {
+					await AssignmentService.transferAssignmentOwnerShip(
+						originalAssignment.id,
+						assignment.owner_profile_id as string
+					);
+				}
+
+				const updated = await AssignmentService.updateAssignment(
+					{
+						...originalAssignment,
+						...assignment,
+						id: originalAssignment.id,
 					},
-					commonUser
+					commonUser?.profileId
 				);
 
-				// Re-fetch
-				await fetchAssignment();
-				await fetchContributors();
+				if (updated && assignment?.id) {
+					const isAdmin = commonUser.permissions?.includes(
+						PermissionName.EDIT_ANY_ASSIGNMENTS
+					);
+					const contributorType = isAdmin
+						? 'ADMIN'
+						: getContributorType(
+								commonUser?.profileId,
+								assignment as Avo.Assignment.Assignment,
+								(originalAssignment.contributors ||
+									[]) as Avo.Assignment.Contributor[]
+						  ).toLowerCase();
+					trackEvents(
+						{
+							object: String(assignment.id),
+							object_type: 'avo_assignment',
+							action: 'edit',
+							resource: {
+								is_public: assignment.is_public || false,
+								role: contributorType,
+								education_level: String(assignment?.education_level_id),
+							},
+						},
+						commonUser
+					);
 
-				ToastService.success(
-					tHtml('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangepast')
-				);
+					// Re-fetch
+					await fetchAssignment();
+					await fetchContributors();
 
-				setHasUnsavedChanges(false);
+					ToastService.success(
+						tHtml(
+							'assignment/views/assignment-edit___de-opdracht-is-succesvol-aangepast'
+						)
+					);
+
+					setHasUnsavedChanges(false);
+				}
+
+				setIsSaving(false);
 			}
 		} catch (err) {
 			console.error(err);
@@ -552,9 +614,9 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 	};
 
 	const reset = useCallback(() => {
-		originalAssignment && setAssignment(originalAssignment as any);
+		originalAssignment && setAssignmentFormValues(originalAssignment as any);
 		resetForm();
-	}, [resetForm, setAssignment, originalAssignment]);
+	}, [resetForm, setAssignmentFormValues, originalAssignment]);
 
 	const selectEducationLevel = useCallback(
 		(lom: Avo.Lom.LomField) => {
@@ -563,7 +625,15 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 			setHasUnsavedChanges(true);
 			assignment.education_level_id = lom.id;
 		},
-		[assignment]
+		[assignment, setSelectEducationLevelModalOpen]
+	);
+
+	const handleAssignmentFieldUpdate = useCallback(
+		(newAssignment: Partial<Avo.Assignment.Assignment> | Partial<AssignmentFields>) => {
+			setAssignmentFormValues(newAssignment as unknown as Partial<AssignmentFields>);
+			setHasUnsavedChanges(true);
+		},
+		[setAssignmentFormValues]
 	);
 
 	const onForcedExitPage = async () => {
@@ -628,14 +698,14 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 		false,
 		{
 			confirmSliceConfig: {
-				responses: (originalAssignment?.responses || []) as any, // TODO strong types
+				responses: originalAssignment?.responses || [],
 			},
 			addCollectionConfig: {
 				addCollectionCallback: (id) => {
 					// Track import collection into assignment event
 					trackEvents(
 						{
-							object: `${assignment?.id}`,
+							object: assignment?.id || '',
 							object_type: 'avo_assignment',
 							action: 'add',
 							resource: {
@@ -660,12 +730,10 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 						reorderedBlocks
 					) as Avo.Assignment.Block[];
 
-					setAssignment((prev) => ({
-						...prev,
+					handleAssignmentFieldUpdate({
+						...assignmentFormValues,
 						blocks,
-					}));
-
-					(setValue as any)('blocks', blocks, { shouldDirty: true });
+					});
 				}
 			},
 		},
@@ -710,7 +778,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 				onBackgroundChange: (item, color) => {
 					if (!assignment) return;
 
-					setAssignment({
+					handleAssignmentFieldUpdate({
 						...assignment,
 						blocks: (assignment.blocks || []).map((block) => {
 							if (block.id === item.id) {
@@ -720,8 +788,6 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 							return block;
 						}),
 					});
-
-					setHasUnsavedChanges(true);
 				},
 			},
 		}
@@ -735,17 +801,6 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 			</Link>
 		),
 		[tText]
-	);
-
-	const renderTitle = useMemo(
-		() => (
-			<AssignmentTitle
-				control={control}
-				setAssignment={setAssignment as any}
-				onFocus={() => setHasUnsavedChanges(true)}
-			/>
-		),
-		[control, setAssignment]
 	);
 
 	const renderContributors = useMemo(
@@ -835,10 +890,8 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 				return (
 					<div className="c-assignment-details-tab">
 						<AssignmentDetailsFormEditable
-							assignment={assignment || {}}
-							setAssignment={setAssignment as any}
-							setValue={setValue}
-							onFocus={() => setHasUnsavedChanges(true)}
+							assignment={assignmentFormValues || {}}
+							setAssignment={handleAssignmentFieldUpdate}
 						/>
 					</div>
 				);
@@ -848,10 +901,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 					<div className="c-assignment-details-tab">
 						<AssignmentMetaDataFormEditable
 							assignment={assignment as Avo.Assignment.Assignment}
-							setAssignment={
-								setAssignment as Dispatch<SetStateAction<Avo.Assignment.Assignment>>
-							}
-							setValue={setValue as any}
+							setAssignment={handleAssignmentFieldUpdate}
 							onFocus={() => setHasUnsavedChanges(true)}
 						/>
 					</div>
@@ -863,11 +913,8 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 			case ASSIGNMENT_CREATE_UPDATE_TABS.ADMIN:
 				return (
 					<AssignmentAdminFormEditable
-						assignment={assignment as Avo.Assignment.Assignment}
-						setAssignment={
-							setAssignment as Dispatch<SetStateAction<Avo.Assignment.Assignment>>
-						}
-						setValue={setValue as any}
+						assignment={assignment}
+						setAssignment={handleAssignmentFieldUpdate}
 					/>
 				);
 
@@ -880,18 +927,13 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 
 	// Fetch initial data
 	useEffect(() => {
-		fetchAssignment();
-	}, [fetchAssignment]);
-
-	// Synchronise the React state that triggers renders with the useForm hook
-	useEffect(() => {
-		Object.keys(assignment || {}).forEach((key) => {
-			const cast = key as keyof AssignmentFields;
-			(setValue as any)(cast, assignment?.[cast]);
-		});
-
-		trigger();
-	}, [assignment as any, setValue, trigger]);
+		if (isCreatingAssignment) {
+			setAssignmentFormValues(ASSIGNMENT_FORM_DEFAULT());
+			setIsAssignmentLoading(false);
+		} else {
+			fetchAssignment();
+		}
+	}, [fetchAssignment, isCreatingAssignment]);
 
 	// Reset the form when the original changes
 	useEffect(() => {
@@ -899,7 +941,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 	}, [originalAssignment, reset]);
 
 	useEffect(() => {
-		originalAssignment && resetForm(originalAssignment as any);
+		resetForm();
 	}, [originalAssignment, resetForm]);
 
 	const handleTabChange = (tabId: ASSIGNMENT_CREATE_UPDATE_TABS) => {
@@ -1013,50 +1055,38 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 		<>
 			<div className="c-assignment-page c-assignment-page--edit c-sticky-bar__wrapper">
 				<div>
-					{renderMobileDesktop({
-						mobile: (
-							<AssignmentHeading
-								back={renderBackButton}
-								title={
-									<div className="u-spacer-top-l">
-										{renderMeta}
-										<div className="u-spacer-top-s">{renderTitle}</div>
-									</div>
-								}
-								actions={renderHeadingActions(true)}
-								info={renderContributors}
-								tabs={
-									<AssignmentTeacherTabs
-										activeTab={tab}
-										onTabChange={handleTabChange}
-										clicksCount={originalAssignment?.responses?.length ?? 0}
+					<AssignmentHeading
+						back={renderBackButton}
+						title={
+							<div className="u-spacer-top-l">
+								{renderMeta}
+								<div className="u-spacer-top-s">
+									<AssignmentTitle
+										value={assignmentFormValues?.title || ''}
+										error={formErrors.title || null}
+										onChange={(newTitle: string) => {
+											handleAssignmentFieldUpdate({
+												...assignmentFormValues,
+												title: newTitle,
+											});
+										}}
 									/>
-								}
-								tour={null}
+								</div>
+							</div>
+						}
+						actions={renderHeadingActions(false)}
+						info={renderContributors}
+						tabs={
+							<AssignmentTeacherTabs
+								activeTab={tab}
+								onTabChange={handleTabChange}
+								clicksCount={originalAssignment?.responses?.length ?? 0}
 							/>
-						),
-						desktop: (
-							<AssignmentHeading
-								back={renderBackButton}
-								title={
-									<div className="u-spacer-top-l">
-										{renderMeta}
-										<div className="u-spacer-top-s">{renderTitle}</div>
-									</div>
-								}
-								actions={renderHeadingActions(false)}
-								info={renderContributors}
-								tabs={
-									<AssignmentTeacherTabs
-										activeTab={tab}
-										onTabChange={handleTabChange}
-										clicksCount={originalAssignment?.responses?.length ?? 0}
-									/>
-								}
-								{...(isSelectEducationLevelModalOpen ? { tour: null } : {})}
-							/>
-						),
-					})}
+						}
+						{...(isSelectEducationLevelModalOpen || isMobileWidth()
+							? { tour: null }
+							: {})}
+					/>
 
 					<Container mode="horizontal">
 						{pastDeadline && (
@@ -1081,29 +1111,31 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 							modal={{
 								isOpen: isConfirmSaveActionModalOpen,
 								onClose: () => setIsConfirmSaveActionModalOpen(false),
-								confirmCallback: () => {
+								confirmCallback: async () => {
 									setIsConfirmSaveActionModalOpen(false);
-									handleSubmit(submit, (...args) => console.error(args))();
+									await saveAssignment();
 								},
 							}}
 						/>
 
-						<InActivityWarningModal
-							onActivity={updateAssignmentEditor}
-							onExit={releaseAssignmentEditStatus}
-							warningMessage={tHtml(
-								'assignment/views/assignment-edit___door-inactiviteit-zal-de-opdracht-zichzelf-sluiten'
-							)}
-							currentPath={history.location.pathname}
-							editPath={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
-							onForcedExit={onForcedExitPage}
-						/>
+						{!isCreatingAssignment && (
+							<InActivityWarningModal
+								onActivity={updateAssignmentEditor}
+								onExit={releaseAssignmentEditStatus}
+								warningMessage={tHtml(
+									'assignment/views/assignment-edit___door-inactiviteit-zal-de-opdracht-zichzelf-sluiten'
+								)}
+								currentPath={history.location.pathname}
+								editPath={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
+								onForcedExit={onForcedExitPage}
+							/>
+						)}
 					</Container>
 				</div>
 
 				{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
 				<StickySaveBar
-					isVisible={unsavedChanges || hasUnsavedChanges}
+					isVisible={hasUnsavedChanges}
 					onSave={handleOnSave}
 					onCancel={cancelSaveBar}
 					isSaving={isSaving}
@@ -1176,29 +1208,43 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 		<>
 			<Helmet>
 				<title>
-					{GENERATE_SITE_TITLE(
-						tText('assignment/views/assignment-edit___bewerk-opdracht-pagina-titel')
-					)}
+					{isCreatingAssignment
+						? GENERATE_SITE_TITLE(
+								tText(
+									'assignment/views/assignment-create___maak-opdracht-pagina-titel'
+								)
+						  )
+						: GENERATE_SITE_TITLE(
+								tText(
+									'assignment/views/assignment-edit___bewerk-opdracht-pagina-titel'
+								)
+						  )}
 				</title>
 
 				<meta
 					name="description"
-					content={tText(
-						'assignment/views/assignment-edit___bewerk-opdracht-pagina-beschrijving'
-					)}
+					content={
+						isCreatingAssignment
+							? tText(
+									'assignment/views/assignment-create___maak-opdracht-pagina-beschrijving'
+							  )
+							: tText(
+									'assignment/views/assignment-edit___bewerk-opdracht-pagina-beschrijving'
+							  )
+					}
 				/>
 			</Helmet>
 
 			{renderPageContent()}
 
-			<BeforeUnloadPrompt when={unsavedChanges && !isForcedExit} />
+			<BeforeUnloadPrompt when={hasUnsavedChanges && !isForcedExit} />
 
 			{!!assignment && !!commonUser && (
 				<PublishAssignmentModal
 					onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
 						setIsPublishModalOpen(false);
 						if (newAssignment) {
-							setAssignment(newAssignment as any);
+							setAssignmentFormValues(newAssignment as any);
 						}
 					}}
 					isOpen={isPublishModalOpen}

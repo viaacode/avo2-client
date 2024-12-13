@@ -3,7 +3,6 @@ import React, { type ReactNode } from 'react';
 import SecuredRoute from '../authentication/components/SecuredRoute';
 import { APP_PATH } from '../constants';
 
-import AssignmentCreate from './views/AssignmentCreate';
 import AssignmentDetailSwitcher from './views/AssignmentDetailSwitcher';
 import AssignmentEdit from './views/AssignmentEdit';
 import AssignmentPupilCollectionDetail from './views/AssignmentPupilCollectionDetail';
@@ -11,7 +10,7 @@ import AssignmentResponseAdminEdit from './views/AssignmentResponseEdit/Assignme
 
 export const renderAssignmentRoutes = (): ReactNode[] => [
 	<SecuredRoute
-		component={AssignmentCreate}
+		component={AssignmentEdit}
 		exact={false}
 		path={APP_PATH.ASSIGNMENT_CREATE.route}
 		key={APP_PATH.ASSIGNMENT_CREATE.route}
