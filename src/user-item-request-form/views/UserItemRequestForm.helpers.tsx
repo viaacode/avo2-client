@@ -2,7 +2,7 @@ import queryString from 'query-string';
 import { type ReactNode } from 'react';
 
 import { isPhoto } from '../../shared/helpers/files';
-import { tText } from '../../shared/helpers/translate-text';
+import { tText } from '../../shared/helpers/translate';
 
 export function renderAttachment(
 	attachmentUrl: string | null,

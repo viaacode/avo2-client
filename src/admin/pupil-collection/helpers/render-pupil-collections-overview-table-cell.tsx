@@ -8,7 +8,7 @@ import { APP_PATH } from '../../../constants';
 import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types';
 import { buildLink, formatDate } from '../../../shared/helpers';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { tText } from '../../../shared/helpers/translate-text';
+import { tText } from '../../../shared/helpers/translate';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 export function renderPupilCollectionTableCellReact(

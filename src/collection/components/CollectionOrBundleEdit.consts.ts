@@ -1,0 +1,22 @@
+import type { Avo } from '@viaa/avo2-types';
+
+import { tText } from '../../shared/helpers/translate';
+
+import { type ReorderType } from './CollectionOrBundleEdit.types';
+
+export const REORDER_TYPE_TO_FRAGMENT_TYPE: Record<
+	ReorderType,
+	Avo.Core.BlockItemType | undefined
+> = {
+	COLLECTION_FRAGMENTS: undefined,
+	BUNDLE_COLLECTION_FRAGMENTS: 'COLLECTION',
+	BUNDLE_ASSIGNMENT_FRAGMENTS: 'ASSIGNMENT',
+};
+
+export function GET_REORDER_TYPE_TO_BUTTON_LABEL() {
+	return {
+		COLLECTION_FRAGMENTS: tText('Herorden onderdelen'),
+		BUNDLE_COLLECTION_FRAGMENTS: tText('Herorden collecties'),
+		BUNDLE_ASSIGNMENT_FRAGMENTS: tText('Herorden opdrachten'),
+	};
+}

@@ -44,6 +44,8 @@ import {
 	ShareModal,
 } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import DraggableBlock from '../../shared/components/DraggableBlock/DraggableBlock';
+import DraggableListModal from '../../shared/components/DraggableList/DraggableListModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
@@ -61,7 +63,6 @@ import {
 import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 import {
@@ -71,7 +72,6 @@ import {
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
-import { type ValueOf } from '../../shared/types';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 import { getFragmentsFromCollection } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
@@ -89,6 +89,16 @@ import {
 } from '../helpers/collection-share-with-collegue-handlers';
 import { deleteCollection, deleteSelfFromCollection } from '../helpers/delete-collection';
 
+import {
+	GET_REORDER_TYPE_TO_BUTTON_LABEL,
+	REORDER_TYPE_TO_FRAGMENT_TYPE,
+} from './CollectionOrBundleEdit.consts';
+import {
+	type CollectionAction,
+	type CollectionOrBundleEditProps,
+	type CollectionState,
+	ReorderType,
+} from './CollectionOrBundleEdit.types';
 import CollectionOrBundleEditActualisation from './CollectionOrBundleEditActualisation';
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
@@ -96,72 +106,9 @@ import CollectionOrBundleEditMarcom from './CollectionOrBundleEditMarcom';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
 import CollectionOrBundleEditQualityCheck from './CollectionOrBundleEditQualityCheck';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
-
-import './CollectionOrBundleEdit.scss';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
-export interface MarcomNoteInfo {
-	id?: string;
-	note: string;
-}
-
-type FragmentPropUpdateAction = {
-	type: 'UPDATE_FRAGMENT_PROP';
-	index: number;
-	fragmentProp: keyof Avo.Collection.Fragment;
-	fragmentPropValue: ValueOf<Avo.Collection.Fragment>;
-};
-
-type FragmentSwapAction = {
-	type: 'SWAP_FRAGMENTS';
-	index: number;
-	direction: 'up' | 'down';
-};
-
-type FragmentInsertAction = {
-	type: 'INSERT_FRAGMENT';
-	index: number;
-	fragment: Avo.Collection.Fragment;
-};
-
-type FragmentDeleteAction = {
-	type: 'DELETE_FRAGMENT';
-	index: number;
-};
-
-type CollectionUpdateAction = {
-	type: 'UPDATE_COLLECTION';
-	newCollection: Avo.Collection.Collection | null;
-};
-
-type CollectionPropUpdateAction = {
-	type: 'UPDATE_COLLECTION_PROP';
-	collectionProp: keyof Avo.Collection.Collection | string; // nested values are also allowed
-	collectionPropValue: ValueOf<Avo.Collection.Collection> | MarcomNoteInfo; // marcom note only exists on collection object in the client
-	updateInitialCollection?: boolean;
-};
-
-type CollectionResetAction = {
-	type: 'RESET_COLLECTION';
-};
-
-export type CollectionAction =
-	| FragmentPropUpdateAction
-	| FragmentSwapAction
-	| FragmentInsertAction
-	| FragmentDeleteAction
-	| CollectionUpdateAction
-	| CollectionPropUpdateAction
-	| CollectionResetAction;
-
-interface CollectionState {
-	currentCollection: Avo.Collection.Collection | null;
-	initialCollection: Avo.Collection.Collection | null;
-}
-
-interface CollectionOrBundleEditProps {
-	type: CollectionOrBundle;
-}
+import './CollectionOrBundleEdit.scss';
 
 const CollectionOrBundleEdit: FC<
 	CollectionOrBundleEditProps &
@@ -409,65 +356,16 @@ const CollectionOrBundleEdit: FC<
 				setLoadingInfo(noRightsError);
 			}
 		}
-	}, [commonUser, collectionState.currentCollection, contributors]);
+	}, [
+		commonUser,
+		collectionState.currentCollection,
+		contributors,
+		isCollection,
+		isAdmin,
+		noRightsError,
+	]);
 
-	const [draggableListCollectionsButton, draggableListCollectionsModal] = useDraggableListModal({
-		button: {
-			icon: undefined,
-			label: tText('Herorden collecties'),
-		},
-		modal: {
-			items: getFragmentsFromCollection(collectionState.currentCollection).filter(
-				(f) => f.type === 'COLLECTION'
-			),
-			onClose: (reorderedFragments?: Avo.Collection.Fragment[]) => {
-				if (reorderedFragments) {
-					const blocks = setBlockPositionToIndex([
-						...reorderedFragments,
-						...getFragmentsFromCollection(collectionState.currentCollection).filter(
-							(f) => f.type === 'ASSIGNMENT'
-						),
-					]) as Avo.Collection.Fragment[];
-
-					changeCollectionState({
-						type: 'UPDATE_COLLECTION_PROP',
-						updateInitialCollection: false,
-						collectionProp: 'collection_fragments',
-						collectionPropValue: blocks,
-					});
-				}
-			},
-		},
-	});
-
-	const [draggableListAssignmentsButton, draggableListAssignmentsModal] = useDraggableListModal({
-		button: {
-			icon: undefined,
-			label: tText('Herorden opdrachten'),
-		},
-		modal: {
-			items: getFragmentsFromCollection(collectionState.currentCollection).filter(
-				(f) => f.type === 'ASSIGNMENT'
-			),
-			onClose: (reorderedFragments?: Avo.Collection.Fragment[]) => {
-				if (reorderedFragments) {
-					const blocks = setBlockPositionToIndex([
-						...getFragmentsFromCollection(collectionState.currentCollection).filter(
-							(f) => f.type === 'COLLECTION'
-						),
-						...reorderedFragments,
-					]) as Avo.Collection.Fragment[];
-
-					changeCollectionState({
-						type: 'UPDATE_COLLECTION_PROP',
-						updateInitialCollection: false,
-						collectionProp: 'collection_fragments',
-						collectionPropValue: blocks,
-					});
-				}
-			},
-		},
-	});
+	const [draggableListType, setDraggableListType] = useState<ReorderType | null>(null);
 
 	const checkPermissionsAndGetCollection = useCallback(async (): Promise<void> => {
 		try {
@@ -1286,6 +1184,34 @@ const CollectionOrBundleEdit: FC<
 			}
 		}
 
+		const renderReorderButtons = (): ReactNode[] => {
+			const reorderTypes = [];
+			if (isCollection) {
+				reorderTypes.push(ReorderType.COLLECTION_FRAGMENTS);
+			} else {
+				reorderTypes.push(
+					ReorderType.BUNDLE_COLLECTION_FRAGMENTS,
+					ReorderType.BUNDLE_ASSIGNMENT_FRAGMENTS
+				);
+			}
+			return reorderTypes.map((reorderType) => {
+				return (
+					<Button
+						key={'button--' + reorderType}
+						icon={IconName.shuffle}
+						type="secondary"
+						title={tText(
+							'shared/hooks/use-draggable-list-modal___herorden-de-onderdelen-via-drag-and-drop'
+						)}
+						label={GET_REORDER_TYPE_TO_BUTTON_LABEL()[reorderType]}
+						onClick={() => {
+							setDraggableListType(reorderType);
+						}}
+					/>
+				);
+			});
+		};
+
 		return (
 			<ButtonToolbar>
 				{permissions.canPublish && (
@@ -1314,8 +1240,8 @@ const CollectionOrBundleEdit: FC<
 					}
 					onClick={() => executeAction(CollectionMenuAction.redirectToDetail)}
 				/>
-				{draggableListCollectionsButton}
-				{draggableListAssignmentsButton}
+
+				{renderReorderButtons()}
 				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
 					onOpen={() => setIsOptionsMenuOpen(true)}
@@ -1628,8 +1554,64 @@ const CollectionOrBundleEdit: FC<
 					/>
 				)}
 
-				{draggableListCollectionsModal}
-				{draggableListAssignmentsModal}
+				{draggableListType && (
+					<DraggableListModal
+						items={getFragmentsFromCollection(
+							collectionState.currentCollection,
+							REORDER_TYPE_TO_FRAGMENT_TYPE[draggableListType]
+						)}
+						renderItem={(item) => <DraggableBlock block={item} />}
+						isOpen={!!draggableListType}
+						onClose={(reorderedFragments?: Avo.Collection.Fragment[]) => {
+							setDraggableListType(null);
+							if (reorderedFragments) {
+								const blocks = setBlockPositionToIndex(reorderedFragments);
+
+								switch (draggableListType) {
+									case 'COLLECTION_FRAGMENTS':
+										changeCollectionState({
+											type: 'UPDATE_COLLECTION_PROP',
+											updateInitialCollection: false,
+											collectionProp: 'collection_fragments',
+											collectionPropValue:
+												blocks as Avo.Collection.Fragment[],
+										});
+										break;
+
+									case 'BUNDLE_COLLECTION_FRAGMENTS':
+										changeCollectionState({
+											type: 'UPDATE_COLLECTION_PROP',
+											updateInitialCollection: false,
+											collectionProp: 'collection_fragments',
+											collectionPropValue: reorderBlockPositions([
+												...blocks,
+												...getFragmentsFromCollection(
+													collectionState.currentCollection,
+													'ASSIGNMENT'
+												),
+											]) as Avo.Collection.Fragment[],
+										});
+										break;
+
+									case 'BUNDLE_ASSIGNMENT_FRAGMENTS':
+										changeCollectionState({
+											type: 'UPDATE_COLLECTION_PROP',
+											updateInitialCollection: false,
+											collectionProp: 'assignment_fragments',
+											collectionPropValue: reorderBlockPositions([
+												...getFragmentsFromCollection(
+													collectionState.currentCollection,
+													'COLLECTION'
+												),
+												...blocks,
+											]) as Avo.Collection.Fragment[],
+										});
+										break;
+								}
+							}
+						}}
+					/>
+				)}
 				<BeforeUnloadPrompt when={unsavedChanges && !isForcedExit} />
 			</div>
 		);

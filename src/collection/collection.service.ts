@@ -150,7 +150,7 @@ import {
 	type MarcomEntry,
 	type QualityLabel,
 } from './collection.types';
-import { type MarcomNoteInfo } from './components/CollectionOrBundleEdit';
+import { type MarcomNoteInfo } from './components/CollectionOrBundleEdit.types';
 import { canManageEditorial } from './helpers/can-manage-editorial';
 
 export interface OrganisationContentItem {

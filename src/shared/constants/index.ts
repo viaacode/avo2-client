@@ -3,7 +3,7 @@
  */
 
 import defaultAudioStillPath from '../../assets/images/audio-still.svg';
-import { tText } from '../helpers/translate-text';
+import { tText } from '../helpers/translate';
 
 export { LANGUAGES } from './languages';
 export { ROUTE_PARTS } from './routes';

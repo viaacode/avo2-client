@@ -327,12 +327,23 @@ function getError<T>(rule: ValidationRule<T>, object: T) {
 	return rule.error(object);
 }
 
+/**
+ * Gets the fragments from a collection or bundle
+ * Optionally, you can filter by type
+ * @param collection
+ * @param type
+ */
 export const getFragmentsFromCollection = (
-	collection: Partial<Avo.Collection.Collection> | null | undefined
+	collection: Partial<Avo.Collection.Collection> | null | undefined,
+	type?: Avo.Core.BlockItemType
 ): Avo.Collection.Fragment[] => {
-	return reorderBlockPositions(
+	const blocks = reorderBlockPositions(
 		(collection?.collection_fragments || []) as Positioned[]
 	) as Avo.Collection.Fragment[];
+	if (type) {
+		return blocks.filter((block) => block.type === type);
+	}
+	return blocks;
 };
 
 /**
@@ -344,6 +355,7 @@ export const cleanCollectionBeforeSave = (
 	// Remove some props
 	const propertiesToDelete = [
 		'collection_fragments',
+		'assignment_fragments',
 		'__typename',
 		'type',
 		'profile',
