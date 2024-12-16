@@ -149,6 +149,7 @@ import {
 } from './collection.types';
 import { type MarcomNoteInfo } from './components/CollectionOrBundleEdit.types';
 import { canManageEditorial } from './helpers/can-manage-editorial';
+import { type BundleSortProp } from './hooks/useGetCollectionsOrBundlesContainingFragment';
 
 export interface OrganisationContentItem {
 	id: string;
@@ -1016,12 +1017,20 @@ export class CollectionService {
 		}
 	}
 
-	static async getPublishedCollectionsOrBundlesContainingFragment(
-		fragmentId: string
+	static async getCollectionsOrBundlesContainingFragment(
+		fragmentId: string,
+		orderProp: BundleSortProp,
+		orderDirection: OrderDirection
 	): Promise<{ id: string; title: string }[]> {
 		try {
 			return await fetchWithLogoutJson(
-				`${getEnv('PROXY_URL')}/collections/containing-fragment/${fragmentId}`
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/collections/containing-fragment/${fragmentId}`,
+					query: {
+						orderProp,
+						orderDirection,
+					},
+				})
 			);
 		} catch (err) {
 			throw new CustomError(

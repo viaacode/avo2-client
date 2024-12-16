@@ -1,4 +1,5 @@
 import './AssignmentDetail.scss';
+import { OrderDirection } from '@meemoo/react-components';
 import {
 	Button,
 	ButtonToolbar,
@@ -38,7 +39,10 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionFragmentType, type Relation } from '../../collection/collection.types';
 import AddToBundleModal from '../../collection/components/modals/AddToBundleModal';
-import { useGetCollectionsOrBundlesContainingFragment } from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
+import {
+	BundleSortProp,
+	useGetCollectionsOrBundlesContainingFragment,
+} from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { type ErrorViewQueryParams } from '../../error/views/ErrorView';
@@ -134,10 +138,13 @@ const AssignmentDetail: FC<
 		refetchIntervalInBackground: true,
 	});
 
-	const { data: bundlesContainingAssignment } = useGetCollectionsOrBundlesContainingFragment(
-		assignmentId,
-		{ enabled: !!assignment }
-	);
+	const { data: bundlesContainingAssignment, refetch: refetchBundlesContainingAssignment } =
+		useGetCollectionsOrBundlesContainingFragment(
+			assignmentId,
+			BundleSortProp.title,
+			OrderDirection.asc,
+			{ enabled: !!assignment }
+		);
 
 	// Errors
 	const [isForbidden, setIsForbidden] = useState<boolean>(false);
@@ -1134,7 +1141,10 @@ const AssignmentDetail: FC<
 					fragmentInfo={assignment}
 					fragmentType={CollectionFragmentType.ASSIGNMENT}
 					isOpen={isAddToBundleModalOpen}
-					onClose={() => setIsAddToBundleModalOpen(false)}
+					onClose={async () => {
+						setIsAddToBundleModalOpen(false);
+						await refetchBundlesContainingAssignment();
+					}}
 				/>
 			)}
 

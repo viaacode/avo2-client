@@ -102,8 +102,13 @@ import {
 } from '../helpers/collection-share-with-collegue-handlers';
 import { deleteCollection, deleteSelfFromCollection } from '../helpers/delete-collection';
 import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
-import { useGetCollectionsOrBundlesContainingFragment } from '../hooks/useGetCollectionsOrBundlesContainingFragment';
+import {
+	BundleSortProp,
+	useGetCollectionsOrBundlesContainingFragment,
+} from '../hooks/useGetCollectionsOrBundlesContainingFragment';
+
 import './CollectionDetail.scss';
+import { OrderDirection } from '@meemoo/react-components';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -208,10 +213,13 @@ const CollectionDetail: FC<
 		refetchIntervalInBackground: true,
 	});
 
-	const { data: bundlesContainingCollection } = useGetCollectionsOrBundlesContainingFragment(
-		collectionId,
-		{ enabled: !!collectionInfo?.collection && !showLoginPopup }
-	);
+	const { data: bundlesContainingCollection, refetch: refetchBundlesContainingCollection } =
+		useGetCollectionsOrBundlesContainingFragment(
+			collectionId,
+			BundleSortProp.title,
+			OrderDirection.asc,
+			{ enabled: !!collectionInfo?.collection && !showLoginPopup }
+		);
 
 	const isBeingEdited =
 		editStatuses &&
@@ -1287,7 +1295,10 @@ const CollectionDetail: FC<
 						fragmentInfo={collection as Avo.Collection.Collection}
 						fragmentType={CollectionFragmentType.COLLECTION}
 						isOpen={isAddToBundleModalOpen}
-						onClose={() => setIsAddToBundleModalOpen(false)}
+						onClose={async () => {
+							setIsAddToBundleModalOpen(false);
+							await refetchBundlesContainingCollection();
+						}}
 					/>
 				)}
 				<DeleteCollectionModal

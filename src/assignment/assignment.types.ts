@@ -42,6 +42,7 @@ export type AssignmentOverviewTableColumns =
 	| 'views'
 	| 'bookmarks'
 	| 'copies'
+	| 'in_bundle'
 	| 'is_copy'
 	| 'contributors'
 	| 'share_type'

@@ -190,6 +190,9 @@ export function renderAssignmentOverviewTableCellReact(
 		case 'copies':
 			return assignment?.counts?.copies || '0';
 
+		case 'in_bundle':
+			return assignment?.counts?.in_collection || '0';
+
 		case 'contributors':
 			return assignment?.counts?.contributors || '0';
 
@@ -361,6 +364,9 @@ export function renderAssignmentOverviewTableCellText(
 
 		case 'copies':
 			return String(assignment?.counts?.copies || 0);
+
+		case 'in_bundle':
+			return String(assignment?.counts?.in_collection || 0);
 
 		case 'contributors':
 			return String(assignment?.counts?.contributors || 0);

@@ -16,6 +16,7 @@ import React, { type FC } from 'react';
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../admin/shared/types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
+import ContainedInBundlesTable from '../../bundle/components/ContainedInBundlesTable';
 import { type QualityLabel } from '../../collection/collection.types';
 import { formatTimestamp, getFullName } from '../../shared/helpers';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -164,6 +165,14 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 								)}
 							</Column>
 						</Grid>
+
+						<ContainedInBundlesTable
+							fragmentId={assignment.id}
+							title={tText('Bundels die deze opdracht bevatten')}
+							emptyTableLabel={tText(
+								'Deze opdracht is in geen enkele bundel opgenomen.'
+							)}
+						/>
 					</Spacer>
 				</Form>
 			</Container>
