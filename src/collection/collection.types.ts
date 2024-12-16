@@ -57,23 +57,14 @@ export const CONTENT_TYPE_TRANSLATIONS: Record<Avo.ContentType.Dutch, Avo.Conten
 	opdracht: 'assignment',
 };
 
-export function blockTypeToContentType(
-	type: Avo.Core.BlockItemBase['type']
-): Avo.ContentType.English {
-	let r: string = CONTENT_TYPE_TRANSLATIONS.item;
-
-	switch (type) {
-		case 'COLLECTION':
-			r = CONTENT_TYPE_TRANSLATIONS.collectie;
-			break;
-
-		case 'ZOEK':
-			r = CONTENT_TYPE_TRANSLATIONS.zoek;
-			break;
-	}
-
-	return r as Avo.ContentType.English;
-}
+export const BLOCK_TYPE_TO_CONTENT_TYPE: Record<Avo.Core.BlockItemType, Avo.ContentType.English> = {
+	TEXT: 'text',
+	ITEM: 'item',
+	COLLECTION: 'collection',
+	ASSIGNMENT: 'assignment',
+	ZOEK: 'search',
+	BOUW: 'search',
+};
 
 export type CollectionLabelLookup = { [id: string]: string };
 

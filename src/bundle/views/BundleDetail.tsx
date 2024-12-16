@@ -39,7 +39,7 @@ import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionService } from '../../collection/collection.service';
 import {
-	blockTypeToContentType,
+	BLOCK_TYPE_TO_CONTENT_TYPE,
 	CollectionCreateUpdateTab,
 	CollectionOrBundle,
 	ContentTypeNumber,
@@ -149,12 +149,18 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 			return;
 		}
 		try {
-			setViewCountsById(
-				await BookmarksViewsPlaysService.getMultipleViewCounts(
-					bundleObj.collection_fragments.map((fragment) => fragment.external_id),
-					'collection'
-				)
+			const collectionViews = await BookmarksViewsPlaysService.getMultipleViewCounts(
+				bundleObj.collection_fragments.map((fragment) => fragment.external_id),
+				'collection'
 			);
+			const assignmentViews = await BookmarksViewsPlaysService.getMultipleViewCounts(
+				bundleObj.collection_fragments.map((fragment) => fragment.external_id),
+				'assignment'
+			);
+			setViewCountsById({
+				...collectionViews,
+				...assignmentViews,
+			});
 		} catch (err) {
 			console.error(new CustomError('Failed to get counts for bundle fragments', err, {}));
 		}
@@ -470,17 +476,21 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 				collectionOrAssignment.type_id === ContentTypeNumber.collection
 					? 'collection'
 					: 'assignment';
+			const detailRoute =
+				collectionOrAssignment.type_id === ContentTypeNumber.collection
+					? APP_PATH.COLLECTION_DETAIL.route
+					: APP_PATH.ASSIGNMENT_DETAIL.route;
 			return (
 				<Column size="3-4" key={`bundle-fragment-${fragment.id}`}>
 					<Link
-						to={buildLink(APP_PATH.COLLECTION_DETAIL.route, {
+						to={buildLink(detailRoute, {
 							id: collectionOrAssignment.id,
 						})}
 						className="a-link__no-styles"
 					>
 						<MediaCard
 							className="u-clickable"
-							category={blockTypeToContentType(fragment.type)}
+							category={BLOCK_TYPE_TO_CONTENT_TYPE[fragment.type]}
 							orientation="vertical"
 							title={
 								(fragment.use_custom_fields

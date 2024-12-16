@@ -565,13 +565,6 @@ export type GetPublicCollectionsByTitleQueryVariables = Exact<{
 
 export type GetPublicCollectionsByTitleQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, title?: string | null, share_type?: string | null, updated_at?: any | null, is_public?: boolean | null, thumbnail_path?: string | null, created_at?: any | null, view_count?: { __typename?: 'app_collection_views', count?: number | null } | null, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null, user?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null } | null, loms: Array<{ __typename?: 'users_profiles_lom_links', lom_id: string }> } | null }> }> };
 
-export type GetPublishedBundlesContainingCollectionQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type GetPublishedBundlesContainingCollectionQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, title: string }> };
-
 export type InsertCollectionMutationVariables = Exact<{
   collection: App_Collections_Insert_Input;
 }>;

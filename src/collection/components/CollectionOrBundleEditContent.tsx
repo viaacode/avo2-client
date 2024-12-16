@@ -1,7 +1,8 @@
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Alert, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
-import React, { type FC, useEffect, useState } from 'react';
+import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -11,10 +12,8 @@ import { type CollectionOrBundle } from '../collection.types';
 import { FragmentAdd, FragmentEdit } from '../components';
 import { showReplacementWarning } from '../helpers/fragment';
 
-import { type CollectionAction } from './CollectionOrBundleEdit';
-
+import { type CollectionAction } from './CollectionOrBundleEdit.types';
 import './CollectionOrBundleEditContent.scss';
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 
 interface CollectionOrBundleEditContentProps {
 	type: CollectionOrBundle;
@@ -36,7 +35,11 @@ const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & Use
 	const [openOptionsId, setOpenOptionsId] = useState<number | string | null>(null);
 	const [allowedToAddLinks, setAllowedToAddLinks] = useState<boolean | null>(null);
 
+	// Computed
 	const isCollection = type === 'collection';
+	const fragments = collection.collection_fragments || [];
+	const fragmentCollections = fragments.filter((f) => f.type === 'COLLECTION');
+	const fragmentAssignments = fragments.filter((f) => f.type === 'ASSIGNMENT');
 
 	useEffect(() => {
 		PermissionService.hasPermission(PermissionName.ADD_HYPERLINK_COLLECTIONS, null, commonUser)
@@ -64,39 +67,56 @@ const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & Use
 		)}`;
 	};
 
-	const collectionFragments = collection.collection_fragments || [];
-
-	const renderFragmentEditor = (fragment: Avo.Collection.Fragment, index: number) => (
-		<FragmentEdit
-			// If the parent is a collection then the fragment is an ITEM or TEXT
-			// If the parent is a bundle then the fragment is a COLLECTION
-			key={getFragmentKey(fragment)}
-			index={index}
-			collectionId={collection.id}
-			numberOfFragments={collectionFragments.length}
-			changeCollectionState={changeCollectionState}
-			openOptionsId={openOptionsId}
-			setOpenOptionsId={setOpenOptionsId}
-			isParentACollection={isCollection}
-			fragment={fragment}
-			allowedToAddLinks={allowedToAddLinks as boolean}
-			renderWarning={() => {
-				if (showReplacementWarning(collection, fragment, commonUser?.profileId)) {
-					return (
-						<Spacer margin="bottom">
-							<Alert type="danger">
-								{tText(
-									'collection/components/fragment/fragment-list___dit-item-is-recent-vervangen-door-een-nieuwe-versie-je-controleert-best-of-je-knippunten-nog-correct-zijn'
-								)}
-							</Alert>
-						</Spacer>
-					);
-				}
-				return null;
-			}}
-			onFocus={onFocus}
-		/>
-	);
+	const renderFragmentEditor = (
+		fragment: Avo.Collection.Fragment,
+		index: number,
+		startIndex: number,
+		endIndex: number
+	): ReactNode => {
+		return (
+			<FragmentEdit
+				// If the parent is a collection then the fragment is an ITEM or TEXT
+				// If the parent is a bundle then the fragment is a COLLECTION
+				key={getFragmentKey(fragment)}
+				index={index}
+				collectionId={collection.id}
+				numberOfFragments={endIndex - startIndex}
+				changeCollectionState={(action) => {
+					if (
+						action.type === 'INSERT_FRAGMENT' ||
+						action.type === 'UPDATE_FRAGMENT_PROP' ||
+						action.type === 'SWAP_FRAGMENTS' ||
+						action.type === 'DELETE_FRAGMENT'
+					) {
+						// We need to map the indexes back to the original indexes in the collection/bundle
+						// Since we have 2 lists of fragments in a bundle (collections and assignments)
+						action.index = startIndex + action.index;
+						changeCollectionState(action);
+					}
+				}}
+				openOptionsId={openOptionsId}
+				setOpenOptionsId={setOpenOptionsId}
+				isParentACollection={isCollection}
+				fragment={fragment}
+				allowedToAddLinks={allowedToAddLinks as boolean}
+				renderWarning={() => {
+					if (showReplacementWarning(collection, fragment, commonUser?.profileId)) {
+						return (
+							<Spacer margin="bottom">
+								<Alert type="danger">
+									{tText(
+										'collection/components/fragment/fragment-list___dit-item-is-recent-vervangen-door-een-nieuwe-versie-je-controleert-best-of-je-knippunten-nog-correct-zijn'
+									)}
+								</Alert>
+							</Spacer>
+						);
+					}
+					return null;
+				}}
+				onFocus={onFocus}
+			/>
+		);
+	};
 
 	// // TODO: DISABLE BELOW UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED
 	//
@@ -302,12 +322,83 @@ const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & Use
 	//
 	// // TODO: DISABLE ABOVE UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED
 
+	const renderFragmentEditors = () => {
+		if (isCollection) {
+			// Render collection fragments: items and texts
+			return (
+				<>
+					<FragmentAdd
+						index={-1}
+						collectionId={collection.id}
+						numberOfFragments={fragments.length}
+						changeCollectionState={changeCollectionState}
+					/>
+					{fragments.map((fragment, index) =>
+						renderFragmentEditor(fragment, index, 0, fragments.length)
+					)}
+				</>
+			);
+		} else {
+			// Render bundle fragments: collections and assignments
+			return (
+				<>
+					{/* Do not show any collections title if no collections in the bundle */}
+					{fragmentCollections.length > 0 && (
+						<>
+							{/* Only show title if also assignments are present */}
+							{fragmentAssignments.length > 0 && (
+								<BlockHeading
+									type="h3"
+									className="u-spacer-top-xl u-spacer-bottom-l"
+								>
+									<Icon
+										name={IconName.collection}
+										className="u-spacer-right-s u-spacer-bottom-xs u-color-ocean-green"
+									/>
+									{tHtml('Collecties in deze bundel')}
+								</BlockHeading>
+							)}
+							{fragmentCollections.map((fragment, index) =>
+								renderFragmentEditor(fragment, index, 0, fragmentCollections.length)
+							)}
+						</>
+					)}
+
+					{/* Do not show any assignments title if no assignments in the bundle */}
+					{fragmentAssignments.length > 0 && (
+						<>
+							{/* Only show title if also collections are present */}
+							{fragmentCollections.length > 0 && (
+								<BlockHeading
+									type="h3"
+									className="u-spacer-top-xl u-spacer-bottom-l"
+								>
+									<Icon
+										name={IconName.clipboard}
+										className="u-spacer-right-s u-spacer-bottom-xs u-color-french-rose"
+									/>
+									{tHtml('Opdrachten in deze bundel')}
+								</BlockHeading>
+							)}
+							{fragmentAssignments.map((fragment, index) =>
+								renderFragmentEditor(
+									fragment,
+									index,
+									fragmentCollections.length,
+									fragmentCollections.length + fragmentAssignments.length
+								)
+							)}
+						</>
+					)}
+				</>
+			);
+		}
+	};
+
 	if (isNil(allowedToAddLinks)) {
 		return null;
 	}
 
-	const fragmentCollections = collectionFragments.filter((f) => f.type === 'COLLECTION');
-	const fragmentAssignments = collectionFragments.filter((f) => f.type === 'ASSIGNMENT');
 	return (
 		<Container mode="vertical" className="m-collection-or-bundle-edit-content">
 			{/*/!* TODO: DISABLE BELOW UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED *!/*/}
@@ -327,36 +418,8 @@ const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & Use
 
 			{/*/!* TODO: DISABLE ABOVE UNTIL RETROACTIVE CHANGES EXPLICITLY REQUESTED *!/*/}
 
-			<Container mode="horizontal" key={collectionFragments.map(getFragmentKey).join('_')}>
-				<BlockHeading type="h3" className="u-spacer-top-xl u-spacer-bottom-l">
-					<Icon
-						name={IconName.collection}
-						className="u-spacer-right-s u-spacer-bottom-xs u-color-ocean-green"
-					/>
-					{tHtml('Collecties in deze bundel')}
-				</BlockHeading>
-				<FragmentAdd
-					index={-1}
-					collectionId={collection.id}
-					numberOfFragments={fragmentCollections.length}
-					changeCollectionState={changeCollectionState}
-				/>
-				{fragmentCollections.map(renderFragmentEditor)}
-
-				<BlockHeading type="h3" className="u-spacer-top-xl u-spacer-bottom-l">
-					<Icon
-						name={IconName.clipboard}
-						className="u-spacer-right-s u-spacer-bottom-xs u-color-french-rose"
-					/>
-					{tHtml('Opdrachten in deze bundel')}
-				</BlockHeading>
-				<FragmentAdd
-					index={fragmentCollections.length}
-					collectionId={collection.id}
-					numberOfFragments={fragmentCollections.length + fragmentAssignments.length}
-					changeCollectionState={changeCollectionState}
-				/>
-				{fragmentAssignments.map(renderFragmentEditor)}
+			<Container mode="horizontal" key={fragments.map(getFragmentKey).join('_')}>
+				{renderFragmentEditors()}
 			</Container>
 		</Container>
 	);

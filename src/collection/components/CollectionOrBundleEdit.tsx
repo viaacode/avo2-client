@@ -80,6 +80,7 @@ import {
 	CollectionFragmentType,
 	CollectionMenuAction,
 	CollectionOrBundle,
+	ContentTypeNumber,
 } from '../collection.types';
 import { CollectionOrBundleTitle, PublishCollectionModal } from '../components';
 import {
@@ -109,6 +110,7 @@ import DeleteCollectionModal from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
+import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
 
 const CollectionOrBundleEdit: FC<
 	CollectionOrBundleEditProps &
@@ -212,7 +214,24 @@ const CollectionOrBundleEdit: FC<
 		action: CollectionAction
 	): CollectionState {
 		if (action.type === 'UPDATE_COLLECTION') {
-			updateHasUnsavedChanges(action.newCollection, action.newCollection);
+			setUnsavedChanges(false);
+
+			const newCollection = action.newCollection;
+
+			if (newCollection && newCollection.type_id === ContentTypeNumber.bundle) {
+				// Ensure collection fragments come first and then the assignment fragments inside the bundle fragments list
+				const orderedBlocks = reorderBlockPositions(
+					newCollection?.collection_fragments || []
+				) as unknown as CollectionFragment[];
+				newCollection.collection_fragments = setBlockPositionToIndex([
+					...orderedBlocks.filter(
+						(fragment) => fragment.type === CollectionFragmentType.COLLECTION
+					),
+					...orderedBlocks.filter(
+						(fragment) => fragment.type === CollectionFragmentType.ASSIGNMENT
+					),
+				]) as unknown as CollectionFragment[];
+			}
 
 			return {
 				currentCollection: action.newCollection,
@@ -221,13 +240,27 @@ const CollectionOrBundleEdit: FC<
 		}
 
 		if (action.type === 'RESET_COLLECTION') {
-			const initial = collectionState.initialCollection;
+			const newCollection = collectionState.initialCollection;
+			setUnsavedChanges(false);
 
-			updateHasUnsavedChanges(initial, initial);
+			if (newCollection && newCollection.type_id === ContentTypeNumber.bundle) {
+				// Ensure collection fragments come first and then the assignment fragments inside the bundle fragments list
+				const orderedBlocks = reorderBlockPositions(
+					newCollection?.collection_fragments || []
+				) as unknown as CollectionFragment[];
+				newCollection.collection_fragments = setBlockPositionToIndex([
+					...orderedBlocks.filter(
+						(fragment) => fragment.type === CollectionFragmentType.COLLECTION
+					),
+					...orderedBlocks.filter(
+						(fragment) => fragment.type === CollectionFragmentType.ASSIGNMENT
+					),
+				]) as unknown as CollectionFragment[];
+			}
 
 			return {
-				currentCollection: initial,
-				initialCollection: initial,
+				currentCollection: newCollection,
+				initialCollection: newCollection,
 			};
 		}
 
@@ -1578,35 +1611,43 @@ const CollectionOrBundleEdit: FC<
 										});
 										break;
 
-									case 'BUNDLE_COLLECTION_FRAGMENTS':
+									case 'BUNDLE_COLLECTION_FRAGMENTS': {
+										const fragmentCollections = blocks as CollectionFragment[];
+										const fragmentAssignments = getFragmentsFromCollection(
+											collectionState.currentCollection,
+											'ASSIGNMENT'
+										);
+										const newFragments = setBlockPositionToIndex([
+											...fragmentCollections,
+											...fragmentAssignments,
+										]) as Avo.Collection.Fragment[];
 										changeCollectionState({
 											type: 'UPDATE_COLLECTION_PROP',
 											updateInitialCollection: false,
-											collectionProp: 'collection_fragments',
-											collectionPropValue: reorderBlockPositions([
-												...blocks,
-												...getFragmentsFromCollection(
-													collectionState.currentCollection,
-													'ASSIGNMENT'
-												),
-											]) as Avo.Collection.Fragment[],
+											collectionProp: 'collection_fragments', // Collection fragments and assignment fragments are stored in the same array
+											collectionPropValue: newFragments,
 										});
 										break;
+									}
 
-									case 'BUNDLE_ASSIGNMENT_FRAGMENTS':
+									case 'BUNDLE_ASSIGNMENT_FRAGMENTS': {
+										const fragmentCollections = getFragmentsFromCollection(
+											collectionState.currentCollection,
+											'COLLECTION'
+										);
+										const fragmentAssignments = blocks as CollectionFragment[];
+										const newFragments = setBlockPositionToIndex([
+											...fragmentCollections,
+											...fragmentAssignments,
+										]) as Avo.Collection.Fragment[];
 										changeCollectionState({
 											type: 'UPDATE_COLLECTION_PROP',
 											updateInitialCollection: false,
-											collectionProp: 'assignment_fragments',
-											collectionPropValue: reorderBlockPositions([
-												...getFragmentsFromCollection(
-													collectionState.currentCollection,
-													'COLLECTION'
-												),
-												...blocks,
-											]) as Avo.Collection.Fragment[],
+											collectionProp: 'collection_fragments', // Collection fragments and assignment fragments are stored in the same array
+											collectionPropValue: newFragments,
 										});
 										break;
+									}
 								}
 							}
 						}}

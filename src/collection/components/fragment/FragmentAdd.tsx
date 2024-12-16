@@ -3,7 +3,7 @@ import React, { type FC } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { NEW_FRAGMENT } from '../../collection.const';
-import { type CollectionAction } from '../CollectionOrBundleEdit';
+import { type CollectionAction } from '../CollectionOrBundleEdit.types';
 
 interface FragmentAddProps {
 	index: number;

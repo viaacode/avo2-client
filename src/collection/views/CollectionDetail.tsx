@@ -94,6 +94,7 @@ import {
 import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
+import { DeleteMyselfFromCollectionContributorsConfirmModal } from '../components/modals/DeleteContributorFromCollectionModal';
 import {
 	onAddContributor,
 	onDeleteContributor,
@@ -101,9 +102,8 @@ import {
 } from '../helpers/collection-share-with-collegue-handlers';
 import { deleteCollection, deleteSelfFromCollection } from '../helpers/delete-collection';
 import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
-
+import { useGetCollectionsOrBundlesContainingFragment } from '../hooks/useGetCollectionsOrBundlesContainingFragment';
 import './CollectionDetail.scss';
-import { DeleteMyselfFromCollectionContributorsConfirmModal } from '../components/modals/DeleteContributorFromCollectionModal';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -167,7 +167,6 @@ const CollectionDetail: FC<
 	);
 	const shouldDeleteSelfFromCollection = isContributor && !permissions?.canDeleteCollections;
 
-	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isDeleteContributorModalOpen, setIsDeleteContributorModalOpen] =
@@ -209,6 +208,11 @@ const CollectionDetail: FC<
 		refetchIntervalInBackground: true,
 	});
 
+	const { data: bundlesContainingCollection } = useGetCollectionsOrBundlesContainingFragment(
+		collectionId,
+		{ enabled: !!collectionInfo?.collection && !showLoginPopup }
+	);
+
 	const isBeingEdited =
 		editStatuses &&
 		!!editStatuses[collectionId] &&
@@ -240,32 +244,6 @@ const CollectionDetail: FC<
 			);
 		}
 	}, [collectionId, tHtml]);
-
-	/**
-	 * Get published bundles that contain this collection
-	 */
-	const getPublishedBundles = useCallback(async () => {
-		try {
-			if (showLoginPopup) {
-				return;
-			}
-			if (isUuid(collectionId)) {
-				setPublishedBundles(
-					await CollectionService.getPublishedBundlesContainingCollection(collectionId)
-				);
-			}
-		} catch (err) {
-			console.error('Failed to get published bundles containing this collection', err, {
-				collectionId,
-			});
-
-			ToastService.danger(
-				tHtml(
-					'collection/views/collection-detail___het-ophalen-van-de-gepubliceerde-bundels-die-deze-collectie-bevatten-is-mislukt'
-				)
-			);
-		}
-	}, [showLoginPopup, collectionId, tHtml]);
 
 	const fetchContributors = useCallback(async () => {
 		if (!collectionId || !collectionInfo || showLoginPopup) {
@@ -528,7 +506,6 @@ const CollectionDetail: FC<
 	useEffect(() => {
 		if (collectionInfo?.collection && !showLoginPopup) {
 			getRelatedCollections();
-			getPublishedBundles();
 			triggerEvents();
 		}
 	}, [collectionInfo, getRelatedCollections]);
@@ -1181,7 +1158,7 @@ const CollectionDetail: FC<
 	const renderCollectionBody = () => {
 		const { collection_fragments } = collection as Avo.Collection.Collection;
 		const hasCopies = (collection?.relations || []).length > 0;
-		const hasParentBundles = !!publishedBundles.length;
+		const hasParentBundles = !!bundlesContainingCollection?.length;
 
 		return (
 			<>
@@ -1218,7 +1195,7 @@ const CollectionDetail: FC<
 								/>
 							)}
 							{(hasCopies || hasParentBundles) && (
-								<Column size="3-6">
+								<Column size="12">
 									<Spacer margin="top-large">
 										<p className="u-text-bold">
 											{tHtml('collection/views/collection-detail___ordering')}
@@ -1246,26 +1223,26 @@ const CollectionDetail: FC<
 
 										{hasParentBundles && (
 											<p className="c-body-1">
-												{`${tText(
-													'collection/views/collection-detail___deze-collectie-is-deel-van-een-map'
-												)} `}
-												{publishedBundles.map((bundle, index) => (
-													<>
-														{index !== 0 &&
-															!!publishedBundles.length &&
-															', '}
-														<Link
-															to={buildLink(
-																APP_PATH.BUNDLE_DETAIL.route,
-																{
-																	id: bundle.id,
-																}
-															)}
-														>
-															{bundle.title}
-														</Link>
-													</>
-												))}
+												{bundlesContainingCollection.length === 1
+													? tText('Deze collectie zit in bundel:')
+													: tText('Deze collectie zit in bundels:')}{' '}
+												{bundlesContainingCollection?.map(
+													(bundle, index) => (
+														<>
+															{index !== 0 && ', '}
+															<Link
+																to={buildLink(
+																	APP_PATH.BUNDLE_DETAIL.route,
+																	{
+																		id: bundle.id,
+																	}
+																)}
+															>
+																{bundle.title}
+															</Link>
+														</>
+													)
+												) || null}
 											</p>
 										)}
 									</Spacer>

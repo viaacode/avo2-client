@@ -59,8 +59,6 @@ import {
 	type GetPublicCollectionsByTitleQueryVariables,
 	type GetPublicCollectionsQuery,
 	type GetPublicCollectionsQueryVariables,
-	type GetPublishedBundlesContainingCollectionQuery,
-	type GetPublishedBundlesContainingCollectionQueryVariables,
 	type InsertCollectionFragmentsMutation,
 	type InsertCollectionFragmentsMutationVariables,
 	type InsertCollectionLabelsMutation,
@@ -105,7 +103,6 @@ import {
 	GetPublicCollectionsByIdDocument,
 	GetPublicCollectionsByTitleDocument,
 	GetPublicCollectionsDocument,
-	GetPublishedBundlesContainingCollectionDocument,
 	InsertCollectionDocument,
 	InsertCollectionFragmentsDocument,
 	InsertCollectionLabelsDocument,
@@ -1019,18 +1016,22 @@ export class CollectionService {
 		}
 	}
 
-	static async getPublishedBundlesContainingCollection(
-		id: string
-	): Promise<Avo.Collection.Collection[]> {
-		const response = await dataService.query<
-			GetPublishedBundlesContainingCollectionQuery,
-			GetPublishedBundlesContainingCollectionQueryVariables
-		>({
-			query: GetPublishedBundlesContainingCollectionDocument,
-			variables: { id },
-		});
-
-		return response.app_collections as Avo.Collection.Collection[];
+	static async getPublishedCollectionsOrBundlesContainingFragment(
+		fragmentId: string
+	): Promise<{ id: string; title: string }[]> {
+		try {
+			return await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/collections/containing-fragment/${fragmentId}`
+			);
+		} catch (err) {
+			throw new CustomError(
+				'Failed to get collections or bundles that contain fragment',
+				err,
+				{
+					fragmentId,
+				}
+			);
+		}
 	}
 
 	static async insertFragments(

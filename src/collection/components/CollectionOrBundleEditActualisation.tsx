@@ -22,7 +22,7 @@ import { getFullName, toDateObject } from '../../shared/helpers';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 
-import { type CollectionAction } from './CollectionOrBundleEdit';
+import { type CollectionAction } from './CollectionOrBundleEdit.types';
 
 interface CollectionOrBundleEditActualisationProps {
 	collection: Avo.Collection.Collection;

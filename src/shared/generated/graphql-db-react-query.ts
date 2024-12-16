@@ -2262,28 +2262,6 @@ export const useGetPublicCollectionsByTitleQuery = <
       fetchData<GetPublicCollectionsByTitleQuery, GetPublicCollectionsByTitleQueryVariables>(GetPublicCollectionsByTitleDocument, variables),
       options
     );
-export const GetPublishedBundlesContainingCollectionDocument = `
-    query getPublishedBundlesContainingCollection($id: String!) {
-  app_collections(
-    where: {is_public: {_eq: true}, collection_fragments: {external_id: {_eq: $id}}, is_deleted: {_eq: false}}
-  ) {
-    id
-    title
-  }
-}
-    `;
-export const useGetPublishedBundlesContainingCollectionQuery = <
-      TData = GetPublishedBundlesContainingCollectionQuery,
-      TError = unknown
-    >(
-      variables: GetPublishedBundlesContainingCollectionQueryVariables,
-      options?: UseQueryOptions<GetPublishedBundlesContainingCollectionQuery, TError, TData>
-    ) =>
-    useQuery<GetPublishedBundlesContainingCollectionQuery, TError, TData>(
-      ['getPublishedBundlesContainingCollection', variables],
-      fetchData<GetPublishedBundlesContainingCollectionQuery, GetPublishedBundlesContainingCollectionQueryVariables>(GetPublishedBundlesContainingCollectionDocument, variables),
-      options
-    );
 export const InsertCollectionDocument = `
     mutation insertCollection($collection: app_collections_insert_input!) {
   insert_app_collections(objects: [$collection]) {

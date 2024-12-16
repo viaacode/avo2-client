@@ -38,6 +38,7 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionFragmentType, type Relation } from '../../collection/collection.types';
 import AddToBundleModal from '../../collection/components/modals/AddToBundleModal';
+import { useGetCollectionsOrBundlesContainingFragment } from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { type ErrorViewQueryParams } from '../../error/views/ErrorView';
@@ -132,6 +133,11 @@ const AssignmentDetail: FC<
 		refetchInterval: EDIT_STATUS_REFETCH_TIME,
 		refetchIntervalInBackground: true,
 	});
+
+	const { data: bundlesContainingAssignment } = useGetCollectionsOrBundlesContainingFragment(
+		assignmentId,
+		{ enabled: !!assignment }
+	);
 
 	// Errors
 	const [isForbidden, setIsForbidden] = useState<boolean>(false);
@@ -845,6 +851,8 @@ const AssignmentDetail: FC<
 
 	const renderMetadata = () => {
 		const hasCopies = (assignment?.relations || []).length > 0;
+		const hasParentBundles = !!bundlesContainingAssignment?.length;
+
 		return (
 			<Container mode="vertical" className="c-assignment-detail--metadata">
 				<Container mode="horizontal">
@@ -861,36 +869,64 @@ const AssignmentDetail: FC<
 								/>
 							)}
 						</Grid>
-						{hasCopies && (
-							<Grid>
-								<Column size="3-3">
-									<p className="u-text-bold">
-										{tHtml(
-											'assignment/views/assignment-detail___extra-informatie'
-										)}
-									</p>
+						{hasCopies ||
+							(hasParentBundles && (
+								<Grid>
+									<Column size="12">
+										<p className="u-text-bold">
+											{tHtml(
+												'assignment/views/assignment-detail___extra-informatie'
+											)}
+										</p>
 
-									<p className="c-body-1">
-										{`${tText(
-											'assignment/views/assignment-detail___deze-opdracht-is-een-kopie-van'
-										)} `}
-										{((assignment?.relations ?? []) as Relation[]).map(
-											(relation: Relation) => (
-												<Link
-													key={`copy-of-link-${relation.object_meta.id}`}
-													to={buildLink(
-														APP_PATH.ASSIGNMENT_DETAIL.route,
-														{ id: relation.object_meta.id }
-													)}
-												>
-													{relation.object_meta.title}
-												</Link>
-											)
+										{hasCopies && (
+											<p className="c-body-1">
+												{`${tText(
+													'assignment/views/assignment-detail___deze-opdracht-is-een-kopie-van'
+												)} `}
+												{((assignment?.relations ?? []) as Relation[]).map(
+													(relation: Relation) => (
+														<Link
+															key={`copy-of-link-${relation.object_meta.id}`}
+															to={buildLink(
+																APP_PATH.ASSIGNMENT_DETAIL.route,
+																{ id: relation.object_meta.id }
+															)}
+														>
+															{relation.object_meta.title}
+														</Link>
+													)
+												)}
+											</p>
 										)}
-									</p>
-								</Column>
-							</Grid>
-						)}
+
+										{hasParentBundles && (
+											<p className="c-body-1">
+												{bundlesContainingAssignment.length === 1
+													? tText('Deze opdracht zit in bundel:')
+													: tText('Deze opdracht zit in bundels:')}{' '}
+												{bundlesContainingAssignment?.map(
+													(bundle, index) => (
+														<>
+															{index !== 0 && ', '}
+															<Link
+																to={buildLink(
+																	APP_PATH.BUNDLE_DETAIL.route,
+																	{
+																		id: bundle.id,
+																	}
+																)}
+															>
+																{bundle.title}
+															</Link>
+														</>
+													)
+												) || null}
+											</p>
+										)}
+									</Column>
+								</Grid>
+							))}
 						{!!relatedAssignments &&
 							renderRelatedItems(relatedAssignments, defaultRenderDetailLink)}
 					</div>

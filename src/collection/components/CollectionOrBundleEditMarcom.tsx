@@ -37,7 +37,7 @@ import {
 import { CollectionService } from '../collection.service';
 import { ContentTypeNumber, type MarcomEntry } from '../collection.types';
 
-import { type CollectionAction, type MarcomNoteInfo } from './CollectionOrBundleEdit';
+import { type CollectionAction, type MarcomNoteInfo } from './CollectionOrBundleEdit.types';
 
 interface CollectionOrBundleEditMarcomProps {
 	collection: Avo.Collection.Collection & { marcom_note?: MarcomNoteInfo };

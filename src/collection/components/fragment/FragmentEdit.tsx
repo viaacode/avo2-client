@@ -27,6 +27,7 @@ import React, {
 	useState,
 } from 'react';
 
+import { APP_PATH } from '../../../constants';
 import { DeleteObjectModal, FlowPlayerWrapper } from '../../../shared/components';
 import {
 	RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
@@ -34,21 +35,25 @@ import {
 } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { getMoreOptionsLabel } from '../../../shared/constants';
-import { createDropdownMenuItem } from '../../../shared/helpers';
+import { buildLink, createDropdownMenuItem } from '../../../shared/helpers';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { CollectionBlockType } from '../../collection.const';
-import { type CollectionAction } from '../CollectionOrBundleEdit';
+import { type CollectionAction } from '../CollectionOrBundleEdit.types';
 import CutFragmentModal from '../modals/CutFragmentModal';
 
 import FragmentAdd from './FragmentAdd';
 import {
 	COLLECTION_FRAGMENT_TYPE_TO_EVENT_OBJECT_TYPE,
+	GET_FRAGMENT_DELETE_LABELS,
 	GET_FRAGMENT_DELETE_SUCCESS_MESSAGES,
+	GET_FRAGMENT_EDIT_SWITCH_LABELS,
 } from './FragmentEdit.const';
+import { FragmentEditAction } from './FragmentEdit.types';
+import './FragmentEdit.scss';
 
 interface FragmentEditProps {
 	index: number;
@@ -105,7 +110,8 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 		// TODO: DISABLED FEATURE
 		// createDropdownMenuItem('duplicate', 'Dupliceren', 'copy'),
 		// createDropdownMenuItem('move', 'Verplaatsen', 'arrow-right'),
-		...createDropdownMenuItem('delete', 'Verwijderen', undefined, true),
+		...createDropdownMenuItem(FragmentEditAction.DETAIL, 'Bekijk', IconName.externalLink, true),
+		...createDropdownMenuItem(FragmentEditAction.DELETE, 'Verwijderen', undefined, true),
 		// TODO: DISABLED FEATURE
 		// createDropdownMenuItem('copyToCollection', 'Kopiëren naar andere collectie', 'copy'),
 		// createDropdownMenuItem('moveToCollection', 'Verplaatsen naar andere collectie', 'arrow-right'),
@@ -201,7 +207,17 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 			// case 'move':
 			// 	onMoveFragment();
 			// 	break;
-			case 'delete':
+
+			case FragmentEditAction.DETAIL: {
+				const routeInfo =
+					fragment.type === CollectionBlockType.COLLECTION
+						? APP_PATH.COLLECTION_DETAIL
+						: APP_PATH.ASSIGNMENT_DETAIL;
+				window.open(buildLink(routeInfo.route, { id: fragment.external_id }), '_blank');
+				break;
+			}
+
+			case FragmentEditAction.DELETE:
 				setDeleteModalOpen(true);
 				break;
 
@@ -218,29 +234,45 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 	};
 
 	// Render functions
-	const renderReorderButton = (index: number, direction: 'up' | 'down') => (
-		<Button
-			type="secondary"
-			icon={`chevron-${direction}` as IconName}
-			ariaLabel={
-				direction === 'up'
-					? tText('collection/components/fragment/fragment-edit___verplaats-naar-boven')
-					: tText('collection/components/fragment/fragment-edit___verplaats-naar-onder')
-			}
-			title={
-				direction === 'up'
-					? tText('collection/components/fragment/fragment-edit___verplaats-naar-boven')
-					: tText('collection/components/fragment/fragment-edit___verplaats-naar-onder')
-			}
-			onClick={() => {
-				changeCollectionState({
-					index,
-					direction,
-					type: 'SWAP_FRAGMENTS',
-				});
-			}}
-		/>
-	);
+	const renderReorderButton = (index: number, direction: 'up' | 'down') => {
+		if (direction === 'up' && isFirst(index)) {
+			return null;
+		}
+		if (direction === 'down' && isLast(index)) {
+			return null;
+		}
+		return (
+			<Button
+				type="secondary"
+				icon={`chevron-${direction}` as IconName}
+				ariaLabel={
+					direction === 'up'
+						? tText(
+								'collection/components/fragment/fragment-edit___verplaats-naar-boven'
+						  )
+						: tText(
+								'collection/components/fragment/fragment-edit___verplaats-naar-onder'
+						  )
+				}
+				title={
+					direction === 'up'
+						? tText(
+								'collection/components/fragment/fragment-edit___verplaats-naar-boven'
+						  )
+						: tText(
+								'collection/components/fragment/fragment-edit___verplaats-naar-onder'
+						  )
+				}
+				onClick={() => {
+					changeCollectionState({
+						index,
+						direction,
+						type: 'SWAP_FRAGMENTS',
+					});
+				}}
+			/>
+		);
+	};
 
 	const renderForm = () => {
 		const disableVideoFields: boolean =
@@ -250,17 +282,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 			<Form>
 				{itemMetaData && (
 					<FormGroup
-						label={
-							[CollectionBlockType.ITEM, CollectionBlockType.TEXT].includes(
-								fragment.type as CollectionBlockType
-							)
-								? tText(
-										'collection/components/fragment/fragment-edit___alternatieve-tekst'
-								  )
-								: tText(
-										'collection/components/fragment/fragment-edit___eigen-collectie-titel'
-								  )
-						}
+						label={GET_FRAGMENT_EDIT_SWITCH_LABELS()[fragment.type]}
 						labelFor="customFields"
 					>
 						<Toggle
@@ -289,7 +311,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 						onFocus={onFocus}
 					/>
 				</FormGroup>
-				{fragment.type !== 'COLLECTION' && (
+				{fragment.type !== 'COLLECTION' && fragment.type !== 'ASSIGNMENT' && (
 					<FormGroup
 						label={tText(
 							'collection/components/fragment/fragment-edit___tekstblok-beschrijving'
@@ -328,38 +350,16 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 		);
 	};
 
-	const getDeleteFragmentModalTitle = () => {
-		if (isParentACollection) {
-			// collection
-			if (fragment.type === 'TEXT') {
-				// text
-				return tText(
-					'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-deze-tekst-blok-wil-verwijderen-uit-deze-collectie'
-				);
-			} else {
-				// video/audio fragment
-				return tText(
-					'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-dit-fragment-wil-verwijderen-uit-deze-collectie'
-				);
-			}
-		} else {
-			// bundle
-			return tText(
-				'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-de-collectie-wil-verwijderen-uit-deze-bundel'
-			);
-		}
-	};
-
 	return (
 		<>
-			<div className="c-panel">
+			<div className="c-panel c-fragment-edit">
 				<div className="c-panel__header">
 					<Toolbar>
 						<ToolbarLeft>
 							<ToolbarItem>
 								<div className="c-button-toolbar">
-									{!isFirst(index) && renderReorderButton(index, 'up')}
-									{!isLast(index) && renderReorderButton(index, 'down')}
+									{renderReorderButton(index, 'up')}
+									{renderReorderButton(index, 'down')}
 									{itemMetaData && fragment.type === 'ITEM' && (
 										<Button
 											icon={IconName.scissors}
@@ -431,15 +431,17 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 				</div>
 			</div>
 
-			<FragmentAdd
-				index={index}
-				collectionId={collectionId}
-				numberOfFragments={numberOfFragments}
-				changeCollectionState={changeCollectionState}
-			/>
+			{isParentACollection && (
+				<FragmentAdd
+					index={index}
+					collectionId={collectionId}
+					numberOfFragments={numberOfFragments}
+					changeCollectionState={changeCollectionState}
+				/>
+			)}
 
 			<DeleteObjectModal
-				title={getDeleteFragmentModalTitle()}
+				title={GET_FRAGMENT_DELETE_LABELS()[fragment.type]}
 				body={tText(
 					'collection/components/fragment/fragment-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden'
 				)}

@@ -2,6 +2,7 @@ import type { Avo } from '@viaa/avo2-types';
 import { type ReactNode } from 'react';
 
 import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { CollectionFragmentType } from '../../collection.types';
 
 export const COLLECTION_FRAGMENT_TYPE_TO_EVENT_OBJECT_TYPE: Partial<
@@ -20,5 +21,27 @@ export function GET_FRAGMENT_DELETE_SUCCESS_MESSAGES(): Record<Avo.Core.BlockIte
 		BOUW: tHtml('Zoek blok is succesvol verwijderd uit de collectie.'),
 		COLLECTION: tHtml('Collectie is succesvol verwijderd uit de bundel.'),
 		ASSIGNMENT: tHtml('Opdracht is succesvol verwijderd uit de bundel.'),
+	};
+}
+
+export function GET_FRAGMENT_DELETE_LABELS(): Record<Avo.Core.BlockItemType, string> {
+	return {
+		ITEM: tText('Ben je zeker dat je het fragment uit deze collectie wil verwijderen?'),
+		TEXT: tText('Ben je zeker dat je deze tekst blok wil verwijderen uit deze collectie?'),
+		ZOEK: '',
+		BOUW: '',
+		COLLECTION: tText('Ben je zeker dat je de collectie uit deze bundel wil verwijderen?'),
+		ASSIGNMENT: tText('Ben je zeker dat je de opdracht uit deze bundel wil verwijderen?'),
+	};
+}
+
+export function GET_FRAGMENT_EDIT_SWITCH_LABELS(): Record<Avo.Core.BlockItemType, string> {
+	return {
+		ITEM: tText('Eigen beschrijving bij fragment'),
+		TEXT: tText('Eigen beschrijving bij fragment'),
+		ZOEK: '',
+		BOUW: '',
+		COLLECTION: tText('Eigen titel bij deze collectie'),
+		ASSIGNMENT: tText('Eigen titel bij deze opdracht'),
 	};
 }

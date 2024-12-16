@@ -45,7 +45,7 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { CollectionService } from '../collection.service';
 import { type QualityLabel } from '../collection.types';
 
-import { type CollectionAction } from './CollectionOrBundleEdit';
+import { type CollectionAction } from './CollectionOrBundleEdit.types';
 
 type BundleColumnId =
 	| 'title'

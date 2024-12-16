@@ -28,7 +28,7 @@ import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
 import { type CollectionOrBundle } from '../collection.types';
 
-import { type CollectionAction } from './CollectionOrBundleEdit';
+import { type CollectionAction } from './CollectionOrBundleEdit.types';
 
 interface CollectionOrBundleEditMetaDataProps {
 	type: CollectionOrBundle;

@@ -21,7 +21,7 @@ import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { booleanToOkNok, okNokToBoolean } from '../helpers/ok-nok-parser';
 
-import { type CollectionAction } from './CollectionOrBundleEdit';
+import { type CollectionAction } from './CollectionOrBundleEdit.types';
 
 interface CollectionOrBundleEditQualityCheckProps {
 	collection: Avo.Collection.Collection;

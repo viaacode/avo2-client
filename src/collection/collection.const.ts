@@ -10,6 +10,8 @@ export const MAX_LONG_DESCRIPTION_LENGTH = 1200;
 export enum CollectionBlockType {
 	TEXT = 'TEXT',
 	ITEM = 'ITEM',
+	COLLECTION = 'COLLECTION',
+	ASSIGNMENT = 'ASSIGNMENT',
 }
 
 export const NEW_FRAGMENT = {

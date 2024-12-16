@@ -22,7 +22,7 @@ import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
 import { ContentTypeNumber } from '../../collection.types';
-import { type CollectionAction } from '../CollectionOrBundleEdit';
+import { type CollectionAction } from '../CollectionOrBundleEdit.types';
 
 import './CutFragmentModal.scss';
 
