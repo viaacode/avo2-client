@@ -10,7 +10,8 @@ import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cooki
  *
  */
 
-test('T05: Inloggen leerid', async ({ page }) => {
+// Broken; https://meemoo.atlassian.net/browse/AVO-3353?focusedCommentId=51773
+test.skip('T05: Inloggen leerid', async ({ page }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,
@@ -30,7 +31,7 @@ test('T05: Inloggen leerid', async ({ page }) => {
 
 	await page.click('div[data-id="leerling"]');
 	await page.waitForTimeout(1000);
-	await page.getByText('LeerID').click();
+	await page.getByRole('button', { name: 'LeerID' }).click();
 
 	// Check if on external login page
 

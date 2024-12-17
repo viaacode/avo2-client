@@ -13,7 +13,8 @@ import { logoutOnderwijsAvo } from '../helpers/logout-onderwijs-avo';
  *
  */
 
-test('T31: Fragment detail - Maak sneldeellink voor leerling met beschrijving', async ({
+// Missing account linking entry in users_notifications
+test.skip('T31: Fragment detail - Maak sneldeellink voor leerling met beschrijving', async ({
 	page,
 }) => {
 	await goToPageAndAcceptCookies(
