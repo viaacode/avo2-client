@@ -121,3 +121,9 @@ export enum CollectionMenuAction {
 	openPublishModal = 'openPublishModal',
 	rename = 'rename',
 }
+
+export interface ParentBundle {
+	id: string;
+	title: string;
+	is_public: boolean;
+}

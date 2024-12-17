@@ -25,7 +25,7 @@ import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 import { Link, type RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
-import { StringParam, useQueryParams } from 'use-query-params';
+import { BooleanParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
 import { AssignmentService } from '../../assignment/assignment.service';
 import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
@@ -110,6 +110,8 @@ import {
 import './CollectionDetail.scss';
 import { OrderDirection } from '@meemoo/react-components';
 
+import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from './CollectionDetail.const';
+
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
 
@@ -176,7 +178,10 @@ const CollectionDetail: FC<
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isDeleteContributorModalOpen, setIsDeleteContributorModalOpen] =
 		useState<boolean>(false);
-	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
+	const [isPublishModalOpen, setIsPublishModalOpen] = useQueryParam(
+		QUERY_PARAM_SHOW_PUBLISH_MODAL,
+		BooleanParam
+	);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isAutoplayCollectionModalOpen, setIsAutoplayCollectionModalOpen] =
@@ -609,7 +614,7 @@ const CollectionDetail: FC<
 				break;
 
 			case CollectionMenuAction.openPublishCollectionModal:
-				setIsPublishModalOpen(!isPublishModalOpen);
+				setIsPublishModalOpen(!isPublishModalOpen || undefined, 'replaceIn');
 				break;
 
 			case CollectionMenuAction.toggleBookmark:
@@ -1236,7 +1241,7 @@ const CollectionDetail: FC<
 													: tText('Deze collectie zit in bundels:')}{' '}
 												{bundlesContainingCollection?.map(
 													(bundle, index) => (
-														<>
+														<span key={'parent-bundle--' + bundle.id}>
 															{index !== 0 && ', '}
 															<Link
 																to={buildLink(
@@ -1248,7 +1253,7 @@ const CollectionDetail: FC<
 															>
 																{bundle.title}
 															</Link>
-														</>
+														</span>
 													)
 												) || null}
 											</p>
@@ -1273,9 +1278,10 @@ const CollectionDetail: FC<
 				{!!collection && !!commonUser && (
 					<PublishCollectionModal
 						collection={collection}
-						isOpen={isPublishModalOpen}
+						parentBundles={bundlesContainingCollection}
+						isOpen={!!isPublishModalOpen}
 						onClose={(newCollection: Avo.Collection.Collection | undefined) => {
-							setIsPublishModalOpen(false);
+							setIsPublishModalOpen(undefined, 'replaceIn');
 
 							if (newCollection) {
 								setCollectionInfo((oldCollectionInfo) => ({

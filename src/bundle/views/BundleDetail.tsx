@@ -25,6 +25,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
 import classnames from 'classnames';
 import { compact, get, noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
@@ -91,7 +92,6 @@ import { ToastService } from '../../shared/services/toast-service';
 import { BundleAction } from '../bundle.types';
 
 import './BundleDetail.scss';
-import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
 
 type BundleDetailProps = {
 	id?: string;
@@ -860,6 +860,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 						{!!bundleObj && !!commonUser && (
 							<PublishCollectionModal
 								collection={bundleObj}
+								parentBundles={[]}
 								isOpen={isPublishModalOpen}
 								onClose={(newBundle: Avo.Collection.Collection | undefined) => {
 									setIsPublishModalOpen(false);

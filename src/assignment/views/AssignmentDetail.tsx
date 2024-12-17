@@ -31,7 +31,7 @@ import React, { type FC, type ReactText, useCallback, useEffect, useState } from
 import { Helmet } from 'react-helmet';
 import { generatePath } from 'react-router';
 import { Link } from 'react-router-dom';
-import { StringParam, useQueryParams } from 'use-query-params';
+import { BooleanParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -43,6 +43,7 @@ import {
 	BundleSortProp,
 	useGetCollectionsOrBundlesContainingFragment,
 } from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
+import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from '../../collection/views/CollectionDetail.const';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { type ErrorViewQueryParams } from '../../error/views/ErrorView';
@@ -154,7 +155,10 @@ const AssignmentDetail: FC<
 	);
 
 	// Modals
-	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
+	const [isPublishModalOpen, setIsPublishModalOpen] = useQueryParam(
+		QUERY_PARAM_SHOW_PUBLISH_MODAL,
+		BooleanParam
+	);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
@@ -522,7 +526,8 @@ const AssignmentDetail: FC<
 				setIsDeleteModalOpen(true);
 				break;
 			case AssignmentAction.openPublishCollectionModal:
-				setIsPublishModalOpen(true);
+			case AssignmentAction.publish:
+				setIsPublishModalOpen(true, 'replaceIn');
 				break;
 			case AssignmentAction.toggleBookmark:
 				await toggleBookmark();
@@ -532,9 +537,6 @@ const AssignmentDetail: FC<
 				break;
 			case AssignmentAction.share:
 				setIsShareModalOpen(true);
-				break;
-			case AssignmentAction.publish:
-				setIsPublishModalOpen(true);
 				break;
 
 			default:
@@ -551,7 +553,10 @@ const AssignmentDetail: FC<
 				AssignmentAction.addToBundle,
 				tText('Voeg toe aan bundel'),
 				IconName.plus,
-				permissions?.canEditBundles || false
+				!!(
+					permissions?.canEditBundles &&
+					commonUser.permissions?.includes(PermissionName.ADD_ASSIGNMENT_TO_BUNDLE)
+				)
 			),
 			...createDropdownMenuItem(
 				AssignmentAction.duplicate,
@@ -1076,13 +1081,14 @@ const AssignmentDetail: FC<
 			{!!assignment && !!commonUser && (
 				<PublishAssignmentModal
 					onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
-						setIsPublishModalOpen(false);
+						setIsPublishModalOpen(undefined, 'replaceIn');
 						if (newAssignment) {
 							setAssignment(newAssignment);
 						}
 					}}
-					isOpen={isPublishModalOpen}
+					isOpen={!!isPublishModalOpen}
 					assignment={assignment as Avo.Assignment.Assignment}
+					parentBundles={bundlesContainingAssignment}
 				/>
 			)}
 

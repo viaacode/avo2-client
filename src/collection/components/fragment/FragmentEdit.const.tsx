@@ -45,3 +45,39 @@ export function GET_FRAGMENT_EDIT_SWITCH_LABELS(): Record<Avo.Core.BlockItemType
 		ASSIGNMENT: tText('Eigen titel bij deze opdracht'),
 	};
 }
+
+/**
+ * Get the labels for a fragment publish status by type and publish status
+ * @constructor
+ */
+export function GET_FRAGMENT_PUBLISH_STATUS_LABELS(): Record<
+	Avo.Core.BlockItemType,
+	Record<string | 'true' | 'false', string>
+> {
+	return {
+		COLLECTION: {
+			true: tText('Deze collectie is publiek'),
+			false: tText('Deze collectie is privé'),
+		},
+		ASSIGNMENT: {
+			true: tText('Deze opdracht is publiek'),
+			false: tText('Deze opdracht is privé'),
+		},
+		ZOEK: {
+			true: '',
+			false: '',
+		},
+		BOUW: {
+			true: '',
+			false: '',
+		},
+		TEXT: {
+			true: '',
+			false: '',
+		},
+		ITEM: {
+			true: '',
+			false: '',
+		},
+	};
+}

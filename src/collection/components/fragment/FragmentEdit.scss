@@ -2,4 +2,8 @@
 
 .c-fragment-edit {
 	margin-bottom: $g-spacer-unit * 2;
+
+	.c-toolbar__item {
+		margin-left: $g-spacer-unit;
+	}
 }

@@ -12,8 +12,11 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FC, useEffect, useState } from 'react';
+import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
+import type { ParentBundle } from '../../collection/collection.types';
+import { APP_PATH } from '../../constants';
+import { buildLink } from '../../shared/helpers';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -25,17 +28,19 @@ interface PublishAssignmentModalProps {
 	isOpen: boolean;
 	onClose: (assignment?: Avo.Assignment.Assignment) => void;
 	assignment: Avo.Assignment.Assignment;
+	parentBundles: ParentBundle[] | undefined;
 }
 
 const PublishAssignmentModal: FC<PublishAssignmentModalProps & UserProps> = ({
 	onClose,
 	isOpen,
 	assignment,
+	parentBundles,
 	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const [validationError, setValidationError] = useState<string[] | undefined>(undefined);
+	const [validationErrors, setValidationErrors] = useState<(string | ReactNode)[]>([]);
 	const [isAssignmentPublic, setIsAssignmentPublic] = useState(assignment.is_public);
 
 	useEffect(() => {
@@ -62,12 +67,29 @@ const PublishAssignmentModal: FC<PublishAssignmentModalProps & UserProps> = ({
 
 			// Validate if user wants to publish
 			if (isPublished) {
-				const validationErrors: string[] =
+				const validationErrorsTemp: string[] =
 					await getValidationErrorsForPublishAssignment(assignment);
 
-				if (validationErrors && validationErrors.length) {
-					setValidationError(validationErrors);
-					ToastService.danger(validationErrors);
+				if (validationErrorsTemp && validationErrorsTemp.length) {
+					setValidationErrors(validationErrorsTemp);
+					ToastService.danger(validationErrorsTemp);
+					return;
+				}
+			}
+
+			// Validate if user wants to depublish
+			if (isDepublished) {
+				const publishedParentBundle = parentBundles?.find((bundle) => bundle.is_public);
+				if (publishedParentBundle) {
+					const linkToBundle = buildLink(APP_PATH.BUNDLE_DETAIL.route, {
+						id: publishedParentBundle.id,
+					});
+					const error: ReactNode = tHtml(
+						'Deze opdracht zit in <a href="{{linkToBundle}}">een gepubliceerde bundel</a>. Verwijder eerst de opdracht uit die bundel en sla dan op.',
+						{ linkToBundle }
+					);
+					setValidationErrors([error]);
+					ToastService.danger([error]);
 					return;
 				}
 			}
@@ -80,7 +102,7 @@ const PublishAssignmentModal: FC<PublishAssignmentModalProps & UserProps> = ({
 				{ ...assignment, ...newAssignmentProps },
 				commonUser?.profileId
 			);
-			setValidationError(undefined);
+			setValidationErrors([]);
 			ToastService.success(
 				isAssignmentPublic
 					? tHtml(
@@ -117,7 +139,7 @@ const PublishAssignmentModal: FC<PublishAssignmentModalProps & UserProps> = ({
 	};
 
 	const closeModal = (newAssignment?: Avo.Assignment.Assignment) => {
-		setValidationError(undefined);
+		setValidationErrors([]);
 		onClose(newAssignment);
 	};
 
@@ -135,7 +157,7 @@ const PublishAssignmentModal: FC<PublishAssignmentModalProps & UserProps> = ({
 						'assignment/modals/publish-assignment-modal___bepaal-in-hoeverre-jouw-opdracht-toegankelijk-is-voor-andere-personen'
 					)}
 				</p>
-				<FormGroup error={validationError}>
+				<FormGroup error={validationErrors}>
 					<Spacer margin="top-large">
 						<BlockHeading className="u-m-0" type="h4">
 							{tHtml('assignment/modals/publish-assignment-modal___zichtbaarheid')}

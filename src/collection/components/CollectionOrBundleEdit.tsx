@@ -12,6 +12,7 @@ import {
 	Tabs,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
 import { cloneDeep, get, isEmpty, isNil, noop, set } from 'lodash-es';
 import React, {
 	type FC,
@@ -19,6 +20,7 @@ import React, {
 	type ReactText,
 	useCallback,
 	useEffect,
+	useMemo,
 	useReducer,
 	useState,
 } from 'react';
@@ -33,6 +35,7 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
+import { OrderDirection } from '../../search/search.const';
 import {
 	HeaderOwnerAndContributors,
 	InActivityWarningModal,
@@ -89,6 +92,10 @@ import {
 	onEditContributor,
 } from '../helpers/collection-share-with-collegue-handlers';
 import { deleteCollection, deleteSelfFromCollection } from '../helpers/delete-collection';
+import {
+	BundleSortProp,
+	useGetCollectionsOrBundlesContainingFragment,
+} from '../hooks/useGetCollectionsOrBundlesContainingFragment';
 
 import {
 	GET_REORDER_TYPE_TO_BUTTON_LABEL,
@@ -110,7 +117,6 @@ import DeleteCollectionModal from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
-import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
 
 const CollectionOrBundleEdit: FC<
 	CollectionOrBundleEditProps &
@@ -157,17 +163,63 @@ const CollectionOrBundleEdit: FC<
 	const isAdmin = isCollection
 		? commonUser.permissions?.includes(PermissionName.EDIT_ANY_COLLECTIONS)
 		: commonUser.permissions?.includes(PermissionName.EDIT_ANY_BUNDLES);
-	const noRightsError = {
-		state: 'error',
-		message: isCollection
-			? tText(
-					'collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-collectie-te-bewerken'
-			  )
-			: tText(
-					'collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-bundel-te-bewerken'
-			  ),
-		icon: IconName.alertTriangle,
-	} as LoadingInfo;
+	const noRightsError = useMemo(
+		() =>
+			({
+				state: 'error',
+				message: isCollection
+					? tText(
+							'collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-collectie-te-bewerken'
+					  )
+					: tText(
+							'collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-bundel-te-bewerken'
+					  ),
+				icon: IconName.alertTriangle,
+			}) as LoadingInfo,
+		[isCollection, tText]
+	);
+
+	const releaseCollectionEditStatus = useCallback(async () => {
+		try {
+			await CollectionService.releaseCollectionEditStatus(collectionId);
+		} catch (err) {
+			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode !== 409) {
+				ToastService.danger(
+					tHtml(
+						'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-updaten-van-de-collectie-bewerk-status'
+					)
+				);
+			}
+		}
+	}, [collectionId, tHtml]);
+
+	const updateCollectionEditor = useCallback(async () => {
+		try {
+			await CollectionService.updateCollectionEditor(collectionId);
+		} catch (err) {
+			redirectToClientPage(
+				buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: collectionId }),
+				history
+			);
+
+			if ((err as CustomError).innerException?.additionalInfo?.statusCode === 409) {
+				await releaseCollectionEditStatus();
+				ToastService.danger(
+					tHtml(
+						'collection/components/collection-or-bundle-edit___iemand-is-deze-collectie-reeds-aan-het-bewerken'
+					)
+				);
+			} else if ((err as CustomError).innerException?.additionalInfo?.statusCode === 401) {
+				return; // User has no rights to edit the collection
+			} else {
+				ToastService.danger(
+					tHtml(
+						'collection/components/collection-or-bundle-edit___verbinding-met-bewerk-server-verloren'
+					)
+				);
+			}
+		}
+	}, [collectionId, history, releaseCollectionEditStatus, tHtml]);
 
 	const updateCollectionEditorWithLoading = useCallback(async () => {
 		if (!isCollection) {
@@ -176,7 +228,7 @@ const CollectionOrBundleEdit: FC<
 
 		setLoadingInfo({ state: 'loading' });
 		await updateCollectionEditor();
-	}, [setLoadingInfo]);
+	}, [isCollection, updateCollectionEditor]);
 
 	useEffect(() => {
 		updateCollectionEditorWithLoading().then(noop);
@@ -377,6 +429,13 @@ const CollectionOrBundleEdit: FC<
 	);
 	const shouldDeleteSelfFromCollection = isContributor && !permissions.canDelete;
 
+	const { data: bundlesContainingCollection } = useGetCollectionsOrBundlesContainingFragment(
+		collectionId,
+		BundleSortProp.title,
+		OrderDirection.asc,
+		{ enabled: !!collectionState.currentCollection }
+	);
+
 	useEffect(() => {
 		if (collectionState.currentCollection && contributors && isCollection) {
 			const userContributorRole = getContributorType(
@@ -555,7 +614,17 @@ const CollectionOrBundleEdit: FC<
 				icon: IconName.alertTriangle,
 			});
 		}
-	}, [commonUser, collectionId, setLoadingInfo, tText, tHtml, isCollection, type, contributors]);
+	}, [
+		isCollection,
+		collectionId,
+		commonUser,
+		isAdmin,
+		type,
+		contributors,
+		noRightsError,
+		tText,
+		tHtml,
+	]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection().then(noop);
@@ -1017,48 +1086,6 @@ const CollectionOrBundleEdit: FC<
 		}
 	};
 
-	const updateCollectionEditor = async () => {
-		try {
-			await CollectionService.updateCollectionEditor(collectionId);
-		} catch (err) {
-			redirectToClientPage(
-				buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: collectionId }),
-				history
-			);
-
-			if ((err as CustomError).innerException?.additionalInfo?.statusCode === 409) {
-				await releaseCollectionEditStatus();
-				ToastService.danger(
-					tHtml(
-						'collection/components/collection-or-bundle-edit___iemand-is-deze-collectie-reeds-aan-het-bewerken'
-					)
-				);
-			} else if ((err as CustomError).innerException?.additionalInfo?.statusCode === 401) {
-				return; // User has no rights to edit the collection
-			} else {
-				ToastService.danger(
-					tHtml(
-						'collection/components/collection-or-bundle-edit___verbinding-met-bewerk-server-verloren'
-					)
-				);
-			}
-		}
-	};
-
-	const releaseCollectionEditStatus = async () => {
-		try {
-			await CollectionService.releaseCollectionEditStatus(collectionId);
-		} catch (err) {
-			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode !== 409) {
-				ToastService.danger(
-					tHtml(
-						'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-updaten-van-de-collectie-bewerk-status'
-					)
-				);
-			}
-		}
-	};
-
 	const onForcedExitPage = async () => {
 		setIsForcedExit(true);
 		try {
@@ -1483,6 +1510,7 @@ const CollectionOrBundleEdit: FC<
 				{!!collectionState.currentCollection && (
 					<PublishCollectionModal
 						collection={collectionState.currentCollection}
+						parentBundles={bundlesContainingCollection}
 						isOpen={isPublishModalOpen}
 						onClose={onCloseShareCollectionModal}
 					/>

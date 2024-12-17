@@ -8,13 +8,15 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classNames from 'classnames';
+import clsx from 'clsx';
 import { noop } from 'lodash-es';
-import React, { type FC, useMemo, useState } from 'react';
+import React, { type FC, useCallback, useMemo, useState } from 'react';
 
 import { APP_PATH } from '../../constants';
 import { ShareDropdown, type ShareWithPupilsProps } from '../../shared/components';
 import { type ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
 import { type ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { isMobileWidth } from '../../shared/helpers';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -38,6 +40,7 @@ interface ShareProps extends ShareWithPupilsProps {
 }
 
 interface AssignmentActionsProps {
+	isCreating?: boolean;
 	view?: Partial<ButtonProps>;
 	preview?: Partial<ButtonProps>;
 	overflow?: Partial<ButtonProps>;
@@ -51,6 +54,7 @@ interface AssignmentActionsProps {
 }
 
 const AssignmentActions: FC<AssignmentActionsProps & UserProps> = ({
+	isCreating,
 	assignment,
 	commonUser,
 	onDuplicate,
@@ -66,116 +70,134 @@ const AssignmentActions: FC<AssignmentActionsProps & UserProps> = ({
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
 
-	const renderViewButton = (buttonProps?: Partial<ButtonProps>) =>
-		view ? <Button type="secondary" {...buttonProps} {...view} /> : null;
-
-	const renderPreviewButton = (buttonProps?: Partial<ButtonProps>) => (
-		<Button
-			label={tText('assignment/views/assignment-edit___bekijk-als-leerling')}
-			title={tText(
-				'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
-			)}
-			ariaLabel={tText(
-				'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
-			)}
-			type="secondary"
-			{...preview}
-			{...buttonProps}
-		/>
+	const renderViewButton = useCallback(
+		(buttonProps?: Partial<ButtonProps>) =>
+			view && !isCreating ? <Button type="secondary" {...buttonProps} {...view} /> : null,
+		[isCreating, view]
 	);
 
-	const renderOverflowButton = (buttonProps?: Partial<ButtonProps>) => (
-		<Button
-			icon={IconName.moreHorizontal}
-			type="secondary"
-			ariaLabel={tText('assignment/views/assignment-detail___meer-opties')}
-			title={tText('assignment/views/assignment-detail___meer-opties')}
-			{...overflow}
-			{...buttonProps}
-		/>
+	const renderPreviewButton = useCallback(
+		(buttonProps?: Partial<ButtonProps>) => (
+			<Button
+				label={tText('assignment/views/assignment-edit___bekijk-als-leerling')}
+				title={tText(
+					'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
+				)}
+				ariaLabel={tText(
+					'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
+				)}
+				type="secondary"
+				{...preview}
+				{...buttonProps}
+			/>
+		),
+		[preview, tText]
 	);
 
-	const renderPublishButton = (buttonProps?: Partial<ButtonProps>) => {
-		if (route !== APP_PATH.ASSIGNMENT_CREATE.route) {
-			return <Button type="secondary" {...buttonProps} />;
-		}
-	};
+	const renderOverflowButton = useCallback(
+		(buttonProps?: Partial<ButtonProps>) => (
+			<Button
+				icon={IconName.moreHorizontal}
+				type="secondary"
+				ariaLabel={tText('assignment/views/assignment-detail___meer-opties')}
+				title={tText('assignment/views/assignment-detail___meer-opties')}
+				{...overflow}
+				{...buttonProps}
+			/>
+		),
+		[overflow, tText]
+	);
 
-	const renderShareButton = (shareDropdownProps?: Partial<ShareDropdownProps>) => {
-		if (
-			route !== APP_PATH.ASSIGNMENT_CREATE.route &&
-			shareWithColleaguesOrPupilsProps?.assignment?.owner
-		) {
-			return renderMobileDesktop({
-				mobile: (
-					<Button
-						label={tText('assignment/components/assignment-actions___delen')}
-						title={tText(
-							'assignment/components/share-dropdown___deel-de-opdracht-met-leerlingen-of-collegas'
-						)}
-						ariaLabel={tText(
-							'assignment/components/share-dropdown___deel-de-opdracht-met-leerlingen-of-collegas'
-						)}
-						type="secondary"
-						{...shareDropdownProps?.buttonProps}
-						onClick={() => shareWithColleaguesOrPupilsProps.onClickMobile()}
-					/>
-				),
-				desktop: (
-					<div
-						className={classNames(
-							'c-assignment-heading__dropdown-wrapper',
-							shareDropdownProps?.buttonProps?.className
-						)}
-					>
-						<ShareDropdown
-							contributors={transformContributorsToSimpleContributors(
-								shareWithColleaguesOrPupilsProps?.assignment
-									?.owner as Avo.User.User,
-								shareWithColleaguesOrPupilsProps.contributors as Avo.Assignment.Contributor[]
+	const renderPublishButton = useCallback(
+		(buttonProps?: Partial<ButtonProps>) => {
+			if (route !== APP_PATH.ASSIGNMENT_CREATE.route) {
+				return <Button type="secondary" {...buttonProps} />;
+			}
+		},
+		[route]
+	);
+
+	const renderShareButton = useCallback(
+		(shareDropdownProps?: Partial<ShareDropdownProps>) => {
+			if (
+				route !== APP_PATH.ASSIGNMENT_CREATE.route &&
+				shareWithColleaguesOrPupilsProps?.assignment?.owner
+			) {
+				return renderMobileDesktop({
+					mobile: (
+						<Button
+							label={tText('assignment/components/assignment-actions___delen')}
+							title={tText(
+								'assignment/components/share-dropdown___deel-de-opdracht-met-leerlingen-of-collegas'
 							)}
-							onDeleteContributor={(info) =>
-								onDeleteContributor(
-									info,
-									shareWithColleaguesOrPupilsProps,
-									shareWithColleaguesOrPupilsProps.fetchContributors
-								)
-							}
-							onEditContributorRights={(contributorInfo, newRights) =>
-								onEditContributor(
-									contributorInfo,
-									newRights,
-									shareWithColleaguesOrPupilsProps,
-									shareWithColleaguesOrPupilsProps.fetchContributors,
-									refetchAssignment
-								)
-							}
-							onAddContributor={(info) =>
-								onAddNewContributor(
-									info,
-									shareWithColleaguesOrPupilsProps,
-									shareWithColleaguesOrPupilsProps.fetchContributors,
-									commonUser
-								)
-							}
-							{...shareDropdownProps}
-							shareWithPupilsProps={shareWithColleaguesOrPupilsProps}
-							availableRights={shareWithColleaguesOrPupilsProps.availableRights}
-							isAdmin={
-								commonUser?.permissions?.includes(
-									PermissionName.EDIT_ANY_ASSIGNMENTS
-								) || false
-							}
-							assignment={assignment}
+							ariaLabel={tText(
+								'assignment/components/share-dropdown___deel-de-opdracht-met-leerlingen-of-collegas'
+							)}
+							type="secondary"
+							{...shareDropdownProps?.buttonProps}
+							onClick={() => shareWithColleaguesOrPupilsProps.onClickMobile()}
 						/>
-					</div>
-				),
-			});
-		}
-	};
+					),
+					desktop: (
+						<div
+							className={classNames(
+								'c-assignment-heading__dropdown-wrapper',
+								shareDropdownProps?.buttonProps?.className
+							)}
+						>
+							<ShareDropdown
+								contributors={transformContributorsToSimpleContributors(
+									shareWithColleaguesOrPupilsProps?.assignment
+										?.owner as Avo.User.User,
+									shareWithColleaguesOrPupilsProps.contributors as Avo.Assignment.Contributor[]
+								)}
+								onDeleteContributor={(info) =>
+									onDeleteContributor(
+										info,
+										shareWithColleaguesOrPupilsProps,
+										shareWithColleaguesOrPupilsProps.fetchContributors
+									)
+								}
+								onEditContributorRights={(contributorInfo, newRights) =>
+									onEditContributor(
+										contributorInfo,
+										newRights,
+										shareWithColleaguesOrPupilsProps,
+										shareWithColleaguesOrPupilsProps.fetchContributors,
+										refetchAssignment
+									)
+								}
+								onAddContributor={(info) =>
+									onAddNewContributor(
+										info,
+										shareWithColleaguesOrPupilsProps,
+										shareWithColleaguesOrPupilsProps.fetchContributors,
+										commonUser
+									)
+								}
+								{...shareDropdownProps}
+								shareWithPupilsProps={shareWithColleaguesOrPupilsProps}
+								availableRights={shareWithColleaguesOrPupilsProps.availableRights}
+								isAdmin={
+									commonUser?.permissions?.includes(
+										PermissionName.EDIT_ANY_ASSIGNMENTS
+									) || false
+								}
+								assignment={assignment}
+							/>
+						</div>
+					),
+				});
+			}
+		},
+		[assignment, commonUser, refetchAssignment, route, shareWithColleaguesOrPupilsProps, tText]
+	);
 
-	const renderDuplicateButton = () => {
+	const renderDuplicateButton = useCallback(() => {
 		if (!onDuplicate) {
+			return null;
+		}
+		if (isCreating) {
 			return null;
 		}
 		return (
@@ -199,25 +221,35 @@ const AssignmentActions: FC<AssignmentActionsProps & UserProps> = ({
 				}}
 			/>
 		);
-	};
+	}, [isCreating, onDuplicate, tText]);
 
-	const renderDeleteButton = (
-		deleteAssignmentButtonProps?: Partial<DeleteAssignmentButtonProps>
-	) => (
-		<DeleteAssignmentButton
-			{...remove}
-			{...deleteAssignmentButtonProps}
-			// Allow merging of configs
-			button={{
-				...remove?.button,
-				...deleteAssignmentButtonProps?.button,
-			}}
-		/>
+	const renderDeleteButton = useCallback(
+		(deleteAssignmentButtonProps?: Partial<DeleteAssignmentButtonProps>) => {
+			if (isCreating) {
+				return null;
+			}
+			return (
+				<DeleteAssignmentButton
+					{...remove}
+					{...deleteAssignmentButtonProps}
+					// Allow merging of configs
+					button={{
+						...remove?.button,
+						...deleteAssignmentButtonProps?.button,
+					}}
+				/>
+			);
+		},
+		[isCreating, remove]
 	);
 
 	return useMemo(
 		() => (
-			<>
+			<div
+				className={clsx('c-assignment-heading__actions', {
+					['c-assignment-heading__actions--creating']: isCreating,
+				})}
+			>
 				{renderPreviewButton({
 					className: 'c-assignment-heading__hide-on-mobile',
 				})}
@@ -231,53 +263,58 @@ const AssignmentActions: FC<AssignmentActionsProps & UserProps> = ({
 					className: 'c-assignment-heading__hide-on-mobile',
 				})}
 
-				<div className="c-assignment-heading__dropdown-wrapper">
-					<Dropdown
-						isOpen={isOverflowDropdownOpen}
-						onClose={() => setOverflowDropdownOpen(false)}
-						placement="bottom-end"
-					>
-						<DropdownButton>
-							{renderOverflowButton({
-								onClick: () => setOverflowDropdownOpen(!isOverflowDropdownOpen),
-							})}
-						</DropdownButton>
+				{(!isCreating || isMobileWidth()) && (
+					<div className="c-assignment-heading__dropdown-wrapper">
+						<Dropdown
+							isOpen={isOverflowDropdownOpen}
+							onClose={() => setOverflowDropdownOpen(false)}
+							placement="bottom-end"
+						>
+							<DropdownButton>
+								{renderOverflowButton({
+									onClick: () => setOverflowDropdownOpen(!isOverflowDropdownOpen),
+								})}
+							</DropdownButton>
 
-						<DropdownContent>
-							{renderPreviewButton({
-								block: true,
-								className: 'c-assignment-heading__show-on-mobile',
-								icon: IconName.eye,
-								type: 'borderless',
-							})}
-							{renderDuplicateButton()}
-							{renderDeleteButton({ button: { block: true, type: 'borderless' } })}
-							{renderPublishButton({
-								...publish,
-								block: true,
-								className: 'c-assignment-heading__show-on-mobile',
-								type: 'borderless',
-							})}
-							{renderViewButton({
-								block: true,
-								className: 'c-assignment-heading__show-on-mobile',
-								icon: IconName.close,
-								type: 'borderless',
-							})}
-							{renderShareButton({
-								dropdownProps: {
-									placement: 'bottom-end',
-								},
-								buttonProps: {
+							<DropdownContent>
+								{renderPreviewButton({
 									block: true,
 									className: 'c-assignment-heading__show-on-mobile',
-									icon: IconName.userGroup,
+									icon: IconName.eye,
 									type: 'borderless',
-								},
-							})}
-						</DropdownContent>
-					</Dropdown>
-				</div>
+								})}
+								{renderDuplicateButton()}
+								{renderDeleteButton({
+									button: { block: true, type: 'borderless' },
+								})}
+								{renderPublishButton({
+									...publish,
+									label: tText('Publiceer'),
+									block: true,
+									className: 'c-assignment-heading__show-on-mobile',
+									type: 'borderless',
+								})}
+								{renderViewButton({
+									block: true,
+									className: 'c-assignment-heading__show-on-mobile',
+									icon: IconName.close,
+									type: 'borderless',
+								})}
+								{renderShareButton({
+									dropdownProps: {
+										placement: 'bottom-end',
+									},
+									buttonProps: {
+										block: true,
+										className: 'c-assignment-heading__show-on-mobile',
+										icon: IconName.userGroup,
+										type: 'borderless',
+									},
+								})}
+							</DropdownContent>
+						</Dropdown>
+					</div>
+				)}
 
 				{renderShareButton({
 					dropdownProps: {
@@ -293,9 +330,21 @@ const AssignmentActions: FC<AssignmentActionsProps & UserProps> = ({
 						),
 					},
 				})}
-			</>
+			</div>
 		),
-		[tText, isOverflowDropdownOpen, publish]
+		[
+			renderPreviewButton,
+			publish,
+			renderPublishButton,
+			renderViewButton,
+			isCreating,
+			isOverflowDropdownOpen,
+			renderOverflowButton,
+			renderDuplicateButton,
+			renderDeleteButton,
+			renderShareButton,
+			tText,
+		]
 	);
 };
 

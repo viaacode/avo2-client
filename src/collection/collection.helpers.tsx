@@ -158,6 +158,20 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 			);
 		},
 	},
+	{
+		error: tText('De bundel heeft niet-publieke collecties of opdrachten'),
+		isValid: (bundle: Partial<Avo.Collection.Collection>) => {
+			return (
+				bundle.type_id === ContentTypeNumber.collection ||
+				!bundle.collection_fragments ||
+				bundle.collection_fragments.every((fragment) => {
+					return (
+						fragment.item_meta as Avo.Collection.Collection | Avo.Assignment.Assignment
+					).is_public;
+				})
+			);
+		},
+	},
 	// TODO: Add check if owner or write-rights.
 ];
 

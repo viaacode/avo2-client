@@ -26,6 +26,7 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
+import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../../constants';
 import { DeleteObjectModal, FlowPlayerWrapper } from '../../../shared/components';
@@ -51,9 +52,12 @@ import {
 	GET_FRAGMENT_DELETE_LABELS,
 	GET_FRAGMENT_DELETE_SUCCESS_MESSAGES,
 	GET_FRAGMENT_EDIT_SWITCH_LABELS,
+	GET_FRAGMENT_PUBLISH_STATUS_LABELS,
 } from './FragmentEdit.const';
 import { FragmentEditAction } from './FragmentEdit.types';
+
 import './FragmentEdit.scss';
+import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from '../../views/CollectionDetail.const';
 
 interface FragmentEditProps {
 	index: number;
@@ -350,6 +354,9 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 		);
 	};
 
+	const fragmentIsPublished: boolean | undefined = (
+		fragment.item_meta as Avo.Collection.Collection | Avo.Assignment.Assignment
+	).is_public;
 	return (
 		<>
 			<div className="c-panel c-fragment-edit">
@@ -377,6 +384,38 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 							</ToolbarItem>
 						</ToolbarLeft>
 						<ToolbarRight>
+							{!isNil(fragmentIsPublished) && (
+								<ToolbarItem>
+									<Link
+										to={buildLink(
+											fragment.type === 'COLLECTION'
+												? APP_PATH.COLLECTION_DETAIL.route
+												: APP_PATH.ASSIGNMENT_DETAIL.route,
+											{ id: fragment.external_id },
+											{ [QUERY_PARAM_SHOW_PUBLISH_MODAL]: '1' }
+										)}
+									>
+										<Button
+											type="secondary"
+											icon={
+												fragmentIsPublished
+													? IconName.unlock3
+													: IconName.lock
+											}
+											ariaLabel={
+												GET_FRAGMENT_PUBLISH_STATUS_LABELS()[fragment.type][
+													String(fragmentIsPublished)
+												]
+											}
+											title={
+												GET_FRAGMENT_PUBLISH_STATUS_LABELS()[fragment.type][
+													String(fragmentIsPublished)
+												]
+											}
+										/>
+									</Link>
+								</ToolbarItem>
+							)}
 							<ToolbarItem>
 								<MoreOptionsDropdown
 									isOpen={openOptionsId === fragment.id}

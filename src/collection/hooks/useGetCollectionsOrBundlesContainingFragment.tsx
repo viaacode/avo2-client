@@ -4,6 +4,7 @@ import { OrderDirection } from '../../search/search.const';
 import { QUERY_KEYS } from '../../shared/constants/query-keys';
 import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { CollectionService } from '../collection.service';
+import { type ParentBundle } from '../collection.types';
 
 export type BundleColumnId =
 	| 'title'
@@ -28,7 +29,7 @@ export const useGetCollectionsOrBundlesContainingFragment = (
 		refetchIntervalInBackground?: boolean;
 	}> = {}
 ) => {
-	return useQuery<{ id: string; title: string }[]>(
+	return useQuery<ParentBundle[]>(
 		[
 			QUERY_KEYS.GET_COLLECTIONS_OR_BUNDLES_CONTAINING_FRAGMENT,
 			fragmentId,

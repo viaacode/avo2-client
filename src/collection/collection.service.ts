@@ -145,6 +145,7 @@ import {
 	CollectionOrBundle,
 	ContentTypeNumber,
 	type MarcomEntry,
+	type ParentBundle,
 	type QualityLabel,
 } from './collection.types';
 import { type MarcomNoteInfo } from './components/CollectionOrBundleEdit.types';
@@ -1021,7 +1022,7 @@ export class CollectionService {
 		fragmentId: string,
 		orderProp: BundleSortProp,
 		orderDirection: OrderDirection
-	): Promise<{ id: string; title: string }[]> {
+	): Promise<ParentBundle[]> {
 		try {
 			return await fetchWithLogoutJson(
 				stringifyUrl({

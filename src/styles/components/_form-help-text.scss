@@ -16,6 +16,10 @@
 
 .c-form-help-text--error {
 	color: $color-error;
+
+	a {
+		color: $color-error;
+	}
 }
 
 .c-form-help-text + .c-form-help-text {

@@ -12,30 +12,35 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FC, useEffect, useState } from 'react';
+import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
+import { APP_PATH } from '../../../constants';
+import { buildLink } from '../../../shared/helpers';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
 import { CollectionService } from '../../collection.service';
+import { type ParentBundle } from '../../collection.types';
 
 interface PublishCollectionModalProps {
 	isOpen: boolean;
 	onClose: (collection?: Avo.Collection.Collection) => void;
 	collection: Avo.Collection.Collection;
+	parentBundles: ParentBundle[] | undefined;
 }
 
 const PublishCollectionModal: FC<PublishCollectionModalProps & UserProps> = ({
 	onClose,
 	isOpen,
 	collection,
+	parentBundles,
 	user,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const [validationError, setValidationError] = useState<string[] | undefined>(undefined);
+	const [validationErrors, setValidationErrors] = useState<(string | ReactNode)[]>([]);
 	const [isCollectionPublic, setIsCollectionPublic] = useState(collection.is_public);
 
 	const isCollection = () => {
@@ -59,11 +64,29 @@ const PublishCollectionModal: FC<PublishCollectionModalProps & UserProps> = ({
 
 			// Validate if user wants to publish
 			if (isPublished) {
-				const validationErrors: string[] = await getValidationErrorsForPublish(collection);
+				const validationErrorsTemp: string[] =
+					await getValidationErrorsForPublish(collection);
 
-				if (validationErrors && validationErrors.length) {
-					setValidationError(validationErrors);
-					ToastService.danger(validationErrors);
+				if (validationErrorsTemp && validationErrorsTemp.length) {
+					setValidationErrors(validationErrorsTemp);
+					ToastService.danger(validationErrorsTemp);
+					return;
+				}
+			}
+
+			// Validate if user wants to depublish
+			if (isDepublished) {
+				const publishedParentBundle = parentBundles?.find((bundle) => bundle.is_public);
+				if (publishedParentBundle) {
+					const linkToBundle = buildLink(APP_PATH.BUNDLE_DETAIL.route, {
+						id: publishedParentBundle.id,
+					});
+					const error: ReactNode = tHtml(
+						'Deze collectie zit in <a href="{{linkToBundle}}">een gepubliceerde bundel</a>. Verwijder eerst de collectie in die bundel en sla dan op.',
+						{ linkToBundle }
+					);
+					setValidationErrors([error]);
+					ToastService.danger([error]);
 					return;
 				}
 			}
@@ -73,7 +96,7 @@ const PublishCollectionModal: FC<PublishCollectionModalProps & UserProps> = ({
 				published_at: new Date().toISOString(),
 			};
 			await CollectionService.updateCollectionProperties(collection.id, newCollectionProps);
-			setValidationError(undefined);
+			setValidationErrors([]);
 			ToastService.success(
 				isCollection()
 					? isCollectionPublic
@@ -115,7 +138,7 @@ const PublishCollectionModal: FC<PublishCollectionModalProps & UserProps> = ({
 	};
 
 	const closeModal = (newCollection?: Avo.Collection.Collection) => {
-		setValidationError(undefined);
+		setValidationErrors([]);
 		onClose(newCollection);
 	};
 
@@ -145,7 +168,7 @@ const PublishCollectionModal: FC<PublishCollectionModalProps & UserProps> = ({
 								'collection/components/modals/share-collection-modal___bepaal-in-hoeverre-jouw-bundel-toegankelijk-is-voor-andere-personen'
 						  )}
 				</p>
-				<FormGroup error={validationError}>
+				<FormGroup error={validationErrors}>
 					<Spacer margin="top-large">
 						<BlockHeading className="u-m-0" type="h4">
 							{tHtml(

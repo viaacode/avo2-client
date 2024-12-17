@@ -12,6 +12,10 @@
 			gap: $g-spacer-unit;
 		}
 
+		&--creating {
+			grid-template-columns: auto; // Only one button on creation page
+		}
+
 		& > button,
 		& > .c-dropdown__trigger,
 		& > .c-assignment-heading__dropdown-wrapper {
@@ -20,6 +24,10 @@
 			@media screen and (min-width: $g-bp2) {
 				transform: none;
 			}
+		}
+
+		.c-assignment-heading__dropdown-wrapper {
+			z-index: 1;
 		}
 
 		.c-dropdown__content-open {

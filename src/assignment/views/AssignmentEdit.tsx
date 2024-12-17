@@ -1,5 +1,6 @@
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
+import { OrderDirection } from '@meemoo/react-components';
 import {
 	Alert,
 	Button,
@@ -28,6 +29,10 @@ import { type DefaultSecureRouteProps } from '../../authentication/components/Se
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { BlockList } from '../../collection/components';
+import {
+	BundleSortProp,
+	useGetCollectionsOrBundlesContainingFragment,
+} from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
@@ -119,6 +124,8 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 }) => {
 	const { tText, tHtml } = useTranslation();
 
+	const assignmentId = match.params.id;
+
 	// Data
 	const [tab, setTab] = useState<ASSIGNMENT_CREATE_UPDATE_TABS>(
 		ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT
@@ -158,9 +165,14 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 		}>
 	>({});
 	const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
+	const { data: bundlesContainingAssignment } = useGetCollectionsOrBundlesContainingFragment(
+		assignmentId,
+		BundleSortProp.title,
+		OrderDirection.asc,
+		{ enabled: !!assignment }
+	);
 
 	// Computed
-	const assignmentId = match.params.id;
 	const isCreatingAssignment = !assignmentId;
 	const isPublic = assignment?.is_public || false;
 
@@ -420,7 +432,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 	// Events
 
 	const handleOnSave = async () => {
-		if (!commonUser?.profileId || !originalAssignment) {
+		if (!commonUser?.profileId || (!originalAssignment && !isCreatingAssignment)) {
 			return;
 		}
 		setIsSaving(true);
@@ -524,6 +536,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 
 					resetForm();
 					setIsSaving(false);
+					setHasUnsavedChanges(false);
 
 					// Delay navigation, until isDirty state becomes false, otherwise the "unsaved changes" modal will popup
 					setTimeout(() => {
@@ -803,15 +816,19 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 		[tText]
 	);
 
-	const renderContributors = useMemo(
-		() =>
-			assignment && (
-				<Flex align="start">
-					<HeaderOwnerAndContributors subject={assignment} commonUser={commonUser} />
-				</Flex>
-			),
-		[assignment, commonUser]
-	);
+	const renderContributors = useMemo(() => {
+		if (!assignment) {
+			return null;
+		}
+		if (isCreatingAssignment) {
+			return null;
+		}
+		return (
+			<Flex align="start">
+				<HeaderOwnerAndContributors subject={assignment} commonUser={commonUser} />
+			</Flex>
+		);
+	}, [assignment, commonUser]);
 
 	const renderMeta = useMemo(() => {
 		const bookmarks = String(bookmarkViewCounts.bookmarkCount || 0);
@@ -986,6 +1003,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 	const renderHeadingActions = (renderLabel: boolean) => {
 		return (
 			<AssignmentActions
+				isCreating={isCreatingAssignment}
 				publish={
 					permissions.canPublish
 						? {
@@ -1249,6 +1267,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 					}}
 					isOpen={isPublishModalOpen}
 					assignment={assignment as Avo.Assignment.Assignment}
+					parentBundles={bundlesContainingAssignment}
 				/>
 			)}
 

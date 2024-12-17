@@ -79,9 +79,7 @@ const AssignmentHeading: FC<AssignmentHeadingProps> = ({
 
 							{actions && (
 								<ToolbarRight>
-									<ToolbarItem className="c-assignment-heading__actions">
-										{actions}
-									</ToolbarItem>
+									<ToolbarItem>{actions}</ToolbarItem>
 								</ToolbarRight>
 							)}
 						</Toolbar>
