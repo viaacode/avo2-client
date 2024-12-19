@@ -85,7 +85,7 @@ const PublishAssignmentModal: FC<PublishAssignmentModalProps & UserProps> = ({
 						id: publishedParentBundle.id,
 					});
 					const error: ReactNode = tHtml(
-						'Deze opdracht zit in <a href="{{linkToBundle}}">een gepubliceerde bundel</a>. Verwijder eerst de opdracht uit die bundel en sla dan op.',
+						'assignment/modals/publish-assignment-modal___deze-opdracht-zit-in-a-href-link-to-bundle-een-gepubliceerde-bundel-a-verwijder-eerst-de-opdracht-uit-die-bundel-en-sla-dan-op',
 						{ linkToBundle }
 					);
 					setValidationErrors([error]);

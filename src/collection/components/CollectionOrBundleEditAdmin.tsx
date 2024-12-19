@@ -351,7 +351,9 @@ const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps & UserPro
 									{/* Show bundles that contain this collection */}
 									<ContainedInBundlesTable
 										fragmentId={collection.id}
-										title={tText('Bundels die deze collectie bevatten')}
+										title={tText(
+											'collection/components/collection-or-bundle-edit-admin___bundels-die-deze-collectie-bevatten'
+										)}
 										emptyTableLabel={tText(
 											'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-in-geen-enkele-bundel-opgenomen'
 										)}

@@ -82,7 +82,7 @@ const PublishCollectionModal: FC<PublishCollectionModalProps & UserProps> = ({
 						id: publishedParentBundle.id,
 					});
 					const error: ReactNode = tHtml(
-						'Deze collectie zit in <a href="{{linkToBundle}}">een gepubliceerde bundel</a>. Verwijder eerst de collectie in die bundel en sla dan op.',
+						'collection/components/modals/publish-collection-modal___deze-collectie-zit-in-a-href-link-to-bundle-een-gepubliceerde-bundel-a-verwijder-eerst-de-collectie-in-die-bundel-en-sla-dan-op',
 						{ linkToBundle }
 					);
 					setValidationErrors([error]);

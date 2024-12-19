@@ -240,7 +240,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 		{
 			id: 'views',
 			icon: IconName.eye,
-			tooltip: tText('Views'),
+			tooltip: tText('admin/assignments/assignments___views'),
 			sortable: true,
 			visibleByDefault: true,
 			dataType: TableColumnDataType.number,
@@ -248,7 +248,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 		{
 			id: 'bookmarks',
 			icon: IconName.bookmark,
-			tooltip: tText('Bookmarks'),
+			tooltip: tText('admin/assignments/assignments___bookmarks'),
 			sortable: true,
 			visibleByDefault: true,
 			dataType: TableColumnDataType.number,
@@ -256,7 +256,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 		{
 			id: 'copies',
 			icon: IconName.copy,
-			tooltip: tText('Kopies'),
+			tooltip: tText('admin/assignments/assignments___kopies'),
 			sortable: true,
 			visibleByDefault: true,
 			dataType: TableColumnDataType.number,
@@ -264,7 +264,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 		{
 			id: 'in_bundle',
 			icon: IconName.folder,
-			tooltip: tText('Aantal keer opgenomen in een bundel'),
+			tooltip: tText('admin/assignments/assignments___aantal-keer-opgenomen-in-een-bundel'),
 			sortable: true,
 			visibleByDefault: true,
 			dataType: TableColumnDataType.number,
@@ -272,7 +272,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 		{
 			id: 'contributors',
 			icon: IconName.share2,
-			tooltip: tText('Gedeeld'),
+			tooltip: tText('admin/assignments/assignments___gedeeld'),
 			sortable: true,
 			visibleByDefault: true,
 			dataType: TableColumnDataType.number,

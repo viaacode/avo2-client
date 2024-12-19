@@ -1237,8 +1237,12 @@ const CollectionDetail: FC<
 										{hasParentBundles && (
 											<p className="c-body-1">
 												{bundlesContainingCollection.length === 1
-													? tText('Deze collectie zit in bundel:')
-													: tText('Deze collectie zit in bundels:')}{' '}
+													? tText(
+															'collection/views/collection-detail___deze-collectie-zit-in-bundel'
+													  )
+													: tText(
+															'collection/views/collection-detail___deze-collectie-zit-in-bundels'
+													  )}{' '}
 												{bundlesContainingCollection?.map(
 													(bundle, index) => (
 														<span key={'parent-bundle--' + bundle.id}>

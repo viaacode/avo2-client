@@ -15,34 +15,62 @@ export const COLLECTION_FRAGMENT_TYPE_TO_EVENT_OBJECT_TYPE: Partial<
 
 export function GET_FRAGMENT_DELETE_SUCCESS_MESSAGES(): Record<Avo.Core.BlockItemType, ReactNode> {
 	return {
-		TEXT: tHtml('Tekst is succesvol verwijderd uit de collectie.'),
-		ITEM: tHtml('Fragment is succesvol verwijderd uit de collectie.'),
-		ZOEK: tHtml('Zoek blok is succesvol verwijderd uit de collectie.'),
-		BOUW: tHtml('Zoek blok is succesvol verwijderd uit de collectie.'),
-		COLLECTION: tHtml('Collectie is succesvol verwijderd uit de bundel.'),
-		ASSIGNMENT: tHtml('Opdracht is succesvol verwijderd uit de bundel.'),
+		TEXT: tHtml(
+			'collection/components/fragment/fragment-edit___tekst-is-succesvol-verwijderd-uit-de-collectie'
+		),
+		ITEM: tHtml(
+			'collection/components/fragment/fragment-edit___fragment-is-succesvol-verwijderd-uit-de-collectie'
+		),
+		ZOEK: tHtml(
+			'collection/components/fragment/fragment-edit___zoek-blok-is-succesvol-verwijderd-uit-de-collectie'
+		),
+		BOUW: tHtml(
+			'collection/components/fragment/fragment-edit___zoek-blok-is-succesvol-verwijderd-uit-de-collectie'
+		),
+		COLLECTION: tHtml(
+			'collection/components/fragment/fragment-edit___collectie-is-succesvol-verwijderd-uit-de-bundel'
+		),
+		ASSIGNMENT: tHtml(
+			'collection/components/fragment/fragment-edit___opdracht-is-succesvol-verwijderd-uit-de-bundel'
+		),
 	};
 }
 
 export function GET_FRAGMENT_DELETE_LABELS(): Record<Avo.Core.BlockItemType, string> {
 	return {
-		ITEM: tText('Ben je zeker dat je het fragment uit deze collectie wil verwijderen?'),
-		TEXT: tText('Ben je zeker dat je deze tekst blok wil verwijderen uit deze collectie?'),
+		ITEM: tText(
+			'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-het-fragment-uit-deze-collectie-wil-verwijderen'
+		),
+		TEXT: tText(
+			'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-deze-tekst-blok-wil-verwijderen-uit-deze-collectie'
+		),
 		ZOEK: '',
 		BOUW: '',
-		COLLECTION: tText('Ben je zeker dat je de collectie uit deze bundel wil verwijderen?'),
-		ASSIGNMENT: tText('Ben je zeker dat je de opdracht uit deze bundel wil verwijderen?'),
+		COLLECTION: tText(
+			'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-de-collectie-uit-deze-bundel-wil-verwijderen'
+		),
+		ASSIGNMENT: tText(
+			'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-de-opdracht-uit-deze-bundel-wil-verwijderen'
+		),
 	};
 }
 
 export function GET_FRAGMENT_EDIT_SWITCH_LABELS(): Record<Avo.Core.BlockItemType, string> {
 	return {
-		ITEM: tText('Eigen beschrijving bij fragment'),
-		TEXT: tText('Eigen beschrijving bij fragment'),
+		ITEM: tText(
+			'collection/components/fragment/fragment-edit___eigen-beschrijving-bij-fragment'
+		),
+		TEXT: tText(
+			'collection/components/fragment/fragment-edit___eigen-beschrijving-bij-fragment'
+		),
 		ZOEK: '',
 		BOUW: '',
-		COLLECTION: tText('Eigen titel bij deze collectie'),
-		ASSIGNMENT: tText('Eigen titel bij deze opdracht'),
+		COLLECTION: tText(
+			'collection/components/fragment/fragment-edit___eigen-titel-bij-deze-collectie'
+		),
+		ASSIGNMENT: tText(
+			'collection/components/fragment/fragment-edit___eigen-titel-bij-deze-opdracht'
+		),
 	};
 }
 
@@ -56,12 +84,12 @@ export function GET_FRAGMENT_PUBLISH_STATUS_LABELS(): Record<
 > {
 	return {
 		COLLECTION: {
-			true: tText('Deze collectie is publiek'),
-			false: tText('Deze collectie is privé'),
+			true: tText('collection/components/fragment/fragment-edit___deze-collectie-is-publiek'),
+			false: tText('collection/components/fragment/fragment-edit___deze-collectie-is-prive'),
 		},
 		ASSIGNMENT: {
-			true: tText('Deze opdracht is publiek'),
-			false: tText('Deze opdracht is privé'),
+			true: tText('collection/components/fragment/fragment-edit___deze-opdracht-is-publiek'),
+			false: tText('collection/components/fragment/fragment-edit___deze-opdracht-is-prive'),
 		},
 		ZOEK: {
 			true: '',

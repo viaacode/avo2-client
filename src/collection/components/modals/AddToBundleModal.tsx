@@ -153,7 +153,9 @@ const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
 					? tHtml(
 							'collection/components/modals/add-to-bundle-modal___de-collectie-is-toegevoegd-aan-de-bundel'
 					  )
-					: tHtml('De opdracht is toegevoegd aan de bundel')
+					: tHtml(
+							'collection/components/modals/add-to-bundle-modal___de-opdracht-is-toegevoegd-aan-de-bundel'
+					  )
 			);
 			onClose();
 			trackEvents(
@@ -171,7 +173,9 @@ const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
 					? tHtml(
 							'collection/components/modals/add-to-bundle-modal___de-collectie-kon-niet-worden-toegevoegd-aan-de-bundel'
 					  )
-					: tHtml('De opdracht kon niet worden toegevoegd aan de bundel')
+					: tHtml(
+							'collection/components/modals/add-to-bundle-modal___de-opdracht-kon-niet-worden-toegevoegd-aan-de-bundel'
+					  )
 			);
 		}
 

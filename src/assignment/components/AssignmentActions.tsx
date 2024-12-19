@@ -289,7 +289,9 @@ const AssignmentActions: FC<AssignmentActionsProps & UserProps> = ({
 								})}
 								{renderPublishButton({
 									...publish,
-									label: tText('Publiceer'),
+									label: tText(
+										'assignment/components/assignment-actions___publiceer'
+									),
 									block: true,
 									className: 'c-assignment-heading__show-on-mobile',
 									type: 'borderless',

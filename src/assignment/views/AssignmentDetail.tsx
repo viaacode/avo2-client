@@ -551,7 +551,7 @@ const AssignmentDetail: FC<
 		const ASSIGNMENT_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				AssignmentAction.addToBundle,
-				tText('Voeg toe aan bundel'),
+				tText('assignment/views/assignment-detail___voeg-toe-aan-bundel'),
 				IconName.plus,
 				!!(
 					permissions?.canEditBundles &&
@@ -713,7 +713,7 @@ const AssignmentDetail: FC<
 			),
 			...createDropdownMenuItem(
 				AssignmentAction.addToBundle,
-				tText('Voeg toe aan bundel'),
+				tText('assignment/views/assignment-detail___voeg-toe-aan-bundel'),
 				IconName.plus,
 				permissions?.canEditBundles || false
 			),
@@ -915,8 +915,12 @@ const AssignmentDetail: FC<
 										{hasParentBundles && (
 											<p className="c-body-1">
 												{bundlesContainingAssignment.length === 1
-													? tText('Deze opdracht zit in bundel:')
-													: tText('Deze opdracht zit in bundels:')}{' '}
+													? tText(
+															'assignment/views/assignment-detail___deze-opdracht-zit-in-bundel'
+													  )
+													: tText(
+															'assignment/views/assignment-detail___deze-opdracht-zit-in-bundels'
+													  )}{' '}
 												{bundlesContainingAssignment?.map(
 													(bundle, index) => (
 														<>

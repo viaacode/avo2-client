@@ -414,7 +414,7 @@ const FlowPlayerWrapper: FC<
 
 			{(!!props.annotationTitle || !!props.annotationText) && (
 				<div className="a-block-image__annotation">
-					{props.annotationTitle && <h3>&#169; {props.annotationTitle}</h3>}
+					{props.annotationTitle && <h3>{props.annotationTitle}</h3>}
 					{props.annotationText && (
 						<p className="a-flowplayer__text">{props.annotationText}</p>
 					)}

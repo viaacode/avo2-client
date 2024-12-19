@@ -159,7 +159,9 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 		},
 	},
 	{
-		error: tText('De bundel heeft niet-publieke collecties of opdrachten'),
+		error: tText(
+			'collection/collection___de-bundel-heeft-niet-publieke-collecties-of-opdrachten'
+		),
 		isValid: (bundle: Partial<Avo.Collection.Collection>) => {
 			return (
 				bundle.type_id === ContentTypeNumber.collection ||

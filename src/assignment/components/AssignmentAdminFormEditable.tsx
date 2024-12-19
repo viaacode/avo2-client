@@ -168,9 +168,11 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 
 						<ContainedInBundlesTable
 							fragmentId={assignment.id}
-							title={tText('Bundels die deze opdracht bevatten')}
+							title={tText(
+								'assignment/components/assignment-admin-form-editable___bundels-die-deze-opdracht-bevatten'
+							)}
 							emptyTableLabel={tText(
-								'Deze opdracht is in geen enkele bundel opgenomen.'
+								'assignment/components/assignment-admin-form-editable___deze-opdracht-is-in-geen-enkele-bundel-opgenomen'
 							)}
 						/>
 					</Spacer>

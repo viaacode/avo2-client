@@ -36,5 +36,5 @@ export const BLOCK_ITEM_LABELS = (
 	ZOEK: tText('shared/components/block-list/block-list___zoekoefening'),
 	BOUW: tText('shared/components/block-list/block-list___zoekoefening'),
 	COLLECTION: tText('shared/components/block-list/block-list___collectie'),
-	ASSIGNMENT: tText('Opdracht'),
+	ASSIGNMENT: tText('shared/components/block-list/block-list___opdracht'),
 });

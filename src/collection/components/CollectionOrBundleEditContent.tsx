@@ -355,7 +355,9 @@ const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & Use
 										name={IconName.collection}
 										className="u-spacer-right-s u-spacer-bottom-xs u-color-ocean-green"
 									/>
-									{tHtml('Collecties in deze bundel')}
+									{tHtml(
+										'collection/components/collection-or-bundle-edit-content___collecties-in-deze-bundel'
+									)}
 								</BlockHeading>
 							)}
 							{fragmentCollections.map((fragment, index) =>
@@ -377,7 +379,9 @@ const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & Use
 										name={IconName.clipboard}
 										className="u-spacer-right-s u-spacer-bottom-xs u-color-french-rose"
 									/>
-									{tHtml('Opdrachten in deze bundel')}
+									{tHtml(
+										'collection/components/collection-or-bundle-edit-content___opdrachten-in-deze-bundel'
+									)}
 								</BlockHeading>
 							)}
 							{fragmentAssignments.map((fragment, index) =>

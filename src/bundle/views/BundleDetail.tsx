@@ -830,7 +830,9 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 													name={IconName.collection}
 													className="u-spacer-right-s u-spacer-bottom-xs u-color-ocean-green"
 												/>
-												{tText('Collecties in deze bundel')}
+												{tText(
+													'bundle/views/bundle-detail___collecties-in-deze-bundel'
+												)}
 											</BlockHeading>
 										)}
 										<div className="c-media-card-list u-spacer-bottom-l">
@@ -846,7 +848,9 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 													name={IconName.clipboard}
 													className="u-spacer-right-s u-spacer-bottom-xs u-color-french-rose"
 												/>
-												{tText('Opdrachten in deze bundel')}
+												{tText(
+													'bundle/views/bundle-detail___opdrachten-in-deze-bundel'
+												)}
 											</BlockHeading>
 										)}
 										<div className="c-media-card-list">
