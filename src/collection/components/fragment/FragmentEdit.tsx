@@ -1,4 +1,4 @@
-import { type RichEditorState } from '@meemoo/react-components';
+import { RichTextEditorWithInternalState } from '@meemoo/react-components';
 import {
 	Button,
 	Column,
@@ -17,7 +17,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { get, isEqual, isNil, isString } from 'lodash-es';
+import { isEqual, isNil, isString } from 'lodash-es';
 import React, {
 	type FC,
 	type ReactNode,
@@ -34,7 +34,6 @@ import {
 	RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
 	RICH_TEXT_EDITOR_OPTIONS_DEFAULT,
 } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
-import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { getMoreOptionsLabel } from '../../../shared/constants';
 import { buildLink, createDropdownMenuItem } from '../../../shared/helpers';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
@@ -43,7 +42,9 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { CollectionBlockType } from '../../collection.const';
+import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from '../../views/CollectionDetail.const';
 import { type CollectionAction } from '../CollectionOrBundleEdit.types';
+import { FRAGMENT_EDIT_DELAY } from '../CollectionOrBundleEditContent.consts';
 import CutFragmentModal from '../modals/CutFragmentModal';
 
 import FragmentAdd from './FragmentAdd';
@@ -57,7 +58,6 @@ import {
 import { FragmentEditAction } from './FragmentEdit.types';
 
 import './FragmentEdit.scss';
-import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from '../../views/CollectionDetail.const';
 
 interface FragmentEditProps {
 	index: number;
@@ -89,15 +89,13 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 }) => {
 	const { tText } = useTranslation();
 
-	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
-	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
-	const [descriptionRichEditorState, setDescriptionRichEditorState] = useState<
-		RichEditorState | undefined
-	>(undefined);
-
-	// Check whether the current fragment is the first and/or last fragment in collection
-	const isFirst = (fragmentIndex: number) => fragmentIndex === 0;
-	const isLast = (fragmentIndex: number) => fragmentIndex === numberOfFragments - 1;
+	/**
+	 * https://meemoo.atlassian.net/browse/AVO-3370
+	 * Delay the save action by 50ms to ensure the  fragment properties are saved locally
+	 * We cannot update the fragment states live in the parent component, because that would also rerender the video players
+	 * and that would cause the video players to lose their current time setting
+	 */
+	const [shouldSave, setShouldSave] = useState(false);
 
 	const getTitle = useCallback(() => {
 		if (fragment.use_custom_fields) {
@@ -106,51 +104,121 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 		return fragment.item_meta?.title || '';
 	}, [fragment.use_custom_fields, fragment.custom_title, fragment.item_meta]);
 
-	// Cache title until the text field blurs, then pass title to collection edit reducer
-	// Otherwise re-rendering cannot keep up with type speed / delete speed
-	const [tempTitle, setTempTitle] = useState<string>(getTitle());
+	const getDescription = (): string | undefined => {
+		let description: string | undefined | null;
+		if (fragment.use_custom_fields) {
+			description = fragment.custom_description;
+		} else {
+			description = fragment?.item_meta?.description;
+		}
+		if (isString(description)) {
+			description = convertToHtml(description);
+		}
+		return description || undefined;
+	};
+
+	/**
+	 * Save the properties of this fragment locally and only update the parent component state, if the user clicks outside the fragment edit component
+	 * https://meemoo.atlassian.net/browse/AVO-3370
+	 * Delay the save action by 100ms to ensure the fragment properties are saved
+	 * We cannot update the fragment states live in the parent component, because that would also rerender the video players
+	 * and that would cause the video players to lose their current time setting
+	 */
+	const [useCustomFields, setUseCustomFields] = useState(fragment.use_custom_fields);
+	const [customTitle, setCustomTitle] = useState(getTitle());
+	const [customDescription, setCustomDescription] = useState(getDescription());
+
+	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
+	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+
+	// Check whether the current fragment is the first and/or last fragment in collection
+	const isFirst = (fragmentIndex: number) => fragmentIndex === 0;
+	const isLast = (fragmentIndex: number) => fragmentIndex === numberOfFragments - 1;
 
 	const FRAGMENT_DROPDOWN_ITEMS = [
 		// TODO: DISABLED FEATURE
 		// createDropdownMenuItem('duplicate', 'Dupliceren', 'copy'),
 		// createDropdownMenuItem('move', 'Verplaatsen', 'arrow-right'),
-		...createDropdownMenuItem(FragmentEditAction.DETAIL, 'Bekijk', IconName.externalLink, true),
-		...createDropdownMenuItem(FragmentEditAction.DELETE, 'Verwijderen', undefined, true),
+		...createDropdownMenuItem(
+			String(fragment.id),
+			FragmentEditAction.DETAIL,
+			'Bekijk',
+			IconName.externalLink,
+			true
+		),
+		...createDropdownMenuItem(
+			String(fragment.id),
+			FragmentEditAction.DELETE,
+			'Verwijderen',
+			undefined,
+			true
+		),
 		// TODO: DISABLED FEATURE
 		// createDropdownMenuItem('copyToCollection', 'Kopiëren naar andere collectie', 'copy'),
 		// createDropdownMenuItem('moveToCollection', 'Verplaatsen naar andere collectie', 'arrow-right'),
 	];
 
+	const submitStateToParent = useCallback(() => {
+		changeCollectionState({
+			index,
+			fragmentProp: 'use_custom_fields',
+			fragmentPropValue: useCustomFields,
+			type: 'UPDATE_FRAGMENT_PROP',
+		});
+		changeCollectionState({
+			index,
+			fragmentProp: 'custom_title',
+			fragmentPropValue: customTitle,
+			type: 'UPDATE_FRAGMENT_PROP',
+		});
+		changeCollectionState({
+			index,
+			fragmentProp: 'custom_description',
+			fragmentPropValue: customDescription,
+			type: 'UPDATE_FRAGMENT_PROP',
+		});
+	}, [changeCollectionState, customDescription, customTitle, index, useCustomFields]);
+
+	const handleClickEvent = (evt: MouseEvent) => {
+		if ((evt.target as HTMLElement)?.closest('.c-fragment-edit')) {
+			// https://meemoo.atlassian.net/browse/AVO-3370
+			// User clicked inside the fragment edit component
+			// Do not update the parent state
+			// So the video playback will not be reset
+			return;
+		}
+		// User clicked outside the fragment edit component
+		// Update parent state => which will trigger a re-render of the fragment edit component
+		// Which will reset the video playback
+		setTimeout(() => {
+			setShouldSave(true);
+		}, FRAGMENT_EDIT_DELAY);
+	};
+
 	useEffect(() => {
-		setTempTitle(getTitle());
-	}, [fragment.use_custom_fields, getTitle]);
+		if (shouldSave) {
+			submitStateToParent();
+			setShouldSave(false);
+		}
+	}, [shouldSave, submitStateToParent]);
+
+	useEffect(() => {
+		window.addEventListener('click', handleClickEvent);
+		return () => window.removeEventListener('click', handleClickEvent);
+	}, []);
 
 	const handleChangedValue = (
 		fragmentProp: keyof Avo.Collection.Fragment,
 		fragmentPropValue: any
 	) => {
 		if (fragmentProp === 'use_custom_fields') {
-			setDescriptionRichEditorState(undefined);
+			setCustomDescription(undefined);
+			setUseCustomFields(fragmentPropValue);
+		} else if (fragmentProp === 'custom_title') {
+			setCustomTitle(fragmentPropValue);
+		} else if (fragmentProp === 'custom_description') {
+			setCustomDescription(fragmentPropValue);
 		}
-		changeCollectionState({
-			index,
-			fragmentProp,
-			fragmentPropValue,
-			type: 'UPDATE_FRAGMENT_PROP',
-		});
-	};
-
-	const getDescription = (): string | undefined => {
-		let description: string | undefined | null;
-		if (fragment.use_custom_fields) {
-			description = fragment.custom_description;
-		} else {
-			description = get(fragment, 'item_meta.description');
-		}
-		if (isString(description)) {
-			description = convertToHtml(description);
-		}
-		return description || undefined;
 	};
 
 	const itemMetaData = (fragment as any).item_meta;
@@ -305,12 +373,12 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 					<TextInput
 						id={`title_${fragment.id}`}
 						type="text"
-						value={tempTitle}
+						value={customTitle}
 						placeholder={tText(
 							'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
 						)}
-						onChange={setTempTitle}
-						onBlur={() => handleChangedValue('custom_title', tempTitle)}
+						onChange={setCustomTitle}
+						onBlur={() => handleChangedValue('custom_title', customTitle)}
 						disabled={disableVideoFields}
 						onFocus={onFocus}
 					/>
@@ -323,7 +391,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 						labelFor={`description_${fragment.id}`}
 					>
 						{!isNil(allowedToAddLinks) && (
-							<RichTextEditorWrapper
+							<RichTextEditorWithInternalState
 								id={`description_${fragment.id}`}
 								controls={
 									allowedToAddLinks
@@ -333,16 +401,9 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 								placeholder={tText(
 									'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
 								)}
-								initialHtml={getDescription()}
-								state={descriptionRichEditorState}
-								onChange={setDescriptionRichEditorState}
-								onBlur={() => {
-									if (descriptionRichEditorState) {
-										handleChangedValue(
-											'custom_description' as any,
-											descriptionRichEditorState.toHTML()
-										);
-									}
+								value={customDescription || undefined}
+								onChange={(newDescription: string) => {
+									setCustomDescription(newDescription);
 								}}
 								disabled={disableVideoFields}
 								onFocus={onFocus}
@@ -358,8 +419,8 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 		fragment.item_meta as Avo.Collection.Collection | Avo.Assignment.Assignment
 	).is_public;
 	return (
-		<>
-			<div className="c-panel c-fragment-edit">
+		<div className="c-fragment-edit">
+			<div className="c-panel">
 				<div className="c-panel__header">
 					<Toolbar>
 						<ToolbarLeft>
@@ -499,7 +560,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 					index={index}
 				/>
 			)}
-		</>
+		</div>
 	);
 };
 

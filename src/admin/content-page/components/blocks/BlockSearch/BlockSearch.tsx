@@ -76,6 +76,7 @@ const BlockSearch: FC<BlockSearchProps & DefaultSecureRouteProps> = ({
 		(searchResult: Avo.Search.ResultItem): MenuSearchResultItemInfo => ({
 			label: searchResult.dc_title,
 			id: searchResult.external_id,
+			key: searchResult.external_id,
 			type: CONTENT_TYPE_TRANSLATIONS[searchResult.administrative_type],
 		})
 	);

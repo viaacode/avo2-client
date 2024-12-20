@@ -15,7 +15,7 @@ import { logoutOnderwijsAvo } from '../helpers/logout-onderwijs-avo';
 
 test.afterEach(async ({ page }, testInfo) => {
 	if (testInfo.status !== testInfo.expectedStatus) {
-		console.log(`Did not run as expected`);
+		console.error(`Did not run as expected`);
 		await cleanupTestdata(page);
 	}
 });

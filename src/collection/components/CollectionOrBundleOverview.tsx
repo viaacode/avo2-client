@@ -453,12 +453,14 @@ const CollectionOrBundleOverview: FC<
 	const renderActions = (collectionUuid: string) => {
 		const ROW_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
+				collectionUuid,
 				CollectionMenuAction.editCollection,
 				tText('collection/views/collection-overview___bewerk'),
 				'edit2',
 				(permissions[collectionUuid] && permissions[collectionUuid].canEdit) || false
 			),
 			...createDropdownMenuItem(
+				collectionUuid,
 				CollectionMenuAction.createAssignment,
 				tText('collection/views/collection-overview___maak-opdracht'),
 				'clipboard',
@@ -467,6 +469,7 @@ const CollectionOrBundleOverview: FC<
 					false
 			),
 			...createDropdownMenuItem(
+				collectionUuid,
 				CollectionMenuAction.openQuickLane,
 				tText('collection/views/collection-overview___delen-met-leerlingen'),
 				'link-2',
@@ -474,12 +477,14 @@ const CollectionOrBundleOverview: FC<
 					PermissionService.hasPerm(commonUser, PermissionName.CREATE_QUICK_LANE)
 			),
 			...createDropdownMenuItem(
+				collectionUuid,
 				CollectionMenuAction.deleteCollection,
 				tText('collection/views/collection-overview___verwijderen'),
 				'trash',
 				!shouldDeleteSelfFromCollection
 			),
 			...createDropdownMenuItem(
+				collectionUuid,
 				CollectionMenuAction.deleteContributor,
 				tText(
 					'collection/components/collection-or-bundle-overview___verwijder-mij-van-deze-collectie'

@@ -15,7 +15,7 @@ import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
 
 test.afterEach(async ({ page }, testInfo) => {
 	if (testInfo.status !== testInfo.expectedStatus) {
-		console.log(`Did not run as expected`);
+		console.error(`Did not run as expected`);
 		await cleanupTestdata(page);
 	}
 });

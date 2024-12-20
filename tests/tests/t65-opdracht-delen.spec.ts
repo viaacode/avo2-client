@@ -3,7 +3,11 @@ import { expect, type Page, test } from '@playwright/test';
 import { cleanupTestdata } from '../helpers/cleanup';
 import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies';
 import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
-import { logoutOnderwijsAvo } from '../helpers/logout-onderwijs-avo';
+import { logoutOnderwijsAvo } from '../helpers/logout-onderwijs-avo'; /**
+ * This test requires `PROXY_E2E=true`
+ * https://github.com/viaacode/avo2-proxy/commit/ae4e79f3b1c4826f5c81ba570b15d904990d43b7
+ * https://github.com/viaacode/avo2-proxy/commit/9b9b740fea4b66478d850da4de8a1d74da8d845e
+ */
 
 /**
  * This test requires `PROXY_E2E=true`
@@ -13,7 +17,7 @@ import { logoutOnderwijsAvo } from '../helpers/logout-onderwijs-avo';
 
 test.afterEach(async ({ page }, testInfo) => {
 	if (testInfo.status !== testInfo.expectedStatus) {
-		console.log(`Did not run as expected`);
+		console.error(`Did not run as expected`);
 		await cleanupTestdata(page);
 	}
 });

@@ -54,7 +54,7 @@ test_1.test.afterEach(function (_a, testInfo_1) { return __awaiter(void 0, [_a, 
         switch (_c.label) {
             case 0:
                 if (!(testInfo.status !== testInfo.expectedStatus)) return [3 /*break*/, 2];
-                console.log("Did not run as expected");
+                console.error("Did not run as expected");
                 return [4 /*yield*/, (0, cleanup_1.cleanupTestdata)(page)];
             case 1:
                 _c.sent();

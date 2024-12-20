@@ -532,12 +532,14 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 	const renderActionDropdown = () => {
 		const BUNDLE_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
+				bundleId,
 				BundleAction.duplicate,
 				tText('bundle/views/bundle-detail___dupliceer'),
 				'copy',
 				permissions.canCreateBundles || false
 			),
 			...createDropdownMenuItem(
+				bundleId,
 				BundleAction.delete,
 				tText('bundle/views/bundle-detail___verwijder'),
 				undefined,
@@ -561,18 +563,21 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 		if (isMobileWidth()) {
 			const BUNDLE_DROPDOWN_ITEMS = [
 				...createDropdownMenuItem(
+					bundleId,
 					BundleAction.edit,
 					tText('bundle/views/bundle-detail___bewerken'),
 					'edit',
 					permissions.canEditBundle || false
 				),
 				...createDropdownMenuItem(
+					bundleId,
 					BundleAction.publish,
 					tText('bundle/views/bundle-detail___delen'),
 					'lock',
 					permissions.canPublishBundle || false
 				),
 				...createDropdownMenuItem(
+					bundleId,
 					BundleAction.toggleBookmark,
 					bookmarkViewPlayCounts.isBookmarked
 						? tText('bundle/views/bundle-detail___verwijder-bladwijzer')
@@ -581,18 +586,21 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 					!isOwner
 				),
 				...createDropdownMenuItem(
+					bundleId,
 					BundleAction.share,
 					tText('bundle/views/bundle-detail___share-bundel'),
 					'share-2',
 					!!bundleObj && bundleObj.is_public
 				),
 				...createDropdownMenuItem(
+					bundleId,
 					BundleAction.duplicate,
 					tText('bundle/views/bundle-detail___dupliceer'),
 					'copy',
 					permissions.canCreateBundles || false
 				),
 				...createDropdownMenuItem(
+					bundleId,
 					BundleAction.delete,
 					tText('bundle/views/bundle-detail___verwijder'),
 					undefined,

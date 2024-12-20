@@ -134,7 +134,6 @@ const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 
 	useEffect(() => {
 		if (isOpen) {
-			// console.log('set start time when opening modal: start time: 0, endtime duration');
 			setFragmentStartTime(0);
 			setFragmentEndTime(toSeconds(itemMetaData.duration) || 0);
 		}
@@ -325,14 +324,9 @@ const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 		);
 
 		const setStartTimeOnce = once(() => {
-			// console.log('set start time once', fragmentStartTime);
 			setModalVideoSeekTime(fragmentStartTime);
 		});
 
-		// console.log('render parent page, values: ', {
-		// 	fragmentStartTime,
-		// 	fragmentEndTime,
-		// });
 		return (
 			<Modal
 				title={tHtml(
@@ -374,10 +368,6 @@ const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 												} else if (newEndTime !== fragmentEndTime) {
 													setModalVideoSeekTime(newEndTime);
 												}
-												// console.log('parent page, set values: ', {
-												// 	newStartTime,
-												// 	newEndTime,
-												// });
 												setFragmentStartTime(newStartTime);
 												setFragmentEndTime(newEndTime);
 											}}

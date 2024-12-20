@@ -117,6 +117,7 @@ import DeleteCollectionModal from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
+import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
 
 const CollectionOrBundleEdit: FC<
 	CollectionOrBundleEditProps &
@@ -154,6 +155,7 @@ const CollectionOrBundleEdit: FC<
 	useWarningBeforeUnload({
 		when: unsavedChanges,
 	});
+	const [shouldDelaySave, setShouldDelaySave] = useState(false);
 	const [contributors, setContributors] = useState<Avo.Collection.Contributor[]>();
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 
@@ -960,6 +962,19 @@ const CollectionOrBundleEdit: FC<
 		}
 	};
 
+	/**
+	 * https://meemoo.atlassian.net/browse/AVO-3370
+	 * Delay the save action by 100ms to ensure the  fragment properties are saved
+	 * We cannot update the fragment states live in the parent component, because that would also rerender the video players
+	 * and that would cause the video players to lose their current time setting
+	 */
+	useEffect(() => {
+		if (shouldDelaySave) {
+			executeAction(CollectionMenuAction.save);
+			setShouldDelaySave(false);
+		}
+	}, [collectionState.currentCollection?.collection_fragments, executeAction, shouldDelaySave]);
+
 	const onCloseShareCollectionModal = (collection?: Avo.Collection.Collection) => {
 		setIsPublishModalOpen(false);
 
@@ -1196,6 +1211,7 @@ const CollectionOrBundleEdit: FC<
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
+				collectionId,
 				shouldDeleteSelfFromCollection
 					? CollectionMenuAction.deleteContributor
 					: CollectionMenuAction.deleteCollection,
@@ -1208,6 +1224,7 @@ const CollectionOrBundleEdit: FC<
 				true
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.addItemById,
 				isCollection
 					? tText('collection/components/collection-or-bundle-edit___voeg-item-toe')
@@ -1366,12 +1383,14 @@ const CollectionOrBundleEdit: FC<
 	const renderHeaderButtonsMobile = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.save,
 				tText('collection/views/collection-edit___opslaan'),
 				IconName.download,
 				true
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.openPublishModal,
 				isPublic
 					? tText('collection/components/collection-or-bundle-edit___maak-prive')
@@ -1380,18 +1399,21 @@ const CollectionOrBundleEdit: FC<
 				true
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.share,
 				tText('collection/components/collection-or-bundle-edit___delen'),
 				IconName.userGroup,
 				isCollection
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.redirectToDetail,
 				tText('collection/components/collection-or-bundle-edit___sluiten'),
 				IconName.close,
 				true
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.rename,
 				isCollection
 					? 'Collectie hernoemen'
@@ -1400,6 +1422,7 @@ const CollectionOrBundleEdit: FC<
 				true
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				permissions.canDelete || isOwner
 					? CollectionMenuAction.deleteCollection
 					: CollectionMenuAction.deleteContributor,
@@ -1501,7 +1524,17 @@ const CollectionOrBundleEdit: FC<
 					{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
 					<StickySaveBar
 						isVisible={unsavedChanges}
-						onSave={() => executeAction(CollectionMenuAction.save)}
+						onSave={() => {
+							/**
+							 * https://meemoo.atlassian.net/browse/AVO-3370
+							 * Delay the save action by 100ms to ensure the  fragment properties are saved
+							 * We cannot update the fragment states live in the parent component, because that would also rerender the video players
+							 * and that would cause the video players to lose their current time setting
+							 */
+							setTimeout(() => {
+								setShouldDelaySave(true);
+							}, COLLECTION_SAVE_DELAY);
+						}}
 						onCancel={cancelSaveBar}
 						isSaving={isSavingCollection}
 					/>

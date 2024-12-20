@@ -1,3 +1,4 @@
+import { OrderDirection } from '@meemoo/react-components';
 import {
 	Button,
 	ButtonToolbar,
@@ -108,7 +109,6 @@ import {
 } from '../hooks/useGetCollectionsOrBundlesContainingFragment';
 
 import './CollectionDetail.scss';
-import { OrderDirection } from '@meemoo/react-components';
 
 import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from './CollectionDetail.const';
 
@@ -870,6 +870,7 @@ const CollectionDetail: FC<
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.addToBundle,
 				tText('collection/views/collection-detail___voeg-toe-aan-bundel'),
 				IconName.plus,
@@ -877,6 +878,7 @@ const CollectionDetail: FC<
 					(isOwner || isEditContributor || isCollectionAdmin || isPublic)
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.openQuickLane,
 				tText('collection/views/collection-detail___delen-met-leerlingen'),
 				IconName.link2,
@@ -884,6 +886,7 @@ const CollectionDetail: FC<
 					(isOwner || isEditContributor || isCollectionAdmin || isPublic)
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.duplicate,
 				tText('collection/views/collection-detail___dupliceer'),
 				IconName.copy,
@@ -891,6 +894,7 @@ const CollectionDetail: FC<
 			),
 
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.deleteCollection,
 				tText('collection/views/collection-detail___verwijderen'),
 				IconName.trash,
@@ -898,6 +902,7 @@ const CollectionDetail: FC<
 			),
 
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.deleteContributor,
 				tText('collection/views/collection-detail___verwijder-mij-van-deze-collectie'),
 				IconName.trash,
@@ -1070,24 +1075,28 @@ const CollectionDetail: FC<
 	const renderHeaderButtonsMobile = () => {
 		const COLLECTION_DROPDOWN_ITEMS_MOBILE = [
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.editCollection,
 				tText('collection/views/collection-detail___bewerken'),
 				IconName.edit,
 				permissions?.canEditCollections || false
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.createAssignment,
 				tText('collection/views/collection-detail___importeer-naar-nieuwe-opdracht'),
 				IconName.clipboard,
 				permissions?.canCreateAssignments || false
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.importToAssignment,
 				tText('collection/views/collection-detail___importeer-naar-bestaande-opdracht'),
 				IconName.clipboard,
 				permissions?.canCreateAssignments || false
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.openPublishCollectionModal,
 				isPublic
 					? tText('collection/views/collection-detail___maak-prive')
@@ -1096,12 +1105,14 @@ const CollectionDetail: FC<
 				permissions?.canPublishCollections || false
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.share,
 				tText('collection/views/collection-detail___deel-deze-collectie'),
 				IconName.userGroup,
 				true
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.toggleBookmark,
 				bookmarkViewPlayCounts.isBookmarked
 					? tText('collection/views/collection-detail___verwijder-bladwijzer')
@@ -1110,12 +1121,14 @@ const CollectionDetail: FC<
 				!isOwner && !isContributor
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.openShareThroughEmail,
 				tText('collection/views/collection-detail___deel'),
 				IconName.share2,
 				!!collection && collection.is_public
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.addToBundle,
 				tText('collection/views/collection-detail___voeg-toe-aan-bundel'),
 				IconName.plus,
@@ -1123,6 +1136,7 @@ const CollectionDetail: FC<
 					(isOwner || isEditContributor || isCollectionAdmin)
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.openQuickLane,
 				tText('collection/views/collection-detail___delen-met-leerlingen'),
 				IconName.link2,
@@ -1130,24 +1144,28 @@ const CollectionDetail: FC<
 					(isOwner || isEditContributor || isCollectionAdmin)
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.openAutoplayCollectionModal,
 				tText('collection/views/collection-detail___speel-de-collectie-af'),
 				IconName.play,
 				permissions?.canAutoplayCollection || false
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.duplicate,
 				tText('collection/views/collection-detail___dupliceer'),
 				IconName.copy,
 				permissions?.canCreateCollections || false
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.deleteCollection,
 				tText('collection/views/collection-detail___verwijderen'),
 				undefined,
 				permissions?.canDeleteCollections || false
 			),
 			...createDropdownMenuItem(
+				collectionId,
 				CollectionMenuAction.deleteContributor,
 				tText('collection/views/collection-detail___verwijder-mij-van-deze-collectie'),
 				undefined,

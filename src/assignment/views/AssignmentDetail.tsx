@@ -550,6 +550,7 @@ const AssignmentDetail: FC<
 	const renderHeaderButtons = () => {
 		const ASSIGNMENT_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
+				assignmentId,
 				AssignmentAction.addToBundle,
 				tText('assignment/views/assignment-detail___voeg-toe-aan-bundel'),
 				IconName.plus,
@@ -559,12 +560,14 @@ const AssignmentDetail: FC<
 				)
 			),
 			...createDropdownMenuItem(
+				assignmentId,
 				AssignmentAction.duplicate,
 				tText('collection/views/collection-detail___dupliceer'),
 				IconName.copy,
 				permissions?.canCreateAssignments || false
 			),
 			...createDropdownMenuItem(
+				assignmentId,
 				AssignmentAction.delete,
 				permissions?.canDeleteAnyAssignments || isOwner
 					? tText('assignment/views/assignment-detail___verwijderen')
@@ -706,30 +709,35 @@ const AssignmentDetail: FC<
 	const renderHeaderButtonsMobile = () => {
 		const ASSIGNMENT_DROPDOWN_ITEMS_MOBILE = [
 			...createDropdownMenuItem(
+				assignmentId,
 				AssignmentAction.edit,
 				tText('assignment/views/assignment-detail___bewerken'),
 				IconName.edit2,
 				permissions?.canEditAssignments || isOwner || false
 			),
 			...createDropdownMenuItem(
+				assignmentId,
 				AssignmentAction.addToBundle,
 				tText('assignment/views/assignment-detail___voeg-toe-aan-bundel'),
 				IconName.plus,
 				permissions?.canEditBundles || false
 			),
 			...createDropdownMenuItem(
+				assignmentId,
 				AssignmentAction.duplicate,
 				tText('collection/views/collection-detail___dupliceer'),
 				IconName.copy,
 				permissions?.canCreateAssignments || false
 			),
 			...createDropdownMenuItem(
+				assignmentId,
 				AssignmentAction.toggleBookmark,
 				tText('assignment/views/assignment-detail___bladwijzer'),
 				IconName.bookmark,
 				!isOwner && !isContributor
 			),
 			...createDropdownMenuItem(
+				assignmentId,
 				AssignmentAction.publish,
 				isPublic
 					? tText('assignment/views/assignment-detail___maak-prive')
@@ -738,12 +746,14 @@ const AssignmentDetail: FC<
 				permissions?.canPublishAssignments || false
 			),
 			...createDropdownMenuItem(
+				assignmentId,
 				AssignmentAction.share,
 				tText('assignment/views/assignment-detail___deel-opdracht'),
 				IconName.userGroup,
 				isOwner || isEditContributor || permissions?.canEditAssignments || false
 			),
 			...createDropdownMenuItem(
+				assignmentId,
 				AssignmentAction.delete,
 				permissions?.canDeleteAnyAssignments || isOwner
 					? tText('assignment/views/assignment-detail___verwijderen')

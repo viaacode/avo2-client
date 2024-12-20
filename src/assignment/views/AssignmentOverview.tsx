@@ -378,6 +378,7 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 						label={getMoreOptionsLabel()}
 						menuItems={[
 							...createDropdownMenuItem(
+								assignmentRow.id,
 								AssignmentAction.edit,
 								tText('assignment/views/assignment-overview___bewerk'),
 								IconName.edit2,
@@ -387,18 +388,21 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 										hasEditRightsForAllAssignments)
 							),
 							...createDropdownMenuItem(
+								assignmentRow.id,
 								AssignmentAction.duplicate,
 								tText('assignment/views/assignment-overview___dupliceer'),
 								IconName.copy,
 								true
 							),
 							...createDropdownMenuItem(
+								assignmentRow.id,
 								AssignmentAction.delete,
 								tText('assignment/views/assignment-overview___verwijderen'),
 								IconName.delete,
 								hasDeleteRightsForAllAssignments || isOwner
 							),
 							...createDropdownMenuItem(
+								assignmentRow.id,
 								AssignmentAction.delete,
 								tText(
 									'assignment/views/assignment-overview___verwijder-mij-van-deze-opdracht'

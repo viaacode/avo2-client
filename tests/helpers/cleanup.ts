@@ -114,7 +114,7 @@ export async function cleanupTestdata(page: Page): Promise<void> {
 		process.env.TEST_ADMIN_PASS as string
 	);
 
-	console.log('CLEANING UP TESTDATA');
+	console.info('CLEANING UP TESTDATA');
 
 	await removeCollectionsByE2ETest(page);
 	await removeBundlesByE2ETest(page);

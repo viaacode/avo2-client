@@ -40,21 +40,11 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 	};
 
 	useEffect(() => {
-		// console.log('set fragment strings', {
-		// 	startTime,
-		// 	endTime,
-		// 	fragmentStartString: formatDurationHoursMinutesSeconds(startTime),
-		// 	fragmentEndString: formatDurationHoursMinutesSeconds(endTime),
-		// });
 		setFragmentStartString(formatDurationHoursMinutesSeconds(startTime));
 		setFragmentEndString(formatDurationHoursMinutesSeconds(endTime));
 	}, [startTime, endTime]);
 
 	const onUpdateMultiRangeValues = (values: number[]) => {
-		// console.log('update multirange values', {
-		// 	startTime: values[0],
-		// 	endTime: values[1],
-		// });
 		onChange(values[0], values[1]);
 	};
 	const updateStartAndEnd = (type: 'start' | 'end', value?: string) => {
