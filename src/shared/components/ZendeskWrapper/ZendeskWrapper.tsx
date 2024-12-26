@@ -1,4 +1,3 @@
-import { get } from 'lodash-es';
 import React, { type FC } from 'react';
 import Zendesk from 'react-zendesk';
 
@@ -6,16 +5,19 @@ import { getEnv } from '../../helpers';
 
 declare const ResizeObserver: any;
 
+const FOOTER_HEIGHT = 373;
+
 const ZendeskWrapper: FC = () => {
 	/**
 	 * Change the bottom margin of the zendesk widget so it doesn't overlap with the footer
 	 */
 	const onLoaded = () => {
 		let widget: HTMLIFrameElement | null;
-		let footerHeight = 100;
-		const zendeskMarginBottom = 10;
+		let footerHeight = FOOTER_HEIGHT;
+		const zendeskMarginBottom = -27;
 		const updateFooterHeight = () => {
-			footerHeight = get(document.querySelector('.c-global-footer'), 'clientHeight', 100);
+			footerHeight =
+				document.querySelector('.c-global-footer')?.clientHeight || FOOTER_HEIGHT;
 		};
 		const updateMargin = () => {
 			if (widget) {
