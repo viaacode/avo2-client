@@ -600,15 +600,15 @@ export function renderCollectionOverviewColumnsReact(
 		case 'actualisation_status':
 			return (
 				getDisplayTextForManagementStatus(
-					rowData?.mgmt_current_status as ManagementStatus | undefined | null
+					rowData?.management?.current_status as ManagementStatus | undefined | null
 				) || '-'
 			);
 
 		case 'actualisation_last_actualised_at':
-			return formatDate(rowData?.mgmt_updated_at) || '-';
+			return formatDate(rowData?.management?.updated_at) || '-';
 
 		case 'actualisation_status_valid_until': {
-			const validDate = rowData?.mgmt_status_expires_at;
+			const validDate = rowData?.management?.status_valid_until;
 			const isValid = !validDate || !isBefore(new Date(validDate), new Date());
 			return (
 				<span className={isValid ? '' : 'a-table-cell__invalid'}>
@@ -618,19 +618,19 @@ export function renderCollectionOverviewColumnsReact(
 		}
 
 		case 'actualisation_approved_at':
-			return formatDate(rowData?.mgmt_last_eindcheck_date) || '-';
+			return formatDate(rowData?.management_final_check?.[0].created_at) || '-';
 
 		case 'actualisation_manager':
 			return rowData?.manager?.full_name || '-';
 
 		case 'quality_check_language_check':
-			return booleanToOkNok(rowData.mgmt_language_check) || '-';
+			return booleanToOkNok(rowData.management_language_check?.[0]?.qc_status) || '-';
 
 		case 'quality_check_quality_check':
-			return booleanToOkNok(rowData.mgmt_quality_check) || '-';
+			return booleanToOkNok(rowData.management_quality_check?.[0]?.qc_status) || '-';
 
 		case 'quality_check_approved_at':
-			return formatDate(rowData?.mgmt_eind_check_date) || '-';
+			return formatDate(rowData?.management_quality_check?.[0].created_at) || '-';
 
 		case 'marcom_last_communication_channel_type': {
 			const channelTypeId = rowData?.channel_type || '';
@@ -764,32 +764,32 @@ export function renderCollectionOverviewColumnsText(
 		case 'actualisation_status':
 			return (
 				getDisplayTextForManagementStatus(
-					rowData?.mgmt_current_status as ManagementStatus | undefined | null
+					rowData?.management?.current_status as ManagementStatus | undefined | null
 				) || ''
 			);
 
 		case 'actualisation_last_actualised_at':
-			return formatDate(rowData?.mgmt_updated_at) || '';
+			return formatDate(rowData?.management?.updated_at) || '-';
 
 		case 'actualisation_status_valid_until': {
-			const validDate = rowData?.mgmt_status_expires_at;
+			const validDate = rowData?.management?.status_valid_until;
 			return formatDate(validDate) || '';
 		}
 
 		case 'actualisation_approved_at':
-			return formatDate(rowData?.mgmt_last_eindcheck_date) || '';
+			return formatDate(rowData?.management_final_check?.[0].created_at) || '-';
 
 		case 'actualisation_manager':
 			return rowData?.manager?.full_name || '';
 
 		case 'quality_check_language_check':
-			return booleanToOkNok(rowData.mgmt_language_check) || '';
+			return booleanToOkNok(rowData.management_language_check?.[0]?.qc_status) || '-';
 
 		case 'quality_check_quality_check':
-			return booleanToOkNok(rowData.mgmt_quality_check) || '';
+			return booleanToOkNok(rowData.management_quality_check?.[0]?.qc_status) || '-';
 
 		case 'quality_check_approved_at':
-			return formatDate(rowData?.mgmt_eind_check_date) || '';
+			return formatDate(rowData?.management_quality_check?.[0].created_at) || '-';
 
 		case 'marcom_last_communication_channel_type': {
 			const channelTypeId = rowData?.channel_type || '';

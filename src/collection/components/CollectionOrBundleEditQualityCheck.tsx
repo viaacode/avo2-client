@@ -40,7 +40,7 @@ const CollectionOrBundleEditQualityCheck: FC<
 			collection?.management_language_check?.[0]?.qc_status &&
 			collection?.management_quality_check?.[0]?.qc_status
 		) {
-			return toDateObject(collection?.mgmt_eind_check_date) || new Date();
+			return toDateObject(collection?.management_final_check?.[0].created_at);
 		}
 		return null;
 	};
@@ -142,7 +142,7 @@ const CollectionOrBundleEditQualityCheck: FC<
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',
 													collectionProp:
-														'management_approved_at[0].created_at',
+														'management_final_check[0].created_at',
 													collectionPropValue: selectedDate
 														? selectedDate.toISOString()
 														: null,

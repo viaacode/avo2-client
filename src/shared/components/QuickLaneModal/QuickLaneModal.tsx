@@ -10,10 +10,10 @@ import { useTabs } from '../../hooks/useTabs';
 import { ToastService } from '../../services/toast-service';
 
 import { isShareable } from './QuickLaneModal.helpers';
-import './QuickLaneModal.scss';
 import { type QuickLaneModalProps } from './QuickLaneModal.types';
 import QuickLaneModalPublicationTab from './QuickLaneModalPublicationTab';
 import QuickLaneModalSharingTab from './QuickLaneModalSharingTab';
+import './QuickLaneModal.scss';
 
 // State
 

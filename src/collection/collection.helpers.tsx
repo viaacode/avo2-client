@@ -362,6 +362,17 @@ export const getFragmentsFromCollection = (
 	return blocks;
 };
 
+const COLLECTION_MANAGEMENT_PROPS: string[] = [
+	'is_managed',
+	'management',
+	'management_actualised_at',
+	'management_language_check',
+	'management_quality_check',
+	'management_final_check',
+	'marcom_note',
+	'QC',
+];
+
 /**
  * Clean the collection of properties from other tables, properties that can't be saved
  */
@@ -382,15 +393,9 @@ export const cleanCollectionBeforeSave = (
 		'lom_classification',
 		'relations',
 		'id',
-		'management',
-		'QC',
-		'management_language_check',
-		'management_quality_check',
-		'management_approved_at',
-		'management_actualised_at',
-		'marcom_note',
 		'loms',
 		'contributors',
+		...COLLECTION_MANAGEMENT_PROPS,
 	];
 	const cleanCollection = omit(collection, propertiesToDelete);
 
@@ -409,22 +414,10 @@ export const keepCoreCollectionProperties = (
 		return collection;
 	}
 	const propertiesToDelete = [
-		'QC',
 		'__typename',
 		'briefing_id',
 		'collection_labels',
 		'id',
-		'is_managed',
-		'management',
-		'management_actualised_at',
-		'management_actualised_at',
-		'management_approved_at',
-		'management_approved_at',
-		'management_language_check',
-		'management_language_check',
-		'management_quality_check',
-		'management_quality_check',
-		'marcom_note',
 		'note',
 		'owner_profile_id',
 		'profile',
@@ -432,6 +425,7 @@ export const keepCoreCollectionProperties = (
 		'type',
 		'updated_by',
 		'updated_by_profile_id',
+		...COLLECTION_MANAGEMENT_PROPS,
 	];
 
 	return omit(collection, propertiesToDelete);
