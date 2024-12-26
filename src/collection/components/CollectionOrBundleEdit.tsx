@@ -578,7 +578,10 @@ const CollectionOrBundleEdit: FC<
 				!collectionObj?.management_language_check?.[0]?.qc_status ||
 				!collectionObj?.management_quality_check?.[0]?.qc_status
 			) {
-				set(collectionObj, 'management_approved_at[0].created_at', null);
+				collectionObj.management_final_check = collectionObj.management_final_check || [];
+				collectionObj.management_final_check[0] =
+					collectionObj.management_final_check[0] || {};
+				collectionObj.management_final_check[0].created_at = '';
 			}
 
 			setPermissions(permissionObj);
