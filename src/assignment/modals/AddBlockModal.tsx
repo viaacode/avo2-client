@@ -12,7 +12,10 @@ import { type Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import React, { type FC, type ReactNode, useMemo } from 'react';
 
-import { BLOCK_ITEM_ICONS } from '../../shared/components/BlockList/BlockList.consts';
+import {
+	BLOCK_TYPE_TO_ICON_NAME,
+	BlockType,
+} from '../../shared/components/BlockList/BlockIconWrapper/BlockIconWrapper.consts';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentBlockType } from '../assignment.types';
 
@@ -48,9 +51,7 @@ const AddBlockModal: FC<AddBlockModalProps> = ({ blocks, isOpen, onClose, onConf
 		() => [
 			{
 				type: AssignmentBlockType.ITEM,
-				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.ITEM]({
-					item_meta: { type: { label: 'video', id: 0 } },
-				} as Avo.Core.BlockItemBase),
+				icon: BLOCK_TYPE_TO_ICON_NAME[BlockType.VIDEO],
 				title: tHtml('assignment/modals/add-block___kijken-luisteren-fragment'),
 				description: tHtml(
 					'assignment/modals/add-block___voeg-een-fragment-uit-je-werkruimte-toe-om-te-laten-bekijken-of-beluisteren'
@@ -66,7 +67,7 @@ const AddBlockModal: FC<AddBlockModalProps> = ({ blocks, isOpen, onClose, onConf
 			},
 			{
 				type: AssignmentBlockType.ZOEK as AddBlockModalType,
-				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.ZOEK](),
+				icon: BLOCK_TYPE_TO_ICON_NAME[BlockType.ZOEK],
 				title: tHtml('assignment/modals/add-block___zoeken-bouwen'),
 				description: disableSearchBlock
 					? tHtml(
@@ -79,14 +80,14 @@ const AddBlockModal: FC<AddBlockModalProps> = ({ blocks, isOpen, onClose, onConf
 			},
 			{
 				type: AssignmentBlockType.TEXT,
-				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.TEXT](),
+				icon: BLOCK_TYPE_TO_ICON_NAME[BlockType.TEXT],
 				title: tHtml('assignment/modals/add-block___instructies-tekst'),
 				description: tHtml(
 					'assignment/modals/add-block___voeg-een-tekstblok-toe-met-instructies-of-wat-extra-informatie'
 				),
 			},
 		],
-		[blocks, tHtml]
+		[disableSearchBlock, tHtml]
 	);
 
 	return (

@@ -3,7 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode } from 'react';
 
 import { type FilterState } from '../../../search/search.types';
-import { BlockItemMetadata, FlowPlayerWrapper } from '../../../shared/components';
+import { FlowPlayerWrapper, ItemMetadata } from '../../../shared/components';
 import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm';
 import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { isRichTextEmpty } from '../../../shared/helpers';
@@ -185,8 +185,8 @@ export const AssignmentBlockEditItem: FC<
 					: undefined
 			}
 		>
-			<BlockItemMetadata
-				block={editableBlock}
+			<ItemMetadata
+				item={editableBlock.item_meta as Avo.Item.Item}
 				buildSeriesLink={
 					buildSearchLink
 						? (series) => buildSearchLink({ filters: { serie: [series] } })

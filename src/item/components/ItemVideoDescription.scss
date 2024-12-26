@@ -26,6 +26,10 @@
 	}
 
 	.c-item-video-description__metadata {
+		@media (max-width: $g-bp2) {
+			margin-top: $g-spacer-unit;
+		}
+
 		.scrollbar-container {
 			padding-right: 10px;
 

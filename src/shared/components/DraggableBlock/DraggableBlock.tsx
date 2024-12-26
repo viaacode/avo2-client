@@ -9,7 +9,7 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { stripHtml } from '../../helpers';
 
 import './DraggableBlock.scss';
-import { BLOCK_ITEM_ICONS } from '../BlockList/BlockList.consts';
+import { GET_BLOCK_ICON } from '../BlockList/BlockIconWrapper/BlockIconWrapper.consts';
 
 interface DraggableBlockProps extends DefaultProps {
 	block?: Avo.Core.BlockItemBase;
@@ -39,7 +39,7 @@ const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
 				{thumbnail ? (
 					<div style={{ backgroundImage: `url(${thumbnail})` }} />
 				) : (
-					<Icon name={BLOCK_ITEM_ICONS()[block.type]()} />
+					<Icon name={GET_BLOCK_ICON(block)} />
 				)}
 			</FlexItem>
 			<FlexItem>

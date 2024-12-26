@@ -151,10 +151,8 @@ const AssignmentPupilCollectionDetail: FC<AssignmentPupilCollectionDetailProps> 
 											PermissionName.VIEW_ANY_PUBLISHED_ITEMS
 										),
 									},
-									meta: {
-										buildSeriesLink: (serie) =>
-											buildGlobalSearchLink({ filters: { serie: [serie] } }),
-									},
+									buildSeriesLink: (serie) =>
+										buildGlobalSearchLink({ filters: { serie: [serie] } }),
 									canOpenOriginal: true,
 								},
 							}}

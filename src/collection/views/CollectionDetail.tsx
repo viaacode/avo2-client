@@ -1193,24 +1193,22 @@ const CollectionDetail: FC<
 
 		return (
 			<>
-				<Container mode="vertical">
-					<Container mode="horizontal">
-						{!!collection && !!commonUser && (
-							<FragmentList
-								collectionFragments={collection_fragments}
-								showDescription
-								showMetadata={false}
-								linkToItems={permissions?.canViewAnyPublishedItems || false}
-								canPlay={
-									!isAddToBundleModalOpen &&
-									!isDeleteModalOpen &&
-									!isPublishModalOpen &&
-									!isAutoplayCollectionModalOpen
-								}
-								collection={collection}
-							/>
-						)}
-					</Container>
+				<Container mode="horizontal">
+					{!!collection && !!commonUser && (
+						<FragmentList
+							collectionFragments={collection_fragments}
+							showDescription
+							showMetadata
+							linkToItems={permissions?.canViewAnyPublishedItems || false}
+							canPlay={
+								!isAddToBundleModalOpen &&
+								!isDeleteModalOpen &&
+								!isPublishModalOpen &&
+								!isAutoplayCollectionModalOpen
+							}
+							collection={collection}
+						/>
+					)}
 				</Container>
 				<Container mode="vertical">
 					<Container mode="horizontal">

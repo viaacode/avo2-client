@@ -138,7 +138,7 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 							(quickLane.content as Avo.Collection.Collection).collection_fragments
 						}
 						showDescription={contentLayout === AssignmentLayout.PlayerAndText}
-						showMetadata={true}
+						showMetadata
 						linkToItems={false}
 						collection={quickLane.content as Avo.Collection.Collection}
 						{...rest}

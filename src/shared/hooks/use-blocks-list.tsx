@@ -3,7 +3,8 @@ import React, { type ReactNode, useMemo } from 'react';
 
 import { switchAssignmentBlockPositions } from '../../assignment/helpers/switch-positions';
 import { BlockListSorter, type ListSorterItem, type ListSorterProps } from '../components';
-import { BLOCK_ITEM_ICONS, BLOCK_ITEM_LABELS } from '../components/BlockList/BlockList.consts';
+import { GET_BLOCK_ICON } from '../components/BlockList/BlockIconWrapper/BlockIconWrapper.consts';
+import { BLOCK_ITEM_LABELS } from '../components/BlockList/BlockList.consts';
 import { getBlockColor } from '../helpers/get-block-color';
 
 export function useBlocksList(
@@ -19,7 +20,7 @@ export function useBlocksList(
 			const mapped: Avo.Core.BlockItemBase & ListSorterItem = {
 				...block,
 				...config?.listSorterItem,
-				icon: BLOCK_ITEM_ICONS()[block.type as Avo.Core.BlockItemType](block),
+				icon: GET_BLOCK_ICON(block),
 				color: getBlockColor(block as Avo.Assignment.Block),
 				onPositionChange: (item, delta) => {
 					const switched = switchAssignmentBlockPositions(

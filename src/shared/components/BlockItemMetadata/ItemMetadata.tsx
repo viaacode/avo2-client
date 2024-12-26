@@ -4,20 +4,20 @@ import React, { type FC, type ReactNode } from 'react';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { formatDate } from '../../helpers';
 
-export type BlockItemMetadataProps = {
-	block: Avo.Core.BlockItemBase;
+export type ItemMetadataProps = {
+	item: Avo.Item.Item;
 	buildSeriesLink?: (series: string) => ReactNode | string;
 };
 
-export const BlockItemMetadata: FC<BlockItemMetadataProps> = ({
-	block,
+export const ItemMetadata: FC<ItemMetadataProps> = ({
+	item,
 	buildSeriesLink = (series: string) => series,
 }) => {
 	const { tHtml } = useTranslation();
 
-	const organisation = (block.item_meta as Avo.Item.Item)?.organisation?.name;
-	const broadcastDate = (block.item_meta as Avo.Item.Item)?.issued;
-	const series = (block.item_meta as Avo.Item.Item)?.series;
+	const organisation = item?.organisation?.name;
+	const broadcastDate = item?.issued;
+	const series = item?.series;
 
 	return organisation || broadcastDate || series ? (
 		<section className="u-spacer-bottom">

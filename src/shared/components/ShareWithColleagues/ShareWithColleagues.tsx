@@ -350,6 +350,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 							'shared/components/share-with-colleagues/share-with-colleagues___bijdrager'
 						),
 						id: ContributorInfoRight.CONTRIBUTOR,
+						key: ContributorInfoRight.CONTRIBUTOR,
 					},
 			  ]
 			: []),
@@ -360,6 +361,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 							'shared/components/share-with-colleagues/share-with-colleagues___kijker'
 						),
 						id: ContributorInfoRight.VIEWER,
+						key: ContributorInfoRight.VIEWER,
 					},
 			  ]
 			: []),

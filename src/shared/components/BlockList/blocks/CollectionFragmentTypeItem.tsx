@@ -1,7 +1,7 @@
 import { type DefaultProps, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
-import React, { type FC, useMemo } from 'react';
+import React, { type FC, type ReactNode, useMemo } from 'react';
 
 import { CollectionBlockType } from '../../../../collection/collection.const';
 import CollectionFragmentFlowPlayer, {
@@ -11,10 +11,7 @@ import CollectionFragmentTitle, {
 	type CollectionFragmentTitleProps,
 } from '../../../../collection/components/CollectionFragmentTitle';
 import useTranslation from '../../../../shared/hooks/useTranslation';
-import {
-	BlockItemMetadata,
-	type BlockItemMetadataProps,
-} from '../../BlockItemMetadata/BlockItemMetadata';
+import { ItemMetadata } from '../../BlockItemMetadata/ItemMetadata';
 import CollapsibleColumn from '../../CollapsibleColumn/CollapsibleColumn';
 import TextWithTimestamps from '../../TextWithTimestamp/TextWithTimestamps';
 
@@ -23,7 +20,7 @@ import './CollectionFragmentTypeItem.scss';
 export interface CollectionFragmentTypeItemProps extends DefaultProps {
 	block: Avo.Core.BlockItemBase;
 	flowPlayer?: CollectionFragmentFlowPlayerProps;
-	meta?: Omit<BlockItemMetadataProps, 'block'>; // TODO @Ian cleanup configs and having to pass block multiple times
+	buildSeriesLink?: (series: string) => ReactNode;
 	title?: CollectionFragmentTitleProps;
 	canOpenOriginal?: boolean;
 }
@@ -31,7 +28,7 @@ export interface CollectionFragmentTypeItemProps extends DefaultProps {
 const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	block,
 	title,
-	meta,
+	buildSeriesLink,
 	flowPlayer,
 	className,
 	canOpenOriginal,
@@ -92,10 +89,15 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 				</div>
 			)}
 
-			{meta && block && (
+			{block && (
 				<div className="c-collection-fragment-type-item__sidebar">
 					<CollapsibleColumn>
-						{meta && <BlockItemMetadata {...meta} block={block} />}
+						{
+							<ItemMetadata
+								item={block.item_meta as Avo.Item.Item}
+								buildSeriesLink={buildSeriesLink}
+							/>
+						}
 
 						{custom ? customDescription : custom === false ? originalDescription : null}
 					</CollapsibleColumn>

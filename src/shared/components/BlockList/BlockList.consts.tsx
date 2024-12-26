@@ -1,30 +1,6 @@
-import { IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 
-import { ContentTypeNumber } from '../../../collection/collection.types';
 import { tText } from '../../helpers/translate';
-
-export const BLOCK_ITEM_ICONS: () => Record<
-	Avo.Core.BlockItemType,
-	(block?: Avo.Core.BlockItemBase) => IconName
-> = () => ({
-	ITEM: (block: Avo.Core.BlockItemBase | undefined): IconName => {
-		if (block?.item_meta) {
-			switch (block?.item_meta?.type_id) {
-				case ContentTypeNumber.audio:
-					return IconName.headphone;
-				case ContentTypeNumber.video:
-					return IconName.video; // TODO: add custom icon
-			}
-		}
-		return IconName.x;
-	},
-	TEXT: () => IconName.type,
-	ZOEK: () => IconName.search,
-	BOUW: () => IconName.search,
-	COLLECTION: () => IconName.collection,
-	ASSIGNMENT: () => IconName.clipboard,
-});
 
 export const BLOCK_ITEM_LABELS = (
 	isPupilCollection: boolean
