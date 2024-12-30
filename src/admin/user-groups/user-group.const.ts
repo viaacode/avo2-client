@@ -1,6 +1,6 @@
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { ROUTE_PARTS } from '../../shared/constants';
-import { tText } from '../../shared/helpers/translate';
+import { tText } from '../../shared/helpers/translate-text';
 
 import { type UserGroup } from './user-group.types';
 

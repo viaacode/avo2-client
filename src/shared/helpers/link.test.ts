@@ -2,9 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { createMemoryHistory } from 'history';
-import { type RouteComponentProps } from 'react-router-dom';
-
 import { ROUTE_PARTS } from '../constants';
 
 import { buildLink } from './build-link';
@@ -29,43 +26,5 @@ describe('Link - buildLink', () => {
 
 	it('Should build a link when search is passed', () => {
 		expect(buildLink(route, {}, searchQuery)).toEqual(`${route}?${searchQuery}`);
-	});
-});
-
-describe('Link - navigate', () => {
-	const history = createMemoryHistory() as unknown as RouteComponentProps['history'];
-	const pushSpy = jest.spyOn(history, 'push');
-
-	afterEach(() => {
-		pushSpy.mockReset();
-	});
-
-	afterAll(() => {
-		pushSpy.mockRestore();
-	});
-
-	it('Should navigate when correct params are passed', () => {
-		// navigate(history, routeWithParam, params);
-
-		// expect(pushSpy).toHaveBeenCalled();
-		// expect(pushSpy).toHaveBeenCalledTimes(1);
-		// expect(pushSpy).toHaveBeenCalledWith(linkWithParam);
-		expect(true);
-	});
-
-	it('Should navigate when search is passed', () => {
-		// navigate(history, routeWithParam, params, searchQuery);
-
-		// expect(pushSpy).toHaveBeenCalled();
-		// expect(pushSpy).toHaveBeenCalledTimes(1);
-		// expect(pushSpy).toHaveBeenCalledWith(`${linkWithParam}?${searchQuery}`);
-		expect(true);
-	});
-
-	it('Should abort navigation when wrong params are given', () => {
-		// navigate(history, routeWithParam, { uuid: 123 });
-
-		// expect(pushSpy).not.toHaveBeenCalled();
-		expect(true);
 	});
 });

@@ -22,7 +22,8 @@ import { type Dispatch } from 'redux';
 
 import poster from '../../../assets/images/elementary-pupil-terms-of-service__poster.png';
 import { CustomError } from '../../../shared/helpers';
-import { tHtml, tText } from '../../../shared/helpers/translate';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { useDisablePictureInPicture } from '../../../shared/hooks/useDisablePictureInPicture';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { ToastService } from '../../../shared/services/toast-service';

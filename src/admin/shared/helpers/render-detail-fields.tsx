@@ -3,7 +3,7 @@ import React, { type ReactElement, type ReactNode } from 'react';
 
 import Html from '../../../shared/components/Html/Html';
 import { formatDate } from '../../../shared/helpers';
-import { tText } from '../../../shared/helpers/translate';
+import { tText } from '../../../shared/helpers/translate-text';
 
 export function renderDetailRow(value: ReactNode, label: string): ReactElement {
 	return (

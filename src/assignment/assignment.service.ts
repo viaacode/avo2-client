@@ -83,7 +83,8 @@ import {
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv, isUserSecondaryElementary } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
-import { tHtml, tText } from '../shared/helpers/translate';
+import { tHtml } from '../shared/helpers/translate-html';
+import { tText } from '../shared/helpers/translate-text';
 import { dataService } from '../shared/services/data-service';
 import { trackEvents } from '../shared/services/event-logging-service';
 import { RelationService } from '../shared/services/relation-service/relation.service';

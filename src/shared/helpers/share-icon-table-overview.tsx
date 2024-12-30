@@ -4,7 +4,8 @@ import { compact } from 'lodash-es';
 import React, { type ReactNode } from 'react';
 
 import { renderMobileDesktop } from './renderMobileDesktop';
-import { tHtml, tText } from './translate';
+import { tHtml } from './translate-html';
+import { tText } from './translate-text';
 
 export function contributorsToString(
 	contributors: Avo.Assignment.Contributor[] | Avo.Collection.Contributor[] | null | undefined

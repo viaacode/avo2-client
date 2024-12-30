@@ -110,6 +110,7 @@ import {
 import CollectionOrBundleEditActualisation from './CollectionOrBundleEditActualisation';
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
+import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
 import CollectionOrBundleEditMarcom from './CollectionOrBundleEditMarcom';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
 import CollectionOrBundleEditQualityCheck from './CollectionOrBundleEditQualityCheck';
@@ -117,7 +118,6 @@ import DeleteCollectionModal from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
-import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
 
 const CollectionOrBundleEdit: FC<
 	CollectionOrBundleEditProps &

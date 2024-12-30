@@ -15,7 +15,8 @@ import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, useCallback, useMemo, useState } from 'react';
 
 import { EducationLevelId } from '../../helpers/lom';
-import { tHtml, tText } from '../../helpers/translate';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 

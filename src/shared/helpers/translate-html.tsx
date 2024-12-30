@@ -3,7 +3,7 @@ import React, { type ReactNode } from 'react';
 
 import Html from '../components/Html/Html';
 
-import { tText } from './translate';
+import { tText } from './translate-text';
 
 /**
  * Wrapper around tText() that renders the translated text as html

@@ -14,7 +14,7 @@ import {
 	MAX_EDIT_IDLE_TIME,
 } from '../../constants';
 import { formatDurationMinutesSeconds } from '../../helpers';
-import { tHtml } from '../../helpers/translate';
+import { tHtml } from '../../helpers/translate-html';
 import { useBeforeUnload } from '../../hooks/useBeforeUnload';
 
 type InActivityWarningModalProps = {

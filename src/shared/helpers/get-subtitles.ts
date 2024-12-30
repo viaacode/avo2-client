@@ -3,7 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 
 import { getEnv } from './env';
-import { tText } from './translate';
+import { tText } from './translate-text';
 
 export function getSubtitles(
 	item: Avo.Item.Item | undefined | null

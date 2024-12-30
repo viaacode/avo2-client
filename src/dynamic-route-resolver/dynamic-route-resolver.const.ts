@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { getEnv } from '../shared/helpers';
-import { tHtml } from '../shared/helpers/translate';
+import { tHtml } from '../shared/helpers/translate-html';
 
 export const GET_REDIRECTS: () => { [avo1Path: string]: string } = () => ({
 	'/frontpage': '/start',

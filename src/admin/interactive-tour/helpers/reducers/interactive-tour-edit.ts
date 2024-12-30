@@ -3,7 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import immer, { type Draft } from 'immer';
 import { cloneDeep } from 'lodash-es';
 
-import { tHtml } from '../../../../shared/helpers/translate';
+import { tHtml } from '../../../../shared/helpers/translate-html';
 import { ToastService } from '../../../../shared/services/toast-service';
 import { type ValueOf } from '../../../../shared/types';
 import { InteractiveTourService } from '../../interactive-tour.service';

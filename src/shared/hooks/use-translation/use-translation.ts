@@ -7,7 +7,8 @@ import {
 	type UseTranslationResponse,
 } from 'react-i18next';
 
-import { tHtml, tText } from '../../helpers/translate';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 
 type useTranslationsResponse<N extends Namespace = DefaultNamespace> = Omit<
 	UseTranslationResponse<N>,

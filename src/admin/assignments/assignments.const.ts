@@ -9,7 +9,7 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import { EducationLevelId } from '../../shared/helpers/lom';
 import { lomToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { tText } from '../../shared/helpers/translate';
+import { tText } from '../../shared/helpers/translate-text';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';

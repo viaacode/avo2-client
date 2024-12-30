@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { EducationLevelId } from '../../helpers/lom';
-import { tHtml } from '../../helpers/translate';
+import { tHtml } from '../../helpers/translate-html';
 
 export const GET_EDUCATION_LEVEL_DIFFERENCE_DICT: () => Partial<
 	Record<string, ReactNode>

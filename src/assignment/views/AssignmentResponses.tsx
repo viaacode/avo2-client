@@ -35,6 +35,7 @@ import {
 	type LoadingInfo,
 } from '../../shared/components';
 import { buildLink, formatDate, isMobileWidth } from '../../shared/helpers';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks/useTableSort';
@@ -56,7 +57,6 @@ import { isItemWithMeta } from '../helpers/is-item-with-meta';
 
 import './AssignmentOverview.scss';
 import './AssignmentResponses.scss';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 
 interface AssignmentResponsesProps
 	extends Omit<DefaultSecureRouteProps<{ id: string }>, 'location'> {

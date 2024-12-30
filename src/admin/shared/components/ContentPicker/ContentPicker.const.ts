@@ -1,6 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 
-import { tText } from '../../../../shared/helpers/translate';
+import { tText } from '../../../../shared/helpers/translate-text';
 import { type PickerTypeOption } from '../../types';
 
 import { retrieveAnchors } from './item-providers/anchors';

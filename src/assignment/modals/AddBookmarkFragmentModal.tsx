@@ -24,7 +24,7 @@ import { compose } from 'redux';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import { CustomError, formatDate, isMobileWidth } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
-import { tText } from '../../shared/helpers/translate';
+import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks/useTableSort';

@@ -7,7 +7,8 @@ import { CollectionFragmentType } from '../collection/collection.types';
 import { OrderDirection } from '../search/search.const';
 import { stripHtml } from '../shared/helpers';
 import { EducationLevelId } from '../shared/helpers/lom';
-import { tHtml, tText } from '../shared/helpers/translate';
+import { tHtml } from '../shared/helpers/translate-html';
+import { tText } from '../shared/helpers/translate-text';
 import { type Positioned } from '../shared/types';
 
 import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from './assignment.const';

@@ -123,7 +123,7 @@ import {
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
 import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
-import { tHtml } from '../shared/helpers/translate';
+import { tHtml } from '../shared/helpers/translate-html';
 import { isUuid } from '../shared/helpers/uuid';
 import { dataService } from '../shared/services/data-service';
 import { QualityLabelsService } from '../shared/services/quality-labels.service';

@@ -15,7 +15,8 @@ import React, { type ReactNode } from 'react';
 
 import { reorderBlockPositions } from '../assignment/assignment.helper';
 import { stripHtml } from '../shared/helpers';
-import { tHtml, tText } from '../shared/helpers/translate';
+import { tHtml } from '../shared/helpers/translate-html';
+import { tText } from '../shared/helpers/translate-text';
 import { type Positioned } from '../shared/types';
 
 import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from './collection.const';

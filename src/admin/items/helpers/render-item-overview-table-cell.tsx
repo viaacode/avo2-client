@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 import { buildLink, formatDate } from '../../../shared/helpers';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { tText } from '../../../shared/helpers/translate';
+import { tText } from '../../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ADMIN_PATH } from '../../admin.const';
 import type { ItemsOverviewTableCols } from '../items.types';

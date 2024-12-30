@@ -7,7 +7,7 @@ import { type RouteComponentProps } from 'react-router-dom';
 import { type Action, type Dispatch } from 'redux';
 
 import { getEnv } from '../../shared/helpers';
-import { tText } from '../../shared/helpers/translate';
+import { tText } from '../../shared/helpers/translate-text';
 import { ToastService } from '../../shared/services/toast-service';
 import { LoginMessage } from '../authentication.types';
 import { logoutAndRedirectToLogin } from '../helpers/redirects';
