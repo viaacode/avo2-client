@@ -6,7 +6,7 @@ import { Link, NavLink, type RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../../../constants';
 import { CustomError } from '../../../../shared/helpers';
-import { tText } from '../../../../shared/helpers/translate';
+import { tText } from '../../../../shared/helpers/translate-text';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { type NavigationItemInfo } from '../../../../shared/types';
 

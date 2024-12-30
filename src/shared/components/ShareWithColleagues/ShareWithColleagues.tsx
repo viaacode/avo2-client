@@ -24,7 +24,7 @@ import { isEmpty, isNil, truncate } from 'lodash-es';
 import React, { type FC, useMemo, useState } from 'react';
 
 import { validateEmailAddress } from '../../helpers';
-import { tHtml } from '../../helpers/translate';
+import { tHtml } from '../../helpers/translate-html';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import useTranslation from '../../hooks/useTranslation';
 import { ConfirmModal, RememberConfirmationKeys } from '../ConfirmModal';

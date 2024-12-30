@@ -2,7 +2,7 @@ import { IconName, Modal, ModalBody, Spacer, Tabs } from '@viaa/avo2-components'
 import { type Avo, type PermissionName } from '@viaa/avo2-types';
 import React, { type FC, useEffect, useState } from 'react';
 
-import { tText } from '../../helpers/translate';
+import { tText } from '../../helpers/translate-text';
 import { useTabs } from '../../hooks/useTabs';
 import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
 import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';

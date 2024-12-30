@@ -2,7 +2,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 import { type ReactNode } from 'react';
 
-import { tHtml } from '../../shared/helpers/translate';
+import { tHtml } from '../../shared/helpers/translate-html';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { AssignmentService } from '../assignment.service';

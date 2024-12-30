@@ -1,7 +1,7 @@
 import { IconName } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../shared/constants';
-import { tText } from '../shared/helpers/translate';
+import { tText } from '../shared/helpers/translate-text';
 
 import { type WorkspaceCounts, type WorkspaceTab, type WorkspaceTabNames } from './workspace.types';
 

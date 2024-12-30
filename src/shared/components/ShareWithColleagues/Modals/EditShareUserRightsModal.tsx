@@ -17,7 +17,8 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, useEffect, useMemo, useState } from 'react';
 
-import { tHtml, tText } from '../../../helpers/translate';
+import { tHtml } from '../../../helpers/translate-html';
+import { tText } from '../../../helpers/translate-text';
 import { findRightByValue } from '../ShareWithColleagues.helpers';
 import { ContributorInfoRight } from '../ShareWithColleagues.types';
 

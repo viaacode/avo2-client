@@ -17,7 +17,7 @@ import type { Requests } from 'node-zendesk';
 import React, { type FC, useState } from 'react';
 
 import { getFullNameCommonUser } from '../../../shared/helpers';
-import { tText } from '../../../shared/helpers/translate';
+import { tText } from '../../../shared/helpers/translate-text';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';

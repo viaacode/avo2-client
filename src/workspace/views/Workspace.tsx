@@ -29,6 +29,7 @@ import { AssignmentOverview } from '../../assignment/views';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { CollectionOrBundle } from '../../collection/collection.types';
 import CollectionOrBundleOverview from '../../collection/components/CollectionOrBundleOverview';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
@@ -59,7 +60,6 @@ import OrganisationContentOverview from './OrganisationContentOverview';
 import QuickLaneOverview from './QuickLaneOverview';
 
 import './Workspace.scss';
-import { CollectionOrBundle } from '../../collection/collection.types';
 
 interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;

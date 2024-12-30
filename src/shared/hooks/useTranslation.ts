@@ -4,7 +4,8 @@ import {
 	type UseTranslationResponse,
 } from 'react-i18next';
 
-import { tHtml, tText } from '../helpers/translate';
+import { tHtml } from '../helpers/translate-html';
+import { tText } from '../helpers/translate-text';
 
 const useTranslation = (): Omit<UseTranslationResponse<DefaultNamespace>, 't'> & {
 	tHtml: typeof tHtml;

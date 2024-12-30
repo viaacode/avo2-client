@@ -15,7 +15,7 @@ import {
 	navigationConsoleError,
 	type RouteParams,
 } from './build-link';
-import { tHtml } from './translate';
+import { tHtml } from './translate-html';
 
 export { buildLink } from './build-link';
 

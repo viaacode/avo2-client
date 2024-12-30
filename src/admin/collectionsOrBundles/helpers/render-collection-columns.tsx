@@ -20,7 +20,7 @@ import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-e
 import { groupLomLinks } from '../../../shared/helpers/lom';
 import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { tText } from '../../../shared/helpers/translate';
+import { tText } from '../../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { getCollectionManagementStatuses } from '../collections-or-bundles.const';
 import {

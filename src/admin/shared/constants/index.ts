@@ -1,6 +1,6 @@
 import { IconName } from '@viaa/avo2-components';
 
-import { tText } from '../../../shared/helpers/translate';
+import { tText } from '../../../shared/helpers/translate-text';
 import { type ReactSelectOption } from '../../../shared/types';
 
 export const GET_ADMIN_ICON_OPTIONS: () => ReactSelectOption<IconName>[] = () => [

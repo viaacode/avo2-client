@@ -1,4 +1,4 @@
-import { tText } from '../../../shared/helpers/translate';
+import { tText } from '../../../shared/helpers/translate-text';
 
 import { type ManageAssignmentLabelsProps } from './ManageAssignmentLabels';
 

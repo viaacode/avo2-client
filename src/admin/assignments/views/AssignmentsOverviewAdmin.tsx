@@ -55,12 +55,11 @@ import {
 	ITEMS_PER_PAGE,
 } from '../assignments.const';
 import { AssignmentsBulkAction, type AssignmentsOverviewTableState } from '../assignments.types';
-
-import './AssignmentsOverviewAdmin.scss';
 import {
 	renderAssignmentOverviewTableCellReact,
 	renderAssignmentOverviewTableCellText,
 } from '../helpers/assignment-overview-render-table-cells';
+import './AssignmentsOverviewAdmin.scss';
 
 const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();

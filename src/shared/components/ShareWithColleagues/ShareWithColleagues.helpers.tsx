@@ -3,7 +3,7 @@ import { groupBy } from 'lodash-es';
 
 import { isUserLevel } from '../../helpers';
 import { EducationLevelId } from '../../helpers/lom';
-import { tText } from '../../helpers/translate';
+import { tText } from '../../helpers/translate-text';
 
 import { type ContributorInfo, ContributorInfoRight } from './ShareWithColleagues.types';
 

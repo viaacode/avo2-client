@@ -11,6 +11,9 @@ module.exports = {
 		'^lodash-es$': '<rootDir>/node_modules/lodash/index.js',
 	},
 	moduleDirectories: ['node_modules'],
-	transform: { '^.+\\.svg$': '<rootDir>/svgTransform.js' },
+	transform: {
+		'^.+\\.svg$': '<rootDir>/svgTransform.js',
+		'^.+\\.(ts|tsx)$': 'ts-jest',
+	},
 	maxConcurrency: 1,
 };

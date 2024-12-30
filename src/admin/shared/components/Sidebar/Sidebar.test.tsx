@@ -1,7 +1,7 @@
 // import { shallow } from 'enzyme';
 // import React from 'react';
 
-// import { tText } from '../../../../shared/helpers/translate';
+// import { tText } from '../../../../shared/helpers/translate-text';
 
 // import Sidebar from './Sidebar';
 

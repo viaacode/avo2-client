@@ -5,7 +5,7 @@ import {
 	type ContributorInfo,
 	ContributorInfoRight,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
-import { tText } from '../../shared/helpers/translate';
+import { tText } from '../../shared/helpers/translate-text';
 import { ToastService } from '../../shared/services/toast-service';
 import { AssignmentService } from '../assignment.service';
 

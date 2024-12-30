@@ -1,6 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
 
-import { tHtml, tText } from '../../shared/helpers/translate';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { ToastService } from '../../shared/services/toast-service';
 import { AssignmentService } from '../assignment.service';
 

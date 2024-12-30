@@ -43,7 +43,7 @@ import { MultiEducationalOrganisationSelectModal } from '../../../../shared/comp
 import { MultiUserSelectDropdown } from '../../../../shared/components/MultiUserSelectDropdown/MultiUserSelectDropdown';
 import { eduOrgToClientOrg } from '../../../../shared/helpers/edu-org-string-to-client-org';
 import { toggleSortOrder } from '../../../../shared/helpers/toggle-sort-order';
-import { tHtml } from '../../../../shared/helpers/translate';
+import { tHtml } from '../../../../shared/helpers/translate-html';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { KeyCode } from '../../../../shared/types';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../PaginationBar/PaginationBar.consts';

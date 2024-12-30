@@ -1,5 +1,5 @@
 import { ROUTE_PARTS } from '../shared/constants';
-import { tText } from '../shared/helpers/translate';
+import { tText } from '../shared/helpers/translate-text';
 
 export const PROFILE_ID = ROUTE_PARTS.profile;
 export const ACCOUNT_ID = ROUTE_PARTS.account;

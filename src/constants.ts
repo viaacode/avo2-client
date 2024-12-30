@@ -2,7 +2,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 
 import { ROUTE_PARTS } from './shared/constants';
-import { tText } from './shared/helpers/translate';
+import { tText } from './shared/helpers/translate-text';
 
 export interface RouteInfo {
 	route: string;

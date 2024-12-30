@@ -1,4 +1,4 @@
-import { tText } from '../../helpers/translate';
+import { tText } from '../../helpers/translate-text';
 
 import { type ColorOption } from './ColorSelect.types';
 

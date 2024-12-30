@@ -8,7 +8,8 @@ import { SearchFilter, SearchOrderAndDirectionProperty } from '../search/search.
 import { ROUTE_PARTS } from '../shared/constants';
 import { EducationLevelId } from '../shared/helpers/lom';
 import { ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list';
-import { tHtml, tText } from '../shared/helpers/translate';
+import { tHtml } from '../shared/helpers/translate-html';
+import { tText } from '../shared/helpers/translate-text';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {

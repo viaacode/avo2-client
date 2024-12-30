@@ -18,7 +18,7 @@ import { ShortDescriptionField, ThumbnailStillsModal } from '../../shared/compon
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { getBottomLoms } from '../../shared/helpers/get-bottom-loms';
 import { EducationLevelType } from '../../shared/helpers/lom';
-import { tHtml } from '../../shared/helpers/translate';
+import { tHtml } from '../../shared/helpers/translate-html';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 type AssignmentMetaDataFormEditableProps = {
