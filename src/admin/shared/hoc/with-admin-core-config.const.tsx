@@ -266,7 +266,6 @@ export function getAdminCoreConfig(): AdminConfig {
 			},
 		},
 		database: {
-			databaseApplicationType: DatabaseType.avo,
 			proxyUrl,
 		},
 		flowplayer: {
@@ -325,6 +324,7 @@ export function getAdminCoreConfig(): AdminConfig {
 		env: {
 			CLIENT_URL: window.location.origin,
 			LDAP_DASHBOARD_PEOPLE_URL: getEnv('LDAP_DASHBOARD_PEOPLE_URL'),
+			DATABASE_APPLICATION_TYPE: DatabaseType.avo,
 		},
 	};
 }
