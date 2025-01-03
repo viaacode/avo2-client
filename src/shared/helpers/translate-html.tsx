@@ -11,7 +11,11 @@ import { tText } from './translate-text';
  * @param params
  */
 export function tHtml(key: string, params?: TOptions | string | undefined): ReactNode | string {
-	const translatedValue: string = tText(key, params);
+	const translatedValue: string = tText(
+		/* IGNORE_ADMIN_CORE_TRANSLATIONS_EXTRACTION */
+		key,
+		params
+	);
 
 	if (translatedValue.includes('<')) {
 		return <Html content={translatedValue} />;
