@@ -112,6 +112,7 @@ export function getAdminCoreConfig(): AdminConfig {
 				ContentBlockType.Spotlight,
 				ContentBlockType.Uitgeklaard,
 				ContentBlockType.UspGrid,
+				ContentBlockType.ImageTextBackground,
 			],
 			defaultPageWidth: ContentWidth.EXTRA_LARGE,
 			onSaveContentPage: () => new Promise(noop),
