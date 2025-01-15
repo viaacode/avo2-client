@@ -73,16 +73,39 @@ export type CollectionsOrBundlesOverviewTableCols =
 
 export type CollectionOrBundleActualisationOverviewTableCols =
 	| CollectionsOrBundlesOverviewTableColsBase
+
+	// Some views in the db use mgmt_current_status, the tables use actualisation_status
+	| 'mgmt_current_status'
 	| 'actualisation_status'
+
+	// Some views in the db use mgmt_updated_at, the tables use actualisation_last_actualised_at
+	| 'mgmt_updated_at'
 	| 'actualisation_last_actualised_at'
+
+	// Some views in the db use mgmt_status_expires_at, the tables use actualisation_status_valid_until
+	| 'mgmt_status_expires_at'
 	| 'actualisation_status_valid_until'
+
+	// Some views in the db use mgmt_last_eindcheck_date, the tables use actualisation_approved_at
+	| 'mgmt_last_eindcheck_date'
 	| 'actualisation_approved_at'
+
+	// Some views in the db use manager.profile_id, the tables use actualisation_manager
 	| 'actualisation_manager';
 
 export type CollectionOrBundleQualityCheckOverviewTableCols =
 	| CollectionsOrBundlesOverviewTableColsBase
+
+	// Some views in the db use mgmt_language_check, the tables use quality_check_language_check
+	| 'mgmt_language_check'
 	| 'quality_check_language_check'
+
+	// Some views in the db use mgmt_quality_check, the tables use quality_check_quality_check
+	| 'mgmt_quality_check'
 	| 'quality_check_quality_check'
+
+	// Some views in the db use mgmt_eind_check_date, the tables use quality_check_approved_at
+	| 'mgmt_eind_check_date'
 	| 'quality_check_approved_at';
 
 export type CollectionOrBundleMarcomOverviewTableCols =

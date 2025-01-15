@@ -364,7 +364,6 @@ export const getFragmentsFromCollection = (
 };
 
 const COLLECTION_MANAGEMENT_PROPS: string[] = [
-	'is_managed',
 	'management',
 	'management_actualised_at',
 	'management_language_check',

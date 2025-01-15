@@ -361,7 +361,7 @@ const getCollectionOrganisationColumn = (
 });
 
 const getActualisationStatusColumn = (): FilterableColumn<CollectionTableCols> => ({
-	id: 'actualisation_status',
+	id: 'mgmt_current_status',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___status'),
 	sortable: true,
 	visibleByDefault: true,
@@ -373,7 +373,7 @@ const getActualisationStatusColumn = (): FilterableColumn<CollectionTableCols> =
 });
 
 const getActualisationLastActualisedAtColumn = (): FilterableColumn<CollectionTableCols> => ({
-	id: 'actualisation_last_actualised_at',
+	id: 'mgmt_last_eindcheck_date',
 	label: tText(
 		'admin/collections-or-bundles/collections-or-bundles___datum-laatste-actualisatie'
 	),
@@ -384,7 +384,7 @@ const getActualisationLastActualisedAtColumn = (): FilterableColumn<CollectionTa
 });
 
 const getActualisationStatusValidUntilColumn = (): FilterableColumn<CollectionTableCols> => ({
-	id: 'actualisation_status_valid_until',
+	id: 'mgmt_status_expires_at',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___vervaldatum'),
 	sortable: true,
 	visibleByDefault: true,
@@ -397,7 +397,7 @@ const getActualisationStatusValidUntilColumn = (): FilterableColumn<CollectionTa
 });
 
 const getActualisationApprovedAtColumn = (): FilterableColumn<CollectionTableCols> => ({
-	id: 'actualisation_approved_at',
+	id: 'updated_at',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___datum-goedkeuring'),
 	sortable: true,
 	visibleByDefault: true,
@@ -417,7 +417,7 @@ const getActualisationResponsibleProfileColumn = (): FilterableColumn<Collection
 });
 
 const getQualityCheckLanguageCheckColumn = (): FilterableColumn<CollectionTableCols> => ({
-	id: 'quality_check_language_check',
+	id: 'mgmt_language_check',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___taalcheck'),
 	sortable: true,
 	visibleByDefault: true,
@@ -431,7 +431,7 @@ const getQualityCheckLanguageCheckColumn = (): FilterableColumn<CollectionTableC
 });
 
 const getQualityCheckQualityCheckColumn = (): FilterableColumn<CollectionTableCols> => ({
-	id: 'quality_check_quality_check',
+	id: 'mgmt_quality_check',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___kwaliteitscontrole'),
 	sortable: true,
 	visibleByDefault: true,
@@ -445,7 +445,7 @@ const getQualityCheckQualityCheckColumn = (): FilterableColumn<CollectionTableCo
 });
 
 const getQualityCheckApprovedAtColumn = (): FilterableColumn<CollectionTableCols> => ({
-	id: 'quality_check_approved_at',
+	id: 'mgmt_eind_check_date',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___datum-goedkeuring'),
 	sortable: true,
 	visibleByDefault: true,
