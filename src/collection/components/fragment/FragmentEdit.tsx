@@ -97,16 +97,25 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 	 */
 	const [shouldSave, setShouldSave] = useState(false);
 
+	/**
+	 * Save the properties of this fragment locally and only update the parent component state, if the user clicks outside the fragment edit component
+	 * https://meemoo.atlassian.net/browse/AVO-3370
+	 * Delay the save action by 100ms to ensure the fragment properties are saved
+	 * We cannot update the fragment states live in the parent component, because that would also rerender the video players
+	 * and that would cause the video players to lose their current time setting
+	 */
+	const [useCustomFields, setUseCustomFields] = useState(fragment.use_custom_fields);
+
 	const getTitle = useCallback(() => {
-		if (fragment.use_custom_fields) {
+		if (useCustomFields) {
 			return fragment.custom_title || '';
 		}
 		return fragment.item_meta?.title || '';
-	}, [fragment.use_custom_fields, fragment.custom_title, fragment.item_meta]);
+	}, [useCustomFields, fragment.custom_title, fragment.item_meta]);
 
 	const getDescription = (): string | undefined => {
 		let description: string | undefined | null;
-		if (fragment.use_custom_fields) {
+		if (useCustomFields) {
 			description = fragment.custom_description;
 		} else {
 			description = fragment?.item_meta?.description;
@@ -117,14 +126,6 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 		return description || undefined;
 	};
 
-	/**
-	 * Save the properties of this fragment locally and only update the parent component state, if the user clicks outside the fragment edit component
-	 * https://meemoo.atlassian.net/browse/AVO-3370
-	 * Delay the save action by 100ms to ensure the fragment properties are saved
-	 * We cannot update the fragment states live in the parent component, because that would also rerender the video players
-	 * and that would cause the video players to lose their current time setting
-	 */
-	const [useCustomFields, setUseCustomFields] = useState(fragment.use_custom_fields);
 	const [customTitle, setCustomTitle] = useState(getTitle());
 	const [customDescription, setCustomDescription] = useState(getDescription());
 
@@ -196,6 +197,10 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 	};
 
 	useEffect(() => {
+		setShouldSave(true);
+	}, [useCustomFields]);
+
+	useEffect(() => {
 		if (shouldSave) {
 			submitStateToParent();
 			setShouldSave(false);
@@ -206,20 +211,6 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 		window.addEventListener('click', handleClickEvent);
 		return () => window.removeEventListener('click', handleClickEvent);
 	}, []);
-
-	const handleChangedValue = (
-		fragmentProp: keyof Avo.Collection.Fragment,
-		fragmentPropValue: any
-	) => {
-		if (fragmentProp === 'use_custom_fields') {
-			setCustomDescription(undefined);
-			setUseCustomFields(fragmentPropValue);
-		} else if (fragmentProp === 'custom_title') {
-			setCustomTitle(fragmentPropValue);
-		} else if (fragmentProp === 'custom_description') {
-			setCustomDescription(fragmentPropValue);
-		}
-	};
 
 	const itemMetaData = (fragment as any).item_meta;
 
@@ -348,7 +339,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 
 	const renderForm = () => {
 		const disableVideoFields: boolean =
-			!fragment.use_custom_fields && fragment.type !== CollectionBlockType.TEXT;
+			!useCustomFields && fragment.type !== CollectionBlockType.TEXT;
 
 		return (
 			<Form>
@@ -359,9 +350,9 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 					>
 						<Toggle
 							id="customFields"
-							checked={fragment.use_custom_fields}
+							checked={useCustomFields}
 							onChange={(newUseCustomFields: boolean) =>
-								handleChangedValue('use_custom_fields', newUseCustomFields)
+								setUseCustomFields(newUseCustomFields)
 							}
 						/>
 					</FormGroup>
@@ -378,7 +369,6 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 							'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
 						)}
 						onChange={setCustomTitle}
-						onBlur={() => handleChangedValue('custom_title', customTitle)}
 						disabled={disableVideoFields}
 						onFocus={onFocus}
 					/>
