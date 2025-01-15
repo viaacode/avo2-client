@@ -413,6 +413,13 @@ export type UpdateAssignmentUpdatedAtDateMutationVariables = Exact<{
 
 export type UpdateAssignmentUpdatedAtDateMutation = { __typename?: 'mutation_root', update_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null };
 
+export type DeleteManagementEntryByCollectionIdMutationVariables = Exact<{
+  collection_id: Scalars['uuid'];
+}>;
+
+
+export type DeleteManagementEntryByCollectionIdMutation = { __typename?: 'mutation_root', delete_app_collection_management?: { __typename?: 'app_collection_management_mutation_response', affected_rows: number } | null };
+
 export type DeleteCollectionFragmentByIdMutationVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -603,7 +610,7 @@ export type InsertCollectionManagementEntryMutationVariables = Exact<{
 }>;
 
 
-export type InsertCollectionManagementEntryMutation = { __typename?: 'mutation_root', insert_app_collection_management?: { __typename?: 'app_collection_management_mutation_response', affected_rows: number } | null };
+export type InsertCollectionManagementEntryMutation = { __typename?: 'mutation_root', delete_app_collection_management?: { __typename?: 'app_collection_management_mutation_response', affected_rows: number } | null, insert_app_collection_management?: { __typename?: 'app_collection_management_mutation_response', affected_rows: number } | null };
 
 export type InsertCollectionManagementQualityCheckEntryMutationVariables = Exact<{
   collection_id: Scalars['uuid'];

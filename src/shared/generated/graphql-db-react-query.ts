@@ -1612,6 +1612,22 @@ export const useUpdateAssignmentUpdatedAtDateMutation = <
       (variables?: UpdateAssignmentUpdatedAtDateMutationVariables) => fetchData<UpdateAssignmentUpdatedAtDateMutation, UpdateAssignmentUpdatedAtDateMutationVariables>(UpdateAssignmentUpdatedAtDateDocument, variables)(),
       options
     );
+export const DeleteManagementEntryByCollectionIdDocument = `
+    mutation deleteManagementEntryByCollectionId($collection_id: uuid!) {
+  delete_app_collection_management(where: {collection_id: {_eq: $collection_id}}) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteManagementEntryByCollectionIdMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteManagementEntryByCollectionIdMutation, TError, DeleteManagementEntryByCollectionIdMutationVariables, TContext>) =>
+    useMutation<DeleteManagementEntryByCollectionIdMutation, TError, DeleteManagementEntryByCollectionIdMutationVariables, TContext>(
+      ['deleteManagementEntryByCollectionId'],
+      (variables?: DeleteManagementEntryByCollectionIdMutationVariables) => fetchData<DeleteManagementEntryByCollectionIdMutation, DeleteManagementEntryByCollectionIdMutationVariables>(DeleteManagementEntryByCollectionIdDocument, variables)(),
+      options
+    );
 export const DeleteCollectionFragmentByIdDocument = `
     mutation deleteCollectionFragmentById($id: Int!) {
   delete_app_collection_fragments(where: {id: {_eq: $id}}) {
@@ -2338,6 +2354,9 @@ export const useInsertCollectionLomLinksMutation = <
     );
 export const InsertCollectionManagementEntryDocument = `
     mutation insertCollectionManagementEntry($collection_id: uuid!, $current_status: String, $manager_profile_id: uuid, $status_valid_until: timestamptz, $note: String, $updated_at: timestamptz) {
+  delete_app_collection_management(where: {collection_id: {_eq: $collection_id}}) {
+    affected_rows
+  }
   insert_app_collection_management(
     objects: [{collection_id: $collection_id, current_status: $current_status, manager_profile_id: $manager_profile_id, status_valid_until: $status_valid_until, note: $note, updated_at: $updated_at}]
   ) {

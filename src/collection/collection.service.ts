@@ -31,6 +31,8 @@ import {
 	type DeleteCollectionLomLinksMutationVariables,
 	type DeleteCollectionOrBundleByUuidMutation,
 	type DeleteCollectionOrBundleByUuidMutationVariables,
+	type DeleteManagementEntryByCollectionIdMutation,
+	type DeleteManagementEntryByCollectionIdMutationVariables,
 	type DeleteMarcomEntriesByParentCollectionIdMutation,
 	type DeleteMarcomEntriesByParentCollectionIdMutationVariables,
 	type DeleteMarcomEntryMutation,
@@ -89,6 +91,7 @@ import {
 	DeleteCollectionLabelsDocument,
 	DeleteCollectionLomLinksDocument,
 	DeleteCollectionOrBundleByUuidDocument,
+	DeleteManagementEntryByCollectionIdDocument,
 	DeleteMarcomEntriesByParentCollectionIdDocument,
 	DeleteMarcomEntryDocument,
 	GetBookmarkedCollectionsByOwnerDocument,
@@ -445,6 +448,10 @@ export class CollectionService {
 					initialCollection,
 					updatedCollection
 				);
+			} else if (initialCollection?.is_managed) {
+				// disabled isManaged
+				// Remove the collection management entry
+				await CollectionService.removeManagementEntry(updatedCollection.id as string);
 			}
 
 			// Update loms
@@ -476,6 +483,24 @@ export class CollectionService {
 			});
 		}
 	}
+
+	private static removeManagementEntry = async (collectionId: string) => {
+		try {
+			await dataService.query<
+				DeleteManagementEntryByCollectionIdMutation,
+				DeleteManagementEntryByCollectionIdMutationVariables
+			>({
+				query: DeleteManagementEntryByCollectionIdDocument,
+				variables: {
+					collection_id: collectionId,
+				},
+			});
+		} catch (err) {
+			throw new CustomError('Failed to remove management entry', err, {
+				collectionId,
+			});
+		}
+	};
 
 	private static saveCollectionManagementData = async (
 		collectionId: string,
