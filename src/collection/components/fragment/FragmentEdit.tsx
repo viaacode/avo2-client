@@ -417,7 +417,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 
 	const fragmentIsPublished: boolean | undefined = (
 		fragment.item_meta as Avo.Collection.Collection | Avo.Assignment.Assignment
-	).is_public;
+	)?.is_public;
 	return (
 		<div className="c-fragment-edit">
 			<div className="c-panel">
