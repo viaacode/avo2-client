@@ -178,7 +178,6 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 				}
 				// The height is too large, we need to wrap the description in a collapsable container
 				const collapsedHeight = 300 - 36 - 18 - (showMetadata ? 63 : 0);
-				console.log('collapsedHeight', collapsedHeight);
 				return (
 					<div ref={descriptionRef} className={showMetadata ? 'u-spacer-top' : ''}>
 						<ExpandableContainer collapsedHeight={collapsedHeight}>
@@ -199,7 +198,6 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 				/* TODO: Fix label height - read more button (36) - additional margin (18) - metadata height (63)  */
 			}
 			const collapsedHeight = videoHeight - 36 - 18 - (showMetadata ? 63 : 0);
-			console.log('collapsedHeight', collapsedHeight);
 			return (
 				<div ref={descriptionRef} className={showMetadata ? 'u-spacer-top' : ''}>
 					<PerfectScrollbar

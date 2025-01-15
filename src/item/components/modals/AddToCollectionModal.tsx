@@ -19,7 +19,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { once } from 'lodash-es';
-import React, { type FC, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { CollectionService } from '../../../collection/collection.service';
 import { CollectionOrBundle, ContentTypeNumber } from '../../../collection/collection.types';
@@ -315,18 +315,39 @@ const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 		}
 	};
 
-	const renderAddToCollectionModal = () => {
+	const setStartTimeOnce = useCallback(
+		() =>
+			once(() => {
+				setModalVideoSeekTime(fragmentStartTime);
+			}),
+		[fragmentStartTime]
+	);
+
+	const renderedItemVideoDescription = useMemo(() => {
 		const fragmentDuration = toSeconds(itemMetaData.duration) || 0;
+
 		const [start, end] = getValidStartAndEnd(
 			fragmentStartTime,
 			fragmentEndTime,
 			fragmentDuration
 		);
+		return (
+			<ItemVideoDescription
+				itemMetaData={itemMetaData}
+				showMetadata={false}
+				showTitle
+				showDescription
+				canPlay={isOpen}
+				onPlay={setStartTimeOnce}
+				cuePointsLabel={{ start, end }}
+				verticalLayout={isMobileWidth()}
+				trackPlayEvent={false}
+			/>
+		);
+	}, [fragmentStartTime, fragmentEndTime, itemMetaData, isOpen, setStartTimeOnce]);
 
-		const setStartTimeOnce = once(() => {
-			setModalVideoSeekTime(fragmentStartTime);
-		});
-
+	const renderAddToCollectionModal = () => {
+		const fragmentDuration = toSeconds(itemMetaData.duration) || 0;
 		return (
 			<Modal
 				title={tHtml(
@@ -341,17 +362,7 @@ const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 					<div className="c-modal__body-add-fragment">
 						<Spacer>
 							<Form>
-								<ItemVideoDescription
-									itemMetaData={itemMetaData}
-									showMetadata={false}
-									showTitle
-									showDescription
-									canPlay={isOpen}
-									onPlay={setStartTimeOnce}
-									cuePointsLabel={{ start, end }}
-									verticalLayout={isMobileWidth()}
-									trackPlayEvent={false}
-								/>
+								{renderedItemVideoDescription}
 								<Grid>
 									<Column size="2-7" className="u-spacer-top-l u-spacer-bottom-l">
 										<TimeCropControls
