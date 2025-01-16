@@ -10,7 +10,7 @@ export type BundleColumnId =
 	| 'title'
 	| 'author'
 	| 'is_public'
-	| 'organization'
+	| 'organisation'
 	| typeof ACTIONS_TABLE_COLUMN_ID;
 
 export enum BundleSortProp {

@@ -1,12 +1,12 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Button, Icon, IconName, Spacer, Table } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode, useState } from 'react';
 import { withRouter } from 'react-router';
 import { type RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { type ParentBundle } from '../../collection/collection.types';
 import {
 	type BundleColumnId,
 	BundleSortProp,
@@ -18,7 +18,6 @@ import { buildLink } from '../../shared/helpers';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { tText } from '../../shared/helpers/translate-text';
-import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser from '../../shared/hocs/withUser';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
@@ -54,27 +53,19 @@ const ContainedInBundlesTable: FC<
 		setBundleSortOrder(sortOrder);
 	};
 
-	const renderBundleCell = (
-		rowData: Partial<Avo.Collection.Collection>,
-		columnId: BundleColumnId
-	): ReactNode => {
+	const renderBundleCell = (parentBundle: ParentBundle, columnId: BundleColumnId): ReactNode => {
 		switch (columnId) {
-			case 'author': {
-				const user = rowData.profile?.user;
-				if (user) {
-					return truncateTableValue(`${user.first_name} ${user.last_name}`);
-				}
-				return '-';
-			}
+			case 'author':
+				return parentBundle.author || '-';
 
-			case 'organization':
-				return rowData?.profile?.organisation?.name || '-';
+			case 'organisation':
+				return parentBundle?.organisation || '-';
 
 			case 'is_public':
 				return (
 					<div
 						title={
-							rowData.is_public
+							parentBundle.is_public
 								? tText(
 										'collection/components/collection-or-bundle-overview___publiek'
 								  )
@@ -83,7 +74,7 @@ const ContainedInBundlesTable: FC<
 								  )
 						}
 					>
-						<Icon name={rowData.is_public ? IconName.unlock3 : IconName.lock} />
+						<Icon name={parentBundle.is_public ? IconName.unlock3 : IconName.lock} />
 					</div>
 				);
 
@@ -100,13 +91,13 @@ const ContainedInBundlesTable: FC<
 						)}
 						onClick={(evt) => {
 							evt.stopPropagation();
-							navigateToBundleDetail(rowData.id as string);
+							navigateToBundleDetail(parentBundle.id as string);
 						}}
 					/>
 				);
 
 			default:
-				return rowData[columnId];
+				return parentBundle[columnId];
 		}
 	};
 
@@ -135,8 +126,10 @@ const ContainedInBundlesTable: FC<
 							dataType: TableColumnDataType.string,
 						},
 						{
-							label: 'Organisatie',
-							id: 'organization',
+							label: tText(
+								'bundle/components/contained-in-bundles-table___organisatie'
+							),
+							id: 'organisation',
 							sortable: false,
 						},
 						{

@@ -126,4 +126,6 @@ export interface ParentBundle {
 	id: string;
 	title: string;
 	is_public: boolean;
+	author: string | null;
+	organisation: string | null;
 }
