@@ -68,14 +68,6 @@
 /* Main navigation mobile
    ========================================================================== */
 
-.c-nav-mobile + .c-nav-mobile {
-	margin: 1.2rem 0;
-	//margin: 1.2rem 0;
-	//.c-nav-mobile__item:first-child {
-	//	border-top: 0.1rem solid $color-gray-100;
-	//}
-}
-
 .c-nav-mobile {
 	.c-nav__item--i {
 		color: $color-gray-700;
@@ -93,10 +85,7 @@
 	justify-content: space-between;
 	text-decoration: none;
 	padding: 1.2rem 0.8rem;
-
-	+ .c-nav-mobile__item {
-		border-top: 0.1rem solid $color-gray-100;
-	}
+	border-top: 0.1rem solid $color-gray-100;
 
 	> .c-nav__item {
 		width: 100%;
@@ -131,6 +120,13 @@
 	height: auto;
 	background-color: white;
 	z-index: 100;
+
+	.c-nav-mobile:first-child {
+		.c-nav-mobile__item:first-child {
+			// Do not show a line for the very first item in the first mobile nav bar
+			border-top: none;
+		}
+	}
 }
 
 /* profile dropdown */
