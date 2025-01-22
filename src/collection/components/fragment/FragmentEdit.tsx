@@ -347,10 +347,10 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 				{itemMetaData && (
 					<FormGroup
 						label={GET_FRAGMENT_EDIT_SWITCH_LABELS()[fragment.type]}
-						labelFor="customFields"
+						labelFor={`customFields___${fragment.id}`}
 					>
 						<Toggle
-							id="customFields"
+							id={`customFields___${fragment.id}`}
 							checked={useCustomFields}
 							onChange={(newUseCustomFields: boolean) =>
 								setUseCustomFields(newUseCustomFields)
@@ -360,10 +360,10 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 				)}
 				<FormGroup
 					label={tText('collection/components/fragment/fragment-edit___tekstblok-titel')}
-					labelFor={`title_${fragment.id}`}
+					labelFor={`title___${fragment.id}`}
 				>
 					<TextInput
-						id={`title_${fragment.id}`}
+						id={`title___${fragment.id}`}
 						type="text"
 						value={customTitle}
 						placeholder={tText(
@@ -387,11 +387,11 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 						label={tText(
 							'collection/components/fragment/fragment-edit___tekstblok-beschrijving'
 						)}
-						labelFor={`description_${fragment.id}`}
+						labelFor={`description___${fragment.id}`}
 					>
 						{!isNil(allowedToAddLinks) && (
 							<RichTextEditorWithInternalState
-								id={`description_${fragment.id}`}
+								id={`description___${fragment.id}`}
 								controls={
 									allowedToAddLinks
 										? RICH_TEXT_EDITOR_OPTIONS_AUTHOR
