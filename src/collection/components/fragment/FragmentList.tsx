@@ -3,7 +3,6 @@ import { type Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 import React, { type FC } from 'react';
 
-import { BlockIconWrapper } from '../../../shared/components/BlockList/BlockIconWrapper/BlockIconWrapper';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { showReplacementWarning } from '../../helpers/fragment';
@@ -57,19 +56,20 @@ const FragmentList: FC<FragmentListProps & UserProps> = ({
 								</Alert>
 							</Spacer>
 						)}
-						<BlockIconWrapper
-							key={collectionFragment.id}
-							type={collectionFragment.type}
-							type_id={collectionFragment.item_meta?.type_id}
-						>
-							<FragmentDetail
-								collectionFragment={collectionFragment}
-								showDescription={showDescription}
-								showMetadata={showMetadata}
-								linkToItems={linkToItems}
-								{...rest}
-							/>
-						</BlockIconWrapper>
+						{/* Disable icons because it takes too much space: https://meemoo.atlassian.net/browse/AVO-3343?focusedCommentId=54020 */}
+						{/*<BlockIconWrapper*/}
+						{/*	key={collectionFragment.id}*/}
+						{/*	type={collectionFragment.type}*/}
+						{/*	type_id={collectionFragment.item_meta?.type_id}*/}
+						{/*>*/}
+						<FragmentDetail
+							collectionFragment={collectionFragment}
+							showDescription={showDescription}
+							showMetadata={showMetadata}
+							linkToItems={linkToItems}
+							{...rest}
+						/>
+						{/*</BlockIconWrapper>*/}
 					</li>
 				);
 			}

@@ -13,7 +13,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
-import { cloneDeep, get, isEmpty, isNil, noop, set } from 'lodash-es';
+import { cloneDeep, isEmpty, isNil, noop, set } from 'lodash-es';
 import React, {
 	type FC,
 	type ReactNode,
@@ -680,13 +680,13 @@ const CollectionOrBundleEdit: FC<
 		);
 		const showEditorialTabs = !!(
 			(isCollection &&
-				get(collectionState, 'currentCollection.is_managed') &&
+				collectionState?.currentCollection?.is_managed &&
 				PermissionService.hasPerm(
 					commonUser,
 					PermissionName.VIEW_COLLECTION_EDITORIAL_OVERVIEWS
 				)) ||
 			(!isCollection &&
-				get(collectionState, 'currentCollection.is_managed') &&
+				collectionState?.currentCollection?.is_managed &&
 				PermissionService.hasPerm(
 					commonUser,
 					PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS
@@ -927,7 +927,7 @@ const CollectionOrBundleEdit: FC<
 				break;
 
 			case CollectionMenuAction.openPublishModal:
-				if (unsavedChanges && !get(collectionState.initialCollection, 'is_public')) {
+				if (unsavedChanges && !collectionState?.initialCollection?.is_public) {
 					ToastService.info(
 						tHtml(
 							'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
@@ -1008,7 +1008,7 @@ const CollectionOrBundleEdit: FC<
 						item,
 					});
 				}
-				const collectionId = get(collectionState.currentCollection, 'id');
+				const collectionId = collectionState?.currentCollection?.id;
 				if (!collectionId) {
 					throw new CustomError('Collection id could not be found', null, {
 						collectionState,
@@ -1052,7 +1052,7 @@ const CollectionOrBundleEdit: FC<
 					);
 					return;
 				}
-				const bundleId = get(collectionState.currentCollection, 'id');
+				const bundleId = collectionState?.currentCollection?.id;
 				if (!bundleId) {
 					throw new CustomError('Bundle id could not be found', null, {
 						collectionState,
@@ -1240,7 +1240,7 @@ const CollectionOrBundleEdit: FC<
 		const isPublic =
 			collectionState.currentCollection && collectionState.currentCollection.is_public;
 		let publishButtonTooltip: string;
-		if (unsavedChanges && !get(collectionState.initialCollection, 'is_public')) {
+		if (unsavedChanges && !collectionState?.initialCollection?.is_public) {
 			publishButtonTooltip = tText(
 				'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
 			);
@@ -1297,9 +1297,7 @@ const CollectionOrBundleEdit: FC<
 				{permissions.canPublish && (
 					<Button
 						type="secondary"
-						disabled={
-							unsavedChanges && !get(collectionState.initialCollection, 'is_public')
-						}
+						disabled={unsavedChanges && !collectionState?.initialCollection?.is_public}
 						title={publishButtonTooltip}
 						ariaLabel={publishButtonTooltip}
 						icon={isPublic ? IconName.unlock3 : IconName.lock}
@@ -1748,22 +1746,18 @@ const CollectionOrBundleEdit: FC<
 			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
-						get(
-							collectionState.currentCollection,
-							'title',
-							isCollection
-								? tText(
-										'collection/components/collection-or-bundle-edit___collectie-bewerken-titel-fallback'
-								  )
-								: tText(
-										'collection/components/collection-or-bundle-edit___bundel-bewerken-titel-fallback'
-								  )
-						)
+						collectionState?.currentCollection?.title || isCollection
+							? tText(
+									'collection/components/collection-or-bundle-edit___collectie-bewerken-titel-fallback'
+							  )
+							: tText(
+									'collection/components/collection-or-bundle-edit___bundel-bewerken-titel-fallback'
+							  )
 					)}
 				</title>
 				<meta
 					name="description"
-					content={get(collectionState.currentCollection, 'description') || ''}
+					content={collectionState?.currentCollection?.description || ''}
 				/>
 			</Helmet>
 			<LoadingErrorLoadedComponent

@@ -24,7 +24,7 @@ export const ItemMetadata: FC<ItemMetadataProps> = ({
 			{organisation && (
 				<div>
 					{tHtml('shared/components/block-item-metadata/block-item-metadata___uitzender')}
-					:<b>{` ${organisation}`}</b>
+					: <b>{organisation}</b>
 				</div>
 			)}
 
@@ -33,14 +33,14 @@ export const ItemMetadata: FC<ItemMetadataProps> = ({
 					{tHtml(
 						'shared/components/block-item-metadata/block-item-metadata___uitgezonden'
 					)}
-					:<b>{` ${formatDate(broadcastDate)}`}</b>
+					: <b>{formatDate(broadcastDate)}</b>
 				</div>
 			)}
 
 			{series && (
 				<div>
-					{tHtml('shared/components/block-item-metadata/block-item-metadata___reeks')}:
-					<b> {buildSeriesLink(series)}</b>
+					{tHtml('shared/components/block-item-metadata/block-item-metadata___reeks')}:{' '}
+					<b>{buildSeriesLink(series)}</b>
 				</div>
 			)}
 		</section>

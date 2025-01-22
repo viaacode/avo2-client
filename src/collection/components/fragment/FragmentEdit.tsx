@@ -28,8 +28,9 @@ import React, {
 } from 'react';
 import { Link } from 'react-router-dom';
 
+import { buildGlobalSearchLink } from '../../../assignment/helpers/build-search-link';
 import { APP_PATH } from '../../../constants';
-import { DeleteObjectModal, FlowPlayerWrapper } from '../../../shared/components';
+import { DeleteObjectModal, FlowPlayerWrapper, ItemMetadata } from '../../../shared/components';
 import {
 	RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
 	RICH_TEXT_EDITOR_OPTIONS_DEFAULT,
@@ -373,6 +374,14 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 						onFocus={onFocus}
 					/>
 				</FormGroup>
+				{!!fragment.item_meta && isParentACollection && (
+					<ItemMetadata
+						item={fragment.item_meta as Avo.Item.Item}
+						buildSeriesLink={(series) =>
+							buildGlobalSearchLink({ filters: { serie: [series] } })
+						}
+					/>
+				)}
 				{fragment.type !== 'COLLECTION' && fragment.type !== 'ASSIGNMENT' && (
 					<FormGroup
 						label={tText(

@@ -12,27 +12,22 @@
 			width: calc(100% - 40px);
 		}
 	}
-}
 
-.c-collection-list__item {
-	margin-bottom: 3.2rem;
-	padding-bottom: 3.2rem;
-	border-bottom: 1px solid #d6dee3;
-
-	&:last-child {
-		border: none;
+	.c-collection-list__item {
+		margin-bottom: $g-spacer-unit * 2;
+		padding-bottom: $g-spacer-unit * 2;
 	}
-}
 
-@media (max-width: $g-bp2) {
-	.m-bundle-detail-header {
-		.c-thumbnail {
-			width: 100%;
-			margin-bottom: 2.2rem;
-		}
+	@media (max-width: $g-bp2) {
+		.m-bundle-detail-header {
+			.c-thumbnail {
+				width: 100%;
+				margin-bottom: 2.2rem;
+			}
 
-		.c-toolbar {
-			align-items: flex-end;
+			.c-toolbar {
+				align-items: flex-end;
+			}
 		}
 	}
 }

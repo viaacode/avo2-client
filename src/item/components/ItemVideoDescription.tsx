@@ -31,14 +31,15 @@ import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWi
 import { TEAL_BRIGHT } from '../../shared/constants';
 import { stripHtml } from '../../shared/helpers';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
-import { tText } from '../../shared/helpers/translate-text';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 
 import './ItemVideoDescription.scss';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface ItemVideoDescriptionProps {
 	itemMetaData: Avo.Item.Item;
 	showMetadata: boolean;
+	enableMetadataLink: boolean;
 	showDescription?: boolean;
 	collapseDescription?: boolean;
 	showTitle?: boolean;
@@ -61,6 +62,7 @@ const DEFAULT_VIDEO_HEIGHT = 421;
 const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComponentProps> = ({
 	itemMetaData,
 	showMetadata = false,
+	enableMetadataLink = false,
 	showTitle = false,
 	showDescription = true,
 	collapseDescription = true,
@@ -213,6 +215,9 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 							onChange={handleDescriptionExpandCollapse}
 							onTransitionEnd={() => handleDescriptionExpandCollapseTransitionEnd()}
 						>
+							<BlockHeading type="h4">
+								{tText('item/components/item-video-description___beschrijving')}
+							</BlockHeading>
 							{renderDescription()}
 						</ExpandableContainer>
 					</PerfectScrollbar>
@@ -230,15 +235,7 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 	return (
 		<div className="c-item-video-description">
 			<Toolbar className="c-toolbar--no-height">
-				<ToolbarLeft>
-					{showTitle ? (
-						renderTitle()
-					) : (
-						<BlockHeading type="h4">
-							{tText('item/components/item-video-description___beschrijving')}
-						</BlockHeading>
-					)}
-				</ToolbarLeft>
+				<ToolbarLeft>{showTitle && renderTitle()}</ToolbarLeft>
 				<ToolbarRight>{renderButtons(itemMetaData)}</ToolbarRight>
 			</Toolbar>
 			<Grid>
@@ -253,7 +250,11 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 								<ItemMetadata
 									item={itemMetaData}
 									buildSeriesLink={(series) =>
-										buildGlobalSearchLink({ filters: { serie: [series] } })
+										enableMetadataLink
+											? buildGlobalSearchLink({
+													filters: { serie: [series] },
+											  })
+											: series
 									}
 								/>
 							)}
