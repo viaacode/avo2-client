@@ -19,14 +19,14 @@ export const GET_TABS: () => WorkspaceTab[] = () => [
 		id: COLLECTIONS_ID,
 	},
 	{
-		label: tText('workspace/workspace___bundels'),
-		icon: IconName.folder,
-		id: BUNDLES_ID,
-	},
-	{
 		label: tText('workspace/workspace___opdrachten'),
 		icon: IconName.clipboard,
 		id: ASSIGNMENTS_ID,
+	},
+	{
+		label: tText('workspace/workspace___bundels'),
+		icon: IconName.folder,
+		id: BUNDLES_ID,
 	},
 	{
 		label: tText('workspace/workspace___gedeelde-links'),
