@@ -236,6 +236,7 @@ const QuickLaneModalSharingTab: FC<QuickLaneModalProps & UserProps> = ({
 								<ItemVideoDescription
 									itemMetaData={content as ItemSchema}
 									showMetadata={false}
+									enableMetadataLink={false}
 									showTitle={false}
 									showDescription={false}
 									canPlay={isOpen}

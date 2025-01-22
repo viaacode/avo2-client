@@ -149,6 +149,7 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 					<ItemVideoDescription
 						itemMetaData={quickLane.content as Avo.Item.Item}
 						showMetadata={true}
+						enableMetadataLink={false}
 						showDescription={contentLayout === AssignmentLayout.PlayerAndText}
 						verticalLayout={isMobileWidth()}
 						cuePointsLabel={{ start, end }}

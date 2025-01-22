@@ -476,6 +476,7 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 								verticalLayout
 								showTitle
 								showMetadata={false}
+								enableMetadataLink={false}
 								titleLink={
 									commonUser
 										? buildLink(APP_PATH.ITEM_DETAIL.route, {

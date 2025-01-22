@@ -939,6 +939,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 						<ItemVideoDescription
 							itemMetaData={item}
 							showMetadata={false}
+							enableMetadataLink={false}
 							canPlay={
 								!isAddToCollectionModalOpen &&
 								!isShareThroughEmailModalOpen &&

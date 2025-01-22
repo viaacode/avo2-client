@@ -56,6 +56,7 @@ const FragmentDetail: FC<FragmentDetailProps> = ({
 		<ItemVideoDescription
 			showDescription={showDescription}
 			showMetadata={showMetadata}
+			enableMetadataLink={false}
 			showTitle
 			itemMetaData={{
 				...(collectionFragment.item_meta as Avo.Item.Item),

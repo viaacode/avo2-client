@@ -175,6 +175,7 @@ const CutFragmentModal: FC<CutFragmentModalProps> = ({
 				<ItemVideoDescription
 					itemMetaData={itemMetaData}
 					showMetadata={false}
+					enableMetadataLink={false}
 					showTitle
 					showDescription={false}
 					canPlay={isOpen}

@@ -335,6 +335,7 @@ const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 			<ItemVideoDescription
 				itemMetaData={itemMetaData}
 				showMetadata={false}
+				enableMetadataLink={false}
 				showTitle
 				showDescription
 				canPlay={isOpen}

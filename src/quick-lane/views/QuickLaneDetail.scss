@@ -1,3 +1,5 @@
+@import "../../styles/settings/variables";
+
 .c-quick-lane-detail {
 	.c-navbar {
 		height: auto;
@@ -26,5 +28,10 @@
 
 	.c-more-options-dropdown {
 		padding-top: 5px;
+	}
+
+	.c-collection-list__item {
+		padding: $g-spacer-unit * 4 0;
+		border-bottom: 1px solid $color-gray-100;
 	}
 }

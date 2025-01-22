@@ -14,8 +14,8 @@
 	}
 
 	.c-collection-list__item {
-		padding-top: $g-spacer-unit * 2;
-		padding-bottom: $g-spacer-unit * 2;
+		padding: $g-spacer-unit * 4 0;
+		border-bottom: 1px solid $color-gray-100;
 	}
 
 	.c-header .o-container {

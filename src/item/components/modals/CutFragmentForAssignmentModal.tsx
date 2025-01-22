@@ -96,6 +96,7 @@ const CutFragmentForAssignmentModal: FC<
 										itemMetaData={itemMetaData}
 										showTitle
 										showMetadata={false}
+										enableMetadataLink={false}
 										showDescription
 										canPlay={isOpen}
 										cuePointsLabel={{ start, end }}
