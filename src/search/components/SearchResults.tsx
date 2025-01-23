@@ -1,13 +1,5 @@
 import { PaginationBar } from '@meemoo/react-components';
-import {
-	Blankslate,
-	Button,
-	Container,
-	Flex,
-	IconName,
-	Spacer,
-	Spinner,
-} from '@viaa/avo2-components';
+import { Blankslate, Button, Container, Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 import React, { type FC } from 'react';
@@ -90,17 +82,16 @@ const SearchResults: FC<SearchResultsProps & UserProps> = ({
 					<ul className="c-search-result-list">
 						{data.results.map(renderSearchResultItem)}
 					</ul>
-					<Spacer margin="large">
-						<PaginationBar
-							{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
-							startItem={currentItemIndex}
-							itemsPerPage={ITEMS_PER_PAGE}
-							totalItems={totalItemCount}
-							onPageChange={(newPage: number) =>
-								setCurrentItemIndex(newPage * ITEMS_PER_PAGE)
-							}
-						/>
-					</Spacer>
+					<PaginationBar
+						className="u-m-t-l u-m-b-l"
+						{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
+						startItem={currentItemIndex}
+						itemsPerPage={ITEMS_PER_PAGE}
+						totalItems={totalItemCount}
+						onPageChange={(newPage: number) =>
+							setCurrentItemIndex(newPage * ITEMS_PER_PAGE)
+						}
+					/>
 				</>
 			);
 		}

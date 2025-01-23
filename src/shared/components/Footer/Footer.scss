@@ -15,8 +15,8 @@
 		grid-gap: $g-spacer-unit * 4;
 
 		/**
- * Mobile
- */
+* Mobile
+*/
 		@media screen and (max-width: $g-bp2) {
 			grid-template-columns: 1fr;
 			grid-template-rows: auto;
@@ -30,11 +30,6 @@
 			padding: 0;
 			box-sizing: border-box;
 			margin-bottom: 1px;
-
-			&:hover {
-				border-bottom: 1px solid $color-gray-200;
-				margin-bottom: 0;
-			}
 
 			img {
 				height: 35px;
@@ -53,7 +48,7 @@
 			display: flex;
 			flex-direction: column;
 			flex-wrap: nowrap;
-			gap: $g-spacer-unit * 2;
+			gap: $g-spacer-unit;
 
 			&.c-global-footer__column-1 {
 				grid-column: 1 / 2;
@@ -77,8 +72,8 @@
 			}
 
 			/**
-			 * Mobile
-			 */
+* Mobile
+*/
 			@media screen and (max-width: $g-bp2) {
 				&.c-global-footer__column-1 {
 					grid-column: 1 / 2;
@@ -110,10 +105,9 @@
 				a {
 					display: inline-block;
 
-					&:hover {
+					&:not(.u-text-decoration-none):hover {
 						color: $color-teal-bright !important;
-						text-decoration-color: $color-teal-bright !important;
-						border-bottom: 1px solid $color-teal-bright !important;
+						text-decoration: underline $color-teal-bright !important;
 					}
 				}
 			}

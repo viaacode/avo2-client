@@ -25,6 +25,7 @@ $u-text-danger-color: $color-error !default;
 
 .u-text-success {
 	color: $u-text-success-color;
+
 	.o-svg-icon {
 		color: $u-text-success-color;
 	}
@@ -58,4 +59,14 @@ $u-text-danger-color: $color-error !default;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+.u-text-decoration-none {
+	text-decoration: none !important;
+	color: black !important;
+
+	&:hover {
+		text-decoration: none !important;
+		color: black !important;
+	}
 }

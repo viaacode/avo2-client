@@ -53,27 +53,36 @@ const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match 
 	const columnTitle1 = tText('shared/components/footer/footer___kolom-1');
 	const columnTitle2 = tText('shared/components/footer/footer___kolom-2');
 	const columnTitle3 = tText('shared/components/footer/footer___kolom-3');
+	const showColumnTitles = !!columnTitle1 || !!columnTitle2 || !!columnTitle3;
 	return (
 		<footer className="c-global-footer">
 			<Container mode="horizontal" className="c-global-footer__inner">
 				<ul className="c-global-footer__column-1">
-					<li className="c-global-footer__column-header">{columnTitle1}</li>
+					{showColumnTitles && (
+						<li className="c-global-footer__column-header">{columnTitle1}</li>
+					)}
 					{mapNavItems(footerNavItemsColumn1)}
 				</ul>
 				<ul className="c-global-footer__column-2">
-					<li className="c-global-footer__column-header">{columnTitle2}</li>
+					{showColumnTitles && (
+						<li className="c-global-footer__column-header">{columnTitle2}</li>
+					)}
 					{mapNavItems(footerNavItemsColumn2)}
 				</ul>
 				<ul className="c-global-footer__column-3">
-					<li className="c-global-footer__column-header">{columnTitle3}</li>
-
+					{showColumnTitles && (
+						<li className="c-global-footer__column-header">{columnTitle3}</li>
+					)}
 					{mapNavItems(footerNavItemsColumn3)}
 				</ul>
 				<ul className="c-global-footer__column-4">
 					<li>
 						<a
 							href="https://meemoo.be/nl"
+							target="_blank"
+							rel="noreferrer"
 							title={tText('shared/components/footer/footer___meemoo')}
+							className="u-text-decoration-none"
 						>
 							<span className="c-nav__item-label">
 								{tText('shared/components/footer/footer___een-initiatief-van')}
@@ -89,7 +98,10 @@ const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match 
 					<li>
 						<a
 							href="https://www.vlaanderen.be/"
+							target="_blank"
+							rel="noreferrer"
 							title={tText('shared/components/footer/footer___vlaamse-overheid')}
+							className="u-text-decoration-none"
 						>
 							<span className="c-nav__item-label">
 								{tText('shared/components/footer/footer___gesteund-door')}
