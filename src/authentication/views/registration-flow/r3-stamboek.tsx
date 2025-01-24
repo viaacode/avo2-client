@@ -1,14 +1,26 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
-import { Alert, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
+import { type ContentPageInfo } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { BlockHeading, ContentPageRenderer } from '@meemoo/admin-core-ui/dist/client.mjs';
+import {
+	Accordion,
+	Button,
+	Container,
+	FormGroup,
+	IconName,
+	Spacer,
+	Spinner,
+} from '@viaa/avo2-components';
 import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
 
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { useGetContentPageByPath } from '../../../admin/content-page/hooks/get-content-page-by-path';
+import { GENERATE_SITE_TITLE } from '../../../constants';
+import ErrorView from '../../../error/views/ErrorView';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { StamboekInput } from '../../components/StamboekInput';
 import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
+
+import ManualRegistration from './r4-manual-registration';
 
 type RegisterStamboekProps = RouteComponentProps;
 
@@ -28,8 +40,42 @@ const RegisterStamboek: FC<RegisterStamboekProps> = ({ location }) => {
 
 	const [validStamboekNumber, setValidStamboekNumber] = useState<string>('');
 
+	const {
+		data: whyTeacherCardPageInfo,
+		isLoading: whyTeacherCardIsLoading,
+		isError: whyTeacherCardIsError,
+	} = useGetContentPageByPath('/faq-lesgever/waarom-lerarenkaart-of-stamboeknummer');
+
+	const {
+		data: whereFindPageInfo,
+		isLoading: whereFindIsLoading,
+		isError: whereFindIsError,
+	} = useGetContentPageByPath('/faq-lesgever/waar-vind-ik-mijn-lerarenkaart-nummer');
+
 	const handleCreateAccountButtonClicked = () => {
 		redirectToServerArchiefRegistrationIdp(location, validStamboekNumber);
+	};
+
+	const renderContentPage = (
+		contentPageInfo: ContentPageInfo | null | undefined,
+		isLoading: boolean,
+		isError: boolean
+	) => {
+		if (isLoading) {
+			return <Spinner />;
+		}
+		if (isError) {
+			return (
+				<ErrorView
+					message={tText('Het laden van dit help artikel is mislukt')}
+					icon={IconName.alertTriangle}
+				/>
+			);
+		}
+		if (contentPageInfo) {
+			return <ContentPageRenderer contentPageInfo={contentPageInfo} />;
+		}
+		return null;
 	};
 
 	return (
@@ -61,18 +107,6 @@ const RegisterStamboek: FC<RegisterStamboekProps> = ({ location }) => {
 							'authentication/views/registration-flow/r-3-stamboek___zo-gaan-wij-na-of-jij-een-actieve-lesgever-bent-aan-een-vlaamse-erkende-onderwijsinstelling'
 						)}
 					</p>
-					<Spacer margin="top-small">
-						<Alert type="info">
-							<a
-								href="/faq-lesgever/waarom-lerarenkaart-of-stamboeknummer"
-								target="_blank"
-							>
-								{tHtml(
-									'authentication/views/registration-flow/r-3-stamboek___waarom-hebben-jullie-mijn-stamboeknummer-nodig'
-								)}
-							</a>
-						</Alert>
-					</Spacer>
 				</div>
 				<Spacer margin={['top-large', 'bottom']}>
 					<FormGroup
@@ -96,14 +130,33 @@ const RegisterStamboek: FC<RegisterStamboekProps> = ({ location }) => {
 					/>
 				</FormGroup>
 
-				<Spacer margin="top-large">
-					{/* TODO add links to help article */}
-					<Alert type="info">
-						<Link to={APP_PATH.MANUAL_ACCESS_REQUEST.route}>
-							Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
-						</Link>
-					</Alert>
-				</Spacer>
+				<Accordion
+					title={tText('Waar vind ik mijn lerarenkaart nummer?')}
+					className="u-m-t-xl"
+					isOpen={false}
+				>
+					{renderContentPage(whereFindPageInfo, whereFindIsLoading, whereFindIsError)}
+				</Accordion>
+				<Accordion
+					title={tText('Waarom hebben jullie mijn stamboeknummer nodig?')}
+					className="u-m-t-s"
+					isOpen={false}
+				>
+					{renderContentPage(
+						whyTeacherCardPageInfo,
+						whyTeacherCardIsLoading,
+						whyTeacherCardIsError
+					)}
+				</Accordion>
+				<Accordion
+					title={tText(
+						'Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.'
+					)}
+					className="u-m-t-s"
+					isOpen={false}
+				>
+					<ManualRegistration />
+				</Accordion>
 			</Container>
 		</Container>
 	);

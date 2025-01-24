@@ -12,7 +12,7 @@ export const useGetContentPageByPath = (
 	options: { enabled?: boolean } = {}
 ) => {
 	return useQuery(
-		[QUERY_KEYS.GET_CONTENT_PAGE_BY_PATH],
+		[QUERY_KEYS.GET_CONTENT_PAGE_BY_PATH, path],
 		async () => {
 			if (!path) {
 				return null;

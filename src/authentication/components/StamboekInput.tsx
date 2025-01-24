@@ -1,19 +1,8 @@
-import {
-	Alert,
-	Button,
-	Icon,
-	IconName,
-	Spacer,
-	TextInput,
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from '@viaa/avo2-components';
+import { Alert, Button, Spacer, TextInput } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import stamboekExampleImage from '../../assets/images/leerkrachten-kaart-voorbeeld-nummer.png';
 import { APP_PATH } from '../../constants';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AvoToastType } from '../../shared/services/toast-service';
@@ -141,31 +130,6 @@ export const StamboekInput: FC<StamboekInputProps> = ({ onChange, value = '' }) 
 				value={rawStamboekNumber}
 				onChange={setStamboekNumber}
 			/>
-			<Tooltip position="bottom" contentClassName="m-stamboek-tooltip">
-				<TooltipTrigger>
-					<span>
-						<Icon className="a-info-icon" name={IconName.info} size="small" />
-					</span>
-				</TooltipTrigger>
-				<TooltipContent>
-					<Spacer margin={'small'}>
-						<Spacer margin="bottom-small">
-							<span>
-								{tHtml(
-									'authentication/components/stamboek-input___je-stamboek-nummer-staat-op-je-lerarenkaart'
-								)}
-							</span>
-						</Spacer>
-						<img
-							alt={tText(
-								'authentication/components/stamboek-input___voorbeeld-leeraren-kaart'
-							)}
-							className="a-stamboek-image"
-							src={stamboekExampleImage}
-						/>
-					</Spacer>
-				</TooltipContent>
-			</Tooltip>
 			<Spacer margin="top-small">
 				{STAMBOEK_MESSAGES[stamboekValidationStatus].status && (
 					<Alert type={STAMBOEK_MESSAGES[stamboekValidationStatus].status}>

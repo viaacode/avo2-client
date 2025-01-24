@@ -12,12 +12,32 @@
 	margin: 0 !important;
 }
 
+.u-m-s {
+	margin: math.div($g-spacer-unit, 2) !important;
+}
+
 .u-m-t-0 {
 	margin-top: 0 !important;
 }
 
+.u-m-t-xs {
+	margin-top: math.div($g-spacer-unit, 2) !important;
+}
+
+.u-m-t-s {
+	margin-top: $g-spacer-unit !important;
+}
+
+.u-m-t-m {
+	margin-top: $g-spacer-unit * 2 !important;
+}
+
 .u-m-t-l {
 	margin-top: $g-spacer-unit * 3 !important;
+}
+
+.u-m-t-xl {
+	margin-top: $g-spacer-unit * 6 !important;
 }
 
 .u-m-b-l {
@@ -26,6 +46,10 @@
 
 .u-m-b-0 {
 	margin-bottom: 0 !important;
+}
+
+.u-m-b-s {
+	margin-bottom: math.div($g-spacer-unit, 2) !important;
 }
 
 .u-p-0 {

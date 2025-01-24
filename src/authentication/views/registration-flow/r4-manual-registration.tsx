@@ -8,7 +8,6 @@ import {
 	Grid,
 	Icon,
 	IconName,
-	Spacer,
 	type TagInfo,
 	TagsInput,
 	TextArea,
@@ -21,7 +20,7 @@ import { type Avo } from '@viaa/avo2-types';
 import type { Requests } from 'node-zendesk';
 import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps, withRouter } from 'react-router';
+import { withRouter } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ROUTE_PARTS } from '../../../shared/constants';
@@ -34,9 +33,7 @@ import { ZendeskService } from '../../../shared/services/zendesk-service';
 
 import './r4-manual-registration.scss';
 
-type ManualRegistrationProps = RouteComponentProps;
-
-const ManualRegistration: FC<ManualRegistrationProps> = ({ history }) => {
+const ManualRegistration: FC = () => {
 	const { tText, tHtml } = useTranslation();
 
 	const [firstName, setFirstName] = useState<string>('');
@@ -194,19 +191,6 @@ const ManualRegistration: FC<ManualRegistrationProps> = ({ history }) => {
 	const renderForm = () => {
 		return (
 			<>
-				<Spacer margin="bottom-large">
-					<Button
-						type="secondary"
-						onClick={history.goBack}
-						icon={IconName.arrowLeft}
-						title={tText(
-							'authentication/views/registration-flow/r-4-manual-registration___ga-terug-naar-de-stamboek-pagina'
-						)}
-						ariaLabel={tText(
-							'authentication/views/registration-flow/r-4-manual-registration___ga-terug-naar-de-stamboek-pagina'
-						)}
-					/>
-				</Spacer>
 				<BlockHeading type="h2">
 					{tHtml(
 						'authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan-op-het-archief-voor-onderwijs'
@@ -367,4 +351,4 @@ const ManualRegistration: FC<ManualRegistrationProps> = ({ history }) => {
 	);
 };
 
-export default withRouter(ManualRegistration);
+export default withRouter(ManualRegistration) as unknown as FC;
