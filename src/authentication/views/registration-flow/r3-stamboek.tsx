@@ -67,7 +67,9 @@ const RegisterStamboek: FC<RegisterStamboekProps> = ({ location }) => {
 		if (isError) {
 			return (
 				<ErrorView
-					message={tText('Het laden van dit help artikel is mislukt')}
+					message={tText(
+						'authentication/views/registration-flow/r-3-stamboek___het-laden-van-dit-help-artikel-is-mislukt'
+					)}
 					icon={IconName.alertTriangle}
 				/>
 			);
@@ -131,14 +133,18 @@ const RegisterStamboek: FC<RegisterStamboekProps> = ({ location }) => {
 				</FormGroup>
 
 				<Accordion
-					title={tText('Waar vind ik mijn lerarenkaart nummer?')}
+					title={tText(
+						'authentication/views/registration-flow/r-3-stamboek___waar-vind-ik-mijn-lerarenkaart-nummer'
+					)}
 					className="u-m-t-xl"
 					isOpen={false}
 				>
 					{renderContentPage(whereFindPageInfo, whereFindIsLoading, whereFindIsError)}
 				</Accordion>
 				<Accordion
-					title={tText('Waarom hebben jullie mijn stamboeknummer nodig?')}
+					title={tText(
+						'authentication/views/registration-flow/r-3-stamboek___waarom-hebben-jullie-mijn-stamboeknummer-nodig'
+					)}
 					className="u-m-t-s"
 					isOpen={false}
 				>
@@ -150,7 +156,7 @@ const RegisterStamboek: FC<RegisterStamboekProps> = ({ location }) => {
 				</Accordion>
 				<Accordion
 					title={tText(
-						'Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.'
+						'authentication/views/registration-flow/r-3-stamboek___ik-ben-lesgever-en-heb-nog-geen-lerarenkaart-of-stamboeknummer'
 					)}
 					className="u-m-t-s"
 					isOpen={false}
