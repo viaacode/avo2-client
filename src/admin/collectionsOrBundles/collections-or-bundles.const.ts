@@ -373,7 +373,7 @@ const getActualisationStatusColumn = (): FilterableColumn<CollectionTableCols> =
 });
 
 const getActualisationLastActualisedAtColumn = (): FilterableColumn<CollectionTableCols> => ({
-	id: 'mgmt_last_eindcheck_date',
+	id: 'mgmt_updated_at',
 	label: tText(
 		'admin/collections-or-bundles/collections-or-bundles___datum-laatste-actualisatie'
 	),
@@ -397,7 +397,7 @@ const getActualisationStatusValidUntilColumn = (): FilterableColumn<CollectionTa
 });
 
 const getActualisationApprovedAtColumn = (): FilterableColumn<CollectionTableCols> => ({
-	id: 'updated_at',
+	id: 'mgmt_last_eindcheck_date',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___datum-goedkeuring'),
 	sortable: true,
 	visibleByDefault: true,

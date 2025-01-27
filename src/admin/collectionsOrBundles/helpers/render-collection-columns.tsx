@@ -606,12 +606,30 @@ export function renderCollectionOverviewColumnsReact(
 					collection?.management?.current_status as ManagementStatus | undefined | null
 				) || '-'
 			);
+		case 'mgmt_current_status': // TODO replace db view with actualisation_approved_at columns
+			return (
+				getDisplayTextForManagementStatus(
+					(collection as any)?.mgmt_current_status as ManagementStatus | undefined | null
+				) || ''
+			);
 
 		case 'actualisation_last_actualised_at':
 			return formatDate(collection?.management?.updated_at) || '-';
+		case 'mgmt_updated_at': // TODO replace db view with actualisation_approved_at columns
+			return formatDate((collection as any)?.mgmt_updated_at) || '-';
 
 		case 'actualisation_status_valid_until': {
 			const validDate = collection?.management?.status_valid_until;
+			const isValid = !validDate || !isBefore(new Date(validDate), new Date());
+			return (
+				<span className={isValid ? '' : 'a-table-cell__invalid'}>
+					{formatDate(validDate) || '-'}
+				</span>
+			);
+		}
+		case 'mgmt_status_expires_at': {
+			// TODO replace db view with actualisation_approved_at columns
+			const validDate = (collection as any)?.mgmt_status_expires_at;
 			const isValid = !validDate || !isBefore(new Date(validDate), new Date());
 			return (
 				<span className={isValid ? '' : 'a-table-cell__invalid'}>
@@ -779,12 +797,25 @@ export function renderCollectionOverviewColumnsText(
 					collection?.management?.current_status as ManagementStatus | undefined | null
 				) || ''
 			);
+		case 'mgmt_current_status': // TODO replace db view with actualisation_approved_at columns
+			return (
+				getDisplayTextForManagementStatus(
+					(collection as any)?.mgmt_current_status as ManagementStatus | undefined | null
+				) || ''
+			);
 
 		case 'actualisation_last_actualised_at':
 			return formatDate(collection?.management?.updated_at) || '-';
+		case 'mgmt_updated_at': // TODO replace db view with actualisation_approved_at columns
+			return formatDate((collection as any)?.mgmt_updated_at) || '-';
 
 		case 'actualisation_status_valid_until': {
 			const validDate = collection?.management?.status_valid_until;
+			return formatDate(validDate) || '';
+		}
+		case 'mgmt_status_expires_at': {
+			// TODO replace db view with actualisation_approved_at columns
+			const validDate = (collection as any)?.mgmt_status_expires_at;
 			return formatDate(validDate) || '';
 		}
 
