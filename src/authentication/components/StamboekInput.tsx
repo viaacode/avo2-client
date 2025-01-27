@@ -108,7 +108,10 @@ export const StamboekInput: FC<StamboekInputProps> = ({ onChange, value = '' }) 
 				setStamboekValidationStatus('INCOMPLETE');
 				return;
 			}
-			if (/^[0-9]{11}(-[0-9]*)?$/g.test(cleanedStamboekNumber)) {
+
+			// Only allow numbers that start with a 6 or are our test number that starts with a 9
+			// https://meemoo.atlassian.net/browse/AVO-3508
+			if (/^[69][0-9]{10}$/g.test(cleanedStamboekNumber)) {
 				const stamboekNumber = cleanedStamboekNumber.substring(0, 11);
 				setStamboekValidationStatus('VALID_FORMAT');
 				const validationStatus: Avo.Stamboek.ValidationStatuses =
@@ -137,7 +140,7 @@ export const StamboekInput: FC<StamboekInputProps> = ({ onChange, value = '' }) 
 	return (
 		<Spacer className="m-stamboek-input" margin={['bottom-large']}>
 			<TextInput
-				placeholder={tText('authentication/components/stamboek-input___00000000000-000000')}
+				placeholder={tText('authentication/components/stamboek-input___60000000000')}
 				value={rawStamboekNumber}
 				onChange={setStamboekNumber}
 			/>
