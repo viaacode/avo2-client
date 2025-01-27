@@ -1199,7 +1199,7 @@ const CollectionDetail: FC<
 							collectionFragments={collection_fragments}
 							showDescription
 							showMetadata
-							linkToItems={permissions?.canViewAnyPublishedItems || false}
+							linkToItems={false}
 							canPlay={
 								!isAddToBundleModalOpen &&
 								!isDeleteModalOpen &&
