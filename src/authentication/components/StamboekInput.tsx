@@ -13,7 +13,7 @@ import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import stamboekExampleImage from '../../assets/images/leerkrachten-kaart-voorbeeld-nummer.png';
+import teacherCardAppImage from '../../../src/assets/images/lerarenkaart-app-portrait.png';
 import { APP_PATH } from '../../constants';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AvoToastType } from '../../shared/services/toast-service';
@@ -155,7 +155,7 @@ export const StamboekInput: FC<StamboekInputProps> = ({ onChange, value = '' }) 
 						<Spacer margin="bottom-small">
 							<span>
 								{tHtml(
-									'authentication/components/stamboek-input___je-stamboek-nummer-staat-op-je-lerarenkaart'
+									'Je vindt je Lerarenkaart-nummer (11 cijfers) in de Lerarenkaart-app van Klasse, te downloaden via de app-store.'
 								)}
 							</span>
 						</Spacer>
@@ -164,7 +164,7 @@ export const StamboekInput: FC<StamboekInputProps> = ({ onChange, value = '' }) 
 								'authentication/components/stamboek-input___voorbeeld-leeraren-kaart'
 							)}
 							className="a-stamboek-image"
-							src={stamboekExampleImage}
+							src={teacherCardAppImage}
 						/>
 					</Spacer>
 				</TooltipContent>
