@@ -512,7 +512,7 @@ export class CollectionService {
 		>
 	) => {
 		try {
-			if (!initialCollection?.is_managed && updatedCollection?.is_managed) {
+			if (!initialCollection?.management && updatedCollection?.management) {
 				// Create management entry
 				await CollectionService.insertManagementEntry(collectionId, {
 					current_status: updatedCollection?.management?.current_status || null,
@@ -522,7 +522,7 @@ export class CollectionService {
 					updated_at:
 						updatedCollection?.management?.updated_at || new Date().toISOString(),
 				});
-			} else if (initialCollection?.is_managed && updatedCollection?.is_managed) {
+			} else if (initialCollection?.management && updatedCollection?.management) {
 				// Update management entry
 				await CollectionService.updateManagementEntry(collectionId, {
 					current_status: updatedCollection?.management?.current_status || null,

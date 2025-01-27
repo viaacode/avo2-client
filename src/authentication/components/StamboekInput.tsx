@@ -13,7 +13,7 @@ import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import teacherCardAppImage from '../../../src/assets/images/lerarenkaart-app-portrait.png';
+import teacherCardAppImage from '../../../src/assets/images/lerarenkaart-app.jpg';
 import { APP_PATH } from '../../constants';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AvoToastType } from '../../shared/services/toast-service';

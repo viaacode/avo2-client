@@ -4,12 +4,12 @@ import {
 	convertToHtml,
 	ExpandableContainer,
 	Grid,
+	Spacer,
 	Toolbar,
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import clsx from 'clsx';
 import { debounce } from 'lodash-es';
 import React, {
 	createRef,
@@ -32,14 +32,14 @@ import { TEAL_BRIGHT } from '../../shared/constants';
 import { stripHtml } from '../../shared/helpers';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
+import useTranslation from '../../shared/hooks/useTranslation';
 
 import './ItemVideoDescription.scss';
-import { tText } from '../../shared/helpers/translate-text';
 
 interface ItemVideoDescriptionProps {
 	itemMetaData: Avo.Item.Item;
 	showMetadata: boolean;
-	enableMetadataLink: boolean;
+	enableMetadataLink?: boolean;
 	showDescription?: boolean;
 	collapseDescription?: boolean;
 	showTitle?: boolean;
@@ -79,11 +79,11 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 	onPlay,
 	trackPlayEvent,
 }) => {
-	const videoRef: RefObject<HTMLDivElement> = createRef();
+	const { tText } = useTranslation();
+	const videoRef: RefObject<HTMLVideoElement> = createRef();
 	const descriptionRef = useRef<HTMLDivElement | null>(null);
-	const scrollBarRef = createRef();
 
-	const [videoHeight, setVideoHeight] = useState<number | null>(null);
+	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
 
 	useEffect(() => {
 		// Register window listener when the component mounts
@@ -108,49 +108,36 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 		};
 	}, [videoRef]);
 
-	const handleDescriptionExpandCollapse = (isOpen: boolean) => {
+	function handleDescriptionExpandCollapse(isOpen: boolean) {
 		if (!isOpen) {
 			// Scroll to the top of the description when it is collapsed
 			descriptionRef.current?.children[0]?.scrollTo({ top: 0 });
 		}
-	};
-
-	const handleDescriptionExpandCollapseTransitionEnd = () => {
-		setTimeout(() => {
-			(scrollBarRef.current as PerfectScrollbar)?.updateScroll();
-			(scrollBarRef.current as PerfectScrollbar)?.forceUpdate();
-		}, 100);
-	};
+	}
 
 	const renderMedia = () => {
 		return (
-			<div ref={videoRef}>
-				<FlowPlayerWrapper
-					src={src}
-					poster={getFlowPlayerPoster(poster, itemMetaData)}
-					item={itemMetaData}
-					canPlay={canPlay}
-					cuePointsVideo={cuePointsVideo}
-					cuePointsLabel={cuePointsLabel}
-					onPlay={onPlay}
-					external_id={itemMetaData.external_id}
-					duration={itemMetaData.duration}
-					title={title || undefined}
-					trackPlayEvent={trackPlayEvent}
-				/>
-			</div>
+			<FlowPlayerWrapper
+				src={src}
+				poster={getFlowPlayerPoster(poster, itemMetaData)}
+				item={itemMetaData}
+				canPlay={canPlay}
+				cuePointsVideo={cuePointsVideo}
+				cuePointsLabel={cuePointsLabel}
+				onPlay={onPlay}
+				external_id={itemMetaData.external_id}
+				duration={itemMetaData.duration}
+				title={title || undefined}
+				trackPlayEvent={trackPlayEvent}
+			/>
 		);
 	};
 
 	const renderTitle = () => {
-		if (!showTitle) {
-			return null;
-		}
-
 		const titleElement = (
 			<BlockHeading
-				type="h2"
-				className={clsx({ ['u-clickable']: titleLink }, 'u-spacer-bottom')}
+				type="h3"
+				className={titleLink ? 'u-clickable' : ''}
 				color={titleLink ? TEAL_BRIGHT : undefined}
 			>
 				{title}
@@ -158,20 +145,37 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 		);
 
 		if (titleLink) {
-			return <Link to={titleLink}>{titleElement}</Link>;
+			return (
+				<Link to={titleLink} className="a-link__no-styles">
+					{titleElement}
+				</Link>
+			);
 		}
 		return titleElement;
 	};
 
 	const renderDescription = () => {
-		return <TextWithTimestamps content={description || ''} />;
+		return (
+			<>
+				<Toolbar className="c-toolbar--no-height">
+					<ToolbarLeft>
+						{showTitle ? (
+							renderTitle()
+						) : (
+							<BlockHeading type="h4">
+								{tText('item/components/item-video-description___beschrijving')}
+							</BlockHeading>
+						)}
+					</ToolbarLeft>
+					<ToolbarRight>{renderButtons(itemMetaData)}</ToolbarRight>
+				</Toolbar>
+
+				<TextWithTimestamps content={description || ''} />
+			</>
+		);
 	};
 
 	const renderDescriptionWrapper = () => {
-		if (!showDescription) {
-			return null;
-		}
-
 		if (collapseDescription) {
 			if (verticalLayout) {
 				if (stripHtml(convertToHtml(description)).length < 444) {
@@ -179,91 +183,66 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 					return renderDescription();
 				}
 				// The height is too large, we need to wrap the description in a collapsable container
-				const collapsedHeight = 300 - 36 - 18 - (showMetadata ? 63 : 0);
 				return (
-					<div ref={descriptionRef} className={showMetadata ? 'u-spacer-top' : ''}>
-						<ExpandableContainer collapsedHeight={collapsedHeight}>
-							{renderDescription()}
-						</ExpandableContainer>
-					</div>
+					<ExpandableContainer collapsedHeight={300 - 36 - 18}>
+						{renderDescription()}
+					</ExpandableContainer>
 				);
-			}
-
-			if (!videoHeight) {
-				// Don't render the description until we know the video height,
-				// otherwise the ExpandableContainer doesn't calculate the display state of the expand button correctly
-				return null;
 			}
 			// The description is rendered next to the video
 			// We need to make the height of the description collapsable container the same as the video height
-			{
-				/* TODO: Fix label height - read more button (36) - additional margin (18) - metadata height (63)  */
-			}
-			const collapsedHeight = videoHeight - 36 - 18 - (showMetadata ? 63 : 0);
 			return (
-				<div ref={descriptionRef} className={showMetadata ? 'u-spacer-top' : ''}>
-					<PerfectScrollbar
-						style={{
-							width: '100%',
-							height: `${videoHeight - (showMetadata ? 63 : 0)}px`, // Height of button
-						}}
-						className="c-scrollable"
-						ref={scrollBarRef as any}
+				<PerfectScrollbar
+					style={{
+						width: '100%',
+						height: `${videoHeight}px`, // Height of button
+					}}
+					className="c-scrollable"
+				>
+					{/* TODO: Fix label height - read more button (36) - additional margin (18) */}
+					<ExpandableContainer
+						collapsedHeight={videoHeight - 36 - 18}
+						onChange={handleDescriptionExpandCollapse}
 					>
-						<ExpandableContainer
-							collapsedHeight={collapsedHeight}
-							onChange={handleDescriptionExpandCollapse}
-							onTransitionEnd={() => handleDescriptionExpandCollapseTransitionEnd()}
-						>
-							<BlockHeading type="h4">
-								{tText('item/components/item-video-description___beschrijving')}
-							</BlockHeading>
-							{renderDescription()}
-						</ExpandableContainer>
-					</PerfectScrollbar>
-				</div>
+						{renderDescription()}
+					</ExpandableContainer>
+				</PerfectScrollbar>
 			);
 		}
 
-		return (
-			<div ref={descriptionRef} className={showMetadata ? 'u-spacer-top' : ''}>
-				{renderDescription()}
-			</div>
-		);
+		return renderDescription();
 	};
 
 	return (
-		<div className="c-item-video-description">
-			<Toolbar className="c-toolbar--no-height">
-				<ToolbarLeft>{showTitle && renderTitle()}</ToolbarLeft>
-				<ToolbarRight>{renderButtons(itemMetaData)}</ToolbarRight>
-			</Toolbar>
-			<Grid>
-				<>
-					<Column size={verticalLayout ? '2-12' : '2-7'}>{renderMedia()}</Column>
-					{(showDescription || showMetadata) && (
-						<Column
-							size={verticalLayout ? '2-12' : '2-5'}
-							className="c-item-video-description__metadata"
-						>
-							{showMetadata && (
-								<ItemMetadata
-									item={itemMetaData}
-									buildSeriesLink={(series) =>
-										enableMetadataLink
-											? buildGlobalSearchLink({
-													filters: { serie: [series] },
-											  })
-											: series
-									}
-								/>
-							)}
-							{renderDescriptionWrapper()}
-						</Column>
-					)}
-				</>
-			</Grid>
-		</div>
+		<Grid className="c-item-video-description">
+			<>
+				<Column size={verticalLayout ? '2-12' : '2-7'}>{renderMedia()}</Column>
+				{(showDescription || showMetadata) && (
+					<Column
+						size={verticalLayout ? '2-12' : '2-5'}
+						className="c-item-video-description__metadata"
+					>
+						{showMetadata && (
+							<ItemMetadata
+								item={itemMetaData}
+								buildSeriesLink={(series) =>
+									enableMetadataLink
+										? buildGlobalSearchLink({
+												filters: { serie: [series] },
+										  })
+										: series
+								}
+							/>
+						)}
+						{showDescription && (
+							<Spacer margin={showMetadata ? ['top'] : []}>
+								<div ref={descriptionRef}>{renderDescriptionWrapper()}</div>
+							</Spacer>
+						)}
+					</Column>
+				)}
+			</>
+		</Grid>
 	);
 };
 
