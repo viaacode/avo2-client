@@ -155,13 +155,13 @@ export const StamboekInput: FC<StamboekInputProps> = ({ onChange, value = '' }) 
 						<Spacer margin="bottom-small">
 							<span>
 								{tHtml(
-									'Je vindt je Lerarenkaart-nummer (11 cijfers) in de Lerarenkaart-app van Klasse, te downloaden via de app-store.'
+									'authentication/components/stamboek-input___je-vindt-je-lerarenkaart-nummer-11-cijfers-in-de-lerarenkaart-app-van-klasse-te-downloaden-via-de-app-store'
 								)}
 							</span>
 						</Spacer>
 						<img
 							alt={tText(
-								'authentication/components/stamboek-input___voorbeeld-leeraren-kaart'
+								'authentication/components/stamboek-input___screenshot-lerarenkaart-app'
 							)}
 							className="a-stamboek-image"
 							src={teacherCardAppImage}
