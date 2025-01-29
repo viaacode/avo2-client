@@ -3,6 +3,7 @@ import meemooLogo from '@assets/images/meemoo-logo.png';
 // eslint-disable-next-line import/no-unresolved
 import vlaamseOverheidLogo from '@assets/images/vlaanderen-logo.png';
 import { Container, Spacer } from '@viaa/avo2-components';
+import { orderBy } from 'lodash-es';
 import React, { type FC, useState } from 'react';
 import { type RouteComponentProps } from 'react-router';
 
@@ -28,7 +29,7 @@ const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match 
 	const footerNavItemsColumn3 = allNavItems?.[NavigationBarId.FOOTER_COLUMN_3] || [];
 
 	const mapNavItems = (navItems: AppContentNavElement[]) => {
-		return navItems.map((item) => (
+		return orderBy(navItems, (navItem) => navItem.position).map((item) => (
 			<NavigationItem
 				key={item.id}
 				item={{

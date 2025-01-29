@@ -100,7 +100,9 @@ const RegisterStamboek: FC<RegisterStamboekProps> = ({ location }) => {
 					{/* TODO add links to help article */}
 					<Alert type="info">
 						<Link to={APP_PATH.MANUAL_ACCESS_REQUEST.route}>
-							Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
+							{tHtml(
+								'authentication/views/registration-flow/r-3-stamboek___ik-ben-lesgever-en-heb-nog-geen-lerarenkaart-of-stamboeknummer'
+							)}
 						</Link>
 					</Alert>
 				</Spacer>
