@@ -35,7 +35,11 @@ import {
 	GET_MARCOM_ENTRY_TABLE_COLUMNS,
 } from '../collection.const';
 import { CollectionService } from '../collection.service';
-import { ContentTypeNumber, type MarcomEntry } from '../collection.types';
+import {
+	CollectionCreateUpdateTab,
+	ContentTypeNumber,
+	type MarcomEntry,
+} from '../collection.types';
 
 import { type CollectionAction, type MarcomNoteInfo } from './CollectionOrBundleEdit.types';
 
@@ -119,7 +123,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 					<Link
 						to={buildLink(APP_PATH.BUNDLE_EDIT_TAB.route, {
 							id: get(value, 'id'),
-							tabId: 'marcom',
+							tabId: CollectionCreateUpdateTab.MARCOM,
 						})}
 					>
 						<span>{get(value, 'title')}</span>
