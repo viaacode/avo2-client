@@ -1341,10 +1341,21 @@ const CollectionOrBundleEdit: FC<
 			if (isCollection) {
 				reorderTypes.push(ReorderType.COLLECTION_FRAGMENTS);
 			} else {
-				reorderTypes.push(
-					ReorderType.BUNDLE_COLLECTION_FRAGMENTS,
-					ReorderType.BUNDLE_ASSIGNMENT_FRAGMENTS
-				);
+				const collectionFragments =
+					collectionState.currentCollection.collection_fragments.filter(
+						(fragment) => fragment.type === CollectionFragmentType.COLLECTION
+					);
+				const assignmentFragments =
+					collectionState.currentCollection.collection_fragments.filter(
+						(fragment) => fragment.type === CollectionFragmentType.ASSIGNMENT
+					);
+
+				if (collectionFragments.length > 0) {
+					reorderTypes.push(ReorderType.BUNDLE_COLLECTION_FRAGMENTS);
+				}
+				if (assignmentFragments.length > 0) {
+					reorderTypes.push(ReorderType.BUNDLE_ASSIGNMENT_FRAGMENTS);
+				}
 			}
 			return reorderTypes.map((reorderType) => {
 				return (
