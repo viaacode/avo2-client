@@ -1342,13 +1342,13 @@ const CollectionOrBundleEdit: FC<
 				reorderTypes.push(ReorderType.COLLECTION_FRAGMENTS);
 			} else {
 				const collectionFragments =
-					collectionState.currentCollection.collection_fragments.filter(
+					collectionState.currentCollection?.collection_fragments?.filter(
 						(fragment) => fragment.type === CollectionFragmentType.COLLECTION
-					);
+					) || [];
 				const assignmentFragments =
-					collectionState.currentCollection.collection_fragments.filter(
+					collectionState.currentCollection?.collection_fragments?.filter(
 						(fragment) => fragment.type === CollectionFragmentType.ASSIGNMENT
-					);
+					) || [];
 
 				if (collectionFragments.length > 0) {
 					reorderTypes.push(ReorderType.BUNDLE_COLLECTION_FRAGMENTS);
