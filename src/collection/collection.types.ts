@@ -105,6 +105,7 @@ export enum CollectionMenuAction {
 	duplicate = 'duplicate',
 	addToBundle = 'addToBundle',
 	addItemById = 'addItemById',
+	addAssignmentById = 'addAssignmentById',
 	deleteCollection = 'deleteCollection',
 	deleteContributor = 'deleteContributor',
 	openShareThroughEmail = 'openShareThroughEmail',
