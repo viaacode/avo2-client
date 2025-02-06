@@ -871,6 +871,54 @@ const AssignmentDetail: FC<
 		);
 	};
 
+	const renderBundlesContainingThisAssignment = (hasParentBundles: boolean) => {
+		if (!hasParentBundles) {
+			return null;
+		}
+		return (
+			<p className="c-body-1">
+				{(bundlesContainingAssignment || []).length === 1
+					? tText('assignment/views/assignment-detail___deze-opdracht-zit-in-bundel')
+					: tText(
+							'assignment/views/assignment-detail___deze-opdracht-zit-in-bundels'
+					  )}{' '}
+				{bundlesContainingAssignment?.map((bundle, index) => (
+					<>
+						{index !== 0 && ', '}
+						<Link
+							to={buildLink(APP_PATH.BUNDLE_DETAIL.route, {
+								id: bundle.id,
+							})}
+						>
+							{bundle.title}
+						</Link>
+					</>
+				)) || null}
+			</p>
+		);
+	};
+
+	const renderIsCopyOf = (hasCopies: boolean) => {
+		if (!hasCopies) {
+			return null;
+		}
+		return (
+			<p className="c-body-1">
+				{`${tText('assignment/views/assignment-detail___deze-opdracht-is-een-kopie-van')} `}
+				{((assignment?.relations ?? []) as Relation[]).map((relation: Relation) => (
+					<Link
+						key={`copy-of-link-${relation.object_meta.id}`}
+						to={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
+							id: relation.object_meta.id,
+						})}
+					>
+						{relation.object_meta.title}
+					</Link>
+				))}
+			</p>
+		);
+	};
+
 	const renderMetadata = () => {
 		const hasCopies = (assignment?.relations || []).length > 0;
 		const hasParentBundles = !!bundlesContainingAssignment?.length;
@@ -891,68 +939,20 @@ const AssignmentDetail: FC<
 								/>
 							)}
 						</Grid>
-						{hasCopies ||
-							(hasParentBundles && (
-								<Grid>
-									<Column size="12">
-										<p className="u-text-bold">
-											{tHtml(
-												'assignment/views/assignment-detail___extra-informatie'
-											)}
-										</p>
-
-										{hasCopies && (
-											<p className="c-body-1">
-												{`${tText(
-													'assignment/views/assignment-detail___deze-opdracht-is-een-kopie-van'
-												)} `}
-												{((assignment?.relations ?? []) as Relation[]).map(
-													(relation: Relation) => (
-														<Link
-															key={`copy-of-link-${relation.object_meta.id}`}
-															to={buildLink(
-																APP_PATH.ASSIGNMENT_DETAIL.route,
-																{ id: relation.object_meta.id }
-															)}
-														>
-															{relation.object_meta.title}
-														</Link>
-													)
-												)}
-											</p>
+						{(hasCopies || hasParentBundles) && (
+							<Grid>
+								<Column size="12">
+									<p className="u-text-bold">
+										{tHtml(
+											'assignment/views/assignment-detail___extra-informatie'
 										)}
+									</p>
 
-										{hasParentBundles && (
-											<p className="c-body-1">
-												{bundlesContainingAssignment.length === 1
-													? tText(
-															'assignment/views/assignment-detail___deze-opdracht-zit-in-bundel'
-													  )
-													: tText(
-															'assignment/views/assignment-detail___deze-opdracht-zit-in-bundels'
-													  )}{' '}
-												{bundlesContainingAssignment?.map(
-													(bundle, index) => (
-														<>
-															{index !== 0 && ', '}
-															<Link
-																to={buildLink(
-																	APP_PATH.BUNDLE_DETAIL.route,
-																	{
-																		id: bundle.id,
-																	}
-																)}
-															>
-																{bundle.title}
-															</Link>
-														</>
-													)
-												) || null}
-											</p>
-										)}
-									</Column>
-								</Grid>
-							))}
+									{renderIsCopyOf(hasCopies)}
+									{renderBundlesContainingThisAssignment(hasParentBundles)}
+								</Column>
+							</Grid>
+						)}
 						{!!relatedAssignments &&
 							renderRelatedItems(relatedAssignments, defaultRenderDetailLink)}
 					</div>

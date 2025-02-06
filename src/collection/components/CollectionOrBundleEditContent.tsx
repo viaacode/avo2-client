@@ -76,7 +76,7 @@ const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & Use
 		return (
 			<FragmentEdit
 				// If the parent is a collection then the fragment is an ITEM or TEXT
-				// If the parent is a bundle then the fragment is a COLLECTION
+				// If the parent is a bundle then the fragment is a COLLECTION or ASSIGNMENT
 				key={getFragmentKey(fragment)}
 				index={index}
 				collectionId={collection.id}

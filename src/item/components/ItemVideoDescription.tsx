@@ -81,6 +81,7 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 }) => {
 	const { tText } = useTranslation();
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
+	const descriptionScrollableRef: RefObject<PerfectScrollbar> = createRef();
 	const descriptionRef = useRef<HTMLDivElement | null>(null);
 
 	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
@@ -107,6 +108,11 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 			window.removeEventListener('resize', onResizeHandler);
 		};
 	}, [videoRef]);
+
+	const updateScroll = () => {
+		descriptionScrollableRef.current?.updateScroll();
+		descriptionScrollableRef.current?.forceUpdate();
+	};
 
 	function handleDescriptionExpandCollapse(isOpen: boolean) {
 		if (!isOpen) {
@@ -198,11 +204,14 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 						height: `${videoHeight}px`, // Height of button
 					}}
 					className="c-scrollable"
+					key={description}
+					ref={descriptionScrollableRef}
 				>
 					{/* TODO: Fix label height - read more button (36) - additional margin (18) */}
 					<ExpandableContainer
 						collapsedHeight={videoHeight - 36 - 18}
 						onChange={handleDescriptionExpandCollapse}
+						onTransitionEnd={updateScroll}
 					>
 						{renderDescription()}
 					</ExpandableContainer>

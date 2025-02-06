@@ -67,6 +67,11 @@ interface FragmentEditProps {
 	changeCollectionState: (action: CollectionAction) => void;
 	openOptionsId: number | string | null;
 	setOpenOptionsId: (id: number | string | null) => void;
+
+	/**
+	 * true: parent is a collection
+	 * false: parent is a bundle
+	 */
 	isParentACollection: boolean;
 	fragment: Avo.Collection.Fragment;
 	allowedToAddLinks: boolean;
@@ -146,7 +151,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 			FragmentEditAction.DETAIL,
 			'Bekijk',
 			IconName.externalLink,
-			true
+			!isParentACollection // Only show view button for bundles
 		),
 		...createDropdownMenuItem(
 			String(fragment.id),
@@ -414,114 +419,115 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 		);
 	};
 
-	const fragmentIsPublished: boolean | undefined = (
-		fragment.item_meta as Avo.Collection.Collection | Avo.Assignment.Assignment
-	)?.is_public;
+	const renderThumbnailOrVideo = () => {
+		if (fragment.type === 'ITEM') {
+			console.log('rendering video for fragment', fragment);
+			return (
+				<FlowPlayerWrapper
+					item={itemMetaData}
+					poster={getFlowPlayerPoster(fragment.thumbnail_path, itemMetaData)}
+					external_id={itemMetaData.external_id}
+					duration={itemMetaData.duration}
+					title={itemMetaData.title}
+					cuePointsVideo={{
+						start: fragment.start_oc,
+						end: fragment.end_oc,
+					}}
+					cuePointsLabel={{
+						start: fragment.start_oc,
+						end: fragment.end_oc,
+					}}
+					canPlay={!isCutModalOpen && !isDeleteModalOpen}
+					trackPlayEvent={false}
+				/>
+			);
+		}
+		if (fragment.type === 'COLLECTION' || fragment.type === 'ASSIGNMENT') {
+			console.log('rendering thumbnail for fragment', fragment);
+			return <Thumbnail category="collection" src={itemMetaData.thumbnail_path} />;
+		}
+	};
+
+	const renderToolbar = () => {
+		const fragmentIsPublished: boolean | undefined = (
+			fragment.item_meta as Avo.Collection.Collection | Avo.Assignment.Assignment
+		)?.is_public;
+		return (
+			<Toolbar>
+				<ToolbarLeft>
+					<ToolbarItem>
+						<div className="c-button-toolbar">
+							{renderReorderButton(index, 'up')}
+							{renderReorderButton(index, 'down')}
+							{itemMetaData && fragment.type === 'ITEM' && (
+								<Button
+									icon={IconName.scissors}
+									label={tText(
+										'collection/components/fragment/fragment-edit___knippen'
+									)}
+									title={tText(
+										'collection/components/fragment/fragment-edit___knip-een-fragment-uit-dit-video-audio-fragment'
+									)}
+									type="secondary"
+									onClick={() => setIsCutModalOpen(true)}
+								/>
+							)}
+						</div>
+					</ToolbarItem>
+				</ToolbarLeft>
+				<ToolbarRight>
+					{!isNil(fragmentIsPublished) && (
+						<ToolbarItem>
+							<Link
+								to={buildLink(
+									fragment.type === 'COLLECTION'
+										? APP_PATH.COLLECTION_DETAIL.route
+										: APP_PATH.ASSIGNMENT_DETAIL.route,
+									{ id: fragment.external_id },
+									{ [QUERY_PARAM_SHOW_PUBLISH_MODAL]: '1' }
+								)}
+							>
+								<Button
+									type="secondary"
+									icon={fragmentIsPublished ? IconName.unlock3 : IconName.lock}
+									ariaLabel={
+										GET_FRAGMENT_PUBLISH_STATUS_LABELS()[fragment.type][
+											String(fragmentIsPublished)
+										]
+									}
+									title={
+										GET_FRAGMENT_PUBLISH_STATUS_LABELS()[fragment.type][
+											String(fragmentIsPublished)
+										]
+									}
+								/>
+							</Link>
+						</ToolbarItem>
+					)}
+					<ToolbarItem>
+						<MoreOptionsDropdown
+							isOpen={openOptionsId === fragment.id}
+							onOpen={() => setOpenOptionsId(fragment.id)}
+							onClose={() => setOpenOptionsId(null)}
+							label={getMoreOptionsLabel()}
+							menuItems={FRAGMENT_DROPDOWN_ITEMS}
+							onOptionClicked={onClickDropdownItem}
+						/>
+					</ToolbarItem>
+				</ToolbarRight>
+			</Toolbar>
+		);
+	};
+
 	return (
 		<div className="c-fragment-edit">
 			<div className="c-panel">
-				<div className="c-panel__header">
-					<Toolbar>
-						<ToolbarLeft>
-							<ToolbarItem>
-								<div className="c-button-toolbar">
-									{renderReorderButton(index, 'up')}
-									{renderReorderButton(index, 'down')}
-									{itemMetaData && fragment.type === 'ITEM' && (
-										<Button
-											icon={IconName.scissors}
-											label={tText(
-												'collection/components/fragment/fragment-edit___knippen'
-											)}
-											title={tText(
-												'collection/components/fragment/fragment-edit___knip-een-fragment-uit-dit-video-audio-fragment'
-											)}
-											type="secondary"
-											onClick={() => setIsCutModalOpen(true)}
-										/>
-									)}
-								</div>
-							</ToolbarItem>
-						</ToolbarLeft>
-						<ToolbarRight>
-							{!isNil(fragmentIsPublished) && (
-								<ToolbarItem>
-									<Link
-										to={buildLink(
-											fragment.type === 'COLLECTION'
-												? APP_PATH.COLLECTION_DETAIL.route
-												: APP_PATH.ASSIGNMENT_DETAIL.route,
-											{ id: fragment.external_id },
-											{ [QUERY_PARAM_SHOW_PUBLISH_MODAL]: '1' }
-										)}
-									>
-										<Button
-											type="secondary"
-											icon={
-												fragmentIsPublished
-													? IconName.unlock3
-													: IconName.lock
-											}
-											ariaLabel={
-												GET_FRAGMENT_PUBLISH_STATUS_LABELS()[fragment.type][
-													String(fragmentIsPublished)
-												]
-											}
-											title={
-												GET_FRAGMENT_PUBLISH_STATUS_LABELS()[fragment.type][
-													String(fragmentIsPublished)
-												]
-											}
-										/>
-									</Link>
-								</ToolbarItem>
-							)}
-							<ToolbarItem>
-								<MoreOptionsDropdown
-									isOpen={openOptionsId === fragment.id}
-									onOpen={() => setOpenOptionsId(fragment.id)}
-									onClose={() => setOpenOptionsId(null)}
-									label={getMoreOptionsLabel()}
-									menuItems={FRAGMENT_DROPDOWN_ITEMS}
-									onOptionClicked={onClickDropdownItem}
-								/>
-							</ToolbarItem>
-						</ToolbarRight>
-					</Toolbar>
-				</div>
+				<div className="c-panel__header">{renderToolbar()}</div>
 				{renderWarning()}
 				<div className="c-panel__body">
 					{fragment.type !== CollectionBlockType.TEXT && itemMetaData ? (
 						<Grid>
-							<Column size="3-6">
-								{fragment.type === 'ITEM' ? (
-									<FlowPlayerWrapper
-										item={itemMetaData}
-										poster={getFlowPlayerPoster(
-											fragment.thumbnail_path,
-											itemMetaData
-										)}
-										external_id={itemMetaData.external_id}
-										duration={itemMetaData.duration}
-										title={itemMetaData.title}
-										cuePointsVideo={{
-											start: fragment.start_oc,
-											end: fragment.end_oc,
-										}}
-										cuePointsLabel={{
-											start: fragment.start_oc,
-											end: fragment.end_oc,
-										}}
-										canPlay={!isCutModalOpen && !isDeleteModalOpen}
-										trackPlayEvent={false}
-									/>
-								) : (
-									<Thumbnail
-										category="collection"
-										src={itemMetaData.thumbnail_path}
-									/>
-								)}
-							</Column>
+							<Column size="3-6">{renderThumbnailOrVideo()}</Column>
 							<Column size="3-6">{renderForm()}</Column>
 						</Grid>
 					) : (
@@ -549,7 +555,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 				confirmCallback={() => onDeleteFragment()}
 			/>
 
-			{itemMetaData && fragment.type !== 'COLLECTION' && (
+			{itemMetaData && fragment.type !== 'COLLECTION' && fragment.type !== 'ASSIGNMENT' && (
 				<CutFragmentModal
 					isOpen={isCutModalOpen}
 					onClose={() => setIsCutModalOpen(false)}

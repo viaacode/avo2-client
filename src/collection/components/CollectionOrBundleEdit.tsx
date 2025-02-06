@@ -30,6 +30,7 @@ import { compose } from 'redux';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { reorderBlockPositions, setBlockPositionToIndex } from '../../assignment/assignment.helper';
+import { AssignmentService } from '../../assignment/assignment.service';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
@@ -137,6 +138,7 @@ const CollectionOrBundleEdit: FC<
 		useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isEnterItemIdModalOpen, setEnterItemIdModalOpen] = useState<boolean>(false);
+	const [isEnterAssignmentIdModalOpen, setEnterAssignmentIdModalOpen] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [permissions, setPermissions] = useState<
 		Partial<{
@@ -956,6 +958,10 @@ const CollectionOrBundleEdit: FC<
 				setEnterItemIdModalOpen(true);
 				break;
 
+			case CollectionMenuAction.addAssignmentById:
+				setEnterAssignmentIdModalOpen(true);
+				break;
+
 			case CollectionMenuAction.share:
 				setIsShareModalOpen(true);
 				break;
@@ -1104,6 +1110,61 @@ const CollectionOrBundleEdit: FC<
 		}
 	};
 
+	const handleAddAssignmentById = async (id: string) => {
+		try {
+			// We're adding an assignment to the collection
+			const assignment = await AssignmentService.fetchAssignmentById(id);
+			if (!assignment) {
+				throw new CustomError('Response does not contain an item', null, {
+					assignment,
+				});
+			}
+			const bundleId = collectionState?.currentCollection?.id;
+			if (!bundleId) {
+				throw new CustomError('Bundle id could not be found', null, {
+					collectionState,
+				});
+			}
+			const fragment: Partial<Avo.Collection.Fragment> = {
+				use_custom_fields: false,
+				start_oc: null,
+				position: getFragmentsFromCollection(collectionState.currentCollection).length,
+				external_id: id,
+				end_oc: null,
+				custom_title: null,
+				custom_description: null,
+				item_meta: {
+					...assignment,
+					type_id: ContentTypeNumber.assignment,
+				},
+				collection_uuid: bundleId,
+				type: 'ASSIGNMENT',
+			};
+			changeCollectionState({
+				type: 'INSERT_FRAGMENT',
+				fragment: fragment as Avo.Collection.Fragment,
+				index: getFragmentsFromCollection(collectionState.currentCollection).length,
+			});
+			ToastService.success(
+				tHtml(
+					'collection/components/collection-or-bundle-edit___de-opdracht-is-toegevoegd-aan-de-bundel'
+				)
+			);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to add assignment to bundle', err, {
+					assignmentId: id,
+					bundleId: collectionId,
+				})
+			);
+			ToastService.danger(
+				tHtml(
+					'collection/components/collection-or-bundle-edit___er-ging-iets-mis-bij-het-toevoegen-van-de-opdracht'
+				)
+			);
+		}
+	};
+
 	const onForcedExitPage = async () => {
 		setIsForcedExit(true);
 		try {
@@ -1211,6 +1272,10 @@ const CollectionOrBundleEdit: FC<
 			? PermissionName.ADD_ITEM_TO_COLLECTION_BY_PID
 			: PermissionName.ADD_COLLECTION_TO_BUNDLE_BY_ID
 	);
+	const canAddAssignmentToBundle = PermissionService.hasPerm(
+		commonUser,
+		PermissionName.ADD_ASSIGNMENT_TO_BUNDLE
+	);
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
@@ -1234,6 +1299,13 @@ const CollectionOrBundleEdit: FC<
 					: tText('collection/components/collection-or-bundle-edit___voeg-collectie-toe'),
 				IconName.plus,
 				canAddItemToCollectionOrBundle
+			),
+			...createDropdownMenuItem(
+				collectionId,
+				CollectionMenuAction.addAssignmentById,
+				tText('collection/components/collection-or-bundle-edit___voeg-opdracht-toe'),
+				IconName.plus,
+				canAddAssignmentToBundle
 			),
 		];
 
@@ -1269,10 +1341,21 @@ const CollectionOrBundleEdit: FC<
 			if (isCollection) {
 				reorderTypes.push(ReorderType.COLLECTION_FRAGMENTS);
 			} else {
-				reorderTypes.push(
-					ReorderType.BUNDLE_COLLECTION_FRAGMENTS,
-					ReorderType.BUNDLE_ASSIGNMENT_FRAGMENTS
-				);
+				const collectionFragments =
+					collectionState.currentCollection?.collection_fragments?.filter(
+						(fragment) => fragment.type === CollectionFragmentType.COLLECTION
+					) || [];
+				const assignmentFragments =
+					collectionState.currentCollection?.collection_fragments?.filter(
+						(fragment) => fragment.type === CollectionFragmentType.ASSIGNMENT
+					) || [];
+
+				if (collectionFragments.length > 0) {
+					reorderTypes.push(ReorderType.BUNDLE_COLLECTION_FRAGMENTS);
+				}
+				if (assignmentFragments.length > 0) {
+					reorderTypes.push(ReorderType.BUNDLE_ASSIGNMENT_FRAGMENTS);
+				}
 			}
 			return reorderTypes.map((reorderType) => {
 				return (
@@ -1634,6 +1717,21 @@ const CollectionOrBundleEdit: FC<
 					isOpen={isEnterItemIdModalOpen}
 					onClose={() => setEnterItemIdModalOpen(false)}
 					inputCallback={handleAddItemById}
+				/>
+
+				<InputModal
+					title={tHtml(
+						'collection/components/collection-or-bundle-edit___voeg-opdracht-toe-via-id'
+					)}
+					inputLabel={tText(
+						'collection/components/collection-or-bundle-edit___opdracht-id'
+					)}
+					inputPlaceholder={tText(
+						'collection/components/collection-or-bundle-edit___bijvoorbeeld-39057-b-95-92-c-9-446-f-944-b-6459-a-6194-d-8-e'
+					)}
+					isOpen={isEnterAssignmentIdModalOpen}
+					onClose={() => setEnterAssignmentIdModalOpen(false)}
+					inputCallback={handleAddAssignmentById}
 				/>
 
 				{isCollection && (
