@@ -67,6 +67,11 @@ interface FragmentEditProps {
 	changeCollectionState: (action: CollectionAction) => void;
 	openOptionsId: number | string | null;
 	setOpenOptionsId: (id: number | string | null) => void;
+
+	/**
+	 * true: parent is a collection
+	 * false: parent is a bundle
+	 */
 	isParentACollection: boolean;
 	fragment: Avo.Collection.Fragment;
 	allowedToAddLinks: boolean;
@@ -146,7 +151,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 			FragmentEditAction.DETAIL,
 			'Bekijk',
 			IconName.externalLink,
-			true
+			!isParentACollection // Only show view button for bundles
 		),
 		...createDropdownMenuItem(
 			String(fragment.id),
