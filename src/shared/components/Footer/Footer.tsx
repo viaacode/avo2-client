@@ -44,6 +44,7 @@ const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match 
 				showActive={false}
 				areDropdownsOpen={areDropdownsOpen}
 				setDropdownsOpen={setDropdownsOpen}
+				onNavigate={() => window?.scrollTo(0, 0)}
 				history={history}
 				location={location}
 				match={match}
