@@ -6,7 +6,7 @@ import {
 } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { compact, get } from 'lodash-es';
+import { compact } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
@@ -103,8 +103,8 @@ const AcceptConditions: FC<AcceptConditionsProps & DefaultSecureRouteProps & Use
 	}, [pages, tText, tHtml]);
 
 	useEffect(() => {
-		if (get(loginState, 'acceptedConditions')) {
-			const fromRoute = get(location, 'state.from.pathname');
+		if ((loginState as Avo.Auth.LoginResponseLoggedIn)?.acceptedConditions) {
+			const fromRoute = (location?.state as any)?.from?.pathname;
 			if (!fromRoute) {
 				throw new CustomError(
 					'Failed to navigate to previously requested route because location.state.from is not set',

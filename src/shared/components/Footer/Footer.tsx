@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-unresolved
 import meemooLogo from '@assets/images/meemoo-logo.png';
 // eslint-disable-next-line import/no-unresolved
-import vlaamseOverheidLogo from '@assets/images/vlaanderen-logo.png';
+import vlaamseOverheidLogo from '@assets/images/vlaanderen-logo.svg';
 import { Container, Spacer } from '@viaa/avo2-components';
 import { orderBy } from 'lodash-es';
 import React, { type FC, useState } from 'react';
@@ -44,6 +44,7 @@ const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match 
 				showActive={false}
 				areDropdownsOpen={areDropdownsOpen}
 				setDropdownsOpen={setDropdownsOpen}
+				onNavigate={() => window?.scrollTo(0, 0)}
 				history={history}
 				location={location}
 				match={match}

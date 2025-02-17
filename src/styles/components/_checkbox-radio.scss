@@ -236,3 +236,17 @@ $c-radio-checked-color: $color-primary !default;
 .c-checkbox-subgroup {
 	margin: 0.8rem 0 0 2.4rem;
 }
+
+.c-checkbox--checked.c-checkbox--disabled input {
+	background-color: $color-gray-200 !important;
+	border-color: $color-gray-300 !important;
+}
+
+:not(.c-checkbox--checked).c-checkbox--disabled input {
+	background-color: $color-gray-100 !important;
+	border-color: $color-gray-300 !important;
+
+	&::before {
+		display: none !important;
+	}
+}

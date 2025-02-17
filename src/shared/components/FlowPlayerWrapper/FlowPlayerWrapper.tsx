@@ -1,6 +1,5 @@
 import './FlowPlayerWrapper.scss';
-
-import { type Config } from '@flowplayer/player';
+import type { FlowPlayerWrapperProps } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import {
 	FlowPlayer,
 	type FlowplayerSourceItem,
@@ -43,36 +42,6 @@ import { BookmarksViewsPlaysService } from '../../services/bookmarks-views-plays
 import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
 import { ToastService } from '../../services/toast-service';
-
-export interface CuePoints {
-	end: number | null;
-	start: number | null;
-}
-
-export type FlowPlayerWrapperProps = {
-	annotationText?: string;
-	annotationTitle?: string;
-	autoplay?: boolean;
-	canPlay?: boolean;
-	cuePoints?: CuePoints;
-	duration?: string;
-	external_id?: string;
-	issuedDate?: string;
-	item?: Avo.Item.Item;
-	cuePointsVideo?: CuePoints;
-	cuePointsLabel?: CuePoints;
-	onEnded?: () => void;
-	onPlay?: (playingSrc?: string) => void;
-	poster?: string;
-	src?: string | FlowplayerSourceList;
-	title?: string;
-	topRight?: ReactNode;
-	seekable?: Config['seekable'];
-	ui?: Config['ui'];
-	controls?: Config['controls'];
-	speed?: unknown | null;
-	trackPlayEvent: boolean;
-};
 
 /**
  * Handle flowplayer play events for the whole app, so we track play count
