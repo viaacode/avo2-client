@@ -32,8 +32,12 @@
 			margin-bottom: 1px;
 
 			img {
-				height: 35px;
+				width: 83px;
 				transform: translate(0, 3px);
+
+				&[alt="Logo van de Vlaamse Overheid"] {
+					margin-top: 6px;
+				}
 			}
 		}
 
