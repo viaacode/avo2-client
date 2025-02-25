@@ -187,8 +187,9 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 	}, [changeCollectionState, customDescription, customTitle, index, useCustomFields]);
 
 	const handleClickEvent = (evt: MouseEvent) => {
-		if ((evt.target as HTMLElement)?.closest('.c-fragment-edit')) {
+		if ((evt.target as HTMLElement)?.closest('.c-fragment-edit__form')) {
 			// https://meemoo.atlassian.net/browse/AVO-3370
+			// https://meemoo.atlassian.net/browse/AVO-3573
 			// User clicked inside the fragment edit component
 			// Do not update the parent state
 			// So the video playback will not be reset
@@ -348,7 +349,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 			!useCustomFields && fragment.type !== CollectionBlockType.TEXT;
 
 		return (
-			<Form>
+			<Form className="c-fragment-edit__form">
 				{itemMetaData && (
 					<FormGroup
 						label={GET_FRAGMENT_EDIT_SWITCH_LABELS()[fragment.type]}
@@ -421,7 +422,6 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 
 	const renderThumbnailOrVideo = () => {
 		if (fragment.type === 'ITEM') {
-			console.log('rendering video for fragment', fragment);
 			return (
 				<FlowPlayerWrapper
 					item={itemMetaData}
