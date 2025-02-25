@@ -172,9 +172,10 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 			await CollectionService.insertMarcomEntry([marcomEntry]);
 			if (!isCollection) {
 				// It's a bundle: add this entry to all included collections
-				const collectionIds = uniq(
-					collection.collection_fragments.map((fragment) => fragment.external_id)
+				const collections = collection.collection_fragments.filter(
+					(fragment) => fragment.type === 'COLLECTION'
 				);
+				const collectionIds = uniq(collections.map((fragment) => fragment.external_id));
 				await CollectionService.insertMarcomEntriesForBundleCollections(
 					collection.id,
 					collectionIds,
