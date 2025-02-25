@@ -1,3 +1,4 @@
+import { type CuePoints } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Column,
@@ -26,7 +27,6 @@ import { compose } from 'redux';
 
 import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
 import { FlowPlayerWrapper, ItemMetadata } from '../../shared/components';
-import { type CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
 import { TEAL_BRIGHT } from '../../shared/constants';
 import { stripHtml } from '../../shared/helpers';

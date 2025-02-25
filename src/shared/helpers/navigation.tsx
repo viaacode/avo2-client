@@ -68,6 +68,7 @@ export function mapNavElementsToNavigationItems(
 				label: navItem.label,
 				icon: navItem.icon_name,
 				tooltip: navItem.tooltip,
+				target: '_self',
 				component: <Component />,
 				key: `nav-item-${navItem.id}`,
 			};
