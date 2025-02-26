@@ -186,6 +186,7 @@ const Navigation: FC<
 							onClick={handleMenuClick}
 						/>
 					),
+					target: '_self',
 					key: 'profile',
 				},
 			];

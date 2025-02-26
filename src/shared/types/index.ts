@@ -17,7 +17,7 @@ export type NavigationItemInfo = {
 	key: string;
 	location?: string;
 	exact?: boolean;
-	target?: string;
+	target: string;
 	component?: ReactElement;
 	icon?: IconName;
 	subLinks?: NavigationItemInfo[];

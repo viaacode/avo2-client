@@ -66,6 +66,7 @@ function getUserNavItems(userPermissions: string[]): NavigationItemInfo[] {
 				navItem: {
 					label: tText('admin/admin___gebruikers'),
 					location: ADMIN_PATH.USER_OVERVIEW,
+					target: '_self',
 					key: 'users',
 					exact: false,
 				},
@@ -75,6 +76,7 @@ function getUserNavItems(userPermissions: string[]): NavigationItemInfo[] {
 				navItem: {
 					label: tText('admin/admin___groepen-en-permissies'),
 					location: ADMIN_PATH.USER_GROUP_OVERVIEW,
+					target: '_self',
 					key: 'userGroups',
 					exact: false,
 				},
@@ -147,6 +149,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		...hasPermissions([PermissionName.EDIT_NAVIGATION_BARS], 'OR', userPermissions, {
 			label: tText('admin/admin___navigatie'),
 			location: ADMIN_PATH.NAVIGATIONS_OVERVIEW,
+			target: '_self',
 			key: 'navigatie',
 			exact: false,
 		}),
@@ -157,6 +160,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			{
 				label: tText('admin/admin___content-paginas'),
 				location: ADMIN_PATH.CONTENT_PAGE_OVERVIEW,
+				target: '_self',
 				key: 'content',
 				exact: false,
 				subLinks: [
@@ -166,18 +170,21 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 								{
 									label: tText('admin/admin___start-uitgelogd'),
 									location: contentPageInfos[0],
+									target: '_self',
 									key: 'faqs',
 									exact: true,
 								},
 								{
 									label: tText('admin/admin___start-uitgelogd-leerlingen'),
 									location: contentPageInfos[1],
+									target: '_self',
 									key: 'faqs',
 									exact: true,
 								},
 								{
 									label: tText('admin/admin___start-ingelogd-lesgever'),
 									location: contentPageInfos[2],
+									target: '_self',
 									key: 'faqs',
 									exact: true,
 								},
@@ -189,18 +196,21 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		...hasPermissions([PermissionName.EDIT_CONTENT_PAGE_LABELS], 'OR', userPermissions, {
 			label: tText('admin/admin___content-pagina-labels'),
 			location: ADMIN_PATH.CONTENT_PAGE_LABEL_OVERVIEW,
+			target: '_self',
 			key: 'content-page-labels',
 			exact: false,
 		}),
 		...hasPermissions([PermissionName.VIEW_ITEMS_OVERVIEW], 'OR', userPermissions, {
 			label: tText('admin/admin___media-items'),
 			location: ADMIN_PATH.ITEMS_OVERVIEW,
+			target: '_self',
 			key: 'items',
 			exact: false,
 		}),
 		...hasPermissions([PermissionName.VIEW_COLLECTIONS_OVERVIEW], 'OR', userPermissions, {
 			label: tText('admin/admin___collectiebeheer'),
 			location: ADMIN_PATH.COLLECTIONS_OVERVIEW,
+			target: '_self',
 			key: 'collections',
 			exact: false,
 			subLinks: [
@@ -212,18 +222,21 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 						{
 							label: tText('admin/admin___actualisatie'),
 							location: ADMIN_PATH.COLLECTION_ACTUALISATION_OVERVIEW,
+							target: '_self',
 							key: 'collections',
 							exact: false,
 						},
 						{
 							label: tText('admin/admin___kwaliteitscontrole'),
 							location: ADMIN_PATH.COLLECTION_QUALITYCHECK_OVERVIEW,
+							target: '_self',
 							key: 'collections',
 							exact: false,
 						},
 						{
 							label: tText('admin/admin___marcom'),
 							location: ADMIN_PATH.COLLECTION_MARCOM_OVERVIEW,
+							target: '_self',
 							key: 'collections',
 							exact: false,
 						},
@@ -234,6 +247,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		...hasPermissions([PermissionName.VIEW_BUNDLES_OVERVIEW], 'OR', userPermissions, {
 			label: tText('admin/admin___bundelbeheer'),
 			location: ADMIN_PATH.BUNDLES_OVERVIEW,
+			target: '_self',
 			key: 'bundels',
 			exact: false,
 			subLinks: [
@@ -245,18 +259,21 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 						{
 							label: tText('admin/admin___actualisatie'),
 							location: ADMIN_PATH.BUNDLE_ACTUALISATION_OVERVIEW,
+							target: '_self',
 							key: 'collections',
 							exact: false,
 						},
 						{
 							label: tText('admin/admin___kwaliteitscontrole'),
 							location: ADMIN_PATH.BUNDLE_QUALITYCHECK_OVERVIEW,
+							target: '_self',
 							key: 'collections',
 							exact: false,
 						},
 						{
 							label: tText('admin/admin___marcom'),
 							location: ADMIN_PATH.BUNDLE_MARCOM_OVERVIEW,
+							target: '_self',
 							key: 'collections',
 							exact: false,
 						},
@@ -267,6 +284,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		...hasPermissions([PermissionName.VIEW_ANY_ASSIGNMENTS], 'OR', userPermissions, {
 			label: tText('admin/admin___opdrachtenbeheer'),
 			location: ADMIN_PATH.ASSIGNMENTS_OVERVIEW,
+			target: '_self',
 			key: 'assignments',
 			exact: false,
 			subLinks: [
@@ -278,6 +296,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 						{
 							label: tText('admin/admin___leerlingencollecties'),
 							location: ADMIN_PATH.ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW,
+							target: '_self',
 							key: 'pupil-collections',
 							exact: false,
 						},
@@ -288,18 +307,21 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		...hasPermissions([PermissionName.VIEW_ANY_UNPUBLISHED_ITEMS], 'OR', userPermissions, {
 			label: tText('admin/admin___items-publiceren'),
 			location: ADMIN_PATH.PUBLISH_ITEMS_OVERVIEW,
+			target: '_self',
 			key: 'publish-items',
 			exact: false,
 		}),
 		...hasPermissions([PermissionName.EDIT_INTERACTIVE_TOURS], 'OR', userPermissions, {
 			label: tText('admin/admin___interactive-tours'),
 			location: ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW,
+			target: '_self',
 			key: 'interactiveTours',
 			exact: false,
 		}),
 		...hasPermissions([PermissionName.EDIT_TRANSLATIONS], 'OR', userPermissions, {
 			label: tText('admin/admin___vertaling'),
 			location: ADMIN_PATH.TRANSLATIONS,
+			target: '_self',
 			key: 'translations',
 			exact: false,
 		}),

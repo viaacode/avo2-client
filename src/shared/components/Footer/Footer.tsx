@@ -29,27 +29,30 @@ const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match 
 	const footerNavItemsColumn3 = allNavItems?.[NavigationBarId.FOOTER_COLUMN_3] || [];
 
 	const mapNavItems = (navItems: AppContentNavElement[]) => {
-		return orderBy(navItems, (navItem) => navItem.position).map((item) => (
-			<NavigationItem
-				key={item.id}
-				item={{
-					label: item.label,
-					location: item.content_path || '',
-					icon: item.icon_name,
-					key: item.id.toString(),
-					tooltip: item.tooltip,
-				}}
-				className="c-nav__item c-nav__item--i"
-				exact={item.content_path === '/'}
-				showActive={false}
-				areDropdownsOpen={areDropdownsOpen}
-				setDropdownsOpen={setDropdownsOpen}
-				onNavigate={() => window?.scrollTo(0, 0)}
-				history={history}
-				location={location}
-				match={match}
-			/>
-		));
+		return orderBy(navItems, (navItem) => navItem.position).map((item) => {
+			return (
+				<NavigationItem
+					key={item.id}
+					item={{
+						label: item.label,
+						location: item.content_path || '',
+						target: item.link_target || '_blank',
+						icon: item.icon_name,
+						key: item.id.toString(),
+						tooltip: item.tooltip,
+					}}
+					className="c-nav__item c-nav__item--i"
+					exact={item.content_path === '/'}
+					showActive={false}
+					areDropdownsOpen={areDropdownsOpen}
+					setDropdownsOpen={setDropdownsOpen}
+					onNavigate={() => window?.scrollTo(0, 0)}
+					history={history}
+					location={location}
+					match={match}
+				/>
+			);
+		});
 	};
 
 	const columnTitle1 = tText('shared/components/footer/footer___kolom-1');
