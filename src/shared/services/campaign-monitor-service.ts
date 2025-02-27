@@ -36,8 +36,13 @@ export class CampaignMonitorService {
 		}
 	}
 
+	/**
+	 * Create or update the user in Campaign Monitor with the given preferences
+	 * @param preferences  if null => no change to the newsletter preferences, but do create the user if they don't exist yet
+	 * @param preferenceCenterKey
+	 */
 	public static async updateNewsletterPreferences(
-		preferences: Partial<NewsletterPreferences>,
+		preferences: Partial<NewsletterPreferences> | null,
 		preferenceCenterKey?: string
 	) {
 		try {

@@ -112,20 +112,32 @@ const CompleteProfileStep: FC<
 		// IN case this screen is shown to an existing user, we don't want to accidentally unsubscribe them
 		// They can always unsubscribe in their account preferences or through the email preference center or unsubscribe all link
 		if (subscribeToNewsletter) {
+			const prefs = {
+				newEmailPreferences: {
+					...existingEmailPreferences,
+					newsletter: true,
+				},
+				preferencesCenterKey: undefined,
+			};
+			updateEmailPreferences(prefs, undefined).catch((err) => {
+				console.error(new CustomError('Failed to subscribe to newsletter', err, prefs));
+				ToastService.danger(
+					tHtml(
+						'settings/components/complete-profile-step___het-inschrijven-op-de-nieuwsbrief-is-mislukt'
+					)
+				);
+			});
+		} else {
 			updateEmailPreferences(
 				{
-					newEmailPreferences: {
-						newsletter: true,
-					},
+					newEmailPreferences: null,
 					preferencesCenterKey: undefined,
 				},
 				undefined
 			).catch((err) => {
 				console.error(
 					new CustomError('Failed to subscribe to newsletter', err, {
-						preferences: {
-							newsletter: true,
-						},
+						newEmailPreferences: null,
 						preferenceCenterKey: undefined,
 					})
 				);
