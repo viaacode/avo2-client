@@ -5,7 +5,7 @@ import {
 	type ToastInfo,
 	UserBulkAction,
 } from '@meemoo/admin-core-ui/dist/admin.mjs';
-import { ContentBlockType, ContentWidth } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { ContentBlockType, ContentPageWidth } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
 import { DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
@@ -114,7 +114,7 @@ export function getAdminCoreConfig(): AdminConfig {
 				ContentBlockType.UspGrid,
 				ContentBlockType.AvoImageTextBackground,
 			],
-			defaultPageWidth: ContentWidth.EXTRA_LARGE,
+			defaultPageWidth: ContentPageWidth.EXTRA_LARGE,
 			onSaveContentPage: () => new Promise(noop),
 		},
 		navigationBars: {
