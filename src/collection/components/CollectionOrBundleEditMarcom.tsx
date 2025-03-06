@@ -22,6 +22,7 @@ import React, { type FC, type ReactNode, useCallback, useEffect, useState } from
 import { Link, type RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
+import { FileUpload } from '../../shared/components';
 import { type App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../shared/helpers';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
@@ -64,6 +65,9 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 	const [marcomChannelName, setMarcomChannelName] = useState<string | null>();
 	const [marcomLink, setMarcomLink] = useState<string>('');
 	const [marcomEntries, setMarcomEntries] = useState<MarcomEntry[] | null>(null);
+	const [klascementAlt, setKlascementAlt] = useState<string | undefined>();
+	const [klascementSource, setKlascementSource] = useState<string | undefined>();
+	const [klascementImage, setKlascementImage] = useState<string | null>();
 
 	const fetchMarcomEntries = useCallback(async () => {
 		try {
@@ -381,6 +385,41 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 								onFocus={onFocus}
 							/>
 						</FormGroup>
+						<BlockHeading type="h3">{tText('klascement-titel')}</BlockHeading>
+						<Flex spaced="wide">
+							<FlexItem>
+								<FileUpload
+									label={tText('upload-een-klascement-afbeelding')}
+									urls={klascementImage ? [klascementImage] : []}
+									allowMulti={false}
+									assetType="KLASCEMENT_VIDEO_IMAGE"
+									allowedDimensions={{
+										minWidth: 680,
+										maxWidth: 680,
+										minHeight: 380,
+										maxHeight: 380,
+									}}
+									ownerId={collection.id}
+									onChange={(urls) => setKlascementImage(urls[0] || null)}
+								/>
+							</FlexItem>
+							<FlexItem>
+								<FormGroup label={tText('klascement-alt-text')}>
+									<TextInput value={klascementAlt} onChange={setKlascementAlt} />
+								</FormGroup>
+								<FormGroup label={tText('klascement-bron-text')}>
+									<TextInput
+										value={klascementSource}
+										onChange={setKlascementSource}
+									/>
+								</FormGroup>
+								<Button
+									label={tText('klascement-publiceren')}
+									type="primary"
+									disabled={!collection.is_public || !!collection.klascement}
+								/>
+							</FlexItem>
+						</Flex>
 					</Form>
 				</Container>
 			</Container>
