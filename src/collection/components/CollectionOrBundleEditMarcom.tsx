@@ -29,6 +29,7 @@ import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
+import { KlascementService } from '../../shared/services/klascement-service';
 import { ToastService } from '../../shared/services/toast-service';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
@@ -68,6 +69,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 	const [klascementAlt, setKlascementAlt] = useState<string | undefined>();
 	const [klascementSource, setKlascementSource] = useState<string | undefined>();
 	const [klascementImage, setKlascementImage] = useState<string | null>();
+	const [isPublishing, setIsPublishing] = useState<boolean>(false);
 
 	const fetchMarcomEntries = useCallback(async () => {
 		try {
@@ -85,6 +87,28 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 			);
 		}
 	}, [collection.id, tHtml]);
+
+	const handlePublish = async () => {
+		setIsPublishing(true);
+
+		const publishData = {
+			collectionId: collection.id,
+			altText: klascementAlt,
+			source: klascementSource,
+			imageUrl: klascementImage,
+		};
+
+		try {
+			await KlascementService.publishCollection(publishData);
+		} catch (err) {
+			setIsPublishing(false);
+
+			ToastService.danger(tText('publiceren-naar-klascement-mislukt'));
+		}
+
+		ToastService.success(tText('publiceren-naar-klascement-gelukt'));
+		setIsPublishing(false);
+	};
 
 	useEffect(() => {
 		fetchMarcomEntries();
@@ -416,7 +440,12 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 								<Button
 									label={tText('klascement-publiceren')}
 									type="primary"
-									disabled={!collection.is_public || !!collection.klascement}
+									disabled={
+										!collection.is_public ||
+										!!collection.klascement ||
+										isPublishing
+									}
+									onClick={handlePublish}
 								/>
 							</FlexItem>
 						</Flex>
