@@ -27,6 +27,7 @@ interface FileUploadProps {
 	label?: string;
 	allowedTypes?: string[];
 	allowMulti?: boolean;
+	allowedDimensions?: FileUploadDimensions;
 	assetType: Avo.FileUpload.AssetType;
 	ownerId: string;
 	urls: string[] | null;
@@ -35,11 +36,19 @@ interface FileUploadProps {
 	onChange: (urls: string[]) => void;
 }
 
+interface FileUploadDimensions {
+	minWidth: number;
+	minHeight: number;
+	maxWidth: number;
+	maxHeight: number;
+}
+
 const FileUpload: FC<FileUploadProps> = ({
 	icon,
 	label,
 	allowedTypes = PHOTO_TYPES,
 	allowMulti = true,
+	allowedDimensions,
 	assetType,
 	ownerId,
 	urls,
@@ -62,14 +71,48 @@ const FileUpload: FC<FileUploadProps> = ({
 		setIsDeleteModalOpen(false);
 	};
 
+	const validateFile = async (file: File) => {
+		return new Promise((resolve) => {
+			// If allowedTypes array is empty, all filetypes are allowed
+			if (allowedTypes.length && !allowedTypes.includes(file.type)) {
+				return resolve(false);
+			}
+
+			// If file type is not an image, the file is allowed
+			// if allowedDimensions is empty, every image is allowed
+			if (!PHOTO_TYPES.includes(file.type) || !allowedDimensions) {
+				return resolve(true);
+			}
+
+			const img = new Image();
+			img.onload = () => {
+				resolve(
+					img.naturalWidth >= allowedDimensions.minWidth &&
+						img.naturalWidth <= allowedDimensions.maxWidth &&
+						img.naturalHeight >= allowedDimensions.minHeight &&
+						img.naturalHeight <= allowedDimensions.maxHeight
+				);
+			};
+			img.onerror = (err) => {
+				console.error(
+					new CustomError('Failed to load image', err, { fileName: file.name })
+				);
+				resolve(false);
+			};
+			img.src = URL.createObjectURL(file);
+		});
+	};
+
 	const uploadSelectedFile = async (files: File[] | null) => {
 		try {
 			if (files && files.length) {
-				// If allowedTypes array is empty, all filetypes are allowed
-				const notAllowedFiles = allowedTypes.length
-					? files.filter((file) => !allowedTypes.includes(file.type))
-					: [];
-				if (notAllowedFiles.length) {
+				const validationResults = await Promise.all(
+					files.map((file) => validateFile(file))
+				);
+				const hasNotAllowedFiles: boolean = validationResults.some(
+					(validationResult) => !validationResult
+				);
+				if (hasNotAllowedFiles) {
 					ToastService.danger(
 						tHtml(
 							'shared/components/file-upload/file-upload___een-geselecteerde-bestand-is-niet-toegelaten'

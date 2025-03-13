@@ -2,12 +2,14 @@ import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
 	ButtonToolbar,
+	Column,
 	Container,
 	DatePicker,
 	Flex,
 	FlexItem,
 	Form,
 	FormGroup,
+	Grid,
 	IconName,
 	Select,
 	Spacer,
@@ -17,11 +19,12 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { get, uniq } from 'lodash-es';
+import { compact, get, uniq } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { Link, type RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
+import { FileUpload } from '../../shared/components';
 import { type App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../shared/helpers';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
@@ -40,6 +43,7 @@ import {
 	ContentTypeNumber,
 	type MarcomEntry,
 } from '../collection.types';
+import { usePublishCollectionToKlascement } from '../hooks/usePublishCollectionToKlascement';
 
 import { type CollectionAction, type MarcomNoteInfo } from './CollectionOrBundleEdit.types';
 
@@ -65,6 +69,17 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 	const [marcomLink, setMarcomLink] = useState<string>('');
 	const [marcomEntries, setMarcomEntries] = useState<MarcomEntry[] | null>(null);
 
+	const [klascementImageUrl, setKlascementImageUrl] = useState<string | null>();
+	const [klascementAltText, setKlascementAltText] = useState<string | undefined>();
+	const [klascementSourceText, setKlascementSourceText] = useState<string | undefined>();
+
+	const [klascementImageUrlError, setKlascementImageUrlError] = useState<string | null>(null);
+	const [klascementAltTextError, setKlascementAltTextError] = useState<string | null>(null);
+	const [klascementSourceTextError, setKlascementSourceTextError] = useState<string | null>(null);
+
+	const { mutateAsync: publishCollectionToKlascement, isLoading: isPublishing } =
+		usePublishCollectionToKlascement();
+
 	const fetchMarcomEntries = useCallback(async () => {
 		try {
 			setMarcomEntries(await CollectionService.getMarcomEntries(collection.id));
@@ -81,6 +96,40 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 			);
 		}
 	}, [collection.id, tHtml]);
+
+	const handlePublish = async () => {
+		if (!klascementImageUrl) {
+			setKlascementImageUrlError(tText('Gelieve een afbeelding te uploaden'));
+			return;
+		} else {
+			setKlascementImageUrlError(null);
+		}
+		if (!klascementAltText) {
+			setKlascementAltTextError(
+				tText('gelieve een alternatieve tekst in te vullen voor de afbeelding')
+			);
+			return;
+		} else {
+			setKlascementAltTextError(null);
+		}
+		if (!klascementSourceText) {
+			setKlascementSourceTextError(tText('gelieve de bron van de afbeelding in te vullen'));
+			return;
+		} else {
+			setKlascementSourceTextError(null);
+		}
+		try {
+			await publishCollectionToKlascement({
+				collectionId: collection.id,
+				imageUrl: klascementImageUrl,
+				altText: klascementAltText,
+				sourceText: klascementSourceText,
+			});
+			ToastService.success(tText('Publiceren naar klascement gelukt'));
+		} catch (err) {
+			ToastService.danger(tText('Publiceren naar klascement mislukt'));
+		}
+	};
 
 	useEffect(() => {
 		fetchMarcomEntries();
@@ -266,7 +315,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 		<>
 			<Container mode="vertical">
 				<Container mode="horizontal">
-					<Form>
+					<Form className="u-m-b-xl">
 						<BlockHeading type="h3">
 							{tText(
 								'collection/components/collection-or-bundle-edit-marcom___meest-recente-communicatie'
@@ -381,6 +430,62 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 								onFocus={onFocus}
 							/>
 						</FormGroup>
+						<BlockHeading type="h3" className="u-padding-top-xl u-padding-bottom">
+							{tText('Publiceren naar Klascement')}
+						</BlockHeading>
+						<Grid>
+							<Column size="3-6">
+								<FormGroup
+									label={tText('Afbeelding voor de embed code')}
+									error={klascementImageUrlError}
+								>
+									<FileUpload
+										label={tText('Upload een afbeelding')}
+										urls={compact([klascementImageUrl])}
+										allowMulti={false}
+										assetType="KLASCEMENT_VIDEO_IMAGE"
+										allowedDimensions={{
+											minWidth: 680,
+											maxWidth: 680,
+											minHeight: 380,
+											maxHeight: 380,
+										}}
+										ownerId={collection.id}
+										onChange={(urls) => setKlascementImageUrl(urls[0] || null)}
+									/>
+								</FormGroup>
+								<FormGroup
+									label={tText('Alternatieve tekst voor de afbeelding')}
+									error={klascementAltTextError}
+								>
+									<TextInput
+										value={klascementAltText}
+										onChange={setKlascementAltText}
+									/>
+								</FormGroup>
+								<FormGroup
+									label={tText('Bron van de afbeelding')}
+									error={klascementSourceTextError}
+								>
+									<TextInput
+										value={klascementSourceText}
+										onChange={setKlascementSourceText}
+									/>
+								</FormGroup>
+								<Button
+									label={tText('Publiceer naar klascement')}
+									icon={IconName.klascement}
+									type="primary"
+									disabled={
+										!collection.is_public ||
+										!!collection.klascement ||
+										isPublishing
+									}
+									onClick={handlePublish}
+									className="u-color-klascement u-m-t"
+								/>
+							</Column>
+						</Grid>
 					</Form>
 				</Container>
 			</Container>
