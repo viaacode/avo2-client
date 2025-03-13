@@ -6,12 +6,12 @@ export interface KlascementPublishData {
 	collectionId: string;
 	imageUrl: string;
 	altText: string;
-	source: string;
+	sourceText: string;
 }
 
 export class KlascementService {
 	public static async publishCollection(data: KlascementPublishData): Promise<void> {
-		let url: string | undefined;
+		let url: string | undefined = undefined;
 
 		try {
 			url = `${getEnv('PROXY_URL')}/klascement/publish/collection`;
@@ -24,6 +24,7 @@ export class KlascementService {
 		} catch (err) {
 			throw new CustomError('Failed to publish to Klascement', err, {
 				url,
+				data,
 			});
 		}
 	}

@@ -93,7 +93,12 @@ const FileUpload: FC<FileUploadProps> = ({
 						img.naturalHeight <= allowedDimensions.maxHeight
 				);
 			};
-			img.onerror = () => resolve(false);
+			img.onerror = (err) => {
+				console.error(
+					new CustomError('Failed to load image', err, { fileName: file.name })
+				);
+				resolve(false);
+			};
 			img.src = URL.createObjectURL(file);
 		});
 	};
@@ -104,8 +109,10 @@ const FileUpload: FC<FileUploadProps> = ({
 				const validationResults = await Promise.all(
 					files.map((file) => validateFile(file))
 				);
-				const notAllowedFiles = files.filter((_v, index) => !validationResults[index]);
-				if (notAllowedFiles.length) {
+				const hasNotAllowedFiles: boolean = validationResults.some(
+					(validationResult) => !validationResult
+				);
+				if (hasNotAllowedFiles) {
 					ToastService.danger(
 						tHtml(
 							'shared/components/file-upload/file-upload___een-geselecteerde-bestand-is-niet-toegelaten'
