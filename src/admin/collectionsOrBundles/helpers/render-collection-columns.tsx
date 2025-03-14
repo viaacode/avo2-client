@@ -28,7 +28,7 @@ import {
 	type CollectionOrBundleMarcomOverviewTableCols,
 	type CollectionOrBundleQualityCheckOverviewTableCols,
 	type CollectionsOrBundlesOverviewTableCols,
-	type CollectionTableCols,
+	type CollectionTableColumns,
 	type ManagementStatus,
 } from '../collections-or-bundles.types';
 
@@ -41,13 +41,13 @@ const getDisplayTextForManagementStatus = (
 	);
 };
 
-export function renderCollectionsOrBundlesTableCellReact(
+export function renderCollectionsOrBundlesOverviewCellReact(
 	collectionOrBundle: Partial<Avo.Collection.Collection>,
 	columnId: CollectionsOrBundlesOverviewTableCols,
 	info: {
 		isCollection: boolean;
-		collectionLabels: QualityLabel[];
-		editStatuses: Avo.Share.EditStatusResponse | undefined;
+		allQualityLabels: QualityLabel[];
+		editStatuses: Avo.Share.EditStatusResponse;
 		commonUser: Avo.User.CommonUser | null;
 	}
 ): ReactNode {
@@ -150,19 +150,18 @@ export function renderCollectionsOrBundlesTableCellReact(
 		}
 
 		default:
-			return renderCollectionOverviewColumnsReact(
-				collectionOrBundle,
-				columnId,
-				info.collectionLabels
-			);
+			return renderCollectionCellReact(collectionOrBundle, columnId, info);
 	}
 }
 
-export function renderCollectionsOrBundlesTableCellText(
+export function renderCollectionsOrBundlesOverviewCellText(
 	collectionOrBundle: Partial<Avo.Collection.Collection>,
 	columnId: CollectionsOrBundlesOverviewTableCols,
 	info: {
-		collectionLabels: QualityLabel[];
+		isCollection: boolean;
+		allQualityLabels: QualityLabel[];
+		editStatuses: Avo.Share.EditStatusResponse;
+		commonUser: Avo.User.CommonUser | null;
 	}
 ): string {
 	switch (columnId) {
@@ -173,20 +172,18 @@ export function renderCollectionsOrBundlesTableCellText(
 			return '';
 
 		default:
-			return renderCollectionOverviewColumnsText(
-				collectionOrBundle,
-				columnId,
-				info.collectionLabels
-			);
+			return renderCollectionCellText(collectionOrBundle, columnId, info);
 	}
 }
 
-export function renderCollectionsOrBundleActualisationOverviewTableCellReact(
+export function renderCollectionsOrBundleActualisationCellReact(
 	collectionOrBundle: Partial<Avo.Collection.Collection>,
 	columnId: CollectionOrBundleActualisationOverviewTableCols,
 	info: {
 		isCollection: boolean;
-		collectionLabels: QualityLabel[];
+		allQualityLabels: QualityLabel[];
+		editStatuses: Avo.Share.EditStatusResponse;
+		commonUser: Avo.User.CommonUser | null;
 	}
 ) {
 	const editLink = buildLink(
@@ -247,19 +244,18 @@ export function renderCollectionsOrBundleActualisationOverviewTableCellReact(
 			);
 
 		default:
-			return renderCollectionOverviewColumnsReact(
-				collectionOrBundle,
-				columnId,
-				info.collectionLabels
-			);
+			return renderCollectionCellReact(collectionOrBundle, columnId, info);
 	}
 }
 
-export function renderCollectionsOrBundleActualisationOverviewTableCellText(
+export function renderCollectionsOrBundleActualisationCellText(
 	collectionOrBundle: Partial<Avo.Collection.Collection>,
 	columnId: CollectionOrBundleActualisationOverviewTableCols,
 	info: {
-		collectionLabels: QualityLabel[];
+		isCollection: boolean;
+		allQualityLabels: QualityLabel[];
+		editStatuses: Avo.Share.EditStatusResponse;
+		commonUser: Avo.User.CommonUser | null;
 	}
 ) {
 	switch (columnId) {
@@ -271,118 +267,18 @@ export function renderCollectionsOrBundleActualisationOverviewTableCellText(
 			return '';
 
 		default:
-			return renderCollectionOverviewColumnsText(
-				collectionOrBundle,
-				columnId,
-				info.collectionLabels
-			);
+			return renderCollectionCellText(collectionOrBundle, columnId, info);
 	}
 }
 
-export function renderCollectionsOrBundlesMarcomTableCellReact(
-	collectionOrBundle: Partial<Avo.Collection.Collection>,
-	columnId: CollectionOrBundleMarcomOverviewTableCols,
-	info: {
-		isCollection: boolean;
-		collectionLabels: QualityLabel[];
-	}
-): ReactNode {
-	const editLink = buildLink(
-		info.isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
-		{ id: collectionOrBundle.id, tabId: CollectionCreateUpdateTab.MARCOM }
-	);
-	const editLinkOriginal = collectionOrBundle.relations?.[0].object
-		? buildLink(
-				info.isCollection
-					? APP_PATH.COLLECTION_EDIT_TAB.route
-					: APP_PATH.BUNDLE_EDIT_TAB.route,
-				{
-					id: collectionOrBundle.relations?.[0].object,
-					tabId: CollectionCreateUpdateTab.MARCOM,
-				}
-		  )
-		: null;
-
-	switch (columnId) {
-		case 'title': {
-			return (
-				<CollectionOrBundleOrAssignmentTitleAndCopyTag
-					title={collectionOrBundle.title}
-					editLink={editLink}
-					editLinkOriginal={editLinkOriginal}
-				/>
-			);
-		}
-
-		case ACTIONS_TABLE_COLUMN_ID:
-			return (
-				<ButtonToolbar>
-					<Link to={editLink}>
-						<Button
-							type="secondary"
-							icon={IconName.edit}
-							ariaLabel={
-								info.isCollection
-									? tText(
-											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
-									  )
-									: tText(
-											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
-									  )
-							}
-							title={
-								info.isCollection
-									? tText(
-											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
-									  )
-									: tText(
-											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
-									  )
-							}
-						/>
-					</Link>
-				</ButtonToolbar>
-			);
-
-		default:
-			return renderCollectionOverviewColumnsReact(
-				collectionOrBundle,
-				columnId,
-				info.collectionLabels
-			);
-	}
-}
-
-export function renderCollectionsOrBundlesMarcomTableCellText(
-	collectionOrBundle: Partial<Avo.Collection.Collection>,
-	columnId: CollectionOrBundleMarcomOverviewTableCols,
-	info: {
-		collectionLabels: QualityLabel[];
-	}
-): string {
-	switch (columnId) {
-		case 'title': {
-			return collectionOrBundle.title || '';
-		}
-
-		case ACTIONS_TABLE_COLUMN_ID:
-			return '';
-
-		default:
-			return renderCollectionOverviewColumnsText(
-				collectionOrBundle,
-				columnId,
-				info.collectionLabels
-			);
-	}
-}
-
-export function renderCollectionOrBundleQualityCheckTableCellReact(
+export function renderCollectionOrBundleQualityCheckCellReact(
 	collectionOrBundle: Partial<Avo.Collection.Collection>,
 	columnId: CollectionOrBundleQualityCheckOverviewTableCols,
 	info: {
 		isCollection: boolean;
-		collectionLabels: QualityLabel[];
+		allQualityLabels: QualityLabel[];
+		editStatuses: Avo.Share.EditStatusResponse;
+		commonUser: Avo.User.CommonUser | null;
 	}
 ): ReactNode {
 	const editLink = buildLink(
@@ -443,19 +339,18 @@ export function renderCollectionOrBundleQualityCheckTableCellReact(
 			);
 
 		default:
-			return renderCollectionOverviewColumnsReact(
-				collectionOrBundle,
-				columnId,
-				info.collectionLabels
-			);
+			return renderCollectionCellReact(collectionOrBundle, columnId, info);
 	}
 }
 
-export function renderCollectionOrBundleQualityCheckTableCellText(
+export function renderCollectionOrBundleQualityCheckCellText(
 	collectionOrBundle: Partial<Avo.Collection.Collection>,
 	columnId: CollectionOrBundleQualityCheckOverviewTableCols,
 	info: {
-		collectionLabels: QualityLabel[];
+		isCollection: boolean;
+		allQualityLabels: QualityLabel[];
+		editStatuses: Avo.Share.EditStatusResponse;
+		commonUser: Avo.User.CommonUser | null;
 	}
 ): string {
 	switch (columnId) {
@@ -467,18 +362,114 @@ export function renderCollectionOrBundleQualityCheckTableCellText(
 			return '';
 
 		default:
-			return renderCollectionOverviewColumnsText(
-				collectionOrBundle,
-				columnId,
-				info.collectionLabels
-			);
+			return renderCollectionCellText(collectionOrBundle, columnId, info);
 	}
 }
 
-export function renderCollectionOverviewColumnsReact(
+export function renderCollectionsOrBundlesMarcomCellReact(
+	collectionOrBundle: Partial<Avo.Collection.Collection>,
+	columnId: CollectionOrBundleMarcomOverviewTableCols,
+	info: {
+		isCollection: boolean;
+		allQualityLabels: QualityLabel[];
+		editStatuses: Avo.Share.EditStatusResponse;
+		commonUser: Avo.User.CommonUser | null;
+	}
+): ReactNode {
+	const editLink = buildLink(
+		info.isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
+		{ id: collectionOrBundle.id, tabId: CollectionCreateUpdateTab.MARCOM }
+	);
+	const editLinkOriginal = collectionOrBundle.relations?.[0].object
+		? buildLink(
+				info.isCollection
+					? APP_PATH.COLLECTION_EDIT_TAB.route
+					: APP_PATH.BUNDLE_EDIT_TAB.route,
+				{
+					id: collectionOrBundle.relations?.[0].object,
+					tabId: CollectionCreateUpdateTab.MARCOM,
+				}
+		  )
+		: null;
+
+	switch (columnId) {
+		case 'title': {
+			return (
+				<CollectionOrBundleOrAssignmentTitleAndCopyTag
+					title={collectionOrBundle.title}
+					editLink={editLink}
+					editLinkOriginal={editLinkOriginal}
+				/>
+			);
+		}
+
+		case ACTIONS_TABLE_COLUMN_ID:
+			return (
+				<ButtonToolbar>
+					<Link to={editLink}>
+						<Button
+							type="secondary"
+							icon={IconName.edit}
+							ariaLabel={
+								info.isCollection
+									? tText(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
+									  )
+									: tText(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
+									  )
+							}
+							title={
+								info.isCollection
+									? tText(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
+									  )
+									: tText(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
+									  )
+							}
+						/>
+					</Link>
+				</ButtonToolbar>
+			);
+
+		default:
+			return renderCollectionCellReact(collectionOrBundle, columnId, info);
+	}
+}
+
+export function renderCollectionsOrBundlesMarcomCellText(
+	collectionOrBundle: Partial<Avo.Collection.Collection>,
+	columnId: CollectionOrBundleMarcomOverviewTableCols,
+	info: {
+		isCollection: boolean;
+		allQualityLabels: QualityLabel[];
+		editStatuses: Avo.Share.EditStatusResponse;
+		commonUser: Avo.User.CommonUser | null;
+	}
+): string {
+	switch (columnId) {
+		case 'title': {
+			return collectionOrBundle.title || '';
+		}
+
+		case ACTIONS_TABLE_COLUMN_ID:
+			return '';
+
+		default:
+			return renderCollectionCellText(collectionOrBundle, columnId, info);
+	}
+}
+
+export function renderCollectionCellReact(
 	collection: Partial<Avo.Collection.Collection>,
-	columnId: CollectionTableCols,
-	collectionLabels: QualityLabel[]
+	columnId: CollectionTableColumns,
+	info: {
+		isCollection: boolean;
+		allQualityLabels: QualityLabel[];
+		editStatuses: Avo.Share.EditStatusResponse;
+		commonUser: Avo.User.CommonUser | null;
+	}
 ): ReactNode {
 	switch (columnId) {
 		case 'owner_profile_id': {
@@ -545,7 +536,7 @@ export function renderCollectionOverviewColumnsReact(
 
 			const tags: TagOption[] = compact(
 				labelObjects.map((labelObj: any): TagOption | null => {
-					const prettyLabel = collectionLabels.find(
+					const prettyLabel = info.allQualityLabels.find(
 						(collectionLabel) => collectionLabel.value === labelObj.label
 					);
 
@@ -691,10 +682,15 @@ export function renderCollectionOverviewColumnsReact(
 	}
 }
 
-export function renderCollectionOverviewColumnsText(
+export function renderCollectionCellText(
 	collection: Partial<Avo.Collection.Collection>,
-	columnId: CollectionTableCols,
-	collectionLabels: QualityLabel[]
+	columnId: CollectionTableColumns,
+	info: {
+		isCollection: boolean;
+		allQualityLabels: QualityLabel[];
+		editStatuses: Avo.Share.EditStatusResponse;
+		commonUser: Avo.User.CommonUser | null;
+	}
 ): string {
 	switch (columnId) {
 		case 'owner_profile_id': {
@@ -758,7 +754,7 @@ export function renderCollectionOverviewColumnsText(
 				collection?.collection_labels || [];
 			return compact(
 				labelObjects.map((labelObj: any): string | null => {
-					const prettyLabel = collectionLabels.find(
+					const prettyLabel = info.allQualityLabels.find(
 						(collectionLabel) => collectionLabel.value === labelObj.label
 					);
 					return prettyLabel?.description || '';
@@ -868,6 +864,6 @@ export function renderCollectionOverviewColumnsText(
 			return collection?.owner?.profile?.organisation?.name || '';
 
 		default:
-			return truncateTableValue((collection as any)[columnId]);
+			return (collection as any)[columnId];
 	}
 }

@@ -8,6 +8,7 @@ import { type DefaultSecureRouteProps } from '../../../authentication/components
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
+import { OrderDirection } from '../../../search/search.const';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
@@ -70,7 +71,7 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 					tableState.page || 0,
 					// We need to substitute page with page_id, because the filter table state already contains a prop "page" for pagination
 					(tableState.sort_column || 'created_at').replace('page_id', 'page') as any,
-					tableState.sort_order || 'desc',
+					tableState.sort_order || OrderDirection.desc,
 					generateWhereObject(tableState)
 				);
 			setInteractiveTours(interactiveToursTemp);

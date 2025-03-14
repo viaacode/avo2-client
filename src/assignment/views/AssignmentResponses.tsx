@@ -47,8 +47,8 @@ import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
-	type AssignmentOverviewTableColumns,
 	type AssignmentResponseTableColumns,
+	type AssignmentTableColumns,
 	type AssignmentType,
 	type PupilCollectionFragment,
 } from '../assignment.types';
@@ -57,6 +57,7 @@ import { isItemWithMeta } from '../helpers/is-item-with-meta';
 
 import './AssignmentOverview.scss';
 import './AssignmentResponses.scss';
+import { OrderDirection } from '../../search/search.const';
 
 interface AssignmentResponsesProps
 	extends Omit<DefaultSecureRouteProps<{ id: string }>, 'location'> {
@@ -64,7 +65,7 @@ interface AssignmentResponsesProps
 }
 
 const DEFAULT_SORT_COLUMN = 'updated_at';
-const DEFAULT_SORT_ORDER = 'desc';
+const DEFAULT_SORT_ORDER = OrderDirection.desc;
 
 const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 	onUpdate = noop,
@@ -90,7 +91,7 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [filterString, setFilterString] = useState<string>('');
 	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
-		useTableSort<AssignmentOverviewTableColumns>(DEFAULT_SORT_COLUMN, DEFAULT_SORT_ORDER);
+		useTableSort<AssignmentTableColumns>(DEFAULT_SORT_COLUMN, DEFAULT_SORT_ORDER);
 
 	// Modal
 	const [isDeleteAssignmentResponseModalOpen, setDeleteAssignmentResponseModalOpen] =
@@ -123,7 +124,7 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 			setFilterString(query.filter);
 		}
 		if (query.sort_column) {
-			setSortColumn(query.sort_column as AssignmentOverviewTableColumns);
+			setSortColumn(query.sort_column as AssignmentTableColumns);
 		}
 		if (query.sort_order) {
 			setSortOrder(query.sort_order as Avo.Search.OrderDirection);
@@ -149,7 +150,7 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 
 	const handleSortOrderChange = (columnId: string) => {
 		const { sortColumn: newSortColumn, sortOrder: newSortOrder } = handleColumnClick(
-			columnId as AssignmentOverviewTableColumns
+			columnId as AssignmentTableColumns
 		);
 
 		let newQuery: any = cloneDeep(query);

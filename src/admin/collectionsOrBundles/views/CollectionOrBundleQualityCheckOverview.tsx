@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet';
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
+import { OrderDirection } from '../../../search/search.const';
 import {
 	type CheckboxOption,
 	LoadingErrorLoadedComponent,
@@ -44,8 +45,8 @@ import {
 	EditorialType,
 } from '../collections-or-bundles.types';
 import {
-	renderCollectionOrBundleQualityCheckTableCellReact,
-	renderCollectionOrBundleQualityCheckTableCellText,
+	renderCollectionOrBundleQualityCheckCellReact,
+	renderCollectionOrBundleQualityCheckCellText,
 } from '../helpers/render-collection-columns';
 
 const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
@@ -68,7 +69,7 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
 	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
-	const [collectionLabels] = useQualityLabels(true);
+	const { data: allQualityLabels } = useQualityLabels();
 	const [organisations] = useCompaniesWithUsers();
 
 	// computed
@@ -100,7 +101,7 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 				),
 				checked: ((tableState?.collection_labels || []) as string[]).includes(NULL_FILTER),
 			},
-			...collectionLabels.map(
+			...(allQualityLabels || []).map(
 				(option): CheckboxOption => ({
 					id: String(option.value),
 					label: option.description,
@@ -110,7 +111,7 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 				})
 			),
 		],
-		[collectionLabels, tText, tableState]
+		[allQualityLabels, tText, tableState]
 	);
 
 	const organisationOptions = useMemo(
@@ -173,7 +174,7 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
 					(tableState.sort_column || 'updated_at') as CollectionSortProps,
-					tableState.sort_order || 'desc',
+					tableState.sort_order || OrderDirection.desc,
 					getFilters(tableState),
 					EditorialType.QUALITY_CHECK,
 					isCollection,
@@ -291,12 +292,14 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={(collection: any, columnId: string): ReactNode =>
-						renderCollectionOrBundleQualityCheckTableCellReact(
+						renderCollectionOrBundleQualityCheckCellReact(
 							collection,
 							columnId as CollectionOrBundleQualityCheckOverviewTableCols,
 							{
 								isCollection,
-								collectionLabels,
+								allQualityLabels: allQualityLabels || [],
+								editStatuses: [],
+								commonUser,
 							}
 						)
 					}
@@ -358,7 +361,7 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 							0,
 							0,
 							(tableState.sort_column || 'created_at') as CollectionSortProps,
-							tableState.sort_order || 'desc',
+							tableState.sort_order || OrderDirection.desc,
 							getFilters(tableState),
 							EditorialType.QUALITY_CHECK,
 							isCollection,
@@ -371,7 +374,7 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 							offset,
 							limit,
 							(tableState.sort_column || 'created_at') as CollectionSortProps,
-							tableState.sort_order || 'desc',
+							tableState.sort_order || OrderDirection.desc,
 							getFilters(tableState),
 							EditorialType.QUALITY_CHECK,
 							isCollection,
@@ -380,10 +383,15 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 						return response.collections;
 					}}
 					renderValue={(value: any, columnId: string) =>
-						renderCollectionOrBundleQualityCheckTableCellText(
+						renderCollectionOrBundleQualityCheckCellText(
 							value as any,
 							columnId as CollectionOrBundleQualityCheckOverviewTableCols,
-							{ collectionLabels }
+							{
+								isCollection,
+								allQualityLabels: allQualityLabels || [],
+								editStatuses: [],
+								commonUser,
+							}
 						)
 					}
 					columns={tableColumnListToCsvColumnList(tableColumns)}

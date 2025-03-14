@@ -61,6 +61,7 @@ import {
 	DEFAULT_SORT_ORDER,
 	GET_SEARCH_ORDER_OPTIONS,
 	ITEMS_PER_PAGE,
+	OrderDirection,
 	SearchFilter,
 	type SearchOrderProperty,
 } from '../search.const';
@@ -104,7 +105,7 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	const [searchTerms, setSearchTerms] = useState('');
 	const [bookmarkStatuses, setBookmarkStatuses] = useState<BookmarkStatusLookup | null>(null);
 
-	const [qualityLabels] = useQualityLabels(
+	const { data: allQualityLabels } = useQualityLabels(
 		!enabledFilters || enabledFilters?.includes('collectionLabel')
 	);
 
@@ -119,7 +120,7 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	};
 
 	const defaultOrder = `${filterState.orderProperty || 'relevance'}_${
-		filterState.orderDirection || 'desc'
+		filterState.orderDirection || OrderDirection.desc
 	}`;
 	const hasFilters = !isEqual(filterState.filters, DEFAULT_FILTER_STATE);
 	const resultStart = (filterState.page || 0) * ITEMS_PER_PAGE + 1;
@@ -152,7 +153,7 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 			//  Scroll to the first search result
 			window.scrollTo(0, 0);
 		}
-	}, [searchResults]);
+	}, [enabledTypeOptions, searchResults]);
 
 	/**
 	 * Update the search results when the filterState or the currentPage changes
@@ -188,7 +189,7 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 			cleanupFilterState(copiedFilterState).filters,
 			{}
 		);
-	}, [filterState, search]);
+	}, [enabledTypeOptions, filterState, search]);
 
 	const updateSearchTerms = useCallback(() => {
 		const query = filterState?.filters?.query ?? '';
@@ -314,7 +315,11 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	};
 
 	const handleTagClicked = (tagId: string) => {
-		if (qualityLabels.find((label) => label.value.toLowerCase() === tagId.toLowerCase())) {
+		if (
+			(allQualityLabels || []).find(
+				(label) => label.value.toLowerCase() === tagId.toLowerCase()
+			)
+		) {
 			setFilterState(
 				{
 					...filterState,
@@ -455,7 +460,7 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 				}
 				loading={searchResultsLoading}
 				bookmarkStatuses={bookmarkStatuses}
-				qualityLabels={qualityLabels}
+				qualityLabels={allQualityLabels || []}
 				navigateUserRequestForm={navigateToItemRequestForm}
 				bookmarkButtons={bookmarks}
 				renderDetailLink={renderDetailLink}
@@ -519,7 +524,7 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 							handleFilterFieldChange={handleFilterFieldChange}
 							multiOptions={multiOptions}
 							enabledFilters={enabledFilters}
-							collectionLabels={qualityLabels}
+							collectionLabels={allQualityLabels || []}
 						/>
 					</Spacer>
 				</Container>

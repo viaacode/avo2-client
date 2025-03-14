@@ -99,21 +99,31 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 
 	const handlePublish = async () => {
 		if (!klascementImageUrl) {
-			setKlascementImageUrlError(tText('Gelieve een afbeelding te uploaden'));
+			setKlascementImageUrlError(
+				tText(
+					'collection/components/collection-or-bundle-edit-marcom___gelieve-een-afbeelding-te-uploaden'
+				)
+			);
 			return;
 		} else {
 			setKlascementImageUrlError(null);
 		}
 		if (!klascementAltText) {
 			setKlascementAltTextError(
-				tText('gelieve een alternatieve tekst in te vullen voor de afbeelding')
+				tText(
+					'collection/components/collection-or-bundle-edit-marcom___gelieve-een-alternatieve-tekst-in-te-vullen-voor-de-afbeelding'
+				)
 			);
 			return;
 		} else {
 			setKlascementAltTextError(null);
 		}
 		if (!klascementSourceText) {
-			setKlascementSourceTextError(tText('gelieve de bron van de afbeelding in te vullen'));
+			setKlascementSourceTextError(
+				tText(
+					'collection/components/collection-or-bundle-edit-marcom___gelieve-de-bron-van-de-afbeelding-in-te-vullen'
+				)
+			);
 			return;
 		} else {
 			setKlascementSourceTextError(null);
@@ -125,9 +135,17 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 				altText: klascementAltText,
 				sourceText: klascementSourceText,
 			});
-			ToastService.success(tText('Publiceren naar klascement gelukt'));
+			ToastService.success(
+				tText(
+					'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement-gelukt'
+				)
+			);
 		} catch (err) {
-			ToastService.danger(tText('Publiceren naar klascement mislukt'));
+			ToastService.danger(
+				tText(
+					'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement-mislukt'
+				)
+			);
 		}
 	};
 
@@ -431,16 +449,22 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 							/>
 						</FormGroup>
 						<BlockHeading type="h3" className="u-padding-top-xl u-padding-bottom">
-							{tText('Publiceren naar Klascement')}
+							{tText(
+								'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement'
+							)}
 						</BlockHeading>
 						<Grid>
 							<Column size="3-6">
 								<FormGroup
-									label={tText('Afbeelding voor de embed code')}
+									label={tText(
+										'collection/components/collection-or-bundle-edit-marcom___afbeelding-voor-de-embed-code'
+									)}
 									error={klascementImageUrlError}
 								>
 									<FileUpload
-										label={tText('Upload een afbeelding')}
+										label={tText(
+											'collection/components/collection-or-bundle-edit-marcom___upload-een-afbeelding'
+										)}
 										urls={compact([klascementImageUrl])}
 										allowMulti={false}
 										assetType="KLASCEMENT_VIDEO_IMAGE"
@@ -455,7 +479,9 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 									/>
 								</FormGroup>
 								<FormGroup
-									label={tText('Alternatieve tekst voor de afbeelding')}
+									label={tText(
+										'collection/components/collection-or-bundle-edit-marcom___alternatieve-tekst-voor-de-afbeelding'
+									)}
 									error={klascementAltTextError}
 								>
 									<TextInput
@@ -464,7 +490,9 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 									/>
 								</FormGroup>
 								<FormGroup
-									label={tText('Bron van de afbeelding')}
+									label={tText(
+										'collection/components/collection-or-bundle-edit-marcom___bron-van-de-afbeelding'
+									)}
 									error={klascementSourceTextError}
 								>
 									<TextInput
@@ -473,7 +501,9 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 									/>
 								</FormGroup>
 								<Button
-									label={tText('Publiceer naar klascement')}
+									label={tText(
+										'collection/components/collection-or-bundle-edit-marcom___publiceer-naar-klascement'
+									)}
 									icon={IconName.klascement}
 									type="primary"
 									disabled={

@@ -1,3 +1,5 @@
+import { OrderDirection } from '../../search/search.const';
+
 export type QuickLaneColumn =
 	| 'title'
 	| 'created_at'
@@ -9,5 +11,5 @@ export type QuickLaneColumn =
 
 export const QUICK_LANE_DEFAULTS = {
 	sort_column: 'created_at',
-	sort_order: 'desc',
+	sort_order: OrderDirection.desc,
 };

@@ -1,10 +1,10 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { createBrowserHistory } from 'history';
 import { isEqual, noop, uniq } from 'lodash-es';
 import { wrapHistory } from 'oaf-react-router';
-import React, { type FC, useEffect, useState } from 'react';
+import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 import { connect, Provider } from 'react-redux';
 import {
 	Route,
@@ -204,7 +204,16 @@ const AppWithRouter = compose(
 
 let confirmUnsavedChangesCallback: ((navigateAway: boolean) => void) | null;
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+	queryCache: new QueryCache({
+		onError: (error, query) => {
+			if (query.meta?.errorMessage) {
+				console.error(error);
+				ToastService.danger(query.meta.errorMessage as ReactNode | string);
+			}
+		},
+	}),
+});
 
 const Root: FC = () => {
 	const { tText, tHtml } = useTranslation();

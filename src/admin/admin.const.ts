@@ -223,21 +223,21 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 							label: tText('admin/admin___actualisatie'),
 							location: ADMIN_PATH.COLLECTION_ACTUALISATION_OVERVIEW,
 							target: '_self',
-							key: 'collections',
+							key: 'collections-actualisation',
 							exact: false,
 						},
 						{
 							label: tText('admin/admin___kwaliteitscontrole'),
 							location: ADMIN_PATH.COLLECTION_QUALITYCHECK_OVERVIEW,
 							target: '_self',
-							key: 'collections',
+							key: 'collections-quality-check',
 							exact: false,
 						},
 						{
 							label: tText('admin/admin___marcom'),
 							location: ADMIN_PATH.COLLECTION_MARCOM_OVERVIEW,
 							target: '_self',
-							key: 'collections',
+							key: 'collections-marcom',
 							exact: false,
 						},
 					]
@@ -260,21 +260,21 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 							label: tText('admin/admin___actualisatie'),
 							location: ADMIN_PATH.BUNDLE_ACTUALISATION_OVERVIEW,
 							target: '_self',
-							key: 'collections',
+							key: 'bundels-actualisation',
 							exact: false,
 						},
 						{
 							label: tText('admin/admin___kwaliteitscontrole'),
 							location: ADMIN_PATH.BUNDLE_QUALITYCHECK_OVERVIEW,
 							target: '_self',
-							key: 'collections',
+							key: 'bundels-quality-check',
 							exact: false,
 						},
 						{
 							label: tText('admin/admin___marcom'),
 							location: ADMIN_PATH.BUNDLE_MARCOM_OVERVIEW,
 							target: '_self',
-							key: 'collections',
+							key: 'bundels-marcom',
 							exact: false,
 						},
 					]
@@ -288,6 +288,20 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			key: 'assignments',
 			exact: false,
 			subLinks: [
+				...hasPermissions(
+					[PermissionName.VIEW_ASSIGNMENT_EDITORIAL_OVERVIEWS],
+					'OR',
+					userPermissions,
+					[
+						{
+							label: tText('admin/admin___marcom'),
+							location: ADMIN_PATH.ASSIGNMENTS_MARCOM_OVERVIEW,
+							target: '_self',
+							key: 'assignments-marcom',
+							exact: false,
+						},
+					]
+				),
 				...hasPermissions(
 					[PermissionName.VIEW_ANY_PUPIL_COLLECTIONS],
 					'OR',

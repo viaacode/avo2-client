@@ -30,7 +30,9 @@ const Admin: FC<{ commonUser: Avo.User.CommonUser }> = ({ commonUser }) => {
 			const tempUserPermissions = commonUser?.permissions || [];
 			setUserPermissions(tempUserPermissions);
 			GET_NAV_ITEMS(tempUserPermissions)
-				.then(setNavigationItems)
+				.then((navItems) => {
+					setNavigationItems(navItems);
+				})
 				.catch((err: any) => {
 					console.error(new CustomError('Failed to get nav items', err));
 					ToastService.danger(

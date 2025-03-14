@@ -7,7 +7,7 @@ import { type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { AssignmentService } from '../../../assignment/assignment.service';
-import { type AssignmentOverviewTableColumns } from '../../../assignment/assignment.types';
+import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
 import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetAssignmentsEditStatuses';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
@@ -55,11 +55,11 @@ import {
 	ITEMS_PER_PAGE,
 } from '../assignments.const';
 import { AssignmentsBulkAction, type AssignmentsOverviewTableState } from '../assignments.types';
-import {
-	renderAssignmentOverviewTableCellReact,
-	renderAssignmentOverviewTableCellText,
-} from '../helpers/assignment-overview-render-table-cells';
 import './AssignmentsOverviewAdmin.scss';
+import {
+	renderAssignmentOverviewCellReact,
+	renderAssignmentsMarcomCellText,
+} from '../helpers/render-assignment-columns';
 
 const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
@@ -69,7 +69,7 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<AssignmentsOverviewTableState>>({
 		sort_column: 'created_at',
-		sort_order: 'desc',
+		sort_order: OrderDirection.desc,
 	});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] = useState(false);
@@ -82,7 +82,8 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 	const [selectedBulkAction, setSelectedBulkAction] = useState<AssignmentsBulkAction | null>(
 		null
 	);
-	const [qualityLabels] = useQualityLabels(true);
+
+	const { data: allQualityLabels } = useQualityLabels();
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
 	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
@@ -123,7 +124,7 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 				label: tText('admin/assignments/views/assignments-overview-admin___geen-label'),
 				checked: (tableState.quality_labels || []).includes(NULL_FILTER),
 			},
-			...qualityLabels.map(
+			...(allQualityLabels || []).map(
 				(option): CheckboxOption => ({
 					id: String(option.value),
 					label: option.description,
@@ -131,7 +132,7 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 				})
 			),
 		],
-		[qualityLabels, tText, tableState]
+		[allQualityLabels, tText, tableState]
 	);
 
 	const tableColumns = useMemo(
@@ -342,8 +343,8 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 				await AssignmentService.fetchAssignmentsForAdmin(
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
-					(tableState.sort_column || 'created_at') as AssignmentOverviewTableColumns,
-					tableState.sort_order || 'desc',
+					(tableState.sort_column || 'created_at') as AssignmentTableColumns,
+					tableState.sort_order || OrderDirection.desc,
 					getColumnDataType(),
 					generateWhereObject(getFilters(tableState))
 				);
@@ -577,12 +578,13 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 					data={assignments}
 					dataCount={assignmentCount}
 					renderCell={(rowData: Partial<Avo.Assignment.Assignment>, columnId: string) =>
-						renderAssignmentOverviewTableCellReact(
+						renderAssignmentOverviewCellReact(
 							rowData,
-							columnId as AssignmentOverviewTableColumns,
+							columnId as AssignmentTableColumns,
 							{
+								allQualityLabels: allQualityLabels || [],
 								editStatuses,
-								commonUser: commonUser as Avo.User.CommonUser,
+								commonUser: commonUser,
 							}
 						)
 					}
@@ -707,9 +709,8 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 						const response = await AssignmentService.fetchAssignmentsForAdmin(
 							0,
 							0,
-							(tableState.sort_column ||
-								'created_at') as AssignmentOverviewTableColumns,
-							tableState.sort_order || 'desc',
+							(tableState.sort_column || 'created_at') as AssignmentTableColumns,
+							tableState.sort_order || OrderDirection.desc,
 							getColumnDataType(),
 							{}
 						);
@@ -719,18 +720,22 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 						const response = await AssignmentService.fetchAssignmentsForAdmin(
 							offset,
 							limit,
-							(tableState.sort_column ||
-								'created_at') as AssignmentOverviewTableColumns,
-							tableState.sort_order || 'desc',
+							(tableState.sort_column || 'created_at') as AssignmentTableColumns,
+							tableState.sort_order || OrderDirection.desc,
 							getColumnDataType(),
 							{}
 						);
 						return response[0];
 					}}
 					renderValue={(value: any, columnId: string) =>
-						renderAssignmentOverviewTableCellText(
+						renderAssignmentsMarcomCellText(
 							value as any,
-							columnId as AssignmentOverviewTableColumns
+							columnId as AssignmentTableColumns,
+							{
+								allQualityLabels: allQualityLabels || [],
+								editStatuses,
+								commonUser,
+							}
 						)
 					}
 					columns={tableColumnListToCsvColumnList(tableColumns)}
