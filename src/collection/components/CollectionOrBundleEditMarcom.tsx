@@ -40,8 +40,8 @@ import {
 import { CollectionService } from '../collection.service';
 import {
 	CollectionCreateUpdateTab,
+	type CollectionMarcomEntry,
 	ContentTypeNumber,
-	type MarcomEntry,
 } from '../collection.types';
 import { usePublishCollectionToKlascement } from '../hooks/usePublishCollectionToKlascement';
 
@@ -68,7 +68,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 	const [marcomChannelType, setMarcomChannelType] = useState<string | null>();
 	const [marcomChannelName, setMarcomChannelName] = useState<string | null>();
 	const [marcomLink, setMarcomLink] = useState<string>('');
-	const [marcomEntries, setMarcomEntries] = useState<MarcomEntry[] | null>(null);
+	const [marcomEntries, setMarcomEntries] = useState<CollectionMarcomEntry[] | null>(null);
 
 	const [klascementImageUrl, setKlascementImageUrl] = useState<string | null>();
 	const [klascementAltText, setKlascementAltText] = useState<string | undefined>();
@@ -155,10 +155,10 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 	}, [fetchMarcomEntries]);
 
 	const renderMarcomTableCell = (
-		rowData: Partial<MarcomEntry>,
-		columnId: keyof MarcomEntry | typeof ACTIONS_TABLE_COLUMN_ID
+		rowData: Partial<CollectionMarcomEntry>,
+		columnId: keyof CollectionMarcomEntry | typeof ACTIONS_TABLE_COLUMN_ID
 	): ReactNode => {
-		const value = get(rowData, columnId);
+		const value = (rowData as any)?.[columnId];
 		switch (columnId) {
 			case 'publish_date':
 				return formatDate(value) || '-';
@@ -280,7 +280,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 		}
 	};
 
-	const deleteMarcomEntry = async (marcomEntry: Partial<MarcomEntry>) => {
+	const deleteMarcomEntry = async (marcomEntry: Partial<CollectionMarcomEntry>) => {
 		try {
 			if (marcomEntry.id) {
 				if (!isCollection) {

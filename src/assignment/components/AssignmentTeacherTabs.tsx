@@ -81,6 +81,15 @@ const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps
 							},
 					  ]
 					: []),
+				...(showAdminTab
+					? [
+							{
+								id: ASSIGNMENT_CREATE_UPDATE_TABS.MARCOM,
+								label: tText('Communicatie'),
+								icon: IconName.send as IconName,
+							},
+					  ]
+					: []),
 			].map((item) => ({
 				...item,
 				active: item.id === activeTab,

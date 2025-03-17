@@ -109,6 +109,7 @@ import { type AssignmentFields } from '../hooks/assignment-form';
 import { useEducationLevelModal } from '../hooks/use-education-level-modal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
+import AssignmentEditMarcom from './AssignmentEditMarcom';
 import AssignmentResponses from './AssignmentResponses';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
@@ -502,6 +503,11 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 					setIsSaving(false);
 					return;
 				}
+
+				const marcomNote = ((assignment as any).marcom_note || '') as string;
+				delete (assignment as any).marcom_note;
+				AssignmentService.insertOrUpdateMarcomNote(assignmentId, marcomNote); // Do not wait for note to be updated
+
 				const created = await AssignmentService.insertAssignment(
 					{
 						...assignment,
@@ -930,6 +936,14 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 			case ASSIGNMENT_CREATE_UPDATE_TABS.ADMIN:
 				return (
 					<AssignmentAdminFormEditable
+						assignment={assignment}
+						setAssignment={handleAssignmentFieldUpdate}
+					/>
+				);
+
+			case ASSIGNMENT_CREATE_UPDATE_TABS.MARCOM:
+				return (
+					<AssignmentEditMarcom
 						assignment={assignment}
 						setAssignment={handleAssignmentFieldUpdate}
 					/>

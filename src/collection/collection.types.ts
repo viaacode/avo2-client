@@ -1,7 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 
 import {
-	type GetCollectionMarcomEntriesQuery,
 	type GetPublicCollectionsByIdQuery,
 	type GetPublicCollectionsByTitleQuery,
 } from '../shared/generated/graphql-db-operations';
@@ -95,7 +94,23 @@ export enum CollectionCreateUpdateTab {
 	MARCOM = 'communicatie',
 }
 
-export type MarcomEntry = GetCollectionMarcomEntriesQuery['app_collection_marcom_log'][0];
+export interface MarcomEntryBase {
+	channel_name?: string | null;
+	channel_type?: string | null;
+	external_link?: string | null;
+	publish_date?: string | null;
+	parent_collection?: { id: any; title: string } | null;
+}
+
+export interface AssignmentMarcomEntry extends MarcomEntryBase {
+	id?: string;
+	assignment_id: string;
+}
+
+export interface CollectionMarcomEntry extends MarcomEntryBase {
+	id?: number;
+	collection_id: string;
+}
 
 export interface BlockItemComponent {
 	block?: Avo.Core.BlockItemBase;

@@ -145,9 +145,9 @@ import {
 } from './collection.helpers';
 import {
 	type Collection,
+	type CollectionMarcomEntry,
 	CollectionOrBundle,
 	ContentTypeNumber,
-	type MarcomEntry,
 	type ParentBundle,
 	type QualityLabel,
 } from './collection.types';
@@ -1442,12 +1442,13 @@ export class CollectionService {
 		}
 	}
 
-	static async getMarcomEntries(collectionUuid: string): Promise<MarcomEntry[]> {
+	static async getMarcomEntries(collectionUuid: string): Promise<CollectionMarcomEntry[]> {
 		let variables: GetCollectionMarcomEntriesQueryVariables | undefined = undefined;
 		try {
 			variables = {
 				collectionUuid,
 			};
+			// TODO replace these graphql queries with endpoints in the backend
 			const response = await dataService.query<
 				GetCollectionMarcomEntriesQuery,
 				GetCollectionMarcomEntriesQueryVariables
@@ -1520,7 +1521,9 @@ export class CollectionService {
 		}
 	}
 
-	static async deleteMarcomEntryByParentId(marcomEntry: Partial<MarcomEntry>): Promise<void> {
+	static async deleteMarcomEntryByParentId(
+		marcomEntry: Partial<CollectionMarcomEntry>
+	): Promise<void> {
 		try {
 			if (!marcomEntry.publish_date) {
 				return; // Can't delete entries without a date

@@ -9,7 +9,7 @@ import { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import { AssignmentsAdminService } from '../assignments.admin.service';
 import { type AssignmentMarcomTableState, type AssignmentSortProps } from '../assignments.types';
 
-export const useGetAssignmentsWithMarcom = (
+export const useGetAssignmentsWithMarcomForAdminOverview = (
 	tableState: Partial<AssignmentMarcomTableState>,
 	options: {
 		enabled?: boolean;

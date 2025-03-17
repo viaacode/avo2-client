@@ -239,6 +239,7 @@ export enum ASSIGNMENT_CREATE_UPDATE_TABS {
 	PUBLISH = 'publicatiedetails',
 	CLICKS = 'kliks',
 	ADMIN = 'beheer',
+	MARCOM = 'communicatie',
 }
 
 export enum ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS {

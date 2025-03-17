@@ -5,6 +5,7 @@ import { stringifyUrl } from 'query-string';
 
 import { ItemsService } from '../admin/items/items.service';
 import { CollectionService } from '../collection/collection.service';
+import { type AssignmentMarcomEntry } from '../collection/collection.types';
 import { type ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
 import {
@@ -1545,5 +1546,64 @@ export class AssignmentService {
 				assignmentId,
 			});
 		}
+	}
+
+	public static async getMarcomEntries(assignmentUuid: string): Promise<AssignmentMarcomEntry[]> {
+		let url: string | undefined = undefined;
+		try {
+			url = stringifyUrl({
+				url: `${getEnv('PROXY_URL')}/assignments/${assignmentUuid}/marcom`,
+			});
+			const response = await fetchWithLogoutJson<AssignmentMarcomEntry[]>(url, {
+				method: 'GET',
+			});
+
+			return response || [];
+		} catch (err) {
+			throw new CustomError('Fetch assignment marcom entries from the database failed', err, {
+				url,
+				assignmentUuid,
+			});
+		}
+	}
+
+	public static async insertMarcomEntry(marcomEntry: AssignmentMarcomEntry): Promise<string> {
+		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			return await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/assignments/${marcomEntry.assignment_id}/marcom`,
+				{ method: 'POST', body: JSON.stringify(marcomEntry) }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to insert a marcom entry for assignment', err, {
+				marcomEntry,
+			});
+		}
+	}
+
+	public static async deleteMarcomEntry(
+		assignmentId: string,
+		marcomEntryId: string | undefined
+	): Promise<void> {
+		if (isNil(marcomEntryId)) {
+			return;
+		}
+		let url: string | undefined = undefined;
+		try {
+			url = `${getEnv('PROXY_URL')}/assignments/${assignmentId}/marcom/${marcomEntryId}`;
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			return await fetchWithLogoutJson(url, { method: 'DELETE' });
+		} catch (err) {
+			throw new CustomError('Failed to delete a marcom entry for the database', err, {
+				assignmentId,
+				marcomEntryId,
+				url,
+			});
+		}
+	}
+
+	public static async insertOrUpdateMarcomNote(assignmentId: string, marcomNote: string) {
+		// TODO call the backend to insert the marcom note, create backend route
+		throw new Error('not yet implemented: ' + JSON.stringify({ assignmentId, marcomNote }));
 	}
 }

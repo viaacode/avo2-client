@@ -38,14 +38,14 @@ import {
 	renderAssignmentMarcomCellReact,
 	renderAssignmentsMarcomCellText,
 } from '../helpers/render-assignment-columns';
-import { useGetAssignmentsWithMarcom } from '../hooks/useGetAssignmentsWithMarcom';
+import { useGetAssignmentsWithMarcomForAdminOverview } from '../hooks/useGetAssignmentsWithMarcomForAdminOverview';
 
 const AssignmentMarcomOverview: FC<UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [tableState, setTableState] = useState<Partial<AssignmentMarcomTableState>>({});
 	const { data: assignmentsWithMarcom, isLoading: isLoadingAssignments } =
-		useGetAssignmentsWithMarcom(tableState);
+		useGetAssignmentsWithMarcomForAdminOverview(tableState);
 	const assignments = assignmentsWithMarcom?.assignments;
 	const assignmentCount = assignmentsWithMarcom?.total;
 	const [isLoadingAssignmentIds, setIsLoadingAssignmentIds] = useState<boolean>(false);
