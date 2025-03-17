@@ -18,7 +18,7 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact, get, uniq } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { Link, type RouteComponentProps } from 'react-router-dom';
@@ -58,6 +58,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 	collection,
 	changeCollectionState,
 	onFocus,
+	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -329,193 +330,220 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 		}
 	};
 
+	const renderExistingMarcomEntries = () => {
+		return (
+			<>
+				<BlockHeading type="h3" className="u-padding-top u-padding-bottom">
+					{tText(
+						'collection/components/collection-or-bundle-edit-marcom___eerdere-communicatie'
+					)}
+				</BlockHeading>
+				{marcomEntries ? (
+					<>
+						<Table
+							data={marcomEntries}
+							columns={GET_MARCOM_ENTRY_TABLE_COLUMNS(isCollection)}
+							renderCell={renderMarcomTableCell as any}
+							emptyStateMessage={getEmptyMarcomTableMessage()}
+							rowKey="id"
+						/>
+					</>
+				) : (
+					<Spacer margin={['top-large', 'bottom-large']}>
+						<Flex center>
+							<Spinner size="large" />
+						</Flex>
+					</Spacer>
+				)}
+			</>
+		);
+	};
+
+	const renderCreateNewMarcomEntryForm = () => {
+		return (
+			<>
+				<BlockHeading type="h3">
+					{tText(
+						'collection/components/collection-or-bundle-edit-marcom___meest-recente-communicatie'
+					)}
+				</BlockHeading>
+				<Flex justify="between" spaced="wide">
+					<FlexItem>
+						<FormGroup
+							label={tText(
+								'collection/components/collection-or-bundle-edit-marcom___datum-communicatie'
+							)}
+						>
+							<DatePicker onChange={setMarcomDate} value={marcomDate} />
+						</FormGroup>
+					</FlexItem>
+					<FlexItem>
+						<FormGroup
+							label={tText(
+								'collection/components/collection-or-bundle-edit-marcom___kanaal-type'
+							)}
+						>
+							<Select
+								options={GET_MARCOM_CHANNEL_TYPE_OPTIONS()}
+								placeholder={'-'}
+								onChange={setMarcomChannelType}
+								value={marcomChannelType}
+								clearable
+							/>
+						</FormGroup>
+					</FlexItem>
+					<FlexItem>
+						<FormGroup
+							label={tText(
+								'collection/components/collection-or-bundle-edit-marcom___kanaal-naam'
+							)}
+						>
+							<Select
+								options={GET_MARCOM_CHANNEL_NAME_OPTIONS()}
+								placeholder={'-'}
+								onChange={setMarcomChannelName}
+								value={marcomChannelName}
+								clearable
+							/>
+						</FormGroup>
+					</FlexItem>
+					<FlexItem>
+						<FormGroup
+							label={tText(
+								'collection/components/collection-or-bundle-edit-marcom___link'
+							)}
+						>
+							<TextInput
+								onChange={setMarcomLink}
+								value={marcomLink || undefined}
+								onFocus={onFocus}
+							/>
+						</FormGroup>
+					</FlexItem>
+					<FlexItem>
+						<FormGroup label=" ">
+							<Button
+								label={tText(
+									'collection/components/collection-or-bundle-edit-marcom___toevoegen'
+								)}
+								onClick={addMarcomEntry}
+								type="primary"
+							/>
+						</FormGroup>
+					</FlexItem>
+				</Flex>
+			</>
+		);
+	};
+
+	const renderMarcomRemarksField = () => {
+		return (
+			<FormGroup
+				label={tText(
+					'collection/components/collection-or-bundle-edit-marcom___opmerkingen'
+				)}
+			>
+				<TextArea
+					value={collection?.marcom_note?.note || ''}
+					onChange={(newNote: string) => {
+						changeCollectionState({
+							type: 'UPDATE_COLLECTION_PROP',
+							collectionProp: 'marcom_note',
+							collectionPropValue: {
+								id: collection?.marcom_note?.id || undefined,
+								note: newNote,
+							},
+						});
+					}}
+					onFocus={onFocus}
+				/>
+			</FormGroup>
+		);
+	};
+
+	const renderPublishToKlascementForm = () => {
+		return (
+			<>
+				<BlockHeading type="h3" className="u-padding-top-xl u-padding-bottom">
+					{tText(
+						'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement'
+					)}
+				</BlockHeading>
+				<Grid>
+					<Column size="3-6">
+						<FormGroup
+							label={tText(
+								'collection/components/collection-or-bundle-edit-marcom___afbeelding-voor-de-embed-code'
+							)}
+							error={klascementImageUrlError}
+						>
+							<FileUpload
+								label={tText(
+									'collection/components/collection-or-bundle-edit-marcom___upload-een-afbeelding'
+								)}
+								urls={compact([klascementImageUrl])}
+								allowMulti={false}
+								assetType="KLASCEMENT_VIDEO_IMAGE"
+								allowedDimensions={{
+									minWidth: 680,
+									maxWidth: 680,
+									minHeight: 380,
+									maxHeight: 380,
+								}}
+								ownerId={collection.id}
+								onChange={(urls) => setKlascementImageUrl(urls[0] || null)}
+							/>
+						</FormGroup>
+						<FormGroup
+							label={tText(
+								'collection/components/collection-or-bundle-edit-marcom___alternatieve-tekst-voor-de-afbeelding'
+							)}
+							error={klascementAltTextError}
+						>
+							<TextInput value={klascementAltText} onChange={setKlascementAltText} />
+						</FormGroup>
+						<FormGroup
+							label={tText(
+								'collection/components/collection-or-bundle-edit-marcom___bron-van-de-afbeelding'
+							)}
+							error={klascementSourceTextError}
+						>
+							<TextInput
+								value={klascementSourceText}
+								onChange={setKlascementSourceText}
+							/>
+						</FormGroup>
+						<Button
+							label={tText(
+								'collection/components/collection-or-bundle-edit-marcom___publiceer-naar-klascement'
+							)}
+							icon={IconName.klascement}
+							type="primary"
+							disabled={
+								!collection.is_public || !!collection.klascement || isPublishing
+							}
+							onClick={handlePublish}
+							className="u-color-klascement u-m-t"
+						/>
+					</Column>
+				</Grid>
+			</>
+		);
+	};
+
 	return (
 		<>
 			<Container mode="vertical">
 				<Container mode="horizontal">
 					<Form className="u-m-b-xl">
-						<BlockHeading type="h3">
-							{tText(
-								'collection/components/collection-or-bundle-edit-marcom___meest-recente-communicatie'
-							)}
-						</BlockHeading>
-						<Flex justify="between" spaced="wide">
-							<FlexItem>
-								<FormGroup
-									label={tText(
-										'collection/components/collection-or-bundle-edit-marcom___datum-communicatie'
-									)}
-								>
-									<DatePicker onChange={setMarcomDate} value={marcomDate} />
-								</FormGroup>
-							</FlexItem>
-							<FlexItem>
-								<FormGroup
-									label={tText(
-										'collection/components/collection-or-bundle-edit-marcom___kanaal-type'
-									)}
-								>
-									<Select
-										options={GET_MARCOM_CHANNEL_TYPE_OPTIONS()}
-										placeholder={'-'}
-										onChange={setMarcomChannelType}
-										value={marcomChannelType}
-										clearable
-									/>
-								</FormGroup>
-							</FlexItem>
-							<FlexItem>
-								<FormGroup
-									label={tText(
-										'collection/components/collection-or-bundle-edit-marcom___kanaal-naam'
-									)}
-								>
-									<Select
-										options={GET_MARCOM_CHANNEL_NAME_OPTIONS()}
-										placeholder={'-'}
-										onChange={setMarcomChannelName}
-										value={marcomChannelName}
-										clearable
-									/>
-								</FormGroup>
-							</FlexItem>
-							<FlexItem>
-								<FormGroup
-									label={tText(
-										'collection/components/collection-or-bundle-edit-marcom___link'
-									)}
-								>
-									<TextInput
-										onChange={setMarcomLink}
-										value={marcomLink || undefined}
-										onFocus={onFocus}
-									/>
-								</FormGroup>
-							</FlexItem>
-							<FlexItem>
-								<FormGroup label=" ">
-									<Button
-										label={tText(
-											'collection/components/collection-or-bundle-edit-marcom___toevoegen'
-										)}
-										onClick={addMarcomEntry}
-										type="primary"
-									/>
-								</FormGroup>
-							</FlexItem>
-						</Flex>
+						{renderCreateNewMarcomEntryForm()}
 						<Spacer margin={['top-extra-large', 'bottom-large']}>
-							<BlockHeading type="h3" className="u-padding-top u-padding-bottom">
-								{tText(
-									'collection/components/collection-or-bundle-edit-marcom___eerdere-communicatie'
-								)}
-							</BlockHeading>
-							{marcomEntries ? (
-								<>
-									<Table
-										data={marcomEntries}
-										columns={GET_MARCOM_ENTRY_TABLE_COLUMNS(isCollection)}
-										renderCell={renderMarcomTableCell as any}
-										emptyStateMessage={getEmptyMarcomTableMessage()}
-										rowKey="id"
-									/>
-								</>
-							) : (
-								<Spacer margin={['top-large', 'bottom-large']}>
-									<Flex center>
-										<Spinner size="large" />
-									</Flex>
-								</Spacer>
-							)}
+							{renderExistingMarcomEntries()}
 						</Spacer>
-						<FormGroup
-							label={tText(
-								'collection/components/collection-or-bundle-edit-marcom___opmerkingen'
-							)}
-						>
-							<TextArea
-								value={collection?.marcom_note?.note || ''}
-								onChange={(newNote: string) => {
-									changeCollectionState({
-										type: 'UPDATE_COLLECTION_PROP',
-										collectionProp: 'marcom_note',
-										collectionPropValue: {
-											id: collection?.marcom_note?.id || undefined,
-											note: newNote,
-										},
-									});
-								}}
-								onFocus={onFocus}
-							/>
-						</FormGroup>
-						<BlockHeading type="h3" className="u-padding-top-xl u-padding-bottom">
-							{tText(
-								'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement'
-							)}
-						</BlockHeading>
-						<Grid>
-							<Column size="3-6">
-								<FormGroup
-									label={tText(
-										'collection/components/collection-or-bundle-edit-marcom___afbeelding-voor-de-embed-code'
-									)}
-									error={klascementImageUrlError}
-								>
-									<FileUpload
-										label={tText(
-											'collection/components/collection-or-bundle-edit-marcom___upload-een-afbeelding'
-										)}
-										urls={compact([klascementImageUrl])}
-										allowMulti={false}
-										assetType="KLASCEMENT_VIDEO_IMAGE"
-										allowedDimensions={{
-											minWidth: 680,
-											maxWidth: 680,
-											minHeight: 380,
-											maxHeight: 380,
-										}}
-										ownerId={collection.id}
-										onChange={(urls) => setKlascementImageUrl(urls[0] || null)}
-									/>
-								</FormGroup>
-								<FormGroup
-									label={tText(
-										'collection/components/collection-or-bundle-edit-marcom___alternatieve-tekst-voor-de-afbeelding'
-									)}
-									error={klascementAltTextError}
-								>
-									<TextInput
-										value={klascementAltText}
-										onChange={setKlascementAltText}
-									/>
-								</FormGroup>
-								<FormGroup
-									label={tText(
-										'collection/components/collection-or-bundle-edit-marcom___bron-van-de-afbeelding'
-									)}
-									error={klascementSourceTextError}
-								>
-									<TextInput
-										value={klascementSourceText}
-										onChange={setKlascementSourceText}
-									/>
-								</FormGroup>
-								<Button
-									label={tText(
-										'collection/components/collection-or-bundle-edit-marcom___publiceer-naar-klascement'
-									)}
-									icon={IconName.klascement}
-									type="primary"
-									disabled={
-										!collection.is_public ||
-										!!collection.klascement ||
-										isPublishing
-									}
-									onClick={handlePublish}
-									className="u-color-klascement u-m-t"
-								/>
-							</Column>
-						</Grid>
+						{renderMarcomRemarksField()}
+						{commonUser?.permissions?.includes(
+							PermissionName.PUBLISH_COLLECTION_TO_KLASCEMENT
+						) && renderPublishToKlascementForm()}
 					</Form>
 				</Container>
 			</Container>
