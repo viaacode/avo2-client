@@ -63,7 +63,7 @@ export const DEFAULT_FILTER_STATE: Avo.Search.Filters = {
 
 export const DEFAULT_SORT_ORDER: SortOrder = {
 	orderProperty: 'relevance',
-	orderDirection: 'desc',
+	orderDirection: OrderDirection.desc,
 };
 
 export enum SearchOrderProperty {

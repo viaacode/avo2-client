@@ -5,8 +5,13 @@ import React, { type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
-import { type AssignmentOverviewTableColumns } from '../../../assignment/assignment.types';
+import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
+import {
+	GET_MARCOM_CHANNEL_NAME_OPTIONS,
+	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
+} from '../../../collection/collection.const';
+import { CollectionCreateUpdateTab, type QualityLabel } from '../../../collection/collection.types';
 import { APP_PATH } from '../../../constants';
 import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import { buildLink, formatDate } from '../../../shared/helpers';
@@ -18,17 +23,17 @@ import { tText } from '../../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { ADMIN_PATH } from '../../admin.const';
 
-export function renderAssignmentOverviewTableCellReact(
+export function renderAssignmentOverviewCellReact(
 	assignment: Partial<Avo.Assignment.Assignment>,
-	columnId: AssignmentOverviewTableColumns,
+	columnId: AssignmentTableColumns,
 	info: {
+		allQualityLabels: QualityLabel[];
 		editStatuses: Avo.Share.EditStatusResponse;
-		commonUser: Avo.User.CommonUser;
+		commonUser: Avo.User.CommonUser | undefined | null;
 	}
 ): ReactNode {
-	const { id, created_at, updated_at, deadline_at } = assignment;
 	const editLink = buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
-		id,
+		id: assignment.id,
 		tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 	});
 	const editLinkOriginal = assignment.relations?.[0].object
@@ -49,6 +54,175 @@ export function renderAssignmentOverviewTableCellReact(
 			);
 		}
 
+		case ACTIONS_TABLE_COLUMN_ID: {
+			if (!info.editStatuses) {
+				return null;
+			}
+			const isAssignmentBeingEdited = isContentBeingEdited(
+				info.editStatuses?.[assignment.id as string],
+				info.commonUser?.profileId
+			);
+			const viewButtonTitle = tText(
+				'admin/assignments/views/assignments-overview-admin___bekijk-deze-opdracht'
+			);
+			const editButtonTitle = isAssignmentBeingEdited
+				? tText(
+						'admin/assignments/views/assignments-overview-admin___deze-opdracht-wordt-reeds-bewerkt-door-iemand-anders'
+				  )
+				: tText(
+						'admin/assignments/views/assignments-overview-admin___bewerk-deze-opdracht'
+				  );
+			return (
+				<ButtonToolbar>
+					<Link
+						to={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
+							id: assignment.id,
+						})}
+					>
+						<Button
+							type="secondary"
+							icon={IconName.eye}
+							ariaLabel={viewButtonTitle}
+							title={viewButtonTitle}
+						/>
+					</Link>
+
+					{isAssignmentBeingEdited ? (
+						<Button
+							type="secondary"
+							icon={IconName.edit}
+							ariaLabel={editButtonTitle}
+							title={editButtonTitle}
+							disabled={true}
+						/>
+					) : (
+						<Link to={editLink}>
+							<Button
+								type="secondary"
+								icon={IconName.edit}
+								ariaLabel={editButtonTitle}
+								title={editButtonTitle}
+							/>
+						</Link>
+					)}
+				</ButtonToolbar>
+			);
+		}
+
+		default:
+			return renderAssignmentCellReact(assignment, columnId, info);
+	}
+}
+
+export function renderAssignmentOverviewCellText(
+	assignment: Partial<Avo.Assignment.Assignment>,
+	columnId: AssignmentTableColumns,
+	info: {
+		allQualityLabels: QualityLabel[];
+		editStatuses: Avo.Share.EditStatusResponse;
+		commonUser: Avo.User.CommonUser | undefined | null;
+	}
+): string {
+	switch (columnId) {
+		case 'title': {
+			return assignment.title || '';
+		}
+
+		case ACTIONS_TABLE_COLUMN_ID: {
+			return '';
+		}
+
+		default:
+			return renderAssignmentCellText(assignment, columnId, info);
+	}
+}
+
+export function renderAssignmentMarcomCellReact(
+	assignment: Partial<Avo.Assignment.Assignment>,
+	columnId: AssignmentTableColumns,
+	info: {
+		allQualityLabels: QualityLabel[];
+		editStatuses: Avo.Share.EditStatusResponse;
+		commonUser: Avo.User.CommonUser | undefined | null;
+	}
+) {
+	const editLink = buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+		id: assignment.id,
+		tabId: CollectionCreateUpdateTab.MARCOM,
+	});
+	const editLinkOriginal = assignment.relations?.[0].object
+		? buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+				id: assignment.relations?.[0].object,
+				tabId: CollectionCreateUpdateTab.MARCOM,
+		  })
+		: null;
+
+	switch (columnId) {
+		case 'title': {
+			return (
+				<CollectionOrBundleOrAssignmentTitleAndCopyTag
+					title={assignment.title}
+					editLink={editLink}
+					editLinkOriginal={editLinkOriginal}
+				/>
+			);
+		}
+
+		case ACTIONS_TABLE_COLUMN_ID:
+			return (
+				<ButtonToolbar>
+					<Link to={editLink}>
+						<Button
+							type="secondary"
+							icon={IconName.edit}
+							ariaLabel={tText(
+								'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
+							)}
+							title={tText(
+								'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
+							)}
+						/>
+					</Link>
+				</ButtonToolbar>
+			);
+
+		default:
+			return renderAssignmentOverviewCellReact(assignment, columnId, info);
+	}
+}
+
+export function renderAssignmentsMarcomCellText(
+	assignment: Partial<Avo.Assignment.Assignment>,
+	columnId: AssignmentTableColumns,
+	info: {
+		allQualityLabels: QualityLabel[];
+		editStatuses: Avo.Share.EditStatusResponse;
+		commonUser: Avo.User.CommonUser | undefined | null;
+	}
+): string {
+	switch (columnId) {
+		case 'title': {
+			return assignment.title || '';
+		}
+
+		case ACTIONS_TABLE_COLUMN_ID:
+			return '';
+
+		default:
+			return renderAssignmentCellText(assignment, columnId, info);
+	}
+}
+
+export function renderAssignmentCellReact(
+	assignment: Partial<Avo.Assignment.Assignment>,
+	columnId: AssignmentTableColumns,
+	info: {
+		allQualityLabels: QualityLabel[];
+		editStatuses: Avo.Share.EditStatusResponse;
+		commonUser: Avo.User.CommonUser | undefined | null;
+	}
+): ReactNode {
+	switch (columnId) {
 		case 'author':
 			return truncateTableValue((assignment as any)?.owner?.full_name);
 
@@ -72,13 +246,38 @@ export function renderAssignmentOverviewTableCellReact(
 		}
 
 		case 'created_at':
-			return formatDate(created_at) || '-';
+			return formatDate(assignment.created_at) || '-';
 
 		case 'updated_at':
-			return formatDate(updated_at) || '-';
+			return formatDate(assignment.updated_at) || '-';
 
 		case 'deadline_at':
-			return formatDate(deadline_at) || '-';
+			return formatDate(assignment.deadline_at) || '-';
+
+		case 'assignment_quality_labels': {
+			const labelObjects: { id: number; label: string }[] = (assignment?.quality_labels ||
+				[]) as { id: number; label: string }[];
+
+			const tags: TagOption[] = compact(
+				labelObjects.map((labelObj: any): TagOption | null => {
+					const prettyLabel = info.allQualityLabels.find(
+						(assignmentLabel) => assignmentLabel.value === labelObj.label
+					);
+
+					if (!prettyLabel) {
+						return null;
+					}
+
+					return { label: prettyLabel.description, id: labelObj.id };
+				})
+			);
+
+			if (tags.length) {
+				return <TagList tags={tags} swatches={false} />;
+			}
+
+			return '-';
+		}
 
 		case 'status':
 			return !!assignment.deadline_at &&
@@ -196,77 +395,46 @@ export function renderAssignmentOverviewTableCellReact(
 		case 'contributors':
 			return assignment?.counts?.contributors || '0';
 
-		case ACTIONS_TABLE_COLUMN_ID: {
-			if (!info.editStatuses) {
-				return null;
-			}
-			const isAssignmentBeingEdited = isContentBeingEdited(
-				info.editStatuses?.[assignment.id as string],
-				info.commonUser?.profileId
-			);
-			const viewButtonTitle = tText(
-				'admin/assignments/views/assignments-overview-admin___bekijk-deze-opdracht'
-			);
-			const editButtonTitle = isAssignmentBeingEdited
-				? tText(
-						'admin/assignments/views/assignments-overview-admin___deze-opdracht-wordt-reeds-bewerkt-door-iemand-anders'
-				  )
-				: tText(
-						'admin/assignments/views/assignments-overview-admin___bewerk-deze-opdracht'
-				  );
-			return (
-				<ButtonToolbar>
-					<Link
-						to={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
-							id: assignment.id,
-						})}
-					>
-						<Button
-							type="secondary"
-							icon={IconName.eye}
-							ariaLabel={viewButtonTitle}
-							title={viewButtonTitle}
-						/>
-					</Link>
-
-					{isAssignmentBeingEdited ? (
-						<Button
-							type="secondary"
-							icon={IconName.edit}
-							ariaLabel={editButtonTitle}
-							title={editButtonTitle}
-							disabled={true}
-						/>
-					) : (
-						<Link to={editLink}>
-							<Button
-								type="secondary"
-								icon={IconName.edit}
-								ariaLabel={editButtonTitle}
-								title={editButtonTitle}
-							/>
-						</Link>
-					)}
-				</ButtonToolbar>
+		case 'marcom_last_communication_channel_type': {
+			const channelTypeId = assignment?.channel_type || '';
+			return truncateTableValue(
+				GET_MARCOM_CHANNEL_TYPE_OPTIONS().find((option) => option.value === channelTypeId)
+					?.label
 			);
 		}
+
+		case 'marcom_last_communication_channel_name': {
+			const channelNameId = assignment?.channel_name || '';
+			return truncateTableValue(
+				GET_MARCOM_CHANNEL_NAME_OPTIONS().find((option) => option.value === channelNameId)
+					?.label
+			);
+		}
+
+		case 'marcom_last_communication_at':
+			return formatDate(assignment?.last_marcom_date) || '-';
+
+		case 'marcom_klascement':
+			return assignment?.klascement ? 'Ja' : 'Nee';
+
+		case 'organisation':
+			return assignment?.owner?.profile?.organisation?.name || '-';
 
 		default:
 			return truncateTableValue((assignment as any)[columnId]);
 	}
 }
 
-export function renderAssignmentOverviewTableCellText(
+export function renderAssignmentCellText(
 	assignment: Partial<Avo.Assignment.Assignment>,
-	columnId: AssignmentOverviewTableColumns
+	columnId: AssignmentTableColumns,
+	info: {
+		allQualityLabels: QualityLabel[];
+		editStatuses: Avo.Share.EditStatusResponse;
+		commonUser: Avo.User.CommonUser | undefined | null;
+	}
 ): string {
-	const { created_at, updated_at, deadline_at } = assignment;
-
 	switch (columnId) {
-		case 'title': {
-			return assignment.title || '';
-		}
-
 		case 'author':
 			return (assignment as any)?.owner?.full_name || '';
 
@@ -290,13 +458,26 @@ export function renderAssignmentOverviewTableCellText(
 		}
 
 		case 'created_at':
-			return formatDate(created_at) || '-';
+			return formatDate(assignment.created_at) || '-';
 
 		case 'updated_at':
-			return formatDate(updated_at) || '-';
+			return formatDate(assignment.updated_at) || '-';
 
 		case 'deadline_at':
-			return formatDate(deadline_at) || '-';
+			return formatDate(assignment.deadline_at) || '-';
+
+		case 'assignment_quality_labels': {
+			const labelObjects: { id: number; label: string }[] = (assignment?.quality_labels ||
+				[]) as { id: number; label: string }[];
+			return compact(
+				labelObjects.map((labelObj: any): string | null => {
+					const prettyLabel = info.allQualityLabels.find(
+						(assignmentLabel) => assignmentLabel.value === labelObj.label
+					);
+					return prettyLabel?.description || '';
+				})
+			).join(', ');
+		}
 
 		case 'status':
 			return !!assignment.deadline_at &&
@@ -371,11 +552,32 @@ export function renderAssignmentOverviewTableCellText(
 		case 'contributors':
 			return String(assignment?.counts?.contributors || 0);
 
-		case ACTIONS_TABLE_COLUMN_ID: {
-			return '';
+		case 'marcom_last_communication_channel_type': {
+			const channelTypeId = assignment?.channel_type || '';
+			return (
+				GET_MARCOM_CHANNEL_TYPE_OPTIONS().find((option) => option.value === channelTypeId)
+					?.label || ''
+			);
 		}
 
+		case 'marcom_last_communication_channel_name': {
+			const channelNameId = assignment?.channel_name || '';
+			return truncateTableValue(
+				GET_MARCOM_CHANNEL_NAME_OPTIONS().find((option) => option.value === channelNameId)
+					?.label
+			);
+		}
+
+		case 'marcom_last_communication_at':
+			return formatDate(assignment?.last_marcom_date) || '';
+
+		case 'marcom_klascement':
+			return assignment?.klascement ? 'Ja' : 'Nee';
+
+		case 'organisation':
+			return assignment?.owner?.profile?.organisation?.name || '';
+
 		default:
-			return (assignment as any)[columnId] || '';
+			return (assignment as any)[columnId];
 	}
 }

@@ -10,6 +10,7 @@ import { CollectionService } from '../../../collection/collection.service';
 import { useGetCollectionsEditStatuses } from '../../../collection/hooks/useGetCollectionsEditStatuses';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
+import { OrderDirection } from '../../../search/search.const';
 import {
 	type CheckboxOption,
 	LoadingErrorLoadedComponent,
@@ -25,15 +26,11 @@ import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
-import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import AddOrRemoveLinkedElementsModal, {
 	type AddOrRemove,
 } from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
-import FilterTable, {
-	type FilterableColumn,
-	getFilters,
-} from '../../shared/components/FilterTable/FilterTable';
+import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
@@ -54,8 +51,8 @@ import {
 	type CollectionSortProps,
 } from '../collections-or-bundles.types';
 import {
-	renderCollectionsOrBundlesTableCellReact,
-	renderCollectionsOrBundlesTableCellText,
+	renderCollectionsOrBundlesOverviewCellReact,
+	renderCollectionsOrBundlesOverviewCellText,
 } from '../helpers/render-collection-columns';
 
 const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, commonUser }) => {
@@ -85,7 +82,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
 	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
-	const [collectionLabels] = useQualityLabels(true);
+	const { data: allQualityLabels } = useQualityLabels();
 	const [organisations] = useCompaniesWithUsers();
 	const [collectionsBeingEdited, setCollectionsBeingEdited] = useState<Avo.Share.EditStatus[]>(
 		[]
@@ -122,7 +119,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 				),
 				checked: ((tableState?.collection_labels || []) as string[]).includes(NULL_FILTER),
 			},
-			...collectionLabels.map(
+			...(allQualityLabels || []).map(
 				(option): CheckboxOption => ({
 					id: String(option.value),
 					label: option.description,
@@ -132,7 +129,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 				})
 			),
 		],
-		[collectionLabels, tText, tableState]
+		[allQualityLabels, tText, tableState]
 	);
 
 	const organisationOptions = useMemo(
@@ -179,13 +176,6 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 	);
 
 	// methods
-	const getColumnDataType = useCallback(() => {
-		const column = tableColumns.find(
-			(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
-		);
-		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
-	}, [tableColumns, tableState.sort_column]);
-
 	const fetchCollectionsOrBundles = useCallback(async () => {
 		setIsLoading(true);
 
@@ -195,7 +185,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
 					(tableState.sort_column || 'created_at') as CollectionSortProps,
-					tableState.sort_order || 'desc',
+					tableState.sort_order || OrderDirection.desc,
 					getFilters(tableState),
 					isCollection,
 					true
@@ -221,7 +211,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 		}
 
 		setIsLoading(false);
-	}, [tableState, getColumnDataType, isCollection, tText]);
+	}, [tableState, isCollection, tText]);
 
 	useEffect(() => {
 		if (commonUser && educationLevelsAndDegrees?.length) {
@@ -537,12 +527,12 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={(collection: any, columnId: string) =>
-						renderCollectionsOrBundlesTableCellReact(
+						renderCollectionsOrBundlesOverviewCellReact(
 							collection as Avo.Collection.Collection,
 							columnId as CollectionsOrBundlesOverviewTableCols,
 							{
 								isCollection,
-								collectionLabels,
+								allQualityLabels: allQualityLabels || [],
 								editStatuses,
 								commonUser,
 							}
@@ -628,7 +618,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 					)}
 					isOpen={changeLabelsModalOpen}
 					onClose={() => setAddLabelModalOpen(false)}
-					labels={collectionLabels.map((labelObj) => ({
+					labels={(allQualityLabels || []).map((labelObj) => ({
 						label: labelObj.description,
 						value: labelObj.value,
 					}))}
@@ -662,7 +652,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 							0,
 							0,
 							(tableState.sort_column || 'created_at') as CollectionSortProps,
-							tableState.sort_order || 'desc',
+							tableState.sort_order || OrderDirection.desc,
 							getFilters(tableState),
 							isCollection,
 							false
@@ -674,7 +664,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 							offset,
 							limit,
 							(tableState.sort_column || 'created_at') as CollectionSortProps,
-							tableState.sort_order || 'desc',
+							tableState.sort_order || OrderDirection.desc,
 							getFilters(tableState),
 							isCollection,
 							false
@@ -682,10 +672,15 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 						return response.collections;
 					}}
 					renderValue={(value: any, columnId: string) =>
-						renderCollectionsOrBundlesTableCellText(
+						renderCollectionsOrBundlesOverviewCellText(
 							value as any,
 							columnId as CollectionsOrBundlesOverviewTableCols,
-							{ collectionLabels }
+							{
+								isCollection,
+								allQualityLabels: allQualityLabels || [],
+								editStatuses,
+								commonUser,
+							}
 						)
 					}
 					columns={tableColumnListToCsvColumnList(tableColumns)}

@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
+import { OrderDirection } from '../../../search/search.const';
 import {
 	type CheckboxOption,
 	LoadingErrorLoadedComponent,
@@ -163,7 +164,7 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 				(tableState.page || 0) * ITEMS_PER_PAGE,
 				ITEMS_PER_PAGE,
 				(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
-				tableState.sort_order || 'desc',
+				tableState.sort_order || OrderDirection.desc,
 				getColumnDataType(),
 				generateWhereObject(getFilters(tableState))
 			);
@@ -299,7 +300,7 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 							0,
 							0,
 							(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
-							tableState.sort_order || 'desc',
+							tableState.sort_order || OrderDirection.desc,
 							getColumnDataType(),
 							{}
 						);
@@ -310,7 +311,7 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 							offset,
 							limit,
 							(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
-							tableState.sort_order || 'desc',
+							tableState.sort_order || OrderDirection.desc,
 							getColumnDataType(),
 							{}
 						);

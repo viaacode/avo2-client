@@ -14,10 +14,10 @@ import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
 	type AssignmentColumn,
-	type AssignmentOverviewTableColumns,
 	type AssignmentResponseColumn,
 	type AssignmentResponseFormState,
 	type AssignmentResponseTableColumns,
+	type AssignmentTableColumns,
 	AssignmentType,
 } from './assignment.types';
 import { type AssignmentFields } from './hooks/assignment-form';
@@ -45,7 +45,7 @@ const getLabelsColumn = (canEditAssignments: boolean | null): AssignmentColumn[]
 	return canEditAssignments
 		? [
 				{
-					id: 'labels' as AssignmentOverviewTableColumns,
+					id: 'labels' as AssignmentTableColumns,
 					label: tText('assignment/assignment___label'),
 					sortable: false,
 				},
@@ -59,7 +59,7 @@ const getTeacherColumn = (canEditAssignments: boolean | null): AssignmentColumn[
 		? []
 		: [
 				{
-					id: 'author' as AssignmentOverviewTableColumns,
+					id: 'author' as AssignmentTableColumns,
 					label: tText('assignment/views/assignment-overview___leerkracht'),
 					sortable: true,
 					dataType: TableColumnDataType.string as ColumnDataType,
@@ -71,7 +71,7 @@ const getClassColumn = (canEditAssignments: boolean | null): AssignmentColumn[] 
 	return canEditAssignments
 		? [
 				{
-					id: 'class_room' as AssignmentOverviewTableColumns,
+					id: 'class_room' as AssignmentTableColumns,
 					label: tText('assignment/views/assignment-overview___klas'),
 					sortable: false,
 					dataType: TableColumnDataType.string,
@@ -84,7 +84,7 @@ const getLastEditColumn = (canEditAssignments: boolean | null): AssignmentColumn
 	return canEditAssignments
 		? [
 				{
-					id: 'updated_at' as AssignmentOverviewTableColumns,
+					id: 'updated_at' as AssignmentTableColumns,
 					label: tText('assignment/assignment___laatst-bewerkt'),
 					sortable: true,
 					dataType: TableColumnDataType.dateTime,
@@ -97,7 +97,7 @@ const getResponseColumn = (canEditAssignments: boolean | null): AssignmentColumn
 	return canEditAssignments
 		? [
 				{
-					id: 'responses' as AssignmentOverviewTableColumns,
+					id: 'responses' as AssignmentTableColumns,
 					label: tText('assignment/assignment___respons'),
 					sortable: true,
 					dataType: TableColumnDataType.number,
@@ -108,7 +108,7 @@ const getResponseColumn = (canEditAssignments: boolean | null): AssignmentColumn
 
 const getActionsColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
 	return canEditAssignments
-		? [{ id: ACTIONS_TABLE_COLUMN_ID as AssignmentOverviewTableColumns, label: '' }]
+		? [{ id: ACTIONS_TABLE_COLUMN_ID as AssignmentTableColumns, label: '' }]
 		: [];
 };
 
@@ -116,7 +116,7 @@ const getSharedColumn = (canEditAssignments: boolean | null) => {
 	return canEditAssignments
 		? [
 				{
-					id: 'share_type' as AssignmentOverviewTableColumns,
+					id: 'share_type' as AssignmentTableColumns,
 					label: tText('assignment/assignment___gedeeld'),
 					sortable: true,
 					dataType: TableColumnDataType.string,
@@ -129,7 +129,7 @@ const getIsPublicColumn = (showPublicState: boolean | null) => {
 	return showPublicState
 		? [
 				{
-					id: 'is_public' as AssignmentOverviewTableColumns,
+					id: 'is_public' as AssignmentTableColumns,
 					label: tText('assignment/assignment___is-publiek'),
 					col: '2',
 					sortable: true,
@@ -152,7 +152,7 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL = (
 	...getLabelsColumn(canEditAssignments),
 	...getTeacherColumn(canEditAssignments),
 	{
-		id: 'deadline_at' as AssignmentOverviewTableColumns,
+		id: 'deadline_at' as AssignmentTableColumns,
 		label: tText('assignment/views/assignment-overview___deadline'),
 		sortable: true,
 		dataType: TableColumnDataType.dateTime,

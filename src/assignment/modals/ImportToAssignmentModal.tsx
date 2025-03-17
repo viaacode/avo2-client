@@ -43,7 +43,7 @@ import {
 } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import { type AssignmentOverviewTableColumns } from '../assignment.types';
+import { type AssignmentTableColumns } from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
 
 import './AddItemsModals.scss';
@@ -77,7 +77,7 @@ const ImportToAssignmentModal: FC<ImportToAssignmentModalProps & UserProps> = ({
 	);
 	const [selectedAssignmentId, setSelectedAssignmentId] = useState<string>();
 	const [sortColumn, sortOrder, handleColumnClick] =
-		useTableSort<AssignmentOverviewTableColumns>('updated_at');
+		useTableSort<AssignmentTableColumns>('updated_at');
 	const [filterString, setFilterString] = useState<string>('');
 
 	const tableColumns = useMemo(() => GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL(true), []);
@@ -150,10 +150,7 @@ const ImportToAssignmentModal: FC<ImportToAssignmentModalProps & UserProps> = ({
 	};
 
 	// very similar to table in assignment overview, but with differences
-	const renderCell = (
-		assignment: Avo.Assignment.Assignment,
-		colKey: AssignmentOverviewTableColumns
-	) => {
+	const renderCell = (assignment: Avo.Assignment.Assignment, colKey: AssignmentTableColumns) => {
 		const cellData: any = (assignment as any)[colKey];
 
 		switch (
@@ -254,7 +251,7 @@ const ImportToAssignmentModal: FC<ImportToAssignmentModalProps & UserProps> = ({
 								  )
 						}
 						renderCell={(rowData: Avo.Assignment.Assignment, colKey: string) =>
-							renderCell(rowData, colKey as AssignmentOverviewTableColumns)
+							renderCell(rowData, colKey as AssignmentTableColumns)
 						}
 						rowKey="id"
 						variant="styled"

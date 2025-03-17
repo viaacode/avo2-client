@@ -22,7 +22,7 @@ type EditableBlockFields = {
 
 export type EditablePupilCollectionFragment = PupilCollectionFragment & EditableBlockFields;
 
-export type AssignmentOverviewTableColumns =
+export type AssignmentTableColumns =
 	| 'title'
 	| 'author'
 	| 'author_user_group'
@@ -47,6 +47,13 @@ export type AssignmentOverviewTableColumns =
 	| 'contributors'
 	| 'share_type'
 	| 'is_public'
+	| 'assignment_quality_labels'
+	| 'organisation'
+	| 'last_updated_by_profile'
+	| 'marcom_last_communication_channel_type'
+	| 'marcom_last_communication_channel_name'
+	| 'marcom_last_communication_at'
+	| 'marcom_klascement'
 	| typeof ACTIONS_TABLE_COLUMN_ID;
 
 export type AssignmentResponseTableColumns =
@@ -57,7 +64,7 @@ export type AssignmentResponseTableColumns =
 	| typeof ACTIONS_TABLE_COLUMN_ID;
 
 export interface AssignmentColumn extends TableColumn {
-	id: AssignmentOverviewTableColumns;
+	id: AssignmentTableColumns;
 	label: string;
 	sortable?: boolean;
 }
@@ -139,7 +146,7 @@ export enum AssignmentAction {
 
 export interface FetchAssignmentsParams {
 	pastDeadline: boolean | null;
-	sortColumn: AssignmentOverviewTableColumns;
+	sortColumn: AssignmentTableColumns;
 	sortOrder: Avo.Search.OrderDirection;
 	tableColumnDataType: TableColumnDataType;
 	offset: number;

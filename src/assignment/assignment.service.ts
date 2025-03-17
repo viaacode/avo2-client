@@ -96,7 +96,7 @@ import { ITEMS_PER_PAGE, RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from '
 import { reorderBlockPositions } from './assignment.helper';
 import {
 	AssignmentBlockType,
-	type AssignmentOverviewTableColumns,
+	type AssignmentTableColumns,
 	AssignmentType,
 	type FetchAssignmentsParams,
 	type PupilCollectionFragment,
@@ -531,7 +531,7 @@ export class AssignmentService {
 	static async fetchAssignmentResponses(
 		assignmentId: string,
 		commonUser: Avo.User.CommonUser | null,
-		sortColumn: AssignmentOverviewTableColumns,
+		sortColumn: AssignmentTableColumns,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
 		page: number,
@@ -1102,7 +1102,7 @@ export class AssignmentService {
 	static async fetchAssignmentsForAdmin(
 		offset: number,
 		limit: number,
-		sortColumn: AssignmentOverviewTableColumns,
+		sortColumn: AssignmentTableColumns,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
 		where: any = {}

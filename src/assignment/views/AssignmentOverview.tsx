@@ -52,7 +52,7 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
-import { type OrderDirection } from '../../search/search.const';
+import { OrderDirection } from '../../search/search.const';
 import { CheckboxDropdownModal, type CheckboxOption } from '../../shared/components';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
@@ -88,7 +88,7 @@ import {
 import { AssignmentService } from '../assignment.service';
 import {
 	AssignmentAction,
-	type AssignmentOverviewTableColumns,
+	type AssignmentTableColumns,
 	AssignmentType,
 	AssignmentView,
 } from '../assignment.types';
@@ -103,7 +103,7 @@ interface AssignmentOverviewProps {
 }
 
 const DEFAULT_SORT_COLUMN = 'updated_at';
-const DEFAULT_SORT_ORDER = 'desc';
+const DEFAULT_SORT_ORDER = OrderDirection.desc;
 
 const defaultFiltersAndSort = {
 	selectedAssignmentLabelIds: [],
@@ -189,7 +189,7 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 	} = useGetAssignments(
 		{
 			pastDeadline: query.view === AssignmentView.FINISHED, // true === past deadline
-			sortColumn: (query.sortColumn || DEFAULT_SORT_COLUMN) as AssignmentOverviewTableColumns,
+			sortColumn: (query.sortColumn || DEFAULT_SORT_COLUMN) as AssignmentTableColumns,
 			sortOrder: (query.sortOrder || DEFAULT_SORT_ORDER) as Avo.Search.OrderDirection,
 			tableColumnDataType: getColumnDataType(),
 			offset: query.page || 0,
@@ -498,10 +498,7 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 		);
 	};
 
-	const renderCell = (
-		assignment: Avo.Assignment.Assignment,
-		colKey: AssignmentOverviewTableColumns
-	) => {
+	const renderCell = (assignment: Avo.Assignment.Assignment, colKey: AssignmentTableColumns) => {
 		const cellData: any = (assignment as any)[colKey];
 		const detailLink = canEditAssignments
 			? buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignment.id })
@@ -914,12 +911,12 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 						  )
 				}
 				renderCell={(rowData: Avo.Assignment.Assignment, colKey: string) =>
-					renderCell(rowData, colKey as AssignmentOverviewTableColumns)
+					renderCell(rowData, colKey as AssignmentTableColumns)
 				}
 				rowKey="id"
 				variant="styled"
 				onColumnClick={handleSortOrderChange}
-				sortColumn={query.sortColumn as AssignmentOverviewTableColumns}
+				sortColumn={query.sortColumn as AssignmentTableColumns}
 				sortOrder={query.sortOrder as OrderDirection}
 				useCards={isMobileWidth()}
 			/>

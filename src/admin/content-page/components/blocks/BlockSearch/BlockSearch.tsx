@@ -21,7 +21,7 @@ import { type Dispatch } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
 import { CONTENT_TYPE_TRANSLATIONS } from '../../../../../collection/collection.types';
-import { SearchFilter } from '../../../../../search/search.const';
+import { OrderDirection, SearchFilter } from '../../../../../search/search.const';
 import { getSearchResults } from '../../../../../search/store/actions';
 import { selectSearchLoading, selectSearchResults } from '../../../../../search/store/selectors';
 import { generateContentLinkString, generateSearchLinkString } from '../../../../../shared/helpers';
@@ -66,7 +66,7 @@ const BlockSearch: FC<BlockSearchProps & DefaultSecureRouteProps> = ({
 		// Only do initial search after query params have been analysed and have been added to the state
 		const filters = { query: debouncedSearchTerms || '' };
 
-		search('relevance', 'desc', 0, ITEMS_IN_AUTOCOMPLETE, filters, {});
+		search('relevance', OrderDirection.desc, 0, ITEMS_IN_AUTOCOMPLETE, filters, {});
 	}, [debouncedSearchTerms, search]);
 
 	// Computed

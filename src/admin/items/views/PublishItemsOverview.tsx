@@ -9,6 +9,7 @@ import { type DefaultSecureRouteProps } from '../../../authentication/components
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
+import { OrderDirection } from '../../../search/search.const';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, formatTimestamp } from '../../../shared/helpers';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
@@ -81,7 +82,7 @@ const PublishItemsOverview: FC<DefaultSecureRouteProps> = ({ history }) => {
 				await ItemsService.fetchUnpublishedItemsWithFilters(
 					tableState.page || 0,
 					(tableState.sort_column || 'updated_at') as UnpublishedItemsOverviewTableCols,
-					tableState.sort_order || 'desc',
+					tableState.sort_order || OrderDirection.desc,
 					generateWhereObject(getFilters(tableState))
 				);
 			setItems(itemsTemp);

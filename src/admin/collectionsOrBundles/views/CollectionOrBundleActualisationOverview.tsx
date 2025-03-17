@@ -9,6 +9,7 @@ import { compose } from 'redux';
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
+import { OrderDirection } from '../../../search/search.const';
 import {
 	type CheckboxOption,
 	LoadingErrorLoadedComponent,
@@ -46,8 +47,8 @@ import {
 	EditorialType,
 } from '../collections-or-bundles.types';
 import {
-	renderCollectionsOrBundleActualisationOverviewTableCellReact,
-	renderCollectionsOrBundleActualisationOverviewTableCellText,
+	renderCollectionsOrBundleActualisationCellReact,
+	renderCollectionsOrBundleActualisationCellText,
 } from '../helpers/render-collection-columns';
 
 const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
@@ -70,7 +71,7 @@ const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
 	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
-	const [collectionLabels] = useQualityLabels(true);
+	const { data: allQualityLabels } = useQualityLabels();
 	const [organisations] = useCompaniesWithUsers();
 
 	// computed
@@ -103,7 +104,7 @@ const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
 				),
 				checked: ((tableState?.collection_labels || []) as string[]).includes(NULL_FILTER),
 			},
-			...collectionLabels.map(
+			...(allQualityLabels || []).map(
 				(option): CheckboxOption => ({
 					id: String(option.value),
 					label: option.description,
@@ -113,7 +114,7 @@ const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
 				})
 			),
 		],
-		[collectionLabels, tText, tableState]
+		[allQualityLabels, tText, tableState]
 	);
 
 	const organisationOptions = useMemo(
@@ -176,7 +177,7 @@ const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
 					(tableState.sort_column || 'created_at') as CollectionSortProps,
-					tableState.sort_order || 'desc',
+					tableState.sort_order || OrderDirection.desc,
 					getFilters(tableState),
 					EditorialType.ACTUALISATION,
 					isCollection,
@@ -287,12 +288,14 @@ const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={(collectionOrBundle: any, columnId: string) => {
-						return renderCollectionsOrBundleActualisationOverviewTableCellReact(
+						return renderCollectionsOrBundleActualisationCellReact(
 							collectionOrBundle as Partial<Avo.Collection.Collection>,
 							columnId as CollectionOrBundleActualisationOverviewTableCols,
 							{
 								isCollection,
-								collectionLabels,
+								allQualityLabels: allQualityLabels || [],
+								editStatuses: [],
+								commonUser,
 							}
 						);
 					}}
@@ -354,7 +357,7 @@ const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
 							0,
 							0,
 							(tableState.sort_column || 'created_at') as CollectionSortProps,
-							tableState.sort_order || 'desc',
+							tableState.sort_order || OrderDirection.desc,
 							getFilters(tableState),
 							EditorialType.ACTUALISATION,
 							isCollection,
@@ -367,7 +370,7 @@ const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
 							offset,
 							limit,
 							(tableState.sort_column || 'created_at') as CollectionSortProps,
-							tableState.sort_order || 'desc',
+							tableState.sort_order || OrderDirection.desc,
 							getFilters(tableState),
 							EditorialType.ACTUALISATION,
 							isCollection,
@@ -376,10 +379,15 @@ const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
 						return response.collections;
 					}}
 					renderValue={(value: any, columnId: string) =>
-						renderCollectionsOrBundleActualisationOverviewTableCellText(
+						renderCollectionsOrBundleActualisationCellText(
 							value as any,
 							columnId as CollectionOrBundleActualisationOverviewTableCols,
-							{ collectionLabels }
+							{
+								isCollection,
+								allQualityLabels: allQualityLabels || [],
+								editStatuses: [],
+								commonUser,
+							}
 						)
 					}
 					columns={tableColumnListToCsvColumnList(tableColumns)}

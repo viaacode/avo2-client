@@ -115,7 +115,7 @@ export type CollectionOrBundleMarcomOverviewTableCols =
 	| 'marcom_last_communication_at'
 	| 'marcom_klascement';
 
-export type CollectionTableCols =
+export type CollectionTableColumns =
 	| CollectionsOrBundlesOverviewTableCols
 	| CollectionOrBundleActualisationOverviewTableCols
 	| CollectionOrBundleQualityCheckOverviewTableCols

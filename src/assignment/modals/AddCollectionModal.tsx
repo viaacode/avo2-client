@@ -31,6 +31,7 @@ import { compose } from 'redux';
 
 import { CollectionService } from '../../collection/collection.service';
 import { type Collection, ContentTypeNumber } from '../../collection/collection.types';
+import { OrderDirection } from '../../search/search.const';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import { CustomError, formatDate, formatTimestamp } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
@@ -41,7 +42,7 @@ import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { type AssignmentOverviewTableColumns } from '../assignment.types';
+import { type AssignmentTableColumns } from '../assignment.types';
 
 import './AddItemsModals.scss';
 
@@ -120,7 +121,7 @@ const AddCollectionModal: FC<AddCollectionModalProps> = ({
 	const [selectedCollectionId, setSelectedCollectionId] = useState<string | null>(null);
 	const [activeView, setActiveView] = useState<AddCollectionTab>(AddCollectionTab.myCollections);
 	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
-		useTableSort<AssignmentOverviewTableColumns>('updated_at');
+		useTableSort<AssignmentTableColumns>('updated_at');
 	const [filterString, setFilterString] = useState<string>('');
 
 	const tableColumns = useMemo(() => GET_ADD_COLLECTION_COLUMNS(), []);
@@ -200,7 +201,7 @@ const AddCollectionModal: FC<AddCollectionModalProps> = ({
 		setSelectedCollectionId(null);
 		setActiveView(AddCollectionTab.myCollections);
 		setSortColumn('updated_at');
-		setSortOrder('desc');
+		setSortOrder(OrderDirection.desc);
 		setFilterString('');
 
 		onClose();

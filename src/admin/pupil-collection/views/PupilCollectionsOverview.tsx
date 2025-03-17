@@ -50,7 +50,7 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<PupilCollectionsOverviewTableState>>({
 		sort_column: 'created_at',
-		sort_order: 'desc',
+		sort_order: OrderDirection.desc,
 	});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] = useState(false);
@@ -141,7 +141,7 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
 					(tableState.sort_column || 'created_at') as PupilCollectionOverviewTableColumns,
-					tableState.sort_order || 'desc',
+					tableState.sort_order || OrderDirection.desc,
 					getColumnDataType(),
 					generateWhereObject(getFilters(tableState))
 				);
@@ -389,7 +389,7 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 							0,
 							(tableState.sort_column ||
 								'created_at') as PupilCollectionOverviewTableColumns,
-							tableState.sort_order || 'desc',
+							tableState.sort_order || OrderDirection.desc,
 							getColumnDataType(),
 							{}
 						);
@@ -401,7 +401,7 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 							limit,
 							(tableState.sort_column ||
 								'created_at') as PupilCollectionOverviewTableColumns,
-							tableState.sort_order || 'desc',
+							tableState.sort_order || OrderDirection.desc,
 							getColumnDataType(),
 							generateWhereObject(getFilters(tableState))
 						);

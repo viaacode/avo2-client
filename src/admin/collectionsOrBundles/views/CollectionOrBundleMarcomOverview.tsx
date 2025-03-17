@@ -13,6 +13,7 @@ import {
 } from '../../../collection/collection.const';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
+import { OrderDirection } from '../../../search/search.const';
 import {
 	type CheckboxOption,
 	LoadingErrorLoadedComponent,
@@ -27,11 +28,7 @@ import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
-import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
-import FilterTable, {
-	type FilterableColumn,
-	getFilters,
-} from '../../shared/components/FilterTable/FilterTable';
+import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
@@ -50,8 +47,8 @@ import {
 	EditorialType,
 } from '../collections-or-bundles.types';
 import {
-	renderCollectionsOrBundlesMarcomTableCellReact,
-	renderCollectionsOrBundlesMarcomTableCellText,
+	renderCollectionsOrBundlesMarcomCellReact,
+	renderCollectionsOrBundlesMarcomCellText,
 } from '../helpers/render-collection-columns';
 
 const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
@@ -72,7 +69,7 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
 	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
-	const [collectionLabels] = useQualityLabels(true);
+	const { data: allQualityLabels } = useQualityLabels();
 	const [organisations] = useCompaniesWithUsers();
 
 	// computed
@@ -105,7 +102,7 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
 				),
 				checked: ((tableState?.collection_labels || []) as string[]).includes(NULL_FILTER),
 			},
-			...collectionLabels.map(
+			...(allQualityLabels || []).map(
 				(option): CheckboxOption => ({
 					id: String(option.value),
 					label: option.description,
@@ -115,7 +112,7 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
 				})
 			),
 		],
-		[collectionLabels, tText, tableState]
+		[allQualityLabels, tText, tableState]
 	);
 
 	const organisationOptions = useMemo(
@@ -200,12 +197,6 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
 		location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_MARCOM_OVERVIEW;
 
 	// methods
-	const getColumnDataType = useCallback(() => {
-		const column = tableColumns.find(
-			(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
-		);
-		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
-	}, [tableColumns, tableState.sort_column]);
 
 	const fetchCollectionsOrBundles = useCallback(async () => {
 		setIsLoading(true);
@@ -216,7 +207,7 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
 					(tableState.sort_column || 'updated_at') as CollectionSortProps,
-					tableState.sort_order || 'desc',
+					tableState.sort_order || OrderDirection.desc,
 					getFilters(tableState),
 					EditorialType.MARCOM,
 					isCollection,
@@ -242,7 +233,7 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
 			});
 		}
 		setIsLoading(false);
-	}, [tableState, getColumnDataType, isCollection, tText]);
+	}, [tableState, isCollection, tText]);
 
 	useEffect(() => {
 		if (commonUser && educationLevelsAndDegrees?.length) {
@@ -327,12 +318,14 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={(collectionOrBundle: any, columnId: string) =>
-						renderCollectionsOrBundlesMarcomTableCellReact(
+						renderCollectionsOrBundlesMarcomCellReact(
 							collectionOrBundle as Partial<Avo.Collection.Collection>,
 							columnId as CollectionOrBundleMarcomOverviewTableCols,
 							{
 								isCollection,
-								collectionLabels,
+								allQualityLabels: allQualityLabels || [],
+								editStatuses: [],
+								commonUser,
 							}
 						)
 					}
@@ -394,7 +387,7 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
 							0,
 							0,
 							(tableState.sort_column || 'created_at') as CollectionSortProps,
-							tableState.sort_order || 'desc',
+							tableState.sort_order || OrderDirection.desc,
 							getFilters(tableState),
 							EditorialType.MARCOM,
 							isCollection,
@@ -407,7 +400,7 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
 							offset,
 							limit,
 							(tableState.sort_column || 'created_at') as CollectionSortProps,
-							tableState.sort_order || 'desc',
+							tableState.sort_order || OrderDirection.desc,
 							getFilters(tableState),
 							EditorialType.MARCOM,
 							isCollection,
@@ -416,10 +409,15 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
 						return response.collections;
 					}}
 					renderValue={(value: any, columnId: string) =>
-						renderCollectionsOrBundlesMarcomTableCellText(
+						renderCollectionsOrBundlesMarcomCellText(
 							value as any,
 							columnId as CollectionOrBundleMarcomOverviewTableCols,
-							{ collectionLabels }
+							{
+								isCollection,
+								allQualityLabels: allQualityLabels || [],
+								editStatuses: [],
+								commonUser,
+							}
 						)
 					}
 					columns={tableColumnListToCsvColumnList(tableColumns)}
