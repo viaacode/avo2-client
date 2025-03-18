@@ -26,7 +26,7 @@ import { Link, type RouteComponentProps } from 'react-router-dom';
 import { APP_PATH } from '../../constants';
 import { FileUpload } from '../../shared/components';
 import { type App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types';
-import { buildLink, CustomError, formatDate } from '../../shared/helpers';
+import { buildLink, CustomError, formatDate, getEnv } from '../../shared/helpers';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -163,7 +163,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 				sourceText: klascementSourceText,
 			});
 			window.open(
-				`https://www.klascement.net/video/${klascementId}/aanpassen/uitgebreid`,
+				`${getEnv('KLASCEMENT_URL')}/video/${klascementId}/aanpassen/uitgebreid`,
 				'_blank'
 			);
 			await fetchKlascementPublishInfo();
