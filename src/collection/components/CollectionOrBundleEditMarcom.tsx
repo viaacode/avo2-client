@@ -167,6 +167,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 				'_blank'
 			);
 			await fetchKlascementPublishInfo();
+			await fetchMarcomEntries();
 			ToastService.success(
 				tText(
 					'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement-gelukt'
