@@ -19,7 +19,7 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { compact, get, uniq } from 'lodash-es';
+import { compact, get, isNil, uniq } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, type RouteComponentProps } from 'react-router-dom';
 
@@ -31,7 +31,6 @@ import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { KlascementService } from '../../shared/services/klascement-service';
 import { ToastService } from '../../shared/services/toast-service';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
@@ -44,6 +43,7 @@ import {
 	type CollectionMarcomEntry,
 	ContentTypeNumber,
 } from '../collection.types';
+import { useGetKlascementPublishInfo } from '../hooks/useGetKlascementPublishInfo';
 import { usePublishCollectionToKlascement } from '../hooks/usePublishCollectionToKlascement';
 
 import { type CollectionAction, type MarcomNoteInfo } from './CollectionOrBundleEdit.types';
@@ -83,10 +83,11 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 	const { mutateAsync: publishCollectionToKlascement, isLoading: isPublishing } =
 		usePublishCollectionToKlascement();
 
-	const isPublishedToKlascement = useMemo(
-		() => klascementId !== undefined && klascementId !== null,
-		[klascementId]
+	const { data: publishInfo, refetch: refetchPublishInfo } = useGetKlascementPublishInfo(
+		collection.id
 	);
+
+	const isPublishedToKlascement = useMemo(() => !isNil(klascementId), [klascementId]);
 
 	const fetchMarcomEntries = useCallback(async () => {
 		try {
@@ -102,25 +103,6 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 					'collection/components/collection-or-bundle-edit-marcom___het-ophalen-van-de-marcom-entries-is-mislukt'
 				)
 			);
-		}
-	}, [collection.id, tHtml]);
-
-	const fetchKlascementPublishInfo = useCallback(async () => {
-		try {
-			const publishInfo = await KlascementService.getKlascementPublishInfoForCollection(
-				collection.id
-			);
-			setKlascementAltText(publishInfo?.alt_text);
-			setKlascementSourceText(publishInfo?.source_text);
-			setKlascementImageUrl(publishInfo?.image_url);
-			setKlascementId(publishInfo?.klascement_id ?? undefined);
-		} catch (err) {
-			console.error(
-				new CustomError('Failed to fetch klascement publish info from the database', err, {
-					collectionId: collection.id,
-				})
-			);
-			ToastService.danger(tHtml('Het ophalen van de klascement informatie is mislukt'));
 		}
 	}, [collection.id, tHtml]);
 
@@ -166,7 +148,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 				`${getEnv('KLASCEMENT_URL')}/video/${klascementId}/aanpassen/uitgebreid`,
 				'_blank'
 			);
-			await fetchKlascementPublishInfo();
+			await refetchPublishInfo();
 			await fetchMarcomEntries();
 			ToastService.success(
 				tText(
@@ -184,8 +166,14 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 
 	useEffect(() => {
 		fetchMarcomEntries();
-		fetchKlascementPublishInfo();
-	}, [fetchMarcomEntries, fetchKlascementPublishInfo]);
+	}, [fetchMarcomEntries]);
+
+	useEffect(() => {
+		setKlascementAltText(publishInfo?.alt_text);
+		setKlascementSourceText(publishInfo?.source_text);
+		setKlascementImageUrl(publishInfo?.image_url);
+		setKlascementId(publishInfo?.klascement_id ?? undefined);
+	}, [publishInfo]);
 
 	const renderMarcomTableCell = (
 		rowData: Partial<CollectionMarcomEntry>,
