@@ -17,7 +17,7 @@ export const useGetKlascementPublishInfo = (
 		},
 		{
 			meta: {
-				errorMessage: tHtml('Failed to fetch klascement publish info from the database'),
+				errorMessage: tHtml('Het ophalen van de klascement informatie is mislukt'),
 			},
 		}
 	);
