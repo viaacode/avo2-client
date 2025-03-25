@@ -19,14 +19,14 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { compact, get, uniq } from 'lodash-es';
-import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
+import { compact, get, isNil, uniq } from 'lodash-es';
+import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, type RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { FileUpload } from '../../shared/components';
 import { type App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types';
-import { buildLink, CustomError, formatDate } from '../../shared/helpers';
+import { buildLink, CustomError, formatDate, getEnv } from '../../shared/helpers';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -43,6 +43,7 @@ import {
 	type CollectionMarcomEntry,
 	ContentTypeNumber,
 } from '../collection.types';
+import { useGetKlascementPublishInfo } from '../hooks/useGetKlascementPublishInfo';
 import { usePublishCollectionToKlascement } from '../hooks/usePublishCollectionToKlascement';
 
 import { type CollectionAction, type MarcomNoteInfo } from './CollectionOrBundleEdit.types';
@@ -73,6 +74,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 	const [klascementImageUrl, setKlascementImageUrl] = useState<string | null>();
 	const [klascementAltText, setKlascementAltText] = useState<string | undefined>();
 	const [klascementSourceText, setKlascementSourceText] = useState<string | undefined>();
+	const [klascementId, setKlascementId] = useState<number | undefined>();
 
 	const [klascementImageUrlError, setKlascementImageUrlError] = useState<string | null>(null);
 	const [klascementAltTextError, setKlascementAltTextError] = useState<string | null>(null);
@@ -80,6 +82,12 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 
 	const { mutateAsync: publishCollectionToKlascement, isLoading: isPublishing } =
 		usePublishCollectionToKlascement();
+
+	const { data: publishInfo, refetch: refetchPublishInfo } = useGetKlascementPublishInfo(
+		collection.id
+	);
+
+	const isPublishedToKlascement = useMemo(() => !isNil(klascementId), [klascementId]);
 
 	const fetchMarcomEntries = useCallback(async () => {
 		try {
@@ -130,12 +138,18 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 			setKlascementSourceTextError(null);
 		}
 		try {
-			await publishCollectionToKlascement({
+			const klascementId = await publishCollectionToKlascement({
 				collectionId: collection.id,
 				imageUrl: klascementImageUrl,
 				altText: klascementAltText,
 				sourceText: klascementSourceText,
 			});
+			window.open(
+				`${getEnv('KLASCEMENT_URL')}/video/${klascementId}/aanpassen/uitgebreid`,
+				'_blank'
+			);
+			await refetchPublishInfo();
+			await fetchMarcomEntries();
 			ToastService.success(
 				tText(
 					'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement-gelukt'
@@ -153,6 +167,13 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 	useEffect(() => {
 		fetchMarcomEntries();
 	}, [fetchMarcomEntries]);
+
+	useEffect(() => {
+		setKlascementAltText(publishInfo?.alt_text);
+		setKlascementSourceText(publishInfo?.source_text);
+		setKlascementImageUrl(publishInfo?.image_url);
+		setKlascementId(publishInfo?.klascement_id ?? undefined);
+	}, [publishInfo]);
 
 	const renderMarcomTableCell = (
 		rowData: Partial<CollectionMarcomEntry>,
@@ -490,6 +511,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 									minHeight: 380,
 									maxHeight: 380,
 								}}
+								disabled={isPublishedToKlascement}
 								ownerId={collection.id}
 								onChange={(urls) => setKlascementImageUrl(urls[0] || null)}
 							/>
@@ -500,7 +522,11 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 							)}
 							error={klascementAltTextError}
 						>
-							<TextInput value={klascementAltText} onChange={setKlascementAltText} />
+							<TextInput
+								value={klascementAltText}
+								disabled={isPublishedToKlascement}
+								onChange={setKlascementAltText}
+							/>
 						</FormGroup>
 						<FormGroup
 							label={tText(
@@ -510,6 +536,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 						>
 							<TextInput
 								value={klascementSourceText}
+								disabled={isPublishedToKlascement}
 								onChange={setKlascementSourceText}
 							/>
 						</FormGroup>
@@ -520,7 +547,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 							icon={IconName.klascement}
 							type="primary"
 							disabled={
-								!collection.is_public || !!collection.klascement || isPublishing
+								!collection.is_public || isPublishedToKlascement || isPublishing
 							}
 							onClick={handlePublish}
 							className="u-color-klascement u-m-t"

@@ -1,4 +1,5 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { stringifyUrl } from 'query-string';
 
 import { CustomError, getEnv } from '../helpers';
 
@@ -26,7 +27,35 @@ export interface KlascementPublishAssignmentResponse {
 	createdAssignmentId: number;
 }
 
+export interface KlascementPublishInfo {
+	id: string;
+	alt_text: string;
+	image_url: string;
+	source_text: string;
+	klascement_id: number | null;
+}
+
 export class KlascementService {
+	public static async getKlascementPublishInfoForCollection(
+		collectionId: string
+	): Promise<KlascementPublishInfo | null> {
+		try {
+			const url = stringifyUrl({
+				url: `${getEnv('PROXY_URL')}/klascement/collection`,
+				query: { collectionId },
+			});
+			return await fetchWithLogoutJson(url);
+		} catch (err) {
+			throw new CustomError(
+				'Failed to get klascement publish information for collection',
+				err,
+				{
+					collectionId,
+				}
+			);
+		}
+	}
+
 	public static async publishCollection(data: KlascementPublishCollectionData): Promise<number> {
 		let url: string | undefined = undefined;
 
