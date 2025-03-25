@@ -3,17 +3,17 @@ import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 import { QUERY_KEYS } from '../../shared/constants/query-keys';
 import { tHtml } from '../../shared/helpers/translate-html';
 import {
-	type KlascementCollectionPublishInfo,
+	type KlascementAssignmentPublishInfo,
 	KlascementService,
 } from '../../shared/services/klascement-service';
 
-export const useGetKlascementPublishInfo = (
-	collectionId: string
-): UseQueryResult<KlascementCollectionPublishInfo> => {
+export const useGetKlascementAssignmentPublishInfo = (
+	assignmentId: string
+): UseQueryResult<KlascementAssignmentPublishInfo> => {
 	return useQuery(
-		[QUERY_KEYS.GET_KLASCEMENT_COLLECTION_PUBLISH_INFO, collectionId],
+		[QUERY_KEYS.GET_KLASCEMENT_ASSIGNMENT_PUBLISH_INFO, assignmentId],
 		async () => {
-			return KlascementService.getKlascementPublishInfoForCollection(collectionId);
+			return KlascementService.getKlascementPublishInfoForAssignment(assignmentId);
 		},
 		{
 			meta: {

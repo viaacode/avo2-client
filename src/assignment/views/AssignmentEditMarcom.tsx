@@ -19,8 +19,8 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { compact, get } from 'lodash-es';
-import React, { type FC, type ReactNode, useState } from 'react';
+import { get, isNil } from 'lodash-es';
+import React, { type FC, type ReactNode, useMemo, useState } from 'react';
 import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
@@ -35,8 +35,7 @@ import {
 } from '../../collection/collection.types';
 import { type MarcomNoteInfo } from '../../collection/components/CollectionOrBundleEdit.types';
 import { APP_PATH } from '../../constants';
-import { FileUpload } from '../../shared/components';
-import { buildLink, formatDate } from '../../shared/helpers';
+import { buildLink, formatDate, getEnv } from '../../shared/helpers';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -44,6 +43,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { useDeleteAssignmentMarcomEntry } from '../hooks/useDeleteAssignmentMarcomEntry';
 import { useGetAssignmentMarcomEntries } from '../hooks/useGetAssignmentMarcomEntries';
+import { useGetKlascementAssignmentPublishInfo } from '../hooks/useGetKlascementAssignmentPublishInfo';
 import { useInsertAssignmentMarcomEntry } from '../hooks/useInsertAssignmentMarcomEntry';
 import { usePublishAssignmentToKlascement } from '../hooks/usePublishAssignmentToKlascement';
 
@@ -65,51 +65,32 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 	const [marcomChannelType, setMarcomChannelType] = useState<string | null>();
 	const [marcomChannelName, setMarcomChannelName] = useState<string | null>();
 	const [marcomLink, setMarcomLink] = useState<string>('');
+
 	const { data: marcomEntries, refetch: refetchMarcomEntries } = useGetAssignmentMarcomEntries(
 		assignment.id
 	);
 	const { mutateAsync: insertMarcomEntry } = useInsertAssignmentMarcomEntry();
 	const { mutateAsync: deleteMarcomEntry } = useDeleteAssignmentMarcomEntry();
 
-	const [klascementImageUrl, setKlascementImageUrl] = useState<string | null>();
-	const [klascementAltText, setKlascementAltText] = useState<string | undefined>();
-	const [klascementSourceText, setKlascementSourceText] = useState<string | undefined>();
-
-	const [klascementImageUrlError, setKlascementImageUrlError] = useState<string | null>(null);
-	const [klascementAltTextError, setKlascementAltTextError] = useState<string | null>(null);
-	const [klascementSourceTextError, setKlascementSourceTextError] = useState<string | null>(null);
-
 	const { mutateAsync: publishAssignmentToKlascement, isLoading: isPublishing } =
 		usePublishAssignmentToKlascement();
 
+	const { data: publishInfo, refetch: refetchPublishInfo } =
+		useGetKlascementAssignmentPublishInfo(assignment.id);
+	const isPublishedToKlascement = useMemo(
+		() => !isNil(publishInfo?.klascement_id),
+		[publishInfo]
+	);
+
 	const handlePublish = async () => {
-		if (!klascementImageUrl) {
-			setKlascementImageUrlError(tText('Gelieve een afbeelding te uploaden'));
-			return;
-		} else {
-			setKlascementImageUrlError(null);
-		}
-		if (!klascementAltText) {
-			setKlascementAltTextError(
-				tText('Gelieve een alternatieve tekst in te vullen voor de afbeelding')
-			);
-			return;
-		} else {
-			setKlascementAltTextError(null);
-		}
-		if (!klascementSourceText) {
-			setKlascementSourceTextError(tText('Gelieve de bron van de afbeelding in te vullen'));
-			return;
-		} else {
-			setKlascementSourceTextError(null);
-		}
 		try {
-			await publishAssignmentToKlascement({
-				assignmentId: assignment.id,
-				imageUrl: klascementImageUrl,
-				altText: klascementAltText,
-				sourceText: klascementSourceText,
-			});
+			const klascementId = await publishAssignmentToKlascement(assignment.id);
+			window.open(
+				`${getEnv('KLASCEMENT_URL')}/oefeningen/${klascementId}/aanpassen/uitgebreid`,
+				'_blank'
+			);
+			await refetchPublishInfo();
+			await refetchMarcomEntries();
 			ToastService.success(tText('Publiceren naar klascement gelukt'));
 		} catch (err) {
 			ToastService.danger(tText('Publiceren naar klascement mislukt'));
@@ -320,46 +301,12 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 				</BlockHeading>
 				<Grid>
 					<Column size="3-6">
-						<FormGroup
-							label={tText('Afbeelding voor de embed code')}
-							error={klascementImageUrlError}
-						>
-							<FileUpload
-								label={tText('Upload een afbeelding')}
-								urls={compact([klascementImageUrl])}
-								allowMulti={false}
-								assetType="KLASCEMENT_VIDEO_IMAGE"
-								allowedDimensions={{
-									minWidth: 680,
-									maxWidth: 680,
-									minHeight: 380,
-									maxHeight: 380,
-								}}
-								ownerId={assignment.id}
-								onChange={(urls) => setKlascementImageUrl(urls[0] || null)}
-							/>
-						</FormGroup>
-						<FormGroup
-							label={tText('Alternatieve tekst voor de afbeelding')}
-							error={klascementAltTextError}
-						>
-							<TextInput value={klascementAltText} onChange={setKlascementAltText} />
-						</FormGroup>
-						<FormGroup
-							label={tText('Bron van de afbeelding')}
-							error={klascementSourceTextError}
-						>
-							<TextInput
-								value={klascementSourceText}
-								onChange={setKlascementSourceText}
-							/>
-						</FormGroup>
 						<Button
 							label={tText('Publiceer naar klascement')}
 							icon={IconName.klascement}
 							type="primary"
 							disabled={
-								!assignment.is_public || !!assignment.klascement || isPublishing
+								!assignment.is_public || isPublishedToKlascement || isPublishing
 							}
 							onClick={handlePublish}
 							className="u-color-klascement u-m-t"
@@ -381,7 +328,7 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 						</Spacer>
 						{renderMarcomRemarksField()}
 						{commonUser?.permissions?.includes(
-							PermissionName.PUBLISH_COLLECTION_TO_KLASCEMENT
+							PermissionName.PUBLISH_ASSIGNMENT_TO_KLASCEMENT
 						) && renderPublishToKlascementForm()}
 					</Form>
 				</Container>

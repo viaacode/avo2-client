@@ -568,9 +568,11 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 							{renderExistingMarcomEntries()}
 						</Spacer>
 						{renderMarcomRemarksField()}
-						{commonUser?.permissions?.includes(
-							PermissionName.PUBLISH_COLLECTION_TO_KLASCEMENT
-						) && renderPublishToKlascementForm()}
+						{isCollection &&
+							commonUser?.permissions?.includes(
+								PermissionName.PUBLISH_COLLECTION_TO_KLASCEMENT
+							) &&
+							renderPublishToKlascementForm()}
 					</Form>
 				</Container>
 			</Container>
