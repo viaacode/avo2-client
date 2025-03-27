@@ -49,7 +49,9 @@ import { usePublishAssignmentToKlascement } from '../hooks/usePublishAssignmentT
 
 interface AssignmentEditMarcomProps {
 	assignment: Avo.Assignment.Assignment & { marcom_note?: MarcomNoteInfo };
-	setAssignment: (newAssignment: Avo.Assignment.Assignment & { marcom_note: string }) => void;
+	setAssignment: (
+		newAssignment: Avo.Assignment.Assignment & { marcom_note: MarcomNoteInfo }
+	) => void;
 	onFocus?: () => void;
 }
 
@@ -284,7 +286,10 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 					onChange={(newNote: string) => {
 						setAssignment({
 							...assignment,
-							marcom_note: newNote,
+							marcom_note: {
+								id: assignment?.marcom_note?.id || undefined,
+								note: newNote,
+							},
 						});
 					}}
 					onFocus={onFocus}
