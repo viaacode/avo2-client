@@ -28,10 +28,10 @@ import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
 import QuickLaneLink from '../QuickLaneLink/QuickLaneLink';
 import TimeCropControls from '../TimeCropControls/TimeCropControls';
 
-import { defaultQuickLaneState, getContentUuid, isShareable } from './QuickLaneModal.helpers';
-import { type QuickLaneModalProps } from './QuickLaneModal.types';
+import { defaultQuickLaneState, getContentUuid, isShareable } from './QuickLaneContent.helpers';
+import { type QuickLaneContentProps } from './QuickLaneContent.types';
 
-const QuickLaneModalSharingTab: FC<QuickLaneModalProps & UserProps> = ({
+const QuickLaneContentSharingTab: FC<QuickLaneContentProps & UserProps> = ({
 	isOpen,
 	user,
 	content,
@@ -71,7 +71,7 @@ const QuickLaneModalSharingTab: FC<QuickLaneModalProps & UserProps> = ({
 		setFragmentEndTime(initialFragmentEnd);
 	}, [initialFragmentEnd, initialFragmentStart]);
 
-	// If the modal is open and we haven't checked if anything exists, fetch or create the record
+	// If the Content is open and we haven't checked if anything exists, fetch or create the record
 	useEffect(() => {
 		if (exists) {
 			return;
@@ -172,7 +172,7 @@ const QuickLaneModalSharingTab: FC<QuickLaneModalProps & UserProps> = ({
 		}
 	}, [quickLane, fragmentDuration]);
 
-	// Ensure a clean slate when opening other modals
+	// Ensure a clean slate when opening other Contents
 	useEffect(() => {
 		if (isOpen) return;
 		resetState();
@@ -190,7 +190,7 @@ const QuickLaneModalSharingTab: FC<QuickLaneModalProps & UserProps> = ({
 			{(avatar.name || avatar.image) && (
 				<Spacer margin={['bottom']}>
 					<Avatar
-						className="m-quick-lane-modal__avatar"
+						className="m-quick-lane-content__avatar"
 						dark={true}
 						name={avatar.name}
 						image={avatar.image}
@@ -328,4 +328,4 @@ const QuickLaneModalSharingTab: FC<QuickLaneModalProps & UserProps> = ({
 	) : null;
 };
 
-export default withUser(QuickLaneModalSharingTab) as FC<QuickLaneModalProps>;
+export default withUser(QuickLaneContentSharingTab) as FC<QuickLaneContentProps>;

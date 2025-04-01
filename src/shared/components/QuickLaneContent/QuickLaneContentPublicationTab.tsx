@@ -9,15 +9,15 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import LomFieldsInput from '../LomFieldsInput/LomFieldsInput';
 
-import { isShareable } from './QuickLaneModal.helpers';
-import { type QuickLaneModalProps } from './QuickLaneModal.types';
+import { isShareable } from './QuickLaneContent.helpers';
+import { type QuickLaneContentProps } from './QuickLaneContent.types';
 
-interface QuickLaneModalPublicationTabProps {
+interface QuickLaneContentPublicationTabProps {
 	onComplete?: () => void;
 }
 
-const QuickLaneModalPublicationTab: FC<
-	QuickLaneModalProps & QuickLaneModalPublicationTabProps & UserProps
+const QuickLaneContentPublicationTab: FC<
+	QuickLaneContentProps & QuickLaneContentPublicationTabProps & UserProps
 > = ({ content, content_label, commonUser, onComplete, onUpdate }) => {
 	const { tText } = useTranslation();
 
@@ -137,6 +137,6 @@ const QuickLaneModalPublicationTab: FC<
 	) : null;
 };
 
-export default withUser(QuickLaneModalPublicationTab) as FC<
-	QuickLaneModalProps & QuickLaneModalPublicationTabProps
+export default withUser(QuickLaneContentPublicationTab) as FC<
+	QuickLaneContentProps & QuickLaneContentPublicationTabProps
 >;
