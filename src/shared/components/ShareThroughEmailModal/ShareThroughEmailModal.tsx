@@ -3,7 +3,6 @@ import React, { type FC, type ReactNode } from 'react';
 
 import withUser, { type UserProps } from '../../hocs/withUser';
 import { type EmailTemplateType } from '../../services/campaign-monitor-service';
-import './ShareThroughEmailModal.scss';
 import ShareThroughEmailContent from '../ShareThroughEmailContent/ShareThroughEmailContent';
 
 interface AddToCollectionModalProps {
