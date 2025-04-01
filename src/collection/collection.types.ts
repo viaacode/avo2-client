@@ -105,6 +105,7 @@ export interface MarcomEntryBase {
 export interface AssignmentMarcomEntry extends MarcomEntryBase {
 	id?: string;
 	assignment_id: string;
+	parent_collection_id?: string;
 }
 
 export interface CollectionMarcomEntry extends MarcomEntryBase {

@@ -1581,6 +1581,34 @@ export class AssignmentService {
 		}
 	}
 
+	static async insertMarcomEntriesForBundleAssignments(
+		parentCollectionId: string,
+		assignmentIds: string[],
+		marcomEntry: AssignmentMarcomEntry
+	): Promise<void> {
+		const allEntries = assignmentIds.map((assignmentId) => ({
+			...marcomEntry,
+			assignment_id: assignmentId,
+			parent_collection_id: parentCollectionId,
+		}));
+
+		try {
+			return await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/assignments/marcom`, {
+				method: 'POST',
+				body: JSON.stringify(allEntries),
+			});
+		} catch (err) {
+			throw new CustomError(
+				'Failed to insert a marcom entry for all bundle assignments',
+				err,
+				{
+					parentCollectionId,
+					allEntries,
+				}
+			);
+		}
+	}
+
 	public static async deleteMarcomEntry(
 		assignmentId: string,
 		marcomEntryId: string | undefined

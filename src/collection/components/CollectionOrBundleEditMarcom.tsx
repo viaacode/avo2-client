@@ -1,5 +1,6 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
+	Alert,
 	Button,
 	ButtonToolbar,
 	Column,
@@ -23,6 +24,7 @@ import { compact, get, isNil, uniq } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, type RouteComponentProps } from 'react-router-dom';
 
+import { AssignmentService } from '../../assignment/assignment.service';
 import { APP_PATH } from '../../constants';
 import { FileUpload } from '../../shared/components';
 import { type App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types';
@@ -276,6 +278,22 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 						publish_date: marcomEntry.publish_date,
 					}
 				);
+				// It's a bundle: add this entry to all included assignments
+				const assignments = collection.collection_fragments.filter(
+					(fragment) => fragment.type === 'ASSIGNMENT'
+				);
+				const assignmentIds = uniq(assignments.map((fragment) => fragment.external_id));
+				await AssignmentService.insertMarcomEntriesForBundleAssignments(
+					collection.id,
+					assignmentIds,
+					{
+						assignment_id: '',
+						channel_name: marcomEntry.channel_name,
+						channel_type: marcomEntry.channel_type,
+						external_link: marcomEntry.external_link,
+						publish_date: marcomEntry.publish_date,
+					}
+				);
 			}
 			await fetchMarcomEntries();
 			ToastService.success(
@@ -482,14 +500,33 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 		);
 	};
 
+	const renderPublishToKlascementHeader = () => {
+		return (
+			<BlockHeading type="h3" className="u-padding-top-xl u-padding-bottom">
+				{tText(
+					'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement'
+				)}
+			</BlockHeading>
+		);
+	};
+
 	const renderPublishToKlascementForm = () => {
+		if (!collection.is_public) {
+			return (
+				<>
+					{renderPublishToKlascementHeader()}
+					<Alert type="info">
+						{tHtml(
+							'Je kan enkel publiceren naar klascement als deze collectie publiek staat'
+						)}
+					</Alert>
+				</>
+			);
+		}
+
 		return (
 			<>
-				<BlockHeading type="h3" className="u-padding-top-xl u-padding-bottom">
-					{tText(
-						'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement'
-					)}
-				</BlockHeading>
+				{renderPublishToKlascementHeader()}
 				<Grid>
 					<Column size="3-6">
 						<FormGroup
