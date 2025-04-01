@@ -1,5 +1,6 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
+	Alert,
 	Button,
 	ButtonToolbar,
 	Column,
@@ -49,7 +50,9 @@ import { usePublishAssignmentToKlascement } from '../hooks/usePublishAssignmentT
 
 interface AssignmentEditMarcomProps {
 	assignment: Avo.Assignment.Assignment & { marcom_note?: MarcomNoteInfo };
-	setAssignment: (newAssignment: Avo.Assignment.Assignment & { marcom_note: string }) => void;
+	setAssignment: (
+		newAssignment: Avo.Assignment.Assignment & { marcom_note: MarcomNoteInfo }
+	) => void;
 	onFocus?: () => void;
 }
 
@@ -284,7 +287,10 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 					onChange={(newNote: string) => {
 						setAssignment({
 							...assignment,
-							marcom_note: newNote,
+							marcom_note: {
+								id: assignment?.marcom_note?.id || undefined,
+								note: newNote,
+							},
 						});
 					}}
 					onFocus={onFocus}
@@ -293,21 +299,38 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 		);
 	};
 
+	const renderPublishToKlascementHeader = () => {
+		return (
+			<BlockHeading type="h3" className="u-padding-top-xl u-padding-bottom">
+				{tText('Publiceren naar klascement')}
+			</BlockHeading>
+		);
+	};
+
 	const renderPublishToKlascementForm = () => {
+		if (!assignment.is_public) {
+			return (
+				<>
+					{renderPublishToKlascementHeader()}
+					<Alert type="info">
+						{tHtml(
+							'Je kan enkel publiceren naar klascement als deze opdracht publiek staat'
+						)}
+					</Alert>
+				</>
+			);
+		}
+
 		return (
 			<>
-				<BlockHeading type="h3" className="u-padding-top-xl u-padding-bottom">
-					{tText('Publiceren naar klascement')}
-				</BlockHeading>
+				{renderPublishToKlascementHeader()}
 				<Grid>
 					<Column size="3-6">
 						<Button
 							label={tText('Publiceer naar klascement')}
 							icon={IconName.klascement}
 							type="primary"
-							disabled={
-								!assignment.is_public || isPublishedToKlascement || isPublishing
-							}
+							disabled={isPublishedToKlascement || isPublishing}
 							onClick={handlePublish}
 							className="u-color-klascement u-m-t"
 						/>
