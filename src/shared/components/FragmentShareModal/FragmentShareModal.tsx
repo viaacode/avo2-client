@@ -2,11 +2,14 @@ import bookwidgetLogo from '@assets/images/bookwidget_logo.png';
 import smartschoolLogo from '@assets/images/smartschool_logo.png';
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
+	Button,
 	Dropdown,
 	IconName,
 	MenuContent,
 	Modal,
 	ModalBody,
+	ModalFooterLeft,
+	ModalSubHeader,
 	Spacer,
 	Tabs,
 } from '@viaa/avo2-components';
@@ -23,8 +26,9 @@ import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';
 import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
 import ShareThroughEmailContent from '../ShareThroughEmailContent/ShareThroughEmailContent';
 import { type ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
+
 import './FragmentShareModal.scss';
-import {FragmentShareEmbedOptions} from "./FragmentShareModal.types";
+import { FragmentShareEmbedOptions } from './FragmentShareModal.types';
 
 type FragmentShareModalProps = {
 	item: Avo.Item.Item;
@@ -163,20 +167,22 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 				<Spacer margin="bottom">
 					<BlockHeading type="h4">{tHtml('Fragment insluiten in')}</BlockHeading>
 				</Spacer>
-				<Dropdown
-					label={getEmbedDropdownLabel()}
-					onOpen={handleRightsButtonClicked}
-					onClose={handleRightsButtonClicked}
-					isOpen={isEmbedDropdownOpen}
-				>
-					<MenuContent
-						menuItems={embedDropdownOptions}
-						onClick={(id) => {
-							setEmbedDropdownSelection(id as string);
-							handleRightsButtonClicked();
-						}}
-					/>
-				</Dropdown>
+				<Spacer margin="bottom">
+					<Dropdown
+						label={getEmbedDropdownLabel()}
+						onOpen={handleRightsButtonClicked}
+						onClose={handleRightsButtonClicked}
+						isOpen={isEmbedDropdownOpen}
+					>
+						<MenuContent
+							menuItems={embedDropdownOptions}
+							onClick={(id) => {
+								setEmbedDropdownSelection(id as string);
+								handleRightsButtonClicked();
+							}}
+						/>
+					</Dropdown>
+				</Spacer>
 			</>
 		);
 	};
@@ -198,16 +204,28 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 		<Modal
 			isOpen={isOpen}
 			size="medium"
-			scrollable={true}
+			scrollable={tab === ShareDropdownTabs.PUPILS || !!embedDropdownSelection}
 			onClose={handleClose}
+			disablePageScroll={true}
 			title={tHtml('Deel dit fragment')}
 		>
-			<ModalBody>
+			<ModalSubHeader>
 				<Spacer className="m-fragment-share-modal__tabs-wrapper" margin={'bottom'}>
 					<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
 				</Spacer>
-				{renderTabs()}
-			</ModalBody>
+			</ModalSubHeader>
+			<ModalBody>{renderTabs()}</ModalBody>
+			<ModalFooterLeft>
+				<Button
+					type="secondary"
+					label={tText('Annuleer fragment delen')}
+					title={tText('Annuleer fragment delen')}
+					ariaLabel={tText('Annuleer fragment delen')}
+					onClick={() => {
+						handleClose();
+					}}
+				/>
+			</ModalFooterLeft>
 		</Modal>
 	);
 };
