@@ -1,9 +1,22 @@
-import { IconName, Modal, ModalBody, Spacer, Tabs } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import React, { type FC, type ReactNode } from 'react';
+import bookwidgetLogo from '@assets/images/bookwidget_logo.png';
+import smartschoolLogo from '@assets/images/smartschool_logo.png';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import {
+	Dropdown,
+	IconName,
+	MenuContent,
+	Modal,
+	ModalBody,
+	Spacer,
+	Tabs,
+} from '@viaa/avo2-components';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import React, { type FC, type ReactNode, useState } from 'react';
 
+import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
+import withUser, { type UserProps } from '../../hocs/withUser';
 import { useTabs } from '../../hooks/useTabs';
 import QuickLaneContent from '../QuickLaneContent/QuickLaneContent';
 import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';
@@ -11,6 +24,7 @@ import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
 import ShareThroughEmailContent from '../ShareThroughEmailContent/ShareThroughEmailContent';
 import { type ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 import './FragmentShareModal.scss';
+import {FragmentShareEmbedOptions} from "./FragmentShareModal.types";
 
 type FragmentShareModalProps = {
 	item: Avo.Item.Item;
@@ -20,11 +34,11 @@ type FragmentShareModalProps = {
 	withPupils?: boolean;
 };
 
-const FragmentShareModal: FC<FragmentShareModalProps> = ({
+const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 	item,
 	isOpen,
 	onClose,
-	withPupils = true,
+	commonUser,
 }) => {
 	const initialTab = ShareDropdownTabs.COLLEAGUES;
 	const [tab, setActiveTab, tabs] = useTabs(
@@ -34,7 +48,7 @@ const FragmentShareModal: FC<FragmentShareModalProps> = ({
 				label: tText('shared/components/share-dropdown/share-dropdown___collegas'),
 				icon: IconName.userTeacher,
 			},
-			...(withPupils
+			...(PermissionService.hasPerm(commonUser, PermissionName.CREATE_QUICK_LANE)
 				? [
 						{
 							id: ShareDropdownTabs.PUPILS,
@@ -45,9 +59,82 @@ const FragmentShareModal: FC<FragmentShareModalProps> = ({
 						},
 				  ]
 				: []),
+			// TODO: inverse this again so it excludes correctly
+			...(!PermissionService.hasPerm(commonUser, PermissionName.EMBED_ITEMS_ON_OTHER_SITES)
+				? [
+						{
+							id: ShareDropdownTabs.EMBED,
+							label: (
+								<>
+									{tText('Insluiten')}
+									<img
+										className="append-logo"
+										src={smartschoolLogo}
+										alt={tText('Smartschool logo')}
+									/>
+									<img
+										className="append-logo"
+										src={bookwidgetLogo}
+										alt={tText('Bookwidget logo')}
+									/>
+								</>
+							),
+							icon: IconName.code,
+						},
+				  ]
+				: []),
 		],
 		initialTab
 	);
+	const [isEmbedDropdownOpen, setIsEmbedDropdownOpen] = useState<boolean>(false);
+	const [embedDropdownSelection, setEmbedDropdownSelection] = useState<string>('');
+
+	const handleRightsButtonClicked = () => {
+		setIsEmbedDropdownOpen(!isEmbedDropdownOpen);
+	};
+
+	const embedDropdownOptions = [
+		{
+			label: (
+				<>
+					<img
+						className="o-svg-icon prepend-logo"
+						src={smartschoolLogo}
+						alt={tText('Smartschool logo')}
+					/>
+					{tText('Smartschool')}
+				</>
+			),
+			id: FragmentShareEmbedOptions.SMARTSCHOOL,
+			key: FragmentShareEmbedOptions.SMARTSCHOOL,
+		},
+		{
+			label: (
+				<>
+					<img
+						className="o-svg-icon prepend-logo"
+						src={bookwidgetLogo}
+						alt={tText('Bookwidget logo')}
+					/>
+					{tText('Bookwidget')}
+				</>
+			),
+			id: FragmentShareEmbedOptions.BOOKWIDGET,
+			key: FragmentShareEmbedOptions.BOOKWIDGET,
+		},
+	];
+
+	const getEmbedDropdownLabel = () => {
+		return (
+			embedDropdownOptions.find((value) => value.id === embedDropdownSelection)?.label ||
+			tText('Selecteer een platform')
+		);
+	};
+
+	const handleClose = () => {
+		onClose && onClose();
+		setActiveTab(initialTab);
+	};
 
 	const renderPupilsContent = (): ReactNode => {
 		return (
@@ -70,9 +157,41 @@ const FragmentShareModal: FC<FragmentShareModalProps> = ({
 		);
 	};
 
-	const handleClose = () => {
-		onClose && onClose();
-		setActiveTab(initialTab);
+	const renderEmbedContent = (): ReactNode => {
+		return (
+			<>
+				<Spacer margin="bottom">
+					<BlockHeading type="h4">{tHtml('Fragment insluiten in')}</BlockHeading>
+				</Spacer>
+				<Dropdown
+					label={getEmbedDropdownLabel()}
+					onOpen={handleRightsButtonClicked}
+					onClose={handleRightsButtonClicked}
+					isOpen={isEmbedDropdownOpen}
+				>
+					<MenuContent
+						menuItems={embedDropdownOptions}
+						onClick={(id) => {
+							setEmbedDropdownSelection(id as string);
+							handleRightsButtonClicked();
+						}}
+					/>
+				</Dropdown>
+			</>
+		);
+	};
+
+	const renderTabs = (): ReactNode => {
+		switch (tab) {
+			case ShareDropdownTabs.COLLEAGUES:
+				return renderColleaguesContent();
+			case ShareDropdownTabs.PUPILS:
+				return renderPupilsContent();
+			case ShareDropdownTabs.EMBED:
+				return renderEmbedContent();
+			default:
+				return <></>;
+		}
 	};
 
 	return (
@@ -81,23 +200,16 @@ const FragmentShareModal: FC<FragmentShareModalProps> = ({
 			size="medium"
 			scrollable={true}
 			onClose={handleClose}
-			title={tHtml('Fragment delen')}
+			title={tHtml('Deel dit fragment')}
 		>
 			<ModalBody>
-				{
-					<>
-						<Spacer className="m-fragment-share-modal__tabs-wrapper" margin={'bottom'}>
-							<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
-						</Spacer>
-
-						{tab === ShareDropdownTabs.PUPILS
-							? renderPupilsContent()
-							: renderColleaguesContent()}
-					</>
-				}
+				<Spacer className="m-fragment-share-modal__tabs-wrapper" margin={'bottom'}>
+					<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
+				</Spacer>
+				{renderTabs()}
 			</ModalBody>
 		</Modal>
 	);
 };
 
-export default FragmentShareModal;
+export default withUser(FragmentShareModal) as FC<FragmentShareModalProps>;
