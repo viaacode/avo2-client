@@ -29,6 +29,7 @@ import { FragmentList } from '../../collection/components';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
+import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
 import { isMobileWidth, renderAvatar, toSeconds } from '../../shared/helpers';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
@@ -60,9 +61,9 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 			return false;
 		}
 
-		if (quickLane.content_label === 'ITEM') {
+		if (quickLane.content_label === QuickLaneTypeEnum.ITEM) {
 			return PermissionService.hasPerm(commonUser, PermissionName.VIEW_ANY_PUBLISHED_ITEMS);
-		} else if (quickLane.content_label === 'COLLECTIE') {
+		} else if (quickLane.content_label === QuickLaneTypeEnum.COLLECTION) {
 			return PermissionService.hasPerm(
 				commonUser,
 				PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS
@@ -179,11 +180,11 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 
 		let path: string | undefined;
 
-		if (quickLane?.content_label === 'ITEM') {
+		if (quickLane?.content_label === QuickLaneTypeEnum.ITEM) {
 			path = generatePath(APP_PATH.ITEM_DETAIL.route, {
 				id: (quickLane.content as Avo.Item.Item).external_id.toString(),
 			});
-		} else if (quickLane.content_label === 'COLLECTIE') {
+		} else if (quickLane.content_label === QuickLaneTypeEnum.COLLECTION) {
 			path = generatePath(APP_PATH.COLLECTION_DETAIL.route, {
 				id: quickLane.content_id,
 			});
@@ -299,7 +300,7 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 			);
 		}
 
-		if (quickLane.content_label === 'COLLECTIE') {
+		if (quickLane.content_label === QuickLaneTypeEnum.COLLECTION) {
 			const content = quickLane.content as Avo.Collection.Collection | undefined;
 
 			if (!content || !content.is_public) {
