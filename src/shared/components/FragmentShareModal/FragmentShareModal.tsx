@@ -6,6 +6,7 @@ import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import { useTabs } from '../../hooks/useTabs';
 import QuickLaneContent from '../QuickLaneContent/QuickLaneContent';
+import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';
 import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
 import ShareThroughEmailContent from '../ShareThroughEmailContent/ShareThroughEmailContent';
 import { type ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
@@ -49,7 +50,13 @@ const FragmentShareModal: FC<FragmentShareModalProps> = ({
 	);
 
 	const renderPupilsContent = (): ReactNode => {
-		return <QuickLaneContent content={item} content_label="ITEM" isOpen={isOpen} />;
+		return (
+			<QuickLaneContent
+				content={item}
+				content_label={QuickLaneTypeEnum.ITEM}
+				isOpen={isOpen}
+			/>
+		);
 	};
 
 	const renderColleaguesContent = (): ReactNode => {
