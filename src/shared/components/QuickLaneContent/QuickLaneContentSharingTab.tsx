@@ -29,7 +29,7 @@ import QuickLaneLink from '../QuickLaneLink/QuickLaneLink';
 import TimeCropControls from '../TimeCropControls/TimeCropControls';
 
 import { defaultQuickLaneState, getContentUuid, isShareable } from './QuickLaneContent.helpers';
-import { type QuickLaneContentProps } from './QuickLaneContent.types';
+import { type QuickLaneContentProps, QuickLaneTypeEnum } from './QuickLaneContent.types';
 
 const QuickLaneContentSharingTab: FC<QuickLaneContentProps & UserProps> = ({
 	isOpen,
@@ -221,7 +221,7 @@ const QuickLaneContentSharingTab: FC<QuickLaneContentProps & UserProps> = ({
 				<FormGroup
 					label={tText('shared/components/quick-lane-modal/quick-lane-modal___inhoud')}
 				>
-					{content_label === 'COLLECTIE' && (
+					{content_label === QuickLaneTypeEnum.COLLECTION && (
 						<ContentLink
 							parent={{
 								content_label,
@@ -230,7 +230,7 @@ const QuickLaneContentSharingTab: FC<QuickLaneContentProps & UserProps> = ({
 							content={content}
 						/>
 					)}
-					{content_label === 'ITEM' && (
+					{content_label === QuickLaneTypeEnum.ITEM && (
 						<>
 							<div className="u-spacer-bottom">
 								<ItemVideoDescription

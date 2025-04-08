@@ -10,7 +10,7 @@ import withUser, { type UserProps } from '../../hocs/withUser';
 import LomFieldsInput from '../LomFieldsInput/LomFieldsInput';
 
 import { isShareable } from './QuickLaneContent.helpers';
-import { type QuickLaneContentProps } from './QuickLaneContent.types';
+import { type QuickLaneContentProps, QuickLaneTypeEnum } from './QuickLaneContent.types';
 
 interface QuickLaneContentPublicationTabProps {
 	onComplete?: () => void;
@@ -22,7 +22,7 @@ const QuickLaneContentPublicationTab: FC<
 	const { tText } = useTranslation();
 
 	const [model, setModel] = useState(content);
-	const isCollection = content_label === 'COLLECTIE';
+	const isCollection = content_label === QuickLaneTypeEnum.COLLECTION;
 
 	useEffect(() => {
 		setModel(content);

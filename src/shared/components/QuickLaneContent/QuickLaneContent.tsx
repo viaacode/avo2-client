@@ -10,17 +10,17 @@ import { useTabs } from '../../hooks/useTabs';
 import { ToastService } from '../../services/toast-service';
 
 import { isShareable } from './QuickLaneContent.helpers';
-import { type QuickLaneContentProps } from './QuickLaneContent.types';
+import { type QuickLaneContentProps, QuickLaneTypeEnum } from './QuickLaneContent.types';
 import QuickLaneContentPublicationTab from './QuickLaneContentPublicationTab';
 import QuickLaneContentSharingTab from './QuickLaneContentSharingTab';
 import './QuickLaneContent.scss';
 
 // State
 
-const QuickLaneContentTabs = {
-	publication: 'publication',
-	sharing: 'sharing',
-};
+enum QuickLaneContentTabs {
+	publication = 'publication',
+	sharing = 'sharing',
+}
 
 // Helpers
 
@@ -54,6 +54,7 @@ const isAllowedToPublish = async (
 
 const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
 	const { content_label, commonUser } = props;
+	const isCollection = content_label === QuickLaneTypeEnum.COLLECTION;
 
 	const [content, setContent] = useState<
 		Avo.Assignment.Assignment | Avo.Collection.Collection | Avo.Item.Item | undefined
@@ -88,7 +89,7 @@ const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
 	// Check permissions
 	useEffect(() => {
 		async function checkPermissions() {
-			if (content_label === 'COLLECTIE' && commonUser) {
+			if (isCollection && commonUser) {
 				setIsPublishRequired(await needsToPublish(commonUser));
 				setCanPublish(
 					await isAllowedToPublish(commonUser, content as Avo.Collection.Collection)
@@ -101,7 +102,7 @@ const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
 
 	useEffect(() => {
 		const shouldBePublishedFirst =
-			content_label === 'COLLECTIE' &&
+			isCollection &&
 			isPublishRequired &&
 			content &&
 			!(content as Avo.Collection.Collection).is_public; // AVO-1880
@@ -122,7 +123,7 @@ const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
 		return tabs.filter((tab) => {
 			switch (tab.id) {
 				case QuickLaneContentTabs.publication:
-					return content_label === 'COLLECTIE' && canPublish;
+					return isCollection && canPublish;
 
 				default:
 					return true;
@@ -132,12 +133,12 @@ const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
 
 	const renderContentNotShareableWarning = (): string => {
 		switch (content_label) {
-			case 'ITEM':
+			case QuickLaneTypeEnum.ITEM:
 				return tText(
 					'shared/components/quick-lane-modal/quick-lane-modal___item-is-niet-gepubliceerd'
 				);
 
-			case 'COLLECTIE':
+			case QuickLaneTypeEnum.COLLECTION:
 				return tab === QuickLaneContentTabs.publication
 					? tText(
 							'shared/components/quick-lane-modal/quick-lane-modal___collectie-is-niet-publiek'
@@ -153,7 +154,7 @@ const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
 
 	const renderTab = () => {
 		switch (tab) {
-			case 'publication':
+			case QuickLaneContentTabs.publication:
 				return (
 					<QuickLaneContentPublicationTab
 						{...props}
@@ -162,7 +163,7 @@ const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
 						onComplete={() => setActiveTab(QuickLaneContentTabs.sharing)}
 					/>
 				);
-			case 'sharing':
+			case QuickLaneContentTabs.sharing:
 				return (
 					<QuickLaneContentSharingTab
 						{...props}
@@ -186,11 +187,11 @@ const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
 								tabs={getTabs()}
 								onClick={(tab) => {
 									switch (tab.toString() as keyof typeof QuickLaneContentTabs) {
-										case 'publication':
+										case QuickLaneContentTabs.publication:
 											setActiveTab(tab);
 											break;
 
-										case 'sharing':
+										case QuickLaneContentTabs.sharing:
 											if (!isPublishRequired || isShareable(content)) {
 												setActiveTab(tab);
 											} else {
@@ -210,9 +211,9 @@ const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
 						</Spacer>
 					)}
 
-					{!isShareable(content) && content_label === 'COLLECTIE' && (
+					{!isShareable(content) && isCollection && (
 						<Spacer margin={['bottom']}>
-							<Alert type={content_label === 'COLLECTIE' ? 'info' : 'danger'}>
+							<Alert type={isCollection ? 'info' : 'danger'}>
 								<p>{renderContentNotShareableWarning()}</p>
 							</Alert>
 						</Spacer>

@@ -1,7 +1,12 @@
 import { type Avo } from '@viaa/avo2-types';
 import { type ReactNode } from 'react';
 
-export type QuickLaneType = 'COLLECTIE' | 'ITEM';
+export enum QuickLaneTypeEnum {
+	COLLECTION = 'COLLECTIE',
+	ITEM = 'ITEM',
+}
+
+export type QuickLaneType = QuickLaneTypeEnum.COLLECTION | QuickLaneTypeEnum.ITEM;
 
 export interface QuickLaneContentProps {
 	content_label?: QuickLaneType;
