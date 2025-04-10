@@ -16,7 +16,7 @@ import {
 	Tabs,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import React, { type FC, type ReactNode, useState } from 'react';
+import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { tHtml } from '../../helpers/translate-html';
@@ -100,6 +100,10 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 		setIsEmbedDropdownOpen(!isEmbedDropdownOpen);
 	};
 
+	useEffect(() => {
+		setEmbedDropdownSelection('');
+	}, [tab]);
+
 	const embedDropdownOptions = [
 		{
 			label: (
@@ -166,28 +170,6 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 	};
 
 	const renderEmbedContent = (): ReactNode => {
-		let embedDetail: ReactNode | string = '';
-		let customDescription: ReactNode | undefined = undefined;
-
-		if (embedDropdownSelection === FragmentShareEmbedOptions.SMARTSCHOOL) {
-			embedDetail = tHtml(
-				'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in een Smartschoolfiche.'
-			);
-		} else if (embedDropdownSelection === FragmentShareEmbedOptions.BOOKWIDGET) {
-			embedDetail = tHtml(
-				'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in Bookwidgets.'
-			);
-			customDescription = (
-				<Alert type="info">
-					<span className="c-content">
-						{tHtml(
-							'Bij het insluiten op Bookwidgets wordt er geen beschrijving bij het fragment weergegeven.'
-						)}
-					</span>
-				</Alert>
-			);
-		}
-
 		return (
 			<>
 				<Container
@@ -215,13 +197,38 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 						</Dropdown>
 					</Spacer>
 				</Container>
-				{embedDetail && <Spacer margin="top-large">{embedDetail}</Spacer>}
-				{embedDropdownSelection && (
-					<EmbedContent
-						item={item}
-						customDescription={customDescription}
-						onClose={handleClose}
-					/>
+				{embedDropdownSelection === FragmentShareEmbedOptions.SMARTSCHOOL && (
+					<>
+						<Spacer margin="top-large">
+							{tHtml(
+								'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in Bookwidgets.'
+							)}
+						</Spacer>
+						<EmbedContent item={item} onClose={handleClose} />
+					</>
+				)}
+
+				{embedDropdownSelection === FragmentShareEmbedOptions.BOOKWIDGET && (
+					<>
+						<Spacer margin="top-large">
+							{tHtml(
+								'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in een Smartschoolfiche.'
+							)}
+						</Spacer>
+						<EmbedContent
+							item={item}
+							customDescription={
+								<Alert type="info">
+									<span className="c-content">
+										{tHtml(
+											'Bij het insluiten op Bookwidgets wordt er geen beschrijving bij het fragment weergegeven.'
+										)}
+									</span>
+								</Alert>
+							}
+							onClose={handleClose}
+						/>
+					</>
 				)}
 			</>
 		);

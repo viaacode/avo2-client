@@ -45,7 +45,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(0);
 
-	const fragmentDuration = useMemo(() => toSeconds(item.duration) || 0, [item]);
+	const fragmentDuration = useMemo(() => toSeconds(item?.duration) || 0, [item]);
 	const [start, end] = getValidStartAndEnd(fragmentStartTime, fragmentEndTime, fragmentDuration);
 
 	const [descriptionSelection, setDescriptionSelection] = useState<DescriptionSelection>(
@@ -55,7 +55,10 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 
 	useEffect(() => {
 		setTitle(item?.title || '');
-		setFragmentEndTime(toSeconds(item.duration) || 0);
+		setFragmentStartTime(0);
+		setFragmentEndTime(toSeconds(item?.duration) || 0);
+
+		setDescriptionSelection(DescriptionSelection.original);
 	}, [item]);
 
 	const renderDescription = () => {
