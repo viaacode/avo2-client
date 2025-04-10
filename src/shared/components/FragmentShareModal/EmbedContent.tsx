@@ -9,6 +9,7 @@ import {
 	Container,
 	ExpandableContainer,
 	FormGroup,
+	IconName,
 	Spacer,
 	TextInput,
 	Toolbar,
@@ -52,6 +53,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 		DescriptionSelection.original
 	);
 	const [isDescriptionExpanded, setIsDescriptionExpanded] = useState<boolean>(false);
+	const [created, setCreated] = useState<boolean>(false);
 
 	useEffect(() => {
 		setTitle(item?.title || '');
@@ -103,6 +105,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 					controls={controls}
 					enabledHeadings={['h3', 'h4', 'normal']}
 					value={item?.description || ''}
+					disabled={created}
 				/>
 			);
 		}
@@ -122,6 +125,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 						id="share-fragment-use-original-description"
 						type="secondary"
 						className="u-flex-auto"
+						disabled={created}
 						label={tText('Originele beschrijving')}
 						active={descriptionSelection === DescriptionSelection.original}
 						onClick={() => setDescriptionSelection(DescriptionSelection.original)}
@@ -129,6 +133,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 					<Button
 						type="secondary"
 						className="u-flex-auto"
+						disabled={created}
 						label={tText('Eigen beschrijving')}
 						active={descriptionSelection === DescriptionSelection.custom}
 						onClick={() => setDescriptionSelection(DescriptionSelection.custom)}
@@ -136,6 +141,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 					<Button
 						type="secondary"
 						className="u-flex-auto"
+						disabled={created}
 						label={tText('Geen beschrijving')}
 						active={descriptionSelection === DescriptionSelection.none}
 						onClick={() => setDescriptionSelection(DescriptionSelection.none)}
@@ -150,7 +156,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 		<>
 			<Spacer margin="top-large">
 				<FormGroup label={tText('Titel')}>
-					<TextInput value={title} onChange={setTitle} />
+					<TextInput value={title} onChange={setTitle} disabled={created} />
 				</FormGroup>
 			</Spacer>
 
@@ -174,6 +180,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 						endTime={fragmentEndTime}
 						minTime={0}
 						maxTime={fragmentDuration}
+						disabled={created}
 						onChange={(newStartTime: number, newEndTime: number) => {
 							const [validStart, validEnd] = getValidStartAndEnd(
 								newStartTime,
@@ -199,25 +206,45 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 						<ButtonToolbar>
 							<Button
 								type="secondary"
-								label={tText('Annuleer')}
-								title={tText('Annuleer')}
-								ariaLabel={tText('Annuleer')}
+								label={created ? tText('Annuleer') : tText('Sluit')}
+								title={created ? tText('Annuleer') : tText('Sluit')}
+								ariaLabel={created ? tText('Annuleer') : tText('Sluit')}
 								onClick={onClose}
 							/>
 						</ButtonToolbar>
 					</ToolbarItem>
 				</ToolbarLeft>
 				<ToolbarRight>
-					<ToolbarItem>
-						<ButtonToolbar>
-							<Button
-								type="primary"
-								label={tText('Code aanmaken')}
-								title={tText('Code aanmaken')}
-								ariaLabel={tText('Code aanmaken')}
-							/>
-						</ButtonToolbar>
-					</ToolbarItem>
+					{!created && (
+						<ToolbarItem>
+							<ButtonToolbar>
+								<Button
+									type="primary"
+									label={tText('Code aanmaken')}
+									title={tText('Code aanmaken')}
+									ariaLabel={tText('Code aanmaken')}
+									onClick={() => setCreated(true)}
+								/>
+							</ButtonToolbar>
+						</ToolbarItem>
+					)}
+					{created && (
+						<>
+							<ToolbarItem>
+								<span>{item?.description.slice(0, 60)}</span>
+							</ToolbarItem>
+							<ToolbarItem>
+								<ButtonToolbar>
+									<Button
+										type="primary"
+										icon={IconName.copy}
+										title={tText('Code kopiëren')}
+										ariaLabel={tText('Code kopiëren')}
+									/>
+								</ButtonToolbar>
+							</ToolbarItem>
+						</>
+					)}
 				</ToolbarRight>
 			</Toolbar>
 		</>
