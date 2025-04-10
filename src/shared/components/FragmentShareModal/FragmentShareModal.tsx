@@ -2,7 +2,6 @@ import bookwidgetLogo from '@assets/images/bookwidget_logo.png';
 import smartschoolLogo from '@assets/images/smartschool_logo.png';
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
-	Alert,
 	Button,
 	Container,
 	Dropdown,
@@ -19,6 +18,7 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { PermissionService } from '../../../authentication/helpers/permission-service';
+import { toSeconds } from '../../helpers';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import withUser, { type UserProps } from '../../hocs/withUser';
@@ -31,7 +31,11 @@ import { type ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 
 import './FragmentShareModal.scss';
 import EmbedContent from './EmbedContent';
-import { FragmentShareEmbedOptions } from './FragmentShareModal.types';
+import {
+	type EmbedCode,
+	EmbedCodeDescriptionType,
+	EmbedCodeExternalWebsite,
+} from './FragmentShareModal.types';
 
 type FragmentShareModalProps = {
 	item: Avo.Item.Item;
@@ -94,7 +98,10 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 		initialTab
 	);
 	const [isEmbedDropdownOpen, setIsEmbedDropdownOpen] = useState<boolean>(false);
-	const [embedDropdownSelection, setEmbedDropdownSelection] = useState<string>('');
+	const [embedDropdownSelection, setEmbedDropdownSelection] = useState<
+		EmbedCodeExternalWebsite | ''
+	>('');
+	const [embedCode, setEmbedCode] = useState<EmbedCode | undefined>(undefined);
 
 	const handleRightsButtonClicked = () => {
 		setIsEmbedDropdownOpen(!isEmbedDropdownOpen);
@@ -103,6 +110,31 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 	useEffect(() => {
 		setEmbedDropdownSelection('');
 	}, [tab]);
+
+	useEffect(() => {
+		if (embedDropdownSelection === '') {
+			setEmbedCode(undefined);
+		} else {
+			setEmbedCode({
+				id: '',
+				title: item.title,
+				externalWebsite: embedDropdownSelection,
+				contentType: 'ITEM',
+				contentId: item.id.toString(),
+				content: item,
+				descriptionType:
+					embedDropdownSelection === EmbedCodeExternalWebsite.BOOKWIDGETS
+						? EmbedCodeDescriptionType.NONE
+						: EmbedCodeDescriptionType.ORIGINAL,
+				description:
+					embedDropdownSelection === EmbedCodeExternalWebsite.BOOKWIDGETS
+						? ''
+						: item.description,
+				start: 0,
+				end: toSeconds(item.duration),
+			} as EmbedCode);
+		}
+	}, [embedDropdownSelection]);
 
 	const embedDropdownOptions = [
 		{
@@ -116,8 +148,8 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 					{tText('Smartschool')}
 				</>
 			),
-			id: FragmentShareEmbedOptions.SMARTSCHOOL,
-			key: FragmentShareEmbedOptions.SMARTSCHOOL,
+			id: EmbedCodeExternalWebsite.SMARTSCHOOL,
+			key: EmbedCodeExternalWebsite.SMARTSCHOOL,
 		},
 		{
 			label: (
@@ -130,8 +162,8 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 					{tText('Bookwidget')}
 				</>
 			),
-			id: FragmentShareEmbedOptions.BOOKWIDGET,
-			key: FragmentShareEmbedOptions.BOOKWIDGET,
+			id: EmbedCodeExternalWebsite.BOOKWIDGETS,
+			key: EmbedCodeExternalWebsite.BOOKWIDGETS,
 		},
 	];
 
@@ -190,46 +222,14 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 							<MenuContent
 								menuItems={embedDropdownOptions}
 								onClick={(id) => {
-									setEmbedDropdownSelection(id as string);
+									setEmbedDropdownSelection(id as EmbedCodeExternalWebsite);
 									handleRightsButtonClicked();
 								}}
 							/>
 						</Dropdown>
 					</Spacer>
 				</Container>
-				{embedDropdownSelection === FragmentShareEmbedOptions.SMARTSCHOOL && (
-					<>
-						<Spacer margin="top-large">
-							{tHtml(
-								'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in Bookwidgets.'
-							)}
-						</Spacer>
-						<EmbedContent item={item} onClose={handleClose} />
-					</>
-				)}
-
-				{embedDropdownSelection === FragmentShareEmbedOptions.BOOKWIDGET && (
-					<>
-						<Spacer margin="top-large">
-							{tHtml(
-								'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in een Smartschoolfiche.'
-							)}
-						</Spacer>
-						<EmbedContent
-							item={item}
-							customDescription={
-								<Alert type="info">
-									<span className="c-content">
-										{tHtml(
-											'Bij het insluiten op Bookwidgets wordt er geen beschrijving bij het fragment weergegeven.'
-										)}
-									</span>
-								</Alert>
-							}
-							onClose={handleClose}
-						/>
-					</>
-				)}
+				{embedCode && <EmbedContent item={embedCode} onClose={handleClose} />}
 			</>
 		);
 	};

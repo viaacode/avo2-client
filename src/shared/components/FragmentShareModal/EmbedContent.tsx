@@ -3,6 +3,7 @@ import {
 	RichTextEditorWithInternalState,
 } from '@meemoo/react-components';
 import {
+	Alert,
 	Button,
 	ButtonGroup,
 	ButtonToolbar,
@@ -17,54 +18,109 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import React, { type FC, useEffect, useMemo, useState } from 'react';
+import { type ItemSchema } from '@viaa/avo2-types/types/item';
+import React, { type FC, useEffect, useState } from 'react';
 
 import { ItemVideoDescription } from '../../../item/components';
-import { toSeconds } from '../../helpers';
+import { copyToClipboard, toSeconds } from '../../helpers';
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
+import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import './EmbedContent.scss';
+import { ToastService } from '../../services/toast-service';
 import TextWithTimestamps from '../TextWithTimestamp/TextWithTimestamps';
 import TimeCropControls from '../TimeCropControls/TimeCropControls';
 
+import {
+	type EmbedCode,
+	EmbedCodeDescriptionType,
+	EmbedCodeExternalWebsite,
+} from './FragmentShareModal.types';
+
 type EmbedProps = {
-	item: Avo.Item.Item;
-	customDescription?: React.ReactNode;
+	item: EmbedCode;
+	onSave?: (item: EmbedCode) => void;
 	onClose?: () => void;
 };
 
-enum DescriptionSelection {
-	original = 'original',
-	custom = 'custom',
-	none = 'none',
-}
+const EmbedContent: FC<EmbedProps> = ({ item, onSave, onClose }) => {
+	const fragmentDuration = toSeconds((item.content as ItemSchema).duration) || 0;
 
-const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 	const [title, setTitle] = useState<string | undefined>();
 
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(0);
 
-	const fragmentDuration = useMemo(() => toSeconds(item?.duration) || 0, [item]);
 	const [start, end] = getValidStartAndEnd(fragmentStartTime, fragmentEndTime, fragmentDuration);
 
-	const [descriptionSelection, setDescriptionSelection] = useState<DescriptionSelection>(
-		DescriptionSelection.original
+	const [descriptionType, setDescriptionType] = useState<EmbedCodeDescriptionType>(
+		EmbedCodeDescriptionType.ORIGINAL
 	);
+	const [description, setDescription] = useState<string>('');
 	const [isDescriptionExpanded, setIsDescriptionExpanded] = useState<boolean>(false);
-	const [created, setCreated] = useState<boolean>(false);
+	const [generatedCode, setGeneratedCode] = useState<string>('');
 
 	useEffect(() => {
-		setTitle(item?.title || '');
-		setFragmentStartTime(0);
-		setFragmentEndTime(toSeconds(item?.duration) || 0);
+		setTitle(item.title || '');
+		setFragmentStartTime(item.start || 0);
+		setFragmentEndTime(item.end || 0);
 
-		setDescriptionSelection(DescriptionSelection.original);
+		handleDescriptionToggle(item.descriptionType);
+		setDescription(item.description || '');
+		setGeneratedCode('');
 	}, [item]);
 
+	const mapValuesToEmbedCode = (): EmbedCode => {
+		let newDescription = '';
+
+		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL) {
+			newDescription = item.content.description || '';
+		} else if (descriptionType === EmbedCodeDescriptionType.CUSTOM) {
+			newDescription = description || '';
+		}
+
+		return {
+			...item,
+			title: title || '',
+			start: fragmentStartTime,
+			end: fragmentEndTime,
+			descriptionType,
+			description: newDescription,
+		};
+	};
+
+	const handleDescriptionToggle = (value: EmbedCodeDescriptionType) => {
+		switch (value) {
+			case EmbedCodeDescriptionType.ORIGINAL:
+				setDescription(item.content.description || '');
+				break;
+			case EmbedCodeDescriptionType.CUSTOM:
+				setDescription(item.content.description || '');
+				break;
+			case EmbedCodeDescriptionType.NONE:
+				setDescription('');
+				break;
+		}
+		setDescriptionType(value);
+	};
+
+	const handleSave = () => {
+		onSave && onSave(mapValuesToEmbedCode());
+	};
+
+	const handleCreate = () => {
+		// TODO: add endpoint to save, for now similate it
+		console.log(mapValuesToEmbedCode());
+		setGeneratedCode('I just got generated');
+	};
+
+	const handleCopyButtonClicked = () => {
+		copyToClipboard(generatedCode);
+		ToastService.success(tHtml('De code is naar je klembord gekopieerd'));
+	};
+
 	const renderDescription = () => {
-		if (descriptionSelection === DescriptionSelection.original) {
+		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL) {
 			return (
 				<div className={isDescriptionExpanded ? '' : 'expandable-container-closed'}>
 					<ExpandableContainer
@@ -72,13 +128,13 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 						defaultExpanded={isDescriptionExpanded}
 						onChange={setIsDescriptionExpanded}
 					>
-						<TextWithTimestamps content={item?.description || ''} />
+						<TextWithTimestamps content={item.description || ''} />
 					</ExpandableContainer>
 				</div>
 			);
 		}
 
-		if (descriptionSelection === DescriptionSelection.custom) {
+		if (descriptionType === EmbedCodeDescriptionType.CUSTOM) {
 			const controls: RichTextEditorControl[] = [
 				'undo',
 				'redo',
@@ -104,8 +160,9 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 				<RichTextEditorWithInternalState
 					controls={controls}
 					enabledHeadings={['h3', 'h4', 'normal']}
-					value={item?.description || ''}
-					disabled={created}
+					value={description || ''}
+					disabled={!!generatedCode}
+					onChange={setDescription}
 				/>
 			);
 		}
@@ -114,8 +171,16 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 	};
 
 	const renderDescriptionWrapper = () => {
-		if (customDescription) {
-			return customDescription;
+		if (item.externalWebsite === EmbedCodeExternalWebsite.BOOKWIDGETS) {
+			return (
+				<Alert type="info">
+					<span className="c-content">
+						{tHtml(
+							'Bij het insluiten op Bookwidgets wordt er geen beschrijving bij het fragment weergegeven.'
+						)}
+					</span>
+				</Alert>
+			);
 		}
 
 		return (
@@ -125,26 +190,26 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 						id="share-fragment-use-original-description"
 						type="secondary"
 						className="u-flex-auto"
-						disabled={created}
+						disabled={!!generatedCode}
 						label={tText('Originele beschrijving')}
-						active={descriptionSelection === DescriptionSelection.original}
-						onClick={() => setDescriptionSelection(DescriptionSelection.original)}
+						active={descriptionType === EmbedCodeDescriptionType.ORIGINAL}
+						onClick={() => handleDescriptionToggle(EmbedCodeDescriptionType.ORIGINAL)}
 					/>
 					<Button
 						type="secondary"
 						className="u-flex-auto"
-						disabled={created}
+						disabled={!!generatedCode}
 						label={tText('Eigen beschrijving')}
-						active={descriptionSelection === DescriptionSelection.custom}
-						onClick={() => setDescriptionSelection(DescriptionSelection.custom)}
+						active={descriptionType === EmbedCodeDescriptionType.CUSTOM}
+						onClick={() => handleDescriptionToggle(EmbedCodeDescriptionType.CUSTOM)}
 					/>
 					<Button
 						type="secondary"
 						className="u-flex-auto"
-						disabled={created}
+						disabled={!!generatedCode}
 						label={tText('Geen beschrijving')}
-						active={descriptionSelection === DescriptionSelection.none}
-						onClick={() => setDescriptionSelection(DescriptionSelection.none)}
+						active={descriptionType === EmbedCodeDescriptionType.NONE}
+						onClick={() => handleDescriptionToggle(EmbedCodeDescriptionType.NONE)}
 					/>
 				</ButtonGroup>
 				<Spacer margin="top">{renderDescription()}</Spacer>
@@ -152,11 +217,77 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 		);
 	};
 
+	const renderRightSideFooter = () => {
+		if (onSave) {
+			return (
+				<ToolbarRight>
+					<ToolbarItem>
+						<ButtonToolbar>
+							<Button
+								type="primary"
+								label={tText('Opslaan')}
+								title={tText('Code aanmaken')}
+								ariaLabel={tText('Code aanmaken')}
+								onClick={handleSave}
+							/>
+						</ButtonToolbar>
+					</ToolbarItem>
+				</ToolbarRight>
+			);
+		}
+
+		if (generatedCode) {
+			return (
+				<ToolbarRight>
+					<ToolbarItem>{generatedCode}</ToolbarItem>
+					<ToolbarItem>
+						<ButtonToolbar>
+							<Button
+								type="primary"
+								icon={IconName.copy}
+								title={tText('Code kopiëren')}
+								ariaLabel={tText('Code kopiëren')}
+								onClick={handleCopyButtonClicked}
+							/>
+						</ButtonToolbar>
+					</ToolbarItem>
+				</ToolbarRight>
+			);
+		}
+
+		return (
+			<ToolbarRight>
+				<ToolbarItem>
+					<ButtonToolbar>
+						<Button
+							type="primary"
+							label={tText('Code aanmaken')}
+							title={tText('Code aanmaken')}
+							ariaLabel={tText('Code aanmaken')}
+							onClick={handleCreate}
+						/>
+					</ButtonToolbar>
+				</ToolbarItem>
+			</ToolbarRight>
+		);
+	};
+
 	return (
 		<>
 			<Spacer margin="top-large">
+				{item.externalWebsite === EmbedCodeExternalWebsite.SMARTSCHOOL &&
+					tHtml(
+						'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in Bookwidgets.'
+					)}
+				{item.externalWebsite === EmbedCodeExternalWebsite.BOOKWIDGETS &&
+					tHtml(
+						'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in een Smartschoolfiche.'
+					)}
+			</Spacer>
+
+			<Spacer margin="top-large">
 				<FormGroup label={tText('Titel')}>
-					<TextInput value={title} onChange={setTitle} disabled={created} />
+					<TextInput value={title} onChange={setTitle} disabled={!!generatedCode} />
 				</FormGroup>
 			</Spacer>
 
@@ -164,7 +295,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 				<FormGroup label={tText('Inhoud')}>
 					<div className="u-spacer-bottom">
 						<ItemVideoDescription
-							itemMetaData={item}
+							itemMetaData={item.content as ItemSchema}
 							showMetadata={false}
 							enableMetadataLink={false}
 							showTitle={false}
@@ -180,7 +311,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 						endTime={fragmentEndTime}
 						minTime={0}
 						maxTime={fragmentDuration}
-						disabled={created}
+						disabled={!!generatedCode}
 						onChange={(newStartTime: number, newEndTime: number) => {
 							const [validStart, validEnd] = getValidStartAndEnd(
 								newStartTime,
@@ -206,46 +337,15 @@ const EmbedContent: FC<EmbedProps> = ({ item, customDescription, onClose }) => {
 						<ButtonToolbar>
 							<Button
 								type="secondary"
-								label={created ? tText('Annuleer') : tText('Sluit')}
-								title={created ? tText('Annuleer') : tText('Sluit')}
-								ariaLabel={created ? tText('Annuleer') : tText('Sluit')}
+								label={generatedCode ? tText('Annuleer') : tText('Sluit')}
+								title={generatedCode ? tText('Annuleer') : tText('Sluit')}
+								ariaLabel={generatedCode ? tText('Annuleer') : tText('Sluit')}
 								onClick={onClose}
 							/>
 						</ButtonToolbar>
 					</ToolbarItem>
 				</ToolbarLeft>
-				<ToolbarRight>
-					{!created && (
-						<ToolbarItem>
-							<ButtonToolbar>
-								<Button
-									type="primary"
-									label={tText('Code aanmaken')}
-									title={tText('Code aanmaken')}
-									ariaLabel={tText('Code aanmaken')}
-									onClick={() => setCreated(true)}
-								/>
-							</ButtonToolbar>
-						</ToolbarItem>
-					)}
-					{created && (
-						<>
-							<ToolbarItem>
-								<span>{item?.description.slice(0, 60)}</span>
-							</ToolbarItem>
-							<ToolbarItem>
-								<ButtonToolbar>
-									<Button
-										type="primary"
-										icon={IconName.copy}
-										title={tText('Code kopiëren')}
-										ariaLabel={tText('Code kopiëren')}
-									/>
-								</ButtonToolbar>
-							</ToolbarItem>
-						</>
-					)}
-				</ToolbarRight>
+				{renderRightSideFooter()}
 			</Toolbar>
 		</>
 	);
