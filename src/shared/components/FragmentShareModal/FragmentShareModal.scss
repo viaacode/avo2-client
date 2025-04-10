@@ -1,6 +1,10 @@
 @import "../../../styles/settings/colors";
 @import "../../../styles/settings/variables";
 
+.embed-selection {
+	padding: 0;
+}
+
 .m-fragment-share-modal__tabs-wrapper {
 	// Equate to avo2-components/src/components/Modal/Modal.scss without importing
 	margin: 0 - ($g-spacer-unit * 3);

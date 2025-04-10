@@ -2,7 +2,9 @@ import bookwidgetLogo from '@assets/images/bookwidget_logo.png';
 import smartschoolLogo from '@assets/images/smartschool_logo.png';
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
+	Alert,
 	Button,
+	Container,
 	Dropdown,
 	IconName,
 	MenuContent,
@@ -28,6 +30,7 @@ import ShareThroughEmailContent from '../ShareThroughEmailContent/ShareThroughEm
 import { type ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 
 import './FragmentShareModal.scss';
+import EmbedContent from './EmbedContent';
 import { FragmentShareEmbedOptions } from './FragmentShareModal.types';
 
 type FragmentShareModalProps = {
@@ -138,6 +141,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 	const handleClose = () => {
 		onClose && onClose();
 		setActiveTab(initialTab);
+		setEmbedDropdownSelection('');
 	};
 
 	const renderPupilsContent = (): ReactNode => {
@@ -162,27 +166,63 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 	};
 
 	const renderEmbedContent = (): ReactNode => {
+		let embedDetail: ReactNode | string = '';
+		let customDescription: ReactNode | undefined = undefined;
+
+		if (embedDropdownSelection === FragmentShareEmbedOptions.SMARTSCHOOL) {
+			embedDetail = tHtml(
+				'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in een Smartschoolfiche.'
+			);
+		} else if (embedDropdownSelection === FragmentShareEmbedOptions.BOOKWIDGET) {
+			embedDetail = tHtml(
+				'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in Bookwidgets.'
+			);
+			customDescription = (
+				<Alert type="info">
+					<span className="c-content">
+						{tHtml(
+							'Bij het insluiten op Bookwidgets wordt er geen beschrijving bij het fragment weergegeven.'
+						)}
+					</span>
+				</Alert>
+			);
+		}
+
 		return (
 			<>
-				<Spacer margin="bottom">
-					<BlockHeading type="h4">{tHtml('Fragment insluiten in')}</BlockHeading>
-				</Spacer>
-				<Spacer margin="bottom">
-					<Dropdown
-						label={getEmbedDropdownLabel()}
-						onOpen={handleRightsButtonClicked}
-						onClose={handleRightsButtonClicked}
-						isOpen={isEmbedDropdownOpen}
-					>
-						<MenuContent
-							menuItems={embedDropdownOptions}
-							onClick={(id) => {
-								setEmbedDropdownSelection(id as string);
-								handleRightsButtonClicked();
-							}}
-						/>
-					</Dropdown>
-				</Spacer>
+				<Container
+					mode="vertical"
+					bordered={!!embedDropdownSelection}
+					className="embed-selection"
+				>
+					<Spacer margin="bottom">
+						<BlockHeading type="h4">{tHtml('Fragment insluiten in')}</BlockHeading>
+					</Spacer>
+					<Spacer margin="bottom">
+						<Dropdown
+							label={getEmbedDropdownLabel()}
+							onOpen={handleRightsButtonClicked}
+							onClose={handleRightsButtonClicked}
+							isOpen={isEmbedDropdownOpen}
+						>
+							<MenuContent
+								menuItems={embedDropdownOptions}
+								onClick={(id) => {
+									setEmbedDropdownSelection(id as string);
+									handleRightsButtonClicked();
+								}}
+							/>
+						</Dropdown>
+					</Spacer>
+				</Container>
+				{embedDetail && <Spacer margin="top-large">{embedDetail}</Spacer>}
+				{embedDropdownSelection && (
+					<EmbedContent
+						item={item}
+						customDescription={customDescription}
+						onClose={handleClose}
+					/>
+				)}
 			</>
 		);
 	};
@@ -203,7 +243,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			size="medium"
+			size="large"
 			scrollable={tab === ShareDropdownTabs.PUPILS || !!embedDropdownSelection}
 			onClose={handleClose}
 			disablePageScroll={true}
@@ -215,17 +255,17 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 				</Spacer>
 			</ModalSubHeader>
 			<ModalBody>{renderTabs()}</ModalBody>
-			<ModalFooterLeft>
-				<Button
-					type="secondary"
-					label={tText('Annuleer fragment delen')}
-					title={tText('Annuleer fragment delen')}
-					ariaLabel={tText('Annuleer fragment delen')}
-					onClick={() => {
-						handleClose();
-					}}
-				/>
-			</ModalFooterLeft>
+			{(!embedDropdownSelection || tab !== ShareDropdownTabs.EMBED) && (
+				<ModalFooterLeft>
+					<Button
+						type="secondary"
+						label={tText('Annuleer')}
+						title={tText('Annuleer')}
+						ariaLabel={tText('Annuleer')}
+						onClick={handleClose}
+					/>
+				</ModalFooterLeft>
+			)}
 		</Modal>
 	);
 };
