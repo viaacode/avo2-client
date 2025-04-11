@@ -158,11 +158,13 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 				)
 			);
 		} catch (err) {
-			ToastService.danger(
-				tText(
-					'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement-mislukt'
-				)
+			const avoError = tText(
+				'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement-mislukt'
 			);
+			const klascementError = (err as any)?.innerException?.additionalInfo?.responseBody
+				?.additionalInfo?.klascementError?.uitzonderingen?.[0]?.diagnose;
+
+			ToastService.danger(compact([avoError, klascementError]).join(': '));
 		}
 	};
 
@@ -524,6 +526,19 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 			);
 		}
 
+		const disablePublishButton =
+			!collection.is_public || isPublishedToKlascement || isPublishing;
+		let publishButtonTooltip = undefined;
+		if (!collection.is_public) {
+			publishButtonTooltip = tText('De collectie moet eerst gepubliceerd worden op AVO');
+		} else if (isPublishedToKlascement) {
+			publishButtonTooltip = tText(
+				'De collectie is reeds gepubliceerd naar klascement. Bewerk het leermiddel daar.'
+			);
+		} else if (isPublishing) {
+			publishButtonTooltip = tText('Bezig met publiceren naar Klascement');
+		}
+
 		return (
 			<>
 				{renderPublishToKlascementHeader()}
@@ -583,9 +598,8 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 							)}
 							icon={IconName.klascement}
 							type="primary"
-							disabled={
-								!collection.is_public || isPublishedToKlascement || isPublishing
-							}
+							disabled={disablePublishButton}
+							title={publishButtonTooltip}
 							onClick={handlePublish}
 							className="u-color-klascement u-m-t"
 						/>
