@@ -13,4 +13,10 @@
 .u-color-klascement {
 	background-color: $color-klascement !important;
 	border-color: $color-klascement !important;
+
+	&[disabled] {
+		background-color: $color-gray-100 !important;
+		border-color: $color-gray-150 !important;
+		cursor: not-allowed !important;
+	}
 }
