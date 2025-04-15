@@ -23,6 +23,11 @@ import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import { useTabs } from '../../hooks/useTabs';
+import {
+	type EmbedCode,
+	EmbedCodeDescriptionType,
+	EmbedCodeExternalWebsite,
+} from '../../services/embed-code-service';
 import QuickLaneContent from '../QuickLaneContent/QuickLaneContent';
 import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';
 import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
@@ -31,11 +36,6 @@ import { type ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 
 import './FragmentShareModal.scss';
 import EmbedContent from './EmbedContent';
-import {
-	type EmbedCode,
-	EmbedCodeDescriptionType,
-	EmbedCodeExternalWebsite,
-} from './FragmentShareModal.types';
 
 type FragmentShareModalProps = {
 	item: Avo.Item.Item;

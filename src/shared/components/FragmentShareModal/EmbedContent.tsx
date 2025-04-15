@@ -27,15 +27,15 @@ import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import './EmbedContent.scss';
-import { ToastService } from '../../services/toast-service';
-import TextWithTimestamps from '../TextWithTimestamp/TextWithTimestamps';
-import TimeCropControls from '../TimeCropControls/TimeCropControls';
-
+import { useCreateEmbedCode } from '../../hooks/useCreateEmbedCode';
 import {
 	type EmbedCode,
 	EmbedCodeDescriptionType,
 	EmbedCodeExternalWebsite,
-} from './FragmentShareModal.types';
+} from '../../services/embed-code-service';
+import { ToastService } from '../../services/toast-service';
+import TextWithTimestamps from '../TextWithTimestamp/TextWithTimestamps';
+import TimeCropControls from '../TimeCropControls/TimeCropControls';
 
 type EmbedProps = {
 	item: EmbedCode;
@@ -59,6 +59,8 @@ const EmbedContent: FC<EmbedProps> = ({ item, onSave, onClose }) => {
 	const [description, setDescription] = useState<string>('');
 	const [isDescriptionExpanded, setIsDescriptionExpanded] = useState<boolean>(false);
 	const [generatedCode, setGeneratedCode] = useState<string>('');
+
+	const { mutateAsync: createEmbedCode, isLoading: isPublishing } = useCreateEmbedCode();
 
 	useEffect(() => {
 		setTitle(item.title || '');
@@ -108,10 +110,16 @@ const EmbedContent: FC<EmbedProps> = ({ item, onSave, onClose }) => {
 		onSave && onSave(mapValuesToEmbedCode());
 	};
 
-	const handleCreate = () => {
-		// TODO: add endpoint to save, for now similate it
-		console.log(mapValuesToEmbedCode());
-		setGeneratedCode('I just got generated');
+	const handleCreate = async () => {
+		try {
+			const embedCodeId = await createEmbedCode(mapValuesToEmbedCode());
+			setGeneratedCode(embedCodeId);
+			ToastService.success(
+				tText('Je code werd succesvol aangemaakt en opgeslagen in je werkruimte.')
+			);
+		} catch (err) {
+			ToastService.danger(tText('Code aanmaken mislukt'));
+		}
 	};
 
 	const handleCopyButtonClicked = () => {
@@ -226,8 +234,8 @@ const EmbedContent: FC<EmbedProps> = ({ item, onSave, onClose }) => {
 							<Button
 								type="primary"
 								label={tText('Opslaan')}
-								title={tText('Code aanmaken')}
-								ariaLabel={tText('Code aanmaken')}
+								title={tText('Opslaan')}
+								ariaLabel={tText('Opslaan')}
 								onClick={handleSave}
 							/>
 						</ButtonToolbar>
@@ -264,6 +272,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, onSave, onClose }) => {
 							label={tText('Code aanmaken')}
 							title={tText('Code aanmaken')}
 							ariaLabel={tText('Code aanmaken')}
+							disabled={isPublishing}
 							onClick={handleCreate}
 						/>
 					</ButtonToolbar>
