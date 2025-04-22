@@ -86,7 +86,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 									<img
 										className="append-logo"
 										src={bookwidgetLogo}
-										alt={tText('Bookwidget logo')}
+										alt={tText('Bookwidgets logo')}
 									/>
 								</>
 							),
@@ -157,9 +157,9 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 					<img
 						className="o-svg-icon prepend-logo"
 						src={bookwidgetLogo}
-						alt={tText('Bookwidget logo')}
+						alt={tText('Bookwidgets logo')}
 					/>
-					{tText('Bookwidget')}
+					{tText('Bookwidgets')}
 				</>
 			),
 			id: EmbedCodeExternalWebsite.BOOKWIDGETS,
