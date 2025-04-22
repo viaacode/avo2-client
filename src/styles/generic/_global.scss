@@ -9,6 +9,10 @@
 	display: none !important;
 }
 
+.disable-document-scroll {
+	overflow: hidden;
+}
+
 .react-datepicker-popper {
 	z-index: $g-c-modal-z;
 }

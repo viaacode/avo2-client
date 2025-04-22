@@ -15,6 +15,7 @@ interface TimeCropControlsPops {
 	endTime: number;
 	minTime: number;
 	maxTime: number;
+	disabled?: boolean;
 	onChange: (newStartTime: number, newEndTime: number) => void;
 	className?: string;
 }
@@ -24,6 +25,7 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 	endTime,
 	minTime,
 	maxTime,
+	disabled,
 	onChange,
 	className,
 }) => {
@@ -121,12 +123,14 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 		<Container className={classnames('c-time-crop-controls', className)}>
 			<TextInput
 				value={fragmentStartString}
+				disabled={disabled}
 				onBlur={() => updateStartAndEnd('start')}
 				onChange={(endTime) => updateStartAndEnd('start', endTime)}
 			/>
 			<div className="m-multi-range-wrapper">
 				<MultiRange
 					values={[start || minTime, end || maxTime]}
+					disabled={disabled}
 					onChange={onUpdateMultiRangeValues}
 					min={minTime}
 					max={Math.max(maxTime, minTime + 1)} // Avoid issues with min === 0 and max === 0 with Range library
@@ -134,6 +138,7 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 				/>
 			</div>
 			<TextInput
+				disabled={disabled}
 				value={fragmentEndString}
 				onBlur={() => updateStartAndEnd('end')}
 				onChange={(endTime) => updateStartAndEnd('end', endTime)}

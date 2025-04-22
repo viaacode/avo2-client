@@ -1,6 +1,10 @@
 @import "../../../styles/settings/colors";
 @import "../../../styles/settings/variables";
 
+.embed-selection {
+	padding: 0;
+}
+
 .m-fragment-share-modal__tabs-wrapper {
 	// Equate to avo2-components/src/components/Modal/Modal.scss without importing
 	margin: 0 - ($g-spacer-unit * 3);
@@ -14,4 +18,15 @@
 		margin-left: 1.7rem;
 		margin-bottom: 0;
 	}
+
+	.append-logo {
+		margin-left: 1rem;
+		width: 1.8rem;
+		height: 1.8rem;
+	}
+}
+
+.prepend-logo {
+	margin-right: 1rem;
+	vertical-align: text-bottom;
 }

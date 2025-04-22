@@ -52,11 +52,7 @@ import { CONTENT_TYPE_TRANSLATIONS, ContentTypeNumber } from '../../collection/c
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { type FilterState } from '../../search/search.types';
-import {
-	LoadingErrorLoadedComponent,
-	type LoadingInfo,
-	ShareThroughEmailModal,
-} from '../../shared/components';
+import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import { LANGUAGES, ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
@@ -794,9 +790,9 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 					<Button
 						type="tertiary"
 						icon={IconName.share2}
-						label={tText('Deel dit fragment')}
-						ariaLabel={tText('Deel dit fragment')}
-						title={tText('Deel dit fragment')}
+						label={tText('Fragment delen')}
+						ariaLabel={tText('Fragment delen')}
+						title={tText('Fragment delen')}
 						onClick={() => {
 							setIsShareFragmentModalOpen(true);
 						}}
@@ -1010,10 +1006,6 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 				<FragmentShareModal
 					isOpen={isShareFragmentModalOpen}
 					item={item}
-					withPupils={PermissionService.hasPerm(
-						commonUser,
-						PermissionName.CREATE_QUICK_LANE
-					)}
 					onClose={() => {
 						setIsShareFragmentModalOpen(false);
 					}}
