@@ -27,7 +27,7 @@ import {
 	type EmbedCode,
 	EmbedCodeDescriptionType,
 	EmbedCodeExternalWebsite,
-} from '../../services/embed-code-service';
+} from '../../types/embed-code';
 import QuickLaneContent from '../QuickLaneContent/QuickLaneContent';
 import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';
 import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
@@ -70,7 +70,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 						},
 				  ]
 				: []),
-			// TODO: inverse this again so it excludes correctly
+			// TODO EMBED: inverse this again so it excludes correctly
 			...(!PermissionService.hasPerm(commonUser, PermissionName.EMBED_ITEMS_ON_OTHER_SITES)
 				? [
 						{

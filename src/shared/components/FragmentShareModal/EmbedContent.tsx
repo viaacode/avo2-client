@@ -28,12 +28,12 @@ import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import './EmbedContent.scss';
 import { useCreateEmbedCode } from '../../hooks/useCreateEmbedCode';
+import { ToastService } from '../../services/toast-service';
 import {
 	type EmbedCode,
 	EmbedCodeDescriptionType,
 	EmbedCodeExternalWebsite,
-} from '../../services/embed-code-service';
-import { ToastService } from '../../services/toast-service';
+} from '../../types/embed-code';
 import TextWithTimestamps from '../TextWithTimestamp/TextWithTimestamps';
 import TimeCropControls from '../TimeCropControls/TimeCropControls';
 
