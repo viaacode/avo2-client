@@ -120,7 +120,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 				title: item.title,
 				externalWebsite: embedDropdownSelection,
 				contentType: 'ITEM',
-				contentId: item.id.toString(),
+				contentId: item.external_id,
 				content: item,
 				descriptionType:
 					embedDropdownSelection === EmbedCodeExternalWebsite.BOOKWIDGETS
