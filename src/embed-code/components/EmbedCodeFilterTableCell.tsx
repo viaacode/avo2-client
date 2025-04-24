@@ -1,7 +1,6 @@
 import { IconName, MetaData, MetaDataItem, Thumbnail } from '@viaa/avo2-components';
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { type FC, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
 
 import {
 	formatDate,
@@ -18,12 +17,14 @@ import './EmbedCodeFilterTableCell.scss';
 export interface EmbedCodeFilterTableCellProps {
 	id: string;
 	data: EmbedCode;
+	onNameClick: (data: EmbedCode) => void;
 	actions?: (data?: EmbedCodeFilterTableCellProps['data']) => ReactNode;
 }
 
 const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 	id,
 	data,
+	onNameClick,
 	actions = () => null,
 }) => {
 	const getItemTimestamp = (date: string) => {
@@ -42,10 +43,8 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 
 	const renderTitle = ({ content, contentType, title }: EmbedCode) => (
 		<div className="c-content-header">
-			<h3 className="c-content-header__header">
-				<Link onClick={console.log} title={title}>
-					{truncateTableValue(title)}
-				</Link>
+			<h3 className="c-content-header__header" onClick={() => onNameClick(data)}>
+				{truncateTableValue(title)}
 			</h3>
 			<div className="c-content-header__meta u-text-muted">
 				<MetaData category={contentType}>

@@ -19,7 +19,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
-import React, { type FC, useEffect, useState } from 'react';
+import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { ItemVideoDescription } from '../../item/components';
 import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
@@ -35,16 +35,21 @@ import {
 	EmbedCodeDescriptionType,
 	EmbedCodeExternalWebsite,
 } from '../embed-code.types';
+import { toEmbedCodeDetail } from '../helpers/links';
 import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
-import {toEmbedCodeDetail} from "../helpers/links";
 
 type EmbedProps = {
-	item: EmbedCode;
+	item?: EmbedCode;
+	contentDescription: ReactNode | string;
 	onSave?: (item: EmbedCode) => void;
 	onClose?: () => void;
 };
 
-const EmbedContent: FC<EmbedProps> = ({ item, onSave, onClose }) => {
+const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClose }) => {
+	if (!item) {
+		return <></>;
+	}
+
 	const fragmentDuration = toSeconds((item.content as ItemSchema).duration) || 0;
 
 	const [title, setTitle] = useState<string | undefined>();
@@ -137,7 +142,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, onSave, onClose }) => {
 						defaultExpanded={isDescriptionExpanded}
 						onChange={setIsDescriptionExpanded}
 					>
-						<TextWithTimestamps content={item.description || ''} />
+						<TextWithTimestamps content={item.content.description || ''} />
 					</ExpandableContainer>
 				</div>
 			);
@@ -284,22 +289,11 @@ const EmbedContent: FC<EmbedProps> = ({ item, onSave, onClose }) => {
 
 	return (
 		<>
-			<Spacer margin="top-large">
-				{item.externalWebsite === EmbedCodeExternalWebsite.SMARTSCHOOL &&
-					tHtml(
-						'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in Bookwidgets.'
-					)}
-				{item.externalWebsite === EmbedCodeExternalWebsite.BOOKWIDGETS &&
-					tHtml(
-						'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in een Smartschoolfiche.'
-					)}
-			</Spacer>
+			<Spacer margin="bottom-large">{contentDescription}</Spacer>
 
-			<Spacer margin="top-large">
-				<FormGroup label={tText('Titel')}>
-					<TextInput value={title} onChange={setTitle} disabled={!!generatedCode} />
-				</FormGroup>
-			</Spacer>
+			<FormGroup label={tText('Titel')}>
+				<TextInput value={title} onChange={setTitle} disabled={!!generatedCode} />
+			</FormGroup>
 
 			<Container mode="vertical" bordered={true}>
 				<FormGroup label={tText('Inhoud')}>

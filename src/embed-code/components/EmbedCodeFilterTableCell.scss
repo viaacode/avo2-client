@@ -20,3 +20,12 @@
 		max-width: 30rem;
 	}
 }
+
+.c-content-header__header {
+	color: $color-primary;
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}

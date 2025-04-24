@@ -30,6 +30,7 @@ import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 import { useDeleteEmbedCode } from '../hooks/useDeleteEmbedCode';
 
 import EmbedCodeFilterTableCell from './EmbedCodeFilterTableCell';
+import EditEmbedCodeModal from './modals/EditEmbedCodeModal';
 
 // Typings
 interface EmbedCodeOverviewProps {
@@ -184,6 +185,10 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 		<EmbedCodeFilterTableCell
 			id={id}
 			data={data}
+			onNameClick={(data) => {
+				setSelected(data);
+				setIsEmbedCodeModalOpen(true);
+			}}
 			actions={(data) => {
 				const items = [
 					{
@@ -230,9 +235,12 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 								if (selected === undefined) {
 									return;
 								}
-								// TODO EMBED: implement actions
 
 								switch (action.toString() as EmbedCodeAction) {
+									case EmbedCodeAction.EDIT:
+										setIsEmbedCodeModalOpen(true);
+										break;
+
 									case EmbedCodeAction.COPY_TO_CLIPBOARD:
 										copyToClipboard(toEmbedCodeDetail(selected.contentId));
 										ToastService.success(
@@ -294,6 +302,15 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 				isLoading={loadingInfo.state === 'loading'}
 				hideTableColumnsButton
 				showCheckboxes={false}
+			/>
+
+			<EditEmbedCodeModal
+				isOpen={isEmbedCodeModalOpen}
+				embedCode={selected}
+				onClose={() => {
+					setIsEmbedCodeModalOpen(false);
+					setSelected(undefined);
+				}}
 			/>
 
 			<DeleteObjectModal

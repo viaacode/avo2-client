@@ -200,35 +200,56 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 		);
 	};
 
+	const renderEmbedContentDescription = (): string | ReactNode => {
+		switch (embedDropdownSelection) {
+			case EmbedCodeExternalWebsite.SMARTSCHOOL:
+				return tHtml(
+					'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in een Smartschoolfiche.'
+				);
+			case EmbedCodeExternalWebsite.BOOKWIDGETS:
+				return tHtml(
+					'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in Bookwidgets.'
+				);
+			default:
+				return '';
+		}
+	};
+
 	const renderEmbedContent = (): ReactNode => {
 		return (
 			<>
-				<Container
-					mode="vertical"
-					bordered={!!embedDropdownSelection}
-					className="embed-selection"
-				>
-					<Spacer margin="bottom">
-						<BlockHeading type="h4">{tHtml('Fragment insluiten in')}</BlockHeading>
-					</Spacer>
-					<Spacer margin="bottom">
-						<Dropdown
-							label={getEmbedDropdownLabel()}
-							onOpen={handleRightsButtonClicked}
-							onClose={handleRightsButtonClicked}
-							isOpen={isEmbedDropdownOpen}
-						>
-							<MenuContent
-								menuItems={embedDropdownOptions}
-								onClick={(id) => {
-									setEmbedDropdownSelection(id as EmbedCodeExternalWebsite);
-									handleRightsButtonClicked();
-								}}
-							/>
-						</Dropdown>
-					</Spacer>
-				</Container>
-				{embedCode && <EmbedContent item={embedCode} onClose={handleClose} />}
+				<Spacer margin="bottom-large">
+					<Container
+						mode="vertical"
+						bordered={!!embedDropdownSelection}
+						className="embed-selection"
+					>
+						<Spacer margin="bottom">
+							<BlockHeading type="h4">{tHtml('Fragment insluiten in')}</BlockHeading>
+						</Spacer>
+						<Spacer margin="bottom">
+							<Dropdown
+								label={getEmbedDropdownLabel()}
+								onOpen={handleRightsButtonClicked}
+								onClose={handleRightsButtonClicked}
+								isOpen={isEmbedDropdownOpen}
+							>
+								<MenuContent
+									menuItems={embedDropdownOptions}
+									onClick={(id) => {
+										setEmbedDropdownSelection(id as EmbedCodeExternalWebsite);
+										handleRightsButtonClicked();
+									}}
+								/>
+							</Dropdown>
+						</Spacer>
+					</Container>
+				</Spacer>
+				<EmbedContent
+					item={embedCode}
+					contentDescription={renderEmbedContentDescription()}
+					onClose={handleClose}
+				/>
 			</>
 		);
 	};
