@@ -5,13 +5,11 @@ import { stringifyUrl } from 'query-string';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CustomError, getEnv } from '../helpers';
 import { type EmbedCode } from '../types/embed-code';
-import type { TableColumnDataType } from '../types/table-column-data-type';
 
 export interface EmbedCodeFilters {
 	filterString?: string;
 	sortColumn?: string;
 	sortOrder?: Avo.Search.OrderDirection;
-	sortType?: TableColumnDataType;
 	limit: number;
 	offset: number;
 }
@@ -52,7 +50,6 @@ export class EmbedCodeService {
 				query: {
 					sortColumn: params?.sortColumn,
 					sortOrder: params?.sortOrder,
-					tableColumnDataType: params?.sortType,
 					offset: params?.offset,
 					limit: params?.limit || ITEMS_PER_PAGE,
 					filterString: params?.filterString,

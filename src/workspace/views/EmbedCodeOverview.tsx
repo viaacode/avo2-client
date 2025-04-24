@@ -32,7 +32,7 @@ interface EmbedCodeOverviewProps {
 
 enum EmbedCodeAction {
 	EDIT = 'EDIT',
-	COPY = 'COPY',
+	COPY_TO_CLIPBOARD = 'COPY_TO_CLIPBOARD',
 	DUPLICATE = 'DUPLICATE',
 	SHOW_ORIGINAL = 'SHOW_ORIGINAL',
 	DELETE = 'DELETE',
@@ -132,9 +132,6 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 				filterString: debouncedFilters.query,
 				sortOrder: sortOrder,
 				sortColumn: sortColumn,
-				sortType: columns.find((column) => {
-					return column.id === sortColumn;
-				})?.dataType as TableColumnDataType,
 				limit: ITEMS_PER_PAGE,
 				offset: debouncedFilters.page * ITEMS_PER_PAGE,
 			};
@@ -206,7 +203,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 					},
 					{
 						icon: IconName.clipboard,
-						id: EmbedCodeAction.COPY,
+						id: EmbedCodeAction.COPY_TO_CLIPBOARD,
 						label: tText('kopieer code'),
 					},
 					{
@@ -246,7 +243,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 								// TODO EMBED: implement actions
 
 								switch (action.toString() as EmbedCodeAction) {
-									case EmbedCodeAction.COPY:
+									case EmbedCodeAction.COPY_TO_CLIPBOARD:
 										setSelected(undefined);
 										break;
 
