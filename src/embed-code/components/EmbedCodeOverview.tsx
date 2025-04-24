@@ -129,6 +129,24 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 		onUpdate && onUpdate();
 	};
 
+	const duplicateSelectedEmbedCode = async (selected: EmbedCode) => {
+		await duplicateEmbedCode({
+			title: selected.title,
+			contentType: selected.contentType,
+			contentId: selected.contentId,
+			descriptionType: selected.descriptionType,
+			description: selected.description,
+			start: selected.start,
+			end: selected.end,
+			externalWebsite: selected.externalWebsite,
+		} as EmbedCode);
+
+		ToastService.success(tHtml('Het fragment werd succesvol gedupliceerd.'));
+
+		setSelected(undefined);
+		await reloadEmbedCodes();
+	};
+
 	const removeEmbedCode = async (id: EmbedCode['id']) => {
 		try {
 			await deleteEmbedCode(id);
@@ -224,18 +242,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 										break;
 
 									case EmbedCodeAction.DUPLICATE:
-										await duplicateEmbedCode({
-											title: selected.title,
-											contentType: selected.contentType,
-											contentId: selected.contentId,
-											descriptionType: selected.descriptionType,
-											description: selected.description,
-											start: selected.start,
-											end: selected.end,
-											externalWebsite: selected.externalWebsite,
-										} as EmbedCode);
-										setSelected(undefined);
-										await reloadEmbedCodes();
+										await duplicateSelectedEmbedCode(selected);
 										break;
 
 									case EmbedCodeAction.SHOW_ORIGINAL:
