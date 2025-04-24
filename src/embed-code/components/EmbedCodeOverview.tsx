@@ -2,15 +2,19 @@ import { IconName, type MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-com
 import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import { isEqual } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import { useQueryParams } from 'use-query-params';
 
 import FilterTable, {
 	type FilterableColumn,
 } from '../../admin/shared/components/FilterTable/FilterTable';
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from '../../admin/shared/components/FilterTable/FilterTable.const';
+import type { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { APP_PATH } from '../../constants';
 import { DeleteObjectModal, type LoadingInfo } from '../../shared/components';
-import { CustomError, isMobileWidth } from '../../shared/helpers';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
+import { CustomError, isMobileWidth, navigate } from '../../shared/helpers';
+import withUser from '../../shared/hocs/withUser';
 import { useDebounce } from '../../shared/hooks/useDebounce';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
@@ -43,7 +47,10 @@ enum EmbedCodeAction {
 
 const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 
-const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser }) => {
+const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = ({
+	commonUser,
+	history,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -258,6 +265,12 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 										setSelected(undefined);
 										break;
 
+									case EmbedCodeAction.SHOW_ORIGINAL:
+										navigate(history, APP_PATH.ITEM_DETAIL.route, {
+											id: selected.contentId,
+										});
+										break;
+
 									case EmbedCodeAction.DELETE:
 										setIsConfirmationModalOpen(true);
 										break;
@@ -317,4 +330,4 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 	);
 };
 
-export default withUser(EmbedCodeOverview) as FC<EmbedCodeOverviewProps>;
+export default compose(withRouter, withUser)(EmbedCodeOverview) as FC<EmbedCodeOverviewProps>;
