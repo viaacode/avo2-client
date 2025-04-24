@@ -6,20 +6,19 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { useQueryParams } from 'use-query-params';
 
-import FilterTable, {
-	type FilterableColumn,
-} from '../../admin/shared/components/FilterTable/FilterTable';
+import FilterTable from '../../admin/shared/components/FilterTable/FilterTable';
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from '../../admin/shared/components/FilterTable/FilterTable.const';
 import type { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH } from '../../constants';
 import { DeleteObjectModal, type LoadingInfo } from '../../shared/components';
-import { copyToClipboard, CustomError, isMobileWidth, navigate } from '../../shared/helpers';
+import { copyToClipboard, CustomError, navigate } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
 import { useDebounce } from '../../shared/hooks/useDebounce';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { type EmbedCodeFilters, EmbedCodeService } from '../embed-code-service';
+import { OVERVIEW_COLUMNS } from '../embed-code.const';
 import {
 	EMBED_CODE_DEFAULTS,
 	type EmbedCode,
@@ -27,6 +26,7 @@ import {
 	type EmbedCodeOverviewTableColumns,
 } from '../embed-code.types';
 import { toEmbedCodeDetail } from '../helpers/links';
+import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 
 import EmbedCodeFilterTableCell from './EmbedCodeFilterTableCell';
 
@@ -51,6 +51,7 @@ const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = ({
 	commonUser,
 	history,
+	onUpdate,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -70,62 +71,11 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 
 	const [filters, setFilters] = useState<EmbedCodeOverviewFilterState | undefined>(undefined);
 	const debouncedFilters: EmbedCodeOverviewFilterState | undefined = useDebounce(filters, 250);
+	const columns = OVERVIEW_COLUMNS;
 
-	// Configuration
-
-	const columns: FilterableColumn<EmbedCodeOverviewTableColumns>[] = [
-		{
-			id: 'thumbnail',
-			label: '',
-			sortable: false,
-			visibleByDefault: true,
-		},
-		{
-			id: 'title',
-			label: tText('Titel'),
-			sortable: true,
-			visibleByDefault: true,
-		},
-		...((isMobileWidth()
-			? []
-			: [
-					{
-						id: 'createdAt',
-						label: tText('Aangemaakt'),
-						sortable: true,
-						visibleByDefault: true,
-					},
-					{
-						id: 'updatedAt',
-						label: tText('Laatst bewerkt'),
-						sortable: true,
-						visibleByDefault: true,
-					},
-					{
-						id: 'start',
-						label: tText('Tijdscode'),
-						sortable: true,
-						visibleByDefault: true,
-					},
-					{
-						id: 'externalWebsite',
-						label: tText('Gedeeld op'),
-						col: '2',
-						sortable: true,
-						visibleByDefault: true,
-					},
-			  ]) as FilterableColumn<EmbedCodeOverviewTableColumns>[]),
-		{
-			id: 'action',
-			tooltip: tText('Acties'),
-			col: '1',
-			sortable: false,
-			visibleByDefault: true,
-		},
-	];
+	const { mutateAsync: duplicateEmbedCode } = useCreateEmbedCode();
 
 	// Data
-
 	const fetchEmbedCodes = useCallback(async () => {
 		setLoadingInfo({ state: 'loading' });
 
@@ -172,6 +122,11 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 		}
 	}, [commonUser, setEmbedCodes, setLoadingInfo, tText, debouncedFilters]); // eslint-disable-line
 
+	const reloadEmbedCodes = async () => {
+		await fetchEmbedCodes();
+		onUpdate && onUpdate();
+	};
+
 	const removeEmbedCode = async (id: EmbedCode['id']) => {
 		if (!commonUser?.profileId) {
 			return;
@@ -179,7 +134,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 
 		try {
 			// TODO EMBED: delete code by id
-			await fetchEmbedCodes();
+			await reloadEmbedCodes();
 
 			ToastService.success(tHtml('het ingesloten fragment is verwijderd'));
 		} catch (error) {
@@ -223,7 +178,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 					{
 						icon: IconName.clipboard,
 						id: EmbedCodeAction.COPY_TO_CLIPBOARD,
-						label: tText('kopieer code'),
+						label: tText('Kopieer code'),
 					},
 					{
 						icon: IconName.copy,
@@ -238,7 +193,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 					{
 						icon: IconName.delete,
 						id: EmbedCodeAction.DELETE,
-						label: tText('verwijder'),
+						label: tText('Verwijder'),
 					},
 				] as (MenuItemInfo & { id: EmbedCodeAction })[];
 
@@ -268,6 +223,21 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 											tHtml('De code werd succesvol gekopieerd.')
 										);
 										setSelected(undefined);
+										break;
+
+									case EmbedCodeAction.DUPLICATE:
+										await duplicateEmbedCode({
+											title: selected.title,
+											contentType: selected.contentType,
+											contentId: selected.contentId,
+											descriptionType: selected.descriptionType,
+											description: selected.description,
+											start: selected.start,
+											end: selected.end,
+											externalWebsite: selected.externalWebsite,
+										} as EmbedCode);
+										setSelected(undefined);
+										await reloadEmbedCodes();
 										break;
 
 									case EmbedCodeAction.SHOW_ORIGINAL:
