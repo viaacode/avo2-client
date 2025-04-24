@@ -297,9 +297,12 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 			/>
 
 			<DeleteObjectModal
-				title={tText('ben je zeker dat je dit ingesloten fragment wilt verwijderen')}
-				body={tText('deze actie kan niet ongedaan gemaakt worden')}
+				title={tText('Fragment verwijderen')}
+				body={tText(
+					'Opgelet! Ben je zeker dat je het fragment wil verwijderen? Het zal dan niet meer werken in Smartschool en BookWidgets.'
+				)}
 				isOpen={isConfirmationModalOpen}
+				size="medium"
 				onClose={() => {
 					setIsConfirmationModalOpen(false);
 					setSelected(undefined);
