@@ -1,4 +1,5 @@
 import { IconName, type MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
+import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import { isEqual } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { useQueryParams } from 'use-query-params';
@@ -9,7 +10,7 @@ import FilterTable, {
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from '../../admin/shared/components/FilterTable/FilterTable.const';
 import { DeleteObjectModal, type LoadingInfo } from '../../shared/components';
 import EmbedCodeFilterTableCell from '../../shared/components/EmbedCodeFilterTableCell/EmbedCodeFilterTableCell';
-import { CustomError } from '../../shared/helpers';
+import { CustomError, isMobileWidth } from '../../shared/helpers';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useDebounce } from '../../shared/hooks/useDebounce';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -21,7 +22,6 @@ import {
 	type EmbedCodeOverviewFilterState,
 	type EmbedCodeOverviewTableColumns,
 } from '../../shared/types/embed-code';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../workspace.const';
 
 // Typings
@@ -66,41 +66,46 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 
 	const columns: FilterableColumn<EmbedCodeOverviewTableColumns>[] = [
 		{
+			id: 'thumbnail',
+			label: '',
+			sortable: false,
+			visibleByDefault: true,
+		},
+		{
 			id: 'title',
 			label: tText('Titel'),
 			sortable: true,
-			dataType: TableColumnDataType.string,
 			visibleByDefault: true,
 		},
-		{
-			id: 'createdAt' as const,
-			label: tText('Aangemaakt'),
-			sortable: true,
-			dataType: TableColumnDataType.dateTime,
-			visibleByDefault: true,
-		},
-		{
-			id: 'updatedAt' as const,
-			label: tText('Laatst bewerkt'),
-			sortable: true,
-			dataType: TableColumnDataType.dateTime,
-			visibleByDefault: true,
-		},
-		{
-			id: 'start',
-			label: tText('Tijdscode'),
-			sortable: true,
-			visibleByDefault: true,
-			dataType: TableColumnDataType.string,
-		},
-		{
-			id: 'externalWebsite',
-			label: tText('Gedeeld op'),
-			col: '2',
-			sortable: true,
-			visibleByDefault: true,
-			dataType: TableColumnDataType.string,
-		},
+		...((isMobileWidth()
+			? []
+			: [
+					{
+						id: 'createdAt',
+						label: tText('Aangemaakt'),
+						sortable: true,
+						visibleByDefault: true,
+					},
+					{
+						id: 'updatedAt',
+						label: tText('Laatst bewerkt'),
+						sortable: true,
+						visibleByDefault: true,
+					},
+					{
+						id: 'start',
+						label: tText('Tijdscode'),
+						sortable: true,
+						visibleByDefault: true,
+					},
+					{
+						id: 'externalWebsite',
+						label: tText('Gedeeld op'),
+						col: '2',
+						sortable: true,
+						visibleByDefault: true,
+					},
+			  ]) as FilterableColumn<EmbedCodeOverviewTableColumns>[]),
 		{
 			id: 'action',
 			tooltip: tText('Acties'),
@@ -126,11 +131,15 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 				return;
 			}
 
-			const sortOrder = debouncedFilters.sort_order || query.sort_order|| EMBED_CODE_DEFAULTS.sort_order;
-			const sortColumn = debouncedFilters.sort_column || query.sort_column || EMBED_CODE_DEFAULTS.sort_column;
+			const sortOrder =
+				debouncedFilters.sort_order || query.sort_order || EMBED_CODE_DEFAULTS.sort_order;
+			const sortColumn =
+				debouncedFilters.sort_column ||
+				query.sort_column ||
+				EMBED_CODE_DEFAULTS.sort_column;
 			const params: EmbedCodeFilters = {
 				filterString: debouncedFilters.query,
-				sortOrder: sortOrder,
+				sortOrder: sortOrder as SearchOrderDirection,
 				sortColumn: sortColumn,
 				limit: ITEMS_PER_PAGE,
 				offset: debouncedFilters.page * ITEMS_PER_PAGE,

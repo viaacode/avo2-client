@@ -10,6 +10,8 @@ import { tText } from '../../helpers/translate-text';
 import { truncateTableValue } from '../../helpers/truncate';
 import { type EmbedCode, EmbedCodeExternalWebsite } from '../../types/embed-code';
 
+import './EmbedCodeFilterTableCell.scss';
+
 export interface EmbedCodeFilterTableCellProps {
 	id: string;
 	data: EmbedCode;
@@ -25,40 +27,39 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 		return <span title={formatTimestamp(date)}>{formatDate(date)}</span>;
 	};
 
+	const renderThumbnail = ({ content }: EmbedCode) => (
+		<Thumbnail
+			alt="thumbnail"
+			category={(content as ItemSchema)?.type?.label}
+			className="m-embed-code-cell-thumbnail"
+			src={content.thumbnail_path || undefined}
+			showCategoryIcon
+		/>
+	);
+
 	const renderTitle = ({ content, contentType, title }: EmbedCode) => (
-		<div className="u-d-flex">
-			<Thumbnail
-				alt="thumbnail"
-				category={(content as ItemSchema)?.type?.label}
-				className="m-collection-overview-thumbnail u-spacer-right"
-				src={content.thumbnail_path || undefined}
-				showCategoryIcon
-			/>
-			<div className="c-content-header">
-				<h3 className="c-content-header__header">
-					<Link onClick={console.log} title={title}>
-						{truncateTableValue(title)}
-					</Link>
-				</h3>
-				<div className="c-content-header__meta u-text-muted">
-					<MetaData category={contentType}>
-						<MetaDataItem>
-							{content?.created_at && (
-								<span
-									title={`Aangemaakt: ${formatDate(
-										new Date(content?.created_at)
-									)}`}
-								>
-									{formatDate(new Date(content?.created_at))}
-								</span>
-							)}
-						</MetaDataItem>
-						<MetaDataItem
-							icon={IconName.eye}
-							label={String((content as ItemSchema)?.item_counts?.views || 0)}
-						/>
-					</MetaData>
-				</div>
+		<div className="c-content-header">
+			<h3 className="c-content-header__header">
+				<Link onClick={console.log} title={title}>
+					{truncateTableValue(title)}
+				</Link>
+			</h3>
+			<div className="c-content-header__meta u-text-muted">
+				<MetaData category={contentType}>
+					<MetaDataItem>
+						{content?.created_at && (
+							<span
+								title={`Aangemaakt: ${formatDate(new Date(content?.created_at))}`}
+							>
+								{formatDate(new Date(content?.created_at))}
+							</span>
+						)}
+					</MetaDataItem>
+					<MetaDataItem
+						icon={IconName.eye}
+						label={String((content as ItemSchema)?.item_counts?.views || 0)}
+					/>
+				</MetaData>
 			</div>
 		</div>
 	);
@@ -92,6 +93,9 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 	};
 
 	switch (id) {
+		case 'thumbnail':
+			return renderThumbnail(data);
+
 		case 'title':
 			return renderTitle(data);
 
@@ -108,7 +112,11 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 			const cellData = `${formatDurationHoursMinutesSeconds(
 				data.start
 			)} - ${formatDurationHoursMinutesSeconds(data.end)}`;
-			return <span title={cellData}>{cellData}</span>;
+			return (
+				<span className="time-code" title={cellData}>
+					{cellData}
+				</span>
+			);
 		}
 		case 'action':
 			return <>{actions(data)}</>;

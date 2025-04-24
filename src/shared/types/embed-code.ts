@@ -32,6 +32,7 @@ export enum EmbedCodeDescriptionType {
 	NONE = 'NONE',
 }
 export type EmbedCodeOverviewTableColumns =
+	| 'thumbnail'
 	| 'title'
 	| 'createdAt'
 	| 'updatedAt'
