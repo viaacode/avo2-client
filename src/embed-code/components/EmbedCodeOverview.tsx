@@ -13,7 +13,7 @@ import { FILTER_TABLE_QUERY_PARAM_CONFIG } from '../../admin/shared/components/F
 import type { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH } from '../../constants';
 import { DeleteObjectModal, type LoadingInfo } from '../../shared/components';
-import { CustomError, isMobileWidth, navigate } from '../../shared/helpers';
+import { copyToClipboard, CustomError, isMobileWidth, navigate } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
 import { useDebounce } from '../../shared/hooks/useDebounce';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -26,6 +26,7 @@ import {
 	type EmbedCodeOverviewFilterState,
 	type EmbedCodeOverviewTableColumns,
 } from '../embed-code.types';
+import { toEmbedCodeDetail } from '../helpers/links';
 
 import EmbedCodeFilterTableCell from './EmbedCodeFilterTableCell';
 
@@ -262,6 +263,10 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 
 								switch (action.toString() as EmbedCodeAction) {
 									case EmbedCodeAction.COPY_TO_CLIPBOARD:
+										copyToClipboard(toEmbedCodeDetail(selected.contentId));
+										ToastService.success(
+											tHtml('De code werd succesvol gekopieerd.')
+										);
 										setSelected(undefined);
 										break;
 
