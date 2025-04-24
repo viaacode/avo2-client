@@ -64,4 +64,24 @@ export class EmbedCodeService {
 			});
 		}
 	}
+
+	public static async deleteEmbedCode(embedCodeId: string): Promise<void> {
+		let url: string | undefined = undefined;
+
+		try {
+			url = `${getEnv('PROXY_URL')}/embed-codes/${embedCodeId}`;
+
+			await fetchWithLogoutJson<{
+				message: 'success';
+			}>(url, {
+				method: 'DELETE',
+				forceLogout: false,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to delete embed code', err, {
+				url,
+				embedCodeId,
+			});
+		}
+	}
 }

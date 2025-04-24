@@ -27,6 +27,7 @@ import {
 } from '../embed-code.types';
 import { toEmbedCodeDetail } from '../helpers/links';
 import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
+import { useDeleteEmbedCode } from '../hooks/useDeleteEmbedCode';
 
 import EmbedCodeFilterTableCell from './EmbedCodeFilterTableCell';
 
@@ -74,6 +75,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 	const columns = OVERVIEW_COLUMNS;
 
 	const { mutateAsync: duplicateEmbedCode } = useCreateEmbedCode();
+	const { mutateAsync: deleteEmbedCode } = useDeleteEmbedCode();
 
 	// Data
 	const fetchEmbedCodes = useCallback(async () => {
@@ -128,14 +130,8 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 	};
 
 	const removeEmbedCode = async (id: EmbedCode['id']) => {
-		if (!commonUser?.profileId) {
-			return;
-		}
-
 		try {
-			// TODO EMBED: delete code by id
-			await reloadEmbedCodes();
-
+			await deleteEmbedCode(id);
 			ToastService.success(tHtml('het ingesloten fragment is verwijderd'));
 		} catch (error) {
 			console.error(error);
@@ -144,6 +140,8 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 				tHtml('er ging iets mis bij het verwijderen van het ingesloten fragment')
 			);
 		}
+
+		await reloadEmbedCodes();
 
 		setIsConfirmationModalOpen(false);
 		setSelected(undefined);
