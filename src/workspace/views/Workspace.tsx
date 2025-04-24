@@ -32,6 +32,7 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { CollectionOrBundle } from '../../collection/collection.types';
 import CollectionOrBundleOverview from '../../collection/components/CollectionOrBundleOverview';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import EmbedCodeOverview from '../../embed-code/components/EmbedCodeOverview';
 import {
 	ControlledDropdown,
 	InteractiveTour,
@@ -61,7 +62,6 @@ import OrganisationContentOverview from './OrganisationContentOverview';
 import QuickLaneOverview from './QuickLaneOverview';
 
 import './Workspace.scss';
-import EmbedCodeOverview from './EmbedCodeOverview';
 
 interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;

@@ -1,14 +1,17 @@
-import bookwidgetLogo from '@assets/images/bookwidget_logo.png';
-import smartschoolLogo from '@assets/images/smartschool_logo.png';
 import { IconName, MetaData, MetaDataItem, Thumbnail } from '@viaa/avo2-components';
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { type FC, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
-import { formatDate, formatDurationHoursMinutesSeconds, formatTimestamp } from '../../helpers';
-import { tText } from '../../helpers/translate-text';
-import { truncateTableValue } from '../../helpers/truncate';
-import { type EmbedCode, EmbedCodeExternalWebsite } from '../../types/embed-code';
+import {
+	formatDate,
+	formatDurationHoursMinutesSeconds,
+	formatTimestamp,
+} from '../../shared/helpers';
+import { tText } from '../../shared/helpers/translate-text';
+import { truncateTableValue } from '../../shared/helpers/truncate';
+import { BookWidgetsLogo, SmartSchoolLogo } from '../embed-code.const';
+import { type EmbedCode, EmbedCodeExternalWebsite } from '../embed-code.types';
 
 import './EmbedCodeFilterTableCell.scss';
 
@@ -70,7 +73,7 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 				<>
 					<img
 						className="o-svg-icon prepend-logo"
-						src={smartschoolLogo}
+						src={SmartSchoolLogo}
 						alt={tText('Smartschool logo')}
 					/>
 					{tText('Smartschool')}
@@ -82,7 +85,7 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 				<>
 					<img
 						className="o-svg-icon prepend-logo"
-						src={bookwidgetLogo}
+						src={BookWidgetsLogo}
 						alt={tText('Bookwidgets logo')}
 					/>
 					{tText('Bookwidgets')}

@@ -2,9 +2,10 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 
-import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-import { CustomError, getEnv } from '../helpers';
-import { type EmbedCode } from '../types/embed-code';
+import { CustomError, getEnv } from '../shared/helpers';
+import { ITEMS_PER_PAGE } from '../workspace/workspace.const';
+
+import { type EmbedCode } from './embed-code.types';
 
 export interface EmbedCodeFilters {
 	filterString?: string;

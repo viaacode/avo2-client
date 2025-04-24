@@ -21,21 +21,21 @@ import {
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { type FC, useEffect, useState } from 'react';
 
-import { ItemVideoDescription } from '../../../item/components';
-import { copyToClipboard, toSeconds } from '../../helpers';
-import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
-import { tHtml } from '../../helpers/translate-html';
-import { tText } from '../../helpers/translate-text';
+import { ItemVideoDescription } from '../../item/components';
+import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
+import TimeCropControls from '../../shared/components/TimeCropControls/TimeCropControls';
+import { copyToClipboard, toSeconds } from '../../shared/helpers';
+import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import './EmbedContent.scss';
-import { useCreateEmbedCode } from '../../hooks/useCreateEmbedCode';
-import { ToastService } from '../../services/toast-service';
+import { ToastService } from '../../shared/services/toast-service';
 import {
 	type EmbedCode,
 	EmbedCodeDescriptionType,
 	EmbedCodeExternalWebsite,
-} from '../../types/embed-code';
-import TextWithTimestamps from '../TextWithTimestamp/TextWithTimestamps';
-import TimeCropControls from '../TimeCropControls/TimeCropControls';
+} from '../embed-code.types';
+import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 
 type EmbedProps = {
 	item: EmbedCode;

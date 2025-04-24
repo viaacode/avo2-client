@@ -9,20 +9,21 @@ import FilterTable, {
 } from '../../admin/shared/components/FilterTable/FilterTable';
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from '../../admin/shared/components/FilterTable/FilterTable.const';
 import { DeleteObjectModal, type LoadingInfo } from '../../shared/components';
-import EmbedCodeFilterTableCell from '../../shared/components/EmbedCodeFilterTableCell/EmbedCodeFilterTableCell';
 import { CustomError, isMobileWidth } from '../../shared/helpers';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useDebounce } from '../../shared/hooks/useDebounce';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { type EmbedCodeFilters, EmbedCodeService } from '../../shared/services/embed-code-service';
 import { ToastService } from '../../shared/services/toast-service';
+import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
+import { type EmbedCodeFilters, EmbedCodeService } from '../embed-code-service';
 import {
 	EMBED_CODE_DEFAULTS,
 	type EmbedCode,
 	type EmbedCodeOverviewFilterState,
 	type EmbedCodeOverviewTableColumns,
-} from '../../shared/types/embed-code';
-import { ITEMS_PER_PAGE } from '../workspace.const';
+} from '../embed-code.types';
+
+import EmbedCodeFilterTableCell from './EmbedCodeFilterTableCell';
 
 // Typings
 interface EmbedCodeOverviewProps {
@@ -182,6 +183,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 		}
 
 		setIsConfirmationModalOpen(false);
+		setSelected(undefined);
 	};
 
 	// Lifecycle

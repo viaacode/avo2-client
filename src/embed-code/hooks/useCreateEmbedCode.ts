@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { type EmbedCode, EmbedCodeService } from '../services/embed-code-service';
+import { EmbedCodeService } from '../embed-code-service';
+import { type EmbedCode } from '../embed-code.types';
 
 export const useCreateEmbedCode = () => {
 	return useMutation(
