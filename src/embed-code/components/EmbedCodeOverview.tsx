@@ -28,6 +28,7 @@ import {
 import { toEmbedCodeDetail } from '../helpers/links';
 import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 import { useDeleteEmbedCode } from '../hooks/useDeleteEmbedCode';
+import { useUpdateEmbedCode } from '../hooks/useUpdateEmbedCode';
 
 import EmbedCodeFilterTableCell from './EmbedCodeFilterTableCell';
 import EditEmbedCodeModal from './modals/EditEmbedCodeModal';
@@ -77,6 +78,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 
 	const { mutateAsync: duplicateEmbedCode } = useCreateEmbedCode();
 	const { mutateAsync: deleteEmbedCode } = useDeleteEmbedCode();
+	const { mutateAsync: updateEmbedCode } = useUpdateEmbedCode();
 
 	// Data
 	const fetchEmbedCodes = useCallback(async () => {
@@ -146,6 +148,20 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 
 		setSelected(undefined);
 		await reloadEmbedCodes();
+	};
+
+	const changeEmbedCode = async (data: EmbedCode) => {
+		try {
+			await updateEmbedCode(data);
+			ToastService.success(tText('Fragment succesvol gewijzigd.'));
+
+			await reloadEmbedCodes();
+
+			setIsEmbedCodeModalOpen(false);
+			setSelected(undefined);
+		} catch (err) {
+			ToastService.danger(tText('Fragment wijzigen mislukt'));
+		}
 	};
 
 	const removeEmbedCode = async (id: EmbedCode['id']) => {
@@ -311,6 +327,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 					setIsEmbedCodeModalOpen(false);
 					setSelected(undefined);
 				}}
+				handleUpdate={changeEmbedCode}
 			/>
 
 			<DeleteObjectModal

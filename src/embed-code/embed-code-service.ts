@@ -38,6 +38,26 @@ export class EmbedCodeService {
 			});
 		}
 	}
+	public static async updateEmbedCode(data: EmbedCode): Promise<void> {
+		let url: string | undefined = undefined;
+
+		try {
+			url = `${getEnv('PROXY_URL')}/embed-codes/${data.id}`;
+
+			await fetchWithLogoutJson<{
+				message: 'success';
+			}>(url, {
+				method: 'POST',
+				body: JSON.stringify(data),
+				forceLogout: false,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to create embed code', err, {
+				url,
+				data,
+			});
+		}
+	}
 
 	public static async getEmbedCodes(params?: EmbedCodeFilters): Promise<{
 		embedCodes: EmbedCode[];

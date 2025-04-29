@@ -10,10 +10,16 @@ import './EditEmbedCodeModal.scss';
 type EditEmbedCodeModalProps = {
 	embedCode?: EmbedCode;
 	isOpen: boolean;
+	handleUpdate: () => Promise<void>;
 	onClose: () => void;
 };
 
-const EditEmbedCodeModal: FC<EditEmbedCodeModalProps> = ({ embedCode, isOpen, onClose }) => {
+const EditEmbedCodeModal: FC<EditEmbedCodeModalProps> = ({
+	embedCode,
+	isOpen,
+	handleUpdate,
+	onClose,
+}) => {
 	const renderEmbedContentDescription = (): string | ReactNode => {
 		switch (embedCode?.externalWebsite) {
 			case EmbedCodeExternalWebsite.SMARTSCHOOL:
@@ -43,7 +49,7 @@ const EditEmbedCodeModal: FC<EditEmbedCodeModalProps> = ({ embedCode, isOpen, on
 					item={embedCode}
 					contentDescription={renderEmbedContentDescription()}
 					onClose={onClose}
-					onSave={(data) => console.log(data)}
+					onSave={handleUpdate}
 				/>
 			</ModalBody>
 		</Modal>
