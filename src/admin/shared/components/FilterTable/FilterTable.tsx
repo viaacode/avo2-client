@@ -246,6 +246,9 @@ const FilterTable: FC<FilterTableProps> = ({
 		const page = tableState.page || 0;
 		const from = page * itemsPerPage + 1;
 		const to = Math.min(page * itemsPerPage + itemsPerPage, dataCount);
+		const hasFilters = columns.some((col) => col.filterType);
+		const showLeftFilters = hasFilters || !!bulkActions;
+		const showToolbar = showLeftFilters || !hideTableColumnsButton;
 
 		return (
 			<>
@@ -279,139 +282,169 @@ const FilterTable: FC<FilterTableProps> = ({
 					</Form>
 				</Spacer>
 
-				<Spacer margin="bottom">
-					<Toolbar className="c-filter-table__toolbar">
-						<ToolbarLeft>
-							<Flex spaced="regular" wrap>
-								{columns.map((col) => {
-									if (!col.filterType || !col.id) {
-										return null;
-									}
+				{showToolbar && (
+					<Spacer margin="bottom">
+						<Toolbar className="c-filter-table__toolbar">
+							{showLeftFilters && (
+								<ToolbarLeft>
+									<Flex spaced="regular" wrap>
+										{columns.map((col) => {
+											if (!col.filterType || !col.id) {
+												return null;
+											}
 
-									switch (col.filterType) {
-										case 'CheckboxDropdownModal':
-											return (
-												<CheckboxDropdownModal
-													label={col.label}
-													{...(col.filterProps || {})}
-													id={col.id}
-													onChange={(value) =>
-														handleTableStateChanged(value, col.id)
-													}
-													options={get(
-														col,
-														'filterProps.options',
-														[]
-													).map((option: CheckboxOption) => ({
-														...option,
-														checked: (
-															(tableState as any)[col.id] || []
-														).includes(option.id),
-													}))}
-													key={`filter-${col.id}`}
-												/>
-											);
+											switch (col.filterType) {
+												case 'CheckboxDropdownModal':
+													return (
+														<CheckboxDropdownModal
+															label={col.label}
+															{...(col.filterProps || {})}
+															id={col.id}
+															onChange={(value) =>
+																handleTableStateChanged(
+																	value,
+																	col.id
+																)
+															}
+															options={get(
+																col,
+																'filterProps.options',
+																[]
+															).map((option: CheckboxOption) => ({
+																...option,
+																checked: (
+																	(tableState as any)[col.id] ||
+																	[]
+																).includes(option.id),
+															}))}
+															key={`filter-${col.id}`}
+														/>
+													);
 
-										case 'DateRangeDropdown':
-											return (
-												<DateRangeDropdown
-													{...(col.filterProps || {})}
-													id={col.id}
-													label={col.label}
-													onChange={(value) =>
-														handleTableStateChanged(value, col.id)
-													}
-													range={(tableState as any)[col.id]}
-													key={`filter-${col.id}`}
-												/>
-											);
+												case 'DateRangeDropdown':
+													return (
+														<DateRangeDropdown
+															{...(col.filterProps || {})}
+															id={col.id}
+															label={col.label}
+															onChange={(value) =>
+																handleTableStateChanged(
+																	value,
+																	col.id
+																)
+															}
+															range={(tableState as any)[col.id]}
+															key={`filter-${col.id}`}
+														/>
+													);
 
-										case 'BooleanCheckboxDropdown':
-											return (
-												<BooleanCheckboxDropdown
-													{...(col.filterProps || {})}
-													id={col.id}
-													label={col.label}
-													value={(tableState as any)[col.id]}
-													onChange={(value) =>
-														handleTableStateChanged(value, col.id)
-													}
-													trueLabel={get(col, 'filterProps.trueLabel')}
-													falseLabel={get(col, 'filterProps.falseLabel')}
-													includeEmpty={get(
-														col,
-														'filterProps.includeEmpty'
-													)}
-													key={`filter-${col.id}`}
-												/>
-											);
+												case 'BooleanCheckboxDropdown':
+													return (
+														<BooleanCheckboxDropdown
+															{...(col.filterProps || {})}
+															id={col.id}
+															label={col.label}
+															value={(tableState as any)[col.id]}
+															onChange={(value) =>
+																handleTableStateChanged(
+																	value,
+																	col.id
+																)
+															}
+															trueLabel={get(
+																col,
+																'filterProps.trueLabel'
+															)}
+															falseLabel={get(
+																col,
+																'filterProps.falseLabel'
+															)}
+															includeEmpty={get(
+																col,
+																'filterProps.includeEmpty'
+															)}
+															key={`filter-${col.id}`}
+														/>
+													);
 
-										case 'MultiUserSelectDropdown':
-											return (
-												<MultiUserSelectDropdown
-													{...(col.filterProps || {})}
-													id={col.id}
-													label={col.label}
-													values={(tableState as any)[col.id]}
-													onChange={(value) =>
-														handleTableStateChanged(value, col.id)
-													}
-													key={`filter-${col.id}`}
-												/>
-											);
+												case 'MultiUserSelectDropdown':
+													return (
+														<MultiUserSelectDropdown
+															{...(col.filterProps || {})}
+															id={col.id}
+															label={col.label}
+															values={(tableState as any)[col.id]}
+															onChange={(value) =>
+																handleTableStateChanged(
+																	value,
+																	col.id
+																)
+															}
+															key={`filter-${col.id}`}
+														/>
+													);
 
-										case 'MultiEducationalOrganisationSelectModal': {
-											const orgs: string[] = (tableState as any)[col.id];
-											const orgObjs: Avo.EducationOrganization.Organization[] =
-												eduOrgToClientOrg(orgs);
+												case 'MultiEducationalOrganisationSelectModal': {
+													const orgs: string[] = (tableState as any)[
+														col.id
+													];
+													const orgObjs: Avo.EducationOrganization.Organization[] =
+														eduOrgToClientOrg(orgs);
 
-											return (
-												<MultiEducationalOrganisationSelectModal
-													{...(col.filterProps || {})}
-													id={col.id}
-													label={col.label || ''}
-													values={orgObjs}
-													onChange={(value) =>
-														handleTableStateChanged(value, col.id)
-													}
-													key={`filter-${col.id}`}
-												/>
-											);
-										}
+													return (
+														<MultiEducationalOrganisationSelectModal
+															{...(col.filterProps || {})}
+															id={col.id}
+															label={col.label || ''}
+															values={orgObjs}
+															onChange={(value) =>
+																handleTableStateChanged(
+																	value,
+																	col.id
+																)
+															}
+															key={`filter-${col.id}`}
+														/>
+													);
+												}
 
-										default:
-											return null;
-									}
-								})}
-								{!!bulkActions && !!bulkActions.length && (
-									<Select
-										options={bulkActions}
-										onChange={handleSelectBulkAction}
-										placeholder={tText(
-											'admin/shared/components/filter-table/filter-table___bulkactie'
+												default:
+													return null;
+											}
+										})}
+										{!!bulkActions && !!bulkActions.length && (
+											<Select
+												options={bulkActions}
+												onChange={handleSelectBulkAction}
+												placeholder={tText(
+													'admin/shared/components/filter-table/filter-table___bulkactie'
+												)}
+												disabled={
+													!bulkActions.find((action) => !action.disabled)
+												}
+												className="c-bulk-action-select"
+											/>
 										)}
-										disabled={!bulkActions.find((action) => !action.disabled)}
-										className="c-bulk-action-select"
+									</Flex>
+								</ToolbarLeft>
+							)}
+							{!hideTableColumnsButton && (
+								<ToolbarRight>
+									<CheckboxDropdownModal
+										label={tText(
+											'admin/shared/components/filter-table/filter-table___kolommen'
+										)}
+										id="table_columns"
+										options={getColumnOptions()}
+										onChange={updateSelectedColumns}
+										showSelectedValuesOnCollapsed={false}
+										showSearch={false}
 									/>
-								)}
-							</Flex>
-						</ToolbarLeft>
-						{!hideTableColumnsButton && (
-							<ToolbarRight>
-								<CheckboxDropdownModal
-									label={tText(
-										'admin/shared/components/filter-table/filter-table___kolommen'
-									)}
-									id="table_columns"
-									options={getColumnOptions()}
-									onChange={updateSelectedColumns}
-									showSelectedValuesOnCollapsed={false}
-									showSearch={false}
-								/>
-							</ToolbarRight>
-						)}
-					</Toolbar>
-				</Spacer>
+								</ToolbarRight>
+							)}
+						</Toolbar>
+					</Spacer>
+				)}
 			</>
 		);
 	};

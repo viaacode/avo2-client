@@ -48,6 +48,7 @@ import {
 	BOOKMARKS_ID,
 	BUNDLES_ID,
 	COLLECTIONS_ID,
+	EMBEDS_ID,
 	GET_TABS,
 	ORGANISATION_CONTENT_ID,
 	QUICK_LANE_ID,
@@ -60,6 +61,7 @@ import OrganisationContentOverview from './OrganisationContentOverview';
 import QuickLaneOverview from './QuickLaneOverview';
 
 import './Workspace.scss';
+import EmbedCodeOverview from './EmbedCodeOverview';
 
 interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;
@@ -73,6 +75,7 @@ interface WorkspacePermissions {
 	canCreateBookmarks?: boolean;
 	canViewContentInSameCompany?: boolean;
 	canViewSomeQuickLanes?: boolean;
+	canEmbedItemsOnOtherSites?: boolean;
 }
 
 const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, commonUser }) => {
@@ -109,6 +112,11 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 				PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
 				PermissionName.VIEW_OWN_ORGANISATION_QUICK_LANE_OVERVIEW,
 			]),
+			PermissionService.hasPermission(
+				PermissionName.EMBED_ITEMS_ON_OTHER_SITES,
+				null,
+				commonUser
+			),
 		])
 			.then((response) => {
 				setPermissions({
@@ -119,6 +127,7 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 					canCreateBookmarks: response[4],
 					canViewContentInSameCompany: response[5],
 					canViewSomeQuickLanes: response[6],
+					canEmbedItemsOnOtherSites: !response[7], // TODO EMBED: inverse once permissions are working
 				});
 			})
 			.catch((err) => {
@@ -205,6 +214,18 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 				? {
 						component: (
 							<QuickLaneOverview numberOfItems={workspaceCounts?.quickLanes || 0} />
+						),
+				  }
+				: empty,
+			[EMBEDS_ID]: permissions.canEmbedItemsOnOtherSites
+				? {
+						component: (
+							<EmbedCodeOverview
+								onUpdate={() => {
+									refetchWorkspaceCounts();
+								}}
+								numberOfItems={workspaceCounts?.embeds || 0}
+							/>
 						),
 				  }
 				: empty,

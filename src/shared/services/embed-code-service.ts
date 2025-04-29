@@ -1,36 +1,17 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
+import { stringifyUrl } from 'query-string';
 
+import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CustomError, getEnv } from '../helpers';
+import { type EmbedCode } from '../types/embed-code';
 
-export type EmbedCodeContentType = 'ITEM' | 'COLLECTION' | 'ASSIGNMENT';
-
-export interface EmbedCode {
-	id: string;
-	title: string;
-	externalWebsite: EmbedCodeExternalWebsite;
-	contentType: EmbedCodeContentType;
-	contentId: string;
-	content: Avo.Item.Item | Avo.Collection.Collection | Avo.Assignment.Assignment;
-	descriptionType: EmbedCodeDescriptionType;
-	description: string | null;
-	owner: Avo.User.CommonUser;
-	ownerProfileId: string;
-	start: number | null;
-	end: number | null;
-	createdAt: string; // ISO datetime string
-	updatedAt: string; // ISO datetime string
-}
-
-export enum EmbedCodeExternalWebsite {
-	SMARTSCHOOL = 'SMARTSCHOOL',
-	BOOKWIDGETS = 'BOOKWIDGETS',
-}
-
-export enum EmbedCodeDescriptionType {
-	ORIGINAL = 'ORIGINAL',
-	CUSTOM = 'CUSTOM',
-	NONE = 'NONE',
+export interface EmbedCodeFilters {
+	filterString?: string;
+	sortColumn?: string;
+	sortOrder?: Avo.Search.OrderDirection;
+	limit: number;
+	offset: number;
 }
 
 export class EmbedCodeService {
@@ -53,6 +34,32 @@ export class EmbedCodeService {
 			throw new CustomError('Failed to create embed code', err, {
 				url,
 				data,
+			});
+		}
+	}
+
+	public static async getEmbedCodes(params?: EmbedCodeFilters): Promise<{
+		embedCodes: EmbedCode[];
+		count: number;
+	}> {
+		let url: string | undefined = undefined;
+
+		try {
+			url = stringifyUrl({
+				url: `${getEnv('PROXY_URL')}/embed-codes`,
+				query: {
+					sortColumn: params?.sortColumn,
+					sortOrder: params?.sortOrder,
+					offset: params?.offset,
+					limit: params?.limit || ITEMS_PER_PAGE,
+					filterString: params?.filterString,
+				},
+			});
+			return fetchWithLogoutJson(url);
+		} catch (err) {
+			throw new CustomError('Failed to fetch embed codes from database', err, {
+				...params,
+				url,
 			});
 		}
 	}
