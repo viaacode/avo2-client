@@ -21,7 +21,7 @@ export class WorkspaceService {
 	public static getAllBookmarksForUser(): Promise<BookmarkInfo[]> {
 		let url: string | null = null;
 		try {
-			url = (getEnv('PROXY_URL') as string) + '/workspace/bookmarksForUser';
+			url = (getEnv('PROXY_URL') as string) + '/workspace/bookmarks';
 			return fetchWithLogoutJson<BookmarkInfo[]>(url, {
 				method: 'GET',
 			});

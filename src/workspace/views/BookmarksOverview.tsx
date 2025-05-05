@@ -72,9 +72,7 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 	const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null);
 	const [bookmarkToDelete, setBookmarkToDelete] = useState<BookmarkInfo | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-	const [isEmbedCodeModalOpen, setIsEmbedCodeModalOpen] = useState<EmbedCode | undefined>(
-		undefined
-	);
+	const [isEmbedCodeModalOpen, setIsEmbedCodeModalOpen] = useState<EmbedCode | null>(null);
 	const [sortColumn, setSortColumn] = useState<keyof BookmarkInfo>('createdAt');
 	const [sortOrder, setSortOrder] = useState<OrderDirection>(OrderDirection.desc);
 	const [page, setPage] = useState<number>(0);
@@ -189,6 +187,28 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 		setPage(0);
 	};
 
+	const handleEmbedCodeClicked = (bookmarkInfo: BookmarkInfo) => {
+		setIsEmbedCodeModalOpen({
+			id: '',
+			title: bookmarkInfo.contentTitle,
+			externalWebsite: EmbedCodeExternalWebsite.SMARTSCHOOL,
+			contentType: 'ITEM',
+			contentId: bookmarkInfo.contentLinkId,
+			content: {
+				title: bookmarkInfo.contentTitle,
+				description: bookmarkInfo.contentDescription,
+				duration: bookmarkInfo.contentDuration,
+				external_id: bookmarkInfo.contentLinkId,
+				thumbnail_path: bookmarkInfo.contentThumbnailPath,
+				type: bookmarkInfo.contentType,
+			},
+			descriptionType: EmbedCodeDescriptionType.ORIGINAL,
+			description: bookmarkInfo.contentDescription,
+			start: 0,
+			end: toSeconds(bookmarkInfo.contentDuration),
+		} as EmbedCode);
+	};
+
 	// Render functions
 	const getDetailLink = (contentType: EventContentType, contentLinkId: string) =>
 		buildLink(
@@ -281,27 +301,7 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 						icon={IconName.code}
 						className="u-spacer-left-s"
 						type="secondary"
-						onClick={() => {
-							setIsEmbedCodeModalOpen({
-								id: '',
-								title: bookmarkInfo.contentTitle,
-								externalWebsite: EmbedCodeExternalWebsite.SMARTSCHOOL,
-								contentType: 'ITEM',
-								contentId: bookmarkInfo.contentLinkId,
-								content: {
-									title: bookmarkInfo.contentTitle,
-									description: bookmarkInfo.contentDescription,
-									duration: bookmarkInfo.contentDuration,
-									external_id: bookmarkInfo.contentLinkId,
-									thumbnail_path: bookmarkInfo.contentThumbnailPath,
-									type: bookmarkInfo.contentType,
-								},
-								descriptionType: EmbedCodeDescriptionType.ORIGINAL,
-								description: bookmarkInfo.contentDescription,
-								start: 0,
-								end: toSeconds(bookmarkInfo.contentDuration),
-							} as EmbedCode);
-						}}
+						onClick={() => handleEmbedCodeClicked(bookmarkInfo)}
 					/>
 				)}
 			</>
@@ -389,7 +389,7 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 			<BookmarkEmbedModal
 				isOpen={!!isEmbedCodeModalOpen}
 				embedCode={isEmbedCodeModalOpen}
-				onClose={() => setIsEmbedCodeModalOpen(undefined)}
+				onClose={() => setIsEmbedCodeModalOpen(null)}
 			/>
 			<DeleteObjectModal
 				title={tHtml('workspace/views/bookmarks___verwijder-bladwijzer')}
