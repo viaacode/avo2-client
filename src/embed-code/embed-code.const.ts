@@ -1,5 +1,5 @@
-import bookwidgetLogo from '@assets/images/bookwidget_logo.png';
-import smartschoolLogo from '@assets/images/smartschool_logo.png';
+import bookwidgetsLogoInternal from '@assets/images/bookwidget_logo.png';
+import smartschoolLogoInternal from '@assets/images/smartschool_logo.png';
 
 import type { FilterableColumn } from '../admin/shared/components/FilterTable/FilterTable';
 import { isMobileWidth } from '../shared/helpers';
@@ -7,10 +7,10 @@ import { tText } from '../shared/helpers/translate-text';
 
 import type { EmbedCodeOverviewTableColumns } from './embed-code.types';
 
-export const BookWidgetsLogo = bookwidgetLogo;
-export const SmartSchoolLogo = smartschoolLogo;
+export const bookWidgetsLogo = bookwidgetsLogoInternal;
+export const smartSchoolLogo = smartschoolLogoInternal;
 
-export const OVERVIEW_COLUMNS: FilterableColumn<EmbedCodeOverviewTableColumns>[] = [
+export const OVERVIEW_COLUMNS = (): FilterableColumn<EmbedCodeOverviewTableColumns>[] => [
 	{
 		id: 'thumbnail',
 		label: '',

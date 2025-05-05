@@ -32,10 +32,12 @@ export class EmbedCodeService {
 			});
 			return response.createdEmbedCodeId;
 		} catch (err) {
-			throw new CustomError('Failed to create embed code', err, {
+			const error = new CustomError('Failed to create embed code', err, {
 				url,
 				data,
 			});
+			console.log(error);
+			throw error;
 		}
 	}
 	public static async updateEmbedCode(data: EmbedCode): Promise<void> {
@@ -52,10 +54,12 @@ export class EmbedCodeService {
 				forceLogout: false,
 			});
 		} catch (err) {
-			throw new CustomError('Failed to create embed code', err, {
+			const error = new CustomError('Failed to create embed code', err, {
 				url,
 				data,
 			});
+			console.log(error);
+			throw error;
 		}
 	}
 
@@ -78,10 +82,12 @@ export class EmbedCodeService {
 			});
 			return fetchWithLogoutJson(url);
 		} catch (err) {
-			throw new CustomError('Failed to fetch embed codes from database', err, {
+			const error = new CustomError('Failed to fetch embed codes from database', err, {
 				...params,
 				url,
 			});
+			console.log(error);
+			throw error;
 		}
 	}
 
@@ -98,10 +104,12 @@ export class EmbedCodeService {
 				forceLogout: false,
 			});
 		} catch (err) {
-			throw new CustomError('Failed to delete embed code', err, {
+			const error = new CustomError('Failed to delete embed code', err, {
 				url,
 				embedCodeId,
 			});
+			console.log(error);
+			throw error;
 		}
 	}
 }

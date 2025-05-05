@@ -17,7 +17,7 @@ import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import EmbedContent from '../../../embed-code/components/EmbedContent';
-import { BookWidgetsLogo, SmartSchoolLogo } from '../../../embed-code/embed-code.const';
+import { bookWidgetsLogo, smartSchoolLogo } from '../../../embed-code/embed-code.const';
 import {
 	type EmbedCode,
 	EmbedCodeDescriptionType,
@@ -79,12 +79,12 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 									{tText('Insluiten')}
 									<img
 										className="append-logo"
-										src={SmartSchoolLogo}
+										src={smartSchoolLogo}
 										alt={tText('Smartschool logo')}
 									/>
 									<img
 										className="append-logo"
-										src={BookWidgetsLogo}
+										src={bookWidgetsLogo}
 										alt={tText('Bookwidgets logo')}
 									/>
 								</>
@@ -141,7 +141,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 				<>
 					<img
 						className="o-svg-icon prepend-logo"
-						src={SmartSchoolLogo}
+						src={smartSchoolLogo}
 						alt={tText('Smartschool logo')}
 					/>
 					{tText('Smartschool')}
@@ -155,7 +155,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 				<>
 					<img
 						className="o-svg-icon prepend-logo"
-						src={BookWidgetsLogo}
+						src={bookWidgetsLogo}
 						alt={tText('Bookwidgets logo')}
 					/>
 					{tText('Bookwidgets')}
@@ -208,7 +208,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 				);
 			case EmbedCodeExternalWebsite.BOOKWIDGETS:
 				return tHtml(
-					'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in Bookwidgets.'
+					'Bewerk het fragment, kopieer de link en plak hem in een widget in Bookwidgets.'
 				);
 			default:
 				return '';

@@ -9,7 +9,7 @@ import {
 } from '../../shared/helpers';
 import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import { BookWidgetsLogo, SmartSchoolLogo } from '../embed-code.const';
+import { bookWidgetsLogo, smartSchoolLogo } from '../embed-code.const';
 import { type EmbedCode, EmbedCodeExternalWebsite } from '../embed-code.types';
 
 import './EmbedCodeFilterTableCell.scss';
@@ -72,7 +72,7 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 				<>
 					<img
 						className="o-svg-icon prepend-logo"
-						src={SmartSchoolLogo}
+						src={smartSchoolLogo}
 						alt={tText('Smartschool logo')}
 					/>
 					{tText('Smartschool')}
@@ -84,7 +84,7 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 				<>
 					<img
 						className="o-svg-icon prepend-logo"
-						src={BookWidgetsLogo}
+						src={bookWidgetsLogo}
 						alt={tText('Bookwidgets logo')}
 					/>
 					{tText('Bookwidgets')}

@@ -74,7 +74,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 
 	const [filters, setFilters] = useState<EmbedCodeOverviewFilterState | undefined>(undefined);
 	const debouncedFilters: EmbedCodeOverviewFilterState | undefined = useDebounce(filters, 250);
-	const columns = OVERVIEW_COLUMNS;
+	const columns = OVERVIEW_COLUMNS();
 
 	const { mutateAsync: duplicateEmbedCode } = useCreateEmbedCode();
 	const { mutateAsync: deleteEmbedCode } = useDeleteEmbedCode();
@@ -129,7 +129,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 
 	const reloadEmbedCodes = async () => {
 		await fetchEmbedCodes();
-		onUpdate && onUpdate();
+		onUpdate?.();
 	};
 
 	const duplicateSelectedEmbedCode = async (selected: EmbedCode) => {
@@ -160,6 +160,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 			setIsEmbedCodeModalOpen(false);
 			setSelected(undefined);
 		} catch (err) {
+			console.log(err);
 			ToastService.danger(tText('Fragment wijzigen mislukt'));
 		}
 	};
