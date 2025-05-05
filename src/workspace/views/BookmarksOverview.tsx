@@ -9,13 +9,14 @@ import {
 	type TableColumn,
 	Thumbnail,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { orderBy } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import BookmarkEmbedModal from '../../embed-code/components/modals/BookmarkEmbedModal';
 import {
@@ -294,16 +295,20 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 					}}
 				/>
 
-				{isItem && (
-					<Button
-						title={tText('Fragment insluiten')}
-						ariaLabel={tText('Fragment insluiten')}
-						icon={IconName.code}
-						className="u-spacer-left-s"
-						type="secondary"
-						onClick={() => handleEmbedCodeClicked(bookmarkInfo)}
-					/>
-				)}
+				{isItem &&
+					PermissionService.hasPerm(
+						commonUser,
+						PermissionName.EMBED_ITEMS_ON_OTHER_SITES
+					) && (
+						<Button
+							title={tText('Fragment insluiten')}
+							ariaLabel={tText('Fragment insluiten')}
+							icon={IconName.code}
+							className="u-spacer-left-s"
+							type="secondary"
+							onClick={() => handleEmbedCodeClicked(bookmarkInfo)}
+						/>
+					)}
 			</>
 		);
 	};
