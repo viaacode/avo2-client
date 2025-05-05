@@ -11,7 +11,7 @@ import { type EmbedCode, EmbedCodeExternalWebsite } from '../../embed-code.types
 import './BookmarkEmbedModal.scss';
 
 type BookmarkEmbedModalProps = {
-	embedCode?: EmbedCode;
+	embedCode: EmbedCode | null;
 	isOpen: boolean;
 	onClose: () => void;
 };
