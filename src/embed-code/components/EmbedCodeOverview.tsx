@@ -2,27 +2,36 @@ import { IconName, type MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-com
 import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import { isEqual } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import { useQueryParams } from 'use-query-params';
 
-import FilterTable, {
-	type FilterableColumn,
-} from '../../admin/shared/components/FilterTable/FilterTable';
+import FilterTable from '../../admin/shared/components/FilterTable/FilterTable';
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from '../../admin/shared/components/FilterTable/FilterTable.const';
+import type { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { APP_PATH } from '../../constants';
 import { DeleteObjectModal, type LoadingInfo } from '../../shared/components';
-import EmbedCodeFilterTableCell from '../../shared/components/EmbedCodeFilterTableCell/EmbedCodeFilterTableCell';
-import { CustomError, isMobileWidth } from '../../shared/helpers';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
+import { copyToClipboard, CustomError, navigate } from '../../shared/helpers';
+import withUser from '../../shared/hocs/withUser';
 import { useDebounce } from '../../shared/hooks/useDebounce';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { type EmbedCodeFilters, EmbedCodeService } from '../../shared/services/embed-code-service';
 import { ToastService } from '../../shared/services/toast-service';
+import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
+import { type EmbedCodeFilters, EmbedCodeService } from '../embed-code-service';
+import { OVERVIEW_COLUMNS } from '../embed-code.const';
 import {
 	EMBED_CODE_DEFAULTS,
 	type EmbedCode,
 	type EmbedCodeOverviewFilterState,
 	type EmbedCodeOverviewTableColumns,
-} from '../../shared/types/embed-code';
-import { ITEMS_PER_PAGE } from '../workspace.const';
+} from '../embed-code.types';
+import { toEmbedCodeDetail } from '../helpers/links';
+import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
+import { useDeleteEmbedCode } from '../hooks/useDeleteEmbedCode';
+import { useUpdateEmbedCode } from '../hooks/useUpdateEmbedCode';
+
+import EmbedCodeFilterTableCell from './EmbedCodeFilterTableCell';
+import EditEmbedCodeModal from './modals/EditEmbedCodeModal';
 
 // Typings
 interface EmbedCodeOverviewProps {
@@ -42,7 +51,11 @@ enum EmbedCodeAction {
 
 const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 
-const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser }) => {
+const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = ({
+	commonUser,
+	history,
+	onUpdate,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -61,62 +74,13 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 
 	const [filters, setFilters] = useState<EmbedCodeOverviewFilterState | undefined>(undefined);
 	const debouncedFilters: EmbedCodeOverviewFilterState | undefined = useDebounce(filters, 250);
+	const columns = OVERVIEW_COLUMNS();
 
-	// Configuration
-
-	const columns: FilterableColumn<EmbedCodeOverviewTableColumns>[] = [
-		{
-			id: 'thumbnail',
-			label: '',
-			sortable: false,
-			visibleByDefault: true,
-		},
-		{
-			id: 'title',
-			label: tText('Titel'),
-			sortable: true,
-			visibleByDefault: true,
-		},
-		...((isMobileWidth()
-			? []
-			: [
-					{
-						id: 'createdAt',
-						label: tText('Aangemaakt'),
-						sortable: true,
-						visibleByDefault: true,
-					},
-					{
-						id: 'updatedAt',
-						label: tText('Laatst bewerkt'),
-						sortable: true,
-						visibleByDefault: true,
-					},
-					{
-						id: 'start',
-						label: tText('Tijdscode'),
-						sortable: true,
-						visibleByDefault: true,
-					},
-					{
-						id: 'externalWebsite',
-						label: tText('Gedeeld op'),
-						col: '2',
-						sortable: true,
-						visibleByDefault: true,
-					},
-			  ]) as FilterableColumn<EmbedCodeOverviewTableColumns>[]),
-		{
-			id: 'action',
-			tooltip: tText('Acties'),
-			col: '1',
-			sortable: false,
-			visibleByDefault: true,
-		},
-	];
+	const { mutateAsync: duplicateEmbedCode } = useCreateEmbedCode();
+	const { mutateAsync: deleteEmbedCode } = useDeleteEmbedCode();
+	const { mutateAsync: updateEmbedCode } = useUpdateEmbedCode();
 
 	// Data
-
 	const fetchEmbedCodes = useCallback(async () => {
 		setLoadingInfo({ state: 'loading' });
 
@@ -163,15 +127,47 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 		}
 	}, [commonUser, setEmbedCodes, setLoadingInfo, tText, debouncedFilters]); // eslint-disable-line
 
-	const removeEmbedCode = async (id: EmbedCode['id']) => {
-		if (!commonUser?.profileId) {
-			return;
-		}
+	const reloadEmbedCodes = async () => {
+		await fetchEmbedCodes();
+		onUpdate?.();
+	};
 
+	const duplicateSelectedEmbedCode = async (selected: EmbedCode) => {
+		await duplicateEmbedCode({
+			title: selected.title,
+			contentType: selected.contentType,
+			contentId: selected.contentId,
+			descriptionType: selected.descriptionType,
+			description: selected.description,
+			start: selected.start,
+			end: selected.end,
+			externalWebsite: selected.externalWebsite,
+		} as EmbedCode);
+
+		ToastService.success(tHtml('Het fragment werd succesvol gedupliceerd.'));
+
+		setSelected(undefined);
+		await reloadEmbedCodes();
+	};
+
+	const changeEmbedCode = async (data: EmbedCode) => {
 		try {
-			// TODO EMBED: delete code by id
-			await fetchEmbedCodes();
+			await updateEmbedCode(data);
+			ToastService.success(tText('Fragment succesvol gewijzigd.'));
 
+			await reloadEmbedCodes();
+
+			setIsEmbedCodeModalOpen(false);
+			setSelected(undefined);
+		} catch (err) {
+			console.log(err);
+			ToastService.danger(tText('Fragment wijzigen mislukt'));
+		}
+	};
+
+	const removeEmbedCode = async (id: EmbedCode['id']) => {
+		try {
+			await deleteEmbedCode(id);
 			ToastService.success(tHtml('het ingesloten fragment is verwijderd'));
 		} catch (error) {
 			console.error(error);
@@ -181,7 +177,10 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 			);
 		}
 
+		await reloadEmbedCodes();
+
 		setIsConfirmationModalOpen(false);
+		setSelected(undefined);
 	};
 
 	// Lifecycle
@@ -203,6 +202,10 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 		<EmbedCodeFilterTableCell
 			id={id}
 			data={data}
+			onNameClick={(data) => {
+				setSelected(data);
+				setIsEmbedCodeModalOpen(true);
+			}}
 			actions={(data) => {
 				const items = [
 					{
@@ -213,7 +216,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 					{
 						icon: IconName.clipboard,
 						id: EmbedCodeAction.COPY_TO_CLIPBOARD,
-						label: tText('kopieer code'),
+						label: tText('Kopieer code'),
 					},
 					{
 						icon: IconName.copy,
@@ -228,7 +231,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 					{
 						icon: IconName.delete,
 						id: EmbedCodeAction.DELETE,
-						label: tText('verwijder'),
+						label: tText('Verwijder'),
 					},
 				] as (MenuItemInfo & { id: EmbedCodeAction })[];
 
@@ -249,11 +252,28 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 								if (selected === undefined) {
 									return;
 								}
-								// TODO EMBED: implement actions
 
 								switch (action.toString() as EmbedCodeAction) {
+									case EmbedCodeAction.EDIT:
+										setIsEmbedCodeModalOpen(true);
+										break;
+
 									case EmbedCodeAction.COPY_TO_CLIPBOARD:
+										copyToClipboard(toEmbedCodeDetail(selected.contentId));
+										ToastService.success(
+											tHtml('De code werd succesvol gekopieerd.')
+										);
 										setSelected(undefined);
+										break;
+
+									case EmbedCodeAction.DUPLICATE:
+										await duplicateSelectedEmbedCode(selected);
+										break;
+
+									case EmbedCodeAction.SHOW_ORIGINAL:
+										navigate(history, APP_PATH.ITEM_DETAIL.route, {
+											id: selected.contentId,
+										});
 										break;
 
 									case EmbedCodeAction.DELETE:
@@ -301,10 +321,23 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 				showCheckboxes={false}
 			/>
 
+			<EditEmbedCodeModal
+				isOpen={isEmbedCodeModalOpen}
+				embedCode={selected}
+				onClose={() => {
+					setIsEmbedCodeModalOpen(false);
+					setSelected(undefined);
+				}}
+				handleUpdate={changeEmbedCode}
+			/>
+
 			<DeleteObjectModal
-				title={tText('ben je zeker dat je dit ingesloten fragment wilt verwijderen')}
-				body={tText('deze actie kan niet ongedaan gemaakt worden')}
+				title={tText('Fragment verwijderen')}
+				body={tText(
+					'Opgelet! Ben je zeker dat je het fragment wil verwijderen? Het zal dan niet meer werken in Smartschool en BookWidgets.'
+				)}
 				isOpen={isConfirmationModalOpen}
+				size="medium"
 				onClose={() => {
 					setIsConfirmationModalOpen(false);
 					setSelected(undefined);
@@ -315,4 +348,4 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & UserProps> = ({ commonUser 
 	);
 };
 
-export default withUser(EmbedCodeOverview) as FC<EmbedCodeOverviewProps>;
+export default compose(withRouter, withUser)(EmbedCodeOverview) as FC<EmbedCodeOverviewProps>;

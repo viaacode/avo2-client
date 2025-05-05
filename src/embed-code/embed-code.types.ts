@@ -1,6 +1,6 @@
 import type { Avo } from '@viaa/avo2-types';
 
-import type { TableColumnDataType } from './table-column-data-type';
+import type { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 export type EmbedCodeContentType = 'ITEM' | 'COLLECTION' | 'ASSIGNMENT';
 

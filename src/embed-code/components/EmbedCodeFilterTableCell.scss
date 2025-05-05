@@ -1,4 +1,4 @@
-@import "../../../styles/settings/variables";
+@import "../../styles/settings/variables";
 
 .m-embed-code-cell-thumbnail.c-thumbnail {
 	width: 125px;
@@ -18,5 +18,14 @@
 
 	@media (min-width: $g-bp2) {
 		max-width: 30rem;
+	}
+}
+
+.c-content-header__header {
+	color: $color-primary;
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
 	}
 }

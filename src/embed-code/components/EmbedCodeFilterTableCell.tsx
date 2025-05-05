@@ -1,26 +1,30 @@
-import bookwidgetLogo from '@assets/images/bookwidget_logo.png';
-import smartschoolLogo from '@assets/images/smartschool_logo.png';
 import { IconName, MetaData, MetaDataItem, Thumbnail } from '@viaa/avo2-components';
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { type FC, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
 
-import { formatDate, formatDurationHoursMinutesSeconds, formatTimestamp } from '../../helpers';
-import { tText } from '../../helpers/translate-text';
-import { truncateTableValue } from '../../helpers/truncate';
-import { type EmbedCode, EmbedCodeExternalWebsite } from '../../types/embed-code';
+import {
+	formatDate,
+	formatDurationHoursMinutesSeconds,
+	formatTimestamp,
+} from '../../shared/helpers';
+import { tText } from '../../shared/helpers/translate-text';
+import { truncateTableValue } from '../../shared/helpers/truncate';
+import { bookWidgetsLogo, smartSchoolLogo } from '../embed-code.const';
+import { type EmbedCode, EmbedCodeExternalWebsite } from '../embed-code.types';
 
 import './EmbedCodeFilterTableCell.scss';
 
 export interface EmbedCodeFilterTableCellProps {
 	id: string;
 	data: EmbedCode;
+	onNameClick: (data: EmbedCode) => void;
 	actions?: (data?: EmbedCodeFilterTableCellProps['data']) => ReactNode;
 }
 
 const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 	id,
 	data,
+	onNameClick,
 	actions = () => null,
 }) => {
 	const getItemTimestamp = (date: string) => {
@@ -39,10 +43,8 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 
 	const renderTitle = ({ content, contentType, title }: EmbedCode) => (
 		<div className="c-content-header">
-			<h3 className="c-content-header__header">
-				<Link onClick={console.log} title={title}>
-					{truncateTableValue(title)}
-				</Link>
+			<h3 className="c-content-header__header" onClick={() => onNameClick(data)}>
+				{truncateTableValue(title)}
 			</h3>
 			<div className="c-content-header__meta u-text-muted">
 				<MetaData category={contentType}>
@@ -70,7 +72,7 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 				<>
 					<img
 						className="o-svg-icon prepend-logo"
-						src={smartschoolLogo}
+						src={smartSchoolLogo}
 						alt={tText('Smartschool logo')}
 					/>
 					{tText('Smartschool')}
@@ -82,7 +84,7 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 				<>
 					<img
 						className="o-svg-icon prepend-logo"
-						src={bookwidgetLogo}
+						src={bookWidgetsLogo}
 						alt={tText('Bookwidgets logo')}
 					/>
 					{tText('Bookwidgets')}

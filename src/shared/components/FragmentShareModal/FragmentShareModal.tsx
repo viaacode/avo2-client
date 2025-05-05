@@ -1,5 +1,3 @@
-import bookwidgetLogo from '@assets/images/bookwidget_logo.png';
-import smartschoolLogo from '@assets/images/smartschool_logo.png';
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
@@ -18,16 +16,18 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { PermissionService } from '../../../authentication/helpers/permission-service';
+import EmbedContent from '../../../embed-code/components/EmbedContent';
+import { bookWidgetsLogo, smartSchoolLogo } from '../../../embed-code/embed-code.const';
+import {
+	type EmbedCode,
+	EmbedCodeDescriptionType,
+	EmbedCodeExternalWebsite,
+} from '../../../embed-code/embed-code.types';
 import { toSeconds } from '../../helpers';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import { useTabs } from '../../hooks/useTabs';
-import {
-	type EmbedCode,
-	EmbedCodeDescriptionType,
-	EmbedCodeExternalWebsite,
-} from '../../types/embed-code';
 import QuickLaneContent from '../QuickLaneContent/QuickLaneContent';
 import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';
 import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
@@ -35,7 +35,6 @@ import ShareThroughEmailContent from '../ShareThroughEmailContent/ShareThroughEm
 import { type ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 
 import './FragmentShareModal.scss';
-import EmbedContent from './EmbedContent';
 
 type FragmentShareModalProps = {
 	item: Avo.Item.Item;
@@ -80,12 +79,12 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 									{tText('Insluiten')}
 									<img
 										className="append-logo"
-										src={smartschoolLogo}
+										src={smartSchoolLogo}
 										alt={tText('Smartschool logo')}
 									/>
 									<img
 										className="append-logo"
-										src={bookwidgetLogo}
+										src={bookWidgetsLogo}
 										alt={tText('Bookwidgets logo')}
 									/>
 								</>
@@ -142,7 +141,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 				<>
 					<img
 						className="o-svg-icon prepend-logo"
-						src={smartschoolLogo}
+						src={smartSchoolLogo}
 						alt={tText('Smartschool logo')}
 					/>
 					{tText('Smartschool')}
@@ -156,7 +155,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 				<>
 					<img
 						className="o-svg-icon prepend-logo"
-						src={bookwidgetLogo}
+						src={bookWidgetsLogo}
 						alt={tText('Bookwidgets logo')}
 					/>
 					{tText('Bookwidgets')}
@@ -201,35 +200,56 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 		);
 	};
 
+	const renderEmbedContentDescription = (): string | ReactNode => {
+		switch (embedDropdownSelection) {
+			case EmbedCodeExternalWebsite.SMARTSCHOOL:
+				return tHtml(
+					'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in een Smartschoolfiche.'
+				);
+			case EmbedCodeExternalWebsite.BOOKWIDGETS:
+				return tHtml(
+					'Bewerk het fragment, kopieer de link en plak hem in een widget in Bookwidgets.'
+				);
+			default:
+				return '';
+		}
+	};
+
 	const renderEmbedContent = (): ReactNode => {
 		return (
 			<>
-				<Container
-					mode="vertical"
-					bordered={!!embedDropdownSelection}
-					className="embed-selection"
-				>
-					<Spacer margin="bottom">
-						<BlockHeading type="h4">{tHtml('Fragment insluiten in')}</BlockHeading>
-					</Spacer>
-					<Spacer margin="bottom">
-						<Dropdown
-							label={getEmbedDropdownLabel()}
-							onOpen={handleRightsButtonClicked}
-							onClose={handleRightsButtonClicked}
-							isOpen={isEmbedDropdownOpen}
-						>
-							<MenuContent
-								menuItems={embedDropdownOptions}
-								onClick={(id) => {
-									setEmbedDropdownSelection(id as EmbedCodeExternalWebsite);
-									handleRightsButtonClicked();
-								}}
-							/>
-						</Dropdown>
-					</Spacer>
-				</Container>
-				{embedCode && <EmbedContent item={embedCode} onClose={handleClose} />}
+				<Spacer margin="bottom-large">
+					<Container
+						mode="vertical"
+						bordered={!!embedDropdownSelection}
+						className="embed-selection"
+					>
+						<Spacer margin="bottom">
+							<BlockHeading type="h4">{tHtml('Fragment insluiten in')}</BlockHeading>
+						</Spacer>
+						<Spacer margin="bottom">
+							<Dropdown
+								label={getEmbedDropdownLabel()}
+								onOpen={handleRightsButtonClicked}
+								onClose={handleRightsButtonClicked}
+								isOpen={isEmbedDropdownOpen}
+							>
+								<MenuContent
+									menuItems={embedDropdownOptions}
+									onClick={(id) => {
+										setEmbedDropdownSelection(id as EmbedCodeExternalWebsite);
+										handleRightsButtonClicked();
+									}}
+								/>
+							</Dropdown>
+						</Spacer>
+					</Container>
+				</Spacer>
+				<EmbedContent
+					item={embedCode}
+					contentDescription={renderEmbedContentDescription()}
+					onClose={handleClose}
+				/>
 			</>
 		);
 	};
