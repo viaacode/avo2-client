@@ -40,6 +40,7 @@ export class EmbedCodeService {
 			throw error;
 		}
 	}
+
 	public static async updateEmbedCode(data: EmbedCode): Promise<void> {
 		let url: string | undefined = undefined;
 
@@ -49,7 +50,7 @@ export class EmbedCodeService {
 			await fetchWithLogoutJson<{
 				message: 'success';
 			}>(url, {
-				method: 'POST',
+				method: 'PATCH',
 				body: JSON.stringify(data),
 				forceLogout: false,
 			});
