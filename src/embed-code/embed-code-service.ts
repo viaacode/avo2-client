@@ -50,7 +50,7 @@ export class EmbedCodeService {
 			await fetchWithLogoutJson<{
 				message: 'success';
 			}>(url, {
-				method: 'POST',
+				method: 'PATCH',
 				body: JSON.stringify(data),
 				forceLogout: false,
 			});
