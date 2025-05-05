@@ -17,13 +17,26 @@ import { compose } from 'redux';
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { APP_PATH } from '../../constants';
+import BookmarkEmbedModal from '../../embed-code/components/modals/BookmarkEmbedModal';
+import {
+	type EmbedCode,
+	EmbedCodeDescriptionType,
+	EmbedCodeExternalWebsite,
+} from '../../embed-code/embed-code.types';
 import { ErrorView } from '../../error/views';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from '../../shared/components';
-import { buildLink, CustomError, formatDate, fromNow, isMobileWidth } from '../../shared/helpers';
+import {
+	buildLink,
+	CustomError,
+	formatDate,
+	fromNow,
+	isMobileWidth,
+	toSeconds,
+} from '../../shared/helpers';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
@@ -59,6 +72,9 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 	const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null);
 	const [bookmarkToDelete, setBookmarkToDelete] = useState<BookmarkInfo | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+	const [isEmbedCodeModalOpen, setIsEmbedCodeModalOpen] = useState<EmbedCode | undefined>(
+		undefined
+	);
 	const [sortColumn, setSortColumn] = useState<keyof BookmarkInfo>('createdAt');
 	const [sortOrder, setSortOrder] = useState<OrderDirection>(OrderDirection.desc);
 	const [page, setPage] = useState<number>(0);
@@ -96,9 +112,7 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 
 	const fetchBookmarks = useCallback(async () => {
 		try {
-			const bookmarkInfos = await BookmarksViewsPlaysService.getAllBookmarksForUser(
-				commonUser as Avo.User.CommonUser
-			);
+			const bookmarkInfos = await BookmarksViewsPlaysService.getAllBookmarksForUser();
 			setBookmarks(bookmarkInfos);
 			setLoadingInfo({ state: 'loaded' });
 		} catch (err) {
@@ -244,18 +258,55 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 		</div>
 	);
 
-	const renderDeleteAction = (bookmarkInfo: BookmarkInfo) => (
-		<Button
-			title={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
-			ariaLabel={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
-			icon={IconName.delete}
-			type="danger-hover"
-			onClick={() => {
-				setBookmarkToDelete(bookmarkInfo);
-				setIsDeleteModalOpen(true);
-			}}
-		/>
-	);
+	const renderActions = (bookmarkInfo: BookmarkInfo) => {
+		const isItem = CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[bookmarkInfo.contentType] === 'item';
+
+		return (
+			<>
+				<Button
+					title={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
+					ariaLabel={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
+					icon={IconName.delete}
+					type="danger-hover"
+					onClick={() => {
+						setBookmarkToDelete(bookmarkInfo);
+						setIsDeleteModalOpen(true);
+					}}
+				/>
+
+				{isItem && (
+					<Button
+						title={tText('Fragment insluiten')}
+						ariaLabel={tText('Fragment insluiten')}
+						icon={IconName.code}
+						className="u-spacer-left-s"
+						type="secondary"
+						onClick={() => {
+							setIsEmbedCodeModalOpen({
+								id: '',
+								title: bookmarkInfo.contentTitle,
+								externalWebsite: EmbedCodeExternalWebsite.SMARTSCHOOL,
+								contentType: 'ITEM',
+								contentId: bookmarkInfo.contentLinkId,
+								content: {
+									title: bookmarkInfo.contentTitle,
+									description: bookmarkInfo.contentDescription,
+									duration: bookmarkInfo.contentDuration,
+									external_id: bookmarkInfo.contentLinkId,
+									thumbnail_path: bookmarkInfo.contentThumbnailPath,
+									type: bookmarkInfo.contentType,
+								},
+								descriptionType: EmbedCodeDescriptionType.ORIGINAL,
+								description: bookmarkInfo.contentDescription,
+								start: 0,
+								end: toSeconds(bookmarkInfo.contentDuration),
+							} as EmbedCode);
+						}}
+					/>
+				)}
+			</>
+		);
+	};
 
 	const renderCell = (bookmarkInfo: BookmarkInfo, colKey: string) => {
 		switch (colKey as keyof BookmarkInfo | typeof ACTIONS_TABLE_COLUMN_ID) {
@@ -274,7 +325,7 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 				);
 			}
 			case ACTIONS_TABLE_COLUMN_ID:
-				return renderDeleteAction(bookmarkInfo);
+				return renderActions(bookmarkInfo);
 
 			default:
 				return null;
@@ -335,6 +386,11 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 	const renderBookmarks = () => (
 		<>
 			{bookmarks && bookmarks.length ? renderTable() : renderEmptyFallback()}
+			<BookmarkEmbedModal
+				isOpen={!!isEmbedCodeModalOpen}
+				embedCode={isEmbedCodeModalOpen}
+				onClose={() => setIsEmbedCodeModalOpen(undefined)}
+			/>
 			<DeleteObjectModal
 				title={tHtml('workspace/views/bookmarks___verwijder-bladwijzer')}
 				body={tHtml(

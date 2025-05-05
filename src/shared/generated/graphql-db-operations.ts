@@ -899,13 +899,6 @@ export type GetBookmarkStatusesQueryVariables = Exact<{
 
 export type GetBookmarkStatusesQuery = { __typename?: 'query_root', app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', collection_uuid: any }>, app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', item_id: any }>, app_assignments_v2_bookmarks: Array<{ __typename?: 'app_assignments_v2_bookmarks', assignment_id: any }> };
 
-export type GetBookmarksForUserQueryVariables = Exact<{
-  profileId: Scalars['uuid'];
-}>;
-
-
-export type GetBookmarksForUserQuery = { __typename?: 'query_root', app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', item_id: any, created_at: any, bookmarkedItem?: { __typename?: 'app_item_meta', title: string, thumbnail_path: string, duration?: any | null, issued?: any | null, item?: { __typename?: 'shared_items', external_id: string, item_meta?: { __typename?: 'app_item_meta', is_deleted?: boolean | null, is_published?: boolean | null, type_id: number, organisation?: { __typename?: 'shared_organisations', name: string } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null } | null } | null, view_count?: { __typename?: 'app_item_views', count?: number | null } | null } | null }>, app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', collection_uuid: any, created_at: any, bookmarkedCollection?: { __typename?: 'app_collections', title: string, thumbnail_path?: string | null, created_at: any, type_id: number, type: { __typename?: 'shared_types', id: number, label: string }, view_count?: { __typename?: 'app_collection_views', count?: number | null } | null } | null }>, app_assignments_v2_bookmarks: Array<{ __typename?: 'app_assignments_v2_bookmarks', assignment_id: any, created_at: any, assignment: { __typename?: 'app_assignments_v2', title?: string | null, thumbnail_path?: string | null, type_id: number, created_at: any, type: { __typename?: 'shared_types', id: number, label: string }, view_count?: { __typename?: 'app_assignment_v2_views', count: number } | null } }> };
-
 export type GetCollectionBookmarkViewPlayCountsQueryVariables = Exact<{
   collectionUuid: Scalars['uuid'];
   profileId?: InputMaybe<Scalars['uuid']>;

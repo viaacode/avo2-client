@@ -40,6 +40,7 @@ export class EmbedCodeService {
 			throw error;
 		}
 	}
+
 	public static async updateEmbedCode(data: EmbedCode): Promise<void> {
 		let url: string | undefined = undefined;
 
