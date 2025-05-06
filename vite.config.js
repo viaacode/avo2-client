@@ -20,6 +20,10 @@ export default defineConfig(() => {
 			outDir: 'dist',
 			sourcemap: true,
 			rollupOptions: {
+				input: {
+					main: path.resolve(__dirname, 'index.html'),
+					embed: path.resolve(__dirname, 'embed/index.html'),
+				},
 				plugins: [sourcemaps()],
 				output: {
 					assetFileNames: function (file) {
