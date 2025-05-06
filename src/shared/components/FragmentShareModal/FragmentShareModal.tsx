@@ -69,8 +69,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 						},
 				  ]
 				: []),
-			// TODO EMBED: inverse this again so it excludes correctly
-			...(!PermissionService.hasPerm(commonUser, PermissionName.EMBED_ITEMS_ON_OTHER_SITES)
+			...(PermissionService.hasPerm(commonUser, PermissionName.EMBED_ITEMS_ON_OTHER_SITES)
 				? [
 						{
 							id: ShareDropdownTabs.EMBED,
