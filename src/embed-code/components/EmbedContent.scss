@@ -2,7 +2,7 @@
 	height: unset;
 }
 
-div.expandable-container-closed{
+div.expandable-container-closed {
 	div[id^="react-collapsed-panel"] {
 		background: linear-gradient(black, rgba(255, 255, 255, 50));
 		-webkit-background-clip: text;

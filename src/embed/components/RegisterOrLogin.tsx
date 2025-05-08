@@ -1,18 +1,10 @@
 import AvoLogo from '@assets/images/avo-logo-centered.svg';
-import {
-	Column,
-	Grid,
-	Icon,
-	IconName,
-	Spacer,
-	Tabs,
-} from '@viaa/avo2-components';
+import { Column, Grid, Icon, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 import { type RouteComponentProps, withRouter } from 'react-router';
 
 import { LoginOptionsTabs } from '../../authentication/components/LoginOptions';
 import LoginOptionsForPupil from '../../authentication/components/LoginOptionsForPupil';
-
 import './RegisterOrLogin.scss';
 import LoginOptionsForTeacher from '../../authentication/components/LoginOptionsForTeacher';
 import { getEnv } from '../../shared/helpers';
