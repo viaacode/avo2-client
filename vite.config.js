@@ -31,6 +31,23 @@ export default defineConfig(() => {
 							? `assets/[name].[ext]`
 							: `assets/[name]-[hash].[ext]`;
 					},
+					plugins: [
+						{
+							name: 'html-path-rewrite',
+							generateBundle(_, bundle) {
+								for (const key in bundle) {
+									if (
+										bundle[key].type === 'asset' &&
+										bundle[key].fileName.endsWith('.html')
+									) {
+										if (bundle[key].fileName === 'embed/index.html') {
+											bundle[key].fileName = 'embed.html';
+										}
+									}
+								}
+							},
+						},
+					],
 				},
 			},
 		},

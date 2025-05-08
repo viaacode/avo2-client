@@ -1,0 +1,43 @@
+import { Column, Container, Grid, Modal, ModalBody } from '@viaa/avo2-components';
+import React, { type FC } from 'react';
+import { type RouteComponentProps, withRouter } from 'react-router';
+
+import LoginOptions from '../../authentication/components/LoginOptions';
+import useTranslation from '../../shared/hooks/useTranslation';
+
+import './RegisterOrLogin.scss';
+
+const RegisterOrLogin: FC<RouteComponentProps> = ({ history, location, match }) => {
+	const { tHtml } = useTranslation();
+
+	return (
+		<Container className="c-register-login-view" mode="horizontal">
+			<Container mode="vertical">
+				<Modal className="c-register-login-view__modal" isOpen size="medium">
+					<ModalBody>
+						<Grid className="u-bg-gray-100">
+							<Column size="3-6">
+								<h2 className="c-h2 u-m-0">
+									{tHtml(
+										'authentication/views/register-or-login___welkom-op-het-archief-voor-onderwijs'
+									)}
+								</h2>
+
+								<p>
+									{tHtml(
+										'authentication/views/register-or-login___maak-een-gratis-account-aan-en-verrijk-je-lessen-met-beeld-en-geluid-op-maat-van-de-klas'
+									)}
+								</p>
+							</Column>
+							<Column size="3-6" className="u-bg-white">
+								<LoginOptions history={history} location={location} match={match} />
+							</Column>
+						</Grid>
+					</ModalBody>
+				</Modal>
+			</Container>
+		</Container>
+	);
+};
+
+export default withRouter(RegisterOrLogin);
