@@ -12,6 +12,7 @@ interface Window {
 		PORT: string;
 		NODE_ENV: string;
 		ENV: 'local' | 'qas' | 'production';
+		REGISTER_URL: string;
 	};
 	APP_INFO: {
 		version: string;

@@ -14,7 +14,7 @@ import withUser, { type UserProps } from '../shared/hocs/withUser';
 import { waitForTranslations } from '../shared/translations/i18n';
 import type { AppState } from '../store';
 
-import Embed from './Embed';
+import Embed from './components/Embed';
 import RegisterOrLogin from './components/RegisterOrLogin';
 import store from './store';
 
@@ -79,7 +79,7 @@ const EmbedApp: FC<
 	};
 
 	return (
-		<div className="o-app">
+		<div className="o-app u-p-t-0">
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
 				dataObject={{}}
