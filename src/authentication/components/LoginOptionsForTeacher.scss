@@ -1,0 +1,17 @@
+.c-button-smartschool,
+.c-button-klascement,
+.c-button-itsme {
+	.o-svg-icon {
+		bottom: 0;
+		margin-right: 0;
+	}
+}
+
+.c-button-smartschool,
+.c-button-klascement {
+	.o-svg-icon {
+		* {
+			fill: white !important;
+		}
+	}
+}

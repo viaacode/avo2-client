@@ -10,15 +10,11 @@ import { useTabs } from '../../shared/hooks/useTabs';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	redirectToClientPage,
-	redirectToServerACMIDMLogin,
-	redirectToServerItsmeLogin,
-	redirectToServerKlascementLogin,
-	redirectToServerLeerIDLogin,
-	redirectToServerLoginPage,
-	redirectToServerSmartschoolLogin,
 } from '../helpers/redirects';
 
 import './LoginOptions.scss';
+import LoginOptionsForPupil from './LoginOptionsForPupil';
+import LoginOptionsForTeacher from './LoginOptionsForTeacher';
 
 interface LoginOptionsProps extends RouteComponentProps {
 	onOptionClicked?: () => void;
@@ -26,7 +22,7 @@ interface LoginOptionsProps extends RouteComponentProps {
 
 const LoginOptionsPreferredTabStorageKey = 'LoginOptions.preference';
 
-const LoginOptionsTabs = {
+export const LoginOptionsTabs = {
 	TEACHER: 'lesgever',
 	STUDENT: 'leerling',
 };
@@ -80,124 +76,22 @@ const LoginOptions: FC<LoginOptionsProps> = ({ history, location, onOptionClicke
 	const getButtons = () => {
 		switch (tab) {
 			case LoginOptionsTabs.TEACHER:
-				return [
-					<Button
-						key="login-button-archief"
-						block
-						label={tText(
-							'authentication/components/login-options___inloggen-met-e-mailadres'
-						)}
-						icon={IconName.at}
-						type="primary"
-						className="c-login-with-archief c-button-mail"
-						onClick={() => {
-							onOptionClicked();
-							redirectToServerLoginPage(location);
-						}}
-					/>,
-
-					<Button
-						key="login-button-itsme"
-						block
-						type="secondary"
-						className="c-button-itsme"
-						icon={IconName.itsme}
-						iconType="multicolor"
-						label={tText('authentication/components/login-options___itsme')}
-						onClick={() => {
-							onOptionClicked();
-							redirectToServerItsmeLogin(location);
-						}}
-					/>,
-
-					<Button
-						key="login-button-acmidm"
-						block
-						type="secondary"
-						className="c-button-acmidm"
-						icon={IconName.eid}
-						label={tText(
-							'authentication/components/login-options___e-id-of-een-digitale-sleutel'
-						)}
-						onClick={() => {
-							onOptionClicked();
-							redirectToServerACMIDMLogin(location);
-						}}
-					/>,
-
-					<Button
-						key="login-button-smartschool"
-						block
-						className="c-button-smartschool"
-						icon={IconName.smartschool}
-						label={tText(
-							'authentication/components/login-options___inloggen-met-smartschool'
-						)}
-						onClick={() => {
-							onOptionClicked();
-							redirectToServerSmartschoolLogin(location);
-						}}
-					/>,
-
-					<Button
-						key="login-button-klascement"
-						block
-						className="c-button-klascement"
-						icon={IconName.klascement}
-						label={tText(
-							'authentication/components/login-options___inloggen-met-klas-cement'
-						)}
-						onClick={() => {
-							onOptionClicked();
-							redirectToServerKlascementLogin(location);
-						}}
-					/>,
-				];
+				return (
+					<LoginOptionsForTeacher
+						onOptionClicked={onOptionClicked}
+						location={location}
+						history={history}
+					/>
+				);
 
 			case LoginOptionsTabs.STUDENT:
-				return [
-					<Button
-						key="login-button-leerid-pupil"
-						block
-						type="secondary"
-						className="c-button-leerid"
-						icon={IconName.leerid}
-						iconType="custom"
-						label={tText('authentication/components/login-options___leerling-id')}
-						onClick={() => {
-							onOptionClicked();
-							redirectToServerLeerIDLogin(location);
-						}}
-					/>,
-
-					<Button
-						key="login-button-smartschool-pupil"
-						block
-						className="c-button-smartschool"
-						icon={IconName.smartschool}
-						label={tText(
-							'authentication/components/login-options___inloggen-met-smartschool'
-						)}
-						onClick={() => {
-							onOptionClicked();
-							redirectToServerSmartschoolLogin(location);
-						}}
-					/>,
-
-					<Button
-						key="login-button-archief-pupil"
-						block
-						label={tText(
-							'authentication/components/login-options___inloggen-met-e-mailadres'
-						)}
-						type="inline-link"
-						className="c-login-with-archief c-button-mail c-login-button--pupil"
-						onClick={() => {
-							onOptionClicked();
-							redirectToServerLoginPage(location);
-						}}
-					/>,
-				];
+				return (
+					<LoginOptionsForPupil
+						onOptionClicked={onOptionClicked}
+						location={location}
+						history={history}
+					/>
+				);
 
 			default:
 				break;
@@ -267,14 +161,7 @@ const LoginOptions: FC<LoginOptionsProps> = ({ history, location, onOptionClicke
 					<h2 className="c-h3 u-m-0 m-login-options__title">{renderTitle()}</h2>
 				</Spacer>
 
-				{getButtons()?.map((button) => (
-					<Spacer
-						key={`button--${button.props.className}`}
-						margin={['top-small', 'bottom-small']}
-					>
-						{button}
-					</Spacer>
-				))}
+				{getButtons()}
 
 				<hr />
 
