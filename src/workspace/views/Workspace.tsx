@@ -127,7 +127,7 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 					canCreateBookmarks: response[4],
 					canViewContentInSameCompany: response[5],
 					canViewSomeQuickLanes: response[6],
-					canEmbedItemsOnOtherSites: !response[7], // TODO EMBED: inverse once permissions are working
+					canEmbedItemsOnOtherSites: response[7],
 				});
 			})
 			.catch((err) => {
