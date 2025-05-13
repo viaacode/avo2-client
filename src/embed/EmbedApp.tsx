@@ -1,9 +1,16 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, useEffect, useMemo, useState } from 'react';
 import { connect, Provider } from 'react-redux';
-import { type RouteComponentProps, BrowserRouter as Router, withRouter } from 'react-router-dom';
+import {
+	Route,
+	type RouteComponentProps,
+	BrowserRouter as Router,
+	withRouter,
+} from 'react-router-dom';
 import { compose, type Dispatch } from 'redux';
+import { QueryParamProvider } from 'use-query-params';
 
 import { LoginMessage } from '../authentication/authentication.types';
 import { getLoginStateAction } from '../authentication/store/actions';
@@ -107,13 +114,19 @@ const EmbedAppWithRouter = compose(
 	withUser
 )(EmbedApp) as FC;
 
+const queryClient = new QueryClient();
+
 const EmbedRoot: FC = () => {
 	return (
-		<Provider store={store}>
-			<Router>
-				<EmbedAppWithRouter />
-			</Router>
-		</Provider>
+		<QueryClientProvider client={queryClient}>
+			<Provider store={store}>
+				<Router>
+					<QueryParamProvider ReactRouterRoute={Route}>
+						<EmbedAppWithRouter />
+					</QueryParamProvider>
+				</Router>
+			</Provider>
+		</QueryClientProvider>
 	);
 };
 

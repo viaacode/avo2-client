@@ -1,12 +1,19 @@
-import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
+import AvoLogo from '@assets/images/avo-logo-button.svg';
+import { Column, Flex, Grid, Icon, IconName, Spacer, Spinner } from '@viaa/avo2-components';
+import type { ItemSchema } from '@viaa/avo2-types/types/item';
 import queryString from 'query-string';
 import React, { type FC, useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 
+import { redirectToExternalPage } from '../../authentication/helpers/redirects';
 import { type EmbedCode } from '../../embed-code/embed-code.types';
+import { ItemVideoDescription } from '../../item/components';
+import { tHtml } from '../../shared/helpers/translate-html';
 import { EmbedCodeService } from '../services/embed-code-service';
 
 import ErrorView from './ErrorView';
+
+import './Embed.scss';
 
 const Embed: FC = () => {
 	const params = queryString.parse(window.location.search);
@@ -49,9 +56,62 @@ const Embed: FC = () => {
 	}
 
 	return (
-		<Spacer margin={['top-large', 'bottom-large']}>
-			<Flex center>{embedCode.title}</Flex>
-		</Spacer>
+		<div className={'embed-wrapper u-spacer-s'}>
+			<ItemVideoDescription
+				itemMetaData={embedCode.content as ItemSchema}
+				showMetadata={false}
+				enableMetadataLink={false}
+				showTitle={false}
+				showDescription={false}
+				canPlay={true}
+				cuePointsLabel={{ start: embedCode.start, end: embedCode.end }}
+				cuePointsVideo={{ start: embedCode.start, end: embedCode.end }}
+				trackPlayEvent={false}
+			/>
+
+			<p className="c-title u-spacer-top-s u-truncate" title={embedCode.title}>
+				{embedCode.title}
+			</p>
+
+			<Grid noWrap>
+				<Column size="flex">
+					<p className="c-meta-data">
+						<span>{tHtml('Aanbieder:')}</span>
+						<span className="u-text-bold u-truncate">
+							{(embedCode.content as ItemSchema)?.organisation.name}
+						</span>
+						<span className="u-text-bold">&bull;</span>
+						<span>{tHtml('Uitgezonden:')}</span>
+						<span className="u-text-bold">
+							{(embedCode.content as ItemSchema)?.issued}
+						</span>
+					</p>
+					<p className="c-meta-data">
+						<span>{tHtml('Reeks:')}</span>
+						<span className="u-text-bold u-truncate">
+							{(embedCode.content as ItemSchema)?.series}{' '}
+						</span>
+					</p>
+				</Column>
+				<Column size="static">
+					<div
+						className="c-avo-button"
+						onClick={() => redirectToExternalPage(window.location.origin, '_blank')}
+					>
+						<img
+							className="c-avo-logo"
+							alt="Archief voor Onderwijs logo"
+							src={AvoLogo}
+						/>
+						<Icon name={IconName.externalLink} subtle />
+					</div>
+				</Column>
+			</Grid>
+
+			<div className="c-custom-logo-overlay u-spacer">
+				<img src={(embedCode.content as ItemSchema)?.organisation?.logo_url} />
+			</div>
+		</div>
 	);
 };
 
