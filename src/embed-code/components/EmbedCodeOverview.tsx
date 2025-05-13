@@ -259,7 +259,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 										break;
 
 									case EmbedCodeAction.COPY_TO_CLIPBOARD:
-										copyToClipboard(toEmbedCodeDetail(selected.contentId));
+										copyToClipboard(toEmbedCodeDetail(selected.id));
 										ToastService.success(
 											tHtml('De code werd succesvol gekopieerd.')
 										);

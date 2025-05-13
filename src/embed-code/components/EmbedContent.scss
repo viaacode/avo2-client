@@ -9,3 +9,8 @@ div.expandable-container-closed {
 		-webkit-text-fill-color: transparent;
 	}
 }
+
+.c-toolbar__right {
+	flex-shrink: 1;
+	min-width: 0;
+}

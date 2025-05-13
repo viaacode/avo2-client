@@ -253,7 +253,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 		if (generatedCode) {
 			return (
 				<ToolbarRight>
-					<ToolbarItem>{generatedCode}</ToolbarItem>
+					<ToolbarItem className="u-truncate">{generatedCode}</ToolbarItem>
 					<ToolbarItem>
 						<ButtonToolbar>
 							<Button
