@@ -14,6 +14,7 @@ import { EmbedCodeService } from '../services/embed-code-service';
 import ErrorView from './ErrorView';
 
 import './Embed.scss';
+import {reorderDate} from "../../shared/helpers";
 
 const Embed: FC = () => {
 	const params = queryString.parse(window.location.search);
@@ -77,19 +78,28 @@ const Embed: FC = () => {
 				<Column size="flex">
 					<p className="c-meta-data">
 						<span>{tHtml('Aanbieder:')}</span>
-						<span className="u-text-bold u-truncate">
+						<span
+							className="u-text-bold u-truncate"
+							title={(embedCode.content as ItemSchema)?.organisation.name}
+						>
 							{(embedCode.content as ItemSchema)?.organisation.name}
 						</span>
 						<span className="u-text-bold">&bull;</span>
 						<span>{tHtml('Uitgezonden:')}</span>
-						<span className="u-text-bold">
-							{(embedCode.content as ItemSchema)?.issued}
+						<span
+							className="u-text-bold"
+							title={reorderDate((embedCode.content as ItemSchema)?.issued, '/')}
+						>
+							{reorderDate((embedCode.content as ItemSchema)?.issued, '/')}
 						</span>
 					</p>
 					<p className="c-meta-data">
 						<span>{tHtml('Reeks:')}</span>
-						<span className="u-text-bold u-truncate">
-							{(embedCode.content as ItemSchema)?.series}{' '}
+						<span
+							className="u-text-bold u-truncate"
+							title={(embedCode.content as ItemSchema)?.series}
+						>
+							{(embedCode.content as ItemSchema)?.series}
 						</span>
 					</p>
 				</Column>
