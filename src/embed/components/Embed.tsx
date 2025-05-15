@@ -6,11 +6,11 @@ import React, { type FC, useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 
 import { redirectToExternalPage } from '../../authentication/helpers/redirects';
+import { EmbedCodeService } from '../../embed-code/embed-code-service';
 import { type EmbedCode } from '../../embed-code/embed-code.types';
 import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
 import { ItemVideoDescription } from '../../item/components';
 import { tHtml } from '../../shared/helpers/translate-html';
-import { EmbedCodeService } from '../services/embed-code-service';
 
 import ErrorView from './ErrorView';
 
