@@ -61,6 +61,7 @@ export type RouteId =
 	| 'COOKIE_POLICY'
 	| 'ERROR'
 	| 'QUICK_LANE'
+	| 'EMBED'
 	| 'ALL_ROUTES';
 
 // Routes should be ordered from least specific, to most specific
@@ -319,6 +320,11 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	},
 	QUICK_LANE: {
 		route: `/${ROUTE_PARTS.quickLane}/:id`,
+		showInContentPicker: false,
+		showForInteractiveTour: false,
+	},
+	EMBED: {
+		route: `/${ROUTE_PARTS.embeds}/:id`,
 		showInContentPicker: false,
 		showForInteractiveTour: false,
 	},
