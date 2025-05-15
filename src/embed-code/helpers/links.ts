@@ -7,7 +7,7 @@ export function toEmbedCodeIFrame(embedCodeId: string): string {
 	return stringifyUrl({
 		url: `${window.location.origin}/embed/index.html`,
 		query: {
-			'embed-id': embedCodeId,
+			embedId: embedCodeId,
 		},
 	});
 }
