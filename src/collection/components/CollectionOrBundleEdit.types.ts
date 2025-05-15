@@ -10,7 +10,7 @@ export enum ReorderType {
 }
 
 export interface MarcomNoteInfo {
-	id?: string;
+	id?: string | null;
 	note: string;
 }
 

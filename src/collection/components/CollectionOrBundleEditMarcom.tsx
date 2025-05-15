@@ -146,6 +146,10 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 				altText: klascementAltText,
 				sourceText: klascementSourceText,
 			});
+			if (!klascementId) {
+				console.error('Received no klascementId from klascement');
+				throw new Error('No klascementId returned');
+			}
 			window.open(
 				`${getEnv('KLASCEMENT_URL')}/video/${klascementId}/aanpassen/uitgebreid`,
 				'_blank'

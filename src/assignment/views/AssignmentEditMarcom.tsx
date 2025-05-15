@@ -288,8 +288,11 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 						setAssignment({
 							...assignment,
 							marcom_note: {
-								id: assignment?.marcom_note?.id || undefined,
+								id: assignment?.marcom_note?.id || null,
 								note: newNote,
+								assignment_id: assignment.id,
+								created_at: new Date().toISOString(),
+								updated_at: new Date().toISOString(),
 							},
 						});
 					}}
