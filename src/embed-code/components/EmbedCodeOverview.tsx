@@ -25,7 +25,7 @@ import {
 	type EmbedCodeOverviewFilterState,
 	type EmbedCodeOverviewTableColumns,
 } from '../embed-code.types';
-import { toEmbedCodeDetail } from '../helpers/links';
+import { toEmbedCodeIFrame } from '../helpers/links';
 import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 import { useDeleteEmbedCode } from '../hooks/useDeleteEmbedCode';
 import { useUpdateEmbedCode } from '../hooks/useUpdateEmbedCode';
@@ -259,7 +259,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 										break;
 
 									case EmbedCodeAction.COPY_TO_CLIPBOARD:
-										copyToClipboard(toEmbedCodeDetail(selected.id));
+										copyToClipboard(toEmbedCodeIFrame(selected.id));
 										ToastService.success(
 											tHtml('De code werd succesvol gekopieerd.')
 										);

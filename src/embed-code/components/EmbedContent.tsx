@@ -35,7 +35,7 @@ import {
 	EmbedCodeDescriptionType,
 	EmbedCodeExternalWebsite,
 } from '../embed-code.types';
-import { toEmbedCodeDetail } from '../helpers/links';
+import { toEmbedCodeIFrame } from '../helpers/links';
 import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 
 type EmbedProps = {
@@ -119,7 +119,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 	const handleCreate = async () => {
 		try {
 			const embedCodeId = await createEmbedCode(mapValuesToEmbedCode());
-			setGeneratedCode(toEmbedCodeDetail(embedCodeId));
+			setGeneratedCode(toEmbedCodeIFrame(embedCodeId));
 			ToastService.success(
 				tText('Je code werd succesvol aangemaakt en opgeslagen in je werkruimte.')
 			);

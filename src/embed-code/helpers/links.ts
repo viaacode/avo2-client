@@ -1,10 +1,19 @@
 import { stringifyUrl } from 'query-string';
+import { generatePath } from 'react-router';
 
-export function toEmbedCodeDetail(embedCodeId: string): string {
+import { APP_PATH } from '../../constants';
+
+export function toEmbedCodeIFrame(embedCodeId: string): string {
 	return stringifyUrl({
 		url: `${window.location.origin}/embed/index.html`,
 		query: {
 			'embed-id': embedCodeId,
 		},
+	});
+}
+
+export function toEmbedCodeDetail(embedCodeId: string): string {
+	return generatePath(APP_PATH.EMBED.route, {
+		id: embedCodeId,
 	});
 }

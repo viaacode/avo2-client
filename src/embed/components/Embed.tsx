@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 
 import { redirectToExternalPage } from '../../authentication/helpers/redirects';
 import { type EmbedCode } from '../../embed-code/embed-code.types';
+import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
 import { ItemVideoDescription } from '../../item/components';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { EmbedCodeService } from '../services/embed-code-service';
@@ -14,7 +15,7 @@ import { EmbedCodeService } from '../services/embed-code-service';
 import ErrorView from './ErrorView';
 
 import './Embed.scss';
-import {reorderDate} from "../../shared/helpers";
+import { reorderDate } from '../../shared/helpers';
 
 const Embed: FC = () => {
 	const params = queryString.parse(window.location.search);
@@ -106,7 +107,7 @@ const Embed: FC = () => {
 				<Column size="static">
 					<div
 						className="c-avo-button"
-						onClick={() => redirectToExternalPage(window.location.origin, '_blank')}
+						onClick={() => redirectToExternalPage(toEmbedCodeDetail(embedId), '_blank')}
 					>
 						<img
 							className="c-avo-logo"
