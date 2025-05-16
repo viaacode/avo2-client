@@ -1,0 +1,66 @@
+@import "../../styles/settings/variables";
+@import "../../styles/settings/colors";
+
+.embed-wrapper {
+	.c-item-video-description {
+		width: 100%;
+		margin: auto;
+	}
+
+	.c-title {
+		font-weight: 500;
+		font-size: 1.8rem;
+		line-height: 1.8rem;
+	}
+
+	.c-custom-logo-overlay{
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		pointer-events: none;
+
+		img {
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 10%;
+		}
+	}
+
+	.c-meta-data {
+		display: flex;
+		align-self: flex-start;
+		gap: .5rem;
+	}
+
+
+	.o-grid-col-flex {
+		width: auto;
+	}
+
+	.o-grid-col-static {
+		width: fit-content;
+		align-self: end;
+	}
+
+	.c-avo-button {
+		height: 3.2rem;
+		width: fit-content;
+		border: 1px solid $color-gray-200;
+		padding: .5rem;
+		display: flex;
+		gap: 1rem;
+		cursor: pointer;
+		margin-top: auto;
+
+		&:hover {
+			background-color: $color-gray-50;
+		}
+
+		.c-avo-logo {
+			height: 100%;
+		}
+	}
+}

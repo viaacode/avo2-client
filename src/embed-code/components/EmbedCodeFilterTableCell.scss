@@ -11,7 +11,8 @@
 	}
 }
 
-.c-content-header__header, .time-code {
+.c-content-header__header,
+.time-code {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;

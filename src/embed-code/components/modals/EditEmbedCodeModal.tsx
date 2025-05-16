@@ -10,7 +10,7 @@ import './EditEmbedCodeModal.scss';
 type EditEmbedCodeModalProps = {
 	embedCode?: EmbedCode;
 	isOpen: boolean;
-	handleUpdate: () => Promise<void>;
+	handleUpdate: (item: EmbedCode) => Promise<void>;
 	onClose: () => void;
 };
 
