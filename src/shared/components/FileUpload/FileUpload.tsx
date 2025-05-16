@@ -14,11 +14,11 @@ import queryString from 'query-string';
 import React, { type FC, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { CustomError } from '../../helpers';
+import { CustomError } from '../../helpers/custom-error';
 import { getUrlInfo, isPhoto, isVideo, PHOTO_TYPES } from '../../helpers/files';
 import { FileUploadService } from '../../services/file-upload-service';
 import { ToastService } from '../../services/toast-service';
-import ConfirmModal from '../ConfirmModal/ConfirmModal';
+import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
 
 import './FileUpload.scss';
 

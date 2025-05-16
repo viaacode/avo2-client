@@ -37,29 +37,12 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { OrderDirection } from '../../search/search.const';
-import {
-	HeaderOwnerAndContributors,
-	InActivityWarningModal,
-	InputModal,
-	InteractiveTour,
-	LoadingErrorLoadedComponent,
-	type LoadingInfo,
-	ShareDropdown,
-	ShareModal,
-} from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import DraggableBlock from '../../shared/components/DraggableBlock/DraggableBlock';
 import DraggableListModal from '../../shared/components/DraggableList/DraggableListModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
-import {
-	buildLink,
-	createDropdownMenuItem,
-	CustomError,
-	isMobileWidth,
-	navigate,
-} from '../../shared/helpers';
 import {
 	getContributorType,
 	transformContributorsToSimpleContributors,
@@ -119,6 +102,21 @@ import DeleteCollectionModal from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
+import ShareModal from '../../shared/components/ShareModal/ShareModal';
+import InputModal from '../../shared/components/InputModal/InputModal';
+import InActivityWarningModal from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
+import { buildLink } from '../../shared/helpers/build-link';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { navigate } from '../../shared/helpers/link';
+import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 
 const CollectionOrBundleEdit: FC<
 	CollectionOrBundleEditProps &

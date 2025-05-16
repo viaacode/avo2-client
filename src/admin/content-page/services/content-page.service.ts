@@ -1,7 +1,8 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type ButtonAction } from '@viaa/avo2-components';
 
-import { CustomError, getEnv } from '../../../shared/helpers';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { getEnv } from '../../../shared/helpers/env';
 import { type ResolvedItemOrCollectionOrAssignment } from '../components/blocks/MediaGridWrapper/MediaGridWrapper.types';
 
 export class ContentPageService {

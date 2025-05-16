@@ -1,7 +1,6 @@
 import { Column, Container, Grid, Modal, ModalBody } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps, withRouter } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -9,7 +8,7 @@ import LoginOptions from '../components/LoginOptions';
 
 import './RegisterOrLogin.scss';
 
-const RegisterOrLogin: FC<RouteComponentProps> = ({ history, location, match }) => {
+const RegisterOrLogin: FC = () => {
 	const { tText, tHtml } = useTranslation();
 
 	return (
@@ -48,7 +47,7 @@ const RegisterOrLogin: FC<RouteComponentProps> = ({ history, location, match }) 
 								</p>
 							</Column>
 							<Column size="3-6" className="u-bg-white">
-								<LoginOptions history={history} location={location} match={match} />
+								<LoginOptions />
 							</Column>
 						</Grid>
 					</ModalBody>
@@ -58,4 +57,4 @@ const RegisterOrLogin: FC<RouteComponentProps> = ({ history, location, match }) 
 	);
 };
 
-export default withRouter(RegisterOrLogin);
+export default RegisterOrLogin;

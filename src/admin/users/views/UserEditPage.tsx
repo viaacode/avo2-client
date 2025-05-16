@@ -18,10 +18,12 @@ import { type DefaultSecureRouteProps } from '../../../authentication/components
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { SettingsService } from '../../../settings/settings.service';
-import { FileUpload } from '../../../shared/components';
+import FileUpload from '../../../shared/components/FileUpload/FileUpload';
 import LomFieldsInput from '../../../shared/components/LomFieldsInput/LomFieldsInput';
-import { buildLink, CustomError, navigate } from '../../../shared/helpers';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { CustomError } from '../../../shared/helpers/custom-error';
 import { PHOTO_TYPES } from '../../../shared/helpers/files';
+import { navigate } from '../../../shared/helpers/link';
 import { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';

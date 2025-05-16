@@ -2,7 +2,7 @@ import { fetchWithLogout } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
 
 import store, { type AppState } from '../../store';
-import { getEnv } from '../helpers';
+import { getEnv } from '../helpers/env';
 
 export interface MinimalClientEvent {
 	action: Avo.EventLogging.Action;

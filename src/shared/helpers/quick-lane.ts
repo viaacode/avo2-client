@@ -1,8 +1,11 @@
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { type CheckboxOption } from '../components';
-import { type QuickLaneType } from '../components/QuickLaneModal/QuickLaneModal.types';
+import { type CheckboxOption } from '../components/CheckboxDropdownModal/CheckboxDropdownModal';
+import {
+	type QuickLaneType,
+	QuickLaneTypeEnum,
+} from '../components/QuickLaneContent/QuickLaneContent.types';
 
 import { tText } from './translate-text';
 
@@ -24,7 +27,7 @@ export const getTypeOptions = (): CheckboxOption[] => {
 		['COLLECTIE']: tText('workspace/views/quick-lane-overview___collectie'),
 	};
 
-	const options: QuickLaneType[] = ['ITEM', 'COLLECTIE'];
+	const options: QuickLaneTypeEnum[] = [QuickLaneTypeEnum.ITEM, QuickLaneTypeEnum.COLLECTION];
 
 	return options.map((label) => {
 		return {

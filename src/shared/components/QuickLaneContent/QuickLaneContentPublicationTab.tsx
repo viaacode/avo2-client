@@ -3,11 +3,13 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact, map } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 
-import { EducationLevelsField, ShortDescriptionField, SubjectsField } from '..';
 import { CollectionService } from '../../../collection/collection.service';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import withUser, { type UserProps } from '../../hocs/withUser';
+import EducationLevelsField from '../EducationLevelsField/EducationLevelsField';
 import LomFieldsInput from '../LomFieldsInput/LomFieldsInput';
+import ShortDescriptionField from '../ShortDescriptionField/ShortDescriptionField';
+import SubjectsField from '../SubjectsField/SubjectsField';
 
 import { isShareable } from './QuickLaneContent.helpers';
 import { type QuickLaneContentProps, QuickLaneTypeEnum } from './QuickLaneContent.types';

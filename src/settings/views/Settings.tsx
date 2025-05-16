@@ -17,8 +17,8 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
-import { InteractiveTour } from '../../shared/components';
-import { buildLink } from '../../shared/helpers';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import { buildLink } from '../../shared/helpers/build-link';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';

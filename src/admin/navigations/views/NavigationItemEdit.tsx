@@ -6,7 +6,7 @@ import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { buildLink } from '../../../shared/helpers';
+import { buildLink } from '../../../shared/helpers/build-link';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ADMIN_PATH } from '../../admin.const';

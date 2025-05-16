@@ -8,12 +8,15 @@ import { type DefaultSecureRouteProps } from '../../../authentication/components
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import {
-	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../../shared/components';
-import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { formatDate } from '../../../shared/helpers/formatters';
+import { navigate } from '../../../shared/helpers/link';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -279,7 +282,7 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 					isLoading={isLoading}
 					showCheckboxes={false}
 				/>
-				<DeleteObjectModal
+				<ConfirmModal
 					confirmCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}

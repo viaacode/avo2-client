@@ -1,6 +1,6 @@
 import { type DefaultProps, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import React, { type FC, type ReactNode, useMemo } from 'react';
 
 import { CollectionBlockType } from '../../../../collection/collection.const';
@@ -80,7 +80,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	);
 
 	return (
-		<div className={classNames(className, 'c-collection-fragment-type-item')}>
+		<div className={clsx(className, 'c-collection-fragment-type-item')}>
 			{title && <CollectionFragmentTitle {...title} />}
 
 			{flowPlayer && (

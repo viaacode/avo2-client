@@ -3,12 +3,12 @@ import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode } from 'react';
 
 import { type APP_PATH } from '../../../../constants';
-import ConfirmModal from '../../../../shared/components/ConfirmModal/ConfirmModal';
-import { buildLink } from '../../../../shared/helpers';
+import { ConfirmModal } from '../../../../shared/components/ConfirmModal/ConfirmModal';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { type ValueOf } from '../../../../shared/types';
 
 import './SubjectsBeingEditedWarningModal.scss';
+import { buildLink } from '../../../../shared/helpers/build-link';
 
 interface SubjectsBeingEditedWarningModalProps {
 	isOpen: boolean;

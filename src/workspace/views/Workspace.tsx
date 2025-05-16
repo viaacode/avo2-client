@@ -33,13 +33,6 @@ import { CollectionOrBundle } from '../../collection/collection.types';
 import CollectionOrBundleOverview from '../../collection/components/CollectionOrBundleOverview';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import EmbedCodeOverview from '../../embed-code/components/EmbedCodeOverview';
-import {
-	ControlledDropdown,
-	InteractiveTour,
-	LoadingErrorLoadedComponent,
-	type LoadingInfo,
-} from '../../shared/components';
-import { buildLink, navigate } from '../../shared/helpers';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -62,6 +55,14 @@ import OrganisationContentOverview from './OrganisationContentOverview';
 import QuickLaneOverview from './QuickLaneOverview';
 
 import './Workspace.scss';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { navigate } from '../../shared/helpers/link';
+import { buildLink } from '../../shared/helpers/build-link';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 
 interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;

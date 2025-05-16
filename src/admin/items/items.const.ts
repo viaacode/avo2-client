@@ -1,7 +1,10 @@
 import { IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 
-import { type CheckboxDropdownModalProps, type CheckboxOption } from '../../shared/components';
+import {
+	type CheckboxDropdownModalProps,
+	type CheckboxOption,
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';

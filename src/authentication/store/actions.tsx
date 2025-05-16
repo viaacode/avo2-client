@@ -6,7 +6,7 @@ import React from 'react';
 import { type RouteComponentProps } from 'react-router-dom';
 import { type Action, type Dispatch } from 'redux';
 
-import { getEnv } from '../../shared/helpers';
+import { getEnv } from '../../shared/helpers/env';
 import { tText } from '../../shared/helpers/translate-text';
 import { ToastService } from '../../shared/services/toast-service';
 import { LoginMessage } from '../authentication.types';

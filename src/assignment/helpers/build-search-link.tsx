@@ -5,7 +5,7 @@ import { type UrlUpdateType } from 'use-query-params';
 
 import { APP_PATH } from '../../constants';
 import { type FilterState } from '../../search/search.types';
-import { buildLink } from '../../shared/helpers';
+import { buildLink } from '../../shared/helpers/build-link';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
 import { type PupilSearchFilterState } from '../assignment.types';
 

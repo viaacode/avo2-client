@@ -1,8 +1,8 @@
 import { Icon, IconName } from '@viaa/avo2-components';
-import classNames from 'classnames';
 import React, { type FC, type ReactNode, useState } from 'react';
 
 import './DraggableList.scss';
+import { clsx } from 'clsx';
 
 interface DraggableListProps {
 	items: any[];
@@ -50,7 +50,7 @@ const DraggableList: FC<DraggableListProps> = ({
 
 	return (
 		<div
-			className={classNames(
+			className={clsx(
 				'c-draggable-list c-table-view',
 				{ 'draggable-container--is-dragging': currentlyBeingDragged },
 				{ 'draggable-container--over': currentlyBeingDragged }
@@ -58,7 +58,7 @@ const DraggableList: FC<DraggableListProps> = ({
 		>
 			{items.map((item, index) => (
 				<div
-					className={classNames(
+					className={clsx(
 						'c-table-view__item',
 						'c-table-view__item--type-action',
 						{

@@ -3,8 +3,11 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 
 import { type AssignmentOverviewTableColumns } from '../../assignment/assignment.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { type CheckboxDropdownModalProps, type CheckboxOption } from '../../shared/components';
 import { type BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
+import {
+	type CheckboxDropdownModalProps,
+	type CheckboxOption,
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { EducationLevelId } from '../../shared/helpers/lom';
 import { lomToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';

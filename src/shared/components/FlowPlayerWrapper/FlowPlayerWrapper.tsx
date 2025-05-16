@@ -27,16 +27,13 @@ import { redirectToClientPage } from '../../../authentication/helpers/redirects'
 import { APP_PATH } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { setLastVideoPlayedAtAction } from '../../../store/actions';
-import {
-	CustomError,
-	formatDurationHoursMinutesSeconds,
-	getEnv,
-	isMobileWidth,
-	reorderDate,
-	toSeconds,
-} from '../../helpers';
+import { CustomError } from '../../helpers/custom-error';
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
+import { getEnv } from '../../helpers/env';
+import { formatDurationHoursMinutesSeconds, reorderDate } from '../../helpers/formatters';
 import { getSubtitles } from '../../helpers/get-subtitles';
+import { isMobileWidth } from '../../helpers/media-query';
+import { toSeconds } from '../../helpers/parsers/duration';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import { BookmarksViewsPlaysService } from '../../services/bookmarks-views-plays-service';
 import { trackEvents } from '../../services/event-logging-service';

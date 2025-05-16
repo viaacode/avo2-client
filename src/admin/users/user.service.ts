@@ -12,7 +12,9 @@ import {
 	GetProfileIdsDocument,
 	UpdateUserTempAccessByIdDocument,
 } from '../../shared/generated/graphql-db-react-query';
-import { CustomError, getEnv, toIsoDate } from '../../shared/helpers';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { getEnv } from '../../shared/helpers/env';
+import { toIsoDate } from '../../shared/helpers/formatters';
 import { dataService } from '../../shared/services/data-service';
 
 export class UserService {

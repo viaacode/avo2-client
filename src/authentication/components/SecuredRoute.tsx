@@ -8,7 +8,7 @@ import { type Dispatch } from 'redux';
 import BundleDetail from '../../bundle/views/BundleDetail';
 import { CollectionDetail } from '../../collection/views';
 import { APP_PATH } from '../../constants';
-import { buildLink } from '../../shared/helpers';
+import { buildLink } from '../../shared/helpers/build-link';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { type AppState } from '../../store';
 import { LoginMessage } from '../authentication.types';

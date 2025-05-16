@@ -10,13 +10,14 @@ import { CollectionService } from '../../../collection/collection.service';
 import { useGetCollectionsEditStatuses } from '../../../collection/hooks/useGetCollectionsEditStatuses';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
+import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import {
-	type CheckboxOption,
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../../shared/components';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
-import { CustomError, getFullNameCommonUser } from '../../../shared/helpers';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { getFullNameCommonUser } from '../../../shared/helpers/formatters';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';

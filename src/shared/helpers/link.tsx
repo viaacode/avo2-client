@@ -17,8 +17,6 @@ import {
 } from './build-link';
 import { tHtml } from './translate-html';
 
-export { buildLink } from './build-link';
-
 export const navigate = (
 	history: RouteComponentProps['history'],
 	route: string,

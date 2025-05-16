@@ -22,14 +22,14 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { clone, compact, fromPairs, take } from 'lodash-es';
 import React, { type FC, type MouseEvent, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { isMobileWidth } from '../../helpers';
 
 import './CheckboxDropdownModal.scss';
+import { isMobileWidth } from '../../helpers/media-query';
 
 interface CheckedState {
 	[checkboxId: string]: boolean;
@@ -333,7 +333,7 @@ export const CheckboxDropdownModal: FC<CheckboxDropdownModalProps> = ({
 
 	if (disabled) {
 		return (
-			<div className={classnames({ 'u-opacity-50 u-disable-click': disabled })}>
+			<div className={clsx({ 'u-opacity-50 u-disable-click': disabled })}>
 				{options.length <= 7 ? renderDropdownControl() : renderModalControl()}
 			</div>
 		);

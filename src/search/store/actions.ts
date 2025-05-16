@@ -2,7 +2,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { type Action, type Dispatch } from 'redux';
 
 import { DEFAULT_AUDIO_STILL } from '../../shared/constants';
-import { CustomError } from '../../shared/helpers';
+import { CustomError } from '../../shared/helpers/custom-error';
 import { fetchSearchResults } from '../search.service';
 
 import {

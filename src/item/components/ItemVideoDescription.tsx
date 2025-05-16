@@ -26,15 +26,16 @@ import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
-import { FlowPlayerWrapper, ItemMetadata } from '../../shared/components';
 import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
 import { TEAL_BRIGHT } from '../../shared/constants';
-import { stripHtml } from '../../shared/helpers';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 import './ItemVideoDescription.scss';
+import FlowPlayerWrapper from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { stripHtml } from '../../shared/helpers/formatters';
+import { ItemMetadata } from '../../shared/components/BlockItemMetadata/ItemMetadata';
 
 interface ItemVideoDescriptionProps {
 	itemMetaData: Avo.Item.Item;

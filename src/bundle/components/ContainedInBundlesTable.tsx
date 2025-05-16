@@ -14,7 +14,7 @@ import {
 } from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
 import { APP_PATH } from '../../constants';
 import { OrderDirection } from '../../search/search.const';
-import { buildLink } from '../../shared/helpers';
+import { buildLink } from '../../shared/helpers/build-link';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { tText } from '../../shared/helpers/translate-text';

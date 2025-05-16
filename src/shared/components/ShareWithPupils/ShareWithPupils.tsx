@@ -1,10 +1,11 @@
 import { Alert, Button, Flex, IconName, Spacer, TextInput } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import React, { type FC } from 'react';
 
 import { APP_PATH } from '../../../constants';
-import { buildLink, copyToClipboard } from '../../helpers';
+import { buildLink } from '../../helpers/build-link';
+import { copyToClipboard } from '../../helpers/clipboard';
 import { useAssignmentPastDeadline } from '../../hooks/useAssignmentPastDeadline';
 import useTranslation from '../../hooks/useTranslation';
 import { ToastService } from '../../services/toast-service';
@@ -61,7 +62,7 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 
 	return (
 		<div
-			className={classnames('c-share-with-pupil', {
+			className={clsx('c-share-with-pupil', {
 				['c-share-with-pupil--disabled']: !canCopy,
 			})}
 		>

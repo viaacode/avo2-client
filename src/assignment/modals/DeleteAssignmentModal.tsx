@@ -1,7 +1,7 @@
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode } from 'react';
 
-import ConfirmModal from '../../shared/components/ConfirmModal/ConfirmModal';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 interface DeleteAssignmentModalProps {

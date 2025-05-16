@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { type Avo } from '@viaa/avo2-types';
-import classnames from 'classnames';
 import { createBrowserHistory } from 'history';
 import { isEqual, noop, uniq } from 'lodash-es';
 import { wrapHistory } from 'oaf-react-router';
@@ -24,17 +23,10 @@ import { SpecialUserGroupId } from './admin/user-groups/user-group.const';
 import { SecuredRoute } from './authentication/components';
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
-import {
-	Footer,
-	LoadingErrorLoadedComponent,
-	type LoadingInfo,
-	Navigation,
-} from './shared/components';
 import ACMIDMNudgeModal from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
-import ConfirmModal from './shared/components/ConfirmModal/ConfirmModal';
+import { ConfirmModal } from './shared/components/ConfirmModal/ConfirmModal';
 import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
-import { CustomError } from './shared/helpers';
 import withUser, { type UserProps } from './shared/hocs/withUser';
 import { usePageLoaded } from './shared/hooks/usePageLoaded';
 import useTranslation from './shared/hooks/useTranslation';
@@ -47,6 +39,15 @@ import { selectHistoryLocations } from './store/selectors';
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import './styles/main.scss';
 import './App.scss';
+import { clsx } from 'clsx';
+
+import Navigation from './shared/components/Navigation/Navigation';
+import Footer from './shared/components/Footer/Footer';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from './shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { CustomError } from './shared/helpers/custom-error';
 
 const history = createBrowserHistory();
 wrapHistory(history, {
@@ -147,7 +148,7 @@ const App: FC<
 
 		return (
 			<div
-				className={classnames('o-app', {
+				className={clsx('o-app', {
 					'o-app--admin': isAdminRoute,
 				})}
 			>

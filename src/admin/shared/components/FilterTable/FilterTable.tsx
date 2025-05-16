@@ -18,7 +18,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { cloneDeep, compact, get, sortBy } from 'lodash-es';
 import React, {
 	type FC,
@@ -32,13 +32,12 @@ import { type RouteComponentProps, withRouter } from 'react-router';
 import { useQueryParams } from 'use-query-params';
 
 import { SearchFilter } from '../../../../search/search.const';
+import BooleanCheckboxDropdown from '../../../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
 import {
-	BooleanCheckboxDropdown,
 	CheckboxDropdownModal,
 	type CheckboxOption,
-	DateRangeDropdown,
-	DeleteObjectModal,
-} from '../../../../shared/components';
+} from '../../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { ConfirmModal } from '../../../../shared/components/ConfirmModal/ConfirmModal';
 import { MultiEducationalOrganisationSelectModal } from '../../../../shared/components/MultiEducationalOrganisationSelectModal/MultiEducationalOrganisationSelectModal';
 import { MultiUserSelectDropdown } from '../../../../shared/components/MultiUserSelectDropdown/MultiUserSelectDropdown';
 import { eduOrgToClientOrg } from '../../../../shared/helpers/edu-org-string-to-client-org';
@@ -52,6 +51,7 @@ import { FILTER_TABLE_QUERY_PARAM_CONFIG } from './FilterTable.const';
 import { cleanupObject } from './FilterTable.utils';
 
 import './FilterTable.scss';
+import DateRangeDropdown from '../../../../shared/components/DateRangeDropdown/DateRangeDropdown';
 
 export interface FilterableTableState {
 	query?: string;
@@ -450,7 +450,7 @@ const FilterTable: FC<FilterTableProps> = ({
 	};
 
 	return (
-		<div className={classnames('c-filter-table', className)}>
+		<div className={clsx('c-filter-table', className)}>
 			{!data.length && !getFilters(tableState) ? (
 				renderNoResults()
 			) : (
@@ -511,7 +511,7 @@ const FilterTable: FC<FilterTableProps> = ({
 				</>
 			)}
 			{!!bulkActions && !!bulkActions.length && (
-				<DeleteObjectModal
+				<ConfirmModal
 					title={tText(
 						'admin/shared/components/filter-table/filter-table___ben-je-zeker-dat-je-deze-actie-wil-uitvoeren'
 					)}

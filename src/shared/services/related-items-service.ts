@@ -3,7 +3,8 @@ import { type Avo } from '@viaa/avo2-types';
 import { stringify } from 'query-string';
 
 import { DEFAULT_AUDIO_STILL } from '../constants';
-import { CustomError, getEnv } from '../helpers';
+import { CustomError } from '../helpers/custom-error';
+import { getEnv } from '../helpers/env';
 
 export enum ObjectTypes {
 	items = 'items',

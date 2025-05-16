@@ -15,8 +15,11 @@ import { type Dispatch } from 'redux';
 
 import { SpecialUserGroupId } from '../../../admin/user-groups/user-group.const';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
-import { CustomError } from '../../../shared/helpers';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { CustomError } from '../../../shared/helpers/custom-error';
 import { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { NotificationService } from '../../../shared/services/notification-service';

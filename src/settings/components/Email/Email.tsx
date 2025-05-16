@@ -16,7 +16,7 @@ import { StringParam, useQueryParams } from 'use-query-params';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
-import { CustomError } from '../../../shared/helpers';
+import { CustomError } from '../../../shared/helpers/custom-error';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import {

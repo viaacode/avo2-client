@@ -17,19 +17,19 @@ import {
 	Toggle,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { get, noop } from 'lodash-es';
+import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import {
-	buildLink,
-	CustomError,
-	formatDate,
-	isMobileWidth,
-	renderAvatar,
-} from '../../shared/helpers';
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../shared/helpers/build-link';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { formatDate, renderAvatar } from '../../shared/helpers/formatters';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks/useTableSort';
@@ -185,7 +185,7 @@ const ImportToAssignmentModal: FC<ImportToAssignmentModalProps & UserProps> = ({
 					.join(', ');
 
 			case 'author': {
-				const profile = get(assignment, 'profile', null);
+				const profile = assignment?.profile || null;
 				const avatarOptions = {
 					dark: true,
 					abbreviatedName: true,

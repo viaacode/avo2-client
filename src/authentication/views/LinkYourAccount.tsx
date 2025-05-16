@@ -4,10 +4,10 @@ import { Helmet } from 'react-helmet';
 import { type RouteComponentProps, withRouter } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { navigate } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 import './LinkYourAccount.scss';
+import { navigate } from '../../shared/helpers/link';
 
 const LinkYourAccount: FC<RouteComponentProps> = ({ history }) => {
 	const { tText, tHtml } = useTranslation();

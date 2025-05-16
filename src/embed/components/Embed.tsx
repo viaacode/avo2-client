@@ -15,7 +15,7 @@ import { tHtml } from '../../shared/helpers/translate-html';
 import ErrorView from './ErrorView';
 
 import './Embed.scss';
-import { reorderDate } from '../../shared/helpers';
+import { reorderDate } from '../../shared/helpers/formatters';
 
 const Embed: FC = () => {
 	const params = queryString.parse(window.location.search);
@@ -72,8 +72,8 @@ const Embed: FC = () => {
 				trackPlayEvent={false}
 			/>
 
-			{
-				showMetadata && <>
+			{showMetadata && (
+				<>
 					<p className="c-title u-spacer-top-s u-truncate" title={embedCode.title}>
 						{embedCode.title}
 					</p>
@@ -86,16 +86,19 @@ const Embed: FC = () => {
 									className="u-text-bold u-truncate"
 									title={(embedCode.content as ItemSchema)?.organisation.name}
 								>
-							{(embedCode.content as ItemSchema)?.organisation.name}
-						</span>
+									{(embedCode.content as ItemSchema)?.organisation.name}
+								</span>
 								<span className="u-text-bold">&bull;</span>
 								<span>{tHtml('Uitgezonden:')}</span>
 								<span
 									className="u-text-bold"
-									title={reorderDate((embedCode.content as ItemSchema)?.issued, '/')}
+									title={reorderDate(
+										(embedCode.content as ItemSchema)?.issued,
+										'/'
+									)}
 								>
-							{reorderDate((embedCode.content as ItemSchema)?.issued, '/')}
-						</span>
+									{reorderDate((embedCode.content as ItemSchema)?.issued, '/')}
+								</span>
 							</p>
 							<p className="c-meta-data">
 								<span>{tHtml('Reeks:')}</span>
@@ -103,28 +106,31 @@ const Embed: FC = () => {
 									className="u-text-bold u-truncate"
 									title={(embedCode.content as ItemSchema)?.series}
 								>
-							{(embedCode.content as ItemSchema)?.series}
-						</span>
+									{(embedCode.content as ItemSchema)?.series}
+								</span>
 							</p>
 						</Column>
 						<Column size="static">
 							<div
 								className="c-avo-button"
-								onClick={() => redirectToExternalPage(toEmbedCodeDetail(embedId), '_blank')}
+								onClick={() =>
+									redirectToExternalPage(toEmbedCodeDetail(embedId), '_blank')
+								}
 							>
 								<img
 									className="c-avo-logo"
 									alt="Archief voor Onderwijs logo"
 									src={AvoLogo}
 								/>
-								<Icon name={IconName.externalLink} subtle/>
+								<Icon name={IconName.externalLink} subtle />
 							</div>
 						</Column>
-					</Grid></>
-			}
+					</Grid>
+				</>
+			)}
 
 			<div className="c-custom-logo-overlay u-spacer">
-				<img src={(embedCode.content as ItemSchema)?.organisation?.logo_url}/>
+				<img src={(embedCode.content as ItemSchema)?.organisation?.logo_url} />
 			</div>
 		</div>
 	);

@@ -6,7 +6,7 @@ import { type RouteComponentProps } from 'react-router-dom';
 import { APP_PATH } from '../../constants';
 import { type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { ROUTE_PARTS } from '../../shared/constants';
-import { getEnv } from '../../shared/helpers';
+import { getEnv } from '../../shared/helpers/env';
 import { SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
 

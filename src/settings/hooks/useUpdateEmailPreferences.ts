@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { type CustomError } from '../../shared/helpers';
+import { type CustomError } from '../../shared/helpers/custom-error';
 import {
 	CampaignMonitorService,
 	type NewsletterPreferences,

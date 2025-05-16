@@ -9,8 +9,13 @@ import { type DefaultSecureRouteProps } from '../../../authentication/components
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
-import { buildLink, CustomError, formatTimestamp } from '../../../shared/helpers';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { formatTimestamp } from '../../../shared/helpers/formatters';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import withUser from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';

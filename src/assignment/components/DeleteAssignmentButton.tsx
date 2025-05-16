@@ -4,8 +4,10 @@ import React, { type FC, useState } from 'react';
 import { compose } from 'redux';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { DeleteObjectModal } from '../../shared/components';
-import { type ConfirmModalProps } from '../../shared/components/ConfirmModal/ConfirmModal';
+import {
+	ConfirmModal,
+	type ConfirmModalProps,
+} from '../../shared/components/ConfirmModal/ConfirmModal';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
@@ -77,7 +79,7 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 					button?.onClick && button.onClick(e);
 				}}
 			/>
-			<DeleteObjectModal
+			<ConfirmModal
 				title={tText(
 					'assignment/views/assignment-overview___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
 				)}

@@ -16,7 +16,7 @@ import {
 } from '@viaa/avo2-components';
 import { HeaderBottomRowLeft } from '@viaa/avo2-components/src/components/Header/Header.slots';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
@@ -27,8 +27,10 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
-import { isMobileWidth, renderAvatar, toSeconds } from '../../shared/helpers';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
+import { renderAvatar } from '../../shared/helpers/formatters';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { toSeconds } from '../../shared/helpers/parsers/duration';
 import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
@@ -166,7 +168,7 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 
 		return (
 			<div
-				className={classnames('c-embed-code-detail', {
+				className={clsx('c-embed-code-detail', {
 					'c-embed-code-detail--mobile': isMobileWidth(),
 				})}
 			>

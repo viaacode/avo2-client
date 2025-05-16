@@ -1,6 +1,6 @@
 import { type ContentPageInfo, type DbContentPage } from '@meemoo/admin-core-ui/dist/admin.mjs';
 
-import { CustomError } from '../../../../../shared/helpers';
+import { CustomError } from '../../../../../shared/helpers/custom-error';
 import { type PickerItem } from '../../../types';
 import { parsePickerItem } from '../helpers/parse-picker';
 

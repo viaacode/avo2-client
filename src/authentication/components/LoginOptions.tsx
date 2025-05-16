@@ -2,7 +2,7 @@ import { Button, Icon, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { type FC, useEffect } from 'react';
 import { type RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { NOT_NOW_LOCAL_STORAGE_KEY } from '../../shared/constants';
@@ -14,7 +14,7 @@ import './LoginOptions.scss';
 import LoginOptionsForPupil from './LoginOptionsForPupil';
 import LoginOptionsForTeacher from './LoginOptionsForTeacher';
 
-interface LoginOptionsProps extends RouteComponentProps {
+interface LoginOptionsProps {
 	onOptionClicked?: () => void;
 }
 
@@ -25,7 +25,10 @@ export const LoginOptionsTabs = {
 	STUDENT: 'leerling',
 };
 
-const LoginOptions: FC<LoginOptionsProps> = ({ history, location, onOptionClicked = noop }) => {
+const LoginOptions: FC<LoginOptionsProps & RouteComponentProps> = ({
+	history,
+	onOptionClicked = noop,
+}) => {
 	const { tText, tHtml } = useTranslation();
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
@@ -74,22 +77,10 @@ const LoginOptions: FC<LoginOptionsProps> = ({ history, location, onOptionClicke
 	const getButtons = () => {
 		switch (tab) {
 			case LoginOptionsTabs.TEACHER:
-				return (
-					<LoginOptionsForTeacher
-						onOptionClicked={onOptionClicked}
-						location={location}
-						history={history}
-					/>
-				);
+				return <LoginOptionsForTeacher onOptionClicked={onOptionClicked} />;
 
 			case LoginOptionsTabs.STUDENT:
-				return (
-					<LoginOptionsForPupil
-						onOptionClicked={onOptionClicked}
-						location={location}
-						history={history}
-					/>
-				);
+				return <LoginOptionsForPupil onOptionClicked={onOptionClicked} />;
 
 			default:
 				break;
@@ -171,4 +162,4 @@ const LoginOptions: FC<LoginOptionsProps> = ({ history, location, onOptionClicke
 	);
 };
 
-export default LoginOptions;
+export default withRouter(LoginOptions);

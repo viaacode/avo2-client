@@ -23,7 +23,7 @@ import React, {
 } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { reorderDate } from '../../helpers';
+import { reorderDate } from '../../helpers/formatters';
 import { ToastService } from '../../services/toast-service';
 import { renderDropdownButton } from '../CheckboxDropdownModal/CheckboxDropdownModal';
 

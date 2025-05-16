@@ -9,7 +9,7 @@ import { APP_PATH } from '../../constants';
 import { type AppContentNavElement } from '../services/navigation-items-service';
 import { type NavigationItemInfo } from '../types';
 
-import { buildLink } from './link';
+import { buildLink } from './build-link';
 import { isMobileWidth } from './media-query';
 
 const NAVIGATION_COMPONENTS: { [componentLabel: string]: any } = {

@@ -25,19 +25,16 @@ import {
 	EmbedCodeExternalWebsite,
 } from '../../embed-code/embed-code.types';
 import { ErrorView } from '../../error/views';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import {
-	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../shared/components';
-import {
-	buildLink,
-	CustomError,
-	formatDate,
-	fromNow,
-	isMobileWidth,
-	toSeconds,
-} from '../../shared/helpers';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../shared/helpers/build-link';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { formatDate, fromNow } from '../../shared/helpers/formatters';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
@@ -396,7 +393,7 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 				embedCode={isEmbedCodeModalOpen}
 				onClose={() => setIsEmbedCodeModalOpen(null)}
 			/>
-			<DeleteObjectModal
+			<ConfirmModal
 				title={tHtml('workspace/views/bookmarks___verwijder-bladwijzer')}
 				body={tHtml(
 					'workspace/views/bookmarks-overview___ben-je-zeker-dat-je-deze-bladwijzer-wil-verwijderen-br-deze-actie-kan-niet-ongedaan-gemaakt-worden'

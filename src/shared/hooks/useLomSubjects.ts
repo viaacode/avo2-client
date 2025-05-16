@@ -2,7 +2,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { useEffect, useState } from 'react';
 
 import useTranslation from '../../shared/hooks/useTranslation';
-import { CustomError } from '../helpers';
+import { CustomError } from '../helpers/custom-error';
 import { LomService } from '../services/lom.service';
 import { ToastService } from '../services/toast-service';
 

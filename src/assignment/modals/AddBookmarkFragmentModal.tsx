@@ -21,9 +21,14 @@ import { noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { compose } from 'redux';
 
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
-import { CustomError, formatDate, isMobileWidth } from '../../shared/helpers';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { formatDate } from '../../shared/helpers/formatters';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser from '../../shared/hocs/withUser';

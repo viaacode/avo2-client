@@ -8,7 +8,7 @@ import {
 	GetTranslationsDocument,
 	UpdateTranslationsDocument,
 } from '../../shared/generated/graphql-db-react-query';
-import { CustomError } from '../../shared/helpers';
+import { CustomError } from '../../shared/helpers/custom-error';
 import { dataService } from '../../shared/services/data-service';
 
 export const fetchTranslations = async (): Promise<any> => {

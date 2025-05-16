@@ -13,12 +13,13 @@ import {
 } from '../helpers/redirects';
 
 import './LoginOptionsForTeacher.scss';
+import { withRouter } from 'react-router-dom';
 
-interface LoginOptionsForTeacherProps extends RouteComponentProps {
+interface LoginOptionsForTeacherProps {
 	onOptionClicked?: () => void;
 }
 
-const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
+const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentProps> = ({
 	location,
 	onOptionClicked = noop,
 }) => {
@@ -101,4 +102,4 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
 	));
 };
 
-export default LoginOptionsForTeacher;
+export default withRouter(LoginOptionsForTeacher);

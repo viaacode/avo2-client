@@ -1,18 +1,18 @@
 import AvoLogo from '@assets/images/avo-logo-centered.svg';
 import { Column, Grid, Icon, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
-import { type RouteComponentProps, withRouter } from 'react-router';
+import { withRouter } from 'react-router';
 
 import { LoginOptionsTabs } from '../../authentication/components/LoginOptions';
 import LoginOptionsForPupil from '../../authentication/components/LoginOptionsForPupil';
 import './RegisterOrLogin.scss';
 import LoginOptionsForTeacher from '../../authentication/components/LoginOptionsForTeacher';
-import { getEnv } from '../../shared/helpers';
+import { getEnv } from '../../shared/helpers/env';
 import { tText } from '../../shared/helpers/translate-text';
 import { useTabs } from '../../shared/hooks/useTabs';
 import useTranslation from '../../shared/hooks/useTranslation';
 
-const RegisterOrLogin: FC<RouteComponentProps> = ({ history, location, match }) => {
+const RegisterOrLogin: FC = () => {
 	const { tHtml } = useTranslation();
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
@@ -56,10 +56,10 @@ const RegisterOrLogin: FC<RouteComponentProps> = ({ history, location, match }) 
 	const getButtons = () => {
 		switch (tab) {
 			case LoginOptionsTabs.TEACHER:
-				return <LoginOptionsForTeacher location={location} history={history} />;
+				return <LoginOptionsForTeacher />;
 
 			case LoginOptionsTabs.STUDENT:
-				return <LoginOptionsForPupil location={location} history={history} />;
+				return <LoginOptionsForPupil />;
 
 			default:
 				break;

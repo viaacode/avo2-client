@@ -11,12 +11,13 @@ import {
 } from '../helpers/redirects';
 
 import './LoginOptionsForPupil.scss';
+import { withRouter } from 'react-router-dom';
 
-interface LoginOptionsForPupilProps extends RouteComponentProps {
+interface LoginOptionsForPupilProps {
 	onOptionClicked?: () => void;
 }
 
-const LoginOptionsForPupil: FC<LoginOptionsForPupilProps> = ({
+const LoginOptionsForPupil: FC<LoginOptionsForPupilProps & RouteComponentProps> = ({
 	location,
 	onOptionClicked = noop,
 }) => {
@@ -71,4 +72,4 @@ const LoginOptionsForPupil: FC<LoginOptionsForPupilProps> = ({
 	));
 };
 
-export default LoginOptionsForPupil;
+export default withRouter(LoginOptionsForPupil);

@@ -21,7 +21,7 @@ import { connect } from 'react-redux';
 import { type Dispatch } from 'redux';
 
 import poster from '../../../assets/images/elementary-pupil-terms-of-service__poster.png';
-import { CustomError } from '../../../shared/helpers';
+import { CustomError } from '../../../shared/helpers/custom-error';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { useDisablePictureInPicture } from '../../../shared/hooks/useDisablePictureInPicture';

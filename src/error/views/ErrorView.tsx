@@ -22,7 +22,8 @@ import {
 	redirectToLoggedOutHome,
 	redirectToServerLogoutPage,
 } from '../../authentication/helpers/redirects';
-import { CustomError, isMobileWidth } from '../../shared/helpers';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';

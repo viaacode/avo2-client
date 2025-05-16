@@ -1,12 +1,12 @@
 import { type DefaultProps, Form, FormGroup } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import React, { type FC } from 'react';
 
-import { formatTimestamp } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 import './AssignmentDetailsForm.scss';
+import { formatTimestamp } from '../../shared/helpers/formatters';
 
 interface AssignmentDetailsFormReadonlyProps {
 	assignment: Avo.Assignment.Assignment;
@@ -20,7 +20,7 @@ const AssignmentDetailsFormReadonly: FC<AssignmentDetailsFormReadonlyProps & Def
 	const { tText } = useTranslation();
 
 	return (
-		<div className={classnames('c-assignment-details-form', className)} style={style}>
+		<div className={clsx('c-assignment-details-form', className)} style={style}>
 			<Form>
 				<FormGroup label={tText('assignment/assignment___klas')}>
 					<p>

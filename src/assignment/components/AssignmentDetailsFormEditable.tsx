@@ -12,7 +12,7 @@ import {
 	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { isAfter, isPast } from 'date-fns';
 import React, { type FC, useCallback } from 'react';
 import { compose } from 'redux';
@@ -68,7 +68,7 @@ const AssignmentDetailsFormEditable: FC<
 	const deadline = assignment.deadline_at ? new Date(assignment.deadline_at) : null;
 	const availableAt = assignment.available_at ? new Date(assignment.available_at) : new Date();
 	return (
-		<div className={classnames('c-assignment-details-form', className)} style={style}>
+		<div className={clsx('c-assignment-details-form', className)} style={style}>
 			<Container mode="vertical">
 				<Container mode="horizontal">
 					<Form>

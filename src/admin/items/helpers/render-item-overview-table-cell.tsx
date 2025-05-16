@@ -4,7 +4,8 @@ import { get, isNil, truncate } from 'lodash-es';
 import React, { type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
-import { buildLink, formatDate } from '../../../shared/helpers';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { formatDate } from '../../../shared/helpers/formatters';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
