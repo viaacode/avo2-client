@@ -33,7 +33,7 @@ import { reorderBlockPositions, setBlockPositionToIndex } from '../../assignment
 import { AssignmentService } from '../../assignment/assignment.service';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { OrderDirection } from '../../search/search.const';

@@ -35,7 +35,7 @@ import { BooleanParam, StringParam, useQueryParam, useQueryParams } from 'use-qu
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionFragmentType, type Relation } from '../../collection/collection.types';
 import AddToBundleModal from '../../collection/components/modals/AddToBundleModal';

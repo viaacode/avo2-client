@@ -20,7 +20,7 @@ import { type RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { StringParam, useQueryParams } from 'use-query-params';
 
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import QuickLaneFilterTableCell from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';

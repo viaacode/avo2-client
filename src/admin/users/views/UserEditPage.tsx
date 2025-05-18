@@ -15,7 +15,7 @@ import React, { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { SettingsService } from '../../../settings/settings.service';
 import FileUpload from '../../../shared/components/FileUpload/FileUpload';

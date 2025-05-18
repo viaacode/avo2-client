@@ -19,7 +19,7 @@ import { withRouter } from 'react-router';
 import { type Dispatch } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import {
 	getLoginResponse,
 	getLoginStateAction,

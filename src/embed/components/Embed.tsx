@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved
 import AvoLogo from '@assets/images/avo-logo-button.svg';
 import { Column, Flex, Grid, Icon, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import type { ItemSchema } from '@viaa/avo2-types/types/item';
@@ -5,17 +6,18 @@ import queryString from 'query-string';
 import React, { type FC, useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 
-import { redirectToExternalPage } from '../../authentication/helpers/redirects';
+import { redirectToExternalPage } from '../../authentication/helpers/redirects/redirect-to-external-page';
 import { EmbedCodeService } from '../../embed-code/embed-code-service';
 import { type EmbedCode } from '../../embed-code/embed-code.types';
 import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
-import { ItemVideoDescription } from '../../item/components';
+import FlowPlayerWrapper from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { reorderDate } from '../../shared/helpers/formatters';
+import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 import { tHtml } from '../../shared/helpers/translate-html';
 
 import ErrorView from './ErrorView';
 
 import './Embed.scss';
-import { reorderDate } from '../../shared/helpers/formatters';
 
 const Embed: FC = () => {
 	const params = queryString.parse(window.location.search);
@@ -60,15 +62,13 @@ const Embed: FC = () => {
 
 	return (
 		<div className={'embed-wrapper u-spacer-s'}>
-			<ItemVideoDescription
-				itemMetaData={embedCode.content as ItemSchema}
-				showMetadata={false}
-				enableMetadataLink={false}
-				showTitle={false}
-				showDescription={false}
+			<FlowPlayerWrapper
+				poster={getFlowPlayerPoster(undefined, embedCode.content as ItemSchema)}
+				item={embedCode.content as ItemSchema}
 				canPlay={true}
 				cuePointsLabel={{ start: embedCode.start, end: embedCode.end }}
 				cuePointsVideo={{ start: embedCode.start, end: embedCode.end }}
+				// onPlay={onPlay} // TODO track events
 				trackPlayEvent={false}
 			/>
 

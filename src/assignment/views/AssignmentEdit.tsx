@@ -27,7 +27,7 @@ import { Link } from 'react-router-dom';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { BlockList } from '../../collection/components';
 import {
 	BundleSortProp,

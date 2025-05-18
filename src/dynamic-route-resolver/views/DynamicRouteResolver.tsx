@@ -19,7 +19,7 @@ import { ItemsService } from '../../admin/items/items.service';
 import { withAdminCoreConfig } from '../../admin/shared/hoc/with-admin-core-config';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToErrorPage } from '../../authentication/helpers/redirects';
+import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page';
 import { getLoginStateAction } from '../../authentication/store/actions';
 import {
 	selectLogin,

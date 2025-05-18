@@ -9,7 +9,7 @@ import { type UrlUpdateType } from 'use-query-params';
 
 import { PermissionService } from '../../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../../error/views';
-import { CutFragmentForAssignmentModal } from '../../../../item/components';
+import CutFragmentForAssignmentModal from '../../../../item/components/modals/CutFragmentForAssignmentModal';
 import { type ItemTrimInfo } from '../../../../item/item.types';
 import ItemDetail from '../../../../item/views/ItemDetail';
 import { PupilCollectionService } from '../../../../pupil-collection/pupil-collection.service';

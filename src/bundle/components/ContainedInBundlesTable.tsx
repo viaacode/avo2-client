@@ -5,7 +5,7 @@ import { withRouter } from 'react-router';
 import { type RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
 
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { type ParentBundle } from '../../collection/collection.types';
 import {
 	type BundleColumnId,

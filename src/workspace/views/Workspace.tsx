@@ -28,7 +28,7 @@ import { Helmet } from 'react-helmet';
 import { AssignmentOverview } from '../../assignment/views';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { CollectionOrBundle } from '../../collection/collection.types';
 import CollectionOrBundleOverview from '../../collection/components/CollectionOrBundleOverview';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';

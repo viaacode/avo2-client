@@ -13,7 +13,7 @@ import { type ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { type AssignmentLayout } from '../../../assignment/assignment.types';
-import { ItemVideoDescription } from '../../../item/components';
+import ItemVideoDescription from '../../../item/components/ItemVideoDescription';
 import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';

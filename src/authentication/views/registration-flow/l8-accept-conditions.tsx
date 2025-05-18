@@ -27,7 +27,7 @@ import { ToastService } from '../../../shared/services/toast-service';
 import { Locale } from '../../../shared/translations/translations.types';
 import { type AppState } from '../../../store';
 import { type DefaultSecureRouteProps } from '../../components/SecuredRoute';
-import { redirectToClientPage } from '../../helpers/redirects';
+import { redirectToClientPage } from '../../helpers/redirects/redirect-to-client-page';
 import { acceptConditionsAction } from '../../store/actions';
 import { selectLogin } from '../../store/selectors';
 

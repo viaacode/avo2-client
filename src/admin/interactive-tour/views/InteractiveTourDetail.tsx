@@ -11,7 +11,7 @@ import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps } from 'react-router';
 
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import {

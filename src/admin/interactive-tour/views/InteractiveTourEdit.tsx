@@ -27,7 +27,7 @@ import React, {
 import { Helmet } from 'react-helmet';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { OrderDirection } from '../../../search/search.const';
 import {

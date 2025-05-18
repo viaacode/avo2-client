@@ -11,7 +11,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { noop, once } from 'lodash-es';
 import React, { type FC, useState } from 'react';
 
-import { ItemVideoDescription } from '../../../item/components';
+import ItemVideoDescription from '../../../item/components/ItemVideoDescription';
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';

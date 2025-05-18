@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { ItemsService } from '../../admin/items/items.service';
 import { CollectionService } from '../../collection/collection.service';
 import { CollectionOrBundle } from '../../collection/collection.types';
-import { CutFragmentForAssignmentModal } from '../../item/components';
+import CutFragmentForAssignmentModal from '../../item/components/modals/CutFragmentForAssignmentModal';
 import { type ItemTrimInfo } from '../../item/item.types';
 import {
 	type SingleEntityModal,

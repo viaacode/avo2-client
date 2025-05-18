@@ -49,7 +49,7 @@ import {
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { type OrderDirection } from '../../search/search.const';

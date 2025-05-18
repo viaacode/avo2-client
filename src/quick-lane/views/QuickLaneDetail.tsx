@@ -28,7 +28,7 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { FragmentList } from '../../collection/components';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
-import { ItemVideoDescription } from '../../item/components';
+import ItemVideoDescription from '../../item/components/ItemVideoDescription';
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { renderAvatar } from '../../shared/helpers/formatters';

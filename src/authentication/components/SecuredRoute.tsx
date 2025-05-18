@@ -13,7 +13,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 import { type AppState } from '../../store';
 import { LoginMessage } from '../authentication.types';
 import { isProfileComplete } from '../helpers/get-profile-info';
-import { redirectToClientPage } from '../helpers/redirects';
+import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';
 import { getLoginStateAction } from '../store/actions';
 import {
 	selectCommonUser,

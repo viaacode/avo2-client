@@ -26,7 +26,7 @@ import { type DefaultSecureRouteProps } from '../../authentication/components/Se
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
-import { ItemVideoDescription } from '../../item/components';
+import ItemVideoDescription from '../../item/components/ItemVideoDescription';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { renderAvatar } from '../../shared/helpers/formatters';
 import { isMobileWidth } from '../../shared/helpers/media-query';

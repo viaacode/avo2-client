@@ -23,7 +23,7 @@ import {
 	ContentTypeString,
 } from '../../../../../collection/collection.types';
 import { APP_PATH } from '../../../../../constants';
-import { ItemVideoDescription } from '../../../../../item/components';
+import ItemVideoDescription from '../../../../../item/components/ItemVideoDescription';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,

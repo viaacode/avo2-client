@@ -17,7 +17,7 @@ import { withRouter } from 'react-router';
 import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import FileUpload from '../../shared/components/FileUpload/FileUpload';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';

@@ -35,7 +35,7 @@ import { Link, type RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionService } from '../../collection/collection.service';

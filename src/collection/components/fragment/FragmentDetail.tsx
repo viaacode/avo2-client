@@ -4,7 +4,7 @@ import { get } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import { APP_PATH } from '../../../constants';
-import { ItemVideoDescription } from '../../../item/components';
+import ItemVideoDescription from '../../../item/components/ItemVideoDescription';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
