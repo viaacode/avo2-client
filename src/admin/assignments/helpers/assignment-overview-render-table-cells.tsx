@@ -75,7 +75,7 @@ export function renderAssignmentOverviewTableCellReact(
 		case 'created_at':
 			return formatDate(created_at) || '-';
 
-		case updated_at:
+		case 'updated_at':
 			return formatDate(updated_at) || '-';
 
 		case 'deadline_at':
