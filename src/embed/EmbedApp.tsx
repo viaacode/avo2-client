@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import React, { type FC, useEffect, useState } from 'react';
+import { Provider } from 'react-redux';
 import { Route } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryParamProvider } from 'use-query-params';
@@ -13,6 +14,7 @@ import Embed from './components/Embed';
 import RegisterOrLogin from './components/RegisterOrLogin';
 import '../styles/main.scss';
 import { useGetLoginStateForEmbed } from './hooks/useGetLoginState';
+import store from './store';
 
 const EmbedApp: FC = () => {
 	const [translationsLoaded, setTranslationsLoaded] = useState<boolean>(false);
@@ -61,11 +63,13 @@ const queryClient = new QueryClient();
 const EmbedRoot: FC = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
-			<BrowserRouter>
-				<QueryParamProvider ReactRouterRoute={Route}>
-					<EmbedApp />
-				</QueryParamProvider>
-			</BrowserRouter>
+			<Provider store={store}>
+				<BrowserRouter>
+					<QueryParamProvider ReactRouterRoute={Route}>
+						<EmbedApp />
+					</QueryParamProvider>
+				</BrowserRouter>
+			</Provider>
 		</QueryClientProvider>
 	);
 };
