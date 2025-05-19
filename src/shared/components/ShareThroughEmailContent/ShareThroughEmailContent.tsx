@@ -2,7 +2,6 @@ import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Box, Button, Flex, FlexItem, Spacer, TextInput } from '@viaa/avo2-components';
 import React, { type FC, useState } from 'react';
 
-import { copyToClipboard } from '../../helpers';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import useTranslation from '../../hooks/useTranslation';
 import {
@@ -13,6 +12,7 @@ import { trackEvents } from '../../services/event-logging-service';
 import { ToastService } from '../../services/toast-service';
 
 import './ShareThroughEmailContent.scss';
+import { copyToClipboard } from '../../helpers/clipboard';
 
 interface AddToCollectionModalProps {
 	type: EmailTemplateType;

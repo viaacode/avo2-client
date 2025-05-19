@@ -16,7 +16,7 @@ import {
 	useKeyPress,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import { cloneDeep, compact, get, isNil, noop, uniq } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -29,12 +29,6 @@ import { type DefaultSecureRouteProps } from '../../authentication/components/Se
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
-import {
-	DeleteObjectModal,
-	LoadingErrorLoadedComponent,
-	type LoadingInfo,
-} from '../../shared/components';
-import { buildLink, formatDate, isMobileWidth } from '../../shared/helpers';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser from '../../shared/hocs/withUser';
@@ -57,6 +51,14 @@ import { isItemWithMeta } from '../helpers/is-item-with-meta';
 
 import './AssignmentOverview.scss';
 import './AssignmentResponses.scss';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { buildLink } from '../../shared/helpers/build-link';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
+import { formatDate } from '../../shared/helpers/formatters';
 
 interface AssignmentResponsesProps
 	extends Omit<DefaultSecureRouteProps<{ id: string }>, 'location'> {
@@ -386,7 +388,7 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 
 	const renderDataCell = (value: ReactNode, label?: ReactNode, className?: string) =>
 		isMobileWidth() ? (
-			<div className={classNames('m-assignment-overview__table__data-cell', className)}>
+			<div className={clsx('m-assignment-overview__table__data-cell', className)}>
 				<div className="m-assignment-overview__table__data-cell__label">{label}</div>
 				<div className="m-assignment-overview__table__data-cell__value">{value}</div>
 			</div>
@@ -567,7 +569,7 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 					/>
 				</Spacer>
 
-				<DeleteObjectModal
+				<ConfirmModal
 					title={tText(
 						'assignment/views/assignment-responses___ben-je-zeker-dat-je-deze-response-wil-verwijderen'
 					)}

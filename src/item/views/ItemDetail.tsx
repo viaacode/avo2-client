@@ -25,7 +25,7 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { get, isNil, noop } from 'lodash-es';
 import React, {
 	type FC,
@@ -52,15 +52,14 @@ import { CONTENT_TYPE_TRANSLATIONS, ContentTypeNumber } from '../../collection/c
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { type FilterState } from '../../search/search.types';
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
-import { LANGUAGES, ROUTE_PARTS } from '../../shared/constants';
+import FragmentShareModal from '../../shared/components/FragmentShareModal/FragmentShareModal';
 import {
-	buildLink,
-	CustomError,
-	isMobileWidth,
-	renderSearchLinks,
-	reorderDate,
-} from '../../shared/helpers';
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { LANGUAGES, ROUTE_PARTS } from '../../shared/constants';
+import { buildLink } from '../../shared/helpers/build-link';
+import { CustomError } from '../../shared/helpers/custom-error';
 import {
 	defaultRenderBookmarkButton,
 	type renderBookmarkButtonProps,
@@ -78,6 +77,9 @@ import {
 	defaultGoToSearchLink,
 	defaultRenderSearchLink,
 } from '../../shared/helpers/default-render-search-link';
+import { reorderDate } from '../../shared/helpers/formatters';
+import { renderSearchLinks } from '../../shared/helpers/link';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
 import withUser from '../../shared/hocs/withUser';
@@ -96,16 +98,13 @@ import {
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { type UnpublishableItem } from '../../shared/types';
-import {
-	AddToCollectionModal,
-	CutFragmentForAssignmentModal,
-	ItemVideoDescription,
-} from '../components';
 import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { type ItemTrimInfo } from '../item.types';
 import './ItemDetail.scss';
-import FragmentShareModal from '../../shared/components/FragmentShareModal/FragmentShareModal';
+import ItemVideoDescription from '../components/ItemVideoDescription';
+import AddToCollectionModal from '../components/modals/AddToCollectionModal';
+import CutFragmentForAssignmentModal from '../components/modals/CutFragmentForAssignmentModal';
 
 interface ItemDetailProps {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
@@ -509,7 +508,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 			<Table
 				horizontal
 				untable
-				className={classnames('c-meta-data__table', {
+				className={clsx('c-meta-data__table', {
 					'c-meta-data__table-mobile': isMobileWidth(),
 				})}
 			>
@@ -542,7 +541,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 			<Table
 				horizontal
 				untable
-				className={classnames('c-meta-data__table', {
+				className={clsx('c-meta-data__table', {
 					'c-meta-data__table-mobile': isMobileWidth(),
 				})}
 			>
@@ -575,7 +574,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 			<Table
 				horizontal
 				untable
-				className={classnames('c-meta-data__table', {
+				className={clsx('c-meta-data__table', {
 					'c-meta-data__table-mobile': isMobileWidth(),
 				})}
 			>
@@ -604,7 +603,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 			<Table
 				horizontal
 				untable
-				className={classnames('c-meta-data__table', {
+				className={clsx('c-meta-data__table', {
 					'c-meta-data__table-mobile': isMobileWidth(),
 				})}
 			>
@@ -633,7 +632,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 			<Table
 				horizontal
 				untable
-				className={classnames('c-meta-data__table', {
+				className={clsx('c-meta-data__table', {
 					'c-meta-data__table-mobile': isMobileWidth(),
 				})}
 			>
@@ -671,7 +670,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 			<Table
 				horizontal
 				untable
-				className={classnames('c-meta-data__table', {
+				className={clsx('c-meta-data__table', {
 					'c-meta-data__table-mobile': isMobileWidth(),
 				})}
 			>
@@ -847,7 +846,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 					title={item.title}
 					category={englishContentType}
 					showMetaData={true}
-					className={classnames('c-item-detail__header', {
+					className={clsx('c-item-detail__header', {
 						'c-item-detail__header-mobile': isMobileWidth(),
 					})}
 				>

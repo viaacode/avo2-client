@@ -1,7 +1,7 @@
 import React, { type FC, type ReactNode } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { formatDate, formatTimestamp } from '../../helpers';
+import { formatDate, formatTimestamp } from '../../helpers/formatters';
 import { type QuickLaneUrlObject } from '../../types';
 import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';
 import QuickLaneLink from '../QuickLaneLink/QuickLaneLink';

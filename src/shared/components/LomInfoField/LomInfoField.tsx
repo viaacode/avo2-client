@@ -3,7 +3,7 @@ import React, { type FC, type ReactNode } from 'react';
 
 import { type SearchFilter } from '../../../search/search.const';
 import { type FilterState } from '../../../search/search.types';
-import { renderSearchLinks } from '../../helpers';
+import { renderSearchLinks } from '../../helpers/link';
 
 type LomInfoFieldProps = {
 	id: string;

@@ -2,9 +2,13 @@ import { type Avo } from '@viaa/avo2-types';
 import React, { type ReactNode, useMemo } from 'react';
 
 import { switchAssignmentBlockPositions } from '../../assignment/helpers/switch-positions';
-import { BlockListSorter, type ListSorterItem, type ListSorterProps } from '../components';
 import { GET_BLOCK_ICON } from '../components/BlockList/BlockIconWrapper/BlockIconWrapper.consts';
 import { BLOCK_ITEM_LABELS } from '../components/BlockList/BlockList.consts';
+import {
+	BlockListSorter,
+	type ListSorterItem,
+	type ListSorterProps,
+} from '../components/ListSorter';
 import { getBlockColor } from '../helpers/get-block-color';
 
 export function useBlocksList(

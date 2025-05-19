@@ -11,8 +11,13 @@ import {
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { OrderDirection } from '../../search/search.const';
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
-import { buildLink, formatDate, formatTimestamp, isMobileWidth } from '../../shared/helpers';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../shared/helpers/build-link';
+import { formatDate, formatTimestamp } from '../../shared/helpers/formatters';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';

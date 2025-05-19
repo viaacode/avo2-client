@@ -10,8 +10,11 @@ import FilterTable from '../../admin/shared/components/FilterTable/FilterTable';
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from '../../admin/shared/components/FilterTable/FilterTable.const';
 import type { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH } from '../../constants';
-import { DeleteObjectModal, type LoadingInfo } from '../../shared/components';
-import { copyToClipboard, CustomError, navigate } from '../../shared/helpers';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
+import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { copyToClipboard } from '../../shared/helpers/clipboard';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { navigate } from '../../shared/helpers/link';
 import withUser from '../../shared/hocs/withUser';
 import { useDebounce } from '../../shared/hooks/useDebounce';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -331,7 +334,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 				handleUpdate={changeEmbedCode}
 			/>
 
-			<DeleteObjectModal
+			<ConfirmModal
 				title={tText('Fragment verwijderen')}
 				body={tText(
 					'Opgelet! Ben je zeker dat je het fragment wil verwijderen? Het zal dan niet meer werken in Smartschool en BookWidgets.'

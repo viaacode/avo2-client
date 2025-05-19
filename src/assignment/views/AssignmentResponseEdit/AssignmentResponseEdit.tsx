@@ -12,7 +12,7 @@ import {
 	Tabs,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import React, {
 	type Dispatch,
 	type FC,
@@ -33,10 +33,8 @@ import {
 
 import { CollectionBlockType } from '../../../collection/collection.const';
 import { type FilterState } from '../../../search/search.types';
-import { InteractiveTour } from '../../../shared/components';
 import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
-import { formatTimestamp } from '../../../shared/helpers';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useAssignmentPastDeadline } from '../../../shared/hooks/useAssignmentPastDeadline';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -67,6 +65,8 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
+import { formatTimestamp } from '../../../shared/helpers/formatters';
+import InteractiveTour from '../../../shared/components/InteractiveTour/InteractiveTour';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment;
@@ -288,7 +288,7 @@ const AssignmentResponseEdit: FC<AssignmentResponseEditProps & UserProps> = ({
 
 	const renderedTitle = useMemo(
 		() => (
-			<Flex className={classnames({ 'u-spacer-top-l': showBackButton })}>
+			<Flex className={clsx({ 'u-spacer-top-l': showBackButton })}>
 				<Icon name={IconName.clipboard} size="large" />
 
 				<BlockHeading className="u-spacer-left" type="h2">

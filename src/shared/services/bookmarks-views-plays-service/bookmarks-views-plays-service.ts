@@ -50,7 +50,8 @@ import {
 	GetMultipleCollectionViewCountsDocument,
 	GetMultipleItemViewCountsDocument,
 } from '../../generated/graphql-db-react-query';
-import { CustomError, normalizeTimestamp } from '../../helpers';
+import { CustomError } from '../../helpers/custom-error';
+import { normalizeTimestamp } from '../../helpers/formatters';
 import { dataService } from '../data-service';
 import { trackEvents } from '../event-logging-service';
 

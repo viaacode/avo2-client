@@ -3,7 +3,10 @@ import { type Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { type Permissions, PermissionService } from '../helpers/permission-service';
 

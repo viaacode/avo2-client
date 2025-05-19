@@ -1,5 +1,6 @@
 import { Avatar, type AvatarProps } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { type UserProfile } from '@viaa/avo2-types/types/user';
 import React, { type ReactNode } from 'react';
 
 export const getProfile = (
@@ -135,6 +136,7 @@ export const renderAvatar = (
 		| Avo.User.Profile
 		| { profile: Avo.User.Profile }
 		| Avo.Assignment.Assignment['profile']
+		| Avo.User.CommonUser
 		| null,
 	options: {
 		small?: boolean;
@@ -142,7 +144,20 @@ export const renderAvatar = (
 		dark?: boolean;
 	} = {}
 ): ReactNode | null => {
-	const profile = getProfile(userOrProfile);
+	let profile: UserProfile | Avo.User.CommonUser | null;
+	if ((userOrProfile as Avo.User.CommonUser)?.profileId) {
+		profile = userOrProfile as Avo.User.CommonUser;
+	} else {
+		profile = getProfile(
+			userOrProfile as
+				| UserProfile
+				| {
+						profile: UserProfile;
+				  }
+				| null
+				| undefined
+		);
+	}
 
 	if (!profile) {
 		return null;

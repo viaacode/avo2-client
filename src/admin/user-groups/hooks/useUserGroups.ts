@@ -1,4 +1,4 @@
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { useEffect, useState } from 'react';
 
 import { GET_SPECIAL_USER_GROUPS } from '../user-group.const';

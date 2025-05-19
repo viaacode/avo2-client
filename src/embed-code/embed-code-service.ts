@@ -1,8 +1,8 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 
-import { CustomError, getEnv } from '../shared/helpers';
+import { CustomError } from '../shared/helpers/custom-error';
+import { getEnv } from '../shared/helpers/env';
 import { ITEMS_PER_PAGE } from '../workspace/workspace.const';
 
 import { type EmbedCode } from './embed-code.types';
@@ -30,10 +30,15 @@ export class EmbedCodeService {
 		try {
 			url = `${getEnv('PROXY_URL')}/embed-codes/${embedId}`;
 
-			return fetchWithLogoutJson<EmbedCode>(url, {
+			const response = await fetch(url, {
 				method: 'GET',
-				forceLogout: false,
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
 			});
+			const embedCode = await response.json();
+			return embedCode as EmbedCode;
 		} catch (err) {
 			const error = new CustomError('Failed to get embed code', err, {
 				url,
@@ -49,15 +54,28 @@ export class EmbedCodeService {
 		try {
 			url = `${getEnv('PROXY_URL')}/embed-codes/`;
 
-			const response = await fetchWithLogoutJson<{
-				message: 'success';
-				createdEmbedCodeId: string;
-			}>(url, {
+			const response = await fetch(url, {
 				method: 'POST',
 				body: JSON.stringify(data),
-				forceLogout: false,
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
 			});
-			return response.createdEmbedCodeId;
+			if (!response.ok) {
+				const error = new CustomError('Failed to create embed code', {
+					url,
+					data,
+				});
+				console.log(error);
+				throw error;
+			}
+			const responseData = (await response.json()) as {
+				message: 'success';
+				createdEmbedCodeId: string;
+			};
+
+			return responseData.createdEmbedCodeId;
 		} catch (err) {
 			const error = new CustomError('Failed to create embed code', err, {
 				url,
@@ -74,13 +92,22 @@ export class EmbedCodeService {
 		try {
 			url = `${getEnv('PROXY_URL')}/embed-codes/${data.id}`;
 
-			await fetchWithLogoutJson<{
-				message: 'success';
-			}>(url, {
+			const response = await fetch(url, {
 				method: 'PATCH',
 				body: JSON.stringify(data),
-				forceLogout: false,
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
 			});
+			if (!response.ok) {
+				const error = new CustomError('Failed to update embed code', null, {
+					url,
+					data,
+				});
+				console.log(error);
+				throw error;
+			}
 		} catch (err) {
 			const error = new CustomError('Failed to create embed code', err, {
 				url,
@@ -108,7 +135,26 @@ export class EmbedCodeService {
 					filterString: params?.filterString,
 				},
 			});
-			return fetchWithLogoutJson(url);
+			const response = await fetch(url, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+			});
+			if (!response.ok) {
+				const error = new CustomError('Failed to fetch embed codes from database', null, {
+					url,
+					...params,
+				});
+				console.log(error);
+				throw error;
+			}
+			const responseData = (await response.json()) as {
+				embedCodes: EmbedCode[];
+				count: number;
+			};
+			return responseData;
 		} catch (err) {
 			const error = new CustomError('Failed to fetch embed codes from database', err, {
 				...params,
@@ -125,12 +171,21 @@ export class EmbedCodeService {
 		try {
 			url = `${getEnv('PROXY_URL')}/embed-codes/${embedCodeId}`;
 
-			await fetchWithLogoutJson<{
-				message: 'success';
-			}>(url, {
+			const response = await fetch(url, {
 				method: 'DELETE',
-				forceLogout: false,
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
 			});
+			if (!response.ok) {
+				const error = new CustomError('Failed to delete embed code', null, {
+					url,
+					embedCodeId,
+				});
+				console.log(error);
+				throw error;
+			}
 		} catch (err) {
 			const error = new CustomError('Failed to delete embed code', err, {
 				url,

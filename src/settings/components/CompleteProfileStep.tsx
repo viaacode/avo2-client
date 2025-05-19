@@ -19,7 +19,7 @@ import { withRouter } from 'react-router';
 import { type Dispatch } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import {
 	getLoginResponse,
 	getLoginStateAction,
@@ -28,7 +28,6 @@ import {
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
-import { CustomError } from '../../shared/helpers';
 import { isTeacher } from '../../shared/helpers/is-teacher';
 import { EducationLevelId, groupLoms } from '../../shared/helpers/lom';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -40,6 +39,7 @@ import { useUpdateEmailPreferences } from '../hooks/useUpdateEmailPreferences';
 import { SettingsService } from '../settings.service';
 
 import './Profile.scss';
+import { CustomError } from '../../shared/helpers/custom-error';
 
 interface CompleteProfileStepProps {
 	redirectTo?: string;

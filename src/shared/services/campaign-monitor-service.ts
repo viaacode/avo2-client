@@ -3,7 +3,8 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 
-import { CustomError, getEnv } from '../helpers';
+import { CustomError } from '../helpers/custom-error';
+import { getEnv } from '../helpers/env';
 
 import { type MinimalClientEvent, trackEvents } from './event-logging-service';
 

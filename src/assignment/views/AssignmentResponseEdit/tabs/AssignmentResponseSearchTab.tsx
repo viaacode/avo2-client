@@ -1,6 +1,6 @@
 import { Button, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { intersection } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
@@ -9,7 +9,7 @@ import { type UrlUpdateType } from 'use-query-params';
 
 import { PermissionService } from '../../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../../error/views';
-import { CutFragmentForAssignmentModal } from '../../../../item/components';
+import CutFragmentForAssignmentModal from '../../../../item/components/modals/CutFragmentForAssignmentModal';
 import { type ItemTrimInfo } from '../../../../item/item.types';
 import ItemDetail from '../../../../item/views/ItemDetail';
 import { PupilCollectionService } from '../../../../pupil-collection/pupil-collection.service';
@@ -207,7 +207,7 @@ const AssignmentResponseSearchTab: FC<
 			return (
 				<Button
 					type="inline-link"
-					className={classnames('c-button--relative-link', className)}
+					className={clsx('c-button--relative-link', className)}
 					onClick={() =>
 						setFilterState({
 							...filterState,

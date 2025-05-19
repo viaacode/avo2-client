@@ -11,8 +11,11 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { BlockList } from '../../collection/components';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
-import { CustomError } from '../../shared/helpers';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { CustomError } from '../../shared/helpers/custom-error';
 import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentService } from '../assignment.service';

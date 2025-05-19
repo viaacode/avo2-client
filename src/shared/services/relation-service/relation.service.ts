@@ -3,7 +3,8 @@ import { type Avo } from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 
 import { type Lookup_Enum_Relation_Types_Enum } from '../../generated/graphql-db-types';
-import { CustomError, getEnv } from '../../helpers';
+import { CustomError } from '../../helpers/custom-error';
+import { getEnv } from '../../helpers/env';
 
 export class RelationService {
 	public static async fetchRelationsByObject(

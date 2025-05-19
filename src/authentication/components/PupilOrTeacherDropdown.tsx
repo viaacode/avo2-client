@@ -6,7 +6,7 @@ import { type RouteComponentProps, withRouter } from 'react-router';
 import { APP_PATH } from '../../constants';
 import { ROUTE_PARTS } from '../../shared/constants';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { redirectToClientPage } from '../helpers/redirects';
+import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';
 
 interface PupilOrTeacherDropdownProps {
 	closeDropdown?: () => void;

@@ -4,7 +4,7 @@ import React, { type FC, lazy, type ReactNode, Suspense, useCallback, useState }
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { CustomError } from '../../../shared/helpers';
+import { CustomError } from '../../../shared/helpers/custom-error';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';

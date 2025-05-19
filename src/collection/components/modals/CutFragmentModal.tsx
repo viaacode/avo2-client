@@ -11,11 +11,12 @@ import { type Avo } from '@viaa/avo2-types';
 import { noop, once } from 'lodash-es';
 import React, { type FC, useState } from 'react';
 
-import { ItemVideoDescription } from '../../../item/components';
+import ItemVideoDescription from '../../../item/components/ItemVideoDescription';
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
-import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
+import { isMobileWidth } from '../../../shared/helpers/media-query';
+import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';

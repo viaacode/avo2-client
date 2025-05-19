@@ -6,7 +6,7 @@ import {
 	type GetUserGroupsWithFiltersQueryVariables,
 } from '../../shared/generated/graphql-db-operations';
 import { GetUserGroupsWithFiltersDocument } from '../../shared/generated/graphql-db-react-query';
-import { CustomError } from '../../shared/helpers';
+import { CustomError } from '../../shared/helpers/custom-error';
 import { dataService } from '../../shared/services/data-service';
 
 import { ITEMS_PER_PAGE } from './user-group.const';

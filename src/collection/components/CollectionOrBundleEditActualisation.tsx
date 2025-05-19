@@ -18,7 +18,7 @@ import { getCollectionManagementStatuses } from '../../admin/collectionsOrBundle
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { NULL_FILTER } from '../../admin/shared/helpers/filters';
 import { type PickerItem } from '../../admin/shared/types';
-import { getFullName, toDateObject } from '../../shared/helpers';
+import { getFullName, toDateObject } from '../../shared/helpers/formatters';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 

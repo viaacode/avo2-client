@@ -27,7 +27,7 @@ import { Link } from 'react-router-dom';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { BlockList } from '../../collection/components';
 import {
 	BundleSortProp,
@@ -37,24 +37,27 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { type ErrorViewQueryParams } from '../../error/views/ErrorView';
+import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
+import InActivityWarningModal from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
 import {
-	HeaderOwnerAndContributors,
-	InActivityWarningModal,
 	ListSorterColor,
 	ListSorterPosition,
 	ListSorterSlice,
-	SelectEducationLevelModal,
-	ShareModal,
-} from '../../shared/components';
-import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+} from '../../shared/components/ListSorter';
+import SelectEducationLevelModal from '../../shared/components/SelectEducationLevelModal/SelectEducationLevelModal';
+import ShareModal from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { buildLink, CustomError, isMobileWidth, navigate } from '../../shared/helpers';
+import { buildLink } from '../../shared/helpers/build-link';
 import {
 	getContributorType,
 	transformContributorsToSimpleContributors,
 } from '../../shared/helpers/contributors';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { navigate } from '../../shared/helpers/link';
 import { type EducationLevelId } from '../../shared/helpers/lom';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useBlocksList } from '../../shared/hooks/use-blocks-list';

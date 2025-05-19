@@ -1,6 +1,7 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 
-import { CustomError, getEnv } from '../shared/helpers';
+import { CustomError } from '../shared/helpers/custom-error';
+import { getEnv } from '../shared/helpers/env';
 import type { BookmarkInfo } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
 import { type WorkspaceCounts } from './workspace.types';

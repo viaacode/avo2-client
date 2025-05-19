@@ -1,39 +1,21 @@
 import { type Avo } from '@viaa/avo2-types';
-import { get, isString, omit, trimEnd, trimStart } from 'lodash-es';
+import { get, isString, omit, trimStart } from 'lodash-es';
 import queryString from 'query-string';
 import { type RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
-import { type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { ROUTE_PARTS } from '../../shared/constants';
-import { getEnv } from '../../shared/helpers';
+import { getEnv } from '../../shared/helpers/env';
 import { SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
+
+import { getBaseUrl } from './get-base-url';
 
 /**
  *
  * Client redirect functions
  *
  **/
-export function redirectToClientPage(path: string, history: RouteComponentProps['history']): void {
-	history.push(path);
-}
-
-export function redirectToErrorPage(
-	props: ErrorViewQueryParams,
-	location: RouteComponentProps['location']
-): void {
-	const baseUrl = getBaseUrl(location);
-	window.location.href = `${baseUrl}/error?${queryString.stringify(props)}`;
-}
-
-export function redirectToLoggedOutHome(location: RouteComponentProps['location']): void {
-	window.location.href = getBaseUrl(location);
-}
-
-export function redirectToLoggedInHome(location: RouteComponentProps['location']): void {
-	window.location.href = `${getBaseUrl(location)}/start`;
-}
 
 /**
  *
@@ -167,23 +149,6 @@ export function redirectToServerUnlinkAccount(
  * Other redirect functions
  *
  **/
-export function redirectToExternalPage(
-	link: string,
-	target: '_blank' | string | null | undefined
-): void {
-	if (target === '_blank') {
-		window.open(link, '_blank', 'noopener,noreferrer');
-	} else {
-		window.location.href = link;
-	}
-}
-
-function getBaseUrl(location: RouteComponentProps['location']): string {
-	if (location.pathname === '/') {
-		return trimEnd(window.location.href, '/');
-	}
-	return trimEnd(decodeURIComponent(window.location.href).split(location.pathname)[0], '/');
-}
 
 function getFromPath(
 	location: RouteComponentProps['location'],

@@ -12,6 +12,7 @@ import {
 	Spacer,
 	Tabs,
 } from '@viaa/avo2-components';
+import { type MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/MenuContent/MenuContent';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
@@ -23,7 +24,7 @@ import {
 	EmbedCodeDescriptionType,
 	EmbedCodeExternalWebsite,
 } from '../../../embed-code/embed-code.types';
-import { toSeconds } from '../../helpers';
+import { toSeconds } from '../../helpers/parsers/duration';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import withUser, { type UserProps } from '../../hocs/withUser';
@@ -134,7 +135,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 		}
 	}, [embedDropdownSelection]);
 
-	const embedDropdownOptions = [
+	const embedDropdownOptions: MenuItemInfoSchema[] = [
 		{
 			label: (
 				<>
@@ -145,7 +146,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 					/>
 					{tText('Smartschool')}
 				</>
-			),
+			) as unknown as string, // TODO allow ReactNode in avo2-components
 			id: EmbedCodeExternalWebsite.SMARTSCHOOL,
 			key: EmbedCodeExternalWebsite.SMARTSCHOOL,
 		},
@@ -159,7 +160,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 					/>
 					{tText('Bookwidgets')}
 				</>
-			),
+			) as unknown as string, // TODO allow ReactNode in avo2-components
 			id: EmbedCodeExternalWebsite.BOOKWIDGETS,
 			key: EmbedCodeExternalWebsite.BOOKWIDGETS,
 		},
@@ -228,7 +229,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 						</Spacer>
 						<Spacer margin="bottom">
 							<Dropdown
-								label={getEmbedDropdownLabel()}
+								label={getEmbedDropdownLabel() as string} // TODO allow ReactNode in avo2-components
 								onOpen={handleRightsButtonClicked}
 								onClose={handleRightsButtonClicked}
 								isOpen={isEmbedDropdownOpen}

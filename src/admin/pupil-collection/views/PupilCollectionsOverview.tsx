@@ -11,9 +11,12 @@ import { ErrorView } from '../../../error/views';
 import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
 import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types';
 import { OrderDirection } from '../../../search/search.const';
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
-import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
-import { CustomError } from '../../../shared/helpers';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';

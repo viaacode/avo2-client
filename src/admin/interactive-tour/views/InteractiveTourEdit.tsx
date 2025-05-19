@@ -27,17 +27,19 @@ import React, {
 import { Helmet } from 'react-helmet';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { OrderDirection } from '../../../search/search.const';
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import {
 	type GetInteractiveTourByIdQuery,
 	type GetInteractiveTourByIdQueryVariables,
 } from '../../../shared/generated/graphql-db-operations';
 import { GetInteractiveTourByIdDocument } from '../../../shared/generated/graphql-db-react-query';
-import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { dataService } from '../../../shared/services/data-service';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -75,6 +77,9 @@ import {
 import InteractiveTourEditStep from './InteractiveTourEditStep';
 
 import './InteractiveTourEdit.scss';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { navigate } from '../../../shared/helpers/link';
+import { buildLink } from '../../../shared/helpers/build-link';
 
 const BlockHeading = lazy(() =>
 	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({

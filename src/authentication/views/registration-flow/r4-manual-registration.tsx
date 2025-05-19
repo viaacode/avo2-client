@@ -25,7 +25,7 @@ import { type RouteComponentProps, withRouter } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ROUTE_PARTS } from '../../../shared/constants';
-import { validateEmailAddress } from '../../../shared/helpers';
+import { validateEmailAddress } from '../../../shared/helpers/validation/email';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';

@@ -3,7 +3,7 @@ import React, { type ReactNode } from 'react';
 import { SecuredRoute } from '../authentication/components';
 import { APP_PATH } from '../constants';
 
-import { Profile } from './components';
+import Profile from './components/Profile';
 import { Settings } from './views';
 
 export const renderSettingsRoutes = (): ReactNode[] => [

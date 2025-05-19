@@ -7,17 +7,18 @@ import {
 	IconName,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import classNames from 'classnames';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import { noop } from 'lodash-es';
 import React, { type FC, useCallback, useMemo, useState } from 'react';
 
 import { APP_PATH } from '../../constants';
-import { ShareDropdown, type ShareWithPupilsProps } from '../../shared/components';
-import { type ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
+import ShareDropdown, {
+	type ShareDropdownProps,
+} from '../../shared/components/ShareDropdown/ShareDropdown';
 import { type ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
-import { isMobileWidth } from '../../shared/helpers';
+import { type ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -140,7 +141,7 @@ const AssignmentActions: FC<AssignmentActionsProps & UserProps> = ({
 					),
 					desktop: (
 						<div
-							className={classNames(
+							className={clsx(
 								'c-assignment-heading__dropdown-wrapper',
 								shareDropdownProps?.buttonProps?.className
 							)}

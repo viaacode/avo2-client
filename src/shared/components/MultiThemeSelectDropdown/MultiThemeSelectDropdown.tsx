@@ -1,12 +1,13 @@
 import { type TagInfo } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import classnames from 'classnames';
 import { groupBy, map } from 'lodash-es';
 import React, { type FC } from 'react';
 import Select from 'react-select';
 
 import './MultiThemeSelectDropdown.scss';
 import MultiThemeSelectOptionGroupHeading from './MultiThemeSelectOptionGroupHeading';
+
+import { clsx } from 'clsx';
 
 interface MultiThemeSelectDropdownProps {
 	id?: string;
@@ -42,7 +43,7 @@ const MultiThemeSelectDropdown: FC<MultiThemeSelectDropdownProps> = ({
 			blurInputOnSelect={false}
 			closeMenuOnSelect={true}
 			components={{ GroupHeading: MultiThemeSelectOptionGroupHeading }}
-			className={classnames('c-multi-theme-select', 'c-tags-input')}
+			className={clsx('c-multi-theme-select', 'c-tags-input')}
 			classNamePrefix="c-tags-input"
 			onChange={(newValue) => onChange(newValue as TagInfo[])}
 			isMulti={allowMulti}

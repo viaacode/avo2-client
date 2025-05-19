@@ -7,13 +7,14 @@ import { Helmet } from 'react-helmet';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
+import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import {
-	type CheckboxOption,
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../../shared/components';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
-import { buildLink, CustomError } from '../../../shared/helpers';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useCompanies } from '../../../shared/hooks/useCompanies';

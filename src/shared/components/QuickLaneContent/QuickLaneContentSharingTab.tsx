@@ -13,12 +13,13 @@ import { type ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { type AssignmentLayout } from '../../../assignment/assignment.types';
-import { ItemVideoDescription } from '../../../item/components';
+import ItemVideoDescription from '../../../item/components/ItemVideoDescription';
 import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { isMobileWidth, toSeconds } from '../../helpers';
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { copyQuickLaneToClipboard } from '../../helpers/generate-quick-lane-href';
+import { isMobileWidth } from '../../helpers/media-query';
+import { toSeconds } from '../../helpers/parsers/duration';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import { useDebounce } from '../../hooks/useDebounce';
 import { ToastService } from '../../services/toast-service';

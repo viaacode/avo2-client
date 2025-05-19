@@ -17,12 +17,11 @@ import React, { type FC, type ReactNode } from 'react';
 import { type RouteComponentProps, withRouter } from 'react-router';
 import { compose } from 'redux';
 
-import {
-	redirectToLoggedInHome,
-	redirectToLoggedOutHome,
-	redirectToServerLogoutPage,
-} from '../../authentication/helpers/redirects';
-import { CustomError, isMobileWidth } from '../../shared/helpers';
+import { redirectToServerLogoutPage } from '../../authentication/helpers/redirects';
+import { redirectToLoggedInHome } from '../../authentication/helpers/redirects/redirect-logged-in-home';
+import { redirectToLoggedOutHome } from '../../authentication/helpers/redirects/redirect-to-logged-out-home';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';

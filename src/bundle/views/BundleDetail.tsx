@@ -26,7 +26,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { compact, get, noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -35,7 +35,7 @@ import { Link, type RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionService } from '../../collection/collection.service';
@@ -51,29 +51,23 @@ import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/C
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
-import {
-	CommonMetaData,
-	DeleteObjectModal,
-	InteractiveTour,
-	ShareThroughEmailModal,
-} from '../../shared/components';
+import CommonMetaData from '../../shared/components/CommonMetaData/CommonMetaData';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import Html from '../../shared/components/Html/Html';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
+import ShareThroughEmailModal from '../../shared/components/ShareThroughEmailModal/ShareThroughEmailModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
-import {
-	buildLink,
-	createDropdownMenuItem,
-	CustomError,
-	formatDate,
-	getFullName,
-	isMobileWidth,
-	renderAvatar,
-} from '../../shared/helpers';
+import { buildLink } from '../../shared/helpers/build-link';
+import { CustomError } from '../../shared/helpers/custom-error';
 import {
 	defaultGoToDetailLink,
 	defaultRenderDetailLink,
 } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
+import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
+import { formatDate, getFullName, renderAvatar } from '../../shared/helpers/formatters';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -741,7 +735,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 					keywords={compact(bundleObj?.loms?.map((lom) => lom.lom?.label))}
 				/>
 				<div
-					className={classnames(
+					className={clsx(
 						'm-bundle-detail',
 						showLoginPopup ? 'hide-behind-login-popup' : ''
 					)}
@@ -886,7 +880,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 				</div>
 				{!showLoginPopup && (
 					<>
-						<DeleteObjectModal
+						<ConfirmModal
 							title={tText(
 								'bundle/views/bundle-detail___ben-je-zeker-dat-je-deze-bundel-wil-verwijderen'
 							)}

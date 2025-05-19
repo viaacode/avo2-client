@@ -1,6 +1,7 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 
-import { CustomError, getEnv } from '../helpers';
+import { CustomError } from '../helpers/custom-error';
+import { getEnv } from '../helpers/env';
 
 export const fetchPlayerTicket = async (externalId: string): Promise<string> => {
 	return (await fetchPlayerTickets([externalId]))[0];

@@ -1,16 +1,16 @@
 import { Accordion, AccordionBody, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { cloneDeep, forEach, get, omit, uniqBy } from 'lodash-es';
 import React, { type FC, type ReactNode, useMemo } from 'react';
 
 import {
 	CheckboxDropdownModal,
 	type CheckboxOption,
-	DateRangeDropdown,
-} from '../../shared/components';
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import DateRangeDropdown from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { LANGUAGES } from '../../shared/constants';
-import { isMobileWidth } from '../../shared/helpers';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { SearchFilter } from '../search.const';
 import { type SearchFilterControlsProps, type SearchFilterMultiOptions } from '../search.types';
@@ -132,7 +132,7 @@ const SearchFilterControls: FC<SearchFilterControlsProps> = ({
 
 	const renderFilters = () => (
 		<ul
-			className={classnames('c-filter-dropdown-list', {
+			className={clsx('c-filter-dropdown-list', {
 				'c-filter-dropdown-list--mobile': isMobileWidth(),
 			})}
 		>

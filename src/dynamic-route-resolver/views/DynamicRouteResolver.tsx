@@ -19,7 +19,7 @@ import { ItemsService } from '../../admin/items/items.service';
 import { withAdminCoreConfig } from '../../admin/shared/hoc/with-admin-core-config';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToErrorPage } from '../../authentication/helpers/redirects';
+import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page';
 import { getLoginStateAction } from '../../authentication/store/actions';
 import {
 	selectLogin,
@@ -31,16 +31,16 @@ import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { OrderDirection, SearchFilter } from '../../search/search.const';
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import {
-	buildLink,
-	CustomError,
-	generateSearchLinkString,
-	getEnv,
-	getFullName,
-	stripHtml,
-} from '../../shared/helpers';
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../shared/helpers/build-link';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { getEnv } from '../../shared/helpers/env';
+import { getFullName, stripHtml } from '../../shared/helpers/formatters';
+import { generateSearchLinkString } from '../../shared/helpers/link';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Locale } from '../../shared/translations/translations.types';

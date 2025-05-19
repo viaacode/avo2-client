@@ -33,9 +33,7 @@ import {
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
-import { InteractiveTour } from '../../shared/components';
 import { getMoreOptionsLabel } from '../../shared/constants';
-import { copyToClipboard, generateContentLinkString } from '../../shared/helpers';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -44,6 +42,9 @@ import { SearchFiltersAndResults } from '../components';
 import { type FilterState } from '../search.types';
 
 import './Search.scss';
+import { copyToClipboard } from '../../shared/helpers/clipboard';
+import { generateContentLinkString } from '../../shared/helpers/link';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 
 const Search: FC<UserProps & RouteComponentProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();

@@ -8,7 +8,7 @@ import {
 import { differenceInHours } from 'date-fns';
 import React, { type FC, useMemo } from 'react';
 
-import { formatCustomTimestamp } from '../../shared/helpers';
+import { formatCustomTimestamp } from '../../shared/helpers/formatters';
 
 interface AssignmentDeadlineProps {
 	deadline?: string | null | Date;

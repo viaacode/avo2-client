@@ -17,7 +17,7 @@ import {
 	GetOrganisationsWithUsersDocument,
 	GetUsersByCompanyIdDocument,
 } from '../generated/graphql-db-react-query';
-import { CustomError } from '../helpers';
+import { CustomError } from '../helpers/custom-error';
 
 import { dataService } from './data-service';
 

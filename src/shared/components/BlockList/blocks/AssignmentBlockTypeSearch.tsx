@@ -17,7 +17,7 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import React, { type FC } from 'react';
 
 import { ReactComponent as NewPartSvg } from '../../../../assets/images/nieuw-onderdeel.svg';
@@ -55,7 +55,7 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 		educationLevelId && GET_EDUCATION_LEVEL_TOOLTIP_DICT()[educationLevelId];
 
 	return (
-		<div className={classnames('c-assignment-block-type-search', className)}>
+		<div className={clsx('c-assignment-block-type-search', className)}>
 			<Flex orientation="vertical">
 				<Toolbar>
 					<ToolbarLeft>

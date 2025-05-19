@@ -1,4 +1,5 @@
-import { createReducer } from './../../shared/helpers';
+import { createReducer } from '../../shared/helpers/redux/create-reducer';
+
 import initialState from './initial-state';
 import {
 	SearchActionTypes,

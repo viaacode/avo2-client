@@ -18,8 +18,9 @@ import { type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
-import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
+import { isMobileWidth } from '../../../shared/helpers/media-query';
+import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';

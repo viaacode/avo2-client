@@ -13,7 +13,7 @@ import {
 	IDLE_TIME_UNTIL_WARNING,
 	MAX_EDIT_IDLE_TIME,
 } from '../../constants';
-import { formatDurationMinutesSeconds } from '../../helpers';
+import { formatDurationMinutesSeconds } from '../../helpers/formatters';
 import { tHtml } from '../../helpers/translate-html';
 import { useBeforeUnload } from '../../hooks/useBeforeUnload';
 

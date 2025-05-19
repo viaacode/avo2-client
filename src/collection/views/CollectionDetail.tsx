@@ -19,7 +19,7 @@ import {
 	ToggleButton,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { compact, isEmpty, isNil, noop } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -38,29 +38,11 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
-import {
-	CommonMetaData,
-	EditButton,
-	HeaderOwnerAndContributors,
-	InteractiveTour,
-	type LoadingInfo,
-	ShareDropdown,
-	ShareModal,
-} from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
-import {
-	buildLink,
-	createDropdownMenuItem,
-	CustomError,
-	generateContentLinkString,
-	getFullName,
-	isMobileWidth,
-	navigate,
-} from '../../shared/helpers';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import {
 	defaultGoToDetailLink,
@@ -111,6 +93,21 @@ import {
 import './CollectionDetail.scss';
 
 import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from './CollectionDetail.const';
+
+import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
+import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
+import EditButton from '../../shared/components/EditButton/EditButton';
+import ShareModal from '../../shared/components/ShareModal/ShareModal';
+import { getFullName } from '../../shared/helpers/formatters/avatar';
+import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { generateContentLinkString, navigate } from '../../shared/helpers/link';
+import { buildLink } from '../../shared/helpers/build-link';
+import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
+import CommonMetaData from '../../shared/components/CommonMetaData/CommonMetaData';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -1353,7 +1350,7 @@ const CollectionDetail: FC<
 						)}
 						isOpen={isQuickLaneModalOpen}
 						content={collection}
-						content_label="COLLECTIE"
+						content_label={QuickLaneTypeEnum.COLLECTION}
 						onClose={() => {
 							setIsQuickLaneModalOpen(false);
 						}}
@@ -1530,7 +1527,7 @@ const CollectionDetail: FC<
 
 		return (
 			<div
-				className={classnames(
+				className={clsx(
 					'm-collection-detail',
 					showLoginPopup ? 'hide-behind-login-popup' : ''
 				)}

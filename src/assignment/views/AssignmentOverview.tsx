@@ -24,7 +24,7 @@ import {
 	useKeyPress,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { cloneDeep, compact, isArray, isNil, noop } from 'lodash-es';
 import React, {
 	type FC,
@@ -49,25 +49,25 @@ import {
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { type OrderDirection } from '../../search/search.const';
-import { CheckboxDropdownModal, type CheckboxOption } from '../../shared/components';
+import {
+	CheckboxDropdownModal,
+	type CheckboxOption,
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
 	ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
 	getMoreOptionsLabel,
 } from '../../shared/constants';
-import {
-	buildLink,
-	createDropdownMenuItem,
-	formatDate,
-	isMobileWidth,
-	navigate,
-	renderAvatar,
-} from '../../shared/helpers';
+import { buildLink } from '../../shared/helpers/build-link';
 import { getContributorType } from '../../shared/helpers/contributors';
+import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
+import { formatDate, renderAvatar } from '../../shared/helpers/formatters';
+import { navigate } from '../../shared/helpers/link';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
@@ -447,7 +447,7 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 	const renderDataCell = (value: ReactNode, label?: ReactNode, className?: string) =>
 		renderMobileDesktop({
 			mobile: (
-				<div className={classnames('m-assignment-overview__table__data-cell', className)}>
+				<div className={clsx('m-assignment-overview__table__data-cell', className)}>
 					<div className="m-assignment-overview__table__data-cell__label">{label}</div>
 					<div className="m-assignment-overview__table__data-cell__value">
 						{value || '-'}

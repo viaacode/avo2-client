@@ -20,14 +20,15 @@ import { type RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { StringParam, useQueryParams } from 'use-query-params';
 
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { DeleteObjectModal } from '../../../shared/components';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import QuickLaneFilterTableCell from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
-import { buildLink, CustomError } from '../../../shared/helpers';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { CustomError } from '../../../shared/helpers/custom-error';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
@@ -468,7 +469,7 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 					{renderContainingCollectionTable()}
 					{renderContainingAssignmentTable()}
 					{renderAssociatedQuickLaneTable()}
-					<DeleteObjectModal
+					<ConfirmModal
 						title={
 							item.is_published
 								? tText('admin/items/views/item-detail___depubliceren')

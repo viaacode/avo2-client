@@ -19,15 +19,16 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { type Avo, type PermissionName } from '@viaa/avo2-types';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import { isEmpty, isNil, truncate } from 'lodash-es';
 import React, { type FC, useMemo, useState } from 'react';
 
-import { validateEmailAddress } from '../../helpers';
 import { tHtml } from '../../helpers/translate-html';
+import { validateEmailAddress } from '../../helpers/validation/email';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import useTranslation from '../../hooks/useTranslation';
-import { ConfirmModal, RememberConfirmationKeys } from '../ConfirmModal';
+import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
+import { RememberConfirmationKeys } from '../ConfirmModal/ConfirmModal.const';
 
 import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
 import { GET_EDUCATION_LEVEL_DIFFERENCE_DICT } from './ShareWithColleagues.const';
@@ -267,7 +268,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 								</div>
 
 								<div
-									className={classNames({
+									className={clsx({
 										'c-colleague-info-row__rights': true,
 										'u-text-muted': showConflictIcon,
 									})}

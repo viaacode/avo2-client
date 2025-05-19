@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { type QualityLabel } from '../../collection/collection.types';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { CustomError } from '../helpers';
+import { CustomError } from '../helpers/custom-error';
 import { QualityLabelsService } from '../services/quality-labels.service';
 import { ToastService } from '../services/toast-service';
 

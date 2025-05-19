@@ -12,7 +12,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { cloneDeep, get } from 'lodash-es';
 import React, { type FC, type MouseEvent, useCallback, useEffect, useState } from 'react';
 
-import { ColorSelect } from '../../shared/components';
+import { ColorSelect } from '../../shared/components/ColorSelect/ColorSelect';
 import { type Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';

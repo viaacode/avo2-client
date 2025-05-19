@@ -1,7 +1,8 @@
 import { PermissionName } from '@viaa/avo2-types';
 import { every, isArray, some } from 'lodash-es';
 
-import { buildLink, CustomError } from '../shared/helpers';
+import { buildLink } from '../shared/helpers/build-link';
+import { CustomError } from '../shared/helpers/custom-error';
 import { tText } from '../shared/helpers/translate-text';
 import { ToastService } from '../shared/services/toast-service';
 import { Locale } from '../shared/translations/translations.types';

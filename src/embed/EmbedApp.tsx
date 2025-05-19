@@ -1,49 +1,25 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import React, { type FC, useEffect, useMemo, useState } from 'react';
-import { connect, Provider } from 'react-redux';
-import {
-	Route,
-	type RouteComponentProps,
-	BrowserRouter as Router,
-	withRouter,
-} from 'react-router-dom';
-import { compose, type Dispatch } from 'redux';
+import React, { type FC, useEffect, useState } from 'react';
+import { Provider } from 'react-redux';
+import { Route } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 import { QueryParamProvider } from 'use-query-params';
 
 import { LoginMessage } from '../authentication/authentication.types';
-import { getLoginStateAction } from '../authentication/store/actions';
-import { selectCommonUser, selectLogin, selectUser } from '../authentication/store/selectors';
-import { LoadingErrorLoadedComponent } from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../shared/helpers/custom-error';
-import withUser, { type UserProps } from '../shared/hocs/withUser';
 import { waitForTranslations } from '../shared/translations/i18n';
-import type { AppState } from '../store';
 
 import Embed from './components/Embed';
 import RegisterOrLogin from './components/RegisterOrLogin';
+import '../styles/main.scss';
+import { useGetLoginStateForEmbed } from './hooks/useGetLoginState';
 import store from './store';
 
-import '../styles/main.scss';
-
-const EmbedApp: FC<
-	RouteComponentProps &
-		UserProps & {
-			getLoginState: () => Dispatch;
-			loginState: Avo.Auth.LoginResponse | null;
-			loginStateError: boolean;
-			loginStateLoading: boolean;
-		}
-> = ({ loginState, loginStateLoading, loginStateError, getLoginState, commonUser }) => {
+const EmbedApp: FC = () => {
 	const [translationsLoaded, setTranslationsLoaded] = useState<boolean>(false);
 
-	const loadingInfo = useMemo(() => {
-		if (translationsLoaded && !loginStateLoading) {
-			return { state: 'loaded' };
-		}
-		return { state: 'loading' };
-	}, [translationsLoaded, loginStateLoading]);
+	const { data: loginState, isLoading: loginStateLoading } = useGetLoginStateForEmbed();
 
 	/**
 	 * Wait for translations to be loaded before rendering the app
@@ -58,15 +34,9 @@ const EmbedApp: FC<
 			});
 	}, [setTranslationsLoaded]);
 
-	useEffect(() => {
-		if (!loginState && !loginStateLoading && !loginStateError) {
-			getLoginState();
-		}
-	}, [getLoginState, loginState, loginStateLoading, loginStateError]);
-
 	// Render
 	const renderApp = () => {
-		if ((!loginState || loginStateLoading) && !loginStateError) {
+		if (loginStateLoading || !translationsLoaded) {
 			// Wait for login check
 			return (
 				<Spacer margin={['top-large', 'bottom-large']}>
@@ -77,7 +47,7 @@ const EmbedApp: FC<
 			);
 		}
 
-		if (loginState?.message !== LoginMessage.LOGGED_IN || !commonUser) {
+		if (loginState?.message !== LoginMessage.LOGGED_IN) {
 			return <RegisterOrLogin />;
 		}
 
@@ -85,34 +55,8 @@ const EmbedApp: FC<
 		return <Embed />;
 	};
 
-	return (
-		<div className="o-app u-p-t-0">
-			<LoadingErrorLoadedComponent
-				loadingInfo={loadingInfo}
-				dataObject={{}}
-				render={renderApp}
-			/>
-		</div>
-	);
+	return renderApp();
 };
-
-const mapStateToProps = (state: AppState) => ({
-	user: selectUser(state),
-	commonUser: selectCommonUser(state),
-	loginState: selectLogin(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		getLoginState: () => dispatch(getLoginStateAction() as any),
-	};
-};
-
-const EmbedAppWithRouter = compose(
-	withRouter,
-	connect(mapStateToProps, mapDispatchToProps),
-	withUser
-)(EmbedApp) as FC;
 
 const queryClient = new QueryClient();
 
@@ -120,11 +64,11 @@ const EmbedRoot: FC = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Provider store={store}>
-				<Router>
+				<BrowserRouter>
 					<QueryParamProvider ReactRouterRoute={Route}>
-						<EmbedAppWithRouter />
+						<EmbedApp />
 					</QueryParamProvider>
-				</Router>
+				</BrowserRouter>
 			</Provider>
 		</QueryClientProvider>
 	);

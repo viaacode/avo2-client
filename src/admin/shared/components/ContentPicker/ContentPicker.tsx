@@ -13,8 +13,8 @@ import React, { type FC, useCallback, useEffect, useState } from 'react';
 import ReactSelect, { type ActionMeta, type PropsValue } from 'react-select';
 import AsyncSelect from 'react-select/async';
 
-import { FileUpload } from '../../../../shared/components';
-import { CustomError } from '../../../../shared/helpers';
+import FileUpload from '../../../../shared/components/FileUpload/FileUpload';
+import { CustomError } from '../../../../shared/helpers/custom-error';
 import withUser, { type UserProps } from '../../../../shared/hocs/withUser';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../shared/services/toast-service';

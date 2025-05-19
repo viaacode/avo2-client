@@ -4,8 +4,11 @@ import React, { type FC, useEffect, useState } from 'react';
 import { HorizontalPageSplit } from 'react-page-split';
 
 import { PermissionService } from '../authentication/helpers/permission-service';
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../shared/components';
-import { CustomError } from '../shared/helpers';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { CustomError } from '../shared/helpers/custom-error';
 import withUser from '../shared/hocs/withUser';
 import useTranslation from '../shared/hooks/useTranslation';
 import { ToastService } from '../shared/services/toast-service';

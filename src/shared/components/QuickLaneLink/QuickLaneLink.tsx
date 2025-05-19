@@ -1,9 +1,9 @@
-import classNames from 'classnames';
 import React, { type FC } from 'react';
 
 import { generateQuickLaneHref } from '../../helpers/generate-quick-lane-href';
 
 import './QuickLaneLink.scss';
+import { clsx } from 'clsx';
 
 interface QuickLaneLinkProps {
 	id: string;
@@ -16,7 +16,7 @@ const defaultLabel = (id: string) => {
 };
 
 const QuickLaneLink: FC<QuickLaneLinkProps> = ({ id, label, short }) => {
-	const className = classNames({
+	const className = clsx({
 		'c-quick-lane-link': true,
 		'c-quick-lane-link--short': short === true,
 	});

@@ -29,7 +29,7 @@ import {
 	InsertPupilCollectionBlocksDocument,
 	UpdatePupilCollectionBlockDocument,
 } from '../shared/generated/graphql-db-react-query';
-import { CustomError } from '../shared/helpers';
+import { CustomError } from '../shared/helpers/custom-error';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import { dataService } from '../shared/services/data-service';
 import { VideoStillService } from '../shared/services/video-stills-service';

@@ -19,13 +19,14 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
-import React, { type FC, type ReactNode, useEffect, useState } from 'react';
+import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 
-import { ItemVideoDescription } from '../../item/components';
+import ItemVideoDescription from '../../item/components/ItemVideoDescription';
 import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
 import TimeCropControls from '../../shared/components/TimeCropControls/TimeCropControls';
-import { copyToClipboard, toSeconds } from '../../shared/helpers';
+import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
+import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import './EmbedContent.scss';
@@ -46,11 +47,9 @@ type EmbedProps = {
 };
 
 const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClose }) => {
-	if (!item) {
-		return <></>;
-	}
-
-	const fragmentDuration = toSeconds((item.content as ItemSchema).duration) || 0;
+	const fragmentDuration = item?.content
+		? toSeconds((item.content as ItemSchema)?.duration) || 0
+		: 0;
 
 	const [title, setTitle] = useState<string | undefined>();
 
@@ -68,17 +67,43 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 
 	const { mutateAsync: createEmbedCode, isLoading: isPublishing } = useCreateEmbedCode();
 
-	useEffect(() => {
-		setTitle(item.title || '');
-		setFragmentStartTime(item.start || 0);
-		setFragmentEndTime(item.end || 0);
+	const handleDescriptionToggle = useCallback(
+		(value: EmbedCodeDescriptionType) => {
+			if (!item) {
+				return;
+			}
+			switch (value) {
+				case EmbedCodeDescriptionType.ORIGINAL:
+					setDescription(item.content.description || '');
+					break;
+				case EmbedCodeDescriptionType.CUSTOM:
+					setDescription(item.content.description || '');
+					break;
+				case EmbedCodeDescriptionType.NONE:
+					setDescription('');
+					break;
+			}
+			setDescriptionType(value);
+		},
+		[item]
+	);
 
-		handleDescriptionToggle(item.descriptionType);
-		setDescription(item.description || '');
-		setGeneratedCode('');
-	}, [item]);
+	useEffect(() => {
+		if (item) {
+			setTitle(item.title || '');
+			setFragmentStartTime(item.start || 0);
+			setFragmentEndTime(item.end || 0);
+
+			handleDescriptionToggle(item.descriptionType);
+			setDescription(item.description || '');
+			setGeneratedCode('');
+		}
+	}, [item, handleDescriptionToggle]);
 
 	const mapValuesToEmbedCode = (): EmbedCode => {
+		if (!item) {
+			return {} as EmbedCode;
+		}
 		let newDescription = '';
 
 		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL) {
@@ -95,21 +120,6 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 			descriptionType,
 			description: newDescription,
 		};
-	};
-
-	const handleDescriptionToggle = (value: EmbedCodeDescriptionType) => {
-		switch (value) {
-			case EmbedCodeDescriptionType.ORIGINAL:
-				setDescription(item.content.description || '');
-				break;
-			case EmbedCodeDescriptionType.CUSTOM:
-				setDescription(item.content.description || '');
-				break;
-			case EmbedCodeDescriptionType.NONE:
-				setDescription('');
-				break;
-		}
-		setDescriptionType(value);
 	};
 
 	const handleSave = () => {
@@ -134,7 +144,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 	};
 
 	const renderDescription = () => {
-		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL) {
+		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL && !!item?.content?.description) {
 			return (
 				<div className={isDescriptionExpanded ? '' : 'expandable-container-closed'}>
 					<ExpandableContainer
@@ -185,7 +195,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 	};
 
 	const renderDescriptionWrapper = () => {
-		if (item.externalWebsite === EmbedCodeExternalWebsite.BOOKWIDGETS) {
+		if (item?.externalWebsite === EmbedCodeExternalWebsite.BOOKWIDGETS) {
 			return (
 				<Alert type="info">
 					<span className="c-content">
@@ -286,6 +296,10 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 			</ToolbarRight>
 		);
 	};
+
+	if (!item) {
+		return <></>;
+	}
 
 	return (
 		<>
