@@ -27,9 +27,11 @@ const BookmarkEmbedModal: FC<BookmarkEmbedModalProps> = ({ embedCode, isOpen, on
 						<img
 							className="o-svg-icon prepend-logo"
 							src={smartSchoolLogo}
-							alt={tText('Smartschool logo')}
+							alt={tText(
+								'embed-code/components/modals/bookmark-embed-modal___smartschool-logo'
+							)}
 						/>
-						{tText('Smartschool')}
+						{tText('embed-code/components/modals/bookmark-embed-modal___smartschool')}
 					</>
 				),
 			},
@@ -40,9 +42,11 @@ const BookmarkEmbedModal: FC<BookmarkEmbedModalProps> = ({ embedCode, isOpen, on
 						<img
 							className="o-svg-icon prepend-logo"
 							src={bookWidgetsLogo}
-							alt={tText('Bookwidgets logo')}
+							alt={tText(
+								'embed-code/components/modals/bookmark-embed-modal___bookwidgets-logo'
+							)}
 						/>
-						{tText('Bookwidgets')}
+						{tText('embed-code/components/modals/bookmark-embed-modal___bookwidgets')}
 					</>
 				),
 			},
@@ -101,7 +105,7 @@ const BookmarkEmbedModal: FC<BookmarkEmbedModalProps> = ({ embedCode, isOpen, on
 			scrollable={true}
 			onClose={handleClose}
 			disablePageScroll={true}
-			title={tHtml('Deel dit fragment')}
+			title={tHtml('embed-code/components/modals/bookmark-embed-modal___deel-dit-fragment')}
 		>
 			<ModalSubHeader>
 				<Spacer className="m-bookmarks-embed-modal__tabs-wrapper" margin={'bottom'}>

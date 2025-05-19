@@ -81,7 +81,7 @@ const Embed: FC = () => {
 					<Grid noWrap>
 						<Column size="flex">
 							<p className="c-meta-data">
-								<span>{tHtml('Aanbieder:')}</span>
+								<span>{tHtml('embed/components/embed___aanbieder')}</span>
 								<span
 									className="u-text-bold u-truncate"
 									title={(embedCode.content as ItemSchema)?.organisation.name}
@@ -89,7 +89,7 @@ const Embed: FC = () => {
 									{(embedCode.content as ItemSchema)?.organisation.name}
 								</span>
 								<span className="u-text-bold">&bull;</span>
-								<span>{tHtml('Uitgezonden:')}</span>
+								<span>{tHtml('embed/components/embed___uitgezonden')}</span>
 								<span
 									className="u-text-bold"
 									title={reorderDate(
@@ -101,7 +101,7 @@ const Embed: FC = () => {
 								</span>
 							</p>
 							<p className="c-meta-data">
-								<span>{tHtml('Reeks:')}</span>
+								<span>{tHtml('embed/components/embed___reeks')}</span>
 								<span
 									className="u-text-bold u-truncate"
 									title={(embedCode.content as ItemSchema)?.series}

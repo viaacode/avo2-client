@@ -789,9 +789,9 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 					<Button
 						type="tertiary"
 						icon={IconName.share2}
-						label={tText('Fragment delen')}
-						ariaLabel={tText('Fragment delen')}
-						title={tText('Fragment delen')}
+						label={tText('item/views/item-detail___fragment-delen')}
+						ariaLabel={tText('item/views/item-detail___fragment-delen')}
+						title={tText('item/views/item-detail___fragment-delen')}
 						onClick={() => {
 							setIsShareFragmentModalOpen(true);
 						}}

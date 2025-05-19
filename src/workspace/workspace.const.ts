@@ -44,7 +44,7 @@ export const GET_TABS: () => WorkspaceTab[] = () => [
 		id: ORGANISATION_CONTENT_ID,
 	},
 	{
-		label: tText('Ingesloten fragmenten'),
+		label: tText('workspace/workspace___ingesloten-fragmenten'),
 		icon: IconName.code,
 		id: EMBEDS_ID,
 	},

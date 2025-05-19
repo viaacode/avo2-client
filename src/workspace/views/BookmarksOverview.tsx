@@ -298,8 +298,10 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 						PermissionName.EMBED_ITEMS_ON_OTHER_SITES
 					) && (
 						<Button
-							title={tText('Fragment insluiten')}
-							ariaLabel={tText('Fragment insluiten')}
+							title={tText('workspace/views/bookmarks-overview___fragment-insluiten')}
+							ariaLabel={tText(
+								'workspace/views/bookmarks-overview___fragment-insluiten'
+							)}
 							icon={IconName.code}
 							className="u-spacer-left-s"
 							type="secondary"

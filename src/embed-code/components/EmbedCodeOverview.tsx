@@ -92,7 +92,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 				setLoadingInfo({
 					state: 'error',
 					message: tHtml(
-						'er is onvoldoende informatie beschikbaar om ingesloten fragmenten op te halen'
+						'embed-code/components/embed-code-overview___er-is-onvoldoende-informatie-beschikbaar-om-ingesloten-fragmenten-op-te-halen'
 					),
 				});
 				return;
@@ -125,7 +125,9 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 
 			setLoadingInfo({
 				state: 'error',
-				message: tHtml('het ophalen van je ingesloten fragmenten is mislukt'),
+				message: tHtml(
+					'embed-code/components/embed-code-overview___het-ophalen-van-je-ingesloten-fragmenten-is-mislukt'
+				),
 			});
 		}
 	}, [commonUser, setEmbedCodes, setLoadingInfo, tText, debouncedFilters]); // eslint-disable-line
@@ -147,7 +149,11 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 			externalWebsite: selected.externalWebsite,
 		} as EmbedCode);
 
-		ToastService.success(tHtml('Het fragment werd succesvol gedupliceerd.'));
+		ToastService.success(
+			tHtml(
+				'embed-code/components/embed-code-overview___het-fragment-werd-succesvol-gedupliceerd'
+			)
+		);
 
 		setSelected(undefined);
 		await reloadEmbedCodes();
@@ -156,7 +162,9 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 	const changeEmbedCode = async (data: EmbedCode) => {
 		try {
 			await updateEmbedCode(data);
-			ToastService.success(tText('Fragment succesvol gewijzigd.'));
+			ToastService.success(
+				tText('embed-code/components/embed-code-overview___fragment-succesvol-gewijzigd')
+			);
 
 			await reloadEmbedCodes();
 
@@ -164,19 +172,27 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 			setSelected(undefined);
 		} catch (err) {
 			console.log(err);
-			ToastService.danger(tText('Fragment wijzigen mislukt'));
+			ToastService.danger(
+				tText('embed-code/components/embed-code-overview___fragment-wijzigen-mislukt')
+			);
 		}
 	};
 
 	const removeEmbedCode = async (id: EmbedCode['id']) => {
 		try {
 			await deleteEmbedCode(id);
-			ToastService.success(tHtml('het ingesloten fragment is verwijderd'));
+			ToastService.success(
+				tHtml(
+					'embed-code/components/embed-code-overview___het-ingesloten-fragment-is-verwijderd'
+				)
+			);
 		} catch (error) {
 			console.error(error);
 
 			ToastService.danger(
-				tHtml('er ging iets mis bij het verwijderen van het ingesloten fragment')
+				tHtml(
+					'embed-code/components/embed-code-overview___er-ging-iets-mis-bij-het-verwijderen-van-het-ingesloten-fragment'
+				)
 			);
 		}
 
@@ -214,27 +230,29 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 					{
 						icon: IconName.edit,
 						id: EmbedCodeAction.EDIT,
-						label: tText('Bewerken'),
+						label: tText('embed-code/components/embed-code-overview___bewerken'),
 					},
 					{
 						icon: IconName.clipboard,
 						id: EmbedCodeAction.COPY_TO_CLIPBOARD,
-						label: tText('Kopieer code'),
+						label: tText('embed-code/components/embed-code-overview___kopieer-code'),
 					},
 					{
 						icon: IconName.copy,
 						id: EmbedCodeAction.DUPLICATE,
-						label: tText('Dupliceren'),
+						label: tText('embed-code/components/embed-code-overview___dupliceren'),
 					},
 					{
 						icon: IconName.eye,
 						id: EmbedCodeAction.SHOW_ORIGINAL,
-						label: tText('Origineel fragment'),
+						label: tText(
+							'embed-code/components/embed-code-overview___origineel-fragment'
+						),
 					},
 					{
 						icon: IconName.delete,
 						id: EmbedCodeAction.DELETE,
-						label: tText('Verwijder'),
+						label: tText('embed-code/components/embed-code-overview___verwijder'),
 					},
 				] as (MenuItemInfo & { id: EmbedCodeAction })[];
 
@@ -249,7 +267,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 
 								!isAModalOpen && setSelected(undefined);
 							}}
-							label={tText('meer acties')}
+							label={tText('embed-code/components/embed-code-overview___meer-acties')}
 							menuItems={items}
 							onOptionClicked={async (action) => {
 								if (selected === undefined) {
@@ -264,7 +282,9 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 									case EmbedCodeAction.COPY_TO_CLIPBOARD:
 										copyToClipboard(toEmbedCodeIFrame(selected.id));
 										ToastService.success(
-											tHtml('De code werd succesvol gekopieerd.')
+											tHtml(
+												'embed-code/components/embed-code-overview___de-code-werd-succesvol-gekopieerd'
+											)
 										);
 										setSelected(undefined);
 										break;
@@ -304,7 +324,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 				noContentMatchingFiltersMessage={
 					loadingInfo.state === 'loaded'
 						? tText(
-								'er werden geen ingesloten fragmenten gevonden die voldoen aan de opgegeven criteria'
+								'embed-code/components/embed-code-overview___er-werden-geen-ingesloten-fragmenten-gevonden-die-voldoen-aan-de-opgegeven-criteria'
 						  )
 						: ''
 				}
@@ -316,7 +336,9 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 				}}
 				renderCell={renderCell as any}
 				renderNoResults={() => <h1>NoResults</h1>}
-				searchTextPlaceholder={tText('Zoek op titel of beschrijving')}
+				searchTextPlaceholder={tText(
+					'embed-code/components/embed-code-overview___zoek-op-titel-of-beschrijving'
+				)}
 				rowKey="id"
 				variant="styled"
 				isLoading={loadingInfo.state === 'loading'}
@@ -335,9 +357,9 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 			/>
 
 			<ConfirmModal
-				title={tText('Fragment verwijderen')}
+				title={tText('embed-code/components/embed-code-overview___fragment-verwijderen')}
 				body={tText(
-					'Opgelet! Ben je zeker dat je het fragment wil verwijderen? Het zal dan niet meer werken in Smartschool en BookWidgets.'
+					'embed-code/components/embed-code-overview___opgelet-ben-je-zeker-dat-je-het-fragment-wil-verwijderen-het-zal-dan-niet-meer-werken-in-smartschool-en-book-widgets'
 				)}
 				isOpen={isConfirmationModalOpen}
 				size="medium"

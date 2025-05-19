@@ -13,7 +13,7 @@
 		line-height: 1.8rem;
 	}
 
-	.c-custom-logo-overlay{
+	.c-custom-logo-overlay {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -32,9 +32,8 @@
 	.c-meta-data {
 		display: flex;
 		align-self: flex-start;
-		gap: .5rem;
+		gap: 0.5rem;
 	}
-
 
 	.o-grid-col-flex {
 		width: auto;
@@ -49,7 +48,7 @@
 		height: 3.2rem;
 		width: fit-content;
 		border: 1px solid $color-gray-200;
-		padding: .5rem;
+		padding: 0.5rem;
 		display: flex;
 		gap: 1rem;
 		cursor: pointer;

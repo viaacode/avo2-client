@@ -25,7 +25,7 @@ const ErrorView: FC = () => {
 					body=""
 					icon={IconName.alertTriangle}
 					title={tHtml(
-						'Oeps, er liep iets mis. Probeer het opnieuw.<br/> Lukt het nog steeds niet? Dan is dit fragment mogelijks verwijderd. '
+						'embed/components/error-view___oeps-er-liep-iets-mis-probeer-het-opnieuw-br-lukt-het-nog-steeds-niet-dan-is-dit-fragment-mogelijks-verwijderd'
 					)}
 					className="c-content"
 				>
@@ -35,7 +35,7 @@ const ErrorView: FC = () => {
 								<Button
 									type="primary"
 									onClick={() => window.location.reload()}
-									label={tText('Probeer opnieuw')}
+									label={tText('embed/components/error-view___probeer-opnieuw')}
 								/>
 							</ButtonToolbar>
 						</ToolbarCenter>

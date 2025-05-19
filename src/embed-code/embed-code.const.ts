@@ -21,7 +21,7 @@ export const OVERVIEW_COLUMNS = (): FilterableColumn<EmbedCodeOverviewTableColum
 	},
 	{
 		id: 'title',
-		label: tText('Titel'),
+		label: tText('embed-code/embed-code___titel'),
 		sortable: true,
 		visibleByDefault: true,
 	},
@@ -30,25 +30,25 @@ export const OVERVIEW_COLUMNS = (): FilterableColumn<EmbedCodeOverviewTableColum
 		: [
 				{
 					id: 'createdAt',
-					label: tText('Aangemaakt'),
+					label: tText('embed-code/embed-code___aangemaakt'),
 					sortable: true,
 					visibleByDefault: true,
 				},
 				{
 					id: 'updatedAt',
-					label: tText('Laatst bewerkt'),
+					label: tText('embed-code/embed-code___laatst-bewerkt'),
 					sortable: true,
 					visibleByDefault: true,
 				},
 				{
 					id: 'start',
-					label: tText('Tijdscode'),
+					label: tText('embed-code/embed-code___tijdscode'),
 					sortable: true,
 					visibleByDefault: true,
 				},
 				{
 					id: 'externalWebsite',
-					label: tText('Gedeeld op'),
+					label: tText('embed-code/embed-code___gedeeld-op'),
 					col: '2',
 					sortable: true,
 					visibleByDefault: true,
@@ -56,7 +56,7 @@ export const OVERVIEW_COLUMNS = (): FilterableColumn<EmbedCodeOverviewTableColum
 		  ]) as FilterableColumn<EmbedCodeOverviewTableColumns>[]),
 	{
 		id: 'action',
-		tooltip: tText('Acties'),
+		tooltip: tText('embed-code/embed-code___acties'),
 		col: '1',
 		sortable: false,
 		visibleByDefault: true,

@@ -115,9 +115,12 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 				return (
 					<ErrorView
 						icon={IconName.alertTriangle}
-						message={tHtml('Onverwacht inhoudstype', {
-							type: contentLabel || undefined,
-						})}
+						message={tHtml(
+							'embed-code/views/embed-code-detail___onverwacht-inhoudstype',
+							{
+								type: contentLabel || undefined,
+							}
+						)}
 					/>
 				);
 		}
@@ -150,8 +153,8 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 			<ToolbarItem>
 				<Button
 					type="primary"
-					label={tText('Bekijk als leerkracht')}
-					title={tText('Bekijk als leerkracht')}
+					label={tText('embed-code/views/embed-code-detail___bekijk-als-leerkracht')}
+					title={tText('embed-code/views/embed-code-detail___bekijk-als-leerkracht')}
 					icon={IconName.eye}
 					onClick={handleClickGoToContentButton}
 				/>
@@ -228,7 +231,9 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 			return (
 				<ErrorView
 					icon={IconName.alertTriangle}
-					message={tHtml('Het laden van het ingesloten fragment is mislukt')}
+					message={tHtml(
+						'embed-code/views/embed-code-detail___het-laden-van-het-ingesloten-fragment-is-mislukt'
+					)}
 				/>
 			);
 		}
@@ -242,7 +247,9 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 				<title>
 					{GENERATE_SITE_TITLE(
 						embedCode?.title ||
-							tText('Ingesloten fragment detail pagina titel fallback')
+							tText(
+								'embed-code/views/embed-code-detail___ingesloten-fragment-detail-pagina-titel-fallback'
+							)
 					)}
 				</title>
 				<meta name="description" content={embedCode?.description || ''} />

@@ -77,14 +77,16 @@ const RegisterOrLogin: FC = () => {
 					{tab === LoginOptionsTabs.TEACHER && (
 						<>
 							<h2 className="c-h2 u-m-0 u-padding-top-l">
-								{tHtml('Nog geen account?')}
+								{tHtml('embed/components/register-or-login___nog-geen-account')}
 							</h2>
 							<a
 								href={getEnv('REGISTER_URL')}
 								target="_blank"
 								rel="noopener noreferrer"
 							>
-								{tHtml('Account aanmaken als lesgever')}
+								{tHtml(
+									'embed/components/register-or-login___account-aanmaken-als-lesgever'
+								)}
 							</a>
 						</>
 					)}

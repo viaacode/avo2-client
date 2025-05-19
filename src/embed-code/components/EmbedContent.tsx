@@ -131,16 +131,22 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 			const embedCodeId = await createEmbedCode(mapValuesToEmbedCode());
 			setGeneratedCode(toEmbedCodeIFrame(embedCodeId));
 			ToastService.success(
-				tText('Je code werd succesvol aangemaakt en opgeslagen in je werkruimte.')
+				tText(
+					'embed-code/components/embed-content___je-code-werd-succesvol-aangemaakt-en-opgeslagen-in-je-werkruimte'
+				)
 			);
 		} catch (err) {
-			ToastService.danger(tText('Code aanmaken mislukt'));
+			ToastService.danger(
+				tText('embed-code/components/embed-content___code-aanmaken-mislukt')
+			);
 		}
 	};
 
 	const handleCopyButtonClicked = () => {
 		copyToClipboard(generatedCode);
-		ToastService.success(tHtml('De code is naar je klembord gekopieerd'));
+		ToastService.success(
+			tHtml('embed-code/components/embed-content___de-code-is-naar-je-klembord-gekopieerd')
+		);
 	};
 
 	const renderDescription = () => {
@@ -200,7 +206,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 				<Alert type="info">
 					<span className="c-content">
 						{tHtml(
-							'Bij het insluiten op Bookwidgets wordt er geen beschrijving bij het fragment weergegeven.'
+							'embed-code/components/embed-content___bij-het-insluiten-op-bookwidgets-wordt-er-geen-beschrijving-bij-het-fragment-weergegeven'
 						)}
 					</span>
 				</Alert>
@@ -215,7 +221,9 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 						type="secondary"
 						className="u-flex-auto"
 						disabled={!!generatedCode}
-						label={tText('Originele beschrijving')}
+						label={tText(
+							'embed-code/components/embed-content___originele-beschrijving'
+						)}
 						active={descriptionType === EmbedCodeDescriptionType.ORIGINAL}
 						onClick={() => handleDescriptionToggle(EmbedCodeDescriptionType.ORIGINAL)}
 					/>
@@ -223,7 +231,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 						type="secondary"
 						className="u-flex-auto"
 						disabled={!!generatedCode}
-						label={tText('Eigen beschrijving')}
+						label={tText('embed-code/components/embed-content___eigen-beschrijving')}
 						active={descriptionType === EmbedCodeDescriptionType.CUSTOM}
 						onClick={() => handleDescriptionToggle(EmbedCodeDescriptionType.CUSTOM)}
 					/>
@@ -231,7 +239,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 						type="secondary"
 						className="u-flex-auto"
 						disabled={!!generatedCode}
-						label={tText('Geen beschrijving')}
+						label={tText('embed-code/components/embed-content___geen-beschrijving')}
 						active={descriptionType === EmbedCodeDescriptionType.NONE}
 						onClick={() => handleDescriptionToggle(EmbedCodeDescriptionType.NONE)}
 					/>
@@ -249,9 +257,9 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 						<ButtonToolbar>
 							<Button
 								type="primary"
-								label={tText('Opslaan')}
-								title={tText('Opslaan')}
-								ariaLabel={tText('Opslaan')}
+								label={tText('embed-code/components/embed-content___opslaan')}
+								title={tText('embed-code/components/embed-content___opslaan')}
+								ariaLabel={tText('embed-code/components/embed-content___opslaan')}
 								onClick={handleSave}
 							/>
 						</ButtonToolbar>
@@ -269,8 +277,10 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 							<Button
 								type="primary"
 								icon={IconName.copy}
-								title={tText('Code kopiëren')}
-								ariaLabel={tText('Code kopiëren')}
+								title={tText('embed-code/components/embed-content___code-kopieren')}
+								ariaLabel={tText(
+									'embed-code/components/embed-content___code-kopieren'
+								)}
 								onClick={handleCopyButtonClicked}
 							/>
 						</ButtonToolbar>
@@ -285,9 +295,9 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 					<ButtonToolbar>
 						<Button
 							type="primary"
-							label={tText('Code aanmaken')}
-							title={tText('Code aanmaken')}
-							ariaLabel={tText('Code aanmaken')}
+							label={tText('embed-code/components/embed-content___code-aanmaken')}
+							title={tText('embed-code/components/embed-content___code-aanmaken')}
+							ariaLabel={tText('embed-code/components/embed-content___code-aanmaken')}
 							disabled={isPublishing}
 							onClick={handleCreate}
 						/>
@@ -305,12 +315,12 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 		<>
 			<Spacer margin="bottom-large">{contentDescription}</Spacer>
 
-			<FormGroup label={tText('Titel')}>
+			<FormGroup label={tText('embed-code/components/embed-content___titel')}>
 				<TextInput value={title} onChange={setTitle} disabled={!!generatedCode} />
 			</FormGroup>
 
 			<Container mode="vertical" bordered={true}>
-				<FormGroup label={tText('Inhoud')}>
+				<FormGroup label={tText('embed-code/components/embed-content___inhoud')}>
 					<div className="u-spacer-bottom">
 						<ItemVideoDescription
 							itemMetaData={item.content as ItemSchema}
@@ -355,9 +365,21 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 						<ButtonToolbar>
 							<Button
 								type="secondary"
-								label={generatedCode ? tText('Annuleer') : tText('Sluit')}
-								title={generatedCode ? tText('Annuleer') : tText('Sluit')}
-								ariaLabel={generatedCode ? tText('Annuleer') : tText('Sluit')}
+								label={
+									generatedCode
+										? tText('embed-code/components/embed-content___annuleer')
+										: tText('embed-code/components/embed-content___sluit')
+								}
+								title={
+									generatedCode
+										? tText('embed-code/components/embed-content___annuleer')
+										: tText('embed-code/components/embed-content___sluit')
+								}
+								ariaLabel={
+									generatedCode
+										? tText('embed-code/components/embed-content___annuleer')
+										: tText('embed-code/components/embed-content___sluit')
+								}
 								onClick={onClose}
 							/>
 						</ButtonToolbar>

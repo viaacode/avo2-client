@@ -73,9 +73,11 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 					<img
 						className="o-svg-icon prepend-logo"
 						src={smartSchoolLogo}
-						alt={tText('Smartschool logo')}
+						alt={tText(
+							'embed-code/components/embed-code-filter-table-cell___smartschool-logo'
+						)}
 					/>
-					{tText('Smartschool')}
+					{tText('embed-code/components/embed-code-filter-table-cell___smartschool')}
 				</>
 			);
 		}
@@ -85,9 +87,11 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 					<img
 						className="o-svg-icon prepend-logo"
 						src={bookWidgetsLogo}
-						alt={tText('Bookwidgets logo')}
+						alt={tText(
+							'embed-code/components/embed-code-filter-table-cell___bookwidgets-logo'
+						)}
 					/>
-					{tText('Bookwidgets')}
+					{tText('embed-code/components/embed-code-filter-table-cell___bookwidgets')}
 				</>
 			);
 		}

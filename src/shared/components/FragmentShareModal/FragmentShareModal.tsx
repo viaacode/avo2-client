@@ -76,16 +76,22 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 							id: ShareDropdownTabs.EMBED,
 							label: (
 								<>
-									{tText('Insluiten')}
+									{tText(
+										'shared/components/fragment-share-modal/fragment-share-modal___insluiten'
+									)}
 									<img
 										className="append-logo"
 										src={smartSchoolLogo}
-										alt={tText('Smartschool logo')}
+										alt={tText(
+											'shared/components/fragment-share-modal/fragment-share-modal___smartschool-logo'
+										)}
 									/>
 									<img
 										className="append-logo"
 										src={bookWidgetsLogo}
-										alt={tText('Bookwidgets logo')}
+										alt={tText(
+											'shared/components/fragment-share-modal/fragment-share-modal___bookwidgets-logo'
+										)}
 									/>
 								</>
 							),
@@ -142,9 +148,13 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 					<img
 						className="o-svg-icon prepend-logo"
 						src={smartSchoolLogo}
-						alt={tText('Smartschool logo')}
+						alt={tText(
+							'shared/components/fragment-share-modal/fragment-share-modal___smartschool-logo'
+						)}
 					/>
-					{tText('Smartschool')}
+					{tText(
+						'shared/components/fragment-share-modal/fragment-share-modal___smartschool'
+					)}
 				</>
 			) as unknown as string, // TODO allow ReactNode in avo2-components
 			id: EmbedCodeExternalWebsite.SMARTSCHOOL,
@@ -156,9 +166,13 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 					<img
 						className="o-svg-icon prepend-logo"
 						src={bookWidgetsLogo}
-						alt={tText('Bookwidgets logo')}
+						alt={tText(
+							'shared/components/fragment-share-modal/fragment-share-modal___bookwidgets-logo'
+						)}
 					/>
-					{tText('Bookwidgets')}
+					{tText(
+						'shared/components/fragment-share-modal/fragment-share-modal___bookwidgets'
+					)}
 				</>
 			) as unknown as string, // TODO allow ReactNode in avo2-components
 			id: EmbedCodeExternalWebsite.BOOKWIDGETS,
@@ -169,7 +183,9 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 	const getEmbedDropdownLabel = () => {
 		return (
 			embedDropdownOptions.find((value) => value.id === embedDropdownSelection)?.label ||
-			tText('Selecteer een platform')
+			tText(
+				'shared/components/fragment-share-modal/fragment-share-modal___selecteer-een-platform'
+			)
 		);
 	};
 
@@ -204,11 +220,11 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 		switch (embedDropdownSelection) {
 			case EmbedCodeExternalWebsite.SMARTSCHOOL:
 				return tHtml(
-					'Bewerk het fragment, kopieer de link en plak hem bij Extra Inhoud in een Smartschoolfiche.'
+					'shared/components/fragment-share-modal/fragment-share-modal___bewerk-het-fragment-kopieer-de-link-en-plak-hem-bij-extra-inhoud-in-een-smartschoolfiche'
 				);
 			case EmbedCodeExternalWebsite.BOOKWIDGETS:
 				return tHtml(
-					'Bewerk het fragment, kopieer de link en plak hem in een widget in Bookwidgets.'
+					'shared/components/fragment-share-modal/fragment-share-modal___bewerk-het-fragment-kopieer-de-link-en-plak-hem-in-een-widget-in-bookwidgets'
 				);
 			default:
 				return '';
@@ -225,7 +241,11 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 						className="embed-selection"
 					>
 						<Spacer margin="bottom">
-							<BlockHeading type="h4">{tHtml('Fragment insluiten in')}</BlockHeading>
+							<BlockHeading type="h4">
+								{tHtml(
+									'shared/components/fragment-share-modal/fragment-share-modal___fragment-insluiten-in'
+								)}
+							</BlockHeading>
 						</Spacer>
 						<Spacer margin="bottom">
 							<Dropdown
@@ -274,7 +294,9 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 			scrollable={tab === ShareDropdownTabs.PUPILS || !!embedDropdownSelection}
 			onClose={handleClose}
 			disablePageScroll={true}
-			title={tHtml('Deel dit fragment')}
+			title={tHtml(
+				'shared/components/fragment-share-modal/fragment-share-modal___deel-dit-fragment'
+			)}
 		>
 			<ModalSubHeader>
 				<Spacer className="m-fragment-share-modal__tabs-wrapper" margin={'bottom'}>
@@ -286,9 +308,15 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 				<ModalFooterLeft>
 					<Button
 						type="secondary"
-						label={tText('Annuleer')}
-						title={tText('Annuleer')}
-						ariaLabel={tText('Annuleer')}
+						label={tText(
+							'shared/components/fragment-share-modal/fragment-share-modal___annuleer'
+						)}
+						title={tText(
+							'shared/components/fragment-share-modal/fragment-share-modal___annuleer'
+						)}
+						ariaLabel={tText(
+							'shared/components/fragment-share-modal/fragment-share-modal___annuleer'
+						)}
 						onClick={handleClose}
 					/>
 				</ModalFooterLeft>

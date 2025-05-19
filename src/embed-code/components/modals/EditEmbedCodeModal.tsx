@@ -24,11 +24,11 @@ const EditEmbedCodeModal: FC<EditEmbedCodeModalProps> = ({
 		switch (embedCode?.externalWebsite) {
 			case EmbedCodeExternalWebsite.SMARTSCHOOL:
 				return tHtml(
-					'Let op! De aanpassingen komen meteen door overal waar je dit fragment insloot in Smartschool'
+					'embed-code/components/modals/edit-embed-code-modal___let-op-de-aanpassingen-komen-meteen-door-overal-waar-je-dit-fragment-insloot-in-smartschool'
 				);
 			case EmbedCodeExternalWebsite.BOOKWIDGETS:
 				return tHtml(
-					'Let op! De aanpassingen komen meteen door overal waar je dit fragment insloot in Bookwidgets'
+					'embed-code/components/modals/edit-embed-code-modal___let-op-de-aanpassingen-komen-meteen-door-overal-waar-je-dit-fragment-insloot-in-bookwidgets'
 				);
 			default:
 				return '';
@@ -42,7 +42,7 @@ const EditEmbedCodeModal: FC<EditEmbedCodeModalProps> = ({
 			scrollable={true}
 			onClose={onClose}
 			disablePageScroll={true}
-			title={tHtml('Fragment bewerken')}
+			title={tHtml('embed-code/components/modals/edit-embed-code-modal___fragment-bewerken')}
 		>
 			<ModalBody>
 				<EmbedContent
