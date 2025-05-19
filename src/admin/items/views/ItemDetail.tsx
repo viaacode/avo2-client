@@ -1,4 +1,4 @@
-import { BlockHeading, sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type RichEditorState } from '@meemoo/react-components';
 import {
 	Button,
@@ -10,6 +10,7 @@ import {
 	Spacer,
 	Spinner,
 	Table,
+	Tabs,
 	Toolbar,
 	ToolbarRight,
 } from '@viaa/avo2-components';
@@ -34,6 +35,7 @@ import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-ba
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { toggleSortOrder } from '../../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
+import { useTabs } from '../../../shared/hooks/useTabs';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -46,6 +48,7 @@ import {
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
 	AdminLayoutBody,
+	AdminLayoutHeader,
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
@@ -55,6 +58,8 @@ import { useGetItemWithRelations } from '../hooks/useGetItemWithRelations';
 import {
 	GET_ITEM_USED_BY_COLLECTIONS_AND_ASSIGNMENTS_COLUMNS,
 	GET_ITEM_USED_BY_QUICK_LANES,
+	GET_TABS,
+	ITEMS_TABS,
 } from '../items.const';
 import { ItemsService } from '../items.service';
 import { type ItemUsedByColumnId, type ItemUsedByEntry } from '../items.types';
@@ -87,6 +92,7 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 
 	const [noteEditorState, setNoteEditorState] = useState<RichEditorState>();
 
+	const [tab, setActiveTab, tabs] = useTabs(GET_TABS(), ITEMS_TABS.GENERAL);
 	const { tText, tHtml } = useTranslation();
 
 	const toggleItemPublishedState = async () => {
@@ -266,40 +272,131 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 		}
 	};
 
-	const renderContainingCollectionTable = () => (
-		<>
-			<Spacer margin={['top-extra-large', 'bottom-small']}>
-				<BlockHeading type="h2">
-					{tText('admin/items/views/item-detail___collecties-die-dit-item-bevatten')}
-				</BlockHeading>
-			</Spacer>
-			{itemUsedBy?.collections?.length ? (
-				<Table
-					columns={GET_ITEM_USED_BY_COLLECTIONS_AND_ASSIGNMENTS_COLUMNS()}
-					data={itemUsedBy.collections}
-					onColumnClick={handleColumnClick as any}
-					onRowClick={(coll) => navigateToCollectionDetail(coll.id)}
-					renderCell={renderCell as any}
-					sortColumn={queryParams.sortProp || undefined}
-					sortOrder={queryParams.sortDirection as SearchOrderDirection | undefined}
-					variant="bordered"
-					rowKey="id"
-				/>
-			) : (
-				tText(
-					'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
-				)
-			)}
-		</>
-	);
+	const renderGeneralInfoTable = () => {
+		const itemMeta = item?.relations?.[0]?.object_meta;
+		const replacementTitle = itemMeta?.title;
+		const replacementExternalId = itemMeta?.external_id;
+		const replacementUuid = itemMeta?.uid;
+
+		const subtitles = getSubtitles(item);
+
+		return (
+			<Table horizontal variant="invisible" className="c-table_detail-page">
+				<tbody>
+					{renderSimpleDetailRows(item, [
+						['uid', tText('admin/items/views/item-detail___av-o-uuid')],
+						['external_id', tText('admin/items/views/item-detail___pid')],
+						['is_published', tText('admin/items/views/item-detail___pubiek')],
+						['is_deleted', tText('admin/items/views/item-detail___verwijderd')],
+					])}
+					{renderDateDetailRows(item, [
+						['created_at', tText('admin/items/views/item-detail___aangemaakt-op')],
+						['updated_at', tText('admin/items/views/item-detail___aangepast-op')],
+						['issued', tText('admin/items/views/item-detail___uitgegeven-op')],
+						['published_at', tText('admin/items/views/item-detail___gepubliceert-op')],
+						['publish_at', tText('admin/items/views/item-detail___te-publiceren-op')],
+						[
+							'depublish_at',
+							tText('admin/items/views/item-detail___te-depubliceren-op'),
+						],
+					])}
+					{renderSimpleDetailRows(item, [
+						[
+							'depublish_reason',
+							tText('admin/items/views/item-detail___reden-tot-depubliceren'),
+						],
+					])}
+					{renderDetailRow(
+						replacementUuid ? (
+							<Link
+								to={buildLink(ADMIN_PATH.ITEM_DETAIL, {
+									id: replacementUuid,
+								})}
+							>{`${replacementTitle} (${replacementExternalId})`}</Link>
+						) : (
+							'-'
+						),
+						tText('admin/items/views/item-detail___vervangen-door')
+					)}
+					{renderSimpleDetailRows(item, [
+						['view_count.count', tText('admin/items/views/item-detail___views')],
+					])}
+					{renderDetailRow(
+						subtitles
+							? subtitles.map((subtitle) => (
+									<a key={subtitle.id} href={subtitle.src}>
+										{subtitle.label}
+									</a>
+							  ))
+							: '-',
+						tText('admin/items/views/item-detail___ondertitels')
+					)}
+					{renderDetailRow(
+						<>
+							<Spacer margin="right-small">
+								<Spacer margin={['top']}>
+									<div style={{ backgroundColor: '#ffffff' }}>
+										<RichTextEditorWrapper
+											id="note"
+											controls={RICH_TEXT_EDITOR_OPTIONS_FULL}
+											fileType="ITEM_NOTE_IMAGE"
+											initialHtml={item.note || undefined}
+											state={noteEditorState}
+											onChange={setNoteEditorState}
+										/>
+									</div>
+								</Spacer>
+								<Toolbar>
+									<ToolbarRight>
+										<Button
+											label={tText(
+												'admin/items/views/item-detail___opmerkingen-opslaan'
+											)}
+											onClick={saveNotes}
+										/>
+									</ToolbarRight>
+								</Toolbar>
+							</Spacer>
+						</>,
+						tText('admin/items/views/item-detail___opmerkingen')
+					)}
+				</tbody>
+			</Table>
+		);
+	};
+
+	const renderContainingCollectionTable = () => {
+		if (itemUsedByIsError) {
+			return tText(
+				'admin/items/views/item-detail___het-ophalen-van-de-collecties-opdrachten-en-sneldeel-links-die-dit-item-gebruiken-is-mislukt'
+			);
+		}
+
+		return (
+			<>
+				{itemUsedBy?.collections?.length ? (
+					<Table
+						columns={GET_ITEM_USED_BY_COLLECTIONS_AND_ASSIGNMENTS_COLUMNS()}
+						data={itemUsedBy.collections}
+						onColumnClick={handleColumnClick as any}
+						onRowClick={(coll) => navigateToCollectionDetail(coll.id)}
+						renderCell={renderCell as any}
+						sortColumn={queryParams.sortProp || undefined}
+						sortOrder={queryParams.sortDirection as SearchOrderDirection | undefined}
+						variant="styled"
+						rowKey="id"
+					/>
+				) : (
+					tText(
+						'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
+					)
+				)}
+			</>
+		);
+	};
 
 	const renderContainingAssignmentTable = () => (
 		<>
-			<Spacer margin={['top-extra-large', 'bottom-small']}>
-				<BlockHeading type="h2">
-					{tText('admin/items/views/item-detail___opdrachten-die-dit-item-bevatten')}
-				</BlockHeading>
-			</Spacer>
 			{itemUsedBy?.assignments?.length ? (
 				<Table
 					columns={GET_ITEM_USED_BY_COLLECTIONS_AND_ASSIGNMENTS_COLUMNS()}
@@ -309,7 +406,7 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 					renderCell={renderCell as any}
 					sortColumn={queryParams.sortProp || undefined}
 					sortOrder={queryParams.sortDirection as SearchOrderDirection | undefined}
-					variant="bordered"
+					variant="styled"
 					rowKey="id"
 				/>
 			) : (
@@ -322,11 +419,6 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 
 	const renderAssociatedQuickLaneTable = () => (
 		<>
-			<Spacer margin={['top-extra-large', 'bottom-small']}>
-				<BlockHeading type="h2">
-					{tText('admin/items/views/item-detail___gedeelde-links-naar-dit-fragment')}
-				</BlockHeading>
-			</Spacer>
 			{itemUsedBy?.quickLanes?.length ? (
 				<>
 					<Table
@@ -336,7 +428,7 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 						renderCell={renderCell as any}
 						sortColumn={queryParams.sortProp || undefined}
 						sortOrder={queryParams.sortDirection as SearchOrderDirection | undefined}
-						variant="bordered"
+						variant="styled"
 						rowKey="id"
 					/>
 				</>
@@ -345,6 +437,22 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 			)}
 		</>
 	);
+
+	const renderTabContent = () => {
+		switch (tab) {
+			case ITEMS_TABS.GENERAL:
+				return renderGeneralInfoTable();
+			case ITEMS_TABS.COLLECTIONS:
+				return renderContainingCollectionTable();
+			case ITEMS_TABS.ASSIGNMENTS:
+				return renderContainingAssignmentTable();
+			case ITEMS_TABS.QUICK_LANE:
+				return renderAssociatedQuickLaneTable();
+			case ITEMS_TABS.EMBEDS:
+			default:
+				return <></>;
+		}
+	};
 
 	const renderItemDetail = () => {
 		if (!item) {
@@ -356,153 +464,42 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 			return;
 		}
 
-		const itemMeta = item?.relations?.[0]?.object_meta;
-		const replacementTitle = itemMeta?.title;
-		const replacementExternalId = itemMeta?.external_id;
-		const replacementUuid = itemMeta?.uid;
-
-		const subtitles = getSubtitles(item);
-
 		return (
-			<Container mode="vertical" size="small">
-				<Container mode="horizontal">
-					<Table horizontal variant="invisible" className="c-table_detail-page">
-						<tbody>
-							{renderSimpleDetailRows(item, [
-								['uid', tText('admin/items/views/item-detail___av-o-uuid')],
-								['external_id', tText('admin/items/views/item-detail___pid')],
-								['is_published', tText('admin/items/views/item-detail___pubiek')],
-								['is_deleted', tText('admin/items/views/item-detail___verwijderd')],
-							])}
-							{renderDateDetailRows(item, [
-								[
-									'created_at',
-									tText('admin/items/views/item-detail___aangemaakt-op'),
-								],
-								[
-									'updated_at',
-									tText('admin/items/views/item-detail___aangepast-op'),
-								],
-								['issued', tText('admin/items/views/item-detail___uitgegeven-op')],
-								[
-									'published_at',
-									tText('admin/items/views/item-detail___gepubliceert-op'),
-								],
-								[
-									'publish_at',
-									tText('admin/items/views/item-detail___te-publiceren-op'),
-								],
-								[
-									'depublish_at',
-									tText('admin/items/views/item-detail___te-depubliceren-op'),
-								],
-							])}
-							{renderSimpleDetailRows(item, [
-								[
-									'depublish_reason',
-									tText('admin/items/views/item-detail___reden-tot-depubliceren'),
-								],
-							])}
-							{renderDetailRow(
-								replacementUuid ? (
-									<Link
-										to={buildLink(ADMIN_PATH.ITEM_DETAIL, {
-											id: replacementUuid,
-										})}
-									>{`${replacementTitle} (${replacementExternalId})`}</Link>
-								) : (
-									'-'
-								),
-								tText('admin/items/views/item-detail___vervangen-door')
-							)}
-							{renderSimpleDetailRows(item, [
-								[
-									'view_count.count',
-									tText('admin/items/views/item-detail___views'),
-								],
-							])}
-							{renderDetailRow(
-								subtitles
-									? subtitles.map((subtitle) => (
-											<a key={subtitle.id} href={subtitle.src}>
-												{subtitle.label}
-											</a>
-									  ))
-									: '-',
-								tText('admin/items/views/item-detail___ondertitels')
-							)}
-							{renderDetailRow(
-								<>
-									<Spacer margin="right-small">
-										<Spacer margin={['top']}>
-											<div style={{ backgroundColor: '#ffffff' }}>
-												<RichTextEditorWrapper
-													id="note"
-													controls={RICH_TEXT_EDITOR_OPTIONS_FULL}
-													fileType="ITEM_NOTE_IMAGE"
-													initialHtml={item.note || undefined}
-													state={noteEditorState}
-													onChange={setNoteEditorState}
-												/>
-											</div>
-										</Spacer>
-										<Toolbar>
-											<ToolbarRight>
-												<Button
-													label={tText(
-														'admin/items/views/item-detail___opmerkingen-opslaan'
-													)}
-													onClick={saveNotes}
-												/>
-											</ToolbarRight>
-										</Toolbar>
-									</Spacer>
-								</>,
-								tText('admin/items/views/item-detail___opmerkingen')
-							)}
-						</tbody>
-					</Table>
-					{itemUsedByIsError &&
-						tText(
-							'admin/items/views/item-detail___het-ophalen-van-de-collecties-opdrachten-en-sneldeel-links-die-dit-item-gebruiken-is-mislukt'
-						)}
-					{renderContainingCollectionTable()}
-					{renderContainingAssignmentTable()}
-					{renderAssociatedQuickLaneTable()}
-					<ConfirmModal
-						title={
-							item.is_published
-								? tText('admin/items/views/item-detail___depubliceren')
-								: tText('admin/items/views/item-detail___publiceren')
-						}
-						body={
-							item.is_published
-								? tText(
-										'admin/items/views/item-detail___weet-je-zeker-dat-je-dit-item-wil-depubliceren'
-								  )
-								: tText(
-										'admin/items/views/item-detail___weet-je-zeker-dat-je-dit-item-wil-publiceren'
-								  )
-						}
-						confirmLabel={
-							item.is_published
-								? tText('admin/items/views/item-detail___depubliceren')
-								: 'Publiceren'
-						}
-						isOpen={isConfirmPublishModalOpen}
-						onClose={() => setIsConfirmPublishModalOpen(false)}
-						confirmCallback={toggleItemPublishedState}
-					/>
-					<DepublishItemModal
-						item={item}
-						isOpen={isDepublishItemModalOpen}
-						onClose={async () => {
-							setDepublishItemModalOpen(false);
-							await refetchItem();
-						}}
-					/>
-				</Container>
-			</Container>
+			<>
+				{renderTabContent()}
+				<ConfirmModal
+					title={
+						item.is_published
+							? tText('admin/items/views/item-detail___depubliceren')
+							: tText('admin/items/views/item-detail___publiceren')
+					}
+					body={
+						item.is_published
+							? tText(
+									'admin/items/views/item-detail___weet-je-zeker-dat-je-dit-item-wil-depubliceren'
+							  )
+							: tText(
+									'admin/items/views/item-detail___weet-je-zeker-dat-je-dit-item-wil-publiceren'
+							  )
+					}
+					confirmLabel={
+						item.is_published
+							? tText('admin/items/views/item-detail___depubliceren')
+							: 'Publiceren'
+					}
+					isOpen={isConfirmPublishModalOpen}
+					onClose={() => setIsConfirmPublishModalOpen(false)}
+					confirmCallback={toggleItemPublishedState}
+				/>
+				<DepublishItemModal
+					item={item}
+					isOpen={isDepublishItemModalOpen}
+					onClose={async () => {
+						setDepublishItemModalOpen(false);
+						await refetchItem();
+					}}
+				/>
+			</>
 		);
 	};
 
@@ -527,7 +524,7 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 				pageTitle={`${tText('admin/items/views/item-detail___item-details')}: ${
 					item.title
 				}`}
-				size="large"
+				size="full-width"
 			>
 				<AdminLayoutTopBarRight>
 					{!!item && (
@@ -574,6 +571,13 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 						</ButtonToolbar>
 					)}
 				</AdminLayoutTopBarRight>
+				<AdminLayoutHeader>
+					<div className="u-bg-gray-50">
+						<Container mode="horizontal" size="full-width">
+							<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
+						</Container>
+					</div>
+				</AdminLayoutHeader>
 				<AdminLayoutBody>{renderItemDetail()}</AdminLayoutBody>
 			</AdminLayout>
 		);
