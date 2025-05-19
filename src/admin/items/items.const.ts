@@ -1,4 +1,4 @@
-import { IconName } from '@viaa/avo2-components';
+import {IconName, type TabProps} from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 
 import {
@@ -18,6 +18,41 @@ export const ITEMS_PATH = {
 	PUBLISH_ITEMS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.publishItems}`,
 	ITEM_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.items}/:id`,
 };
+
+export enum ITEMS_TABS {
+	GENERAL = 'GENERAL',
+	COLLECTIONS = 'COLLECTIONS',
+	ASSIGNMENTS = 'ASSIGNMENTS',
+	QUICK_LANE = 'QUICK_LANE',
+	EMBEDS = 'EMBEDS',
+}
+
+export const GET_TABS: () => TabProps[] = () => [
+	{
+		label: tText('Algemeen'),
+		id: ITEMS_TABS.GENERAL,
+	},
+	{
+		label: tText('Collecties'),
+		icon: IconName.collection,
+		id: ITEMS_TABS.COLLECTIONS,
+	},
+	{
+		label: tText('Opdrachten'),
+		icon: IconName.clipboard,
+		id: ITEMS_TABS.ASSIGNMENTS,
+	},
+	{
+		label: tText('Gedeelde links'),
+		icon: IconName.link2,
+		id: ITEMS_TABS.QUICK_LANE,
+	},
+	{
+		label: tText('Ingesloten fragmenten'),
+		icon: IconName.code,
+		id: ITEMS_TABS.EMBEDS,
+	},
+];
 
 export const ITEMS_PER_PAGE = 10;
 
