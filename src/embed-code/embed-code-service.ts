@@ -32,6 +32,10 @@ export class EmbedCodeService {
 
 			const response = await fetch(url, {
 				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
 			});
 			const embedCode = await response.json();
 			return embedCode as EmbedCode;
@@ -53,6 +57,10 @@ export class EmbedCodeService {
 			const response = await fetch(url, {
 				method: 'POST',
 				body: JSON.stringify(data),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
 			});
 			if (!response.ok) {
 				const error = new CustomError('Failed to create embed code', {
@@ -87,6 +95,10 @@ export class EmbedCodeService {
 			const response = await fetch(url, {
 				method: 'PATCH',
 				body: JSON.stringify(data),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
 			});
 			if (!response.ok) {
 				const error = new CustomError('Failed to update embed code', null, {
@@ -123,7 +135,13 @@ export class EmbedCodeService {
 					filterString: params?.filterString,
 				},
 			});
-			const response = await fetch(url);
+			const response = await fetch(url, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+			});
 			if (!response.ok) {
 				const error = new CustomError('Failed to fetch embed codes from database', null, {
 					url,
@@ -155,6 +173,10 @@ export class EmbedCodeService {
 
 			const response = await fetch(url, {
 				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
 			});
 			if (!response.ok) {
 				const error = new CustomError('Failed to delete embed code', null, {
