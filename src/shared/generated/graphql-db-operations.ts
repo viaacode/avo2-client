@@ -265,15 +265,6 @@ export type AssignmentPupilBlocksQueryVariables = Exact<{
 
 export type AssignmentPupilBlocksQuery = { __typename?: 'query_root', app_pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any }> };
 
-export type BulkUpdateAuthorForAssignmentsMutationVariables = Exact<{
-  authorId: Scalars['uuid'];
-  assignmentIds: Array<Scalars['uuid']> | Scalars['uuid'];
-  now: Scalars['timestamptz'];
-}>;
-
-
-export type BulkUpdateAuthorForAssignmentsMutation = { __typename?: 'mutation_root', update_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null };
-
 export type SoftDeleteAssignmentByIdMutationVariables = Exact<{
   assignmentId: Scalars['uuid'];
   now: Scalars['timestamptz'];

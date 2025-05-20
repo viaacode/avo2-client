@@ -875,25 +875,6 @@ export const useAssignmentPupilBlocksQuery = <
       fetchData<AssignmentPupilBlocksQuery, AssignmentPupilBlocksQueryVariables>(AssignmentPupilBlocksDocument, variables),
       options
     );
-export const BulkUpdateAuthorForAssignmentsDocument = `
-    mutation bulkUpdateAuthorForAssignments($authorId: uuid!, $assignmentIds: [uuid!]!, $now: timestamptz!) {
-  update_app_assignments_v2(
-    where: {id: {_in: $assignmentIds}, is_deleted: {_eq: false}}
-    _set: {owner_profile_id: $authorId, updated_at: $now}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useBulkUpdateAuthorForAssignmentsMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<BulkUpdateAuthorForAssignmentsMutation, TError, BulkUpdateAuthorForAssignmentsMutationVariables, TContext>) =>
-    useMutation<BulkUpdateAuthorForAssignmentsMutation, TError, BulkUpdateAuthorForAssignmentsMutationVariables, TContext>(
-      ['bulkUpdateAuthorForAssignments'],
-      (variables?: BulkUpdateAuthorForAssignmentsMutationVariables) => fetchData<BulkUpdateAuthorForAssignmentsMutation, BulkUpdateAuthorForAssignmentsMutationVariables>(BulkUpdateAuthorForAssignmentsDocument, variables)(),
-      options
-    );
 export const SoftDeleteAssignmentByIdDocument = `
     mutation softDeleteAssignmentById($assignmentId: uuid!, $now: timestamptz!) {
   update_app_assignments_v2(

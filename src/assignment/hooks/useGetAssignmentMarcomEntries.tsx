@@ -25,7 +25,9 @@ export const useGetAssignmentMarcomEntries = (
 			keepPreviousData: true,
 			...options,
 			meta: {
-				errorMessage: tHtml('Het ophalen van de marcom entries is mislukt'),
+				errorMessage: tHtml(
+					'assignment/hooks/use-get-assignment-marcom-entries___het-ophalen-van-de-marcom-entries-is-mislukt'
+				),
 			},
 		}
 	);

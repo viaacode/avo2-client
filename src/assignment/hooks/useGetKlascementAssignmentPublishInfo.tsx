@@ -17,7 +17,9 @@ export const useGetKlascementAssignmentPublishInfo = (
 		},
 		{
 			meta: {
-				errorMessage: tHtml('Het ophalen van de klascement informatie is mislukt'),
+				errorMessage: tHtml(
+					'assignment/hooks/use-get-klascement-assignment-publish-info___het-ophalen-van-de-klascement-informatie-is-mislukt'
+				),
 			},
 		}
 	);

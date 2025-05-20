@@ -96,9 +96,15 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 			);
 			await refetchPublishInfo();
 			await refetchMarcomEntries();
-			ToastService.success(tText('Publiceren naar klascement gelukt'));
+			ToastService.success(
+				tText('assignment/views/assignment-edit-marcom___publiceren-naar-klascement-gelukt')
+			);
 		} catch (err) {
-			ToastService.danger(tText('Publiceren naar klascement mislukt'));
+			ToastService.danger(
+				tText(
+					'assignment/views/assignment-edit-marcom___publiceren-naar-klascement-mislukt'
+				)
+			);
 		}
 	};
 
@@ -160,12 +166,18 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 								});
 								await refetchMarcomEntries();
 								ToastService.success(
-									tHtml('Het verwijderen van de marcom entry is gelukt')
+									tHtml(
+										'assignment/views/assignment-edit-marcom___het-verwijderen-van-de-marcom-entry-is-gelukt'
+									)
 								);
 							}}
 							size="small"
-							title={tText('Verwijder de marcom entry')}
-							ariaLabel={tText('Verwijder de marcom entry')}
+							title={tText(
+								'assignment/views/assignment-edit-marcom___verwijder-de-marcom-entry'
+							)}
+							ariaLabel={tText(
+								'assignment/views/assignment-edit-marcom___verwijder-de-marcom-entry'
+							)}
 							type="danger-hover"
 						/>
 					</ButtonToolbar>
@@ -186,7 +198,11 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 		};
 		await insertMarcomEntry(marcomEntry);
 		await refetchMarcomEntries();
-		ToastService.success(tHtml('Het toevoegen van de marcom entry is gelukt'));
+		ToastService.success(
+			tHtml(
+				'assignment/views/assignment-edit-marcom___het-toevoegen-van-de-marcom-entry-is-gelukt'
+			)
+		);
 
 		setMarcomChannelType(null);
 		setMarcomChannelName(null);
@@ -196,14 +212,16 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 	const getEmptyMarcomTableMessage = () => {
 		// Assignment
 		// Without filters
-		return tText('Er zijn nog geen marcom entries voor deze opdracht');
+		return tText(
+			'assignment/views/assignment-edit-marcom___er-zijn-nog-geen-marcom-entries-voor-deze-opdracht'
+		);
 	};
 
 	const renderExistingMarcomEntries = () => {
 		return (
 			<>
 				<BlockHeading type="h3" className="u-padding-top u-padding-bottom">
-					{tText('Eerdere communicatie')}
+					{tText('assignment/views/assignment-edit-marcom___eerdere-communicatie')}
 				</BlockHeading>
 				{marcomEntries ? (
 					<>
@@ -229,15 +247,23 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 	const renderCreateNewMarcomEntryForm = () => {
 		return (
 			<>
-				<BlockHeading type="h3">{tText('Meest recente communicatie')}</BlockHeading>
+				<BlockHeading type="h3">
+					{tText('assignment/views/assignment-edit-marcom___meest-recente-communicatie')}
+				</BlockHeading>
 				<Flex justify="between" spaced="wide">
 					<FlexItem>
-						<FormGroup label={tText('Datum communicatie')}>
+						<FormGroup
+							label={tText(
+								'assignment/views/assignment-edit-marcom___datum-communicatie'
+							)}
+						>
 							<DatePicker onChange={setMarcomDate} value={marcomDate} />
 						</FormGroup>
 					</FlexItem>
 					<FlexItem>
-						<FormGroup label={tText('Kanaal type')}>
+						<FormGroup
+							label={tText('assignment/views/assignment-edit-marcom___kanaal-type')}
+						>
 							<Select
 								options={GET_MARCOM_CHANNEL_TYPE_OPTIONS()}
 								placeholder={'-'}
@@ -248,7 +274,9 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 						</FormGroup>
 					</FlexItem>
 					<FlexItem>
-						<FormGroup label={tText('Kanaal naam')}>
+						<FormGroup
+							label={tText('assignment/views/assignment-edit-marcom___kanaal-naam')}
+						>
 							<Select
 								options={GET_MARCOM_CHANNEL_NAME_OPTIONS()}
 								placeholder={'-'}
@@ -259,7 +287,7 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 						</FormGroup>
 					</FlexItem>
 					<FlexItem>
-						<FormGroup label={tText('Link')}>
+						<FormGroup label={tText('assignment/views/assignment-edit-marcom___link')}>
 							<TextInput
 								onChange={setMarcomLink}
 								value={marcomLink || undefined}
@@ -270,7 +298,7 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 					<FlexItem>
 						<FormGroup label=" ">
 							<Button
-								label={tText('Toevoegen')}
+								label={tText('assignment/views/assignment-edit-marcom___toevoegen')}
 								onClick={addMarcomEntry}
 								type="primary"
 							/>
@@ -283,7 +311,7 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 
 	const renderMarcomRemarksField = () => {
 		return (
-			<FormGroup label={tText('Opmerkingen')}>
+			<FormGroup label={tText('assignment/views/assignment-edit-marcom___opmerkingen')}>
 				<TextArea
 					value={assignment?.marcom_note?.note || ''}
 					onChange={(newNote: string) => {
@@ -307,7 +335,7 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 	const renderPublishToKlascementHeader = () => {
 		return (
 			<BlockHeading type="h3" className="u-padding-top-xl u-padding-bottom">
-				{tText('Publiceren naar klascement')}
+				{tText('assignment/views/assignment-edit-marcom___publiceren-naar-klascement')}
 			</BlockHeading>
 		);
 	};
@@ -319,7 +347,7 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 					{renderPublishToKlascementHeader()}
 					<Alert type="info">
 						{tHtml(
-							'Je kan enkel publiceren naar klascement als deze opdracht publiek staat'
+							'assignment/views/assignment-edit-marcom___je-kan-enkel-publiceren-naar-klascement-als-deze-opdracht-publiek-staat'
 						)}
 					</Alert>
 				</>
@@ -332,7 +360,9 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 				<Grid>
 					<Column size="3-6">
 						<Button
-							label={tText('Publiceer naar klascement')}
+							label={tText(
+								'assignment/views/assignment-edit-marcom___publiceer-naar-klascement'
+							)}
 							icon={IconName.klascement}
 							type="primary"
 							disabled={isPublishedToKlascement || isPublishing}

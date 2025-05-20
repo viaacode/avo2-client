@@ -77,7 +77,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 	const [marcomEntries, setMarcomEntries] = useState<CollectionMarcomEntry[] | null>(null);
 
 	const [klascementImageUrl, setKlascementImageUrl] = useState<string | null>();
-	const [klascementAltText, setKlascementAltText] = useState<string | undefined>();
+	const [klascementAlt, setKlascementAlt] = useState<string | undefined>();
 	const [klascementSourceText, setKlascementSourceText] = useState<string | undefined>();
 	const [klascementId, setKlascementId] = useState<number | undefined>();
 
@@ -122,7 +122,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 		} else {
 			setKlascementImageUrlError(null);
 		}
-		if (!klascementAltText) {
+		if (!klascementAlt) {
 			setKlascementAltTextError(
 				tText(
 					'collection/components/collection-or-bundle-edit-marcom___gelieve-een-alternatieve-tekst-in-te-vullen-voor-de-afbeelding'
@@ -146,7 +146,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 			const klascementId = await publishCollectionToKlascement({
 				collectionId: collection.id,
 				imageUrl: klascementImageUrl,
-				altText: klascementAltText,
+				altText: klascementAlt,
 				sourceText: klascementSourceText,
 			});
 			if (!klascementId) {
@@ -180,7 +180,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 	}, [fetchMarcomEntries]);
 
 	useEffect(() => {
-		setKlascementAltText(publishInfo?.alt_text);
+		setKlascementAlt(publishInfo?.alt_text);
 		setKlascementSourceText(publishInfo?.source_text);
 		setKlascementImageUrl(publishInfo?.image_url);
 		setKlascementId(publishInfo?.klascement_id ?? undefined);
@@ -526,7 +526,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 					{renderPublishToKlascementHeader()}
 					<Alert type="info">
 						{tHtml(
-							'Je kan enkel publiceren naar klascement als deze collectie publiek staat'
+							'collection/components/collection-or-bundle-edit-marcom___je-kan-enkel-publiceren-naar-klascement-als-deze-collectie-publiek-staat'
 						)}
 					</Alert>
 				</>
@@ -537,13 +537,17 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 			!collection.is_public || isPublishedToKlascement || isPublishing;
 		let publishButtonTooltip = undefined;
 		if (!collection.is_public) {
-			publishButtonTooltip = tText('De collectie moet eerst gepubliceerd worden op AVO');
+			publishButtonTooltip = tText(
+				'collection/components/collection-or-bundle-edit-marcom___de-collectie-moet-eerst-gepubliceerd-worden-op-avo'
+			);
 		} else if (isPublishedToKlascement) {
 			publishButtonTooltip = tText(
-				'De collectie is reeds gepubliceerd naar klascement. Bewerk het leermiddel daar.'
+				'collection/components/collection-or-bundle-edit-marcom___de-collectie-is-reeds-gepubliceerd-naar-klascement-bewerk-het-leermiddel-daar'
 			);
 		} else if (isPublishing) {
-			publishButtonTooltip = tText('Bezig met publiceren naar Klascement');
+			publishButtonTooltip = tText(
+				'collection/components/collection-or-bundle-edit-marcom___bezig-met-publiceren-naar-klascement'
+			);
 		}
 
 		return (
@@ -582,9 +586,9 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 							error={klascementAltTextError}
 						>
 							<TextInput
-								value={klascementAltText}
+								value={klascementAlt}
 								disabled={isPublishedToKlascement}
-								onChange={setKlascementAltText}
+								onChange={setKlascementAlt}
 							/>
 						</FormGroup>
 						<FormGroup

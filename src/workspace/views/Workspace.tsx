@@ -434,7 +434,6 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 								<InteractiveTour showButton />
 								{tabId && renderActionButton(tabId)}
 							</ToolbarRight>
-
 						</Toolbar>
 					</Container>
 				</Container>

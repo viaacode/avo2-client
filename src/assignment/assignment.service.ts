@@ -15,8 +15,6 @@ import {
 import {
 	type AssignmentPupilBlocksQuery,
 	type AssignmentPupilBlocksQueryVariables,
-	type BulkUpdateAuthorForAssignmentsMutation,
-	type BulkUpdateAuthorForAssignmentsMutationVariables,
 	type DeleteAssignmentResponseByIdMutation,
 	type DeleteAssignmentResponseByIdMutationVariables,
 	type DeleteAssignmentsByIdMutation,
@@ -56,7 +54,6 @@ import {
 } from '../shared/generated/graphql-db-operations';
 import {
 	AssignmentPupilBlocksDocument,
-	BulkUpdateAuthorForAssignmentsDocument,
 	DeleteAssignmentResponseByIdDocument,
 	DeleteAssignmentsByIdDocument,
 	GetAssignmentBlocksDocument,
@@ -1218,24 +1215,20 @@ export class AssignmentService {
 		assignmentIds: string[]
 	): Promise<number> {
 		try {
-			const response = await dataService.query<
-				BulkUpdateAuthorForAssignmentsMutation,
-				BulkUpdateAuthorForAssignmentsMutationVariables
-			>({
-				query: BulkUpdateAuthorForAssignmentsDocument,
-				variables: {
+			const url = stringifyUrl({
+				url: `${getEnv('PROXY_URL')}/assignments/bulk/change-author`,
+				query: {
 					assignmentIds,
 					authorId: profileId,
-					now: new Date().toISOString(),
 				},
 			});
-
-			return response?.update_app_assignments_v2?.affected_rows || 0;
+			return await fetchWithLogoutJson(url, {
+				method: 'PATCH',
+			});
 		} catch (err) {
 			throw new CustomError('Failed to update author for assignments in the database', err, {
 				profileId,
 				assignmentIds,
-				query: 'BULK_UPDATE_AUTHOR_FOR_ASSIGNMENTS',
 			});
 		}
 	}

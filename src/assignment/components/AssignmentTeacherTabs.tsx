@@ -85,7 +85,9 @@ const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps
 					? [
 							{
 								id: ASSIGNMENT_CREATE_UPDATE_TABS.MARCOM,
-								label: tText('Communicatie'),
+								label: tText(
+									'assignment/components/assignment-teacher-tabs___communicatie'
+								),
 								icon: IconName.send as IconName,
 							},
 					  ]

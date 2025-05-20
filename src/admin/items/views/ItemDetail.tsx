@@ -530,7 +530,9 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 					/>
 				</>
 			) : (
-				tText('Dit fragment werd nog niets gedeeld op Smartschool of Bookwidgets')
+				tText(
+					'admin/items/views/item-detail___dit-fragment-werd-nog-niets-gedeeld-op-smartschool-of-bookwidgets'
+				)
 			)}
 		</>
 	);

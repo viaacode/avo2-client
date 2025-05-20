@@ -29,26 +29,26 @@ export enum ITEMS_TABS {
 
 export const GET_TABS: () => TabProps[] = () => [
 	{
-		label: tText('Algemeen'),
+		label: tText('admin/items/items___algemeen'),
 		id: ITEMS_TABS.GENERAL,
 	},
 	{
-		label: tText('Collecties'),
+		label: tText('admin/items/items___collecties'),
 		icon: IconName.collection,
 		id: ITEMS_TABS.COLLECTIONS,
 	},
 	{
-		label: tText('Opdrachten'),
+		label: tText('admin/items/items___opdrachten'),
 		icon: IconName.clipboard,
 		id: ITEMS_TABS.ASSIGNMENTS,
 	},
 	{
-		label: tText('Gedeelde links'),
+		label: tText('admin/items/items___gedeelde-links'),
 		icon: IconName.link2,
 		id: ITEMS_TABS.QUICK_LANE,
 	},
 	{
-		label: tText('Ingesloten fragmenten'),
+		label: tText('admin/items/items___ingesloten-fragmenten'),
 		icon: IconName.code,
 		id: ITEMS_TABS.EMBEDS,
 	},
@@ -344,25 +344,25 @@ export const GET_ITEM_USED_BY_QUICK_LANES = () => [
 export const GET_ITEM_USED_BY_EMBED_CODES = () => [
 	{
 		id: 'title',
-		label: tText('Titel'),
+		label: tText('admin/items/items___titel'),
 		sortable: true,
 		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'owner',
-		label: tText('Aangemaakt door'),
+		label: tText('admin/items/items___aangemaakt-door'),
 		sortable: true,
 		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'createdAt',
-		label: tText('Aangemaakt op'),
+		label: tText('admin/items/items___aangemaakt-op'),
 		sortable: true,
 		dataType: TableColumnDataType.dateTime,
 	},
 	{
 		id: 'externalWebsite',
-		label: tText('Gedeeld op'),
+		label: tText('admin/items/items___gedeeld-op'),
 		sortable: true,
 		dataType: TableColumnDataType.string,
 	},
