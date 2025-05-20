@@ -3,26 +3,28 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact, map } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 
-import { EducationLevelsField, ShortDescriptionField, SubjectsField } from '..';
 import { CollectionService } from '../../../collection/collection.service';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import withUser, { type UserProps } from '../../hocs/withUser';
+import EducationLevelsField from '../EducationLevelsField/EducationLevelsField';
 import LomFieldsInput from '../LomFieldsInput/LomFieldsInput';
+import ShortDescriptionField from '../ShortDescriptionField/ShortDescriptionField';
+import SubjectsField from '../SubjectsField/SubjectsField';
 
-import { isShareable } from './QuickLaneModal.helpers';
-import { type QuickLaneModalProps } from './QuickLaneModal.types';
+import { isShareable } from './QuickLaneContent.helpers';
+import { type QuickLaneContentProps, QuickLaneTypeEnum } from './QuickLaneContent.types';
 
-interface QuickLaneModalPublicationTabProps {
+interface QuickLaneContentPublicationTabProps {
 	onComplete?: () => void;
 }
 
-const QuickLaneModalPublicationTab: FC<
-	QuickLaneModalProps & QuickLaneModalPublicationTabProps & UserProps
+const QuickLaneContentPublicationTab: FC<
+	QuickLaneContentProps & QuickLaneContentPublicationTabProps & UserProps
 > = ({ content, content_label, commonUser, onComplete, onUpdate }) => {
 	const { tText } = useTranslation();
 
 	const [model, setModel] = useState(content);
-	const isCollection = content_label === 'COLLECTIE';
+	const isCollection = content_label === QuickLaneTypeEnum.COLLECTION;
 
 	useEffect(() => {
 		setModel(content);
@@ -137,6 +139,6 @@ const QuickLaneModalPublicationTab: FC<
 	) : null;
 };
 
-export default withUser(QuickLaneModalPublicationTab) as FC<
-	QuickLaneModalProps & QuickLaneModalPublicationTabProps
+export default withUser(QuickLaneContentPublicationTab) as FC<
+	QuickLaneContentProps & QuickLaneContentPublicationTabProps
 >;

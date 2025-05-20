@@ -27,7 +27,6 @@ import { canManageEditorial } from '../../../collection/helpers/can-manage-edito
 import { OrderDirection } from '../../../search/search.const';
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
-import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
@@ -38,6 +37,8 @@ import { VideoStillService } from '../../../shared/services/video-stills-service
 import ItemVideoDescription from '../ItemVideoDescription';
 
 import './AddToCollectionModal.scss';
+import { toSeconds } from '../../../shared/helpers/parsers/duration';
+import { isMobileWidth } from '../../../shared/helpers/media-query';
 
 interface AddToCollectionModalProps {
 	externalId: string;

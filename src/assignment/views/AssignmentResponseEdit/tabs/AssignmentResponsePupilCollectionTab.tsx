@@ -23,7 +23,7 @@ import { CollectionBlockType } from '../../../../collection/collection.const';
 import { BlockList } from '../../../../collection/components';
 import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { getMoreOptionsLabel } from '../../../../shared/constants';
-import { isMobileWidth } from '../../../../shared/helpers';
+import { isMobileWidth } from '../../../../shared/helpers/media-query';
 import { useBlocksList } from '../../../../shared/hooks/use-blocks-list';
 import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../../../shared/hooks/useTranslation';

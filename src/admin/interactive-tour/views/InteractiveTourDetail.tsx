@@ -11,14 +11,16 @@ import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps } from 'react-router';
 
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import {
-	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../../shared/components';
-import { buildLink, CustomError, navigate } from '../../../shared/helpers';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { navigate } from '../../../shared/helpers/link';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
@@ -216,7 +218,7 @@ const InteractiveTourDetail: FC<InteractiveTourDetailProps> = ({ history, match 
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				{renderInteractiveTourDetail()}
-				<DeleteObjectModal
+				<ConfirmModal
 					confirmCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}

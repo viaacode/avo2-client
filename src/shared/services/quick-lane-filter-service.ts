@@ -1,14 +1,14 @@
 import { type Avo } from '@viaa/avo2-types';
 
 import { type DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
-import { type QuickLaneType } from '../components/QuickLaneModal/QuickLaneModal.types';
+import { type QuickLaneType } from '../components/QuickLaneContent/QuickLaneContent.types';
 import {
 	type GetQuickLanesWithFiltersQuery,
 	type GetQuickLanesWithFiltersQueryVariables,
 } from '../generated/graphql-db-operations';
 import { GetQuickLanesWithFiltersDocument } from '../generated/graphql-db-react-query';
 import { type App_Quick_Lanes_Bool_Exp } from '../generated/graphql-db-types';
-import { CustomError } from '../helpers';
+import { CustomError } from '../helpers/custom-error';
 import { getOrderObject } from '../helpers/generate-order-gql-query';
 import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object';
 import { type QuickLaneUrlObject } from '../types';

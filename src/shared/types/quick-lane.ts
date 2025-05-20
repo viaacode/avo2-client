@@ -2,7 +2,7 @@ import { type Avo } from '@viaa/avo2-types';
 
 import { type AssignmentLayout } from '../../assignment/assignment.types';
 import { type DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
-import { type QuickLaneType } from '../components/QuickLaneModal/QuickLaneModal.types';
+import { type QuickLaneType } from '../components/QuickLaneContent/QuickLaneContent.types';
 import { type GetQuickLanesByContentIdQuery } from '../generated/graphql-db-operations';
 
 interface QuickLaneUrl {

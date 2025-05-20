@@ -28,7 +28,7 @@ import {
 	redirectToServerUnlinkAccount,
 } from '../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../constants';
-import { DeleteObjectModal } from '../../shared/components';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import useTranslation from '../../shared/hooks/useTranslation';
 
@@ -177,7 +177,7 @@ const LinkedAccounts: FC<AccountProps> = ({ location, commonUser }) => {
 						</Column>
 					</Grid>
 				)}
-				<DeleteObjectModal
+				<ConfirmModal
 					title={tText(
 						'settings/components/linked-accounts___ben-je-zeker-dat-je-de-account-koppeling-wil-verbreken'
 					)}

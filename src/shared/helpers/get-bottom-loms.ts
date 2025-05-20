@@ -1,5 +1,5 @@
 import { type Avo } from '@viaa/avo2-types';
-import { filter, map, sortBy } from 'lodash';
+import { filter, map, sortBy } from 'lodash-es';
 
 import { groupLoms } from './lom';
 

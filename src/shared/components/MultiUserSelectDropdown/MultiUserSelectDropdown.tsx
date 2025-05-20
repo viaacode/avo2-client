@@ -11,14 +11,14 @@ import {
 	TagList,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { uniqBy } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 
 import { ContentPicker } from '../../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../../admin/shared/types';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { CustomError } from '../../helpers';
+import { CustomError } from '../../helpers/custom-error';
 import { ToastService } from '../../services/toast-service';
 
 import './MultiUserSelectDropdown.scss';
@@ -223,7 +223,7 @@ export const MultiUserSelectDropdown: FC<MultiUserSelectDropdownProps> = ({
 
 	if (disabled) {
 		return (
-			<div className={classnames({ 'u-opacity-50 u-disable-click': disabled })}>
+			<div className={clsx({ 'u-opacity-50 u-disable-click': disabled })}>
 				{renderCheckboxControl()}
 			</div>
 		);

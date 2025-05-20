@@ -18,7 +18,7 @@ import { type PickerItem } from '../../admin/shared/types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import ContainedInBundlesTable from '../../bundle/components/ContainedInBundlesTable';
 import { type QualityLabel } from '../../collection/collection.types';
-import { formatTimestamp, getFullName } from '../../shared/helpers';
+import { formatTimestamp, getFullName } from '../../shared/helpers/formatters';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useGetQualityLabels } from '../../shared/hooks/useGetQualityLabels';
 import useTranslation from '../../shared/hooks/useTranslation';

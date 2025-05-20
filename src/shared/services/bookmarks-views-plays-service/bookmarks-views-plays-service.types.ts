@@ -13,6 +13,7 @@ export interface BookmarkInfo {
 	createdAt: number; // Bookmark created at date
 	contentId: string;
 	contentLinkId: string;
+	contentDescription: string;
 	contentType: Avo.ContentType.English;
 	contentTitle: string;
 	contentDuration?: string;
@@ -32,11 +33,13 @@ export interface BookmarkViewPlayCounts {
 export interface AppItemBookmark {
 	bookmarkedItem?: {
 		title: string;
+		description: string;
 		thumbnail_path: string;
 		duration: string;
 		issued: string;
 		item: {
 			external_id: string;
+			description: string;
 			item_meta: {
 				organisation: {
 					name: string;

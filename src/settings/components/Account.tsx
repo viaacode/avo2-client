@@ -17,11 +17,12 @@ import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps } from 'react-router';
 
-import { redirectToExternalPage } from '../../authentication/helpers/redirects';
+import { redirectToExternalPage } from '../../authentication/helpers/redirects/redirect-to-external-page';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { Users_Idps_Enum } from '../../shared/generated/graphql-db-types';
-import { formatDate, getEnv } from '../../shared/helpers';
+import { getEnv } from '../../shared/helpers/env';
+import { formatDate } from '../../shared/helpers/formatters';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import useTranslation from '../../shared/hooks/useTranslation';
 

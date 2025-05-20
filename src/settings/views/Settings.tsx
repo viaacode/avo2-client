@@ -14,17 +14,20 @@ import React, { type FC, type ReactElement, type ReactText, useState } from 'rea
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
-import { InteractiveTour } from '../../shared/components';
-import { buildLink } from '../../shared/helpers';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import { buildLink } from '../../shared/helpers/build-link';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
-import { Account, Email, Notifications, Profile } from '../components';
+import Account from '../components/Account';
+import Email from '../components/Email/Email';
 import LinkedAccounts from '../components/LinkedAccounts';
+import Notifications from '../components/Notifications';
+import Profile from '../components/Profile';
 import {
 	ACCOUNT_ID,
 	EMAIL_ID,

@@ -23,11 +23,17 @@ import {
 	ContentTypeString,
 } from '../../../../../collection/collection.types';
 import { APP_PATH } from '../../../../../constants';
-import { ItemVideoDescription } from '../../../../../item/components';
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../../../shared/components';
+import ItemVideoDescription from '../../../../../item/components/ItemVideoDescription';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { DEFAULT_AUDIO_STILL } from '../../../../../shared/constants';
-import { buildLink, CustomError, formatDate, isMobileWidth } from '../../../../../shared/helpers';
+import { buildLink } from '../../../../../shared/helpers/build-link';
+import { CustomError } from '../../../../../shared/helpers/custom-error';
 import { defaultRenderBookmarkButton } from '../../../../../shared/helpers/default-render-bookmark-button';
+import { formatDate } from '../../../../../shared/helpers/formatters';
+import { isMobileWidth } from '../../../../../shared/helpers/media-query';
 import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
 import withUser, { type UserProps } from '../../../../../shared/hocs/withUser';
 import useTranslation from '../../../../../shared/hooks/useTranslation';

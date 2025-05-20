@@ -13,6 +13,7 @@ interface Window {
 		NODE_ENV: string;
 		ENV: 'local' | 'qas' | 'production';
 		KLASCEMENT_URL: string;
+		REGISTER_URL: string;
 	};
 	APP_INFO: {
 		version: string;

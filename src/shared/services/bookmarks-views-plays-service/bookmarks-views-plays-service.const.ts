@@ -216,6 +216,7 @@ export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE: { [type: string]: EventContentT
 	item: 'item',
 	video: 'item',
 	audio: 'item',
+	ITEM: 'item',
 	collection: 'collection',
 	collectie: 'collection',
 	assignment: 'assignment',

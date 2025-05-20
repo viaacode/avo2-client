@@ -18,7 +18,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 
-import { CustomError } from '../../../shared/helpers';
+import { CustomError } from '../../../shared/helpers/custom-error';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';

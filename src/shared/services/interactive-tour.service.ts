@@ -4,7 +4,8 @@ import { compact, findLast, forIn, fromPairs, last, startsWith, uniqBy } from 'l
 import queryString from 'query-string';
 
 import { type APP_PATH } from '../../constants';
-import { CustomError, getEnv } from '../helpers';
+import { CustomError } from '../helpers/custom-error';
+import { getEnv } from '../helpers/env';
 
 import { type GetInteractiveTourResponse } from './interactive-tour.types';
 import { NotificationService } from './notification-service';

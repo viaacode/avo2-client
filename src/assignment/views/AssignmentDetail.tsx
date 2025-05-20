@@ -35,7 +35,7 @@ import { BooleanParam, StringParam, useQueryParam, useQueryParams } from 'use-qu
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionFragmentType, type Relation } from '../../collection/collection.types';
 import AddToBundleModal from '../../collection/components/modals/AddToBundleModal';
@@ -48,30 +48,26 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
-import {
-	CommonMetaData,
-	EditButton,
-	HeaderOwnerAndContributors,
-	InteractiveTour,
-	ShareDropdown,
-	ShareModal,
-	type ShareWithPupilsProps,
-} from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
+import CommonMetaData from '../../shared/components/CommonMetaData/CommonMetaData';
+import EditButton from '../../shared/components/EditButton/EditButton';
+import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
+import ShareModal from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { type ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel } from '../../shared/constants';
-import {
-	buildLink,
-	createDropdownMenuItem,
-	CustomError,
-	isMobileWidth,
-	navigate,
-} from '../../shared/helpers';
+import { buildLink } from '../../shared/helpers/build-link';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
+import { CustomError } from '../../shared/helpers/custom-error';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
+import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
+import { navigate } from '../../shared/helpers/link';
 import { type EducationLevelId } from '../../shared/helpers/lom';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {

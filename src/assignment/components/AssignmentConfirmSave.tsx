@@ -2,7 +2,8 @@ import { type DefaultProps } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode } from 'react';
 
-import ConfirmModal, {
+import {
+	ConfirmModal,
 	type ConfirmModalProps,
 } from '../../shared/components/ConfirmModal/ConfirmModal';
 import useTranslation from '../../shared/hooks/useTranslation';

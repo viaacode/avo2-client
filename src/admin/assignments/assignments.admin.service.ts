@@ -1,7 +1,8 @@
 import { type Avo } from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 
-import { CustomError, getEnv } from '../../shared/helpers';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { getEnv } from '../../shared/helpers/env';
 
 import { type AssignmentSortProps } from './assignments.types';
 

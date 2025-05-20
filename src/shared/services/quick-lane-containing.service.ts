@@ -3,7 +3,7 @@ import {
 	type GetQuickLanesByContentIdQueryVariables,
 } from '../generated/graphql-db-operations';
 import { GetQuickLanesByContentIdDocument } from '../generated/graphql-db-react-query';
-import { CustomError } from '../helpers';
+import { CustomError } from '../helpers/custom-error';
 import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object';
 import { type QuickLaneUrlObject } from '../types';
 

@@ -1,7 +1,8 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
 
-import { CustomError, getEnv } from '../helpers';
+import { CustomError } from '../helpers/custom-error';
+import { getEnv } from '../helpers/env';
 import { EducationLevelId } from '../helpers/lom';
 
 export class LomService {

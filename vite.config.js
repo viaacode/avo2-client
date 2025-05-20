@@ -20,6 +20,10 @@ export default defineConfig(() => {
 			outDir: 'dist',
 			sourcemap: true,
 			rollupOptions: {
+				input: {
+					main: path.resolve(__dirname, 'index.html'),
+					embed: path.resolve(__dirname, 'embed/index.html'),
+				},
 				plugins: [sourcemaps()],
 				output: {
 					assetFileNames: function (file) {
@@ -27,6 +31,23 @@ export default defineConfig(() => {
 							? `assets/[name].[ext]`
 							: `assets/[name]-[hash].[ext]`;
 					},
+					plugins: [
+						{
+							name: 'html-path-rewrite',
+							generateBundle(_, bundle) {
+								for (const key in bundle) {
+									if (
+										bundle[key].type === 'asset' &&
+										bundle[key].fileName.endsWith('.html')
+									) {
+										if (bundle[key].fileName === 'embed/index.html') {
+											bundle[key].fileName = 'embed.html';
+										}
+									}
+								}
+							},
+						},
+					],
 				},
 			},
 		},

@@ -1,8 +1,11 @@
 import { type ButtonType, IconName, type SelectOption } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 
-import { type CheckboxDropdownModalProps, type CheckboxOption } from '../../shared/components';
 import { type BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
+import {
+	type CheckboxDropdownModalProps,
+	type CheckboxOption,
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { type DateRangeDropdownProps } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { lomToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';

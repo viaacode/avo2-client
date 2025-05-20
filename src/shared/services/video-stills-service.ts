@@ -4,7 +4,9 @@ import { compact, isNil, uniq, without } from 'lodash-es';
 
 import { ContentTypeNumber, ContentTypeString } from '../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../constants';
-import { CustomError, getEnv, toSeconds } from '../helpers';
+import { CustomError } from '../helpers/custom-error';
+import { getEnv } from '../helpers/env';
+import { toSeconds } from '../helpers/parsers/duration';
 
 export class VideoStillService {
 	/**

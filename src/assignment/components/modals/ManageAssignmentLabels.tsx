@@ -15,13 +15,13 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { compact, intersection, sortBy, without } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 
-import { ColorSelect } from '../../../shared/components';
+import { ColorSelect } from '../../../shared/components/ColorSelect/ColorSelect';
 import { type Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-db-types';
-import { CustomError } from '../../../shared/helpers';
+import { CustomError } from '../../../shared/helpers/custom-error';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
@@ -256,7 +256,7 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 						/>
 
 						<label
-							className={classnames('c-max-length', {
+							className={clsx('c-max-length', {
 								'c-max-length--invalid':
 									(assignmentLabel.label?.length || 0) > MAX_LABEL_LENGTH,
 							})}

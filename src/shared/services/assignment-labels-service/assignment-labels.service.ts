@@ -28,7 +28,7 @@ import {
 	type App_Assignment_Labels_V2_Insert_Input,
 	type Lookup_Enum_Colors_Enum,
 } from '../../generated/graphql-db-types';
-import { CustomError } from '../../helpers';
+import { CustomError } from '../../helpers/custom-error';
 import { dataService } from '../data-service';
 
 export class AssignmentLabelsService {

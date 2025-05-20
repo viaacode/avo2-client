@@ -16,7 +16,7 @@ import {
 } from '@viaa/avo2-components';
 import { HeaderBottomRowLeft } from '@viaa/avo2-components/src/components/Header/Header.slots';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
@@ -28,9 +28,12 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { FragmentList } from '../../collection/components';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
-import { ItemVideoDescription } from '../../item/components';
-import { isMobileWidth, renderAvatar, toSeconds } from '../../shared/helpers';
+import ItemVideoDescription from '../../item/components/ItemVideoDescription';
+import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
+import { renderAvatar } from '../../shared/helpers/formatters';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
 import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -60,9 +63,9 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 			return false;
 		}
 
-		if (quickLane.content_label === 'ITEM') {
+		if (quickLane.content_label === QuickLaneTypeEnum.ITEM) {
 			return PermissionService.hasPerm(commonUser, PermissionName.VIEW_ANY_PUBLISHED_ITEMS);
-		} else if (quickLane.content_label === 'COLLECTIE') {
+		} else if (quickLane.content_label === QuickLaneTypeEnum.COLLECTION) {
 			return PermissionService.hasPerm(
 				commonUser,
 				PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS
@@ -179,11 +182,11 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 
 		let path: string | undefined;
 
-		if (quickLane?.content_label === 'ITEM') {
+		if (quickLane?.content_label === QuickLaneTypeEnum.ITEM) {
 			path = generatePath(APP_PATH.ITEM_DETAIL.route, {
 				id: (quickLane.content as Avo.Item.Item).external_id.toString(),
 			});
-		} else if (quickLane.content_label === 'COLLECTIE') {
+		} else if (quickLane.content_label === QuickLaneTypeEnum.COLLECTION) {
 			path = generatePath(APP_PATH.COLLECTION_DETAIL.route, {
 				id: quickLane.content_id,
 			});
@@ -221,7 +224,7 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 
 		return (
 			<div
-				className={classnames('c-quick-lane-detail', {
+				className={clsx('c-quick-lane-detail', {
 					'c-quick-lane-detail--mobile': isMobileWidth(),
 				})}
 			>
@@ -299,7 +302,7 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 			);
 		}
 
-		if (quickLane.content_label === 'COLLECTIE') {
+		if (quickLane.content_label === QuickLaneTypeEnum.COLLECTION) {
 			const content = quickLane.content as Avo.Collection.Collection | undefined;
 
 			if (!content || !content.is_public) {

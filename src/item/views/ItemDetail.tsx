@@ -25,7 +25,7 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { get, isNil, noop } from 'lodash-es';
 import React, {
 	type FC,
@@ -52,20 +52,14 @@ import { CONTENT_TYPE_TRANSLATIONS, ContentTypeNumber } from '../../collection/c
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { type FilterState } from '../../search/search.types';
+import FragmentShareModal from '../../shared/components/FragmentShareModal/FragmentShareModal';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-	ShareThroughEmailModal,
-} from '../../shared/components';
-import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { LANGUAGES, ROUTE_PARTS } from '../../shared/constants';
-import {
-	buildLink,
-	CustomError,
-	isMobileWidth,
-	renderSearchLinks,
-	reorderDate,
-} from '../../shared/helpers';
+import { buildLink } from '../../shared/helpers/build-link';
+import { CustomError } from '../../shared/helpers/custom-error';
 import {
 	defaultRenderBookmarkButton,
 	type renderBookmarkButtonProps,
@@ -83,6 +77,9 @@ import {
 	defaultGoToSearchLink,
 	defaultRenderSearchLink,
 } from '../../shared/helpers/default-render-search-link';
+import { reorderDate } from '../../shared/helpers/formatters';
+import { renderSearchLinks } from '../../shared/helpers/link';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
 import withUser from '../../shared/hocs/withUser';
@@ -101,15 +98,13 @@ import {
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { type UnpublishableItem } from '../../shared/types';
-import {
-	AddToCollectionModal,
-	CutFragmentForAssignmentModal,
-	ItemVideoDescription,
-} from '../components';
 import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { type ItemTrimInfo } from '../item.types';
 import './ItemDetail.scss';
+import ItemVideoDescription from '../components/ItemVideoDescription';
+import AddToCollectionModal from '../components/modals/AddToCollectionModal';
+import CutFragmentForAssignmentModal from '../components/modals/CutFragmentForAssignmentModal';
 
 interface ItemDetailProps {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
@@ -171,9 +166,8 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isAddToCollectionModalOpen, setIsAddToCollectionModalOpen] = useState(false);
 	const [isAddToFragmentModalOpen, setIsAddToFragmentModalOpen] = useState(false);
-	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isReportItemModalOpen, setIsReportItemModalOpen] = useState(false);
-	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
+	const [isShareFragmentModalOpen, setIsShareFragmentModalOpen] = useState(false);
 	const [relatedItems, setRelatedItems] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
@@ -514,7 +508,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 			<Table
 				horizontal
 				untable
-				className={classnames('c-meta-data__table', {
+				className={clsx('c-meta-data__table', {
 					'c-meta-data__table-mobile': isMobileWidth(),
 				})}
 			>
@@ -547,7 +541,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 			<Table
 				horizontal
 				untable
-				className={classnames('c-meta-data__table', {
+				className={clsx('c-meta-data__table', {
 					'c-meta-data__table-mobile': isMobileWidth(),
 				})}
 			>
@@ -580,7 +574,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 			<Table
 				horizontal
 				untable
-				className={classnames('c-meta-data__table', {
+				className={clsx('c-meta-data__table', {
 					'c-meta-data__table-mobile': isMobileWidth(),
 				})}
 			>
@@ -609,7 +603,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 			<Table
 				horizontal
 				untable
-				className={classnames('c-meta-data__table', {
+				className={clsx('c-meta-data__table', {
 					'c-meta-data__table-mobile': isMobileWidth(),
 				})}
 			>
@@ -638,7 +632,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 			<Table
 				horizontal
 				untable
-				className={classnames('c-meta-data__table', {
+				className={clsx('c-meta-data__table', {
 					'c-meta-data__table-mobile': isMobileWidth(),
 				})}
 			>
@@ -676,7 +670,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 			<Table
 				horizontal
 				untable
-				className={classnames('c-meta-data__table', {
+				className={clsx('c-meta-data__table', {
 					'c-meta-data__table-mobile': isMobileWidth(),
 				})}
 			>
@@ -792,21 +786,16 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 							</DropdownContent>
 						</Dropdown>
 					)}
-
-					{PermissionService.hasPerm(commonUser, PermissionName.CREATE_QUICK_LANE) && (
-						<Button
-							type="tertiary"
-							icon={IconName.link2}
-							label={tText('item/views/item___delen-met-leerlingen')}
-							ariaLabel={tText(
-								'item/views/item-detail___deel-dit-met-alle-leerlingen'
-							)}
-							title={tText('item/views/item-detail___deel-dit-met-alle-leerlingen')}
-							onClick={() => {
-								setIsQuickLaneModalOpen(true);
-							}}
-						/>
-					)}
+					<Button
+						type="tertiary"
+						icon={IconName.share2}
+						label={tText('item/views/item-detail___fragment-delen')}
+						ariaLabel={tText('item/views/item-detail___fragment-delen')}
+						title={tText('item/views/item-detail___fragment-delen')}
+						onClick={() => {
+							setIsShareFragmentModalOpen(true);
+						}}
+					/>
 					{PermissionService.hasPerm(commonUser, PermissionName.VIEW_ITEMS_OVERVIEW) && (
 						<Link to={buildLink(ITEMS_PATH.ITEM_DETAIL, { id: item?.uid })}>
 							<Button
@@ -830,17 +819,6 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 							title: tText('item/views/item___toggle-bladwijzer'),
 							onClick: toggleBookmark,
 						})}
-
-					<Button
-						type="tertiary"
-						icon={IconName.share2}
-						ariaLabel={tText('item/views/item___share-item')}
-						title={tText('item/views/item___share-item')}
-						onClick={() => {
-							setIsShareThroughEmailModalOpen(true);
-						}}
-					/>
-
 					<Button
 						type="tertiary"
 						icon={IconName.flag}
@@ -868,7 +846,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 					title={item.title}
 					category={englishContentType}
 					showMetaData={true}
-					className={classnames('c-item-detail__header', {
+					className={clsx('c-item-detail__header', {
 						'c-item-detail__header-mobile': isMobileWidth(),
 					})}
 				>
@@ -940,11 +918,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 							itemMetaData={item}
 							showMetadata={false}
 							enableMetadataLink={false}
-							canPlay={
-								!isAddToCollectionModalOpen &&
-								!isShareThroughEmailModalOpen &&
-								!isReportItemModalOpen
-							}
+							canPlay={!isAddToCollectionModalOpen && !isReportItemModalOpen}
 							verticalLayout={isMobileWidth()}
 							cuePointsVideo={{
 								start: cuePoint ? parseInt(cuePoint.split(',')[0], 10) : null,
@@ -1020,18 +994,6 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 						/>
 					)}
 				{!renderActionButtons && (
-					<ShareThroughEmailModal
-						modalTitle={tText('item/views/item-detail___deel-dit-item')}
-						type="item"
-						emailLinkHref={window.location.href}
-						emailLinkTitle={item.title}
-						isOpen={isShareThroughEmailModalOpen}
-						onClose={() => {
-							setIsShareThroughEmailModalOpen(false);
-						}}
-					/>
-				)}
-				{!renderActionButtons && (
 					<ReportItemModal
 						externalId={match.params.id}
 						isOpen={isReportItemModalOpen}
@@ -1040,17 +1002,13 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 						}}
 					/>
 				)}
-				{PermissionService.hasPerm(commonUser, PermissionName.CREATE_QUICK_LANE) && (
-					<QuickLaneModal
-						modalTitle={tHtml('item/views/item___snel-delen-met-leerlingen')}
-						isOpen={isQuickLaneModalOpen}
-						content={item}
-						content_label="ITEM"
-						onClose={() => {
-							setIsQuickLaneModalOpen(false);
-						}}
-					/>
-				)}
+				<FragmentShareModal
+					isOpen={isShareFragmentModalOpen}
+					item={item}
+					onClose={() => {
+						setIsShareFragmentModalOpen(false);
+					}}
+				/>
 				{PermissionService.hasPerm(commonUser, PermissionName.CREATE_ASSIGNMENTS) && (
 					<ImportToAssignmentModal
 						isOpen={isImportToAssignmentModalOpen}

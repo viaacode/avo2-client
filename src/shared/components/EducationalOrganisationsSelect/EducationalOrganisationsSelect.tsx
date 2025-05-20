@@ -1,11 +1,11 @@
 import { Alert, Select, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { pullAllBy, remove, uniq } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { CustomError } from '../../helpers';
+import { CustomError } from '../../helpers/custom-error';
 import { stringsToTagList } from '../../helpers/strings-to-taglist';
 import { EducationOrganisationService } from '../../services/education-organizations-service';
 import { ToastService } from '../../services/toast-service';
@@ -206,7 +206,7 @@ export const EducationalOrganisationsSelect: FC<EducationalOrganisationsSelectPr
 
 	if (disabled) {
 		return (
-			<div className={classnames({ 'u-opacity-50 u-disable-click': disabled })}>
+			<div className={clsx({ 'u-opacity-50 u-disable-click': disabled })}>
 				{renderOrganisationTagsAndSelects()}
 			</div>
 		);

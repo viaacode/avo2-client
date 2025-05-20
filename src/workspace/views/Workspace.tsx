@@ -28,17 +28,11 @@ import { Helmet } from 'react-helmet';
 import { AssignmentOverview } from '../../assignment/views';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { CollectionOrBundle } from '../../collection/collection.types';
 import CollectionOrBundleOverview from '../../collection/components/CollectionOrBundleOverview';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import {
-	ControlledDropdown,
-	InteractiveTour,
-	LoadingErrorLoadedComponent,
-	type LoadingInfo,
-} from '../../shared/components';
-import { buildLink, navigate } from '../../shared/helpers';
+import EmbedCodeOverview from '../../embed-code/components/EmbedCodeOverview';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -48,6 +42,7 @@ import {
 	BOOKMARKS_ID,
 	BUNDLES_ID,
 	COLLECTIONS_ID,
+	EMBEDS_ID,
 	GET_TABS,
 	ORGANISATION_CONTENT_ID,
 	QUICK_LANE_ID,
@@ -60,6 +55,14 @@ import OrganisationContentOverview from './OrganisationContentOverview';
 import QuickLaneOverview from './QuickLaneOverview';
 
 import './Workspace.scss';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { navigate } from '../../shared/helpers/link';
+import { buildLink } from '../../shared/helpers/build-link';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 
 interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;
@@ -73,6 +76,7 @@ interface WorkspacePermissions {
 	canCreateBookmarks?: boolean;
 	canViewContentInSameCompany?: boolean;
 	canViewSomeQuickLanes?: boolean;
+	canEmbedItemsOnOtherSites?: boolean;
 }
 
 const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, commonUser }) => {
@@ -109,6 +113,11 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 				PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
 				PermissionName.VIEW_OWN_ORGANISATION_QUICK_LANE_OVERVIEW,
 			]),
+			PermissionService.hasPermission(
+				PermissionName.EMBED_ITEMS_ON_OTHER_SITES,
+				null,
+				commonUser
+			),
 		])
 			.then((response) => {
 				setPermissions({
@@ -119,6 +128,7 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 					canCreateBookmarks: response[4],
 					canViewContentInSameCompany: response[5],
 					canViewSomeQuickLanes: response[6],
+					canEmbedItemsOnOtherSites: response[7],
 				});
 			})
 			.catch((err) => {
@@ -205,6 +215,18 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 				? {
 						component: (
 							<QuickLaneOverview numberOfItems={workspaceCounts?.quickLanes || 0} />
+						),
+				  }
+				: empty,
+			[EMBEDS_ID]: permissions.canEmbedItemsOnOtherSites
+				? {
+						component: (
+							<EmbedCodeOverview
+								onUpdate={() => {
+									refetchWorkspaceCounts();
+								}}
+								numberOfItems={workspaceCounts?.embeds || 0}
+							/>
 						),
 				  }
 				: empty,
@@ -408,19 +430,19 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 								</BlockHeading>
 							</ToolbarLeft>
 
-							{tabId && <ToolbarRight>{renderActionButton(tabId)}</ToolbarRight>}
+							<ToolbarRight>
+								<InteractiveTour showButton />
+								{tabId && renderActionButton(tabId)}
+							</ToolbarRight>
+
 						</Toolbar>
 					</Container>
 				</Container>
 
-				<Navbar background="alt" placement="top" autoHeight>
+				<Navbar background="alt" placement="top" autoHeight className="c-scrollable">
 					<Container mode="horizontal">
 						<Toolbar className="c-toolbar--no-height">
 							<ToolbarLeft>{renderToolbar(tabs, activeTab)}</ToolbarLeft>
-
-							<ToolbarRight>
-								<InteractiveTour showButton />
-							</ToolbarRight>
 						</Toolbar>
 					</Container>
 				</Navbar>

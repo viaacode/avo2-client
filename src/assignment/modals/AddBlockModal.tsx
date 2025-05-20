@@ -9,7 +9,7 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import React, { type FC, type ReactNode, useMemo } from 'react';
 
 import {
@@ -106,7 +106,7 @@ const AddBlockModal: FC<AddBlockModalProps> = ({ blocks, isOpen, onClose, onConf
 							<li key={item.type}>
 								<label
 									htmlFor={`c-add-block__${item.type}-button`}
-									className={classNames({
+									className={clsx({
 										'c-add-block__list-item': true,
 										'c-add-block__list-item--disabled': item.disabled,
 									})}

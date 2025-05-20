@@ -4,8 +4,8 @@ import { noop } from 'lodash-es';
 import React, { type Dispatch, type FC, type SetStateAction, useMemo, useState } from 'react';
 
 import AlertBar from '../../shared/components/AlertBar/AlertBar';
-import { isMobileWidth } from '../../shared/helpers';
 import { EducationLevelId } from '../../shared/helpers/lom';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import AssignmentResponseEdit from '../views/AssignmentResponseEdit/AssignmentResponseEdit';

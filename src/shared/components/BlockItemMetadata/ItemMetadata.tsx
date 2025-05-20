@@ -2,7 +2,7 @@ import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { formatDate } from '../../helpers';
+import { formatDate } from '../../helpers/formatters';
 
 export type ItemMetadataProps = {
 	item: Avo.Item.Item;

@@ -1,7 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
 import { groupBy } from 'lodash-es';
 
-import { isUserLevel } from '../../helpers';
+import { isUserLevel } from '../../helpers/is-user';
 import { EducationLevelId } from '../../helpers/lom';
 import { tText } from '../../helpers/translate-text';
 

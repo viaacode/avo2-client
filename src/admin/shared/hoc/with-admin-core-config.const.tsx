@@ -13,9 +13,9 @@ import React, { type FC } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 import { APP_PATH, type RouteId } from '../../../constants';
-import { FlowPlayerWrapper } from '../../../shared/components';
+import FlowPlayerWrapper from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { DEFAULT_AUDIO_STILL, ROUTE_PARTS } from '../../../shared/constants';
-import { getEnv } from '../../../shared/helpers';
+import { getEnv } from '../../../shared/helpers/env';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';

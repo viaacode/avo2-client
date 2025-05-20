@@ -1,7 +1,7 @@
 import React, { type FC } from 'react';
 import Zendesk from 'react-zendesk';
 
-import { getEnv } from '../../helpers';
+import { getEnv } from '../../helpers/env';
 
 declare const ResizeObserver: any;
 

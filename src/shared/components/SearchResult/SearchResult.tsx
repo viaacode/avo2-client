@@ -14,11 +14,11 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import classnames from 'clsx';
 import { isNil, noop, truncate } from 'lodash-es';
 import React, { type FC, type ReactNode, type ReactText } from 'react';
 
 import './SearchResult.scss';
+import { clsx } from 'clsx';
 
 interface SearchResultProps extends DefaultProps {
 	title: ReactNode;
@@ -58,7 +58,7 @@ export const SearchResult: FC<SearchResultProps> = ({
 	onTagClicked = noop,
 }) => {
 	return (
-		<div className={classnames(className, 'c-search-result')}>
+		<div className={clsx(className, 'c-search-result')}>
 			<div className="c-search-result__image">{thumbnail}</div>
 			<div className="c-search-result__content">
 				<Flex align="start" justify="between">

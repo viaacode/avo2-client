@@ -1,7 +1,8 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type IconName } from '@viaa/avo2-components';
 
-import { CustomError, getEnv } from '../helpers';
+import { CustomError } from '../helpers/custom-error';
+import { getEnv } from '../helpers/env';
 
 export interface AppContentNavElement {
 	content_path: string | null;

@@ -8,7 +8,7 @@ import {
 	GetProfilePreferenceDocument,
 	SetProfilePreferenceDocument,
 } from '../generated/graphql-db-react-query';
-import { CustomError } from '../helpers';
+import { CustomError } from '../helpers/custom-error';
 
 import { dataService } from './data-service';
 import { type ProfilePreferenceKey } from './profile-preferences.types';

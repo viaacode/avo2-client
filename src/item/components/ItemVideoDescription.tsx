@@ -1,4 +1,3 @@
-import { type CuePoints } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Column,
@@ -26,15 +25,17 @@ import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
-import { FlowPlayerWrapper, ItemMetadata } from '../../shared/components';
+import { ItemMetadata } from '../../shared/components/BlockItemMetadata/ItemMetadata';
+import FlowPlayerWrapper from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
 import { TEAL_BRIGHT } from '../../shared/constants';
-import { stripHtml } from '../../shared/helpers';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 import './ItemVideoDescription.scss';
+import { stripHtml } from '../../shared/helpers/formatters';
+import { type CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.types';
 
 interface ItemVideoDescriptionProps {
 	itemMetaData: Avo.Item.Item;

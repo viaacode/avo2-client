@@ -12,15 +12,9 @@ import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetA
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { OrderDirection } from '../../../search/search.const';
-import {
-	type CheckboxOption,
-	LoadingErrorLoadedComponent,
-	type LoadingInfo,
-} from '../../../shared/components';
-import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
-import { buildLink, CustomError } from '../../../shared/helpers';
 import { EducationLevelType } from '../../../shared/helpers/lom';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
@@ -56,6 +50,13 @@ import {
 } from '../assignments.const';
 import { AssignmentsBulkAction, type AssignmentsOverviewTableState } from '../assignments.types';
 import './AssignmentsOverviewAdmin.scss';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { buildLink } from '../../../shared/helpers/build-link';
 import {
 	renderAssignmentOverviewCellReact,
 	renderAssignmentsMarcomCellText,

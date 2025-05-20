@@ -10,12 +10,12 @@ import { type DefaultSecureRouteProps } from '../../../authentication/components
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { OrderDirection } from '../../../search/search.const';
+import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import {
-	type CheckboxOption,
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../../shared/components';
-import { CustomError } from '../../../shared/helpers';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';

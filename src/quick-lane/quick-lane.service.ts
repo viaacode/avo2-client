@@ -4,7 +4,7 @@ import { ItemsService } from '../admin/items/items.service';
 import { AssignmentLayout } from '../assignment/assignment.types';
 import { CollectionService } from '../collection/collection.service';
 import { CollectionOrBundle } from '../collection/collection.types';
-import { type QuickLaneType } from '../shared/components/QuickLaneModal/QuickLaneModal.types';
+import { type QuickLaneType } from '../shared/components/QuickLaneContent/QuickLaneContent.types';
 import {
 	type GetQuickLaneByContentAndOwnerQuery,
 	type GetQuickLaneByContentAndOwnerQueryVariables,
@@ -24,7 +24,7 @@ import {
 	RemoveQuickLanesDocument,
 	UpdateQuickLaneByIdDocument,
 } from '../shared/generated/graphql-db-react-query';
-import { CustomError } from '../shared/helpers';
+import { CustomError } from '../shared/helpers/custom-error';
 import { quickLaneUrlRecordToObject } from '../shared/helpers/quick-lane-url-record-to-object';
 import { dataService } from '../shared/services/data-service';
 import { type QuickLaneUrlObject, type QuickLaneUrlRecord } from '../shared/types';

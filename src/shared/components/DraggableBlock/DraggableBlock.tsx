@@ -1,15 +1,15 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type DefaultProps, Flex, FlexItem, Icon } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import { truncate } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { stripHtml } from '../../helpers';
 import { GET_BLOCK_ICON } from '../BlockList/BlockIconWrapper/BlockIconWrapper.consts';
 
 import './DraggableBlock.scss';
+import { stripHtml } from '../../helpers/formatters';
 
 interface DraggableBlockProps extends DefaultProps {
 	block?: Avo.Core.BlockItemBase;
@@ -34,7 +34,7 @@ const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
 	].find((string) => string && string.length > 0);
 
 	return (
-		<Flex className={classNames('c-draggable-block', className)} center>
+		<Flex className={clsx('c-draggable-block', className)} center>
 			<FlexItem shrink>
 				{thumbnail ? (
 					<div style={{ backgroundImage: `url(${thumbnail})` }} />

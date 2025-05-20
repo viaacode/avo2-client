@@ -8,11 +8,11 @@ import FilterTable, {
 } from '../../admin/shared/components/FilterTable/FilterTable';
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from '../../admin/shared/components/FilterTable/FilterTable.const';
 import { QuickLaneService } from '../../quick-lane/quick-lane.service';
-import { DeleteObjectModal, type LoadingInfo } from '../../shared/components';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
+import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { QUICK_LANE_DEFAULTS, type QuickLaneColumn } from '../../shared/constants/quick-lane';
-import { CustomError, isMobileWidth } from '../../shared/helpers';
 import { copyQuickLaneToClipboard } from '../../shared/helpers/generate-quick-lane-href';
 import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -28,6 +28,8 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../workspace.const';
 
 import './QuickLaneOverview.scss';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { CustomError } from '../../shared/helpers/custom-error';
 
 // Typings
 
@@ -357,7 +359,7 @@ const QuickLaneOverview: FC<QuickLaneOverviewProps & UserProps> = ({ commonUser 
 				}}
 			/>
 
-			<DeleteObjectModal
+			<ConfirmModal
 				title={tText(
 					'workspace/views/quick-lane-overview___ben-je-zeker-dat-je-deze-gedeelde-link-wilt-verwijderen'
 				)}

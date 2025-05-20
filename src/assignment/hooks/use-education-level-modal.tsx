@@ -1,7 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
 import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 
-import { isUserSecondaryElementary } from '../../shared/helpers';
+import { isUserSecondaryElementary } from '../../shared/helpers/is-user';
 import { isUserAssignmentOwner } from '../assignment.helper';
 
 export function useEducationLevelModal(

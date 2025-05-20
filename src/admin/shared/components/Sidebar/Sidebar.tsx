@@ -1,11 +1,11 @@
 import { Icon, IconName } from '@viaa/avo2-components';
-import classnames from 'classnames';
+import { clsx } from 'clsx';
 import { flatten } from 'lodash-es';
 import React, { type FC, type ReactElement, type ReactNode } from 'react';
 import { Link, NavLink, type RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../../../constants';
-import { CustomError } from '../../../../shared/helpers';
+import { CustomError } from '../../../../shared/helpers/custom-error';
 import { tText } from '../../../../shared/helpers/translate-text';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { type NavigationItemInfo } from '../../../../shared/types';
@@ -58,12 +58,12 @@ const Sidebar: FC<SidebarProps> = ({
 		return (
 			<li
 				key={`${navItem.location}-${index}`}
-				className={classnames('o-sidebar__avo__nav-item-wrapper', {
+				className={clsx('o-sidebar__avo__nav-item-wrapper', {
 					'o-sidebar__avo__nav-item-sublink': isSubLink || false,
 				})}
 			>
 				<NavLink
-					className={classnames('o-sidebar__avo__nav-item')}
+					className={clsx('o-sidebar__avo__nav-item')}
 					activeClassName="o-sidebar__avo__nav-item--active"
 					isActive={(_match, location) => isActiveClass(navItem, location)}
 					to={navItem.location || '/'}
@@ -87,9 +87,7 @@ const Sidebar: FC<SidebarProps> = ({
 	};
 
 	return (
-		<div
-			className={classnames(className, 'o-sidebar__avo', { 'o-sidebar__avo--light': light })}
-		>
+		<div className={clsx(className, 'o-sidebar__avo', { 'o-sidebar__avo--light': light })}>
 			{headerLink && (
 				<div className="o-sidebar__avo__header">
 					<Link

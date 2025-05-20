@@ -82,8 +82,10 @@ import {
 	type App_Pupil_Collection_Blocks,
 	Lookup_Enum_Relation_Types_Enum,
 } from '../shared/generated/graphql-db-types';
-import { CustomError, getEnv, isUserSecondaryElementary } from '../shared/helpers';
+import { CustomError } from '../shared/helpers/custom-error';
+import { getEnv } from '../shared/helpers/env';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
+import { isUserSecondaryElementary } from '../shared/helpers/is-user';
 import { tHtml } from '../shared/helpers/translate-html';
 import { tText } from '../shared/helpers/translate-text';
 import { dataService } from '../shared/services/data-service';

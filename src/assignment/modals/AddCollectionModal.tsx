@@ -32,8 +32,12 @@ import { compose } from 'redux';
 import { CollectionService } from '../../collection/collection.service';
 import { type Collection, ContentTypeNumber } from '../../collection/collection.types';
 import { OrderDirection } from '../../search/search.const';
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
-import { CustomError, formatDate, formatTimestamp } from '../../shared/helpers';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { formatDate, formatTimestamp } from '../../shared/helpers/formatters';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';

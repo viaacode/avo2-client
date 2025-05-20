@@ -2,7 +2,8 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
 import queryString from 'query-string';
 
-import { CustomError, getEnv } from '../helpers';
+import { CustomError } from '../helpers/custom-error';
+import { getEnv } from '../helpers/env';
 
 export class EducationOrganisationService {
 	public static async fetchCities(): Promise<string[]> {

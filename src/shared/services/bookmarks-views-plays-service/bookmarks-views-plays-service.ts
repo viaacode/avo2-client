@@ -1,7 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
 import { compact, fromPairs, get, groupBy, noop } from 'lodash-es';
 
-import { ContentTypeNumber } from '../../../collection/collection.types';
+import { WorkspaceService } from '../../../workspace/workspace.service';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
 import {
 	type DeleteAssignmentBookmarksForUserMutationVariables,
@@ -11,8 +11,6 @@ import {
 	type DeleteItemBookmarkMutationVariables,
 	type GetAssignmentBookmarkViewCountsQuery,
 	type GetAssignmentBookmarkViewCountsQueryVariables,
-	type GetBookmarksForUserQuery,
-	type GetBookmarksForUserQueryVariables,
 	type GetBookmarkStatusesQuery,
 	type GetBookmarkStatusesQueryVariables,
 	type GetCollectionBookmarkViewPlayCountsQuery,
@@ -44,7 +42,6 @@ import {
 } from '../../generated/graphql-db-operations';
 import {
 	GetAssignmentBookmarkViewCountsDocument,
-	GetBookmarksForUserDocument,
 	GetBookmarkStatusesDocument,
 	GetCollectionBookmarkViewPlayCountsDocument,
 	GetItemBookmarksForUserDocument,
@@ -53,14 +50,13 @@ import {
 	GetMultipleCollectionViewCountsDocument,
 	GetMultipleItemViewCountsDocument,
 } from '../../generated/graphql-db-react-query';
-import { CustomError, normalizeTimestamp } from '../../helpers';
+import { CustomError } from '../../helpers/custom-error';
+import { normalizeTimestamp } from '../../helpers/formatters';
 import { dataService } from '../data-service';
 import { trackEvents } from '../event-logging-service';
 
 import { GET_EVENT_QUERIES } from './bookmarks-views-plays-service.const';
 import {
-	type AppAssignmentBookmark,
-	type AppCollectionBookmark,
 	type AppItemBookmark,
 	type BookmarkInfo,
 	type BookmarkRequestInfo,
@@ -266,6 +262,7 @@ export class BookmarksViewsPlaysService {
 				contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
 				contentType: itemBookmark.bookmarkedItem.item.item_meta.type
 					.label as Avo.ContentType.English,
+				contentDescription: '',
 				createdAt: normalizeTimestamp(itemBookmark.created_at).getTime(),
 				contentTitle: itemBookmark.bookmarkedItem.title,
 				contentDuration: itemBookmark.bookmarkedItem.duration,
@@ -306,76 +303,15 @@ export class BookmarksViewsPlaysService {
 	/**
 	 * Gets all bookmarks for user without pagination
 	 * since we cannot order items across both tables: item_bookmarks and collection_bookmarks
-	 * @param commonUser
 	 */
-	public static async getAllBookmarksForUser(
-		commonUser: Avo.User.CommonUser
-	): Promise<BookmarkInfo[]> {
-		const variables: GetBookmarksForUserQueryVariables = { profileId: commonUser.profileId };
-		const response = await dataService.query<
-			GetBookmarksForUserQuery,
-			GetBookmarksForUserQueryVariables
-		>({
-			query: GetBookmarksForUserDocument,
-			variables,
-		});
-		const itemBookmarks: AppItemBookmark[] = response.app_item_bookmarks as AppItemBookmark[];
-		const collectionBookmarks: AppCollectionBookmark[] = (response.app_collection_bookmarks ||
-			[]) as AppCollectionBookmark[];
-		const itemBookmarkInfos: (BookmarkInfo | null)[] =
-			BookmarksViewsPlaysService.getItemBookmarkInfos(itemBookmarks);
-		const assignmentBookmarks: AppAssignmentBookmark[] =
-			(response.app_assignments_v2_bookmarks || []) as AppAssignmentBookmark[];
+	public static async getAllBookmarksForUser(): Promise<BookmarkInfo[]> {
+		const bookmarks = await WorkspaceService.getAllBookmarksForUser();
 
-		const collectionBookmarkInfos: (BookmarkInfo | null)[] = collectionBookmarks.map(
-			(collectionBookmark): BookmarkInfo | null => {
-				if (!collectionBookmark.bookmarkedCollection) {
-					return null;
-				}
-				return {
-					contentId: collectionBookmark.collection_uuid,
-					contentLinkId: collectionBookmark.collection_uuid,
-					contentType:
-						collectionBookmark.bookmarkedCollection.type_id ===
-						ContentTypeNumber.collection
-							? 'collection'
-							: 'bundle',
-					createdAt: normalizeTimestamp(collectionBookmark.created_at).getTime(),
-					contentTitle: collectionBookmark.bookmarkedCollection.title,
-					contentThumbnailPath: collectionBookmark.bookmarkedCollection.thumbnail_path,
-					contentCreatedAt: normalizeTimestamp(
-						collectionBookmark.bookmarkedCollection.created_at
-					).getTime(),
-					contentViews:
-						get(collectionBookmark, 'bookmarkedCollection.view_counts[0].count') || 0,
-				};
-			}
-		);
-		const assignmentBookmarkInfos: (BookmarkInfo | null)[] = assignmentBookmarks.map(
-			(assignmentBookmark): BookmarkInfo | null => {
-				if (!assignmentBookmark.assignment) {
-					return null;
-				}
-				return {
-					contentId: assignmentBookmark.assignment_id,
-					contentLinkId: assignmentBookmark.assignment_id,
-					contentType: 'assignment',
-					createdAt: normalizeTimestamp(assignmentBookmark.created_at).getTime(),
-					contentTitle: assignmentBookmark.assignment.title,
-					contentThumbnailPath: assignmentBookmark.assignment.thumbnail_path,
-					contentCreatedAt: normalizeTimestamp(
-						assignmentBookmark.assignment.created_at
-					).getTime(),
-					contentViews:
-						get(assignmentBookmark, 'bookmarkedCollection.view_counts[0].count') || 0,
-				};
-			}
-		);
-		return [
-			...compact(itemBookmarkInfos),
-			...compact(collectionBookmarkInfos),
-			...compact(assignmentBookmarkInfos),
-		];
+		return bookmarks.map((item) => ({
+			...item,
+			contentThumbnailPath:
+				item.contentType === 'audio' ? DEFAULT_AUDIO_STILL : item.contentThumbnailPath,
+		}));
 	}
 
 	private static getQueryAndVariables(

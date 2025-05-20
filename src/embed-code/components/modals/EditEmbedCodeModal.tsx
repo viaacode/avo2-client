@@ -1,0 +1,59 @@
+import { Modal, ModalBody } from '@viaa/avo2-components';
+import React, { type FC, type ReactNode } from 'react';
+
+import EmbedContent from '../../../embed-code/components/EmbedContent';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { type EmbedCode, EmbedCodeExternalWebsite } from '../../embed-code.types';
+
+import './EditEmbedCodeModal.scss';
+
+type EditEmbedCodeModalProps = {
+	embedCode?: EmbedCode;
+	isOpen: boolean;
+	handleUpdate: (item: EmbedCode) => Promise<void>;
+	onClose: () => void;
+};
+
+const EditEmbedCodeModal: FC<EditEmbedCodeModalProps> = ({
+	embedCode,
+	isOpen,
+	handleUpdate,
+	onClose,
+}) => {
+	const renderEmbedContentDescription = (): string | ReactNode => {
+		switch (embedCode?.externalWebsite) {
+			case EmbedCodeExternalWebsite.SMARTSCHOOL:
+				return tHtml(
+					'embed-code/components/modals/edit-embed-code-modal___let-op-de-aanpassingen-komen-meteen-door-overal-waar-je-dit-fragment-insloot-in-smartschool'
+				);
+			case EmbedCodeExternalWebsite.BOOKWIDGETS:
+				return tHtml(
+					'embed-code/components/modals/edit-embed-code-modal___let-op-de-aanpassingen-komen-meteen-door-overal-waar-je-dit-fragment-insloot-in-bookwidgets'
+				);
+			default:
+				return '';
+		}
+	};
+
+	return (
+		<Modal
+			isOpen={isOpen}
+			size="large"
+			scrollable={true}
+			onClose={onClose}
+			disablePageScroll={true}
+			title={tHtml('embed-code/components/modals/edit-embed-code-modal___fragment-bewerken')}
+		>
+			<ModalBody>
+				<EmbedContent
+					item={embedCode}
+					contentDescription={renderEmbedContentDescription()}
+					onClose={onClose}
+					onSave={handleUpdate}
+				/>
+			</ModalBody>
+		</Modal>
+	);
+};
+
+export default EditEmbedCodeModal as FC<EditEmbedCodeModalProps>;

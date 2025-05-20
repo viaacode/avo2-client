@@ -11,6 +11,7 @@ export const ASSIGNMENTS_ID = ROUTE_PARTS.assignments;
 export const BOOKMARKS_ID = ROUTE_PARTS.bookmarks;
 export const ORGANISATION_CONTENT_ID = ROUTE_PARTS.organisationContent;
 export const QUICK_LANE_ID = ROUTE_PARTS.quickLane;
+export const EMBEDS_ID = ROUTE_PARTS.embeds;
 
 export const GET_TABS: () => WorkspaceTab[] = () => [
 	{
@@ -42,6 +43,11 @@ export const GET_TABS: () => WorkspaceTab[] = () => [
 		label: tText('workspace/workspace___organisatie-content'),
 		id: ORGANISATION_CONTENT_ID,
 	},
+	{
+		label: tText('workspace/workspace___ingesloten-fragmenten'),
+		icon: IconName.code,
+		id: EMBEDS_ID,
+	},
 ];
 
 export const ITEMS_PER_PAGE = 20;
@@ -53,4 +59,5 @@ export const WORKSPACE_TAB_ID_TO_COUNT_ID: Record<WorkspaceTabNames, keyof Works
 	[BOOKMARKS_ID]: 'bookmarks' as const,
 	[ORGANISATION_CONTENT_ID]: 'organisationContent' as const,
 	[QUICK_LANE_ID]: 'quickLanes' as const,
+	[EMBEDS_ID]: 'embeds' as const,
 };

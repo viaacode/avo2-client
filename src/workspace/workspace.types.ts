@@ -6,6 +6,7 @@ import {
 	type BOOKMARKS_ID,
 	type BUNDLES_ID,
 	type COLLECTIONS_ID,
+	type EMBEDS_ID,
 	type ORGANISATION_CONTENT_ID,
 	type QUICK_LANE_ID,
 } from './workspace.const';
@@ -37,7 +38,8 @@ export type WorkspaceTabNames =
 	| typeof ASSIGNMENTS_ID
 	| typeof BOOKMARKS_ID
 	| typeof ORGANISATION_CONTENT_ID
-	| typeof QUICK_LANE_ID;
+	| typeof QUICK_LANE_ID
+	| typeof EMBEDS_ID;
 
 export interface WorkspaceTab extends TabProps {
 	id: WorkspaceTabNames;
@@ -50,5 +52,6 @@ export type WorkspaceCounts = {
 	bookmarks: number;
 	organisationContent: number;
 	quickLanes: number;
+	embeds: number;
 	organisationQuickLanes: number;
 };

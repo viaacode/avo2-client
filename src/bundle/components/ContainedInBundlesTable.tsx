@@ -5,7 +5,7 @@ import { withRouter } from 'react-router';
 import { type RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
 
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { type ParentBundle } from '../../collection/collection.types';
 import {
 	type BundleColumnId,
@@ -14,7 +14,7 @@ import {
 } from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
 import { APP_PATH } from '../../constants';
 import { OrderDirection } from '../../search/search.const';
-import { buildLink } from '../../shared/helpers';
+import { buildLink } from '../../shared/helpers/build-link';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { tText } from '../../shared/helpers/translate-text';

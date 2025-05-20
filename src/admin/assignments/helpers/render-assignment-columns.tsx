@@ -14,7 +14,8 @@ import {
 import { CollectionCreateUpdateTab, type QualityLabel } from '../../../collection/collection.types';
 import { APP_PATH } from '../../../constants';
 import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
-import { buildLink, formatDate } from '../../../shared/helpers';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { formatDate } from '../../../shared/helpers/formatters';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
 import { groupLomLinks } from '../../../shared/helpers/lom';
 import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';

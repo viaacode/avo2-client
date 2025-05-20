@@ -30,13 +30,14 @@ import { Link } from 'react-router-dom';
 
 import { buildGlobalSearchLink } from '../../../assignment/helpers/build-search-link';
 import { APP_PATH } from '../../../constants';
-import { DeleteObjectModal, FlowPlayerWrapper, ItemMetadata } from '../../../shared/components';
+import { ItemMetadata } from '../../../shared/components/BlockItemMetadata/ItemMetadata';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
+import FlowPlayerWrapper from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import {
 	RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
 	RICH_TEXT_EDITOR_OPTIONS_DEFAULT,
 } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { getMoreOptionsLabel } from '../../../shared/constants';
-import { buildLink, createDropdownMenuItem } from '../../../shared/helpers';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -59,6 +60,8 @@ import {
 import { FragmentEditAction } from './FragmentEdit.types';
 
 import './FragmentEdit.scss';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { createDropdownMenuItem } from '../../../shared/helpers/dropdown';
 
 interface FragmentEditProps {
 	index: number;
@@ -545,7 +548,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 				/>
 			)}
 
-			<DeleteObjectModal
+			<ConfirmModal
 				title={GET_FRAGMENT_DELETE_LABELS()[fragment.type]}
 				body={tText(
 					'collection/components/fragment/fragment-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden'
