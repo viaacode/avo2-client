@@ -34,6 +34,7 @@ export class EmbedCodeService {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
+					authorization: `Bearer ${EmbedCodeService.getJwtTokenFromUrl()}`,
 				},
 				credentials: 'include',
 			});
@@ -194,5 +195,15 @@ export class EmbedCodeService {
 			console.log(error);
 			throw error;
 		}
+	}
+
+	/**
+	 * Embed codes inside an iframe will have a query param: jwtToken containing a token to authenticate api requests
+	 * After the user has logged in, or when the external platform has provided enough info to log in the user through the LTI login flow
+	 * @private
+	 */
+	public static getJwtTokenFromUrl(): string | null {
+		const urlParams = new URLSearchParams(window.location.search);
+		return urlParams.get('jwtToken');
 	}
 }
