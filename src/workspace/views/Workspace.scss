@@ -16,6 +16,11 @@
 		}
 	}
 
+	.c-navbar .c-toolbar {
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
+
 	.c-tab-select {
 		width: 100%;
 	}
