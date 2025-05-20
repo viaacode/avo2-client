@@ -430,19 +430,19 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 								</BlockHeading>
 							</ToolbarLeft>
 
-							{tabId && <ToolbarRight>{renderActionButton(tabId)}</ToolbarRight>}
+							<ToolbarRight>
+								<InteractiveTour showButton />
+								{tabId && renderActionButton(tabId)}
+							</ToolbarRight>
+
 						</Toolbar>
 					</Container>
 				</Container>
 
-				<Navbar background="alt" placement="top" autoHeight>
+				<Navbar background="alt" placement="top" autoHeight className="c-scrollable">
 					<Container mode="horizontal">
 						<Toolbar className="c-toolbar--no-height">
 							<ToolbarLeft>{renderToolbar(tabs, activeTab)}</ToolbarLeft>
-
-							<ToolbarRight>
-								<InteractiveTour showButton />
-							</ToolbarRight>
 						</Toolbar>
 					</Container>
 				</Navbar>
