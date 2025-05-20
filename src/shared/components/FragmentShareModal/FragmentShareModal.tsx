@@ -14,7 +14,7 @@ import {
 } from '@viaa/avo2-components';
 import { type MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/MenuContent/MenuContent';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import React, { type FC, type ReactNode, useEffect, useState } from 'react';
+import React, { createRef, type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import EmbedContent from '../../../embed-code/components/EmbedContent';
@@ -107,6 +107,8 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 		EmbedCodeExternalWebsite | ''
 	>('');
 	const [embedCode, setEmbedCode] = useState<EmbedCode | undefined>(undefined);
+
+	const modalRef = createRef();
 
 	const handleRightsButtonClicked = () => {
 		setIsEmbedDropdownOpen(!isEmbedDropdownOpen);
@@ -269,6 +271,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 					item={embedCode}
 					contentDescription={renderEmbedContentDescription()}
 					onClose={handleClose}
+					onResize={() => modalRef?.current?.updateSize()}
 				/>
 			</>
 		);
@@ -289,6 +292,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 
 	return (
 		<Modal
+			ref={modalRef}
 			isOpen={isOpen}
 			size="large"
 			scrollable={tab === ShareDropdownTabs.PUPILS || !!embedDropdownSelection}
