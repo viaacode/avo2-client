@@ -7,6 +7,8 @@ import {
 	Flex,
 	Icon,
 	IconName,
+	Pill,
+	PillVariants,
 	Spacer,
 	Spinner,
 	Table,
@@ -15,7 +17,8 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
-import React, { type FC, type ReactNode, useState } from 'react';
+import { compact, noop } from 'lodash-es';
+import React, { type FC, type ReactNode, useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -23,6 +26,8 @@ import { StringParam, useQueryParams } from 'use-query-params';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import EmbedCodeFilterTableCell from '../../../embed-code/components/EmbedCodeFilterTableCell';
+import { toEmbedCodeDetail } from '../../../embed-code/helpers/links';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import QuickLaneFilterTableCell from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
@@ -30,6 +35,7 @@ import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrap
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
+import { formatDate, formatTimestamp } from '../../../shared/helpers/formatters';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
@@ -57,6 +63,7 @@ import { useGetItemUsedBy } from '../hooks/useGetItemUsedBy';
 import { useGetItemWithRelations } from '../hooks/useGetItemWithRelations';
 import {
 	GET_ITEM_USED_BY_COLLECTIONS_AND_ASSIGNMENTS_COLUMNS,
+	GET_ITEM_USED_BY_EMBED_CODES,
 	GET_ITEM_USED_BY_QUICK_LANES,
 	GET_TABS,
 	ITEMS_TABS,
@@ -92,8 +99,47 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 
 	const [noteEditorState, setNoteEditorState] = useState<RichEditorState>();
 
-	const [tab, setActiveTab, tabs] = useTabs(GET_TABS(), ITEMS_TABS.GENERAL);
+	const [activeTab, setActiveTab, tabs] = useTabs(GET_TABS(), ITEMS_TABS.GENERAL);
 	const { tText, tHtml } = useTranslation();
+
+	const getTabCount = (tab: string | number) => {
+		switch (tab) {
+			case ITEMS_TABS.COLLECTIONS:
+				return itemUsedBy?.collections.length;
+			case ITEMS_TABS.ASSIGNMENTS:
+				return itemUsedBy?.assignments.length;
+			case ITEMS_TABS.QUICK_LANE:
+				return itemUsedBy?.quickLanes.length;
+			case ITEMS_TABS.EMBEDS:
+				return itemUsedBy?.embedCodes.length;
+			case ITEMS_TABS.GENERAL:
+			default:
+				return 0;
+		}
+	};
+
+	const getNavTabs = useCallback(() => {
+		return compact(
+			GET_TABS().map((tab) => {
+				const isTabActive = activeTab === tab.id;
+				const tabCount = getTabCount(tab.id);
+				return {
+					...tab,
+					active: isTabActive,
+					label: tabCount ? (
+						<>
+							{tab.label}
+							<Pill variants={isTabActive ? [PillVariants.active] : []}>
+								{tabCount}
+							</Pill>
+						</>
+					) : (
+						tab.label
+					),
+				};
+			})
+		);
+	}, [activeTab, getTabCount]);
 
 	const toggleItemPublishedState = async () => {
 		try {
@@ -191,6 +237,10 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 							/>
 						);
 					}
+					case 'EMBED_CODE': {
+						const date = rowData.createdAt;
+						return <span title={formatTimestamp(date)}>{formatDate(date)}</span>;
+					}
 
 					default:
 						return rowData[columnId];
@@ -205,6 +255,19 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 								id={columnId}
 								data={mapItemUsedByToQuickLane(rowData)}
 							/>
+						);
+					}
+					case 'EMBED_CODE': {
+						const href = toEmbedCodeDetail(rowData.id);
+						return (
+							<a
+								href={href}
+								rel="noopener noreferrer"
+								target="_blank"
+								title={rowData.title}
+							>
+								{rowData.title}
+							</a>
 						);
 					}
 
@@ -236,6 +299,19 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 						<Icon name={rowData.isPublic ? IconName.unlock3 : IconName.lock} />
 					</div>
 				);
+
+			case 'externalWebsite': {
+				return (
+					<EmbedCodeFilterTableCell
+						id={columnId}
+						data={{
+							...rowData,
+							contentId: rowData.id,
+						}}
+						onNameClick={noop}
+					/>
+				);
+			}
 
 			case ACTIONS_TABLE_COLUMN_ID: {
 				if (rowData.type === 'QUICK_LANE') {
@@ -438,8 +514,29 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 		</>
 	);
 
+	const renderAssociatedEmbedCodesTable = () => (
+		<>
+			{itemUsedBy?.embedCodes?.length ? (
+				<>
+					<Table
+						columns={GET_ITEM_USED_BY_EMBED_CODES()}
+						data={itemUsedBy.embedCodes}
+						onColumnClick={handleColumnClick}
+						renderCell={renderCell as any}
+						sortColumn={queryParams.sortProp || undefined}
+						sortOrder={queryParams.sortDirection as SearchOrderDirection | undefined}
+						variant="styled"
+						rowKey="id"
+					/>
+				</>
+			) : (
+				tText('Dit fragment werd nog niets gedeeld op Smartschool of Bookwidgets')
+			)}
+		</>
+	);
+
 	const renderTabContent = () => {
-		switch (tab) {
+		switch (activeTab) {
 			case ITEMS_TABS.GENERAL:
 				return renderGeneralInfoTable();
 			case ITEMS_TABS.COLLECTIONS:
@@ -449,6 +546,7 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 			case ITEMS_TABS.QUICK_LANE:
 				return renderAssociatedQuickLaneTable();
 			case ITEMS_TABS.EMBEDS:
+				return renderAssociatedEmbedCodesTable();
 			default:
 				return <></>;
 		}
@@ -574,7 +672,7 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 				<AdminLayoutHeader>
 					<div className="u-bg-gray-50">
 						<Container mode="horizontal" size="full-width">
-							<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
+							<Tabs tabs={getNavTabs()} onClick={(id) => setActiveTab(id)} />
 						</Container>
 					</div>
 				</AdminLayoutHeader>

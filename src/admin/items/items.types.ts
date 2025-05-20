@@ -1,5 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 
+import { type EmbedCodeExternalWebsite } from '../../embed-code/embed-code.types';
 import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { type FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
@@ -94,13 +95,15 @@ export interface ItemUsedByEntry {
 	organisation: string | undefined;
 	owner: string;
 	title: string;
-	type: 'COLLECTION' | 'ASSIGNMENT' | 'QUICK_LANE';
+	type: 'COLLECTION' | 'ASSIGNMENT' | 'QUICK_LANE' | 'EMBED_CODE';
+	externalWebsite?: EmbedCodeExternalWebsite;
 }
 
 export interface ItemUsedByResponse {
 	collections: ItemUsedByEntry[];
 	assignments: ItemUsedByEntry[];
 	quickLanes: ItemUsedByEntry[];
+	embedCodes: ItemUsedByEntry[];
 }
 
 export type ItemUsedByColumnId = keyof ItemUsedByEntry;

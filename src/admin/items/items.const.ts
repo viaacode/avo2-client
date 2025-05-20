@@ -1,4 +1,4 @@
-import {IconName, type TabProps} from '@viaa/avo2-components';
+import { IconName, type TabProps } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 
 import {
@@ -338,5 +338,32 @@ export const GET_ITEM_USED_BY_QUICK_LANES = () => [
 		label: tText('workspace/views/quick-lane-overview___aangemaakt-op'),
 		sortable: true,
 		dataType: TableColumnDataType.dateTime,
+	},
+];
+
+export const GET_ITEM_USED_BY_EMBED_CODES = () => [
+	{
+		id: 'title',
+		label: tText('Titel'),
+		sortable: true,
+		dataType: TableColumnDataType.string,
+	},
+	{
+		id: 'owner',
+		label: tText('Aangemaakt door'),
+		sortable: true,
+		dataType: TableColumnDataType.string,
+	},
+	{
+		id: 'createdAt',
+		label: tText('Aangemaakt op'),
+		sortable: true,
+		dataType: TableColumnDataType.dateTime,
+	},
+	{
+		id: 'externalWebsite',
+		label: tText('Gedeeld op'),
+		sortable: true,
+		dataType: TableColumnDataType.string,
 	},
 ];
