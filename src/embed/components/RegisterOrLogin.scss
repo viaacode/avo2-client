@@ -3,9 +3,13 @@
 @import "../../styles/settings/colors";
 @import "../../styles/settings/variables";
 
+$pupil-teacher-tabs-height: 4.4rem;
+
 .c-register-login-view {
+	height: 100%;
+
 	.o-grid {
-		height: 100%;
+		height: calc(100% - $pupil-teacher-tabs-height - $g-spacer-unit * 7); // Vertically and visually center login buttons on the screen
 	}
 
 	[class*="o-grid-col"] {
@@ -16,7 +20,8 @@
 			justify-content: center;
 		}
 
-		&:not(:first-child) {
+		&:last-child {
+			display: flex;
 			border-left: 1px solid $c-register-login-view-modal-border-color;
 		}
 	}
@@ -24,6 +29,7 @@
 	.m-login-options__wrapper {
 		min-height: 324px;
 		max-height: 324px;
+		width: 100%;
 		margin: auto;
 	}
 

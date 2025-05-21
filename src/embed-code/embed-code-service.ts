@@ -23,7 +23,7 @@ export class EmbedCodeService {
 			const error = new CustomError('Failed to get embed code when embedId is empty', {
 				url,
 			});
-			console.log(error);
+			console.error(error);
 			throw error;
 		}
 
@@ -34,6 +34,7 @@ export class EmbedCodeService {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
+					authorization: `Bearer ${EmbedCodeService.getJwtTokenFromUrl()}`,
 				},
 				credentials: 'include',
 			});
@@ -43,7 +44,7 @@ export class EmbedCodeService {
 			const error = new CustomError('Failed to get embed code', err, {
 				url,
 			});
-			console.log(error);
+			console.error(error);
 			throw error;
 		}
 	}
@@ -67,7 +68,7 @@ export class EmbedCodeService {
 					url,
 					data,
 				});
-				console.log(error);
+				console.error(error);
 				throw error;
 			}
 			const responseData = (await response.json()) as {
@@ -81,7 +82,7 @@ export class EmbedCodeService {
 				url,
 				data,
 			});
-			console.log(error);
+			console.error(error);
 			throw error;
 		}
 	}
@@ -105,7 +106,7 @@ export class EmbedCodeService {
 					url,
 					data,
 				});
-				console.log(error);
+				console.error(error);
 				throw error;
 			}
 		} catch (err) {
@@ -113,7 +114,7 @@ export class EmbedCodeService {
 				url,
 				data,
 			});
-			console.log(error);
+			console.error(error);
 			throw error;
 		}
 	}
@@ -147,7 +148,7 @@ export class EmbedCodeService {
 					url,
 					...params,
 				});
-				console.log(error);
+				console.error(error);
 				throw error;
 			}
 			const responseData = (await response.json()) as {
@@ -160,7 +161,7 @@ export class EmbedCodeService {
 				...params,
 				url,
 			});
-			console.log(error);
+			console.error(error);
 			throw error;
 		}
 	}
@@ -183,7 +184,7 @@ export class EmbedCodeService {
 					url,
 					embedCodeId,
 				});
-				console.log(error);
+				console.error(error);
 				throw error;
 			}
 		} catch (err) {
@@ -191,8 +192,18 @@ export class EmbedCodeService {
 				url,
 				embedCodeId,
 			});
-			console.log(error);
+			console.error(error);
 			throw error;
 		}
+	}
+
+	/**
+	 * Embed codes inside an iframe will have a query param: jwtToken containing a token to authenticate api requests
+	 * After the user has logged in, or when the external platform has provided enough info to log in the user through the LTI login flow
+	 * @private
+	 */
+	public static getJwtTokenFromUrl(): string | null {
+		const urlParams = new URLSearchParams(window.location.search);
+		return urlParams.get('jwtToken');
 	}
 }

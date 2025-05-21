@@ -2,6 +2,7 @@ import { Button, IconName, Spacer } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
 import { type RouteComponentProps } from 'react-router';
+import { withRouter } from 'react-router-dom';
 
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
@@ -11,15 +12,16 @@ import {
 } from '../helpers/redirects';
 
 import './LoginOptionsForPupil.scss';
-import { withRouter } from 'react-router-dom';
 
 interface LoginOptionsForPupilProps {
 	onOptionClicked?: () => void;
+	openInNewTab?: boolean;
 }
 
 const LoginOptionsForPupil: FC<LoginOptionsForPupilProps & RouteComponentProps> = ({
 	location,
 	onOptionClicked = noop,
+	openInNewTab = false,
 }) => {
 	const { tText } = useTranslation();
 
@@ -35,7 +37,7 @@ const LoginOptionsForPupil: FC<LoginOptionsForPupilProps & RouteComponentProps> 
 				label={tText('authentication/components/login-options___leerling-id')}
 				onClick={() => {
 					onOptionClicked();
-					redirectToServerLeerIDLogin(location);
+					redirectToServerLeerIDLogin(location, openInNewTab);
 				}}
 			/>,
 
@@ -47,7 +49,7 @@ const LoginOptionsForPupil: FC<LoginOptionsForPupilProps & RouteComponentProps> 
 				label={tText('authentication/components/login-options___inloggen-met-smartschool')}
 				onClick={() => {
 					onOptionClicked();
-					redirectToServerSmartschoolLogin(location);
+					redirectToServerSmartschoolLogin(location, openInNewTab);
 				}}
 			/>,
 
@@ -59,7 +61,7 @@ const LoginOptionsForPupil: FC<LoginOptionsForPupilProps & RouteComponentProps> 
 				className="c-login-with-archief c-button-mail c-login-button--pupil"
 				onClick={() => {
 					onOptionClicked();
-					redirectToServerLoginPage(location);
+					redirectToServerLoginPage(location, openInNewTab);
 				}}
 			/>,
 		];

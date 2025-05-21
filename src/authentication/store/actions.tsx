@@ -6,6 +6,7 @@ import React from 'react';
 import { type RouteComponentProps } from 'react-router-dom';
 import { type Action, type Dispatch } from 'redux';
 
+import { EmbedCodeService } from '../../embed-code/embed-code-service';
 import { getEnv } from '../../shared/helpers/env';
 import { tText } from '../../shared/helpers/translate-text';
 import { ToastService } from '../../shared/services/toast-service';
@@ -149,6 +150,10 @@ export const getLoginResponse = async (force = false): Promise<Avo.Auth.LoginRes
 		const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 		return fetchWithLogoutJson<Avo.Auth.LoginResponse>(url, {
 			forceLogout: false,
+			headers: {
+				'Content-Type': 'application/json',
+				authorization: `Bearer ${EmbedCodeService.getJwtTokenFromUrl()}`,
+			},
 		});
 	} catch (err) {
 		console.error('failed to check login state', err);

@@ -17,7 +17,7 @@ const RegisterOrLogin: FC = () => {
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
 			{
-				label: tText('authentication/components/login-options___leerling'),
+				label: tText('authentication/components/login-options___lesgever'),
 				id: LoginOptionsTabs.TEACHER,
 				icon: IconName.userTeacher,
 			},
@@ -56,10 +56,10 @@ const RegisterOrLogin: FC = () => {
 	const getButtons = () => {
 		switch (tab) {
 			case LoginOptionsTabs.TEACHER:
-				return <LoginOptionsForTeacher />;
+				return <LoginOptionsForTeacher openInNewTab={true} />;
 
 			case LoginOptionsTabs.STUDENT:
-				return <LoginOptionsForPupil />;
+				return <LoginOptionsForPupil openInNewTab={true} />;
 
 			default:
 				break;

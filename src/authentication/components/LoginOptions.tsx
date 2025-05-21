@@ -77,10 +77,17 @@ const LoginOptions: FC<LoginOptionsProps & RouteComponentProps> = ({
 	const getButtons = () => {
 		switch (tab) {
 			case LoginOptionsTabs.TEACHER:
-				return <LoginOptionsForTeacher onOptionClicked={onOptionClicked} />;
+				return (
+					<LoginOptionsForTeacher
+						onOptionClicked={onOptionClicked}
+						openInNewTab={false}
+					/>
+				);
 
 			case LoginOptionsTabs.STUDENT:
-				return <LoginOptionsForPupil onOptionClicked={onOptionClicked} />;
+				return (
+					<LoginOptionsForPupil onOptionClicked={onOptionClicked} openInNewTab={false} />
+				);
 
 			default:
 				break;

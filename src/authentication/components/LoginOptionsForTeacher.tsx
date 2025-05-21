@@ -2,6 +2,7 @@ import { Button, IconName, Spacer } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
 import { type RouteComponentProps } from 'react-router';
+import { withRouter } from 'react-router-dom';
 
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
@@ -13,15 +14,16 @@ import {
 } from '../helpers/redirects';
 
 import './LoginOptionsForTeacher.scss';
-import { withRouter } from 'react-router-dom';
 
 interface LoginOptionsForTeacherProps {
 	onOptionClicked?: () => void;
+	openInNewTab?: boolean;
 }
 
 const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentProps> = ({
 	location,
 	onOptionClicked = noop,
+	openInNewTab = false,
 }) => {
 	const { tText } = useTranslation();
 
@@ -36,7 +38,7 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 				className="c-login-with-archief c-button-mail"
 				onClick={() => {
 					onOptionClicked();
-					redirectToServerLoginPage(location);
+					redirectToServerLoginPage(location, openInNewTab);
 				}}
 			/>,
 
@@ -50,7 +52,7 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 				label={tText('authentication/components/login-options___itsme')}
 				onClick={() => {
 					onOptionClicked();
-					redirectToServerItsmeLogin(location);
+					redirectToServerItsmeLogin(location, openInNewTab);
 				}}
 			/>,
 
@@ -65,7 +67,7 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 				)}
 				onClick={() => {
 					onOptionClicked();
-					redirectToServerACMIDMLogin(location);
+					redirectToServerACMIDMLogin(location, openInNewTab);
 				}}
 			/>,
 
@@ -77,7 +79,7 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 				label={tText('authentication/components/login-options___inloggen-met-smartschool')}
 				onClick={() => {
 					onOptionClicked();
-					redirectToServerSmartschoolLogin(location);
+					redirectToServerSmartschoolLogin(location, openInNewTab);
 				}}
 			/>,
 
@@ -89,7 +91,7 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 				label={tText('authentication/components/login-options___inloggen-met-klas-cement')}
 				onClick={() => {
 					onOptionClicked();
-					redirectToServerKlascementLogin(location);
+					redirectToServerKlascementLogin(location, openInNewTab);
 				}}
 			/>,
 		];

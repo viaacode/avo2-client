@@ -446,7 +446,6 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 			);
 		}
 		if (fragment.type === 'COLLECTION' || fragment.type === 'ASSIGNMENT') {
-			console.log('rendering thumbnail for fragment', fragment);
 			return <Thumbnail category="collection" src={itemMetaData.thumbnail_path} />;
 		}
 	};

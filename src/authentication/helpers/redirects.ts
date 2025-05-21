@@ -1,9 +1,10 @@
 import { type Avo } from '@viaa/avo2-types';
 import { get, isString, omit, trimStart } from 'lodash-es';
-import queryString from 'query-string';
+import queryString, { stringifyUrl } from 'query-string';
 import { type RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
+import { EmbedCodeService } from '../../embed-code/embed-code-service';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { getEnv } from '../../shared/helpers/env';
 import { SERVER_LOGOUT_PAGE } from '../authentication.const';
@@ -13,78 +14,149 @@ import { getBaseUrl } from './get-base-url';
 
 /**
  *
- * Client redirect functions
- *
- **/
-
-/**
- *
  * Server redirect functions
  *
  **/
-export function redirectToServerLoginPage(location: RouteComponentProps['location']): void {
+
+function getRedirectUrl(
+	location: RouteComponentProps['location'],
+	closeTabAfterLogin: boolean
+): string {
+	return closeTabAfterLogin
+		? getBaseUrl(location) + '/embed/close-browser.html'
+		: getRedirectAfterLogin(location);
+}
+
+/**
+ * Redirect to the server login page for the hetarchief idp (acm / ldap meemoo)
+ * @param location
+ * @param openInNewTab used for embed iframes that need to login using the separate browser tab and close the ta automatically
+ */
+export function redirectToServerLoginPage(
+	location: RouteComponentProps['location'],
+	openInNewTab = false
+): void {
 	// Redirect to login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = getRedirectAfterLogin(location);
+	const returnToUrl = getRedirectUrl(location, openInNewTab);
 	// Not logged in, we need to redirect the user to the SAML identity server login page
-	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/login?${queryString.stringify({
-		returnToUrl,
-		stamboekNumber: localStorage && localStorage.getItem(STAMBOEK_LOCAL_STORAGE_KEY),
-	})}`;
+	const fullUrl = stringifyUrl({
+		url: `${getEnv('PROXY_URL')}/auth/hetarchief/login`,
+		query: {
+			returnToUrl,
+			stamboekNumber: localStorage && localStorage.getItem(STAMBOEK_LOCAL_STORAGE_KEY),
+			ltiJwtToken: EmbedCodeService.getJwtTokenFromUrl(),
+		},
+	});
+	if (openInNewTab) {
+		window.open(fullUrl, '_blank');
+	} else {
+		window.location.href = fullUrl;
+	}
 }
 
-export function redirectToServerItsmeLogin(location: RouteComponentProps['location']): void {
-	const returnToUrl = getRedirectAfterLogin(location);
-	window.location.href = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
+export function redirectToServerItsmeLogin(
+	location: RouteComponentProps['location'],
+	openInNewTab = false
+): void {
+	const returnToUrl = getRedirectUrl(location, openInNewTab);
+	const fullUrl = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
 		returnToUrl,
 		authMech: 'itsme',
+		ltiJwtToken: EmbedCodeService.getJwtTokenFromUrl(),
 	})}`;
+	if (openInNewTab) {
+		window.open(fullUrl, '_blank');
+	} else {
+		window.location.href = fullUrl;
+	}
 }
 
-export function redirectToServerLeerIDLogin(location: RouteComponentProps['location']): void {
-	const returnToUrl = getRedirectAfterLogin(location);
-	window.location.href = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
+export function redirectToServerLeerIDLogin(
+	location: RouteComponentProps['location'],
+	openInNewTab = false
+): void {
+	const returnToUrl = getRedirectUrl(location, openInNewTab);
+	const fullUrl = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
 		returnToUrl,
 		authMech: 'leerid',
+		ltiJwtToken: EmbedCodeService.getJwtTokenFromUrl(),
 	})}`;
+	if (openInNewTab) {
+		window.open(fullUrl, '_blank');
+	} else {
+		window.location.href = fullUrl;
+	}
 }
 
-export function redirectToServerACMIDMLogin(location: RouteComponentProps['location']): void {
-	const returnToUrl = getRedirectAfterLogin(location);
-	window.location.href = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
+export function redirectToServerACMIDMLogin(
+	location: RouteComponentProps['location'],
+	openInNewTab = false
+): void {
+	const returnToUrl = getRedirectUrl(location, openInNewTab);
+	const fullUrl = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
 		returnToUrl,
+		ltiJwtToken: EmbedCodeService.getJwtTokenFromUrl(),
 	})}`;
+	if (openInNewTab) {
+		window.open(fullUrl, '_blank');
+	} else {
+		window.location.href = fullUrl;
+	}
 }
 
-export function redirectToServerSmartschoolLogin(location: RouteComponentProps['location']): void {
+export function redirectToServerSmartschoolLogin(
+	location: RouteComponentProps['location'],
+	openInNewTab = false
+): void {
 	// Redirect to smartschool login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = getRedirectAfterLogin(location);
-	window.location.href = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
+	const returnToUrl = getRedirectUrl(location, openInNewTab);
+	const fullUrl = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
 		returnToUrl,
+		ltiJwtToken: EmbedCodeService.getJwtTokenFromUrl(),
 	})}`;
+	if (openInNewTab) {
+		window.open(fullUrl, '_blank');
+	} else {
+		window.location.href = fullUrl;
+	}
 }
 
-export function redirectToServerKlascementLogin(location: RouteComponentProps['location']): void {
+export function redirectToServerKlascementLogin(
+	location: RouteComponentProps['location'],
+	openInNewTab = false
+): void {
 	// Redirect to klascement login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = getRedirectAfterLogin(location);
-	window.location.href = `${getEnv('PROXY_URL')}/auth/klascement/login?${queryString.stringify({
+	const returnToUrl = getRedirectUrl(location, openInNewTab);
+	const fullUrl = `${getEnv('PROXY_URL')}/auth/klascement/login?${queryString.stringify({
 		returnToUrl,
+		ltiJwtToken: EmbedCodeService.getJwtTokenFromUrl(),
 	})}`;
+	if (openInNewTab) {
+		window.open(fullUrl, '_blank');
+	} else {
+		window.location.href = fullUrl;
+	}
 }
 
 export function redirectToServerArchiefRegistrationIdp(
 	location: RouteComponentProps['location'],
-	stamboekNumber: string
+	stamboekNumber: string,
+	openInNewTab = false
 ): void {
 	const returnToUrl = getBaseUrl(location) + APP_PATH.LOGIN.route;
-	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/register?${queryString.stringify(
-		{
-			returnToUrl,
-			stamboekNumber,
-		}
-	)}`;
+	const fullUrl = `${getEnv('PROXY_URL')}/auth/hetarchief/register?${queryString.stringify({
+		returnToUrl,
+		stamboekNumber,
+		ltiJwtToken: EmbedCodeService.getJwtTokenFromUrl(),
+	})}`;
+	if (openInNewTab) {
+		window.open(fullUrl, '_blank');
+	} else {
+		window.location.href = fullUrl;
+	}
 }
 
 export function redirectToServerLogoutPage(

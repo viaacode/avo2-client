@@ -171,7 +171,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 			setIsEmbedCodeModalOpen(false);
 			setSelected(undefined);
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 			ToastService.danger(
 				tText('embed-code/components/embed-code-overview___fragment-wijzigen-mislukt')
 			);
