@@ -7,9 +7,8 @@ import React, { type FC, useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 
 import { redirectToExternalPage } from '../../authentication/helpers/redirects/redirect-to-external-page';
-import { EmbedCodeService } from '../../embed-code/embed-code-service';
-import { type EmbedCode } from '../../embed-code/embed-code.types';
 import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
+import { useGetEmbedCode } from '../../embed-code/hooks/useGetEmbedCode';
 import FlowPlayerWrapper from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { reorderDate } from '../../shared/helpers/formatters';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
@@ -20,33 +19,24 @@ import ErrorView from './ErrorView';
 import './Embed.scss';
 
 const Embed: FC = () => {
-	const params = queryString.parse(window.location.search);
-	const embedId = (params['embedId'] as string) || '';
-	const showMetadata = (params['showMetadata'] as string) === 'true';
+	const query = queryString.parse(window.location.search);
+	const [embedId, setEmbedId] = useState<string | null>(null);
+	const showMetadata = (query['showMetadata'] as string) === 'true';
 
-	const [isLoadingEmbedCode, setIsLoadingEmbedCode] = useState<boolean>(false);
-	const [isError, setIsError] = useState<boolean>(false);
-	const [embedCode, setEmbedCode] = useState<EmbedCode | null>(null);
+	const {
+		data: embedCode,
+		isLoading: isLoadingEmbedCode,
+		isError: isErrorEmbedCode,
+	} = useGetEmbedCode(embedId, true);
 
 	useEffect(() => {
-		const loadEmbedCode = async () => {
-			setIsLoadingEmbedCode(true);
-			setIsError(false);
+		const embedId = query['embedId'];
+		if (embedId && typeof embedId === 'string') {
+			setEmbedId(embedId as string);
+		}
+	}, [query]);
 
-			try {
-				const result = await EmbedCodeService.getEmbedCode(embedId);
-				setEmbedCode(result);
-			} catch (err) {
-				setIsError(true);
-			}
-
-			setIsLoadingEmbedCode(false);
-		};
-
-		loadEmbedCode();
-	}, [embedId]);
-
-	if (isLoadingEmbedCode) {
+	if (!embedCode || isLoadingEmbedCode) {
 		return (
 			<Flex center style={{ height: '100%' }}>
 				<Spinner size="large" />
@@ -54,7 +44,7 @@ const Embed: FC = () => {
 		);
 	}
 
-	if (!embedCode || isError) {
+	if (isErrorEmbedCode) {
 		return <ErrorView />;
 	}
 
@@ -112,7 +102,10 @@ const Embed: FC = () => {
 							<div
 								className="c-avo-button"
 								onClick={() =>
-									redirectToExternalPage(toEmbedCodeDetail(embedId), '_blank')
+									redirectToExternalPage(
+										toEmbedCodeDetail(embedId as string),
+										'_blank'
+									)
 								}
 							>
 								<img

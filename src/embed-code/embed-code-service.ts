@@ -30,11 +30,12 @@ export class EmbedCodeService {
 		try {
 			url = `${getEnv('PROXY_URL')}/embed-codes/${embedId}`;
 
+			const ltiJwtToken = EmbedCodeService.getJwtTokenFromUrl();
 			const response = await fetch(url, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
-					authorization: `Bearer ${EmbedCodeService.getJwtTokenFromUrl()}`,
+					authorization: `Bearer ${ltiJwtToken}`,
 				},
 				credentials: 'include',
 			});

@@ -4,17 +4,25 @@ import { QUERY_KEYS } from '../../shared/constants/query-keys';
 import { EmbedCodeService } from '../embed-code-service';
 import { type EmbedCode } from '../embed-code.types';
 
-export const useGetEmbedCode = (embedCodeId: string): UseQueryResult<EmbedCode> => {
+export const useGetEmbedCode = (
+	embedCodeId: string | null,
+	enabled = true
+): UseQueryResult<EmbedCode> => {
 	return useQuery(
-		[QUERY_KEYS.GET_EMBED_CODES, embedCodeId],
+		[QUERY_KEYS.GET_EMBED_CODES, embedCodeId, EmbedCodeService.getJwtTokenFromUrl()],
 		async () => {
+			if (!embedCodeId) {
+				return null;
+			}
 			return EmbedCodeService.getEmbedCode(embedCodeId);
 		},
 		{
-			enabled: true,
+			enabled,
 			refetchInterval: false,
 			refetchIntervalInBackground: false,
 			keepPreviousData: true,
+			cacheTime: 60 * 60 * 1000, // 1 hour
+			staleTime: 60 * 60 * 1000, // 1 hour
 		}
 	);
 };

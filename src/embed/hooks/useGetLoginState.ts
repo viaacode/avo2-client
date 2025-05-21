@@ -1,9 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { type Avo } from '@viaa/avo2-types';
 
+import { setLoginSuccess } from '../../authentication/store/actions';
 import { EmbedCodeService } from '../../embed-code/embed-code-service';
 import { QUERY_KEYS } from '../../shared/constants/query-keys';
 import { getEnv } from '../../shared/helpers/env';
+import store from '../../store';
 
 export const useGetLoginStateForEmbed = () => {
 	return useQuery<Avo.Auth.LoginResponse>(
@@ -22,8 +24,9 @@ export const useGetLoginStateForEmbed = () => {
 			if (!response.ok) {
 				throw new Error('Failed to fetch login state');
 			}
-			const userInfo = await response.json();
-			return userInfo as Avo.Auth.LoginResponse;
+			const loginResponse = await response.json();
+			store.dispatch(setLoginSuccess(loginResponse));
+			return loginResponse as Avo.Auth.LoginResponse;
 		},
 		{
 			refetchOnWindowFocus: true,
