@@ -13,11 +13,11 @@ import { ErrorView } from '../error/views';
 import { CustomError } from '../shared/helpers/custom-error';
 import { tText } from '../shared/helpers/translate-text';
 import { waitForTranslations } from '../shared/translations/i18n';
+import store from '../store';
 
 import Embed from './components/Embed';
 import RegisterOrLogin from './components/RegisterOrLogin';
 import { useGetLoginStateForEmbed } from './hooks/useGetLoginState';
-import store from './store';
 
 import '../styles/main.scss';
 
@@ -25,6 +25,15 @@ const EmbedApp: FC = () => {
 	const [translationsLoaded, setTranslationsLoaded] = useState<boolean>(false);
 
 	const { data: loginState, isLoading: loginStateLoading } = useGetLoginStateForEmbed();
+	const [ltiJwtToken, setLtiJwtToken] = useState<string | null>(null);
+
+	useEffect(() => {
+		// Get the JWT token from the URL
+		const jwtToken = EmbedCodeService.getJwtTokenFromUrl();
+		if (jwtToken) {
+			setLtiJwtToken(jwtToken);
+		}
+	}, []);
 
 	/**
 	 * Wait for translations to be loaded before rendering the app
@@ -50,7 +59,7 @@ const EmbedApp: FC = () => {
 			);
 		}
 
-		if (!EmbedCodeService.getJwtTokenFromUrl()) {
+		if (!ltiJwtToken) {
 			// No JWT token in URL, redirect to error page
 			return (
 				<ErrorView
