@@ -9,7 +9,7 @@ ENV NODE_ENV $NODE_ENV
 ENV CI $CI
 ENV TZ=Europe/Brussels
 WORKDIR /app
-RUN mkdir ./dist/ &&chown -R node:node /app && chmod -R  g+s /app && chmod -R  g+w /app
+RUN mkdir ./dist/ && mkdir ./dist-embed &&chown -R node:node /app && chmod -R  g+s /app && chmod -R  g+w /app
 COPY  --chown=node:node . .
 RUN chown -R node:node /app && chmod -R  g+sw /app
 RUN apk update
