@@ -22,7 +22,6 @@ export default defineConfig(() => {
 			rollupOptions: {
 				input: {
 					main: path.resolve(__dirname, 'index.html'),
-					embed: path.resolve(__dirname, 'embed/index.html'),
 				},
 				plugins: [sourcemaps()],
 				output: {

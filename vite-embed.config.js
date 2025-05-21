@@ -17,10 +17,12 @@ const ASSETS_WITHOUT_A_HASH = [
 export default defineConfig(() => {
 	return {
 		build: {
-			outDir: 'dist',
+			outDir: 'dist-embed',
 			sourcemap: true,
 			rollupOptions: {
-				input: 'embed/index.html',
+				input: {
+					embed: path.resolve(__dirname, 'embed/index.html'),
+				},
 				plugins: [sourcemaps()],
 				output: {
 					assetFileNames: function (file) {

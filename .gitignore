@@ -236,6 +236,7 @@ node_modules
 # production
 /build
 /dist
+/dist-embed
 
 # misc
 .DS_Store
