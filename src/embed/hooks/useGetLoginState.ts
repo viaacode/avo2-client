@@ -9,13 +9,14 @@ export const useGetLoginStateForEmbed = () => {
 	return useQuery<Avo.Auth.LoginResponse>(
 		[QUERY_KEYS.GET_LOGIN_STATE_EMBED],
 		async () => {
+			const jwtToken = EmbedCodeService.getJwtTokenFromUrl();
 			const response = await fetch(`${getEnv('PROXY_URL')}/auth/check-login`, {
 				method: 'GET',
 				credentials: 'include',
 				cache: 'no-store',
 				headers: {
 					'Content-Type': 'application/json',
-					authorization: `Bearer ${EmbedCodeService.getJwtTokenFromUrl()}`, // JWT token authentication for embed codes inside an iframe on external sites
+					authorization: jwtToken ? `Bearer ${jwtToken}` : '', // JWT token authentication for embed codes inside an iframe on external sites
 				},
 			});
 			if (!response.ok) {
@@ -27,6 +28,8 @@ export const useGetLoginStateForEmbed = () => {
 		{
 			refetchOnWindowFocus: true,
 			refetchOnReconnect: true,
+			refetchOnMount: true,
+			keepPreviousData: true,
 		}
 	);
 };

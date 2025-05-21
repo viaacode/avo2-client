@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
+import { Flex, Spinner } from '@viaa/avo2-components';
+import { IconNameSchema } from '@viaa/avo2-components/dist/components/Icon/Icon.types';
 import React, { type FC, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 import { Route } from 'react-router';
@@ -7,14 +8,18 @@ import { BrowserRouter } from 'react-router-dom';
 import { QueryParamProvider } from 'use-query-params';
 
 import { LoginMessage } from '../authentication/authentication.types';
+import { EmbedCodeService } from '../embed-code/embed-code-service';
+import { ErrorView } from '../error/views';
 import { CustomError } from '../shared/helpers/custom-error';
+import { tText } from '../shared/helpers/translate-text';
 import { waitForTranslations } from '../shared/translations/i18n';
 
 import Embed from './components/Embed';
 import RegisterOrLogin from './components/RegisterOrLogin';
-import '../styles/main.scss';
 import { useGetLoginStateForEmbed } from './hooks/useGetLoginState';
 import store from './store';
+
+import '../styles/main.scss';
 
 const EmbedApp: FC = () => {
 	const [translationsLoaded, setTranslationsLoaded] = useState<boolean>(false);
@@ -39,11 +44,21 @@ const EmbedApp: FC = () => {
 		if (loginStateLoading || !translationsLoaded) {
 			// Wait for login check
 			return (
-				<Spacer margin={['top-large', 'bottom-large']}>
-					<Flex center>
-						<Spinner size="large" />
-					</Flex>
-				</Spacer>
+				<Flex center style={{ height: '100%' }}>
+					<Spinner size="large" />
+				</Flex>
+			);
+		}
+
+		if (!EmbedCodeService.getJwtTokenFromUrl()) {
+			// No JWT token in URL, redirect to error page
+			return (
+				<ErrorView
+					message={tText(
+						'Deze embedcode heeft geen jwt query param, en kan dus niet geladen worden'
+					)}
+					icon={IconNameSchema.alertTriangle}
+				/>
 			);
 		}
 

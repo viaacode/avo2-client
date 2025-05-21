@@ -1,13 +1,29 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8" />
-	<title>EmbedApp</title>
-</head>
-<body>
-<div id="embed-root"></div>
-<!-- Init .env variables -->
-<script src="/env-config.js" data-cookieconsent="ignore"></script>
-<script type="module" src="../src/embed/main.tsx"></script>
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<title>EmbedApp</title>
+	</head>
+	<body>
+		<div id="embed-root"></div>
+		<!-- reset html and body margins and padding and disable scrollbars -->
+		<style>
+			html,
+			body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+				height: 100%;
+				width: 100%;
+			}
+
+			#embed-root {
+				position: relative;
+				height: 100%;
+			}
+		</style>
+		<!-- Init .env variables -->
+		<script src="/env-config.js" data-cookieconsent="ignore"></script>
+		<script type="module" src="../src/embed/main.tsx"></script>
+	</body>
 </html>

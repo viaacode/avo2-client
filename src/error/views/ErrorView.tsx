@@ -105,6 +105,9 @@ const ErrorView: FC<ErrorViewProps & RouteComponentProps & UserProps> = ({
 	};
 
 	const renderButtons = (btns: string[]) => {
+		if (btns.length === 0) {
+			return null;
+		}
 		const buttons = (
 			<>
 				{btns.includes('home') && (

@@ -23,7 +23,7 @@ export class EmbedCodeService {
 			const error = new CustomError('Failed to get embed code when embedId is empty', {
 				url,
 			});
-			console.log(error);
+			console.error(error);
 			throw error;
 		}
 
@@ -44,7 +44,7 @@ export class EmbedCodeService {
 			const error = new CustomError('Failed to get embed code', err, {
 				url,
 			});
-			console.log(error);
+			console.error(error);
 			throw error;
 		}
 	}
@@ -68,7 +68,7 @@ export class EmbedCodeService {
 					url,
 					data,
 				});
-				console.log(error);
+				console.error(error);
 				throw error;
 			}
 			const responseData = (await response.json()) as {
@@ -82,7 +82,7 @@ export class EmbedCodeService {
 				url,
 				data,
 			});
-			console.log(error);
+			console.error(error);
 			throw error;
 		}
 	}
@@ -106,7 +106,7 @@ export class EmbedCodeService {
 					url,
 					data,
 				});
-				console.log(error);
+				console.error(error);
 				throw error;
 			}
 		} catch (err) {
@@ -114,7 +114,7 @@ export class EmbedCodeService {
 				url,
 				data,
 			});
-			console.log(error);
+			console.error(error);
 			throw error;
 		}
 	}
@@ -148,7 +148,7 @@ export class EmbedCodeService {
 					url,
 					...params,
 				});
-				console.log(error);
+				console.error(error);
 				throw error;
 			}
 			const responseData = (await response.json()) as {
@@ -161,7 +161,7 @@ export class EmbedCodeService {
 				...params,
 				url,
 			});
-			console.log(error);
+			console.error(error);
 			throw error;
 		}
 	}
@@ -184,7 +184,7 @@ export class EmbedCodeService {
 					url,
 					embedCodeId,
 				});
-				console.log(error);
+				console.error(error);
 				throw error;
 			}
 		} catch (err) {
@@ -192,7 +192,7 @@ export class EmbedCodeService {
 				url,
 				embedCodeId,
 			});
-			console.log(error);
+			console.error(error);
 			throw error;
 		}
 	}

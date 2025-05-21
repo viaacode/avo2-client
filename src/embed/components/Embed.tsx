@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import AvoLogo from '@assets/images/avo-logo-button.svg';
-import { Column, Flex, Grid, Icon, IconName, Spacer, Spinner } from '@viaa/avo2-components';
+import { Column, Flex, Grid, Icon, IconName, Spinner } from '@viaa/avo2-components';
 import type { ItemSchema } from '@viaa/avo2-types/types/item';
 import queryString from 'query-string';
 import React, { type FC, useEffect, useState } from 'react';
@@ -48,11 +48,9 @@ const Embed: FC = () => {
 
 	if (isLoadingEmbedCode) {
 		return (
-			<Spacer margin={['top-large', 'bottom-large']}>
-				<Flex center>
-					<Spinner size="large" />
-				</Flex>
-			</Spacer>
+			<Flex center style={{ height: '100%' }}>
+				<Spinner size="large" />
+			</Flex>
 		);
 	}
 
@@ -61,7 +59,7 @@ const Embed: FC = () => {
 	}
 
 	return (
-		<div className={'embed-wrapper u-spacer-s'}>
+		<div className="embed-wrapper">
 			<FlowPlayerWrapper
 				poster={getFlowPlayerPoster(undefined, embedCode.content as ItemSchema)}
 				item={embedCode.content as ItemSchema}
@@ -73,7 +71,7 @@ const Embed: FC = () => {
 			/>
 
 			{showMetadata && (
-				<>
+				<div className="c-embed-metadata">
 					<p className="c-title u-spacer-top-s u-truncate" title={embedCode.title}>
 						{embedCode.title}
 					</p>
@@ -126,7 +124,7 @@ const Embed: FC = () => {
 							</div>
 						</Column>
 					</Grid>
-				</>
+				</div>
 			)}
 
 			<div className="c-custom-logo-overlay u-spacer">
