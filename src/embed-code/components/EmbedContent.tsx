@@ -19,6 +19,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
+import { debounce } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 
 import ItemVideoDescription from '../../item/components/ItemVideoDescription';
@@ -30,6 +31,7 @@ import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import './EmbedContent.scss';
+import useResizeObserver from '../../shared/hooks/useResizeObserver';
 import { ToastService } from '../../shared/services/toast-service';
 import {
 	type EmbedCode,
@@ -44,9 +46,10 @@ type EmbedProps = {
 	contentDescription: ReactNode | string;
 	onSave?: (item: EmbedCode) => void;
 	onClose?: () => void;
+	onResize?: () => void;
 };
 
-const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClose }) => {
+const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClose, onResize }) => {
 	const fragmentDuration = item?.content
 		? toSeconds((item.content as ItemSchema)?.duration) || 0
 		: 0;
@@ -67,6 +70,9 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 
 	const { mutateAsync: createEmbedCode, isLoading: isPublishing } = useCreateEmbedCode();
 
+	const debouncedEmbedContentResize = debounce(() => onResize && onResize(), 50);
+	const embedContentRef = useResizeObserver(() => debouncedEmbedContentResize());
+
 	const handleDescriptionToggle = useCallback(
 		(value: EmbedCodeDescriptionType) => {
 			if (!item) {
@@ -84,6 +90,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 					break;
 			}
 			setDescriptionType(value);
+			setIsDescriptionExpanded(false);
 		},
 		[item]
 	);
@@ -99,6 +106,10 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 			setGeneratedCode('');
 		}
 	}, [item, handleDescriptionToggle]);
+
+	useEffect(() => {
+		debouncedEmbedContentResize();
+	}, [debouncedEmbedContentResize, description, descriptionType]);
 
 	const mapValuesToEmbedCode = (): EmbedCode => {
 		if (!item) {
@@ -152,7 +163,10 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 	const renderDescription = () => {
 		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL && !!item?.content?.description) {
 			return (
-				<div className={isDescriptionExpanded ? '' : 'expandable-container-closed'}>
+				<div
+					className={isDescriptionExpanded ? '' : 'expandable-container-closed'}
+					ref={embedContentRef}
+				>
 					<ExpandableContainer
 						collapsedHeight={300}
 						defaultExpanded={isDescriptionExpanded}

@@ -1,5 +1,5 @@
 import { Modal, ModalBody } from '@viaa/avo2-components';
-import React, { type FC, type ReactNode } from 'react';
+import React, { createRef, type FC, type ReactNode } from 'react';
 
 import EmbedContent from '../../../embed-code/components/EmbedContent';
 import { tHtml } from '../../../shared/helpers/translate-html';
@@ -20,6 +20,8 @@ const EditEmbedCodeModal: FC<EditEmbedCodeModalProps> = ({
 	handleUpdate,
 	onClose,
 }) => {
+	const modalRef = createRef();
+
 	const renderEmbedContentDescription = (): string | ReactNode => {
 		switch (embedCode?.externalWebsite) {
 			case EmbedCodeExternalWebsite.SMARTSCHOOL:
@@ -37,6 +39,7 @@ const EditEmbedCodeModal: FC<EditEmbedCodeModalProps> = ({
 
 	return (
 		<Modal
+			ref={modalRef}
 			isOpen={isOpen}
 			size="large"
 			scrollable={true}
@@ -50,6 +53,7 @@ const EditEmbedCodeModal: FC<EditEmbedCodeModalProps> = ({
 					contentDescription={renderEmbedContentDescription()}
 					onClose={onClose}
 					onSave={handleUpdate}
+					onResize={() => modalRef?.current?.updateSize()}
 				/>
 			</ModalBody>
 		</Modal>
