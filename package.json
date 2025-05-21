@@ -8,7 +8,7 @@
     "start": "vite",
     "dev": "dotenv -e .env.qas vite",
     "env": "dotenv -e .env.qas node ./scripts/env.js && cp env-config.js ./public",
-    "build": "vite build && vite build  --config vite-embed.config.js && cp ./dist-embed/embed.html ./dist/embed.html && cp -rf ./dist-embed/assets/* ./dist/assets/ && rm -rf ./dist-embed",
+    "build": "vite build && vite build  --config vite-embed.config.js && cp ./dist-embed/embed.html ./dist/embed.html && cp -rf ./dist-embed/assets/* ./dist/assets/",
     "preview": "vite preview",
     "postbuild": "npx ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/add-cookiebot-ignore-attributes.ts",
     "unit-tests": "jest --transformIgnorePatterns \"node_modules/(?!(lodash-es))/\"",
