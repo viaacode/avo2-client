@@ -12,6 +12,7 @@ import { useGetEmbedCode } from '../../embed-code/hooks/useGetEmbedCode';
 import FlowPlayerWrapper from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { reorderDate } from '../../shared/helpers/formatters';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
+import { isUuid } from '../../shared/helpers/isUuid';
 import { tHtml } from '../../shared/helpers/translate-html';
 
 import ErrorView from './ErrorView';
@@ -19,9 +20,9 @@ import ErrorView from './ErrorView';
 import './Embed.scss';
 
 const Embed: FC = () => {
-	const query = queryString.parse(window.location.search);
+	const urlInfo = queryString.parseUrl(window.location.href);
 	const [embedId, setEmbedId] = useState<string | null>(null);
-	const showMetadata = (query['showMetadata'] as string) === 'true';
+	const showMetadata = (urlInfo.query['showMetadata'] as string) === 'true';
 
 	const {
 		data: embedCode,
@@ -30,11 +31,11 @@ const Embed: FC = () => {
 	} = useGetEmbedCode(embedId, true);
 
 	useEffect(() => {
-		const embedId = query['embedId'];
-		if (embedId && typeof embedId === 'string') {
+		const embedId = urlInfo.query['embedId'] || urlInfo.url.split('/').pop();
+		if (embedId && typeof embedId === 'string' && isUuid(embedId)) {
 			setEmbedId(embedId as string);
 		}
-	}, [query]);
+	}, [urlInfo]);
 
 	if (!embedCode || isLoadingEmbedCode) {
 		return (
