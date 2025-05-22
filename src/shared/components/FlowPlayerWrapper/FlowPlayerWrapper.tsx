@@ -142,6 +142,8 @@ const FlowPlayerWrapper: FC<
 				...triggeredForUrl,
 				[playingSrc]: true,
 			});
+		} else if (!triggeredForUrlRef.current[playingSrc] && props.onPlay) {
+			props.onPlay(playingSrc);
 		}
 	};
 

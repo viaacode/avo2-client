@@ -29,6 +29,7 @@ import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import { useTabs } from '../../hooks/useTabs';
+import { trackEvents } from '../../services/event-logging-service';
 import QuickLaneContent from '../QuickLaneContent/QuickLaneContent';
 import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';
 import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
@@ -112,6 +113,20 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 
 	const handleRightsButtonClicked = () => {
 		setIsEmbedDropdownOpen(!isEmbedDropdownOpen);
+	};
+
+	const handleTabChanged = (id: string | number) => {
+		setActiveTab(id);
+		if (id === ShareDropdownTabs.EMBED) {
+			trackEvents(
+				{
+					object: item.external_id,
+					object_type: 'embed_code',
+					action: 'activate',
+				},
+				commonUser
+			);
+		}
 	};
 
 	useEffect(() => {
@@ -304,7 +319,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 		>
 			<ModalSubHeader>
 				<Spacer className="m-fragment-share-modal__tabs-wrapper" margin={'bottom'}>
-					<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
+					<Tabs tabs={tabs} onClick={handleTabChanged} />
 				</Spacer>
 			</ModalSubHeader>
 			<ModalBody>{renderTabs()}</ModalBody>

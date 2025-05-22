@@ -16,6 +16,7 @@ import {
 } from '@viaa/avo2-components';
 import { HeaderBottomRowLeft } from '@viaa/avo2-components/src/components/Header/Header.slots';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import type { ItemSchema } from '@viaa/avo2-types/types/item';
 import { clsx } from 'clsx';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo } from 'react';
@@ -34,6 +35,7 @@ import { toSeconds } from '../../shared/helpers/parsers/duration';
 import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { useGetEmbedCode } from '../hooks/useGetEmbedCode';
 
 type EmbedCodeDetailProps = DefaultSecureRouteProps<{ id: string }>;
@@ -67,6 +69,15 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 
 		// Also increase the view count for the item or collection
 		if (embedCode.contentType === 'ITEM' && embedCode.contentId) {
+			trackEvents(
+				{
+					object: embedCode.id,
+					object_type: 'embed_code',
+					action: 'view',
+				},
+				commonUser
+			);
+
 			await BookmarksViewsPlaysService.action(
 				'view',
 				'item',
@@ -81,6 +92,19 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 			triggerViewEvents().then(noop);
 		}
 	}, [embedCode, triggerViewEvents]);
+
+	const onPlay = () => {
+		if (embedCode) {
+			trackEvents(
+				{
+					object: embedCode?.id,
+					object_type: 'embed_code',
+					action: 'play',
+				},
+				commonUser
+			);
+		}
+	};
 
 	// Render methods
 	const renderContent = () => {
@@ -108,7 +132,9 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 						verticalLayout={isMobileWidth()}
 						cuePointsLabel={{ start, end }}
 						cuePointsVideo={{ start, end }}
-						trackPlayEvent={true}
+						onPlay={onPlay}
+						// Not tracking the playevent in the FlowPlayer since that is bound to the item and not an embed
+						trackPlayEvent={false}
 					/>
 				);
 			default:

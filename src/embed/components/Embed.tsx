@@ -5,6 +5,7 @@ import type { ItemSchema } from '@viaa/avo2-types/types/item';
 import queryString from 'query-string';
 import React, { type FC, useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
 import { redirectToExternalPage } from '../../authentication/helpers/redirects/redirect-to-external-page';
 import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
@@ -14,12 +15,14 @@ import { reorderDate } from '../../shared/helpers/formatters';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 import { isUuid } from '../../shared/helpers/isUuid';
 import { tHtml } from '../../shared/helpers/translate-html';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
+import { trackEvents } from '../../shared/services/event-logging-service';
 
 import ErrorView from './ErrorView';
 
 import './Embed.scss';
 
-const Embed: FC = () => {
+const Embed: FC<UserProps> = ({ commonUser }) => {
 	const urlInfo = queryString.parseUrl(window.location.href);
 	const [embedId, setEmbedId] = useState<string | null>(null);
 	const showMetadata = (urlInfo.query['showMetadata'] as string) === 'true';
@@ -49,6 +52,29 @@ const Embed: FC = () => {
 		return <ErrorView />;
 	}
 
+	const onPlay = () => {
+		trackEvents(
+			{
+				object: embedCode.id,
+				object_type: 'embed_code',
+				action: 'play',
+			},
+			commonUser
+		);
+	};
+
+	const openOnAvo = () => {
+		trackEvents(
+			{
+				object: embedCode.id,
+				object_type: 'embed_code',
+				action: 'view',
+			},
+			commonUser
+		);
+		redirectToExternalPage(toEmbedCodeDetail(embedCode.id), '_blank');
+	};
+
 	return (
 		<div className="embed-wrapper">
 			<FlowPlayerWrapper
@@ -57,7 +83,8 @@ const Embed: FC = () => {
 				canPlay={true}
 				cuePointsLabel={{ start: embedCode.start, end: embedCode.end }}
 				cuePointsVideo={{ start: embedCode.start, end: embedCode.end }}
-				// onPlay={onPlay} // TODO track events
+				onPlay={onPlay}
+				// Not tracking the playevent in the FlowPlayer since that is bound to the item and not an embed
 				trackPlayEvent={false}
 			/>
 
@@ -100,15 +127,7 @@ const Embed: FC = () => {
 							</p>
 						</Column>
 						<Column size="static">
-							<div
-								className="c-avo-button"
-								onClick={() =>
-									redirectToExternalPage(
-										toEmbedCodeDetail(embedId as string),
-										'_blank'
-									)
-								}
-							>
+							<div className="c-avo-button" onClick={openOnAvo}>
 								<img
 									className="c-avo-logo"
 									alt="Archief voor Onderwijs logo"
@@ -128,4 +147,4 @@ const Embed: FC = () => {
 	);
 };
 
-export default withRouter(Embed);
+export default compose(withRouter, withUser)(Embed) as FC;
