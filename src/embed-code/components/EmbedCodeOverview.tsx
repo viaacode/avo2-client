@@ -18,6 +18,7 @@ import { navigate } from '../../shared/helpers/link';
 import withUser from '../../shared/hocs/withUser';
 import { useDebounce } from '../../shared/hooks/useDebounce';
 import useTranslation from '../../shared/hooks/useTranslation';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { type EmbedCodeFilters, EmbedCodeService } from '../embed-code-service';
@@ -280,6 +281,14 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 										break;
 
 									case EmbedCodeAction.COPY_TO_CLIPBOARD:
+										trackEvents(
+											{
+												object: selected.id,
+												object_type: 'embed_code',
+												action: 'copy',
+											},
+											commonUser
+										);
 										copyToClipboard(toEmbedCodeIFrame(selected.id));
 										ToastService.success(
 											tHtml(
