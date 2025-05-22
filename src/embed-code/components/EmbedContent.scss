@@ -3,7 +3,8 @@
 }
 
 div.expandable-container-closed {
-	div[id^="react-collapsed-panel"] {
+	// Only apply the gradient when there is no sibling div containing a div of type button with display: none
+	div[id^="react-collapsed-panel"]:has(+ div > div[type="button"]:not([style*="display: none"])) {
 		background: linear-gradient(black, rgba(255, 255, 255, 50));
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
