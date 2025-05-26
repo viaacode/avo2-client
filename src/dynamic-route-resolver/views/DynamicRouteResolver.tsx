@@ -8,6 +8,7 @@ import {
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { keys } from 'lodash-es';
+import { stringifyUrl } from 'query-string';
 import React, { type ComponentType, type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
@@ -334,9 +335,13 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 		);
 
 		window.open(
-			`${getEnv('PROXY_URL')}/not-found?message=${getPageNotFoundError(
-				loginState?.message === 'LOGGED_IN'
-			)}`,
+			stringifyUrl({
+				url: `${getEnv('PROXY_URL')}/not-found`,
+				query: {
+					message: getPageNotFoundError(loginState?.message === 'LOGGED_IN'),
+					url: window.location.href,
+				},
+			}),
 			'_self'
 		);
 		return (
