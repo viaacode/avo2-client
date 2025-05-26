@@ -7,6 +7,10 @@
 	width: 100%;
 	height: 100%;
 
+	div.c-video-player:has(+ div.c-embed-metadata){
+		height: calc(100% - 8rem);
+	}
+
 	.c-title {
 		font-weight: 600;
 		font-size: 1.8rem;
