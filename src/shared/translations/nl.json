@@ -1634,6 +1634,7 @@
   "embed/components/error-view___probeer-opnieuw": "Probeer opnieuw",
   "embed/components/register-or-login___account-aanmaken-als-lesgever": "Account aanmaken als lesgever",
   "embed/components/register-or-login___nog-geen-account": "Nog geen account?",
+  "embed/embed-app___deze-embedcode-heeft-geen-jwt-query-param-en-kan-dus-niet-geladen-worden": "Deze embedcode heeft geen jwt query param en kan dus niet geladen worden",
   "error/components/error-no-access___stap-1": "Je klikte op een link naar een niet-publieke pagina waarvoor je geen kijk- of bewerkrechten hebt.",
   "error/components/error-no-access___stap-2": "Je toegang is ingetrokken door de eigenaar of een andere collega met bewerkingsrechten.",
   "error/components/error-no-access___stap-3": "Een uitnodigingslink kan slechts eenmalig aangeklikt worden.",

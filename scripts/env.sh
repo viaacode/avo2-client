@@ -13,6 +13,7 @@ echo "  PROXY_URL: \"$PROXY_URL\"," >> ./env-config.js
 echo "  FLOW_PLAYER_TOKEN: \"$FLOW_PLAYER_TOKEN\"," >> ./env-config.js
 echo "  FLOW_PLAYER_ID: \"$FLOW_PLAYER_ID\"," >> ./env-config.js
 echo "  ZENDESK_KEY: \"$ZENDESK_KEY\"," >> ./env-config.js
+echo "  KLASCEMENT_URL: \"$KLASCEMENT_URL\"," >> ./env-config.js
 echo "  LDAP_DASHBOARD_PEOPLE_URL: \"$LDAP_DASHBOARD_PEOPLE_URL\"," >> ./env-config.js
 echo "  SSUM_ACCOUNT_EDIT_URL: \"$SSUM_ACCOUNT_EDIT_URL\"," >> ./env-config.js
 echo "  SSUM_PASSWORD_EDIT_URL: \"$SSUM_PASSWORD_EDIT_URL\"," >> ./env-config.js

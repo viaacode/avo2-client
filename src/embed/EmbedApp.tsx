@@ -64,7 +64,7 @@ const EmbedApp: FC = () => {
 			return (
 				<ErrorView
 					message={tText(
-						'Deze embedcode heeft geen jwt query param, en kan dus niet geladen worden'
+						'embed/embed-app___deze-embedcode-heeft-geen-jwt-query-param-en-kan-dus-niet-geladen-worden'
 					)}
 					icon={IconNameSchema.alertTriangle}
 				/>

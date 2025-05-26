@@ -77,7 +77,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 	const [marcomEntries, setMarcomEntries] = useState<CollectionMarcomEntry[] | null>(null);
 
 	const [klascementImageUrl, setKlascementImageUrl] = useState<string | null>();
-	const [klascementAlt, setKlascementAlt] = useState<string | undefined>();
+	const [klascementAltText, setKlascementAltText] = useState<string | undefined>();
 	const [klascementSourceText, setKlascementSourceText] = useState<string | undefined>();
 	const [klascementId, setKlascementId] = useState<number | undefined>();
 
@@ -122,7 +122,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 		} else {
 			setKlascementImageUrlError(null);
 		}
-		if (!klascementAlt) {
+		if (!klascementAltText) {
 			setKlascementAltTextError(
 				tText(
 					'collection/components/collection-or-bundle-edit-marcom___gelieve-een-alternatieve-tekst-in-te-vullen-voor-de-afbeelding'
@@ -143,20 +143,21 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 			setKlascementSourceTextError(null);
 		}
 		try {
-			const klascementId = await publishCollectionToKlascement({
+			const klascementIdTemp = await publishCollectionToKlascement({
 				collectionId: collection.id,
 				imageUrl: klascementImageUrl,
-				altText: klascementAlt,
+				altText: klascementAltText,
 				sourceText: klascementSourceText,
 			});
-			if (!klascementId) {
+			if (!klascementIdTemp) {
 				console.error('Received no klascementId from klascement');
 				throw new Error('No klascementId returned');
 			}
 			window.open(
-				`${getEnv('KLASCEMENT_URL')}/video/${klascementId}/aanpassen/uitgebreid`,
+				`${getEnv('KLASCEMENT_URL')}/video/${klascementIdTemp}/aanpassen/uitgebreid`,
 				'_blank'
 			);
+			setKlascementId(klascementIdTemp);
 			await refetchPublishInfo();
 			await fetchMarcomEntries();
 			ToastService.success(
@@ -180,7 +181,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 	}, [fetchMarcomEntries]);
 
 	useEffect(() => {
-		setKlascementAlt(publishInfo?.alt_text);
+		setKlascementAltText(publishInfo?.alt_text);
 		setKlascementSourceText(publishInfo?.source_text);
 		setKlascementImageUrl(publishInfo?.image_url);
 		setKlascementId(publishInfo?.klascement_id ?? undefined);
@@ -561,23 +562,31 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 							)}
 							error={klascementImageUrlError}
 						>
-							<FileUpload
-								label={tText(
-									'collection/components/collection-or-bundle-edit-marcom___upload-een-afbeelding'
-								)}
-								urls={compact([klascementImageUrl])}
-								allowMulti={false}
-								assetType="KLASCEMENT_VIDEO_IMAGE"
-								allowedDimensions={{
-									minWidth: 680,
-									maxWidth: 680,
-									minHeight: 380,
-									maxHeight: 380,
-								}}
-								disabled={isPublishedToKlascement}
-								ownerId={collection.id}
-								onChange={(urls) => setKlascementImageUrl(urls[0] || null)}
-							/>
+							{isPublishedToKlascement ? (
+								<img
+									alt={tText(
+										'Afbeelding die gepubliceerd is naar klascement voor deze collectie'
+									)}
+									src={compact([klascementImageUrl])[0]}
+								/>
+							) : (
+								<FileUpload
+									label={tText(
+										'collection/components/collection-or-bundle-edit-marcom___upload-een-afbeelding'
+									)}
+									urls={compact([klascementImageUrl])}
+									allowMulti={false}
+									assetType="KLASCEMENT_VIDEO_IMAGE"
+									allowedDimensions={{
+										minWidth: 680,
+										maxWidth: 680,
+										minHeight: 380,
+										maxHeight: 380,
+									}}
+									ownerId={collection.id}
+									onChange={(urls) => setKlascementImageUrl(urls[0] || null)}
+								/>
+							)}
 						</FormGroup>
 						<FormGroup
 							label={tText(
@@ -586,9 +595,9 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 							error={klascementAltTextError}
 						>
 							<TextInput
-								value={klascementAlt}
+								value={klascementAltText}
 								disabled={isPublishedToKlascement}
-								onChange={setKlascementAlt}
+								onChange={setKlascementAltText}
 							/>
 						</FormGroup>
 						<FormGroup
