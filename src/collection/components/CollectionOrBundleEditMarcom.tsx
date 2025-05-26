@@ -143,20 +143,21 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 			setKlascementSourceTextError(null);
 		}
 		try {
-			const klascementId = await publishCollectionToKlascement({
+			const klascementIdTemp = await publishCollectionToKlascement({
 				collectionId: collection.id,
 				imageUrl: klascementImageUrl,
 				altText: klascementAltText,
 				sourceText: klascementSourceText,
 			});
-			if (!klascementId) {
+			if (!klascementIdTemp) {
 				console.error('Received no klascementId from klascement');
 				throw new Error('No klascementId returned');
 			}
 			window.open(
-				`${getEnv('KLASCEMENT_URL')}/video/${klascementId}/aanpassen/uitgebreid`,
+				`${getEnv('KLASCEMENT_URL')}/video/${klascementIdTemp}/aanpassen/uitgebreid`,
 				'_blank'
 			);
+			setKlascementId(klascementIdTemp);
 			await refetchPublishInfo();
 			await fetchMarcomEntries();
 			ToastService.success(
