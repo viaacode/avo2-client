@@ -40,16 +40,16 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 		}
 	}, [urlInfo]);
 
-	if (isLoadingEmbedCode) {
+	if (isErrorEmbedCode || (embedCode && !embedCode.content)) {
+		return <ErrorView isNotFoundError={embedCode && !embedCode.content} />;
+	}
+
+	if (isLoadingEmbedCode || !embedCode) {
 		return (
 			<Flex center style={{ height: '100%' }}>
 				<Spinner size="large" />
 			</Flex>
 		);
-	}
-
-	if (isErrorEmbedCode || !embedCode || !embedCode.content) {
-		return <ErrorView isNotFoundError={embedCode && !embedCode.content} />;
 	}
 
 	const onPlay = () => {
