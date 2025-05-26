@@ -10,7 +10,12 @@ export const useGetEmbedCode = (
 ): UseQueryResult<EmbedCode> => {
 	return useQuery(
 		[QUERY_KEYS.GET_EMBED_CODES, embedCodeId, EmbedCodeService.getJwtTokenFromUrl()],
-		async () => EmbedCodeService.getEmbedCode(embedCodeId),
+		async () => {
+			if (!embedCodeId) {
+				return null;
+			}
+			return EmbedCodeService.getEmbedCode(embedCodeId);
+		},
 		{
 			enabled,
 			refetchInterval: false,
