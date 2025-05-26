@@ -16,7 +16,7 @@ export interface EmbedCodeFilters {
 }
 
 export class EmbedCodeService {
-	public static async getEmbedCode(embedId: string): Promise<EmbedCode> {
+	public static async getEmbedCode(embedId: string | null): Promise<EmbedCode> {
 		let url: string | undefined = undefined;
 
 		if (!embedId) {
@@ -39,6 +39,14 @@ export class EmbedCodeService {
 				},
 				credentials: 'include',
 			});
+
+			if (!response.ok) {
+				const error = new CustomError('Failed to get embed code', {
+					url,
+				});
+				throw error;
+			}
+
 			const embedCode = await response.json();
 			return embedCode as EmbedCode;
 		} catch (err) {

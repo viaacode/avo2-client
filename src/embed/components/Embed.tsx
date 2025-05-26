@@ -37,7 +37,7 @@ const Embed: FC = () => {
 		}
 	}, [urlInfo]);
 
-	if (!embedCode || isLoadingEmbedCode) {
+	if (isLoadingEmbedCode) {
 		return (
 			<Flex center style={{ height: '100%' }}>
 				<Spinner size="large" />
@@ -45,8 +45,8 @@ const Embed: FC = () => {
 		);
 	}
 
-	if (isErrorEmbedCode) {
-		return <ErrorView />;
+	if (isErrorEmbedCode || !embedCode || !embedCode.content) {
+		return <ErrorView isNotFoundError={embedCode && !embedCode.content} />;
 	}
 
 	return (
