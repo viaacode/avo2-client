@@ -1,6 +1,8 @@
 @import "../../styles/settings/variables";
 @import "../../styles/settings/colors";
 
+$embed-metadata-height: 8rem;
+
 .embed-wrapper {
 	position: absolute;
 	inset: 0;
@@ -8,7 +10,7 @@
 	height: 100%;
 
 	div.c-video-player:has(+ div.c-embed-metadata){
-		height: calc(100% - 8rem);
+		height: calc(100% - $embed-metadata-height);
 	}
 
 	.c-title {
