@@ -31,7 +31,9 @@ import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import './EmbedContent.scss';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useResizeObserver from '../../shared/hooks/useResizeObserver';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import {
 	type EmbedCode,
@@ -49,7 +51,14 @@ type EmbedProps = {
 	onResize?: () => void;
 };
 
-const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClose, onResize }) => {
+const EmbedContent: FC<EmbedProps & UserProps> = ({
+	item,
+	contentDescription,
+	onSave,
+	onClose,
+	onResize,
+	commonUser,
+}) => {
 	const fragmentDuration = item?.content
 		? toSeconds((item.content as ItemSchema)?.duration) || 0
 		: 0;
@@ -140,7 +149,7 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 	const handleCreate = async () => {
 		try {
 			const embedCodeId = await createEmbedCode(mapValuesToEmbedCode());
-			setGeneratedCode(toEmbedCodeIFrame(embedCodeId));
+			setGeneratedCode(embedCodeId);
 			ToastService.success(
 				tText(
 					'embed-code/components/embed-content___je-code-werd-succesvol-aangemaakt-en-opgeslagen-in-je-werkruimte'
@@ -154,7 +163,16 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 	};
 
 	const handleCopyButtonClicked = () => {
-		copyToClipboard(generatedCode);
+		trackEvents(
+			{
+				object: generatedCode,
+				object_type: 'embed_code',
+				action: 'copy',
+			},
+			commonUser
+		);
+
+		copyToClipboard(toEmbedCodeIFrame(generatedCode));
 		ToastService.success(
 			tHtml('embed-code/components/embed-content___de-code-is-naar-je-klembord-gekopieerd')
 		);
@@ -285,7 +303,9 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 		if (generatedCode) {
 			return (
 				<ToolbarRight>
-					<ToolbarItem className="u-truncate">{generatedCode}</ToolbarItem>
+					<ToolbarItem className="u-truncate">
+						{toEmbedCodeIFrame(generatedCode)}
+					</ToolbarItem>
 					<ToolbarItem>
 						<ButtonToolbar>
 							<Button
@@ -405,4 +425,4 @@ const EmbedContent: FC<EmbedProps> = ({ item, contentDescription, onSave, onClos
 	);
 };
 
-export default EmbedContent;
+export default withUser(EmbedContent);
