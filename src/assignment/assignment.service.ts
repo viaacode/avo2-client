@@ -435,6 +435,7 @@ export class AssignmentService {
 		};
 
 		delete newAssignment.owner;
+		delete newAssignment.marcom_note;
 		newAssignment.updated_at = new Date().toISOString();
 		const blocks: Avo.Assignment.Block[] = await AssignmentService.fetchAssignmentBlocks(
 			initialAssignment.id
