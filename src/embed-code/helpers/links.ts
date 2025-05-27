@@ -5,7 +5,7 @@ import { APP_PATH } from '../../constants';
 
 export function toEmbedCodeIFrame(embedCodeId: string): string {
 	return stringifyUrl({
-		url: `${window.location.origin}/embed/index.html`,
+		url: `${window.location.origin}/embed`,
 		query: {
 			embedId: embedCodeId,
 		},
