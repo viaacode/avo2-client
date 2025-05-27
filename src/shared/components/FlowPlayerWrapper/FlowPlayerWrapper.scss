@@ -112,30 +112,6 @@ $c-video-player-progress-inner-bg: $color-teal-bright;
 		}
 	}
 
-	.c-cut-overlay {
-		position: absolute;
-		display: flex;
-		align-items: center;
-		bottom: 7.5%;
-		left: 0;
-		color: rgba(#fff, 0.67);
-
-		padding: 0.5rem 1rem;
-
-		background-color: $color-teal-bright;
-		box-shadow: 0 0 5px 0 rgba($color-gray-shadow, 0.5);
-
-		font-size: 1.2rem;
-		font-weight: 500;
-
-		.o-svg-icon {
-			width: 1.5rem;
-			height: 1.5rem;
-
-			margin-right: 0.5rem;
-		}
-	}
-
 	.c-video-player__top-right {
 		position: absolute;
 		top: 0;
@@ -157,5 +133,30 @@ $c-video-player-progress-inner-bg: $color-teal-bright;
 				font-size: 1.2rem;
 			}
 		}
+	}
+}
+
+
+.c-cut-overlay {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	bottom: 7.5%;
+	left: 0;
+	color: rgba(#fff, 0.67);
+
+	padding: 0.5rem 1rem;
+
+	background-color: $color-teal-bright;
+	box-shadow: 0 0 5px 0 rgba($color-gray-shadow, 0.5);
+
+	font-size: 1.2rem;
+	font-weight: 500;
+
+	.o-svg-icon {
+		width: 1.5rem;
+		height: 1.5rem;
+
+		margin-right: 0.5rem;
 	}
 }

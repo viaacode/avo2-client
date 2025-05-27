@@ -102,12 +102,19 @@ const FlowPlayerWrapper: FC<
 	}, [item, setSrc, tText, tHtml]);
 
 	useEffect(() => {
-		if (item && (props.autoplay || autoplayVideo === item.external_id)) {
+		if (
+			item &&
+			(props.autoplay ||
+				props.initFlowPlayerWithoutAutoPlay ||
+				autoplayVideo === item.external_id)
+		) {
 			initFlowPlayer();
 		}
-	}, [props.autoplay, autoplayVideo, item, initFlowPlayer]);
+	}, [props.autoplay, autoplayVideo, item, initFlowPlayer, props.initFlowPlayerWithoutAutoPlay]);
 
 	const handlePlay = (playingSrc: string) => {
+		setClickedThumbnail(true);
+
 		// Only trigger once per video
 		if (
 			item &&
@@ -138,12 +145,18 @@ const FlowPlayerWrapper: FC<
 			if (props.onPlay) {
 				props.onPlay(playingSrc);
 			}
+
 			setTriggeredForUrlRef({
 				...triggeredForUrl,
 				[playingSrc]: true,
 			});
 		} else if (!triggeredForUrlRef.current[playingSrc] && props.onPlay) {
 			props.onPlay(playingSrc);
+
+			setTriggeredForUrlRef({
+				...triggeredForUrl,
+				[playingSrc]: true,
+			});
 		}
 	};
 
@@ -271,6 +284,21 @@ const FlowPlayerWrapper: FC<
 			? window.ga.getAll()[0].get('trackingId')
 			: undefined;
 
+	const renderCutOverlay = () => {
+		return (
+			!isNil(start) &&
+			!isNil(end) &&
+			(start !== 0 || end !== toSeconds(item?.duration)) && (
+				<div className="c-cut-overlay">
+					<Icon name={IconName.scissors} />
+					{`${formatDurationHoursMinutesSeconds(
+						start
+					)} - ${formatDurationHoursMinutesSeconds(end)}`}
+				</div>
+			)
+		);
+	};
+
 	return (
 		<>
 			<div
@@ -279,78 +307,92 @@ const FlowPlayerWrapper: FC<
 			>
 				{src &&
 				(props.autoplay ||
+					props.initFlowPlayerWithoutAutoPlay ||
 					clickedThumbnail ||
 					!item ||
 					autoplayVideo === item?.external_id) ? (
-					<FlowPlayer
-						src={getBrowserSafeUrl(src)}
-						type={(item?.type?.label as 'video' | 'audio' | undefined) || 'video'}
-						poster={poster}
-						title={props.title}
-						metadata={
-							item
-								? [
-										props.issuedDate || reorderDate(item.issued || null, '.'),
-										item?.organisation?.name || '',
-								  ]
-								: undefined
-						}
-						token={getEnv('FLOW_PLAYER_TOKEN')}
-						dataPlayerId={getEnv('FLOW_PLAYER_ID')}
-						logo={
-							item?.organisation?.overlay ? item?.organisation?.logo_url : undefined
-						}
-						speed={
-							props.speed === null
-								? undefined
-								: {
-										options: [0.5, 0.75, 1, 1.25, 1.5],
-										labels: [
-											tText(
-												'shared/components/flow-player-wrapper/flow-player-wrapper___0-5'
-											),
-											tText(
-												'shared/components/flow-player-wrapper/flow-player-wrapper___0-75'
-											),
-											tText(
-												'shared/components/flow-player-wrapper/flow-player-wrapper___normaal'
-											),
-											tText(
-												'shared/components/flow-player-wrapper/flow-player-wrapper___1-25'
-											),
-											tText(
-												'shared/components/flow-player-wrapper/flow-player-wrapper___1-5'
-											),
-										],
-								  }
-						}
-						start={item ? start : null}
-						end={item ? end : null}
-						autoplay={(!!item && !!src) || (!isPlaylist && props.autoplay)}
-						canPlay={props.canPlay}
-						subtitles={getSubtitles(item)}
-						playlistScrollable={!isMobileWidth()}
-						onPlay={handlePlay}
-						onEnded={props.onEnded}
-						onTimeUpdate={handleTimeUpdate}
-						googleAnalyticsId={trackingId}
-						googleAnalyticsEvents={
-							[
-								'video_player_load',
-								'video_start',
-								'video_click_play',
-								'video_25_percent',
-								'video_50_percent',
-								'video_75_percent',
-								'video_complete',
-							] as any
-						}
-						googleAnalyticsTitle={props.title}
-						renderPlaylistTile={renderPlaylistTile}
-						seekable={props.seekable}
-						ui={props.ui}
-						controls={props.controls}
-					/>
+					<>
+						<FlowPlayer
+							src={getBrowserSafeUrl(src)}
+							type={(item?.type?.label as 'video' | 'audio' | undefined) || 'video'}
+							poster={poster}
+							title={props.title}
+							metadata={
+								item
+									? [
+											props.issuedDate ||
+												reorderDate(item.issued || null, '.'),
+											item?.organisation?.name || '',
+									  ]
+									: undefined
+							}
+							token={getEnv('FLOW_PLAYER_TOKEN')}
+							dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+							logo={
+								item?.organisation?.overlay
+									? item?.organisation?.logo_url
+									: undefined
+							}
+							speed={
+								props.speed === null
+									? undefined
+									: {
+											options: [0.5, 0.75, 1, 1.25, 1.5],
+											labels: [
+												tText(
+													'shared/components/flow-player-wrapper/flow-player-wrapper___0-5'
+												),
+												tText(
+													'shared/components/flow-player-wrapper/flow-player-wrapper___0-75'
+												),
+												tText(
+													'shared/components/flow-player-wrapper/flow-player-wrapper___normaal'
+												),
+												tText(
+													'shared/components/flow-player-wrapper/flow-player-wrapper___1-25'
+												),
+												tText(
+													'shared/components/flow-player-wrapper/flow-player-wrapper___1-5'
+												),
+											],
+									  }
+							}
+							start={item ? start : null}
+							end={item ? end : null}
+							autoplay={
+								props.initFlowPlayerWithoutAutoPlay
+									? false
+									: (!!item && !!src) || (!isPlaylist && props.autoplay)
+							}
+							canPlay={props.canPlay}
+							subtitles={getSubtitles(item)}
+							playlistScrollable={!isMobileWidth()}
+							onPlay={handlePlay}
+							onEnded={props.onEnded}
+							onTimeUpdate={handleTimeUpdate}
+							googleAnalyticsId={trackingId}
+							googleAnalyticsEvents={
+								[
+									'video_player_load',
+									'video_start',
+									'video_click_play',
+									'video_25_percent',
+									'video_50_percent',
+									'video_75_percent',
+									'video_complete',
+								] as any
+							}
+							googleAnalyticsTitle={props.title}
+							renderPlaylistTile={renderPlaylistTile}
+							seekable={props.seekable}
+							ui={props.ui}
+							controls={props.controls}
+						/>
+
+						{props.initFlowPlayerWithoutAutoPlay &&
+							!clickedThumbnail &&
+							renderCutOverlay()}
+					</>
 				) : (
 					// Fake player for logged-out users that do not yet have video playback rights
 					<div
@@ -363,16 +405,7 @@ const FlowPlayerWrapper: FC<
 								<Icon name={IconName.play} className="c-play-overlay__button" />
 							</div>
 						</div>
-						{!isNil(start) &&
-							!isNil(end) &&
-							(start !== 0 || end !== toSeconds(item?.duration)) && (
-								<div className="c-cut-overlay">
-									<Icon name={IconName.scissors} />
-									{`${formatDurationHoursMinutesSeconds(
-										start
-									)} - ${formatDurationHoursMinutesSeconds(end)}`}
-								</div>
-							)}
+						{renderCutOverlay()}
 						{!!props.topRight && (
 							<div className="c-video-player__top-right">{props.topRight}</div>
 						)}
