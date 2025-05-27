@@ -1,4 +1,5 @@
 import {
+	type SetEmbedFlowAction,
 	type SetHistoryLocationsAction,
 	type SetLastVideoPlayedAtAction,
 	type SetShowNudgingModalAction,
@@ -18,4 +19,9 @@ export const setLastVideoPlayedAtAction = (data: Date | null): SetLastVideoPlaye
 export const setHistoryLocationsAction = (data: string[]): SetHistoryLocationsAction => ({
 	data,
 	type: UiStateActionTypes.SET_HISTORY_LOCATIONS,
+});
+
+export const setEmbedFlowAction = (data: string): SetEmbedFlowAction => ({
+	data,
+	type: UiStateActionTypes.SET_EMBED_FLOW,
 });

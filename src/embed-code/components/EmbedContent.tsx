@@ -21,6 +21,7 @@ import {
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
 import { debounce } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
+import { compose } from 'redux';
 
 import ItemVideoDescription from '../../item/components/ItemVideoDescription';
 import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
@@ -31,6 +32,7 @@ import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import './EmbedContent.scss';
+import withEmbedFlow, { type EmbedFlowProps } from '../../shared/hocs/withEmbedFlow';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useResizeObserver from '../../shared/hooks/useResizeObserver';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -51,13 +53,14 @@ type EmbedProps = {
 	onResize?: () => void;
 };
 
-const EmbedContent: FC<EmbedProps & UserProps> = ({
+const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	item,
 	contentDescription,
 	onSave,
 	onClose,
 	onResize,
 	commonUser,
+	isSmartSchoolEmbedFlow,
 }) => {
 	const fragmentDuration = item?.content
 		? toSeconds((item.content as ItemSchema)?.duration) || 0
@@ -148,7 +151,23 @@ const EmbedContent: FC<EmbedProps & UserProps> = ({
 
 	const handleCreate = async () => {
 		try {
-			const embedCodeId = await createEmbedCode(mapValuesToEmbedCode());
+			const embedToSave = mapValuesToEmbedCode();
+			const embedCodeId = await createEmbedCode(embedToSave);
+
+			if (isSmartSchoolEmbedFlow) {
+				window.opener.postMessage(
+					[
+						{
+							title: embedToSave.title,
+							url: toEmbedCodeIFrame(embedCodeId),
+						},
+					],
+					'*'
+				);
+				window.close();
+				return;
+			}
+
 			setGeneratedCode(embedCodeId);
 			ToastService.success(
 				tText(
@@ -323,6 +342,26 @@ const EmbedContent: FC<EmbedProps & UserProps> = ({
 			);
 		}
 
+		if (isSmartSchoolEmbedFlow) {
+			return (
+				<ToolbarRight>
+					<ToolbarItem>
+						<ButtonToolbar>
+							<Button
+								className="c-button-smartschool"
+								icon={IconName.smartschool}
+								label={tText('Gebruiken in smartschool')}
+								ariaLabel={tText('Gebruiken in smartschool')}
+								title={tText('Gebruiken in smartschool')}
+								disabled={isPublishing}
+								onClick={handleCreate}
+							/>
+						</ButtonToolbar>
+					</ToolbarItem>
+				</ToolbarRight>
+			);
+		}
+
 		return (
 			<ToolbarRight>
 				<ToolbarItem>
@@ -347,7 +386,7 @@ const EmbedContent: FC<EmbedProps & UserProps> = ({
 
 	return (
 		<>
-			<Spacer margin="bottom-large">{contentDescription}</Spacer>
+			{!isSmartSchoolEmbedFlow && <Spacer margin="bottom-large">{contentDescription}</Spacer>}
 
 			<FormGroup label={tText('embed-code/components/embed-content___titel')}>
 				<TextInput value={title} onChange={setTitle} disabled={!!generatedCode} />
@@ -425,4 +464,4 @@ const EmbedContent: FC<EmbedProps & UserProps> = ({
 	);
 };
 
-export default withUser(EmbedContent);
+export default compose(withUser, withEmbedFlow)(EmbedContent);

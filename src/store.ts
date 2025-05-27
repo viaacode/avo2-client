@@ -7,15 +7,12 @@ import { type LoginState } from './authentication/store/types';
 import searchReducer from './search/store/reducer';
 import { type SearchState } from './search/store/types';
 import uiStateReducer from './store/reducer';
+import { type UiState } from './store/types';
 
 export interface AppState {
 	loginState: LoginState;
 	search: SearchState;
-	uiState: {
-		showNudgingModal: boolean | null;
-		lastVideoPlayedAt: Date | null;
-		historyLocations: string[];
-	};
+	uiState: UiState;
 }
 
 const middleware = [thunk];

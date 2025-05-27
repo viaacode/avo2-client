@@ -15,6 +15,7 @@ import {
 import { type MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/MenuContent/MenuContent';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import React, { createRef, type FC, type ReactNode, useEffect, useState } from 'react';
+import { compose } from 'redux';
 
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import EmbedContent from '../../../embed-code/components/EmbedContent';
@@ -37,6 +38,7 @@ import ShareThroughEmailContent from '../ShareThroughEmailContent/ShareThroughEm
 import { type ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 
 import './FragmentShareModal.scss';
+import withEmbedFlow, { type EmbedFlowProps } from '../../hocs/withEmbedFlow';
 
 type FragmentShareModalProps = {
 	item: Avo.Item.Item;
@@ -46,11 +48,12 @@ type FragmentShareModalProps = {
 	withPupils?: boolean;
 };
 
-const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
+const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProps> = ({
 	item,
 	isOpen,
 	onClose,
 	commonUser,
+	isSmartSchoolEmbedFlow,
 }) => {
 	const initialTab = ShareDropdownTabs.COLLEAGUES;
 	const [tab, setActiveTab, tabs] = useTabs(
@@ -130,8 +133,17 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 	};
 
 	useEffect(() => {
-		setEmbedDropdownSelection('');
-	}, [tab]);
+		if (!isSmartSchoolEmbedFlow) {
+			setEmbedDropdownSelection('');
+		}
+	}, [isSmartSchoolEmbedFlow, tab]);
+
+	useEffect(() => {
+		if (isSmartSchoolEmbedFlow) {
+			setActiveTab(ShareDropdownTabs.EMBED);
+			setEmbedDropdownSelection(EmbedCodeExternalWebsite.SMARTSCHOOL);
+		}
+	}, [isSmartSchoolEmbedFlow, setActiveTab, setEmbedDropdownSelection]);
 
 	useEffect(() => {
 		if (embedDropdownSelection === '') {
@@ -156,7 +168,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 				end: toSeconds(item.duration),
 			} as EmbedCode);
 		}
-	}, [embedDropdownSelection]);
+	}, [embedDropdownSelection, item]);
 
 	const embedDropdownOptions: MenuItemInfoSchema[] = [
 		{
@@ -251,37 +263,41 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 	const renderEmbedContent = (): ReactNode => {
 		return (
 			<>
-				<Spacer margin="bottom-large">
-					<Container
-						mode="vertical"
-						bordered={!!embedDropdownSelection}
-						className="embed-selection"
-					>
-						<Spacer margin="bottom">
-							<BlockHeading type="h4">
-								{tHtml(
-									'shared/components/fragment-share-modal/fragment-share-modal___fragment-insluiten-in'
-								)}
-							</BlockHeading>
-						</Spacer>
-						<Spacer margin="bottom">
-							<Dropdown
-								label={getEmbedDropdownLabel() as string} // TODO allow ReactNode in avo2-components
-								onOpen={handleRightsButtonClicked}
-								onClose={handleRightsButtonClicked}
-								isOpen={isEmbedDropdownOpen}
-							>
-								<MenuContent
-									menuItems={embedDropdownOptions}
-									onClick={(id) => {
-										setEmbedDropdownSelection(id as EmbedCodeExternalWebsite);
-										handleRightsButtonClicked();
-									}}
-								/>
-							</Dropdown>
-						</Spacer>
-					</Container>
-				</Spacer>
+				{!isSmartSchoolEmbedFlow && (
+					<Spacer margin="bottom-large">
+						<Container
+							mode="vertical"
+							bordered={!!embedDropdownSelection}
+							className="embed-selection"
+						>
+							<Spacer margin="bottom">
+								<BlockHeading type="h4">
+									{tHtml(
+										'shared/components/fragment-share-modal/fragment-share-modal___fragment-insluiten-in'
+									)}
+								</BlockHeading>
+							</Spacer>
+							<Spacer margin="bottom">
+								<Dropdown
+									label={getEmbedDropdownLabel() as string} // TODO allow ReactNode in avo2-components
+									onOpen={handleRightsButtonClicked}
+									onClose={handleRightsButtonClicked}
+									isOpen={isEmbedDropdownOpen}
+								>
+									<MenuContent
+										menuItems={embedDropdownOptions}
+										onClick={(id) => {
+											setEmbedDropdownSelection(
+												id as EmbedCodeExternalWebsite
+											);
+											handleRightsButtonClicked();
+										}}
+									/>
+								</Dropdown>
+							</Spacer>
+						</Container>
+					</Spacer>
+				)}
 				<EmbedContent
 					item={embedCode}
 					contentDescription={renderEmbedContentDescription()}
@@ -317,11 +333,13 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 				'shared/components/fragment-share-modal/fragment-share-modal___deel-dit-fragment'
 			)}
 		>
-			<ModalSubHeader>
-				<Spacer className="m-fragment-share-modal__tabs-wrapper" margin={'bottom'}>
-					<Tabs tabs={tabs} onClick={handleTabChanged} />
-				</Spacer>
-			</ModalSubHeader>
+			{!isSmartSchoolEmbedFlow && (
+				<ModalSubHeader>
+					<Spacer className="m-fragment-share-modal__tabs-wrapper" margin={'bottom'}>
+						<Tabs tabs={tabs} onClick={handleTabChanged} />
+					</Spacer>
+				</ModalSubHeader>
+			)}
 			<ModalBody>{renderTabs()}</ModalBody>
 			{(!embedDropdownSelection || tab !== ShareDropdownTabs.EMBED) && (
 				<ModalFooterLeft>
@@ -344,4 +362,4 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps> = ({
 	);
 };
 
-export default withUser(FragmentShareModal) as FC<FragmentShareModalProps>;
+export default compose(withUser, withEmbedFlow)(FragmentShareModal) as FC<FragmentShareModalProps>;
