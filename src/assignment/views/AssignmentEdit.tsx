@@ -29,6 +29,7 @@ import { type DefaultSecureRouteProps } from '../../authentication/components/Se
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { BlockList } from '../../collection/components';
+import type { MarcomNoteInfo } from '../../collection/components/CollectionOrBundleEdit.types';
 import {
 	BundleSortProp,
 	useGetCollectionsOrBundlesContainingFragment,
@@ -153,7 +154,9 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
 
-	const assignment = assignmentFormValues as unknown as Avo.Assignment.Assignment;
+	const assignment = assignmentFormValues as unknown as Avo.Assignment.Assignment & {
+		marcom_note?: MarcomNoteInfo;
+	};
 
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
@@ -955,7 +958,18 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 			default:
 				return tab;
 		}
-	}, [tab, renderedListSorter]);
+	}, [
+		tab,
+		renderedListSorter,
+		draggableListButton,
+		assignment,
+		pastDeadline,
+		match,
+		history,
+		onUpdate,
+		handleAssignmentFieldUpdate,
+		assignmentFormValues,
+	]);
 
 	// Effects
 
@@ -1116,6 +1130,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 								activeTab={tab}
 								onTabChange={handleTabChange}
 								clicksCount={originalAssignment?.responses?.length ?? 0}
+								isManaged={(assignment as any)?.is_managed || false} // TODO remove any after update typings to v3.0.20
 							/>
 						}
 						{...(isSelectEducationLevelModalOpen || isMobileWidth()

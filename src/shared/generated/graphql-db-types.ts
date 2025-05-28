@@ -16869,6 +16869,189 @@ export type App_Embed_Codes_Max_Fields = {
   updated_at?: Maybe<Scalars['timestamp']>;
 };
 
+/** This table contains the api keys that smartschool will use to fetch metadata about certain videos in embeds. */
+export type App_Embed_Codes_Metadata_Api_Keys = {
+  __typename?: 'app_embed_codes_metadata_api_keys';
+  api_key: Scalars['String'];
+  created_at: Scalars['timestamptz'];
+  external_website: Scalars['String'];
+  id: Scalars['uuid'];
+  updated_at: Scalars['timestamptz'];
+  whitelisted_domains: Scalars['String'];
+};
+
+/** aggregated selection of "app.embed_codes_metadata_api_keys" */
+export type App_Embed_Codes_Metadata_Api_Keys_Aggregate = {
+  __typename?: 'app_embed_codes_metadata_api_keys_aggregate';
+  aggregate?: Maybe<App_Embed_Codes_Metadata_Api_Keys_Aggregate_Fields>;
+  nodes: Array<App_Embed_Codes_Metadata_Api_Keys>;
+};
+
+/** aggregate fields of "app.embed_codes_metadata_api_keys" */
+export type App_Embed_Codes_Metadata_Api_Keys_Aggregate_Fields = {
+  __typename?: 'app_embed_codes_metadata_api_keys_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<App_Embed_Codes_Metadata_Api_Keys_Max_Fields>;
+  min?: Maybe<App_Embed_Codes_Metadata_Api_Keys_Min_Fields>;
+};
+
+
+/** aggregate fields of "app.embed_codes_metadata_api_keys" */
+export type App_Embed_Codes_Metadata_Api_Keys_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<App_Embed_Codes_Metadata_Api_Keys_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "app.embed_codes_metadata_api_keys". All fields are combined with a logical 'AND'. */
+export type App_Embed_Codes_Metadata_Api_Keys_Bool_Exp = {
+  _and?: InputMaybe<Array<App_Embed_Codes_Metadata_Api_Keys_Bool_Exp>>;
+  _not?: InputMaybe<App_Embed_Codes_Metadata_Api_Keys_Bool_Exp>;
+  _or?: InputMaybe<Array<App_Embed_Codes_Metadata_Api_Keys_Bool_Exp>>;
+  api_key?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  external_website?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  whitelisted_domains?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "app.embed_codes_metadata_api_keys" */
+export enum App_Embed_Codes_Metadata_Api_Keys_Constraint {
+  /** unique or primary key constraint on columns "api_key" */
+  EmbedCodesMetadataApiKeysApiKeyKey = 'embed_codes_metadata_api_keys_api_key_key',
+  /** unique or primary key constraint on columns "id" */
+  EmbedCodesMetadataApiKeysPkey = 'embed_codes_metadata_api_keys_pkey'
+}
+
+/** input type for inserting data into table "app.embed_codes_metadata_api_keys" */
+export type App_Embed_Codes_Metadata_Api_Keys_Insert_Input = {
+  api_key?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  external_website?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+  whitelisted_domains?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type App_Embed_Codes_Metadata_Api_Keys_Max_Fields = {
+  __typename?: 'app_embed_codes_metadata_api_keys_max_fields';
+  api_key?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  external_website?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  whitelisted_domains?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type App_Embed_Codes_Metadata_Api_Keys_Min_Fields = {
+  __typename?: 'app_embed_codes_metadata_api_keys_min_fields';
+  api_key?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  external_website?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  whitelisted_domains?: Maybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "app.embed_codes_metadata_api_keys" */
+export type App_Embed_Codes_Metadata_Api_Keys_Mutation_Response = {
+  __typename?: 'app_embed_codes_metadata_api_keys_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<App_Embed_Codes_Metadata_Api_Keys>;
+};
+
+/** on_conflict condition type for table "app.embed_codes_metadata_api_keys" */
+export type App_Embed_Codes_Metadata_Api_Keys_On_Conflict = {
+  constraint: App_Embed_Codes_Metadata_Api_Keys_Constraint;
+  update_columns?: Array<App_Embed_Codes_Metadata_Api_Keys_Update_Column>;
+  where?: InputMaybe<App_Embed_Codes_Metadata_Api_Keys_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "app.embed_codes_metadata_api_keys". */
+export type App_Embed_Codes_Metadata_Api_Keys_Order_By = {
+  api_key?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  external_website?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  whitelisted_domains?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: app.embed_codes_metadata_api_keys */
+export type App_Embed_Codes_Metadata_Api_Keys_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "app.embed_codes_metadata_api_keys" */
+export enum App_Embed_Codes_Metadata_Api_Keys_Select_Column {
+  /** column name */
+  ApiKey = 'api_key',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExternalWebsite = 'external_website',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  WhitelistedDomains = 'whitelisted_domains'
+}
+
+/** input type for updating data in table "app.embed_codes_metadata_api_keys" */
+export type App_Embed_Codes_Metadata_Api_Keys_Set_Input = {
+  api_key?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  external_website?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+  whitelisted_domains?: InputMaybe<Scalars['String']>;
+};
+
+/** Streaming cursor of the table "app_embed_codes_metadata_api_keys" */
+export type App_Embed_Codes_Metadata_Api_Keys_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: App_Embed_Codes_Metadata_Api_Keys_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type App_Embed_Codes_Metadata_Api_Keys_Stream_Cursor_Value_Input = {
+  api_key?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  external_website?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+  whitelisted_domains?: InputMaybe<Scalars['String']>;
+};
+
+/** update columns of table "app.embed_codes_metadata_api_keys" */
+export enum App_Embed_Codes_Metadata_Api_Keys_Update_Column {
+  /** column name */
+  ApiKey = 'api_key',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExternalWebsite = 'external_website',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  WhitelistedDomains = 'whitelisted_domains'
+}
+
+export type App_Embed_Codes_Metadata_Api_Keys_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<App_Embed_Codes_Metadata_Api_Keys_Set_Input>;
+  where: App_Embed_Codes_Metadata_Api_Keys_Bool_Exp;
+};
+
 /** aggregate min on columns */
 export type App_Embed_Codes_Min_Fields = {
   __typename?: 'app_embed_codes_min_fields';
@@ -25906,6 +26089,10 @@ export type Mutation_Root = {
   delete_app_embed_codes?: Maybe<App_Embed_Codes_Mutation_Response>;
   /** delete single row from the table: "app.embed_codes" */
   delete_app_embed_codes_by_pk?: Maybe<App_Embed_Codes>;
+  /** delete data from the table: "app.embed_codes_metadata_api_keys" */
+  delete_app_embed_codes_metadata_api_keys?: Maybe<App_Embed_Codes_Metadata_Api_Keys_Mutation_Response>;
+  /** delete single row from the table: "app.embed_codes_metadata_api_keys" */
+  delete_app_embed_codes_metadata_api_keys_by_pk?: Maybe<App_Embed_Codes_Metadata_Api_Keys>;
   /** delete data from the table: "app.interactive_tour" */
   delete_app_interactive_tour?: Maybe<App_Interactive_Tour_Mutation_Response>;
   /** delete single row from the table: "app.interactive_tour" */
@@ -26298,6 +26485,10 @@ export type Mutation_Root = {
   insert_app_content_one?: Maybe<App_Content>;
   /** insert data into the table: "app.embed_codes" */
   insert_app_embed_codes?: Maybe<App_Embed_Codes_Mutation_Response>;
+  /** insert data into the table: "app.embed_codes_metadata_api_keys" */
+  insert_app_embed_codes_metadata_api_keys?: Maybe<App_Embed_Codes_Metadata_Api_Keys_Mutation_Response>;
+  /** insert a single row into the table: "app.embed_codes_metadata_api_keys" */
+  insert_app_embed_codes_metadata_api_keys_one?: Maybe<App_Embed_Codes_Metadata_Api_Keys>;
   /** insert a single row into the table: "app.embed_codes" */
   insert_app_embed_codes_one?: Maybe<App_Embed_Codes>;
   /** insert data into the table: "app.interactive_tour" */
@@ -26768,6 +26959,12 @@ export type Mutation_Root = {
   update_app_embed_codes_by_pk?: Maybe<App_Embed_Codes>;
   /** update multiples rows of table: "app.embed_codes" */
   update_app_embed_codes_many?: Maybe<Array<Maybe<App_Embed_Codes_Mutation_Response>>>;
+  /** update data of the table: "app.embed_codes_metadata_api_keys" */
+  update_app_embed_codes_metadata_api_keys?: Maybe<App_Embed_Codes_Metadata_Api_Keys_Mutation_Response>;
+  /** update single row of the table: "app.embed_codes_metadata_api_keys" */
+  update_app_embed_codes_metadata_api_keys_by_pk?: Maybe<App_Embed_Codes_Metadata_Api_Keys>;
+  /** update multiples rows of table: "app.embed_codes_metadata_api_keys" */
+  update_app_embed_codes_metadata_api_keys_many?: Maybe<Array<Maybe<App_Embed_Codes_Metadata_Api_Keys_Mutation_Response>>>;
   /** update data of the table: "app.interactive_tour" */
   update_app_interactive_tour?: Maybe<App_Interactive_Tour_Mutation_Response>;
   /** update single row of the table: "app.interactive_tour" */
@@ -27575,6 +27772,18 @@ export type Mutation_RootDelete_App_Embed_CodesArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_App_Embed_Codes_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_App_Embed_Codes_Metadata_Api_KeysArgs = {
+  where: App_Embed_Codes_Metadata_Api_Keys_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_App_Embed_Codes_Metadata_Api_Keys_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -28829,6 +29038,20 @@ export type Mutation_RootInsert_App_Content_OneArgs = {
 export type Mutation_RootInsert_App_Embed_CodesArgs = {
   objects: Array<App_Embed_Codes_Insert_Input>;
   on_conflict?: InputMaybe<App_Embed_Codes_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_App_Embed_Codes_Metadata_Api_KeysArgs = {
+  objects: Array<App_Embed_Codes_Metadata_Api_Keys_Insert_Input>;
+  on_conflict?: InputMaybe<App_Embed_Codes_Metadata_Api_Keys_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_App_Embed_Codes_Metadata_Api_Keys_OneArgs = {
+  object: App_Embed_Codes_Metadata_Api_Keys_Insert_Input;
+  on_conflict?: InputMaybe<App_Embed_Codes_Metadata_Api_Keys_On_Conflict>;
 };
 
 
@@ -30548,6 +30771,26 @@ export type Mutation_RootUpdate_App_Embed_Codes_ManyArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_App_Embed_Codes_Metadata_Api_KeysArgs = {
+  _set?: InputMaybe<App_Embed_Codes_Metadata_Api_Keys_Set_Input>;
+  where: App_Embed_Codes_Metadata_Api_Keys_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_App_Embed_Codes_Metadata_Api_Keys_By_PkArgs = {
+  _set?: InputMaybe<App_Embed_Codes_Metadata_Api_Keys_Set_Input>;
+  pk_columns: App_Embed_Codes_Metadata_Api_Keys_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_App_Embed_Codes_Metadata_Api_Keys_ManyArgs = {
+  updates: Array<App_Embed_Codes_Metadata_Api_Keys_Updates>;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_App_Interactive_TourArgs = {
   _append?: InputMaybe<App_Interactive_Tour_Append_Input>;
   _delete_at_path?: InputMaybe<App_Interactive_Tour_Delete_At_Path_Input>;
@@ -32257,6 +32500,12 @@ export type Query_Root = {
   app_embed_codes_aggregate: App_Embed_Codes_Aggregate;
   /** fetch data from the table: "app.embed_codes" using primary key columns */
   app_embed_codes_by_pk?: Maybe<App_Embed_Codes>;
+  /** fetch data from the table: "app.embed_codes_metadata_api_keys" */
+  app_embed_codes_metadata_api_keys: Array<App_Embed_Codes_Metadata_Api_Keys>;
+  /** fetch aggregated fields from the table: "app.embed_codes_metadata_api_keys" */
+  app_embed_codes_metadata_api_keys_aggregate: App_Embed_Codes_Metadata_Api_Keys_Aggregate;
+  /** fetch data from the table: "app.embed_codes_metadata_api_keys" using primary key columns */
+  app_embed_codes_metadata_api_keys_by_pk?: Maybe<App_Embed_Codes_Metadata_Api_Keys>;
   /** fetch data from the table: "app.interactive_tour" */
   app_interactive_tour: Array<App_Interactive_Tour>;
   /** fetch aggregated fields from the table: "app.interactive_tour" */
@@ -33786,6 +34035,29 @@ export type Query_RootApp_Embed_Codes_AggregateArgs = {
 
 
 export type Query_RootApp_Embed_Codes_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootApp_Embed_Codes_Metadata_Api_KeysArgs = {
+  distinct_on?: InputMaybe<Array<App_Embed_Codes_Metadata_Api_Keys_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Embed_Codes_Metadata_Api_Keys_Order_By>>;
+  where?: InputMaybe<App_Embed_Codes_Metadata_Api_Keys_Bool_Exp>;
+};
+
+
+export type Query_RootApp_Embed_Codes_Metadata_Api_Keys_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Embed_Codes_Metadata_Api_Keys_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Embed_Codes_Metadata_Api_Keys_Order_By>>;
+  where?: InputMaybe<App_Embed_Codes_Metadata_Api_Keys_Bool_Exp>;
+};
+
+
+export type Query_RootApp_Embed_Codes_Metadata_Api_Keys_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -39285,6 +39557,14 @@ export type Subscription_Root = {
   app_embed_codes_aggregate: App_Embed_Codes_Aggregate;
   /** fetch data from the table: "app.embed_codes" using primary key columns */
   app_embed_codes_by_pk?: Maybe<App_Embed_Codes>;
+  /** fetch data from the table: "app.embed_codes_metadata_api_keys" */
+  app_embed_codes_metadata_api_keys: Array<App_Embed_Codes_Metadata_Api_Keys>;
+  /** fetch aggregated fields from the table: "app.embed_codes_metadata_api_keys" */
+  app_embed_codes_metadata_api_keys_aggregate: App_Embed_Codes_Metadata_Api_Keys_Aggregate;
+  /** fetch data from the table: "app.embed_codes_metadata_api_keys" using primary key columns */
+  app_embed_codes_metadata_api_keys_by_pk?: Maybe<App_Embed_Codes_Metadata_Api_Keys>;
+  /** fetch data from the table in a streaming manner: "app.embed_codes_metadata_api_keys" */
+  app_embed_codes_metadata_api_keys_stream: Array<App_Embed_Codes_Metadata_Api_Keys>;
   /** fetch data from the table in a streaming manner: "app.embed_codes" */
   app_embed_codes_stream: Array<App_Embed_Codes>;
   /** fetch data from the table: "app.interactive_tour" */
@@ -41320,6 +41600,36 @@ export type Subscription_RootApp_Embed_Codes_AggregateArgs = {
 
 export type Subscription_RootApp_Embed_Codes_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootApp_Embed_Codes_Metadata_Api_KeysArgs = {
+  distinct_on?: InputMaybe<Array<App_Embed_Codes_Metadata_Api_Keys_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Embed_Codes_Metadata_Api_Keys_Order_By>>;
+  where?: InputMaybe<App_Embed_Codes_Metadata_Api_Keys_Bool_Exp>;
+};
+
+
+export type Subscription_RootApp_Embed_Codes_Metadata_Api_Keys_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Embed_Codes_Metadata_Api_Keys_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Embed_Codes_Metadata_Api_Keys_Order_By>>;
+  where?: InputMaybe<App_Embed_Codes_Metadata_Api_Keys_Bool_Exp>;
+};
+
+
+export type Subscription_RootApp_Embed_Codes_Metadata_Api_Keys_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootApp_Embed_Codes_Metadata_Api_Keys_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<App_Embed_Codes_Metadata_Api_Keys_Stream_Cursor_Input>>;
+  where?: InputMaybe<App_Embed_Codes_Metadata_Api_Keys_Bool_Exp>;
 };
 
 

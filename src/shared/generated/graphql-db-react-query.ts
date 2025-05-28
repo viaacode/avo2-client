@@ -1243,6 +1243,7 @@ export const GetAssignmentWithResponseDocument = `
     is_collaborative
     is_deleted
     is_public
+    is_managed
     thumbnail_path
     owner_profile_id
     owner {
