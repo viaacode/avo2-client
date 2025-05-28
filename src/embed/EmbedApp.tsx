@@ -1,10 +1,11 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Flex, Spinner } from '@viaa/avo2-components';
+import { Flex, type IconName, Spinner } from '@viaa/avo2-components';
 import { IconNameSchema } from '@viaa/avo2-components/dist/components/Icon/Icon.types';
+import { parse } from 'query-string';
 import React, { type FC, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
-import { Route } from 'react-router';
-import { BrowserRouter } from 'react-router-dom';
+import { Route, type RouteComponentProps } from 'react-router';
+import { BrowserRouter, withRouter } from 'react-router-dom';
 import { QueryParamProvider } from 'use-query-params';
 
 import { LoginMessage } from '../authentication/authentication.types';
@@ -16,16 +17,20 @@ import { waitForTranslations } from '../shared/translations/i18n';
 import store from '../store';
 
 import Embed from './components/Embed';
+import { EmbedErrorView } from './components/EmbedErrorView';
 import RegisterOrLogin from './components/RegisterOrLogin';
 import { useGetLoginStateForEmbed } from './hooks/useGetLoginState';
 
 import '../styles/main.scss';
 
-const EmbedApp: FC = () => {
+const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
+	const query = parse(location?.search || '');
 	const [translationsLoaded, setTranslationsLoaded] = useState<boolean>(false);
 
 	const { data: loginState, isLoading: loginStateLoading } = useGetLoginStateForEmbed();
 	const [ltiJwtToken, setLtiJwtToken] = useState<string | null>(null);
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [errorIcon, setErrorIcon] = useState<IconName | null>(null);
 
 	useEffect(() => {
 		// Get the JWT token from the URL
@@ -34,6 +39,18 @@ const EmbedApp: FC = () => {
 			setLtiJwtToken(jwtToken);
 		}
 	}, []);
+
+	useEffect(() => {
+		const errorMessageTemp = query['errorMessage'];
+		if (errorMessageTemp && typeof errorMessageTemp === 'string') {
+			setErrorMessage(errorMessageTemp);
+		}
+
+		const errorIconTemp = query['icon'];
+		if (errorIconTemp && typeof errorIconTemp === 'string') {
+			setErrorIcon(errorIconTemp as IconName);
+		}
+	}, [query]);
 
 	/**
 	 * Wait for translations to be loaded before rendering the app
@@ -50,6 +67,10 @@ const EmbedApp: FC = () => {
 
 	// Render
 	const renderApp = () => {
+		if (errorMessage) {
+			return <EmbedErrorView message={errorMessage} icon={errorIcon} />;
+		}
+
 		if (loginStateLoading || !translationsLoaded) {
 			// Wait for login check
 			return (
@@ -82,6 +103,8 @@ const EmbedApp: FC = () => {
 	return renderApp();
 };
 
+const EmbedAppWithRouter = withRouter(EmbedApp);
+
 const queryClient = new QueryClient();
 
 const EmbedRoot: FC = () => {
@@ -90,7 +113,7 @@ const EmbedRoot: FC = () => {
 			<Provider store={store}>
 				<BrowserRouter>
 					<QueryParamProvider ReactRouterRoute={Route}>
-						<EmbedApp />
+						<EmbedAppWithRouter />
 					</QueryParamProvider>
 				</BrowserRouter>
 			</Provider>
