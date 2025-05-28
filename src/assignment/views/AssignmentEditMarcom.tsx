@@ -354,6 +354,16 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 			);
 		}
 
+		const disablePublishButton = isPublishedToKlascement || isPublishing;
+		let publishButtonTooltip = undefined;
+		if (isPublishedToKlascement) {
+			publishButtonTooltip = tText(
+				'De opdracht is reeds gepubliceerd naar klascement. Bewerk het leermiddel daar.'
+			);
+		} else if (isPublishing) {
+			publishButtonTooltip = tText('Bezig met publiceren naar klascement');
+		}
+
 		return (
 			<>
 				{renderPublishToKlascementHeader()}
@@ -365,7 +375,8 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 							)}
 							icon={IconName.klascement}
 							type="primary"
-							disabled={isPublishedToKlascement || isPublishing}
+							disabled={disablePublishButton}
+							title={publishButtonTooltip}
 							onClick={handlePublish}
 							className="u-color-klascement u-m-t"
 						/>
