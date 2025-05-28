@@ -23,6 +23,10 @@ const uiStateReducer = createReducer(initialState, {
 		...state,
 		historyLocations: action.data || [],
 	}),
+	[UiStateActionTypes.SET_EMBED_FLOW]: (state, action) => ({
+		...state,
+		embedFlow: action.data,
+	}),
 });
 
 export default uiStateReducer;

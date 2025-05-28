@@ -105,6 +105,7 @@ import './ItemDetail.scss';
 import ItemVideoDescription from '../components/ItemVideoDescription';
 import AddToCollectionModal from '../components/modals/AddToCollectionModal';
 import CutFragmentForAssignmentModal from '../components/modals/CutFragmentForAssignmentModal';
+import withEmbedFlow, { type EmbedFlowProps } from '../../shared/hocs/withEmbedFlow';
 
 interface ItemDetailProps {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
@@ -138,7 +139,9 @@ const ITEM_ACTIONS = {
 	importToAssignment: 'importToAssignment',
 };
 
-const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> = ({
+const ItemDetail: FC<
+	ItemDetailProps & DefaultSecureRouteProps<{ id: string }> & EmbedFlowProps
+> = ({
 	history,
 	match,
 	location,
@@ -154,6 +157,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 	renderBookmarkButton = defaultRenderBookmarkButton,
 	renderBookmarkCount = defaultRenderBookmarkCount,
 	renderInteractiveTour = defaultRenderInteractiveTour,
+	isSmartSchoolEmbedFlow,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -734,6 +738,36 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 		);
 	};
 
+	const renderShareButtons = () => {
+		if (isSmartSchoolEmbedFlow) {
+			return (
+				<Button
+					className="c-button-smartschool"
+					icon={IconName.smartschool}
+					label={tText('Gebruiken in smartschool')}
+					ariaLabel={tText('Gebruiken in smartschool')}
+					title={tText('Gebruiken in smartschool')}
+					onClick={() => {
+						setIsShareFragmentModalOpen(true);
+					}}
+				/>
+			);
+		}
+
+		return (
+			<Button
+				type="tertiary"
+				icon={IconName.share2}
+				label={tText('item/views/item-detail___fragment-delen')}
+				ariaLabel={tText('item/views/item-detail___fragment-delen')}
+				title={tText('item/views/item-detail___fragment-delen')}
+				onClick={() => {
+					setIsShareFragmentModalOpen(true);
+				}}
+			/>
+		);
+	};
+
 	const defaultRenderActionButtons = () => {
 		return (
 			<div className="c-item-detail__action-buttons">
@@ -786,16 +820,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 							</DropdownContent>
 						</Dropdown>
 					)}
-					<Button
-						type="tertiary"
-						icon={IconName.share2}
-						label={tText('item/views/item-detail___fragment-delen')}
-						ariaLabel={tText('item/views/item-detail___fragment-delen')}
-						title={tText('item/views/item-detail___fragment-delen')}
-						onClick={() => {
-							setIsShareFragmentModalOpen(true);
-						}}
-					/>
+					{renderShareButtons()}
 					{PermissionService.hasPerm(commonUser, PermissionName.VIEW_ITEMS_OVERVIEW) && (
 						<Link to={buildLink(ITEMS_PATH.ITEM_DETAIL, { id: item?.uid })}>
 							<Button
@@ -1079,4 +1104,4 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 	);
 };
 
-export default compose(withRouter, withUser)(ItemDetail) as FC<ItemDetailProps>;
+export default compose(withRouter, withUser, withEmbedFlow)(ItemDetail) as FC<ItemDetailProps>;

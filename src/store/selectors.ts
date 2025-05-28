@@ -11,3 +11,7 @@ export const selectLastVideoPlayedAt = ({ uiState }: AppState) => {
 export const selectHistoryLocations = ({ uiState }: AppState) => {
 	return uiState?.historyLocations || [];
 };
+
+export const selectIsSmartSchoolEmbedFlow = ({ uiState }: AppState) => {
+	return uiState?.embedFlow === 'smartschool';
+};
