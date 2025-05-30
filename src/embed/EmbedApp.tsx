@@ -32,14 +32,19 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [errorIcon, setErrorIcon] = useState<IconName | null>(null);
 
+	/**
+	 * Get the JWT token from the browser URL and store it in state
+	 */
 	useEffect(() => {
-		// Get the JWT token from the URL
 		const jwtToken = EmbedCodeService.getJwtTokenFromUrl();
 		if (jwtToken) {
 			setLtiJwtToken(jwtToken);
 		}
 	}, []);
 
+	/**
+	 * Get the error message and icon from the URL query parameters if they are present
+	 */
 	useEffect(() => {
 		const errorMessageTemp = query['errorMessage'];
 		if (errorMessageTemp && typeof errorMessageTemp === 'string') {
