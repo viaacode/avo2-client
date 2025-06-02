@@ -9,16 +9,16 @@ import {
 } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode } from 'react';
 
-import { tHtml } from '../../shared/helpers/translate-html';
 import useTranslation from '../../shared/hooks/useTranslation';
 
-import './ErrorView.scss';
+import './EmbedErrorView.scss';
 
-interface ErrorViewProps {
-	isNotFoundError?: boolean;
+export interface EmbedErrorViewProps {
+	message: string | ReactNode;
+	icon?: IconName | null;
 }
 
-const ErrorView: FC<ErrorViewProps> = ({ isNotFoundError = false }) => {
+export const EmbedErrorView: FC<EmbedErrorViewProps> = ({ message, icon }) => {
 	const { tText } = useTranslation();
 	const errorMessage: string | ReactNode = isNotFoundError
 		? tHtml('Deze video is niet meer beschikbaar')
@@ -31,8 +31,8 @@ const ErrorView: FC<ErrorViewProps> = ({ isNotFoundError = false }) => {
 			<Container size="medium" mode="horizontal">
 				<Blankslate
 					body=""
-					icon={IconName.alertTriangle}
-					title={errorMessage}
+					icon={icon || IconName.alertTriangle}
+					title={message}
 					className="c-content"
 				>
 					{!isNotFoundError && (
@@ -55,5 +55,3 @@ const ErrorView: FC<ErrorViewProps> = ({ isNotFoundError = false }) => {
 		</Container>
 	);
 };
-
-export default ErrorView as FC<ErrorViewProps>;

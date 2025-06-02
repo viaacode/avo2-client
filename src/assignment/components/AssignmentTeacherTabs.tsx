@@ -15,6 +15,7 @@ interface AssignmentTeacherTabsProps {
 	activeTab: ASSIGNMENT_CREATE_UPDATE_TABS | null;
 	onTabChange: (newActiveTab: ASSIGNMENT_CREATE_UPDATE_TABS) => void;
 	clicksCount: number;
+	isManaged: boolean;
 }
 
 const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps & UserProps> = ({
@@ -23,6 +24,7 @@ const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps
 	activeTab,
 	onTabChange,
 	clicksCount,
+	isManaged,
 }) => {
 	const { tText } = useTranslation();
 
@@ -81,7 +83,7 @@ const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps
 							},
 					  ]
 					: []),
-				...(showAdminTab
+				...(showAdminTab && isManaged
 					? [
 							{
 								id: ASSIGNMENT_CREATE_UPDATE_TABS.MARCOM,
@@ -96,7 +98,7 @@ const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps
 				...item,
 				active: item.id === activeTab,
 			})),
-		[tText, activeTab]
+		[tText, history.location.pathname, activeTab, clicksCount, showAdminTab, isManaged]
 	);
 
 	return (

@@ -1,4 +1,5 @@
 import {
+	Checkbox,
 	Column,
 	Container,
 	Form,
@@ -42,6 +43,7 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 				value: assignment.profile.id,
 		  }
 		: undefined;
+	const isManaged: boolean = (assignment as any)?.is_managed || false; // TODO remove any after update typings to v3.0.20
 
 	const transformQualityLabelsToTagInfo = (labels: QualityLabel[]): TagInfo[] => {
 		return labels.map((label: QualityLabel) => ({
@@ -162,6 +164,61 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 											onSelect={handleOwnerChange}
 										/>
 									</FormGroup>
+								)}
+
+								{PermissionService.hasPerm(
+									commonUser,
+									PermissionName.EDIT_ASSIGNMENT_AUTHOR
+								) && (
+									<FormGroup
+										label={tText(
+											'collection/components/collection-or-bundle-edit-admin___eigenaar'
+										)}
+										required
+									>
+										<ContentPicker
+											initialValue={owner}
+											hideTargetSwitch
+											hideTypeDropdown
+											allowedTypes={['PROFILE']}
+											onSelect={handleOwnerChange}
+										/>
+									</FormGroup>
+								)}
+
+								{PermissionService.hasPerm(
+									commonUser,
+									PermissionName.EDIT_ASSIGNMENT_EDITORIAL_STATUS
+								) ? (
+									<FormGroup>
+										<Checkbox
+											label={tText(
+												'collection/components/collection-or-bundle-edit-admin___redactie'
+											)}
+											checked={isManaged}
+											onChange={() => {
+												setAssignment({
+													...assignment,
+													is_managed: !isManaged,
+												});
+											}}
+										/>
+									</FormGroup>
+								) : (
+									<Spacer margin="top">
+										{`${tText(
+											'collection/components/collection-or-bundle-edit-admin___redactie'
+										)}: ${
+											isManaged
+												? tText(
+														'collection/components/collection-or-bundle-edit-admin___ja'
+												  )
+												: tText(
+														'collection/components/collection-or-bundle-edit-admin___nee'
+												  )
+										}
+											`}
+									</Spacer>
 								)}
 							</Column>
 						</Grid>

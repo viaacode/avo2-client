@@ -18,7 +18,7 @@ import { tHtml } from '../../shared/helpers/translate-html';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { trackEvents } from '../../shared/services/event-logging-service';
 
-import ErrorView from './ErrorView';
+import { EmbedErrorView } from './EmbedErrorView';
 
 import './Embed.scss';
 
@@ -33,6 +33,8 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 		isError: isErrorEmbedCode,
 	} = useGetEmbedCode(embedId, true);
 
+	const embedCodeNotFound = embedCode && !embedCode.content;
+
 	useEffect(() => {
 		const embedId = urlInfo.query['embedId'] || urlInfo.url.split('/').pop();
 		if (embedId && typeof embedId === 'string' && isUuid(embedId)) {
@@ -40,8 +42,47 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 		}
 	}, [urlInfo]);
 
-	if (isErrorEmbedCode || (embedCode && !embedCode.content)) {
-		return <ErrorView isNotFoundError={embedCode && !embedCode.content} />;
+	const onPlay = () => {
+		if (!embedCode) {
+			return;
+		}
+		trackEvents(
+			{
+				object: embedCode?.id,
+				object_type: 'embed_code',
+				action: 'play',
+			},
+			commonUser
+		);
+	};
+
+	const openOnAvo = () => {
+		if (!embedCode) {
+			return;
+		}
+		trackEvents(
+			{
+				object: embedCode?.id,
+				object_type: 'embed_code',
+				action: 'view',
+			},
+			commonUser
+		);
+		redirectToExternalPage(toEmbedCodeDetail(embedCode?.id), '_blank');
+	};
+
+	if (isErrorEmbedCode || embedCodeNotFound) {
+		return (
+			<EmbedErrorView
+				message={
+					embedCodeNotFound
+						? tHtml('Deze video is niet meer beschikbaar')
+						: tHtml(
+								'embed/components/error-view___oeps-er-liep-iets-mis-probeer-het-opnieuw-br-lukt-het-nog-steeds-niet-dan-is-dit-fragment-mogelijks-verwijderd'
+						  )
+				}
+			/>
+		);
 	}
 
 	if (isLoadingEmbedCode || !embedCode) {
@@ -51,29 +92,6 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 			</Flex>
 		);
 	}
-
-	const onPlay = () => {
-		trackEvents(
-			{
-				object: embedCode.id,
-				object_type: 'embed_code',
-				action: 'play',
-			},
-			commonUser
-		);
-	};
-
-	const openOnAvo = () => {
-		trackEvents(
-			{
-				object: embedCode.id,
-				object_type: 'embed_code',
-				action: 'view',
-			},
-			commonUser
-		);
-		redirectToExternalPage(toEmbedCodeDetail(embedCode.id), '_blank');
-	};
 
 	return (
 		<div className="embed-wrapper">
