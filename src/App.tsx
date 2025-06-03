@@ -144,8 +144,8 @@ const App: FC<
 	}, [location, props]);
 
 	/**
-	 * Check if this window was opened from somewhere else and get the embed-flow
-	 * Store them in the redux store
+	 * Check if this window was opened from somewhere else and get the embed-flow query param
+	 * Store the embed-flow query param in the redux store
 	 */
 	useEffect(() => {
 		if (window.opener) {
