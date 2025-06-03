@@ -148,10 +148,15 @@ const App: FC<
 	 * Store the embed-flow query param in the redux store
 	 */
 	useEffect(() => {
-		if (window.opener) {
-			const url = new URL(window.location.href);
-			const embedFlow = url.searchParams.get('embed-flow') || '';
+		const url = new URL(window.location.href);
+		const embedFlow = url.searchParams.get('embed-flow') || '';
+		const isOpenedByOtherPage = !!window.opener;
+		if (isOpenedByOtherPage && !!embedFlow) {
 			setEmbedFlow(embedFlow);
+		} else if (embedFlow) {
+			console.error(
+				"Embed flow query param is present, but the page wasn't opened from another page, so window.opener is undefined. Cannot start the embed flow"
+			);
 		}
 	}, [setEmbedFlow]);
 
