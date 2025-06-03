@@ -11,7 +11,9 @@ div.expandable-container-closed {
 	}
 }
 
-.c-toolbar__right {
-	flex-shrink: 1;
-	min-width: 0;
+.c-embed-code-content-toolbar{
+	.c-toolbar__right:has(> .u-truncate) {
+		flex-shrink: 1;
+		min-width: 0;
+	}
 }
