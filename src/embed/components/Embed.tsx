@@ -99,6 +99,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 				poster={getFlowPlayerPoster(undefined, embedCode.content as ItemSchema)}
 				item={embedCode.content as ItemSchema}
 				canPlay={true}
+				placeholder={false}
 				cuePointsLabel={{ start: embedCode.start, end: embedCode.end }}
 				cuePointsVideo={{ start: embedCode.start, end: embedCode.end }}
 				onPlay={onPlay}

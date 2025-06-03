@@ -32,6 +32,7 @@ export type FlowPlayerWrapperProps = {
 	controls?: boolean;
 	speed?: unknown | null;
 	trackPlayEvent: boolean;
+	placeholder?: boolean;
 };
 
 export type Cuepoints = {
