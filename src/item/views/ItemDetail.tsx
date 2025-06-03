@@ -744,9 +744,9 @@ const ItemDetail: FC<
 				<Button
 					className="c-button-smartschool"
 					icon={IconName.smartschool}
-					label={tText('Gebruiken in smartschool')}
-					ariaLabel={tText('Gebruiken in smartschool')}
-					title={tText('Gebruiken in smartschool')}
+					label={tText('item/views/item-detail___gebruiken-in-smartschool')}
+					ariaLabel={tText('item/views/item-detail___gebruiken-in-smartschool')}
+					title={tText('item/views/item-detail___gebruiken-in-smartschool')}
 					onClick={() => {
 						setIsShareFragmentModalOpen(true);
 					}}

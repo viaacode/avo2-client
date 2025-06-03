@@ -21,7 +21,7 @@ export interface EmbedErrorViewProps {
 export const EmbedErrorView: FC<EmbedErrorViewProps> = ({ message, icon }) => {
 	const { tText } = useTranslation();
 	const errorMessage: string | ReactNode = isNotFoundError
-		? tHtml('Deze video is niet meer beschikbaar')
+		? tHtml('embed/components/embed-error-view___deze-video-is-niet-meer-beschikbaar')
 		: tHtml(
 				'embed/components/error-view___oeps-er-liep-iets-mis-probeer-het-opnieuw-br-lukt-het-nog-steeds-niet-dan-is-dit-fragment-mogelijks-verwijderd'
 		  );

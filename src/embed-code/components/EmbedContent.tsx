@@ -350,9 +350,15 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 							<Button
 								className="c-button-smartschool"
 								icon={IconName.smartschool}
-								label={tText('Gebruiken in smartschool')}
-								ariaLabel={tText('Gebruiken in smartschool')}
-								title={tText('Gebruiken in smartschool')}
+								label={tText(
+									'embed-code/components/embed-content___gebruiken-in-smartschool'
+								)}
+								ariaLabel={tText(
+									'embed-code/components/embed-content___gebruiken-in-smartschool'
+								)}
+								title={tText(
+									'embed-code/components/embed-content___gebruiken-in-smartschool'
+								)}
 								disabled={isPublishing}
 								onClick={handleCreate}
 							/>

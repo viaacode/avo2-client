@@ -76,7 +76,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 			<EmbedErrorView
 				message={
 					embedCodeNotFound
-						? tHtml('Deze video is niet meer beschikbaar')
+						? tHtml('embed/components/embed___deze-video-is-niet-meer-beschikbaar')
 						: tHtml(
 								'embed/components/error-view___oeps-er-liep-iets-mis-probeer-het-opnieuw-br-lukt-het-nog-steeds-niet-dan-is-dit-fragment-mogelijks-verwijderd'
 						  )

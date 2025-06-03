@@ -565,7 +565,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 							{isPublishedToKlascement ? (
 								<img
 									alt={tText(
-										'Afbeelding die gepubliceerd is naar klascement voor deze collectie'
+										'collection/components/collection-or-bundle-edit-marcom___afbeelding-die-gepubliceerd-is-naar-klascement-voor-deze-collectie'
 									)}
 									src={compact([klascementImageUrl])[0]}
 								/>

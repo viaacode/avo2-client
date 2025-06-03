@@ -358,10 +358,12 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 		let publishButtonTooltip = undefined;
 		if (isPublishedToKlascement) {
 			publishButtonTooltip = tText(
-				'De opdracht is reeds gepubliceerd naar klascement. Bewerk het leermiddel daar.'
+				'assignment/views/assignment-edit-marcom___de-opdracht-is-reeds-gepubliceerd-naar-klascement-bewerk-het-leermiddel-daar'
 			);
 		} else if (isPublishing) {
-			publishButtonTooltip = tText('Bezig met publiceren naar klascement');
+			publishButtonTooltip = tText(
+				'assignment/views/assignment-edit-marcom___bezig-met-publiceren-naar-klascement'
+			);
 		}
 
 		return (
