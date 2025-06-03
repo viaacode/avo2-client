@@ -9,6 +9,7 @@ import { bookWidgetsLogo, smartSchoolLogo } from '../../embed-code.const';
 import { type EmbedCode, EmbedCodeExternalWebsite } from '../../embed-code.types';
 
 import './BookmarkEmbedModal.scss';
+import withEmbedFlow, { type EmbedFlowProps } from '../../../shared/hocs/withEmbedFlow';
 
 type BookmarkEmbedModalProps = {
 	embedCode: EmbedCode | null;
@@ -16,7 +17,12 @@ type BookmarkEmbedModalProps = {
 	onClose: () => void;
 };
 
-const BookmarkEmbedModal: FC<BookmarkEmbedModalProps> = ({ embedCode, isOpen, onClose }) => {
+const BookmarkEmbedModal: FC<BookmarkEmbedModalProps & EmbedFlowProps> = ({
+	embedCode,
+	isOpen,
+	onClose,
+	isSmartSchoolEmbedFlow,
+}) => {
 	const initialTab = EmbedCodeExternalWebsite.SMARTSCHOOL;
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
@@ -107,14 +113,16 @@ const BookmarkEmbedModal: FC<BookmarkEmbedModalProps> = ({ embedCode, isOpen, on
 			disablePageScroll={true}
 			title={tHtml('embed-code/components/modals/bookmark-embed-modal___deel-dit-fragment')}
 		>
-			<ModalSubHeader>
-				<Spacer className="m-bookmarks-embed-modal__tabs-wrapper" margin={'bottom'}>
-					<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
-				</Spacer>
-			</ModalSubHeader>
+			{!isSmartSchoolEmbedFlow && (
+				<ModalSubHeader>
+					<Spacer className="m-bookmarks-embed-modal__tabs-wrapper" margin={'bottom'}>
+						<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
+					</Spacer>
+				</ModalSubHeader>
+			)}
 			<ModalBody>{renderTabs()}</ModalBody>
 		</Modal>
 	);
 };
 
-export default BookmarkEmbedModal as FC<BookmarkEmbedModalProps>;
+export default withEmbedFlow(BookmarkEmbedModal) as FC<BookmarkEmbedModalProps>;

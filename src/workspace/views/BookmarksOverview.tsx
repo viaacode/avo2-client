@@ -38,6 +38,7 @@ import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
+import withEmbedFlow, { type EmbedFlowProps } from '../../shared/hocs/withEmbedFlow';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
@@ -58,12 +59,9 @@ interface BookmarksOverviewProps {
 	onUpdate: () => void | Promise<void>;
 }
 
-const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentProps> = ({
-	numberOfItems,
-	onUpdate,
-	history,
-	commonUser,
-}) => {
+const BookmarksOverview: FC<
+	BookmarksOverviewProps & UserProps & RouteComponentProps & EmbedFlowProps
+> = ({ numberOfItems, onUpdate, history, commonUser, isSmartSchoolEmbedFlow }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -279,6 +277,22 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 	const renderActions = (bookmarkInfo: BookmarkInfo) => {
 		const isItem = CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[bookmarkInfo.contentType] === 'item';
 
+		if (isSmartSchoolEmbedFlow) {
+			if (isItem) {
+				return (
+					<Button
+						className="c-button-smartschool"
+						icon={IconName.smartschool}
+						label={tText('Gebruiken in smartschool')}
+						ariaLabel={tText('Gebruiken in smartschool')}
+						title={tText('Gebruiken in smartschool')}
+						onClick={() => handleEmbedCodeClicked(bookmarkInfo)}
+					/>
+				);
+			}
+			return <></>;
+		}
+
 		return (
 			<>
 				<Button
@@ -416,4 +430,8 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 	);
 };
 
-export default compose(withRouter, withUser)(BookmarksOverview) as FC<BookmarksOverviewProps>;
+export default compose(
+	withRouter,
+	withUser,
+	withEmbedFlow
+)(BookmarksOverview) as FC<BookmarksOverviewProps>;
