@@ -20,7 +20,7 @@ import { tText } from '../../helpers/translate-text';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 
-type SelectEducationLevelModalProps = Omit<ModalProps, 'children'> &
+type SelectEducationLevelModalProps = Omit<ModalProps, 'children' | 'ref'> &
 	Partial<UserProps> & {
 		onConfirm?: (lom: Avo.Lom.LomField) => void;
 	};

@@ -26,6 +26,6 @@ export interface SetEmbedFlowAction extends Action {
 export interface UiState {
 	readonly showNudgingModal: boolean | null;
 	readonly lastVideoPlayedAt: Date | null;
-	readonly embedFlow: string;
+	readonly embedFlow: string | null;
 	readonly historyLocations: string[];
 }

@@ -20,11 +20,6 @@ export interface EmbedErrorViewProps {
 
 export const EmbedErrorView: FC<EmbedErrorViewProps> = ({ message, icon }) => {
 	const { tText } = useTranslation();
-	const errorMessage: string | ReactNode = isNotFoundError
-		? tHtml('embed/components/embed-error-view___deze-video-is-niet-meer-beschikbaar')
-		: tHtml(
-				'embed/components/error-view___oeps-er-liep-iets-mis-probeer-het-opnieuw-br-lukt-het-nog-steeds-niet-dan-is-dit-fragment-mogelijks-verwijderd'
-		  );
 
 	return (
 		<Container mode="vertical" background="alt" className="m-error-view">
@@ -35,21 +30,17 @@ export const EmbedErrorView: FC<EmbedErrorViewProps> = ({ message, icon }) => {
 					title={message}
 					className="c-content"
 				>
-					{!isNotFoundError && (
-						<Toolbar>
-							<ToolbarCenter>
-								<ButtonToolbar>
-									<Button
-										type="primary"
-										onClick={() => window.location.reload()}
-										label={tText(
-											'embed/components/error-view___probeer-opnieuw'
-										)}
-									/>
-								</ButtonToolbar>
-							</ToolbarCenter>
-						</Toolbar>
-					)}
+					<Toolbar>
+						<ToolbarCenter>
+							<ButtonToolbar>
+								<Button
+									type="primary"
+									onClick={() => window.location.reload()}
+									label={tText('embed/components/error-view___probeer-opnieuw')}
+								/>
+							</ButtonToolbar>
+						</ToolbarCenter>
+					</Toolbar>
 				</Blankslate>
 			</Container>
 		</Container>

@@ -5,6 +5,7 @@ import {
 	Dropdown,
 	IconName,
 	MenuContent,
+	type MenuItemInfo,
 	Modal,
 	ModalBody,
 	ModalFooterLeft,
@@ -12,7 +13,6 @@ import {
 	Spacer,
 	Tabs,
 } from '@viaa/avo2-components';
-import { type MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/MenuContent/MenuContent';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import React, { createRef, type FC, type ReactNode, useEffect, useState } from 'react';
 import { compose } from 'redux';
@@ -28,6 +28,7 @@ import {
 import { toSeconds } from '../../helpers/parsers/duration';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
+import withEmbedFlow, { type EmbedFlowProps } from '../../hocs/withEmbedFlow';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import { useTabs } from '../../hooks/useTabs';
 import { trackEvents } from '../../services/event-logging-service';
@@ -38,7 +39,6 @@ import ShareThroughEmailContent from '../ShareThroughEmailContent/ShareThroughEm
 import { type ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 
 import './FragmentShareModal.scss';
-import withEmbedFlow, { type EmbedFlowProps } from '../../hocs/withEmbedFlow';
 
 type FragmentShareModalProps = {
 	item: Avo.Item.Item;
@@ -112,7 +112,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 	>('');
 	const [embedCode, setEmbedCode] = useState<EmbedCode | undefined>(undefined);
 
-	const modalRef = createRef();
+	const modalRef = createRef<{ updateSize: () => void }>();
 
 	const handleRightsButtonClicked = () => {
 		setIsEmbedDropdownOpen(!isEmbedDropdownOpen);
@@ -170,7 +170,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 		}
 	}, [embedDropdownSelection, item]);
 
-	const embedDropdownOptions: MenuItemInfoSchema[] = [
+	const embedDropdownOptions: MenuItemInfo[] = [
 		{
 			label: (
 				<>

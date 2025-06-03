@@ -96,7 +96,7 @@ const LinkedAccounts: FC<AccountProps> = ({ location, commonUser }) => {
 	};
 
 	const renderIdpLinkControls = (idpType: Idp) => {
-		let linked = !!commonUser.idps?.[idpType];
+		let linked = !!(commonUser.idps as any)?.[idpType];
 		if (!linked && idpType === Idp.VLAAMSEOVERHEID__SUB_ID) {
 			linked = !!commonUser.idps?.VLAAMSEOVERHEID__ACCOUNT_ID;
 		}

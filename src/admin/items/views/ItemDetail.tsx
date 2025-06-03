@@ -27,6 +27,7 @@ import { StringParam, useQueryParams } from 'use-query-params';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import EmbedCodeFilterTableCell from '../../../embed-code/components/EmbedCodeFilterTableCell';
+import { type EmbedCode } from '../../../embed-code/embed-code.types';
 import { toEmbedCodeDetail } from '../../../embed-code/helpers/links';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import QuickLaneFilterTableCell from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
@@ -120,7 +121,7 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 
 	const getNavTabs = useCallback(() => {
 		return compact(
-			GET_TABS().map((tab) => {
+			tabs.map((tab) => {
 				const isTabActive = activeTab === tab.id;
 				const tabCount = getTabCount(tab.id);
 				return {
@@ -304,10 +305,12 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 				return (
 					<EmbedCodeFilterTableCell
 						id={columnId}
-						data={{
-							...rowData,
-							contentId: rowData.id,
-						}}
+						data={
+							{
+								...rowData,
+								contentId: rowData.id,
+							} as unknown as Partial<EmbedCode>
+						}
 						onNameClick={noop}
 					/>
 				);
@@ -416,7 +419,7 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 											id="note"
 											controls={RICH_TEXT_EDITOR_OPTIONS_FULL}
 											fileType="ITEM_NOTE_IMAGE"
-											initialHtml={item.note || undefined}
+											initialHtml={item?.note || undefined}
 											state={noteEditorState}
 											onChange={setNoteEditorState}
 										/>

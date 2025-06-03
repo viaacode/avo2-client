@@ -6,6 +6,7 @@ import {
 	Container,
 	Flex,
 	FlexItem,
+	HeaderBottomRowLeft,
 	IconName,
 	Navbar,
 	Spinner,
@@ -14,9 +15,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { HeaderBottomRowLeft } from '@viaa/avo2-components/src/components/Header/Header.slots';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import type { ItemSchema } from '@viaa/avo2-types/types/item';
 import { clsx } from 'clsx';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo } from 'react';
