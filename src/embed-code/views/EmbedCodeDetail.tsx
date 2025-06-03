@@ -2,6 +2,7 @@ import './EmbedCodeDetail.scss';
 
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
+	Alert,
 	Button,
 	Container,
 	Flex,
@@ -16,7 +17,6 @@ import {
 } from '@viaa/avo2-components';
 import { HeaderBottomRowLeft } from '@viaa/avo2-components/src/components/Header/Header.slots';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import type { ItemSchema } from '@viaa/avo2-types/types/item';
 import { clsx } from 'clsx';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo } from 'react';
@@ -61,6 +61,15 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 			return false;
 		}
 	}, [commonUser, embedCode]);
+
+	const content = useMemo(() => {
+		if (embedCode?.content?.relations?.length) {
+			return embedCode?.content?.relations[0].object_meta;
+		}
+		return embedCode?.content;
+	}, [embedCode]);
+
+	const isReplaced = useMemo(() => !!embedCode?.content?.relations?.length, [embedCode]);
 
 	const triggerViewEvents = useCallback(async () => {
 		if (!embedCode) {
@@ -108,7 +117,7 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 
 	// Render methods
 	const renderContent = () => {
-		if (!embedCode || !embedCode.content) {
+		if (!embedCode || !content) {
 			return null;
 		}
 
@@ -117,14 +126,14 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 		const [start, end] = getValidStartAndEnd(
 			embedCode.start,
 			embedCode.end,
-			toSeconds((embedCode.content as Avo.Item.Item)?.duration || 0)
+			toSeconds((content as Avo.Item.Item)?.duration || 0)
 		);
 
 		switch (contentLabel) {
 			case 'ITEM':
 				return (
 					<ItemVideoDescription
-						itemMetaData={embedCode.content as Avo.Item.Item}
+						itemMetaData={content as Avo.Item.Item}
 						showMetadata={true}
 						enableMetadataLink={false}
 						showDescription={embedCode.descriptionType !== 'NONE'}
@@ -235,6 +244,16 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 						</Container>
 					</Container>
 				</Navbar>
+
+				{isReplaced && (
+					<Container mode="horizontal">
+						<Alert type="danger">
+							{tHtml(
+								'Dit fragment werd uitzonderlijk vervangen door Het Archief voor Onderwijs. Het zou kunnen dat de tijdscodes of de beschrijving niet meer goed passen. Meld dit aan de lesgever die het fragment aanmaakte. '
+							)}
+						</Alert>
+					</Container>
+				)}
 				<Container mode="vertical">
 					<Container mode="horizontal">{renderContent()}</Container>
 				</Container>

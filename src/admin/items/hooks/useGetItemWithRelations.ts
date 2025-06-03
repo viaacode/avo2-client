@@ -11,15 +11,7 @@ export const useGetItemWithRelations = (
 ) => {
 	return useQuery(
 		[QUERY_KEYS.GET_ITEM_USED_BY, itemUuid],
-		async () => {
-			const itemObj = await ItemsService.fetchItemByUuid(itemUuid);
-			const replacedByUuid: string | undefined = itemObj?.relations?.[0]?.object;
-			if (replacedByUuid && itemObj.relations) {
-				itemObj.relations[0].object_meta =
-					await ItemsService.fetchItemByUuid(replacedByUuid);
-			}
-			return itemObj;
-		},
+		async () => await ItemsService.fetchItemByUuid(itemUuid, true),
 		options
 	);
 };

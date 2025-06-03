@@ -104,13 +104,6 @@ export type GetDistinctSeriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetDistinctSeriesQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', series?: string | null, is_published?: boolean | null, is_deleted?: boolean | null }> };
 
-export type GetItemByUuidQueryVariables = Exact<{
-  uuid: Scalars['uuid'];
-}>;
-
-
-export type GetItemByUuidQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', thumbnail_path: string, created_at?: any | null, depublish_at?: any | null, depublish_reason?: string | null, description?: string | null, duration?: any | null, expiry_date?: any | null, external_id: any, uid: any, is_deleted?: boolean | null, is_published?: boolean | null, issued?: any | null, lom_classification?: any | null, lom_thema?: any | null, lom_context?: any | null, lom_intendedenduserrole?: any | null, lom_keywords?: any | null, lom_languages?: any | null, org_id?: any | null, publish_at?: any | null, published_at: any, series?: string | null, title: string, updated_at?: any | null, note?: string | null, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string, logo_url?: string | null, overlay: boolean } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null, relations: Array<{ __typename?: 'app_item_relations_view', object?: any | null, subject?: any | null, predicate?: string | null, created_at?: any | null, updated_at?: any | null }>, item_collaterals: Array<{ __typename?: 'app_item_collateral', path?: string | null, description?: string | null, external_id: string }>, view_count?: { __typename?: 'app_item_views', count?: number | null } | null }> };
-
 export type GetItemDepublishReasonByExternalIdQueryVariables = Exact<{
   externalId: Scalars['bpchar'];
 }>;

@@ -4515,6 +4515,7 @@ export type App_Assignments_V2_Overview = {
   id?: Maybe<Scalars['uuid']>;
   is_collaborative?: Maybe<Scalars['Boolean']>;
   is_deleted?: Maybe<Scalars['Boolean']>;
+  is_managed?: Maybe<Scalars['Boolean']>;
   is_public?: Maybe<Scalars['Boolean']>;
   /** An array relationship */
   labels: Array<App_Assignments_V2_Assignment_Labels_V2>;
@@ -4751,6 +4752,7 @@ export type App_Assignments_V2_Overview_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   is_collaborative?: InputMaybe<Boolean_Comparison_Exp>;
   is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
+  is_managed?: InputMaybe<Boolean_Comparison_Exp>;
   is_public?: InputMaybe<Boolean_Comparison_Exp>;
   labels?: InputMaybe<App_Assignments_V2_Assignment_Labels_V2_Bool_Exp>;
   labels_aggregate?: InputMaybe<App_Assignments_V2_Assignment_Labels_V2_Aggregate_Bool_Exp>;
@@ -4828,6 +4830,7 @@ export type App_Assignments_V2_Overview_Order_By = {
   id?: InputMaybe<Order_By>;
   is_collaborative?: InputMaybe<Order_By>;
   is_deleted?: InputMaybe<Order_By>;
+  is_managed?: InputMaybe<Order_By>;
   is_public?: InputMaybe<Order_By>;
   labels_aggregate?: InputMaybe<App_Assignments_V2_Assignment_Labels_V2_Aggregate_Order_By>;
   lom_learning_resource_type?: InputMaybe<Order_By>;
@@ -4867,6 +4870,8 @@ export enum App_Assignments_V2_Overview_Select_Column {
   IsCollaborative = 'is_collaborative',
   /** column name */
   IsDeleted = 'is_deleted',
+  /** column name */
+  IsManaged = 'is_managed',
   /** column name */
   IsPublic = 'is_public',
   /** column name */
@@ -4926,6 +4931,7 @@ export type App_Assignments_V2_Overview_Stream_Cursor_Value_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   is_collaborative?: InputMaybe<Scalars['Boolean']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
+  is_managed?: InputMaybe<Scalars['Boolean']>;
   is_public?: InputMaybe<Scalars['Boolean']>;
   lom_learning_resource_type?: InputMaybe<Scalars['jsonb']>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
@@ -45516,12 +45522,14 @@ export enum Users_Idps_Constraint {
 }
 
 export enum Users_Idps_Enum {
-  /** OAuth service van Bookwidgets op https://www.bookwidgets.com/lti/authorize. */
-  Bookwidgets = 'BOOKWIDGETS',
   /** De B2C idp van VIAA: Hetarchief-account. */
   Hetarchief = 'HETARCHIEF',
   /** OAuth service van Klascement op oauth.klascement.be */
   Klascement = 'KLASCEMENT',
+  /** bookwidgets lti idp flow for embedding videos in their platform */
+  LtiBookwidgets = 'LTI_BOOKWIDGETS',
+  /** smartschoollti idp flow for embedding videos in their platform */
+  LtiSmartschool = 'LTI_SMARTSCHOOL',
   /** OAuth service van Smartschool op oauth.smartschool.be. */
   Smartschool = 'SMARTSCHOOL',
   /** OAuth service van de Vlaamse Overheid: ACM-IDM using the ov_account_uuid id of the user */
