@@ -44,6 +44,7 @@ import { type FlowPlayerWrapperProps } from './FlowPlayerWrapper.types';
 
 /**
  * Handle flowplayer play events for the whole app, so we track play count
+ * @param placeholder
  * @param props
  * @constructor
  */
@@ -51,7 +52,7 @@ const FlowPlayerWrapper: FC<
 	FlowPlayerWrapperProps &
 		UserProps &
 		RouteComponentProps & { setLastVideoPlayedAt: (lastVideoPlayedAt: Date | null) => Dispatch }
-> = (props) => {
+> = ({ placeholder = true, ...props }) => {
 	const item: Avo.Item.Item | undefined = props.item;
 	const poster: string | undefined = props.poster || get(item, 'thumbnail_path');
 
@@ -102,15 +103,10 @@ const FlowPlayerWrapper: FC<
 	}, [item, setSrc, tText, tHtml]);
 
 	useEffect(() => {
-		if (
-			item &&
-			(props.autoplay ||
-				props.initFlowPlayerWithoutAutoPlay ||
-				autoplayVideo === item.external_id)
-		) {
+		if (item && (props.autoplay || !placeholder || autoplayVideo === item.external_id)) {
 			initFlowPlayer();
 		}
-	}, [props.autoplay, autoplayVideo, item, initFlowPlayer, props.initFlowPlayerWithoutAutoPlay]);
+	}, [props.autoplay, autoplayVideo, item, initFlowPlayer, placeholder]);
 
 	const handlePlay = (playingSrc: string) => {
 		setClickedThumbnail(true);
@@ -307,7 +303,7 @@ const FlowPlayerWrapper: FC<
 			>
 				{src &&
 				(props.autoplay ||
-					props.initFlowPlayerWithoutAutoPlay ||
+					!placeholder ||
 					clickedThumbnail ||
 					!item ||
 					autoplayVideo === item?.external_id) ? (
@@ -360,7 +356,7 @@ const FlowPlayerWrapper: FC<
 							start={item ? start : null}
 							end={item ? end : null}
 							autoplay={
-								props.initFlowPlayerWithoutAutoPlay
+								!placeholder
 									? false
 									: (!!item && !!src) || (!isPlaylist && props.autoplay)
 							}
@@ -389,9 +385,7 @@ const FlowPlayerWrapper: FC<
 							controls={props.controls}
 						/>
 
-						{props.initFlowPlayerWithoutAutoPlay &&
-							!clickedThumbnail &&
-							renderCutOverlay()}
+						{!placeholder && !clickedThumbnail && renderCutOverlay()}
 					</>
 				) : (
 					// Fake player for logged-out users that do not yet have video playback rights
