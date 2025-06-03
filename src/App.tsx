@@ -33,7 +33,7 @@ import useTranslation from './shared/hooks/useTranslation';
 import { ToastService } from './shared/services/toast-service';
 import { waitForTranslations } from './shared/translations/i18n';
 import store, { type AppState } from './store';
-import { setHistoryLocationsAction } from './store/actions';
+import { setEmbedFlowAction, setHistoryLocationsAction } from './store/actions';
 import { selectHistoryLocations } from './store/selectors';
 
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
@@ -69,8 +69,9 @@ const App: FC<
 		UserProps & {
 			historyLocations: string[];
 			setHistoryLocations: (locations: string[]) => void;
+			setEmbedFlow: (embedFlow: string) => void;
 		}
-> = (props) => {
+> = ({ setEmbedFlow, ...props }) => {
 	const { tHtml } = useTranslation();
 	const location = useLocation();
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
@@ -142,6 +143,18 @@ const App: FC<
 		}
 	}, [location, props]);
 
+	/**
+	 * Check if this window was opened from somewhere else and get the embed-flow query param
+	 * Store the embed-flow query param in the redux store
+	 */
+	useEffect(() => {
+		if (window.opener) {
+			const url = new URL(window.location.href);
+			const embedFlow = url.searchParams.get('embed-flow') || '';
+			setEmbedFlow(embedFlow);
+		}
+	}, [setEmbedFlow]);
+
 	// Render
 	const renderApp = () => {
 		const isLoginRoute = props.location.pathname === APP_PATH.LOGIN.route;
@@ -194,6 +207,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
 	setHistoryLocations: (locations: string[]) =>
 		dispatch(setHistoryLocationsAction(locations) as any),
+	setEmbedFlow: (embedFlow: string) => dispatch(setEmbedFlowAction(embedFlow) as any),
 });
 
 const AppWithRouter = compose(
