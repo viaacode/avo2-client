@@ -445,7 +445,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 				</FormGroup>
 				<Spacer margin="top-large">{renderDescriptionWrapper()}</Spacer>
 			</Container>
-			<Toolbar justify>
+			<Toolbar justify className="c-embed-code-content-toolbar">
 				<ToolbarLeft>
 					<ToolbarItem>
 						<ButtonToolbar>
