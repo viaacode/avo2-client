@@ -7,6 +7,7 @@ import {
 	Container,
 	Flex,
 	FlexItem,
+	HeaderBottomRowLeft,
 	IconName,
 	Navbar,
 	Spinner,
@@ -15,7 +16,6 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { HeaderBottomRowLeft } from '@viaa/avo2-components/src/components/Header/Header.slots';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { noop } from 'lodash-es';

@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Flex, type IconName, Spinner } from '@viaa/avo2-components';
-import { IconNameSchema } from '@viaa/avo2-components/dist/components/Icon/Icon.types';
+import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { parse } from 'query-string';
 import React, { type FC, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
@@ -92,7 +91,7 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 					message={tText(
 						'embed/embed-app___deze-embedcode-heeft-geen-jwt-query-param-en-kan-dus-niet-geladen-worden'
 					)}
-					icon={IconNameSchema.alertTriangle}
+					icon={IconName.alertTriangle}
 				/>
 			);
 		}

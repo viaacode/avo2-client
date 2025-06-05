@@ -29,6 +29,7 @@ describe('login > store > selectors', () => {
 			showNudgingModal: null,
 			lastVideoPlayedAt: null,
 			historyLocations: [],
+			embedFlow: null,
 		},
 	};
 

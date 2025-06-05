@@ -65,7 +65,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 	// State
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [embedCodes, setEmbedCodes] = useState<EmbedCode[]>([]);
-	const [selected, setSelected] = useState<EmbedCode | undefined>(undefined);
+	const [selected, setSelected] = useState<Partial<EmbedCode> | undefined>(undefined);
 	const [embedCodesCount, setEmbedCodesCount] = useState<number>(0);
 	const [isEmbedCodeModalOpen, setIsEmbedCodeModalOpen] = useState(false);
 	const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -138,7 +138,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 		onUpdate?.();
 	};
 
-	const duplicateSelectedEmbedCode = async (selected: EmbedCode) => {
+	const duplicateSelectedEmbedCode = async (selected: Partial<EmbedCode>) => {
 		await duplicateEmbedCode({
 			title: selected.title,
 			contentType: selected.contentType,
@@ -281,15 +281,30 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 										break;
 
 									case EmbedCodeAction.COPY_TO_CLIPBOARD:
+										if (!selected?.id) {
+											console.error(
+												new CustomError(
+													"EmbedCodeOverview: copyToClipboard called without selected embed code or embed doesn't have an id",
+													undefined,
+													{ selected }
+												)
+											);
+											ToastService.danger(
+												tHtml(
+													'embed-code/components/embed-code-overview___er-ging-iets-mis-bij-het-kopieren-van-de-code'
+												)
+											);
+											return;
+										}
 										trackEvents(
 											{
-												object: selected.id,
+												object: selected?.id,
 												object_type: 'embed_code',
 												action: 'copy',
 											},
 											commonUser
 										);
-										copyToClipboard(toEmbedCodeIFrame(selected.id));
+										copyToClipboard(toEmbedCodeIFrame(selected?.id));
 										ToastService.success(
 											tHtml(
 												'embed-code/components/embed-code-overview___de-code-werd-succesvol-gekopieerd'
@@ -357,7 +372,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 
 			<EditEmbedCodeModal
 				isOpen={isEmbedCodeModalOpen}
-				embedCode={selected}
+				embedCode={selected as EmbedCode}
 				onClose={() => {
 					setIsEmbedCodeModalOpen(false);
 					setSelected(undefined);
@@ -376,7 +391,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 					setIsConfirmationModalOpen(false);
 					setSelected(undefined);
 				}}
-				confirmCallback={async () => selected && removeEmbedCode(selected.id)}
+				confirmCallback={async () => selected?.id && removeEmbedCode(selected.id)}
 			/>
 		</>
 	);

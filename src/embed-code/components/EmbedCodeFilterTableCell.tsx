@@ -2,22 +2,22 @@ import { IconName, MetaData, MetaDataItem, Thumbnail } from '@viaa/avo2-componen
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { type FC, type ReactNode } from 'react';
 
+import {
+	formatDate,
+	formatDurationHoursMinutesSeconds,
+	formatTimestamp,
+} from '../../shared/helpers/formatters';
 import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { bookWidgetsLogo, smartSchoolLogo } from '../embed-code.const';
 import { type EmbedCode, EmbedCodeExternalWebsite } from '../embed-code.types';
 
 import './EmbedCodeFilterTableCell.scss';
-import {
-	formatDate,
-	formatDurationHoursMinutesSeconds,
-	formatTimestamp,
-} from '../../shared/helpers/formatters';
 
 export interface EmbedCodeFilterTableCellProps {
 	id: string;
-	data: EmbedCode;
-	onNameClick: (data: EmbedCode) => void;
+	data: Partial<EmbedCode>;
+	onNameClick: (data: Partial<EmbedCode>) => void;
 	actions?: (data?: EmbedCodeFilterTableCellProps['data']) => ReactNode;
 }
 
@@ -27,21 +27,21 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 	onNameClick,
 	actions = () => null,
 }) => {
-	const getItemTimestamp = (date: string) => {
+	const getItemTimestamp = (date: string | undefined) => {
 		return <span title={formatTimestamp(date)}>{formatDate(date)}</span>;
 	};
 
-	const renderThumbnail = ({ content }: EmbedCode) => (
+	const renderThumbnail = ({ content }: Partial<EmbedCode>) => (
 		<Thumbnail
 			alt="thumbnail"
 			category={(content as ItemSchema)?.type?.label}
 			className="m-embed-code-cell-thumbnail"
-			src={content.thumbnail_path || undefined}
+			src={content?.thumbnail_path || undefined}
 			showCategoryIcon
 		/>
 	);
 
-	const renderTitle = ({ content, contentType, title }: EmbedCode) => (
+	const renderTitle = ({ content, contentType, title }: Partial<EmbedCode>) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header" onClick={() => onNameClick(data)}>
 				{truncateTableValue(title)}
@@ -66,7 +66,7 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 		</div>
 	);
 
-	const renderEmbedType = ({ externalWebsite }: EmbedCode) => {
+	const renderEmbedType = ({ externalWebsite }: Partial<EmbedCode>) => {
 		if (externalWebsite === EmbedCodeExternalWebsite.SMARTSCHOOL) {
 			return (
 				<>
@@ -106,10 +106,10 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 			return renderTitle(data);
 
 		case 'createdAt':
-			return getItemTimestamp(data.createdAt);
+			return getItemTimestamp(data?.createdAt);
 
 		case 'updatedAt':
-			return getItemTimestamp(data.updatedAt);
+			return getItemTimestamp(data?.updatedAt);
 
 		case 'externalWebsite':
 			return renderEmbedType(data);

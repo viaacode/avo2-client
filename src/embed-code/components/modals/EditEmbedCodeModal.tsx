@@ -1,4 +1,4 @@
-import { Modal, ModalBody } from '@viaa/avo2-components';
+import { Modal, ModalBody, type ModalRef } from '@viaa/avo2-components';
 import React, { createRef, type FC, type ReactNode } from 'react';
 
 import EmbedContent from '../../../embed-code/components/EmbedContent';
@@ -20,7 +20,7 @@ const EditEmbedCodeModal: FC<EditEmbedCodeModalProps> = ({
 	handleUpdate,
 	onClose,
 }) => {
-	const modalRef = createRef();
+	const modalRef = createRef<ModalRef>();
 
 	const renderEmbedContentDescription = (): string | ReactNode => {
 		switch (embedCode?.externalWebsite) {

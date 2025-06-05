@@ -20,7 +20,14 @@ import {
 } from '@viaa/avo2-components';
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
 import { debounce } from 'lodash-es';
-import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
+import React, {
+	type FC,
+	type LegacyRef,
+	type ReactNode,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { compose } from 'redux';
 
 import ItemVideoDescription from '../../item/components/ItemVideoDescription';
@@ -202,7 +209,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 			return (
 				<div
 					className={isDescriptionExpanded ? '' : 'expandable-container-closed'}
-					ref={embedContentRef}
+					ref={embedContentRef as LegacyRef<HTMLDivElement>}
 				>
 					<ExpandableContainer
 						collapsedHeight={300}
@@ -438,7 +445,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 				</FormGroup>
 				<Spacer margin="top-large">{renderDescriptionWrapper()}</Spacer>
 			</Container>
-			<Toolbar justify>
+			<Toolbar justify className="c-embed-code-content-toolbar">
 				<ToolbarLeft>
 					<ToolbarItem>
 						<ButtonToolbar>
@@ -470,4 +477,4 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	);
 };
 
-export default compose(withUser, withEmbedFlow)(EmbedContent);
+export default compose(withUser, withEmbedFlow)(EmbedContent) as FC<EmbedProps>;
