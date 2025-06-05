@@ -36,6 +36,7 @@ import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { createResource } from '../helpers/resourceForTrackEvents';
 import { useGetEmbedCode } from '../hooks/useGetEmbedCode';
 
 type EmbedCodeDetailProps = DefaultSecureRouteProps<{ id: string }>;
@@ -76,17 +77,21 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 			return null;
 		}
 
-		// Also increase the view count for the item or collection
 		if (embedCode.contentType === 'ITEM' && embedCode.contentId) {
 			trackEvents(
 				{
 					object: embedCode.id,
 					object_type: 'embed_code',
 					action: 'view',
+					resource: {
+						...createResource(embedCode, commonUser as Avo.User.CommonUser),
+						parentPage: '', // No parent page since we are on the detail page in avo
+					},
 				},
 				commonUser
 			);
 
+			// Also increase the view count for the item or collection
 			await BookmarksViewsPlaysService.action(
 				'view',
 				'item',
@@ -109,6 +114,10 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 					object: embedCode?.id,
 					object_type: 'embed_code',
 					action: 'play',
+					resource: {
+						...createResource(embedCode, commonUser as Avo.User.CommonUser),
+						parentPage: '', // No parent page since we are on the detail page in avo
+					},
 				},
 				commonUser
 			);

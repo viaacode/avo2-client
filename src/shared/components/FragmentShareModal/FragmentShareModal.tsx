@@ -14,6 +14,7 @@ import {
 	Tabs,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { isNil } from 'lodash-es';
 import React, { createRef, type FC, type ReactNode, useEffect, useState } from 'react';
 import { compose } from 'redux';
 
@@ -25,6 +26,7 @@ import {
 	EmbedCodeDescriptionType,
 	EmbedCodeExternalWebsite,
 } from '../../../embed-code/embed-code.types';
+import { createResource } from '../../../embed-code/helpers/resourceForTrackEvents';
 import { toSeconds } from '../../helpers/parsers/duration';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
@@ -118,20 +120,6 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 		setIsEmbedDropdownOpen(!isEmbedDropdownOpen);
 	};
 
-	const handleTabChanged = (id: string | number) => {
-		setActiveTab(id);
-		if (id === ShareDropdownTabs.EMBED) {
-			trackEvents(
-				{
-					object: item.external_id,
-					object_type: 'embed_code',
-					action: 'activate',
-				},
-				commonUser
-			);
-		}
-	};
-
 	useEffect(() => {
 		if (!isSmartSchoolEmbedFlow) {
 			setEmbedDropdownSelection('');
@@ -139,17 +127,17 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 	}, [isSmartSchoolEmbedFlow, tab]);
 
 	useEffect(() => {
-		if (isSmartSchoolEmbedFlow) {
+		if (isSmartSchoolEmbedFlow && isOpen) {
 			setActiveTab(ShareDropdownTabs.EMBED);
 			setEmbedDropdownSelection(EmbedCodeExternalWebsite.SMARTSCHOOL);
 		}
-	}, [isSmartSchoolEmbedFlow, setActiveTab, setEmbedDropdownSelection]);
+	}, [isSmartSchoolEmbedFlow, setActiveTab, setEmbedDropdownSelection, isOpen]);
 
 	useEffect(() => {
-		if (embedDropdownSelection === '') {
-			setEmbedCode(undefined);
-		} else {
-			setEmbedCode({
+		let newEmbedCode = undefined;
+
+		if (embedDropdownSelection !== '') {
+			newEmbedCode = {
 				id: '',
 				title: item.title,
 				externalWebsite: embedDropdownSelection,
@@ -166,9 +154,25 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 						: item.description,
 				start: 0,
 				end: toSeconds(item.duration),
-			} as EmbedCode);
+			} as EmbedCode;
 		}
-	}, [embedDropdownSelection, item]);
+
+		if (isNil(embedCode) && !isNil(newEmbedCode)) {
+			trackEvents(
+				{
+					object: 'no-id-yet',
+					object_type: 'embed_code',
+					action: 'activate',
+					resource: {
+						...createResource(newEmbedCode, commonUser as Avo.User.CommonUser),
+						startedFlow: isSmartSchoolEmbedFlow ? 'SMART_SCHOOL' : 'AVO',
+					},
+				},
+				commonUser
+			);
+		}
+		setEmbedCode(newEmbedCode);
+	}, [embedDropdownSelection, setEmbedCode, item]);
 
 	const embedDropdownOptions: MenuItemInfo[] = [
 		{
@@ -336,7 +340,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 			{!isSmartSchoolEmbedFlow && (
 				<ModalSubHeader>
 					<Spacer className="m-fragment-share-modal__tabs-wrapper" margin={'bottom'}>
-						<Tabs tabs={tabs} onClick={handleTabChanged} />
+						<Tabs tabs={tabs} onClick={setActiveTab} />
 					</Spacer>
 				</ModalSubHeader>
 			)}

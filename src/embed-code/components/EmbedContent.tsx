@@ -50,7 +50,10 @@ import {
 	EmbedCodeExternalWebsite,
 } from '../embed-code.types';
 import { toEmbedCodeIFrame } from '../helpers/links';
+import { createResource } from '../helpers/resourceForTrackEvents';
 import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
+
+import type { Avo } from '@viaa/avo2-types';
 
 type EmbedProps = {
 	item?: EmbedCode;
@@ -85,7 +88,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	);
 	const [description, setDescription] = useState<string>('');
 	const [isDescriptionExpanded, setIsDescriptionExpanded] = useState<boolean>(false);
-	const [generatedCode, setGeneratedCode] = useState<string>('');
+	const [savedEmbedCode, setSavedEmbedCode] = useState<EmbedCode | null>(null);
 
 	const { mutateAsync: createEmbedCode, isLoading: isPublishing } = useCreateEmbedCode();
 
@@ -122,7 +125,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 
 			handleDescriptionToggle(item.descriptionType);
 			setDescription(item.description || '');
-			setGeneratedCode('');
+			setSavedEmbedCode(null);
 		}
 	}, [item, handleDescriptionToggle]);
 
@@ -159,14 +162,27 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	const handleCreate = async () => {
 		try {
 			const embedToSave = mapValuesToEmbedCode();
-			const embedCodeId = await createEmbedCode(embedToSave);
+			const createdEmbedCode = await createEmbedCode(embedToSave);
+
+			trackEvents(
+				{
+					object: createdEmbedCode.id,
+					object_type: 'embed_code',
+					action: 'create',
+					resource: {
+						...createResource(createdEmbedCode, commonUser as Avo.User.CommonUser),
+						startedFlow: isSmartSchoolEmbedFlow ? 'SMART_SCHOOL' : 'AVO',
+					},
+				},
+				commonUser
+			);
 
 			if (isSmartSchoolEmbedFlow) {
 				window.opener.postMessage(
 					[
 						{
 							title: embedToSave.title,
-							url: toEmbedCodeIFrame(embedCodeId),
+							url: toEmbedCodeIFrame(createdEmbedCode.id),
 						},
 					],
 					'*'
@@ -175,7 +191,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 				return;
 			}
 
-			setGeneratedCode(embedCodeId);
+			setSavedEmbedCode(createdEmbedCode);
 			ToastService.success(
 				tText(
 					'embed-code/components/embed-content___je-code-werd-succesvol-aangemaakt-en-opgeslagen-in-je-werkruimte'
@@ -189,16 +205,25 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	};
 
 	const handleCopyButtonClicked = () => {
+		if (!savedEmbedCode) {
+			console.error('No embed code to copy');
+			return;
+		}
+
 		trackEvents(
 			{
-				object: generatedCode,
+				object: savedEmbedCode.id,
 				object_type: 'embed_code',
 				action: 'copy',
+				resource: {
+					...createResource(savedEmbedCode, commonUser as Avo.User.CommonUser),
+					pageUrl: window.location.href,
+				},
 			},
 			commonUser
 		);
 
-		copyToClipboard(toEmbedCodeIFrame(generatedCode));
+		copyToClipboard(toEmbedCodeIFrame(savedEmbedCode.id));
 		ToastService.success(
 			tHtml('embed-code/components/embed-content___de-code-is-naar-je-klembord-gekopieerd')
 		);
@@ -249,7 +274,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 					controls={controls}
 					enabledHeadings={['h3', 'h4', 'normal']}
 					value={description || ''}
-					disabled={!!generatedCode}
+					disabled={!!savedEmbedCode}
 					onChange={setDescription}
 				/>
 			);
@@ -278,7 +303,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 						id="share-fragment-use-original-description"
 						type="secondary"
 						className="u-flex-auto"
-						disabled={!!generatedCode}
+						disabled={!!savedEmbedCode}
 						label={tText(
 							'embed-code/components/embed-content___originele-beschrijving'
 						)}
@@ -288,7 +313,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 					<Button
 						type="secondary"
 						className="u-flex-auto"
-						disabled={!!generatedCode}
+						disabled={!!savedEmbedCode}
 						label={tText('embed-code/components/embed-content___eigen-beschrijving')}
 						active={descriptionType === EmbedCodeDescriptionType.CUSTOM}
 						onClick={() => handleDescriptionToggle(EmbedCodeDescriptionType.CUSTOM)}
@@ -296,7 +321,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 					<Button
 						type="secondary"
 						className="u-flex-auto"
-						disabled={!!generatedCode}
+						disabled={!!savedEmbedCode}
 						label={tText('embed-code/components/embed-content___geen-beschrijving')}
 						active={descriptionType === EmbedCodeDescriptionType.NONE}
 						onClick={() => handleDescriptionToggle(EmbedCodeDescriptionType.NONE)}
@@ -326,11 +351,11 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 			);
 		}
 
-		if (generatedCode) {
+		if (savedEmbedCode) {
 			return (
 				<ToolbarRight>
 					<ToolbarItem className="u-truncate">
-						{toEmbedCodeIFrame(generatedCode)}
+						{toEmbedCodeIFrame(savedEmbedCode.id)}
 					</ToolbarItem>
 					<ToolbarItem>
 						<ButtonToolbar>
@@ -402,7 +427,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 			{!isSmartSchoolEmbedFlow && <Spacer margin="bottom-large">{contentDescription}</Spacer>}
 
 			<FormGroup label={tText('embed-code/components/embed-content___titel')}>
-				<TextInput value={title} onChange={setTitle} disabled={!!generatedCode} />
+				<TextInput value={title} onChange={setTitle} disabled={!!savedEmbedCode} />
 			</FormGroup>
 
 			<Container mode="vertical" bordered={true}>
@@ -425,7 +450,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 						endTime={fragmentEndTime}
 						minTime={0}
 						maxTime={fragmentDuration}
-						disabled={!!generatedCode}
+						disabled={!!savedEmbedCode}
 						onChange={(newStartTime: number, newEndTime: number) => {
 							const [validStart, validEnd] = getValidStartAndEnd(
 								newStartTime,
@@ -452,17 +477,17 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 							<Button
 								type="secondary"
 								label={
-									generatedCode
+									savedEmbedCode
 										? tText('embed-code/components/embed-content___annuleer')
 										: tText('embed-code/components/embed-content___sluit')
 								}
 								title={
-									generatedCode
+									savedEmbedCode
 										? tText('embed-code/components/embed-content___annuleer')
 										: tText('embed-code/components/embed-content___sluit')
 								}
 								ariaLabel={
-									generatedCode
+									savedEmbedCode
 										? tText('embed-code/components/embed-content___annuleer')
 										: tText('embed-code/components/embed-content___sluit')
 								}
