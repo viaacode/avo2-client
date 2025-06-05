@@ -37,7 +37,11 @@ import { GENERATE_SITE_TITLE } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
 import CommonMetadata from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
+import FileUpload from '../../shared/components/FileUpload/FileUpload';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { getEnv } from '../../shared/helpers/env';
+import { formatDate } from '../../shared/helpers/formatters';
 import { groupLomLinks, groupLoms } from '../../shared/helpers/lom';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -50,10 +54,6 @@ import { SettingsService } from '../settings.service';
 import { type UsersInSameCompanyColumn } from '../settings.types';
 
 import './Profile.scss';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { getEnv } from '../../shared/helpers/env';
-import { formatDate } from '../../shared/helpers/formatters';
-import FileUpload from '../../shared/components/FileUpload/FileUpload';
 
 type FieldPermissionKey =
 	| 'SUBJECTS'

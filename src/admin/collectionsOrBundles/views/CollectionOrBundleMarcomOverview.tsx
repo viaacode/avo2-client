@@ -13,8 +13,8 @@ import {
 } from '../../../collection/collection.const';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
-import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { OrderDirection } from '../../../search/search.const';
+import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,

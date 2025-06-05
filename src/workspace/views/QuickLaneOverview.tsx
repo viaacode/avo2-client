@@ -13,7 +13,9 @@ import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComp
 import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { QUICK_LANE_DEFAULTS, type QuickLaneColumn } from '../../shared/constants/quick-lane';
+import { CustomError } from '../../shared/helpers/custom-error';
 import { copyQuickLaneToClipboard } from '../../shared/helpers/generate-quick-lane-href';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useDebounce } from '../../shared/hooks/useDebounce';
@@ -28,8 +30,6 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../workspace.const';
 
 import './QuickLaneOverview.scss';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { CustomError } from '../../shared/helpers/custom-error';
 
 // Typings
 

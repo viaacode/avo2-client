@@ -6,10 +6,10 @@ import { truncate } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
+import { stripHtml } from '../../helpers/formatters';
 import { GET_BLOCK_ICON } from '../BlockList/BlockIconWrapper/BlockIconWrapper.consts';
 
 import './DraggableBlock.scss';
-import { stripHtml } from '../../helpers/formatters';
 
 interface DraggableBlockProps extends DefaultProps {
 	block?: Avo.Core.BlockItemBase;

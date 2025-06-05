@@ -38,6 +38,8 @@ import {
 	RICH_TEXT_EDITOR_OPTIONS_DEFAULT,
 } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { getMoreOptionsLabel } from '../../../shared/constants';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { createDropdownMenuItem } from '../../../shared/helpers/dropdown';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -60,8 +62,6 @@ import {
 import { FragmentEditAction } from './FragmentEdit.types';
 
 import './FragmentEdit.scss';
-import { buildLink } from '../../../shared/helpers/build-link';
-import { createDropdownMenuItem } from '../../../shared/helpers/dropdown';
 
 interface FragmentEditProps {
 	index: number;

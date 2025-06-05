@@ -1,4 +1,5 @@
 import { IconName, type MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
 import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import { isEqual } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
@@ -30,6 +31,7 @@ import {
 	type EmbedCodeOverviewTableColumns,
 } from '../embed-code.types';
 import { toEmbedCodeIFrame } from '../helpers/links';
+import { createResource } from '../helpers/resourceForTrackEvents';
 import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 import { useDeleteEmbedCode } from '../hooks/useDeleteEmbedCode';
 import { useUpdateEmbedCode } from '../hooks/useUpdateEmbedCode';
@@ -298,9 +300,16 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 										}
 										trackEvents(
 											{
-												object: selected?.id,
+												object: selected.id,
 												object_type: 'embed_code',
 												action: 'copy',
+												resource: {
+													...createResource(
+														selected,
+														commonUser as Avo.User.CommonUser
+													),
+													pageUrl: window.location.href,
+												},
 											},
 											commonUser
 										);

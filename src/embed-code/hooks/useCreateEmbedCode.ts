@@ -5,6 +5,6 @@ import { type EmbedCode } from '../embed-code.types';
 
 export const useCreateEmbedCode = () => {
 	return useMutation(
-		(embedCode: EmbedCode): Promise<string> => EmbedCodeService.createEmbedCode(embedCode)
+		(embedCode: EmbedCode): Promise<EmbedCode> => EmbedCodeService.createEmbedCode(embedCode)
 	);
 };

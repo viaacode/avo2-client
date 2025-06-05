@@ -4,12 +4,12 @@ import React, { type FC, type ReactNode, useEffect } from 'react';
 import EmbedContent from '../../../embed-code/components/EmbedContent';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
+import withEmbedFlow, { type EmbedFlowProps } from '../../../shared/hocs/withEmbedFlow';
 import { useTabs } from '../../../shared/hooks/useTabs';
 import { bookWidgetsLogo, smartSchoolLogo } from '../../embed-code.const';
 import { type EmbedCode, EmbedCodeExternalWebsite } from '../../embed-code.types';
 
 import './BookmarkEmbedModal.scss';
-import withEmbedFlow, { type EmbedFlowProps } from '../../../shared/hocs/withEmbedFlow';
 
 type BookmarkEmbedModalProps = {
 	embedCode: EmbedCode | null;

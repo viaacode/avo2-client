@@ -26,6 +26,7 @@ import {
 	getProfileInitials,
 } from '../../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToExternalPage } from '../../../authentication/helpers/redirects/redirect-to-external-page';
 import { getLoginStateAction } from '../../../authentication/store/actions';
 import {
 	selectLogin,
@@ -44,7 +45,6 @@ import { NavigationBarId } from './Navigation.const';
 import { NavigationItem } from './NavigationItem';
 
 import './Navigation.scss';
-import { redirectToExternalPage } from '../../../authentication/helpers/redirects/redirect-to-external-page';
 
 type NavigationParams = RouteComponentProps;
 

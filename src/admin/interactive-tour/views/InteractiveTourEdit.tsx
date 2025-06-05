@@ -40,6 +40,9 @@ import {
 	type GetInteractiveTourByIdQueryVariables,
 } from '../../../shared/generated/graphql-db-operations';
 import { GetInteractiveTourByIdDocument } from '../../../shared/generated/graphql-db-react-query';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { navigate } from '../../../shared/helpers/link';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { dataService } from '../../../shared/services/data-service';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -77,9 +80,6 @@ import {
 import InteractiveTourEditStep from './InteractiveTourEditStep';
 
 import './InteractiveTourEdit.scss';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { navigate } from '../../../shared/helpers/link';
-import { buildLink } from '../../../shared/helpers/build-link';
 
 const BlockHeading = lazy(() =>
 	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({

@@ -1,9 +1,9 @@
+import { clsx } from 'clsx';
 import React, { type FC } from 'react';
 
 import { generateQuickLaneHref } from '../../helpers/generate-quick-lane-href';
 
 import './QuickLaneLink.scss';
-import { clsx } from 'clsx';
 
 interface QuickLaneLinkProps {
 	id: string;

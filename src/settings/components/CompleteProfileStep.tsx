@@ -28,6 +28,7 @@ import {
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
+import { CustomError } from '../../shared/helpers/custom-error';
 import { isTeacher } from '../../shared/helpers/is-teacher';
 import { EducationLevelId, groupLoms } from '../../shared/helpers/lom';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -39,7 +40,6 @@ import { useUpdateEmailPreferences } from '../hooks/useUpdateEmailPreferences';
 import { SettingsService } from '../settings.service';
 
 import './Profile.scss';
-import { CustomError } from '../../shared/helpers/custom-error';
 
 interface CompleteProfileStepProps {
 	redirectTo?: string;

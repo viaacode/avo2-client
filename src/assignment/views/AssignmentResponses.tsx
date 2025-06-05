@@ -29,6 +29,15 @@ import { type DefaultSecureRouteProps } from '../../authentication/components/Se
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
+import { OrderDirection } from '../../search/search.const';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../shared/helpers/build-link';
+import { formatDate } from '../../shared/helpers/formatters';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser from '../../shared/hocs/withUser';
@@ -51,15 +60,6 @@ import { isItemWithMeta } from '../helpers/is-item-with-meta';
 
 import './AssignmentOverview.scss';
 import './AssignmentResponses.scss';
-import {
-	LoadingErrorLoadedComponent,
-	type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { buildLink } from '../../shared/helpers/build-link';
-import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
-import { formatDate } from '../../shared/helpers/formatters';
-import { OrderDirection } from '../../search/search.const';
 
 interface AssignmentResponsesProps
 	extends Omit<DefaultSecureRouteProps<{ id: string }>, 'location'> {

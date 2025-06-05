@@ -10,6 +10,7 @@ import {
 	TagList,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
 import React, { type FC, type MouseEvent, useEffect, useState } from 'react';
 
 import { NULL_FILTER } from '../../../admin/shared/helpers/filters';
@@ -17,7 +18,6 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { EducationalOrganisationsSelect } from '../EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 
 import './MultiEducationalOrganisationSelectModal.scss';
-import { clsx } from 'clsx';
 
 interface MultiEducationalOrganisationSelectModalProps {
 	label: string;

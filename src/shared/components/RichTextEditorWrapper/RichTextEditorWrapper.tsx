@@ -9,13 +9,13 @@ import { isEqual } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
+import { CustomError } from '../../helpers/custom-error';
 import { FileUploadService } from '../../services/file-upload-service';
 import { ToastService } from '../../services/toast-service';
 
 import { RICH_TEXT_EDITOR_OPTIONS_DEFAULT } from './RichTextEditor.consts';
 
 import './RichTextEditorWrapper.scss';
-import { CustomError } from '../../helpers/custom-error';
 
 export type RichTextEditorWrapperProps = RichTextEditorProps & {
 	fileType?: Avo.FileUpload.AssetType; // Required to enable file upload

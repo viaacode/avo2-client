@@ -58,7 +58,7 @@ export class EmbedCodeService {
 		}
 	}
 
-	public static async createEmbedCode(data: EmbedCode): Promise<string> {
+	public static async createEmbedCode(data: EmbedCode): Promise<EmbedCode> {
 		let url: string | undefined = undefined;
 
 		try {
@@ -82,10 +82,10 @@ export class EmbedCodeService {
 			}
 			const responseData = (await response.json()) as {
 				message: 'success';
-				createdEmbedCodeId: string;
+				createdEmbed: EmbedCode;
 			};
 
-			return responseData.createdEmbedCodeId;
+			return responseData.createdEmbed;
 		} catch (err) {
 			const error = new CustomError('Failed to create embed code', err, {
 				url,

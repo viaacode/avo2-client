@@ -38,6 +38,7 @@ import {
 	type CheckboxOption,
 } from '../../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ConfirmModal } from '../../../../shared/components/ConfirmModal/ConfirmModal';
+import DateRangeDropdown from '../../../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { MultiEducationalOrganisationSelectModal } from '../../../../shared/components/MultiEducationalOrganisationSelectModal/MultiEducationalOrganisationSelectModal';
 import { MultiUserSelectDropdown } from '../../../../shared/components/MultiUserSelectDropdown/MultiUserSelectDropdown';
 import { eduOrgToClientOrg } from '../../../../shared/helpers/edu-org-string-to-client-org';
@@ -51,7 +52,6 @@ import { FILTER_TABLE_QUERY_PARAM_CONFIG } from './FilterTable.const';
 import { cleanupObject } from './FilterTable.utils';
 
 import './FilterTable.scss';
-import DateRangeDropdown from '../../../../shared/components/DateRangeDropdown/DateRangeDropdown';
 
 export interface FilterableTableState {
 	query?: string;
