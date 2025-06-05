@@ -4,11 +4,11 @@ import React, { type FC } from 'react';
 import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
+import { buildLink } from '../../shared/helpers/build-link';
 import { CollectionBlockType } from '../collection.const';
 import { type BlockItemComponent, ContentTypeNumber } from '../collection.types';
 
 import './CollectionFragmentTitle.scss';
-import { buildLink } from '../../shared/helpers/build-link';
 
 export interface CollectionFragmentTitleProps extends BlockItemComponent {
 	canClickHeading?: boolean;

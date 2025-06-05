@@ -18,6 +18,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
 import { debounce } from 'lodash-es';
 import React, {
@@ -38,7 +39,6 @@ import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
-import './EmbedContent.scss';
 import withEmbedFlow, { type EmbedFlowProps } from '../../shared/hocs/withEmbedFlow';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useResizeObserver from '../../shared/hooks/useResizeObserver';
@@ -53,7 +53,7 @@ import { toEmbedCodeIFrame } from '../helpers/links';
 import { createResource } from '../helpers/resourceForTrackEvents';
 import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 
-import type { Avo } from '@viaa/avo2-types';
+import './EmbedContent.scss';
 
 type EmbedProps = {
 	item?: EmbedCode;

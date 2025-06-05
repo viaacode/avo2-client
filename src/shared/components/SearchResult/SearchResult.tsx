@@ -14,11 +14,11 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
 import { isNil, noop, truncate } from 'lodash-es';
 import React, { type FC, type ReactNode, type ReactText } from 'react';
 
 import './SearchResult.scss';
-import { clsx } from 'clsx';
 
 interface SearchResultProps extends DefaultProps {
 	title: ReactNode;

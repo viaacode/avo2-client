@@ -27,9 +27,9 @@ import { clone, compact, fromPairs, take } from 'lodash-es';
 import React, { type FC, type MouseEvent, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
+import { isMobileWidth } from '../../helpers/media-query';
 
 import './CheckboxDropdownModal.scss';
-import { isMobileWidth } from '../../helpers/media-query';
 
 interface CheckedState {
 	[checkboxId: string]: boolean;

@@ -34,7 +34,9 @@ import {
 import { CollectionBlockType } from '../../../collection/collection.const';
 import { type FilterState } from '../../../search/search.types';
 import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import InteractiveTour from '../../../shared/components/InteractiveTour/InteractiveTour';
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
+import { formatTimestamp } from '../../../shared/helpers/formatters';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useAssignmentPastDeadline } from '../../../shared/hooks/useAssignmentPastDeadline';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -65,8 +67,6 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { formatTimestamp } from '../../../shared/helpers/formatters';
-import InteractiveTour from '../../../shared/components/InteractiveTour/InteractiveTour';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment;
