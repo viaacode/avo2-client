@@ -32,6 +32,7 @@ import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { OrderDirection, SearchFilter } from '../../search/search.const';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import {
 	LoadingErrorLoadedComponent,
@@ -306,15 +307,18 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 						updatedAt={routeInfo.data?.updated_at}
 					/>
 					{routeInfo.data && (
-						<ContentPageRenderer
-							contentPageInfo={routeInfo.data as ContentPageInfo}
-							commonUser={
-								(loginState as Avo.Auth.LoginResponseLoggedIn).commonUserInfo
-							}
-							renderFakeTitle={
-								(routeInfo.data as ContentPageInfo).contentType === 'FAQ_ITEM'
-							}
-						/>
+						<>
+							<InteractiveTour showButton={false} />
+							<ContentPageRenderer
+								contentPageInfo={routeInfo.data as ContentPageInfo}
+								commonUser={
+									(loginState as Avo.Auth.LoginResponseLoggedIn).commonUserInfo
+								}
+								renderFakeTitle={
+									(routeInfo.data as ContentPageInfo).contentType === 'FAQ_ITEM'
+								}
+							/>
+						</>
 					)}
 				</>
 			);
