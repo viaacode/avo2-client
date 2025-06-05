@@ -67,7 +67,7 @@ const checkForItemReplacements = async (item: Avo.Item.Item): Promise<Avo.Item.I
 	})[0];
 
 	if (replacement) {
-		return ItemsService.fetchItemByUuid(replacement.object);
+		return ItemsService.fetchItemByUuid(replacement.object, false);
 	}
 
 	return Promise.resolve(item);

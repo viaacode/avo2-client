@@ -7,8 +7,6 @@ import type {
 	DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables,
 	GetDistinctSeriesQuery,
 	GetDistinctSeriesQueryVariables,
-	GetItemByUuidQuery,
-	GetItemByUuidQueryVariables,
 	GetItemDepublishReasonByExternalIdQuery,
 	GetItemDepublishReasonByExternalIdQueryVariables,
 	GetItemsByExternalIdQuery,
@@ -39,7 +37,6 @@ import type {
 import {
 	DeleteItemFromCollectionBookmarksAndAssignmentsDocument,
 	GetDistinctSeriesDocument,
-	GetItemByUuidDocument,
 	GetItemDepublishReasonByExternalIdDocument,
 	GetItemsByExternalIdDocument,
 	GetItemsWithFiltersDocument,
@@ -162,34 +159,23 @@ export class ItemsService {
 		}
 	}
 
-	public static async fetchItemByUuid(uuid: string): Promise<Avo.Item.Item> {
-		let variables: GetItemByUuidQueryVariables | null = null;
+	public static async fetchItemByUuid(
+		uuid: string,
+		withRelations: boolean
+	): Promise<Avo.Item.Item> {
+		let url: string | null = null;
 		try {
-			variables = {
-				uuid,
-			};
-
-			const response = await dataService.query<
-				GetItemByUuidQuery,
-				GetItemByUuidQueryVariables
-			>({
-				variables,
-				query: GetItemByUuidDocument,
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			url = stringifyUrl({
+				url: `${getEnv('PROXY_URL')}/items/${uuid}`,
+				query: {
+					withRelations,
+				},
 			});
-
-			const rawItem = response.app_item_meta[0];
-
-			if (!rawItem) {
-				throw new CustomError('Response does not contain an item', null, {
-					response,
-				});
-			}
-
-			return addDefaultAudioStillToItem(rawItem as unknown as Avo.Item.Item);
+			return await fetchWithLogoutJson<Avo.Item.Item>(url);
 		} catch (err) {
 			throw new CustomError('Failed to get the item from the database', err, {
-				variables,
-				query: 'GET_ITEM_BY_UUID',
+				uuid,
 			});
 		}
 	}
@@ -355,7 +341,10 @@ export class ItemsService {
 			const replacedByItemUid = relations?.[0]?.object || null;
 
 			if (replacedByItemUid) {
-				const replacementItem = await ItemsService.fetchItemByUuid(replacedByItemUid);
+				const replacementItem = await ItemsService.fetchItemByUuid(
+					replacedByItemUid,
+					false
+				);
 				return { ...replacementItem, replacement_for: externalId };
 			}
 		}

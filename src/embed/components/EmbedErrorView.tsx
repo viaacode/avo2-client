@@ -16,9 +16,10 @@ import './EmbedErrorView.scss';
 export interface EmbedErrorViewProps {
 	message: string | ReactNode;
 	icon?: IconName | null;
+	showReloadButton?: boolean;
 }
 
-export const EmbedErrorView: FC<EmbedErrorViewProps> = ({ message, icon }) => {
+export const EmbedErrorView: FC<EmbedErrorViewProps> = ({ message, icon, showReloadButton }) => {
 	const { tText } = useTranslation();
 
 	return (
@@ -30,17 +31,21 @@ export const EmbedErrorView: FC<EmbedErrorViewProps> = ({ message, icon }) => {
 					title={message}
 					className="c-content"
 				>
-					<Toolbar>
-						<ToolbarCenter>
-							<ButtonToolbar>
-								<Button
-									type="primary"
-									onClick={() => window.location.reload()}
-									label={tText('embed/components/error-view___probeer-opnieuw')}
-								/>
-							</ButtonToolbar>
-						</ToolbarCenter>
-					</Toolbar>
+					{showReloadButton && (
+						<Toolbar>
+							<ToolbarCenter>
+								<ButtonToolbar>
+									<Button
+										type="primary"
+										onClick={() => window.location.reload()}
+										label={tText(
+											'embed/components/error-view___probeer-opnieuw'
+										)}
+									/>
+								</ButtonToolbar>
+							</ToolbarCenter>
+						</Toolbar>
+					)}
 				</Blankslate>
 			</Container>
 		</Container>
