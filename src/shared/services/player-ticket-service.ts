@@ -1,5 +1,6 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 
+import { LTI_JWT_TOKEN_HEADER } from '../../embed/embed.types';
 import { EmbedCodeService } from '../../embed-code/embed-code-service';
 import { CustomError } from '../helpers/custom-error';
 import { getEnv } from '../helpers/env';
@@ -12,10 +13,9 @@ export const fetchPlayerTickets = async (externalIds: string[]): Promise<string[
 	try {
 		const url = `${getEnv('PROXY_URL')}/admin/player-ticket?externalIds=${externalIds}`;
 
-		const ltiJwtToken = EmbedCodeService.getJwtTokenFromUrl();
 		return fetchWithLogoutJson<string[]>(url, {
 			headers: {
-				authorization: ltiJwtToken ? `Bearer ${ltiJwtToken}` : '',
+				[LTI_JWT_TOKEN_HEADER]: EmbedCodeService.getJwtTokenFromUrl() || '',
 			},
 		});
 	} catch (err) {

@@ -6,6 +6,7 @@ import React from 'react';
 import { type RouteComponentProps } from 'react-router-dom';
 import { type Action, type Dispatch } from 'redux';
 
+import { LTI_JWT_TOKEN_HEADER } from '../../embed/embed.types';
 import { EmbedCodeService } from '../../embed-code/embed-code-service';
 import { getEnv } from '../../shared/helpers/env';
 import { tText } from '../../shared/helpers/translate-text';
@@ -152,7 +153,7 @@ export const getLoginResponse = async (force = false): Promise<Avo.Auth.LoginRes
 			forceLogout: false,
 			headers: {
 				'Content-Type': 'application/json',
-				authorization: `Bearer ${EmbedCodeService.getJwtTokenFromUrl()}`,
+				[LTI_JWT_TOKEN_HEADER]: EmbedCodeService.getJwtTokenFromUrl() || '',
 			},
 		});
 	} catch (err) {

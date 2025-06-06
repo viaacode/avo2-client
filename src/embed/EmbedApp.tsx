@@ -18,7 +18,7 @@ import store from '../store';
 import Embed from './components/Embed';
 import { EmbedErrorView } from './components/EmbedErrorView';
 import RegisterOrLogin from './components/RegisterOrLogin';
-import { useGetLoginStateForEmbed } from './hooks/useGetLoginState';
+import { useGetLoginStateForEmbed } from './hooks/useGetLoginStateForEmbed';
 
 import '../styles/main.scss';
 

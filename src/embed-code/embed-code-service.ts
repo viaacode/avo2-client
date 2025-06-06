@@ -1,6 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 
+import { LTI_JWT_TOKEN_HEADER } from '../embed/embed.types';
 import { CustomError } from '../shared/helpers/custom-error';
 import { getEnv } from '../shared/helpers/env';
 import { ITEMS_PER_PAGE } from '../workspace/workspace.const';
@@ -30,12 +31,11 @@ export class EmbedCodeService {
 		try {
 			url = `${getEnv('PROXY_URL')}/embed-codes/${embedId}`;
 
-			const ltiJwtToken = EmbedCodeService.getJwtTokenFromUrl();
 			const response = await fetch(url, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
-					authorization: `Bearer ${ltiJwtToken}`,
+					[LTI_JWT_TOKEN_HEADER]: EmbedCodeService.getJwtTokenFromUrl() || '',
 				},
 				credentials: 'include',
 			});
