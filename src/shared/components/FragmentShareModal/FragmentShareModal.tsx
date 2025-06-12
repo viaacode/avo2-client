@@ -56,6 +56,8 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 	commonUser,
 	isSmartSchoolEmbedFlow,
 }) => {
+	showOnlyEmbedTab = isSmartSchoolEmbedFlow ? true : showOnlyEmbedTab;
+
 	const initialTab = ShareDropdownTabs.COLLEAGUES;
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
@@ -133,18 +135,23 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 	}, [isSmartSchoolEmbedFlow, tab]);
 
 	useEffect(() => {
-		if (isSmartSchoolEmbedFlow && isOpen) {
+		if (!isOpen) {
+			return;
+		}
+
+		if (showOnlyEmbedTab) {
 			setActiveTab(ShareDropdownTabs.EMBED);
+		}
+
+		if (isSmartSchoolEmbedFlow) {
 			setEmbedDropdownSelection(EmbedCodeExternalWebsite.SMARTSCHOOL);
-		} else if (showOnlyEmbedTab) {
-			setActiveTab(ShareDropdownTabs.EMBED);
 		}
 	}, [isSmartSchoolEmbedFlow, setActiveTab, setEmbedDropdownSelection, isOpen, showOnlyEmbedTab]);
 
 	useEffect(() => {
 		let newEmbedCode = null;
 
-		if (embedDropdownSelection !== '') {
+		if (embedDropdownSelection !== '' && item) {
 			newEmbedCode = {
 				id: '',
 				title: item.title,
