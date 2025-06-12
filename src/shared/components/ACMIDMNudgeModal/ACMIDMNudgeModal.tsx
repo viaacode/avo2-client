@@ -13,13 +13,13 @@ import { type AppState } from '../../../store';
 import { setShowNudgingModalAction } from '../../../store/actions';
 import { selectShowNudgingModal } from '../../../store/selectors';
 import { NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL, ROUTE_PARTS } from '../../constants';
+import { CustomError } from '../../helpers/custom-error';
 import { isPupil } from '../../helpers/is-pupil';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import { ProfilePreferencesService } from '../../services/profile-preferences.service';
 import { ProfilePreferenceKey } from '../../services/profile-preferences.types';
 
 import './ACMIDMNudgeModal.scss';
-import { CustomError } from '../../helpers/custom-error';
 
 interface UiStateProps {
 	showNudgingModal: boolean;

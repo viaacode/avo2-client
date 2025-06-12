@@ -5,11 +5,11 @@ import React, { type FC } from 'react';
 
 import { CONTENT_TYPE_TRANSLATIONS } from '../../collection/collection.types';
 import { SearchResult } from '../../shared/components/SearchResult/SearchResult';
+import { formatDate } from '../../shared/helpers/formatters';
 import { tText } from '../../shared/helpers/translate-text';
 import { type SearchResultItemProps } from '../search.types';
 
 import './SearchResultItem.scss';
-import { formatDate } from '../../shared/helpers/formatters';
 
 const SearchResultItem: FC<SearchResultItemProps> = ({
 	id,

@@ -1,9 +1,18 @@
-import { Button, IconName, Spacer } from '@viaa/avo2-components';
+import {
+	Button,
+	Icon,
+	IconName,
+	Spacer,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
 import { type RouteComponentProps } from 'react-router';
 import { withRouter } from 'react-router-dom';
 
+import { tHtml } from '../../shared/helpers/translate-html';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	redirectToServerACMIDMLogin,
@@ -41,6 +50,21 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 					redirectToServerLoginPage(location, openInNewTab);
 				}}
 			/>,
+
+			<>
+				<hr />
+				<h3 className="c-h4 u-m-0">
+					{tText('Is jouw account al gekoppeld?')}
+					<Tooltip position="bottom">
+						<TooltipTrigger>
+							<Icon className="a-info-icon" name={IconName.info} size="small" />
+						</TooltipTrigger>
+						<TooltipContent>
+							<span>{tHtml('Account tooltip content')}</span>
+						</TooltipContent>
+					</Tooltip>
+				</h3>
+			</>,
 
 			<Button
 				key="login-button-itsme"

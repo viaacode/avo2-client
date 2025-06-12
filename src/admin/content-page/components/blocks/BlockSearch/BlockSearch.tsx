@@ -24,16 +24,17 @@ import { CONTENT_TYPE_TRANSLATIONS } from '../../../../../collection/collection.
 import { OrderDirection, SearchFilter } from '../../../../../search/search.const';
 import { getSearchResults } from '../../../../../search/store/actions';
 import { selectSearchLoading, selectSearchResults } from '../../../../../search/store/selectors';
+import {
+	generateContentLinkString,
+	generateSearchLinkString,
+} from '../../../../../shared/helpers/link';
 import { useDebounce } from '../../../../../shared/hooks/useDebounce';
 import useTranslation from '../../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { KeyCode } from '../../../../../shared/types';
 import { type AppState } from '../../../../../store';
+
 import './BlockSearch.scss';
-import {
-	generateContentLinkString,
-	generateSearchLinkString,
-} from '../../../../../shared/helpers/link';
 
 interface BlockSearchProps {
 	searchResults: Avo.Search.Search | null;

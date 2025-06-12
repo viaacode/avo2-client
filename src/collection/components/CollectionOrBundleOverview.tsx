@@ -39,10 +39,24 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { OrderDirection } from '../../search/search.const';
+import {
+	CheckboxDropdownModal,
+	type CheckboxOption,
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generated/graphql-db-react-query';
+import { buildLink } from '../../shared/helpers/build-link';
+import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
+import { formatDate, formatTimestamp } from '../../shared/helpers/formatters';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
+import { navigate } from '../../shared/helpers/link';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
@@ -69,20 +83,6 @@ import DeleteCollectionModal from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
 import './CollectionOrBundleOverview.scss';
-import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { buildLink } from '../../shared/helpers/build-link';
-import { formatDate, formatTimestamp } from '../../shared/helpers/formatters';
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { navigate } from '../../shared/helpers/link';
-import {
-	CheckboxDropdownModal,
-	type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import {
-	LoadingErrorLoadedComponent,
-	type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 
 interface CollectionOrBundleOverviewProps {
 	numberOfItems: number;

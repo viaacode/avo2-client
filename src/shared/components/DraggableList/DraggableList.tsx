@@ -1,8 +1,8 @@
 import { Icon, IconName } from '@viaa/avo2-components';
+import { clsx } from 'clsx';
 import React, { type FC, type ReactNode, useState } from 'react';
 
 import './DraggableList.scss';
-import { clsx } from 'clsx';
 
 interface DraggableListProps {
 	items: any[];
