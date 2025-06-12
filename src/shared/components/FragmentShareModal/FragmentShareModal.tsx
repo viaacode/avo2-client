@@ -36,34 +36,40 @@ import QuickLaneContent from '../QuickLaneContent/QuickLaneContent';
 import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';
 import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
 import ShareThroughEmailContent from '../ShareThroughEmailContent/ShareThroughEmailContent';
-import { type ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 
 import './FragmentShareModal.scss';
 
 type FragmentShareModalProps = {
-	item: Avo.Item.Item;
+	item: Avo.Item.Item | null;
 	isOpen: boolean;
 	onClose: () => void;
-	shareWithPupilsProps?: ShareWithPupilsProps;
-	withPupils?: boolean;
+	showOnlyEmbedTab?: boolean;
 };
 
 const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProps> = ({
 	item,
 	isOpen,
 	onClose,
+	showOnlyEmbedTab,
 	commonUser,
 	isSmartSchoolEmbedFlow,
 }) => {
 	const initialTab = ShareDropdownTabs.COLLEAGUES;
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
-			{
-				id: ShareDropdownTabs.COLLEAGUES,
-				label: tText('shared/components/share-dropdown/share-dropdown___collegas'),
-				icon: IconName.userTeacher,
-			},
-			...(PermissionService.hasPerm(commonUser, PermissionName.CREATE_QUICK_LANE)
+			...(!showOnlyEmbedTab
+				? [
+						{
+							id: ShareDropdownTabs.COLLEAGUES,
+							label: tText(
+								'shared/components/share-dropdown/share-dropdown___collegas'
+							),
+							icon: IconName.userTeacher,
+						},
+				  ]
+				: []),
+			...(!showOnlyEmbedTab &&
+			PermissionService.hasPerm(commonUser, PermissionName.CREATE_QUICK_LANE)
 				? [
 						{
 							id: ShareDropdownTabs.PUPILS,
@@ -120,10 +126,10 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 
 	const handleTabChanged = (id: string | number) => {
 		setActiveTab(id);
-		if (id === ShareDropdownTabs.EMBED) {
+		if (id === ShareDropdownTabs.EMBED && item) {
 			trackEvents(
 				{
-					object: item.external_id,
+					object: item?.external_id,
 					object_type: 'embed_code',
 					action: 'activate',
 				},
@@ -142,8 +148,10 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 		if (isSmartSchoolEmbedFlow) {
 			setActiveTab(ShareDropdownTabs.EMBED);
 			setEmbedDropdownSelection(EmbedCodeExternalWebsite.SMARTSCHOOL);
+		} else if (showOnlyEmbedTab) {
+			setActiveTab(ShareDropdownTabs.EMBED);
 		}
-	}, [isSmartSchoolEmbedFlow, setActiveTab, setEmbedDropdownSelection]);
+	}, [isSmartSchoolEmbedFlow, setActiveTab, setEmbedDropdownSelection, showOnlyEmbedTab]);
 
 	useEffect(() => {
 		if (embedDropdownSelection === '') {
@@ -151,10 +159,10 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 		} else {
 			setEmbedCode({
 				id: '',
-				title: item.title,
+				title: item?.title,
 				externalWebsite: embedDropdownSelection,
 				contentType: 'ITEM',
-				contentId: item.external_id,
+				contentId: item?.external_id,
 				content: item,
 				descriptionType:
 					embedDropdownSelection === EmbedCodeExternalWebsite.BOOKWIDGETS
@@ -163,9 +171,9 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 				description:
 					embedDropdownSelection === EmbedCodeExternalWebsite.BOOKWIDGETS
 						? ''
-						: item.description,
+						: item?.description,
 				start: 0,
-				end: toSeconds(item.duration),
+				end: toSeconds(item?.duration),
 			} as EmbedCode);
 		}
 	}, [embedDropdownSelection, item]);
@@ -225,6 +233,10 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 	};
 
 	const renderPupilsContent = (): ReactNode => {
+		if (!item) {
+			return <></>;
+		}
+
 		return (
 			<QuickLaneContent
 				content={item}
@@ -235,6 +247,9 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 	};
 
 	const renderColleaguesContent = (): ReactNode => {
+		if (!item) {
+			return <></>;
+		}
 		return (
 			<ShareThroughEmailContent
 				emailLinkHref={window.location.href}

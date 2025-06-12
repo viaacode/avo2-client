@@ -151,7 +151,7 @@ export class QuickLaneService {
 			switch (url.content_label) {
 				case 'ITEM':
 					url.content = await checkForItemReplacements(
-						await ItemsService.fetchItemByUuid(url.content_id || '')
+						await ItemsService.fetchItemByUuid(url.content_id || '', false)
 					);
 					break;
 

@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import AvoLogo from '@assets/images/avo-logo-button.svg';
-import { Alert, Column, Flex, Grid, Icon, IconName, Spacer, Spinner } from '@viaa/avo2-components';
+import { Alert, Column, Flex, Grid, Icon, IconName, Spinner } from '@viaa/avo2-components';
 import type { ItemSchema } from '@viaa/avo2-types/types/item';
 import queryString from 'query-string';
 import React, { type FC, useEffect, useMemo, useState } from 'react';

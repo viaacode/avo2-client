@@ -18,14 +18,9 @@ import { compose } from 'redux';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
-import BookmarkEmbedModal from '../../embed-code/components/modals/BookmarkEmbedModal';
-import {
-	type EmbedCode,
-	EmbedCodeDescriptionType,
-	EmbedCodeExternalWebsite,
-} from '../../embed-code/embed-code.types';
 import { ErrorView } from '../../error/views';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
+import FragmentShareModal from '../../shared/components/FragmentShareModal/FragmentShareModal';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
@@ -34,7 +29,6 @@ import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { formatDate, fromNow } from '../../shared/helpers/formatters';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
@@ -68,7 +62,7 @@ const BookmarksOverview: FC<
 	const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null);
 	const [bookmarkToDelete, setBookmarkToDelete] = useState<BookmarkInfo | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-	const [isEmbedCodeModalOpen, setIsEmbedCodeModalOpen] = useState<EmbedCode | null>(null);
+	const [isEmbedCodeModalOpen, setIsEmbedCodeModalOpen] = useState<Avo.Item.Item | null>(null);
 	const [sortColumn, setSortColumn] = useState<keyof BookmarkInfo>('createdAt');
 	const [sortOrder, setSortOrder] = useState<OrderDirection>(OrderDirection.desc);
 	const [page, setPage] = useState<number>(0);
@@ -185,24 +179,13 @@ const BookmarksOverview: FC<
 
 	const handleEmbedCodeClicked = (bookmarkInfo: BookmarkInfo) => {
 		setIsEmbedCodeModalOpen({
-			id: '',
 			title: bookmarkInfo.contentTitle,
-			externalWebsite: EmbedCodeExternalWebsite.SMARTSCHOOL,
-			contentType: 'ITEM',
-			contentId: bookmarkInfo.contentLinkId,
-			content: {
-				title: bookmarkInfo.contentTitle,
-				description: bookmarkInfo.contentDescription,
-				duration: bookmarkInfo.contentDuration,
-				external_id: bookmarkInfo.contentLinkId,
-				thumbnail_path: bookmarkInfo.contentThumbnailPath,
-				type: bookmarkInfo.contentType,
-			},
-			descriptionType: EmbedCodeDescriptionType.ORIGINAL,
 			description: bookmarkInfo.contentDescription,
-			start: 0,
-			end: toSeconds(bookmarkInfo.contentDuration),
-		} as EmbedCode);
+			duration: bookmarkInfo.contentDuration,
+			external_id: bookmarkInfo.contentLinkId,
+			thumbnail_path: bookmarkInfo.contentThumbnailPath,
+			type: bookmarkInfo.contentType,
+		} as Avo.Item.Item);
 	};
 
 	// Render functions
@@ -410,9 +393,10 @@ const BookmarksOverview: FC<
 	const renderBookmarks = () => (
 		<>
 			{bookmarks && bookmarks.length ? renderTable() : renderEmptyFallback()}
-			<BookmarkEmbedModal
+			<FragmentShareModal
 				isOpen={!!isEmbedCodeModalOpen}
-				embedCode={isEmbedCodeModalOpen}
+				item={isEmbedCodeModalOpen}
+				showOnlyEmbedTab={true}
 				onClose={() => setIsEmbedCodeModalOpen(null)}
 			/>
 			<ConfirmModal
