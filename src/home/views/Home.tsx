@@ -7,6 +7,7 @@ import { compose } from 'redux';
 import { useGetContentPageByPath } from '../../admin/content-page/hooks/get-content-page-by-path';
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -35,7 +36,13 @@ const Home: FC<UserProps & RouteComponentProps> = ({ history, commonUser }) => {
 				/>
 			</Helmet>
 			{contentPageInfo && (
-				<ContentPageRenderer contentPageInfo={contentPageInfo} commonUser={commonUser} />
+				<>
+					<InteractiveTour showButton={false} />
+					<ContentPageRenderer
+						contentPageInfo={contentPageInfo}
+						commonUser={commonUser}
+					/>
+				</>
 			)}
 		</>
 	);
