@@ -129,7 +129,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 		if (id === ShareDropdownTabs.EMBED && item) {
 			trackEvents(
 				{
-					object: item?.external_id,
+					object: item.external_id,
 					object_type: 'embed_code',
 					action: 'activate',
 				},
@@ -154,15 +154,19 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 	}, [isSmartSchoolEmbedFlow, setActiveTab, setEmbedDropdownSelection, showOnlyEmbedTab]);
 
 	useEffect(() => {
+		if (!item) {
+			return;
+		}
+
 		if (embedDropdownSelection === '') {
 			setEmbedCode(undefined);
 		} else {
 			setEmbedCode({
 				id: '',
-				title: item?.title,
+				title: item.title,
 				externalWebsite: embedDropdownSelection,
 				contentType: 'ITEM',
-				contentId: item?.external_id,
+				contentId: item.external_id,
 				content: item,
 				descriptionType:
 					embedDropdownSelection === EmbedCodeExternalWebsite.BOOKWIDGETS
@@ -171,9 +175,9 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 				description:
 					embedDropdownSelection === EmbedCodeExternalWebsite.BOOKWIDGETS
 						? ''
-						: item?.description,
+						: item.description,
 				start: 0,
-				end: toSeconds(item?.duration),
+				end: toSeconds(item.duration),
 			} as EmbedCode);
 		}
 	}, [embedDropdownSelection, item]);
@@ -234,7 +238,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 
 	const renderPupilsContent = (): ReactNode => {
 		if (!item) {
-			return <></>;
+			return null;
 		}
 
 		return (
@@ -248,8 +252,9 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 
 	const renderColleaguesContent = (): ReactNode => {
 		if (!item) {
-			return <></>;
+			return null;
 		}
+
 		return (
 			<ShareThroughEmailContent
 				emailLinkHref={window.location.href}

@@ -62,7 +62,8 @@ const BookmarksOverview: FC<
 	const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null);
 	const [bookmarkToDelete, setBookmarkToDelete] = useState<BookmarkInfo | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-	const [isEmbedCodeModalOpen, setIsEmbedCodeModalOpen] = useState<Avo.Item.Item | null>(null);
+	const [mediaItemForEmbedCodeModal, setMediaItemForEmbedCodeModal] =
+		useState<Avo.Item.Item | null>(null);
 	const [sortColumn, setSortColumn] = useState<keyof BookmarkInfo>('createdAt');
 	const [sortOrder, setSortOrder] = useState<OrderDirection>(OrderDirection.desc);
 	const [page, setPage] = useState<number>(0);
@@ -178,7 +179,7 @@ const BookmarksOverview: FC<
 	};
 
 	const handleEmbedCodeClicked = (bookmarkInfo: BookmarkInfo) => {
-		setIsEmbedCodeModalOpen({
+		setMediaItemForEmbedCodeModal({
 			title: bookmarkInfo.contentTitle,
 			description: bookmarkInfo.contentDescription,
 			duration: bookmarkInfo.contentDuration,
@@ -394,10 +395,10 @@ const BookmarksOverview: FC<
 		<>
 			{bookmarks && bookmarks.length ? renderTable() : renderEmptyFallback()}
 			<FragmentShareModal
-				isOpen={!!isEmbedCodeModalOpen}
-				item={isEmbedCodeModalOpen}
+				isOpen={!!mediaItemForEmbedCodeModal}
+				item={mediaItemForEmbedCodeModal}
 				showOnlyEmbedTab={true}
-				onClose={() => setIsEmbedCodeModalOpen(null)}
+				onClose={() => setMediaItemForEmbedCodeModal(null)}
 			/>
 			<ConfirmModal
 				title={tHtml('workspace/views/bookmarks___verwijder-bladwijzer')}
