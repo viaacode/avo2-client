@@ -1,13 +1,13 @@
 import { type TagInfo } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
 import { groupBy, map } from 'lodash-es';
 import React, { type FC } from 'react';
 import Select from 'react-select';
 
-import './MultiThemeSelectDropdown.scss';
 import MultiThemeSelectOptionGroupHeading from './MultiThemeSelectOptionGroupHeading';
 
-import { clsx } from 'clsx';
+import './MultiThemeSelectDropdown.scss';
 
 interface MultiThemeSelectDropdownProps {
 	id?: string;

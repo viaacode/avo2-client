@@ -9,13 +9,13 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode } from 'react';
 
+import { getFullName } from '../../helpers/formatters';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import withUser from '../../hocs/withUser';
 import { ContributorInfoRight } from '../ShareWithColleagues/ShareWithColleagues.types';
 
 import './HeaderOwnerAndContributors.scss';
-import { tText } from '../../helpers/translate-text';
-import { tHtml } from '../../helpers/translate-html';
-import { getFullName } from '../../helpers/formatters';
 
 type HeaderOwnerAndContributorsProps = {
 	commonUser: Avo.User.CommonUser | null | undefined;

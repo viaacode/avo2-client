@@ -1,14 +1,17 @@
 // eslint-disable-next-line import/no-unresolved
 import AvoLogo from '@assets/images/avo-logo-button.svg';
-import { Alert, Column, Flex, Grid, Icon, IconName, Spacer, Spinner } from '@viaa/avo2-components';
+import { Alert, Column, Flex, Grid, Icon, IconName, Spinner } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
 import type { ItemSchema } from '@viaa/avo2-types/types/item';
+import { noop } from 'lodash-es';
 import queryString from 'query-string';
-import React, { type FC, useEffect, useMemo, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { redirectToExternalPage } from '../../authentication/helpers/redirects/redirect-to-external-page';
 import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
+import { createResource } from '../../embed-code/helpers/resourceForTrackEvents';
 import { useGetEmbedCode } from '../../embed-code/hooks/useGetEmbedCode';
 import FlowPlayerWrapper from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { reorderDate } from '../../shared/helpers/formatters';
@@ -80,6 +83,29 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 		return null;
 	}, [content, embedCode, isErrorEmbedCode]);
 
+	const triggerViewEvents = useCallback(async () => {
+		if (embedCode && embedCode.contentType === 'ITEM' && embedCode.contentId) {
+			trackEvents(
+				{
+					object: embedCode?.id,
+					object_type: 'embed_code',
+					action: 'view',
+					resource: {
+						...createResource(embedCode, commonUser as Avo.User.CommonUser),
+						parentPage: window.parent.location.href,
+					},
+				},
+				commonUser
+			);
+		}
+	}, [commonUser, embedCode]);
+
+	useEffect(() => {
+		if (embedCode) {
+			triggerViewEvents().then(noop);
+		}
+	}, [embedCode, triggerViewEvents]);
+
 	const onPlay = () => {
 		if (!embedCode) {
 			return;
@@ -89,6 +115,10 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 				object: embedCode?.id,
 				object_type: 'embed_code',
 				action: 'play',
+				resource: {
+					...createResource(embedCode, commonUser as Avo.User.CommonUser),
+					parentPage: window.parent.location.href,
+				},
 			},
 			commonUser
 		);
@@ -102,7 +132,11 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 			{
 				object: embedCode?.id,
 				object_type: 'embed_code',
-				action: 'view',
+				action: 'request',
+				resource: {
+					...createResource(embedCode, commonUser as Avo.User.CommonUser),
+					parentPage: window.parent.location.href,
+				},
 			},
 			commonUser
 		);

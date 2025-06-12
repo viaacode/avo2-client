@@ -3,10 +3,10 @@ import { setPlayingVideoSeekTime } from '@meemoo/react-components';
 import { convertToHtml } from '@viaa/avo2-components';
 import React, { type FC, useCallback, useEffect, useRef } from 'react';
 
+import { parseDuration } from '../../helpers/parsers/duration';
 import Html from '../Html/Html';
 
 import './TextWithTimestamps.scss';
-import { parseDuration } from '../../helpers/parsers/duration';
 
 interface TextWithTimestampsProps {
 	content: string;

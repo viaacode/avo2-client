@@ -82,6 +82,7 @@ import { renderSearchLinks } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
+import withEmbedFlow, { type EmbedFlowProps } from '../../shared/hocs/withEmbedFlow';
 import withUser from '../../shared/hocs/withUser';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -98,14 +99,14 @@ import {
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { type UnpublishableItem } from '../../shared/types';
-import ReportItemModal from '../components/modals/ReportItemModal';
-import { RELATED_ITEMS_AMOUNT } from '../item.const';
-import { type ItemTrimInfo } from '../item.types';
-import './ItemDetail.scss';
 import ItemVideoDescription from '../components/ItemVideoDescription';
 import AddToCollectionModal from '../components/modals/AddToCollectionModal';
 import CutFragmentForAssignmentModal from '../components/modals/CutFragmentForAssignmentModal';
-import withEmbedFlow, { type EmbedFlowProps } from '../../shared/hocs/withEmbedFlow';
+import ReportItemModal from '../components/modals/ReportItemModal';
+import { RELATED_ITEMS_AMOUNT } from '../item.const';
+import { type ItemTrimInfo } from '../item.types';
+
+import './ItemDetail.scss';
 
 interface ItemDetailProps {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
