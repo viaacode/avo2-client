@@ -9,7 +9,6 @@ import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
-import { redirectToExternalPage } from '../../authentication/helpers/redirects/redirect-to-external-page';
 import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
 import { createResource } from '../../embed-code/helpers/resourceForTrackEvents';
 import { useGetEmbedCode } from '../../embed-code/hooks/useGetEmbedCode';
@@ -124,7 +123,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 		);
 	};
 
-	const openOnAvo = () => {
+	const trackViewEmbedLinkClicked = () => {
 		if (!embedCode) {
 			return;
 		}
@@ -140,7 +139,6 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 			},
 			commonUser
 		);
-		redirectToExternalPage(toEmbedCodeDetail(embedCode?.id), '_blank');
 	};
 
 	if (errorInfo) {
@@ -222,14 +220,20 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 								</p>
 							</Column>
 							<Column size="static">
-								<div className="c-avo-button" onClick={openOnAvo}>
+								<a
+									className="c-avo-button"
+									href={toEmbedCodeDetail(embedCode?.id)}
+									target="_blank"
+									onClick={trackViewEmbedLinkClicked}
+									rel="noreferrer"
+								>
 									<img
 										className="c-avo-logo"
 										alt="Archief voor Onderwijs logo"
 										src={AvoLogo}
 									/>
 									<Icon name={IconName.externalLink} subtle />
-								</div>
+								</a>
 							</Column>
 						</Grid>
 					</div>
