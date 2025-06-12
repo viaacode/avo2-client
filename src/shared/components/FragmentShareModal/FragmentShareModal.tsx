@@ -112,7 +112,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 	const [embedDropdownSelection, setEmbedDropdownSelection] = useState<
 		EmbedCodeExternalWebsite | ''
 	>('');
-	const [embedCode, setEmbedCode] = useState<EmbedCode | undefined>(undefined);
+	const [embedCode, setEmbedCode] = useState<EmbedCode | null>(null);
 
 	const modalRef = createRef<{ updateSize: () => void }>();
 
@@ -134,7 +134,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 	}, [isSmartSchoolEmbedFlow, setActiveTab, setEmbedDropdownSelection, isOpen]);
 
 	useEffect(() => {
-		let newEmbedCode = undefined;
+		let newEmbedCode = null;
 
 		if (embedDropdownSelection !== '') {
 			newEmbedCode = {

@@ -56,7 +56,7 @@ import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 import './EmbedContent.scss';
 
 type EmbedProps = {
-	item?: EmbedCode;
+	item: EmbedCode | null;
 	contentDescription: ReactNode | string;
 	onSave?: (item: EmbedCode) => void;
 	onClose?: () => void;
@@ -207,6 +207,9 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	const handleCopyButtonClicked = () => {
 		if (!savedEmbedCode) {
 			console.error('No embed code to copy');
+			ToastService.danger(
+				tHtml('Het kopieren van de embed code naar je klembord is mislukt.')
+			);
 			return;
 		}
 
