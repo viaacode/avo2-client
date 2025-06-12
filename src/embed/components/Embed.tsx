@@ -47,7 +47,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 
 	const content = useMemo(() => {
 		if (embedCode?.content?.relations?.length) {
-			return embedCode?.content?.relations[0].object_meta;
+			return embedCode?.content?.relations?.[0]?.object_meta;
 		}
 		return embedCode?.content;
 	}, [embedCode]);
@@ -64,9 +64,9 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 			showReloadButton = true;
 		} else if (embedCode && !content) {
 			errorMessage = tHtml('embed/components/embed___deze-video-is-niet-meer-beschikbaar');
-		} else if (content && content.is_deleted) {
+		} else if (content?.is_deleted) {
 			errorMessage = tHtml('Deze video werd verwijderd');
-		} else if (content && !content.is_published) {
+		} else if (content && !content?.is_published) {
 			if (content.depublish_reason) {
 				errorMessage = tHtml('Deze video werd gedepubliceerd met volgende reden', {
 					depublishReason: content.depublish_reason,
@@ -195,9 +195,9 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 									<span>{tHtml('embed/components/embed___aanbieder')}</span>
 									<span
 										className="u-text-bold u-truncate"
-										title={content?.organisation.name}
+										title={content?.organisation?.name}
 									>
-										{content?.organisation.name}
+										{content?.organisation?.name}
 									</span>
 									<span className="u-text-bold">&bull;</span>
 									<span>{tHtml('embed/components/embed___uitgezonden')}</span>
