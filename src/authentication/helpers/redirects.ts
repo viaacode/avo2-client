@@ -23,7 +23,7 @@ function getRedirectUrl(
 	closeTabAfterLogin: boolean
 ): string {
 	return closeTabAfterLogin
-		? getBaseUrl(location) + '/embed/close-browser.html'
+		? getBaseUrl(location) + '/embed/close-browser'
 		: getRedirectAfterLogin(location);
 }
 
