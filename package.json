@@ -1,6 +1,6 @@
 {
   "name": "avo2-client",
-  "version": "1.31.8",
+  "version": "1.31.9",
   "private": true,
   "scripts": {
     "__prepare": "husky install",
@@ -39,13 +39,13 @@
   "dependencies": {
     "@flowplayer/player": "3.3.0",
     "@hookform/resolvers": "2.9.11",
-    "@meemoo/admin-core-ui": "4.4.12",
-    "@meemoo/react-components": "4.1.4",
+    "@meemoo/admin-core-ui": "4.4.16",
+    "@meemoo/react-components": "4.2.0",
     "@popperjs/core": "2.11.6",
     "@studiohyperdrive/pagination": "1.0.0",
     "@tanstack/react-query": "4.36.1",
     "@uidotdev/usehooks": "^2.4.1",
-    "@viaa/avo2-components": "5.1.7",
+    "@viaa/avo2-components": "5.1.8",
     "@viaa/avo2-types": "3.0.21",
     "autosize": "6.0.1",
     "capture-stack-trace": "1.0.1",
