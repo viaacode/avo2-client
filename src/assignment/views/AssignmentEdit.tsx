@@ -39,6 +39,7 @@ import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import InActivityWarningModal from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
 import {
@@ -892,6 +893,14 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 							</Spacer>
 						)}
 						{renderedListSorter}
+						{!assignment?.blocks?.length && (
+							<EmptyStateMessage
+								title={tText('Hulp nodig bij het maken van opdrachten titel')}
+								message={tHtml(
+									'Hulp nodig bij het maken van opdrachten beschrijving'
+								)}
+							/>
+						)}
 					</div>
 				);
 
