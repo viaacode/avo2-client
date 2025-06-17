@@ -893,8 +893,13 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 							</Spacer>
 						)}
 						{renderedListSorter}
-						{assignment?.blocks?.length === 0 && (
-							<EmptyStateMessage message="" title="" />
+						{!assignment?.blocks?.length && (
+							<EmptyStateMessage
+								title={tText('Hulp nodig bij het maken van opdrachten titel')}
+								message={tHtml(
+									'Hulp nodig bij het maken van opdrachten beschrijving'
+								)}
+							/>
 						)}
 					</div>
 				);
