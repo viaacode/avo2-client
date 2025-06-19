@@ -69,7 +69,9 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 	const [embedCodes, setEmbedCodes] = useState<EmbedCode[]>([]);
 	const [selected, setSelected] = useState<Partial<EmbedCode> | undefined>(undefined);
 	const [embedCodesCount, setEmbedCodesCount] = useState<number>(0);
-	const [isEmbedCodeModalOpen, setIsEmbedCodeModalOpen] = useState(false);
+	const [embedCodeForEditModal, setEmbedCodeForEditModal] = useState<
+		Partial<EmbedCode> | undefined
+	>(undefined);
 	const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
 	// Set default sorting
@@ -171,8 +173,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 
 			await reloadEmbedCodes();
 
-			setIsEmbedCodeModalOpen(false);
-			setSelected(undefined);
+			setEmbedCodeForEditModal(undefined);
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
@@ -224,10 +225,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 		<EmbedCodeFilterTableCell
 			id={id}
 			data={data}
-			onNameClick={(data) => {
-				setSelected(data);
-				setIsEmbedCodeModalOpen(true);
-			}}
+			onNameClick={(data) => setEmbedCodeForEditModal(data)}
 			actions={(data) => {
 				const items = [
 					{
@@ -266,7 +264,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 							onOpen={() => setSelected(data as EmbedCode)}
 							onClose={() => {
 								const isAModalOpen =
-									isEmbedCodeModalOpen || isConfirmationModalOpen;
+									embedCodeForEditModal || isConfirmationModalOpen;
 
 								!isAModalOpen && setSelected(undefined);
 							}}
@@ -279,7 +277,8 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 
 								switch (action.toString() as EmbedCodeAction) {
 									case EmbedCodeAction.EDIT:
-										setIsEmbedCodeModalOpen(true);
+										setSelected(undefined);
+										setEmbedCodeForEditModal(selected);
 										break;
 
 									case EmbedCodeAction.COPY_TO_CLIPBOARD:
@@ -305,7 +304,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 												action: 'copy',
 												resource: {
 													...createResource(
-														selected,
+														selected as EmbedCode,
 														commonUser as Avo.User.CommonUser
 													),
 													pageUrl: window.location.href,
@@ -380,12 +379,9 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 			/>
 
 			<EditEmbedCodeModal
-				isOpen={isEmbedCodeModalOpen}
-				embedCode={selected as EmbedCode}
-				onClose={() => {
-					setIsEmbedCodeModalOpen(false);
-					setSelected(undefined);
-				}}
+				isOpen={!!embedCodeForEditModal}
+				embedCode={embedCodeForEditModal as EmbedCode}
+				onClose={() => setEmbedCodeForEditModal(undefined)}
 				handleUpdate={changeEmbedCode}
 			/>
 
