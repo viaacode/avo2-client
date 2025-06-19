@@ -69,7 +69,7 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 	const renderEmbedType = ({ externalWebsite }: Partial<EmbedCode>) => {
 		if (externalWebsite === EmbedCodeExternalWebsite.SMARTSCHOOL) {
 			return (
-				<>
+				<span className="u-nowrap">
 					<img
 						className="o-svg-icon prepend-logo"
 						src={smartSchoolLogo}
@@ -78,12 +78,12 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 						)}
 					/>
 					{tText('embed-code/components/embed-code-filter-table-cell___smartschool')}
-				</>
+				</span>
 			);
 		}
 		if (externalWebsite === EmbedCodeExternalWebsite.BOOKWIDGETS) {
 			return (
-				<>
+				<span className="u-nowrap">
 					<img
 						className="o-svg-icon prepend-logo"
 						src={bookWidgetsLogo}
@@ -92,7 +92,7 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 						)}
 					/>
 					{tText('embed-code/components/embed-code-filter-table-cell___bookwidgets')}
-				</>
+				</span>
 			);
 		}
 		return null;
