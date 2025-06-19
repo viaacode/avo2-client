@@ -481,18 +481,18 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 								type="secondary"
 								label={
 									savedEmbedCode
-										? tText('embed-code/components/embed-content___annuleer')
-										: tText('embed-code/components/embed-content___sluit')
+										? tText('embed-code/components/embed-content___sluit')
+										: tText('embed-code/components/embed-content___annuleer')
 								}
 								title={
 									savedEmbedCode
-										? tText('embed-code/components/embed-content___annuleer')
-										: tText('embed-code/components/embed-content___sluit')
+										? tText('embed-code/components/embed-content___sluit')
+										: tText('embed-code/components/embed-content___annuleer')
 								}
 								ariaLabel={
 									savedEmbedCode
-										? tText('embed-code/components/embed-content___annuleer')
-										: tText('embed-code/components/embed-content___sluit')
+										? tText('embed-code/components/embed-content___sluit')
+										: tText('embed-code/components/embed-content___annuleer')
 								}
 								onClick={onClose}
 							/>
