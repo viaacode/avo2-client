@@ -39,6 +39,7 @@ import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import InActivityWarningModal from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
 import {
@@ -875,25 +876,41 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 		);
 	}, [bookmarkViewCounts, tText, assignment]);
 
+	const renderAssignmentBlocks = () => {
+		if (!assignment?.blocks?.length) {
+			return (
+				<>
+					{renderedListSorter}
+					<EmptyStateMessage
+						title={tText('Hulp nodig bij het maken van opdrachten titel')}
+						message={tHtml('Hulp nodig bij het maken van opdrachten beschrijving')}
+					/>
+				</>
+			);
+		}
+
+		return (
+			<>
+				{!pastDeadline && (
+					<Spacer
+						margin={['bottom-large']}
+						className="c-assignment-page__reorder-container"
+					>
+						{draggableListButton}
+					</Spacer>
+				)}
+				{renderedListSorter}
+			</>
+		);
+	};
+
 	const renderedTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT:
 				if (pastDeadline) {
 					return <BlockList blocks={assignment?.blocks || []} />;
 				}
-				return (
-					<div className="c-assignment-contents-tab">
-						{(assignment?.blocks?.length || 0) > 0 && !pastDeadline && (
-							<Spacer
-								margin={['bottom-large']}
-								className="c-assignment-page__reorder-container"
-							>
-								{draggableListButton}
-							</Spacer>
-						)}
-						{renderedListSorter}
-					</div>
-				);
+				return <div className="c-assignment-contents-tab">{renderAssignmentBlocks()}</div>;
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS:
 				if (pastDeadline) {
