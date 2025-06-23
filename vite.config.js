@@ -36,7 +36,14 @@ export default defineConfig(() => {
 		server: {
 			port: 8080,
 		},
-		plugins: [react(), viteTsconfigPaths(), svgrPlugin(), cssInjectedByJsPlugin()],
+		plugins: [
+			react(),
+			viteTsconfigPaths(),
+			svgrPlugin(),
+			cssInjectedByJsPlugin({
+				topExecutionPriority: false,
+			}),
+		],
 		sourcemap: true,
 		// TODO, see if we can load graphql files instead of the documents from the react-query generated file, since we don't use the react query a lot
 		// assetsInclude: ['**/*.graphql'],
