@@ -2,38 +2,23 @@
 @import "../../styles/settings/colors";
 
 $embed-metadata-height: 8rem;
-$embed-alert-height: 5.5rem;
 
 .embed-wrapper {
 	position: absolute;
 	inset: 0;
 	width: 100%;
 	height: 100%;
+	display: flex;
+	flex-flow: column;
 
 	div.c-video-player {
-		height: 100%;
-
-		&:nth-child(2) {
-			height: calc(100% - $embed-alert-height);
-		}
-
-		&:has(+ div.c-embed-metadata) {
-			height: calc(100% - $embed-metadata-height);
-
-			&:nth-child(2) {
-				height: calc(100% - $embed-metadata-height - $embed-alert-height);
-			}
-		}
+		flex: 1 1 auto;
 	}
 
 	.c-title {
 		font-weight: 600;
 		font-size: 1.8rem;
 		line-height: 1.8rem;
-	}
-
-	div.c-alert ~ .c-custom-logo-overlay {
-		top: $embed-alert-height;
 	}
 
 	.c-custom-logo-overlay {
@@ -48,7 +33,9 @@ $embed-alert-height: 5.5rem;
 			position: absolute;
 			top: 0;
 			right: 0;
-			width: 10%;
+			width: 8%;
+			min-width: 5rem;
+			padding: 1.2rem;
 		}
 	}
 

@@ -169,17 +169,23 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 						)}
 					</Alert>
 				)}
-				<FlowPlayerWrapper
-					poster={getFlowPlayerPoster(undefined, content)}
-					item={content}
-					canPlay={true}
-					placeholder={false}
-					cuePointsLabel={{ start: embedCode.start, end: embedCode.end }}
-					cuePointsVideo={{ start: embedCode.start, end: embedCode.end }}
-					onPlay={onPlay}
-					// Not tracking the playevent in the FlowPlayer since that is bound to the item and not an embed
-					trackPlayEvent={false}
-				/>
+				<div className="c-video-player">
+					<FlowPlayerWrapper
+						poster={getFlowPlayerPoster(undefined, content)}
+						item={content}
+						canPlay={true}
+						placeholder={false}
+						cuePointsLabel={{ start: embedCode.start, end: embedCode.end }}
+						cuePointsVideo={{ start: embedCode.start, end: embedCode.end }}
+						onPlay={onPlay}
+						// Not tracking the playevent in the FlowPlayer since that is bound to the item and not an embed
+						trackPlayEvent={false}
+					/>
+
+					<div className="c-custom-logo-overlay">
+						<img src={content?.organisation?.logo_url} />
+					</div>
+				</div>
 
 				{showMetadata && (
 					<div className="c-embed-metadata">
@@ -238,10 +244,6 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 						</Grid>
 					</div>
 				)}
-
-				<div className="c-custom-logo-overlay u-spacer">
-					<img src={content?.organisation?.logo_url} />
-				</div>
 			</div>
 		</>
 	);
