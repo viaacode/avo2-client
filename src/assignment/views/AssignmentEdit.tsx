@@ -876,33 +876,41 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 		);
 	}, [bookmarkViewCounts, tText, assignment]);
 
+	const renderAssignmentBlocks = () => {
+		if (!assignment?.blocks?.length) {
+			return (
+				<>
+					{renderedListSorter}
+					<EmptyStateMessage
+						title={tText('Hulp nodig bij het maken van opdrachten titel')}
+						message={tHtml('Hulp nodig bij het maken van opdrachten beschrijving')}
+					/>
+				</>
+			);
+		}
+
+		return (
+			<>
+				{!pastDeadline && (
+					<Spacer
+						margin={['bottom-large']}
+						className="c-assignment-page__reorder-container"
+					>
+						{draggableListButton}
+					</Spacer>
+				)}
+				{renderedListSorter}
+			</>
+		);
+	};
+
 	const renderedTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT:
 				if (pastDeadline) {
 					return <BlockList blocks={assignment?.blocks || []} />;
 				}
-				return (
-					<div className="c-assignment-contents-tab">
-						{(assignment?.blocks?.length || 0) > 0 && !pastDeadline && (
-							<Spacer
-								margin={['bottom-large']}
-								className="c-assignment-page__reorder-container"
-							>
-								{draggableListButton}
-							</Spacer>
-						)}
-						{renderedListSorter}
-						{!assignment?.blocks?.length && (
-							<EmptyStateMessage
-								title={tText('Hulp nodig bij het maken van opdrachten titel')}
-								message={tHtml(
-									'Hulp nodig bij het maken van opdrachten beschrijving'
-								)}
-							/>
-						)}
-					</div>
-				);
+				return <div className="c-assignment-contents-tab">{renderAssignmentBlocks()}</div>;
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS:
 				if (pastDeadline) {
