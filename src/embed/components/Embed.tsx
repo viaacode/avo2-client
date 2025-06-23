@@ -64,14 +64,17 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 		} else if (embedCode && !content) {
 			errorMessage = tHtml('embed/components/embed___deze-video-is-niet-meer-beschikbaar');
 		} else if (content?.is_deleted) {
-			errorMessage = tHtml('Deze video werd verwijderd');
+			errorMessage = tHtml('embed/components/embed___deze-video-werd-verwijderd');
 		} else if (content && !content?.is_published) {
 			if (content.depublish_reason) {
-				errorMessage = tHtml('Deze video werd gedepubliceerd met volgende reden', {
-					depublishReason: content.depublish_reason,
-				});
+				errorMessage = tHtml(
+					'embed/components/embed___deze-video-werd-gedepubliceerd-met-volgende-reden',
+					{
+						depublishReason: content.depublish_reason,
+					}
+				);
 			} else {
-				errorMessage = tHtml('Deze video werd gedepubliceerd');
+				errorMessage = tHtml('embed/components/embed___deze-video-werd-gedepubliceerd');
 			}
 			icon = IconName.cameraOff;
 		}
@@ -165,7 +168,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 				{isReplaced && (
 					<Alert type="danger">
 						{tHtml(
-							'Dit fragment werd uitzonderlijk vervangen door Het Archief voor Onderwijs. Het zou kunnen dat de tijdscodes of de beschrijving niet meer goed passen. Meld dit aan de lesgever die het fragment aanmaakte.'
+							'embed/components/embed___dit-fragment-werd-uitzonderlijk-vervangen-door-het-archief-voor-onderwijs-het-zou-kunnen-dat-de-tijdscodes-of-de-beschrijving-niet-meer-goed-passen-meld-dit-aan-de-lesgever-die-het-fragment-aanmaakte'
 						)}
 					</Alert>
 				)}

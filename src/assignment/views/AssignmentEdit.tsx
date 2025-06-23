@@ -882,8 +882,12 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 				<>
 					{renderedListSorter}
 					<EmptyStateMessage
-						title={tText('Hulp nodig bij het maken van opdrachten titel')}
-						message={tHtml('Hulp nodig bij het maken van opdrachten beschrijving')}
+						title={tText(
+							'assignment/views/assignment-edit___hulp-nodig-bij-het-maken-van-opdrachten-titel'
+						)}
+						message={tHtml(
+							'assignment/views/assignment-edit___hulp-nodig-bij-het-maken-van-opdrachten-beschrijving'
+						)}
 					/>
 				</>
 			);

@@ -214,7 +214,9 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 		if (!savedEmbedCode) {
 			console.error('No embed code to copy');
 			ToastService.danger(
-				tHtml('Het kopieren van de embed code naar je klembord is mislukt.')
+				tHtml(
+					'embed-code/components/embed-content___het-kopieren-van-de-embed-code-naar-je-klembord-is-mislukt'
+				)
 			);
 			return;
 		}

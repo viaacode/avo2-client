@@ -258,7 +258,7 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 					<Container mode="horizontal">
 						<Alert type="danger">
 							{tHtml(
-								'Dit fragment werd uitzonderlijk vervangen door Het Archief voor Onderwijs. Het zou kunnen dat de tijdscodes of de beschrijving niet meer goed passen. Meld dit aan de lesgever die het fragment aanmaakte. '
+								'embed-code/views/embed-code-detail___dit-fragment-werd-uitzonderlijk-vervangen-door-het-archief-voor-onderwijs-het-zou-kunnen-dat-de-tijdscodes-of-de-beschrijving-niet-meer-goed-passen-meld-dit-aan-de-lesgever-die-het-fragment-aanmaakte'
 							)}
 						</Alert>
 					</Container>

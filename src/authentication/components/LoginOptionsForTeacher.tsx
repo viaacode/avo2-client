@@ -54,13 +54,19 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 			<>
 				<hr />
 				<h3 className="c-h4 u-m-0">
-					{tText('Is jouw account al gekoppeld?')}
+					{tText(
+						'authentication/components/login-options-for-teacher___is-jouw-account-al-gekoppeld'
+					)}
 					<Tooltip position="bottom">
 						<TooltipTrigger>
 							<Icon className="a-info-icon" name={IconName.info} size="small" />
 						</TooltipTrigger>
 						<TooltipContent>
-							<span>{tHtml('Account tooltip content')}</span>
+							<span>
+								{tHtml(
+									'authentication/components/login-options-for-teacher___account-tooltip-content'
+								)}
+							</span>
 						</TooltipContent>
 					</Tooltip>
 				</h3>
