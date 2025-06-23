@@ -95,6 +95,10 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	const debouncedEmbedContentResize = debounce(() => onResize && onResize(), 50);
 	const embedContentRef = useResizeObserver(() => debouncedEmbedContentResize());
 
+	const cancelButtonLabel = savedEmbedCode
+		? tText('embed-code/components/embed-content___sluit')
+		: tText('embed-code/components/embed-content___annuleer');
+
 	const handleDescriptionToggle = useCallback(
 		(value: EmbedCodeDescriptionType) => {
 			if (!item) {
@@ -479,21 +483,9 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 						<ButtonToolbar>
 							<Button
 								type="secondary"
-								label={
-									savedEmbedCode
-										? tText('embed-code/components/embed-content___sluit')
-										: tText('embed-code/components/embed-content___annuleer')
-								}
-								title={
-									savedEmbedCode
-										? tText('embed-code/components/embed-content___sluit')
-										: tText('embed-code/components/embed-content___annuleer')
-								}
-								ariaLabel={
-									savedEmbedCode
-										? tText('embed-code/components/embed-content___sluit')
-										: tText('embed-code/components/embed-content___annuleer')
-								}
+								label={cancelButtonLabel}
+								title={cancelButtonLabel}
+								ariaLabel={cancelButtonLabel}
 								onClick={onClose}
 							/>
 						</ButtonToolbar>
