@@ -8,6 +8,7 @@ import {
 	ButtonGroup,
 	ButtonToolbar,
 	Container,
+	convertToHtml,
 	ExpandableContainer,
 	FormGroup,
 	IconName,
@@ -110,7 +111,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 					setDescription(item.content.description || '');
 					break;
 				case EmbedCodeDescriptionType.CUSTOM:
-					setDescription(item.content.description || '');
+					setDescription(convertToHtml(item.content.description));
 					break;
 				case EmbedCodeDescriptionType.NONE:
 					setDescription('');
