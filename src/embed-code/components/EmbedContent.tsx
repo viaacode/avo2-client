@@ -20,6 +20,7 @@ import {
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
+import { clsx } from 'clsx';
 import { debounce } from 'lodash-es';
 import React, {
 	type FC,
@@ -240,7 +241,9 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL && !!item?.content?.description) {
 			return (
 				<div
-					className={isDescriptionExpanded ? '' : 'expandable-container-closed'}
+					className={clsx('original-description', {
+						'expandable-container-closed': !isDescriptionExpanded,
+					})}
 					ref={embedContentRef as LegacyRef<HTMLDivElement>}
 				>
 					<ExpandableContainer
@@ -430,7 +433,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	}
 
 	return (
-		<>
+		<div className="embed-content-wrapper">
 			{!isSmartSchoolEmbedFlow && <Spacer margin="bottom-large">{contentDescription}</Spacer>}
 
 			<FormGroup label={tText('embed-code/components/embed-content___titel')}>
@@ -493,7 +496,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 				</ToolbarLeft>
 				{renderRightSideFooter()}
 			</Toolbar>
-		</>
+		</div>
 	);
 };
 

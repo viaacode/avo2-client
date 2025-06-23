@@ -1,19 +1,29 @@
-.bf-content {
-	height: unset;
-}
+@import "../../styles/settings/colors";
 
-div.expandable-container-closed {
-	// Only apply the gradient when there is no sibling div containing a div of type button with display: none
-	div[id^="react-collapsed-panel"]:has(+ div > div[type="button"]:not([style*="display: none"])) {
-		background: linear-gradient(black, rgba(255, 255, 255, 50));
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
+.embed-content-wrapper {
+	.bf-content {
+		height: unset;
 	}
-}
 
-.c-embed-code-content-toolbar {
-	.c-toolbar__right:has(> .u-truncate) {
-		flex-shrink: 1;
-		min-width: 0;
+	div.expandable-container-closed {
+		// Only apply the gradient when there is no sibling div containing a div of type button with display: none
+		div[id^="react-collapsed-panel"]:has(+ div > div[type="button"]:not([style*="display: none"])) {
+			background: linear-gradient(black, rgba(255, 255, 255, 50));
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+	}
+
+	.c-embed-code-content-toolbar {
+		.c-toolbar__right:has(> .u-truncate) {
+			flex-shrink: 1;
+			min-width: 0;
+		}
+	}
+
+	.original-description {
+		border: 1px solid $color-gray-200;
+		border-radius: 0.3rem;
+		padding: 1rem;
 	}
 }
