@@ -236,7 +236,11 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL && !!item?.content?.description) {
 			return (
 				<div
-					className={isDescriptionExpanded ? '' : 'expandable-container-closed'}
+					className={
+						isDescriptionExpanded
+							? 'original-description'
+							: 'original-description expandable-container-closed'
+					}
 					ref={embedContentRef as LegacyRef<HTMLDivElement>}
 				>
 					<ExpandableContainer
@@ -426,7 +430,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	}
 
 	return (
-		<>
+		<div className="embed-content-wrapper">
 			{!isSmartSchoolEmbedFlow && <Spacer margin="bottom-large">{contentDescription}</Spacer>}
 
 			<FormGroup label={tText('embed-code/components/embed-content___titel')}>
@@ -501,7 +505,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 				</ToolbarLeft>
 				{renderRightSideFooter()}
 			</Toolbar>
-		</>
+		</div>
 	);
 };
 

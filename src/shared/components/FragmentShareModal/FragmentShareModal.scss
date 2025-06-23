@@ -1,8 +1,13 @@
 @import "../../../styles/settings/colors";
 @import "../../../styles/settings/variables";
 
-.embed-selection {
+div.embed-selection.o-container-vertical {
 	padding: 0;
+
+	.prepend-logo {
+		margin-right: 1rem;
+		vertical-align: text-bottom;
+	}
 }
 
 .m-fragment-share-modal__tabs-wrapper {
@@ -12,7 +17,6 @@
 	background-color: $color-gray-50;
 
 	.c-tab-item.c-tab-item__active {
-		border-bottom: 0.2rem solid $color-gray-200;
 		padding: 1.5rem 0;
 		margin-right: 1.7rem;
 		margin-left: 1.7rem;
@@ -24,9 +28,4 @@
 		width: 1.8rem;
 		height: 1.8rem;
 	}
-}
-
-.prepend-logo {
-	margin-right: 1rem;
-	vertical-align: text-bottom;
 }
