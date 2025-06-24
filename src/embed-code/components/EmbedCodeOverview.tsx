@@ -143,6 +143,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 	};
 
 	const duplicateSelectedEmbedCode = async (selected: Partial<EmbedCode>) => {
+		// TODO: What with replaced fragments?
 		await duplicateEmbedCode({
 			title: selected.title,
 			contentType: selected.contentType,
@@ -206,6 +207,13 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 		setSelected(undefined);
 	};
 
+	const handleEditEmbedCode = async (embedCodeId: string) => {
+		const correctEmbed = await EmbedCodeService.getEmbedCode(embedCodeId);
+
+		setSelected(undefined);
+		setEmbedCodeForEditModal(correctEmbed);
+	};
+
 	// Lifecycle
 
 	useEffect(() => {
@@ -225,7 +233,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 		<EmbedCodeFilterTableCell
 			id={id}
 			data={data}
-			onNameClick={(data) => setEmbedCodeForEditModal(data)}
+			onNameClick={(data) => handleEditEmbedCode(data?.id as string)}
 			actions={(data) => {
 				const items = [
 					{
@@ -277,8 +285,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 
 								switch (action.toString() as EmbedCodeAction) {
 									case EmbedCodeAction.EDIT:
-										setSelected(undefined);
-										setEmbedCodeForEditModal(selected);
+										await handleEditEmbedCode(selected.id as string);
 										break;
 
 									case EmbedCodeAction.COPY_TO_CLIPBOARD:
