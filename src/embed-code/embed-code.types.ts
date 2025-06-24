@@ -19,6 +19,7 @@ export interface EmbedCode {
 	end: number | null;
 	createdAt: string; // ISO datetime string
 	updatedAt: string; // ISO datetime string
+	replacedBy?: Avo.Item.Item;
 }
 
 export enum EmbedCodeExternalWebsite {

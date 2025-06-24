@@ -1,12 +1,14 @@
 import { type Avo } from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 
+import { ItemsService } from '../admin/items/items.service';
 import { LTI_JWT_TOKEN_HEADER } from '../embed/embed.types';
 import { CustomError } from '../shared/helpers/custom-error';
 import { getEnv } from '../shared/helpers/env';
 import { ITEMS_PER_PAGE } from '../workspace/workspace.const';
 
 import { type EmbedCode } from './embed-code.types';
+import { showFragmentReplacementWarning } from './helpers/showFragmentReplacementWarning';
 
 export interface EmbedCodeFilters {
 	filterString?: string;
@@ -47,8 +49,16 @@ export class EmbedCodeService {
 				throw error;
 			}
 
-			const embedCode = await response.json();
-			return embedCode as EmbedCode;
+			const embedCode = (await response.json()) as EmbedCode;
+
+			if (showFragmentReplacementWarning(embedCode)) {
+				embedCode.replacedBy = await ItemsService.fetchItemByUuid(
+					embedCode.content.relations?.[0].object as string,
+					false
+				);
+			}
+
+			return embedCode;
 		} catch (err) {
 			const error = new CustomError('Failed to get embed code', err, {
 				url,
