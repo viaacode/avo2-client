@@ -9,7 +9,7 @@ export function createResource(
 	embedCode: EmbedCode,
 	commonUser: Avo.User.CommonUser
 ): MinimalClientEvent['resource'] {
-	const content = embedCode.content as Avo.Item.Item;
+	const content = (embedCode.replacedBy || embedCode?.content) as Avo.Item.Item;
 	return {
 		// User related
 		profileId: commonUser?.profileId || '',
@@ -17,7 +17,7 @@ export function createResource(
 		isPupil: isPupil(commonUser?.userGroup?.id),
 
 		// Content related
-		pidVideo: embedCode.contentId,
+		pidVideo: content.external_id,
 		organisation: content.organisation?.name,
 
 		// Embed code related

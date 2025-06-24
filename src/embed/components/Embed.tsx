@@ -2,7 +2,6 @@
 import AvoLogo from '@assets/images/avo-logo-button.svg';
 import { Alert, Column, Flex, Grid, Icon, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import type { ItemSchema } from '@viaa/avo2-types/types/item';
 import { noop } from 'lodash-es';
 import queryString from 'query-string';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -11,6 +10,7 @@ import { compose } from 'redux';
 
 import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
 import { createResource } from '../../embed-code/helpers/resourceForTrackEvents';
+import { showFragmentReplacementWarning } from '../../embed-code/helpers/showFragmentReplacementWarning';
 import { useGetEmbedCode } from '../../embed-code/hooks/useGetEmbedCode';
 import FlowPlayerWrapper from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { reorderDate } from '../../shared/helpers/formatters';
@@ -42,14 +42,10 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 		}
 	}, [urlInfo]);
 
-	const isReplaced = useMemo(() => !!embedCode?.content?.relations?.length, [embedCode]);
-
-	const content = useMemo(() => {
-		if (embedCode?.content?.relations?.length) {
-			return embedCode?.content?.relations?.[0]?.object_meta;
-		}
-		return embedCode?.content;
-	}, [embedCode]);
+	const content = useMemo(
+		() => (embedCode?.replacedBy || embedCode?.content) as Avo.Item.Item,
+		[embedCode]
+	);
 
 	const errorInfo = useMemo(() => {
 		let errorMessage: React.ReactNode | string = '';
@@ -83,7 +79,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 	}, [content, embedCode, isErrorEmbedCode]);
 
 	const triggerViewEvents = useCallback(async () => {
-		if (embedCode && embedCode.contentType === 'ITEM' && embedCode.contentId) {
+		if (embedCode && embedCode.contentType === 'ITEM') {
 			trackEvents(
 				{
 					object: embedCode?.id,
@@ -162,7 +158,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 	return (
 		<>
 			<div className="embed-wrapper">
-				{isReplaced && (
+				{showFragmentReplacementWarning(embedCode) && (
 					<Alert type="danger">
 						{tHtml(
 							'Dit fragment werd uitzonderlijk vervangen door Het Archief voor Onderwijs. Het zou kunnen dat de tijdscodes of de beschrijving niet meer goed passen. Meld dit aan de lesgever die het fragment aanmaakte.'
@@ -209,10 +205,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 										className="u-text-bold"
 										title={reorderDate(content?.issued, '/')}
 									>
-										{reorderDate(
-											(embedCode.content as ItemSchema)?.issued,
-											'/'
-										)}
+										{reorderDate(content?.issued, '/')}
 									</span>
 								</p>
 								<p className="c-meta-data">
