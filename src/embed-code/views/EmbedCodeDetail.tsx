@@ -37,6 +37,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { createResource } from '../helpers/resourceForTrackEvents';
+import { showFragmentReplacementWarning } from '../helpers/showFragmentReplacementWarning';
 import { useGetEmbedCode } from '../hooks/useGetEmbedCode';
 
 type EmbedCodeDetailProps = DefaultSecureRouteProps<{ id: string }>;
@@ -63,21 +64,17 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 		}
 	}, [commonUser, embedCode]);
 
-	const content = useMemo(() => {
-		if (embedCode?.content?.relations?.length) {
-			return embedCode?.content?.relations[0].object_meta;
-		}
-		return embedCode?.content;
-	}, [embedCode]);
-
-	const isReplaced = useMemo(() => !!embedCode?.content?.relations?.length, [embedCode]);
+	const content = useMemo(
+		() => (embedCode?.replacedBy || embedCode?.content) as Avo.Item.Item,
+		[embedCode]
+	);
 
 	const triggerViewEvents = useCallback(async () => {
-		if (!embedCode) {
+		if (!embedCode || !content) {
 			return null;
 		}
 
-		if (embedCode.contentType === 'ITEM' && embedCode.contentId) {
+		if (embedCode.contentType === 'ITEM') {
 			trackEvents(
 				{
 					object: embedCode.id,
@@ -95,11 +92,11 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 			await BookmarksViewsPlaysService.action(
 				'view',
 				'item',
-				embedCode.contentId,
+				content.external_id,
 				commonUser
 			).then(noop);
 		}
-	}, [commonUser, embedCode]);
+	}, [commonUser, embedCode, content]);
 
 	useEffect(() => {
 		if (embedCode) {
@@ -171,7 +168,7 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 	};
 
 	const handleClickGoToContentButton = () => {
-		if (!embedCode?.contentId) {
+		if (!embedCode || !content) {
 			return;
 		}
 
@@ -179,7 +176,7 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 
 		if (embedCode?.contentType === 'ITEM') {
 			path = generatePath(APP_PATH.ITEM_DETAIL.route, {
-				id: (embedCode.content as Avo.Item.Item).external_id.toString(),
+				id: content.external_id.toString(),
 			});
 		}
 
@@ -254,7 +251,7 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 					</Container>
 				</Navbar>
 
-				{isReplaced && (
+				{showFragmentReplacementWarning(embedCode) && (
 					<Container mode="horizontal">
 						<Alert type="danger">
 							{tHtml(
