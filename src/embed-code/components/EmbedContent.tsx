@@ -20,7 +20,6 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
-import { type ItemSchema } from '@viaa/avo2-types/types/item';
 import { clsx } from 'clsx';
 import { debounce } from 'lodash-es';
 import React, {
@@ -29,6 +28,7 @@ import React, {
 	type ReactNode,
 	useCallback,
 	useEffect,
+	useMemo,
 	useState,
 } from 'react';
 import { compose } from 'redux';
@@ -53,6 +53,7 @@ import {
 } from '../embed-code.types';
 import { toEmbedCodeIFrame } from '../helpers/links';
 import { createResource } from '../helpers/resourceForTrackEvents';
+import { showFragmentReplacementWarning } from '../helpers/showFragmentReplacementWarning';
 import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 
 import './EmbedContent.scss';
@@ -74,9 +75,8 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	commonUser,
 	isSmartSchoolEmbedFlow,
 }) => {
-	const fragmentDuration = item?.content
-		? toSeconds((item.content as ItemSchema)?.duration) || 0
-		: 0;
+	const fragmentDuration =
+		toSeconds(((item?.replacedBy || item?.content) as Avo.Item.Item)?.duration) || 0;
 
 	const [title, setTitle] = useState<string | undefined>();
 
@@ -97,21 +97,23 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	const debouncedEmbedContentResize = debounce(() => onResize && onResize(), 50);
 	const embedContentRef = useResizeObserver(() => debouncedEmbedContentResize());
 
+	const content = useMemo(() => (item?.replacedBy || item?.content) as Avo.Item.Item, [item]);
+
 	const cancelButtonLabel = savedEmbedCode
 		? tText('embed-code/components/embed-content___sluit')
 		: tText('embed-code/components/embed-content___annuleer');
 
 	const handleDescriptionToggle = useCallback(
 		(value: EmbedCodeDescriptionType) => {
-			if (!item) {
+			if (!content) {
 				return;
 			}
 			switch (value) {
 				case EmbedCodeDescriptionType.ORIGINAL:
-					setDescription(item.content.description || '');
+					setDescription(content?.description || '');
 					break;
 				case EmbedCodeDescriptionType.CUSTOM:
-					setDescription(convertToHtml(item.content.description));
+					setDescription(convertToHtml(content?.description));
 					break;
 				case EmbedCodeDescriptionType.NONE:
 					setDescription('');
@@ -120,7 +122,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 			setDescriptionType(value);
 			setIsDescriptionExpanded(false);
 		},
-		[item]
+		[content]
 	);
 
 	useEffect(() => {
@@ -140,19 +142,20 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	}, [debouncedEmbedContentResize, description, descriptionType]);
 
 	const mapValuesToEmbedCode = (): EmbedCode => {
-		if (!item) {
+		if (!item || !content) {
 			return {} as EmbedCode;
 		}
 		let newDescription = '';
 
 		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL) {
-			newDescription = item.content.description || '';
+			newDescription = content.description || '';
 		} else if (descriptionType === EmbedCodeDescriptionType.CUSTOM) {
 			newDescription = description || '';
 		}
 
 		return {
 			...item,
+			contentId: content.external_id,
 			title: title || '',
 			start: fragmentStartTime,
 			end: fragmentEndTime,
@@ -238,8 +241,20 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 		);
 	};
 
+	const renderReplacementWarning = () => {
+		return (
+			showFragmentReplacementWarning(item) && (
+				<Alert type="danger" className="u-m-b-l">
+					{tHtml(
+						'Dit fragment werd uitzonderlijk vervangen door Het Archief voor Onderwijs. Het zou kunnen dat de tijdscodes of de beschrijving niet meer goed passen.'
+					)}
+				</Alert>
+			)
+		);
+	};
+
 	const renderDescription = () => {
-		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL && !!item?.content?.description) {
+		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL && !!content?.description) {
 			return (
 				<div
 					className={clsx('original-description', {
@@ -252,7 +267,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 						defaultExpanded={isDescriptionExpanded}
 						onChange={setIsDescriptionExpanded}
 					>
-						<TextWithTimestamps content={item.content.description || ''} />
+						<TextWithTimestamps content={content.description || ''} />
 					</ExpandableContainer>
 				</div>
 			);
@@ -435,6 +450,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 
 	return (
 		<div className="embed-content-wrapper">
+			{renderReplacementWarning()}
 			{!isSmartSchoolEmbedFlow && <Spacer margin="bottom-large">{contentDescription}</Spacer>}
 
 			<FormGroup label={tText('embed-code/components/embed-content___titel')}>
@@ -445,7 +461,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 				<FormGroup label={tText('embed-code/components/embed-content___inhoud')}>
 					<div className="u-spacer-bottom">
 						<ItemVideoDescription
-							itemMetaData={item.content as ItemSchema}
+							itemMetaData={content}
 							showMetadata={false}
 							enableMetadataLink={false}
 							showTitle={false}
