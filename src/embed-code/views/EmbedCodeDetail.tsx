@@ -121,19 +121,20 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 			return null;
 		}
 
+		const content = embedCode.content as Avo.Item.Item;
 		const contentLabel = embedCode.contentType;
 
 		const [start, end] = getValidStartAndEnd(
 			embedCode.start,
 			embedCode.end,
-			toSeconds((embedCode.content as Avo.Item.Item)?.duration || 0)
+			toSeconds(content.duration || 0)
 		);
 
 		switch (contentLabel) {
 			case 'ITEM':
 				return (
 					<ItemVideoDescription
-						itemMetaData={embedCode.content as Avo.Item.Item}
+						itemMetaData={content}
 						showMetadata={true}
 						enableMetadataLink={false}
 						showDescription={embedCode.descriptionType !== 'NONE'}

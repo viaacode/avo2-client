@@ -78,7 +78,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 		if (embedCode && embedCode.contentType === 'ITEM') {
 			trackEvents(
 				{
-					object: embedCode?.id,
+					object: embedCode.id,
 					object_type: 'embed_code',
 					action: 'view',
 					resource: {
@@ -103,7 +103,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 		}
 		trackEvents(
 			{
-				object: embedCode?.id,
+				object: embedCode.id,
 				object_type: 'embed_code',
 				action: 'play',
 				resource: {
@@ -121,7 +121,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 		}
 		trackEvents(
 			{
-				object: embedCode?.id,
+				object: embedCode.id,
 				object_type: 'embed_code',
 				action: 'request',
 				resource: {
