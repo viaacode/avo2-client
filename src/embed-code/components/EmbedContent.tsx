@@ -461,7 +461,10 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 				<FormGroup label={tText('embed-code/components/embed-content___inhoud')}>
 					<div className="u-spacer-bottom">
 						<ItemVideoDescription
-							itemMetaData={content}
+							itemMetaData={{
+								...content,
+								thumbnail_path: item.thumbnailPath,
+							}}
 							showMetadata={false}
 							enableMetadataLink={false}
 							showTitle={false}

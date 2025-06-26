@@ -36,7 +36,7 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 			alt="thumbnail"
 			category={(content as Avo.Item.Item)?.type?.label}
 			className="m-embed-code-cell-thumbnail"
-			src={content?.thumbnail_path || undefined}
+			src={data?.thumbnailPath || undefined}
 			showCategoryIcon
 		/>
 	);
