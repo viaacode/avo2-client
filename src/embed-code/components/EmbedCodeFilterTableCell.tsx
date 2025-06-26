@@ -31,12 +31,12 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 		return <span title={formatTimestamp(date)}>{formatDate(date)}</span>;
 	};
 
-	const renderThumbnail = ({ content }: Partial<EmbedCode>) => (
+	const renderThumbnail = ({ content, thumbnailPath }: Partial<EmbedCode>) => (
 		<Thumbnail
 			alt="thumbnail"
 			category={(content as Avo.Item.Item)?.type?.label}
 			className="m-embed-code-cell-thumbnail"
-			src={data?.thumbnailPath || undefined}
+			src={thumbnailPath}
 			showCategoryIcon
 		/>
 	);
