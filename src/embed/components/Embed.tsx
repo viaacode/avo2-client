@@ -10,7 +10,6 @@ import { compose } from 'redux';
 
 import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
 import { createResource } from '../../embed-code/helpers/resourceForTrackEvents';
-import { showFragmentReplacementWarning } from '../../embed-code/helpers/showFragmentReplacementWarning';
 import { useGetEmbedCode } from '../../embed-code/hooks/useGetEmbedCode';
 import FlowPlayerWrapper from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { reorderDate } from '../../shared/helpers/formatters';
@@ -42,10 +41,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 		}
 	}, [urlInfo]);
 
-	const content = useMemo(
-		() => (embedCode?.replacedBy || embedCode?.content) as Avo.Item.Item,
-		[embedCode]
-	);
+	const content = useMemo(() => embedCode?.content as Avo.Item.Item, [embedCode]);
 
 	const errorInfo = useMemo(() => {
 		let errorMessage: React.ReactNode | string = '';
@@ -158,7 +154,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 	return (
 		<>
 			<div className="embed-wrapper">
-				{showFragmentReplacementWarning(embedCode) && (
+				{embedCode.contentIsReplaced && (
 					<Alert type="danger">
 						{tHtml(
 							'Dit fragment werd uitzonderlijk vervangen door Het Archief voor Onderwijs. Het zou kunnen dat de tijdscodes of de beschrijving niet meer goed passen. Meld dit aan de lesgever die het fragment aanmaakte.'
@@ -168,7 +164,10 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 				<div className="c-video-player">
 					<FlowPlayerWrapper
 						poster={getFlowPlayerPoster(undefined, content)}
-						item={content}
+						item={{
+							...content,
+							thumbnail_path: embedCode?.thumbnailPath,
+						}}
 						canPlay={true}
 						placeholder={false}
 						cuePointsLabel={{ start: embedCode.start, end: embedCode.end }}

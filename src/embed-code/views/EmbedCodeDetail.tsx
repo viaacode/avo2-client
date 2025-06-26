@@ -37,7 +37,6 @@ import useTranslation from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { createResource } from '../helpers/resourceForTrackEvents';
-import { showFragmentReplacementWarning } from '../helpers/showFragmentReplacementWarning';
 import { useGetEmbedCode } from '../hooks/useGetEmbedCode';
 
 type EmbedCodeDetailProps = DefaultSecureRouteProps<{ id: string }>;
@@ -64,13 +63,8 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 		}
 	}, [commonUser, embedCode]);
 
-	const content = useMemo(
-		() => (embedCode?.replacedBy || embedCode?.content) as Avo.Item.Item,
-		[embedCode]
-	);
-
 	const triggerViewEvents = useCallback(async () => {
-		if (!embedCode || !content) {
+		if (!embedCode?.content) {
 			return null;
 		}
 
@@ -92,11 +86,11 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 			await BookmarksViewsPlaysService.action(
 				'view',
 				'item',
-				content.external_id,
+				(embedCode.content as Avo.Item.Item).external_id,
 				commonUser
 			).then(noop);
 		}
-	}, [commonUser, embedCode, content]);
+	}, [commonUser, embedCode]);
 
 	useEffect(() => {
 		if (embedCode) {
@@ -123,7 +117,7 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 
 	// Render methods
 	const renderContent = () => {
-		if (!embedCode || !content) {
+		if (!embedCode?.content) {
 			return null;
 		}
 
@@ -132,14 +126,14 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 		const [start, end] = getValidStartAndEnd(
 			embedCode.start,
 			embedCode.end,
-			toSeconds((content as Avo.Item.Item)?.duration || 0)
+			toSeconds((embedCode.content as Avo.Item.Item)?.duration || 0)
 		);
 
 		switch (contentLabel) {
 			case 'ITEM':
 				return (
 					<ItemVideoDescription
-						itemMetaData={content as Avo.Item.Item}
+						itemMetaData={embedCode.content as Avo.Item.Item}
 						showMetadata={true}
 						enableMetadataLink={false}
 						showDescription={embedCode.descriptionType !== 'NONE'}
@@ -168,7 +162,7 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 	};
 
 	const handleClickGoToContentButton = () => {
-		if (!embedCode || !content) {
+		if (!embedCode?.content) {
 			return;
 		}
 
@@ -176,7 +170,7 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 
 		if (embedCode?.contentType === 'ITEM') {
 			path = generatePath(APP_PATH.ITEM_DETAIL.route, {
-				id: content.external_id.toString(),
+				id: (embedCode.content as Avo.Item.Item).external_id.toString(),
 			});
 		}
 
@@ -251,7 +245,7 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 					</Container>
 				</Navbar>
 
-				{showFragmentReplacementWarning(embedCode) && (
+				{embedCode.contentIsReplaced && (
 					<Container mode="horizontal">
 						<Alert type="danger">
 							{tHtml(

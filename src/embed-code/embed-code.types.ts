@@ -20,7 +20,7 @@ export interface EmbedCode {
 	createdAt: string; // ISO datetime string
 	updatedAt: string; // ISO datetime string
 	thumbnailPath: string;
-	replacedBy?: Avo.Item.Item;
+	contentIsReplaced: boolean;
 }
 
 export enum EmbedCodeExternalWebsite {

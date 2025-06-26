@@ -28,7 +28,6 @@ import React, {
 	type ReactNode,
 	useCallback,
 	useEffect,
-	useMemo,
 	useState,
 } from 'react';
 import { compose } from 'redux';
@@ -53,7 +52,6 @@ import {
 } from '../embed-code.types';
 import { toEmbedCodeIFrame } from '../helpers/links';
 import { createResource } from '../helpers/resourceForTrackEvents';
-import { showFragmentReplacementWarning } from '../helpers/showFragmentReplacementWarning';
 import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 
 import './EmbedContent.scss';
@@ -75,8 +73,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	commonUser,
 	isSmartSchoolEmbedFlow,
 }) => {
-	const fragmentDuration =
-		toSeconds(((item?.replacedBy || item?.content) as Avo.Item.Item)?.duration) || 0;
+	const fragmentDuration = toSeconds((item?.content as Avo.Item.Item)?.duration) || 0;
 
 	const [title, setTitle] = useState<string | undefined>();
 
@@ -97,23 +94,21 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	const debouncedEmbedContentResize = debounce(() => onResize && onResize(), 50);
 	const embedContentRef = useResizeObserver(() => debouncedEmbedContentResize());
 
-	const content = useMemo(() => (item?.replacedBy || item?.content) as Avo.Item.Item, [item]);
-
 	const cancelButtonLabel = savedEmbedCode
 		? tText('embed-code/components/embed-content___sluit')
 		: tText('embed-code/components/embed-content___annuleer');
 
 	const handleDescriptionToggle = useCallback(
 		(value: EmbedCodeDescriptionType) => {
-			if (!content) {
+			if (!item?.content) {
 				return;
 			}
 			switch (value) {
 				case EmbedCodeDescriptionType.ORIGINAL:
-					setDescription(content?.description || '');
+					setDescription(item.content.description || '');
 					break;
 				case EmbedCodeDescriptionType.CUSTOM:
-					setDescription(convertToHtml(content?.description));
+					setDescription(convertToHtml(item.content.description));
 					break;
 				case EmbedCodeDescriptionType.NONE:
 					setDescription('');
@@ -122,7 +117,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 			setDescriptionType(value);
 			setIsDescriptionExpanded(false);
 		},
-		[content]
+		[item]
 	);
 
 	useEffect(() => {
@@ -142,20 +137,20 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	}, [debouncedEmbedContentResize, description, descriptionType]);
 
 	const mapValuesToEmbedCode = (): EmbedCode => {
-		if (!item || !content) {
+		if (!item?.content) {
 			return {} as EmbedCode;
 		}
 		let newDescription = '';
 
 		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL) {
-			newDescription = content.description || '';
+			newDescription = item.content.description || '';
 		} else if (descriptionType === EmbedCodeDescriptionType.CUSTOM) {
 			newDescription = description || '';
 		}
 
 		return {
 			...item,
-			contentId: content.external_id,
+			contentId: (item.content as Avo.Item.Item).external_id,
 			title: title || '',
 			start: fragmentStartTime,
 			end: fragmentEndTime,
@@ -243,7 +238,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 
 	const renderReplacementWarning = () => {
 		return (
-			showFragmentReplacementWarning(item) && (
+			item?.contentIsReplaced && (
 				<Alert type="danger" className="u-m-b-l">
 					{tHtml(
 						'Dit fragment werd uitzonderlijk vervangen door Het Archief voor Onderwijs. Het zou kunnen dat de tijdscodes of de beschrijving niet meer goed passen.'
@@ -254,7 +249,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	};
 
 	const renderDescription = () => {
-		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL && !!content?.description) {
+		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL && !!item?.content?.description) {
 			return (
 				<div
 					className={clsx('original-description', {
@@ -267,7 +262,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 						defaultExpanded={isDescriptionExpanded}
 						onChange={setIsDescriptionExpanded}
 					>
-						<TextWithTimestamps content={content.description || ''} />
+						<TextWithTimestamps content={item.content.description || ''} />
 					</ExpandableContainer>
 				</div>
 			);
@@ -462,7 +457,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 					<div className="u-spacer-bottom">
 						<ItemVideoDescription
 							itemMetaData={{
-								...content,
+								...(item.content as Avo.Item.Item),
 								thumbnail_path: item.thumbnailPath,
 							}}
 							showMetadata={false}
