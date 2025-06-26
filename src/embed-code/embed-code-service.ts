@@ -47,8 +47,7 @@ export class EmbedCodeService {
 				throw error;
 			}
 
-			const embedCode = await response.json();
-			return embedCode as EmbedCode;
+			return (await response.json()) as EmbedCode;
 		} catch (err) {
 			const error = new CustomError('Failed to get embed code', err, {
 				url,

@@ -63,21 +63,12 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 		}
 	}, [commonUser, embedCode]);
 
-	const content = useMemo(() => {
-		if (embedCode?.content?.relations?.length) {
-			return embedCode?.content?.relations[0].object_meta;
-		}
-		return embedCode?.content;
-	}, [embedCode]);
-
-	const isReplaced = useMemo(() => !!embedCode?.content?.relations?.length, [embedCode]);
-
 	const triggerViewEvents = useCallback(async () => {
-		if (!embedCode) {
+		if (!embedCode?.content) {
 			return null;
 		}
 
-		if (embedCode.contentType === 'ITEM' && embedCode.contentId) {
+		if (embedCode.contentType === 'ITEM') {
 			trackEvents(
 				{
 					object: embedCode.id,
@@ -95,7 +86,7 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 			await BookmarksViewsPlaysService.action(
 				'view',
 				'item',
-				embedCode.contentId,
+				(embedCode.content as Avo.Item.Item).external_id,
 				commonUser
 			).then(noop);
 		}
@@ -126,23 +117,24 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 
 	// Render methods
 	const renderContent = () => {
-		if (!embedCode || !content) {
+		if (!embedCode?.content) {
 			return null;
 		}
 
+		const content = embedCode.content as Avo.Item.Item;
 		const contentLabel = embedCode.contentType;
 
 		const [start, end] = getValidStartAndEnd(
 			embedCode.start,
 			embedCode.end,
-			toSeconds((content as Avo.Item.Item)?.duration || 0)
+			toSeconds(content.duration || 0)
 		);
 
 		switch (contentLabel) {
 			case 'ITEM':
 				return (
 					<ItemVideoDescription
-						itemMetaData={content as Avo.Item.Item}
+						itemMetaData={content}
 						showMetadata={true}
 						enableMetadataLink={false}
 						showDescription={embedCode.descriptionType !== 'NONE'}
@@ -171,7 +163,7 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 	};
 
 	const handleClickGoToContentButton = () => {
-		if (!embedCode?.contentId) {
+		if (!embedCode?.content) {
 			return;
 		}
 
@@ -254,7 +246,7 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 					</Container>
 				</Navbar>
 
-				{isReplaced && (
+				{embedCode.contentIsReplaced && (
 					<Container mode="horizontal">
 						<Alert type="danger">
 							{tHtml(
