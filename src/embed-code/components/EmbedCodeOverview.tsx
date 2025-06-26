@@ -143,26 +143,30 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 	};
 
 	const duplicateSelectedEmbedCode = async (selected: Partial<EmbedCode>) => {
-		// TODO: What with replaced fragments?
-		await duplicateEmbedCode({
-			title: selected.title,
-			contentType: selected.contentType,
-			contentId: selected.contentId,
-			descriptionType: selected.descriptionType,
-			description: selected.description,
-			start: selected.start,
-			end: selected.end,
-			externalWebsite: selected.externalWebsite,
-		} as EmbedCode);
+		try {
+			await duplicateEmbedCode({
+				title: selected.title,
+				contentType: selected.contentType,
+				contentId: (selected.content as Avo.Item.Item).external_id,
+				descriptionType: selected.descriptionType,
+				description: selected.description,
+				start: selected.start,
+				end: selected.end,
+				externalWebsite: selected.externalWebsite,
+			} as EmbedCode);
 
-		ToastService.success(
-			tHtml(
-				'embed-code/components/embed-code-overview___het-fragment-werd-succesvol-gedupliceerd'
-			)
-		);
+			ToastService.success(
+				tHtml(
+					'embed-code/components/embed-code-overview___het-fragment-werd-succesvol-gedupliceerd'
+				)
+			);
 
-		setSelected(undefined);
-		await reloadEmbedCodes();
+			setSelected(undefined);
+			await reloadEmbedCodes();
+		} catch (err) {
+			console.error(err);
+			ToastService.danger(tText('fragment dupliceren mislukt'));
+		}
 	};
 
 	const changeEmbedCode = async (data: EmbedCode) => {
@@ -334,7 +338,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 
 									case EmbedCodeAction.SHOW_ORIGINAL:
 										navigate(history, APP_PATH.ITEM_DETAIL.route, {
-											id: selected.contentId,
+											id: (selected.content as Avo.Item.Item).external_id,
 										});
 										break;
 
