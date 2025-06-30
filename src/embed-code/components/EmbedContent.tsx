@@ -23,14 +23,7 @@ import type { Avo } from '@viaa/avo2-types';
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
 import { clsx } from 'clsx';
 import { debounce } from 'lodash-es';
-import React, {
-	type FC,
-	type LegacyRef,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type LegacyRef, type ReactNode, useEffect, useState } from 'react';
 import { compose } from 'redux';
 
 import ItemVideoDescription from '../../item/components/ItemVideoDescription';
@@ -53,6 +46,7 @@ import {
 } from '../embed-code.types';
 import { toEmbedCodeIFrame } from '../helpers/links';
 import { createResource } from '../helpers/resourceForTrackEvents';
+import { getValidationErrors } from '../helpers/validationRules';
 import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 
 import './EmbedContent.scss';
@@ -88,8 +82,8 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	const [descriptionType, setDescriptionType] = useState<EmbedCodeDescriptionType>(
 		EmbedCodeDescriptionType.ORIGINAL
 	);
-	const [description, setDescription] = useState<string>('');
 	const [isDescriptionExpanded, setIsDescriptionExpanded] = useState<boolean>(false);
+	const [customDescription, setCustomDescription] = useState<string>('');
 	const [savedEmbedCode, setSavedEmbedCode] = useState<EmbedCode | null>(null);
 
 	const { mutateAsync: createEmbedCode, isLoading: isPublishing } = useCreateEmbedCode();
@@ -101,43 +95,22 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 		? tText('embed-code/components/embed-content___sluit')
 		: tText('embed-code/components/embed-content___annuleer');
 
-	const handleDescriptionToggle = useCallback(
-		(value: EmbedCodeDescriptionType) => {
-			if (!item) {
-				return;
-			}
-			switch (value) {
-				case EmbedCodeDescriptionType.ORIGINAL:
-					setDescription(item.content.description || '');
-					break;
-				case EmbedCodeDescriptionType.CUSTOM:
-					setDescription(convertToHtml(item.content.description));
-					break;
-				case EmbedCodeDescriptionType.NONE:
-					setDescription('');
-					break;
-			}
-			setDescriptionType(value);
-			setIsDescriptionExpanded(false);
-		},
-		[item]
-	);
-
 	useEffect(() => {
 		if (item) {
 			setTitle(item.title || '');
 			setFragmentStartTime(item.start || 0);
 			setFragmentEndTime(item.end || 0);
 
-			handleDescriptionToggle(item.descriptionType);
-			setDescription(item.description || '');
+			setDescriptionType(item.descriptionType);
+			setCustomDescription(convertToHtml(item.description || item.content.description || ''));
+
 			setSavedEmbedCode(null);
 		}
-	}, [item, handleDescriptionToggle]);
+	}, [item]);
 
 	useEffect(() => {
 		debouncedEmbedContentResize();
-	}, [debouncedEmbedContentResize, description, descriptionType]);
+	}, [debouncedEmbedContentResize, isDescriptionExpanded, descriptionType]);
 
 	const mapValuesToEmbedCode = (): EmbedCode => {
 		if (!item) {
@@ -148,7 +121,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL) {
 			newDescription = item.content.description || '';
 		} else if (descriptionType === EmbedCodeDescriptionType.CUSTOM) {
-			newDescription = description || '';
+			newDescription = customDescription || '';
 		}
 
 		return {
@@ -161,13 +134,31 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 		};
 	};
 
+	const handleValidation = () => {
+		const value = mapValuesToEmbedCode();
+
+		// validate collection before update
+		const validationErrors = getValidationErrors(value);
+
+		// display validation errors
+		if (validationErrors.length) {
+			ToastService.danger(validationErrors);
+			return null;
+		}
+		return value;
+	};
+
 	const handleSave = () => {
-		onSave && onSave(mapValuesToEmbedCode());
+		const embedToSave = handleValidation();
+		embedToSave && onSave && onSave(embedToSave);
 	};
 
 	const handleCreate = async () => {
 		try {
-			const embedToSave = mapValuesToEmbedCode();
+			const embedToSave = handleValidation();
+			if (!embedToSave) {
+				return;
+			}
 			const createdEmbedCode = await createEmbedCode(embedToSave);
 
 			trackEvents(
@@ -284,9 +275,9 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 				<RichTextEditorWithInternalState
 					controls={controls}
 					enabledHeadings={['h3', 'h4', 'normal']}
-					value={description || ''}
+					value={customDescription || ''}
 					disabled={!!savedEmbedCode}
-					onChange={setDescription}
+					onChange={setCustomDescription}
 				/>
 			);
 		}
@@ -319,7 +310,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 							'embed-code/components/embed-content___originele-beschrijving'
 						)}
 						active={descriptionType === EmbedCodeDescriptionType.ORIGINAL}
-						onClick={() => handleDescriptionToggle(EmbedCodeDescriptionType.ORIGINAL)}
+						onClick={() => setDescriptionType(EmbedCodeDescriptionType.ORIGINAL)}
 					/>
 					<Button
 						type="secondary"
@@ -327,7 +318,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 						disabled={!!savedEmbedCode}
 						label={tText('embed-code/components/embed-content___eigen-beschrijving')}
 						active={descriptionType === EmbedCodeDescriptionType.CUSTOM}
-						onClick={() => handleDescriptionToggle(EmbedCodeDescriptionType.CUSTOM)}
+						onClick={() => setDescriptionType(EmbedCodeDescriptionType.CUSTOM)}
 					/>
 					<Button
 						type="secondary"
@@ -335,7 +326,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 						disabled={!!savedEmbedCode}
 						label={tText('embed-code/components/embed-content___geen-beschrijving')}
 						active={descriptionType === EmbedCodeDescriptionType.NONE}
-						onClick={() => handleDescriptionToggle(EmbedCodeDescriptionType.NONE)}
+						onClick={() => setDescriptionType(EmbedCodeDescriptionType.NONE)}
 					/>
 				</ButtonGroup>
 				<Spacer margin="top">{renderDescription()}</Spacer>
@@ -435,14 +426,21 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 
 	return (
 		<div className="embed-content-wrapper">
-			{!isSmartSchoolEmbedFlow && <Spacer margin="bottom-large">{contentDescription}</Spacer>}
+			<Container mode="vertical" bordered={true} className="u-p-t-0">
+				{!isSmartSchoolEmbedFlow && (
+					<Spacer margin="bottom-large">{contentDescription}</Spacer>
+				)}
 
-			<FormGroup label={tText('embed-code/components/embed-content___titel')}>
-				<TextInput value={title} onChange={setTitle} disabled={!!savedEmbedCode} />
-			</FormGroup>
+				<Spacer margin={['bottom']}>
+					<FormGroup
+						required
+						label={tText('embed-code/components/embed-content___titel')}
+					>
+						<TextInput value={title} onChange={setTitle} disabled={!!savedEmbedCode} />
+					</FormGroup>
+				</Spacer>
 
-			<Container mode="vertical" bordered={true}>
-				<FormGroup label={tText('embed-code/components/embed-content___inhoud')}>
+				<FormGroup label={tText('embed-code/components/embed-content___inhoud')} required>
 					<div className="u-spacer-bottom">
 						<ItemVideoDescription
 							itemMetaData={{
