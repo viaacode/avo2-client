@@ -159,6 +159,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 				contentType: 'ITEM',
 				contentId: item.external_id,
 				content: item,
+				thumbnailPath: item.thumbnail_path,
 				descriptionType:
 					embedDropdownSelection === EmbedCodeExternalWebsite.BOOKWIDGETS
 						? EmbedCodeDescriptionType.NONE
