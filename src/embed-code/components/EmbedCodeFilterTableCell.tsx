@@ -1,5 +1,5 @@
 import { IconName, MetaData, MetaDataItem, Thumbnail } from '@viaa/avo2-components';
-import { type ItemSchema } from '@viaa/avo2-types/types/item';
+import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode } from 'react';
 
 import {
@@ -31,12 +31,12 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 		return <span title={formatTimestamp(date)}>{formatDate(date)}</span>;
 	};
 
-	const renderThumbnail = ({ content }: Partial<EmbedCode>) => (
+	const renderThumbnail = ({ content, thumbnailPath }: Partial<EmbedCode>) => (
 		<Thumbnail
 			alt="thumbnail"
-			category={(content as ItemSchema)?.type?.label}
+			category={(content as Avo.Item.Item)?.type?.label}
 			className="m-embed-code-cell-thumbnail"
-			src={data?.thumbnailPath || undefined}
+			src={thumbnailPath}
 			showCategoryIcon
 		/>
 	);
@@ -59,7 +59,7 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 					</MetaDataItem>
 					<MetaDataItem
 						icon={IconName.eye}
-						label={String((content as ItemSchema)?.item_counts?.views || 0)}
+						label={String((content as Avo.Item.Item)?.item_counts?.views || 0)}
 					/>
 				</MetaData>
 			</div>

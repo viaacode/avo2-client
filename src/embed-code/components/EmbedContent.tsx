@@ -20,7 +20,6 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
-import { type ItemSchema } from '@viaa/avo2-types/types/item';
 import { clsx } from 'clsx';
 import { debounce } from 'lodash-es';
 import React, { type FC, type LegacyRef, type ReactNode, useEffect, useState } from 'react';
@@ -68,9 +67,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	commonUser,
 	isSmartSchoolEmbedFlow,
 }) => {
-	const fragmentDuration = item?.content
-		? toSeconds((item.content as ItemSchema)?.duration) || 0
-		: 0;
+	const fragmentDuration = toSeconds((item?.content as Avo.Item.Item)?.duration) || 0;
 
 	const [title, setTitle] = useState<string | undefined>();
 
@@ -113,7 +110,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	}, [debouncedEmbedContentResize, isDescriptionExpanded, descriptionType]);
 
 	const mapValuesToEmbedCode = (): EmbedCode => {
-		if (!item) {
+		if (!item?.content) {
 			return {} as EmbedCode;
 		}
 		let newDescription = '';
@@ -126,6 +123,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 
 		return {
 			...item,
+			contentId: (item.content as Avo.Item.Item).external_id,
 			title: title || '',
 			start: fragmentStartTime,
 			end: fragmentEndTime,
@@ -137,7 +135,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	const handleValidation = () => {
 		const value = mapValuesToEmbedCode();
 
-		// validate collection before update
+		// validate embed before update
 		const validationErrors = getValidationErrors(value);
 
 		// display validation errors
@@ -226,6 +224,18 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 		copyToClipboard(toEmbedCodeIFrame(savedEmbedCode.id));
 		ToastService.success(
 			tHtml('embed-code/components/embed-content___de-code-is-naar-je-klembord-gekopieerd')
+		);
+	};
+
+	const renderReplacementWarning = () => {
+		return (
+			item?.contentIsReplaced && (
+				<Alert type="danger" className="u-m-b-l">
+					{tHtml(
+						'Dit fragment werd uitzonderlijk vervangen door Het Archief voor Onderwijs. Het zou kunnen dat de tijdscodes of de beschrijving niet meer goed passen.'
+					)}
+				</Alert>
+			)
 		);
 	};
 
@@ -427,6 +437,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	return (
 		<div className="embed-content-wrapper">
 			<Container mode="vertical" bordered={true} className="u-p-t-0">
+				{renderReplacementWarning()}
 				{!isSmartSchoolEmbedFlow && (
 					<Spacer margin="bottom-large">{contentDescription}</Spacer>
 				)}
