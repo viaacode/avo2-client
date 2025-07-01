@@ -488,7 +488,7 @@ export function renderAssignmentCellText(
 
 		case 'subjects': {
 			const groupedLoms = groupLomLinks(assignment.loms);
-			return groupedLoms?.subject?.join(', ') || '';
+			return groupedLoms?.subject?.map((item) => item.label).join(', ') || '';
 		}
 
 		case 'education_level_id': {
@@ -498,12 +498,12 @@ export function renderAssignmentCellText(
 
 		case 'education_levels': {
 			const groupedLoms = groupLomLinks(assignment.loms);
-			return groupedLoms.educationLevel?.join(', ') || '';
+			return groupedLoms.educationLevel?.map((item) => item.label).join(', ') || '';
 		}
 
 		case 'education_degrees': {
 			const groupedLoms = groupLomLinks(assignment.loms);
-			return groupedLoms.educationDegree?.join(', ') || '';
+			return groupedLoms.educationDegree?.map((item) => item.label).join(', ') || '';
 		}
 
 		case 'is_public':
