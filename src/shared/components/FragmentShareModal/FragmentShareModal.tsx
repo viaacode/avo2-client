@@ -14,6 +14,7 @@ import {
 	Tabs,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
 import { isNil } from 'lodash-es';
 import React, { createRef, type FC, type ReactNode, useEffect, useState } from 'react';
 import { compose } from 'redux';
@@ -159,6 +160,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 				contentType: 'ITEM',
 				contentId: item.external_id,
 				content: item,
+				thumbnailPath: item.thumbnail_path,
 				descriptionType:
 					embedDropdownSelection === EmbedCodeExternalWebsite.BOOKWIDGETS
 						? EmbedCodeDescriptionType.NONE
@@ -169,6 +171,7 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 						: item.description,
 				start: 0,
 				end: toSeconds(item.duration),
+				thumbnailPath: item.thumbnail_path,
 			} as EmbedCode;
 		}
 
@@ -291,39 +294,37 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 		return (
 			<>
 				{!isSmartSchoolEmbedFlow && (
-					<Spacer margin="bottom-large">
-						<Container
-							mode="vertical"
-							bordered={!!embedDropdownSelection}
-							className="embed-selection"
-						>
-							<Spacer margin="bottom">
-								<BlockHeading type="h4">
-									{tHtml(
-										'shared/components/fragment-share-modal/fragment-share-modal___fragment-insluiten-in'
-									)}
-								</BlockHeading>
-							</Spacer>
-							<Spacer margin="bottom">
-								<Dropdown
-									label={getEmbedDropdownLabel() as string} // TODO allow ReactNode in avo2-components
-									onOpen={handleRightsButtonClicked}
-									onClose={handleRightsButtonClicked}
-									isOpen={isEmbedDropdownOpen}
-								>
-									<MenuContent
-										menuItems={embedDropdownOptions}
-										onClick={(id) => {
-											setEmbedDropdownSelection(
-												id as EmbedCodeExternalWebsite
-											);
-											handleRightsButtonClicked();
-										}}
-									/>
-								</Dropdown>
-							</Spacer>
-						</Container>
-					</Spacer>
+					<Container
+						mode="vertical"
+						bordered={!!embedDropdownSelection}
+						className={clsx('embed-selection', {
+							'embed-selection-selected': !!embedDropdownSelection,
+						})}
+					>
+						<Spacer margin="bottom">
+							<BlockHeading type="h4">
+								{tHtml(
+									'shared/components/fragment-share-modal/fragment-share-modal___fragment-insluiten-in'
+								)}
+							</BlockHeading>
+						</Spacer>
+						<Spacer margin="bottom">
+							<Dropdown
+								label={getEmbedDropdownLabel() as string} // TODO allow ReactNode in avo2-components
+								onOpen={handleRightsButtonClicked}
+								onClose={handleRightsButtonClicked}
+								isOpen={isEmbedDropdownOpen}
+							>
+								<MenuContent
+									menuItems={embedDropdownOptions}
+									onClick={(id) => {
+										setEmbedDropdownSelection(id as EmbedCodeExternalWebsite);
+										handleRightsButtonClicked();
+									}}
+								/>
+							</Dropdown>
+						</Spacer>
+					</Container>
 				)}
 				<EmbedContent
 					item={embedCode}
