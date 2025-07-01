@@ -27,6 +27,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 	const urlInfo = queryString.parseUrl(window.location.href);
 	const [embedId, setEmbedId] = useState<string | null>(null);
 	const showMetadata = (urlInfo.query['showMetadata'] as string) === 'true';
+	const parentPage = urlInfo.query['parentPageUrl'] as string;
 
 	const {
 		data: embedCode,
@@ -39,7 +40,15 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 		if (embedId && typeof embedId === 'string' && isUuid(embedId)) {
 			setEmbedId(embedId as string);
 		}
-	}, [urlInfo]);
+
+		if (!parentPage) {
+			console.error(
+				'Parent page niet beschikbaar, geen tracking mogelijk voor',
+				urlInfo.url,
+				embedId
+			);
+		}
+	}, [parentPage, urlInfo]);
 
 	const content = useMemo(() => embedCode?.content as Avo.Item.Item, [embedCode]);
 
@@ -83,7 +92,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 					action: 'view',
 					resource: {
 						...createResource(embedCode, commonUser as Avo.User.CommonUser),
-						parentPage: window.parent.location.href,
+						parentPage,
 					},
 				},
 				commonUser
@@ -108,7 +117,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 				action: 'play',
 				resource: {
 					...createResource(embedCode, commonUser as Avo.User.CommonUser),
-					parentPage: window.parent.location.href,
+					parentPage,
 				},
 			},
 			commonUser
@@ -126,7 +135,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 				action: 'request',
 				resource: {
 					...createResource(embedCode, commonUser as Avo.User.CommonUser),
-					parentPage: window.parent.location.href,
+					parentPage,
 				},
 			},
 			commonUser
