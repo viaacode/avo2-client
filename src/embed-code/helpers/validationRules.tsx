@@ -22,11 +22,11 @@ export const getValidationErrors = (embedCode: EmbedCode): string[] => {
 
 const GET_VALIDATION_RULES = (): ValidationRule<Partial<EmbedCode>>[] => [
 	{
-		error: () => tText('Het fragment heeft geen titel'),
+		error: () => tText('embed-code/helpers/validation-rules___het-fragment-heeft-geen-titel'),
 		isValid: (embedCode) => !!embedCode.title,
 	},
 	{
-		error: () => tText('Het fragment heeft geen inhoud'),
+		error: () => tText('embed-code/helpers/validation-rules___het-fragment-heeft-geen-inhoud'),
 		isValid: (embedCode) => {
 			if (embedCode.descriptionType !== 'CUSTOM') {
 				return true;
@@ -41,15 +41,21 @@ const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRul
 	Pick<EmbedCode, 'start' | 'end'>
 >[] = () => [
 	{
-		error: tText('de starttijd heeft geen geldig formaat uu mm ss'),
+		error: tText(
+			'embed-code/helpers/validation-rules___de-starttijd-heeft-geen-geldig-formaat-uu-mm-ss'
+		),
 		isValid: (embedCode) => !isNil(embedCode.start),
 	},
 	{
-		error: tText('de eindtijd heeft geen geldig formaat uu mm ss'),
+		error: tText(
+			'embed-code/helpers/validation-rules___de-eindtijd-heeft-geen-geldig-formaat-uu-mm-ss'
+		),
 		isValid: (embedCode) => !isNil(embedCode.end),
 	},
 	{
-		error: tText('de starttijd moet voor de eindtijd vallen'),
+		error: tText(
+			'embed-code/helpers/validation-rules___de-starttijd-moet-voor-de-eindtijd-vallen'
+		),
 		isValid: (embedCode) => {
 			return !embedCode.start || !embedCode.end || embedCode.start < embedCode.end;
 		},

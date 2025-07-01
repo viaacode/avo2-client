@@ -165,7 +165,9 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 			await reloadEmbedCodes();
 		} catch (err) {
 			console.error(err);
-			ToastService.danger(tText('fragment dupliceren mislukt'));
+			ToastService.danger(
+				tText('embed-code/components/embed-code-overview___fragment-dupliceren-mislukt')
+			);
 		}
 	};
 
