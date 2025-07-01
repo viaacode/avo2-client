@@ -171,7 +171,6 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 						: item.description,
 				start: 0,
 				end: toSeconds(item.duration),
-				thumbnailPath: item.thumbnail_path,
 			} as EmbedCode;
 		}
 
