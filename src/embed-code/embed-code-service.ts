@@ -144,26 +144,14 @@ export class EmbedCodeService {
 					filterString: params?.filterString,
 				},
 			});
-			const response = await fetch(url, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-			});
-			if (!response.ok) {
-				const error = new CustomError('Failed to fetch embed codes from database', null, {
-					url,
-					...params,
-				});
-				console.error(error);
-				throw error;
-			}
-			const responseData = (await response.json()) as {
+
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			return await fetchWithLogoutJson<{
 				embedCodes: EmbedCode[];
 				count: number;
-			};
-			return responseData;
+			}>(url, {
+				method: 'GET',
+			});
 		} catch (err) {
 			const error = new CustomError('Failed to fetch embed codes from database', err, {
 				...params,
