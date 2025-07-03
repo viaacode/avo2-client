@@ -770,22 +770,22 @@ export function renderCollectionCellText(
 
 		case 'education_levels': {
 			const groupedLoms = groupLomLinks(collection.loms);
-			return groupedLoms.educationLevel?.join(', ') || '';
+			return groupedLoms.educationLevel?.map((item) => item.label).join(', ') || '';
 		}
 
 		case 'education_degrees': {
 			const groupedLoms = groupLomLinks(collection.loms);
-			return groupedLoms.educationDegree?.join(', ') || '';
+			return groupedLoms.educationDegree?.map((item) => item.label).join(', ') || '';
 		}
 
 		case 'subjects': {
 			const groupedLoms = groupLomLinks(collection.loms);
-			return groupedLoms.subject?.join(', ') || '';
+			return groupedLoms.subject?.map((item) => item.label).join(', ') || '';
 		}
 
 		case 'themas': {
 			const groupedLoms = groupLomLinks(collection.loms);
-			return groupedLoms.theme?.join(', ') || '';
+			return groupedLoms.theme?.map((item) => item.label).join(', ') || '';
 		}
 
 		case 'actualisation_status':
