@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { type Avo } from '@viaa/avo2-types';
 
+import { LoginMessage } from '../../authentication/authentication.types';
 import { setLoginSuccess } from '../../authentication/store/actions';
 import { EmbedCodeService } from '../../embed-code/embed-code-service';
 import { QUERY_KEYS } from '../../shared/constants/query-keys';
@@ -16,7 +17,7 @@ export const useGetLoginStateForEmbed = () => {
 			try {
 				const loginState = (store.getState() as unknown as AppState)?.loginState.data;
 
-				if (loginState?.message === 'LOGGED_IN') {
+				if (loginState?.message === LoginMessage.LOGGED_IN) {
 					return loginState;
 				}
 
