@@ -10,6 +10,7 @@ import {
 	Container,
 	convertToHtml,
 	ExpandableContainer,
+	Form,
 	FormGroup,
 	IconName,
 	Spacer,
@@ -439,61 +440,64 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	return (
 		<div className="embed-content-wrapper">
 			<Container mode="vertical" bordered={true} className="u-p-t-0">
-				{renderReplacementWarning()}
-				{!isSmartSchoolEmbedFlow && (
-					<Spacer margin="bottom-large">{contentDescription}</Spacer>
-				)}
+				<Form type="standard">
+					{renderReplacementWarning()}
+					{!isSmartSchoolEmbedFlow && (
+						<Spacer margin="bottom-large">{contentDescription}</Spacer>
+					)}
 
-				<Spacer margin={['bottom']}>
 					<FormGroup
 						required
 						label={tText('embed-code/components/embed-content___titel')}
 					>
 						<TextInput value={title} onChange={setTitle} disabled={!!savedEmbedCode} />
 					</FormGroup>
-				</Spacer>
 
-				<FormGroup label={tText('embed-code/components/embed-content___inhoud')} required>
-					<div className="u-spacer-bottom">
-						<ItemVideoDescription
-							itemMetaData={{
-								...(item.content as Avo.Item.Item),
-								thumbnail_path: item.thumbnailPath,
+					<FormGroup
+						label={tText('embed-code/components/embed-content___inhoud')}
+						required
+					>
+						<div className="u-spacer-bottom">
+							<ItemVideoDescription
+								itemMetaData={{
+									...(item.content as Avo.Item.Item),
+									thumbnail_path: item.thumbnailPath,
+								}}
+								showMetadata={false}
+								enableMetadataLink={false}
+								showTitle={false}
+								showDescription={false}
+								canPlay={true}
+								cuePointsLabel={{ start, end }}
+								cuePointsVideo={{ start, end }}
+								trackPlayEvent={false}
+							/>
+						</div>
+						<TimeCropControls
+							startTime={fragmentStartTime}
+							endTime={fragmentEndTime}
+							minTime={0}
+							maxTime={fragmentDuration}
+							disabled={!!savedEmbedCode}
+							onChange={(newStartTime: number, newEndTime: number) => {
+								const [validStart, validEnd] = getValidStartAndEnd(
+									newStartTime,
+									newEndTime,
+									fragmentDuration
+								);
+
+								const [start_oc, end_oc] = [
+									validStart || 0,
+									validEnd || fragmentDuration,
+								];
+
+								setFragmentStartTime(start_oc);
+								setFragmentEndTime(end_oc);
 							}}
-							showMetadata={false}
-							enableMetadataLink={false}
-							showTitle={false}
-							showDescription={false}
-							canPlay={true}
-							cuePointsLabel={{ start, end }}
-							cuePointsVideo={{ start, end }}
-							trackPlayEvent={false}
 						/>
-					</div>
-					<TimeCropControls
-						startTime={fragmentStartTime}
-						endTime={fragmentEndTime}
-						minTime={0}
-						maxTime={fragmentDuration}
-						disabled={!!savedEmbedCode}
-						onChange={(newStartTime: number, newEndTime: number) => {
-							const [validStart, validEnd] = getValidStartAndEnd(
-								newStartTime,
-								newEndTime,
-								fragmentDuration
-							);
-
-							const [start_oc, end_oc] = [
-								validStart || 0,
-								validEnd || fragmentDuration,
-							];
-
-							setFragmentStartTime(start_oc);
-							setFragmentEndTime(end_oc);
-						}}
-					/>
-				</FormGroup>
-				<Spacer margin="top-large">{renderDescriptionWrapper()}</Spacer>
+					</FormGroup>
+					<Spacer margin="top-large">{renderDescriptionWrapper()}</Spacer>
+				</Form>
 			</Container>
 			<Toolbar justify className="c-embed-code-content-toolbar">
 				<ToolbarLeft>

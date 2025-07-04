@@ -4,6 +4,7 @@ import {
 	Button,
 	Flex,
 	FlexItem,
+	Form,
 	FormGroup,
 	Spacer,
 	TextInput,
@@ -187,7 +188,7 @@ const QuickLaneContentSharingTab: FC<QuickLaneContentProps & UserProps> = ({
 	const [start, end] = getValidStartAndEnd(fragmentStartTime, fragmentEndTime, fragmentDuration);
 
 	return user && content && content_label ? (
-		<>
+		<Form type="standard">
 			{(avatar.name || avatar.image) && (
 				<Spacer margin={['bottom']}>
 					<Avatar
@@ -325,7 +326,7 @@ const QuickLaneContentSharingTab: FC<QuickLaneContentProps & UserProps> = ({
 					</Flex>
 				</Box>
 			</Spacer>
-		</>
+		</Form>
 	) : null;
 };
 
