@@ -31,6 +31,8 @@ export class EmbedCodeService {
 		try {
 			url = `${getEnv('PROXY_URL')}/embed-codes/${embedId}`;
 
+			// Using a regular fetch since we use this method for AVO and the embed iframe
+			// For the iframe we need to add extra headers since the authentication goes via the LTI flow and our fetchWithLogoutJson will get in the way
 			const response = await fetch(url, {
 				method: 'GET',
 				headers: {
@@ -63,26 +65,14 @@ export class EmbedCodeService {
 		try {
 			url = `${getEnv('PROXY_URL')}/embed-codes/`;
 
-			const response = await fetch(url, {
-				method: 'POST',
-				body: JSON.stringify(data),
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-			});
-			if (!response.ok) {
-				const error = new CustomError('Failed to create embed code', {
-					url,
-					data,
-				});
-				console.error(error);
-				throw error;
-			}
-			const responseData = (await response.json()) as {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const responseData = await fetchWithLogoutJson<{
 				message: 'success';
 				createdEmbed: EmbedCode;
-			};
+			}>(url, {
+				method: 'POST',
+				body: JSON.stringify(data),
+			});
 
 			return responseData.createdEmbed;
 		} catch (err) {
@@ -101,22 +91,14 @@ export class EmbedCodeService {
 		try {
 			url = `${getEnv('PROXY_URL')}/embed-codes/${data.id}`;
 
-			const response = await fetch(url, {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			await fetchWithLogoutJson<{
+				message: 'success';
+				createdEmbed: EmbedCode;
+			}>(url, {
 				method: 'PATCH',
 				body: JSON.stringify(data),
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
 			});
-			if (!response.ok) {
-				const error = new CustomError('Failed to update embed code', null, {
-					url,
-					data,
-				});
-				console.error(error);
-				throw error;
-			}
 		} catch (err) {
 			const error = new CustomError('Failed to create embed code', err, {
 				url,
@@ -144,26 +126,14 @@ export class EmbedCodeService {
 					filterString: params?.filterString,
 				},
 			});
-			const response = await fetch(url, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-			});
-			if (!response.ok) {
-				const error = new CustomError('Failed to fetch embed codes from database', null, {
-					url,
-					...params,
-				});
-				console.error(error);
-				throw error;
-			}
-			const responseData = (await response.json()) as {
+
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			return await fetchWithLogoutJson<{
 				embedCodes: EmbedCode[];
 				count: number;
-			};
-			return responseData;
+			}>(url, {
+				method: 'GET',
+			});
 		} catch (err) {
 			const error = new CustomError('Failed to fetch embed codes from database', err, {
 				...params,
@@ -180,21 +150,13 @@ export class EmbedCodeService {
 		try {
 			url = `${getEnv('PROXY_URL')}/embed-codes/${embedCodeId}`;
 
-			const response = await fetch(url, {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			await fetchWithLogoutJson<{
+				message: 'success';
+				createdEmbed: EmbedCode;
+			}>(url, {
 				method: 'DELETE',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
 			});
-			if (!response.ok) {
-				const error = new CustomError('Failed to delete embed code', null, {
-					url,
-					embedCodeId,
-				});
-				console.error(error);
-				throw error;
-			}
 		} catch (err) {
 			const error = new CustomError('Failed to delete embed code', err, {
 				url,
