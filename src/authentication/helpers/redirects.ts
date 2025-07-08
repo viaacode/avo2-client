@@ -45,7 +45,7 @@ export function redirectToServerLoginPage(
 		query: {
 			returnToUrl,
 			stamboekNumber: localStorage && localStorage.getItem(STAMBOEK_LOCAL_STORAGE_KEY),
-			ltiJwtToken: EmbedCodeService.getJwtTokenFromUrl(),
+			ltiJwtToken: EmbedCodeService.getJwtToken(),
 		},
 	});
 	if (openInNewTab) {
@@ -63,7 +63,7 @@ export function redirectToServerItsmeLogin(
 	const fullUrl = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
 		returnToUrl,
 		authMech: 'itsme',
-		ltiJwtToken: EmbedCodeService.getJwtTokenFromUrl(),
+		ltiJwtToken: EmbedCodeService.getJwtToken(),
 	})}`;
 	if (openInNewTab) {
 		window.open(fullUrl, '_blank');
@@ -80,7 +80,7 @@ export function redirectToServerLeerIDLogin(
 	const fullUrl = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
 		returnToUrl,
 		authMech: 'leerid',
-		ltiJwtToken: EmbedCodeService.getJwtTokenFromUrl(),
+		ltiJwtToken: EmbedCodeService.getJwtToken(),
 	})}`;
 	if (openInNewTab) {
 		window.open(fullUrl, '_blank');
@@ -96,7 +96,7 @@ export function redirectToServerACMIDMLogin(
 	const returnToUrl = getRedirectUrl(location, openInNewTab);
 	const fullUrl = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
 		returnToUrl,
-		ltiJwtToken: EmbedCodeService.getJwtTokenFromUrl(),
+		ltiJwtToken: EmbedCodeService.getJwtToken(),
 	})}`;
 	if (openInNewTab) {
 		window.open(fullUrl, '_blank');
@@ -114,7 +114,7 @@ export function redirectToServerSmartschoolLogin(
 	const returnToUrl = getRedirectUrl(location, openInNewTab);
 	const fullUrl = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
 		returnToUrl,
-		ltiJwtToken: EmbedCodeService.getJwtTokenFromUrl(),
+		ltiJwtToken: EmbedCodeService.getJwtToken(),
 	})}`;
 	if (openInNewTab) {
 		window.open(fullUrl, '_blank');
@@ -132,7 +132,7 @@ export function redirectToServerKlascementLogin(
 	const returnToUrl = getRedirectUrl(location, openInNewTab);
 	const fullUrl = `${getEnv('PROXY_URL')}/auth/klascement/login?${queryString.stringify({
 		returnToUrl,
-		ltiJwtToken: EmbedCodeService.getJwtTokenFromUrl(),
+		ltiJwtToken: EmbedCodeService.getJwtToken(),
 	})}`;
 	if (openInNewTab) {
 		window.open(fullUrl, '_blank');
@@ -150,7 +150,7 @@ export function redirectToServerArchiefRegistrationIdp(
 	const fullUrl = `${getEnv('PROXY_URL')}/auth/hetarchief/register?${queryString.stringify({
 		returnToUrl,
 		stamboekNumber,
-		ltiJwtToken: EmbedCodeService.getJwtTokenFromUrl(),
+		ltiJwtToken: EmbedCodeService.getJwtToken(),
 	})}`;
 	if (openInNewTab) {
 		window.open(fullUrl, '_blank');

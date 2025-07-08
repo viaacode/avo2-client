@@ -27,7 +27,7 @@ export const useGetLoginStateForEmbed = () => {
 					cache: 'no-store',
 					headers: {
 						'Content-Type': 'application/json',
-						[LTI_JWT_TOKEN_HEADER]: EmbedCodeService.getJwtTokenFromUrl() || '',
+						[LTI_JWT_TOKEN_HEADER]: EmbedCodeService.getJwtToken() || '',
 					},
 				});
 				if (!response.ok) {

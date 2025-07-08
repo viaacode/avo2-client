@@ -35,7 +35,7 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 	 * Get the JWT token from the browser URL and store it in state
 	 */
 	useEffect(() => {
-		const jwtToken = EmbedCodeService.getJwtTokenFromUrl();
+		const jwtToken = EmbedCodeService.getJwtToken();
 		if (jwtToken) {
 			setLtiJwtToken(jwtToken);
 		}

@@ -37,7 +37,7 @@ export class EmbedCodeService {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
-					[LTI_JWT_TOKEN_HEADER]: EmbedCodeService.getJwtTokenFromUrl() || '',
+					[LTI_JWT_TOKEN_HEADER]: EmbedCodeService.getJwtToken() || '',
 				},
 				credentials: 'include',
 			});
@@ -172,7 +172,7 @@ export class EmbedCodeService {
 	 * After the user has logged in, or when the external platform has provided enough info to log in the user through the LTI login flow
 	 * @private
 	 */
-	public static getJwtTokenFromUrl(): string | null {
+	public static getJwtToken(): string | null {
 		const urlParams = new URLSearchParams(window.location.search);
 		return urlParams.get('jwtToken');
 	}

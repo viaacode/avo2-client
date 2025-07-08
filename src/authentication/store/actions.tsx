@@ -153,7 +153,7 @@ export const getLoginResponse = async (force = false): Promise<Avo.Auth.LoginRes
 			forceLogout: false,
 			headers: {
 				'Content-Type': 'application/json',
-				[LTI_JWT_TOKEN_HEADER]: EmbedCodeService.getJwtTokenFromUrl() || '',
+				[LTI_JWT_TOKEN_HEADER]: EmbedCodeService.getJwtToken() || '',
 			},
 		});
 	} catch (err) {
