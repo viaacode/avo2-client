@@ -28,7 +28,7 @@ const RegisterOrLogin: FC = () => {
 				icon: IconName.userStudent,
 			},
 		],
-		LoginOptionsTabs.TEACHER
+		LoginOptionsTabs.STUDENT
 	);
 
 	const renderTitle = () => {
@@ -72,11 +72,11 @@ const RegisterOrLogin: FC = () => {
 			<Spacer className="m-register-login__tabs-wrapper" margin={'bottom'}>
 				<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
 			</Spacer>
-			<Grid className="u-bg-gray-100" noWrap>
+			<Grid className="u-bg-gray-100 u-spacer-bottom" noWrap>
 				<Column size="3-6" className="u-text-center">
 					<img className="avo-logo" alt="Archief voor Onderwijs logo" src={AvoLogo} />
 					{tab === LoginOptionsTabs.TEACHER && (
-						<>
+						<span className="account-creation">
 							<h2 className="c-h2 u-m-0 u-padding-top-l">
 								{tHtml('embed/components/register-or-login___nog-geen-account')}
 							</h2>
@@ -89,7 +89,7 @@ const RegisterOrLogin: FC = () => {
 									'embed/components/register-or-login___account-aanmaken-als-lesgever'
 								)}
 							</a>
-						</>
+						</span>
 					)}
 				</Column>
 				<Column size="3-6" className="u-bg-white">
