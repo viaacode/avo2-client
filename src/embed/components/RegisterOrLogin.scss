@@ -4,7 +4,7 @@
 @import "../../styles/settings/variables";
 
 $pupil-teacher-tabs-height: 4.4rem;
-$column-spacing: 3.2rem;
+$column-spacing: 2.2rem;
 
 .c-register-login-view {
 	height: 100%;
@@ -28,8 +28,13 @@ $column-spacing: 3.2rem;
 			display: flex;
 			padding-left: $column-spacing;
 			padding-right: $column-spacing;
+			margin-top: $column-spacing;
+			margin-bottom: $column-spacing;
+
 			flex-direction: column;
 			justify-content: center;
+
+			border-right: 1px solid $c-register-login-view-modal-border-color;
 		}
 
 		.account-creation {
@@ -38,19 +43,18 @@ $column-spacing: 3.2rem;
 
 		&:last-child {
 			display: flex;
-			border-left: 1px solid $c-register-login-view-modal-border-color;
 		}
 	}
 
 	.m-login-options__wrapper {
 		width: 100%;
 		margin: auto;
-		padding: 1.2rem;
+		padding: 0 1.2rem;
 	}
 
 	.avo-logo {
 		width: 100%;
-		max-width: 200px;
+		max-width: 160px;
 		margin-left: auto;
 		margin-right: auto;
 	}

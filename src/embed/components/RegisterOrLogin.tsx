@@ -67,9 +67,11 @@ const RegisterOrLogin: FC = () => {
 					<img className="avo-logo" alt="Archief voor Onderwijs logo" src={AvoLogo} />
 					{tab === LoginOptionsTabs.TEACHER && (
 						<span className="account-creation">
-							<h2 className="c-h2 u-m-0 u-padding-top-l">
-								{tHtml('embed/components/register-or-login___nog-geen-account')}
-							</h2>
+							<Spacer margin={['bottom-small']}>
+								<h2 className="c-h3 u-m-0 u-padding-top-l">
+									{tHtml('embed/components/register-or-login___nog-geen-account')}
+								</h2>
+							</Spacer>
 							<a
 								href={getEnv('REGISTER_URL')}
 								target="_blank"
@@ -84,7 +86,7 @@ const RegisterOrLogin: FC = () => {
 				</Column>
 				<Column size="3-6" className="u-bg-white">
 					<div className="m-login-options__wrapper">
-						<Spacer margin={['bottom-large']}>
+						<Spacer margin={['bottom-small']}>
 							<h2 className="c-h3 u-m-0 m-login-options__title">{renderTitle()}</h2>
 						</Spacer>
 						{getButtons()}
