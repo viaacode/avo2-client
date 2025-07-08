@@ -34,20 +34,10 @@ const RegisterOrLogin: FC = () => {
 	const renderTitle = () => {
 		switch (tab) {
 			case LoginOptionsTabs.TEACHER:
-				return (
-					<>
-						<Icon name={IconName.userTeacher} />
-						{tHtml('authentication/components/login-options___log-in-als-lesgever')}
-					</>
-				);
+				return tHtml('authentication/components/login-options___log-in-als-lesgever');
 
 			case LoginOptionsTabs.STUDENT:
-				return (
-					<>
-						<Icon name={IconName.userStudent} />
-						{tHtml('authentication/components/login-options___log-in-als-leerling')}
-					</>
-				);
+				return tHtml('authentication/components/login-options___log-in-als-leerling');
 
 			default:
 				break;
