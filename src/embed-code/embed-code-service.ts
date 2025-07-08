@@ -17,6 +17,8 @@ export interface EmbedCodeFilters {
 }
 
 export class EmbedCodeService {
+	private static jwtToken = '';
+
 	public static async getEmbedCode(embedId: string | null): Promise<EmbedCode> {
 		let url: string | undefined = undefined;
 
@@ -172,8 +174,16 @@ export class EmbedCodeService {
 	 * After the user has logged in, or when the external platform has provided enough info to log in the user through the LTI login flow
 	 * @private
 	 */
+	public static setJwtToken(token: string): void {
+		this.jwtToken = token;
+	}
+
+	/**
+	 * Embed codes inside an iframe will have a query param: jwtToken containing a token to authenticate api requests
+	 * After the user has logged in, or when the external platform has provided enough info to log in the user through the LTI login flow
+	 * @private
+	 */
 	public static getJwtToken(): string | null {
-		const urlParams = new URLSearchParams(window.location.search);
-		return urlParams.get('jwtToken');
+		return this.jwtToken;
 	}
 }
