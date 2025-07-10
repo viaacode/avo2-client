@@ -15,7 +15,7 @@ export const fetchPlayerTickets = async (externalIds: string[]): Promise<string[
 
 		return fetchWithLogoutJson<string[]>(url, {
 			headers: {
-				[LTI_JWT_TOKEN_HEADER]: EmbedCodeService.getJwtTokenFromUrl() || '',
+				[LTI_JWT_TOKEN_HEADER]: EmbedCodeService.getJwtToken() || '',
 			},
 		});
 	} catch (err) {
