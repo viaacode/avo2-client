@@ -31,6 +31,7 @@ import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWi
 import TimeCropControls from '../../shared/components/TimeCropControls/TimeCropControls';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
+import { textToHtmlWithTimestamps } from '../../shared/helpers/formatters';
 import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
@@ -117,7 +118,7 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 		let newDescription = '';
 
 		if (descriptionType === EmbedCodeDescriptionType.ORIGINAL) {
-			newDescription = item.content.description || '';
+			newDescription = textToHtmlWithTimestamps(item.content.description || '');
 		} else if (descriptionType === EmbedCodeDescriptionType.CUSTOM) {
 			newDescription = customDescription || '';
 		}
