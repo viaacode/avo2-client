@@ -35,6 +35,7 @@ const LoginOptionsForPupil: FC<LoginOptionsForPupilProps & RouteComponentProps> 
 				icon={IconName.leerid}
 				iconType="custom"
 				label={tText('authentication/components/login-options___leerling-id')}
+				title={tText('authentication/components/login-options___leerling-id')}
 				onClick={() => {
 					onOptionClicked();
 					redirectToServerLeerIDLogin(location, openInNewTab);
@@ -47,6 +48,7 @@ const LoginOptionsForPupil: FC<LoginOptionsForPupilProps & RouteComponentProps> 
 				className="c-button-smartschool"
 				icon={IconName.smartschool}
 				label={tText('authentication/components/login-options___inloggen-met-smartschool')}
+				title={tText('authentication/components/login-options___inloggen-met-smartschool')}
 				onClick={() => {
 					onOptionClicked();
 					redirectToServerSmartschoolLogin(location, openInNewTab);
@@ -57,6 +59,7 @@ const LoginOptionsForPupil: FC<LoginOptionsForPupilProps & RouteComponentProps> 
 				key="login-button-archief-pupil"
 				block
 				label={tText('authentication/components/login-options___inloggen-met-e-mailadres')}
+				title={tText('authentication/components/login-options___inloggen-met-e-mailadres')}
 				type="inline-link"
 				className="c-login-with-archief c-button-mail c-login-button--pupil"
 				onClick={() => {

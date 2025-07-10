@@ -42,6 +42,7 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 				key="login-button-archief"
 				block
 				label={tText('authentication/components/login-options___inloggen-met-e-mailadres')}
+				title={tText('authentication/components/login-options___inloggen-met-e-mailadres')}
 				icon={IconName.at}
 				type="primary"
 				className="c-login-with-archief c-button-mail"
@@ -80,6 +81,7 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 				icon={IconName.itsme}
 				iconType="multicolor"
 				label={tText('authentication/components/login-options___itsme')}
+				title={tText('authentication/components/login-options___itsme')}
 				onClick={() => {
 					onOptionClicked();
 					redirectToServerItsmeLogin(location, openInNewTab);
@@ -95,6 +97,9 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 				label={tText(
 					'authentication/components/login-options___e-id-of-een-digitale-sleutel'
 				)}
+				title={tText(
+					'authentication/components/login-options___e-id-of-een-digitale-sleutel'
+				)}
 				onClick={() => {
 					onOptionClicked();
 					redirectToServerACMIDMLogin(location, openInNewTab);
@@ -107,6 +112,7 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 				className="c-button-smartschool"
 				icon={IconName.smartschool}
 				label={tText('authentication/components/login-options___inloggen-met-smartschool')}
+				title={tText('authentication/components/login-options___inloggen-met-smartschool')}
 				onClick={() => {
 					onOptionClicked();
 					redirectToServerSmartschoolLogin(location, openInNewTab);
@@ -119,6 +125,7 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 				className="c-button-klascement"
 				icon={IconName.klascement}
 				label={tText('authentication/components/login-options___inloggen-met-klas-cement')}
+				title={tText('authentication/components/login-options___inloggen-met-klas-cement')}
 				onClick={() => {
 					onOptionClicked();
 					redirectToServerKlascementLogin(location, openInNewTab);
