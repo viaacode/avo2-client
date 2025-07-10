@@ -1,8 +1,18 @@
+@import "../../styles/settings/variables";
+
+$spacing-size: 2rem;
+
 .m-error-view {
-	min-height: 400px;
+	min-height: 300px;
+	overflow: auto;
+	padding: $spacing-size 0 0;
 
 	.c-blankslate {
 		background-color: transparent;
+
+		@media screen and (max-width: $g-bp1) {
+			padding: $spacing-size;
+		}
 	}
 
 	.c-toolbar {
