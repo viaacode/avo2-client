@@ -25,9 +25,16 @@ export interface EmbedProps {
 	embedId: string | null;
 	parentPage: string;
 	showMetadata: boolean;
+	onReload: () => void;
 }
 
-const Embed: FC<EmbedProps & UserProps> = ({ embedId, showMetadata, parentPage, commonUser }) => {
+const Embed: FC<EmbedProps & UserProps> = ({
+	embedId,
+	showMetadata,
+	parentPage,
+	onReload,
+	commonUser,
+}) => {
 	const {
 		data: embedCode,
 		isLoading: isLoadingEmbedCode,
@@ -41,7 +48,7 @@ const Embed: FC<EmbedProps & UserProps> = ({ embedId, showMetadata, parentPage, 
 		let showReloadButton = false;
 		let icon: IconName | null = null;
 
-		if (isErrorEmbedCode) {
+		if (!isErrorEmbedCode) {
 			errorMessage = tHtml(
 				'embed/components/error-view___oeps-er-liep-iets-mis-probeer-het-opnieuw-br-lukt-het-nog-steeds-niet-dan-is-dit-fragment-mogelijks-verwijderd'
 			);
@@ -133,7 +140,7 @@ const Embed: FC<EmbedProps & UserProps> = ({ embedId, showMetadata, parentPage, 
 		return (
 			<EmbedErrorView
 				message={errorInfo.errorMessage}
-				showReloadButton={errorInfo.showReloadButton}
+				onReload={errorInfo.showReloadButton ? onReload : null}
 				icon={errorInfo.icon}
 			/>
 		);

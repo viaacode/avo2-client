@@ -27,6 +27,7 @@ import '../styles/main.scss';
 const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 	const [translationsLoaded, setTranslationsLoaded] = useState<boolean>(false);
 	const [query, setQuery] = useState<URLSearchParams | null>(null);
+	const [originalUrl, setOriginalUrl] = useState<string | null>(null);
 	const [embedId, setEmbedId] = useState<string | null>(null);
 	const ltiJwtToken = EmbedCodeService.getJwtToken();
 
@@ -46,11 +47,20 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 			});
 	};
 
+	const onReloadPage = () => {
+		if (!originalUrl) {
+			console.error("Can't reload iframe, original iframe url was not stored");
+			return;
+		}
+		window.location.replace(originalUrl);
+	};
+
 	/**
 	 * Store URL query params in the state
 	 */
 	useEffect(() => {
 		setQuery(new URLSearchParams(location?.search || ''));
+		setOriginalUrl(window.location.href);
 	}, []);
 
 	/**
@@ -151,6 +161,7 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 				embedId={embedId}
 				showMetadata={query?.get('showMetadata') === 'true'}
 				parentPage={query?.get('parentPageUrl') || ''}
+				onReload={onReloadPage}
 			/>
 		);
 	};
