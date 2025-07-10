@@ -1,5 +1,5 @@
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { createBrowserHistory } from 'history';
 import { isEqual, noop, uniq } from 'lodash-es';
@@ -22,6 +22,7 @@ import { ADMIN_PATH } from './admin/admin.const';
 import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config';
 import { SpecialUserGroupId } from './admin/user-groups/user-group.const';
 import { SecuredRoute } from './authentication/components';
+import { PermissionService } from './authentication/helpers/permission-service';
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
 import ACMIDMNudgeModal from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
@@ -150,14 +151,24 @@ const App: FC<
 		const url = new URL(window.location.href);
 		const embedFlow = url.searchParams.get('embed-flow') || '';
 		const isOpenedByOtherPage = !!window.opener;
-		if (isOpenedByOtherPage && !!embedFlow) {
-			setEmbedFlow(embedFlow);
+
+		if (isOpenedByOtherPage && !!embedFlow && props.commonUser) {
+			if (
+				PermissionService.hasPerm(
+					props.commonUser,
+					PermissionName.EMBED_ITEMS_ON_OTHER_SITES
+				)
+			) {
+				setEmbedFlow(embedFlow);
+			} else {
+				ToastService.info(tHtml('Je hebt geen toegang tot de embed functionaliteit'));
+			}
 		} else if (embedFlow) {
 			console.error(
 				"Embed flow query param is present, but the page wasn't opened from another page, so window.opener is undefined. Cannot start the embed flow"
 			);
 		}
-	}, [setEmbedFlow]);
+	}, [setEmbedFlow, props.commonUser]);
 
 	// Render
 	const renderApp = () => {
