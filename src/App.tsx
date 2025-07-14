@@ -161,7 +161,7 @@ const App: FC<
 			) {
 				setEmbedFlow(embedFlow);
 			} else {
-				ToastService.info(tHtml('Je hebt geen toegang tot de embed functionaliteit'));
+				ToastService.info(tHtml('app___je-hebt-geen-toegang-tot-de-embed-functionaliteit'));
 			}
 		} else if (embedFlow) {
 			console.error(
