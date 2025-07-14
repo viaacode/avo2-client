@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import queryString from 'query-string';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 import { Route, type RouteComponentProps } from 'react-router';
 import { BrowserRouter, withRouter } from 'react-router-dom';
@@ -26,9 +26,12 @@ import '../styles/main.scss';
 
 const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 	const [translationsLoaded, setTranslationsLoaded] = useState<boolean>(false);
-	const [query, setQuery] = useState<URLSearchParams | null>(null);
 	const [originalUrl, setOriginalUrl] = useState<string | null>(null);
 	const [embedId, setEmbedId] = useState<string | null>(null);
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [errorIcon, setErrorIcon] = useState<IconName | null>(null);
+	const [parentPageUrl, setParentPageUrl] = useState<string>('');
+	const [showMetadata, setShowMetadata] = useState<boolean>(false);
 	const ltiJwtToken = EmbedCodeService.getJwtToken();
 
 	const {
@@ -36,8 +39,6 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 		isLoading: loginStateLoading,
 		refetch: checkLoginAgain,
 	} = useGetLoginStateForEmbed();
-	const [errorMessage, setErrorMessage] = useState<string | null>(null);
-	const [errorIcon, setErrorIcon] = useState<IconName | null>(null);
 
 	const doCheckLoginStateAgain = async () => {
 		await checkLoginAgain()
@@ -60,29 +61,18 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 	};
 
 	/**
-	 * Store URL query params in the state
-	 */
-	useEffect(() => {
-		setQuery(new URLSearchParams(location?.search || ''));
-		setOriginalUrl(window.location.href);
-	}, []);
-
-	/**
-	 * refresh login state once we have the LTI token, otherwise we will always get a LOGGED_OUT message
-	 */
-	useEffect(() => {
-		doCheckLoginStateAgain();
-	}, [doCheckLoginStateAgain]);
-
-	/**
 	 * Store query params in specific state variables
 	 */
 	useEffect(() => {
+		setOriginalUrl(window.location.href);
+		const query = new URLSearchParams(location?.search || '');
+
 		if (!query) {
 			return;
 		}
 
 		EmbedCodeService.setJwtToken(query.get('jwtToken') || '');
+		setShowMetadata(query.get('showMetadata') === 'true');
 
 		const urlInfo = queryString.parseUrl(window.location.href);
 		const foundEmbedId = query.get('embedId') || urlInfo.url.split('/').pop() || '';
@@ -92,7 +82,7 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 		}
 
 		// Get the parentPage from the URL query parameters if they are present
-		const parentPage = query.get('parentPage');
+		const parentPage = query.get('parentPageUrl');
 		if (!parentPage) {
 			console.error(
 				'Parent page niet beschikbaar, geen tracking mogelijk voor',
@@ -100,6 +90,7 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 				foundEmbedId
 			);
 		}
+		setParentPageUrl(parentPage || '');
 
 		// Get the error message and icon from the URL query parameters if they are present
 		const errorMessageTemp = query.get('errorMessage');
@@ -113,7 +104,14 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 		}
 
 		window.history.replaceState(null, '', window.location.href.split('?')[0]);
-	}, [query]);
+	}, []);
+
+	/**
+	 * refresh login state once we have the LTI token, otherwise we will always get a LOGGED_OUT message
+	 */
+	useEffect(() => {
+		doCheckLoginStateAgain();
+	}, [doCheckLoginStateAgain]);
 
 	/**
 	 * Wait for translations to be loaded before rendering the app
@@ -163,8 +161,8 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 		return (
 			<Embed
 				embedId={embedId}
-				showMetadata={query?.get('showMetadata') === 'true'}
-				parentPage={query?.get('parentPageUrl') || ''}
+				showMetadata={showMetadata}
+				parentPage={parentPageUrl}
 				onReload={onReloadPage}
 			/>
 		);
