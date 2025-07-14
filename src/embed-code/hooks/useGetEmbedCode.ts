@@ -9,7 +9,7 @@ export const useGetEmbedCode = (
 	enabled = true
 ): UseQueryResult<EmbedCode> => {
 	return useQuery(
-		[QUERY_KEYS.GET_EMBED_CODES, embedCodeId, EmbedCodeService.getJwtTokenFromUrl()],
+		[QUERY_KEYS.GET_EMBED_CODES, embedCodeId, EmbedCodeService.getJwtToken()],
 		async () => {
 			if (!embedCodeId) {
 				return null;

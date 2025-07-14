@@ -3,8 +3,7 @@ import AvoLogo from '@assets/images/avo-logo-button.svg';
 import { Alert, Column, Flex, Grid, Icon, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import queryString from 'query-string';
-import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useMemo } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
@@ -14,7 +13,6 @@ import { useGetEmbedCode } from '../../embed-code/hooks/useGetEmbedCode';
 import FlowPlayerWrapper from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { reorderDate } from '../../shared/helpers/formatters';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
-import { isUuid } from '../../shared/helpers/isUuid';
 import { tHtml } from '../../shared/helpers/translate-html';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -23,32 +21,25 @@ import { EmbedErrorView } from './EmbedErrorView';
 
 import './Embed.scss';
 
-const Embed: FC<UserProps> = ({ commonUser }) => {
-	const urlInfo = queryString.parseUrl(window.location.href);
-	const [embedId, setEmbedId] = useState<string | null>(null);
-	const showMetadata = (urlInfo.query['showMetadata'] as string) === 'true';
-	const parentPage = urlInfo.query['parentPageUrl'] as string;
+export interface EmbedProps {
+	embedId: string | null;
+	parentPage: string;
+	showMetadata: boolean;
+	onReload: () => void;
+}
 
+const Embed: FC<EmbedProps & UserProps> = ({
+	embedId,
+	showMetadata,
+	parentPage,
+	onReload,
+	commonUser,
+}) => {
 	const {
 		data: embedCode,
 		isLoading: isLoadingEmbedCode,
 		isError: isErrorEmbedCode,
 	} = useGetEmbedCode(embedId, true);
-
-	useEffect(() => {
-		const embedId = urlInfo.query['embedId'] || urlInfo.url.split('/').pop();
-		if (embedId && typeof embedId === 'string' && isUuid(embedId)) {
-			setEmbedId(embedId as string);
-		}
-
-		if (!parentPage) {
-			console.error(
-				'Parent page niet beschikbaar, geen tracking mogelijk voor',
-				urlInfo.url,
-				embedId
-			);
-		}
-	}, [parentPage, urlInfo]);
 
 	const content = useMemo(() => embedCode?.content as Avo.Item.Item, [embedCode]);
 
@@ -149,7 +140,7 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 		return (
 			<EmbedErrorView
 				message={errorInfo.errorMessage}
-				showReloadButton={errorInfo.showReloadButton}
+				onReload={errorInfo.showReloadButton ? onReload : null}
 				icon={errorInfo.icon}
 			/>
 		);
@@ -253,4 +244,4 @@ const Embed: FC<UserProps> = ({ commonUser }) => {
 	);
 };
 
-export default compose(withRouter, withUser)(Embed) as FC;
+export default compose(withRouter, withUser)(Embed) as FC<EmbedProps>;

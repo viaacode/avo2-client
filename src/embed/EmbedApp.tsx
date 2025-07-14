@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
-import { parse } from 'query-string';
+import { noop } from 'lodash-es';
+import queryString from 'query-string';
 import React, { type FC, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 import { Route, type RouteComponentProps } from 'react-router';
@@ -11,6 +12,7 @@ import { LoginMessage } from '../authentication/authentication.types';
 import { EmbedCodeService } from '../embed-code/embed-code-service';
 import { ErrorView } from '../error/views';
 import { CustomError } from '../shared/helpers/custom-error';
+import { isUuid } from '../shared/helpers/isUuid';
 import { tText } from '../shared/helpers/translate-text';
 import { waitForTranslations } from '../shared/translations/i18n';
 import store from '../store';
@@ -23,38 +25,93 @@ import { useGetLoginStateForEmbed } from './hooks/useGetLoginStateForEmbed';
 import '../styles/main.scss';
 
 const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
-	const query = parse(location?.search || '');
 	const [translationsLoaded, setTranslationsLoaded] = useState<boolean>(false);
-
-	const { data: loginState, isLoading: loginStateLoading } = useGetLoginStateForEmbed();
-	const [ltiJwtToken, setLtiJwtToken] = useState<string | null>(null);
+	const [originalUrl, setOriginalUrl] = useState<string | null>(null);
+	const [embedId, setEmbedId] = useState<string | null>(null);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [errorIcon, setErrorIcon] = useState<IconName | null>(null);
+	const [parentPageUrl, setParentPageUrl] = useState<string>('');
+	const [showMetadata, setShowMetadata] = useState<boolean>(false);
+	const ltiJwtToken = EmbedCodeService.getJwtToken();
 
-	/**
-	 * Get the JWT token from the browser URL and store it in state
+	const {
+		data: loginState,
+		isLoading: loginStateLoading,
+		refetch: checkLoginAgain,
+	} = useGetLoginStateForEmbed();
+
+	const doCheckLoginStateAgain = async () => {
+		await checkLoginAgain()
+			.then(noop)
+			.catch((err) => {
+				console.error(new CustomError('Failed to check login', err));
+			});
+	};
+
+	/*
+	 * Method called by the explicit click on the reload button of the Error View
+	 * Normally we should have the original URL with the JWT token, but just in case we check and log an error if something is wrong
 	 */
-	useEffect(() => {
-		const jwtToken = EmbedCodeService.getJwtTokenFromUrl();
-		if (jwtToken) {
-			setLtiJwtToken(jwtToken);
+	const onReloadPage = () => {
+		if (!originalUrl) {
+			console.error("Can't reload iframe, original iframe url was not stored");
+			return;
 		}
-	}, []);
+		window.location.replace(originalUrl);
+	};
 
 	/**
-	 * Get the error message and icon from the URL query parameters if they are present
+	 * Store query params in specific state variables
 	 */
 	useEffect(() => {
-		const errorMessageTemp = query['errorMessage'];
-		if (errorMessageTemp && typeof errorMessageTemp === 'string') {
+		setOriginalUrl(window.location.href);
+		const query = new URLSearchParams(location?.search || '');
+
+		if (!query) {
+			return;
+		}
+
+		EmbedCodeService.setJwtToken(query.get('jwtToken') || '');
+		setShowMetadata(query.get('showMetadata') === 'true');
+
+		const urlInfo = queryString.parseUrl(window.location.href);
+		const foundEmbedId = query.get('embedId') || urlInfo.url.split('/').pop() || '';
+
+		if (foundEmbedId && isUuid(foundEmbedId)) {
+			setEmbedId(foundEmbedId);
+		}
+
+		// Get the parentPage from the URL query parameters if they are present
+		const parentPage = query.get('parentPageUrl');
+		if (!parentPage) {
+			console.error(
+				'Parent page niet beschikbaar, geen tracking mogelijk voor',
+				window.location.href,
+				foundEmbedId
+			);
+		}
+		setParentPageUrl(parentPage || '');
+
+		// Get the error message and icon from the URL query parameters if they are present
+		const errorMessageTemp = query.get('errorMessage');
+		if (errorMessageTemp) {
 			setErrorMessage(errorMessageTemp);
 		}
 
-		const errorIconTemp = query['icon'];
-		if (errorIconTemp && typeof errorIconTemp === 'string') {
+		const errorIconTemp = query.get('icon');
+		if (errorIconTemp) {
 			setErrorIcon(errorIconTemp as IconName);
 		}
-	}, [query]);
+
+		window.history.replaceState(null, '', window.location.href.split('?')[0]);
+	}, []);
+
+	/**
+	 * refresh login state once we have the LTI token, otherwise we will always get a LOGGED_OUT message
+	 */
+	useEffect(() => {
+		doCheckLoginStateAgain();
+	}, [doCheckLoginStateAgain]);
 
 	/**
 	 * Wait for translations to be loaded before rendering the app
@@ -101,7 +158,14 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 		}
 
 		// Check if the page requires the user to be logged in and not both logged in or out
-		return <Embed />;
+		return (
+			<Embed
+				embedId={embedId}
+				showMetadata={showMetadata}
+				parentPage={parentPageUrl}
+				onReload={onReloadPage}
+			/>
+		);
 	};
 
 	return renderApp();
