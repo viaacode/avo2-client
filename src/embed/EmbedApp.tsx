@@ -47,6 +47,10 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 			});
 	};
 
+	/*
+	 * Method called by the explicit click on the reload button of the Error View
+	 * Normally we should have the original URL with the JWT token, but just in case we check and log an error if something is wrong
+	 */
 	const onReloadPage = () => {
 		if (!originalUrl) {
 			console.error("Can't reload iframe, original iframe url was not stored");
