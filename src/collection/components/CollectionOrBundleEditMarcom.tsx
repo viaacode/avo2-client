@@ -169,8 +169,11 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 			const avoError = tText(
 				'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement-mislukt'
 			);
-			const klascementError = (err as any)?.innerException?.additionalInfo?.responseBody
-				?.additionalInfo?.klascementError?.uitzonderingen?.[0]?.diagnose;
+			const klascementError =
+				(err as any)?.innerException?.additionalInfo?.responseBody?.additionalInfo
+					?.klascementError?.uitzonderingen?.[0]?.diagnose ||
+				(err as any)?.innerException?.additionalInfo?.responseBody?.additionalInfo
+					?.klascementError;
 
 			ToastService.danger(compact([avoError, klascementError]).join(': '));
 		}
