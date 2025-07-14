@@ -149,7 +149,8 @@ const setAcceptConditions = (): SetAcceptConditionsAction => ({
 
 export const getLoginResponse = async (force = false): Promise<Avo.Auth.LoginResponse> => {
 	try {
-		const history = (store.getState() as unknown as AppState)?.uiState?.historyLocations || [];
+		const history: string[] =
+			(store.getState() as unknown as AppState)?.uiState?.historyLocations || [];
 		const url = `${getEnv('PROXY_URL')}/auth/check-login?${queryString.stringify({
 			force,
 			history,
