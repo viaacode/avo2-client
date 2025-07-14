@@ -28,26 +28,16 @@ const RegisterOrLogin: FC = () => {
 				icon: IconName.userStudent,
 			},
 		],
-		LoginOptionsTabs.TEACHER
+		LoginOptionsTabs.STUDENT
 	);
 
 	const renderTitle = () => {
 		switch (tab) {
 			case LoginOptionsTabs.TEACHER:
-				return (
-					<>
-						<Icon name={IconName.userTeacher} />
-						{tHtml('authentication/components/login-options___log-in-als-lesgever')}
-					</>
-				);
+				return tHtml('authentication/components/login-options___log-in-als-lesgever');
 
 			case LoginOptionsTabs.STUDENT:
-				return (
-					<>
-						<Icon name={IconName.userStudent} />
-						{tHtml('authentication/components/login-options___log-in-als-leerling')}
-					</>
-				);
+				return tHtml('authentication/components/login-options___log-in-als-leerling');
 
 			default:
 				break;
@@ -72,14 +62,16 @@ const RegisterOrLogin: FC = () => {
 			<Spacer className="m-register-login__tabs-wrapper" margin={'bottom'}>
 				<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
 			</Spacer>
-			<Grid className="u-bg-gray-100" noWrap>
+			<Grid className="u-bg-gray-100 u-spacer-bottom" noWrap>
 				<Column size="3-6" className="u-text-center">
 					<img className="avo-logo" alt="Archief voor Onderwijs logo" src={AvoLogo} />
 					{tab === LoginOptionsTabs.TEACHER && (
-						<>
-							<h2 className="c-h2 u-m-0 u-padding-top-l">
-								{tHtml('embed/components/register-or-login___nog-geen-account')}
-							</h2>
+						<span className="account-creation">
+							<Spacer margin={['bottom-small']}>
+								<h2 className="c-h3 u-m-0 u-padding-top-l">
+									{tHtml('embed/components/register-or-login___nog-geen-account')}
+								</h2>
+							</Spacer>
 							<a
 								href={getEnv('REGISTER_URL')}
 								target="_blank"
@@ -89,12 +81,12 @@ const RegisterOrLogin: FC = () => {
 									'embed/components/register-or-login___account-aanmaken-als-lesgever'
 								)}
 							</a>
-						</>
+						</span>
 					)}
 				</Column>
 				<Column size="3-6" className="u-bg-white">
 					<div className="m-login-options__wrapper">
-						<Spacer margin={['bottom-large']}>
+						<Spacer margin={['bottom-small']}>
 							<h2 className="c-h3 u-m-0 m-login-options__title">{renderTitle()}</h2>
 						</Spacer>
 						{getButtons()}
