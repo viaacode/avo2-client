@@ -2,6 +2,7 @@ import { Button, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { subMinutes } from 'date-fns';
 import { compact } from 'lodash-es';
+import queryString from 'query-string';
 import React from 'react';
 import { type RouteComponentProps } from 'react-router-dom';
 import { type Action, type Dispatch } from 'redux';
@@ -11,6 +12,7 @@ import { EmbedCodeService } from '../../embed-code/embed-code-service';
 import { getEnv } from '../../shared/helpers/env';
 import { tText } from '../../shared/helpers/translate-text';
 import { ToastService } from '../../shared/services/toast-service';
+import store, { type AppState } from '../../store';
 import { LoginMessage } from '../authentication.types';
 import { logoutAndRedirectToLogin } from '../helpers/redirects';
 
@@ -147,7 +149,13 @@ const setAcceptConditions = (): SetAcceptConditionsAction => ({
 
 export const getLoginResponse = async (force = false): Promise<Avo.Auth.LoginResponse> => {
 	try {
-		const url = `${getEnv('PROXY_URL')}/auth/check-login?force=${force}`;
+		const history: string[] =
+			(store.getState() as unknown as AppState)?.uiState?.historyLocations || [];
+		const url = `${getEnv('PROXY_URL')}/auth/check-login?${queryString.stringify({
+			force,
+			history,
+		})}`;
+
 		const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 		return fetchWithLogoutJson<Avo.Auth.LoginResponse>(url, {
 			forceLogout: false,
