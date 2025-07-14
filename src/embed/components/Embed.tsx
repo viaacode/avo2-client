@@ -48,7 +48,7 @@ const Embed: FC<EmbedProps & UserProps> = ({
 		let showReloadButton = false;
 		let icon: IconName | null = null;
 
-		if (!isErrorEmbedCode) {
+		if (isErrorEmbedCode) {
 			errorMessage = tHtml(
 				'embed/components/error-view___oeps-er-liep-iets-mis-probeer-het-opnieuw-br-lukt-het-nog-steeds-niet-dan-is-dit-fragment-mogelijks-verwijderd'
 			);
