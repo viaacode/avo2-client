@@ -929,25 +929,6 @@ export const useGetAssignmentByTitleOrDescriptionQuery = <
       fetchData<GetAssignmentByTitleOrDescriptionQuery, GetAssignmentByTitleOrDescriptionQueryVariables>(GetAssignmentByTitleOrDescriptionDocument, variables),
       options
     );
-export const GetAssignmentIdsDocument = `
-    query getAssignmentIds($where: app_assignments_v2_bool_exp!) {
-  app_assignments_v2(where: $where) {
-    id
-  }
-}
-    `;
-export const useGetAssignmentIdsQuery = <
-      TData = GetAssignmentIdsQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentIdsQueryVariables,
-      options?: UseQueryOptions<GetAssignmentIdsQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentIdsQuery, TError, TData>(
-      ['getAssignmentIds', variables],
-      fetchData<GetAssignmentIdsQuery, GetAssignmentIdsQueryVariables>(GetAssignmentIdsDocument, variables),
-      options
-    );
 export const GetAssignmentResponseDocument = `
     query getAssignmentResponse($profileId: uuid!, $assignmentId: uuid!) {
   app_assignment_responses_v2(

@@ -194,7 +194,7 @@ const AssignmentMarcomOverview: FC<UserProps> = ({ commonUser }) => {
 	const setAllAssignmentsAsSelected = async () => {
 		setIsLoadingAssignmentIds(true);
 		try {
-			const assignmentIds = await AssignmentsAdminService.getAssignmentIds(
+			const assignmentIds = await AssignmentsAdminService.getAssignmentMarcomIds(
 				getFilters(tableState)
 			);
 			ToastService.info(

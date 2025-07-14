@@ -3,6 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { cloneDeep, compact, isNil } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 
+import { type AssignmentsOverviewTableState } from '../admin/assignments/assignments.types';
 import { ItemsService } from '../admin/items/items.service';
 import { CollectionService } from '../collection/collection.service';
 import { type AssignmentMarcomEntry } from '../collection/collection.types';
@@ -23,8 +24,6 @@ import {
 	type GetAssignmentBlocksQueryVariables,
 	type GetAssignmentByTitleOrDescriptionQuery,
 	type GetAssignmentByTitleOrDescriptionQueryVariables,
-	type GetAssignmentIdsQuery,
-	type GetAssignmentIdsQueryVariables,
 	type GetAssignmentResponseByIdQuery,
 	type GetAssignmentResponseByIdQueryVariables,
 	type GetAssignmentResponseQuery,
@@ -58,7 +57,6 @@ import {
 	DeleteAssignmentsByIdDocument,
 	GetAssignmentBlocksDocument,
 	GetAssignmentByTitleOrDescriptionDocument,
-	GetAssignmentIdsDocument,
 	GetAssignmentResponseByIdDocument,
 	GetAssignmentResponseDocument,
 	GetAssignmentResponsesByAssignmentIdDocument,
@@ -1106,7 +1104,7 @@ export class AssignmentService {
 		sortColumn: AssignmentTableColumns,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
-		where: any = {}
+		filters: Partial<AssignmentsOverviewTableState> = {}
 	): Promise<[Avo.Assignment.Assignment[], number]> {
 		try {
 			return fetchWithLogoutJson(
@@ -1118,7 +1116,7 @@ export class AssignmentService {
 						sortColumn,
 						sortOrder,
 						tableColumnDataType,
-						where: JSON.stringify(where),
+						filters: JSON.stringify(filters),
 					},
 				})
 			);
@@ -1129,46 +1127,7 @@ export class AssignmentService {
 				sortColumn,
 				sortOrder,
 				tableColumnDataType,
-				where,
-			});
-		}
-	}
-
-	static async getAssignmentIds(where: any = {}): Promise<string[]> {
-		let variables;
-		try {
-			const whereWithoutDeleted = {
-				...where,
-				is_deleted: { _eq: false },
-			};
-
-			variables = {
-				where: whereWithoutDeleted,
-			};
-
-			const response = await dataService.query<
-				GetAssignmentIdsQuery,
-				GetAssignmentIdsQueryVariables
-			>({
-				variables,
-				query: GetAssignmentIdsDocument,
-			});
-
-			const assignmentIds: string[] = (response?.app_assignments_v2 || []).map(
-				(assignment) => assignment.id
-			);
-
-			if (!assignmentIds) {
-				throw new CustomError('Response does not contain any assignment ids', null, {
-					response,
-				});
-			}
-
-			return assignmentIds;
-		} catch (err) {
-			throw new CustomError('Failed to get assignment ids from the database', err, {
-				variables,
-				query: 'GET_ASSIGNMENT_IDS',
+				filters,
 			});
 		}
 	}
