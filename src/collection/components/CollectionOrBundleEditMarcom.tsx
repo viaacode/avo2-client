@@ -31,6 +31,7 @@ import { type App_Collection_Marcom_Log_Insert_Input } from '../../shared/genera
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
+import { extractKlascementError } from '../../shared/helpers/extract-klascement-error';
 import { formatDate } from '../../shared/helpers/formatters';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
@@ -169,10 +170,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 			const avoError = tText(
 				'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement-mislukt'
 			);
-			const klascementError = (err as any)?.innerException?.additionalInfo?.responseBody
-				?.additionalInfo?.klascementError?.uitzonderingen?.[0]?.diagnose;
-
-			ToastService.danger(compact([avoError, klascementError]).join(': '));
+			ToastService.danger(compact([avoError, extractKlascementError(err)]).join(': '));
 		}
 	};
 

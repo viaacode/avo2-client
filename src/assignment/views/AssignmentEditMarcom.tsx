@@ -20,7 +20,7 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { get, isNil } from 'lodash-es';
+import { compact, get, isNil } from 'lodash-es';
 import React, { type FC, type ReactNode, useMemo, useState } from 'react';
 import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -38,6 +38,7 @@ import { type MarcomNoteInfo } from '../../collection/components/CollectionOrBun
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { getEnv } from '../../shared/helpers/env';
+import { extractKlascementError } from '../../shared/helpers/extract-klascement-error';
 import { formatDate } from '../../shared/helpers/formatters';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
@@ -100,11 +101,10 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 				tText('assignment/views/assignment-edit-marcom___publiceren-naar-klascement-gelukt')
 			);
 		} catch (err) {
-			ToastService.danger(
-				tText(
-					'assignment/views/assignment-edit-marcom___publiceren-naar-klascement-mislukt'
-				)
+			const avoError = tText(
+				'assignment/views/assignment-edit-marcom___publiceren-naar-klascement-mislukt'
 			);
+			ToastService.danger(compact([avoError, extractKlascementError(err)]).join(': '));
 		}
 	};
 
