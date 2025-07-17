@@ -10,6 +10,7 @@ import { QueryParamProvider } from 'use-query-params';
 
 import { LoginMessage } from '../authentication/authentication.types';
 import { EmbedCodeService } from '../embed-code/embed-code-service';
+import { toEmbedCodeDetail } from '../embed-code/helpers/links';
 import { ErrorView } from '../error/views';
 import { CustomError } from '../shared/helpers/custom-error';
 import { isUuid } from '../shared/helpers/isUuid';
@@ -48,6 +49,22 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 			});
 	};
 
+	const isRenderedInAnIframe = () => {
+		let isIframe = false;
+
+		// A parent can have 0, 1 or multiple iframes
+		// When not rendered in an iframe, most likely the parent.frames.length will be 0
+		// If the document matches 1 of the parent.frames this means this iframe is rendered as iframe
+		for (let i = 0; i < parent.frames.length; i++) {
+			const currentFrame = parent.frames[i];
+			if (currentFrame.document === document) {
+				isIframe = true;
+				break;
+			}
+		}
+		return isIframe;
+	};
+
 	/*
 	 * Method called by the explicit click on the reload button of the Error View
 	 * Normally we should have the original URL with the JWT token, but just in case we check and log an error if something is wrong
@@ -79,6 +96,16 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 
 		if (foundEmbedId && isUuid(foundEmbedId)) {
 			setEmbedId(foundEmbedId);
+
+			// If the embed code url is loaded outside an iframe, we'll redirect to the view url of that embed
+			// eg: /embed/506951e8-a3c9-4e2a-80aa-8e68531add20 => /ingesloten-fragment/506951e8-a3c9-4e2a-80aa-8e68531add20
+			// https://meemoo.atlassian.net/browse/AVO-3719
+			if (!isRenderedInAnIframe()) {
+				const newUrl = toEmbedCodeDetail(foundEmbedId);
+				window.location.href = newUrl;
+				window.history.replaceState(null, '', newUrl);
+				return;
+			}
 		}
 
 		// Get the parentPage from the URL query parameters if they are present
