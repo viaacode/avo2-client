@@ -97,7 +97,9 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 		if (foundEmbedId && isUuid(foundEmbedId)) {
 			setEmbedId(foundEmbedId);
 
-			// When the embed is not rendered in an iframe, we'll redirect to /ingesloten-fragmenten/uuid on AVO itself instead of the embed app
+			// If the embed code url is loaded outside an iframe, we'll redirect to the view url of that embed
+			// eg: /embed/506951e8-a3c9-4e2a-80aa-8e68531add20 => /ingesloten-fragment/506951e8-a3c9-4e2a-80aa-8e68531add20
+			// https://meemoo.atlassian.net/browse/AVO-3719
 			if (!isRenderedInAnIframe()) {
 				const newUrl = toEmbedCodeDetail(foundEmbedId);
 				window.location.href = newUrl;
