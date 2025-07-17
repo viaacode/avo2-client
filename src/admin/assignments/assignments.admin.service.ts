@@ -95,7 +95,7 @@ export class AssignmentsAdminService {
 				assignmentIds: string[];
 			}>(
 				stringifyUrl({
-					url: `${getEnv('PROXY_URL')}/assignments/admin-overview/ids`,
+					url: `${getEnv('PROXY_URL')}/assignments/admin/overview/ids`,
 					query: {
 						filters: JSON.stringify(filters),
 					},
@@ -103,64 +103,29 @@ export class AssignmentsAdminService {
 			);
 			return response?.assignmentIds || [];
 		} catch (err) {
-			throw new CustomError('Failed to get collection ids from the database', err, {
+			throw new CustomError('Failed to get assignment ids from the database', err, {
 				filters,
 			});
 		}
 	}
 
-	static async bulkUpdateAuthorForAssignments(
-		authorId: string,
-		assignmentIds: string[]
-	): Promise<void> {
-		let url: string | undefined = undefined;
+	static async getAssignmentMarcomIds(filters: any): Promise<string[]> {
 		try {
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
-			url = `${getEnv('PROXY_URL')}/assignments/bulk/change-user`;
-			await fetchWithLogoutJson<{
+			const response = await fetchWithLogoutJson<{
 				assignmentIds: string[];
 			}>(
 				stringifyUrl({
-					url,
+					url: `${getEnv('PROXY_URL')}/assignments/admin/overview/marcom/ids`,
 					query: {
-						authorId,
-						assignmentIds,
+						filters: JSON.stringify(filters),
 					},
 				})
 			);
+			return response?.assignmentIds || [];
 		} catch (err) {
-			throw new CustomError('Failed to update author for assignments in the database', err, {
-				url,
-				authorId,
-				assignmentIds,
-				query: 'BulkUpdateAuthorForAssignments',
-			});
-		}
-	}
-
-	static async bulkDeleteAssignments(
-		assignmentIds: string[],
-		updatedByProfileId: string
-	): Promise<void> {
-		let url: string | undefined = undefined;
-		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
-			url = `${getEnv('PROXY_URL')}/assignments/bulk/delete`;
-			await fetchWithLogoutJson<{
-				assignmentIds: string[];
-			}>(
-				stringifyUrl({
-					url,
-					query: {
-						assignmentIds,
-						updatedByProfileId,
-					},
-				})
-			);
-		} catch (err) {
-			throw new CustomError('Failed to delete assignments in the database', err, {
-				assignmentIds,
-				query: 'BULK_DELETE_ASSIGNMENTS',
+			throw new CustomError('Failed to get assignment marcom ids from the database', err, {
+				filters,
 			});
 		}
 	}

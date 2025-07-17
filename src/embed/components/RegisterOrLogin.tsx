@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import AvoLogo from '@assets/images/avo-logo-centered.svg';
-import { Column, Grid, Icon, IconName, Spacer, Tabs } from '@viaa/avo2-components';
+import { Column, Grid, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 import { withRouter } from 'react-router';
 

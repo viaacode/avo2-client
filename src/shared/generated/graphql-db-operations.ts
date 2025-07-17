@@ -296,13 +296,6 @@ export type GetAssignmentByTitleOrDescriptionQueryVariables = Exact<{
 
 export type GetAssignmentByTitleOrDescriptionQuery = { __typename?: 'query_root', assignmentByTitle: Array<{ __typename?: 'app_assignments_v2', id: any }>, assignmentByDescription: Array<{ __typename?: 'app_assignments_v2', id: any }> };
 
-export type GetAssignmentIdsQueryVariables = Exact<{
-  where: App_Assignments_V2_Bool_Exp;
-}>;
-
-
-export type GetAssignmentIdsQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any }> };
-
 export type GetAssignmentResponseQueryVariables = Exact<{
   profileId: Scalars['uuid'];
   assignmentId: Scalars['uuid'];
