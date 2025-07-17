@@ -39,6 +39,7 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 		data: loginState,
 		isLoading: loginStateLoading,
 		refetch: checkLoginAgain,
+		isRefetching: refetchingLoginState,
 	} = useGetLoginStateForEmbed();
 
 	const doCheckLoginStateAgain = async () => {
@@ -159,7 +160,7 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 			return <EmbedErrorView message={errorMessage} icon={errorIcon} />;
 		}
 
-		if (loginStateLoading || !translationsLoaded) {
+		if (loginStateLoading || refetchingLoginState || !translationsLoaded) {
 			// Wait for login check
 			return (
 				<Flex center style={{ height: '100%' }}>
