@@ -49,7 +49,7 @@ const EditEmbedCodeModal: FC<EditEmbedCodeModalProps> = ({
 		>
 			<ModalBody>
 				<EmbedContent
-					item={embedCode}
+					item={embedCode || null}
 					contentDescription={renderEmbedContentDescription()}
 					onClose={onClose}
 					onSave={handleUpdate}

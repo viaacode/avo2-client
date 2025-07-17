@@ -1,6 +1,6 @@
 import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { type Avo } from '@viaa/avo2-types';
-import { first, get, isNil, noop, partition, without } from 'lodash-es';
+import { noop, partition } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps, withRouter } from 'react-router-dom';
@@ -19,10 +19,8 @@ import {
 	type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
-import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import { EducationLevelType } from '../../../shared/helpers/lom';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
@@ -37,15 +35,7 @@ import FilterTable, {
 	getFilters,
 } from '../../shared/components/FilterTable/FilterTable';
 import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
-import {
-	generateEducationLevelFilter,
-	generateEducationLomFilter,
-	generateLomFilter,
-	getBooleanFilters,
-	getDateRangeFilters,
-	getMultiOptionFilters,
-	NULL_FILTER,
-} from '../../shared/helpers/filters';
+import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { type PickerItem } from '../../shared/types';
@@ -62,6 +52,7 @@ import {
 } from '../helpers/render-assignment-columns';
 
 import './AssignmentsOverviewAdmin.scss';
+import { AssignmentsAdminService } from '../assignments.admin.service';
 
 const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
@@ -148,189 +139,6 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 		[userGroupOptions, assignmentLabelOptions, subjects, educationLevelsAndDegrees]
 	);
 
-	const generateWhereObject = useCallback(
-		(filters: Partial<AssignmentsOverviewTableState>) => {
-			const andFilters: any[] = [];
-
-			// Text search
-			if (filters.query) {
-				const query = `%${filters.query}%`;
-
-				andFilters.push({
-					_or: [
-						{ title: { _ilike: query } },
-						{ owner: { full_name: { _ilike: query } } },
-					],
-				});
-			}
-
-			// Author multi option filter
-			andFilters.push(...getMultiOptionFilters(filters, ['author'], ['owner.profile_id']));
-
-			// Date filters
-			andFilters.push(
-				...getDateRangeFilters(
-					filters,
-					['created_at', 'updated_at', 'deadline_at'],
-					['created_at', 'updated_at', 'deadline_at']
-				)
-			);
-
-			// Status filter: active/expired
-			if (!isNil(filters.status?.[0]) && filters.status?.length === 1) {
-				if (filters.status?.[0] === 'true') {
-					// Active assignment
-					andFilters.push({
-						deadline_at: {
-							_gte: new Date().toISOString(),
-						},
-					});
-				} else {
-					// Assignment past deadline
-					andFilters.push({
-						deadline_at: {
-							_lt: new Date().toISOString(),
-						},
-					});
-				}
-			}
-
-			andFilters.push(...getBooleanFilters(filters, ['is_public']));
-
-			// pupil collections filter: has collections, does not have collections
-			if (!isNil(filters.responses?.[0]) && filters.responses?.length === 1) {
-				if (filters.responses?.[0] === 'true') {
-					// Assignments with pupil collections
-					andFilters.push({
-						responses: {},
-					});
-				} else {
-					// Assignments without pupil collections
-					andFilters.push({
-						_not: {
-							responses: {},
-						},
-					});
-				}
-			}
-
-			// user group
-			if (filters.author_user_group?.length) {
-				const defaultGroupFilter = {
-					profile: {
-						profile_user_group: {
-							group: {
-								id: {
-									_in: without(filters.author_user_group, NULL_FILTER),
-								},
-							},
-						},
-					},
-				};
-
-				const defaultNullFilter = { profile: { _not: { profile_user_groups: {} } } };
-
-				const groupFilter = [defaultGroupFilter];
-				andFilters.push({
-					_or: [
-						...groupFilter,
-						...(filters.author_user_group.includes(NULL_FILTER)
-							? [defaultNullFilter]
-							: []),
-					],
-				});
-			}
-
-			// is copy
-			const isCopy = first(get(filters, 'is_copy'));
-			if (!isNil(isCopy)) {
-				if (isCopy === 'true') {
-					andFilters.push({
-						relations: { predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsCopyOf } },
-					});
-				} else if (isCopy === 'false') {
-					andFilters.push({
-						_not: {
-							relations: {
-								predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsCopyOf },
-							},
-						},
-					});
-				}
-			}
-
-			// labels
-			if (filters.quality_labels?.length) {
-				const filterKey = 'quality_labels';
-
-				andFilters.push({
-					_or: [
-						{
-							[filterKey]: {
-								enum_collection_label: {
-									value: {
-										_in: filters.quality_labels,
-									},
-								},
-							},
-						},
-						...(filters.quality_labels.includes(NULL_FILTER)
-							? [{ _not: { [filterKey]: {} } }]
-							: []),
-					],
-				});
-			}
-
-			// subjects
-			if (filters.subjects?.length) {
-				andFilters.push(generateLomFilter(filters.subjects, EducationLevelType.vak));
-			}
-
-			// // Enable when meemoo requests a column and folder for lom themes
-			// if (filters.themes && filters.themes.length) {
-			// 	andFilters.push(
-			// 		generateLomFilter(filters.themes, EducationLevelType.thema)
-			// 	);
-			// }
-
-			// Education levels
-			if (filters.education_levels && filters.education_levels.length) {
-				andFilters.push(
-					generateEducationLomFilter(
-						filters.education_levels,
-						(educationLevelsAndDegrees || [])
-							.filter((item) => !item.broader)
-							.map((item) => item.id)
-					)
-				);
-			}
-
-			// Education degrees
-			if (filters.education_degrees?.length) {
-				andFilters.push(
-					generateEducationLomFilter(
-						filters.education_degrees,
-						(educationLevelsAndDegrees || [])
-							.filter((item) => !!item.broader)
-							.map((item) => item.id)
-					)
-				);
-			}
-
-			if (filters.education_level_id) {
-				andFilters.push(
-					generateEducationLevelFilter(
-						filters.education_level_id,
-						EducationLevelType.structuur
-					)
-				);
-			}
-
-			return { _and: andFilters };
-		},
-		[educationLevelsAndDegrees]
-	);
-
 	const getColumnDataType = useCallback(() => {
 		const column = tableColumns.find((tableColumn: FilterableColumn) => {
 			return tableColumn.id === (tableState.sort_column || 'empty');
@@ -348,7 +156,7 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 					(tableState.sort_column || 'created_at') as AssignmentTableColumns,
 					tableState.sort_order || OrderDirection.desc,
 					getColumnDataType(),
-					generateWhereObject(getFilters(tableState))
+					getFilters(tableState)
 				);
 
 			setAssignments(assignmentsTemp);
@@ -365,7 +173,7 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 			});
 		}
 		setIsLoading(false);
-	}, [tableState, getColumnDataType, generateWhereObject, tHtml]);
+	}, [tableState, getColumnDataType, tHtml]);
 
 	useEffect(() => {
 		if (commonUser && educationLevelsAndDegrees?.length) {
@@ -384,8 +192,8 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 	const setAllAssignmentsAsSelected = async () => {
 		setIsLoading(true);
 		try {
-			const assignmentIds = await AssignmentService.getAssignmentIds(
-				generateWhereObject(getFilters(tableState))
+			const assignmentIds = await AssignmentsAdminService.getAssignmentIds(
+				getFilters(tableState)
 			);
 			ToastService.info(
 				tHtml(

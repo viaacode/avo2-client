@@ -16762,6 +16762,7 @@ export type App_Embed_Codes = {
   owner: Users_Profiles;
   owner_profile_id: Scalars['uuid'];
   start_oc?: Maybe<Scalars['Int']>;
+  thumbnail_path?: Maybe<Scalars['String']>;
   title: Scalars['String'];
   updated_at: Scalars['timestamp'];
 };
@@ -16822,6 +16823,7 @@ export type App_Embed_Codes_Bool_Exp = {
   owner?: InputMaybe<Users_Profiles_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   start_oc?: InputMaybe<Int_Comparison_Exp>;
+  thumbnail_path?: InputMaybe<String_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
 };
@@ -16854,6 +16856,7 @@ export type App_Embed_Codes_Insert_Input = {
   owner?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   start_oc?: InputMaybe<Scalars['Int']>;
+  thumbnail_path?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamp']>;
 };
@@ -16871,6 +16874,7 @@ export type App_Embed_Codes_Max_Fields = {
   id?: Maybe<Scalars['uuid']>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   start_oc?: Maybe<Scalars['Int']>;
+  thumbnail_path?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamp']>;
 };
@@ -17071,6 +17075,7 @@ export type App_Embed_Codes_Min_Fields = {
   id?: Maybe<Scalars['uuid']>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   start_oc?: Maybe<Scalars['Int']>;
+  thumbnail_path?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamp']>;
 };
@@ -17107,6 +17112,7 @@ export type App_Embed_Codes_Order_By = {
   owner?: InputMaybe<Users_Profiles_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   start_oc?: InputMaybe<Order_By>;
+  thumbnail_path?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -17139,6 +17145,8 @@ export enum App_Embed_Codes_Select_Column {
   /** column name */
   StartOc = 'start_oc',
   /** column name */
+  ThumbnailPath = 'thumbnail_path',
+  /** column name */
   Title = 'title',
   /** column name */
   UpdatedAt = 'updated_at'
@@ -17156,6 +17164,7 @@ export type App_Embed_Codes_Set_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   start_oc?: InputMaybe<Scalars['Int']>;
+  thumbnail_path?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamp']>;
 };
@@ -17201,6 +17210,7 @@ export type App_Embed_Codes_Stream_Cursor_Value_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   start_oc?: InputMaybe<Scalars['Int']>;
+  thumbnail_path?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamp']>;
 };
@@ -17234,6 +17244,8 @@ export enum App_Embed_Codes_Update_Column {
   OwnerProfileId = 'owner_profile_id',
   /** column name */
   StartOc = 'start_oc',
+  /** column name */
+  ThumbnailPath = 'thumbnail_path',
   /** column name */
   Title = 'title',
   /** column name */
@@ -26325,6 +26337,10 @@ export type Mutation_Root = {
   delete_users_profile_flags?: Maybe<Users_Profile_Flags_Mutation_Response>;
   /** delete single row from the table: "users.profile_flags" */
   delete_users_profile_flags_by_pk?: Maybe<Users_Profile_Flags>;
+  /** delete data from the table: "users.profile_klascement_user_ids" */
+  delete_users_profile_klascement_user_ids?: Maybe<Users_Profile_Klascement_User_Ids_Mutation_Response>;
+  /** delete single row from the table: "users.profile_klascement_user_ids" */
+  delete_users_profile_klascement_user_ids_by_pk?: Maybe<Users_Profile_Klascement_User_Ids>;
   /** delete data from the table: "users.profile_preferences" */
   delete_users_profile_preferences?: Maybe<Users_Profile_Preferences_Mutation_Response>;
   /** delete single row from the table: "users.profile_preferences" */
@@ -26725,6 +26741,10 @@ export type Mutation_Root = {
   insert_users_profile_flags?: Maybe<Users_Profile_Flags_Mutation_Response>;
   /** insert a single row into the table: "users.profile_flags" */
   insert_users_profile_flags_one?: Maybe<Users_Profile_Flags>;
+  /** insert data into the table: "users.profile_klascement_user_ids" */
+  insert_users_profile_klascement_user_ids?: Maybe<Users_Profile_Klascement_User_Ids_Mutation_Response>;
+  /** insert a single row into the table: "users.profile_klascement_user_ids" */
+  insert_users_profile_klascement_user_ids_one?: Maybe<Users_Profile_Klascement_User_Ids>;
   /** insert data into the table: "users.profile_preferences" */
   insert_users_profile_preferences?: Maybe<Users_Profile_Preferences_Mutation_Response>;
   /** insert a single row into the table: "users.profile_preferences" */
@@ -27311,6 +27331,12 @@ export type Mutation_Root = {
   update_users_profile_flags_by_pk?: Maybe<Users_Profile_Flags>;
   /** update multiples rows of table: "users.profile_flags" */
   update_users_profile_flags_many?: Maybe<Array<Maybe<Users_Profile_Flags_Mutation_Response>>>;
+  /** update data of the table: "users.profile_klascement_user_ids" */
+  update_users_profile_klascement_user_ids?: Maybe<Users_Profile_Klascement_User_Ids_Mutation_Response>;
+  /** update single row of the table: "users.profile_klascement_user_ids" */
+  update_users_profile_klascement_user_ids_by_pk?: Maybe<Users_Profile_Klascement_User_Ids>;
+  /** update multiples rows of table: "users.profile_klascement_user_ids" */
+  update_users_profile_klascement_user_ids_many?: Maybe<Array<Maybe<Users_Profile_Klascement_User_Ids_Mutation_Response>>>;
   /** update data of the table: "users.profile_preferences" */
   update_users_profile_preferences?: Maybe<Users_Profile_Preferences_Mutation_Response>;
   /** update single row of the table: "users.profile_preferences" */
@@ -28475,6 +28501,18 @@ export type Mutation_RootDelete_Users_Profile_FlagsArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Users_Profile_Flags_By_PkArgs = {
   id: Scalars['Int'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Users_Profile_Klascement_User_IdsArgs = {
+  where: Users_Profile_Klascement_User_Ids_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Users_Profile_Klascement_User_Ids_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -29861,6 +29899,20 @@ export type Mutation_RootInsert_Users_Profile_FlagsArgs = {
 export type Mutation_RootInsert_Users_Profile_Flags_OneArgs = {
   object: Users_Profile_Flags_Insert_Input;
   on_conflict?: InputMaybe<Users_Profile_Flags_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Users_Profile_Klascement_User_IdsArgs = {
+  objects: Array<Users_Profile_Klascement_User_Ids_Insert_Input>;
+  on_conflict?: InputMaybe<Users_Profile_Klascement_User_Ids_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Users_Profile_Klascement_User_Ids_OneArgs = {
+  object: Users_Profile_Klascement_User_Ids_Insert_Input;
+  on_conflict?: InputMaybe<Users_Profile_Klascement_User_Ids_On_Conflict>;
 };
 
 
@@ -32084,6 +32136,26 @@ export type Mutation_RootUpdate_Users_Profile_Flags_ManyArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Users_Profile_Klascement_User_IdsArgs = {
+  _set?: InputMaybe<Users_Profile_Klascement_User_Ids_Set_Input>;
+  where: Users_Profile_Klascement_User_Ids_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Users_Profile_Klascement_User_Ids_By_PkArgs = {
+  _set?: InputMaybe<Users_Profile_Klascement_User_Ids_Set_Input>;
+  pk_columns: Users_Profile_Klascement_User_Ids_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Users_Profile_Klascement_User_Ids_ManyArgs = {
+  updates: Array<Users_Profile_Klascement_User_Ids_Updates>;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_Users_Profile_PreferencesArgs = {
   _append?: InputMaybe<Users_Profile_Preferences_Append_Input>;
   _delete_at_path?: InputMaybe<Users_Profile_Preferences_Delete_At_Path_Input>;
@@ -32892,6 +32964,12 @@ export type Query_Root = {
   users_profile_flags_aggregate: Users_Profile_Flags_Aggregate;
   /** fetch data from the table: "users.profile_flags" using primary key columns */
   users_profile_flags_by_pk?: Maybe<Users_Profile_Flags>;
+  /** fetch data from the table: "users.profile_klascement_user_ids" */
+  users_profile_klascement_user_ids: Array<Users_Profile_Klascement_User_Ids>;
+  /** fetch aggregated fields from the table: "users.profile_klascement_user_ids" */
+  users_profile_klascement_user_ids_aggregate: Users_Profile_Klascement_User_Ids_Aggregate;
+  /** fetch data from the table: "users.profile_klascement_user_ids" using primary key columns */
+  users_profile_klascement_user_ids_by_pk?: Maybe<Users_Profile_Klascement_User_Ids>;
   /** fetch data from the table: "users.profile_preferences" */
   users_profile_preferences: Array<Users_Profile_Preferences>;
   /** fetch aggregated fields from the table: "users.profile_preferences" */
@@ -35557,6 +35635,29 @@ export type Query_RootUsers_Profile_Flags_AggregateArgs = {
 
 export type Query_RootUsers_Profile_Flags_By_PkArgs = {
   id: Scalars['Int'];
+};
+
+
+export type Query_RootUsers_Profile_Klascement_User_IdsArgs = {
+  distinct_on?: InputMaybe<Array<Users_Profile_Klascement_User_Ids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Profile_Klascement_User_Ids_Order_By>>;
+  where?: InputMaybe<Users_Profile_Klascement_User_Ids_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Profile_Klascement_User_Ids_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Profile_Klascement_User_Ids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Profile_Klascement_User_Ids_Order_By>>;
+  where?: InputMaybe<Users_Profile_Klascement_User_Ids_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Profile_Klascement_User_Ids_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -40087,6 +40188,14 @@ export type Subscription_Root = {
   users_profile_flags_by_pk?: Maybe<Users_Profile_Flags>;
   /** fetch data from the table in a streaming manner: "users.profile_flags" */
   users_profile_flags_stream: Array<Users_Profile_Flags>;
+  /** fetch data from the table: "users.profile_klascement_user_ids" */
+  users_profile_klascement_user_ids: Array<Users_Profile_Klascement_User_Ids>;
+  /** fetch aggregated fields from the table: "users.profile_klascement_user_ids" */
+  users_profile_klascement_user_ids_aggregate: Users_Profile_Klascement_User_Ids_Aggregate;
+  /** fetch data from the table: "users.profile_klascement_user_ids" using primary key columns */
+  users_profile_klascement_user_ids_by_pk?: Maybe<Users_Profile_Klascement_User_Ids>;
+  /** fetch data from the table in a streaming manner: "users.profile_klascement_user_ids" */
+  users_profile_klascement_user_ids_stream: Array<Users_Profile_Klascement_User_Ids>;
   /** fetch data from the table: "users.profile_preferences" */
   users_profile_preferences: Array<Users_Profile_Preferences>;
   /** fetch aggregated fields from the table: "users.profile_preferences" */
@@ -43604,6 +43713,36 @@ export type Subscription_RootUsers_Profile_Flags_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<Users_Profile_Flags_Stream_Cursor_Input>>;
   where?: InputMaybe<Users_Profile_Flags_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Profile_Klascement_User_IdsArgs = {
+  distinct_on?: InputMaybe<Array<Users_Profile_Klascement_User_Ids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Profile_Klascement_User_Ids_Order_By>>;
+  where?: InputMaybe<Users_Profile_Klascement_User_Ids_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Profile_Klascement_User_Ids_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Profile_Klascement_User_Ids_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Profile_Klascement_User_Ids_Order_By>>;
+  where?: InputMaybe<Users_Profile_Klascement_User_Ids_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Profile_Klascement_User_Ids_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootUsers_Profile_Klascement_User_Ids_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Users_Profile_Klascement_User_Ids_Stream_Cursor_Input>>;
+  where?: InputMaybe<Users_Profile_Klascement_User_Ids_Bool_Exp>;
 };
 
 
@@ -47325,6 +47464,186 @@ export type Users_Profile_Flags_Variance_Order_By = {
   id?: InputMaybe<Order_By>;
 };
 
+/** stores the klascement user ids that are used to publish educational materials to klascement through their api */
+export type Users_Profile_Klascement_User_Ids = {
+  __typename?: 'users_profile_klascement_user_ids';
+  avo_profile_id: Scalars['uuid'];
+  created_at: Scalars['timestamptz'];
+  id: Scalars['uuid'];
+  klascement_user_id: Scalars['String'];
+  updated_at: Scalars['timestamptz'];
+};
+
+/** aggregated selection of "users.profile_klascement_user_ids" */
+export type Users_Profile_Klascement_User_Ids_Aggregate = {
+  __typename?: 'users_profile_klascement_user_ids_aggregate';
+  aggregate?: Maybe<Users_Profile_Klascement_User_Ids_Aggregate_Fields>;
+  nodes: Array<Users_Profile_Klascement_User_Ids>;
+};
+
+/** aggregate fields of "users.profile_klascement_user_ids" */
+export type Users_Profile_Klascement_User_Ids_Aggregate_Fields = {
+  __typename?: 'users_profile_klascement_user_ids_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Users_Profile_Klascement_User_Ids_Max_Fields>;
+  min?: Maybe<Users_Profile_Klascement_User_Ids_Min_Fields>;
+};
+
+
+/** aggregate fields of "users.profile_klascement_user_ids" */
+export type Users_Profile_Klascement_User_Ids_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Users_Profile_Klascement_User_Ids_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "users.profile_klascement_user_ids". All fields are combined with a logical 'AND'. */
+export type Users_Profile_Klascement_User_Ids_Bool_Exp = {
+  _and?: InputMaybe<Array<Users_Profile_Klascement_User_Ids_Bool_Exp>>;
+  _not?: InputMaybe<Users_Profile_Klascement_User_Ids_Bool_Exp>;
+  _or?: InputMaybe<Array<Users_Profile_Klascement_User_Ids_Bool_Exp>>;
+  avo_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  klascement_user_id?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "users.profile_klascement_user_ids" */
+export enum Users_Profile_Klascement_User_Ids_Constraint {
+  /** unique or primary key constraint on columns "avo_profile_id" */
+  ProfileKlascementUserIdsAvoProfileIdKey = 'profile_klascement_user_ids_avo_profile_id_key',
+  /** unique or primary key constraint on columns "klascement_user_id", "avo_profile_id" */
+  ProfileKlascementUserIdsAvoProfileIdKlascementUserKey = 'profile_klascement_user_ids_avo_profile_id_klascement_user__key',
+  /** unique or primary key constraint on columns "id" */
+  ProfileKlascementUserIdsPkey = 'profile_klascement_user_ids_pkey'
+}
+
+/** input type for inserting data into table "users.profile_klascement_user_ids" */
+export type Users_Profile_Klascement_User_Ids_Insert_Input = {
+  avo_profile_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  klascement_user_id?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type Users_Profile_Klascement_User_Ids_Max_Fields = {
+  __typename?: 'users_profile_klascement_user_ids_max_fields';
+  avo_profile_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  klascement_user_id?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type Users_Profile_Klascement_User_Ids_Min_Fields = {
+  __typename?: 'users_profile_klascement_user_ids_min_fields';
+  avo_profile_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  klascement_user_id?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** response of any mutation on the table "users.profile_klascement_user_ids" */
+export type Users_Profile_Klascement_User_Ids_Mutation_Response = {
+  __typename?: 'users_profile_klascement_user_ids_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Users_Profile_Klascement_User_Ids>;
+};
+
+/** input type for inserting object relation for remote table "users.profile_klascement_user_ids" */
+export type Users_Profile_Klascement_User_Ids_Obj_Rel_Insert_Input = {
+  data: Users_Profile_Klascement_User_Ids_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Users_Profile_Klascement_User_Ids_On_Conflict>;
+};
+
+/** on_conflict condition type for table "users.profile_klascement_user_ids" */
+export type Users_Profile_Klascement_User_Ids_On_Conflict = {
+  constraint: Users_Profile_Klascement_User_Ids_Constraint;
+  update_columns?: Array<Users_Profile_Klascement_User_Ids_Update_Column>;
+  where?: InputMaybe<Users_Profile_Klascement_User_Ids_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "users.profile_klascement_user_ids". */
+export type Users_Profile_Klascement_User_Ids_Order_By = {
+  avo_profile_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  klascement_user_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: users.profile_klascement_user_ids */
+export type Users_Profile_Klascement_User_Ids_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "users.profile_klascement_user_ids" */
+export enum Users_Profile_Klascement_User_Ids_Select_Column {
+  /** column name */
+  AvoProfileId = 'avo_profile_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  KlascementUserId = 'klascement_user_id',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "users.profile_klascement_user_ids" */
+export type Users_Profile_Klascement_User_Ids_Set_Input = {
+  avo_profile_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  klascement_user_id?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** Streaming cursor of the table "users_profile_klascement_user_ids" */
+export type Users_Profile_Klascement_User_Ids_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Users_Profile_Klascement_User_Ids_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Users_Profile_Klascement_User_Ids_Stream_Cursor_Value_Input = {
+  avo_profile_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  klascement_user_id?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** update columns of table "users.profile_klascement_user_ids" */
+export enum Users_Profile_Klascement_User_Ids_Update_Column {
+  /** column name */
+  AvoProfileId = 'avo_profile_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  KlascementUserId = 'klascement_user_id',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+export type Users_Profile_Klascement_User_Ids_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Users_Profile_Klascement_User_Ids_Set_Input>;
+  where: Users_Profile_Klascement_User_Ids_Bool_Exp;
+};
+
 /** Tabel voor optionele voorkeuren of instellingskeuzes gekoppeld aan een gebruikersprofiel. */
 export type Users_Profile_Preferences = {
   __typename?: 'users_profile_preferences';
@@ -48108,6 +48427,8 @@ export type Users_Profiles = {
   item_bookmarks: Array<App_Item_Bookmarks>;
   /** An aggregate relationship */
   item_bookmarks_aggregate: App_Item_Bookmarks_Aggregate;
+  /** An object relationship */
+  klascement_user_id_info?: Maybe<Users_Profile_Klascement_User_Ids>;
   language: Lookup_Languages_Enum;
   /** An array relationship */
   loms: Array<Users_Profiles_Lom_Links>;
@@ -48546,6 +48867,7 @@ export type Users_Profiles_Bool_Exp = {
   is_exception?: InputMaybe<Boolean_Comparison_Exp>;
   item_bookmarks?: InputMaybe<App_Item_Bookmarks_Bool_Exp>;
   item_bookmarks_aggregate?: InputMaybe<App_Item_Bookmarks_Aggregate_Bool_Exp>;
+  klascement_user_id_info?: InputMaybe<Users_Profile_Klascement_User_Ids_Bool_Exp>;
   language?: InputMaybe<Lookup_Languages_Enum_Comparison_Exp>;
   loms?: InputMaybe<Users_Profiles_Lom_Links_Bool_Exp>;
   loms_aggregate?: InputMaybe<Users_Profiles_Lom_Links_Aggregate_Bool_Exp>;
@@ -48607,6 +48929,7 @@ export type Users_Profiles_Insert_Input = {
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   is_exception?: InputMaybe<Scalars['Boolean']>;
   item_bookmarks?: InputMaybe<App_Item_Bookmarks_Arr_Rel_Insert_Input>;
+  klascement_user_id_info?: InputMaybe<Users_Profile_Klascement_User_Ids_Obj_Rel_Insert_Input>;
   language?: InputMaybe<Lookup_Languages_Enum>;
   loms?: InputMaybe<Users_Profiles_Lom_Links_Arr_Rel_Insert_Input>;
   notifications?: InputMaybe<Users_Notifications_Arr_Rel_Insert_Input>;
@@ -48946,6 +49269,7 @@ export type Users_Profiles_Order_By = {
   is_deleted?: InputMaybe<Order_By>;
   is_exception?: InputMaybe<Order_By>;
   item_bookmarks_aggregate?: InputMaybe<App_Item_Bookmarks_Aggregate_Order_By>;
+  klascement_user_id_info?: InputMaybe<Users_Profile_Klascement_User_Ids_Order_By>;
   language?: InputMaybe<Order_By>;
   loms_aggregate?: InputMaybe<Users_Profiles_Lom_Links_Aggregate_Order_By>;
   notifications_aggregate?: InputMaybe<Users_Notifications_Aggregate_Order_By>;
