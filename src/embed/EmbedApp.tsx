@@ -97,6 +97,7 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 		if (foundEmbedId && isUuid(foundEmbedId)) {
 			setEmbedId(foundEmbedId);
 
+			// When the embed is not rendered in an iframe, we'll redirect to /ingesloten-fragmenten/uuid on AVO itself instead of the embed app
 			if (!isRenderedInAnIframe()) {
 				const newUrl = toEmbedCodeDetail(foundEmbedId);
 				window.location.href = newUrl;
