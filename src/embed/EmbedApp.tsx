@@ -139,7 +139,9 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 	 */
 	useEffect(() => {
 		doCheckLoginStateAgain();
-	}, [doCheckLoginStateAgain]);
+		// Not updating the dependencies array otherwise we will end up in and endless loop of loading and login screen flickering
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	/**
 	 * Wait for translations to be loaded before rendering the app
