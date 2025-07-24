@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import queryString from 'query-string';
-import React, { type FC, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 import { Route, type RouteComponentProps } from 'react-router';
 import { BrowserRouter, withRouter } from 'react-router-dom';
@@ -70,13 +70,13 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 	 * Method called by the explicit click on the reload button of the Error View
 	 * Normally we should have the original URL with the JWT token, but just in case we check and log an error if something is wrong
 	 */
-	const onReloadPage = () => {
+	const onReloadPage = useCallback(() => {
 		if (!originalUrl) {
 			console.error("Can't reload iframe, original iframe url was not stored");
 			return;
 		}
 		window.location.replace(originalUrl);
-	};
+	}, [originalUrl]);
 
 	/**
 	 * Store query params in specific state variables
@@ -157,7 +157,7 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 	}, [setTranslationsLoaded]);
 
 	// Render
-	const renderApp = () => {
+	const renderApp = useCallback(() => {
 		if (errorMessage) {
 			return <EmbedErrorView message={errorMessage} icon={errorIcon} />;
 		}
@@ -196,7 +196,19 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 				onReload={onReloadPage}
 			/>
 		);
-	};
+	}, [
+		embedId,
+		errorIcon,
+		errorMessage,
+		loginState?.message,
+		loginStateLoading,
+		ltiJwtToken,
+		onReloadPage,
+		parentPageUrl,
+		refetchingLoginState,
+		showMetadata,
+		translationsLoaded,
+	]);
 
 	return renderApp();
 };
