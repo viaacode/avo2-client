@@ -15,11 +15,6 @@ export const useGetLoginStateForEmbed = () => {
 		[QUERY_KEYS.GET_LOGIN_STATE_EMBED],
 		async () => {
 			try {
-				// Without a JWT token we know we are not logged in
-				if (!EmbedCodeService.getJwtToken()) {
-					return { message: LoginMessage.LOGGED_OUT };
-				}
-
 				const loginState = (store.getState() as unknown as AppState)?.loginState.data;
 
 				if (loginState?.message === LoginMessage.LOGGED_IN) {
@@ -51,6 +46,7 @@ export const useGetLoginStateForEmbed = () => {
 			refetchOnReconnect: true,
 			refetchOnMount: true,
 			keepPreviousData: true,
+			enabled: !!EmbedCodeService.getJwtToken(),
 		}
 	);
 };
