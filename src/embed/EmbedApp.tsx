@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
-import { noop } from 'lodash-es';
 import queryString from 'query-string';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
@@ -35,20 +34,7 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 	const [showMetadata, setShowMetadata] = useState<boolean>(false);
 	const ltiJwtToken = EmbedCodeService.getJwtToken();
 
-	const {
-		data: loginState,
-		isLoading: loginStateLoading,
-		refetch: checkLoginAgain,
-		isRefetching: refetchingLoginState,
-	} = useGetLoginStateForEmbed();
-
-	const doCheckLoginStateAgain = async () => {
-		await checkLoginAgain()
-			.then(noop)
-			.catch((err) => {
-				console.error(new CustomError('Failed to check login', err));
-			});
-	};
+	const { data: loginState, isLoading: loginStateLoading } = useGetLoginStateForEmbed();
 
 	const isRenderedInAnIframe = () => {
 		let isIframe = false;
@@ -135,15 +121,6 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 	}, []);
 
 	/**
-	 * refresh login state once we have the LTI token, otherwise we will always get a LOGGED_OUT message
-	 */
-	useEffect(() => {
-		doCheckLoginStateAgain();
-		// Not updating the dependencies array otherwise we will end up in and endless loop of loading and login screen flickering
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	/**
 	 * Wait for translations to be loaded before rendering the app
 	 */
 	useEffect(() => {
@@ -162,7 +139,7 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 			return <EmbedErrorView message={errorMessage} icon={errorIcon} />;
 		}
 
-		if (loginStateLoading || refetchingLoginState || !translationsLoaded) {
+		if (loginStateLoading || !translationsLoaded) {
 			// Wait for login check
 			return (
 				<Flex center style={{ height: '100%' }}>
@@ -205,7 +182,6 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 		ltiJwtToken,
 		onReloadPage,
 		parentPageUrl,
-		refetchingLoginState,
 		showMetadata,
 		translationsLoaded,
 	]);
