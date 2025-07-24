@@ -39,15 +39,13 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 	const isRenderedInAnIframe = () => {
 		let isIframe = false;
 
-		// A parent can have 0, 1 or multiple iframes
-		// When not rendered in an iframe, most likely the parent.frames.length will be 0
-		// If the document matches 1 of the parent.frames this means this iframe is rendered as iframe
-		for (let i = 0; i < parent.frames.length; i++) {
-			const currentFrame = parent.frames[i];
-			if (currentFrame.document === document) {
-				isIframe = true;
-				break;
-			}
+		// Try to access the location href of the parent. If we are in an Iframe, this will fail
+		try {
+			window.parent?.location.href;
+		} catch (err) {
+			// Most likely this is an iframe, and we encountered a security error for a cross-origin frame
+			// There is no other reason why the line above would fail otherwise
+			isIframe = true;
 		}
 		return isIframe;
 	};
