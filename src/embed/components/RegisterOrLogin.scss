@@ -12,6 +12,11 @@ $column-spacing: 2.2rem;
 	display: flex;
 	flex-direction: column;
 
+	hr {
+		border-color: $color-gray-100;
+		border-style: solid;
+	}
+
 	.o-grid {
 		flex-grow: 1;
 		margin-right: 0;
