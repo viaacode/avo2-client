@@ -155,7 +155,6 @@ const FilterTable: FC<FilterTableProps> = ({
 			[id]: value,
 			...(id !== 'page' ? { page: 0 } : {}), // Reset the page to 0, when any filter or sort order change is made
 		});
-
 		setTableState(newTableState, 'replace');
 	};
 

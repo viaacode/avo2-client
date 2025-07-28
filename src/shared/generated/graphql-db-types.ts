@@ -4110,6 +4110,8 @@ export type App_Assignments_V2_Marcom_Notes_Updates = {
 /** columns and relationships of "app.assignments_v2_marcom_overview" */
 export type App_Assignments_V2_Marcom_Overview = {
   __typename?: 'app_assignments_v2_marcom_overview';
+  /** An object relationship */
+  assignment?: Maybe<App_Assignments_V2>;
   assignment_id?: Maybe<Scalars['uuid']>;
   channel_name?: Maybe<Scalars['String']>;
   channel_type?: Maybe<Scalars['String']>;
@@ -4203,6 +4205,7 @@ export type App_Assignments_V2_Marcom_Overview_Bool_Exp = {
   _and?: InputMaybe<Array<App_Assignments_V2_Marcom_Overview_Bool_Exp>>;
   _not?: InputMaybe<App_Assignments_V2_Marcom_Overview_Bool_Exp>;
   _or?: InputMaybe<Array<App_Assignments_V2_Marcom_Overview_Bool_Exp>>;
+  assignment?: InputMaybe<App_Assignments_V2_Bool_Exp>;
   assignment_id?: InputMaybe<Uuid_Comparison_Exp>;
   channel_name?: InputMaybe<String_Comparison_Exp>;
   channel_type?: InputMaybe<String_Comparison_Exp>;
@@ -4255,6 +4258,7 @@ export type App_Assignments_V2_Marcom_Overview_Min_Fields = {
 
 /** Ordering options when selecting data from "app.assignments_v2_marcom_overview". */
 export type App_Assignments_V2_Marcom_Overview_Order_By = {
+  assignment?: InputMaybe<App_Assignments_V2_Order_By>;
   assignment_id?: InputMaybe<Order_By>;
   channel_name?: InputMaybe<Order_By>;
   channel_type?: InputMaybe<Order_By>;
@@ -45665,6 +45669,8 @@ export enum Users_Idps_Enum {
   Hetarchief = 'HETARCHIEF',
   /** OAuth service van Klascement op oauth.klascement.be */
   Klascement = 'KLASCEMENT',
+  /** lti idp for embedding videos on external platforms without a user being logged in on the external platform */
+  LtiAnonymous = 'LTI_ANONYMOUS',
   /** bookwidgets lti idp flow for embedding videos in their platform */
   LtiBookwidgets = 'LTI_BOOKWIDGETS',
   /** smartschoollti idp flow for embedding videos in their platform */
