@@ -1,60 +1,51 @@
 import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { IconName } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { OrderDirection } from '../../../search/search.const';
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import {
-	LoadingErrorLoadedComponent,
-	type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useCompanies } from '../../../shared/hooks/useCompanies';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
-import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
-import FilterTable, {
-	type FilterableColumn,
-	getFilters,
-} from '../../shared/components/FilterTable/FilterTable';
-import {
-	getBooleanFilters,
-	getDateRangeFilters,
-	getMultiOptionFilters,
-	getQueryFilter,
-} from '../../shared/helpers/filters';
+import FilterTable from '../../shared/components/FilterTable/FilterTable';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import {
 	renderItemsOverviewTableCell,
 	renderItemsOverviewTableCellText,
 } from '../helpers/render-item-overview-table-cell';
+import { useGetItemsWithFilters } from '../hooks/useGetItemsWithFilters';
 import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
 import { type ItemsOverviewTableCols, type ItemsTableState } from '../items.types';
 
 import { ItemBulkAction } from './ItemsOverview.types';
 
-const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
+const ItemsOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
 
-	const [items, setItems] = useState<Avo.Item.Item[] | null>(null);
-	const [itemCount, setItemCount] = useState<number>(0);
-	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
+	const {
+		data: itemsWithFilters,
+		isLoading,
+		isRefetching,
+		isError,
+	} = useGetItemsWithFilters(tableState);
+
+	const items = itemsWithFilters?.items;
+	const itemCount = itemsWithFilters?.total;
+
 	const [seriesOptions, setSeriesOptions] = useState<CheckboxOption[] | null>(null);
 	const [companies] = useCompanies(true);
-	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] = useState(false);
 
 	const companyOptions = useMemo(
@@ -76,115 +67,7 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 		[companyOptions, seriesOptions]
 	);
 
-	const getColumnDataType = useCallback((): TableColumnDataType => {
-		const column = tableColumns.find(
-			(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
-		);
-		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
-	}, [tableColumns, tableState.sort_column]);
-
 	// methods
-	const fetchItems = useCallback(async () => {
-		setIsLoading(true);
-		const generateWhereObject = (filters: Partial<ItemsTableState>) => {
-			const andFilters: any[] = [];
-			andFilters.push(
-				...getQueryFilter(filters.query, (queryWildcard: string, query: string) => [
-					{ external_id: { _eq: query } },
-					{ title: { _ilike: queryWildcard } },
-					{ description: { _ilike: queryWildcard } },
-					{ lom_keywords: { _contains: query } },
-				])
-			);
-			andFilters.push(...getBooleanFilters(filters, ['is_deleted']));
-			if (filters.is_published) {
-				const orFilters = [];
-				if (filters.is_published.includes('published')) {
-					orFilters.push({ is_published: { _eq: true } });
-				}
-				if (filters.is_published.includes('unpublished')) {
-					orFilters.push({
-						is_published: { _eq: false },
-						depublish_reason: { _is_null: true },
-						_not: {
-							relations: {
-								predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsReplacedBy },
-							},
-						},
-					});
-				}
-				if (filters.is_published.includes('unpublished-with-reason')) {
-					orFilters.push({
-						is_published: { _eq: false },
-						depublish_reason: { _is_null: false },
-					});
-				}
-				if (filters.is_published.includes('unpublished-with-merge')) {
-					orFilters.push({
-						is_published: { _eq: false },
-						relations: {
-							predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsReplacedBy },
-						},
-					});
-				}
-
-				if (orFilters.length) {
-					andFilters.push({ _or: orFilters });
-				}
-			}
-			andFilters.push(
-				...getMultiOptionFilters(filters, ['series', 'organisation'], ['series', 'org_id'])
-			);
-			andFilters.push(
-				...getDateRangeFilters(filters, [
-					'updated_at',
-					'issued',
-					'expiry_date',
-					'publish_at',
-					'depublish_at',
-					'published_at',
-				])
-			);
-
-			// Only show published/unpublished items based on permissions
-			if (!PermissionService.hasPerm(commonUser, PermissionName.VIEW_ANY_PUBLISHED_ITEMS)) {
-				andFilters.push({ is_published: { _eq: false } });
-			}
-			if (!PermissionService.hasPerm(commonUser, PermissionName.VIEW_ANY_UNPUBLISHED_ITEMS)) {
-				andFilters.push({ is_published: { _eq: true } });
-			}
-
-			if (filters.type && filters.type.length) {
-				andFilters.push({ type: { label: { _in: filters.type } } });
-			}
-			return { _and: andFilters };
-		};
-
-		try {
-			const [itemsTemp, collectionsCountTemp] = await ItemsService.fetchItemsWithFilters(
-				(tableState.page || 0) * ITEMS_PER_PAGE,
-				ITEMS_PER_PAGE,
-				(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
-				tableState.sort_order || OrderDirection.desc,
-				getColumnDataType(),
-				generateWhereObject(getFilters(tableState))
-			);
-			setItems(itemsTemp);
-			setItemCount(collectionsCountTemp);
-		} catch (err) {
-			console.error(
-				new CustomError('Failed to get items from the database', err, { tableState })
-			);
-			setLoadingInfo({
-				state: 'error',
-				message: tHtml(
-					'admin/items/views/items-overview___het-ophalen-van-de-items-is-mislukt'
-				),
-			});
-		}
-		setIsLoading(false);
-	}, [commonUser, tableState, getColumnDataType, tHtml]);
-
 	const fetchAllSeries = useCallback(async () => {
 		try {
 			setSeriesOptions(
@@ -203,20 +86,8 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 	}, [tHtml]);
 
 	useEffect(() => {
-		fetchItems();
-	}, [fetchItems]);
-
-	useEffect(() => {
 		fetchAllSeries();
 	}, [fetchAllSeries]);
-
-	useEffect(() => {
-		if (items) {
-			setLoadingInfo({
-				state: 'loaded',
-			});
-		}
-	}, [setLoadingInfo, items]);
 
 	const handleBulkActionClicked = (action: ItemBulkAction) => {
 		if (action === ItemBulkAction.EXPORT_ALL) {
@@ -247,15 +118,12 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 	};
 
 	const renderItemsOverview = () => {
-		if (!items) {
-			return null;
-		}
 		return (
 			<>
 				<FilterTable
 					columns={tableColumns}
-					data={items}
-					dataCount={itemCount}
+					data={items || []}
+					dataCount={itemCount || 0}
 					renderCell={(rowData: Partial<Avo.Item.Item>, columnId: string) =>
 						renderItemsOverviewTableCell(rowData, columnId as ItemsOverviewTableCols, {
 							getItemDetailLink,
@@ -268,11 +136,15 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 					noContentMatchingFiltersMessage={tText(
 						'admin/items/views/items-overview___er-zijn-geen-items-doe-voldoen-aan-de-opgegeven-filters'
 					)}
+					errorMessage={tHtml(
+						'admin/items/views/items-overview___het-ophalen-van-de-items-is-mislukt'
+					)}
+					isError={isError}
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
 					renderNoResults={renderNoResults}
 					rowKey="uid"
-					isLoading={isLoading}
+					isLoading={isLoading || isRefetching}
 					showCheckboxes={false}
 					bulkActions={[
 						{
@@ -302,10 +174,9 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 							0,
 							(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
 							tableState.sort_order || OrderDirection.desc,
-							getColumnDataType(),
 							{}
 						);
-						return response[1];
+						return response.total;
 					}}
 					fetchMoreItems={async (offset: number, limit: number) => {
 						const response = await ItemsService.fetchItemsWithFilters(
@@ -313,10 +184,9 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 							limit,
 							(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
 							tableState.sort_order || OrderDirection.desc,
-							getColumnDataType(),
 							{}
 						);
-						return response[0];
+						return response.items;
 					}}
 					renderValue={(value: any, columnId: string) =>
 						renderItemsOverviewTableCellText(
@@ -352,14 +222,10 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 						)}
 					/>
 				</Helmet>
-				<LoadingErrorLoadedComponent
-					loadingInfo={loadingInfo}
-					dataObject={items}
-					render={renderItemsOverview}
-				/>
+				{renderItemsOverview()}
 			</AdminLayoutBody>
 		</AdminLayout>
 	);
 };
 
-export default withUser(ItemsOverview) as FC;
+export default ItemsOverview;

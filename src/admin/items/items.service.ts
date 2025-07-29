@@ -11,8 +11,6 @@ import type {
 	GetItemDepublishReasonByExternalIdQueryVariables,
 	GetItemsByExternalIdQuery,
 	GetItemsByExternalIdQueryVariables,
-	GetItemsWithFiltersQuery,
-	GetItemsWithFiltersQueryVariables,
 	GetPublicItemsByTitleOrExternalIdQuery,
 	GetPublicItemsByTitleOrExternalIdQueryVariables,
 	GetPublicItemsQuery,
@@ -39,7 +37,6 @@ import {
 	GetDistinctSeriesDocument,
 	GetItemDepublishReasonByExternalIdDocument,
 	GetItemsByExternalIdDocument,
-	GetItemsWithFiltersDocument,
 	GetPublicItemsByTitleOrExternalIdDocument,
 	GetPublicItemsDocument,
 	GetUnpublishedItemPidsDocument,
@@ -55,13 +52,11 @@ import { Lookup_Enum_Relation_Types_Enum } from '../../shared/generated/graphql-
 import { CustomError } from '../../shared/helpers/custom-error';
 import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
 import { getEnv } from '../../shared/helpers/env';
-import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { dataService } from '../../shared/services/data-service';
 import { RelationService } from '../../shared/services/relation-service/relation.service';
 import { type UnpublishableItem } from '../../shared/types';
-import { type TableColumnDataType } from '../../shared/types/table-column-data-type';
 
-import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
+import { ITEMS_PER_PAGE } from './items.const';
 import {
 	type ItemsOverviewTableCols,
 	type ItemUsedByResponse,
@@ -75,45 +70,32 @@ export class ItemsService {
 		limit: number,
 		sortColumn: ItemsOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
-		tableColumnDataType: TableColumnDataType,
-		where: GetItemsWithFiltersQueryVariables['where']
-	): Promise<[Avo.Item.Item[], number]> {
-		let variables: GetItemsWithFiltersQueryVariables | null = null;
+		filters: any
+	): Promise<{ items: Avo.Item.Item[]; total: number }> {
 		try {
-			variables = {
-				where,
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			return await fetchWithLogoutJson<{
+				items: Avo.Item.Item[];
+				total: number;
+			}>(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/items/admin/overview`,
+					query: {
+						offset,
+						limit,
+						sortColumn,
+						sortOrder,
+						filters: JSON.stringify(filters),
+					},
+				})
+			);
+		} catch (err) {
+			throw new CustomError('Failed to get items overview from the database', err, {
 				offset,
 				limit,
-				orderBy: getOrderObject(
-					sortColumn,
-					sortOrder,
-					tableColumnDataType,
-					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
-				),
-			};
-
-			const response = await dataService.query<
-				GetItemsWithFiltersQuery,
-				GetItemsWithFiltersQueryVariables
-			>({
-				variables,
-				query: GetItemsWithFiltersDocument,
-			});
-
-			const items = response.app_item_meta;
-			const itemCount = response.app_item_meta_aggregate.aggregate?.count ?? 0;
-
-			if (!items) {
-				throw new CustomError('Response does not contain any items', null, {
-					response,
-				});
-			}
-
-			return [items as Avo.Item.Item[], itemCount];
-		} catch (err) {
-			throw new CustomError('Failed to get items from the database', err, {
-				variables,
-				query: 'GET_ITEMS_WITH_FILTERS',
+				sortColumn,
+				sortOrder,
+				filters,
 			});
 		}
 	}
