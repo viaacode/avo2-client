@@ -32,6 +32,7 @@ export const useGetItemsWithFilters = (
 			enabled: true,
 			refetchInterval: false,
 			refetchIntervalInBackground: false,
+			retry: false,
 			...options,
 			meta: {
 				errorMessage: tHtml(

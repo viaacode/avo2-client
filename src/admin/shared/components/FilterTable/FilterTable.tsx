@@ -31,6 +31,7 @@ import React, {
 import { type RouteComponentProps, withRouter } from 'react-router';
 import { useQueryParams } from 'use-query-params';
 
+import { ErrorView } from '../../../../error/views';
 import { SearchFilter } from '../../../../search/search.const';
 import BooleanCheckboxDropdown from '../../../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
 import {
@@ -79,7 +80,8 @@ interface FilterTableProps extends RouteComponentProps {
 	itemsPerPage: number;
 	columns: FilterableColumn[];
 	searchTextPlaceholder: string;
-	noContentMatchingFiltersMessage: string;
+	noContentMatchingFiltersMessage: string | ReactNode;
+	errorMessage?: string | ReactNode;
 	renderNoResults: () => ReactElement;
 	renderCell: (
 		rowData: any,
@@ -93,6 +95,7 @@ interface FilterTableProps extends RouteComponentProps {
 	rowKey?: string | ((row: any) => string);
 	variant?: 'bordered' | 'invisible' | 'styled';
 	isLoading?: boolean;
+	isError?: boolean;
 	defaultOrderProp?: string;
 	defaultOrderDirection?: OrderDirection;
 
@@ -115,6 +118,7 @@ const FilterTable: FC<FilterTableProps> = ({
 	columns,
 	searchTextPlaceholder,
 	noContentMatchingFiltersMessage,
+	errorMessage,
 	renderNoResults,
 	renderCell,
 	className,
@@ -123,6 +127,7 @@ const FilterTable: FC<FilterTableProps> = ({
 	rowKey = 'id',
 	variant = 'bordered',
 	isLoading = false,
+	isError = false,
 	bulkActions,
 	onSelectBulkAction,
 	showCheckboxes = false,
@@ -448,6 +453,14 @@ const FilterTable: FC<FilterTableProps> = ({
 		);
 	};
 
+	const renderError = () => (
+		<ErrorView
+			message={errorMessage || tHtml('Er is iets mis gegaan bij het laden van de gegevens')}
+			icon={IconName.alertTriangle}
+			actionButtons={['home']}
+		/>
+	);
+
 	return (
 		<div className={clsx('c-filter-table', className)}>
 			{!data.length && !getFilters(tableState) ? (
@@ -460,7 +473,9 @@ const FilterTable: FC<FilterTableProps> = ({
 							<Table
 								columns={getSelectedColumns()}
 								data={data}
-								emptyStateMessage={noContentMatchingFiltersMessage}
+								emptyStateMessage={
+									!isError ? (noContentMatchingFiltersMessage as string) : ''
+								}
 								onColumnClick={(columnId) => {
 									handleSortOrderChanged(columnId);
 								}}
@@ -479,6 +494,7 @@ const FilterTable: FC<FilterTableProps> = ({
 								onSelectionChanged={onSelectionChanged}
 								onSelectAll={onSelectAll}
 							/>
+							{isError && renderError()}
 							<Spacer margin="top-large">
 								<PaginationBar
 									{...GET_DEFAULT_PAGINATION_BAR_PROPS()}

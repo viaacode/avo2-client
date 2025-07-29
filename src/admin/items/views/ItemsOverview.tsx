@@ -1,4 +1,5 @@
 import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -8,10 +9,6 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { OrderDirection } from '../../../search/search.const';
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import {
-	LoadingErrorLoadedComponent,
-	type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
@@ -37,12 +34,16 @@ const ItemsOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
 
 	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
-	const { data: itemsWithFilters, isLoading, isRefetching } = useGetItemsWithFilters(tableState);
+	const {
+		data: itemsWithFilters,
+		isLoading,
+		isRefetching,
+		isError,
+	} = useGetItemsWithFilters(tableState);
 
 	const items = itemsWithFilters?.items;
 	const itemCount = itemsWithFilters?.total;
 
-	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [seriesOptions, setSeriesOptions] = useState<CheckboxOption[] | null>(null);
 	const [companies] = useCompanies(true);
 	const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] = useState(false);
@@ -87,14 +88,6 @@ const ItemsOverview: FC = () => {
 	useEffect(() => {
 		fetchAllSeries();
 	}, [fetchAllSeries]);
-
-	useEffect(() => {
-		if (items) {
-			setLoadingInfo({
-				state: 'loaded',
-			});
-		}
-	}, [setLoadingInfo, items]);
 
 	const handleBulkActionClicked = (action: ItemBulkAction) => {
 		if (action === ItemBulkAction.EXPORT_ALL) {
@@ -143,6 +136,10 @@ const ItemsOverview: FC = () => {
 					noContentMatchingFiltersMessage={tText(
 						'admin/items/views/items-overview___er-zijn-geen-items-doe-voldoen-aan-de-opgegeven-filters'
 					)}
+					errorMessage={tHtml(
+						'admin/items/views/items-overview___het-ophalen-van-de-items-is-mislukt'
+					)}
+					isError={isError}
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
 					renderNoResults={renderNoResults}
@@ -225,11 +222,7 @@ const ItemsOverview: FC = () => {
 						)}
 					/>
 				</Helmet>
-				<LoadingErrorLoadedComponent
-					loadingInfo={loadingInfo}
-					dataObject={items}
-					render={renderItemsOverview}
-				/>
+				{renderItemsOverview()}
 			</AdminLayoutBody>
 		</AdminLayout>
 	);
