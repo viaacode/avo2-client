@@ -166,10 +166,10 @@ const Embed: FC<EmbedProps & UserProps> = ({
 				)}
 				<div className="c-video-player">
 					<FlowPlayerWrapper
-						poster={getFlowPlayerPoster(undefined, content)}
+						poster={embedCode?.thumbnailPath || getFlowPlayerPoster(undefined, content)}
 						item={{
 							...content,
-							thumbnail_path: embedCode?.thumbnailPath,
+							thumbnail_path: embedCode.thumbnailPath,
 						}}
 						canPlay={true}
 						placeholder={false}
