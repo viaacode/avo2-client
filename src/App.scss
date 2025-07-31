@@ -22,3 +22,15 @@
 	align-items: center;
 	justify-content: flex-end;
 }
+
+// Cookiebot logo on the banner
+a#CybotCookiebotDialogPoweredbyCybot,
+div#CybotCookiebotDialogPoweredByText {
+	display: none;
+}
+
+/* Cookiebot logo on the Privacy trigger */
+#CookiebotWidget .CookiebotWidget-body .CookiebotWidget-main-logo {
+	display: none;
+}
+
