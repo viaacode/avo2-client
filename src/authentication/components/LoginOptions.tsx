@@ -5,9 +5,14 @@ import { type RouteComponentProps } from 'react-router';
 import { Link, withRouter } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
-import { NOT_NOW_LOCAL_STORAGE_KEY } from '../../shared/constants';
 import { useTabs } from '../../shared/hooks/useTabs';
 import useTranslation from '../../shared/hooks/useTranslation';
+import {
+	getPreferredLoginOption,
+	LoginOptionsTabs,
+	removePreferredLoginOption,
+	setPreferredLoginOption,
+} from '../helpers/login-options-preferred-tab';
 import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';
 
 import './LoginOptions.scss';
@@ -17,13 +22,6 @@ import LoginOptionsForTeacher from './LoginOptionsForTeacher';
 interface LoginOptionsProps {
 	onOptionClicked?: () => void;
 }
-
-const LoginOptionsPreferredTabStorageKey = 'LoginOptions.preference';
-
-export const LoginOptionsTabs = {
-	TEACHER: 'lesgever',
-	STUDENT: 'leerling',
-};
 
 const LoginOptions: FC<LoginOptionsProps & RouteComponentProps> = ({
 	history,
@@ -43,12 +41,12 @@ const LoginOptions: FC<LoginOptionsProps & RouteComponentProps> = ({
 				icon: IconName.userStudent,
 			},
 		],
-		localStorage?.getItem(LoginOptionsPreferredTabStorageKey) || LoginOptionsTabs.TEACHER
+		getPreferredLoginOption()
 	);
 
 	// Whenever a user sees the LoginOptions, reset their nudging
 	useEffect(() => {
-		localStorage.removeItem(NOT_NOW_LOCAL_STORAGE_KEY);
+		removePreferredLoginOption();
 	}, []);
 
 	const renderTitle = () => {
@@ -138,7 +136,7 @@ const LoginOptions: FC<LoginOptionsProps & RouteComponentProps> = ({
 				tabs={tabs}
 				onClick={(id) => {
 					setActiveTab(id);
-					localStorage.setItem(LoginOptionsPreferredTabStorageKey, id.toString());
+					setPreferredLoginOption(id);
 				}}
 			/>
 
