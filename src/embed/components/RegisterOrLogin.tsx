@@ -4,10 +4,10 @@ import { Column, Grid, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 import { withRouter } from 'react-router';
 
-import { LoginOptionsTabs } from '../../authentication/components/LoginOptions';
 import LoginOptionsForPupil from '../../authentication/components/LoginOptionsForPupil';
 import './RegisterOrLogin.scss';
 import LoginOptionsForTeacher from '../../authentication/components/LoginOptionsForTeacher';
+import { LoginOptionsTabs } from '../../authentication/helpers/login-options-preferred-tab';
 import { getEnv } from '../../shared/helpers/env';
 import { tText } from '../../shared/helpers/translate-text';
 import { useTabs } from '../../shared/hooks/useTabs';
