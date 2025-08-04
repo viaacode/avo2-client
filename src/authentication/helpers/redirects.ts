@@ -55,23 +55,6 @@ export function redirectToServerLoginPage(
 	}
 }
 
-export function redirectToServerItsmeLogin(
-	location: RouteComponentProps['location'],
-	openInNewTab = false
-): void {
-	const returnToUrl = getRedirectUrl(location, openInNewTab);
-	const fullUrl = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
-		returnToUrl,
-		authMech: 'itsme',
-		ltiJwtToken: EmbedCodeService.getJwtToken(),
-	})}`;
-	if (openInNewTab) {
-		window.open(fullUrl, '_blank');
-	} else {
-		window.location.href = fullUrl;
-	}
-}
-
 export function redirectToServerLeerIDLogin(
 	location: RouteComponentProps['location'],
 	openInNewTab = false
