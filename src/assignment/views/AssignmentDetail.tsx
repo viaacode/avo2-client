@@ -543,7 +543,7 @@ const AssignmentDetail: FC<
 
 	// Render
 
-	const renderHeaderButtons = () => {
+	const renderAssignmentDropdownOptions = () => {
 		const ASSIGNMENT_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				assignmentId,
@@ -573,6 +573,37 @@ const AssignmentDetail: FC<
 			),
 		];
 
+		if (ASSIGNMENT_DROPDOWN_ITEMS.length === 0) {
+			return;
+		}
+
+		if (ASSIGNMENT_DROPDOWN_ITEMS.length > 1) {
+			return (
+				<MoreOptionsDropdown
+					isOpen={isOptionsMenuOpen}
+					onOpen={() => setIsOptionsMenuOpen(true)}
+					onClose={() => setIsOptionsMenuOpen(false)}
+					label={getMoreOptionsLabel()}
+					menuItems={ASSIGNMENT_DROPDOWN_ITEMS}
+					onOptionClicked={executeAction}
+				/>
+			);
+		}
+
+		const singleButton = ASSIGNMENT_DROPDOWN_ITEMS[0];
+
+		return (
+			<Button
+				type="secondary"
+				title={singleButton.label}
+				ariaLabel={singleButton.label}
+				icon={singleButton.icon}
+				onClick={() => executeAction(singleButton.id)}
+			/>
+		);
+	};
+
+	const renderHeaderButtons = () => {
 		return (
 			<ButtonToolbar>
 				{(isOwner || isEditContributor || permissions?.canEditAssignments) &&
@@ -671,16 +702,7 @@ const AssignmentDetail: FC<
 					/>
 				)}
 
-				{!inviteToken && (
-					<MoreOptionsDropdown
-						isOpen={isOptionsMenuOpen}
-						onOpen={() => setIsOptionsMenuOpen(true)}
-						onClose={() => setIsOptionsMenuOpen(false)}
-						label={getMoreOptionsLabel()}
-						menuItems={ASSIGNMENT_DROPDOWN_ITEMS}
-						onOptionClicked={executeAction}
-					/>
-				)}
+				{!inviteToken && renderAssignmentDropdownOptions()}
 
 				<Spacer margin="left-small">
 					{permissions?.canEditAssignments && !inviteToken && (

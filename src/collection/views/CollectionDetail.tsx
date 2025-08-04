@@ -863,7 +863,7 @@ const CollectionDetail: FC<
 
 	// Render functions
 
-	const renderHeaderButtons = () => {
+	const renderCollectionDropdownOptions = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				collectionId,
@@ -906,6 +906,37 @@ const CollectionDetail: FC<
 			),
 		];
 
+		if (COLLECTION_DROPDOWN_ITEMS.length === 0) {
+			return;
+		}
+
+		if (COLLECTION_DROPDOWN_ITEMS.length > 1) {
+			return (
+				<MoreOptionsDropdown
+					isOpen={isOptionsMenuOpen}
+					onOpen={() => setIsOptionsMenuOpen(true)}
+					onClose={() => setIsOptionsMenuOpen(false)}
+					label={getMoreOptionsLabel()}
+					menuItems={COLLECTION_DROPDOWN_ITEMS}
+					onOptionClicked={executeAction}
+				/>
+			);
+		}
+
+		const singleButton = COLLECTION_DROPDOWN_ITEMS[0];
+
+		return (
+			<Button
+				type="secondary"
+				title={singleButton.label}
+				ariaLabel={singleButton.label}
+				icon={singleButton.icon}
+				onClick={() => executeAction(singleButton.id)}
+			/>
+		);
+	};
+
+	const renderHeaderButtons = () => {
 		return (
 			<ButtonToolbar>
 				{(permissions?.canAutoplayCollection || inviteToken) && (
@@ -1035,16 +1066,7 @@ const CollectionDetail: FC<
 						onClick={() => executeAction(CollectionMenuAction.toggleBookmark)}
 					/>
 				)}
-				{!inviteToken && (
-					<MoreOptionsDropdown
-						isOpen={isOptionsMenuOpen}
-						onOpen={() => setIsOptionsMenuOpen(true)}
-						onClose={() => setIsOptionsMenuOpen(false)}
-						label={getMoreOptionsLabel()}
-						menuItems={COLLECTION_DROPDOWN_ITEMS}
-						onOptionClicked={executeAction}
-					/>
-				)}
+				{!inviteToken && renderCollectionDropdownOptions()}
 				{permissions?.canEditCollections && !inviteToken && (
 					<Spacer margin="left-small">
 						<EditButton

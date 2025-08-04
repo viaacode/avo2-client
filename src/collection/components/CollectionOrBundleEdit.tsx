@@ -1373,6 +1373,39 @@ const CollectionOrBundleEdit: FC<
 			});
 		};
 
+		const renderDropdownOptions = () => {
+			if (COLLECTION_DROPDOWN_ITEMS.length === 0) {
+				return;
+			}
+
+			if (COLLECTION_DROPDOWN_ITEMS.length > 1) {
+				return (
+					<MoreOptionsDropdown
+						isOpen={isOptionsMenuOpen}
+						onOpen={() => setIsOptionsMenuOpen(true)}
+						onClose={() => setIsOptionsMenuOpen(false)}
+						label={getMoreOptionsLabel()}
+						menuItems={COLLECTION_DROPDOWN_ITEMS}
+						onOptionClicked={(optionId) =>
+							executeAction(optionId as CollectionMenuAction)
+						}
+					/>
+				);
+			}
+
+			const singleButton = COLLECTION_DROPDOWN_ITEMS[0];
+
+			return (
+				<Button
+					type="secondary"
+					title={singleButton.label}
+					ariaLabel={singleButton.label}
+					icon={singleButton.icon}
+					onClick={() => executeAction(singleButton.id as CollectionMenuAction)}
+				/>
+			);
+		};
+
 		return (
 			<ButtonToolbar>
 				{permissions.canPublish && (
@@ -1401,14 +1434,7 @@ const CollectionOrBundleEdit: FC<
 				/>
 
 				{renderReorderButtons()}
-				<MoreOptionsDropdown
-					isOpen={isOptionsMenuOpen}
-					onOpen={() => setIsOptionsMenuOpen(true)}
-					onClose={() => setIsOptionsMenuOpen(false)}
-					label={getMoreOptionsLabel()}
-					menuItems={COLLECTION_DROPDOWN_ITEMS}
-					onOptionClicked={(optionId) => executeAction(optionId as CollectionMenuAction)}
-				/>
+				{renderDropdownOptions()}
 				<InteractiveTour showButton />
 
 				{isCollection && (
