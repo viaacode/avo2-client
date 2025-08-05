@@ -5,14 +5,17 @@ import { connect } from 'react-redux';
 import { Redirect, Route, type RouteComponentProps, withRouter } from 'react-router';
 import { type Dispatch } from 'redux';
 
+import AssignmentDetailSwitcher from '../../assignment/views/AssignmentDetailSwitcher';
 import BundleDetail from '../../bundle/views/BundleDetail';
 import { CollectionDetail } from '../../collection/views';
 import { APP_PATH } from '../../constants';
+import QuickLaneDetail from '../../quick-lane/views/QuickLaneDetail';
 import { buildLink } from '../../shared/helpers/build-link';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { type AppState } from '../../store';
 import { LoginMessage } from '../authentication.types';
 import { isProfileComplete } from '../helpers/get-profile-info';
+import { LoginOptionsTabs, setPreferredLoginOption } from '../helpers/login-options-preferred-tab';
 import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';
 import { getLoginStateAction } from '../store/actions';
 import {
@@ -139,6 +142,10 @@ const SecuredRoute: FC<SecuredRouteProps> = ({
 				if (component === CollectionDetail || component === BundleDetail) {
 					const Component = component;
 					return <Component {...props} user={user} />;
+				}
+
+				if (component === QuickLaneDetail || component === AssignmentDetailSwitcher) {
+					setPreferredLoginOption(LoginOptionsTabs.STUDENT);
 				}
 
 				// On errors or not logged in => redirect to login or register page
