@@ -44,6 +44,7 @@ import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndCo
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import MoreOptionsDropdownWrapper from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
@@ -863,7 +864,7 @@ const CollectionDetail: FC<
 
 	// Render functions
 
-	const renderHeaderButtons = () => {
+	const renderCollectionDropdownOptions = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				collectionId,
@@ -906,6 +907,19 @@ const CollectionDetail: FC<
 			),
 		];
 
+		return (
+			<MoreOptionsDropdownWrapper
+				isOpen={isOptionsMenuOpen}
+				onOpen={() => setIsOptionsMenuOpen(true)}
+				onClose={() => setIsOptionsMenuOpen(false)}
+				label={getMoreOptionsLabel()}
+				menuItems={COLLECTION_DROPDOWN_ITEMS}
+				onOptionClicked={executeAction}
+			/>
+		);
+	};
+
+	const renderHeaderButtons = () => {
 		return (
 			<ButtonToolbar>
 				{(permissions?.canAutoplayCollection || inviteToken) && (
@@ -1035,16 +1049,7 @@ const CollectionDetail: FC<
 						onClick={() => executeAction(CollectionMenuAction.toggleBookmark)}
 					/>
 				)}
-				{!inviteToken && (
-					<MoreOptionsDropdown
-						isOpen={isOptionsMenuOpen}
-						onOpen={() => setIsOptionsMenuOpen(true)}
-						onClose={() => setIsOptionsMenuOpen(false)}
-						label={getMoreOptionsLabel()}
-						menuItems={COLLECTION_DROPDOWN_ITEMS}
-						onOptionClicked={executeAction}
-					/>
-				)}
+				{!inviteToken && renderCollectionDropdownOptions()}
 				{permissions?.canEditCollections && !inviteToken && (
 					<Spacer margin="left-small">
 						<EditButton

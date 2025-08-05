@@ -48,6 +48,7 @@ import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import MoreOptionsDropdownWrapper from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
 import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
 import ShareModal from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
@@ -1401,7 +1402,8 @@ const CollectionOrBundleEdit: FC<
 				/>
 
 				{renderReorderButtons()}
-				<MoreOptionsDropdown
+
+				<MoreOptionsDropdownWrapper
 					isOpen={isOptionsMenuOpen}
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}
@@ -1409,6 +1411,7 @@ const CollectionOrBundleEdit: FC<
 					menuItems={COLLECTION_DROPDOWN_ITEMS}
 					onOptionClicked={(optionId) => executeAction(optionId as CollectionMenuAction)}
 				/>
+
 				<InteractiveTour showButton />
 
 				{isCollection && (

@@ -53,6 +53,7 @@ import CommonMetaData from '../../shared/components/CommonMetaData/CommonMetaDat
 import EditButton from '../../shared/components/EditButton/EditButton';
 import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import MoreOptionsDropdownWrapper from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
 import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
 import ShareModal from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
@@ -543,7 +544,7 @@ const AssignmentDetail: FC<
 
 	// Render
 
-	const renderHeaderButtons = () => {
+	const renderAssignmentDropdownOptions = () => {
 		const ASSIGNMENT_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				assignmentId,
@@ -573,6 +574,19 @@ const AssignmentDetail: FC<
 			),
 		];
 
+		return (
+			<MoreOptionsDropdownWrapper
+				isOpen={isOptionsMenuOpen}
+				onOpen={() => setIsOptionsMenuOpen(true)}
+				onClose={() => setIsOptionsMenuOpen(false)}
+				label={getMoreOptionsLabel()}
+				menuItems={ASSIGNMENT_DROPDOWN_ITEMS}
+				onOptionClicked={executeAction}
+			/>
+		);
+	};
+
+	const renderHeaderButtons = () => {
 		return (
 			<ButtonToolbar>
 				{(isOwner || isEditContributor || permissions?.canEditAssignments) &&
@@ -671,16 +685,7 @@ const AssignmentDetail: FC<
 					/>
 				)}
 
-				{!inviteToken && (
-					<MoreOptionsDropdown
-						isOpen={isOptionsMenuOpen}
-						onOpen={() => setIsOptionsMenuOpen(true)}
-						onClose={() => setIsOptionsMenuOpen(false)}
-						label={getMoreOptionsLabel()}
-						menuItems={ASSIGNMENT_DROPDOWN_ITEMS}
-						onOptionClicked={executeAction}
-					/>
-				)}
+				{!inviteToken && renderAssignmentDropdownOptions()}
 
 				<Spacer margin="left-small">
 					{permissions?.canEditAssignments && !inviteToken && (
