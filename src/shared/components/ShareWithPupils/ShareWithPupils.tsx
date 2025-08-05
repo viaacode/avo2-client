@@ -60,6 +60,111 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 		onDetailLinkClicked?.();
 	};
 
+	const determineAlertContent = () => {
+		if (canCopy) {
+			return {
+				title: '',
+				content: (
+					<p>
+						{tHtml(
+							'Je kan de link enkel delen met leerlingen die Smartschool of LeerID hebben.'
+						)}
+					</p>
+				),
+			};
+		}
+
+		if (isAssignmentExpired) {
+			return {
+				title: tText(
+					'assignment/components/share-assignment-with-pupil___opdracht-is-verlopen--titel'
+				),
+				content: (
+					<p>
+						{tHtml(
+							'assignment/components/share-assignment-with-pupil___opdracht-is-verlopen--beschrijving'
+						)}
+					</p>
+				),
+			};
+		}
+
+		if (!hasAssignmentContent) {
+			return {
+				title: tText(
+					'assignment/components/share-assignment-with-pupil___link-nog-niet-deelbaar'
+				),
+				content: (
+					<p>
+						{tText(
+							'assignment/components/share-assignment-with-pupil___deze-opdracht-bevat-nog-geen'
+						) + ' '}
+						<Button
+							label={tText(
+								'assignment/components/share-assignment-with-pupil___inhoud'
+							)}
+							type="inline-link"
+							onClick={handleContentLinkClicked}
+						/>
+						{'.'}
+					</p>
+				),
+			};
+		}
+
+		if (!isAssignmentDetailsComplete) {
+			return {
+				title: tText(
+					'assignment/components/share-assignment-with-pupil___link-nog-niet-deelbaar'
+				),
+				content: (
+					<p>
+						{tText(
+							'assignment/components/share-assignment-with-pupil___vul-de-ontbrekende-informatie-onder'
+						) + ' '}
+						<Button
+							label={tText(
+								'assignment/components/share-assignment-with-pupil___details'
+							)}
+							type="inline-link"
+							onClick={handleDetailLinkClicked}
+						/>
+						{' ' + tText('assignment/components/share-assignment-with-pupil___aan')}
+					</p>
+				),
+			};
+		}
+
+		return {
+			title: '',
+			content: '',
+		};
+	};
+
+	const renderAlert = () => {
+		const { title, content } = determineAlertContent();
+
+		return (
+			(title || content) && (
+				<>
+					<Spacer margin="bottom" />
+					<Alert
+						type={canCopy ? 'warn' : 'info'}
+						message={
+							<>
+								{title && (
+									<h4>
+										<strong>{title}</strong>
+									</h4>
+								)}
+								{content}
+							</>
+						}
+					/>
+				</>
+			)
+		);
+	};
 	return (
 		<div
 			className={clsx('c-share-with-pupil', {
@@ -76,73 +181,7 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 					type="tertiary"
 				/>
 			</Flex>
-			{!canCopy && (
-				<>
-					<Spacer margin="bottom" />
-					<Alert
-						type="info"
-						message={
-							<>
-								<h4>
-									<strong>
-										{!isAssignmentExpired &&
-											(!hasAssignmentContent ||
-												!isAssignmentDetailsComplete) &&
-											tText(
-												'assignment/components/share-assignment-with-pupil___link-nog-niet-deelbaar'
-											)}
-										{isAssignmentExpired &&
-											tText(
-												'assignment/components/share-assignment-with-pupil___opdracht-is-verlopen--titel'
-											)}
-									</strong>
-								</h4>
-
-								{!hasAssignmentContent && (
-									<p>
-										{tText(
-											'assignment/components/share-assignment-with-pupil___deze-opdracht-bevat-nog-geen'
-										) + ' '}
-										<Button
-											label={tText(
-												'assignment/components/share-assignment-with-pupil___inhoud'
-											)}
-											type="inline-link"
-											onClick={handleContentLinkClicked}
-										/>
-										{'.'}
-									</p>
-								)}
-								{!isAssignmentDetailsComplete && (
-									<p>
-										{tText(
-											'assignment/components/share-assignment-with-pupil___vul-de-ontbrekende-informatie-onder'
-										) + ' '}
-										<Button
-											label={tText(
-												'assignment/components/share-assignment-with-pupil___details'
-											)}
-											type="inline-link"
-											onClick={handleDetailLinkClicked}
-										/>
-										{' ' +
-											tText(
-												'assignment/components/share-assignment-with-pupil___aan'
-											)}
-									</p>
-								)}
-								{isAssignmentExpired && (
-									<p>
-										{tHtml(
-											'assignment/components/share-assignment-with-pupil___opdracht-is-verlopen--beschrijving'
-										)}
-									</p>
-								)}
-							</>
-						}
-					/>
-				</>
-			)}
+			{renderAlert()}
 		</div>
 	);
 };
