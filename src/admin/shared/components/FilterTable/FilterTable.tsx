@@ -50,7 +50,7 @@ import { KeyCode } from '../../../../shared/types';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../PaginationBar/PaginationBar.consts';
 
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from './FilterTable.const';
-import { cleanupObject } from './FilterTable.utils';
+import { cleanupObject, getPreferredColumns, setPreferredColumns } from './FilterTable.utils';
 
 import './FilterTable.scss';
 
@@ -137,6 +137,7 @@ const FilterTable: FC<FilterTableProps> = ({
 	hideTableColumnsButton,
 	defaultOrderProp,
 	defaultOrderDirection,
+	location,
 }) => {
 	const { tText } = useTranslation();
 
@@ -147,11 +148,6 @@ const FilterTable: FC<FilterTableProps> = ({
 	const [confirmBulkActionModalOpen, setConfirmBulkActionModalOpen] = useState<boolean>(false);
 	const [tableState, setTableState] = useQueryParams(FILTER_TABLE_QUERY_PARAM_CONFIG(columns));
 
-	useEffect(() => {
-		onTableStateChanged(tableState);
-		setSearchTerm(tableState.query || '');
-	}, [onTableStateChanged, tableState]);
-
 	const handleTableStateChanged = (value: any, id: string) => {
 		let newTableState: any = cloneDeep(tableState);
 
@@ -160,6 +156,11 @@ const FilterTable: FC<FilterTableProps> = ({
 			[id]: value,
 			...(id !== 'page' ? { page: 0 } : {}), // Reset the page to 0, when any filter or sort order change is made
 		});
+
+		if (id === 'columns') {
+			setPreferredColumns(location.pathname, value);
+		}
+
 		setTableState(newTableState, 'replace');
 	};
 
@@ -245,6 +246,15 @@ const FilterTable: FC<FilterTableProps> = ({
 			'columns'
 		);
 	};
+
+	useEffect(() => {
+		handleTableStateChanged(getPreferredColumns(location.pathname), 'columns');
+	}, []);
+
+	useEffect(() => {
+		onTableStateChanged(tableState);
+		setSearchTerm(tableState.query || '');
+	}, [onTableStateChanged, tableState]);
 
 	const renderFilters = () => {
 		const page = tableState.page || 0;
