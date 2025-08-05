@@ -16,7 +16,6 @@ import { tHtml } from '../../shared/helpers/translate-html';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	redirectToServerACMIDMLogin,
-	redirectToServerItsmeLogin,
 	redirectToServerKlascementLogin,
 	redirectToServerLoginPage,
 	redirectToServerSmartschoolLogin,
@@ -80,26 +79,8 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 				className="c-button-itsme"
 				icon={IconName.itsme}
 				iconType="multicolor"
-				label={tText('authentication/components/login-options___itsme')}
-				title={tText('authentication/components/login-options___itsme')}
-				onClick={() => {
-					onOptionClicked();
-					redirectToServerItsmeLogin(location, openInNewTab);
-				}}
-			/>,
-
-			<Button
-				key="login-button-acmidm"
-				block
-				type="secondary"
-				className="c-button-acmidm"
-				icon={IconName.eid}
-				label={tText(
-					'authentication/components/login-options___e-id-of-een-digitale-sleutel'
-				)}
-				title={tText(
-					'authentication/components/login-options___e-id-of-een-digitale-sleutel'
-				)}
+				label={tText('itsme of eID')}
+				title={tText('itsme of eID')}
 				onClick={() => {
 					onOptionClicked();
 					redirectToServerACMIDMLogin(location, openInNewTab);
