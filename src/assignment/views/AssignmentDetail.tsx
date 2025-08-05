@@ -53,6 +53,7 @@ import CommonMetaData from '../../shared/components/CommonMetaData/CommonMetaDat
 import EditButton from '../../shared/components/EditButton/EditButton';
 import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import MoreOptionsDropdownWrapper from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
 import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
 import ShareModal from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
@@ -573,32 +574,14 @@ const AssignmentDetail: FC<
 			),
 		];
 
-		if (ASSIGNMENT_DROPDOWN_ITEMS.length === 0) {
-			return;
-		}
-
-		if (ASSIGNMENT_DROPDOWN_ITEMS.length > 1) {
-			return (
-				<MoreOptionsDropdown
-					isOpen={isOptionsMenuOpen}
-					onOpen={() => setIsOptionsMenuOpen(true)}
-					onClose={() => setIsOptionsMenuOpen(false)}
-					label={getMoreOptionsLabel()}
-					menuItems={ASSIGNMENT_DROPDOWN_ITEMS}
-					onOptionClicked={executeAction}
-				/>
-			);
-		}
-
-		const singleButton = ASSIGNMENT_DROPDOWN_ITEMS[0];
-
 		return (
-			<Button
-				type="secondary"
-				title={singleButton.label}
-				ariaLabel={singleButton.label}
-				icon={singleButton.icon}
-				onClick={() => executeAction(singleButton.id)}
+			<MoreOptionsDropdownWrapper
+				isOpen={isOptionsMenuOpen}
+				onOpen={() => setIsOptionsMenuOpen(true)}
+				onClose={() => setIsOptionsMenuOpen(false)}
+				label={getMoreOptionsLabel()}
+				menuItems={ASSIGNMENT_DROPDOWN_ITEMS}
+				onOptionClicked={executeAction}
 			/>
 		);
 	};

@@ -44,6 +44,7 @@ import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndCo
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import MoreOptionsDropdownWrapper from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
@@ -906,32 +907,14 @@ const CollectionDetail: FC<
 			),
 		];
 
-		if (COLLECTION_DROPDOWN_ITEMS.length === 0) {
-			return;
-		}
-
-		if (COLLECTION_DROPDOWN_ITEMS.length > 1) {
-			return (
-				<MoreOptionsDropdown
-					isOpen={isOptionsMenuOpen}
-					onOpen={() => setIsOptionsMenuOpen(true)}
-					onClose={() => setIsOptionsMenuOpen(false)}
-					label={getMoreOptionsLabel()}
-					menuItems={COLLECTION_DROPDOWN_ITEMS}
-					onOptionClicked={executeAction}
-				/>
-			);
-		}
-
-		const singleButton = COLLECTION_DROPDOWN_ITEMS[0];
-
 		return (
-			<Button
-				type="secondary"
-				title={singleButton.label}
-				ariaLabel={singleButton.label}
-				icon={singleButton.icon}
-				onClick={() => executeAction(singleButton.id)}
+			<MoreOptionsDropdownWrapper
+				isOpen={isOptionsMenuOpen}
+				onOpen={() => setIsOptionsMenuOpen(true)}
+				onClose={() => setIsOptionsMenuOpen(false)}
+				label={getMoreOptionsLabel()}
+				menuItems={COLLECTION_DROPDOWN_ITEMS}
+				onOptionClicked={executeAction}
 			/>
 		);
 	};

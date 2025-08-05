@@ -48,6 +48,7 @@ import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import MoreOptionsDropdownWrapper from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
 import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
 import ShareModal from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
@@ -1373,39 +1374,6 @@ const CollectionOrBundleEdit: FC<
 			});
 		};
 
-		const renderDropdownOptions = () => {
-			if (COLLECTION_DROPDOWN_ITEMS.length === 0) {
-				return;
-			}
-
-			if (COLLECTION_DROPDOWN_ITEMS.length > 1) {
-				return (
-					<MoreOptionsDropdown
-						isOpen={isOptionsMenuOpen}
-						onOpen={() => setIsOptionsMenuOpen(true)}
-						onClose={() => setIsOptionsMenuOpen(false)}
-						label={getMoreOptionsLabel()}
-						menuItems={COLLECTION_DROPDOWN_ITEMS}
-						onOptionClicked={(optionId) =>
-							executeAction(optionId as CollectionMenuAction)
-						}
-					/>
-				);
-			}
-
-			const singleButton = COLLECTION_DROPDOWN_ITEMS[0];
-
-			return (
-				<Button
-					type="secondary"
-					title={singleButton.label}
-					ariaLabel={singleButton.label}
-					icon={singleButton.icon}
-					onClick={() => executeAction(singleButton.id as CollectionMenuAction)}
-				/>
-			);
-		};
-
 		return (
 			<ButtonToolbar>
 				{permissions.canPublish && (
@@ -1434,7 +1402,16 @@ const CollectionOrBundleEdit: FC<
 				/>
 
 				{renderReorderButtons()}
-				{renderDropdownOptions()}
+
+				<MoreOptionsDropdownWrapper
+					isOpen={isOptionsMenuOpen}
+					onOpen={() => setIsOptionsMenuOpen(true)}
+					onClose={() => setIsOptionsMenuOpen(false)}
+					label={getMoreOptionsLabel()}
+					menuItems={COLLECTION_DROPDOWN_ITEMS}
+					onOptionClicked={(optionId) => executeAction(optionId as CollectionMenuAction)}
+				/>
+
 				<InteractiveTour showButton />
 
 				{isCollection && (
