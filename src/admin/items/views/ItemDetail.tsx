@@ -1,3 +1,4 @@
+import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type RichEditorState } from '@meemoo/react-components';
 import {
@@ -40,7 +41,6 @@ import { formatDate, formatTimestamp } from '../../../shared/helpers/formatters'
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { toggleSortOrder } from '../../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTabs } from '../../../shared/hooks/useTabs';
 import useTranslation from '../../../shared/hooks/useTranslation';

@@ -1,3 +1,4 @@
+import { getFilters } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { useQuery } from '@tanstack/react-query';
 import { type Avo } from '@viaa/avo2-types';
 
@@ -5,7 +6,6 @@ import { OrderDirection } from '../../../search/search.const';
 import { QUERY_KEYS } from '../../../shared/constants/query-keys';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { ITEMS_PER_PAGE } from '../../collectionsOrBundles/collections-or-bundles.const';
-import { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import { ItemsService } from '../items.service';
 import type { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
 

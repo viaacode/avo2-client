@@ -1,3 +1,4 @@
+import { type FilterableColumn, TableFilterType } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { IconName, type TabProps } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 
@@ -9,7 +10,6 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 
 import { type ItemsOverviewTableCols, type UnpublishedItemsOverviewTableCols } from './items.types';
 
@@ -103,7 +103,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		label: tText('admin/items/items___reeks'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'CheckboxDropdownModal',
+		filterType: TableFilterType.CheckboxDropdownModal,
 		filterProps: {
 			options: seriesOptions,
 			showMaxOptions: 40,
@@ -115,7 +115,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		label: tText('admin/items/items___uitgegeven'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
+		filterType: TableFilterType.DateRangeDropdown,
 		dataType: TableColumnDataType.dateTime,
 	},
 	{
@@ -123,7 +123,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		label: tText('admin/items/items___published'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
+		filterType: TableFilterType.DateRangeDropdown,
 		dataType: TableColumnDataType.dateTime,
 	},
 	{
@@ -131,7 +131,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		label: tText('admin/items/items___type'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'CheckboxDropdownModal',
+		filterType: TableFilterType.CheckboxDropdownModal,
 		filterProps: {
 			options: [
 				{ label: tText('admin/items/items___video'), id: 'video' },
@@ -146,7 +146,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		label: tText('admin/items/items___cp'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'CheckboxDropdownModal',
+		filterType: TableFilterType.CheckboxDropdownModal,
 		filterProps: {
 			options: cpOptions,
 			showMaxOptions: 40,
@@ -158,7 +158,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		label: tText('admin/items/items___publiek'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'CheckboxDropdownModal',
+		filterType: TableFilterType.CheckboxDropdownModal,
 		filterProps: {
 			options: [
 				{
@@ -252,7 +252,7 @@ export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn<Unpubl
 			label: tText('admin/items/items___aangepast-op-mam'),
 			sortable: true,
 			visibleByDefault: true,
-			filterType: 'DateRangeDropdown',
+			filterType: TableFilterType.DateRangeDropdown,
 			dataType: TableColumnDataType.dateTime,
 		},
 		{
@@ -260,7 +260,7 @@ export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn<Unpubl
 			label: tText('admin/items/items___status'),
 			sortable: true,
 			visibleByDefault: true,
-			filterType: 'CheckboxDropdownModal',
+			filterType: TableFilterType.CheckboxDropdownModal,
 			filterProps: {
 				options: [
 					{

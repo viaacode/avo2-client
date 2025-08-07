@@ -1,12 +1,14 @@
+import {
+	FILTER_TABLE_QUERY_PARAM_CONFIG,
+	type FilterableColumn,
+	FilterTable,
+	TableFilterType,
+} from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { IconName, type MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
 import { isEqual } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { useQueryParams } from 'use-query-params';
 
-import FilterTable, {
-	type FilterableColumn,
-} from '../../admin/shared/components/FilterTable/FilterTable';
-import { FILTER_TABLE_QUERY_PARAM_CONFIG } from '../../admin/shared/components/FilterTable/FilterTable.const';
 import { QuickLaneService } from '../../quick-lane/quick-lane.service';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
@@ -86,7 +88,7 @@ const QuickLaneOverview: FC<QuickLaneOverviewProps & UserProps> = ({ commonUser 
 						sortable: true,
 						dataType: TableColumnDataType.string,
 						visibleByDefault: true,
-						filterType: 'CheckboxDropdownModal' as const,
+						filterType: TableFilterType.CheckboxDropdownModal,
 						filterProps: { options: getTypeOptions() },
 					},
 
@@ -100,7 +102,7 @@ const QuickLaneOverview: FC<QuickLaneOverviewProps & UserProps> = ({ commonUser 
 									sortable: true,
 									dataType: TableColumnDataType.string,
 									visibleByDefault: true,
-									filterType: 'MultiUserSelectDropdown' as const,
+									filterType: TableFilterType.MultiUserSelectDropdown,
 								},
 						  ]
 						: []),
@@ -112,7 +114,7 @@ const QuickLaneOverview: FC<QuickLaneOverviewProps & UserProps> = ({ commonUser 
 							sortable: true,
 							dataType: TableColumnDataType.dateTime,
 							visibleByDefault: true,
-							filterType: 'DateRangeDropdown' as const,
+							filterType: TableFilterType.DateRangeDropdown,
 						},
 						// Disabled due to: https://meemoo.atlassian.net/browse/AVO-1753?focusedCommentId=24892
 						// {
@@ -121,7 +123,7 @@ const QuickLaneOverview: FC<QuickLaneOverviewProps & UserProps> = ({ commonUser 
 						// 	sortable: true,
 						// 	dataType: TableColumnDataType.dateTime,
 						// 	visibleByDefault: true,
-						// 	filterType: 'DateRangeDropdown' as const,
+						// 	filterType: TableFilterType.DateRangeDropdown,
 						// },
 					],
 			  ]),

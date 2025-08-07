@@ -1,4 +1,9 @@
-import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import {
+	ExportAllToCsvModal,
+	type FilterableColumn,
+	FilterTable,
+	getFilters,
+} from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { type Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useMemo, useState } from 'react';
@@ -24,10 +29,6 @@ import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { AssignmentsBulkAction } from '../../assignments/assignments.types';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
-import FilterTable, {
-	type FilterableColumn,
-	getFilters,
-} from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getMultiOptionFilters } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';

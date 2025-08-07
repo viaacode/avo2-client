@@ -1,3 +1,4 @@
+import { type FilterableColumn, TableFilterType } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { type ButtonType, IconName, type SelectOption } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 
@@ -14,7 +15,6 @@ import { lomToCheckboxOption } from '../../shared/helpers/set-selected-checkboxe
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
 
 import { AssignmentsBulkAction } from './assignments.types';
@@ -80,7 +80,7 @@ function getAssignmentAuthorColumn(): FilterableColumn<AssignmentTableColumns> {
 		label: tText('admin/assignments/assignments___auteur'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'MultiUserSelectDropdown',
+		filterType: TableFilterType.MultiUserSelectDropdown,
 	};
 }
 
@@ -92,7 +92,7 @@ function getAssignmentAuthorUserGroupColumn(
 		label: tText('admin/assignments/assignments___rol'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'CheckboxDropdownModal',
+		filterType: TableFilterType.CheckboxDropdownModal,
 		filterProps: {
 			options: userGroupOptions,
 		} as CheckboxDropdownModalProps,
@@ -116,7 +116,7 @@ function getAssignmentCreatedAtColumn(): FilterableColumn<AssignmentTableColumns
 		label: tText('admin/assignments/assignments___aangemaakt-op'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
+		filterType: TableFilterType.DateRangeDropdown,
 		dataType: TableColumnDataType.dateTime,
 	};
 }
@@ -127,7 +127,7 @@ function getAssignmentUpdatedAtColumn(): FilterableColumn<AssignmentTableColumns
 		label: tText('admin/assignments/assignments___aangepast-op'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
+		filterType: TableFilterType.DateRangeDropdown,
 		dataType: TableColumnDataType.dateTime,
 	};
 }
@@ -138,7 +138,7 @@ function getAssignmentDeadlineAtColumn(): FilterableColumn<AssignmentTableColumn
 		label: tText('admin/assignments/assignments___vervaldatum'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
+		filterType: TableFilterType.DateRangeDropdown,
 		dataType: TableColumnDataType.dateTime,
 	};
 }
@@ -149,7 +149,7 @@ function getAssignmentStatusColumn(): FilterableColumn<AssignmentTableColumns> {
 		label: tText('admin/assignments/assignments___status'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'BooleanCheckboxDropdown',
+		filterType: TableFilterType.BooleanCheckboxDropdown,
 		filterProps: {
 			trueLabel: tText('admin/assignments/assignments___actief'),
 			falseLabel: tText('admin/assignments/assignments___afgelopen'),
@@ -172,7 +172,7 @@ function getAssignmentSubjectsColumn(
 		label: tText('admin/assignments/assignments___vakken'),
 		sortable: false,
 		visibleByDefault: false,
-		filterType: 'CheckboxDropdownModal',
+		filterType: TableFilterType.CheckboxDropdownModal,
 		filterProps: {
 			options: [...subjects.map(lomToCheckboxOption), NULL_FILTER_OPTION],
 		} as CheckboxDropdownModalProps,
@@ -192,7 +192,7 @@ function getAssignmentEducationLevelIdColumn(
 		label: tText('admin/assignments/assignments___kenmerk'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'CheckboxDropdownModal',
+		filterType: TableFilterType.CheckboxDropdownModal,
 		filterProps: {
 			options: [
 				...educationLevelsAndDegrees
@@ -222,7 +222,7 @@ function getAssignmentEducationLevelsColumn(
 		label: tText('admin/assignments/assignments___onderwijsniveaus'),
 		sortable: false,
 		visibleByDefault: false,
-		filterType: 'CheckboxDropdownModal',
+		filterType: TableFilterType.CheckboxDropdownModal,
 		filterProps: {
 			options: [
 				...educationLevelsAndDegrees
@@ -247,7 +247,7 @@ function getAssignmentEducationDegreesColumn(
 		label: tText('admin/assignments/assignments___onderwijsgraden'),
 		sortable: false,
 		visibleByDefault: false,
-		filterType: 'CheckboxDropdownModal',
+		filterType: TableFilterType.CheckboxDropdownModal,
 		filterProps: {
 			options: [
 				...educationLevelsAndDegrees
@@ -265,7 +265,7 @@ function getAssignmentIsPublicColumn(): FilterableColumn<AssignmentTableColumns>
 		label: tText('admin/assignments/assignments___publiek'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'BooleanCheckboxDropdown',
+		filterType: TableFilterType.BooleanCheckboxDropdown,
 		dataType: TableColumnDataType.boolean,
 	};
 }
@@ -278,7 +278,7 @@ function getAssignmentQualityLabelsColumn(
 		label: tText('admin/assignments/assignments___labels'),
 		sortable: false,
 		visibleByDefault: true,
-		filterType: 'CheckboxDropdownModal',
+		filterType: TableFilterType.CheckboxDropdownModal,
 		filterProps: {
 			options: assignmentLabelOptions,
 		} as CheckboxDropdownModalProps,
@@ -291,7 +291,7 @@ function getAssignmentIsCopyColumn(): FilterableColumn<AssignmentTableColumns> {
 		label: tText('admin/assignments/assignments___kopie'),
 		sortable: false,
 		visibleByDefault: false,
-		filterType: 'BooleanCheckboxDropdown',
+		filterType: TableFilterType.BooleanCheckboxDropdown,
 	};
 }
 
@@ -301,7 +301,7 @@ function getAssignmentResponsesColumn(): FilterableColumn<AssignmentTableColumns
 		label: tText('admin/assignments/assignments___leerlingencollecties'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'BooleanCheckboxDropdown',
+		filterType: TableFilterType.BooleanCheckboxDropdown,
 		filterProps: {
 			includeEmpty: false,
 		} as BooleanCheckboxDropdownProps,
@@ -378,7 +378,7 @@ const getMarcomLastCommunicationChannelTypeColumn = (
 ): FilterableColumn<AssignmentTableColumns> => ({
 	id: 'marcom_last_communication_channel_type',
 	label: tText('admin/assignments/assignments___laatste-communicatie-kanaal-type'),
-	filterType: 'CheckboxDropdownModal',
+	filterType: TableFilterType.CheckboxDropdownModal,
 	filterProps: {
 		label: tText('admin/assignments/assignments___communicatietype'),
 		options: channelTypeOptions,
@@ -395,7 +395,7 @@ const getMarcomLastCommunicationChannelNameColumn = (
 	label: tText('admin/assignments/assignments___laatste-communicatie-kanaal-naam'),
 	sortable: true,
 	visibleByDefault: true,
-	filterType: 'CheckboxDropdownModal',
+	filterType: TableFilterType.CheckboxDropdownModal,
 	filterProps: {
 		label: tText('admin/assignments/assignments___communicatiekanaal'),
 		options: channelNameOptions,
@@ -436,7 +436,7 @@ const getAssignmentLabelsColumn = (
 	label: tText('admin/assignments/assignments___labels'),
 	sortable: false,
 	visibleByDefault: true,
-	filterType: 'CheckboxDropdownModal',
+	filterType: TableFilterType.CheckboxDropdownModal,
 	filterProps: {
 		options: collectionLabelOptions,
 	} as CheckboxDropdownModalProps,
@@ -449,7 +449,7 @@ const getAssignmentOrganisationColumn = (
 	label: tText('admin/assignments/assignments___organisatie'),
 	sortable: false,
 	visibleByDefault: false,
-	filterType: 'CheckboxDropdownModal',
+	filterType: TableFilterType.CheckboxDropdownModal,
 	filterProps: {
 		options: organisationOptions,
 	} as CheckboxDropdownModalProps,

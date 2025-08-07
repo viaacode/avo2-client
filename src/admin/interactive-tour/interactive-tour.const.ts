@@ -1,9 +1,10 @@
+import { type FilterableColumn, TableFilterType } from '@meemoo/admin-core-ui/dist/admin.mjs';
+
 import { ROUTE_PARTS } from '../../shared/constants';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';
 import { generateRandomId } from '../../shared/helpers/uuid';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 
 import {
 	type EditableInteractiveTour,
@@ -40,7 +41,7 @@ export const GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: () => FilterableColumn<In
 			label: tText('admin/interactive-tour/interactive-tour___aangemaakt-op'),
 			sortable: true,
 			visibleByDefault: true,
-			filterType: 'DateRangeDropdown',
+			filterType: TableFilterType.DateRangeDropdown,
 			dataType: TableColumnDataType.dateTime,
 		},
 		{
@@ -48,7 +49,7 @@ export const GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: () => FilterableColumn<In
 			label: tText('admin/interactive-tour/interactive-tour___aangepast-op'),
 			sortable: true,
 			visibleByDefault: true,
-			filterType: 'DateRangeDropdown',
+			filterType: TableFilterType.DateRangeDropdown,
 			dataType: TableColumnDataType.dateTime,
 		},
 		{
