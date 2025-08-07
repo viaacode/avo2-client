@@ -10,15 +10,10 @@ $embed-metadata-height: 8rem;
 	height: 100%;
 	display: flex;
 	flex-flow: column;
+	padding: 1rem;
 
 	div.c-video-player {
 		flex: 1 1 auto;
-	}
-
-	.c-title {
-		font-weight: 600;
-		font-size: 1.8rem;
-		line-height: 1.8rem;
 	}
 
 	.c-custom-logo-overlay {
