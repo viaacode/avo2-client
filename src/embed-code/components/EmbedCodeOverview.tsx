@@ -1,3 +1,4 @@
+import { FILTER_TABLE_QUERY_PARAM_CONFIG, FilterTable } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { IconName, type MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
@@ -7,8 +8,6 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { useQueryParams } from 'use-query-params';
 
-import FilterTable from '../../admin/shared/components/FilterTable/FilterTable';
-import { FILTER_TABLE_QUERY_PARAM_CONFIG } from '../../admin/shared/components/FilterTable/FilterTable.const';
 import type { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH } from '../../constants';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';

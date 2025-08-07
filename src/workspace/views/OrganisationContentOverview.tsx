@@ -1,3 +1,4 @@
+import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { PaginationBar } from '@meemoo/react-components';
 import { IconName, Spacer, Table, type TableColumn } from '@viaa/avo2-components';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
@@ -18,7 +19,6 @@ import {
 import { buildLink } from '../../shared/helpers/build-link';
 import { formatDate, formatTimestamp } from '../../shared/helpers/formatters';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';

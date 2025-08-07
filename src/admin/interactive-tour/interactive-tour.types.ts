@@ -1,8 +1,8 @@
+import { type FilterableTableState } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { type RichEditorState } from '@meemoo/react-components';
 
 import { type GetInteractiveTourByIdQuery } from '../../shared/generated/graphql-db-operations';
 import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { type FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export type InteractiveTourOverviewTableCols =
 	| 'name'

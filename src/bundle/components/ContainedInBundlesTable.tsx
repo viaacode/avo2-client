@@ -1,3 +1,4 @@
+import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Button, Icon, IconName, Spacer, Table } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode, useState } from 'react';
@@ -16,7 +17,6 @@ import { APP_PATH } from '../../constants';
 import { OrderDirection } from '../../search/search.const';
 import { buildLink } from '../../shared/helpers/build-link';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { tText } from '../../shared/helpers/translate-text';
 import withUser from '../../shared/hocs/withUser';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';

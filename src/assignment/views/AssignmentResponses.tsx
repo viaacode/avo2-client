@@ -1,3 +1,4 @@
+import { cleanupFilterTableState } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { PaginationBar } from '@meemoo/react-components';
 import {
@@ -23,7 +24,6 @@ import { Link } from 'react-router-dom';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
 import { ItemsService } from '../../admin/items/items.service';
-import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -157,7 +157,7 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 
 		let newQuery: any = cloneDeep(query);
 
-		newQuery = cleanupObject({
+		newQuery = cleanupFilterTableState({
 			...newQuery,
 			sort_column: newSortColumn,
 			sort_order: newSortOrder,

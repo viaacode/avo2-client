@@ -1,5 +1,6 @@
 import './AssignmentOverview.scss';
 
+import { cleanupFilterTableState, toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { PaginationBar } from '@meemoo/react-components';
 import {
 	Button,
@@ -46,7 +47,6 @@ import {
 	withDefault,
 } from 'use-query-params';
 
-import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
@@ -71,7 +71,6 @@ import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -237,7 +236,7 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 	const handleSortOrderChange = (columnId: string) => {
 		let newQuery: any = cloneDeep(query);
 
-		newQuery = cleanupObject({
+		newQuery = cleanupFilterTableState({
 			...newQuery,
 			sortColumn: columnId,
 			sortOrder: toggleSortOrder(query.sortOrder),

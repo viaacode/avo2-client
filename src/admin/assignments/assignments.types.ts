@@ -1,4 +1,4 @@
-import { type FilterableTableState } from '../shared/components/FilterTable/FilterTable';
+import { type FilterableTableState } from '@meemoo/admin-core-ui/dist/admin.mjs';
 
 export interface AssignmentsOverviewTableState extends FilterableTableState {
 	title: string;

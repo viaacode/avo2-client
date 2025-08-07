@@ -1,3 +1,4 @@
+import { type FilterableColumn, TableFilterType } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { type ButtonType, IconName, type SelectOption } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 
@@ -12,7 +13,6 @@ import { lomToCheckboxOption } from '../../shared/helpers/set-selected-checkboxe
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
 
 import { CollectionBulkAction, type CollectionTableColumns } from './collections-or-bundles.types';
@@ -100,7 +100,7 @@ const getCollectionAuthorColumn = (): FilterableColumn<CollectionTableColumns> =
 	label: tText('admin/collections-or-bundles/views/collections-or-bundles-overview___auteur'),
 	sortable: true,
 	visibleByDefault: true,
-	filterType: 'MultiUserSelectDropdown',
+	filterType: TableFilterType.MultiUserSelectDropdown,
 	dataType: TableColumnDataType.string,
 });
 
@@ -112,7 +112,7 @@ const getCollectionAuthorUserGroupColumn = (
 	id: 'author_user_group',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___auteur-rol'),
 	sortable: true,
-	filterType: 'CheckboxDropdownModal',
+	filterType: TableFilterType.CheckboxDropdownModal,
 	filterProps: {
 		options: userGroupOptions,
 	} as CheckboxDropdownModalProps,
@@ -134,7 +134,7 @@ const getCollectionCreatedAtColumn = (): FilterableColumn<CollectionTableColumns
 	label: tText('admin/collections-or-bundles/collections-or-bundles___aangemaakt-op'),
 	sortable: true,
 	visibleByDefault: true,
-	filterType: 'DateRangeDropdown',
+	filterType: TableFilterType.DateRangeDropdown,
 	filterProps: {},
 	dataType: TableColumnDataType.dateTime,
 });
@@ -144,7 +144,7 @@ const getCollectionUpdatedAtColumn = (): FilterableColumn<CollectionTableColumns
 	label: tText('admin/collections-or-bundles/collections-or-bundles___aangepast-op'),
 	sortable: true,
 	visibleByDefault: true,
-	filterType: 'DateRangeDropdown',
+	filterType: TableFilterType.DateRangeDropdown,
 	filterProps: {},
 	dataType: TableColumnDataType.dateTime,
 });
@@ -154,7 +154,7 @@ const getCollectionIsPublicColumn = (): FilterableColumn<CollectionTableColumns>
 	label: tText('admin/collections-or-bundles/collections-or-bundles___publiek'),
 	sortable: true,
 	visibleByDefault: true,
-	filterType: 'BooleanCheckboxDropdown',
+	filterType: TableFilterType.BooleanCheckboxDropdown,
 	dataType: TableColumnDataType.boolean,
 });
 
@@ -165,7 +165,7 @@ const getCollectionLabelsColumn = (
 	label: tText('admin/collections-or-bundles/views/collections-or-bundles-overview___labels'),
 	sortable: false,
 	visibleByDefault: true,
-	filterType: 'CheckboxDropdownModal',
+	filterType: TableFilterType.CheckboxDropdownModal,
 	filterProps: {
 		options: collectionLabelOptions,
 	} as CheckboxDropdownModalProps,
@@ -176,7 +176,7 @@ const getCollectionIsCopyColumn = (): FilterableColumn<CollectionTableColumns> =
 	label: tText('admin/collections-or-bundles/views/collections-or-bundles-overview___kopie'),
 	sortable: false,
 	visibleByDefault: false,
-	filterType: 'BooleanCheckboxDropdown',
+	filterType: TableFilterType.BooleanCheckboxDropdown,
 });
 
 const getCollectionManagedColumn = (): FilterableColumn<CollectionTableColumns> => ({
@@ -184,7 +184,7 @@ const getCollectionManagedColumn = (): FilterableColumn<CollectionTableColumns> 
 	label: tText('admin/collections-or-bundles/collections-or-bundles___redactie'),
 	sortable: true,
 	visibleByDefault: false,
-	filterType: 'BooleanCheckboxDropdown',
+	filterType: TableFilterType.BooleanCheckboxDropdown,
 	dataType: TableColumnDataType.boolean,
 });
 
@@ -294,7 +294,7 @@ const getCollectionSubjectsColumn = (
 	label: tText('admin/collections-or-bundles/collections-or-bundles___vakken'),
 	sortable: false,
 	visibleByDefault: false,
-	filterType: 'CheckboxDropdownModal',
+	filterType: TableFilterType.CheckboxDropdownModal,
 	filterProps: {
 		options: [
 			...subjects.map(lomToCheckboxOption),
@@ -309,7 +309,7 @@ const getCollectionThemesColumn = () // themes: Avo.Lom.LomField[]
 	label: tText('admin/collections-or-bundles/collections-or-bundles___themas'),
 	sortable: false,
 	visibleByDefault: false,
-	// filterType: 'CheckboxDropdownModal',
+	// filterType: TableFilterType.CheckboxDropdownModal,
 	// filterProps: {
 	// 	options: [
 	// 		...themes.map(lomToCheckboxOption),
@@ -325,7 +325,7 @@ const getCollectionEducationLevelsColumn = (
 	label: tText('admin/collections-or-bundles/collections-or-bundles___onderwijsniveaus'),
 	sortable: false,
 	visibleByDefault: false,
-	filterType: 'CheckboxDropdownModal',
+	filterType: TableFilterType.CheckboxDropdownModal,
 	filterProps: {
 		options: [
 			...educationLevels.map(lomToCheckboxOption),
@@ -341,7 +341,7 @@ const getCollectionEducationDegreesColumn = (
 	label: tText('admin/collections-or-bundles/collections-or-bundles___onderwijsgraden'),
 	sortable: false,
 	visibleByDefault: false,
-	filterType: 'CheckboxDropdownModal',
+	filterType: TableFilterType.CheckboxDropdownModal,
 	filterProps: {
 		options: [
 			...educationDegrees.map(lomToCheckboxOption),
@@ -357,7 +357,7 @@ const getCollectionOrganisationColumn = (
 	label: tText('admin/collections-or-bundles/collections-or-bundles___organisatie'),
 	sortable: false,
 	visibleByDefault: false,
-	filterType: 'CheckboxDropdownModal',
+	filterType: TableFilterType.CheckboxDropdownModal,
 	filterProps: {
 		options: organisationOptions,
 	} as CheckboxDropdownModalProps,
@@ -368,7 +368,7 @@ const getActualisationStatusColumn = (): FilterableColumn<CollectionTableColumns
 	label: tText('admin/collections-or-bundles/collections-or-bundles___status'),
 	sortable: true,
 	visibleByDefault: true,
-	filterType: 'CheckboxDropdownModal',
+	filterType: TableFilterType.CheckboxDropdownModal,
 	filterProps: {
 		options: getCollectionManagementStatuses(),
 	} as CheckboxDropdownModalProps,
@@ -382,7 +382,7 @@ const getActualisationLastActualisedAtColumn = (): FilterableColumn<CollectionTa
 	),
 	sortable: true,
 	visibleByDefault: true,
-	filterType: 'DateRangeDropdown',
+	filterType: TableFilterType.DateRangeDropdown,
 	dataType: TableColumnDataType.dateTime,
 });
 
@@ -391,7 +391,7 @@ const getActualisationStatusValidUntilColumn = (): FilterableColumn<CollectionTa
 	label: tText('admin/collections-or-bundles/collections-or-bundles___vervaldatum'),
 	sortable: true,
 	visibleByDefault: true,
-	filterType: 'DateRangeDropdown',
+	filterType: TableFilterType.DateRangeDropdown,
 	filterProps: {
 		showPastFutureOptions: true,
 		defaultControls: 'past',
@@ -404,7 +404,7 @@ const getActualisationApprovedAtColumn = (): FilterableColumn<CollectionTableCol
 	label: tText('admin/collections-or-bundles/collections-or-bundles___datum-goedkeuring'),
 	sortable: true,
 	visibleByDefault: true,
-	filterType: 'DateRangeDropdown',
+	filterType: TableFilterType.DateRangeDropdown,
 	dataType: TableColumnDataType.dateTime,
 });
 
@@ -415,7 +415,7 @@ const getActualisationResponsibleProfileColumn = (): FilterableColumn<Collection
 	),
 	sortable: true,
 	visibleByDefault: false,
-	filterType: 'MultiUserSelectDropdown',
+	filterType: TableFilterType.MultiUserSelectDropdown,
 	dataType: TableColumnDataType.string,
 });
 
@@ -424,7 +424,7 @@ const getQualityCheckLanguageCheckColumn = (): FilterableColumn<CollectionTableC
 	label: tText('admin/collections-or-bundles/collections-or-bundles___taalcheck'),
 	sortable: true,
 	visibleByDefault: true,
-	filterType: 'BooleanCheckboxDropdown',
+	filterType: TableFilterType.BooleanCheckboxDropdown,
 	filterProps: {
 		trueLabel: tText('admin/collections-or-bundles/collections-or-bundles___ok'),
 		falseLabel: tText('admin/collections-or-bundles/collections-or-bundles___nok'),
@@ -438,7 +438,7 @@ const getQualityCheckQualityCheckColumn = (): FilterableColumn<CollectionTableCo
 	label: tText('admin/collections-or-bundles/collections-or-bundles___kwaliteitscontrole'),
 	sortable: true,
 	visibleByDefault: true,
-	filterType: 'BooleanCheckboxDropdown',
+	filterType: TableFilterType.BooleanCheckboxDropdown,
 	filterProps: {
 		trueLabel: tText('admin/collections-or-bundles/collections-or-bundles___ok'),
 		falseLabel: tText('admin/collections-or-bundles/collections-or-bundles___nok'),
@@ -462,7 +462,7 @@ const getMarcomLastCommunicationChannelTypeColumn = (
 	label: tText(
 		'admin/collections-or-bundles/collections-or-bundles___laatste-communicatie-kanaal-type'
 	),
-	filterType: 'CheckboxDropdownModal',
+	filterType: TableFilterType.CheckboxDropdownModal,
 	filterProps: {
 		label: tText('admin/collections-or-bundles/collections-or-bundles___communicatietype'),
 		options: channelTypeOptions,
@@ -481,7 +481,7 @@ const getMarcomLastCommunicationChannelNameColumn = (
 	),
 	sortable: true,
 	visibleByDefault: true,
-	filterType: 'CheckboxDropdownModal',
+	filterType: TableFilterType.CheckboxDropdownModal,
 	filterProps: {
 		label: tText('admin/collections-or-bundles/collections-or-bundles___communicatiekanaal'),
 		options: channelNameOptions,

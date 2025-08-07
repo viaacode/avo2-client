@@ -1,3 +1,4 @@
+import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { PaginationBar } from '@meemoo/react-components';
 import { QueryClient } from '@tanstack/react-query';
 import {
@@ -60,7 +61,6 @@ import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';

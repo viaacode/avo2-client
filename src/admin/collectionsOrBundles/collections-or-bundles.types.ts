@@ -1,5 +1,6 @@
+import { type FilterableTableState } from '@meemoo/admin-core-ui/dist/admin.mjs';
+
 import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { type FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export enum CollectionBulkAction {
 	PUBLISH = 'PUBLISH',
