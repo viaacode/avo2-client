@@ -187,7 +187,10 @@ const Embed: FC<EmbedProps & UserProps> = ({
 
 				{showMetadata && (
 					<div className="c-embed-metadata">
-						<p className="c-title u-spacer-top-s u-truncate" title={embedCode.title}>
+						<p
+							className="c-h3 u-spacer-top-s u-m-b-0 u-truncate"
+							title={embedCode.title}
+						>
 							{embedCode.title}
 						</p>
 
