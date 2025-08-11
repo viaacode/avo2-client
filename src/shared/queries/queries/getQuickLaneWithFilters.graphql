@@ -14,8 +14,8 @@ query getQuickLanesWithFilters(
 						{
 							owner: {
 								_or: [
-									{ usersByuserId: { first_name: { _ilike: $filterString } } }
-									{ usersByuserId: { last_name: { _ilike: $filterString } } }
+									{ first_name: { _ilike: $filterString } }
+									{ last_name: { _ilike: $filterString } }
 								]
 							}
 						}
@@ -38,13 +38,12 @@ query getQuickLanesWithFilters(
 		created_at
 		updated_at
 		owner {
-			id
+			first_name
+			last_name
+			full_name
+			profile_id
+			mail
 			avatar
-			user: usersByuserId {
-				full_name
-				first_name
-				last_name
-			}
 			organisation {
 				name
 				logo_url
@@ -61,8 +60,8 @@ query getQuickLanesWithFilters(
 						{
 							owner: {
 								_or: [
-									{ usersByuserId: { first_name: { _ilike: $filterString } } }
-									{ usersByuserId: { last_name: { _ilike: $filterString } } }
+									{ first_name: { _ilike: $filterString } }
+									{ last_name: { _ilike: $filterString } }
 								]
 							}
 						}

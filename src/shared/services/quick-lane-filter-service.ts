@@ -107,7 +107,7 @@ export class QuickLaneFilterService {
 					params?.sortColumn && params?.sortOrder && params?.sortType
 						? getOrderObject(params.sortColumn, params.sortOrder, params.sortType, {
 								author: (order: Avo.Search.OrderDirection) => ({
-									owner: { usersByuserId: { first_name: order } },
+									owner: { first_name: order },
 								}),
 						  })
 						: undefined,

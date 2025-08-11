@@ -20,13 +20,12 @@ query getQuickLaneByContentAndOwner(
 		start_oc
 		end_oc
 		owner {
-			id
+			first_name
+			last_name
+			full_name
+			profile_id
+			mail
 			avatar
-			user: usersByuserId {
-				full_name
-				first_name
-				last_name
-			}
 			organisation {
 				name
 				logo_url
