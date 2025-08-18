@@ -1,3 +1,4 @@
+import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { OrderDirection, PaginationBar } from '@meemoo/react-components';
 import {
 	Button,
@@ -30,7 +31,6 @@ import { CustomError } from '../../shared/helpers/custom-error';
 import { formatDate, fromNow } from '../../shared/helpers/formatters';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withEmbedFlow, { type EmbedFlowProps } from '../../shared/hocs/withEmbedFlow';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';

@@ -1,5 +1,4 @@
-import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
-import { IconName } from '@viaa/avo2-components';
+import { ExportAllToCsvModal, FilterTable } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -16,7 +15,6 @@ import { useCompanies } from '../../../shared/hooks/useCompanies';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
-import FilterTable from '../../shared/components/FilterTable/FilterTable';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import {

@@ -1,4 +1,9 @@
-import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import {
+	ExportAllToCsvModal,
+	type FilterableColumn,
+	FilterTable,
+	getFilters,
+} from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { type Avo } from '@viaa/avo2-types';
 import { noop, partition } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
@@ -30,16 +35,13 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
-import FilterTable, {
-	type FilterableColumn,
-	getFilters,
-} from '../../shared/components/FilterTable/FilterTable';
 import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { type PickerItem } from '../../shared/types';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
+import { AssignmentsAdminService } from '../assignments.admin.service';
 import {
 	GET_ASSIGNMENT_BULK_ACTIONS,
 	GET_ASSIGNMENT_OVERVIEW_TABLE_COLS,
@@ -52,7 +54,6 @@ import {
 } from '../helpers/render-assignment-columns';
 
 import './AssignmentsOverviewAdmin.scss';
-import { AssignmentsAdminService } from '../assignments.admin.service';
 
 const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
