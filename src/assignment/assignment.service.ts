@@ -988,7 +988,7 @@ export class AssignmentService {
 		trackEvents(
 			{
 				object: assignmentId,
-				object_type: 'avo_assignment',
+				object_type: 'assignment',
 				action: 'add',
 				resource: {
 					type: 'collection',
@@ -1313,7 +1313,7 @@ export class AssignmentService {
 			trackEvents(
 				{
 					object: assignmentId,
-					object_type: 'avo_assignment',
+					object_type: 'assignment',
 					action: 'share',
 					resource: {
 						education_level: String(assignment.education_level_id),

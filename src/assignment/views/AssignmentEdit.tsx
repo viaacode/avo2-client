@@ -530,7 +530,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 					trackEvents(
 						{
 							object: String(created.id),
-							object_type: 'avo_assignment',
+							object_type: 'assignment',
 							action: 'create',
 							resource: created.education_level_id
 								? {
@@ -605,7 +605,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 					trackEvents(
 						{
 							object: String(assignment.id),
-							object_type: 'avo_assignment',
+							object_type: 'assignment',
 							action: 'edit',
 							resource: {
 								is_public: assignment.is_public || false,
@@ -732,7 +732,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 					trackEvents(
 						{
 							object: assignment?.id || '',
-							object_type: 'avo_assignment',
+							object_type: 'assignment',
 							action: 'add',
 							resource: {
 								id,

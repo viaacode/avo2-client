@@ -780,7 +780,7 @@ const CollectionDetail: FC<
 			trackEvents(
 				{
 					object: importToAssignmentId,
-					object_type: 'avo_assignment',
+					object_type: 'assignment',
 					action: 'add',
 					resource: {
 						type: 'collection',
