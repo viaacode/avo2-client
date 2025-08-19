@@ -241,7 +241,7 @@ export function renderAssignmentCellReact(
 			// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
 			return (
 				assignment?.updated_by?.fullName ||
-				(assignment as any)?.last_user_edit_profile?.usersByuserId?.full_name ||
+				(assignment as any)?.last_user_edit_profile?.full_name ||
 				'-'
 			);
 		}
@@ -453,7 +453,7 @@ export function renderAssignmentCellText(
 			// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
 			return (
 				assignment?.updated_by?.fullName ||
-				(assignment as any)?.last_user_edit_profile?.usersByuserId?.full_name ||
+				(assignment as any)?.last_user_edit_profile?.full_name ||
 				'-'
 			);
 		}
