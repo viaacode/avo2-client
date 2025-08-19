@@ -636,7 +636,7 @@ export function renderCollectionCellReact(
 			return formatDate((collection as any)?.mgmt_last_eindcheck_date) || '-';
 
 		case 'actualisation_manager':
-			return collection?.manager?.full_name || '-';
+			return collection?.manager?.fullName || '-';
 
 		case 'quality_check_language_check':
 			return booleanToOkNok(collection.management_language_check?.[0]?.qc_status) || '-';
@@ -822,7 +822,7 @@ export function renderCollectionCellText(
 			return formatDate((collection as any)?.mgmt_last_eindcheck_date) || '-';
 
 		case 'actualisation_manager':
-			return collection?.manager?.full_name || '';
+			return collection?.manager?.fullName || '';
 
 		case 'quality_check_language_check':
 			return booleanToOkNok(collection.management_language_check?.[0]?.qc_status) || '-';
