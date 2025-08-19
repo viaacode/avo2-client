@@ -491,7 +491,7 @@ export function renderCollectionCellReact(
 		case 'last_updated_by_profile': {
 			// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
 			return (
-				collection?.updated_by?.user?.full_name ||
+				collection?.updated_by?.fullName ||
 				(collection as any)?.last_editor?.full_name ||
 				(collection as any)?.last_editor_name ||
 				'-'
@@ -712,7 +712,7 @@ export function renderCollectionCellText(
 		case 'last_updated_by_profile': {
 			// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
 			return (
-				collection?.updated_by?.user?.full_name ||
+				collection?.updated_by?.fullName ||
 				(collection as any)?.last_editor?.full_name ||
 				(collection as any)?.last_editor_name ||
 				''
