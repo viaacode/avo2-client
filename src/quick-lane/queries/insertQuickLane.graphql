@@ -12,13 +12,12 @@ mutation insertQuickLanes($objects: [app_quick_lanes_insert_input!]!) {
 			created_at
 			updated_at
 			owner {
-				id
+				first_name
+				last_name
+				full_name
+				profile_id
+				mail
 				avatar
-				user: usersByuserId {
-					full_name
-					first_name
-					last_name
-				}
 				organisation {
 					name
 					logo_url
