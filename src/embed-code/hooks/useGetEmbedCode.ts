@@ -21,6 +21,7 @@ export const useGetEmbedCode = (
 			refetchInterval: false,
 			refetchIntervalInBackground: false,
 			keepPreviousData: true,
+			retry: false, // otherwise in case of failure this keeps retrying at least 3 times
 			cacheTime: 60 * 60 * 1000, // 1 hour
 			staleTime: 60 * 60 * 1000, // 1 hour
 		}
