@@ -48,7 +48,7 @@ export class EmbedCodeService {
 			const responseJson = await response.json();
 
 			if (!response.ok) {
-				// THis means the external platform and the embed do not match
+				// This means the external platform and the embed do not match
 				if (response.status === 403) {
 					errorMessage = responseJson.message;
 				}
