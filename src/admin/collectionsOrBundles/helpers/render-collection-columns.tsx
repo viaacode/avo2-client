@@ -491,7 +491,7 @@ export function renderCollectionCellReact(
 		case 'last_updated_by_profile': {
 			// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
 			return (
-				collection?.updated_by?.user?.full_name ||
+				collection?.updated_by?.fullName ||
 				(collection as any)?.last_editor?.full_name ||
 				(collection as any)?.last_editor_name ||
 				'-'
@@ -636,7 +636,7 @@ export function renderCollectionCellReact(
 			return formatDate((collection as any)?.mgmt_last_eindcheck_date) || '-';
 
 		case 'actualisation_manager':
-			return collection?.manager?.full_name || '-';
+			return collection?.manager?.fullName || '-';
 
 		case 'quality_check_language_check':
 			return booleanToOkNok(collection.management_language_check?.[0]?.qc_status) || '-';
@@ -712,7 +712,7 @@ export function renderCollectionCellText(
 		case 'last_updated_by_profile': {
 			// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
 			return (
-				collection?.updated_by?.user?.full_name ||
+				collection?.updated_by?.fullName ||
 				(collection as any)?.last_editor?.full_name ||
 				(collection as any)?.last_editor_name ||
 				''
@@ -822,7 +822,7 @@ export function renderCollectionCellText(
 			return formatDate((collection as any)?.mgmt_last_eindcheck_date) || '-';
 
 		case 'actualisation_manager':
-			return collection?.manager?.full_name || '';
+			return collection?.manager?.fullName || '';
 
 		case 'quality_check_language_check':
 			return booleanToOkNok(collection.management_language_check?.[0]?.qc_status) || '-';
