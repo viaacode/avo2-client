@@ -160,7 +160,7 @@ const AssignmentResponseSearchTab: FC<
 			trackEvents(
 				{
 					object: assignment.id,
-					object_type: 'avo_assignment',
+					object_type: 'assignment',
 					action: 'search',
 					resource: {
 						...newFilterState.filters,

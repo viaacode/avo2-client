@@ -376,7 +376,7 @@ const AssignmentDetail: FC<
 		trackEvents(
 			{
 				object: assignment?.id,
-				object_type: 'avo_assignment',
+				object_type: 'assignment',
 				action: 'view',
 				resource: {
 					is_public: assignment?.is_public || false,
