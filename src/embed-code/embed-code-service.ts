@@ -21,6 +21,7 @@ export class EmbedCodeService {
 
 	public static async getEmbedCode(embedId: string | null): Promise<EmbedCode> {
 		let url: string | undefined = undefined;
+		let errorMessage: string | undefined = undefined;
 
 		if (!embedId) {
 			const error = new CustomError('Failed to get embed code when embedId is empty', {
@@ -44,17 +45,25 @@ export class EmbedCodeService {
 				credentials: 'include',
 			});
 
+			const responseJson = await response.json();
+
 			if (!response.ok) {
+				// This means the external platform and the embed do not match
+				if (response.status === 403) {
+					errorMessage = responseJson.message;
+				}
 				const error = new CustomError('Failed to get embed code', {
 					url,
+					errorMessage: responseJson.message,
 				});
 				throw error;
 			}
 
-			return (await response.json()) as EmbedCode;
+			return responseJson as EmbedCode;
 		} catch (err) {
 			const error = new CustomError('Failed to get embed code', err, {
 				url,
+				errorMessage,
 			});
 			console.error(error);
 			throw error;
