@@ -786,359 +786,6 @@ export const useUpdateUserTempAccessByIdMutation = <
       (variables?: UpdateUserTempAccessByIdMutationVariables) => fetchData<UpdateUserTempAccessByIdMutation, UpdateUserTempAccessByIdMutationVariables>(UpdateUserTempAccessByIdDocument, variables)(),
       options
     );
-export const AssignmentPupilBlocksDocument = `
-    query assignmentPupilBlocks($assignmentId: uuid!) {
-  app_pupil_collection_blocks(
-    where: {assignment_responses_v2: {assignment_id: {_eq: $assignmentId}}}
-  ) {
-    id
-  }
-}
-    `;
-export const useAssignmentPupilBlocksQuery = <
-      TData = AssignmentPupilBlocksQuery,
-      TError = unknown
-    >(
-      variables: AssignmentPupilBlocksQueryVariables,
-      options?: UseQueryOptions<AssignmentPupilBlocksQuery, TError, TData>
-    ) =>
-    useQuery<AssignmentPupilBlocksQuery, TError, TData>(
-      ['assignmentPupilBlocks', variables],
-      fetchData<AssignmentPupilBlocksQuery, AssignmentPupilBlocksQueryVariables>(AssignmentPupilBlocksDocument, variables),
-      options
-    );
-export const SoftDeleteAssignmentByIdDocument = `
-    mutation softDeleteAssignmentById($assignmentId: uuid!, $now: timestamptz!) {
-  update_app_assignments_v2(
-    where: {id: {_eq: $assignmentId}}
-    _set: {is_deleted: true, updated_at: $now}
-  ) {
-    affected_rows
-  }
-  delete_app_assignments_v2_contributors(
-    where: {assignment_id: {_eq: $assignmentId}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useSoftDeleteAssignmentByIdMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<SoftDeleteAssignmentByIdMutation, TError, SoftDeleteAssignmentByIdMutationVariables, TContext>) =>
-    useMutation<SoftDeleteAssignmentByIdMutation, TError, SoftDeleteAssignmentByIdMutationVariables, TContext>(
-      ['softDeleteAssignmentById'],
-      (variables?: SoftDeleteAssignmentByIdMutationVariables) => fetchData<SoftDeleteAssignmentByIdMutation, SoftDeleteAssignmentByIdMutationVariables>(SoftDeleteAssignmentByIdDocument, variables)(),
-      options
-    );
-export const DeleteAssignmentResponseByIdDocument = `
-    mutation deleteAssignmentResponseById($assignmentResponseId: uuid!) {
-  delete_app_assignment_responses_v2(where: {id: {_eq: $assignmentResponseId}}) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteAssignmentResponseByIdMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteAssignmentResponseByIdMutation, TError, DeleteAssignmentResponseByIdMutationVariables, TContext>) =>
-    useMutation<DeleteAssignmentResponseByIdMutation, TError, DeleteAssignmentResponseByIdMutationVariables, TContext>(
-      ['deleteAssignmentResponseById'],
-      (variables?: DeleteAssignmentResponseByIdMutationVariables) => fetchData<DeleteAssignmentResponseByIdMutation, DeleteAssignmentResponseByIdMutationVariables>(DeleteAssignmentResponseByIdDocument, variables)(),
-      options
-    );
-export const DeleteAssignmentsByIdDocument = `
-    mutation deleteAssignmentsById($assignmentIds: [uuid!]!) {
-  delete_app_assignments_v2(where: {id: {_in: $assignmentIds}}) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteAssignmentsByIdMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteAssignmentsByIdMutation, TError, DeleteAssignmentsByIdMutationVariables, TContext>) =>
-    useMutation<DeleteAssignmentsByIdMutation, TError, DeleteAssignmentsByIdMutationVariables, TContext>(
-      ['deleteAssignmentsById'],
-      (variables?: DeleteAssignmentsByIdMutationVariables) => fetchData<DeleteAssignmentsByIdMutation, DeleteAssignmentsByIdMutationVariables>(DeleteAssignmentsByIdDocument, variables)(),
-      options
-    );
-export const GetAssignmentBlocksDocument = `
-    query getAssignmentBlocks($assignmentId: uuid!) {
-  app_assignment_blocks_v2(
-    where: {assignment_id: {_eq: $assignmentId}, is_deleted: {_eq: false}}
-    order_by: {position: asc}
-  ) {
-    id
-    position
-    type
-    custom_title
-    thumbnail_path
-    use_custom_fields
-    custom_description
-    original_title
-    original_description
-    created_at
-    updated_at
-    fragment_id
-    start_oc
-    end_oc
-    is_deleted
-    assignment_id
-    color
-  }
-}
-    `;
-export const useGetAssignmentBlocksQuery = <
-      TData = GetAssignmentBlocksQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentBlocksQueryVariables,
-      options?: UseQueryOptions<GetAssignmentBlocksQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentBlocksQuery, TError, TData>(
-      ['getAssignmentBlocks', variables],
-      fetchData<GetAssignmentBlocksQuery, GetAssignmentBlocksQueryVariables>(GetAssignmentBlocksDocument, variables),
-      options
-    );
-export const GetAssignmentByTitleOrDescriptionDocument = `
-    query getAssignmentByTitleOrDescription($title: String!, $description: String!, $assignmentId: uuid!) {
-  assignmentByTitle: app_assignments_v2(
-    where: {title: {_eq: $title}, is_deleted: {_eq: false}, is_public: {_eq: true}, id: {_neq: $assignmentId}}
-    limit: 1
-  ) {
-    id
-  }
-  assignmentByDescription: app_assignments_v2(
-    where: {description: {_eq: $description}, is_deleted: {_eq: false}, is_public: {_eq: true}, id: {_neq: $assignmentId}}
-    limit: 1
-  ) {
-    id
-  }
-}
-    `;
-export const useGetAssignmentByTitleOrDescriptionQuery = <
-      TData = GetAssignmentByTitleOrDescriptionQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentByTitleOrDescriptionQueryVariables,
-      options?: UseQueryOptions<GetAssignmentByTitleOrDescriptionQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentByTitleOrDescriptionQuery, TError, TData>(
-      ['getAssignmentByTitleOrDescription', variables],
-      fetchData<GetAssignmentByTitleOrDescriptionQuery, GetAssignmentByTitleOrDescriptionQueryVariables>(GetAssignmentByTitleOrDescriptionDocument, variables),
-      options
-    );
-export const GetAssignmentResponseDocument = `
-    query getAssignmentResponse($profileId: uuid!, $assignmentId: uuid!) {
-  app_assignment_responses_v2(
-    where: {owner_profile_id: {_eq: $profileId}, assignment_id: {_eq: $assignmentId}}
-  ) {
-    id
-    created_at
-    updated_at
-    owner_profile_id
-    assignment_id
-    collection_title
-    pupil_collection_blocks(
-      where: {is_deleted: {_eq: false}}
-      order_by: {position: asc}
-    ) {
-      id
-      fragment_id
-      use_custom_fields
-      custom_title
-      custom_description
-      start_oc
-      end_oc
-      position
-      created_at
-      updated_at
-      type
-      thumbnail_path
-      assignment_response_id
-    }
-    owner {
-      full_name
-    }
-  }
-}
-    `;
-export const useGetAssignmentResponseQuery = <
-      TData = GetAssignmentResponseQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentResponseQueryVariables,
-      options?: UseQueryOptions<GetAssignmentResponseQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentResponseQuery, TError, TData>(
-      ['getAssignmentResponse', variables],
-      fetchData<GetAssignmentResponseQuery, GetAssignmentResponseQueryVariables>(GetAssignmentResponseDocument, variables),
-      options
-    );
-export const GetAssignmentResponseByIdDocument = `
-    query getAssignmentResponseById($assignmentResponseId: uuid!) {
-  app_assignment_responses_v2(where: {id: {_eq: $assignmentResponseId}}) {
-    id
-    assignment_id
-    collection_title
-    created_at
-    updated_at
-    owner_profile_id
-    owner {
-      full_name
-    }
-    assignment {
-      id
-      title
-      deadline_at
-      owner {
-        full_name
-      }
-      owner_profile_id
-    }
-    pupil_collection_blocks(
-      where: {is_deleted: {_eq: false}}
-      order_by: {position: asc}
-    ) {
-      id
-      position
-      type
-      custom_title
-      thumbnail_path
-      use_custom_fields
-      custom_description
-      created_at
-      updated_at
-      fragment_id
-      start_oc
-      end_oc
-      assignment_response_id
-    }
-  }
-}
-    `;
-export const useGetAssignmentResponseByIdQuery = <
-      TData = GetAssignmentResponseByIdQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentResponseByIdQueryVariables,
-      options?: UseQueryOptions<GetAssignmentResponseByIdQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentResponseByIdQuery, TError, TData>(
-      ['getAssignmentResponseById', variables],
-      fetchData<GetAssignmentResponseByIdQuery, GetAssignmentResponseByIdQueryVariables>(GetAssignmentResponseByIdDocument, variables),
-      options
-    );
-export const GetAssignmentResponsesDocument = `
-    query getAssignmentResponses($profileId: uuid!, $assignmentId: uuid!) {
-  app_assignment_responses_v2(
-    where: {assignment: {owner_profile_id: {_eq: $profileId}}, assignment_id: {_eq: $assignmentId}}
-  ) {
-    id
-    created_at
-    owner_profile_id
-    assignment_id
-    collection_title
-    pupil_collection_blocks(
-      where: {is_deleted: {_eq: false}}
-      order_by: {position: asc}
-    ) {
-      id
-      fragment_id
-      use_custom_fields
-      custom_title
-      custom_description
-      start_oc
-      end_oc
-      position
-      created_at
-      updated_at
-      type
-      thumbnail_path
-      assignment_response_id
-    }
-    owner {
-      full_name
-    }
-  }
-}
-    `;
-export const useGetAssignmentResponsesQuery = <
-      TData = GetAssignmentResponsesQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentResponsesQueryVariables,
-      options?: UseQueryOptions<GetAssignmentResponsesQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentResponsesQuery, TError, TData>(
-      ['getAssignmentResponses', variables],
-      fetchData<GetAssignmentResponsesQuery, GetAssignmentResponsesQueryVariables>(GetAssignmentResponsesDocument, variables),
-      options
-    );
-export const GetAssignmentResponsesByAssignmentIdDocument = `
-    query getAssignmentResponsesByAssignmentId($assignmentId: uuid!, $offset: Int = 0, $limit: Int, $order: [app_assignment_responses_v2_order_by!]! = {updated_at: desc}, $filter: [app_assignment_responses_v2_bool_exp!]) {
-  app_assignment_responses_v2(
-    where: {assignment_id: {_eq: $assignmentId}, _and: $filter}
-    offset: $offset
-    limit: $limit
-    order_by: $order
-  ) {
-    id
-    assignment_id
-    collection_title
-    created_at
-    updated_at
-    owner_profile_id
-    owner {
-      full_name
-    }
-    assignment {
-      id
-      title
-      deadline_at
-      owner {
-        full_name
-      }
-      owner_profile_id
-    }
-    pupil_collection_blocks(where: {type: {_eq: "ITEM"}}) {
-      id
-      position
-      type
-      custom_title
-      thumbnail_path
-      use_custom_fields
-      custom_description
-      created_at
-      updated_at
-      fragment_id
-      start_oc
-      end_oc
-      assignment_response_id
-    }
-  }
-  count: app_assignment_responses_v2_aggregate(
-    where: {assignment_id: {_eq: $assignmentId}}
-  ) {
-    aggregate {
-      count
-    }
-  }
-}
-    `;
-export const useGetAssignmentResponsesByAssignmentIdQuery = <
-      TData = GetAssignmentResponsesByAssignmentIdQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentResponsesByAssignmentIdQueryVariables,
-      options?: UseQueryOptions<GetAssignmentResponsesByAssignmentIdQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentResponsesByAssignmentIdQuery, TError, TData>(
-      ['getAssignmentResponsesByAssignmentId', variables],
-      fetchData<GetAssignmentResponsesByAssignmentIdQuery, GetAssignmentResponsesByAssignmentIdQueryVariables>(GetAssignmentResponsesByAssignmentIdDocument, variables),
-      options
-    );
 export const GetAssignmentWithResponseDocument = `
     query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
   app_assignments_v2(
@@ -1328,50 +975,6 @@ export const useGetContributorsByAssignmentUuidQuery = <
       fetchData<GetContributorsByAssignmentUuidQuery, GetContributorsByAssignmentUuidQueryVariables>(GetContributorsByAssignmentUuidDocument, variables),
       options
     );
-export const GetMaxPositionAssignmentBlocksDocument = `
-    query getMaxPositionAssignmentBlocks($assignmentId: uuid!) {
-  app_assignments_v2_by_pk(id: $assignmentId) {
-    blocks_aggregate {
-      aggregate {
-        max {
-          position
-        }
-      }
-    }
-  }
-}
-    `;
-export const useGetMaxPositionAssignmentBlocksQuery = <
-      TData = GetMaxPositionAssignmentBlocksQuery,
-      TError = unknown
-    >(
-      variables: GetMaxPositionAssignmentBlocksQueryVariables,
-      options?: UseQueryOptions<GetMaxPositionAssignmentBlocksQuery, TError, TData>
-    ) =>
-    useQuery<GetMaxPositionAssignmentBlocksQuery, TError, TData>(
-      ['getMaxPositionAssignmentBlocks', variables],
-      fetchData<GetMaxPositionAssignmentBlocksQuery, GetMaxPositionAssignmentBlocksQueryVariables>(GetMaxPositionAssignmentBlocksDocument, variables),
-      options
-    );
-export const IncrementAssignmentViewCountDocument = `
-    mutation incrementAssignmentViewCount($assignmentId: uuid!) {
-  update_app_assignment_v2_views(
-    where: {assignment_uuid: {_eq: $assignmentId}}
-    _inc: {count: 1}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useIncrementAssignmentViewCountMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<IncrementAssignmentViewCountMutation, TError, IncrementAssignmentViewCountMutationVariables, TContext>) =>
-    useMutation<IncrementAssignmentViewCountMutation, TError, IncrementAssignmentViewCountMutationVariables, TContext>(
-      ['incrementAssignmentViewCount'],
-      (variables?: IncrementAssignmentViewCountMutationVariables) => fetchData<IncrementAssignmentViewCountMutation, IncrementAssignmentViewCountMutationVariables>(IncrementAssignmentViewCountDocument, variables)(),
-      options
-    );
 export const InsertAssignmentBlocksDocument = `
     mutation insertAssignmentBlocks($assignmentBlocks: [app_assignment_blocks_v2_insert_input!]!) {
   insert_app_assignment_blocks_v2(objects: $assignmentBlocks) {
@@ -1440,71 +1043,6 @@ export const useInsertAssignmentResponseMutation = <
     useMutation<InsertAssignmentResponseMutation, TError, InsertAssignmentResponseMutationVariables, TContext>(
       ['insertAssignmentResponse'],
       (variables?: InsertAssignmentResponseMutationVariables) => fetchData<InsertAssignmentResponseMutation, InsertAssignmentResponseMutationVariables>(InsertAssignmentResponseDocument, variables)(),
-      options
-    );
-export const UpdateAssignmentResponseDocument = `
-    mutation updateAssignmentResponse($assignmentResponseId: uuid, $collectionTitle: String!, $updatedAt: timestamptz!) {
-  update_app_assignment_responses_v2(
-    where: {id: {_eq: $assignmentResponseId}}
-    _set: {collection_title: $collectionTitle, updated_at: $updatedAt}
-  ) {
-    returning {
-      assignment_id
-      collection_title
-      created_at
-      id
-      owner_profile_id
-      pupil_collection_blocks(
-        where: {is_deleted: {_eq: false}}
-        order_by: {position: asc}
-      ) {
-        assignment_response_id
-        created_at
-        custom_description
-        custom_title
-        end_oc
-        fragment_id
-        id
-        position
-        start_oc
-        thumbnail_path
-        type
-        updated_at
-        use_custom_fields
-      }
-      owner {
-        full_name
-      }
-    }
-  }
-}
-    `;
-export const useUpdateAssignmentResponseMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateAssignmentResponseMutation, TError, UpdateAssignmentResponseMutationVariables, TContext>) =>
-    useMutation<UpdateAssignmentResponseMutation, TError, UpdateAssignmentResponseMutationVariables, TContext>(
-      ['updateAssignmentResponse'],
-      (variables?: UpdateAssignmentResponseMutationVariables) => fetchData<UpdateAssignmentResponseMutation, UpdateAssignmentResponseMutationVariables>(UpdateAssignmentResponseDocument, variables)(),
-      options
-    );
-export const UpdateAssignmentUpdatedAtDateDocument = `
-    mutation updateAssignmentUpdatedAtDate($assignmentId: uuid!, $updatedAt: timestamptz!) {
-  update_app_assignments_v2(
-    where: {id: {_eq: $assignmentId}}
-    _set: {updated_at: $updatedAt}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useUpdateAssignmentUpdatedAtDateMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateAssignmentUpdatedAtDateMutation, TError, UpdateAssignmentUpdatedAtDateMutationVariables, TContext>) =>
-    useMutation<UpdateAssignmentUpdatedAtDateMutation, TError, UpdateAssignmentUpdatedAtDateMutationVariables, TContext>(
-      ['updateAssignmentUpdatedAtDate'],
-      (variables?: UpdateAssignmentUpdatedAtDateMutationVariables) => fetchData<UpdateAssignmentUpdatedAtDateMutation, UpdateAssignmentUpdatedAtDateMutationVariables>(UpdateAssignmentUpdatedAtDateDocument, variables)(),
       options
     );
 export const DeleteManagementEntryByCollectionIdDocument = `
@@ -2394,202 +1932,6 @@ export const useUpdateMarcomNoteMutation = <
       (variables?: UpdateMarcomNoteMutationVariables) => fetchData<UpdateMarcomNoteMutation, UpdateMarcomNoteMutationVariables>(UpdateMarcomNoteDocument, variables)(),
       options
     );
-export const BulkUpdateAuthorForPupilCollectionsDocument = `
-    mutation bulkUpdateAuthorForPupilCollections($authorId: uuid!, $pupilCollectionIds: [uuid!]!, $now: timestamptz!) {
-  update_app_assignment_responses_v2(
-    where: {id: {_in: $pupilCollectionIds}}
-    _set: {owner_profile_id: $authorId, updated_at: $now}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useBulkUpdateAuthorForPupilCollectionsMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<BulkUpdateAuthorForPupilCollectionsMutation, TError, BulkUpdateAuthorForPupilCollectionsMutationVariables, TContext>) =>
-    useMutation<BulkUpdateAuthorForPupilCollectionsMutation, TError, BulkUpdateAuthorForPupilCollectionsMutationVariables, TContext>(
-      ['bulkUpdateAuthorForPupilCollections'],
-      (variables?: BulkUpdateAuthorForPupilCollectionsMutationVariables) => fetchData<BulkUpdateAuthorForPupilCollectionsMutation, BulkUpdateAuthorForPupilCollectionsMutationVariables>(BulkUpdateAuthorForPupilCollectionsDocument, variables)(),
-      options
-    );
-export const DeleteAssignmentResponsesDocument = `
-    mutation deleteAssignmentResponses($assignmentResponseIds: [uuid!]!) {
-  delete_app_assignment_responses_v2(where: {id: {_in: $assignmentResponseIds}}) {
-    affected_rows
-  }
-  delete_app_pupil_collection_blocks(
-    where: {assignment_response_id: {_in: $assignmentResponseIds}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteAssignmentResponsesMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteAssignmentResponsesMutation, TError, DeleteAssignmentResponsesMutationVariables, TContext>) =>
-    useMutation<DeleteAssignmentResponsesMutation, TError, DeleteAssignmentResponsesMutationVariables, TContext>(
-      ['deleteAssignmentResponses'],
-      (variables?: DeleteAssignmentResponsesMutationVariables) => fetchData<DeleteAssignmentResponsesMutation, DeleteAssignmentResponsesMutationVariables>(DeleteAssignmentResponsesDocument, variables)(),
-      options
-    );
-export const GetMaxPositionPupilCollectionBlocksDocument = `
-    query getMaxPositionPupilCollectionBlocks($assignmentResponseId: uuid!) {
-  app_assignment_responses_v2_by_pk(id: $assignmentResponseId) {
-    pupil_collection_blocks_aggregate {
-      aggregate {
-        max {
-          position
-        }
-      }
-    }
-  }
-}
-    `;
-export const useGetMaxPositionPupilCollectionBlocksQuery = <
-      TData = GetMaxPositionPupilCollectionBlocksQuery,
-      TError = unknown
-    >(
-      variables: GetMaxPositionPupilCollectionBlocksQueryVariables,
-      options?: UseQueryOptions<GetMaxPositionPupilCollectionBlocksQuery, TError, TData>
-    ) =>
-    useQuery<GetMaxPositionPupilCollectionBlocksQuery, TError, TData>(
-      ['getMaxPositionPupilCollectionBlocks', variables],
-      fetchData<GetMaxPositionPupilCollectionBlocksQuery, GetMaxPositionPupilCollectionBlocksQueryVariables>(GetMaxPositionPupilCollectionBlocksDocument, variables),
-      options
-    );
-export const GetPupilCollectionIdsDocument = `
-    query getPupilCollectionIds($where: app_assignment_responses_v2_bool_exp!) {
-  app_assignment_responses_v2(
-    where: {_and: [$where, {collection_title: {_is_null: false}}, {assignment: {is_deleted: {_eq: false}}}]}
-  ) {
-    id
-  }
-}
-    `;
-export const useGetPupilCollectionIdsQuery = <
-      TData = GetPupilCollectionIdsQuery,
-      TError = unknown
-    >(
-      variables: GetPupilCollectionIdsQueryVariables,
-      options?: UseQueryOptions<GetPupilCollectionIdsQuery, TError, TData>
-    ) =>
-    useQuery<GetPupilCollectionIdsQuery, TError, TData>(
-      ['getPupilCollectionIds', variables],
-      fetchData<GetPupilCollectionIdsQuery, GetPupilCollectionIdsQueryVariables>(GetPupilCollectionIdsDocument, variables),
-      options
-    );
-export const GetPupilCollectionsAdminOverviewDocument = `
-    query getPupilCollectionsAdminOverview($offset: Int!, $limit: Int!, $orderBy: [app_assignment_responses_v2_order_by!]!, $where: app_assignment_responses_v2_bool_exp!) {
-  app_assignment_responses_v2(
-    offset: $offset
-    limit: $limit
-    order_by: $orderBy
-    where: {_and: [$where, {collection_title: {_is_null: false}, assignment: {is_deleted: {_eq: false}}}]}
-  ) {
-    id
-    assignment_id
-    collection_title
-    created_at
-    updated_at
-    owner {
-      full_name
-    }
-    owner_profile_id
-    assignment {
-      id
-      title
-      deadline_at
-      owner {
-        full_name
-      }
-      owner_profile_id
-    }
-  }
-  app_assignment_responses_v2_aggregate(
-    where: {_and: [$where, {collection_title: {_is_null: false}}, {assignment: {is_deleted: {_eq: false}}}]}
-  ) {
-    aggregate {
-      count
-    }
-  }
-}
-    `;
-export const useGetPupilCollectionsAdminOverviewQuery = <
-      TData = GetPupilCollectionsAdminOverviewQuery,
-      TError = unknown
-    >(
-      variables: GetPupilCollectionsAdminOverviewQueryVariables,
-      options?: UseQueryOptions<GetPupilCollectionsAdminOverviewQuery, TError, TData>
-    ) =>
-    useQuery<GetPupilCollectionsAdminOverviewQuery, TError, TData>(
-      ['getPupilCollectionsAdminOverview', variables],
-      fetchData<GetPupilCollectionsAdminOverviewQuery, GetPupilCollectionsAdminOverviewQueryVariables>(GetPupilCollectionsAdminOverviewDocument, variables),
-      options
-    );
-export const InsertPupilCollectionBlocksDocument = `
-    mutation insertPupilCollectionBlocks($pupilCollectionBlocks: [app_pupil_collection_blocks_insert_input!]!) {
-  insert_app_pupil_collection_blocks(objects: $pupilCollectionBlocks) {
-    affected_rows
-    returning {
-      id
-      created_at
-      custom_description
-      end_oc
-      custom_title
-      fragment_id
-      position
-      start_oc
-      thumbnail_path
-      type
-      updated_at
-      use_custom_fields
-      assignment_response_id
-    }
-  }
-}
-    `;
-export const useInsertPupilCollectionBlocksMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<InsertPupilCollectionBlocksMutation, TError, InsertPupilCollectionBlocksMutationVariables, TContext>) =>
-    useMutation<InsertPupilCollectionBlocksMutation, TError, InsertPupilCollectionBlocksMutationVariables, TContext>(
-      ['insertPupilCollectionBlocks'],
-      (variables?: InsertPupilCollectionBlocksMutationVariables) => fetchData<InsertPupilCollectionBlocksMutation, InsertPupilCollectionBlocksMutationVariables>(InsertPupilCollectionBlocksDocument, variables)(),
-      options
-    );
-export const UpdatePupilCollectionBlockDocument = `
-    mutation updatePupilCollectionBlock($blockId: uuid!, $update: app_pupil_collection_blocks_set_input!) {
-  update_app_pupil_collection_blocks_by_pk(
-    pk_columns: {id: $blockId}
-    _set: $update
-  ) {
-    id
-    created_at
-    custom_description
-    end_oc
-    custom_title
-    fragment_id
-    position
-    start_oc
-    thumbnail_path
-    type
-    updated_at
-    use_custom_fields
-    assignment_response_id
-  }
-}
-    `;
-export const useUpdatePupilCollectionBlockMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdatePupilCollectionBlockMutation, TError, UpdatePupilCollectionBlockMutationVariables, TContext>) =>
-    useMutation<UpdatePupilCollectionBlockMutation, TError, UpdatePupilCollectionBlockMutationVariables, TContext>(
-      ['updatePupilCollectionBlock'],
-      (variables?: UpdatePupilCollectionBlockMutationVariables) => fetchData<UpdatePupilCollectionBlockMutation, UpdatePupilCollectionBlockMutationVariables>(UpdatePupilCollectionBlockDocument, variables)(),
-      options
-    );
 export const GetQuickLaneByContentAndOwnerDocument = `
     query getQuickLaneByContentAndOwner($contentId: uuid = "", $contentLabel: String = "", $profileId: uuid = "") {
   app_quick_lanes(
@@ -2605,13 +1947,12 @@ export const GetQuickLaneByContentAndOwnerDocument = `
     start_oc
     end_oc
     owner {
-      id
+      first_name
+      last_name
+      full_name
+      profile_id
+      mail
       avatar
-      user: usersByuserId {
-        full_name
-        first_name
-        last_name
-      }
       organisation {
         name
         logo_url
@@ -2646,13 +1987,12 @@ export const GetQuickLaneByIdDocument = `
     created_at
     updated_at
     owner {
-      id
+      first_name
+      last_name
+      full_name
+      profile_id
+      mail
       avatar
-      user: usersByuserId {
-        full_name
-        first_name
-        last_name
-      }
       organisation {
         name
         logo_url
@@ -2689,13 +2029,12 @@ export const InsertQuickLanesDocument = `
       created_at
       updated_at
       owner {
-        id
+        first_name
+        last_name
+        full_name
+        profile_id
+        mail
         avatar
-        user: usersByuserId {
-          full_name
-          first_name
-          last_name
-        }
         organisation {
           name
           logo_url
@@ -2716,9 +2055,9 @@ export const useInsertQuickLanesMutation = <
       options
     );
 export const RemoveQuickLanesDocument = `
-    mutation RemoveQuickLanes($ids: [uuid!]!, $profileId: uuid!) {
+    mutation removeQuickLanes($ids: [uuid!]!, $profileId: uuid!) {
   delete_app_quick_lanes(
-    where: {id: {_in: $ids}, owner: {usersByuserId: {profile: {id: {_eq: $profileId}}}}}
+    where: {id: {_in: $ids}, owner_profile_id: {_eq: $profileId}}
   ) {
     affected_rows
     returning {
@@ -2732,7 +2071,7 @@ export const useRemoveQuickLanesMutation = <
       TContext = unknown
     >(options?: UseMutationOptions<RemoveQuickLanesMutation, TError, RemoveQuickLanesMutationVariables, TContext>) =>
     useMutation<RemoveQuickLanesMutation, TError, RemoveQuickLanesMutationVariables, TContext>(
-      ['RemoveQuickLanes'],
+      ['removeQuickLanes'],
       (variables?: RemoveQuickLanesMutationVariables) => fetchData<RemoveQuickLanesMutation, RemoveQuickLanesMutationVariables>(RemoveQuickLanesDocument, variables)(),
       options
     );
@@ -2751,13 +2090,12 @@ export const UpdateQuickLaneByIdDocument = `
       created_at
       updated_at
       owner {
-        id
+        first_name
+        last_name
+        full_name
+        profile_id
+        mail
         avatar
-        user: usersByuserId {
-          full_name
-          first_name
-          last_name
-        }
         organisation {
           name
           logo_url
@@ -2849,13 +2187,12 @@ export const GetQuickLanesByContentIdDocument = `
     created_at
     updated_at
     owner {
-      id
+      first_name
+      last_name
+      full_name
+      profile_id
+      mail
       avatar
-      user: usersByuserId {
-        full_name
-        first_name
-        last_name
-      }
       organisation {
         name
         logo_url
@@ -2880,7 +2217,7 @@ export const useGetQuickLanesByContentIdQuery = <
 export const GetQuickLanesWithFiltersDocument = `
     query getQuickLanesWithFilters($filterString: String, $filters: [app_quick_lanes_bool_exp!], $orderBy: [app_quick_lanes_order_by!], $limit: Int = 100, $offset: Int = 0) {
   app_quick_lanes(
-    where: {_and: [{_or: [{title: {_ilike: $filterString}}, {owner: {_or: [{usersByuserId: {first_name: {_ilike: $filterString}}}, {usersByuserId: {last_name: {_ilike: $filterString}}}]}}]}, {_and: $filters}]}
+    where: {_and: [{_or: [{title: {_ilike: $filterString}}, {owner: {_or: [{first_name: {_ilike: $filterString}}, {last_name: {_ilike: $filterString}}]}}]}, {_and: $filters}]}
     order_by: $orderBy
     offset: $offset
     limit: $limit
@@ -2895,13 +2232,12 @@ export const GetQuickLanesWithFiltersDocument = `
     created_at
     updated_at
     owner {
-      id
+      first_name
+      last_name
+      full_name
+      profile_id
+      mail
       avatar
-      user: usersByuserId {
-        full_name
-        first_name
-        last_name
-      }
       organisation {
         name
         logo_url
@@ -2910,7 +2246,7 @@ export const GetQuickLanesWithFiltersDocument = `
     }
   }
   app_quick_lanes_aggregate(
-    where: {_and: [{_or: [{title: {_ilike: $filterString}}, {owner: {_or: [{usersByuserId: {first_name: {_ilike: $filterString}}}, {usersByuserId: {last_name: {_ilike: $filterString}}}]}}]}, {_and: $filters}]}
+    where: {_and: [{_or: [{title: {_ilike: $filterString}}, {owner: {_or: [{first_name: {_ilike: $filterString}}, {last_name: {_ilike: $filterString}}]}}]}, {_and: $filters}]}
   ) {
     aggregate {
       count

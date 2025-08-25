@@ -251,85 +251,6 @@ export type UpdateUserTempAccessByIdMutationVariables = Exact<{
 
 export type UpdateUserTempAccessByIdMutation = { __typename?: 'mutation_root', insert_shared_user_temp_access_one?: { __typename?: 'shared_user_temp_access', user_id: any, from?: any | null, until: any, user: { __typename?: 'shared_users', full_name?: string | null, mail?: string | null } } | null };
 
-export type AssignmentPupilBlocksQueryVariables = Exact<{
-  assignmentId: Scalars['uuid'];
-}>;
-
-
-export type AssignmentPupilBlocksQuery = { __typename?: 'query_root', app_pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any }> };
-
-export type SoftDeleteAssignmentByIdMutationVariables = Exact<{
-  assignmentId: Scalars['uuid'];
-  now: Scalars['timestamptz'];
-}>;
-
-
-export type SoftDeleteAssignmentByIdMutation = { __typename?: 'mutation_root', update_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null, delete_app_assignments_v2_contributors?: { __typename?: 'app_assignments_v2_contributors_mutation_response', affected_rows: number } | null };
-
-export type DeleteAssignmentResponseByIdMutationVariables = Exact<{
-  assignmentResponseId: Scalars['uuid'];
-}>;
-
-
-export type DeleteAssignmentResponseByIdMutation = { __typename?: 'mutation_root', delete_app_assignment_responses_v2?: { __typename?: 'app_assignment_responses_v2_mutation_response', affected_rows: number } | null };
-
-export type DeleteAssignmentsByIdMutationVariables = Exact<{
-  assignmentIds: Array<Scalars['uuid']> | Scalars['uuid'];
-}>;
-
-
-export type DeleteAssignmentsByIdMutation = { __typename?: 'mutation_root', delete_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null };
-
-export type GetAssignmentBlocksQueryVariables = Exact<{
-  assignmentId: Scalars['uuid'];
-}>;
-
-
-export type GetAssignmentBlocksQuery = { __typename?: 'query_root', app_assignment_blocks_v2: Array<{ __typename?: 'app_assignment_blocks_v2', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, original_title?: string | null, original_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, is_deleted: boolean, assignment_id: any, color?: string | null }> };
-
-export type GetAssignmentByTitleOrDescriptionQueryVariables = Exact<{
-  title: Scalars['String'];
-  description: Scalars['String'];
-  assignmentId: Scalars['uuid'];
-}>;
-
-
-export type GetAssignmentByTitleOrDescriptionQuery = { __typename?: 'query_root', assignmentByTitle: Array<{ __typename?: 'app_assignments_v2', id: any }>, assignmentByDescription: Array<{ __typename?: 'app_assignments_v2', id: any }> };
-
-export type GetAssignmentResponseQueryVariables = Exact<{
-  profileId: Scalars['uuid'];
-  assignmentId: Scalars['uuid'];
-}>;
-
-
-export type GetAssignmentResponseQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, updated_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, fragment_id?: string | null, use_custom_fields: boolean, custom_title?: string | null, custom_description?: string | null, start_oc?: number | null, end_oc?: number | null, position: number, created_at: any, updated_at: any, type: string, thumbnail_path?: string | null, assignment_response_id: any }>, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }> };
-
-export type GetAssignmentResponseByIdQueryVariables = Exact<{
-  assignmentResponseId: Scalars['uuid'];
-}>;
-
-
-export type GetAssignmentResponseByIdQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, assignment_id: any, collection_title?: string | null, created_at: any, updated_at: any, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, assignment_response_id: any }> }> };
-
-export type GetAssignmentResponsesQueryVariables = Exact<{
-  profileId: Scalars['uuid'];
-  assignmentId: Scalars['uuid'];
-}>;
-
-
-export type GetAssignmentResponsesQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, fragment_id?: string | null, use_custom_fields: boolean, custom_title?: string | null, custom_description?: string | null, start_oc?: number | null, end_oc?: number | null, position: number, created_at: any, updated_at: any, type: string, thumbnail_path?: string | null, assignment_response_id: any }>, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }> };
-
-export type GetAssignmentResponsesByAssignmentIdQueryVariables = Exact<{
-  assignmentId: Scalars['uuid'];
-  offset?: InputMaybe<Scalars['Int']>;
-  limit?: InputMaybe<Scalars['Int']>;
-  order?: Array<App_Assignment_Responses_V2_Order_By> | App_Assignment_Responses_V2_Order_By;
-  filter?: InputMaybe<Array<App_Assignment_Responses_V2_Bool_Exp> | App_Assignment_Responses_V2_Bool_Exp>;
-}>;
-
-
-export type GetAssignmentResponsesByAssignmentIdQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, assignment_id: any, collection_title?: string | null, created_at: any, updated_at: any, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, assignment_response_id: any }> }>, count: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count: number } | null } };
-
 export type GetAssignmentWithResponseQueryVariables = Exact<{
   assignmentId: Scalars['uuid'];
   pupilUuid: Scalars['uuid'];
@@ -345,20 +266,6 @@ export type GetContributorsByAssignmentUuidQueryVariables = Exact<{
 
 export type GetContributorsByAssignmentUuidQuery = { __typename?: 'query_root', app_assignments_v2_contributors: Array<{ __typename?: 'app_assignments_v2_contributors', assignment_id: any, invite_email?: string | null, invite_token?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile_id?: any | null, id: any, profile?: { __typename?: 'users_profiles', avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null, mail?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null, loms: Array<{ __typename?: 'users_profiles_lom_links', lom_id: string }> } | null }> };
 
-export type GetMaxPositionAssignmentBlocksQueryVariables = Exact<{
-  assignmentId: Scalars['uuid'];
-}>;
-
-
-export type GetMaxPositionAssignmentBlocksQuery = { __typename?: 'query_root', app_assignments_v2_by_pk?: { __typename?: 'app_assignments_v2', blocks_aggregate: { __typename?: 'app_assignment_blocks_v2_aggregate', aggregate?: { __typename?: 'app_assignment_blocks_v2_aggregate_fields', max?: { __typename?: 'app_assignment_blocks_v2_max_fields', position?: number | null } | null } | null } } | null };
-
-export type IncrementAssignmentViewCountMutationVariables = Exact<{
-  assignmentId: Scalars['uuid'];
-}>;
-
-
-export type IncrementAssignmentViewCountMutation = { __typename?: 'mutation_root', update_app_assignment_v2_views?: { __typename?: 'app_assignment_v2_views_mutation_response', affected_rows: number } | null };
-
 export type InsertAssignmentBlocksMutationVariables = Exact<{
   assignmentBlocks: Array<App_Assignment_Blocks_V2_Insert_Input> | App_Assignment_Blocks_V2_Insert_Input;
 }>;
@@ -372,23 +279,6 @@ export type InsertAssignmentResponseMutationVariables = Exact<{
 
 
 export type InsertAssignmentResponseMutation = { __typename?: 'mutation_root', insert_app_assignment_responses_v2?: { __typename?: 'app_assignment_responses_v2_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null, updated_at: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, fragment_id?: string | null, use_custom_fields: boolean, custom_title?: string | null, custom_description?: string | null, start_oc?: number | null, end_oc?: number | null, position: number, created_at: any, updated_at: any, type: string, thumbnail_path?: string | null, assignment_response_id: any }> }> } | null };
-
-export type UpdateAssignmentResponseMutationVariables = Exact<{
-  assignmentResponseId?: InputMaybe<Scalars['uuid']>;
-  collectionTitle: Scalars['String'];
-  updatedAt: Scalars['timestamptz'];
-}>;
-
-
-export type UpdateAssignmentResponseMutation = { __typename?: 'mutation_root', update_app_assignment_responses_v2?: { __typename?: 'app_assignment_responses_v2_mutation_response', returning: Array<{ __typename?: 'app_assignment_responses_v2', assignment_id: any, collection_title?: string | null, created_at: any, id: any, owner_profile_id: any, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', assignment_response_id: any, created_at: any, custom_description?: string | null, custom_title?: string | null, end_oc?: number | null, fragment_id?: string | null, id: any, position: number, start_oc?: number | null, thumbnail_path?: string | null, type: string, updated_at: any, use_custom_fields: boolean }>, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }> } | null };
-
-export type UpdateAssignmentUpdatedAtDateMutationVariables = Exact<{
-  assignmentId: Scalars['uuid'];
-  updatedAt: Scalars['timestamptz'];
-}>;
-
-
-export type UpdateAssignmentUpdatedAtDateMutation = { __typename?: 'mutation_root', update_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null };
 
 export type DeleteManagementEntryByCollectionIdMutationVariables = Exact<{
   collection_id: Scalars['uuid'];
@@ -521,7 +411,7 @@ export type GetOrganisationContentQueryVariables = Exact<{
 }>;
 
 
-export type GetOrganisationContentQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, created_at: any, title: string, updated_at: any, type: { __typename?: 'shared_types', label: string }, last_editor?: { __typename?: 'users_summary_view', full_name?: string | null } | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }> };
+export type GetOrganisationContentQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, created_at: any, title: string, updated_at: any, type: { __typename?: 'shared_types', label: string }, last_editor?: { __typename?: 'users_common_users', full_name?: string | null } | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }> };
 
 export type GetPublicCollectionsQueryVariables = Exact<{
   limit: Scalars['Int'];
@@ -651,61 +541,6 @@ export type UpdateMarcomNoteMutationVariables = Exact<{
 
 export type UpdateMarcomNoteMutation = { __typename?: 'mutation_root', update_app_collection_marcom_notes?: { __typename?: 'app_collection_marcom_notes_mutation_response', returning: Array<{ __typename?: 'app_collection_marcom_notes', id: number }> } | null };
 
-export type BulkUpdateAuthorForPupilCollectionsMutationVariables = Exact<{
-  authorId: Scalars['uuid'];
-  pupilCollectionIds: Array<Scalars['uuid']> | Scalars['uuid'];
-  now: Scalars['timestamptz'];
-}>;
-
-
-export type BulkUpdateAuthorForPupilCollectionsMutation = { __typename?: 'mutation_root', update_app_assignment_responses_v2?: { __typename?: 'app_assignment_responses_v2_mutation_response', affected_rows: number } | null };
-
-export type DeleteAssignmentResponsesMutationVariables = Exact<{
-  assignmentResponseIds: Array<Scalars['uuid']> | Scalars['uuid'];
-}>;
-
-
-export type DeleteAssignmentResponsesMutation = { __typename?: 'mutation_root', delete_app_assignment_responses_v2?: { __typename?: 'app_assignment_responses_v2_mutation_response', affected_rows: number } | null, delete_app_pupil_collection_blocks?: { __typename?: 'app_pupil_collection_blocks_mutation_response', affected_rows: number } | null };
-
-export type GetMaxPositionPupilCollectionBlocksQueryVariables = Exact<{
-  assignmentResponseId: Scalars['uuid'];
-}>;
-
-
-export type GetMaxPositionPupilCollectionBlocksQuery = { __typename?: 'query_root', app_assignment_responses_v2_by_pk?: { __typename?: 'app_assignment_responses_v2', pupil_collection_blocks_aggregate: { __typename?: 'app_pupil_collection_blocks_aggregate', aggregate?: { __typename?: 'app_pupil_collection_blocks_aggregate_fields', max?: { __typename?: 'app_pupil_collection_blocks_max_fields', position?: number | null } | null } | null } } | null };
-
-export type GetPupilCollectionIdsQueryVariables = Exact<{
-  where: App_Assignment_Responses_V2_Bool_Exp;
-}>;
-
-
-export type GetPupilCollectionIdsQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any }> };
-
-export type GetPupilCollectionsAdminOverviewQueryVariables = Exact<{
-  offset: Scalars['Int'];
-  limit: Scalars['Int'];
-  orderBy: Array<App_Assignment_Responses_V2_Order_By> | App_Assignment_Responses_V2_Order_By;
-  where: App_Assignment_Responses_V2_Bool_Exp;
-}>;
-
-
-export type GetPupilCollectionsAdminOverviewQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, assignment_id: any, collection_title?: string | null, created_at: any, updated_at: any, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null } }>, app_assignment_responses_v2_aggregate: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count: number } | null } };
-
-export type InsertPupilCollectionBlocksMutationVariables = Exact<{
-  pupilCollectionBlocks: Array<App_Pupil_Collection_Blocks_Insert_Input> | App_Pupil_Collection_Blocks_Insert_Input;
-}>;
-
-
-export type InsertPupilCollectionBlocksMutation = { __typename?: 'mutation_root', insert_app_pupil_collection_blocks?: { __typename?: 'app_pupil_collection_blocks_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, created_at: any, custom_description?: string | null, end_oc?: number | null, custom_title?: string | null, fragment_id?: string | null, position: number, start_oc?: number | null, thumbnail_path?: string | null, type: string, updated_at: any, use_custom_fields: boolean, assignment_response_id: any }> } | null };
-
-export type UpdatePupilCollectionBlockMutationVariables = Exact<{
-  blockId: Scalars['uuid'];
-  update: App_Pupil_Collection_Blocks_Set_Input;
-}>;
-
-
-export type UpdatePupilCollectionBlockMutation = { __typename?: 'mutation_root', update_app_pupil_collection_blocks_by_pk?: { __typename?: 'app_pupil_collection_blocks', id: any, created_at: any, custom_description?: string | null, end_oc?: number | null, custom_title?: string | null, fragment_id?: string | null, position: number, start_oc?: number | null, thumbnail_path?: string | null, type: string, updated_at: any, use_custom_fields: boolean, assignment_response_id: any } | null };
-
 export type GetQuickLaneByContentAndOwnerQueryVariables = Exact<{
   contentId?: InputMaybe<Scalars['uuid']>;
   contentLabel?: InputMaybe<Scalars['String']>;
@@ -713,21 +548,21 @@ export type GetQuickLaneByContentAndOwnerQueryVariables = Exact<{
 }>;
 
 
-export type GetQuickLaneByContentAndOwnerQuery = { __typename?: 'query_root', app_quick_lanes: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, created_at: any, updated_at: any, start_oc?: number | null, end_oc?: number | null, owner: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } }> };
+export type GetQuickLaneByContentAndOwnerQuery = { __typename?: 'query_root', app_quick_lanes: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, created_at: any, updated_at: any, start_oc?: number | null, end_oc?: number | null, owner?: { __typename?: 'users_common_users', first_name?: string | null, last_name?: string | null, full_name?: string | null, profile_id?: any | null, mail?: string | null, avatar?: string | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }> };
 
 export type GetQuickLaneByIdQueryVariables = Exact<{
   id?: InputMaybe<Scalars['uuid']>;
 }>;
 
 
-export type GetQuickLaneByIdQuery = { __typename?: 'query_root', app_quick_lanes: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, start_oc?: number | null, end_oc?: number | null, created_at: any, updated_at: any, owner: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } }> };
+export type GetQuickLaneByIdQuery = { __typename?: 'query_root', app_quick_lanes: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, start_oc?: number | null, end_oc?: number | null, created_at: any, updated_at: any, owner?: { __typename?: 'users_common_users', first_name?: string | null, last_name?: string | null, full_name?: string | null, profile_id?: any | null, mail?: string | null, avatar?: string | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }> };
 
 export type InsertQuickLanesMutationVariables = Exact<{
   objects: Array<App_Quick_Lanes_Insert_Input> | App_Quick_Lanes_Insert_Input;
 }>;
 
 
-export type InsertQuickLanesMutation = { __typename?: 'mutation_root', insert_app_quick_lanes?: { __typename?: 'app_quick_lanes_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, start_oc?: number | null, end_oc?: number | null, created_at: any, updated_at: any, owner: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } }> } | null };
+export type InsertQuickLanesMutation = { __typename?: 'mutation_root', insert_app_quick_lanes?: { __typename?: 'app_quick_lanes_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, start_oc?: number | null, end_oc?: number | null, created_at: any, updated_at: any, owner?: { __typename?: 'users_common_users', first_name?: string | null, last_name?: string | null, full_name?: string | null, profile_id?: any | null, mail?: string | null, avatar?: string | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }> } | null };
 
 export type RemoveQuickLanesMutationVariables = Exact<{
   ids: Array<Scalars['uuid']> | Scalars['uuid'];
@@ -743,7 +578,7 @@ export type UpdateQuickLaneByIdMutationVariables = Exact<{
 }>;
 
 
-export type UpdateQuickLaneByIdMutation = { __typename?: 'mutation_root', update_app_quick_lanes?: { __typename?: 'app_quick_lanes_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, start_oc?: number | null, end_oc?: number | null, created_at: any, updated_at: any, owner: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } }> } | null };
+export type UpdateQuickLaneByIdMutation = { __typename?: 'mutation_root', update_app_quick_lanes?: { __typename?: 'app_quick_lanes_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, start_oc?: number | null, end_oc?: number | null, created_at: any, updated_at: any, owner?: { __typename?: 'users_common_users', first_name?: string | null, last_name?: string | null, full_name?: string | null, profile_id?: any | null, mail?: string | null, avatar?: string | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }> } | null };
 
 export type GetProfilePreferenceQueryVariables = Exact<{
   profileId: Scalars['uuid'];
@@ -771,7 +606,7 @@ export type GetQuickLanesByContentIdQueryVariables = Exact<{
 }>;
 
 
-export type GetQuickLanesByContentIdQuery = { __typename?: 'query_root', app_quick_lanes: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, start_oc?: number | null, end_oc?: number | null, created_at: any, updated_at: any, owner: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } }> };
+export type GetQuickLanesByContentIdQuery = { __typename?: 'query_root', app_quick_lanes: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, start_oc?: number | null, end_oc?: number | null, created_at: any, updated_at: any, owner?: { __typename?: 'users_common_users', first_name?: string | null, last_name?: string | null, full_name?: string | null, profile_id?: any | null, mail?: string | null, avatar?: string | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }> };
 
 export type GetQuickLanesWithFiltersQueryVariables = Exact<{
   filterString?: InputMaybe<Scalars['String']>;
@@ -782,7 +617,7 @@ export type GetQuickLanesWithFiltersQueryVariables = Exact<{
 }>;
 
 
-export type GetQuickLanesWithFiltersQuery = { __typename?: 'query_root', app_quick_lanes: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, start_oc?: number | null, end_oc?: number | null, created_at: any, updated_at: any, owner: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } }>, app_quick_lanes_aggregate: { __typename?: 'app_quick_lanes_aggregate', aggregate?: { __typename?: 'app_quick_lanes_aggregate_fields', count: number } | null } };
+export type GetQuickLanesWithFiltersQuery = { __typename?: 'query_root', app_quick_lanes: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, start_oc?: number | null, end_oc?: number | null, created_at: any, updated_at: any, owner?: { __typename?: 'users_common_users', first_name?: string | null, last_name?: string | null, full_name?: string | null, profile_id?: any | null, mail?: string | null, avatar?: string | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }>, app_quick_lanes_aggregate: { __typename?: 'app_quick_lanes_aggregate', aggregate?: { __typename?: 'app_quick_lanes_aggregate_fields', count: number } | null } };
 
 export type DeleteAssignmentLabelsMutationVariables = Exact<{
   profileId: Scalars['uuid'];

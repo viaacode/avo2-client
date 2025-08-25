@@ -1,8 +1,0 @@
-mutation incrementAssignmentViewCount($assignmentId: uuid!) {
-	update_app_assignment_v2_views(
-		where: { assignment_uuid: { _eq: $assignmentId } }
-		_inc: { count: 1 }
-	) {
-		affected_rows
-	}
-}
