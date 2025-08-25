@@ -11,6 +11,7 @@ import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
 import { createResource } from '../../embed-code/helpers/resourceForTrackEvents';
 import { useGetEmbedCode } from '../../embed-code/hooks/useGetEmbedCode';
 import FlowPlayerWrapper from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { type CustomError } from '../../shared/helpers/custom-error';
 import { reorderDate } from '../../shared/helpers/formatters';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 import { tHtml } from '../../shared/helpers/translate-html';
@@ -39,6 +40,7 @@ const Embed: FC<EmbedProps & UserProps> = ({
 		data: embedCode,
 		isLoading: isLoadingEmbedCode,
 		isError: isErrorEmbedCode,
+		error: embedErrorEmbedCode,
 	} = useGetEmbedCode(embedId, true);
 
 	const content = useMemo(() => embedCode?.content as Avo.Item.Item, [embedCode]);
@@ -49,10 +51,14 @@ const Embed: FC<EmbedProps & UserProps> = ({
 		let icon: IconName | null = null;
 
 		if (isErrorEmbedCode) {
-			errorMessage = tHtml(
-				'embed/components/error-view___oeps-er-liep-iets-mis-probeer-het-opnieuw-br-lukt-het-nog-steeds-niet-dan-is-dit-fragment-mogelijks-verwijderd'
-			);
-			showReloadButton = true;
+			if ((embedErrorEmbedCode as CustomError)?.additionalInfo?.errorMessage) {
+				errorMessage = (embedErrorEmbedCode as CustomError).additionalInfo.errorMessage;
+			} else {
+				errorMessage = tHtml(
+					'embed/components/error-view___oeps-er-liep-iets-mis-probeer-het-opnieuw-br-lukt-het-nog-steeds-niet-dan-is-dit-fragment-mogelijks-verwijderd'
+				);
+				showReloadButton = true;
+			}
 		} else if (embedCode && !content) {
 			errorMessage = tHtml('embed/components/embed___deze-video-is-niet-meer-beschikbaar');
 		} else if (content?.is_deleted) {
