@@ -1,11 +1,33 @@
-import { IconName, ToggleButton, type ToggleButtonProps } from '@viaa/avo2-components';
+import {
+	IconName,
+	ToggleButton,
+	type ToggleButtonProps,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from '@viaa/avo2-components';
 import React, { type ReactNode } from 'react';
 
 export type renderBookmarkButtonProps = Pick<
 	ToggleButtonProps,
-	'active' | 'onClick' | 'ariaLabel' | 'title'
+	'active' | 'onClick' | 'ariaLabel' | 'title' | 'type'
 >;
 
-export const defaultRenderBookmarkButton = (props: renderBookmarkButtonProps): ReactNode => (
-	<ToggleButton type="tertiary" icon={IconName.bookmark} {...props} />
-);
+const getBookmarkButton = (props: renderBookmarkButtonProps): ReactNode => {
+	return <ToggleButton type="tertiary" icon={IconName.bookmark} {...props} />;
+};
+
+export const defaultRenderBookmarkButton = (props: renderBookmarkButtonProps): ReactNode => {
+	if (props.title) {
+		return (
+			<Tooltip position="bottom">
+				<TooltipTrigger>{getBookmarkButton({ ...props, title: '' })}</TooltipTrigger>
+				<TooltipContent>
+					<span>{props.title}</span>
+				</TooltipContent>
+			</Tooltip>
+		);
+	}
+
+	return getBookmarkButton(props);
+};
