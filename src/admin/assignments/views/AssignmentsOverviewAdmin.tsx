@@ -510,6 +510,7 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 					)}
 					isOpen={isExportAllToCsvModalOpen}
 					onClose={() => setIsExportAllToCsvModalOpen(false)}
+					itemsPerRequest={20}
 					fetchingItemsLabel={tText(
 						'admin/assignments/views/assignments-overview-admin___bezig-met-ophalen-van-opdrachten'
 					)}

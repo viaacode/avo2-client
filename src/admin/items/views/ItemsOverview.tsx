@@ -160,6 +160,7 @@ const ItemsOverview: FC = () => {
 					)}
 					isOpen={isExportAllToCsvModalOpen}
 					onClose={() => setIsExportAllToCsvModalOpen(false)}
+					itemsPerRequest={20}
 					fetchingItemsLabel={tText(
 						'admin/items/views/items-overview___bezig-met-ophalen-van-media-items'
 					)}
