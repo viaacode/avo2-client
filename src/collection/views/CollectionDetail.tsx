@@ -16,7 +16,6 @@ import {
 	MoreOptionsDropdown,
 	Spacer,
 	Spinner,
-	ToggleButton,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
@@ -55,6 +54,7 @@ import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, ROUTE_PARTS } from '../.
 import { buildLink } from '../../shared/helpers/build-link';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { CustomError } from '../../shared/helpers/custom-error';
+import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render-bookmark-button';
 import {
 	defaultGoToDetailLink,
 	defaultRenderDetailLink,
@@ -1039,16 +1039,16 @@ const CollectionDetail: FC<
 						}
 					/>
 				)}
-				{!isOwner && !isContributor && !inviteToken && (
-					<ToggleButton
-						title={tText('collection/views/collection-detail___bladwijzer')}
-						type="secondary"
-						icon={IconName.bookmark}
-						active={bookmarkViewPlayCounts.isBookmarked}
-						ariaLabel={tText('collection/views/collection-detail___bladwijzer')}
-						onClick={() => executeAction(CollectionMenuAction.toggleBookmark)}
-					/>
-				)}
+				{!isOwner &&
+					!isContributor &&
+					!inviteToken &&
+					defaultRenderBookmarkButton({
+						active: bookmarkViewPlayCounts.isBookmarked,
+						ariaLabel: tText('collection/views/collection-detail___bladwijzer'),
+						title: tText('collection/views/collection-detail___bladwijzer'),
+						onClick: () => executeAction(CollectionMenuAction.toggleBookmark),
+						type: 'secondary',
+					})}
 				{!inviteToken && renderCollectionDropdownOptions()}
 				{permissions?.canEditCollections && !inviteToken && (
 					<Spacer margin="left-small">
