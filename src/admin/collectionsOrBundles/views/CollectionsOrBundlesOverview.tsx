@@ -641,6 +641,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 					}
 					isOpen={isExportAllToCsvModalOpen}
 					onClose={() => setIsExportAllToCsvModalOpen(false)}
+					itemsPerRequest={20}
 					fetchingItemsLabel={tText(
 						'admin/collections-or-bundles/views/collections-or-bundles-overview___bezig-met-ophalen-van-media-items'
 					)}

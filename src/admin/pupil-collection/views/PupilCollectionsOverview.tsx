@@ -381,6 +381,7 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 					)}
 					isOpen={isExportAllToCsvModalOpen}
 					onClose={() => setIsExportAllToCsvModalOpen(false)}
+					itemsPerRequest={20}
 					fetchingItemsLabel={tText(
 						'admin/pupil-collection/views/pupil-collections-overview___bezig-met-ophalen-van-leerling-collecties'
 					)}
