@@ -487,7 +487,7 @@ export class AssignmentService {
 		try {
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			return await fetchWithLogoutJson(
-				`${getEnv('PROXY_URL')}/assignments-responses/${assignmentResponseId}`,
+				`${getEnv('PROXY_URL')}/assignment-responses/${assignmentResponseId}`,
 				{
 					method: 'DELETE',
 				}
@@ -504,7 +504,7 @@ export class AssignmentService {
 	static async deleteAssignmentResponses(assignmentResponseIds: string[]): Promise<void> {
 		try {
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
-			return await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/assignments-responses}`, {
+			return await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/assignment-responses}`, {
 				method: 'DELETE',
 				body: JSON.stringify(assignmentResponseIds),
 			});
@@ -569,7 +569,7 @@ export class AssignmentService {
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 
 			return (await fetchWithLogoutJson(
-				`${getEnv('PROXY_URL')}/assignments-responses/${assignmentId}/multiple`,
+				`${getEnv('PROXY_URL')}/assignment-responses/${assignmentId}/multiple`,
 				{
 					method: 'GET',
 				}
@@ -593,7 +593,7 @@ export class AssignmentService {
 		try {
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			const assignmentResponse = (await fetchWithLogoutJson(
-				`${getEnv('PROXY_URL')}/assignments-responses/${assignmentId}/single`,
+				`${getEnv('PROXY_URL')}/assignment-responses/${assignmentId}/personal`,
 				{
 					method: 'GET',
 				}
@@ -627,7 +627,7 @@ export class AssignmentService {
 		try {
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			const assignmentResponse = (await fetchWithLogoutJson(
-				`${getEnv('PROXY_URL')}/assignments-responses/${assignmentResponseId}`,
+				`${getEnv('PROXY_URL')}/assignment-responses/${assignmentResponseId}`,
 				{
 					method: 'GET',
 				}
