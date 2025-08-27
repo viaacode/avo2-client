@@ -1,4 +1,4 @@
-query getCollectionsByItemUuid($fragmentId: String!) {
+query getCollectionsByItemUuid($fragmentId: bpchar!) {
 	app_collections(
 		where: {
 			collection_fragments: { external_id: { _eq: $fragmentId } }

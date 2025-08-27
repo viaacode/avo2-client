@@ -1,5 +1,5 @@
 mutation deleteItemFromCollectionBookmarksAndAssignments(
-	$itemExternalId: String!
+	$itemExternalId: bpchar!
 	$itemUid: uuid!
 ) {
 	delete_app_collection_fragments(where: { external_id: { _eq: $itemExternalId } }) {

@@ -6,6 +6,7 @@ import { Helmet } from 'react-helmet';
 import { type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
+import { AssignmentService } from '../../../assignment/assignment.service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
@@ -237,7 +238,7 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 		setIsLoading(true);
 		setPupilCollectionsDeleteModalOpen(false);
 		try {
-			await PupilCollectionService.deleteAssignmentResponses(selectedPupilCollectionIds);
+			await AssignmentService.deleteAssignmentResponses(selectedPupilCollectionIds);
 			await fetchPupilCollections();
 			ToastService.success(
 				tHtml(

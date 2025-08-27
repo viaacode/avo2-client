@@ -73,7 +73,7 @@ query getCollectionsByOwnerOrContributor(
 				value
 			}
 			profile {
-				user: usersByuserId {
+				user {
 					full_name
 					first_name
 					last_name

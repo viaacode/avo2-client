@@ -107,7 +107,7 @@ export type App_Assignment_Blocks_V2 = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  fragment_id?: Maybe<Scalars['String']>;
+  fragment_id?: Maybe<Scalars['bpchar']>;
   id: Scalars['uuid'];
   is_deleted: Scalars['Boolean'];
   original_description?: Maybe<Scalars['String']>;
@@ -226,7 +226,7 @@ export type App_Assignment_Blocks_V2_Bool_Exp = {
   custom_description?: InputMaybe<String_Comparison_Exp>;
   custom_title?: InputMaybe<String_Comparison_Exp>;
   end_oc?: InputMaybe<Int_Comparison_Exp>;
-  fragment_id?: InputMaybe<String_Comparison_Exp>;
+  fragment_id?: InputMaybe<Bpchar_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
   original_description?: InputMaybe<String_Comparison_Exp>;
@@ -261,7 +261,7 @@ export type App_Assignment_Blocks_V2_Insert_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  fragment_id?: InputMaybe<Scalars['String']>;
+  fragment_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   original_description?: InputMaybe<Scalars['String']>;
@@ -283,7 +283,7 @@ export type App_Assignment_Blocks_V2_Max_Fields = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  fragment_id?: Maybe<Scalars['String']>;
+  fragment_id?: Maybe<Scalars['bpchar']>;
   id?: Maybe<Scalars['uuid']>;
   original_description?: Maybe<Scalars['String']>;
   original_title?: Maybe<Scalars['String']>;
@@ -322,7 +322,7 @@ export type App_Assignment_Blocks_V2_Min_Fields = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  fragment_id?: Maybe<Scalars['String']>;
+  fragment_id?: Maybe<Scalars['bpchar']>;
   id?: Maybe<Scalars['uuid']>;
   original_description?: Maybe<Scalars['String']>;
   original_title?: Maybe<Scalars['String']>;
@@ -457,7 +457,7 @@ export type App_Assignment_Blocks_V2_Set_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  fragment_id?: InputMaybe<Scalars['String']>;
+  fragment_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   original_description?: InputMaybe<Scalars['String']>;
@@ -531,7 +531,7 @@ export type App_Assignment_Blocks_V2_Stream_Cursor_Value_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  fragment_id?: InputMaybe<Scalars['String']>;
+  fragment_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   original_description?: InputMaybe<Scalars['String']>;
@@ -661,7 +661,7 @@ export type App_Assignment_Labels_V2 = {
   label?: Maybe<Scalars['String']>;
   owner_profile_id: Scalars['uuid'];
   /** An object relationship */
-  profile: Users_Profiles;
+  profile?: Maybe<Users_Common_Users>;
   type: Scalars['String'];
 };
 
@@ -723,7 +723,7 @@ export type App_Assignment_Labels_V2_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   label?: InputMaybe<String_Comparison_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
+  profile?: InputMaybe<Users_Common_Users_Bool_Exp>;
   type?: InputMaybe<String_Comparison_Exp>;
 };
 
@@ -741,7 +741,7 @@ export type App_Assignment_Labels_V2_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   label?: InputMaybe<Scalars['String']>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  profile?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   type?: InputMaybe<Scalars['String']>;
 };
 
@@ -814,7 +814,7 @@ export type App_Assignment_Labels_V2_Order_By = {
   id?: InputMaybe<Order_By>;
   label?: InputMaybe<Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
+  profile?: InputMaybe<Users_Common_Users_Order_By>;
   type?: InputMaybe<Order_By>;
 };
 
@@ -899,10 +899,8 @@ export type App_Assignment_Responses_V2 = {
   created_at: Scalars['timestamptz'];
   id: Scalars['uuid'];
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id: Scalars['uuid'];
-  /** An object relationship */
-  profile: Users_Profiles;
   /** An array relationship */
   pupil_collection_blocks: Array<App_Pupil_Collection_Blocks>;
   /** An aggregate relationship */
@@ -987,9 +985,8 @@ export type App_Assignment_Responses_V2_Bool_Exp = {
   collection_title?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
   pupil_collection_blocks?: InputMaybe<App_Pupil_Collection_Blocks_Bool_Exp>;
   pupil_collection_blocks_aggregate?: InputMaybe<App_Pupil_Collection_Blocks_Aggregate_Bool_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -1008,9 +1005,8 @@ export type App_Assignment_Responses_V2_Insert_Input = {
   collection_title?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  owner?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
+  owner?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
   pupil_collection_blocks?: InputMaybe<App_Pupil_Collection_Blocks_Arr_Rel_Insert_Input>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
@@ -1087,9 +1083,8 @@ export type App_Assignment_Responses_V2_Order_By = {
   collection_title?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
   pupil_collection_blocks_aggregate?: InputMaybe<App_Pupil_Collection_Blocks_Aggregate_Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -1467,10 +1462,10 @@ export type App_Assignments_V2 = {
   marcom_notes_aggregate: App_Assignments_V2_Marcom_Notes_Aggregate;
   note?: Maybe<Scalars['String']>;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id: Scalars['uuid'];
   /** An object relationship */
-  profile: Users_Profiles;
+  profile?: Maybe<Users_Profiles>;
   published_at?: Maybe<Scalars['timestamptz']>;
   /** An array relationship */
   quality_labels: Array<App_Assignments_V2_Quality_Labels>;
@@ -2371,7 +2366,7 @@ export type App_Assignments_V2_Bool_Exp = {
   marcom_notes?: InputMaybe<App_Assignments_V2_Marcom_Notes_Bool_Exp>;
   marcom_notes_aggregate?: InputMaybe<App_Assignments_V2_Marcom_Notes_Aggregate_Bool_Exp>;
   note?: InputMaybe<String_Comparison_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   profile?: InputMaybe<Users_Profiles_Bool_Exp>;
   published_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -2410,7 +2405,7 @@ export type App_Assignments_V2_Contributors = {
   invite_email?: Maybe<Scalars['String']>;
   invite_token?: Maybe<Scalars['uuid']>;
   /** An object relationship */
-  profile?: Maybe<Users_Profiles>;
+  profile?: Maybe<Users_Common_Users>;
   profile_id?: Maybe<Scalars['uuid']>;
   rights: Lookup_Enum_Right_Types_Enum;
   updated_at: Scalars['timestamptz'];
@@ -2475,7 +2470,7 @@ export type App_Assignments_V2_Contributors_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   invite_email?: InputMaybe<String_Comparison_Exp>;
   invite_token?: InputMaybe<Uuid_Comparison_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
+  profile?: InputMaybe<Users_Common_Users_Bool_Exp>;
   profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   rights?: InputMaybe<Lookup_Enum_Right_Types_Enum_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -2498,7 +2493,7 @@ export type App_Assignments_V2_Contributors_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   invite_email?: InputMaybe<Scalars['String']>;
   invite_token?: InputMaybe<Scalars['uuid']>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  profile?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   profile_id?: InputMaybe<Scalars['uuid']>;
   rights?: InputMaybe<Lookup_Enum_Right_Types_Enum>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
@@ -2575,7 +2570,7 @@ export type App_Assignments_V2_Contributors_Order_By = {
   id?: InputMaybe<Order_By>;
   invite_email?: InputMaybe<Order_By>;
   invite_token?: InputMaybe<Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
+  profile?: InputMaybe<Users_Common_Users_Order_By>;
   profile_id?: InputMaybe<Order_By>;
   rights?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
@@ -3042,7 +3037,7 @@ export type App_Assignments_V2_Insert_Input = {
   marcom_note?: InputMaybe<App_Assignments_V2_Marcom_Notes_Obj_Rel_Insert_Input>;
   marcom_notes?: InputMaybe<App_Assignments_V2_Marcom_Notes_Arr_Rel_Insert_Input>;
   note?: InputMaybe<Scalars['String']>;
-  owner?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
+  owner?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
   published_at?: InputMaybe<Scalars['timestamptz']>;
@@ -4126,7 +4121,7 @@ export type App_Assignments_V2_Marcom_Overview = {
   /** An aggregate relationship */
   loms_aggregate: App_Assignments_V2_Lom_Links_Aggregate;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   parent_collection_id?: Maybe<Scalars['uuid']>;
   /** An array relationship */
@@ -4216,7 +4211,7 @@ export type App_Assignments_V2_Marcom_Overview_Bool_Exp = {
   last_marcom_date?: InputMaybe<Timestamp_Comparison_Exp>;
   loms?: InputMaybe<App_Assignments_V2_Lom_Links_Bool_Exp>;
   loms_aggregate?: InputMaybe<App_Assignments_V2_Lom_Links_Aggregate_Bool_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   parent_collection_id?: InputMaybe<Uuid_Comparison_Exp>;
   quality_labels?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
@@ -4268,7 +4263,7 @@ export type App_Assignments_V2_Marcom_Overview_Order_By = {
   last_editor?: InputMaybe<Users_Common_Users_Order_By>;
   last_marcom_date?: InputMaybe<Order_By>;
   loms_aggregate?: InputMaybe<App_Assignments_V2_Lom_Links_Aggregate_Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   parent_collection_id?: InputMaybe<Order_By>;
   quality_labels_aggregate?: InputMaybe<App_Assignments_V2_Quality_Labels_Aggregate_Order_By>;
@@ -4478,7 +4473,7 @@ export type App_Assignments_V2_Order_By = {
   marcom_note?: InputMaybe<App_Assignments_V2_Marcom_Notes_Order_By>;
   marcom_notes_aggregate?: InputMaybe<App_Assignments_V2_Marcom_Notes_Aggregate_Order_By>;
   note?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   profile?: InputMaybe<Users_Profiles_Order_By>;
   published_at?: InputMaybe<Order_By>;
@@ -4531,7 +4526,7 @@ export type App_Assignments_V2_Overview = {
   /** An aggregate relationship */
   loms_aggregate: App_Assignments_V2_Lom_Links_Aggregate;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   profile?: Maybe<Users_Profiles>;
@@ -4763,7 +4758,7 @@ export type App_Assignments_V2_Overview_Bool_Exp = {
   lom_learning_resource_type?: InputMaybe<Jsonb_Comparison_Exp>;
   loms?: InputMaybe<App_Assignments_V2_Lom_Links_Bool_Exp>;
   loms_aggregate?: InputMaybe<App_Assignments_V2_Lom_Links_Aggregate_Bool_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   profile?: InputMaybe<Users_Profiles_Bool_Exp>;
   published_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -4839,7 +4834,7 @@ export type App_Assignments_V2_Overview_Order_By = {
   labels_aggregate?: InputMaybe<App_Assignments_V2_Assignment_Labels_V2_Aggregate_Order_By>;
   lom_learning_resource_type?: InputMaybe<Order_By>;
   loms_aggregate?: InputMaybe<App_Assignments_V2_Lom_Links_Aggregate_Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   profile?: InputMaybe<Users_Profiles_Order_By>;
   published_at?: InputMaybe<Order_By>;
@@ -5947,7 +5942,7 @@ export type App_Collection_Actualisation_Overview = {
   mgmt_status_expires_at?: Maybe<Scalars['timestamptz']>;
   mgmt_updated_at?: Maybe<Scalars['timestamptz']>;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   title?: Maybe<Scalars['String']>;
   /** An object relationship */
@@ -6067,7 +6062,7 @@ export type App_Collection_Actualisation_Overview_Bool_Exp = {
   mgmt_manager_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   mgmt_status_expires_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   mgmt_updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
   type?: InputMaybe<Shared_Types_Bool_Exp>;
@@ -6129,7 +6124,7 @@ export type App_Collection_Actualisation_Overview_Order_By = {
   mgmt_manager_profile_id?: InputMaybe<Order_By>;
   mgmt_status_expires_at?: InputMaybe<Order_By>;
   mgmt_updated_at?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
   type?: InputMaybe<Shared_Types_Order_By>;
@@ -7081,7 +7076,7 @@ export type App_Collection_Fragments = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  external_id?: Maybe<Scalars['String']>;
+  external_id?: Maybe<Scalars['bpchar']>;
   id: Scalars['Int'];
   is_copy_of?: Maybe<Scalars['uuid']>;
   is_deleted: Scalars['Boolean'];
@@ -7200,7 +7195,7 @@ export type App_Collection_Fragments_Bool_Exp = {
   custom_description?: InputMaybe<String_Comparison_Exp>;
   custom_title?: InputMaybe<String_Comparison_Exp>;
   end_oc?: InputMaybe<Int_Comparison_Exp>;
-  external_id?: InputMaybe<String_Comparison_Exp>;
+  external_id?: InputMaybe<Bpchar_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   is_copy_of?: InputMaybe<Uuid_Comparison_Exp>;
   is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
@@ -7234,7 +7229,7 @@ export type App_Collection_Fragments_Insert_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  external_id?: InputMaybe<Scalars['String']>;
+  external_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['Int']>;
   is_copy_of?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
@@ -7255,7 +7250,7 @@ export type App_Collection_Fragments_Max_Fields = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  external_id?: Maybe<Scalars['String']>;
+  external_id?: Maybe<Scalars['bpchar']>;
   id?: Maybe<Scalars['Int']>;
   is_copy_of?: Maybe<Scalars['uuid']>;
   position?: Maybe<Scalars['Int']>;
@@ -7292,7 +7287,7 @@ export type App_Collection_Fragments_Min_Fields = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  external_id?: Maybe<Scalars['String']>;
+  external_id?: Maybe<Scalars['bpchar']>;
   id?: Maybe<Scalars['Int']>;
   is_copy_of?: Maybe<Scalars['uuid']>;
   position?: Maybe<Scalars['Int']>;
@@ -7421,7 +7416,7 @@ export type App_Collection_Fragments_Set_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  external_id?: InputMaybe<Scalars['String']>;
+  external_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['Int']>;
   is_copy_of?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
@@ -7500,7 +7495,7 @@ export type App_Collection_Fragments_Stream_Cursor_Value_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  external_id?: InputMaybe<Scalars['String']>;
+  external_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['Int']>;
   is_copy_of?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
@@ -9592,7 +9587,7 @@ export type App_Collection_Marcom_Overview = {
   /** An aggregate relationship */
   loms_aggregate: App_Collections_Lom_Links_Aggregate;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   parent_collection_id?: Maybe<Scalars['uuid']>;
   /** An array relationship */
@@ -9712,7 +9707,7 @@ export type App_Collection_Marcom_Overview_Bool_Exp = {
   lom_context?: InputMaybe<Jsonb_Comparison_Exp>;
   loms?: InputMaybe<App_Collections_Lom_Links_Bool_Exp>;
   loms_aggregate?: InputMaybe<App_Collections_Lom_Links_Aggregate_Bool_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   parent_collection_id?: InputMaybe<Uuid_Comparison_Exp>;
   quality_labels?: InputMaybe<App_Collection_Labels_Bool_Exp>;
@@ -9769,7 +9764,7 @@ export type App_Collection_Marcom_Overview_Order_By = {
   lom_classification?: InputMaybe<Order_By>;
   lom_context?: InputMaybe<Order_By>;
   loms_aggregate?: InputMaybe<App_Collections_Lom_Links_Aggregate_Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   parent_collection_id?: InputMaybe<Order_By>;
   quality_labels_aggregate?: InputMaybe<App_Collection_Labels_Aggregate_Order_By>;
@@ -10160,7 +10155,7 @@ export type App_Collection_Qc_Overview = {
   mgmt_language_check?: Maybe<Scalars['Boolean']>;
   mgmt_quality_check?: Maybe<Scalars['Boolean']>;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   title?: Maybe<Scalars['String']>;
   /** An object relationship */
@@ -10276,7 +10271,7 @@ export type App_Collection_Qc_Overview_Bool_Exp = {
   mgmt_eind_check_date?: InputMaybe<Timestamptz_Comparison_Exp>;
   mgmt_language_check?: InputMaybe<Boolean_Comparison_Exp>;
   mgmt_quality_check?: InputMaybe<Boolean_Comparison_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
   type?: InputMaybe<Shared_Types_Bool_Exp>;
@@ -10324,7 +10319,7 @@ export type App_Collection_Qc_Overview_Order_By = {
   mgmt_eind_check_date?: InputMaybe<Order_By>;
   mgmt_language_check?: InputMaybe<Order_By>;
   mgmt_quality_check?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
   type?: InputMaybe<Shared_Types_Order_By>;
@@ -11150,7 +11145,7 @@ export type App_Collections = {
   organisation?: Maybe<Shared_Organisations>;
   organisation_id?: Maybe<Scalars['String']>;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   play_count?: Maybe<App_Collection_Plays>;
@@ -11553,7 +11548,7 @@ export type App_Collections_Bool_Exp = {
   note?: InputMaybe<String_Comparison_Exp>;
   organisation?: InputMaybe<Shared_Organisations_Bool_Exp>;
   organisation_id?: InputMaybe<String_Comparison_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   play_count?: InputMaybe<App_Collection_Plays_Bool_Exp>;
   profile?: InputMaybe<Users_Profiles_Bool_Exp>;
@@ -11595,7 +11590,7 @@ export type App_Collections_Contributors = {
   invite_email?: Maybe<Scalars['String']>;
   invite_token?: Maybe<Scalars['uuid']>;
   /** An object relationship */
-  profile?: Maybe<Users_Profiles>;
+  profile?: Maybe<Users_Common_Users>;
   profile_id?: Maybe<Scalars['uuid']>;
   rights: Lookup_Enum_Right_Types_Enum;
   updated_at: Scalars['timestamptz'];
@@ -11660,7 +11655,7 @@ export type App_Collections_Contributors_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   invite_email?: InputMaybe<String_Comparison_Exp>;
   invite_token?: InputMaybe<Uuid_Comparison_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
+  profile?: InputMaybe<Users_Common_Users_Bool_Exp>;
   profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   rights?: InputMaybe<Lookup_Enum_Right_Types_Enum_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -11683,7 +11678,7 @@ export type App_Collections_Contributors_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   invite_email?: InputMaybe<Scalars['String']>;
   invite_token?: InputMaybe<Scalars['uuid']>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  profile?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   profile_id?: InputMaybe<Scalars['uuid']>;
   rights?: InputMaybe<Lookup_Enum_Right_Types_Enum>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
@@ -11760,7 +11755,7 @@ export type App_Collections_Contributors_Order_By = {
   id?: InputMaybe<Order_By>;
   invite_email?: InputMaybe<Order_By>;
   invite_token?: InputMaybe<Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
+  profile?: InputMaybe<Users_Common_Users_Order_By>;
   profile_id?: InputMaybe<Order_By>;
   rights?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
@@ -12041,7 +12036,7 @@ export type App_Collections_Insert_Input = {
   note?: InputMaybe<Scalars['String']>;
   organisation?: InputMaybe<Shared_Organisations_Obj_Rel_Insert_Input>;
   organisation_id?: InputMaybe<Scalars['String']>;
-  owner?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
+  owner?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   play_count?: InputMaybe<App_Collection_Plays_Obj_Rel_Insert_Input>;
   profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
@@ -12675,7 +12670,7 @@ export type App_Collections_Order_By = {
   note?: InputMaybe<Order_By>;
   organisation?: InputMaybe<Shared_Organisations_Order_By>;
   organisation_id?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   play_count?: InputMaybe<App_Collection_Plays_Order_By>;
   profile?: InputMaybe<Users_Profiles_Order_By>;
@@ -12762,7 +12757,7 @@ export type App_Collections_Overview = {
   organisation?: Maybe<Shared_Organisations>;
   organisation_id?: Maybe<Scalars['String']>;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   play_count?: Maybe<App_Collection_Plays>;
@@ -13085,7 +13080,7 @@ export type App_Collections_Overview_Bool_Exp = {
   note?: InputMaybe<String_Comparison_Exp>;
   organisation?: InputMaybe<Shared_Organisations_Bool_Exp>;
   organisation_id?: InputMaybe<String_Comparison_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   play_count?: InputMaybe<App_Collection_Plays_Bool_Exp>;
   profile?: InputMaybe<Users_Profiles_Bool_Exp>;
@@ -13198,7 +13193,7 @@ export type App_Collections_Overview_Order_By = {
   note?: InputMaybe<Order_By>;
   organisation?: InputMaybe<Shared_Organisations_Order_By>;
   organisation_id?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   play_count?: InputMaybe<App_Collection_Plays_Order_By>;
   profile?: InputMaybe<Users_Profiles_Order_By>;
@@ -16654,7 +16649,7 @@ export type App_Embed_Codes = {
   content_assignment?: Maybe<App_Assignments_V2>;
   /** An object relationship */
   content_collection?: Maybe<App_Collections>;
-  content_id: Scalars['String'];
+  content_id: Scalars['bpchar'];
   /** An object relationship */
   content_item?: Maybe<App_Item_Meta>;
   content_type: Scalars['String'];
@@ -16717,7 +16712,7 @@ export type App_Embed_Codes_Bool_Exp = {
   _or?: InputMaybe<Array<App_Embed_Codes_Bool_Exp>>;
   content_assignment?: InputMaybe<App_Assignments_V2_Bool_Exp>;
   content_collection?: InputMaybe<App_Collections_Bool_Exp>;
-  content_id?: InputMaybe<String_Comparison_Exp>;
+  content_id?: InputMaybe<Bpchar_Comparison_Exp>;
   content_item?: InputMaybe<App_Item_Meta_Bool_Exp>;
   content_type?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
@@ -16750,7 +16745,7 @@ export type App_Embed_Codes_Inc_Input = {
 export type App_Embed_Codes_Insert_Input = {
   content_assignment?: InputMaybe<App_Assignments_V2_Obj_Rel_Insert_Input>;
   content_collection?: InputMaybe<App_Collections_Obj_Rel_Insert_Input>;
-  content_id?: InputMaybe<Scalars['String']>;
+  content_id?: InputMaybe<Scalars['bpchar']>;
   content_item?: InputMaybe<App_Item_Meta_Obj_Rel_Insert_Input>;
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
@@ -16770,7 +16765,7 @@ export type App_Embed_Codes_Insert_Input = {
 /** aggregate max on columns */
 export type App_Embed_Codes_Max_Fields = {
   __typename?: 'app_embed_codes_max_fields';
-  content_id?: Maybe<Scalars['String']>;
+  content_id?: Maybe<Scalars['bpchar']>;
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamp']>;
   description?: Maybe<Scalars['String']>;
@@ -16971,7 +16966,7 @@ export type App_Embed_Codes_Metadata_Api_Keys_Updates = {
 /** aggregate min on columns */
 export type App_Embed_Codes_Min_Fields = {
   __typename?: 'app_embed_codes_min_fields';
-  content_id?: Maybe<Scalars['String']>;
+  content_id?: Maybe<Scalars['bpchar']>;
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamp']>;
   description?: Maybe<Scalars['String']>;
@@ -17060,7 +17055,7 @@ export enum App_Embed_Codes_Select_Column {
 
 /** input type for updating data in table "app.embed_codes" */
 export type App_Embed_Codes_Set_Input = {
-  content_id?: InputMaybe<Scalars['String']>;
+  content_id?: InputMaybe<Scalars['bpchar']>;
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   description?: InputMaybe<Scalars['String']>;
@@ -17106,7 +17101,7 @@ export type App_Embed_Codes_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type App_Embed_Codes_Stream_Cursor_Value_Input = {
-  content_id?: InputMaybe<Scalars['String']>;
+  content_id?: InputMaybe<Scalars['bpchar']>;
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   description?: InputMaybe<Scalars['String']>;
@@ -20240,7 +20235,7 @@ export type App_Pupil_Collection_Blocks = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  fragment_id?: Maybe<Scalars['String']>;
+  fragment_id?: Maybe<Scalars['bpchar']>;
   id: Scalars['uuid'];
   is_deleted: Scalars['Boolean'];
   position: Scalars['Int'];
@@ -20356,7 +20351,7 @@ export type App_Pupil_Collection_Blocks_Bool_Exp = {
   custom_description?: InputMaybe<String_Comparison_Exp>;
   custom_title?: InputMaybe<String_Comparison_Exp>;
   end_oc?: InputMaybe<Int_Comparison_Exp>;
-  fragment_id?: InputMaybe<String_Comparison_Exp>;
+  fragment_id?: InputMaybe<Bpchar_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
   position?: InputMaybe<Int_Comparison_Exp>;
@@ -20388,7 +20383,7 @@ export type App_Pupil_Collection_Blocks_Insert_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  fragment_id?: InputMaybe<Scalars['String']>;
+  fragment_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   position?: InputMaybe<Scalars['Int']>;
@@ -20407,7 +20402,7 @@ export type App_Pupil_Collection_Blocks_Max_Fields = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  fragment_id?: Maybe<Scalars['String']>;
+  fragment_id?: Maybe<Scalars['bpchar']>;
   id?: Maybe<Scalars['uuid']>;
   position?: Maybe<Scalars['Int']>;
   start_oc?: Maybe<Scalars['Int']>;
@@ -20440,7 +20435,7 @@ export type App_Pupil_Collection_Blocks_Min_Fields = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  fragment_id?: Maybe<Scalars['String']>;
+  fragment_id?: Maybe<Scalars['bpchar']>;
   id?: Maybe<Scalars['uuid']>;
   position?: Maybe<Scalars['Int']>;
   start_oc?: Maybe<Scalars['Int']>;
@@ -20560,7 +20555,7 @@ export type App_Pupil_Collection_Blocks_Set_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  fragment_id?: InputMaybe<Scalars['String']>;
+  fragment_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   position?: InputMaybe<Scalars['Int']>;
@@ -20631,7 +20626,7 @@ export type App_Pupil_Collection_Blocks_Stream_Cursor_Value_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  fragment_id?: InputMaybe<Scalars['String']>;
+  fragment_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   position?: InputMaybe<Scalars['Int']>;
@@ -22952,6 +22947,7 @@ export enum Lookup_Enum_Content_Block_Types_Enum {
   Iframe = 'IFRAME',
   Image = 'IMAGE',
   ImageGrid = 'IMAGE_GRID',
+  ImageTextBackground = 'IMAGE_TEXT_BACKGROUND',
   ImageTitleTextButton = 'IMAGE_TITLE_TEXT_BUTTON',
   Intro = 'INTRO',
   Klaar = 'KLAAR',
@@ -26231,10 +26227,10 @@ export type Mutation_Root = {
   delete_users_groups?: Maybe<Users_Groups_Mutation_Response>;
   /** delete single row from the table: "users.groups" */
   delete_users_groups_by_pk?: Maybe<Users_Groups>;
-  /** delete data from the table: "users.idp_map" */
-  delete_users_idp_map?: Maybe<Users_Idp_Map_Mutation_Response>;
-  /** delete single row from the table: "users.idp_map" */
-  delete_users_idp_map_by_pk?: Maybe<Users_Idp_Map>;
+  /** delete data from the table: "users.idp_map_v2" */
+  delete_users_idp_map_v2?: Maybe<Users_Idp_Map_V2_Mutation_Response>;
+  /** delete single row from the table: "users.idp_map_v2" */
+  delete_users_idp_map_v2_by_pk?: Maybe<Users_Idp_Map_V2>;
   /** delete data from the table: "users.idps" */
   delete_users_idps?: Maybe<Users_Idps_Mutation_Response>;
   /** delete single row from the table: "users.idps" */
@@ -26675,10 +26671,10 @@ export type Mutation_Root = {
   insert_users_groups?: Maybe<Users_Groups_Mutation_Response>;
   /** insert a single row into the table: "users.groups" */
   insert_users_groups_one?: Maybe<Users_Groups>;
-  /** insert data into the table: "users.idp_map" */
-  insert_users_idp_map?: Maybe<Users_Idp_Map_Mutation_Response>;
-  /** insert a single row into the table: "users.idp_map" */
-  insert_users_idp_map_one?: Maybe<Users_Idp_Map>;
+  /** insert data into the table: "users.idp_map_v2" */
+  insert_users_idp_map_v2?: Maybe<Users_Idp_Map_V2_Mutation_Response>;
+  /** insert a single row into the table: "users.idp_map_v2" */
+  insert_users_idp_map_v2_one?: Maybe<Users_Idp_Map_V2>;
   /** insert data into the table: "users.idps" */
   insert_users_idps?: Maybe<Users_Idps_Mutation_Response>;
   /** insert a single row into the table: "users.idps" */
@@ -27289,12 +27285,12 @@ export type Mutation_Root = {
   update_users_groups_by_pk?: Maybe<Users_Groups>;
   /** update multiples rows of table: "users.groups" */
   update_users_groups_many?: Maybe<Array<Maybe<Users_Groups_Mutation_Response>>>;
-  /** update data of the table: "users.idp_map" */
-  update_users_idp_map?: Maybe<Users_Idp_Map_Mutation_Response>;
-  /** update single row of the table: "users.idp_map" */
-  update_users_idp_map_by_pk?: Maybe<Users_Idp_Map>;
-  /** update multiples rows of table: "users.idp_map" */
-  update_users_idp_map_many?: Maybe<Array<Maybe<Users_Idp_Map_Mutation_Response>>>;
+  /** update data of the table: "users.idp_map_v2" */
+  update_users_idp_map_v2?: Maybe<Users_Idp_Map_V2_Mutation_Response>;
+  /** update single row of the table: "users.idp_map_v2" */
+  update_users_idp_map_v2_by_pk?: Maybe<Users_Idp_Map_V2>;
+  /** update multiples rows of table: "users.idp_map_v2" */
+  update_users_idp_map_v2_many?: Maybe<Array<Maybe<Users_Idp_Map_V2_Mutation_Response>>>;
   /** update data of the table: "users.idps" */
   update_users_idps?: Maybe<Users_Idps_Mutation_Response>;
   /** update single row of the table: "users.idps" */
@@ -28475,13 +28471,13 @@ export type Mutation_RootDelete_Users_Groups_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_Users_Idp_MapArgs = {
-  where: Users_Idp_Map_Bool_Exp;
+export type Mutation_RootDelete_Users_Idp_Map_V2Args = {
+  where: Users_Idp_Map_V2_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootDelete_Users_Idp_Map_By_PkArgs = {
+export type Mutation_RootDelete_Users_Idp_Map_V2_By_PkArgs = {
   id: Scalars['Int'];
 };
 
@@ -29977,16 +29973,16 @@ export type Mutation_RootInsert_Users_Groups_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_Users_Idp_MapArgs = {
-  objects: Array<Users_Idp_Map_Insert_Input>;
-  on_conflict?: InputMaybe<Users_Idp_Map_On_Conflict>;
+export type Mutation_RootInsert_Users_Idp_Map_V2Args = {
+  objects: Array<Users_Idp_Map_V2_Insert_Input>;
+  on_conflict?: InputMaybe<Users_Idp_Map_V2_On_Conflict>;
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_Users_Idp_Map_OneArgs = {
-  object: Users_Idp_Map_Insert_Input;
-  on_conflict?: InputMaybe<Users_Idp_Map_On_Conflict>;
+export type Mutation_RootInsert_Users_Idp_Map_V2_OneArgs = {
+  object: Users_Idp_Map_V2_Insert_Input;
+  on_conflict?: InputMaybe<Users_Idp_Map_V2_On_Conflict>;
 };
 
 
@@ -32282,24 +32278,24 @@ export type Mutation_RootUpdate_Users_Groups_ManyArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Users_Idp_MapArgs = {
-  _inc?: InputMaybe<Users_Idp_Map_Inc_Input>;
-  _set?: InputMaybe<Users_Idp_Map_Set_Input>;
-  where: Users_Idp_Map_Bool_Exp;
+export type Mutation_RootUpdate_Users_Idp_Map_V2Args = {
+  _inc?: InputMaybe<Users_Idp_Map_V2_Inc_Input>;
+  _set?: InputMaybe<Users_Idp_Map_V2_Set_Input>;
+  where: Users_Idp_Map_V2_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Users_Idp_Map_By_PkArgs = {
-  _inc?: InputMaybe<Users_Idp_Map_Inc_Input>;
-  _set?: InputMaybe<Users_Idp_Map_Set_Input>;
-  pk_columns: Users_Idp_Map_Pk_Columns_Input;
+export type Mutation_RootUpdate_Users_Idp_Map_V2_By_PkArgs = {
+  _inc?: InputMaybe<Users_Idp_Map_V2_Inc_Input>;
+  _set?: InputMaybe<Users_Idp_Map_V2_Set_Input>;
+  pk_columns: Users_Idp_Map_V2_Pk_Columns_Input;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Users_Idp_Map_ManyArgs = {
-  updates: Array<Users_Idp_Map_Updates>;
+export type Mutation_RootUpdate_Users_Idp_Map_V2_ManyArgs = {
+  updates: Array<Users_Idp_Map_V2_Updates>;
 };
 
 
@@ -33390,8 +33386,12 @@ export type Query_Root = {
   users_idp_map: Array<Users_Idp_Map>;
   /** fetch aggregated fields from the table: "users.idp_map" */
   users_idp_map_aggregate: Users_Idp_Map_Aggregate;
-  /** fetch data from the table: "users.idp_map" using primary key columns */
-  users_idp_map_by_pk?: Maybe<Users_Idp_Map>;
+  /** fetch data from the table: "users.idp_map_v2" */
+  users_idp_map_v2: Array<Users_Idp_Map_V2>;
+  /** fetch aggregated fields from the table: "users.idp_map_v2" */
+  users_idp_map_v2_aggregate: Users_Idp_Map_V2_Aggregate;
+  /** fetch data from the table: "users.idp_map_v2" using primary key columns */
+  users_idp_map_v2_by_pk?: Maybe<Users_Idp_Map_V2>;
   /** fetch data from the table: "users.idps" */
   users_idps: Array<Users_Idps>;
   /** fetch aggregated fields from the table: "users.idps" */
@@ -36612,7 +36612,25 @@ export type Query_RootUsers_Idp_Map_AggregateArgs = {
 };
 
 
-export type Query_RootUsers_Idp_Map_By_PkArgs = {
+export type Query_RootUsers_Idp_Map_V2Args = {
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Idp_Map_V2_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Idp_Map_V2_By_PkArgs = {
   id: Scalars['Int'];
 };
 
@@ -36958,7 +36976,7 @@ export type Reporting_Assignment_Blocks = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
-  item_id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -36993,7 +37011,7 @@ export type Reporting_Assignment_Blocks_Bool_Exp = {
   content_type?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  item_id?: InputMaybe<String_Comparison_Exp>;
+  item_id?: InputMaybe<Bpchar_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
 
@@ -37003,7 +37021,7 @@ export type Reporting_Assignment_Blocks_Insert_Input = {
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  item_id?: InputMaybe<Scalars['String']>;
+  item_id?: InputMaybe<Scalars['bpchar']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -37014,7 +37032,7 @@ export type Reporting_Assignment_Blocks_Max_Fields = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
-  item_id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -37025,7 +37043,7 @@ export type Reporting_Assignment_Blocks_Min_Fields = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
-  item_id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -37070,7 +37088,7 @@ export type Reporting_Assignment_Blocks_Set_Input = {
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  item_id?: InputMaybe<Scalars['String']>;
+  item_id?: InputMaybe<Scalars['bpchar']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -37088,7 +37106,7 @@ export type Reporting_Assignment_Blocks_Stream_Cursor_Value_Input = {
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  item_id?: InputMaybe<Scalars['String']>;
+  item_id?: InputMaybe<Scalars['bpchar']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -37444,7 +37462,7 @@ export type Reporting_Assignment_Response_Blocks = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
-  item_id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -37479,7 +37497,7 @@ export type Reporting_Assignment_Response_Blocks_Bool_Exp = {
   content_type?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  item_id?: InputMaybe<String_Comparison_Exp>;
+  item_id?: InputMaybe<Bpchar_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
 
@@ -37489,7 +37507,7 @@ export type Reporting_Assignment_Response_Blocks_Insert_Input = {
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  item_id?: InputMaybe<Scalars['String']>;
+  item_id?: InputMaybe<Scalars['bpchar']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -37500,7 +37518,7 @@ export type Reporting_Assignment_Response_Blocks_Max_Fields = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
-  item_id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -37511,7 +37529,7 @@ export type Reporting_Assignment_Response_Blocks_Min_Fields = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
-  item_id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -37556,7 +37574,7 @@ export type Reporting_Assignment_Response_Blocks_Set_Input = {
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  item_id?: InputMaybe<Scalars['String']>;
+  item_id?: InputMaybe<Scalars['bpchar']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -37574,7 +37592,7 @@ export type Reporting_Assignment_Response_Blocks_Stream_Cursor_Value_Input = {
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  item_id?: InputMaybe<Scalars['String']>;
+  item_id?: InputMaybe<Scalars['bpchar']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -38071,7 +38089,7 @@ export type Reporting_Assignments_Stream_Cursor_Value_Input = {
 export type Reporting_Bundle_Blocks = {
   __typename?: 'reporting_bundle_blocks';
   bundle_id?: Maybe<Scalars['uuid']>;
-  content_id?: Maybe<Scalars['String']>;
+  content_id?: Maybe<Scalars['bpchar']>;
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
@@ -38120,7 +38138,7 @@ export type Reporting_Bundle_Blocks_Bool_Exp = {
   _not?: InputMaybe<Reporting_Bundle_Blocks_Bool_Exp>;
   _or?: InputMaybe<Array<Reporting_Bundle_Blocks_Bool_Exp>>;
   bundle_id?: InputMaybe<Uuid_Comparison_Exp>;
-  content_id?: InputMaybe<String_Comparison_Exp>;
+  content_id?: InputMaybe<Bpchar_Comparison_Exp>;
   content_type?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
@@ -38131,7 +38149,7 @@ export type Reporting_Bundle_Blocks_Bool_Exp = {
 export type Reporting_Bundle_Blocks_Max_Fields = {
   __typename?: 'reporting_bundle_blocks_max_fields';
   bundle_id?: Maybe<Scalars['uuid']>;
-  content_id?: Maybe<Scalars['String']>;
+  content_id?: Maybe<Scalars['bpchar']>;
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
@@ -38142,7 +38160,7 @@ export type Reporting_Bundle_Blocks_Max_Fields = {
 export type Reporting_Bundle_Blocks_Min_Fields = {
   __typename?: 'reporting_bundle_blocks_min_fields';
   bundle_id?: Maybe<Scalars['uuid']>;
-  content_id?: Maybe<Scalars['String']>;
+  content_id?: Maybe<Scalars['bpchar']>;
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
@@ -38204,7 +38222,7 @@ export type Reporting_Bundle_Blocks_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Reporting_Bundle_Blocks_Stream_Cursor_Value_Input = {
   bundle_id?: InputMaybe<Scalars['uuid']>;
-  content_id?: InputMaybe<Scalars['String']>;
+  content_id?: InputMaybe<Scalars['bpchar']>;
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
@@ -38766,7 +38784,7 @@ export type Reporting_Collection_Blocks = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
-  item_id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -38815,7 +38833,7 @@ export type Reporting_Collection_Blocks_Bool_Exp = {
   content_type?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
-  item_id?: InputMaybe<String_Comparison_Exp>;
+  item_id?: InputMaybe<Bpchar_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
 
@@ -38826,7 +38844,7 @@ export type Reporting_Collection_Blocks_Max_Fields = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
-  item_id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -38837,7 +38855,7 @@ export type Reporting_Collection_Blocks_Min_Fields = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
-  item_id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -38899,7 +38917,7 @@ export type Reporting_Collection_Blocks_Stream_Cursor_Value_Input = {
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
-  item_id?: InputMaybe<Scalars['String']>;
+  item_id?: InputMaybe<Scalars['bpchar']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -44420,10 +44438,6 @@ export type Shared_Users = {
   /** computed full name from first_name,last_name */
   full_name?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
-  /** An array relationship */
-  idpmaps: Array<Users_Idp_Map>;
-  /** An aggregate relationship */
-  idpmaps_aggregate: Users_Idp_Map_Aggregate;
   is_blocked?: Maybe<Scalars['Boolean']>;
   last_access_at?: Maybe<Scalars['timestamptz']>;
   /** An object relationship */
@@ -44466,26 +44480,6 @@ export type Shared_UsersAudit_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Users_Audit_Log_Order_By>>;
   where?: InputMaybe<Users_Audit_Log_Bool_Exp>;
-};
-
-
-/** columns and relationships of "shared.users" */
-export type Shared_UsersIdpmapsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Idp_Map_Order_By>>;
-  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
-};
-
-
-/** columns and relationships of "shared.users" */
-export type Shared_UsersIdpmaps_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Idp_Map_Order_By>>;
-  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
 };
 
 
@@ -44615,8 +44609,6 @@ export type Shared_Users_Bool_Exp = {
   first_name?: InputMaybe<String_Comparison_Exp>;
   full_name?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
-  idpmaps?: InputMaybe<Users_Idp_Map_Bool_Exp>;
-  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_Aggregate_Bool_Exp>;
   is_blocked?: InputMaybe<Boolean_Comparison_Exp>;
   last_access_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   last_block?: InputMaybe<Shared_User_Last_Blocked_Bool_Exp>;
@@ -44655,7 +44647,6 @@ export type Shared_Users_Insert_Input = {
   external_uid?: InputMaybe<Scalars['Int']>;
   first_name?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['Int']>;
-  idpmaps?: InputMaybe<Users_Idp_Map_Arr_Rel_Insert_Input>;
   is_blocked?: InputMaybe<Scalars['Boolean']>;
   last_access_at?: InputMaybe<Scalars['timestamptz']>;
   last_block?: InputMaybe<Shared_User_Last_Blocked_Obj_Rel_Insert_Input>;
@@ -44770,7 +44761,6 @@ export type Shared_Users_Order_By = {
   first_name?: InputMaybe<Order_By>;
   full_name?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_Aggregate_Order_By>;
   is_blocked?: InputMaybe<Order_By>;
   last_access_at?: InputMaybe<Order_By>;
   last_block?: InputMaybe<Shared_User_Last_Blocked_Order_By>;
@@ -46089,10 +46079,16 @@ export type Subscription_Root = {
   users_idp_map: Array<Users_Idp_Map>;
   /** fetch aggregated fields from the table: "users.idp_map" */
   users_idp_map_aggregate: Users_Idp_Map_Aggregate;
-  /** fetch data from the table: "users.idp_map" using primary key columns */
-  users_idp_map_by_pk?: Maybe<Users_Idp_Map>;
   /** fetch data from the table in a streaming manner: "users.idp_map" */
   users_idp_map_stream: Array<Users_Idp_Map>;
+  /** fetch data from the table: "users.idp_map_v2" */
+  users_idp_map_v2: Array<Users_Idp_Map_V2>;
+  /** fetch aggregated fields from the table: "users.idp_map_v2" */
+  users_idp_map_v2_aggregate: Users_Idp_Map_V2_Aggregate;
+  /** fetch data from the table: "users.idp_map_v2" using primary key columns */
+  users_idp_map_v2_by_pk?: Maybe<Users_Idp_Map_V2>;
+  /** fetch data from the table in a streaming manner: "users.idp_map_v2" */
+  users_idp_map_v2_stream: Array<Users_Idp_Map_V2>;
   /** fetch data from the table: "users.idps" */
   users_idps: Array<Users_Idps>;
   /** fetch aggregated fields from the table: "users.idps" */
@@ -50386,15 +50382,40 @@ export type Subscription_RootUsers_Idp_Map_AggregateArgs = {
 };
 
 
-export type Subscription_RootUsers_Idp_Map_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
 export type Subscription_RootUsers_Idp_Map_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<Users_Idp_Map_Stream_Cursor_Input>>;
   where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Idp_Map_V2Args = {
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Idp_Map_V2_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Idp_Map_V2_By_PkArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type Subscription_RootUsers_Idp_Map_V2_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Users_Idp_Map_V2_Stream_Cursor_Input>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
 };
 
 
@@ -51284,9 +51305,9 @@ export type Users_Common_Users = {
   first_name?: Maybe<Scalars['String']>;
   full_name?: Maybe<Scalars['String']>;
   /** An array relationship */
-  idpmaps: Array<Users_Idp_Map>;
+  idpmaps: Array<Users_Idp_Map_V2>;
   /** An aggregate relationship */
-  idpmaps_aggregate: Users_Idp_Map_Aggregate;
+  idpmaps_aggregate: Users_Idp_Map_V2_Aggregate;
   is_blocked?: Maybe<Scalars['Boolean']>;
   is_deleted?: Maybe<Scalars['Boolean']>;
   is_exception?: Maybe<Scalars['Boolean']>;
@@ -51314,6 +51335,8 @@ export type Users_Common_Users = {
   notifications_aggregate: Users_Notifications_Aggregate;
   /** An object relationship */
   organisation?: Maybe<Shared_Organisations>;
+  /** An object relationship */
+  profile?: Maybe<Users_Profiles>;
   /** An array relationship */
   profile_educational_organizations: Array<Users_Profile_Educational_Organizations>;
   /** An aggregate relationship */
@@ -51332,6 +51355,8 @@ export type Users_Common_Users = {
   temp_access?: Maybe<Shared_User_Temp_Access>;
   title?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
+  /** An object relationship */
+  user?: Maybe<Shared_Users>;
   /** An object relationship */
   user_group?: Maybe<Users_Profile_User_Groups>;
   user_id?: Maybe<Scalars['uuid']>;
@@ -51480,21 +51505,21 @@ export type Users_Common_UsersEmail_Preferences_AggregateArgs = {
 
 /** columns and relationships of "users.common_users" */
 export type Users_Common_UsersIdpmapsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Idp_Map_Order_By>>;
-  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
 };
 
 
 /** columns and relationships of "users.common_users" */
 export type Users_Common_UsersIdpmaps_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Idp_Map_Order_By>>;
-  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
 };
 
 
@@ -51669,8 +51694,8 @@ export type Users_Common_Users_Bool_Exp = {
   expires_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   first_name?: InputMaybe<String_Comparison_Exp>;
   full_name?: InputMaybe<String_Comparison_Exp>;
-  idpmaps?: InputMaybe<Users_Idp_Map_Bool_Exp>;
-  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_Aggregate_Bool_Exp>;
+  idpmaps?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_V2_Aggregate_Bool_Exp>;
   is_blocked?: InputMaybe<Boolean_Comparison_Exp>;
   is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
   is_exception?: InputMaybe<Boolean_Comparison_Exp>;
@@ -51688,6 +51713,7 @@ export type Users_Common_Users_Bool_Exp = {
   notifications?: InputMaybe<Users_Notifications_Bool_Exp>;
   notifications_aggregate?: InputMaybe<Users_Notifications_Aggregate_Bool_Exp>;
   organisation?: InputMaybe<Shared_Organisations_Bool_Exp>;
+  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
   profile_educational_organizations?: InputMaybe<Users_Profile_Educational_Organizations_Bool_Exp>;
   profile_educational_organizations_aggregate?: InputMaybe<Users_Profile_Educational_Organizations_Aggregate_Bool_Exp>;
   profile_flags?: InputMaybe<Users_Profile_Flags_Bool_Exp>;
@@ -51699,6 +51725,7 @@ export type Users_Common_Users_Bool_Exp = {
   temp_access?: InputMaybe<Shared_User_Temp_Access_Bool_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  user?: InputMaybe<Shared_Users_Bool_Exp>;
   user_group?: InputMaybe<Users_Profile_User_Groups_Bool_Exp>;
   user_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
@@ -51723,7 +51750,7 @@ export type Users_Common_Users_Insert_Input = {
   expires_at?: InputMaybe<Scalars['timestamptz']>;
   first_name?: InputMaybe<Scalars['String']>;
   full_name?: InputMaybe<Scalars['String']>;
-  idpmaps?: InputMaybe<Users_Idp_Map_Arr_Rel_Insert_Input>;
+  idpmaps?: InputMaybe<Users_Idp_Map_V2_Arr_Rel_Insert_Input>;
   is_blocked?: InputMaybe<Scalars['Boolean']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   is_exception?: InputMaybe<Scalars['Boolean']>;
@@ -51738,6 +51765,7 @@ export type Users_Common_Users_Insert_Input = {
   mail?: InputMaybe<Scalars['String']>;
   notifications?: InputMaybe<Users_Notifications_Arr_Rel_Insert_Input>;
   organisation?: InputMaybe<Shared_Organisations_Obj_Rel_Insert_Input>;
+  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
   profile_educational_organizations?: InputMaybe<Users_Profile_Educational_Organizations_Arr_Rel_Insert_Input>;
   profile_flags?: InputMaybe<Users_Profile_Flags_Arr_Rel_Insert_Input>;
   profile_id?: InputMaybe<Scalars['uuid']>;
@@ -51746,6 +51774,7 @@ export type Users_Common_Users_Insert_Input = {
   temp_access?: InputMaybe<Shared_User_Temp_Access_Obj_Rel_Insert_Input>;
   title?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
+  user?: InputMaybe<Shared_Users_Obj_Rel_Insert_Input>;
   user_group?: InputMaybe<Users_Profile_User_Groups_Obj_Rel_Insert_Input>;
   user_id?: InputMaybe<Scalars['uuid']>;
 };
@@ -51825,7 +51854,7 @@ export type Users_Common_Users_Order_By = {
   expires_at?: InputMaybe<Order_By>;
   first_name?: InputMaybe<Order_By>;
   full_name?: InputMaybe<Order_By>;
-  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_Aggregate_Order_By>;
+  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_V2_Aggregate_Order_By>;
   is_blocked?: InputMaybe<Order_By>;
   is_deleted?: InputMaybe<Order_By>;
   is_exception?: InputMaybe<Order_By>;
@@ -51840,6 +51869,7 @@ export type Users_Common_Users_Order_By = {
   mail?: InputMaybe<Order_By>;
   notifications_aggregate?: InputMaybe<Users_Notifications_Aggregate_Order_By>;
   organisation?: InputMaybe<Shared_Organisations_Order_By>;
+  profile?: InputMaybe<Users_Profiles_Order_By>;
   profile_educational_organizations_aggregate?: InputMaybe<Users_Profile_Educational_Organizations_Aggregate_Order_By>;
   profile_flags_aggregate?: InputMaybe<Users_Profile_Flags_Aggregate_Order_By>;
   profile_id?: InputMaybe<Order_By>;
@@ -51848,6 +51878,7 @@ export type Users_Common_Users_Order_By = {
   temp_access?: InputMaybe<Shared_User_Temp_Access_Order_By>;
   title?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
+  user?: InputMaybe<Shared_Users_Order_By>;
   user_group?: InputMaybe<Users_Profile_User_Groups_Order_By>;
   user_id?: InputMaybe<Order_By>;
 };
@@ -52913,14 +52944,14 @@ export type Users_Groups_Variance_Order_By = {
 /** columns and relationships of "users.idp_map" */
 export type Users_Idp_Map = {
   __typename?: 'users_idp_map';
-  id: Scalars['Int'];
-  idp: Users_Idps_Enum;
+  id?: Maybe<Scalars['Int']>;
+  idp?: Maybe<Scalars['String']>;
   /** An object relationship */
-  idpByIdp: Users_Idps;
-  idp_user_id: Scalars['String'];
+  idpByIdp?: Maybe<Users_Idps>;
+  idp_user_id?: Maybe<Scalars['String']>;
   /** An object relationship */
   local_user?: Maybe<Users_Common_Users>;
-  local_user_id: Scalars['uuid'];
+  local_user_id?: Maybe<Scalars['uuid']>;
 };
 
 /** aggregated selection of "users.idp_map" */
@@ -52928,17 +52959,6 @@ export type Users_Idp_Map_Aggregate = {
   __typename?: 'users_idp_map_aggregate';
   aggregate?: Maybe<Users_Idp_Map_Aggregate_Fields>;
   nodes: Array<Users_Idp_Map>;
-};
-
-export type Users_Idp_Map_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Users_Idp_Map_Aggregate_Bool_Exp_Count>;
-};
-
-export type Users_Idp_Map_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<Users_Idp_Map_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
 };
 
 /** aggregate fields of "users.idp_map" */
@@ -52964,37 +52984,10 @@ export type Users_Idp_Map_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']>;
 };
 
-/** order by aggregate values of table "users.idp_map" */
-export type Users_Idp_Map_Aggregate_Order_By = {
-  avg?: InputMaybe<Users_Idp_Map_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Users_Idp_Map_Max_Order_By>;
-  min?: InputMaybe<Users_Idp_Map_Min_Order_By>;
-  stddev?: InputMaybe<Users_Idp_Map_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<Users_Idp_Map_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<Users_Idp_Map_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<Users_Idp_Map_Sum_Order_By>;
-  var_pop?: InputMaybe<Users_Idp_Map_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<Users_Idp_Map_Var_Samp_Order_By>;
-  variance?: InputMaybe<Users_Idp_Map_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "users.idp_map" */
-export type Users_Idp_Map_Arr_Rel_Insert_Input = {
-  data: Array<Users_Idp_Map_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Users_Idp_Map_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Users_Idp_Map_Avg_Fields = {
   __typename?: 'users_idp_map_avg_fields';
   id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Avg_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "users.idp_map". All fields are combined with a logical 'AND'. */
@@ -53003,82 +52996,29 @@ export type Users_Idp_Map_Bool_Exp = {
   _not?: InputMaybe<Users_Idp_Map_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Idp_Map_Bool_Exp>>;
   id?: InputMaybe<Int_Comparison_Exp>;
-  idp?: InputMaybe<Users_Idps_Enum_Comparison_Exp>;
+  idp?: InputMaybe<String_Comparison_Exp>;
   idpByIdp?: InputMaybe<Users_Idps_Bool_Exp>;
   idp_user_id?: InputMaybe<String_Comparison_Exp>;
   local_user?: InputMaybe<Users_Common_Users_Bool_Exp>;
   local_user_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
-/** unique or primary key constraints on table "users.idp_map" */
-export enum Users_Idp_Map_Constraint {
-  /** unique or primary key constraint on columns "idp_user_id" */
-  IdpMapIdpUserIdKey = 'idp_map_idp_user_id_key',
-  /** unique or primary key constraint on columns "id" */
-  IdpMapPkey = 'idp_map_pkey',
-  /** unique or primary key constraint on columns "idp_user_id", "idp", "local_user_id" */
-  LocalUserIdIdpIdpUserId = 'local_user_id_idp_idp_user_id'
-}
-
-/** input type for incrementing numeric columns in table "users.idp_map" */
-export type Users_Idp_Map_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "users.idp_map" */
-export type Users_Idp_Map_Insert_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  idp?: InputMaybe<Users_Idps_Enum>;
-  idpByIdp?: InputMaybe<Users_Idps_Obj_Rel_Insert_Input>;
-  idp_user_id?: InputMaybe<Scalars['String']>;
-  local_user?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
-  local_user_id?: InputMaybe<Scalars['uuid']>;
-};
-
 /** aggregate max on columns */
 export type Users_Idp_Map_Max_Fields = {
   __typename?: 'users_idp_map_max_fields';
   id?: Maybe<Scalars['Int']>;
+  idp?: Maybe<Scalars['String']>;
   idp_user_id?: Maybe<Scalars['String']>;
   local_user_id?: Maybe<Scalars['uuid']>;
-};
-
-/** order by max() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Max_Order_By = {
-  id?: InputMaybe<Order_By>;
-  idp_user_id?: InputMaybe<Order_By>;
-  local_user_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Users_Idp_Map_Min_Fields = {
   __typename?: 'users_idp_map_min_fields';
   id?: Maybe<Scalars['Int']>;
+  idp?: Maybe<Scalars['String']>;
   idp_user_id?: Maybe<Scalars['String']>;
   local_user_id?: Maybe<Scalars['uuid']>;
-};
-
-/** order by min() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Min_Order_By = {
-  id?: InputMaybe<Order_By>;
-  idp_user_id?: InputMaybe<Order_By>;
-  local_user_id?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "users.idp_map" */
-export type Users_Idp_Map_Mutation_Response = {
-  __typename?: 'users_idp_map_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Users_Idp_Map>;
-};
-
-/** on_conflict condition type for table "users.idp_map" */
-export type Users_Idp_Map_On_Conflict = {
-  constraint: Users_Idp_Map_Constraint;
-  update_columns?: Array<Users_Idp_Map_Update_Column>;
-  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
 };
 
 /** Ordering options when selecting data from "users.idp_map". */
@@ -53089,11 +53029,6 @@ export type Users_Idp_Map_Order_By = {
   idp_user_id?: InputMaybe<Order_By>;
   local_user?: InputMaybe<Users_Common_Users_Order_By>;
   local_user_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: users.idp_map */
-export type Users_Idp_Map_Pk_Columns_Input = {
-  id: Scalars['Int'];
 };
 
 /** select columns of table "users.idp_map" */
@@ -53108,23 +53043,10 @@ export enum Users_Idp_Map_Select_Column {
   LocalUserId = 'local_user_id'
 }
 
-/** input type for updating data in table "users.idp_map" */
-export type Users_Idp_Map_Set_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  idp?: InputMaybe<Users_Idps_Enum>;
-  idp_user_id?: InputMaybe<Scalars['String']>;
-  local_user_id?: InputMaybe<Scalars['uuid']>;
-};
-
 /** aggregate stddev on columns */
 export type Users_Idp_Map_Stddev_Fields = {
   __typename?: 'users_idp_map_stddev_fields';
   id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Stddev_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
@@ -53133,20 +53055,10 @@ export type Users_Idp_Map_Stddev_Pop_Fields = {
   id?: Maybe<Scalars['Float']>;
 };
 
-/** order by stddev_pop() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Stddev_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** aggregate stddev_samp on columns */
 export type Users_Idp_Map_Stddev_Samp_Fields = {
   __typename?: 'users_idp_map_stddev_samp_fields';
   id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Stddev_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** Streaming cursor of the table "users_idp_map" */
@@ -53160,7 +53072,7 @@ export type Users_Idp_Map_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Users_Idp_Map_Stream_Cursor_Value_Input = {
   id?: InputMaybe<Scalars['Int']>;
-  idp?: InputMaybe<Users_Idps_Enum>;
+  idp?: InputMaybe<Scalars['String']>;
   idp_user_id?: InputMaybe<Scalars['String']>;
   local_user_id?: InputMaybe<Scalars['uuid']>;
 };
@@ -53171,13 +53083,199 @@ export type Users_Idp_Map_Sum_Fields = {
   id?: Maybe<Scalars['Int']>;
 };
 
-/** order by sum() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Sum_Order_By = {
+/** contains the links between identity providers and the users in the hetarchief database. */
+export type Users_Idp_Map_V2 = {
+  __typename?: 'users_idp_map_v2';
+  /** An object relationship */
+  common_user?: Maybe<Users_Common_Users>;
+  id: Scalars['Int'];
+  idp: Users_Idps_Enum;
+  /** An object relationship */
+  idp_type: Users_Idps;
+  idp_user_id: Scalars['String'];
+  local_profile_id: Scalars['uuid'];
+  /** An object relationship */
+  profile: Users_Profiles;
+};
+
+/** aggregated selection of "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Aggregate = {
+  __typename?: 'users_idp_map_v2_aggregate';
+  aggregate?: Maybe<Users_Idp_Map_V2_Aggregate_Fields>;
+  nodes: Array<Users_Idp_Map_V2>;
+};
+
+export type Users_Idp_Map_V2_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Users_Idp_Map_V2_Aggregate_Bool_Exp_Count>;
+};
+
+export type Users_Idp_Map_V2_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+  filter?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Aggregate_Fields = {
+  __typename?: 'users_idp_map_v2_aggregate_fields';
+  avg?: Maybe<Users_Idp_Map_V2_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Users_Idp_Map_V2_Max_Fields>;
+  min?: Maybe<Users_Idp_Map_V2_Min_Fields>;
+  stddev?: Maybe<Users_Idp_Map_V2_Stddev_Fields>;
+  stddev_pop?: Maybe<Users_Idp_Map_V2_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Users_Idp_Map_V2_Stddev_Samp_Fields>;
+  sum?: Maybe<Users_Idp_Map_V2_Sum_Fields>;
+  var_pop?: Maybe<Users_Idp_Map_V2_Var_Pop_Fields>;
+  var_samp?: Maybe<Users_Idp_Map_V2_Var_Samp_Fields>;
+  variance?: Maybe<Users_Idp_Map_V2_Variance_Fields>;
+};
+
+
+/** aggregate fields of "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Aggregate_Order_By = {
+  avg?: InputMaybe<Users_Idp_Map_V2_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Users_Idp_Map_V2_Max_Order_By>;
+  min?: InputMaybe<Users_Idp_Map_V2_Min_Order_By>;
+  stddev?: InputMaybe<Users_Idp_Map_V2_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Users_Idp_Map_V2_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Users_Idp_Map_V2_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Users_Idp_Map_V2_Sum_Order_By>;
+  var_pop?: InputMaybe<Users_Idp_Map_V2_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Users_Idp_Map_V2_Var_Samp_Order_By>;
+  variance?: InputMaybe<Users_Idp_Map_V2_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Arr_Rel_Insert_Input = {
+  data: Array<Users_Idp_Map_V2_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Users_Idp_Map_V2_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type Users_Idp_Map_V2_Avg_Fields = {
+  __typename?: 'users_idp_map_v2_avg_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Avg_Order_By = {
   id?: InputMaybe<Order_By>;
 };
 
-/** update columns of table "users.idp_map" */
-export enum Users_Idp_Map_Update_Column {
+/** Boolean expression to filter rows from the table "users.idp_map_v2". All fields are combined with a logical 'AND'. */
+export type Users_Idp_Map_V2_Bool_Exp = {
+  _and?: InputMaybe<Array<Users_Idp_Map_V2_Bool_Exp>>;
+  _not?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+  _or?: InputMaybe<Array<Users_Idp_Map_V2_Bool_Exp>>;
+  common_user?: InputMaybe<Users_Common_Users_Bool_Exp>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  idp?: InputMaybe<Users_Idps_Enum_Comparison_Exp>;
+  idp_type?: InputMaybe<Users_Idps_Bool_Exp>;
+  idp_user_id?: InputMaybe<String_Comparison_Exp>;
+  local_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
+};
+
+/** unique or primary key constraints on table "users.idp_map_v2" */
+export enum Users_Idp_Map_V2_Constraint {
+  /** unique or primary key constraint on columns "idp_user_id" */
+  IdpMapV2IdpUserIdKey = 'idp_map_v2_idp_user_id_key',
+  /** unique or primary key constraint on columns "local_profile_id", "idp_user_id" */
+  IdpMapV2IdpUserIdLocalProfileIdKey = 'idp_map_v2_idp_user_id_local_profile_id_key',
+  /** unique or primary key constraint on columns "id" */
+  IdpMapV2Pkey = 'idp_map_v2_pkey'
+}
+
+/** input type for incrementing numeric columns in table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Inc_Input = {
+  id?: InputMaybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Insert_Input = {
+  common_user?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
+  id?: InputMaybe<Scalars['Int']>;
+  idp?: InputMaybe<Users_Idps_Enum>;
+  idp_type?: InputMaybe<Users_Idps_Obj_Rel_Insert_Input>;
+  idp_user_id?: InputMaybe<Scalars['String']>;
+  local_profile_id?: InputMaybe<Scalars['uuid']>;
+  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+};
+
+/** aggregate max on columns */
+export type Users_Idp_Map_V2_Max_Fields = {
+  __typename?: 'users_idp_map_v2_max_fields';
+  id?: Maybe<Scalars['Int']>;
+  idp_user_id?: Maybe<Scalars['String']>;
+  local_profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by max() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Max_Order_By = {
+  id?: InputMaybe<Order_By>;
+  idp_user_id?: InputMaybe<Order_By>;
+  local_profile_id?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Users_Idp_Map_V2_Min_Fields = {
+  __typename?: 'users_idp_map_v2_min_fields';
+  id?: Maybe<Scalars['Int']>;
+  idp_user_id?: Maybe<Scalars['String']>;
+  local_profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by min() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Min_Order_By = {
+  id?: InputMaybe<Order_By>;
+  idp_user_id?: InputMaybe<Order_By>;
+  local_profile_id?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Mutation_Response = {
+  __typename?: 'users_idp_map_v2_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Users_Idp_Map_V2>;
+};
+
+/** on_conflict condition type for table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_On_Conflict = {
+  constraint: Users_Idp_Map_V2_Constraint;
+  update_columns?: Array<Users_Idp_Map_V2_Update_Column>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "users.idp_map_v2". */
+export type Users_Idp_Map_V2_Order_By = {
+  common_user?: InputMaybe<Users_Common_Users_Order_By>;
+  id?: InputMaybe<Order_By>;
+  idp?: InputMaybe<Order_By>;
+  idp_type?: InputMaybe<Users_Idps_Order_By>;
+  idp_user_id?: InputMaybe<Order_By>;
+  local_profile_id?: InputMaybe<Order_By>;
+  profile?: InputMaybe<Users_Profiles_Order_By>;
+};
+
+/** primary key columns input for table: users.idp_map_v2 */
+export type Users_Idp_Map_V2_Pk_Columns_Input = {
+  id: Scalars['Int'];
+};
+
+/** select columns of table "users.idp_map_v2" */
+export enum Users_Idp_Map_V2_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
@@ -53185,15 +53283,128 @@ export enum Users_Idp_Map_Update_Column {
   /** column name */
   IdpUserId = 'idp_user_id',
   /** column name */
-  LocalUserId = 'local_user_id'
+  LocalProfileId = 'local_profile_id'
 }
 
-export type Users_Idp_Map_Updates = {
+/** input type for updating data in table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Set_Input = {
+  id?: InputMaybe<Scalars['Int']>;
+  idp?: InputMaybe<Users_Idps_Enum>;
+  idp_user_id?: InputMaybe<Scalars['String']>;
+  local_profile_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** aggregate stddev on columns */
+export type Users_Idp_Map_V2_Stddev_Fields = {
+  __typename?: 'users_idp_map_v2_stddev_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Stddev_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Users_Idp_Map_V2_Stddev_Pop_Fields = {
+  __typename?: 'users_idp_map_v2_stddev_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Stddev_Pop_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Users_Idp_Map_V2_Stddev_Samp_Fields = {
+  __typename?: 'users_idp_map_v2_stddev_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Stddev_Samp_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** Streaming cursor of the table "users_idp_map_v2" */
+export type Users_Idp_Map_V2_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Users_Idp_Map_V2_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Users_Idp_Map_V2_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['Int']>;
+  idp?: InputMaybe<Users_Idps_Enum>;
+  idp_user_id?: InputMaybe<Scalars['String']>;
+  local_profile_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** aggregate sum on columns */
+export type Users_Idp_Map_V2_Sum_Fields = {
+  __typename?: 'users_idp_map_v2_sum_fields';
+  id?: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Sum_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** update columns of table "users.idp_map_v2" */
+export enum Users_Idp_Map_V2_Update_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Idp = 'idp',
+  /** column name */
+  IdpUserId = 'idp_user_id',
+  /** column name */
+  LocalProfileId = 'local_profile_id'
+}
+
+export type Users_Idp_Map_V2_Updates = {
   /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Users_Idp_Map_Inc_Input>;
+  _inc?: InputMaybe<Users_Idp_Map_V2_Inc_Input>;
   /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Users_Idp_Map_Set_Input>;
-  where: Users_Idp_Map_Bool_Exp;
+  _set?: InputMaybe<Users_Idp_Map_V2_Set_Input>;
+  where: Users_Idp_Map_V2_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Users_Idp_Map_V2_Var_Pop_Fields = {
+  __typename?: 'users_idp_map_v2_var_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Var_Pop_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Users_Idp_Map_V2_Var_Samp_Fields = {
+  __typename?: 'users_idp_map_v2_var_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Var_Samp_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Users_Idp_Map_V2_Variance_Fields = {
+  __typename?: 'users_idp_map_v2_variance_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Variance_Order_By = {
+  id?: InputMaybe<Order_By>;
 };
 
 /** aggregate var_pop on columns */
@@ -53202,31 +53413,16 @@ export type Users_Idp_Map_Var_Pop_Fields = {
   id?: Maybe<Scalars['Float']>;
 };
 
-/** order by var_pop() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Var_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** aggregate var_samp on columns */
 export type Users_Idp_Map_Var_Samp_Fields = {
   __typename?: 'users_idp_map_var_samp_fields';
   id?: Maybe<Scalars['Float']>;
 };
 
-/** order by var_samp() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Var_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** aggregate variance on columns */
 export type Users_Idp_Map_Variance_Fields = {
   __typename?: 'users_idp_map_variance_fields';
   id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Variance_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "users.idps" */
@@ -53278,7 +53474,7 @@ export enum Users_Idps_Enum {
   Hetarchief = 'HETARCHIEF',
   /** OAuth service van Klascement op oauth.klascement.be */
   Klascement = 'KLASCEMENT',
-  /** lti idp for embedding videos on external platforms without a user being logged in on the external platform */
+  /** anonymous idp flow for embedding videos from an external platform without the user being logged in on the external platform */
   LtiAnonymous = 'LTI_ANONYMOUS',
   /** bookwidgets lti idp flow for embedding videos in their platform */
   LtiBookwidgets = 'LTI_BOOKWIDGETS',
@@ -57072,9 +57268,9 @@ export type Users_Summary_View = {
   group_id?: Maybe<Scalars['Int']>;
   group_name?: Maybe<Scalars['String']>;
   /** An array relationship */
-  idps: Array<Users_Idp_Map>;
+  idps: Array<Users_Idp_Map_V2>;
   /** An aggregate relationship */
-  idps_aggregate: Users_Idp_Map_Aggregate;
+  idps_aggregate: Users_Idp_Map_V2_Aggregate;
   is_blocked?: Maybe<Scalars['Boolean']>;
   is_deleted?: Maybe<Scalars['Boolean']>;
   is_exception?: Maybe<Scalars['Boolean']>;
@@ -57226,21 +57422,21 @@ export type Users_Summary_ViewEducational_Organizations_AggregateArgs = {
 
 /** columns and relationships of "users.summary_view" */
 export type Users_Summary_ViewIdpsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Idp_Map_Order_By>>;
-  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
 };
 
 
 /** columns and relationships of "users.summary_view" */
 export type Users_Summary_ViewIdps_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Idp_Map_Order_By>>;
-  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
 };
 
 
@@ -57328,8 +57524,8 @@ export type Users_Summary_View_Bool_Exp = {
   full_name?: InputMaybe<String_Comparison_Exp>;
   group_id?: InputMaybe<Int_Comparison_Exp>;
   group_name?: InputMaybe<String_Comparison_Exp>;
-  idps?: InputMaybe<Users_Idp_Map_Bool_Exp>;
-  idps_aggregate?: InputMaybe<Users_Idp_Map_Aggregate_Bool_Exp>;
+  idps?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+  idps_aggregate?: InputMaybe<Users_Idp_Map_V2_Aggregate_Bool_Exp>;
   is_blocked?: InputMaybe<Boolean_Comparison_Exp>;
   is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
   is_exception?: InputMaybe<Boolean_Comparison_Exp>;
@@ -57371,7 +57567,7 @@ export type Users_Summary_View_Insert_Input = {
   full_name?: InputMaybe<Scalars['String']>;
   group_id?: InputMaybe<Scalars['Int']>;
   group_name?: InputMaybe<Scalars['String']>;
-  idps?: InputMaybe<Users_Idp_Map_Arr_Rel_Insert_Input>;
+  idps?: InputMaybe<Users_Idp_Map_V2_Arr_Rel_Insert_Input>;
   is_blocked?: InputMaybe<Scalars['Boolean']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   is_exception?: InputMaybe<Scalars['Boolean']>;
@@ -57469,7 +57665,7 @@ export type Users_Summary_View_Order_By = {
   full_name?: InputMaybe<Order_By>;
   group_id?: InputMaybe<Order_By>;
   group_name?: InputMaybe<Order_By>;
-  idps_aggregate?: InputMaybe<Users_Idp_Map_Aggregate_Order_By>;
+  idps_aggregate?: InputMaybe<Users_Idp_Map_V2_Aggregate_Order_By>;
   is_blocked?: InputMaybe<Order_By>;
   is_deleted?: InputMaybe<Order_By>;
   is_exception?: InputMaybe<Order_By>;
@@ -57632,7 +57828,7 @@ export type Users_Summary_View_Variance_Fields = {
 export type Users_Users_Sync_Cm = {
   __typename?: 'users_users_sync_cm';
   action: Scalars['String'];
-  avo_user_id?: Maybe<Scalars['uuid']>;
+  avo_profile_id?: Maybe<Scalars['uuid']>;
   cm_email?: Maybe<Scalars['String']>;
   created_at: Scalars['timestamptz'];
   expected_info?: Maybe<Scalars['jsonb']>;
@@ -57704,7 +57900,7 @@ export type Users_Users_Sync_Cm_Bool_Exp = {
   _not?: InputMaybe<Users_Users_Sync_Cm_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Users_Sync_Cm_Bool_Exp>>;
   action?: InputMaybe<String_Comparison_Exp>;
-  avo_user_id?: InputMaybe<Uuid_Comparison_Exp>;
+  avo_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   cm_email?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   expected_info?: InputMaybe<Jsonb_Comparison_Exp>;
@@ -57718,7 +57914,7 @@ export type Users_Users_Sync_Cm_Bool_Exp = {
 
 /** unique or primary key constraints on table "users.users_sync_cm" */
 export enum Users_Users_Sync_Cm_Constraint {
-  /** unique or primary key constraint on columns "avo_user_id" */
+  /** unique or primary key constraint on columns "avo_profile_id" */
   UsersSyncCmAvoUserIdKey = 'users_sync_cm_avo_user_id_key',
   /** unique or primary key constraint on columns "cm_email" */
   UsersSyncCmCmEmailKey = 'users_sync_cm_cm_email_key',
@@ -57754,7 +57950,7 @@ export type Users_Users_Sync_Cm_Inc_Input = {
 /** input type for inserting data into table "users.users_sync_cm" */
 export type Users_Users_Sync_Cm_Insert_Input = {
   action?: InputMaybe<Scalars['String']>;
-  avo_user_id?: InputMaybe<Scalars['uuid']>;
+  avo_profile_id?: InputMaybe<Scalars['uuid']>;
   cm_email?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   expected_info?: InputMaybe<Scalars['jsonb']>;
@@ -57770,7 +57966,7 @@ export type Users_Users_Sync_Cm_Insert_Input = {
 export type Users_Users_Sync_Cm_Max_Fields = {
   __typename?: 'users_users_sync_cm_max_fields';
   action?: Maybe<Scalars['String']>;
-  avo_user_id?: Maybe<Scalars['uuid']>;
+  avo_profile_id?: Maybe<Scalars['uuid']>;
   cm_email?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   failed_sync_count?: Maybe<Scalars['Int']>;
@@ -57784,7 +57980,7 @@ export type Users_Users_Sync_Cm_Max_Fields = {
 export type Users_Users_Sync_Cm_Min_Fields = {
   __typename?: 'users_users_sync_cm_min_fields';
   action?: Maybe<Scalars['String']>;
-  avo_user_id?: Maybe<Scalars['uuid']>;
+  avo_profile_id?: Maybe<Scalars['uuid']>;
   cm_email?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   failed_sync_count?: Maybe<Scalars['Int']>;
@@ -57813,7 +58009,7 @@ export type Users_Users_Sync_Cm_On_Conflict = {
 /** Ordering options when selecting data from "users.users_sync_cm". */
 export type Users_Users_Sync_Cm_Order_By = {
   action?: InputMaybe<Order_By>;
-  avo_user_id?: InputMaybe<Order_By>;
+  avo_profile_id?: InputMaybe<Order_By>;
   cm_email?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   expected_info?: InputMaybe<Order_By>;
@@ -57841,7 +58037,7 @@ export enum Users_Users_Sync_Cm_Select_Column {
   /** column name */
   Action = 'action',
   /** column name */
-  AvoUserId = 'avo_user_id',
+  AvoProfileId = 'avo_profile_id',
   /** column name */
   CmEmail = 'cm_email',
   /** column name */
@@ -57865,7 +58061,7 @@ export enum Users_Users_Sync_Cm_Select_Column {
 /** input type for updating data in table "users.users_sync_cm" */
 export type Users_Users_Sync_Cm_Set_Input = {
   action?: InputMaybe<Scalars['String']>;
-  avo_user_id?: InputMaybe<Scalars['uuid']>;
+  avo_profile_id?: InputMaybe<Scalars['uuid']>;
   cm_email?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   expected_info?: InputMaybe<Scalars['jsonb']>;
@@ -57906,7 +58102,7 @@ export type Users_Users_Sync_Cm_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Users_Users_Sync_Cm_Stream_Cursor_Value_Input = {
   action?: InputMaybe<Scalars['String']>;
-  avo_user_id?: InputMaybe<Scalars['uuid']>;
+  avo_profile_id?: InputMaybe<Scalars['uuid']>;
   cm_email?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   expected_info?: InputMaybe<Scalars['jsonb']>;
@@ -57929,7 +58125,7 @@ export enum Users_Users_Sync_Cm_Update_Column {
   /** column name */
   Action = 'action',
   /** column name */
-  AvoUserId = 'avo_user_id',
+  AvoProfileId = 'avo_profile_id',
   /** column name */
   CmEmail = 'cm_email',
   /** column name */
