@@ -1,5 +1,0 @@
-mutation deleteAssignmentResponseById($assignmentResponseId: uuid!) {
-	delete_app_assignment_responses_v2(where: { id: { _eq: $assignmentResponseId } }) {
-		affected_rows
-	}
-}

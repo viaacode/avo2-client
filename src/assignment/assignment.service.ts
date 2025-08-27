@@ -1,6 +1,6 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
-import { cloneDeep, compact, isNil } from 'lodash-es';
+import { cloneDeep, isNil } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 
 import { type AssignmentsOverviewTableState } from '../admin/assignments/assignments.types';
@@ -8,78 +8,33 @@ import { ItemsService } from '../admin/items/items.service';
 import { CollectionService } from '../collection/collection.service';
 import { type AssignmentMarcomEntry } from '../collection/collection.types';
 import { type ItemTrimInfo } from '../item/item.types';
-import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
 import {
 	type ContributorInfo,
 	type ContributorInfoRight,
 } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
-	type AssignmentPupilBlocksQuery,
-	type AssignmentPupilBlocksQueryVariables,
-	type DeleteAssignmentResponseByIdMutation,
-	type DeleteAssignmentResponseByIdMutationVariables,
-	type DeleteAssignmentsByIdMutation,
-	type DeleteAssignmentsByIdMutationVariables,
-	type GetAssignmentBlocksQuery,
-	type GetAssignmentBlocksQueryVariables,
-	type GetAssignmentByTitleOrDescriptionQuery,
-	type GetAssignmentByTitleOrDescriptionQueryVariables,
-	type GetAssignmentResponseByIdQuery,
-	type GetAssignmentResponseByIdQueryVariables,
-	type GetAssignmentResponseQuery,
-	type GetAssignmentResponseQueryVariables,
-	type GetAssignmentResponsesByAssignmentIdQuery,
-	type GetAssignmentResponsesByAssignmentIdQueryVariables,
-	type GetAssignmentResponsesQuery,
-	type GetAssignmentResponsesQueryVariables,
 	type GetAssignmentWithResponseQuery,
 	type GetAssignmentWithResponseQueryVariables,
 	type GetContributorsByAssignmentUuidQuery,
 	type GetContributorsByAssignmentUuidQueryVariables,
-	type GetMaxPositionAssignmentBlocksQuery,
-	type GetMaxPositionAssignmentBlocksQueryVariables,
-	type IncrementAssignmentViewCountMutation,
-	type IncrementAssignmentViewCountMutationVariables,
 	type InsertAssignmentBlocksMutation,
 	type InsertAssignmentBlocksMutationVariables,
 	type InsertAssignmentResponseMutation,
 	type InsertAssignmentResponseMutationVariables,
-	type SoftDeleteAssignmentByIdMutation,
-	type SoftDeleteAssignmentByIdMutationVariables,
-	type UpdateAssignmentResponseMutation,
-	type UpdateAssignmentResponseMutationVariables,
-	type UpdateAssignmentUpdatedAtDateMutation,
-	type UpdateAssignmentUpdatedAtDateMutationVariables,
 } from '../shared/generated/graphql-db-operations';
 import {
-	AssignmentPupilBlocksDocument,
-	DeleteAssignmentResponseByIdDocument,
-	DeleteAssignmentsByIdDocument,
-	GetAssignmentBlocksDocument,
-	GetAssignmentByTitleOrDescriptionDocument,
-	GetAssignmentResponseByIdDocument,
-	GetAssignmentResponseDocument,
-	GetAssignmentResponsesByAssignmentIdDocument,
-	GetAssignmentResponsesDocument,
 	GetAssignmentWithResponseDocument,
 	GetContributorsByAssignmentUuidDocument,
-	GetMaxPositionAssignmentBlocksDocument,
-	IncrementAssignmentViewCountDocument,
 	InsertAssignmentBlocksDocument,
 	InsertAssignmentResponseDocument,
-	SoftDeleteAssignmentByIdDocument,
-	UpdateAssignmentResponseDocument,
-	UpdateAssignmentUpdatedAtDateDocument,
 } from '../shared/generated/graphql-db-react-query';
 import {
 	type App_Assignments_V2_Insert_Input,
 	type App_Assignments_V2_Set_Input,
-	type App_Pupil_Collection_Blocks,
 	Lookup_Enum_Relation_Types_Enum,
 } from '../shared/generated/graphql-db-types';
 import { CustomError } from '../shared/helpers/custom-error';
 import { getEnv } from '../shared/helpers/env';
-import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import { isUserSecondaryElementary } from '../shared/helpers/is-user';
 import { tHtml } from '../shared/helpers/translate-html';
 import { tText } from '../shared/helpers/translate-text';
@@ -90,8 +45,7 @@ import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import { type TableColumnDataType } from '../shared/types/table-column-data-type';
 
-import { ITEMS_PER_PAGE, RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './assignment.const';
-import { reorderBlockPositions } from './assignment.helper';
+import { ITEMS_PER_PAGE } from './assignment.const';
 import {
 	AssignmentBlockType,
 	type AssignmentTableColumns,
@@ -107,8 +61,10 @@ export class AssignmentService {
 		assignments: Avo.Assignment.Assignment[];
 		count: number;
 	}> {
+		let url: string | undefined = undefined;
+
 		try {
-			const url = stringifyUrl({
+			url = stringifyUrl({
 				url: `${getEnv('PROXY_URL')}/assignments`,
 				query: {
 					pastDeadline: params.pastDeadline ? 'true' : 'false',
@@ -127,7 +83,7 @@ export class AssignmentService {
 		} catch (err) {
 			throw new CustomError('Failed to fetch assignments from database', err, {
 				...params,
-				url: `${getEnv('PROXY_URL')}/assignments`,
+				url,
 			});
 		}
 	}
@@ -168,27 +124,22 @@ export class AssignmentService {
 		}
 	}
 
-	static async hasPupilCollectionBlocks(assignmentId: string): Promise<boolean> {
-		const pupilBlocks = await dataService.query<
-			AssignmentPupilBlocksQuery,
-			AssignmentPupilBlocksQueryVariables
-		>({
-			query: AssignmentPupilBlocksDocument,
-			variables: { assignmentId },
-		});
-		return pupilBlocks.app_pupil_collection_blocks.length > 0;
-	}
-
 	static async fetchAssignmentBlocks(assignmentId: string): Promise<Avo.Assignment.Block[]> {
-		const blocks = await dataService.query<
-			GetAssignmentBlocksQuery,
-			GetAssignmentBlocksQueryVariables
-		>({
-			query: GetAssignmentBlocksDocument,
-			variables: { assignmentId },
-		});
-
-		return reorderBlockPositions(blocks.app_assignment_blocks_v2) as Avo.Assignment.Block[];
+		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			return await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/blocks`,
+				{
+					method: 'GET',
+				}
+			);
+		} catch (err) {
+			const error = new CustomError('Failed to fetch assignment blocks', err, {
+				assignmentId,
+			});
+			console.error(error);
+			throw error;
+		}
 	}
 
 	/**
@@ -228,7 +179,6 @@ export class AssignmentService {
 		}
 
 		delete assignmentToSave.owner;
-		delete assignmentToSave.profile;
 		delete assignmentToSave.responses;
 		delete (assignmentToSave as any).__typename;
 		delete (assignmentToSave as any).descriptionRichEditorState;
@@ -240,12 +190,9 @@ export class AssignmentService {
 
 	static async deleteAssignment(assignmentId: string): Promise<void> {
 		try {
-			await dataService.query<
-				SoftDeleteAssignmentByIdMutation,
-				SoftDeleteAssignmentByIdMutationVariables
-			>({
-				query: SoftDeleteAssignmentByIdDocument,
-				variables: { assignmentId, now: new Date().toISOString() },
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			return await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/assignments/${assignmentId}`, {
+				method: 'DELETE',
 			});
 		} catch (err) {
 			const error = new CustomError('Failed to delete assignment', err, { assignmentId });
@@ -256,12 +203,10 @@ export class AssignmentService {
 
 	static async deleteAssignments(assignmentIds: string[]): Promise<void> {
 		try {
-			await dataService.query<
-				DeleteAssignmentsByIdMutation,
-				DeleteAssignmentsByIdMutationVariables
-			>({
-				query: DeleteAssignmentsByIdDocument,
-				variables: { assignmentIds },
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			return await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/assignments`, {
+				method: 'DELETE',
+				body: JSON.stringify(assignmentIds),
 			});
 		} catch (err) {
 			const error = new CustomError('Failed to delete assignment', err, { assignmentIds });
@@ -297,21 +242,16 @@ export class AssignmentService {
 
 	static async updateAssignmentUpdatedAtDate(assignmentId: string): Promise<void> {
 		try {
-			const variables: UpdateAssignmentUpdatedAtDateMutationVariables = {
-				assignmentId,
-				updatedAt: new Date().toISOString(),
-			};
-			await dataService.query<
-				UpdateAssignmentUpdatedAtDateMutation,
-				UpdateAssignmentUpdatedAtDateMutationVariables
-			>({
-				query: UpdateAssignmentUpdatedAtDateDocument,
-				variables,
-			});
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/updated-at`,
+				{
+					method: 'POST',
+				}
+			);
 		} catch (err) {
 			const error = new CustomError('Failed to update assignment updated_at date', err, {
 				assignmentId,
-				query: 'UPDATE_ASSIGNMENT_UPDATED_AT_DATE',
 			});
 
 			console.error(error);
@@ -327,38 +267,11 @@ export class AssignmentService {
 		}
 	): Promise<Omit<Avo.Assignment.Response, 'assignment'> | null> {
 		try {
-			if (isNil(original.id)) {
-				throw new CustomError(
-					'Failed to update assignment response because its id is undefined',
-					null,
-					{ original, update }
-				);
-			}
-
-			const variables: UpdateAssignmentResponseMutationVariables = {
-				collectionTitle: update.collection_title,
-				updatedAt: new Date().toISOString(),
-				assignmentResponseId: original.id,
-			};
-			await dataService.query<
-				UpdateAssignmentResponseMutation,
-				UpdateAssignmentResponseMutationVariables
-			>({
-				query: UpdateAssignmentResponseDocument,
-				variables,
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			return await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/assignments/${original.id}`, {
+				method: 'PATCH',
+				body: JSON.stringify(update),
 			});
-
-			// Update blocks
-			await PupilCollectionService.updatePupilCollectionBlocks(
-				original.id,
-				(original.pupil_collection_blocks || []) as PupilCollectionFragment[],
-				(update.pupil_collection_blocks || []) as PupilCollectionFragment[]
-			);
-
-			return {
-				...original,
-				...update,
-			} as Omit<Avo.Assignment.Response, 'assignment'>;
 		} catch (err) {
 			const error = new CustomError('Failed to update assignment', err, {
 				original,
@@ -529,7 +442,6 @@ export class AssignmentService {
 	// Fetch assignment responses for response overview page
 	static async fetchAssignmentResponses(
 		assignmentId: string,
-		commonUser: Avo.User.CommonUser | null,
 		sortColumn: AssignmentTableColumns,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
@@ -539,104 +451,66 @@ export class AssignmentService {
 		assignmentResponses: Avo.Assignment.Response[];
 		count: number;
 	}> {
-		let variables: GetAssignmentResponsesByAssignmentIdQueryVariables | undefined = undefined;
+		let url: string | undefined = undefined;
 		try {
-			const trimmedFilterString = filterString && filterString.trim();
-			const filterArray: any[] = [];
-
-			if (trimmedFilterString) {
-				filterArray.push({
-					_or: [
-						{ owner: { full_name: { _ilike: `%${trimmedFilterString}%` } } },
-						{ collection_title: { _ilike: `%${trimmedFilterString}%` } },
-					],
-				});
-			}
-
-			variables = {
-				assignmentId,
-				order: getOrderObject(
+			url = stringifyUrl({
+				url: `${getEnv('PROXY_URL')}/assignment-responses`,
+				query: {
+					assignmentId,
 					sortColumn,
 					sortOrder,
 					tableColumnDataType,
-					RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
-				),
-				offset: page * ITEMS_PER_PAGE,
-				limit: ITEMS_PER_PAGE,
-				filter: filterArray.length ? filterArray : {},
-			};
-
-			// Get the assignment from graphql
-			const assignmentResponse = await dataService.query<
-				GetAssignmentResponsesByAssignmentIdQuery,
-				GetAssignmentResponsesByAssignmentIdQueryVariables
-			>({
-				query: GetAssignmentResponsesByAssignmentIdDocument,
-				variables,
+					offset: page * ITEMS_PER_PAGE,
+					limit: ITEMS_PER_PAGE,
+					filterString,
+				},
 			});
 
-			if (
-				!assignmentResponse ||
-				!assignmentResponse.app_assignment_responses_v2 ||
-				!assignmentResponse.count
-			) {
-				throw new CustomError('Response does not have the expected format', null, {
-					assignmentResponse,
-				});
-			}
-
-			const assignmentResponses: Avo.Assignment.Response[] =
-				(assignmentResponse.app_assignment_responses_v2 || []) as Avo.Assignment.Response[];
-
-			// Enrich assignmentResponses with item infos
-			const fragmentExternalIds = compact(
-				assignmentResponses.flatMap(
-					(response) =>
-						response.pupil_collection_blocks?.map(
-							(block) => (block as App_Pupil_Collection_Blocks).fragment_id
-						)
-				)
-			);
-			const itemMetas = await ItemsService.fetchItemsByExternalIds(fragmentExternalIds);
-			assignmentResponses.forEach((response) => {
-				response.pupil_collection_blocks?.forEach((block) => {
-					(block as any).item_meta = itemMetas.find(
-						(itemMeta) =>
-							!!itemMeta?.external_id &&
-							itemMeta?.external_id ===
-								(block as App_Pupil_Collection_Blocks).fragment_id
-					);
-				});
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			return await fetchWithLogoutJson(url, {
+				method: 'GET',
 			});
-
-			return {
-				assignmentResponses,
-				count: assignmentResponse.count.aggregate?.count || 0,
-			};
 		} catch (err) {
-			throw new CustomError('Failed to fetch assignments from database', err, {
-				commonUser,
-				variables,
-				query: 'GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID',
-			});
+			const error = new CustomError(
+				'Failed to fetch assignment responses from database',
+				err,
+				{
+					url,
+				}
+			);
+			console.error(error);
+			throw error;
 		}
 	}
 
 	static async deleteAssignmentResponse(assignmentResponseId: string): Promise<void> {
 		try {
-			const variables: DeleteAssignmentResponseByIdMutationVariables = {
-				assignmentResponseId,
-			};
-			await dataService.query<
-				DeleteAssignmentResponseByIdMutation,
-				DeleteAssignmentResponseByIdMutationVariables
-			>({
-				query: DeleteAssignmentResponseByIdDocument,
-				variables,
-			});
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			return await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/assignment-responses/${assignmentResponseId}`,
+				{
+					method: 'DELETE',
+				}
+			);
 		} catch (err) {
 			const error = new CustomError('Failed to delete assignment response', err, {
 				assignmentResponseId,
+			});
+			console.error(error);
+			throw error;
+		}
+	}
+
+	static async deleteAssignmentResponses(assignmentResponseIds: string[]): Promise<void> {
+		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			return await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/assignment-responses}`, {
+				method: 'DELETE',
+				body: JSON.stringify(assignmentResponseIds),
+			});
+		} catch (err) {
+			const error = new CustomError('Failed to delete assignment responses', err, {
+				assignmentResponseIds,
 			});
 			console.error(error);
 			throw error;
@@ -688,29 +562,24 @@ export class AssignmentService {
 
 	/**
 	 * Get the assignment responses for the specified assignment id and owner of the assignment
-	 * @param profileId
 	 * @param assignmentId
 	 */
-	static async getAssignmentResponses(
-		profileId: string,
-		assignmentId: string
-	): Promise<GetAssignmentResponsesQuery['app_assignment_responses_v2']> {
+	static async getAssignmentResponses(assignmentId: string): Promise<Avo.Assignment.Response[]> {
 		try {
-			const variables: GetAssignmentResponsesQueryVariables = { profileId, assignmentId };
-			const response = await dataService.query<
-				GetAssignmentResponsesQuery,
-				GetAssignmentResponsesQueryVariables
-			>({
-				query: GetAssignmentResponsesDocument,
-				variables,
-			});
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 
-			return response?.app_assignment_responses_v2 || [];
+			return (await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/assignment-responses/${assignmentId}/multiple`,
+				{
+					method: 'GET',
+				}
+			)) as Avo.Assignment.Response[];
 		} catch (err) {
-			throw new CustomError('Failed to get assignment responses from database', err, {
-				profileId,
-				query: 'GET_ASSIGNMENT_RESPONSES',
+			const error = new CustomError('Failed to get assignment responses from database', err, {
+				assignmentId,
 			});
+			console.error(error);
+			throw error;
 		}
 	}
 
@@ -719,20 +588,16 @@ export class AssignmentService {
 	 * Helper for create assignmentResponseObject method below
 	 */
 	static async getAssignmentResponse(
-		profileId: string,
 		assignmentId: string
 	): Promise<Omit<Avo.Assignment.Response, 'assignment'> | undefined> {
 		try {
-			const variables: GetAssignmentResponseQueryVariables = { profileId, assignmentId };
-			const response = await dataService.query<
-				GetAssignmentResponseQuery,
-				GetAssignmentResponseQueryVariables
-			>({
-				query: GetAssignmentResponseDocument,
-				variables,
-			});
-
-			const assignmentResponse = response?.app_assignment_responses_v2?.[0];
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const assignmentResponse = (await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/assignment-responses/${assignmentId}/personal`,
+				{
+					method: 'GET',
+				}
+			)) as Avo.Assignment.Response | null;
 
 			if (!assignmentResponse) {
 				return undefined;
@@ -740,16 +605,16 @@ export class AssignmentService {
 
 			return {
 				...assignmentResponse,
-				owner: assignmentResponse.owner || undefined,
 				pupil_collection_blocks: await AssignmentService.enrichBlocksWithMeta(
 					assignmentResponse.pupil_collection_blocks as Avo.Core.BlockItemBase[]
 				),
 			};
 		} catch (err) {
-			throw new CustomError('Failed to get assignment response from database', err, {
-				profileId,
-				query: 'GET_ASSIGNMENT_RESPONSE',
+			const error = new CustomError('Failed to get assignment response from database', err, {
+				assignmentId,
 			});
+			console.error(error);
+			throw error;
 		}
 	}
 
@@ -760,18 +625,13 @@ export class AssignmentService {
 		assignmentResponseId: string
 	): Promise<Avo.Assignment.Response | null> {
 		try {
-			const variables: GetAssignmentResponseByIdQueryVariables = { assignmentResponseId };
-			const response = await dataService.query<
-				GetAssignmentResponseByIdQuery,
-				GetAssignmentResponseByIdQueryVariables
-			>({
-				query: GetAssignmentResponseByIdDocument,
-				variables,
-			});
-
-			const assignmentResponse:
-				| GetAssignmentResponseByIdQuery['app_assignment_responses_v2'][0]
-				| undefined = response?.app_assignment_responses_v2?.[0];
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const assignmentResponse = (await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/assignment-responses/${assignmentResponseId}`,
+				{
+					method: 'GET',
+				}
+			)) as Avo.Assignment.Response | null;
 
 			if (!assignmentResponse) {
 				return null;
@@ -782,12 +642,13 @@ export class AssignmentService {
 				pupil_collection_blocks: await AssignmentService.enrichBlocksWithMeta(
 					assignmentResponse.pupil_collection_blocks as Avo.Core.BlockItemBase[]
 				),
-			} as Avo.Assignment.Response | null;
+			} as Avo.Assignment.Response;
 		} catch (err) {
-			throw new CustomError('Failed to get assignment response from database', err, {
+			const error = new CustomError('Failed to get assignment response from database', err, {
 				assignmentResponseId,
-				query: 'GET_ASSIGNMENT_RESPONSE',
 			});
+			console.error(error);
+			throw error;
 		}
 	}
 
@@ -808,10 +669,7 @@ export class AssignmentService {
 			}
 			const existingAssignmentResponse:
 				| Omit<Avo.Assignment.Response, 'assignment'>
-				| undefined = await AssignmentService.getAssignmentResponse(
-				commonUser.profileId,
-				assignment?.id
-			);
+				| undefined = await AssignmentService.getAssignmentResponse(assignment?.id);
 
 			if (existingAssignmentResponse) {
 				if (assignment.lom_learning_resource_type?.includes(AssignmentType.BOUW)) {
@@ -872,14 +730,21 @@ export class AssignmentService {
 	}
 
 	static async getAssignmentBlockMaxPosition(assignmentId: string): Promise<number | null> {
-		const result = await dataService.query<
-			GetMaxPositionAssignmentBlocksQuery,
-			GetMaxPositionAssignmentBlocksQueryVariables
-		>({
-			query: GetMaxPositionAssignmentBlocksDocument,
-			variables: { assignmentId },
-		});
-		return result.app_assignments_v2_by_pk?.blocks_aggregate?.aggregate?.max?.position || null;
+		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			return await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/block-max-position`,
+				{
+					method: 'GET',
+				}
+			);
+		} catch (err) {
+			const error = new CustomError('Failed to get assignment block max position', err, {
+				assignmentId,
+			});
+			console.error(error);
+			throw error;
+		}
 	}
 
 	static async importCollectionToAssignment(
@@ -1141,31 +1006,21 @@ export class AssignmentService {
 		byDescription: boolean;
 	}> {
 		try {
-			const variables: GetAssignmentByTitleOrDescriptionQueryVariables = {
-				title,
-				description: description || '',
-				assignmentId,
-			};
-
-			const response = await dataService.query<
-				GetAssignmentByTitleOrDescriptionQuery,
-				GetAssignmentByTitleOrDescriptionQueryVariables
-			>({ query: GetAssignmentByTitleOrDescriptionDocument, variables });
-
-			const assignmentWithSameTitleExists = !!(response.assignmentByTitle || []).length;
-
-			const assignmentWithSameDescriptionExists = !!(response.assignmentByDescription || [])
-				.length;
-
-			return {
-				byTitle: assignmentWithSameTitleExists,
-				byDescription: assignmentWithSameDescriptionExists,
-			};
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const url = stringifyUrl({
+				url: `${getEnv('PROXY_URL')}/assignments/search`,
+				query: {
+					title,
+					description,
+					assignmentId,
+				},
+			});
+			return fetchWithLogoutJson(url);
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get duplicate assignments by title or description',
 				err,
-				{ title, description, query: 'GET_ASSIGNMENT_BY_TITLE_OR_DESCRIPTION' }
+				{ title, description }
 			);
 		}
 	}
@@ -1195,18 +1050,13 @@ export class AssignmentService {
 
 	static async increaseViewCount(assignmentId: string): Promise<number> {
 		try {
-			const variables: IncrementAssignmentViewCountMutationVariables = {
-				assignmentId,
-			};
-			const response = await dataService.query<
-				IncrementAssignmentViewCountMutation,
-				IncrementAssignmentViewCountMutationVariables
-			>({
-				query: IncrementAssignmentViewCountDocument,
-				variables,
-			});
-
-			return response?.update_app_assignment_v2_views?.affected_rows || 0;
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			return await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/view-count`,
+				{
+					method: 'POST',
+				}
+			);
 		} catch (err) {
 			throw new CustomError('Failed to increase assignment view count in the database', err, {
 				assignmentId,
