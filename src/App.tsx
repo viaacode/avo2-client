@@ -85,8 +85,10 @@ const App: FC<
 	 * Scroll to the element with the id that is in the hash of the url
 	 */
 	const handlePageLoaded = useCallback(() => {
-		const decodedHash = decodeURIComponent(window.location.hash).replaceAll(' ', '-');
-		document.querySelector(decodedHash)?.scrollIntoView({ behavior: 'smooth' });
+		if (window.location.hash) {
+			const decodedHash = decodeURIComponent(window.location.hash).replaceAll(' ', '-');
+			document.querySelector(decodedHash)?.scrollIntoView({ behavior: 'smooth' });
+		}
 	}, []);
 	usePageLoaded(handlePageLoaded, !!props.location.hash);
 
