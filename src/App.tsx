@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 import { createBrowserHistory } from 'history';
 import { isEqual, noop, uniq } from 'lodash-es';
 import { wrapHistory } from 'oaf-react-router';
-import React, { type FC, type ReactNode, useEffect, useState } from 'react';
+import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { connect, Provider } from 'react-redux';
 import {
 	Route,
@@ -84,9 +84,12 @@ const App: FC<
 	/**
 	 * Scroll to the element with the id that is in the hash of the url
 	 */
-	const handlePageLoaded = () => {
-		document.querySelector(props.location.hash)?.scrollIntoView({ behavior: 'smooth' });
-	};
+	const handlePageLoaded = useCallback(() => {
+		if (window.location.hash) {
+			const decodedHash = decodeURIComponent(window.location.hash).replaceAll(' ', '-');
+			document.querySelector(decodedHash)?.scrollIntoView({ behavior: 'smooth' });
+		}
+	}, []);
 	usePageLoaded(handlePageLoaded, !!props.location.hash);
 
 	/**
@@ -141,7 +144,8 @@ const App: FC<
 		if (!isEqual(existingHistoryLocations, newHistoryLocations)) {
 			props.setHistoryLocations(newHistoryLocations);
 		}
-	}, [location, props]);
+		handlePageLoaded();
+	}, [location, props, handlePageLoaded]);
 
 	/**
 	 * Check if this window was opened from somewhere else and get the embed-flow query param
