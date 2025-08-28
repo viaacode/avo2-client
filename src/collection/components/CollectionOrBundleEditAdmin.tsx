@@ -27,7 +27,7 @@ import AssociatedQuickLaneTable, {
 import { OrderDirection } from '../../search/search.const';
 import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { CustomError } from '../../shared/helpers/custom-error';
-import { formatTimestamp, getFullName } from '../../shared/helpers/formatters';
+import { formatTimestamp, getFullNameCommonUser } from '../../shared/helpers/formatters';
 import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -206,8 +206,11 @@ const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps & UserPro
 										<TextInput
 											disabled
 											value={
-												getFullName(collection.updated_by, true, false) ||
-												'-'
+												getFullNameCommonUser(
+													collection.updated_by,
+													true,
+													false
+												) || '-'
 											}
 										/>
 									</FormGroup>

@@ -54,7 +54,10 @@ import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, ROUTE_PARTS } from '../.
 import { buildLink } from '../../shared/helpers/build-link';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { CustomError } from '../../shared/helpers/custom-error';
-import { defaultGoToDetailLink, defaultRenderDetailLink, } from '../../shared/helpers/default-render-detail-link';
+import {
+	defaultGoToDetailLink,
+	defaultRenderDetailLink,
+} from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { getFullName } from '../../shared/helpers/formatters/avatar';
@@ -63,10 +66,17 @@ import { isMobileWidth } from '../../shared/helpers/media-query';
 import { isUuid } from '../../shared/helpers/uuid';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { BookmarksViewsPlaysService, DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS, } from '../../shared/services/bookmarks-views-plays-service';
+import {
+	BookmarksViewsPlaysService,
+	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
+} from '../../shared/services/bookmarks-views-plays-service';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems, ObjectTypes, ObjectTypesAll, } from '../../shared/services/related-items-service';
+import {
+	getRelatedItems,
+	ObjectTypes,
+	ObjectTypesAll,
+} from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { renderRelatedItems } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
@@ -82,10 +92,17 @@ import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '.
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from '../components/modals/DeleteContributorFromCollectionModal';
-import { onAddContributor, onDeleteContributor, onEditContributor, } from '../helpers/collection-share-with-collegue-handlers';
+import {
+	onAddContributor,
+	onDeleteContributor,
+	onEditContributor,
+} from '../helpers/collection-share-with-collegue-handlers';
 import { deleteCollection, deleteSelfFromCollection } from '../helpers/delete-collection';
 import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
-import { BundleSortProp, useGetCollectionsOrBundlesContainingFragment, } from '../hooks/useGetCollectionsOrBundlesContainingFragment';
+import {
+	BundleSortProp,
+	useGetCollectionsOrBundlesContainingFragment,
+} from '../hooks/useGetCollectionsOrBundlesContainingFragment';
 
 import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from './CollectionDetail.const';
 

@@ -7,13 +7,12 @@ import { Link } from 'react-router-dom';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
 import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
-import {
-	GET_MARCOM_CHANNEL_NAME_OPTIONS,
-	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
-} from '../../../collection/collection.const';
+import { GET_MARCOM_CHANNEL_NAME_OPTIONS, GET_MARCOM_CHANNEL_TYPE_OPTIONS, } from '../../../collection/collection.const';
 import { CollectionCreateUpdateTab, type QualityLabel } from '../../../collection/collection.types';
 import { APP_PATH } from '../../../constants';
-import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
+import {
+	CollectionOrBundleOrAssignmentTitleAndCopyTag
+} from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { formatDate } from '../../../shared/helpers/formatters';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
@@ -241,7 +240,7 @@ export function renderAssignmentCellReact(
 			// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
 			return (
 				assignment?.updated_by?.fullName ||
-				(assignment as any)?.last_user_edit_profile?.full_name ||
+				assignment?.last_user_edit_profile?.fullName ||
 				'-'
 			);
 		}
@@ -453,7 +452,7 @@ export function renderAssignmentCellText(
 			// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
 			return (
 				assignment?.updated_by?.fullName ||
-				(assignment as any)?.last_user_edit_profile?.full_name ||
+				assignment?.last_user_edit_profile?.fullName ||
 				'-'
 			);
 		}
