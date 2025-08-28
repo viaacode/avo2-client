@@ -223,7 +223,7 @@ export const useUpdateInteractiveTourMutation = <
       options
     );
 export const DeleteItemFromCollectionBookmarksAndAssignmentsDocument = `
-    mutation deleteItemFromCollectionBookmarksAndAssignments($itemExternalId: String!, $itemUid: uuid!) {
+    mutation deleteItemFromCollectionBookmarksAndAssignments($itemExternalId: bpchar!, $itemUid: uuid!) {
   delete_app_collection_fragments(where: {external_id: {_eq: $itemExternalId}}) {
     affected_rows
   }
@@ -567,7 +567,7 @@ export const useGetUserWithEitherBookmarkQuery = <
       options
     );
 export const ReplaceItemInCollectionsBookmarksAndAssignmentsDocument = `
-    mutation replaceItemInCollectionsBookmarksAndAssignments($oldItemUid: uuid!, $oldItemExternalId: String!, $newItemUid: uuid!, $newItemExternalId: String!, $usersWithBothBookmarks: [uuid!]!) {
+    mutation replaceItemInCollectionsBookmarksAndAssignments($oldItemUid: uuid!, $oldItemExternalId: bpchar!, $newItemUid: uuid!, $newItemExternalId: bpchar!, $usersWithBothBookmarks: [uuid!]!) {
   update_app_collection_fragments(
     where: {external_id: {_eq: $oldItemExternalId}}
     _set: {external_id: $newItemExternalId, start_oc: null, end_oc: null}
@@ -886,13 +886,13 @@ export const GetAssignmentWithResponseDocument = `
       profile {
         avatar
         user_id
-        user: usersByuserId {
+        user {
           last_name
           first_name
           mail
           full_name
         }
-        id
+        id: profile_id
         organisation {
           name
           logo_url
@@ -945,7 +945,7 @@ export const GetContributorsByAssignmentUuidDocument = `
     id
     profile {
       avatar
-      user: usersByuserId {
+      user {
         first_name
         full_name
         last_name
@@ -1112,7 +1112,7 @@ export const useDeleteCollectionLomLinksMutation = <
       options
     );
 export const DeleteCollectionOrBundleByUuidDocument = `
-    mutation deleteCollectionOrBundleByUuid($collectionOrBundleUuid: uuid!, $collectionOrBundleUuidAsText: String!) {
+    mutation deleteCollectionOrBundleByUuid($collectionOrBundleUuid: uuid!, $collectionOrBundleUuidAsText: bpchar!) {
   update_app_collections(
     where: {id: {_eq: $collectionOrBundleUuid}}
     _set: {is_deleted: true}
@@ -1353,7 +1353,7 @@ export const useGetCollectionTitlesByOwnerQuery = <
       options
     );
 export const GetCollectionsByItemUuidDocument = `
-    query getCollectionsByItemUuid($fragmentId: String!) {
+    query getCollectionsByItemUuid($fragmentId: bpchar!) {
   app_collections(
     where: {collection_fragments: {external_id: {_eq: $fragmentId}}, is_deleted: {_eq: false}}
   ) {
@@ -1450,7 +1450,7 @@ export const GetCollectionsByOwnerOrContributorDocument = `
         value
       }
       profile {
-        user: usersByuserId {
+        user {
           full_name
           first_name
           last_name
@@ -1500,7 +1500,7 @@ export const GetContributorsByCollectionUuidDocument = `
         logo_url
         or_id
       }
-      user: usersByuserId {
+      user {
         first_name
         full_name
         last_name
@@ -1578,7 +1578,7 @@ export const GetPublicCollectionsDocument = `
           logo_url
           or_id
         }
-        user: usersByuserId {
+        user {
           first_name
           full_name
           last_name
@@ -1629,7 +1629,7 @@ export const GetPublicCollectionsByIdDocument = `
         value
       }
       profile {
-        user: usersByuserId {
+        user {
           first_name
           full_name
           last_name
@@ -1686,7 +1686,7 @@ export const GetPublicCollectionsByTitleDocument = `
           logo_url
           or_id
         }
-        user: usersByuserId {
+        user {
           first_name
           full_name
           last_name

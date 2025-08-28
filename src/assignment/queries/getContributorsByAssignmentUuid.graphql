@@ -8,7 +8,7 @@ query getContributorsByAssignmentUuid($id: uuid!) {
 		id
 		profile {
 			avatar
-			user: usersByuserId {
+			user {
 				first_name
 				full_name
 				last_name
