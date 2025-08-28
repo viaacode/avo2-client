@@ -90,7 +90,13 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 		usePublishCollectionToKlascement();
 
 	const { data: publishInfo, refetch: refetchPublishInfo } = useGetKlascementPublishInfo(
-		collection.id
+		collection.id,
+		{
+			enabled:
+				commonUser?.permissions?.includes(
+					PermissionName.PUBLISH_COLLECTION_TO_KLASCEMENT
+				) || false,
+		}
 	);
 
 	const isPublishedToKlascement = useMemo(() => !isNil(klascementId), [klascementId]);

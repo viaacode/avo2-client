@@ -8,7 +8,8 @@ import {
 } from '../../shared/services/klascement-service';
 
 export const useGetKlascementPublishInfo = (
-	collectionId: string
+	collectionId: string,
+	options: { enabled?: boolean } = {}
 ): UseQueryResult<KlascementCollectionPublishInfo> => {
 	return useQuery(
 		[QUERY_KEYS.GET_KLASCEMENT_COLLECTION_PUBLISH_INFO, collectionId],
@@ -16,11 +17,13 @@ export const useGetKlascementPublishInfo = (
 			return KlascementService.getKlascementPublishInfoForCollection(collectionId);
 		},
 		{
+			enabled: true,
 			meta: {
 				errorMessage: tHtml(
 					'collection/hooks/use-get-klascement-publish-info___het-ophalen-van-de-klascement-informatie-is-mislukt'
 				),
 			},
+			...options,
 		}
 	);
 };
