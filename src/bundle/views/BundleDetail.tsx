@@ -18,7 +18,6 @@ import {
 	Spacer,
 	Spinner,
 	Thumbnail,
-	ToggleButton,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
@@ -53,6 +52,7 @@ import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
 import CommonMetaData from '../../shared/components/CommonMetaData/CommonMetaData';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
+import EditButton from '../../shared/components/EditButton/EditButton';
 import Html from '../../shared/components/Html/Html';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
@@ -60,6 +60,7 @@ import ShareThroughEmailModal from '../../shared/components/ShareThroughEmailMod
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
+import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render-bookmark-button';
 import {
 	defaultGoToDetailLink,
 	defaultRenderDetailLink,
@@ -632,22 +633,13 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 						type="secondary"
 					/>
 				)}
-				{permissions.canEditBundle && (
-					<Button
-						label={tText('bundle/views/bundle-detail___bewerken')}
-						title={tText('bundle/views/bundle-detail___pas-de-bundel-aan')}
-						onClick={() => executeAction(BundleAction.edit)}
-						type="primary"
-					/>
-				)}
-				<ToggleButton
-					title={tText('collection/views/collection-detail___bladwijzer')}
-					type="secondary"
-					icon={IconName.bookmark}
-					active={bookmarkViewPlayCounts.isBookmarked}
-					ariaLabel={tText('collection/views/collection-detail___bladwijzer')}
-					onClick={() => executeAction(BundleAction.toggleBookmark)}
-				/>
+				{defaultRenderBookmarkButton({
+					active: bookmarkViewPlayCounts.isBookmarked,
+					ariaLabel: tText('collection/views/collection-detail___bladwijzer'),
+					title: tText('collection/views/collection-detail___bladwijzer'),
+					onClick: () => executeAction(BundleAction.toggleBookmark),
+					type: 'secondary',
+				})}
 				{isPublic && (
 					<Button
 						title={tText('bundle/views/bundle-detail___share-bundel')}
@@ -658,6 +650,16 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 					/>
 				)}
 				{renderActionDropdown()}
+				{permissions.canEditBundle && (
+					<EditButton
+						type="primary"
+						label={tText('bundle/views/bundle-detail___bewerken')}
+						title={tText('bundle/views/bundle-detail___pas-de-bundel-aan')}
+						onClick={() => executeAction(BundleAction.edit)}
+						disabled={false}
+						toolTipContent=""
+					/>
+				)}
 				{!!commonUser && <InteractiveTour showButton />}
 			</ButtonToolbar>
 		);

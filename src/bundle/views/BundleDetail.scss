@@ -7,6 +7,13 @@
 		overflow: hidden;
 	}
 
+	.c-toolbar {
+		.c-tooltip{
+			// This is so dirty but seems to fix the issue of not aligning the tooltip for the bookmark
+			margin-left: $g-spacer-unit*3;
+		}
+	}
+
 	.c-bundle-toolbar__mobile {
 		> .c-toolbar__left {
 			width: calc(100% - 40px);

@@ -20,7 +20,6 @@ import {
 	MoreOptionsDropdown,
 	Spacer,
 	Spinner,
-	ToggleButton,
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
@@ -63,6 +62,7 @@ import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel } from '../../shared/cons
 import { buildLink } from '../../shared/helpers/build-link';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { CustomError } from '../../shared/helpers/custom-error';
+import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render-bookmark-button';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
@@ -674,16 +674,16 @@ const AssignmentDetail: FC<
 					/>
 				)}
 
-				{!isOwner && !isContributor && !inviteToken && (
-					<ToggleButton
-						title={tText('assignment/views/assignment-detail___bladwijzer')}
-						type="secondary"
-						icon={IconName.bookmark}
-						active={bookmarkViewCounts.isBookmarked}
-						ariaLabel={tText('assignment/views/assignment-detail___bladwijzer')}
-						onClick={() => executeAction(AssignmentAction.toggleBookmark)}
-					/>
-				)}
+				{!isOwner &&
+					!isContributor &&
+					!inviteToken &&
+					defaultRenderBookmarkButton({
+						active: bookmarkViewCounts.isBookmarked,
+						ariaLabel: tText('assignment/views/assignment-detail___bladwijzer'),
+						title: tText('assignment/views/assignment-detail___bladwijzer'),
+						onClick: () => executeAction(AssignmentAction.toggleBookmark),
+						type: 'secondary',
+					})}
 
 				{!inviteToken && renderAssignmentDropdownOptions()}
 

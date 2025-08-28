@@ -8,7 +8,6 @@ import {
 	Spacer,
 	TagList,
 	type TagOption,
-	ToggleButton,
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
@@ -19,6 +18,8 @@ import { isNil, noop, truncate } from 'lodash-es';
 import React, { type FC, type ReactNode, type ReactText } from 'react';
 
 import './SearchResult.scss';
+import { defaultRenderBookmarkButton } from '../../helpers/default-render-bookmark-button';
+import { tText } from '../../helpers/translate-text';
 
 interface SearchResultProps extends DefaultProps {
 	title: ReactNode;
@@ -69,12 +70,13 @@ export const SearchResult: FC<SearchResultProps> = ({
 					{!isNil(isBookmarked) && (
 						<FlexItem shrink>
 							<div className="c-button-toolbar">
-								<ToggleButton
-									active={isBookmarked}
-									icon={IconName.bookmark}
-									onClick={(active: boolean) => onToggleBookmark(active)}
-									ariaLabel="toggle bookmark"
-								/>
+								{defaultRenderBookmarkButton({
+									active: isBookmarked,
+									ariaLabel: tText('toggle bookmark'),
+									title: tText('toggle bookmark'),
+									onClick: (active: boolean) => onToggleBookmark(active),
+									type: undefined,
+								})}
 							</div>
 						</FlexItem>
 					)}
