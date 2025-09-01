@@ -243,13 +243,13 @@ export type GetProfileIdsQueryVariables = Exact<{
 export type GetProfileIdsQuery = { __typename?: 'query_root', users_summary_view: Array<{ __typename?: 'users_summary_view', profile_id?: any | null }> };
 
 export type UpdateUserTempAccessByIdMutationVariables = Exact<{
-  user_id: Scalars['uuid'];
+  profile_id: Scalars['uuid'];
   from?: InputMaybe<Scalars['date']>;
   until: Scalars['date'];
 }>;
 
 
-export type UpdateUserTempAccessByIdMutation = { __typename?: 'mutation_root', insert_shared_user_temp_access_one?: { __typename?: 'shared_user_temp_access', user_id: any, from?: any | null, until: any, user: { __typename?: 'shared_users', full_name?: string | null, mail?: string | null } } | null };
+export type UpdateUserTempAccessByIdMutation = { __typename?: 'mutation_root', insert_shared_user_temp_access_v2_one?: { __typename?: 'shared_user_temp_access_v2', profile_id: any } | null };
 
 export type GetAssignmentWithResponseQueryVariables = Exact<{
   assignmentId: Scalars['uuid'];
@@ -869,7 +869,7 @@ export type GetUsersByCompanyIdQueryVariables = Exact<{
 }>;
 
 
-export type GetUsersByCompanyIdQuery = { __typename?: 'query_root', users_profiles: Array<{ __typename?: 'users_profiles', id: any, user?: { __typename?: 'shared_users', uid: any, full_name?: string | null, mail?: string | null, is_blocked?: boolean | null, last_access_at?: any | null, temp_access?: { __typename?: 'shared_user_temp_access', from?: any | null, until: any, current?: { __typename?: 'shared_user_temp_access_status', status?: number | null } | null } | null } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', id: number, label: string } } | null }> };
+export type GetUsersByCompanyIdQuery = { __typename?: 'query_root', users_profiles: Array<{ __typename?: 'users_profiles', id: any, user?: { __typename?: 'shared_users', uid: any, full_name?: string | null, mail?: string | null, is_blocked?: boolean | null, last_access_at?: any | null } | null, temp_access?: { __typename?: 'shared_user_temp_access_v2', from: any, until: any, has_currently_access?: { __typename?: 'shared_user_temp_access_status_v2', status?: boolean | null } | null } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', id: number, label: string } } | null }> };
 
 export type InsertNotificationMutationVariables = Exact<{
   key: Scalars['String'];

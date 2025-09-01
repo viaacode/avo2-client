@@ -10,12 +10,12 @@ query getUsersByCompanyId($companyId: String!) {
 			mail
 			is_blocked
 			last_access_at
-			temp_access {
-				from
-				until
-				current {
-					status
-				}
+		}
+		temp_access {
+			from
+			until
+			has_currently_access {
+				status
 			}
 		}
 		profile_user_group {
