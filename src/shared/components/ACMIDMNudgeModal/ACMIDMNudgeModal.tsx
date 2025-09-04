@@ -6,6 +6,10 @@ import { type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose, type Dispatch } from 'redux';
 
 import { isProfileComplete } from '../../../authentication/helpers/get-profile-info';
+import {
+	getLoginCounter,
+	LOGIN_COUNTER_BEFORE_NUDGING,
+} from '../../../authentication/helpers/login-counter-before-nudging';
 import { redirectToServerLinkAccount } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -60,6 +64,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 
 	const updateShowNudgingModal = useCallback(async () => {
 		const hasDismissed = localStorage.getItem(NOT_NOW_LOCAL_STORAGE_KEY) === NOT_NOW_VAL;
+		const loginCounter = getLoginCounter();
 
 		// Stop early if previously dismissed
 		// Or if user is logging out https://meemoo.atlassian.net/browse/ARC-1731
@@ -75,9 +80,11 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 
 		const isOnAssignmentPage = location.pathname.includes(ROUTE_PARTS.assignments);
 		const isOnAccountLinkingPage = location.pathname.includes(APP_PATH.SETTINGS_LINKS.route);
-
 		const isUserAPupil = isPupil(commonUser.userGroup?.id);
+		const didUserLoginEnoughTimesBeforeNudging = loginCounter >= LOGIN_COUNTER_BEFORE_NUDGING;
+
 		if (
+			didUserLoginEnoughTimesBeforeNudging &&
 			commonUser &&
 			!isOnAccountLinkingPage &&
 			(!isUserAPupil || (isUserAPupil && !isOnAssignmentPage))
