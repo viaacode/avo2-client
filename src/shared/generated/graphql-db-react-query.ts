@@ -762,18 +762,12 @@ export const useGetProfileIdsQuery = <
       options
     );
 export const UpdateUserTempAccessByIdDocument = `
-    mutation updateUserTempAccessById($user_id: uuid!, $from: date, $until: date!) {
-  insert_shared_user_temp_access_one(
-    object: {user_id: $user_id, from: $from, until: $until}
-    on_conflict: {constraint: user_temp_access_pkey, update_columns: [from, until]}
+    mutation updateUserTempAccessById($profile_id: uuid!, $from: date, $until: date!) {
+  insert_shared_user_temp_access_v2_one(
+    object: {profile_id: $profile_id, from: $from, until: $until}
+    on_conflict: {constraint: user_temp_access_v2_pkey, update_columns: [from, until]}
   ) {
-    user_id
-    user {
-      full_name
-      mail
-    }
-    from
-    until
+    profile_id
   }
 }
     `;
@@ -3036,12 +3030,12 @@ export const GetUsersByCompanyIdDocument = `
       mail
       is_blocked
       last_access_at
-      temp_access {
-        from
-        until
-        current {
-          status
-        }
+    }
+    temp_access {
+      from
+      until
+      has_currently_access {
+        status
       }
     }
     profile_user_group {

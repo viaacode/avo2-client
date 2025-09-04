@@ -22947,7 +22947,6 @@ export enum Lookup_Enum_Content_Block_Types_Enum {
   Iframe = 'IFRAME',
   Image = 'IMAGE',
   ImageGrid = 'IMAGE_GRID',
-  ImageTextBackground = 'IMAGE_TEXT_BACKGROUND',
   ImageTitleTextButton = 'IMAGE_TITLE_TEXT_BUTTON',
   Intro = 'INTRO',
   Klaar = 'KLAAR',
@@ -26203,10 +26202,10 @@ export type Mutation_Root = {
   delete_shared_user_roles?: Maybe<Shared_User_Roles_Mutation_Response>;
   /** delete single row from the table: "shared.user_roles" */
   delete_shared_user_roles_by_pk?: Maybe<Shared_User_Roles>;
-  /** delete data from the table: "shared.user_temp_access" */
-  delete_shared_user_temp_access?: Maybe<Shared_User_Temp_Access_Mutation_Response>;
-  /** delete single row from the table: "shared.user_temp_access" */
-  delete_shared_user_temp_access_by_pk?: Maybe<Shared_User_Temp_Access>;
+  /** delete data from the table: "shared.user_temp_access_v2" */
+  delete_shared_user_temp_access_v2?: Maybe<Shared_User_Temp_Access_V2_Mutation_Response>;
+  /** delete single row from the table: "shared.user_temp_access_v2" */
+  delete_shared_user_temp_access_v2_by_pk?: Maybe<Shared_User_Temp_Access_V2>;
   /** delete data from the table: "shared.users" */
   delete_shared_users?: Maybe<Shared_Users_Mutation_Response>;
   /** delete single row from the table: "shared.users" */
@@ -26647,10 +26646,10 @@ export type Mutation_Root = {
   insert_shared_user_roles?: Maybe<Shared_User_Roles_Mutation_Response>;
   /** insert a single row into the table: "shared.user_roles" */
   insert_shared_user_roles_one?: Maybe<Shared_User_Roles>;
-  /** insert data into the table: "shared.user_temp_access" */
-  insert_shared_user_temp_access?: Maybe<Shared_User_Temp_Access_Mutation_Response>;
-  /** insert a single row into the table: "shared.user_temp_access" */
-  insert_shared_user_temp_access_one?: Maybe<Shared_User_Temp_Access>;
+  /** insert data into the table: "shared.user_temp_access_v2" */
+  insert_shared_user_temp_access_v2?: Maybe<Shared_User_Temp_Access_V2_Mutation_Response>;
+  /** insert a single row into the table: "shared.user_temp_access_v2" */
+  insert_shared_user_temp_access_v2_one?: Maybe<Shared_User_Temp_Access_V2>;
   /** insert data into the table: "shared.users" */
   insert_shared_users?: Maybe<Shared_Users_Mutation_Response>;
   /** insert a single row into the table: "shared.users" */
@@ -27249,12 +27248,12 @@ export type Mutation_Root = {
   update_shared_user_roles_by_pk?: Maybe<Shared_User_Roles>;
   /** update multiples rows of table: "shared.user_roles" */
   update_shared_user_roles_many?: Maybe<Array<Maybe<Shared_User_Roles_Mutation_Response>>>;
-  /** update data of the table: "shared.user_temp_access" */
-  update_shared_user_temp_access?: Maybe<Shared_User_Temp_Access_Mutation_Response>;
-  /** update single row of the table: "shared.user_temp_access" */
-  update_shared_user_temp_access_by_pk?: Maybe<Shared_User_Temp_Access>;
-  /** update multiples rows of table: "shared.user_temp_access" */
-  update_shared_user_temp_access_many?: Maybe<Array<Maybe<Shared_User_Temp_Access_Mutation_Response>>>;
+  /** update data of the table: "shared.user_temp_access_v2" */
+  update_shared_user_temp_access_v2?: Maybe<Shared_User_Temp_Access_V2_Mutation_Response>;
+  /** update single row of the table: "shared.user_temp_access_v2" */
+  update_shared_user_temp_access_v2_by_pk?: Maybe<Shared_User_Temp_Access_V2>;
+  /** update multiples rows of table: "shared.user_temp_access_v2" */
+  update_shared_user_temp_access_v2_many?: Maybe<Array<Maybe<Shared_User_Temp_Access_V2_Mutation_Response>>>;
   /** update data of the table: "shared.users" */
   update_shared_users?: Maybe<Shared_Users_Mutation_Response>;
   /** update single row of the table: "shared.users" */
@@ -28399,14 +28398,14 @@ export type Mutation_RootDelete_Shared_User_Roles_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_Shared_User_Temp_AccessArgs = {
-  where: Shared_User_Temp_Access_Bool_Exp;
+export type Mutation_RootDelete_Shared_User_Temp_Access_V2Args = {
+  where: Shared_User_Temp_Access_V2_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootDelete_Shared_User_Temp_Access_By_PkArgs = {
-  user_id: Scalars['uuid'];
+export type Mutation_RootDelete_Shared_User_Temp_Access_V2_By_PkArgs = {
+  profile_id: Scalars['uuid'];
 };
 
 
@@ -29889,16 +29888,16 @@ export type Mutation_RootInsert_Shared_User_Roles_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_Shared_User_Temp_AccessArgs = {
-  objects: Array<Shared_User_Temp_Access_Insert_Input>;
-  on_conflict?: InputMaybe<Shared_User_Temp_Access_On_Conflict>;
+export type Mutation_RootInsert_Shared_User_Temp_Access_V2Args = {
+  objects: Array<Shared_User_Temp_Access_V2_Insert_Input>;
+  on_conflict?: InputMaybe<Shared_User_Temp_Access_V2_On_Conflict>;
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_Shared_User_Temp_Access_OneArgs = {
-  object: Shared_User_Temp_Access_Insert_Input;
-  on_conflict?: InputMaybe<Shared_User_Temp_Access_On_Conflict>;
+export type Mutation_RootInsert_Shared_User_Temp_Access_V2_OneArgs = {
+  object: Shared_User_Temp_Access_V2_Insert_Input;
+  on_conflict?: InputMaybe<Shared_User_Temp_Access_V2_On_Conflict>;
 };
 
 
@@ -32140,22 +32139,22 @@ export type Mutation_RootUpdate_Shared_User_Roles_ManyArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Shared_User_Temp_AccessArgs = {
-  _set?: InputMaybe<Shared_User_Temp_Access_Set_Input>;
-  where: Shared_User_Temp_Access_Bool_Exp;
+export type Mutation_RootUpdate_Shared_User_Temp_Access_V2Args = {
+  _set?: InputMaybe<Shared_User_Temp_Access_V2_Set_Input>;
+  where: Shared_User_Temp_Access_V2_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Shared_User_Temp_Access_By_PkArgs = {
-  _set?: InputMaybe<Shared_User_Temp_Access_Set_Input>;
-  pk_columns: Shared_User_Temp_Access_Pk_Columns_Input;
+export type Mutation_RootUpdate_Shared_User_Temp_Access_V2_By_PkArgs = {
+  _set?: InputMaybe<Shared_User_Temp_Access_V2_Set_Input>;
+  pk_columns: Shared_User_Temp_Access_V2_Pk_Columns_Input;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Shared_User_Temp_Access_ManyArgs = {
-  updates: Array<Shared_User_Temp_Access_Updates>;
+export type Mutation_RootUpdate_Shared_User_Temp_Access_V2_ManyArgs = {
+  updates: Array<Shared_User_Temp_Access_V2_Updates>;
 };
 
 
@@ -33342,12 +33341,20 @@ export type Query_Root = {
   shared_user_temp_access: Array<Shared_User_Temp_Access>;
   /** fetch aggregated fields from the table: "shared.user_temp_access" */
   shared_user_temp_access_aggregate: Shared_User_Temp_Access_Aggregate;
-  /** fetch data from the table: "shared.user_temp_access" using primary key columns */
-  shared_user_temp_access_by_pk?: Maybe<Shared_User_Temp_Access>;
   /** fetch data from the table: "shared.user_temp_access_status" */
   shared_user_temp_access_status: Array<Shared_User_Temp_Access_Status>;
   /** fetch aggregated fields from the table: "shared.user_temp_access_status" */
   shared_user_temp_access_status_aggregate: Shared_User_Temp_Access_Status_Aggregate;
+  /** fetch data from the table: "shared.user_temp_access_status_v2" */
+  shared_user_temp_access_status_v2: Array<Shared_User_Temp_Access_Status_V2>;
+  /** fetch aggregated fields from the table: "shared.user_temp_access_status_v2" */
+  shared_user_temp_access_status_v2_aggregate: Shared_User_Temp_Access_Status_V2_Aggregate;
+  /** fetch data from the table: "shared.user_temp_access_v2" */
+  shared_user_temp_access_v2: Array<Shared_User_Temp_Access_V2>;
+  /** fetch aggregated fields from the table: "shared.user_temp_access_v2" */
+  shared_user_temp_access_v2_aggregate: Shared_User_Temp_Access_V2_Aggregate;
+  /** fetch data from the table: "shared.user_temp_access_v2" using primary key columns */
+  shared_user_temp_access_v2_by_pk?: Maybe<Shared_User_Temp_Access_V2>;
   /** fetch data from the table: "shared.users" */
   shared_users: Array<Shared_Users>;
   /** fetch aggregated fields from the table: "shared.users" */
@@ -36438,11 +36445,6 @@ export type Query_RootShared_User_Temp_Access_AggregateArgs = {
 };
 
 
-export type Query_RootShared_User_Temp_Access_By_PkArgs = {
-  user_id: Scalars['uuid'];
-};
-
-
 export type Query_RootShared_User_Temp_Access_StatusArgs = {
   distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_Status_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -36458,6 +36460,47 @@ export type Query_RootShared_User_Temp_Access_Status_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Shared_User_Temp_Access_Status_Order_By>>;
   where?: InputMaybe<Shared_User_Temp_Access_Status_Bool_Exp>;
+};
+
+
+export type Query_RootShared_User_Temp_Access_Status_V2Args = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_Status_V2_Bool_Exp>;
+};
+
+
+export type Query_RootShared_User_Temp_Access_Status_V2_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_Status_V2_Bool_Exp>;
+};
+
+
+export type Query_RootShared_User_Temp_Access_V2Args = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
+};
+
+
+export type Query_RootShared_User_Temp_Access_V2_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
+};
+
+
+export type Query_RootShared_User_Temp_Access_V2_By_PkArgs = {
+  profile_id: Scalars['uuid'];
 };
 
 
@@ -44091,18 +44134,14 @@ export type Shared_User_Roles_Variance_Fields = {
   id?: Maybe<Scalars['Float']>;
 };
 
-/** Tabel om de tijdelijke toegang van gebruikers te beheren. */
+/** columns and relationships of "shared.user_temp_access" */
 export type Shared_User_Temp_Access = {
   __typename?: 'shared_user_temp_access';
-  created_at: Scalars['timestamptz'];
-  /** An object relationship */
-  current?: Maybe<Shared_User_Temp_Access_Status>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   from?: Maybe<Scalars['date']>;
-  until: Scalars['date'];
-  updated_at: Scalars['timestamptz'];
-  /** An object relationship */
-  user: Shared_Users;
-  user_id: Scalars['uuid'];
+  until?: Maybe<Scalars['date']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  user_id?: Maybe<Scalars['uuid']>;
 };
 
 /** aggregated selection of "shared.user_temp_access" */
@@ -44133,29 +44172,10 @@ export type Shared_User_Temp_Access_Bool_Exp = {
   _not?: InputMaybe<Shared_User_Temp_Access_Bool_Exp>;
   _or?: InputMaybe<Array<Shared_User_Temp_Access_Bool_Exp>>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  current?: InputMaybe<Shared_User_Temp_Access_Status_Bool_Exp>;
   from?: InputMaybe<Date_Comparison_Exp>;
   until?: InputMaybe<Date_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  user?: InputMaybe<Shared_Users_Bool_Exp>;
   user_id?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "shared.user_temp_access" */
-export enum Shared_User_Temp_Access_Constraint {
-  /** unique or primary key constraint on columns "user_id" */
-  UserTempAccessPkey = 'user_temp_access_pkey'
-}
-
-/** input type for inserting data into table "shared.user_temp_access" */
-export type Shared_User_Temp_Access_Insert_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  current?: InputMaybe<Shared_User_Temp_Access_Status_Obj_Rel_Insert_Input>;
-  from?: InputMaybe<Scalars['date']>;
-  until?: InputMaybe<Scalars['date']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-  user?: InputMaybe<Shared_Users_Obj_Rel_Insert_Input>;
-  user_id?: InputMaybe<Scalars['uuid']>;
 };
 
 /** aggregate max on columns */
@@ -44178,43 +44198,13 @@ export type Shared_User_Temp_Access_Min_Fields = {
   user_id?: Maybe<Scalars['uuid']>;
 };
 
-/** response of any mutation on the table "shared.user_temp_access" */
-export type Shared_User_Temp_Access_Mutation_Response = {
-  __typename?: 'shared_user_temp_access_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Shared_User_Temp_Access>;
-};
-
-/** input type for inserting object relation for remote table "shared.user_temp_access" */
-export type Shared_User_Temp_Access_Obj_Rel_Insert_Input = {
-  data: Shared_User_Temp_Access_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Shared_User_Temp_Access_On_Conflict>;
-};
-
-/** on_conflict condition type for table "shared.user_temp_access" */
-export type Shared_User_Temp_Access_On_Conflict = {
-  constraint: Shared_User_Temp_Access_Constraint;
-  update_columns?: Array<Shared_User_Temp_Access_Update_Column>;
-  where?: InputMaybe<Shared_User_Temp_Access_Bool_Exp>;
-};
-
 /** Ordering options when selecting data from "shared.user_temp_access". */
 export type Shared_User_Temp_Access_Order_By = {
   created_at?: InputMaybe<Order_By>;
-  current?: InputMaybe<Shared_User_Temp_Access_Status_Order_By>;
   from?: InputMaybe<Order_By>;
   until?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
-  user?: InputMaybe<Shared_Users_Order_By>;
   user_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: shared.user_temp_access */
-export type Shared_User_Temp_Access_Pk_Columns_Input = {
-  user_id: Scalars['uuid'];
 };
 
 /** select columns of table "shared.user_temp_access" */
@@ -44231,20 +44221,11 @@ export enum Shared_User_Temp_Access_Select_Column {
   UserId = 'user_id'
 }
 
-/** input type for updating data in table "shared.user_temp_access" */
-export type Shared_User_Temp_Access_Set_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  from?: InputMaybe<Scalars['date']>;
-  until?: InputMaybe<Scalars['date']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-  user_id?: InputMaybe<Scalars['uuid']>;
-};
-
 /** columns and relationships of "shared.user_temp_access_status" */
 export type Shared_User_Temp_Access_Status = {
   __typename?: 'shared_user_temp_access_status';
-  status?: Maybe<Scalars['Int']>;
-  uid?: Maybe<Scalars['uuid']>;
+  status?: Maybe<Scalars['Boolean']>;
+  user_id?: Maybe<Scalars['uuid']>;
 };
 
 /** aggregated selection of "shared.user_temp_access_status" */
@@ -44257,17 +44238,9 @@ export type Shared_User_Temp_Access_Status_Aggregate = {
 /** aggregate fields of "shared.user_temp_access_status" */
 export type Shared_User_Temp_Access_Status_Aggregate_Fields = {
   __typename?: 'shared_user_temp_access_status_aggregate_fields';
-  avg?: Maybe<Shared_User_Temp_Access_Status_Avg_Fields>;
   count: Scalars['Int'];
   max?: Maybe<Shared_User_Temp_Access_Status_Max_Fields>;
   min?: Maybe<Shared_User_Temp_Access_Status_Min_Fields>;
-  stddev?: Maybe<Shared_User_Temp_Access_Status_Stddev_Fields>;
-  stddev_pop?: Maybe<Shared_User_Temp_Access_Status_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Shared_User_Temp_Access_Status_Stddev_Samp_Fields>;
-  sum?: Maybe<Shared_User_Temp_Access_Status_Sum_Fields>;
-  var_pop?: Maybe<Shared_User_Temp_Access_Status_Var_Pop_Fields>;
-  var_samp?: Maybe<Shared_User_Temp_Access_Status_Var_Samp_Fields>;
-  variance?: Maybe<Shared_User_Temp_Access_Status_Variance_Fields>;
 };
 
 
@@ -44277,50 +44250,31 @@ export type Shared_User_Temp_Access_Status_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']>;
 };
 
-/** aggregate avg on columns */
-export type Shared_User_Temp_Access_Status_Avg_Fields = {
-  __typename?: 'shared_user_temp_access_status_avg_fields';
-  status?: Maybe<Scalars['Float']>;
-};
-
 /** Boolean expression to filter rows from the table "shared.user_temp_access_status". All fields are combined with a logical 'AND'. */
 export type Shared_User_Temp_Access_Status_Bool_Exp = {
   _and?: InputMaybe<Array<Shared_User_Temp_Access_Status_Bool_Exp>>;
   _not?: InputMaybe<Shared_User_Temp_Access_Status_Bool_Exp>;
   _or?: InputMaybe<Array<Shared_User_Temp_Access_Status_Bool_Exp>>;
-  status?: InputMaybe<Int_Comparison_Exp>;
-  uid?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** input type for inserting data into table "shared.user_temp_access_status" */
-export type Shared_User_Temp_Access_Status_Insert_Input = {
-  status?: InputMaybe<Scalars['Int']>;
-  uid?: InputMaybe<Scalars['uuid']>;
+  status?: InputMaybe<Boolean_Comparison_Exp>;
+  user_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
 /** aggregate max on columns */
 export type Shared_User_Temp_Access_Status_Max_Fields = {
   __typename?: 'shared_user_temp_access_status_max_fields';
-  status?: Maybe<Scalars['Int']>;
-  uid?: Maybe<Scalars['uuid']>;
+  user_id?: Maybe<Scalars['uuid']>;
 };
 
 /** aggregate min on columns */
 export type Shared_User_Temp_Access_Status_Min_Fields = {
   __typename?: 'shared_user_temp_access_status_min_fields';
-  status?: Maybe<Scalars['Int']>;
-  uid?: Maybe<Scalars['uuid']>;
-};
-
-/** input type for inserting object relation for remote table "shared.user_temp_access_status" */
-export type Shared_User_Temp_Access_Status_Obj_Rel_Insert_Input = {
-  data: Shared_User_Temp_Access_Status_Insert_Input;
+  user_id?: Maybe<Scalars['uuid']>;
 };
 
 /** Ordering options when selecting data from "shared.user_temp_access_status". */
 export type Shared_User_Temp_Access_Status_Order_By = {
   status?: InputMaybe<Order_By>;
-  uid?: InputMaybe<Order_By>;
+  user_id?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "shared.user_temp_access_status" */
@@ -44328,26 +44282,8 @@ export enum Shared_User_Temp_Access_Status_Select_Column {
   /** column name */
   Status = 'status',
   /** column name */
-  Uid = 'uid'
+  UserId = 'user_id'
 }
-
-/** aggregate stddev on columns */
-export type Shared_User_Temp_Access_Status_Stddev_Fields = {
-  __typename?: 'shared_user_temp_access_status_stddev_fields';
-  status?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Shared_User_Temp_Access_Status_Stddev_Pop_Fields = {
-  __typename?: 'shared_user_temp_access_status_stddev_pop_fields';
-  status?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Shared_User_Temp_Access_Status_Stddev_Samp_Fields = {
-  __typename?: 'shared_user_temp_access_status_stddev_samp_fields';
-  status?: Maybe<Scalars['Float']>;
-};
 
 /** Streaming cursor of the table "shared_user_temp_access_status" */
 export type Shared_User_Temp_Access_Status_Stream_Cursor_Input = {
@@ -44359,32 +44295,97 @@ export type Shared_User_Temp_Access_Status_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Shared_User_Temp_Access_Status_Stream_Cursor_Value_Input = {
-  status?: InputMaybe<Scalars['Int']>;
-  uid?: InputMaybe<Scalars['uuid']>;
+  status?: InputMaybe<Scalars['Boolean']>;
+  user_id?: InputMaybe<Scalars['uuid']>;
 };
 
-/** aggregate sum on columns */
-export type Shared_User_Temp_Access_Status_Sum_Fields = {
-  __typename?: 'shared_user_temp_access_status_sum_fields';
-  status?: Maybe<Scalars['Int']>;
+/** columns and relationships of "shared.user_temp_access_status_v2" */
+export type Shared_User_Temp_Access_Status_V2 = {
+  __typename?: 'shared_user_temp_access_status_v2';
+  id?: Maybe<Scalars['uuid']>;
+  status?: Maybe<Scalars['Boolean']>;
 };
 
-/** aggregate var_pop on columns */
-export type Shared_User_Temp_Access_Status_Var_Pop_Fields = {
-  __typename?: 'shared_user_temp_access_status_var_pop_fields';
-  status?: Maybe<Scalars['Float']>;
+/** aggregated selection of "shared.user_temp_access_status_v2" */
+export type Shared_User_Temp_Access_Status_V2_Aggregate = {
+  __typename?: 'shared_user_temp_access_status_v2_aggregate';
+  aggregate?: Maybe<Shared_User_Temp_Access_Status_V2_Aggregate_Fields>;
+  nodes: Array<Shared_User_Temp_Access_Status_V2>;
 };
 
-/** aggregate var_samp on columns */
-export type Shared_User_Temp_Access_Status_Var_Samp_Fields = {
-  __typename?: 'shared_user_temp_access_status_var_samp_fields';
-  status?: Maybe<Scalars['Float']>;
+/** aggregate fields of "shared.user_temp_access_status_v2" */
+export type Shared_User_Temp_Access_Status_V2_Aggregate_Fields = {
+  __typename?: 'shared_user_temp_access_status_v2_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Shared_User_Temp_Access_Status_V2_Max_Fields>;
+  min?: Maybe<Shared_User_Temp_Access_Status_V2_Min_Fields>;
 };
 
-/** aggregate variance on columns */
-export type Shared_User_Temp_Access_Status_Variance_Fields = {
-  __typename?: 'shared_user_temp_access_status_variance_fields';
-  status?: Maybe<Scalars['Float']>;
+
+/** aggregate fields of "shared.user_temp_access_status_v2" */
+export type Shared_User_Temp_Access_Status_V2_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "shared.user_temp_access_status_v2". All fields are combined with a logical 'AND'. */
+export type Shared_User_Temp_Access_Status_V2_Bool_Exp = {
+  _and?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Bool_Exp>>;
+  _not?: InputMaybe<Shared_User_Temp_Access_Status_V2_Bool_Exp>;
+  _or?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Bool_Exp>>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  status?: InputMaybe<Boolean_Comparison_Exp>;
+};
+
+/** input type for inserting data into table "shared.user_temp_access_status_v2" */
+export type Shared_User_Temp_Access_Status_V2_Insert_Input = {
+  id?: InputMaybe<Scalars['uuid']>;
+  status?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** aggregate max on columns */
+export type Shared_User_Temp_Access_Status_V2_Max_Fields = {
+  __typename?: 'shared_user_temp_access_status_v2_max_fields';
+  id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregate min on columns */
+export type Shared_User_Temp_Access_Status_V2_Min_Fields = {
+  __typename?: 'shared_user_temp_access_status_v2_min_fields';
+  id?: Maybe<Scalars['uuid']>;
+};
+
+/** input type for inserting object relation for remote table "shared.user_temp_access_status_v2" */
+export type Shared_User_Temp_Access_Status_V2_Obj_Rel_Insert_Input = {
+  data: Shared_User_Temp_Access_Status_V2_Insert_Input;
+};
+
+/** Ordering options when selecting data from "shared.user_temp_access_status_v2". */
+export type Shared_User_Temp_Access_Status_V2_Order_By = {
+  id?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "shared.user_temp_access_status_v2" */
+export enum Shared_User_Temp_Access_Status_V2_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Status = 'status'
+}
+
+/** Streaming cursor of the table "shared_user_temp_access_status_v2" */
+export type Shared_User_Temp_Access_Status_V2_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Shared_User_Temp_Access_Status_V2_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Shared_User_Temp_Access_Status_V2_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['uuid']>;
+  status?: InputMaybe<Scalars['Boolean']>;
 };
 
 /** Streaming cursor of the table "shared_user_temp_access" */
@@ -44404,24 +44405,190 @@ export type Shared_User_Temp_Access_Stream_Cursor_Value_Input = {
   user_id?: InputMaybe<Scalars['uuid']>;
 };
 
-/** update columns of table "shared.user_temp_access" */
-export enum Shared_User_Temp_Access_Update_Column {
+/** contains the dates for which certain users have access to the avo platform */
+export type Shared_User_Temp_Access_V2 = {
+  __typename?: 'shared_user_temp_access_v2';
+  /** An object relationship */
+  common_user?: Maybe<Users_Common_Users>;
+  created_at: Scalars['timestamp'];
+  from: Scalars['date'];
+  /** An object relationship */
+  has_currently_access?: Maybe<Shared_User_Temp_Access_Status_V2>;
+  profile_id: Scalars['uuid'];
+  until: Scalars['date'];
+  updated_at: Scalars['timestamp'];
+};
+
+/** aggregated selection of "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Aggregate = {
+  __typename?: 'shared_user_temp_access_v2_aggregate';
+  aggregate?: Maybe<Shared_User_Temp_Access_V2_Aggregate_Fields>;
+  nodes: Array<Shared_User_Temp_Access_V2>;
+};
+
+/** aggregate fields of "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Aggregate_Fields = {
+  __typename?: 'shared_user_temp_access_v2_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Shared_User_Temp_Access_V2_Max_Fields>;
+  min?: Maybe<Shared_User_Temp_Access_V2_Min_Fields>;
+};
+
+
+/** aggregate fields of "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Shared_User_Temp_Access_V2_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "shared.user_temp_access_v2". All fields are combined with a logical 'AND'. */
+export type Shared_User_Temp_Access_V2_Bool_Exp = {
+  _and?: InputMaybe<Array<Shared_User_Temp_Access_V2_Bool_Exp>>;
+  _not?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
+  _or?: InputMaybe<Array<Shared_User_Temp_Access_V2_Bool_Exp>>;
+  common_user?: InputMaybe<Users_Common_Users_Bool_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  from?: InputMaybe<Date_Comparison_Exp>;
+  has_currently_access?: InputMaybe<Shared_User_Temp_Access_Status_V2_Bool_Exp>;
+  profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  until?: InputMaybe<Date_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "shared.user_temp_access_v2" */
+export enum Shared_User_Temp_Access_V2_Constraint {
+  /** unique or primary key constraint on columns "profile_id" */
+  UserTempAccessV2Pkey = 'user_temp_access_v2_pkey'
+}
+
+/** input type for inserting data into table "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Insert_Input = {
+  common_user?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  from?: InputMaybe<Scalars['date']>;
+  has_currently_access?: InputMaybe<Shared_User_Temp_Access_Status_V2_Obj_Rel_Insert_Input>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  until?: InputMaybe<Scalars['date']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Shared_User_Temp_Access_V2_Max_Fields = {
+  __typename?: 'shared_user_temp_access_v2_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  from?: Maybe<Scalars['date']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  until?: Maybe<Scalars['date']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Shared_User_Temp_Access_V2_Min_Fields = {
+  __typename?: 'shared_user_temp_access_v2_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  from?: Maybe<Scalars['date']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  until?: Maybe<Scalars['date']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Mutation_Response = {
+  __typename?: 'shared_user_temp_access_v2_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Shared_User_Temp_Access_V2>;
+};
+
+/** input type for inserting object relation for remote table "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Obj_Rel_Insert_Input = {
+  data: Shared_User_Temp_Access_V2_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Shared_User_Temp_Access_V2_On_Conflict>;
+};
+
+/** on_conflict condition type for table "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_On_Conflict = {
+  constraint: Shared_User_Temp_Access_V2_Constraint;
+  update_columns?: Array<Shared_User_Temp_Access_V2_Update_Column>;
+  where?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "shared.user_temp_access_v2". */
+export type Shared_User_Temp_Access_V2_Order_By = {
+  common_user?: InputMaybe<Users_Common_Users_Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  from?: InputMaybe<Order_By>;
+  has_currently_access?: InputMaybe<Shared_User_Temp_Access_Status_V2_Order_By>;
+  profile_id?: InputMaybe<Order_By>;
+  until?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: shared.user_temp_access_v2 */
+export type Shared_User_Temp_Access_V2_Pk_Columns_Input = {
+  profile_id: Scalars['uuid'];
+};
+
+/** select columns of table "shared.user_temp_access_v2" */
+export enum Shared_User_Temp_Access_V2_Select_Column {
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
   From = 'from',
   /** column name */
+  ProfileId = 'profile_id',
+  /** column name */
   Until = 'until',
   /** column name */
-  UpdatedAt = 'updated_at',
-  /** column name */
-  UserId = 'user_id'
+  UpdatedAt = 'updated_at'
 }
 
-export type Shared_User_Temp_Access_Updates = {
+/** input type for updating data in table "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  from?: InputMaybe<Scalars['date']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  until?: InputMaybe<Scalars['date']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** Streaming cursor of the table "shared_user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Shared_User_Temp_Access_V2_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Shared_User_Temp_Access_V2_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  from?: InputMaybe<Scalars['date']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  until?: InputMaybe<Scalars['date']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "shared.user_temp_access_v2" */
+export enum Shared_User_Temp_Access_V2_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  From = 'from',
+  /** column name */
+  ProfileId = 'profile_id',
+  /** column name */
+  Until = 'until',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+export type Shared_User_Temp_Access_V2_Updates = {
   /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Shared_User_Temp_Access_Set_Input>;
-  where: Shared_User_Temp_Access_Bool_Exp;
+  _set?: InputMaybe<Shared_User_Temp_Access_V2_Set_Input>;
+  where: Shared_User_Temp_Access_V2_Bool_Exp;
 };
 
 /** columns and relationships of "shared.users" */
@@ -44455,8 +44622,6 @@ export type Shared_Users = {
   /** An object relationship */
   role?: Maybe<Shared_User_Roles>;
   role_id?: Maybe<Scalars['Int']>;
-  /** An object relationship */
-  temp_access?: Maybe<Shared_User_Temp_Access>;
   type_label?: Maybe<Scalars['String']>;
   uid: Scalars['uuid'];
   updated_at: Scalars['timestamptz'];
@@ -44620,7 +44785,6 @@ export type Shared_Users_Bool_Exp = {
   profiles_aggregate?: InputMaybe<Users_Profiles_Aggregate_Bool_Exp>;
   role?: InputMaybe<Shared_User_Roles_Bool_Exp>;
   role_id?: InputMaybe<Int_Comparison_Exp>;
-  temp_access?: InputMaybe<Shared_User_Temp_Access_Bool_Exp>;
   type_label?: InputMaybe<String_Comparison_Exp>;
   uid?: InputMaybe<Uuid_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -44657,7 +44821,6 @@ export type Shared_Users_Insert_Input = {
   profiles?: InputMaybe<Users_Profiles_Arr_Rel_Insert_Input>;
   role?: InputMaybe<Shared_User_Roles_Obj_Rel_Insert_Input>;
   role_id?: InputMaybe<Scalars['Int']>;
-  temp_access?: InputMaybe<Shared_User_Temp_Access_Obj_Rel_Insert_Input>;
   type_label?: InputMaybe<Scalars['String']>;
   uid?: InputMaybe<Scalars['uuid']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
@@ -44771,7 +44934,6 @@ export type Shared_Users_Order_By = {
   profiles_aggregate?: InputMaybe<Users_Profiles_Aggregate_Order_By>;
   role?: InputMaybe<Shared_User_Roles_Order_By>;
   role_id?: InputMaybe<Order_By>;
-  temp_access?: InputMaybe<Shared_User_Temp_Access_Order_By>;
   type_label?: InputMaybe<Order_By>;
   uid?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
@@ -46019,16 +46181,28 @@ export type Subscription_Root = {
   shared_user_temp_access: Array<Shared_User_Temp_Access>;
   /** fetch aggregated fields from the table: "shared.user_temp_access" */
   shared_user_temp_access_aggregate: Shared_User_Temp_Access_Aggregate;
-  /** fetch data from the table: "shared.user_temp_access" using primary key columns */
-  shared_user_temp_access_by_pk?: Maybe<Shared_User_Temp_Access>;
   /** fetch data from the table: "shared.user_temp_access_status" */
   shared_user_temp_access_status: Array<Shared_User_Temp_Access_Status>;
   /** fetch aggregated fields from the table: "shared.user_temp_access_status" */
   shared_user_temp_access_status_aggregate: Shared_User_Temp_Access_Status_Aggregate;
   /** fetch data from the table in a streaming manner: "shared.user_temp_access_status" */
   shared_user_temp_access_status_stream: Array<Shared_User_Temp_Access_Status>;
+  /** fetch data from the table: "shared.user_temp_access_status_v2" */
+  shared_user_temp_access_status_v2: Array<Shared_User_Temp_Access_Status_V2>;
+  /** fetch aggregated fields from the table: "shared.user_temp_access_status_v2" */
+  shared_user_temp_access_status_v2_aggregate: Shared_User_Temp_Access_Status_V2_Aggregate;
+  /** fetch data from the table in a streaming manner: "shared.user_temp_access_status_v2" */
+  shared_user_temp_access_status_v2_stream: Array<Shared_User_Temp_Access_Status_V2>;
   /** fetch data from the table in a streaming manner: "shared.user_temp_access" */
   shared_user_temp_access_stream: Array<Shared_User_Temp_Access>;
+  /** fetch data from the table: "shared.user_temp_access_v2" */
+  shared_user_temp_access_v2: Array<Shared_User_Temp_Access_V2>;
+  /** fetch aggregated fields from the table: "shared.user_temp_access_v2" */
+  shared_user_temp_access_v2_aggregate: Shared_User_Temp_Access_V2_Aggregate;
+  /** fetch data from the table: "shared.user_temp_access_v2" using primary key columns */
+  shared_user_temp_access_v2_by_pk?: Maybe<Shared_User_Temp_Access_V2>;
+  /** fetch data from the table in a streaming manner: "shared.user_temp_access_v2" */
+  shared_user_temp_access_v2_stream: Array<Shared_User_Temp_Access_V2>;
   /** fetch data from the table: "shared.users" */
   shared_users: Array<Shared_Users>;
   /** fetch aggregated fields from the table: "shared.users" */
@@ -50152,11 +50326,6 @@ export type Subscription_RootShared_User_Temp_Access_AggregateArgs = {
 };
 
 
-export type Subscription_RootShared_User_Temp_Access_By_PkArgs = {
-  user_id: Scalars['uuid'];
-};
-
-
 export type Subscription_RootShared_User_Temp_Access_StatusArgs = {
   distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_Status_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -50182,10 +50351,65 @@ export type Subscription_RootShared_User_Temp_Access_Status_StreamArgs = {
 };
 
 
+export type Subscription_RootShared_User_Temp_Access_Status_V2Args = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_Status_V2_Bool_Exp>;
+};
+
+
+export type Subscription_RootShared_User_Temp_Access_Status_V2_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_Status_V2_Bool_Exp>;
+};
+
+
+export type Subscription_RootShared_User_Temp_Access_Status_V2_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Shared_User_Temp_Access_Status_V2_Stream_Cursor_Input>>;
+  where?: InputMaybe<Shared_User_Temp_Access_Status_V2_Bool_Exp>;
+};
+
+
 export type Subscription_RootShared_User_Temp_Access_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<Shared_User_Temp_Access_Stream_Cursor_Input>>;
   where?: InputMaybe<Shared_User_Temp_Access_Bool_Exp>;
+};
+
+
+export type Subscription_RootShared_User_Temp_Access_V2Args = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
+};
+
+
+export type Subscription_RootShared_User_Temp_Access_V2_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
+};
+
+
+export type Subscription_RootShared_User_Temp_Access_V2_By_PkArgs = {
+  profile_id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootShared_User_Temp_Access_V2_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Shared_User_Temp_Access_V2_Stream_Cursor_Input>>;
+  where?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
 };
 
 
@@ -51352,7 +51576,7 @@ export type Users_Common_Users = {
   profile_preferences_aggregate: Users_Profile_Preferences_Aggregate;
   stamboek?: Maybe<Scalars['String']>;
   /** An object relationship */
-  temp_access?: Maybe<Shared_User_Temp_Access>;
+  temp_access?: Maybe<Shared_User_Temp_Access_V2>;
   title?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
   /** An object relationship */
@@ -51722,7 +51946,7 @@ export type Users_Common_Users_Bool_Exp = {
   profile_preferences?: InputMaybe<Users_Profile_Preferences_Bool_Exp>;
   profile_preferences_aggregate?: InputMaybe<Users_Profile_Preferences_Aggregate_Bool_Exp>;
   stamboek?: InputMaybe<String_Comparison_Exp>;
-  temp_access?: InputMaybe<Shared_User_Temp_Access_Bool_Exp>;
+  temp_access?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   user?: InputMaybe<Shared_Users_Bool_Exp>;
@@ -51771,7 +51995,7 @@ export type Users_Common_Users_Insert_Input = {
   profile_id?: InputMaybe<Scalars['uuid']>;
   profile_preferences?: InputMaybe<Users_Profile_Preferences_Arr_Rel_Insert_Input>;
   stamboek?: InputMaybe<Scalars['String']>;
-  temp_access?: InputMaybe<Shared_User_Temp_Access_Obj_Rel_Insert_Input>;
+  temp_access?: InputMaybe<Shared_User_Temp_Access_V2_Obj_Rel_Insert_Input>;
   title?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
   user?: InputMaybe<Shared_Users_Obj_Rel_Insert_Input>;
@@ -51875,7 +52099,7 @@ export type Users_Common_Users_Order_By = {
   profile_id?: InputMaybe<Order_By>;
   profile_preferences_aggregate?: InputMaybe<Users_Profile_Preferences_Aggregate_Order_By>;
   stamboek?: InputMaybe<Order_By>;
-  temp_access?: InputMaybe<Shared_User_Temp_Access_Order_By>;
+  temp_access?: InputMaybe<Shared_User_Temp_Access_V2_Order_By>;
   title?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
   user?: InputMaybe<Shared_Users_Order_By>;
@@ -53474,7 +53698,7 @@ export enum Users_Idps_Enum {
   Hetarchief = 'HETARCHIEF',
   /** OAuth service van Klascement op oauth.klascement.be */
   Klascement = 'KLASCEMENT',
-  /** anonymous idp flow for embedding videos from an external platform without the user being logged in on the external platform */
+  /** lti idp for embedding videos on external platforms without a user being logged in on the external platform */
   LtiAnonymous = 'LTI_ANONYMOUS',
   /** bookwidgets lti idp flow for embedding videos in their platform */
   LtiBookwidgets = 'LTI_BOOKWIDGETS',
@@ -56275,6 +56499,8 @@ export type Users_Profiles = {
   /** An aggregate relationship */
   profile_user_groups_aggregate: Users_Profile_User_Groups_Aggregate;
   stamboek?: Maybe<Scalars['String']>;
+  /** An object relationship */
+  temp_access?: Maybe<Shared_User_Temp_Access_V2>;
   title?: Maybe<Scalars['String']>;
   updated_at: Scalars['timestamptz'];
   user_id?: Maybe<Scalars['uuid']>;
@@ -56696,6 +56922,7 @@ export type Users_Profiles_Bool_Exp = {
   profile_user_groups?: InputMaybe<Users_Profile_User_Groups_Bool_Exp>;
   profile_user_groups_aggregate?: InputMaybe<Users_Profile_User_Groups_Aggregate_Bool_Exp>;
   stamboek?: InputMaybe<String_Comparison_Exp>;
+  temp_access?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   user_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -56747,6 +56974,7 @@ export type Users_Profiles_Insert_Input = {
   profile_user_group?: InputMaybe<Users_Profile_User_Groups_Obj_Rel_Insert_Input>;
   profile_user_groups?: InputMaybe<Users_Profile_User_Groups_Arr_Rel_Insert_Input>;
   stamboek?: InputMaybe<Scalars['String']>;
+  temp_access?: InputMaybe<Shared_User_Temp_Access_V2_Obj_Rel_Insert_Input>;
   title?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
   user_id?: InputMaybe<Scalars['uuid']>;
@@ -57075,6 +57303,7 @@ export type Users_Profiles_Order_By = {
   profile_user_group?: InputMaybe<Users_Profile_User_Groups_Order_By>;
   profile_user_groups_aggregate?: InputMaybe<Users_Profile_User_Groups_Aggregate_Order_By>;
   stamboek?: InputMaybe<Order_By>;
+  temp_access?: InputMaybe<Shared_User_Temp_Access_V2_Order_By>;
   title?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
   user_id?: InputMaybe<Order_By>;

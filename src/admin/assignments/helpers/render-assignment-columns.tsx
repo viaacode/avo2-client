@@ -7,12 +7,13 @@ import { Link } from 'react-router-dom';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
 import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
-import { GET_MARCOM_CHANNEL_NAME_OPTIONS, GET_MARCOM_CHANNEL_TYPE_OPTIONS, } from '../../../collection/collection.const';
+import {
+	GET_MARCOM_CHANNEL_NAME_OPTIONS,
+	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
+} from '../../../collection/collection.const';
 import { CollectionCreateUpdateTab, type QualityLabel } from '../../../collection/collection.types';
 import { APP_PATH } from '../../../constants';
-import {
-	CollectionOrBundleOrAssignmentTitleAndCopyTag
-} from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
+import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { formatDate } from '../../../shared/helpers/formatters';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
