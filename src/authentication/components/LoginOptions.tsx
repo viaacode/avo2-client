@@ -7,6 +7,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { APP_PATH } from '../../constants';
 import { useTabs } from '../../shared/hooks/useTabs';
 import useTranslation from '../../shared/hooks/useTranslation';
+import { setLoginCounter } from '../helpers/login-counter-before-nudging';
 import {
 	getPreferredLoginOption,
 	LoginOptionsTabs,
@@ -44,9 +45,10 @@ const LoginOptions: FC<LoginOptionsProps & RouteComponentProps> = ({
 		getPreferredLoginOption()
 	);
 
-	// Whenever a user sees the LoginOptions, reset their nudging
+	// Whenever a user sees the LoginOptions, reset their nudging and increase their login counter
 	useEffect(() => {
 		removePreferredLoginOption();
+		setLoginCounter();
 	}, []);
 
 	const renderTitle = () => {
