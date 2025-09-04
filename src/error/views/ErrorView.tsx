@@ -18,7 +18,9 @@ import { type RouteComponentProps, withRouter } from 'react-router';
 import { compose } from 'redux';
 
 import { redirectToServerLogoutPage } from '../../authentication/helpers/redirects';
+import { redirectToHelp } from '../../authentication/helpers/redirects/redirect-help';
 import { redirectToLoggedInHome } from '../../authentication/helpers/redirects/redirect-logged-in-home';
+import { redirectToPupils } from '../../authentication/helpers/redirects/redirect-pupils';
 import { redirectToLoggedOutHome } from '../../authentication/helpers/redirects/redirect-to-logged-out-home';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { isMobileWidth } from '../../shared/helpers/media-query';
@@ -28,16 +30,18 @@ import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 
 import './ErrorView.scss';
 
+type ErrorActionButton = Avo.Auth.ErrorActionButton | 'help' | 'pupils';
+
 export interface ErrorViewQueryParams {
 	message?: string | ReactNode;
 	icon?: IconName;
-	actionButtons?: Avo.Auth.ErrorActionButton[];
+	actionButtons?: ErrorActionButton[];
 }
 
 interface ErrorViewProps {
 	message?: string | ReactNode;
 	icon?: IconName;
-	actionButtons?: Avo.Auth.ErrorActionButton[];
+	actionButtons?: ErrorActionButton[];
 	children?: ReactNode;
 }
 
@@ -114,6 +118,18 @@ const ErrorView: FC<ErrorViewProps & RouteComponentProps & UserProps> = ({
 					<Button
 						onClick={goToHome}
 						label={tText('error/views/error-view___ga-terug-naar-de-homepagina')}
+					/>
+				)}
+				{btns.includes('help') && (
+					<Button
+						onClick={() => redirectToHelp(location)}
+						label={tText('Ga naar de hulppagina')}
+					/>
+				)}
+				{btns.includes('pupils') && (
+					<Button
+						onClick={() => redirectToPupils(location)}
+						label={tText('Ga naar de startpagina')}
 					/>
 				)}
 				{btns.includes('helpdesk') && (

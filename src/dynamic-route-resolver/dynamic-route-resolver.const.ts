@@ -38,6 +38,9 @@ export const GET_ERROR_MESSAGES: () => { [key: string]: ReactNode } = () => ({
 	DEPUBLISHED_PAGINA: tHtml(
 		'dynamic-route-resolver/dynamic-route-resolver___deze-pagina-is-niet-meer-beschikbaar'
 	),
+	PUPIL_ONLY: tHtml('deze pagina is enkel voor leerlingen'),
+	NOT_FOR_PUPILS: tHtml('deze pagina is niet voor leerlingen'),
+	OTHER_ROLES: tHtml('de pagina is voor gebruikers met andere rechten'),
 	DEPUBLISHED_EVENT_DETAIL: tHtml(
 		'dynamic-route-resolver/dynamic-route-resolver___dit-event-is-reeds-afgelopen-a-href-workshops-en-events-bekijk-al-onze-events-a'
 	),

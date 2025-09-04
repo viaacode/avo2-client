@@ -18,6 +18,7 @@ import { compose, type Dispatch } from 'redux';
 import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state';
 import { ItemsService } from '../../admin/items/items.service';
 import { withAdminCoreConfig } from '../../admin/shared/hoc/with-admin-core-config';
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page';
@@ -42,6 +43,7 @@ import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
 import { getFullName, stripHtml } from '../../shared/helpers/formatters';
+import { isPupil } from '../../shared/helpers/is-pupil';
 import { generateSearchLinkString } from '../../shared/helpers/link';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
@@ -49,7 +51,14 @@ import { Locale } from '../../shared/translations/translations.types';
 import { type AppState } from '../../store';
 import { GET_ERROR_MESSAGES, GET_REDIRECTS } from '../dynamic-route-resolver.const';
 
-type DynamicRouteType = 'contentPage' | 'bundle' | 'notFound' | 'depublishedContentPage';
+type DynamicRouteType =
+	| 'contentPage'
+	| 'bundle'
+	| 'notFound'
+	| 'depublishedContentPage'
+	| 'pupilOnlyPage'
+	| 'notForPupilPage'
+	| 'wrongUserGroupPage';
 
 interface RouteInfo {
 	type: DynamicRouteType;
@@ -187,6 +196,34 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 					const type = (err as any)?.innerException?.additionalInfo?.responseBody
 						?.additionalInfo?.contentPageType;
 					setRouteInfo({ type: 'depublishedContentPage', data: { type } });
+				} else if (JSON.stringify(err).includes('CONTENT_PAGE_WRONG_USER_GROUP')) {
+					const contentPageUserGroups = (err as any)?.innerException?.additionalInfo
+						?.responseBody?.additionalInfo?.contentPageUserGroups as string[];
+
+					if (
+						contentPageUserGroups.every(
+							(userGroup) =>
+								isPupil(userGroup) || userGroup === SpecialUserGroupId.Admin
+						)
+					) {
+						setRouteInfo({
+							type: 'pupilOnlyPage',
+							data: null,
+						});
+					} else if (
+						contentPageUserGroups.every((userGroup) => !isPupil(userGroup)) &&
+						isPupil(commonUserInfo?.userGroup?.id)
+					) {
+						setRouteInfo({
+							type: 'notForPupilPage',
+							data: null,
+						});
+					} else {
+						setRouteInfo({
+							type: 'wrongUserGroupPage',
+							data: null,
+						});
+					}
 				} else {
 					setRouteInfo({ type: 'notFound', data: null });
 				}
@@ -328,6 +365,27 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 				<ErrorView icon={IconName.clock} actionButtons={['home', 'helpdesk']} message="">
 					{GET_ERROR_MESSAGES()[`DEPUBLISHED_${routeInfo.data.type}`] ||
 						GET_ERROR_MESSAGES()[`DEPUBLISHED_PAGINA`]}
+				</ErrorView>
+			);
+		}
+		if (routeInfo && routeInfo.type === 'pupilOnlyPage') {
+			return (
+				<ErrorView icon={IconName.clock} actionButtons={['help', 'helpdesk']} message="">
+					{GET_ERROR_MESSAGES()[`PUPIL_ONLY`]}
+				</ErrorView>
+			);
+		}
+		if (routeInfo && routeInfo.type === 'notForPupilPage') {
+			return (
+				<ErrorView icon={IconName.clock} actionButtons={['pupils']} message="">
+					{GET_ERROR_MESSAGES()[`NOT_FOR_PUPILS`]}
+				</ErrorView>
+			);
+		}
+		if (routeInfo && routeInfo.type === 'wrongUserGroupPage') {
+			return (
+				<ErrorView icon={IconName.clock} actionButtons={['help', 'helpdesk']} message="">
+					{GET_ERROR_MESSAGES()[`OTHER_ROLES`]}
 				</ErrorView>
 			);
 		}
