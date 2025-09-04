@@ -184,7 +184,7 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 					additionalInfo: { pathname },
 				});
 				if (JSON.stringify(err).includes('CONTENT_PAGE_DEPUBLISHED')) {
-					const type = (err as any)?.innerException?.additionalInfo?.responseContent
+					const type = (err as any)?.innerException?.additionalInfo?.responseBody
 						?.additionalInfo?.contentPageType;
 					setRouteInfo({ type: 'depublishedContentPage', data: { type } });
 				} else {
