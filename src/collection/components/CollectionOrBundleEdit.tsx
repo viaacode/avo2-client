@@ -2,6 +2,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
+	convertToHtml,
 	Header,
 	HeaderBottomRowLeft,
 	HeaderMiddleRowRight,
@@ -237,6 +238,35 @@ const CollectionOrBundleEdit: FC<
 		updateCollectionEditorWithLoading().then(noop);
 	}, [updateCollectionEditorWithLoading]);
 
+	const createInitialCollection = (collection: Avo.Collection.Collection | null) => {
+		if (!collection) {
+			return collection;
+		}
+
+		const mapDescription = (description: string | undefined | null) =>
+			description ? convertToHtml(description) : undefined;
+
+		return {
+			...collection,
+			collection_fragments: collection.collection_fragments
+				? collection.collection_fragments.map((item) => {
+						const item_meta = item.item_meta;
+
+						return {
+							...item,
+							custom_description: mapDescription(item.custom_description),
+							item_meta: item_meta
+								? {
+										...item.item_meta,
+										description: mapDescription(item_meta.description),
+								  }
+								: item_meta,
+						} as Avo.Collection.Fragment;
+				  })
+				: collection.collection_fragments,
+		};
+	};
+
 	const updateHasUnsavedChanges = (
 		initialCollection: Avo.Collection.Collection | null,
 		currentCollection: Avo.Collection.Collection | null
@@ -290,7 +320,7 @@ const CollectionOrBundleEdit: FC<
 
 			return {
 				currentCollection: action.newCollection,
-				initialCollection: cloneDeep(action.newCollection),
+				initialCollection: createInitialCollection(cloneDeep(action.newCollection)),
 			};
 		}
 
@@ -315,7 +345,7 @@ const CollectionOrBundleEdit: FC<
 
 			return {
 				currentCollection: newCollection,
-				initialCollection: newCollection,
+				initialCollection: createInitialCollection(newCollection),
 			};
 		}
 
@@ -412,7 +442,7 @@ const CollectionOrBundleEdit: FC<
 
 		return {
 			currentCollection: newCurrentCollection,
-			initialCollection: newInitialCollection,
+			initialCollection: createInitialCollection(newInitialCollection),
 		};
 	}
 
@@ -588,7 +618,7 @@ const CollectionOrBundleEdit: FC<
 			setPermissions(permissionObj);
 			changeCollectionState({
 				type: 'UPDATE_COLLECTION',
-				newCollection: collectionObj || null,
+				newCollection: createInitialCollection(collectionObj),
 			});
 		} catch (err) {
 			if ((err as CustomError)?.innerException?.statusCode === 403) {
