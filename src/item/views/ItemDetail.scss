@@ -18,6 +18,7 @@
 	&__action-buttons {
 		display: grid;
 		grid-template-columns: auto auto;
+		gap: $g-spacer-unit;
 
 		&--left,
 		&--right {
