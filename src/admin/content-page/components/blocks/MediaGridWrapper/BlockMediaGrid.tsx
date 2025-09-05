@@ -56,6 +56,7 @@ interface BlockMediaGridProps extends DefaultProps {
 	buttonAction?: ButtonAction;
 	ctaTitle?: string;
 	ctaTitleColor?: string;
+	ctaTitleBackgroundColor?: string;
 	ctaTitleSize?: HeadingType;
 	ctaContent?: string;
 	ctaContentColor?: string;
@@ -81,6 +82,7 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 	buttonAction,
 	ctaTitle = '',
 	ctaTitleColor,
+	ctaTitleBackgroundColor,
 	ctaTitleSize = 'h4',
 	ctaContent = '',
 	ctaContentColor,
@@ -115,9 +117,18 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 					>
 						<div className="c-thumbnail__content">
 							{ctaTitle && (
-								<BlockHeading type={ctaTitleSize} color={ctaTitleColor}>
-									{ctaTitle}
-								</BlockHeading>
+								<>
+									<BlockHeading type={ctaTitleSize}>
+										<mark
+											style={{
+												backgroundColor: ctaTitleBackgroundColor,
+												color: ctaTitleColor,
+											}}
+										>
+											{ctaTitle}
+										</mark>
+									</BlockHeading>
+								</>
 							)}
 							{ctaContent && (
 								<div style={{ color: ctaContentColor }}>{ctaContent}</div>
