@@ -26,9 +26,16 @@ import {
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import clsx from 'clsx';
-import React, { type FC, type ReactNode } from 'react';
+import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import './BlockMediaGrid.scss';
+
+const FONT_TYPE_TO_VW: Record<HeadingType, number> = {
+	h4: 1.8,
+	h3: 2.1,
+	h2: 2.4,
+	h1: 2.7,
+};
 
 export type MediaListItem = {
 	category: Avo.ContentType.English;
@@ -100,9 +107,25 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 	renderLink = defaultRenderLinkFunction,
 	renderMediaCardWrapper,
 }) => {
+	const ref = React.createRef<HTMLDivElement>();
 	const hasCTA = ctaTitle || ctaButtonLabel || ctaContent;
 
+	const [blockWidth, setBlockWidth] = useState<number | null>(null); // pixels
+
+	useEffect(() => {
+		if (ref.current) {
+			setBlockWidth(ref.current.clientWidth);
+		}
+	}, [ref]);
+
 	const renderCTA = () => {
+		const fontSize =
+			((FONT_TYPE_TO_VW[ctaTitleSize] * (blockWidth || window.innerWidth)) /
+				window.innerWidth) *
+			3;
+		const lineHeightTitle = fontSize * 1.2;
+		const fontWeight = ctaTitleSize === 'h4' ? 'normal' : 'inherit';
+
 		return (
 			<>
 				<div className="c-media-card-thumb">
@@ -117,18 +140,20 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 					>
 						<div className="c-thumbnail__content">
 							{ctaTitle && (
-								<>
-									<BlockHeading type={ctaTitleSize}>
-										<mark
-											style={{
-												backgroundColor: ctaTitleBackgroundColor,
-												color: ctaTitleColor,
-											}}
-										>
-											{ctaTitle}
-										</mark>
-									</BlockHeading>
-								</>
+								<BlockHeading type={ctaTitleSize}>
+									<mark
+										style={{
+											fontSize: `${fontSize}vw`,
+											lineHeight: `${lineHeightTitle}vw`,
+											fontWeight,
+											backgroundColor:
+												ctaTitleBackgroundColor || 'transparent',
+											color: ctaTitleColor,
+										}}
+									>
+										{ctaTitle}
+									</mark>
+								</BlockHeading>
 							)}
 							{ctaContent && (
 								<div style={{ color: ctaContentColor }}>{ctaContent}</div>
@@ -239,7 +264,10 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 				})}
 				{hasCTA && (
 					<Column size={fullWidth ? '3-12' : '3-3'}>
-						<div className={clsx(className, 'c-media-card', 'c-media-card__cta')}>
+						<div
+							className={clsx(className, 'c-media-card', 'c-media-card__cta')}
+							ref={ref}
+						>
 							{renderLink(
 								ctaButtonAction,
 								renderCTA(),
