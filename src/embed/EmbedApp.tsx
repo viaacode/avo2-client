@@ -34,7 +34,11 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 	const [showMetadata, setShowMetadata] = useState<boolean>(false);
 	const ltiJwtToken = EmbedCodeService.getJwtToken();
 
-	const { data: loginState, isLoading: loginStateLoading } = useGetLoginStateForEmbed();
+	const {
+		data: loginState,
+		isLoading: loginStateLoading,
+		refetch: refetchLoginState,
+	} = useGetLoginStateForEmbed();
 
 	const isRenderedInAnIframe = () => {
 		let isIframe = false;
@@ -61,6 +65,26 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 		}
 		window.location.replace(originalUrl);
 	}, [originalUrl]);
+
+	/**
+	 * Refetch the login state when the browser tab becomes visible again and the user is not logged in yet
+	 */
+	useEffect(() => {
+		const handleVisibilityChange = async () => {
+			if (
+				document.visibilityState === 'visible' &&
+				loginState?.message !== LoginMessage.LOGGED_IN
+			) {
+				// Refetch the login state when the tab becomes visible
+				// Since the user might just have logged in through the external browser tab
+				await refetchLoginState();
+			}
+		};
+		document.addEventListener('visibilitychange', handleVisibilityChange);
+		return () => {
+			document.removeEventListener('visibilitychange', handleVisibilityChange);
+		};
+	}, [loginState, refetchLoginState]);
 
 	/**
 	 * Store query params in specific state variables
