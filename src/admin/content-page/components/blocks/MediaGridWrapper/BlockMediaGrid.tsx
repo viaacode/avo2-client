@@ -119,12 +119,20 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 	}, [ref]);
 
 	const renderCTA = () => {
-		const fontSize =
-			((FONT_TYPE_TO_VW[ctaTitleSize] * (blockWidth || window.innerWidth)) /
-				window.innerWidth) *
-			3;
-		const lineHeightTitle = fontSize * 1.2;
-		const fontWeight = ctaTitleSize === 'h4' ? 'normal' : 'inherit';
+		let sizing = {};
+
+		if (!fullWidth) {
+			const fontSize =
+				(FONT_TYPE_TO_VW[ctaTitleSize] * (blockWidth || window.innerWidth)) /
+				window.innerWidth;
+			const lineHeightTitle = fontSize * 1.2;
+			const fontWeight = ctaTitleSize === 'h4' ? 'normal' : 'inherit';
+			sizing = {
+				fontSize: `${fontSize * 3.5}vw`,
+				lineHeight: `${lineHeightTitle}vw`,
+				fontWeight,
+			};
+		}
 
 		return (
 			<>
@@ -143,9 +151,7 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 								<BlockHeading type={ctaTitleSize}>
 									<mark
 										style={{
-											fontSize: `${fontSize}vw`,
-											lineHeight: `${lineHeightTitle}vw`,
-											fontWeight,
+											...sizing,
 											backgroundColor:
 												ctaTitleBackgroundColor || 'transparent',
 											color: ctaTitleColor,
