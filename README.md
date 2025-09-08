@@ -68,17 +68,13 @@ See postman collection (TODO add link)
 
 Steps to deploy:
 
-* Update package.json version to match release branch version
-* Do `npm install` or update the version of the package-lock.json file version
-* Extract translations
-*
-* Merge release branch into master
-* This deploys to `qas` if the integration tests succeed
+* check the deploy steps script: https://meemoo.atlassian.net/wiki/spaces/AVO2/pages/3434807412/Draaiboek+releases
+* follow the checklist: https://studiohyperdrive.slite.com/app/docs/l2drKQKtX
 
 ### Deploy to PROD
 
-* Add tag on master + push the tag (format: v1.1.1)
-* Wait for build to succeed (eta 20min)
+* check the deploy steps script: https://meemoo.atlassian.net/wiki/spaces/AVO2/pages/3434807412/Draaiboek+releases
+* follow the checklist: https://studiohyperdrive.slite.com/app/docs/nKN5Wm7IZQ
 
 ### Troubleshoot deploy
 
