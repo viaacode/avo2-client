@@ -17,6 +17,7 @@ import {
 	type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../../shared/helpers/custom-error';
+import { getEnv } from '../../../shared/helpers/env';
 import { formatDate } from '../../../shared/helpers/formatters';
 import { navigate } from '../../../shared/helpers/link';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
@@ -141,14 +142,28 @@ const RedirectDetailOverview: FC<RedirectsOverviewProps> = ({ history }) => {
 	) => {
 		switch (columnId) {
 			case 'oldPath':
-				return rowData.oldPath;
+				return rowData[columnId];
 
-			case 'newPath':
+			case 'newPath': {
+				if (rowData.newPath.startsWith('{{PROXY_URL}}')) {
+					const parsedPath = rowData.newPath.replace(
+						'{{PROXY_URL}}',
+						getEnv('PROXY_URL') || ''
+					);
+
+					return (
+						<a href={parsedPath} target="_blank" rel="noopener noreferrer">
+							{rowData.newPath}
+						</a>
+					);
+				}
+
 				return (
 					<Link to={rowData.newPath} replace={true} target="_blank">
 						{rowData.newPath}
 					</Link>
 				);
+			}
 
 			case 'createdAt':
 			case 'updatedAt':

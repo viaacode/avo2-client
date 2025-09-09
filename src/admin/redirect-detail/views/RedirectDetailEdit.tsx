@@ -105,10 +105,25 @@ const RedirectDetailEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match
 			return {
 				old_path: tText('Een oude url is verplicht'),
 			};
+		} else if (!redirectDetail.oldPath.startsWith('/')) {
+			return {
+				old_path: tText('De url moet starten met /'),
+			};
 		}
+
 		if (!redirectDetail?.newPath) {
 			return {
 				new_path: tText('Een nieuwe url is verplicht'),
+			};
+		} else if (
+			redirectDetail.newPath.startsWith('{{PROXY_URL}}') &&
+			redirectDetail.type === RedirectDetailType.TECHNICAL
+		) {
+			// Technical types can start with {{PROXY_URL}}
+			return null;
+		} else if (!redirectDetail.newPath.startsWith('/')) {
+			return {
+				new_path: tText('De url moet starten met /'),
 			};
 		}
 		return null;
