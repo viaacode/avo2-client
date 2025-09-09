@@ -1,5 +1,6 @@
 import { type FilterableColumn, TableFilterType } from '@meemoo/admin-core-ui/dist/admin.mjs';
 
+import type { CheckboxDropdownModalProps } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';
@@ -52,6 +53,10 @@ export const GET_REDIRECT_DETAIL_OVERVIEW_TABLE_COLS: () => FilterableColumn<Red
 			label: tText('Type'),
 			sortable: true,
 			visibleByDefault: true,
+			filterType: TableFilterType.CheckboxDropdownModal,
+			filterProps: {
+				options: REDIRECT_DETAIL_TYPE_OPTIONS(),
+			} as unknown as CheckboxDropdownModalProps,
 			dataType: TableColumnDataType.string,
 		},
 		{
@@ -63,10 +68,12 @@ export const GET_REDIRECT_DETAIL_OVERVIEW_TABLE_COLS: () => FilterableColumn<Red
 
 export const REDIRECT_DETAIL_TYPE_OPTIONS = () => [
 	{
+		id: String(RedirectDetailType.MARCOM),
 		value: RedirectDetailType.MARCOM,
 		label: tText('Marcom'),
 	},
 	{
+		id: String(RedirectDetailType.TECHNICAL),
 		value: RedirectDetailType.TECHNICAL,
 		label: tText('Technisch'),
 	},

@@ -73,6 +73,7 @@ const RedirectDetailOverview: FC<RedirectsOverviewProps> = ({ history }) => {
 				query: debouncedFilters?.query,
 				created_at: debouncedFilters?.created_at,
 				updated_at: debouncedFilters?.updated_at,
+				type: debouncedFilters?.type,
 				sortOrder:
 					debouncedFilters?.sort_order || (OrderDirection.desc as SearchOrderDirection),
 				sortColumn: debouncedFilters?.sort_column || 'updated_at',

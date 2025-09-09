@@ -39,6 +39,7 @@ export interface RedirectDetailFilters {
 	offset: number;
 	created_at?: DateRange;
 	updated_at?: DateRange;
+	type?: RedirectDetailType[];
 }
 
 export interface RedirectDetailOverviewFilterState {
@@ -49,4 +50,5 @@ export interface RedirectDetailOverviewFilterState {
 	sort_order?: Avo.Search.OrderDirection;
 	created_at?: DateRange;
 	updated_at?: DateRange;
+	type?: RedirectDetailType[];
 }
