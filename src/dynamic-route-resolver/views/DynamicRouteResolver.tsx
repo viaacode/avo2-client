@@ -17,6 +17,7 @@ import { compose, type Dispatch } from 'redux';
 
 import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state';
 import { ItemsService } from '../../admin/items/items.service';
+import { RedirectDetailService } from '../../admin/redirect-detail/redirect-detail.service';
 import { withAdminCoreConfig } from '../../admin/shared/hoc/with-admin-core-config';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -47,7 +48,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Locale } from '../../shared/translations/translations.types';
 import { type AppState } from '../../store';
-import { GET_ERROR_MESSAGES, GET_REDIRECTS } from '../dynamic-route-resolver.const';
+import { GET_ERROR_MESSAGES } from '../dynamic-route-resolver.const';
 
 type DynamicRouteType = 'contentPage' | 'bundle' | 'notFound' | 'depublishedContentPage';
 
@@ -93,7 +94,7 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 			const pathname = location.pathname;
 
 			// Check if path is avo1 path that needs to be redirected
-			const redirects = GET_REDIRECTS();
+			const redirects = await RedirectDetailService.fetchAllRedirectDetails();
 			const pathWithHash = pathname + location.hash;
 			const key: string | undefined = keys(redirects).find((key) =>
 				new RegExp(`^${key}$`, 'gi').test(pathWithHash)

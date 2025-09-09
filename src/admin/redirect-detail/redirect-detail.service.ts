@@ -3,10 +3,35 @@ import { stringifyUrl } from 'query-string';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
 
+import { mapTechnicalPath } from './helpers/map-technical-path';
 import { ITEMS_PER_PAGE } from './redirect-detail.const';
 import { type RedirectDetail, type RedirectDetailFilters } from './redirect-detail.types';
 
 export class RedirectDetailService {
+	public static async fetchAllRedirectDetails(): Promise<{ [avo1Path: string]: string }> {
+		const url = `${getEnv('PROXY_URL')}/redirect-details/all`;
+
+		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const redirectDetails = await fetchWithLogoutJson<{ [avo1Path: string]: string }>(url, {
+				method: 'GET',
+			});
+
+			return Object.fromEntries(
+				Object.entries(redirectDetails).map((mapping) => [
+					mapping[0],
+					mapTechnicalPath(mapping[1]),
+				])
+			);
+		} catch (err) {
+			const error = new CustomError('Failed to fetch redirect details from database', err, {
+				url,
+			});
+			console.error(error);
+			throw error;
+		}
+	}
+
 	public static async fetchRedirectDetails(params: RedirectDetailFilters): Promise<{
 		redirectDetails: RedirectDetail[];
 		count: number;

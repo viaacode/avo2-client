@@ -29,6 +29,7 @@ import {
 	AdminLayoutBody,
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { PROXY_PATH_SHORTCUT } from '../helpers/map-technical-path';
 import { useCreateRedirectDetail } from '../hooks/useCreateRedirectDetail';
 import { useUpdateRedirectDetail } from '../hooks/useUpdateRedirectDetail';
 import { REDIRECT_DETAIL_PATH, REDIRECT_DETAIL_TYPE_OPTIONS } from '../redirect-detail.const';
@@ -116,7 +117,7 @@ const RedirectDetailEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match
 				new_path: tText('Een nieuwe url is verplicht'),
 			};
 		} else if (
-			redirectDetail.newPath.startsWith('{{PROXY_URL}}') &&
+			redirectDetail.newPath.startsWith(PROXY_PATH_SHORTCUT) &&
 			redirectDetail.type === RedirectDetailType.TECHNICAL
 		) {
 			// Technical types can start with {{PROXY_URL}}

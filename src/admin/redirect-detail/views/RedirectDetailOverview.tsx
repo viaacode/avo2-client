@@ -17,7 +17,6 @@ import {
 	type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import { getEnv } from '../../../shared/helpers/env';
 import { formatDate } from '../../../shared/helpers/formatters';
 import { navigate } from '../../../shared/helpers/link';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
@@ -29,6 +28,7 @@ import {
 	AdminLayoutBody,
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { mapTechnicalPath, PROXY_PATH_SHORTCUT } from '../helpers/map-technical-path';
 import { useDeleteRedirectDetail } from '../hooks/useDeleteRedirectDetail';
 import {
 	GET_REDIRECT_DETAIL_OVERVIEW_TABLE_COLS,
@@ -145,12 +145,9 @@ const RedirectDetailOverview: FC<RedirectsOverviewProps> = ({ history }) => {
 				return rowData[columnId];
 
 			case 'newPath': {
-				if (rowData.newPath.startsWith('{{PROXY_URL}}')) {
-					const parsedPath = rowData.newPath.replace(
-						'{{PROXY_URL}}',
-						getEnv('PROXY_URL') || ''
-					);
+				const parsedPath = mapTechnicalPath(rowData.newPath);
 
+				if (rowData.newPath.startsWith(PROXY_PATH_SHORTCUT)) {
 					return (
 						<a href={parsedPath} target="_blank" rel="noopener noreferrer">
 							{rowData.newPath}
