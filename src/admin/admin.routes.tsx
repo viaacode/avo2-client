@@ -14,6 +14,7 @@ import { renderInteractiveTourRoutes } from './interactive-tour/interactive-tour
 import { renderItemRoutes, renderPublishItemRoutes } from './items/items.routes';
 import { renderAdminNavigationRoutes } from './navigations/navigations.routes';
 import { renderAdminPupilCollectionRoutes } from './pupil-collection/pupil-collection.routes';
+import { renderRedirectDetailRoutes } from './redirect-detail/redirect-detail.routes';
 import { renderAdminTranslationsRoutes } from './translations/translations.routes';
 import { renderAdminUserGroupRoutes } from './user-groups/user-group.routes';
 import { renderAdminUserRoutes } from './users/user.routes';
@@ -72,6 +73,7 @@ export const renderAdminRoutes = (userPermissions: string[]): ReactNode => {
 			{renderWithPermissions(renderInteractiveTourRoutes, [
 				PermissionName.EDIT_INTERACTIVE_TOURS,
 			])}
+			{renderWithPermissions(renderRedirectDetailRoutes, [PermissionName.EDIT_REDIRECTS])}
 			{renderWithPermissions(renderAdminTranslationsRoutes, [
 				PermissionName.EDIT_TRANSLATIONS,
 			])}

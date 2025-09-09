@@ -17,7 +17,7 @@ import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.const
 import { ITEMS_PATH } from './items/items.const';
 import { NAVIGATIONS_PATH } from './navigations/navigations.const';
 import { PUPIL_COLLECTIONS_PATH } from './pupil-collection/pupil-collection.const';
-import { REDIRECT_PATH } from './redirects/redirects.const';
+import { REDIRECT_DETAIL_PATH } from './redirect-detail/redirect-detail.const';
 import { TRANSLATIONS_PATH } from './translations/translations.const';
 import { USER_GROUP_PATH } from './user-groups/user-group.const';
 import { USER_PATH } from './users/user.const';
@@ -35,7 +35,7 @@ export const ADMIN_PATH = Object.freeze({
 	...PUPIL_COLLECTIONS_PATH,
 	...ITEMS_PATH,
 	...INTERACTIVE_TOUR_PATH,
-	...REDIRECT_PATH,
+	...REDIRECT_DETAIL_PATH,
 });
 
 function getNavWithSubLinks(
@@ -96,7 +96,6 @@ function hasPermissions(
 	userPermissions: string[],
 	navInfos: NavigationItemInfo | NavigationItemInfo[]
 ): NavigationItemInfo[] {
-	console.log(permissions);
 	const navInfoObj: NavigationItemInfo[] = isArray(navInfos) ? navInfos : [navInfos];
 	if (booleanOperator === 'OR') {
 		// OR
