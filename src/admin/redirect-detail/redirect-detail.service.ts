@@ -96,6 +96,8 @@ export class RedirectDetailService {
 			const error = new CustomError('Failed to create redirectDetail', err, {
 				url,
 				redirectDetail,
+				errorMessage: (err as CustomError)?.additionalInfo?.responseBody?.additionalInfo
+					?.message,
 			});
 			console.error(error);
 			throw error;
@@ -120,6 +122,8 @@ export class RedirectDetailService {
 			const error = new CustomError('Failed to update redirectDetail', err, {
 				url,
 				redirectDetail,
+				errorMessage: (err as CustomError)?.additionalInfo?.responseBody?.additionalInfo
+					?.message,
 			});
 			console.error(error);
 			throw error;

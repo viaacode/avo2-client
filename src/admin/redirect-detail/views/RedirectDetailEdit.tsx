@@ -165,7 +165,10 @@ const RedirectDetailEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match
 				})
 			);
 
-			ToastService.danger(tHtml('Het opslaan van de redirect is mislukt'));
+			ToastService.danger(
+				(err as CustomError)?.additionalInfo?.errorMessage ||
+					tHtml('Het opslaan van de redirect is mislukt')
+			);
 		}
 		setIsSaving(false);
 	};
