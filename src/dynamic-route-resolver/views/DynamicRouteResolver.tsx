@@ -18,6 +18,7 @@ import { compose, type Dispatch } from 'redux';
 import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state';
 import { ItemsService } from '../../admin/items/items.service';
 import { withAdminCoreConfig } from '../../admin/shared/hoc/with-admin-core-config';
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page';
@@ -42,14 +43,17 @@ import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
 import { getFullName, stripHtml } from '../../shared/helpers/formatters';
+import { isPupil } from '../../shared/helpers/is-pupil';
 import { generateSearchLinkString } from '../../shared/helpers/link';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Locale } from '../../shared/translations/translations.types';
 import { type AppState } from '../../store';
-import { GET_ERROR_MESSAGES, GET_REDIRECTS } from '../dynamic-route-resolver.const';
-
-type DynamicRouteType = 'contentPage' | 'bundle' | 'notFound' | 'depublishedContentPage';
+import {
+	DynamicRouteType,
+	GET_ERROR_MESSAGES,
+	GET_REDIRECTS,
+} from '../dynamic-route-resolver.const';
 
 interface RouteInfo {
 	type: DynamicRouteType;
@@ -173,7 +177,7 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 				if (contentPage) {
 					// Path is indeed a content page url
 					setRouteInfo({
-						type: 'contentPage',
+						type: DynamicRouteType.CONTENT_PAGE,
 						data: convertDbContentPageToContentPageInfo(contentPage),
 					});
 				}
@@ -186,9 +190,43 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 				if (JSON.stringify(err).includes('CONTENT_PAGE_DEPUBLISHED')) {
 					const type = (err as any)?.innerException?.additionalInfo?.responseBody
 						?.additionalInfo?.contentPageType;
-					setRouteInfo({ type: 'depublishedContentPage', data: { type } });
+					setRouteInfo({
+						type: DynamicRouteType.DEPUBLISHED_CONTENT_PAGE,
+						data: { type },
+					});
+				} else if (
+					commonUserInfo &&
+					JSON.stringify(err).includes('CONTENT_PAGE_WRONG_USER_GROUP')
+				) {
+					const contentPageUserGroups = (err as any)?.innerException?.additionalInfo
+						?.responseBody?.additionalInfo?.contentPageUserGroups as string[];
+
+					if (
+						contentPageUserGroups.every(
+							(userGroup) =>
+								isPupil(userGroup) || userGroup === SpecialUserGroupId.Admin
+						)
+					) {
+						setRouteInfo({
+							type: DynamicRouteType.PUPIL_ONLY_PAGE,
+							data: null,
+						});
+					} else if (
+						contentPageUserGroups.every((userGroup) => !isPupil(userGroup)) &&
+						isPupil(commonUserInfo.userGroup?.id)
+					) {
+						setRouteInfo({
+							type: DynamicRouteType.NOT_FOR_PUPIL_PAGE,
+							data: null,
+						});
+					} else {
+						setRouteInfo({
+							type: DynamicRouteType.WRONG_USER_GROUP_PAGE,
+							data: null,
+						});
+					}
 				} else {
-					setRouteInfo({ type: 'notFound', data: null });
+					setRouteInfo({ type: DynamicRouteType.NOT_FOUND, data: null });
 				}
 			}
 
@@ -263,7 +301,7 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 	// };
 
 	const renderRouteComponent = () => {
-		if (routeInfo && routeInfo.type === 'contentPage') {
+		if (routeInfo && routeInfo.type === DynamicRouteType.CONTENT_PAGE) {
 			const routeUserGroupIds = ((routeInfo.data as DbContentPage).userGroupIds ?? []).map(
 				(id) => String(id)
 			);
@@ -323,12 +361,43 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 				</>
 			);
 		}
-		if (routeInfo && routeInfo.type === 'depublishedContentPage') {
+		if (routeInfo && routeInfo.type === DynamicRouteType.DEPUBLISHED_CONTENT_PAGE) {
 			return (
-				<ErrorView icon={IconName.clock} actionButtons={['home', 'helpdesk']} message="">
-					{GET_ERROR_MESSAGES()[`DEPUBLISHED_${routeInfo.data.type}`] ||
-						GET_ERROR_MESSAGES()[`DEPUBLISHED_PAGINA`]}
-				</ErrorView>
+				<ErrorView
+					icon={IconName.clock}
+					actionButtons={['home', 'helpdesk']}
+					message={
+						GET_ERROR_MESSAGES()[`DEPUBLISHED_${routeInfo.data.type}`] ||
+						GET_ERROR_MESSAGES()[`DEPUBLISHED_PAGINA`]
+					}
+				/>
+			);
+		}
+		if (routeInfo && routeInfo.type === DynamicRouteType.PUPIL_ONLY_PAGE) {
+			return (
+				<ErrorView
+					icon={IconName.clock}
+					actionButtons={['help', 'helpdesk']}
+					message={GET_ERROR_MESSAGES()[`PUPIL_ONLY`]}
+				/>
+			);
+		}
+		if (routeInfo && routeInfo.type === DynamicRouteType.NOT_FOR_PUPIL_PAGE) {
+			return (
+				<ErrorView
+					icon={IconName.clock}
+					actionButtons={['pupils']}
+					message={GET_ERROR_MESSAGES()[`NOT_FOR_PUPILS`]}
+				/>
+			);
+		}
+		if (routeInfo && routeInfo.type === DynamicRouteType.WRONG_USER_GROUP_PAGE) {
+			return (
+				<ErrorView
+					icon={IconName.clock}
+					actionButtons={['help', 'helpdesk']}
+					message={GET_ERROR_MESSAGES()[`OTHER_ROLES`]}
+				/>
 			);
 		}
 		console.error(
