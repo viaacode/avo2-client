@@ -66,6 +66,7 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 	ctaTitle,
 	ctaTitleColor,
 	ctaTitleSize,
+	ctaTitleBackgroundColor,
 	ctaContent,
 	ctaContentColor,
 	ctaButtonLabel,
@@ -447,6 +448,7 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 					buttonAction={buttonAction || searchQuery}
 					ctaTitle={ctaTitle}
 					ctaTitleColor={ctaTitleColor}
+					ctaTitleBackgroundColor={ctaTitleBackgroundColor}
 					ctaTitleSize={ctaTitleSize}
 					ctaContent={ctaContent}
 					ctaContentColor={ctaContentColor}
