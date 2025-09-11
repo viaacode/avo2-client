@@ -3,35 +3,35 @@ import type { Avo } from '@viaa/avo2-types';
 import type { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 
-export enum RedirectDetailType {
-	MARCOM = 'MARCOM',
-	TECHNICAL = 'TECHNICAL',
+export enum UrlRedirectPathPattern {
+	PLAIN_TEXT = 'PLAIN_TEXT',
+	REGEX = 'REGEX',
 }
 
-export type RedirectDetailOverviewTableCols =
+export type UrlRedirectOverviewTableCols =
 	| 'oldPath'
+	| 'oldPathPattern'
 	| 'newPath'
 	| 'createdAt'
 	| 'updatedAt'
-	| 'type'
 	| typeof ACTIONS_TABLE_COLUMN_ID;
 
-export interface RedirectDetailEditFormErrorState {
+export interface UrlRedirectEditFormErrorState {
 	old_path?: string;
 	new_path?: string;
-	type?: RedirectDetailType;
+	oldPathPattern?: UrlRedirectPathPattern;
 }
 
-export type RedirectDetail = {
+export type UrlRedirect = {
 	id: number;
 	oldPath: string;
 	newPath: string;
 	createdAt: string;
 	updatedAt: string;
-	type: RedirectDetailType;
+	oldPathPattern: UrlRedirectPathPattern;
 };
 
-export interface RedirectDetailFilters {
+export interface UrlRedirectFilters {
 	query?: string;
 	sortColumn?: string;
 	sortOrder?: Avo.Search.OrderDirection;
@@ -39,16 +39,16 @@ export interface RedirectDetailFilters {
 	offset: number;
 	created_at?: DateRange;
 	updated_at?: DateRange;
-	type?: RedirectDetailType[];
+	old_path_pattern?: UrlRedirectPathPattern[];
 }
 
-export interface RedirectDetailOverviewFilterState {
+export interface UrlRedirectOverviewFilterState {
 	columns: any[];
 	page: number;
 	query?: string;
 	sort_column?: string;
 	sort_order?: Avo.Search.OrderDirection;
-	created_at?: DateRange;
-	updated_at?: DateRange;
-	type?: RedirectDetailType[];
+	createdAt?: DateRange;
+	updatedAt?: DateRange;
+	oldPathPattern?: UrlRedirectPathPattern[];
 }

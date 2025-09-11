@@ -3,28 +3,26 @@ import { stringifyUrl } from 'query-string';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
 
-import { mapTechnicalPath } from './helpers/map-technical-path';
-import { ITEMS_PER_PAGE } from './redirect-detail.const';
-import { type RedirectDetail, type RedirectDetailFilters } from './redirect-detail.types';
+import { mapProxyPath } from './helpers/map-proxy-path';
+import { ITEMS_PER_PAGE } from './url-redirects.const';
+import { type UrlRedirect, type UrlRedirectFilters } from './url-redirects.types';
 
-export class RedirectDetailService {
-	public static async fetchAllRedirectDetails(): Promise<{ [avo1Path: string]: string }> {
-		const url = `${getEnv('PROXY_URL')}/redirect-details/all`;
+export class UrlRedirectsService {
+	public static async fetchUrlRedirectMap(): Promise<{ [avo1Path: string]: string }> {
+		const url = `${getEnv('PROXY_URL')}/url-redirects/map`;
 
 		try {
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
-			const redirectDetails = await fetchWithLogoutJson<{ [avo1Path: string]: string }>(url, {
-				method: 'GET',
-			});
+			const urlRedirects = await fetchWithLogoutJson<{ [avo1Path: string]: string }>(url);
 
 			return Object.fromEntries(
-				Object.entries(redirectDetails).map((mapping) => [
+				Object.entries(urlRedirects).map((mapping) => [
 					mapping[0],
-					mapTechnicalPath(mapping[1]),
+					mapProxyPath(mapping[1]),
 				])
 			);
 		} catch (err) {
-			const error = new CustomError('Failed to fetch redirect details from database', err, {
+			const error = new CustomError('Failed to fetch url redirects from database', err, {
 				url,
 			});
 			console.error(error);
@@ -32,15 +30,15 @@ export class RedirectDetailService {
 		}
 	}
 
-	public static async fetchRedirectDetails(params: RedirectDetailFilters): Promise<{
-		redirectDetails: RedirectDetail[];
+	public static async fetchUrlRedirectsOverview(params: UrlRedirectFilters): Promise<{
+		urlRedirects: UrlRedirect[];
 		count: number;
 	}> {
 		let url: string | undefined = undefined;
 
 		try {
 			url = stringifyUrl({
-				url: `${getEnv('PROXY_URL')}/redirect-details`,
+				url: `${getEnv('PROXY_URL')}/url-redirects`,
 				query: {
 					sortColumn: params?.sortColumn,
 					sortOrder: params?.sortOrder,
@@ -52,13 +50,11 @@ export class RedirectDetailService {
 
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			return await fetchWithLogoutJson<{
-				redirectDetails: RedirectDetail[];
+				urlRedirects: UrlRedirect[];
 				count: number;
-			}>(url, {
-				method: 'GET',
-			});
+			}>(url);
 		} catch (err) {
-			const error = new CustomError('Failed to fetch redirect details from database', err, {
+			const error = new CustomError('Failed to fetch url redirects from database', err, {
 				...params,
 				url,
 			});
@@ -67,13 +63,13 @@ export class RedirectDetailService {
 		}
 	}
 
-	public static async fetchRedirectDetail(redirectDetailId: number): Promise<RedirectDetail> {
+	public static async fetchSingleUrlRedirect(urlRedirectId: number): Promise<UrlRedirect> {
 		let url: string | undefined = undefined;
 		const errorMessage: string | undefined = undefined;
 
-		if (!redirectDetailId) {
+		if (!urlRedirectId) {
 			const error = new CustomError(
-				'Failed to get redirect detail when redirectDetailId is empty',
+				'Failed to get url redirect when urlRedirectId is empty',
 				{
 					url,
 				}
@@ -83,14 +79,12 @@ export class RedirectDetailService {
 		}
 
 		try {
-			url = `${getEnv('PROXY_URL')}/redirect-details/${redirectDetailId}`;
+			url = `${getEnv('PROXY_URL')}/url-redirects/${urlRedirectId}`;
 
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
-			return await fetchWithLogoutJson<RedirectDetail>(url, {
-				method: 'GET',
-			});
+			return await fetchWithLogoutJson<UrlRedirect>(url);
 		} catch (err) {
-			const error = new CustomError('Failed to get redirect', err, {
+			const error = new CustomError('Failed to get url redirect', err, {
 				url,
 				errorMessage,
 			});
@@ -99,28 +93,26 @@ export class RedirectDetailService {
 		}
 	}
 
-	public static async insertRedirectDetail(
-		redirectDetail: RedirectDetail
-	): Promise<RedirectDetail> {
+	public static async insertUrlRedirect(urlRedirect: UrlRedirect): Promise<UrlRedirect> {
 		let url: string | undefined = undefined;
 
 		try {
-			url = `${getEnv('PROXY_URL')}/redirect-details/`;
+			url = `${getEnv('PROXY_URL')}/url-redirects/`;
 
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			const responseData = await fetchWithLogoutJson<{
 				message: 'success';
-				createdRedirectDetail: RedirectDetail;
+				createdUrlRedirect: UrlRedirect;
 			}>(url, {
 				method: 'POST',
-				body: JSON.stringify(redirectDetail),
+				body: JSON.stringify(urlRedirect),
 			});
 
-			return responseData.createdRedirectDetail;
+			return responseData.createdUrlRedirect;
 		} catch (err) {
-			const error = new CustomError('Failed to create redirectDetail', err, {
+			const error = new CustomError('Failed to create url redirect', err, {
 				url,
-				redirectDetail,
+				urlRedirect,
 				errorMessage: (err as CustomError)?.additionalInfo?.responseBody?.additionalInfo
 					?.message,
 			});
@@ -129,24 +121,21 @@ export class RedirectDetailService {
 		}
 	}
 
-	static async updateRedirectDetail(redirectDetail: RedirectDetail): Promise<number> {
+	static async updateUrlRedirect(urlRedirect: UrlRedirect): Promise<UrlRedirect> {
 		let url: string | undefined = undefined;
 
 		try {
-			url = `${getEnv('PROXY_URL')}/redirect-details/${redirectDetail.id}`;
+			url = `${getEnv('PROXY_URL')}/url-redirects/${urlRedirect.id}`;
 
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
-			await fetchWithLogoutJson<{
-				message: 'success';
-			}>(url, {
+			return await fetchWithLogoutJson<UrlRedirect>(url, {
 				method: 'PATCH',
-				body: JSON.stringify(redirectDetail),
+				body: JSON.stringify(urlRedirect),
 			});
-			return redirectDetail.id;
 		} catch (err) {
-			const error = new CustomError('Failed to update redirectDetail', err, {
+			const error = new CustomError('Failed to update url redirect', err, {
 				url,
-				redirectDetail,
+				urlRedirect,
 				errorMessage: (err as CustomError)?.additionalInfo?.responseBody?.additionalInfo
 					?.message,
 			});
@@ -155,11 +144,11 @@ export class RedirectDetailService {
 		}
 	}
 
-	static async deleteRedirectDetail(redirectDetailId: number): Promise<void> {
+	static async deleteUrlRedirect(urlRedirectId: number): Promise<void> {
 		let url: string | undefined = undefined;
 
 		try {
-			url = `${getEnv('PROXY_URL')}/redirect-details/${redirectDetailId}`;
+			url = `${getEnv('PROXY_URL')}/url-redirects/${urlRedirectId}`;
 
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			await fetchWithLogoutJson<{
@@ -168,9 +157,9 @@ export class RedirectDetailService {
 				method: 'DELETE',
 			});
 		} catch (err) {
-			const error = new CustomError('Failed to delete redirect detail', err, {
+			const error = new CustomError('Failed to delete url redirect', err, {
 				url,
-				redirectDetailId,
+				urlRedirectId,
 			});
 			console.error(error);
 			throw error;
