@@ -1,10 +1,12 @@
 import {
 	Button,
 	ButtonToolbar,
+	Column,
 	Container,
 	Flex,
 	Form,
 	FormGroup,
+	Grid,
 	IconName,
 	Select,
 	Spacer,
@@ -156,17 +158,43 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 		return (
 			<Container size="medium">
 				<Form>
-					<FormGroup label={tText('Oude url')} error={formErrors.old_path} required>
-						<TextInput
-							value={updatedUrlRedirect.oldPath || ''}
-							onChange={(newValue: string) =>
-								setUpdatedUrlRedirect({
-									...updatedUrlRedirect,
-									oldPath: newValue,
-								})
-							}
-						/>
-					</FormGroup>
+					<Grid>
+						<Column size="7">
+							<FormGroup
+								label={tText('Oude url')}
+								error={formErrors.old_path}
+								required
+							>
+								<TextInput
+									value={updatedUrlRedirect.oldPath || ''}
+									onChange={(newValue: string) =>
+										setUpdatedUrlRedirect({
+											...updatedUrlRedirect,
+											oldPath: newValue,
+										})
+									}
+								/>
+							</FormGroup>
+						</Column>
+						<Column size="5">
+							<FormGroup
+								label={tText('Oude url patroon')}
+								error={formErrors.oldPathPattern}
+							>
+								<Select
+									options={URL_REDIRECT_PATTERN_OPTIONS()}
+									value={updatedUrlRedirect.oldPathPattern}
+									onChange={(newContentType) =>
+										setUpdatedUrlRedirect({
+											...updatedUrlRedirect,
+											oldPathPattern:
+												newContentType as UrlRedirectPathPattern,
+										})
+									}
+								/>
+							</FormGroup>
+						</Column>
+					</Grid>
 					<FormGroup label={tText('Nieuwe url')} error={formErrors.new_path} required>
 						<TextInput
 							value={updatedUrlRedirect.newPath || ''}
@@ -174,18 +202,6 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 								setUpdatedUrlRedirect({
 									...updatedUrlRedirect,
 									newPath: newValue,
-								})
-							}
-						/>
-					</FormGroup>
-					<FormGroup label={tText('Oude url patroon')} error={formErrors.oldPathPattern}>
-						<Select
-							options={URL_REDIRECT_PATTERN_OPTIONS()}
-							value={updatedUrlRedirect.oldPathPattern}
-							onChange={(newContentType) =>
-								setUpdatedUrlRedirect({
-									...updatedUrlRedirect,
-									oldPathPattern: newContentType as UrlRedirectPathPattern,
 								})
 							}
 						/>

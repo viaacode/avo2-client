@@ -191,8 +191,8 @@ const UrlRedirectOverview: FC<RedirectsOverviewProps> = ({ history }) => {
 			<>
 				<FilterTable
 					columns={GET_URL_REDIRECT_OVERVIEW_TABLE_COLS()}
-					data={urlRedirectsAndCount.urlRedirects}
-					dataCount={urlRedirectsAndCount.count}
+					data={urlRedirectsAndCount.urlRedirects || []}
+					dataCount={urlRedirectsAndCount.count || 0}
 					renderCell={(rowData: UrlRedirect, columnId: string) =>
 						renderTableCell(rowData, columnId as UrlRedirectOverviewTableCols)
 					}
