@@ -22,7 +22,10 @@ import {
 	AdminLayoutBody,
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { mapProxyPath, PROXY_PATH_SHORTCUT } from '../helpers/map-proxy-path';
+import {
+	PROXY_PATH_SHORTCUT,
+	replaceProxyUrlTemplateWithUrl,
+} from '../helpers/replace-proxy-url-template-with-url';
 import { useDeleteUrlRedirect } from '../hooks/useDeleteUrlRedirect';
 import { useGetUrlRedirects } from '../hooks/useGetUrlRedirects';
 import {
@@ -100,7 +103,7 @@ const UrlRedirectOverview: FC<RedirectsOverviewProps> = ({ history }) => {
 				return rowData[columnId];
 
 			case 'newPath': {
-				const parsedPath = mapProxyPath(rowData.newPath);
+				const parsedPath = replaceProxyUrlTemplateWithUrl(rowData.newPath);
 
 				if (rowData.newPath.startsWith(PROXY_PATH_SHORTCUT)) {
 					return (

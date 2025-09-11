@@ -32,7 +32,7 @@ import {
 	AdminLayoutBody,
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { PROXY_PATH_SHORTCUT } from '../helpers/map-proxy-path';
+import { PROXY_PATH_SHORTCUT } from '../helpers/replace-proxy-url-template-with-url';
 import { useCreateUrlRedirect } from '../hooks/useCreateUrlRedirect';
 import { useGetUrlRedirectById } from '../hooks/useGetUrlRedirectById';
 import { useUpdateUrlRedirect } from '../hooks/useUpdateUrlRedirect';

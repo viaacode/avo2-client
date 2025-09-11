@@ -3,7 +3,7 @@ import { stringifyUrl } from 'query-string';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
 
-import { mapProxyPath } from './helpers/map-proxy-path';
+import { replaceProxyUrlTemplateWithUrl } from './helpers/replace-proxy-url-template-with-url';
 import { ITEMS_PER_PAGE } from './url-redirects.const';
 import { type UrlRedirect, type UrlRedirectFilters } from './url-redirects.types';
 
@@ -18,7 +18,7 @@ export class UrlRedirectsService {
 			return Object.fromEntries(
 				Object.entries(urlRedirects).map((mapping) => [
 					mapping[0],
-					mapProxyPath(mapping[1]),
+					replaceProxyUrlTemplateWithUrl(mapping[1]),
 				])
 			);
 		} catch (err) {
