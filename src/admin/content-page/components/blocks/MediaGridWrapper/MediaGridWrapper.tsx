@@ -2,6 +2,7 @@ import {
 	type MediaGridBlockComponentState,
 	type MediaGridBlockState,
 } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import type { DbContentPage } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
 	type ButtonAction,
@@ -43,7 +44,7 @@ import { ADMIN_PATH } from '../../../../admin.const';
 import { ContentPageService } from '../../../services/content-page.service';
 
 import { BlockMediaGrid, type MediaListItem } from './BlockMediaGrid';
-import { type ResolvedItemOrCollectionOrAssignment } from './MediaGridWrapper.types';
+import { type ResolvedItemOrCollectionOrAssignmentOrContentPage } from './MediaGridWrapper.types';
 
 interface MediaGridWrapperProps extends MediaGridBlockState {
 	searchQuery?: ButtonAction;
@@ -52,7 +53,7 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 		mediaItem: ButtonAction;
 		copyrightOwnerOrId: string | 'NO_COPYRIGHT_NOTICE';
 	}[];
-	results: ResolvedItemOrCollectionOrAssignment[];
+	results: ResolvedItemOrCollectionOrAssignmentOrContentPage[];
 	renderLink: RenderLinkFunction;
 	buttonAltTitle?: string;
 	ctaButtonAltTitle?: string;
@@ -91,7 +92,7 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [resolvedResults, setResolvedResults] = useState<
-		ResolvedItemOrCollectionOrAssignment[] | null
+		ResolvedItemOrCollectionOrAssignmentOrContentPage[] | null
 	>(null);
 
 	// cache search results
@@ -99,7 +100,7 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 	const [lastSearchQueryLimit, setLastSearchQueryLimit] = useState<number | null>(null);
 
 	const [activeItem, setActiveItem] = useState<
-		(Avo.Item.Item & ResolvedItemOrCollectionOrAssignment) | null
+		(Avo.Item.Item & ResolvedItemOrCollectionOrAssignmentOrContentPage) | null
 	>(null);
 	const [activeItemBookmarkStatus, setActiveItemBookmarkStatus] = useState<boolean | null>(null);
 	const [activeCopyright, setActiveCopyright] = useState<Avo.Organization.Organization | null>(
@@ -265,15 +266,32 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 	};
 
 	const getThumbnailFromItem = (
-		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignment | null
+		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignmentOrContentPage | null
 	) => {
 		if (itemOrCollectionOrAssignment?.type?.label === 'audio') {
 			return DEFAULT_AUDIO_STILL;
 		}
 		if (itemOrCollectionOrAssignment?.type?.label === 'opdracht') {
-			return itemOrCollectionOrAssignment?.thumbnail_path || placeholderImage;
+			return (
+				(itemOrCollectionOrAssignment as Avo.Assignment.Assignment)?.thumbnail_path ||
+				placeholderImage
+			);
 		}
-		return itemOrCollectionOrAssignment?.thumbnail_path || '';
+		return (itemOrCollectionOrAssignment as Avo.Item.Item)?.thumbnail_path || '';
+	};
+
+	const getLabelFromItem = (
+		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignmentOrContentPage | null
+	): string => {
+		if ((itemOrCollectionOrAssignment as any)?.type?.label) {
+			return (itemOrCollectionOrAssignment as any)?.type?.label;
+		}
+
+		if ((itemOrCollectionOrAssignment as any)?.content_type) {
+			return 'contentPagina';
+		}
+
+		return 'item';
 	};
 
 	const ITEM_LABEL_TO_TYPE: Partial<Record<ContentTypeString, Avo.Core.ContentPickerType>> = {
@@ -282,15 +300,15 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 		collectie: 'COLLECTION',
 		bundel: 'BUNDLE',
 		opdracht: 'ASSIGNMENT',
+		contentPagina: 'CONTENT_PAGE',
 	};
 
 	const getThumbnailMetadata = (itemOrCollectionOrAssignment: any): string | null => {
-		const itemLabel =
-			(itemOrCollectionOrAssignment as Avo.Item.Item | Avo.Collection.Collection)?.type
-				?.label || 'item';
+		const itemLabel = getLabelFromItem(itemOrCollectionOrAssignment);
 		const itemDuration = String((itemOrCollectionOrAssignment as Avo.Item.Item)?.duration || 0);
 		const collectionItems =
 			(itemOrCollectionOrAssignment as Avo.Collection.Collection)?.item_count || 0;
+
 		return (
 			{
 				item: itemDuration,
@@ -311,6 +329,7 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 						  )
 				}`,
 				opdracht: null,
+				contentPagina: null,
 			}[itemLabel] || null
 		);
 	};
@@ -324,30 +343,40 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 		setActiveCopyright(orgInfo);
 	};
 
-	const mapItemOrCollectionOrAssignmentData = (
-		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignment,
+	const mapItemOrCollectionOrAssignmentOrPageData = (
+		itemOrCollectionOrAssignmentOrPage: ResolvedItemOrCollectionOrAssignmentOrContentPage,
 		index: number
 	): MediaListItem => {
-		const itemLabel = itemOrCollectionOrAssignment?.type?.label || 'video';
-		const viewCount = itemOrCollectionOrAssignment?.view_count || 0;
+		const itemLabel = getLabelFromItem(itemOrCollectionOrAssignmentOrPage);
+		const viewCount = itemOrCollectionOrAssignmentOrPage?.view_count || 0;
 
 		const element: MediaGridBlockComponentState = (elements || [])[index] || ({} as any);
 
 		// Show copy right notice when the block requires it and the user is not logged in, or when they are editing the content page (preview)
 		// https://meemoo.atlassian.net/browse/AVO-3015
 		const showCopyrightNotice =
-			!!itemOrCollectionOrAssignment.copyright_organisation &&
+			!!itemOrCollectionOrAssignmentOrPage.copyright_organisation &&
 			(!commonUser || location.pathname.startsWith(ADMIN_PATH.DASHBOARD));
+		const createdAt =
+			(
+				itemOrCollectionOrAssignmentOrPage as
+					| Avo.Item.Item
+					| Avo.Collection.Collection
+					| Avo.Assignment.Assignment
+			)?.created_at || (itemOrCollectionOrAssignmentOrPage as DbContentPage)?.createdAt;
 
 		return {
-			category:
-				CONTENT_TYPE_TRANSLATIONS[itemOrCollectionOrAssignment?.type?.label || 'video'],
-			metadata: [
-				...(itemLabel !== ContentTypeString.assignment
-					? [{ icon: IconName.eye, label: String(viewCount || 0) }]
-					: []),
-				{ label: formatDate(itemOrCollectionOrAssignment?.created_at) },
-			],
+			category: CONTENT_TYPE_TRANSLATIONS[itemLabel],
+			subCategory: (itemOrCollectionOrAssignmentOrPage as any).content_type,
+			metadata:
+				itemLabel === ContentTypeString.contentPage
+					? []
+					: [
+							...(itemLabel !== ContentTypeString.assignment
+								? [{ icon: IconName.eye, label: String(viewCount || 0) }]
+								: []),
+							{ label: formatDate(createdAt) },
+					  ],
 			buttonLabel: element.buttonLabel,
 			buttonAltTitle: element.buttonAltTitle,
 			buttonType: element.buttonType,
@@ -355,30 +384,40 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 			itemAction:
 				element.mediaItem ||
 				({
-					type: ITEM_LABEL_TO_TYPE[itemLabel],
+					type: ITEM_LABEL_TO_TYPE[itemLabel as ContentTypeString],
 					value:
-						(itemOrCollectionOrAssignment as Avo.Item.Item | Avo.Collection.Collection)
-							?.external_id || itemOrCollectionOrAssignment?.id,
+						(
+							itemOrCollectionOrAssignmentOrPage as
+								| Avo.Item.Item
+								| Avo.Collection.Collection
+						)?.external_id ||
+						(itemOrCollectionOrAssignmentOrPage as DbContentPage)?.path ||
+						itemOrCollectionOrAssignmentOrPage?.id,
 					target: searchQuery?.target || '_self',
 				} as ButtonAction),
 			buttonAction: element.buttonAction,
-			title: itemOrCollectionOrAssignment?.title || '',
-			description: itemOrCollectionOrAssignment?.description || '',
-			issued: (itemOrCollectionOrAssignment as Avo.Item.Item)?.issued || '',
+			title:
+				itemOrCollectionOrAssignmentOrPage?.media_item_label ||
+				itemOrCollectionOrAssignmentOrPage?.title ||
+				'',
+			description: itemOrCollectionOrAssignmentOrPage?.description || '',
+			issued: (itemOrCollectionOrAssignmentOrPage as Avo.Item.Item)?.issued || '',
 			organisation:
-				(itemOrCollectionOrAssignment as Avo.Item.Item | Avo.Collection.Collection)
+				(itemOrCollectionOrAssignmentOrPage as Avo.Item.Item | Avo.Collection.Collection)
 					?.organisation || '',
 			thumbnail: {
 				label: itemLabel,
-				meta: getThumbnailMetadata(itemOrCollectionOrAssignment),
-				src: element.copyrightImage || getThumbnailFromItem(itemOrCollectionOrAssignment),
+				meta: getThumbnailMetadata(itemOrCollectionOrAssignmentOrPage),
+				src:
+					element.copyrightImage ||
+					getThumbnailFromItem(itemOrCollectionOrAssignmentOrPage),
 				topRight: showCopyrightNotice && (
 					<Button
 						type="inline-link"
 						onClick={(evt) =>
 							handleCopyrightClicked(
 								evt,
-								itemOrCollectionOrAssignment.copyright_organisation as Avo.Organization.Organization
+								itemOrCollectionOrAssignmentOrPage.copyright_organisation as Avo.Organization.Organization
 							)
 						}
 						label={tText(
@@ -390,9 +429,9 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 					/>
 				),
 			},
-			src: itemOrCollectionOrAssignment?.src,
+			src: itemOrCollectionOrAssignmentOrPage?.src,
 			item_collaterals:
-				(itemOrCollectionOrAssignment as Avo.Item.Item)?.item_collaterals || null,
+				(itemOrCollectionOrAssignmentOrPage as Avo.Item.Item)?.item_collaterals || null,
 		} as any;
 	};
 
@@ -408,7 +447,8 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 						setActiveItem(
 							(resolvedResults?.find((resultItem) => resultItem.src === item.src) ||
 								null) as
-								| (Avo.Item.Item & ResolvedItemOrCollectionOrAssignment)
+								| (Avo.Item.Item &
+										ResolvedItemOrCollectionOrAssignmentOrContentPage)
 								| null
 						)
 					}
@@ -438,7 +478,10 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 
 	// Render
 	const renderMediaGridBlock = () => {
-		const elements = compact(resolvedResults || []).map(mapItemOrCollectionOrAssignmentData);
+		const elements = compact(resolvedResults || []).map(
+			mapItemOrCollectionOrAssignmentOrPageData
+		);
+
 		return (
 			<>
 				<BlockMediaGrid

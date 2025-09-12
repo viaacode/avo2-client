@@ -39,6 +39,7 @@ const FONT_TYPE_TO_VW: Record<HeadingType, number> = {
 
 export type MediaListItem = {
 	category: Avo.ContentType.English;
+	subCategory: Avo.ContentPage.Type;
 	metadata?: MetaDataItemProps[];
 	thumbnail?: {
 		label: string;
@@ -191,14 +192,32 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 	};
 
 	const renderMediaCard = (mediaListItem: MediaListItem) => {
-		const { category, metadata, thumbnail, title, buttonLabel, buttonIcon, buttonType } =
-			mediaListItem;
+		const {
+			category,
+			subCategory,
+			metadata,
+			thumbnail,
+			title,
+			buttonLabel,
+			buttonIcon,
+			buttonType,
+		} = mediaListItem;
 
 		return (
-			<MediaCard category={category} orientation={orientation} title={title}>
+			<MediaCard
+				category={category}
+				subCategory={subCategory}
+				orientation={orientation}
+				title={title}
+			>
 				{thumbnail && (
 					<MediaCardThumbnail>
-						<Thumbnail alt={title} category={category} {...thumbnail} />
+						<Thumbnail
+							alt={title}
+							category={category}
+							subCategory={subCategory}
+							{...thumbnail}
+						/>
 					</MediaCardThumbnail>
 				)}
 				<MediaCardMetaData>
