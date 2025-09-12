@@ -59,6 +59,7 @@ export type MediaListItem = {
 
 interface BlockMediaGridProps extends DefaultProps {
 	title?: string;
+	titleType?: HeadingType;
 	buttonLabel?: string;
 	buttonAltTitle?: string;
 	buttonAction?: ButtonAction;
@@ -85,6 +86,7 @@ interface BlockMediaGridProps extends DefaultProps {
 
 export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 	title,
+	titleType = 'h2',
 	buttonLabel,
 	buttonAltTitle,
 	buttonAction,
@@ -266,7 +268,7 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 			{(!!title || !!buttonLabel) && (
 				<Toolbar>
 					<ToolbarLeft>
-						{title && <BlockHeading type="h2">{title}</BlockHeading>}
+						{title && <BlockHeading type={titleType}>{title}</BlockHeading>}
 					</ToolbarLeft>
 					<ToolbarRight>
 						{buttonLabel &&

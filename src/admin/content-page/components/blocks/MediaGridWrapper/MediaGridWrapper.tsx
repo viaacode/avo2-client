@@ -61,6 +61,7 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 
 const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentProps> = ({
 	title,
+	titleType = 'h2',
 	buttonLabel,
 	buttonAltTitle,
 	buttonAction,
@@ -486,6 +487,7 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 			<>
 				<BlockMediaGrid
 					title={title}
+					titleType={titleType}
 					buttonLabel={buttonLabel}
 					buttonAltTitle={buttonAltTitle}
 					buttonAction={buttonAction || searchQuery}
