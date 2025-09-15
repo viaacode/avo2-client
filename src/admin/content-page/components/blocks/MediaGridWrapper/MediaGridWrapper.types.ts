@@ -11,4 +11,6 @@ export type ResolvedItemOrCollectionOrAssignmentOrContentPage = Partial<
 	media_item_label: string | null;
 	copyright_organisation: Avo.Organization.Organization | null;
 	copyright_image: string | null;
+	start_cue_point?: number;
+	end_cue_point?: number;
 };

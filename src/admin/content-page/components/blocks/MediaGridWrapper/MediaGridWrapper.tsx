@@ -437,7 +437,11 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 	};
 
 	const openInModal = (mediaListItem: MediaListItem): boolean => {
-		return openMediaInModal && mediaListItem?.itemAction?.type === 'ITEM';
+		return (
+			openMediaInModal &&
+			(mediaListItem?.itemAction?.type === 'ITEM' ||
+				mediaListItem?.itemAction?.type === 'ITEM_WITH_CUE_POINTS')
+		);
 	};
 
 	const renderMediaCardWrapper = (mediaCard: ReactNode, item: MediaListItem) => {
@@ -526,6 +530,26 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 								src={activeItem.src}
 								poster={(activeItem as Avo.Item.Item)?.thumbnail_path}
 								itemMetaData={activeItem as unknown as Avo.Item.Item}
+								cuePointsVideo={{
+									start:
+										(
+											activeItem as ResolvedItemOrCollectionOrAssignmentOrContentPage
+										).start_cue_point || null,
+									end:
+										(
+											activeItem as ResolvedItemOrCollectionOrAssignmentOrContentPage
+										).end_cue_point || null,
+								}}
+								cuePointsLabel={{
+									start:
+										(
+											activeItem as ResolvedItemOrCollectionOrAssignmentOrContentPage
+										).start_cue_point || null,
+									end:
+										(
+											activeItem as ResolvedItemOrCollectionOrAssignmentOrContentPage
+										).end_cue_point || null,
+								}}
 								verticalLayout
 								showTitle
 								showMetadata={false}
