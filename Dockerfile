@@ -29,7 +29,9 @@ WORKDIR /app
 # try alias to keep --max_old_space_size=2048 in subprocesses
 RUN alias npm='node --max_old_space_size=2048 /usr/bin/npm' >> ~/.bash_aliases &&\
   . ~/.bash_aliases &&\
-  npm run build
+  npm run build \
+# Add cookiebot attribute to script in index.html. Fails if no replacements were made.
+RUN npm run add-cookiebot-attribute
 ## final image with static serving with nginx
 FROM nginxinc/nginx-unprivileged
 ENV NODE_ENV $NODE_ENV

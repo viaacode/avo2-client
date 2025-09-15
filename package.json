@@ -11,7 +11,7 @@
     "env": "dotenv -e .env.qas node ./scripts/env.js && cp env-config.js ./public",
     "build": "vite build && vite build --config vite-embed.config.js && mkdir -p ./dist/embed && cp ./dist-embed/embed.html ./dist/embed/index.html && cp -rf ./dist-embed/assets/* ./dist/assets/ && cp ./embed/close-browser.html ./dist/embed/close-browser.html",
     "preview": "vite preview",
-    "postbuild": "npx ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/add-cookiebot-ignore-attributes.ts",
+    "add-cookiebot-attribute": "npx ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/add-cookiebot-ignore-attributes.ts",
     "unit-tests": "jest --transformIgnorePatterns \"node_modules/(?!(lodash-es))/\"",
     "lint": "eslint \"{src,test}/**/*.{ts,tsx}\" --ignore-pattern 'src/shared/generated/*.ts' --cache",
     "lint:fix": "eslint \"{src,test}/**/*.{ts,tsx}\" --ignore-pattern 'src/shared/generated/*.ts' --fix",
