@@ -2,7 +2,7 @@ import path from 'path';
 
 import replace, { type ReplaceResult } from 'replace-in-file';
 
-const regex = /<script([^>]*)src="(\/assets\/index-[^.]+\.js)"([^>]*)><\/script>/g;
+const regex = /<script([^>]*)src="(\/assets\/main-[^.]+\.js)"([^>]*)><\/script>/g;
 
 replace
 	.replaceInFile({
