@@ -17,7 +17,7 @@ export const renderCollectionOrBundleRoutes = (userPermissions: string[]): React
 				userPermissions.includes(PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS)),
 		<SecuredRoute
 			key={COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW}
-			component={CollectionsOrBundlesOverview}
+			Component={CollectionsOrBundlesOverview}
 			exact
 			path={COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW}
 		/>,
@@ -25,7 +25,7 @@ export const renderCollectionOrBundleRoutes = (userPermissions: string[]): React
 		userPermissions.includes(PermissionName.VIEW_COLLECTION_EDITORIAL_OVERVIEWS),
 		<SecuredRoute
 			key={COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_ACTUALISATION_OVERVIEW}
-			component={CollectionOrBundleActualisationOverview}
+			Component={CollectionOrBundleActualisationOverview}
 			exact
 			path={COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_ACTUALISATION_OVERVIEW}
 		/>,
@@ -33,7 +33,7 @@ export const renderCollectionOrBundleRoutes = (userPermissions: string[]): React
 		userPermissions.includes(PermissionName.VIEW_COLLECTION_EDITORIAL_OVERVIEWS),
 		<SecuredRoute
 			key={COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_QUALITYCHECK_OVERVIEW}
-			component={CollectionOrBundleQualityCheckOverview}
+			Component={CollectionOrBundleQualityCheckOverview}
 			exact
 			path={COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_QUALITYCHECK_OVERVIEW}
 		/>,
@@ -41,7 +41,7 @@ export const renderCollectionOrBundleRoutes = (userPermissions: string[]): React
 		userPermissions.includes(PermissionName.VIEW_COLLECTION_EDITORIAL_OVERVIEWS),
 		<SecuredRoute
 			key={COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_MARCOM_OVERVIEW}
-			component={CollectionOrBundleMarcomOverview}
+			Component={CollectionOrBundleMarcomOverview}
 			exact
 			path={COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_MARCOM_OVERVIEW}
 		/>,
@@ -51,7 +51,7 @@ export const renderCollectionOrBundleRoutes = (userPermissions: string[]): React
 				userPermissions.includes(PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES)),
 		<SecuredRoute
 			key={COLLECTIONS_OR_BUNDLES_PATH.BUNDLES_OVERVIEW}
-			component={CollectionsOrBundlesOverview}
+			Component={CollectionsOrBundlesOverview}
 			exact
 			path={COLLECTIONS_OR_BUNDLES_PATH.BUNDLES_OVERVIEW}
 		/>,
@@ -59,7 +59,7 @@ export const renderCollectionOrBundleRoutes = (userPermissions: string[]): React
 		userPermissions.includes(PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS),
 		<SecuredRoute
 			key={COLLECTIONS_OR_BUNDLES_PATH.BUNDLE_ACTUALISATION_OVERVIEW}
-			component={CollectionOrBundleActualisationOverview}
+			Component={CollectionOrBundleActualisationOverview}
 			exact
 			path={COLLECTIONS_OR_BUNDLES_PATH.BUNDLE_ACTUALISATION_OVERVIEW}
 		/>,
@@ -67,7 +67,7 @@ export const renderCollectionOrBundleRoutes = (userPermissions: string[]): React
 		userPermissions.includes(PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS),
 		<SecuredRoute
 			key={COLLECTIONS_OR_BUNDLES_PATH.BUNDLE_QUALITYCHECK_OVERVIEW}
-			component={CollectionOrBundleQualityCheckOverview}
+			Component={CollectionOrBundleQualityCheckOverview}
 			exact
 			path={COLLECTIONS_OR_BUNDLES_PATH.BUNDLE_QUALITYCHECK_OVERVIEW}
 		/>,
@@ -75,7 +75,7 @@ export const renderCollectionOrBundleRoutes = (userPermissions: string[]): React
 		userPermissions.includes(PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS),
 		<SecuredRoute
 			key={COLLECTIONS_OR_BUNDLES_PATH.BUNDLE_MARCOM_OVERVIEW}
-			component={CollectionOrBundleMarcomOverview}
+			Component={CollectionOrBundleMarcomOverview}
 			exact
 			path={COLLECTIONS_OR_BUNDLES_PATH.BUNDLE_MARCOM_OVERVIEW}
 		/>

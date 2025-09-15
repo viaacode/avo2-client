@@ -11,8 +11,6 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
@@ -32,7 +30,7 @@ import './AssignmentResponseEdit.scss';
 
 const AssignmentResponseAdminEdit: FC<
 	UserProps & DefaultSecureRouteProps<{ assignmentId: string; responseId: string }>
-> = ({ match, commonUser }) => {
+> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// Data
@@ -238,4 +236,4 @@ const AssignmentResponseAdminEdit: FC<
 	);
 };
 
-export default compose(withRouter, withUser)(AssignmentResponseAdminEdit) as FC;
+export default withUser(AssignmentResponseAdminEdit) as FC;

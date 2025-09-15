@@ -89,7 +89,7 @@ const BlockHeading = lazy(() =>
 
 type InteractiveTourEditProps = DefaultSecureRouteProps<{ id: string }>;
 
-const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, location }) => {
+const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ location }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// Hooks
@@ -205,7 +205,7 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, loc
 
 	const navigateBack = () => {
 		if (isCreatePage) {
-			history.push(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_OVERVIEW);
+			navigate(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_OVERVIEW);
 		} else {
 			navigate(history, INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL, {
 				id: match.params.id,

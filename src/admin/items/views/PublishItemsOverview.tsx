@@ -3,8 +3,7 @@ import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { get, isNil, truncate } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { useNavigate } from 'react-router';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
@@ -37,8 +36,9 @@ import {
 	type UnpublishedItemsTableState,
 } from '../items.types';
 
-const PublishItemsOverview: FC<DefaultSecureRouteProps> = ({ history }) => {
+const PublishItemsOverview: FC<DefaultSecureRouteProps> = () => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	const [items, setItems] = useState<UnpublishedItem[] | null>(null);
 	const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
@@ -126,7 +126,7 @@ const PublishItemsOverview: FC<DefaultSecureRouteProps> = ({ history }) => {
 			return;
 		}
 		const link = buildLink(APP_PATH.ITEM_DETAIL.route, { id: externalId });
-		redirectToClientPage(link, history);
+		redirectToClientPage(link, navigateFunc);
 	};
 
 	const navigateToAdminItemDetail = (uuid: string | undefined) => {
@@ -137,7 +137,7 @@ const PublishItemsOverview: FC<DefaultSecureRouteProps> = ({ history }) => {
 			return;
 		}
 		const link = buildLink(ADMIN_PATH.ITEM_DETAIL, { id: uuid });
-		redirectToClientPage(link, history);
+		redirectToClientPage(link, navigateFunc);
 	};
 
 	const publishSelection = async () => {
@@ -388,4 +388,4 @@ const PublishItemsOverview: FC<DefaultSecureRouteProps> = ({ history }) => {
 	);
 };
 
-export default compose(withRouter, withUser)(PublishItemsOverview) as FC;
+export default withUser(PublishItemsOverview) as FC;

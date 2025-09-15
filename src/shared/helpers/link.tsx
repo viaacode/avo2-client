@@ -2,7 +2,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { isArray, isEmpty, isNil } from 'lodash-es';
 import queryString from 'query-string';
 import React, { Fragment, type ReactNode } from 'react';
-import { type RouteComponentProps } from 'react-router-dom';
+import { type NavigateFunction } from 'react-router';
 
 import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
@@ -18,7 +18,7 @@ import {
 import { tHtml } from './translate-html';
 
 export const navigate = (
-	history: RouteComponentProps['history'],
+	navigate: NavigateFunction,
 	route: string,
 	params: RouteParams = {},
 	search?: string | { [paramName: string]: string },
@@ -47,9 +47,9 @@ export const navigate = (
 		return;
 	}
 	if (action === 'push') {
-		history.push(builtLink);
+		navigate(builtLink);
 	} else if (action === 'replace') {
-		history.replace(builtLink);
+		navigate(builtLink, { replace: true });
 	}
 };
 

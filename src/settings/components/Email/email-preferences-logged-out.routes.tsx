@@ -7,7 +7,7 @@ import Email from './Email';
 
 export const renderEmailPreferencesLoggedOutRoutes = (): ReactNode[] => [
 	<Route
-		component={Email}
+		element={<Email />}
 		path={APP_PATH.EMAIL_PREFERENCES_LOGGED_OUT.route}
 		key={APP_PATH.EMAIL_PREFERENCES_LOGGED_OUT.route}
 	/>,

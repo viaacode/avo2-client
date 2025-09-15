@@ -7,19 +7,19 @@ import { CollectionDetail, CollectionEdit } from './views';
 
 export const renderCollectionRoutes = (): ReactNode[] => [
 	<SecuredRoute
-		component={CollectionDetail}
+		Component={CollectionDetail}
 		exact
 		path={APP_PATH.COLLECTION_DETAIL.route}
 		key={APP_PATH.COLLECTION_DETAIL.route}
 	/>,
 	<SecuredRoute
-		component={CollectionEdit}
+		Component={CollectionEdit}
 		exact
 		path={APP_PATH.COLLECTION_EDIT.route}
 		key={APP_PATH.COLLECTION_EDIT.route}
 	/>,
 	<SecuredRoute
-		component={CollectionEdit}
+		Component={CollectionEdit}
 		exact
 		path={APP_PATH.COLLECTION_EDIT_TAB.route}
 		key={APP_PATH.COLLECTION_EDIT_TAB.route}

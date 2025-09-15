@@ -1,15 +1,7 @@
-import {
-	Button,
-	ButtonToolbar,
-	Container,
-	HeaderButtons,
-	Spacer,
-	Table,
-} from '@viaa/avo2-components';
+import { Button, ButtonToolbar, Container, HeaderButtons, Spacer, Table, } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps } from 'react-router';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
@@ -24,23 +16,20 @@ import { navigate } from '../../../shared/helpers/link';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
-import {
-	renderDateDetailRows,
-	renderDetailRow,
-	renderSimpleDetailRows,
-} from '../../shared/helpers/render-detail-fields';
+import { renderDateDetailRows, renderDetailRow, renderSimpleDetailRows, } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import {
-	AdminLayoutBody,
-	AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
 import { type InteractiveTour } from '../interactive-tour.types';
+import { useMatch, useNavigate } from 'react-router';
 
-type InteractiveTourDetailProps = RouteComponentProps<{ id: string }>;
+const InteractiveTourDetail: FC = () => {
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id', string>(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL);
 
-const InteractiveTourDetail: FC<InteractiveTourDetailProps> = ({ history, match }) => {
+	const interactiveTourId = match?.params.id;
+
 	// Hooks
 	const [interactiveTour, setInteractiveTour] = useState<InteractiveTour | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -50,13 +39,24 @@ const InteractiveTourDetail: FC<InteractiveTourDetailProps> = ({ history, match 
 
 	const fetchInteractiveTourById = useCallback(async () => {
 		try {
-			setInteractiveTour(await InteractiveTourService.fetchInteractiveTour(match.params.id));
+			if (!interactiveTourId) {
+				setLoadingInfo({
+					state: 'error',
+					message: tHtml(
+						'admin/interactive-tour/views/interactive-tour-detail___het-ophalen-van-de-interactive-tour-is-mislukt'
+					),
+				});
+				return;
+			}
+			setInteractiveTour(
+				await InteractiveTourService.fetchInteractiveTour(interactiveTourId)
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get interactive tour by id', err, {
 					query: 'GET_INTERACTIVE_TOUR_BY_ID',
 					variables: {
-						id: match.params.id,
+						id: interactiveTourId,
 					},
 				})
 			);
@@ -67,7 +67,7 @@ const InteractiveTourDetail: FC<InteractiveTourDetailProps> = ({ history, match 
 				),
 			});
 		}
-	}, [match.params.id, tHtml]);
+	}, [interactiveTourId, tHtml]);
 
 	useEffect(() => {
 		fetchInteractiveTourById();
@@ -105,7 +105,7 @@ const InteractiveTourDetail: FC<InteractiveTourDetailProps> = ({ history, match 
 					'admin/interactive-tour/views/interactive-tour-detail___de-interactive-tour-is-verwijdert'
 				)
 			);
-			redirectToClientPage(ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW, history);
+			redirectToClientPage(ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW, navigateFunc);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to delete interactive tour', err, { interactiveTour })
@@ -171,7 +171,7 @@ const InteractiveTourDetail: FC<InteractiveTourDetailProps> = ({ history, match 
 
 	const renderInteractiveTourDetailPage = () => (
 		<AdminLayout
-			onClickBackButton={() => navigate(history, ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW)}
+			onClickBackButton={() => navigate(navigateFunc, ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW)}
 			pageTitle={tText(
 				'admin/interactive-tour/views/interactive-tour-detail___interactive-tour-details'
 			)}
@@ -194,9 +194,9 @@ const InteractiveTourDetail: FC<InteractiveTourDetailProps> = ({ history, match 
 							onClick={() => {
 								redirectToClientPage(
 									buildLink(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT, {
-										id: match.params.id,
+										id: interactiveTourId,
 									}),
-									history
+									navigateFunc
 								);
 							}}
 						/>

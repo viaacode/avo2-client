@@ -3,6 +3,7 @@ import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
 import { get, isNil } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -43,8 +44,9 @@ import {
 
 type InteractiveTourOverviewProps = DefaultSecureRouteProps;
 
-const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ history }) => {
+const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = () => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	const [interactiveTourIdToDelete, setInteractiveTourIdToDelete] = useState<number | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
@@ -186,9 +188,13 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 							type="secondary"
 							icon={IconName.eye}
 							onClick={() =>
-								navigate(history, INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL, {
-									id: rowData.id,
-								})
+								navigate(
+									navigateFunc,
+									INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL,
+									{
+										id: rowData.id,
+									}
+								)
 							}
 							title={tText(
 								'admin/interactive-tour/views/interactive-tour-overview___bekijk-de-rondleiding-detail-pagina'
@@ -200,9 +206,13 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 						<Button
 							icon={IconName.edit}
 							onClick={() =>
-								navigate(history, INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT, {
-									id: rowData.id,
-								})
+								navigate(
+									navigateFunc,
+									INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT,
+									{
+										id: rowData.id,
+									}
+								)
 							}
 							size="small"
 							title={tText(
@@ -251,7 +261,7 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 						label={tText(
 							'admin/interactive-tour/views/interactive-tour-overview___interactieve-tour-aanmaken'
 						)}
-						onClick={() => history.push(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE)}
+						onClick={() => navigateFunc(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE)}
 					/>
 				</Spacer>
 			</ErrorView>
@@ -307,7 +317,7 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 					onClick={() => {
 						redirectToClientPage(
 							INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE,
-							history
+							navigateFunc
 						);
 					}}
 				/>

@@ -26259,6 +26259,26 @@ export type Mutation_Root = {
   delete_migrate_reference_ids?: Maybe<Migrate_Reference_Ids_Mutation_Response>;
   /** delete single row from the table: "migrate.reference_ids" */
   delete_migrate_reference_ids_by_pk?: Maybe<Migrate_Reference_Ids>;
+  /** delete data from the table: "reporting.assignment_blocks" */
+  delete_reporting_assignment_blocks?: Maybe<Reporting_Assignment_Blocks_Mutation_Response>;
+  /** delete data from the table: "reporting.assignment_contributors" */
+  delete_reporting_assignment_contributors?: Maybe<Reporting_Assignment_Contributors_Mutation_Response>;
+  /** delete data from the table: "reporting.assignment_response_blocks" */
+  delete_reporting_assignment_response_blocks?: Maybe<Reporting_Assignment_Response_Blocks_Mutation_Response>;
+  /** delete data from the table: "reporting.assignment_responses" */
+  delete_reporting_assignment_responses?: Maybe<Reporting_Assignment_Responses_Mutation_Response>;
+  /** delete data from the table: "reporting.collection_contributors" */
+  delete_reporting_collection_contributors?: Maybe<Reporting_Collection_Contributors_Mutation_Response>;
+  /** delete data from the table: "reporting.educational_organisations" */
+  delete_reporting_educational_organisations?: Maybe<Reporting_Educational_Organisations_Mutation_Response>;
+  /** delete data from the table: "reporting.items" */
+  delete_reporting_items?: Maybe<Reporting_Items_Mutation_Response>;
+  /** delete data from the table: "reporting.organisations" */
+  delete_reporting_organisations?: Maybe<Reporting_Organisations_Mutation_Response>;
+  /** delete data from the table: "reporting.profile_educational_organisation_links" */
+  delete_reporting_profile_educational_organisation_links?: Maybe<Reporting_Profile_Educational_Organisation_Links_Mutation_Response>;
+  /** delete data from the table: "reporting.quick_share_links" */
+  delete_reporting_quick_share_links?: Maybe<Reporting_Quick_Share_Links_Mutation_Response>;
   /** delete data from the table: "shared.collateral" */
   delete_shared_collateral?: Maybe<Shared_Collateral_Mutation_Response>;
   /** delete single row from the table: "shared.collateral" */
@@ -26661,6 +26681,46 @@ export type Mutation_Root = {
   insert_migrate_reference_ids?: Maybe<Migrate_Reference_Ids_Mutation_Response>;
   /** insert a single row into the table: "migrate.reference_ids" */
   insert_migrate_reference_ids_one?: Maybe<Migrate_Reference_Ids>;
+  /** insert data into the table: "reporting.assignment_blocks" */
+  insert_reporting_assignment_blocks?: Maybe<Reporting_Assignment_Blocks_Mutation_Response>;
+  /** insert a single row into the table: "reporting.assignment_blocks" */
+  insert_reporting_assignment_blocks_one?: Maybe<Reporting_Assignment_Blocks>;
+  /** insert data into the table: "reporting.assignment_contributors" */
+  insert_reporting_assignment_contributors?: Maybe<Reporting_Assignment_Contributors_Mutation_Response>;
+  /** insert a single row into the table: "reporting.assignment_contributors" */
+  insert_reporting_assignment_contributors_one?: Maybe<Reporting_Assignment_Contributors>;
+  /** insert data into the table: "reporting.assignment_response_blocks" */
+  insert_reporting_assignment_response_blocks?: Maybe<Reporting_Assignment_Response_Blocks_Mutation_Response>;
+  /** insert a single row into the table: "reporting.assignment_response_blocks" */
+  insert_reporting_assignment_response_blocks_one?: Maybe<Reporting_Assignment_Response_Blocks>;
+  /** insert data into the table: "reporting.assignment_responses" */
+  insert_reporting_assignment_responses?: Maybe<Reporting_Assignment_Responses_Mutation_Response>;
+  /** insert a single row into the table: "reporting.assignment_responses" */
+  insert_reporting_assignment_responses_one?: Maybe<Reporting_Assignment_Responses>;
+  /** insert data into the table: "reporting.collection_contributors" */
+  insert_reporting_collection_contributors?: Maybe<Reporting_Collection_Contributors_Mutation_Response>;
+  /** insert a single row into the table: "reporting.collection_contributors" */
+  insert_reporting_collection_contributors_one?: Maybe<Reporting_Collection_Contributors>;
+  /** insert data into the table: "reporting.educational_organisations" */
+  insert_reporting_educational_organisations?: Maybe<Reporting_Educational_Organisations_Mutation_Response>;
+  /** insert a single row into the table: "reporting.educational_organisations" */
+  insert_reporting_educational_organisations_one?: Maybe<Reporting_Educational_Organisations>;
+  /** insert data into the table: "reporting.items" */
+  insert_reporting_items?: Maybe<Reporting_Items_Mutation_Response>;
+  /** insert a single row into the table: "reporting.items" */
+  insert_reporting_items_one?: Maybe<Reporting_Items>;
+  /** insert data into the table: "reporting.organisations" */
+  insert_reporting_organisations?: Maybe<Reporting_Organisations_Mutation_Response>;
+  /** insert a single row into the table: "reporting.organisations" */
+  insert_reporting_organisations_one?: Maybe<Reporting_Organisations>;
+  /** insert data into the table: "reporting.profile_educational_organisation_links" */
+  insert_reporting_profile_educational_organisation_links?: Maybe<Reporting_Profile_Educational_Organisation_Links_Mutation_Response>;
+  /** insert a single row into the table: "reporting.profile_educational_organisation_links" */
+  insert_reporting_profile_educational_organisation_links_one?: Maybe<Reporting_Profile_Educational_Organisation_Links>;
+  /** insert data into the table: "reporting.quick_share_links" */
+  insert_reporting_quick_share_links?: Maybe<Reporting_Quick_Share_Links_Mutation_Response>;
+  /** insert a single row into the table: "reporting.quick_share_links" */
+  insert_reporting_quick_share_links_one?: Maybe<Reporting_Quick_Share_Links>;
   /** insert data into the table: "shared.collateral" */
   insert_shared_collateral?: Maybe<Shared_Collateral_Mutation_Response>;
   /** insert a single row into the table: "shared.collateral" */
@@ -27211,6 +27271,46 @@ export type Mutation_Root = {
   update_migrate_reference_ids_by_pk?: Maybe<Migrate_Reference_Ids>;
   /** update multiples rows of table: "migrate.reference_ids" */
   update_migrate_reference_ids_many?: Maybe<Array<Maybe<Migrate_Reference_Ids_Mutation_Response>>>;
+  /** update data of the table: "reporting.assignment_blocks" */
+  update_reporting_assignment_blocks?: Maybe<Reporting_Assignment_Blocks_Mutation_Response>;
+  /** update multiples rows of table: "reporting.assignment_blocks" */
+  update_reporting_assignment_blocks_many?: Maybe<Array<Maybe<Reporting_Assignment_Blocks_Mutation_Response>>>;
+  /** update data of the table: "reporting.assignment_contributors" */
+  update_reporting_assignment_contributors?: Maybe<Reporting_Assignment_Contributors_Mutation_Response>;
+  /** update multiples rows of table: "reporting.assignment_contributors" */
+  update_reporting_assignment_contributors_many?: Maybe<Array<Maybe<Reporting_Assignment_Contributors_Mutation_Response>>>;
+  /** update data of the table: "reporting.assignment_response_blocks" */
+  update_reporting_assignment_response_blocks?: Maybe<Reporting_Assignment_Response_Blocks_Mutation_Response>;
+  /** update multiples rows of table: "reporting.assignment_response_blocks" */
+  update_reporting_assignment_response_blocks_many?: Maybe<Array<Maybe<Reporting_Assignment_Response_Blocks_Mutation_Response>>>;
+  /** update data of the table: "reporting.assignment_responses" */
+  update_reporting_assignment_responses?: Maybe<Reporting_Assignment_Responses_Mutation_Response>;
+  /** update multiples rows of table: "reporting.assignment_responses" */
+  update_reporting_assignment_responses_many?: Maybe<Array<Maybe<Reporting_Assignment_Responses_Mutation_Response>>>;
+  /** update data of the table: "reporting.collection_contributors" */
+  update_reporting_collection_contributors?: Maybe<Reporting_Collection_Contributors_Mutation_Response>;
+  /** update multiples rows of table: "reporting.collection_contributors" */
+  update_reporting_collection_contributors_many?: Maybe<Array<Maybe<Reporting_Collection_Contributors_Mutation_Response>>>;
+  /** update data of the table: "reporting.educational_organisations" */
+  update_reporting_educational_organisations?: Maybe<Reporting_Educational_Organisations_Mutation_Response>;
+  /** update multiples rows of table: "reporting.educational_organisations" */
+  update_reporting_educational_organisations_many?: Maybe<Array<Maybe<Reporting_Educational_Organisations_Mutation_Response>>>;
+  /** update data of the table: "reporting.items" */
+  update_reporting_items?: Maybe<Reporting_Items_Mutation_Response>;
+  /** update multiples rows of table: "reporting.items" */
+  update_reporting_items_many?: Maybe<Array<Maybe<Reporting_Items_Mutation_Response>>>;
+  /** update data of the table: "reporting.organisations" */
+  update_reporting_organisations?: Maybe<Reporting_Organisations_Mutation_Response>;
+  /** update multiples rows of table: "reporting.organisations" */
+  update_reporting_organisations_many?: Maybe<Array<Maybe<Reporting_Organisations_Mutation_Response>>>;
+  /** update data of the table: "reporting.profile_educational_organisation_links" */
+  update_reporting_profile_educational_organisation_links?: Maybe<Reporting_Profile_Educational_Organisation_Links_Mutation_Response>;
+  /** update multiples rows of table: "reporting.profile_educational_organisation_links" */
+  update_reporting_profile_educational_organisation_links_many?: Maybe<Array<Maybe<Reporting_Profile_Educational_Organisation_Links_Mutation_Response>>>;
+  /** update data of the table: "reporting.quick_share_links" */
+  update_reporting_quick_share_links?: Maybe<Reporting_Quick_Share_Links_Mutation_Response>;
+  /** update multiples rows of table: "reporting.quick_share_links" */
+  update_reporting_quick_share_links_many?: Maybe<Array<Maybe<Reporting_Quick_Share_Links_Mutation_Response>>>;
   /** update data of the table: "shared.collateral" */
   update_shared_collateral?: Maybe<Shared_Collateral_Mutation_Response>;
   /** update single row of the table: "shared.collateral" */
@@ -28259,6 +28359,66 @@ export type Mutation_RootDelete_Migrate_Reference_IdsArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Migrate_Reference_Ids_By_PkArgs = {
   id: Scalars['Int'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Reporting_Assignment_BlocksArgs = {
+  where: Reporting_Assignment_Blocks_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Reporting_Assignment_ContributorsArgs = {
+  where: Reporting_Assignment_Contributors_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Reporting_Assignment_Response_BlocksArgs = {
+  where: Reporting_Assignment_Response_Blocks_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Reporting_Assignment_ResponsesArgs = {
+  where: Reporting_Assignment_Responses_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Reporting_Collection_ContributorsArgs = {
+  where: Reporting_Collection_Contributors_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Reporting_Educational_OrganisationsArgs = {
+  where: Reporting_Educational_Organisations_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Reporting_ItemsArgs = {
+  where: Reporting_Items_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Reporting_OrganisationsArgs = {
+  where: Reporting_Organisations_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Reporting_Profile_Educational_Organisation_LinksArgs = {
+  where: Reporting_Profile_Educational_Organisation_Links_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Reporting_Quick_Share_LinksArgs = {
+  where: Reporting_Quick_Share_Links_Bool_Exp;
 };
 
 
@@ -29611,6 +29771,126 @@ export type Mutation_RootInsert_Migrate_Reference_IdsArgs = {
 export type Mutation_RootInsert_Migrate_Reference_Ids_OneArgs = {
   object: Migrate_Reference_Ids_Insert_Input;
   on_conflict?: InputMaybe<Migrate_Reference_Ids_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Assignment_BlocksArgs = {
+  objects: Array<Reporting_Assignment_Blocks_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Assignment_Blocks_OneArgs = {
+  object: Reporting_Assignment_Blocks_Insert_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Assignment_ContributorsArgs = {
+  objects: Array<Reporting_Assignment_Contributors_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Assignment_Contributors_OneArgs = {
+  object: Reporting_Assignment_Contributors_Insert_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Assignment_Response_BlocksArgs = {
+  objects: Array<Reporting_Assignment_Response_Blocks_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Assignment_Response_Blocks_OneArgs = {
+  object: Reporting_Assignment_Response_Blocks_Insert_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Assignment_ResponsesArgs = {
+  objects: Array<Reporting_Assignment_Responses_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Assignment_Responses_OneArgs = {
+  object: Reporting_Assignment_Responses_Insert_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Collection_ContributorsArgs = {
+  objects: Array<Reporting_Collection_Contributors_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Collection_Contributors_OneArgs = {
+  object: Reporting_Collection_Contributors_Insert_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Educational_OrganisationsArgs = {
+  objects: Array<Reporting_Educational_Organisations_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Educational_Organisations_OneArgs = {
+  object: Reporting_Educational_Organisations_Insert_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_ItemsArgs = {
+  objects: Array<Reporting_Items_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Items_OneArgs = {
+  object: Reporting_Items_Insert_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_OrganisationsArgs = {
+  objects: Array<Reporting_Organisations_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Organisations_OneArgs = {
+  object: Reporting_Organisations_Insert_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Profile_Educational_Organisation_LinksArgs = {
+  objects: Array<Reporting_Profile_Educational_Organisation_Links_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Profile_Educational_Organisation_Links_OneArgs = {
+  object: Reporting_Profile_Educational_Organisation_Links_Insert_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Quick_Share_LinksArgs = {
+  objects: Array<Reporting_Quick_Share_Links_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Reporting_Quick_Share_Links_OneArgs = {
+  object: Reporting_Quick_Share_Links_Insert_Input;
 };
 
 
@@ -31637,6 +31917,142 @@ export type Mutation_RootUpdate_Migrate_Reference_Ids_ManyArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Reporting_Assignment_BlocksArgs = {
+  _set?: InputMaybe<Reporting_Assignment_Blocks_Set_Input>;
+  where: Reporting_Assignment_Blocks_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Assignment_Blocks_ManyArgs = {
+  updates: Array<Reporting_Assignment_Blocks_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Assignment_ContributorsArgs = {
+  _set?: InputMaybe<Reporting_Assignment_Contributors_Set_Input>;
+  where: Reporting_Assignment_Contributors_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Assignment_Contributors_ManyArgs = {
+  updates: Array<Reporting_Assignment_Contributors_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Assignment_Response_BlocksArgs = {
+  _set?: InputMaybe<Reporting_Assignment_Response_Blocks_Set_Input>;
+  where: Reporting_Assignment_Response_Blocks_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Assignment_Response_Blocks_ManyArgs = {
+  updates: Array<Reporting_Assignment_Response_Blocks_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Assignment_ResponsesArgs = {
+  _set?: InputMaybe<Reporting_Assignment_Responses_Set_Input>;
+  where: Reporting_Assignment_Responses_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Assignment_Responses_ManyArgs = {
+  updates: Array<Reporting_Assignment_Responses_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Collection_ContributorsArgs = {
+  _set?: InputMaybe<Reporting_Collection_Contributors_Set_Input>;
+  where: Reporting_Collection_Contributors_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Collection_Contributors_ManyArgs = {
+  updates: Array<Reporting_Collection_Contributors_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Educational_OrganisationsArgs = {
+  _inc?: InputMaybe<Reporting_Educational_Organisations_Inc_Input>;
+  _set?: InputMaybe<Reporting_Educational_Organisations_Set_Input>;
+  where: Reporting_Educational_Organisations_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Educational_Organisations_ManyArgs = {
+  updates: Array<Reporting_Educational_Organisations_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_ItemsArgs = {
+  _append?: InputMaybe<Reporting_Items_Append_Input>;
+  _delete_at_path?: InputMaybe<Reporting_Items_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Reporting_Items_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Reporting_Items_Delete_Key_Input>;
+  _prepend?: InputMaybe<Reporting_Items_Prepend_Input>;
+  _set?: InputMaybe<Reporting_Items_Set_Input>;
+  where: Reporting_Items_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Items_ManyArgs = {
+  updates: Array<Reporting_Items_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_OrganisationsArgs = {
+  _set?: InputMaybe<Reporting_Organisations_Set_Input>;
+  where: Reporting_Organisations_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Organisations_ManyArgs = {
+  updates: Array<Reporting_Organisations_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Profile_Educational_Organisation_LinksArgs = {
+  _set?: InputMaybe<Reporting_Profile_Educational_Organisation_Links_Set_Input>;
+  where: Reporting_Profile_Educational_Organisation_Links_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Profile_Educational_Organisation_Links_ManyArgs = {
+  updates: Array<Reporting_Profile_Educational_Organisation_Links_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Quick_Share_LinksArgs = {
+  _set?: InputMaybe<Reporting_Quick_Share_Links_Set_Input>;
+  where: Reporting_Quick_Share_Links_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Reporting_Quick_Share_Links_ManyArgs = {
+  updates: Array<Reporting_Quick_Share_Links_Updates>;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_Shared_CollateralArgs = {
   _append?: InputMaybe<Shared_Collateral_Append_Input>;
   _delete_at_path?: InputMaybe<Shared_Collateral_Delete_At_Path_Input>;
@@ -32820,6 +33236,154 @@ export type Query_Root = {
   migrate_reference_ids_aggregate: Migrate_Reference_Ids_Aggregate;
   /** fetch data from the table: "migrate.reference_ids" using primary key columns */
   migrate_reference_ids_by_pk?: Maybe<Migrate_Reference_Ids>;
+  /** fetch data from the table: "reporting.assignment_blocks" */
+  reporting_assignment_blocks: Array<Reporting_Assignment_Blocks>;
+  /** fetch aggregated fields from the table: "reporting.assignment_blocks" */
+  reporting_assignment_blocks_aggregate: Reporting_Assignment_Blocks_Aggregate;
+  /** fetch data from the table: "reporting.assignment_contributors" */
+  reporting_assignment_contributors: Array<Reporting_Assignment_Contributors>;
+  /** fetch aggregated fields from the table: "reporting.assignment_contributors" */
+  reporting_assignment_contributors_aggregate: Reporting_Assignment_Contributors_Aggregate;
+  /** fetch data from the table: "reporting.assignment_education_degrees" */
+  reporting_assignment_education_degrees: Array<Reporting_Assignment_Education_Degrees>;
+  /** fetch aggregated fields from the table: "reporting.assignment_education_degrees" */
+  reporting_assignment_education_degrees_aggregate: Reporting_Assignment_Education_Degrees_Aggregate;
+  /** fetch data from the table: "reporting.assignment_education_levels" */
+  reporting_assignment_education_levels: Array<Reporting_Assignment_Education_Levels>;
+  /** fetch aggregated fields from the table: "reporting.assignment_education_levels" */
+  reporting_assignment_education_levels_aggregate: Reporting_Assignment_Education_Levels_Aggregate;
+  /** fetch data from the table: "reporting.assignment_response_blocks" */
+  reporting_assignment_response_blocks: Array<Reporting_Assignment_Response_Blocks>;
+  /** fetch aggregated fields from the table: "reporting.assignment_response_blocks" */
+  reporting_assignment_response_blocks_aggregate: Reporting_Assignment_Response_Blocks_Aggregate;
+  /** fetch data from the table: "reporting.assignment_responses" */
+  reporting_assignment_responses: Array<Reporting_Assignment_Responses>;
+  /** fetch aggregated fields from the table: "reporting.assignment_responses" */
+  reporting_assignment_responses_aggregate: Reporting_Assignment_Responses_Aggregate;
+  /** fetch data from the table: "reporting.assignment_subjects" */
+  reporting_assignment_subjects: Array<Reporting_Assignment_Subjects>;
+  /** fetch aggregated fields from the table: "reporting.assignment_subjects" */
+  reporting_assignment_subjects_aggregate: Reporting_Assignment_Subjects_Aggregate;
+  /** fetch data from the table: "reporting.assignment_themes" */
+  reporting_assignment_themes: Array<Reporting_Assignment_Themes>;
+  /** fetch aggregated fields from the table: "reporting.assignment_themes" */
+  reporting_assignment_themes_aggregate: Reporting_Assignment_Themes_Aggregate;
+  /** fetch data from the table: "reporting.assignments" */
+  reporting_assignments: Array<Reporting_Assignments>;
+  /** fetch aggregated fields from the table: "reporting.assignments" */
+  reporting_assignments_aggregate: Reporting_Assignments_Aggregate;
+  /** fetch data from the table: "reporting.bundle_blocks" */
+  reporting_bundle_blocks: Array<Reporting_Bundle_Blocks>;
+  /** fetch aggregated fields from the table: "reporting.bundle_blocks" */
+  reporting_bundle_blocks_aggregate: Reporting_Bundle_Blocks_Aggregate;
+  /** fetch data from the table: "reporting.bundle_education_degrees" */
+  reporting_bundle_education_degrees: Array<Reporting_Bundle_Education_Degrees>;
+  /** fetch aggregated fields from the table: "reporting.bundle_education_degrees" */
+  reporting_bundle_education_degrees_aggregate: Reporting_Bundle_Education_Degrees_Aggregate;
+  /** fetch data from the table: "reporting.bundle_education_levels" */
+  reporting_bundle_education_levels: Array<Reporting_Bundle_Education_Levels>;
+  /** fetch aggregated fields from the table: "reporting.bundle_education_levels" */
+  reporting_bundle_education_levels_aggregate: Reporting_Bundle_Education_Levels_Aggregate;
+  /** fetch data from the table: "reporting.bundle_subjects" */
+  reporting_bundle_subjects: Array<Reporting_Bundle_Subjects>;
+  /** fetch aggregated fields from the table: "reporting.bundle_subjects" */
+  reporting_bundle_subjects_aggregate: Reporting_Bundle_Subjects_Aggregate;
+  /** fetch data from the table: "reporting.bundle_themes" */
+  reporting_bundle_themes: Array<Reporting_Bundle_Themes>;
+  /** fetch aggregated fields from the table: "reporting.bundle_themes" */
+  reporting_bundle_themes_aggregate: Reporting_Bundle_Themes_Aggregate;
+  /** fetch data from the table: "reporting.bundles" */
+  reporting_bundles: Array<Reporting_Bundles>;
+  /** fetch aggregated fields from the table: "reporting.bundles" */
+  reporting_bundles_aggregate: Reporting_Bundles_Aggregate;
+  /** fetch data from the table: "reporting.collection_blocks" */
+  reporting_collection_blocks: Array<Reporting_Collection_Blocks>;
+  /** fetch aggregated fields from the table: "reporting.collection_blocks" */
+  reporting_collection_blocks_aggregate: Reporting_Collection_Blocks_Aggregate;
+  /** fetch data from the table: "reporting.collection_contributors" */
+  reporting_collection_contributors: Array<Reporting_Collection_Contributors>;
+  /** fetch aggregated fields from the table: "reporting.collection_contributors" */
+  reporting_collection_contributors_aggregate: Reporting_Collection_Contributors_Aggregate;
+  /** fetch data from the table: "reporting.collection_education_degrees" */
+  reporting_collection_education_degrees: Array<Reporting_Collection_Education_Degrees>;
+  /** fetch aggregated fields from the table: "reporting.collection_education_degrees" */
+  reporting_collection_education_degrees_aggregate: Reporting_Collection_Education_Degrees_Aggregate;
+  /** fetch data from the table: "reporting.collection_education_levels" */
+  reporting_collection_education_levels: Array<Reporting_Collection_Education_Levels>;
+  /** fetch aggregated fields from the table: "reporting.collection_education_levels" */
+  reporting_collection_education_levels_aggregate: Reporting_Collection_Education_Levels_Aggregate;
+  /** fetch data from the table: "reporting.collection_subjects" */
+  reporting_collection_subjects: Array<Reporting_Collection_Subjects>;
+  /** fetch aggregated fields from the table: "reporting.collection_subjects" */
+  reporting_collection_subjects_aggregate: Reporting_Collection_Subjects_Aggregate;
+  /** fetch data from the table: "reporting.collection_themes" */
+  reporting_collection_themes: Array<Reporting_Collection_Themes>;
+  /** fetch aggregated fields from the table: "reporting.collection_themes" */
+  reporting_collection_themes_aggregate: Reporting_Collection_Themes_Aggregate;
+  /** fetch data from the table: "reporting.collections" */
+  reporting_collections: Array<Reporting_Collections>;
+  /** fetch aggregated fields from the table: "reporting.collections" */
+  reporting_collections_aggregate: Reporting_Collections_Aggregate;
+  /** fetch data from the table: "reporting.educational_organisations" */
+  reporting_educational_organisations: Array<Reporting_Educational_Organisations>;
+  /** fetch aggregated fields from the table: "reporting.educational_organisations" */
+  reporting_educational_organisations_aggregate: Reporting_Educational_Organisations_Aggregate;
+  /** fetch data from the table: "reporting.identity_provider_links" */
+  reporting_identity_provider_links: Array<Reporting_Identity_Provider_Links>;
+  /** fetch aggregated fields from the table: "reporting.identity_provider_links" */
+  reporting_identity_provider_links_aggregate: Reporting_Identity_Provider_Links_Aggregate;
+  /** fetch data from the table: "reporting.item_education_degrees" */
+  reporting_item_education_degrees: Array<Reporting_Item_Education_Degrees>;
+  /** fetch aggregated fields from the table: "reporting.item_education_degrees" */
+  reporting_item_education_degrees_aggregate: Reporting_Item_Education_Degrees_Aggregate;
+  /** fetch data from the table: "reporting.item_education_levels" */
+  reporting_item_education_levels: Array<Reporting_Item_Education_Levels>;
+  /** fetch aggregated fields from the table: "reporting.item_education_levels" */
+  reporting_item_education_levels_aggregate: Reporting_Item_Education_Levels_Aggregate;
+  /** fetch data from the table: "reporting.item_subjects" */
+  reporting_item_subjects: Array<Reporting_Item_Subjects>;
+  /** fetch aggregated fields from the table: "reporting.item_subjects" */
+  reporting_item_subjects_aggregate: Reporting_Item_Subjects_Aggregate;
+  /** fetch data from the table: "reporting.item_themes" */
+  reporting_item_themes: Array<Reporting_Item_Themes>;
+  /** fetch aggregated fields from the table: "reporting.item_themes" */
+  reporting_item_themes_aggregate: Reporting_Item_Themes_Aggregate;
+  /** fetch data from the table: "reporting.items" */
+  reporting_items: Array<Reporting_Items>;
+  /** fetch aggregated fields from the table: "reporting.items" */
+  reporting_items_aggregate: Reporting_Items_Aggregate;
+  /** fetch data from the table: "reporting.organisations" */
+  reporting_organisations: Array<Reporting_Organisations>;
+  /** fetch aggregated fields from the table: "reporting.organisations" */
+  reporting_organisations_aggregate: Reporting_Organisations_Aggregate;
+  /** fetch data from the table: "reporting.profile_education_degrees" */
+  reporting_profile_education_degrees: Array<Reporting_Profile_Education_Degrees>;
+  /** fetch aggregated fields from the table: "reporting.profile_education_degrees" */
+  reporting_profile_education_degrees_aggregate: Reporting_Profile_Education_Degrees_Aggregate;
+  /** fetch data from the table: "reporting.profile_education_levels" */
+  reporting_profile_education_levels: Array<Reporting_Profile_Education_Levels>;
+  /** fetch aggregated fields from the table: "reporting.profile_education_levels" */
+  reporting_profile_education_levels_aggregate: Reporting_Profile_Education_Levels_Aggregate;
+  /** fetch data from the table: "reporting.profile_educational_organisation_links" */
+  reporting_profile_educational_organisation_links: Array<Reporting_Profile_Educational_Organisation_Links>;
+  /** fetch aggregated fields from the table: "reporting.profile_educational_organisation_links" */
+  reporting_profile_educational_organisation_links_aggregate: Reporting_Profile_Educational_Organisation_Links_Aggregate;
+  /** fetch data from the table: "reporting.profile_subjects" */
+  reporting_profile_subjects: Array<Reporting_Profile_Subjects>;
+  /** fetch aggregated fields from the table: "reporting.profile_subjects" */
+  reporting_profile_subjects_aggregate: Reporting_Profile_Subjects_Aggregate;
+  /** fetch data from the table: "reporting.profile_themes" */
+  reporting_profile_themes: Array<Reporting_Profile_Themes>;
+  /** fetch aggregated fields from the table: "reporting.profile_themes" */
+  reporting_profile_themes_aggregate: Reporting_Profile_Themes_Aggregate;
+  /** fetch data from the table: "reporting.profiles" */
+  reporting_profiles: Array<Reporting_Profiles>;
+  /** fetch aggregated fields from the table: "reporting.profiles" */
+  reporting_profiles_aggregate: Reporting_Profiles_Aggregate;
+  /** fetch data from the table: "reporting.quick_share_links" */
+  reporting_quick_share_links: Array<Reporting_Quick_Share_Links>;
+  /** fetch aggregated fields from the table: "reporting.quick_share_links" */
+  reporting_quick_share_links_aggregate: Reporting_Quick_Share_Links_Aggregate;
   /** fetch data from the table: "shared.collateral" */
   shared_collateral: Array<Shared_Collateral>;
   /** fetch aggregated fields from the table: "shared.collateral" */
@@ -32898,6 +33462,10 @@ export type Query_Root = {
   users_audit_log_aggregate: Users_Audit_Log_Aggregate;
   /** fetch data from the table: "users.audit_log" using primary key columns */
   users_audit_log_by_pk?: Maybe<Users_Audit_Log>;
+  /** fetch data from the table: "users.common_users" */
+  users_common_users: Array<Users_Common_Users>;
+  /** fetch aggregated fields from the table: "users.common_users" */
+  users_common_users_aggregate: Users_Common_Users_Aggregate;
   /** fetch data from the table: "users.email_preferences" */
   users_email_preferences: Array<Users_Email_Preferences>;
   /** fetch aggregated fields from the table: "users.email_preferences" */
@@ -35056,6 +35624,672 @@ export type Query_RootMigrate_Reference_Ids_By_PkArgs = {
 };
 
 
+export type Query_RootReporting_Assignment_BlocksArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Blocks_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignment_Blocks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Blocks_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignment_ContributorsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Contributors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Contributors_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Contributors_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignment_Contributors_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Contributors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Contributors_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Contributors_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignment_Education_DegreesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignment_Education_Degrees_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignment_Education_LevelsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Education_Levels_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignment_Education_Levels_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Education_Levels_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignment_Response_BlocksArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Response_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Response_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Response_Blocks_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignment_Response_Blocks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Response_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Response_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Response_Blocks_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignment_ResponsesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Responses_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Responses_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Responses_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignment_Responses_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Responses_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Responses_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Responses_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignment_SubjectsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Subjects_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignment_Subjects_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Subjects_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignment_ThemesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Themes_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignment_Themes_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Themes_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_AssignmentsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignments_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignments_Order_By>>;
+  where?: InputMaybe<Reporting_Assignments_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Assignments_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignments_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignments_Order_By>>;
+  where?: InputMaybe<Reporting_Assignments_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Bundle_BlocksArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Blocks_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Bundle_Blocks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Blocks_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Bundle_Education_DegreesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Bundle_Education_Degrees_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Bundle_Education_LevelsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Education_Levels_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Bundle_Education_Levels_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Education_Levels_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Bundle_SubjectsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Subjects_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Bundle_Subjects_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Subjects_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Bundle_ThemesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Themes_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Bundle_Themes_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Themes_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_BundlesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundles_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundles_Order_By>>;
+  where?: InputMaybe<Reporting_Bundles_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Bundles_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundles_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundles_Order_By>>;
+  where?: InputMaybe<Reporting_Bundles_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Collection_BlocksArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Blocks_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Collection_Blocks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Blocks_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Collection_ContributorsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Contributors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Contributors_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Contributors_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Collection_Contributors_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Contributors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Contributors_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Contributors_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Collection_Education_DegreesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Collection_Education_Degrees_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Collection_Education_LevelsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Education_Levels_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Collection_Education_Levels_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Education_Levels_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Collection_SubjectsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Subjects_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Collection_Subjects_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Subjects_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Collection_ThemesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Themes_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Collection_Themes_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Themes_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_CollectionsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collections_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collections_Order_By>>;
+  where?: InputMaybe<Reporting_Collections_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Collections_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collections_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collections_Order_By>>;
+  where?: InputMaybe<Reporting_Collections_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Educational_OrganisationsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Educational_Organisations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Educational_Organisations_Order_By>>;
+  where?: InputMaybe<Reporting_Educational_Organisations_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Educational_Organisations_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Educational_Organisations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Educational_Organisations_Order_By>>;
+  where?: InputMaybe<Reporting_Educational_Organisations_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Identity_Provider_LinksArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Identity_Provider_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Identity_Provider_Links_Order_By>>;
+  where?: InputMaybe<Reporting_Identity_Provider_Links_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Identity_Provider_Links_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Identity_Provider_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Identity_Provider_Links_Order_By>>;
+  where?: InputMaybe<Reporting_Identity_Provider_Links_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Item_Education_DegreesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Item_Education_Degrees_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Item_Education_LevelsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Education_Levels_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Item_Education_Levels_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Education_Levels_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Item_SubjectsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Subjects_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Item_Subjects_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Subjects_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Item_ThemesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Themes_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Item_Themes_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Themes_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_ItemsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Items_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Items_Order_By>>;
+  where?: InputMaybe<Reporting_Items_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Items_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Items_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Items_Order_By>>;
+  where?: InputMaybe<Reporting_Items_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_OrganisationsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Organisations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Organisations_Order_By>>;
+  where?: InputMaybe<Reporting_Organisations_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Organisations_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Organisations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Organisations_Order_By>>;
+  where?: InputMaybe<Reporting_Organisations_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Profile_Education_DegreesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Profile_Education_Degrees_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Profile_Education_LevelsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Education_Levels_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Profile_Education_Levels_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Education_Levels_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Profile_Educational_Organisation_LinksArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Educational_Organisation_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Educational_Organisation_Links_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Educational_Organisation_Links_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Profile_Educational_Organisation_Links_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Educational_Organisation_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Educational_Organisation_Links_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Educational_Organisation_Links_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Profile_SubjectsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Subjects_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Profile_Subjects_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Subjects_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Profile_ThemesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Themes_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Profile_Themes_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Themes_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_ProfilesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profiles_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profiles_Order_By>>;
+  where?: InputMaybe<Reporting_Profiles_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Profiles_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profiles_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profiles_Order_By>>;
+  where?: InputMaybe<Reporting_Profiles_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Quick_Share_LinksArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Quick_Share_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Quick_Share_Links_Order_By>>;
+  where?: InputMaybe<Reporting_Quick_Share_Links_Bool_Exp>;
+};
+
+
+export type Query_RootReporting_Quick_Share_Links_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Quick_Share_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Quick_Share_Links_Order_By>>;
+  where?: InputMaybe<Reporting_Quick_Share_Links_Bool_Exp>;
+};
+
+
 export type Query_RootShared_CollateralArgs = {
   distinct_on?: InputMaybe<Array<Shared_Collateral_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -35368,6 +36602,24 @@ export type Query_RootUsers_Audit_Log_AggregateArgs = {
 
 export type Query_RootUsers_Audit_Log_By_PkArgs = {
   id: Scalars['Int'];
+};
+
+
+export type Query_RootUsers_Common_UsersArgs = {
+  distinct_on?: InputMaybe<Array<Users_Common_Users_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Common_Users_Order_By>>;
+  where?: InputMaybe<Users_Common_Users_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Common_Users_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Common_Users_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Common_Users_Order_By>>;
+  where?: InputMaybe<Users_Common_Users_Bool_Exp>;
 };
 
 
@@ -35795,6 +37047,4613 @@ export type Query_RootUsers_Users_Sync_Cm_AggregateArgs = {
 
 export type Query_RootUsers_Users_Sync_Cm_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+/** columns and relationships of "reporting.assignment_blocks" */
+export type Reporting_Assignment_Blocks = {
+  __typename?: 'reporting_assignment_blocks';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  content_type?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  item_id?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregated selection of "reporting.assignment_blocks" */
+export type Reporting_Assignment_Blocks_Aggregate = {
+  __typename?: 'reporting_assignment_blocks_aggregate';
+  aggregate?: Maybe<Reporting_Assignment_Blocks_Aggregate_Fields>;
+  nodes: Array<Reporting_Assignment_Blocks>;
+};
+
+/** aggregate fields of "reporting.assignment_blocks" */
+export type Reporting_Assignment_Blocks_Aggregate_Fields = {
+  __typename?: 'reporting_assignment_blocks_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Assignment_Blocks_Max_Fields>;
+  min?: Maybe<Reporting_Assignment_Blocks_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.assignment_blocks" */
+export type Reporting_Assignment_Blocks_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Assignment_Blocks_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.assignment_blocks". All fields are combined with a logical 'AND'. */
+export type Reporting_Assignment_Blocks_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Assignment_Blocks_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Assignment_Blocks_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Assignment_Blocks_Bool_Exp>>;
+  assignment_id?: InputMaybe<Uuid_Comparison_Exp>;
+  content_type?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  item_id?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** input type for inserting data into table "reporting.assignment_blocks" */
+export type Reporting_Assignment_Blocks_Insert_Input = {
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  content_type?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  item_id?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Assignment_Blocks_Max_Fields = {
+  __typename?: 'reporting_assignment_blocks_max_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  content_type?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  item_id?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Assignment_Blocks_Min_Fields = {
+  __typename?: 'reporting_assignment_blocks_min_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  content_type?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  item_id?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** response of any mutation on the table "reporting.assignment_blocks" */
+export type Reporting_Assignment_Blocks_Mutation_Response = {
+  __typename?: 'reporting_assignment_blocks_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Reporting_Assignment_Blocks>;
+};
+
+/** Ordering options when selecting data from "reporting.assignment_blocks". */
+export type Reporting_Assignment_Blocks_Order_By = {
+  assignment_id?: InputMaybe<Order_By>;
+  content_type?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  item_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.assignment_blocks" */
+export enum Reporting_Assignment_Blocks_Select_Column {
+  /** column name */
+  AssignmentId = 'assignment_id',
+  /** column name */
+  ContentType = 'content_type',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ItemId = 'item_id',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "reporting.assignment_blocks" */
+export type Reporting_Assignment_Blocks_Set_Input = {
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  content_type?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  item_id?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** Streaming cursor of the table "reporting_assignment_blocks" */
+export type Reporting_Assignment_Blocks_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Assignment_Blocks_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Assignment_Blocks_Stream_Cursor_Value_Input = {
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  content_type?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  item_id?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+export type Reporting_Assignment_Blocks_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Reporting_Assignment_Blocks_Set_Input>;
+  where: Reporting_Assignment_Blocks_Bool_Exp;
+};
+
+/** columns and relationships of "reporting.assignment_contributors" */
+export type Reporting_Assignment_Contributors = {
+  __typename?: 'reporting_assignment_contributors';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  rights?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregated selection of "reporting.assignment_contributors" */
+export type Reporting_Assignment_Contributors_Aggregate = {
+  __typename?: 'reporting_assignment_contributors_aggregate';
+  aggregate?: Maybe<Reporting_Assignment_Contributors_Aggregate_Fields>;
+  nodes: Array<Reporting_Assignment_Contributors>;
+};
+
+/** aggregate fields of "reporting.assignment_contributors" */
+export type Reporting_Assignment_Contributors_Aggregate_Fields = {
+  __typename?: 'reporting_assignment_contributors_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Assignment_Contributors_Max_Fields>;
+  min?: Maybe<Reporting_Assignment_Contributors_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.assignment_contributors" */
+export type Reporting_Assignment_Contributors_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Assignment_Contributors_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.assignment_contributors". All fields are combined with a logical 'AND'. */
+export type Reporting_Assignment_Contributors_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Assignment_Contributors_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Assignment_Contributors_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Assignment_Contributors_Bool_Exp>>;
+  assignment_id?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  rights?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** input type for inserting data into table "reporting.assignment_contributors" */
+export type Reporting_Assignment_Contributors_Insert_Input = {
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  rights?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Assignment_Contributors_Max_Fields = {
+  __typename?: 'reporting_assignment_contributors_max_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  rights?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Assignment_Contributors_Min_Fields = {
+  __typename?: 'reporting_assignment_contributors_min_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  rights?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** response of any mutation on the table "reporting.assignment_contributors" */
+export type Reporting_Assignment_Contributors_Mutation_Response = {
+  __typename?: 'reporting_assignment_contributors_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Reporting_Assignment_Contributors>;
+};
+
+/** Ordering options when selecting data from "reporting.assignment_contributors". */
+export type Reporting_Assignment_Contributors_Order_By = {
+  assignment_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  profile_id?: InputMaybe<Order_By>;
+  rights?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.assignment_contributors" */
+export enum Reporting_Assignment_Contributors_Select_Column {
+  /** column name */
+  AssignmentId = 'assignment_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ProfileId = 'profile_id',
+  /** column name */
+  Rights = 'rights',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "reporting.assignment_contributors" */
+export type Reporting_Assignment_Contributors_Set_Input = {
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  rights?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** Streaming cursor of the table "reporting_assignment_contributors" */
+export type Reporting_Assignment_Contributors_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Assignment_Contributors_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Assignment_Contributors_Stream_Cursor_Value_Input = {
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  rights?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+export type Reporting_Assignment_Contributors_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Reporting_Assignment_Contributors_Set_Input>;
+  where: Reporting_Assignment_Contributors_Bool_Exp;
+};
+
+/** columns and relationships of "reporting.assignment_education_degrees" */
+export type Reporting_Assignment_Education_Degrees = {
+  __typename?: 'reporting_assignment_education_degrees';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.assignment_education_degrees" */
+export type Reporting_Assignment_Education_Degrees_Aggregate = {
+  __typename?: 'reporting_assignment_education_degrees_aggregate';
+  aggregate?: Maybe<Reporting_Assignment_Education_Degrees_Aggregate_Fields>;
+  nodes: Array<Reporting_Assignment_Education_Degrees>;
+};
+
+/** aggregate fields of "reporting.assignment_education_degrees" */
+export type Reporting_Assignment_Education_Degrees_Aggregate_Fields = {
+  __typename?: 'reporting_assignment_education_degrees_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Assignment_Education_Degrees_Max_Fields>;
+  min?: Maybe<Reporting_Assignment_Education_Degrees_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.assignment_education_degrees" */
+export type Reporting_Assignment_Education_Degrees_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Assignment_Education_Degrees_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.assignment_education_degrees". All fields are combined with a logical 'AND'. */
+export type Reporting_Assignment_Education_Degrees_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Assignment_Education_Degrees_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Assignment_Education_Degrees_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Assignment_Education_Degrees_Bool_Exp>>;
+  assignment_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Assignment_Education_Degrees_Max_Fields = {
+  __typename?: 'reporting_assignment_education_degrees_max_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Assignment_Education_Degrees_Min_Fields = {
+  __typename?: 'reporting_assignment_education_degrees_min_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.assignment_education_degrees". */
+export type Reporting_Assignment_Education_Degrees_Order_By = {
+  assignment_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.assignment_education_degrees" */
+export enum Reporting_Assignment_Education_Degrees_Select_Column {
+  /** column name */
+  AssignmentId = 'assignment_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_assignment_education_degrees" */
+export type Reporting_Assignment_Education_Degrees_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Assignment_Education_Degrees_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Assignment_Education_Degrees_Stream_Cursor_Value_Input = {
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.assignment_education_levels" */
+export type Reporting_Assignment_Education_Levels = {
+  __typename?: 'reporting_assignment_education_levels';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.assignment_education_levels" */
+export type Reporting_Assignment_Education_Levels_Aggregate = {
+  __typename?: 'reporting_assignment_education_levels_aggregate';
+  aggregate?: Maybe<Reporting_Assignment_Education_Levels_Aggregate_Fields>;
+  nodes: Array<Reporting_Assignment_Education_Levels>;
+};
+
+/** aggregate fields of "reporting.assignment_education_levels" */
+export type Reporting_Assignment_Education_Levels_Aggregate_Fields = {
+  __typename?: 'reporting_assignment_education_levels_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Assignment_Education_Levels_Max_Fields>;
+  min?: Maybe<Reporting_Assignment_Education_Levels_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.assignment_education_levels" */
+export type Reporting_Assignment_Education_Levels_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Assignment_Education_Levels_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.assignment_education_levels". All fields are combined with a logical 'AND'. */
+export type Reporting_Assignment_Education_Levels_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Assignment_Education_Levels_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Assignment_Education_Levels_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Assignment_Education_Levels_Bool_Exp>>;
+  assignment_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Assignment_Education_Levels_Max_Fields = {
+  __typename?: 'reporting_assignment_education_levels_max_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Assignment_Education_Levels_Min_Fields = {
+  __typename?: 'reporting_assignment_education_levels_min_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.assignment_education_levels". */
+export type Reporting_Assignment_Education_Levels_Order_By = {
+  assignment_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.assignment_education_levels" */
+export enum Reporting_Assignment_Education_Levels_Select_Column {
+  /** column name */
+  AssignmentId = 'assignment_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_assignment_education_levels" */
+export type Reporting_Assignment_Education_Levels_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Assignment_Education_Levels_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Assignment_Education_Levels_Stream_Cursor_Value_Input = {
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.assignment_response_blocks" */
+export type Reporting_Assignment_Response_Blocks = {
+  __typename?: 'reporting_assignment_response_blocks';
+  assignment_response_id?: Maybe<Scalars['uuid']>;
+  content_type?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  item_id?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregated selection of "reporting.assignment_response_blocks" */
+export type Reporting_Assignment_Response_Blocks_Aggregate = {
+  __typename?: 'reporting_assignment_response_blocks_aggregate';
+  aggregate?: Maybe<Reporting_Assignment_Response_Blocks_Aggregate_Fields>;
+  nodes: Array<Reporting_Assignment_Response_Blocks>;
+};
+
+/** aggregate fields of "reporting.assignment_response_blocks" */
+export type Reporting_Assignment_Response_Blocks_Aggregate_Fields = {
+  __typename?: 'reporting_assignment_response_blocks_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Assignment_Response_Blocks_Max_Fields>;
+  min?: Maybe<Reporting_Assignment_Response_Blocks_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.assignment_response_blocks" */
+export type Reporting_Assignment_Response_Blocks_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Assignment_Response_Blocks_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.assignment_response_blocks". All fields are combined with a logical 'AND'. */
+export type Reporting_Assignment_Response_Blocks_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Assignment_Response_Blocks_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Assignment_Response_Blocks_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Assignment_Response_Blocks_Bool_Exp>>;
+  assignment_response_id?: InputMaybe<Uuid_Comparison_Exp>;
+  content_type?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  item_id?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** input type for inserting data into table "reporting.assignment_response_blocks" */
+export type Reporting_Assignment_Response_Blocks_Insert_Input = {
+  assignment_response_id?: InputMaybe<Scalars['uuid']>;
+  content_type?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  item_id?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Assignment_Response_Blocks_Max_Fields = {
+  __typename?: 'reporting_assignment_response_blocks_max_fields';
+  assignment_response_id?: Maybe<Scalars['uuid']>;
+  content_type?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  item_id?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Assignment_Response_Blocks_Min_Fields = {
+  __typename?: 'reporting_assignment_response_blocks_min_fields';
+  assignment_response_id?: Maybe<Scalars['uuid']>;
+  content_type?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  item_id?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** response of any mutation on the table "reporting.assignment_response_blocks" */
+export type Reporting_Assignment_Response_Blocks_Mutation_Response = {
+  __typename?: 'reporting_assignment_response_blocks_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Reporting_Assignment_Response_Blocks>;
+};
+
+/** Ordering options when selecting data from "reporting.assignment_response_blocks". */
+export type Reporting_Assignment_Response_Blocks_Order_By = {
+  assignment_response_id?: InputMaybe<Order_By>;
+  content_type?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  item_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.assignment_response_blocks" */
+export enum Reporting_Assignment_Response_Blocks_Select_Column {
+  /** column name */
+  AssignmentResponseId = 'assignment_response_id',
+  /** column name */
+  ContentType = 'content_type',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ItemId = 'item_id',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "reporting.assignment_response_blocks" */
+export type Reporting_Assignment_Response_Blocks_Set_Input = {
+  assignment_response_id?: InputMaybe<Scalars['uuid']>;
+  content_type?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  item_id?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** Streaming cursor of the table "reporting_assignment_response_blocks" */
+export type Reporting_Assignment_Response_Blocks_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Assignment_Response_Blocks_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Assignment_Response_Blocks_Stream_Cursor_Value_Input = {
+  assignment_response_id?: InputMaybe<Scalars['uuid']>;
+  content_type?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  item_id?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+export type Reporting_Assignment_Response_Blocks_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Reporting_Assignment_Response_Blocks_Set_Input>;
+  where: Reporting_Assignment_Response_Blocks_Bool_Exp;
+};
+
+/** columns and relationships of "reporting.assignment_responses" */
+export type Reporting_Assignment_Responses = {
+  __typename?: 'reporting_assignment_responses';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  owner_profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregated selection of "reporting.assignment_responses" */
+export type Reporting_Assignment_Responses_Aggregate = {
+  __typename?: 'reporting_assignment_responses_aggregate';
+  aggregate?: Maybe<Reporting_Assignment_Responses_Aggregate_Fields>;
+  nodes: Array<Reporting_Assignment_Responses>;
+};
+
+/** aggregate fields of "reporting.assignment_responses" */
+export type Reporting_Assignment_Responses_Aggregate_Fields = {
+  __typename?: 'reporting_assignment_responses_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Assignment_Responses_Max_Fields>;
+  min?: Maybe<Reporting_Assignment_Responses_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.assignment_responses" */
+export type Reporting_Assignment_Responses_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Assignment_Responses_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.assignment_responses". All fields are combined with a logical 'AND'. */
+export type Reporting_Assignment_Responses_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Assignment_Responses_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Assignment_Responses_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Assignment_Responses_Bool_Exp>>;
+  assignment_id?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** input type for inserting data into table "reporting.assignment_responses" */
+export type Reporting_Assignment_Responses_Insert_Input = {
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  owner_profile_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Assignment_Responses_Max_Fields = {
+  __typename?: 'reporting_assignment_responses_max_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  owner_profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Assignment_Responses_Min_Fields = {
+  __typename?: 'reporting_assignment_responses_min_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  owner_profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** response of any mutation on the table "reporting.assignment_responses" */
+export type Reporting_Assignment_Responses_Mutation_Response = {
+  __typename?: 'reporting_assignment_responses_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Reporting_Assignment_Responses>;
+};
+
+/** Ordering options when selecting data from "reporting.assignment_responses". */
+export type Reporting_Assignment_Responses_Order_By = {
+  assignment_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  owner_profile_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.assignment_responses" */
+export enum Reporting_Assignment_Responses_Select_Column {
+  /** column name */
+  AssignmentId = 'assignment_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  OwnerProfileId = 'owner_profile_id',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "reporting.assignment_responses" */
+export type Reporting_Assignment_Responses_Set_Input = {
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  owner_profile_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** Streaming cursor of the table "reporting_assignment_responses" */
+export type Reporting_Assignment_Responses_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Assignment_Responses_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Assignment_Responses_Stream_Cursor_Value_Input = {
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  owner_profile_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+export type Reporting_Assignment_Responses_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Reporting_Assignment_Responses_Set_Input>;
+  where: Reporting_Assignment_Responses_Bool_Exp;
+};
+
+/** columns and relationships of "reporting.assignment_subjects" */
+export type Reporting_Assignment_Subjects = {
+  __typename?: 'reporting_assignment_subjects';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.assignment_subjects" */
+export type Reporting_Assignment_Subjects_Aggregate = {
+  __typename?: 'reporting_assignment_subjects_aggregate';
+  aggregate?: Maybe<Reporting_Assignment_Subjects_Aggregate_Fields>;
+  nodes: Array<Reporting_Assignment_Subjects>;
+};
+
+/** aggregate fields of "reporting.assignment_subjects" */
+export type Reporting_Assignment_Subjects_Aggregate_Fields = {
+  __typename?: 'reporting_assignment_subjects_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Assignment_Subjects_Max_Fields>;
+  min?: Maybe<Reporting_Assignment_Subjects_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.assignment_subjects" */
+export type Reporting_Assignment_Subjects_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Assignment_Subjects_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.assignment_subjects". All fields are combined with a logical 'AND'. */
+export type Reporting_Assignment_Subjects_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Assignment_Subjects_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Assignment_Subjects_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Assignment_Subjects_Bool_Exp>>;
+  assignment_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Assignment_Subjects_Max_Fields = {
+  __typename?: 'reporting_assignment_subjects_max_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Assignment_Subjects_Min_Fields = {
+  __typename?: 'reporting_assignment_subjects_min_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.assignment_subjects". */
+export type Reporting_Assignment_Subjects_Order_By = {
+  assignment_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.assignment_subjects" */
+export enum Reporting_Assignment_Subjects_Select_Column {
+  /** column name */
+  AssignmentId = 'assignment_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_assignment_subjects" */
+export type Reporting_Assignment_Subjects_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Assignment_Subjects_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Assignment_Subjects_Stream_Cursor_Value_Input = {
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.assignment_themes" */
+export type Reporting_Assignment_Themes = {
+  __typename?: 'reporting_assignment_themes';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.assignment_themes" */
+export type Reporting_Assignment_Themes_Aggregate = {
+  __typename?: 'reporting_assignment_themes_aggregate';
+  aggregate?: Maybe<Reporting_Assignment_Themes_Aggregate_Fields>;
+  nodes: Array<Reporting_Assignment_Themes>;
+};
+
+/** aggregate fields of "reporting.assignment_themes" */
+export type Reporting_Assignment_Themes_Aggregate_Fields = {
+  __typename?: 'reporting_assignment_themes_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Assignment_Themes_Max_Fields>;
+  min?: Maybe<Reporting_Assignment_Themes_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.assignment_themes" */
+export type Reporting_Assignment_Themes_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Assignment_Themes_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.assignment_themes". All fields are combined with a logical 'AND'. */
+export type Reporting_Assignment_Themes_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Assignment_Themes_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Assignment_Themes_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Assignment_Themes_Bool_Exp>>;
+  assignment_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Assignment_Themes_Max_Fields = {
+  __typename?: 'reporting_assignment_themes_max_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Assignment_Themes_Min_Fields = {
+  __typename?: 'reporting_assignment_themes_min_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.assignment_themes". */
+export type Reporting_Assignment_Themes_Order_By = {
+  assignment_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.assignment_themes" */
+export enum Reporting_Assignment_Themes_Select_Column {
+  /** column name */
+  AssignmentId = 'assignment_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_assignment_themes" */
+export type Reporting_Assignment_Themes_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Assignment_Themes_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Assignment_Themes_Stream_Cursor_Value_Input = {
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.assignments" */
+export type Reporting_Assignments = {
+  __typename?: 'reporting_assignments';
+  available_at?: Maybe<Scalars['timestamptz']>;
+  content_type?: Maybe<Scalars['String']>;
+  copy_of?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  deadline_at?: Maybe<Scalars['timestamptz']>;
+  education_level_type_id?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  is_active?: Maybe<Scalars['Boolean']>;
+  is_archived?: Maybe<Scalars['Boolean']>;
+  is_public?: Maybe<Scalars['Boolean']>;
+  owner_profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregated selection of "reporting.assignments" */
+export type Reporting_Assignments_Aggregate = {
+  __typename?: 'reporting_assignments_aggregate';
+  aggregate?: Maybe<Reporting_Assignments_Aggregate_Fields>;
+  nodes: Array<Reporting_Assignments>;
+};
+
+/** aggregate fields of "reporting.assignments" */
+export type Reporting_Assignments_Aggregate_Fields = {
+  __typename?: 'reporting_assignments_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Assignments_Max_Fields>;
+  min?: Maybe<Reporting_Assignments_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.assignments" */
+export type Reporting_Assignments_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Assignments_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.assignments". All fields are combined with a logical 'AND'. */
+export type Reporting_Assignments_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Assignments_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Assignments_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Assignments_Bool_Exp>>;
+  available_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  content_type?: InputMaybe<String_Comparison_Exp>;
+  copy_of?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  deadline_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  education_level_type_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  is_active?: InputMaybe<Boolean_Comparison_Exp>;
+  is_archived?: InputMaybe<Boolean_Comparison_Exp>;
+  is_public?: InputMaybe<Boolean_Comparison_Exp>;
+  owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Assignments_Max_Fields = {
+  __typename?: 'reporting_assignments_max_fields';
+  available_at?: Maybe<Scalars['timestamptz']>;
+  content_type?: Maybe<Scalars['String']>;
+  copy_of?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  deadline_at?: Maybe<Scalars['timestamptz']>;
+  education_level_type_id?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  owner_profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Assignments_Min_Fields = {
+  __typename?: 'reporting_assignments_min_fields';
+  available_at?: Maybe<Scalars['timestamptz']>;
+  content_type?: Maybe<Scalars['String']>;
+  copy_of?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  deadline_at?: Maybe<Scalars['timestamptz']>;
+  education_level_type_id?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  owner_profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** Ordering options when selecting data from "reporting.assignments". */
+export type Reporting_Assignments_Order_By = {
+  available_at?: InputMaybe<Order_By>;
+  content_type?: InputMaybe<Order_By>;
+  copy_of?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  deadline_at?: InputMaybe<Order_By>;
+  education_level_type_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  is_active?: InputMaybe<Order_By>;
+  is_archived?: InputMaybe<Order_By>;
+  is_public?: InputMaybe<Order_By>;
+  owner_profile_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.assignments" */
+export enum Reporting_Assignments_Select_Column {
+  /** column name */
+  AvailableAt = 'available_at',
+  /** column name */
+  ContentType = 'content_type',
+  /** column name */
+  CopyOf = 'copy_of',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  DeadlineAt = 'deadline_at',
+  /** column name */
+  EducationLevelTypeId = 'education_level_type_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IsActive = 'is_active',
+  /** column name */
+  IsArchived = 'is_archived',
+  /** column name */
+  IsPublic = 'is_public',
+  /** column name */
+  OwnerProfileId = 'owner_profile_id',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** Streaming cursor of the table "reporting_assignments" */
+export type Reporting_Assignments_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Assignments_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Assignments_Stream_Cursor_Value_Input = {
+  available_at?: InputMaybe<Scalars['timestamptz']>;
+  content_type?: InputMaybe<Scalars['String']>;
+  copy_of?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  deadline_at?: InputMaybe<Scalars['timestamptz']>;
+  education_level_type_id?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  is_active?: InputMaybe<Scalars['Boolean']>;
+  is_archived?: InputMaybe<Scalars['Boolean']>;
+  is_public?: InputMaybe<Scalars['Boolean']>;
+  owner_profile_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** columns and relationships of "reporting.bundle_blocks" */
+export type Reporting_Bundle_Blocks = {
+  __typename?: 'reporting_bundle_blocks';
+  bundle_id?: Maybe<Scalars['uuid']>;
+  content_id?: Maybe<Scalars['String']>;
+  content_type?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['Int']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregated selection of "reporting.bundle_blocks" */
+export type Reporting_Bundle_Blocks_Aggregate = {
+  __typename?: 'reporting_bundle_blocks_aggregate';
+  aggregate?: Maybe<Reporting_Bundle_Blocks_Aggregate_Fields>;
+  nodes: Array<Reporting_Bundle_Blocks>;
+};
+
+/** aggregate fields of "reporting.bundle_blocks" */
+export type Reporting_Bundle_Blocks_Aggregate_Fields = {
+  __typename?: 'reporting_bundle_blocks_aggregate_fields';
+  avg?: Maybe<Reporting_Bundle_Blocks_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Bundle_Blocks_Max_Fields>;
+  min?: Maybe<Reporting_Bundle_Blocks_Min_Fields>;
+  stddev?: Maybe<Reporting_Bundle_Blocks_Stddev_Fields>;
+  stddev_pop?: Maybe<Reporting_Bundle_Blocks_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Reporting_Bundle_Blocks_Stddev_Samp_Fields>;
+  sum?: Maybe<Reporting_Bundle_Blocks_Sum_Fields>;
+  var_pop?: Maybe<Reporting_Bundle_Blocks_Var_Pop_Fields>;
+  var_samp?: Maybe<Reporting_Bundle_Blocks_Var_Samp_Fields>;
+  variance?: Maybe<Reporting_Bundle_Blocks_Variance_Fields>;
+};
+
+
+/** aggregate fields of "reporting.bundle_blocks" */
+export type Reporting_Bundle_Blocks_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Bundle_Blocks_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** aggregate avg on columns */
+export type Reporting_Bundle_Blocks_Avg_Fields = {
+  __typename?: 'reporting_bundle_blocks_avg_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.bundle_blocks". All fields are combined with a logical 'AND'. */
+export type Reporting_Bundle_Blocks_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Bundle_Blocks_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Bundle_Blocks_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Bundle_Blocks_Bool_Exp>>;
+  bundle_id?: InputMaybe<Uuid_Comparison_Exp>;
+  content_id?: InputMaybe<String_Comparison_Exp>;
+  content_type?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Bundle_Blocks_Max_Fields = {
+  __typename?: 'reporting_bundle_blocks_max_fields';
+  bundle_id?: Maybe<Scalars['uuid']>;
+  content_id?: Maybe<Scalars['String']>;
+  content_type?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['Int']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Bundle_Blocks_Min_Fields = {
+  __typename?: 'reporting_bundle_blocks_min_fields';
+  bundle_id?: Maybe<Scalars['uuid']>;
+  content_id?: Maybe<Scalars['String']>;
+  content_type?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['Int']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** Ordering options when selecting data from "reporting.bundle_blocks". */
+export type Reporting_Bundle_Blocks_Order_By = {
+  bundle_id?: InputMaybe<Order_By>;
+  content_id?: InputMaybe<Order_By>;
+  content_type?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.bundle_blocks" */
+export enum Reporting_Bundle_Blocks_Select_Column {
+  /** column name */
+  BundleId = 'bundle_id',
+  /** column name */
+  ContentId = 'content_id',
+  /** column name */
+  ContentType = 'content_type',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** aggregate stddev on columns */
+export type Reporting_Bundle_Blocks_Stddev_Fields = {
+  __typename?: 'reporting_bundle_blocks_stddev_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Reporting_Bundle_Blocks_Stddev_Pop_Fields = {
+  __typename?: 'reporting_bundle_blocks_stddev_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Reporting_Bundle_Blocks_Stddev_Samp_Fields = {
+  __typename?: 'reporting_bundle_blocks_stddev_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** Streaming cursor of the table "reporting_bundle_blocks" */
+export type Reporting_Bundle_Blocks_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Bundle_Blocks_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Bundle_Blocks_Stream_Cursor_Value_Input = {
+  bundle_id?: InputMaybe<Scalars['uuid']>;
+  content_id?: InputMaybe<Scalars['String']>;
+  content_type?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['Int']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate sum on columns */
+export type Reporting_Bundle_Blocks_Sum_Fields = {
+  __typename?: 'reporting_bundle_blocks_sum_fields';
+  id?: Maybe<Scalars['Int']>;
+};
+
+/** aggregate var_pop on columns */
+export type Reporting_Bundle_Blocks_Var_Pop_Fields = {
+  __typename?: 'reporting_bundle_blocks_var_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate var_samp on columns */
+export type Reporting_Bundle_Blocks_Var_Samp_Fields = {
+  __typename?: 'reporting_bundle_blocks_var_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate variance on columns */
+export type Reporting_Bundle_Blocks_Variance_Fields = {
+  __typename?: 'reporting_bundle_blocks_variance_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** columns and relationships of "reporting.bundle_education_degrees" */
+export type Reporting_Bundle_Education_Degrees = {
+  __typename?: 'reporting_bundle_education_degrees';
+  bundle_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.bundle_education_degrees" */
+export type Reporting_Bundle_Education_Degrees_Aggregate = {
+  __typename?: 'reporting_bundle_education_degrees_aggregate';
+  aggregate?: Maybe<Reporting_Bundle_Education_Degrees_Aggregate_Fields>;
+  nodes: Array<Reporting_Bundle_Education_Degrees>;
+};
+
+/** aggregate fields of "reporting.bundle_education_degrees" */
+export type Reporting_Bundle_Education_Degrees_Aggregate_Fields = {
+  __typename?: 'reporting_bundle_education_degrees_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Bundle_Education_Degrees_Max_Fields>;
+  min?: Maybe<Reporting_Bundle_Education_Degrees_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.bundle_education_degrees" */
+export type Reporting_Bundle_Education_Degrees_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Bundle_Education_Degrees_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.bundle_education_degrees". All fields are combined with a logical 'AND'. */
+export type Reporting_Bundle_Education_Degrees_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Bundle_Education_Degrees_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Bundle_Education_Degrees_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Bundle_Education_Degrees_Bool_Exp>>;
+  bundle_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Bundle_Education_Degrees_Max_Fields = {
+  __typename?: 'reporting_bundle_education_degrees_max_fields';
+  bundle_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Bundle_Education_Degrees_Min_Fields = {
+  __typename?: 'reporting_bundle_education_degrees_min_fields';
+  bundle_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.bundle_education_degrees". */
+export type Reporting_Bundle_Education_Degrees_Order_By = {
+  bundle_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.bundle_education_degrees" */
+export enum Reporting_Bundle_Education_Degrees_Select_Column {
+  /** column name */
+  BundleId = 'bundle_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_bundle_education_degrees" */
+export type Reporting_Bundle_Education_Degrees_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Bundle_Education_Degrees_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Bundle_Education_Degrees_Stream_Cursor_Value_Input = {
+  bundle_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.bundle_education_levels" */
+export type Reporting_Bundle_Education_Levels = {
+  __typename?: 'reporting_bundle_education_levels';
+  bundle_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.bundle_education_levels" */
+export type Reporting_Bundle_Education_Levels_Aggregate = {
+  __typename?: 'reporting_bundle_education_levels_aggregate';
+  aggregate?: Maybe<Reporting_Bundle_Education_Levels_Aggregate_Fields>;
+  nodes: Array<Reporting_Bundle_Education_Levels>;
+};
+
+/** aggregate fields of "reporting.bundle_education_levels" */
+export type Reporting_Bundle_Education_Levels_Aggregate_Fields = {
+  __typename?: 'reporting_bundle_education_levels_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Bundle_Education_Levels_Max_Fields>;
+  min?: Maybe<Reporting_Bundle_Education_Levels_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.bundle_education_levels" */
+export type Reporting_Bundle_Education_Levels_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Bundle_Education_Levels_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.bundle_education_levels". All fields are combined with a logical 'AND'. */
+export type Reporting_Bundle_Education_Levels_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Bundle_Education_Levels_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Bundle_Education_Levels_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Bundle_Education_Levels_Bool_Exp>>;
+  bundle_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Bundle_Education_Levels_Max_Fields = {
+  __typename?: 'reporting_bundle_education_levels_max_fields';
+  bundle_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Bundle_Education_Levels_Min_Fields = {
+  __typename?: 'reporting_bundle_education_levels_min_fields';
+  bundle_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.bundle_education_levels". */
+export type Reporting_Bundle_Education_Levels_Order_By = {
+  bundle_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.bundle_education_levels" */
+export enum Reporting_Bundle_Education_Levels_Select_Column {
+  /** column name */
+  BundleId = 'bundle_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_bundle_education_levels" */
+export type Reporting_Bundle_Education_Levels_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Bundle_Education_Levels_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Bundle_Education_Levels_Stream_Cursor_Value_Input = {
+  bundle_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.bundle_subjects" */
+export type Reporting_Bundle_Subjects = {
+  __typename?: 'reporting_bundle_subjects';
+  bundle_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.bundle_subjects" */
+export type Reporting_Bundle_Subjects_Aggregate = {
+  __typename?: 'reporting_bundle_subjects_aggregate';
+  aggregate?: Maybe<Reporting_Bundle_Subjects_Aggregate_Fields>;
+  nodes: Array<Reporting_Bundle_Subjects>;
+};
+
+/** aggregate fields of "reporting.bundle_subjects" */
+export type Reporting_Bundle_Subjects_Aggregate_Fields = {
+  __typename?: 'reporting_bundle_subjects_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Bundle_Subjects_Max_Fields>;
+  min?: Maybe<Reporting_Bundle_Subjects_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.bundle_subjects" */
+export type Reporting_Bundle_Subjects_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Bundle_Subjects_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.bundle_subjects". All fields are combined with a logical 'AND'. */
+export type Reporting_Bundle_Subjects_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Bundle_Subjects_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Bundle_Subjects_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Bundle_Subjects_Bool_Exp>>;
+  bundle_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Bundle_Subjects_Max_Fields = {
+  __typename?: 'reporting_bundle_subjects_max_fields';
+  bundle_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Bundle_Subjects_Min_Fields = {
+  __typename?: 'reporting_bundle_subjects_min_fields';
+  bundle_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.bundle_subjects". */
+export type Reporting_Bundle_Subjects_Order_By = {
+  bundle_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.bundle_subjects" */
+export enum Reporting_Bundle_Subjects_Select_Column {
+  /** column name */
+  BundleId = 'bundle_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_bundle_subjects" */
+export type Reporting_Bundle_Subjects_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Bundle_Subjects_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Bundle_Subjects_Stream_Cursor_Value_Input = {
+  bundle_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.bundle_themes" */
+export type Reporting_Bundle_Themes = {
+  __typename?: 'reporting_bundle_themes';
+  bundle_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.bundle_themes" */
+export type Reporting_Bundle_Themes_Aggregate = {
+  __typename?: 'reporting_bundle_themes_aggregate';
+  aggregate?: Maybe<Reporting_Bundle_Themes_Aggregate_Fields>;
+  nodes: Array<Reporting_Bundle_Themes>;
+};
+
+/** aggregate fields of "reporting.bundle_themes" */
+export type Reporting_Bundle_Themes_Aggregate_Fields = {
+  __typename?: 'reporting_bundle_themes_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Bundle_Themes_Max_Fields>;
+  min?: Maybe<Reporting_Bundle_Themes_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.bundle_themes" */
+export type Reporting_Bundle_Themes_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Bundle_Themes_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.bundle_themes". All fields are combined with a logical 'AND'. */
+export type Reporting_Bundle_Themes_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Bundle_Themes_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Bundle_Themes_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Bundle_Themes_Bool_Exp>>;
+  bundle_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Bundle_Themes_Max_Fields = {
+  __typename?: 'reporting_bundle_themes_max_fields';
+  bundle_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Bundle_Themes_Min_Fields = {
+  __typename?: 'reporting_bundle_themes_min_fields';
+  bundle_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.bundle_themes". */
+export type Reporting_Bundle_Themes_Order_By = {
+  bundle_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.bundle_themes" */
+export enum Reporting_Bundle_Themes_Select_Column {
+  /** column name */
+  BundleId = 'bundle_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_bundle_themes" */
+export type Reporting_Bundle_Themes_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Bundle_Themes_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Bundle_Themes_Stream_Cursor_Value_Input = {
+  bundle_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.bundles" */
+export type Reporting_Bundles = {
+  __typename?: 'reporting_bundles';
+  copy_of?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  depublish_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  is_deleted?: Maybe<Scalars['Boolean']>;
+  is_public?: Maybe<Scalars['Boolean']>;
+  owner_profile_id?: Maybe<Scalars['uuid']>;
+  publish_at?: Maybe<Scalars['timestamptz']>;
+  published_at?: Maybe<Scalars['timestamptz']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregated selection of "reporting.bundles" */
+export type Reporting_Bundles_Aggregate = {
+  __typename?: 'reporting_bundles_aggregate';
+  aggregate?: Maybe<Reporting_Bundles_Aggregate_Fields>;
+  nodes: Array<Reporting_Bundles>;
+};
+
+/** aggregate fields of "reporting.bundles" */
+export type Reporting_Bundles_Aggregate_Fields = {
+  __typename?: 'reporting_bundles_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Bundles_Max_Fields>;
+  min?: Maybe<Reporting_Bundles_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.bundles" */
+export type Reporting_Bundles_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Bundles_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.bundles". All fields are combined with a logical 'AND'. */
+export type Reporting_Bundles_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Bundles_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Bundles_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Bundles_Bool_Exp>>;
+  copy_of?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  depublish_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
+  is_public?: InputMaybe<Boolean_Comparison_Exp>;
+  owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  publish_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  published_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Bundles_Max_Fields = {
+  __typename?: 'reporting_bundles_max_fields';
+  copy_of?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  depublish_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  owner_profile_id?: Maybe<Scalars['uuid']>;
+  publish_at?: Maybe<Scalars['timestamptz']>;
+  published_at?: Maybe<Scalars['timestamptz']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Bundles_Min_Fields = {
+  __typename?: 'reporting_bundles_min_fields';
+  copy_of?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  depublish_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  owner_profile_id?: Maybe<Scalars['uuid']>;
+  publish_at?: Maybe<Scalars['timestamptz']>;
+  published_at?: Maybe<Scalars['timestamptz']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** Ordering options when selecting data from "reporting.bundles". */
+export type Reporting_Bundles_Order_By = {
+  copy_of?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  depublish_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  is_deleted?: InputMaybe<Order_By>;
+  is_public?: InputMaybe<Order_By>;
+  owner_profile_id?: InputMaybe<Order_By>;
+  publish_at?: InputMaybe<Order_By>;
+  published_at?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.bundles" */
+export enum Reporting_Bundles_Select_Column {
+  /** column name */
+  CopyOf = 'copy_of',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  DepublishAt = 'depublish_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IsDeleted = 'is_deleted',
+  /** column name */
+  IsPublic = 'is_public',
+  /** column name */
+  OwnerProfileId = 'owner_profile_id',
+  /** column name */
+  PublishAt = 'publish_at',
+  /** column name */
+  PublishedAt = 'published_at',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** Streaming cursor of the table "reporting_bundles" */
+export type Reporting_Bundles_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Bundles_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Bundles_Stream_Cursor_Value_Input = {
+  copy_of?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  depublish_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  is_deleted?: InputMaybe<Scalars['Boolean']>;
+  is_public?: InputMaybe<Scalars['Boolean']>;
+  owner_profile_id?: InputMaybe<Scalars['uuid']>;
+  publish_at?: InputMaybe<Scalars['timestamptz']>;
+  published_at?: InputMaybe<Scalars['timestamptz']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** columns and relationships of "reporting.collection_blocks" */
+export type Reporting_Collection_Blocks = {
+  __typename?: 'reporting_collection_blocks';
+  collection_id?: Maybe<Scalars['uuid']>;
+  content_type?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['Int']>;
+  item_id?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregated selection of "reporting.collection_blocks" */
+export type Reporting_Collection_Blocks_Aggregate = {
+  __typename?: 'reporting_collection_blocks_aggregate';
+  aggregate?: Maybe<Reporting_Collection_Blocks_Aggregate_Fields>;
+  nodes: Array<Reporting_Collection_Blocks>;
+};
+
+/** aggregate fields of "reporting.collection_blocks" */
+export type Reporting_Collection_Blocks_Aggregate_Fields = {
+  __typename?: 'reporting_collection_blocks_aggregate_fields';
+  avg?: Maybe<Reporting_Collection_Blocks_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Collection_Blocks_Max_Fields>;
+  min?: Maybe<Reporting_Collection_Blocks_Min_Fields>;
+  stddev?: Maybe<Reporting_Collection_Blocks_Stddev_Fields>;
+  stddev_pop?: Maybe<Reporting_Collection_Blocks_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Reporting_Collection_Blocks_Stddev_Samp_Fields>;
+  sum?: Maybe<Reporting_Collection_Blocks_Sum_Fields>;
+  var_pop?: Maybe<Reporting_Collection_Blocks_Var_Pop_Fields>;
+  var_samp?: Maybe<Reporting_Collection_Blocks_Var_Samp_Fields>;
+  variance?: Maybe<Reporting_Collection_Blocks_Variance_Fields>;
+};
+
+
+/** aggregate fields of "reporting.collection_blocks" */
+export type Reporting_Collection_Blocks_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Collection_Blocks_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** aggregate avg on columns */
+export type Reporting_Collection_Blocks_Avg_Fields = {
+  __typename?: 'reporting_collection_blocks_avg_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.collection_blocks". All fields are combined with a logical 'AND'. */
+export type Reporting_Collection_Blocks_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Collection_Blocks_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Collection_Blocks_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Collection_Blocks_Bool_Exp>>;
+  collection_id?: InputMaybe<Uuid_Comparison_Exp>;
+  content_type?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  item_id?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Collection_Blocks_Max_Fields = {
+  __typename?: 'reporting_collection_blocks_max_fields';
+  collection_id?: Maybe<Scalars['uuid']>;
+  content_type?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['Int']>;
+  item_id?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Collection_Blocks_Min_Fields = {
+  __typename?: 'reporting_collection_blocks_min_fields';
+  collection_id?: Maybe<Scalars['uuid']>;
+  content_type?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['Int']>;
+  item_id?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** Ordering options when selecting data from "reporting.collection_blocks". */
+export type Reporting_Collection_Blocks_Order_By = {
+  collection_id?: InputMaybe<Order_By>;
+  content_type?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  item_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.collection_blocks" */
+export enum Reporting_Collection_Blocks_Select_Column {
+  /** column name */
+  CollectionId = 'collection_id',
+  /** column name */
+  ContentType = 'content_type',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ItemId = 'item_id',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** aggregate stddev on columns */
+export type Reporting_Collection_Blocks_Stddev_Fields = {
+  __typename?: 'reporting_collection_blocks_stddev_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Reporting_Collection_Blocks_Stddev_Pop_Fields = {
+  __typename?: 'reporting_collection_blocks_stddev_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Reporting_Collection_Blocks_Stddev_Samp_Fields = {
+  __typename?: 'reporting_collection_blocks_stddev_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** Streaming cursor of the table "reporting_collection_blocks" */
+export type Reporting_Collection_Blocks_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Collection_Blocks_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Collection_Blocks_Stream_Cursor_Value_Input = {
+  collection_id?: InputMaybe<Scalars['uuid']>;
+  content_type?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['Int']>;
+  item_id?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate sum on columns */
+export type Reporting_Collection_Blocks_Sum_Fields = {
+  __typename?: 'reporting_collection_blocks_sum_fields';
+  id?: Maybe<Scalars['Int']>;
+};
+
+/** aggregate var_pop on columns */
+export type Reporting_Collection_Blocks_Var_Pop_Fields = {
+  __typename?: 'reporting_collection_blocks_var_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate var_samp on columns */
+export type Reporting_Collection_Blocks_Var_Samp_Fields = {
+  __typename?: 'reporting_collection_blocks_var_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate variance on columns */
+export type Reporting_Collection_Blocks_Variance_Fields = {
+  __typename?: 'reporting_collection_blocks_variance_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** columns and relationships of "reporting.collection_contributors" */
+export type Reporting_Collection_Contributors = {
+  __typename?: 'reporting_collection_contributors';
+  collection_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  rights?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregated selection of "reporting.collection_contributors" */
+export type Reporting_Collection_Contributors_Aggregate = {
+  __typename?: 'reporting_collection_contributors_aggregate';
+  aggregate?: Maybe<Reporting_Collection_Contributors_Aggregate_Fields>;
+  nodes: Array<Reporting_Collection_Contributors>;
+};
+
+/** aggregate fields of "reporting.collection_contributors" */
+export type Reporting_Collection_Contributors_Aggregate_Fields = {
+  __typename?: 'reporting_collection_contributors_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Collection_Contributors_Max_Fields>;
+  min?: Maybe<Reporting_Collection_Contributors_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.collection_contributors" */
+export type Reporting_Collection_Contributors_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Collection_Contributors_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.collection_contributors". All fields are combined with a logical 'AND'. */
+export type Reporting_Collection_Contributors_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Collection_Contributors_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Collection_Contributors_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Collection_Contributors_Bool_Exp>>;
+  collection_id?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  rights?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** input type for inserting data into table "reporting.collection_contributors" */
+export type Reporting_Collection_Contributors_Insert_Input = {
+  collection_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  rights?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Collection_Contributors_Max_Fields = {
+  __typename?: 'reporting_collection_contributors_max_fields';
+  collection_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  rights?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Collection_Contributors_Min_Fields = {
+  __typename?: 'reporting_collection_contributors_min_fields';
+  collection_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  rights?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** response of any mutation on the table "reporting.collection_contributors" */
+export type Reporting_Collection_Contributors_Mutation_Response = {
+  __typename?: 'reporting_collection_contributors_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Reporting_Collection_Contributors>;
+};
+
+/** Ordering options when selecting data from "reporting.collection_contributors". */
+export type Reporting_Collection_Contributors_Order_By = {
+  collection_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  profile_id?: InputMaybe<Order_By>;
+  rights?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.collection_contributors" */
+export enum Reporting_Collection_Contributors_Select_Column {
+  /** column name */
+  CollectionId = 'collection_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ProfileId = 'profile_id',
+  /** column name */
+  Rights = 'rights',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "reporting.collection_contributors" */
+export type Reporting_Collection_Contributors_Set_Input = {
+  collection_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  rights?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** Streaming cursor of the table "reporting_collection_contributors" */
+export type Reporting_Collection_Contributors_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Collection_Contributors_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Collection_Contributors_Stream_Cursor_Value_Input = {
+  collection_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  rights?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+export type Reporting_Collection_Contributors_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Reporting_Collection_Contributors_Set_Input>;
+  where: Reporting_Collection_Contributors_Bool_Exp;
+};
+
+/** columns and relationships of "reporting.collection_education_degrees" */
+export type Reporting_Collection_Education_Degrees = {
+  __typename?: 'reporting_collection_education_degrees';
+  collection_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.collection_education_degrees" */
+export type Reporting_Collection_Education_Degrees_Aggregate = {
+  __typename?: 'reporting_collection_education_degrees_aggregate';
+  aggregate?: Maybe<Reporting_Collection_Education_Degrees_Aggregate_Fields>;
+  nodes: Array<Reporting_Collection_Education_Degrees>;
+};
+
+/** aggregate fields of "reporting.collection_education_degrees" */
+export type Reporting_Collection_Education_Degrees_Aggregate_Fields = {
+  __typename?: 'reporting_collection_education_degrees_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Collection_Education_Degrees_Max_Fields>;
+  min?: Maybe<Reporting_Collection_Education_Degrees_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.collection_education_degrees" */
+export type Reporting_Collection_Education_Degrees_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Collection_Education_Degrees_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.collection_education_degrees". All fields are combined with a logical 'AND'. */
+export type Reporting_Collection_Education_Degrees_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Collection_Education_Degrees_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Collection_Education_Degrees_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Collection_Education_Degrees_Bool_Exp>>;
+  collection_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Collection_Education_Degrees_Max_Fields = {
+  __typename?: 'reporting_collection_education_degrees_max_fields';
+  collection_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Collection_Education_Degrees_Min_Fields = {
+  __typename?: 'reporting_collection_education_degrees_min_fields';
+  collection_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.collection_education_degrees". */
+export type Reporting_Collection_Education_Degrees_Order_By = {
+  collection_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.collection_education_degrees" */
+export enum Reporting_Collection_Education_Degrees_Select_Column {
+  /** column name */
+  CollectionId = 'collection_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_collection_education_degrees" */
+export type Reporting_Collection_Education_Degrees_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Collection_Education_Degrees_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Collection_Education_Degrees_Stream_Cursor_Value_Input = {
+  collection_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.collection_education_levels" */
+export type Reporting_Collection_Education_Levels = {
+  __typename?: 'reporting_collection_education_levels';
+  collection_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.collection_education_levels" */
+export type Reporting_Collection_Education_Levels_Aggregate = {
+  __typename?: 'reporting_collection_education_levels_aggregate';
+  aggregate?: Maybe<Reporting_Collection_Education_Levels_Aggregate_Fields>;
+  nodes: Array<Reporting_Collection_Education_Levels>;
+};
+
+/** aggregate fields of "reporting.collection_education_levels" */
+export type Reporting_Collection_Education_Levels_Aggregate_Fields = {
+  __typename?: 'reporting_collection_education_levels_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Collection_Education_Levels_Max_Fields>;
+  min?: Maybe<Reporting_Collection_Education_Levels_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.collection_education_levels" */
+export type Reporting_Collection_Education_Levels_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Collection_Education_Levels_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.collection_education_levels". All fields are combined with a logical 'AND'. */
+export type Reporting_Collection_Education_Levels_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Collection_Education_Levels_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Collection_Education_Levels_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Collection_Education_Levels_Bool_Exp>>;
+  collection_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Collection_Education_Levels_Max_Fields = {
+  __typename?: 'reporting_collection_education_levels_max_fields';
+  collection_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Collection_Education_Levels_Min_Fields = {
+  __typename?: 'reporting_collection_education_levels_min_fields';
+  collection_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.collection_education_levels". */
+export type Reporting_Collection_Education_Levels_Order_By = {
+  collection_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.collection_education_levels" */
+export enum Reporting_Collection_Education_Levels_Select_Column {
+  /** column name */
+  CollectionId = 'collection_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_collection_education_levels" */
+export type Reporting_Collection_Education_Levels_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Collection_Education_Levels_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Collection_Education_Levels_Stream_Cursor_Value_Input = {
+  collection_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.collection_subjects" */
+export type Reporting_Collection_Subjects = {
+  __typename?: 'reporting_collection_subjects';
+  collection_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.collection_subjects" */
+export type Reporting_Collection_Subjects_Aggregate = {
+  __typename?: 'reporting_collection_subjects_aggregate';
+  aggregate?: Maybe<Reporting_Collection_Subjects_Aggregate_Fields>;
+  nodes: Array<Reporting_Collection_Subjects>;
+};
+
+/** aggregate fields of "reporting.collection_subjects" */
+export type Reporting_Collection_Subjects_Aggregate_Fields = {
+  __typename?: 'reporting_collection_subjects_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Collection_Subjects_Max_Fields>;
+  min?: Maybe<Reporting_Collection_Subjects_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.collection_subjects" */
+export type Reporting_Collection_Subjects_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Collection_Subjects_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.collection_subjects". All fields are combined with a logical 'AND'. */
+export type Reporting_Collection_Subjects_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Collection_Subjects_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Collection_Subjects_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Collection_Subjects_Bool_Exp>>;
+  collection_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Collection_Subjects_Max_Fields = {
+  __typename?: 'reporting_collection_subjects_max_fields';
+  collection_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Collection_Subjects_Min_Fields = {
+  __typename?: 'reporting_collection_subjects_min_fields';
+  collection_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.collection_subjects". */
+export type Reporting_Collection_Subjects_Order_By = {
+  collection_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.collection_subjects" */
+export enum Reporting_Collection_Subjects_Select_Column {
+  /** column name */
+  CollectionId = 'collection_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_collection_subjects" */
+export type Reporting_Collection_Subjects_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Collection_Subjects_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Collection_Subjects_Stream_Cursor_Value_Input = {
+  collection_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.collection_themes" */
+export type Reporting_Collection_Themes = {
+  __typename?: 'reporting_collection_themes';
+  collection_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.collection_themes" */
+export type Reporting_Collection_Themes_Aggregate = {
+  __typename?: 'reporting_collection_themes_aggregate';
+  aggregate?: Maybe<Reporting_Collection_Themes_Aggregate_Fields>;
+  nodes: Array<Reporting_Collection_Themes>;
+};
+
+/** aggregate fields of "reporting.collection_themes" */
+export type Reporting_Collection_Themes_Aggregate_Fields = {
+  __typename?: 'reporting_collection_themes_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Collection_Themes_Max_Fields>;
+  min?: Maybe<Reporting_Collection_Themes_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.collection_themes" */
+export type Reporting_Collection_Themes_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Collection_Themes_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.collection_themes". All fields are combined with a logical 'AND'. */
+export type Reporting_Collection_Themes_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Collection_Themes_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Collection_Themes_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Collection_Themes_Bool_Exp>>;
+  collection_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Collection_Themes_Max_Fields = {
+  __typename?: 'reporting_collection_themes_max_fields';
+  collection_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Collection_Themes_Min_Fields = {
+  __typename?: 'reporting_collection_themes_min_fields';
+  collection_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.collection_themes". */
+export type Reporting_Collection_Themes_Order_By = {
+  collection_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.collection_themes" */
+export enum Reporting_Collection_Themes_Select_Column {
+  /** column name */
+  CollectionId = 'collection_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_collection_themes" */
+export type Reporting_Collection_Themes_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Collection_Themes_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Collection_Themes_Stream_Cursor_Value_Input = {
+  collection_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.collections" */
+export type Reporting_Collections = {
+  __typename?: 'reporting_collections';
+  copy_of?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  depublish_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  is_deleted?: Maybe<Scalars['Boolean']>;
+  is_public?: Maybe<Scalars['Boolean']>;
+  owner_profile_id?: Maybe<Scalars['uuid']>;
+  publish_at?: Maybe<Scalars['timestamptz']>;
+  published_at?: Maybe<Scalars['timestamptz']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregated selection of "reporting.collections" */
+export type Reporting_Collections_Aggregate = {
+  __typename?: 'reporting_collections_aggregate';
+  aggregate?: Maybe<Reporting_Collections_Aggregate_Fields>;
+  nodes: Array<Reporting_Collections>;
+};
+
+/** aggregate fields of "reporting.collections" */
+export type Reporting_Collections_Aggregate_Fields = {
+  __typename?: 'reporting_collections_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Collections_Max_Fields>;
+  min?: Maybe<Reporting_Collections_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.collections" */
+export type Reporting_Collections_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Collections_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.collections". All fields are combined with a logical 'AND'. */
+export type Reporting_Collections_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Collections_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Collections_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Collections_Bool_Exp>>;
+  copy_of?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  depublish_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
+  is_public?: InputMaybe<Boolean_Comparison_Exp>;
+  owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  publish_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  published_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Collections_Max_Fields = {
+  __typename?: 'reporting_collections_max_fields';
+  copy_of?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  depublish_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  owner_profile_id?: Maybe<Scalars['uuid']>;
+  publish_at?: Maybe<Scalars['timestamptz']>;
+  published_at?: Maybe<Scalars['timestamptz']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Collections_Min_Fields = {
+  __typename?: 'reporting_collections_min_fields';
+  copy_of?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  depublish_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  owner_profile_id?: Maybe<Scalars['uuid']>;
+  publish_at?: Maybe<Scalars['timestamptz']>;
+  published_at?: Maybe<Scalars['timestamptz']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** Ordering options when selecting data from "reporting.collections". */
+export type Reporting_Collections_Order_By = {
+  copy_of?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  depublish_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  is_deleted?: InputMaybe<Order_By>;
+  is_public?: InputMaybe<Order_By>;
+  owner_profile_id?: InputMaybe<Order_By>;
+  publish_at?: InputMaybe<Order_By>;
+  published_at?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.collections" */
+export enum Reporting_Collections_Select_Column {
+  /** column name */
+  CopyOf = 'copy_of',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  DepublishAt = 'depublish_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IsDeleted = 'is_deleted',
+  /** column name */
+  IsPublic = 'is_public',
+  /** column name */
+  OwnerProfileId = 'owner_profile_id',
+  /** column name */
+  PublishAt = 'publish_at',
+  /** column name */
+  PublishedAt = 'published_at',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** Streaming cursor of the table "reporting_collections" */
+export type Reporting_Collections_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Collections_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Collections_Stream_Cursor_Value_Input = {
+  copy_of?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  depublish_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  is_deleted?: InputMaybe<Scalars['Boolean']>;
+  is_public?: InputMaybe<Scalars['Boolean']>;
+  owner_profile_id?: InputMaybe<Scalars['uuid']>;
+  publish_at?: InputMaybe<Scalars['timestamptz']>;
+  published_at?: InputMaybe<Scalars['timestamptz']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** columns and relationships of "reporting.educational_organisations" */
+export type Reporting_Educational_Organisations = {
+  __typename?: 'reporting_educational_organisations';
+  id?: Maybe<Scalars['Int']>;
+  ldap_entryuuid?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+  organisation_id?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.educational_organisations" */
+export type Reporting_Educational_Organisations_Aggregate = {
+  __typename?: 'reporting_educational_organisations_aggregate';
+  aggregate?: Maybe<Reporting_Educational_Organisations_Aggregate_Fields>;
+  nodes: Array<Reporting_Educational_Organisations>;
+};
+
+/** aggregate fields of "reporting.educational_organisations" */
+export type Reporting_Educational_Organisations_Aggregate_Fields = {
+  __typename?: 'reporting_educational_organisations_aggregate_fields';
+  avg?: Maybe<Reporting_Educational_Organisations_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Educational_Organisations_Max_Fields>;
+  min?: Maybe<Reporting_Educational_Organisations_Min_Fields>;
+  stddev?: Maybe<Reporting_Educational_Organisations_Stddev_Fields>;
+  stddev_pop?: Maybe<Reporting_Educational_Organisations_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Reporting_Educational_Organisations_Stddev_Samp_Fields>;
+  sum?: Maybe<Reporting_Educational_Organisations_Sum_Fields>;
+  var_pop?: Maybe<Reporting_Educational_Organisations_Var_Pop_Fields>;
+  var_samp?: Maybe<Reporting_Educational_Organisations_Var_Samp_Fields>;
+  variance?: Maybe<Reporting_Educational_Organisations_Variance_Fields>;
+};
+
+
+/** aggregate fields of "reporting.educational_organisations" */
+export type Reporting_Educational_Organisations_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Educational_Organisations_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** aggregate avg on columns */
+export type Reporting_Educational_Organisations_Avg_Fields = {
+  __typename?: 'reporting_educational_organisations_avg_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.educational_organisations". All fields are combined with a logical 'AND'. */
+export type Reporting_Educational_Organisations_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Educational_Organisations_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Educational_Organisations_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Educational_Organisations_Bool_Exp>>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  ldap_entryuuid?: InputMaybe<Uuid_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  organisation_id?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** input type for incrementing numeric columns in table "reporting.educational_organisations" */
+export type Reporting_Educational_Organisations_Inc_Input = {
+  id?: InputMaybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "reporting.educational_organisations" */
+export type Reporting_Educational_Organisations_Insert_Input = {
+  id?: InputMaybe<Scalars['Int']>;
+  ldap_entryuuid?: InputMaybe<Scalars['uuid']>;
+  name?: InputMaybe<Scalars['String']>;
+  organisation_id?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Educational_Organisations_Max_Fields = {
+  __typename?: 'reporting_educational_organisations_max_fields';
+  id?: Maybe<Scalars['Int']>;
+  ldap_entryuuid?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+  organisation_id?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Educational_Organisations_Min_Fields = {
+  __typename?: 'reporting_educational_organisations_min_fields';
+  id?: Maybe<Scalars['Int']>;
+  ldap_entryuuid?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+  organisation_id?: Maybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "reporting.educational_organisations" */
+export type Reporting_Educational_Organisations_Mutation_Response = {
+  __typename?: 'reporting_educational_organisations_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Reporting_Educational_Organisations>;
+};
+
+/** Ordering options when selecting data from "reporting.educational_organisations". */
+export type Reporting_Educational_Organisations_Order_By = {
+  id?: InputMaybe<Order_By>;
+  ldap_entryuuid?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  organisation_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.educational_organisations" */
+export enum Reporting_Educational_Organisations_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LdapEntryuuid = 'ldap_entryuuid',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  OrganisationId = 'organisation_id'
+}
+
+/** input type for updating data in table "reporting.educational_organisations" */
+export type Reporting_Educational_Organisations_Set_Input = {
+  id?: InputMaybe<Scalars['Int']>;
+  ldap_entryuuid?: InputMaybe<Scalars['uuid']>;
+  name?: InputMaybe<Scalars['String']>;
+  organisation_id?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate stddev on columns */
+export type Reporting_Educational_Organisations_Stddev_Fields = {
+  __typename?: 'reporting_educational_organisations_stddev_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Reporting_Educational_Organisations_Stddev_Pop_Fields = {
+  __typename?: 'reporting_educational_organisations_stddev_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Reporting_Educational_Organisations_Stddev_Samp_Fields = {
+  __typename?: 'reporting_educational_organisations_stddev_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** Streaming cursor of the table "reporting_educational_organisations" */
+export type Reporting_Educational_Organisations_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Educational_Organisations_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Educational_Organisations_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['Int']>;
+  ldap_entryuuid?: InputMaybe<Scalars['uuid']>;
+  name?: InputMaybe<Scalars['String']>;
+  organisation_id?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate sum on columns */
+export type Reporting_Educational_Organisations_Sum_Fields = {
+  __typename?: 'reporting_educational_organisations_sum_fields';
+  id?: Maybe<Scalars['Int']>;
+};
+
+export type Reporting_Educational_Organisations_Updates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Reporting_Educational_Organisations_Inc_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Reporting_Educational_Organisations_Set_Input>;
+  where: Reporting_Educational_Organisations_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Reporting_Educational_Organisations_Var_Pop_Fields = {
+  __typename?: 'reporting_educational_organisations_var_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate var_samp on columns */
+export type Reporting_Educational_Organisations_Var_Samp_Fields = {
+  __typename?: 'reporting_educational_organisations_var_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate variance on columns */
+export type Reporting_Educational_Organisations_Variance_Fields = {
+  __typename?: 'reporting_educational_organisations_variance_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** columns and relationships of "reporting.identity_provider_links" */
+export type Reporting_Identity_Provider_Links = {
+  __typename?: 'reporting_identity_provider_links';
+  avo_profile_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['Int']>;
+  idp_type?: Maybe<Scalars['String']>;
+  idp_user_id?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.identity_provider_links" */
+export type Reporting_Identity_Provider_Links_Aggregate = {
+  __typename?: 'reporting_identity_provider_links_aggregate';
+  aggregate?: Maybe<Reporting_Identity_Provider_Links_Aggregate_Fields>;
+  nodes: Array<Reporting_Identity_Provider_Links>;
+};
+
+/** aggregate fields of "reporting.identity_provider_links" */
+export type Reporting_Identity_Provider_Links_Aggregate_Fields = {
+  __typename?: 'reporting_identity_provider_links_aggregate_fields';
+  avg?: Maybe<Reporting_Identity_Provider_Links_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Identity_Provider_Links_Max_Fields>;
+  min?: Maybe<Reporting_Identity_Provider_Links_Min_Fields>;
+  stddev?: Maybe<Reporting_Identity_Provider_Links_Stddev_Fields>;
+  stddev_pop?: Maybe<Reporting_Identity_Provider_Links_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Reporting_Identity_Provider_Links_Stddev_Samp_Fields>;
+  sum?: Maybe<Reporting_Identity_Provider_Links_Sum_Fields>;
+  var_pop?: Maybe<Reporting_Identity_Provider_Links_Var_Pop_Fields>;
+  var_samp?: Maybe<Reporting_Identity_Provider_Links_Var_Samp_Fields>;
+  variance?: Maybe<Reporting_Identity_Provider_Links_Variance_Fields>;
+};
+
+
+/** aggregate fields of "reporting.identity_provider_links" */
+export type Reporting_Identity_Provider_Links_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Identity_Provider_Links_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** aggregate avg on columns */
+export type Reporting_Identity_Provider_Links_Avg_Fields = {
+  __typename?: 'reporting_identity_provider_links_avg_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.identity_provider_links". All fields are combined with a logical 'AND'. */
+export type Reporting_Identity_Provider_Links_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Identity_Provider_Links_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Identity_Provider_Links_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Identity_Provider_Links_Bool_Exp>>;
+  avo_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  idp_type?: InputMaybe<String_Comparison_Exp>;
+  idp_user_id?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Identity_Provider_Links_Max_Fields = {
+  __typename?: 'reporting_identity_provider_links_max_fields';
+  avo_profile_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['Int']>;
+  idp_type?: Maybe<Scalars['String']>;
+  idp_user_id?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Identity_Provider_Links_Min_Fields = {
+  __typename?: 'reporting_identity_provider_links_min_fields';
+  avo_profile_id?: Maybe<Scalars['uuid']>;
+  id?: Maybe<Scalars['Int']>;
+  idp_type?: Maybe<Scalars['String']>;
+  idp_user_id?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.identity_provider_links". */
+export type Reporting_Identity_Provider_Links_Order_By = {
+  avo_profile_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  idp_type?: InputMaybe<Order_By>;
+  idp_user_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.identity_provider_links" */
+export enum Reporting_Identity_Provider_Links_Select_Column {
+  /** column name */
+  AvoProfileId = 'avo_profile_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IdpType = 'idp_type',
+  /** column name */
+  IdpUserId = 'idp_user_id'
+}
+
+/** aggregate stddev on columns */
+export type Reporting_Identity_Provider_Links_Stddev_Fields = {
+  __typename?: 'reporting_identity_provider_links_stddev_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Reporting_Identity_Provider_Links_Stddev_Pop_Fields = {
+  __typename?: 'reporting_identity_provider_links_stddev_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Reporting_Identity_Provider_Links_Stddev_Samp_Fields = {
+  __typename?: 'reporting_identity_provider_links_stddev_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** Streaming cursor of the table "reporting_identity_provider_links" */
+export type Reporting_Identity_Provider_Links_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Identity_Provider_Links_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Identity_Provider_Links_Stream_Cursor_Value_Input = {
+  avo_profile_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['Int']>;
+  idp_type?: InputMaybe<Scalars['String']>;
+  idp_user_id?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate sum on columns */
+export type Reporting_Identity_Provider_Links_Sum_Fields = {
+  __typename?: 'reporting_identity_provider_links_sum_fields';
+  id?: Maybe<Scalars['Int']>;
+};
+
+/** aggregate var_pop on columns */
+export type Reporting_Identity_Provider_Links_Var_Pop_Fields = {
+  __typename?: 'reporting_identity_provider_links_var_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate var_samp on columns */
+export type Reporting_Identity_Provider_Links_Var_Samp_Fields = {
+  __typename?: 'reporting_identity_provider_links_var_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate variance on columns */
+export type Reporting_Identity_Provider_Links_Variance_Fields = {
+  __typename?: 'reporting_identity_provider_links_variance_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** columns and relationships of "reporting.item_education_degrees" */
+export type Reporting_Item_Education_Degrees = {
+  __typename?: 'reporting_item_education_degrees';
+  id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.item_education_degrees" */
+export type Reporting_Item_Education_Degrees_Aggregate = {
+  __typename?: 'reporting_item_education_degrees_aggregate';
+  aggregate?: Maybe<Reporting_Item_Education_Degrees_Aggregate_Fields>;
+  nodes: Array<Reporting_Item_Education_Degrees>;
+};
+
+/** aggregate fields of "reporting.item_education_degrees" */
+export type Reporting_Item_Education_Degrees_Aggregate_Fields = {
+  __typename?: 'reporting_item_education_degrees_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Item_Education_Degrees_Max_Fields>;
+  min?: Maybe<Reporting_Item_Education_Degrees_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.item_education_degrees" */
+export type Reporting_Item_Education_Degrees_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Item_Education_Degrees_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.item_education_degrees". All fields are combined with a logical 'AND'. */
+export type Reporting_Item_Education_Degrees_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Item_Education_Degrees_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Item_Education_Degrees_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Item_Education_Degrees_Bool_Exp>>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  item_id?: InputMaybe<Bpchar_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Item_Education_Degrees_Max_Fields = {
+  __typename?: 'reporting_item_education_degrees_max_fields';
+  id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Item_Education_Degrees_Min_Fields = {
+  __typename?: 'reporting_item_education_degrees_min_fields';
+  id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.item_education_degrees". */
+export type Reporting_Item_Education_Degrees_Order_By = {
+  id?: InputMaybe<Order_By>;
+  item_id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.item_education_degrees" */
+export enum Reporting_Item_Education_Degrees_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ItemId = 'item_id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_item_education_degrees" */
+export type Reporting_Item_Education_Degrees_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Item_Education_Degrees_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Item_Education_Degrees_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['String']>;
+  item_id?: InputMaybe<Scalars['bpchar']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.item_education_levels" */
+export type Reporting_Item_Education_Levels = {
+  __typename?: 'reporting_item_education_levels';
+  id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.item_education_levels" */
+export type Reporting_Item_Education_Levels_Aggregate = {
+  __typename?: 'reporting_item_education_levels_aggregate';
+  aggregate?: Maybe<Reporting_Item_Education_Levels_Aggregate_Fields>;
+  nodes: Array<Reporting_Item_Education_Levels>;
+};
+
+/** aggregate fields of "reporting.item_education_levels" */
+export type Reporting_Item_Education_Levels_Aggregate_Fields = {
+  __typename?: 'reporting_item_education_levels_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Item_Education_Levels_Max_Fields>;
+  min?: Maybe<Reporting_Item_Education_Levels_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.item_education_levels" */
+export type Reporting_Item_Education_Levels_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Item_Education_Levels_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.item_education_levels". All fields are combined with a logical 'AND'. */
+export type Reporting_Item_Education_Levels_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Item_Education_Levels_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Item_Education_Levels_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Item_Education_Levels_Bool_Exp>>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  item_id?: InputMaybe<Bpchar_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Item_Education_Levels_Max_Fields = {
+  __typename?: 'reporting_item_education_levels_max_fields';
+  id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Item_Education_Levels_Min_Fields = {
+  __typename?: 'reporting_item_education_levels_min_fields';
+  id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.item_education_levels". */
+export type Reporting_Item_Education_Levels_Order_By = {
+  id?: InputMaybe<Order_By>;
+  item_id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.item_education_levels" */
+export enum Reporting_Item_Education_Levels_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ItemId = 'item_id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_item_education_levels" */
+export type Reporting_Item_Education_Levels_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Item_Education_Levels_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Item_Education_Levels_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['String']>;
+  item_id?: InputMaybe<Scalars['bpchar']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.item_subjects" */
+export type Reporting_Item_Subjects = {
+  __typename?: 'reporting_item_subjects';
+  id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.item_subjects" */
+export type Reporting_Item_Subjects_Aggregate = {
+  __typename?: 'reporting_item_subjects_aggregate';
+  aggregate?: Maybe<Reporting_Item_Subjects_Aggregate_Fields>;
+  nodes: Array<Reporting_Item_Subjects>;
+};
+
+/** aggregate fields of "reporting.item_subjects" */
+export type Reporting_Item_Subjects_Aggregate_Fields = {
+  __typename?: 'reporting_item_subjects_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Item_Subjects_Max_Fields>;
+  min?: Maybe<Reporting_Item_Subjects_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.item_subjects" */
+export type Reporting_Item_Subjects_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Item_Subjects_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.item_subjects". All fields are combined with a logical 'AND'. */
+export type Reporting_Item_Subjects_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Item_Subjects_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Item_Subjects_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Item_Subjects_Bool_Exp>>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  item_id?: InputMaybe<Bpchar_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Item_Subjects_Max_Fields = {
+  __typename?: 'reporting_item_subjects_max_fields';
+  id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Item_Subjects_Min_Fields = {
+  __typename?: 'reporting_item_subjects_min_fields';
+  id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.item_subjects". */
+export type Reporting_Item_Subjects_Order_By = {
+  id?: InputMaybe<Order_By>;
+  item_id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.item_subjects" */
+export enum Reporting_Item_Subjects_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ItemId = 'item_id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_item_subjects" */
+export type Reporting_Item_Subjects_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Item_Subjects_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Item_Subjects_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['String']>;
+  item_id?: InputMaybe<Scalars['bpchar']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.item_themes" */
+export type Reporting_Item_Themes = {
+  __typename?: 'reporting_item_themes';
+  id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.item_themes" */
+export type Reporting_Item_Themes_Aggregate = {
+  __typename?: 'reporting_item_themes_aggregate';
+  aggregate?: Maybe<Reporting_Item_Themes_Aggregate_Fields>;
+  nodes: Array<Reporting_Item_Themes>;
+};
+
+/** aggregate fields of "reporting.item_themes" */
+export type Reporting_Item_Themes_Aggregate_Fields = {
+  __typename?: 'reporting_item_themes_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Item_Themes_Max_Fields>;
+  min?: Maybe<Reporting_Item_Themes_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.item_themes" */
+export type Reporting_Item_Themes_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Item_Themes_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.item_themes". All fields are combined with a logical 'AND'. */
+export type Reporting_Item_Themes_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Item_Themes_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Item_Themes_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Item_Themes_Bool_Exp>>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  item_id?: InputMaybe<Bpchar_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Item_Themes_Max_Fields = {
+  __typename?: 'reporting_item_themes_max_fields';
+  id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Item_Themes_Min_Fields = {
+  __typename?: 'reporting_item_themes_min_fields';
+  id?: Maybe<Scalars['String']>;
+  item_id?: Maybe<Scalars['bpchar']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.item_themes". */
+export type Reporting_Item_Themes_Order_By = {
+  id?: InputMaybe<Order_By>;
+  item_id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.item_themes" */
+export enum Reporting_Item_Themes_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ItemId = 'item_id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label'
+}
+
+/** Streaming cursor of the table "reporting_item_themes" */
+export type Reporting_Item_Themes_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Item_Themes_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Item_Themes_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['String']>;
+  item_id?: InputMaybe<Scalars['bpchar']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.items" */
+export type Reporting_Items = {
+  __typename?: 'reporting_items';
+  archived_at?: Maybe<Scalars['timestamptz']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  depublish_at?: Maybe<Scalars['timestamptz']>;
+  depublish_reason?: Maybe<Scalars['String']>;
+  duration?: Maybe<Scalars['time']>;
+  id?: Maybe<Scalars['bpchar']>;
+  is_deleted?: Maybe<Scalars['Boolean']>;
+  is_published?: Maybe<Scalars['Boolean']>;
+  issued?: Maybe<Scalars['date']>;
+  lom_keywords?: Maybe<Scalars['jsonb']>;
+  lom_languages?: Maybe<Scalars['jsonb']>;
+  org_id?: Maybe<Scalars['bpchar']>;
+  publish_at?: Maybe<Scalars['timestamptz']>;
+  published_at?: Maybe<Scalars['timestamptz']>;
+  series?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+
+/** columns and relationships of "reporting.items" */
+export type Reporting_ItemsLom_KeywordsArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "reporting.items" */
+export type Reporting_ItemsLom_LanguagesArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.items" */
+export type Reporting_Items_Aggregate = {
+  __typename?: 'reporting_items_aggregate';
+  aggregate?: Maybe<Reporting_Items_Aggregate_Fields>;
+  nodes: Array<Reporting_Items>;
+};
+
+/** aggregate fields of "reporting.items" */
+export type Reporting_Items_Aggregate_Fields = {
+  __typename?: 'reporting_items_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Items_Max_Fields>;
+  min?: Maybe<Reporting_Items_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.items" */
+export type Reporting_Items_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Items_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Reporting_Items_Append_Input = {
+  lom_keywords?: InputMaybe<Scalars['jsonb']>;
+  lom_languages?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.items". All fields are combined with a logical 'AND'. */
+export type Reporting_Items_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Items_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Items_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Items_Bool_Exp>>;
+  archived_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  depublish_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  depublish_reason?: InputMaybe<String_Comparison_Exp>;
+  duration?: InputMaybe<Time_Comparison_Exp>;
+  id?: InputMaybe<Bpchar_Comparison_Exp>;
+  is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
+  is_published?: InputMaybe<Boolean_Comparison_Exp>;
+  issued?: InputMaybe<Date_Comparison_Exp>;
+  lom_keywords?: InputMaybe<Jsonb_Comparison_Exp>;
+  lom_languages?: InputMaybe<Jsonb_Comparison_Exp>;
+  org_id?: InputMaybe<Bpchar_Comparison_Exp>;
+  publish_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  published_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  series?: InputMaybe<String_Comparison_Exp>;
+  type?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Reporting_Items_Delete_At_Path_Input = {
+  lom_keywords?: InputMaybe<Array<Scalars['String']>>;
+  lom_languages?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Reporting_Items_Delete_Elem_Input = {
+  lom_keywords?: InputMaybe<Scalars['Int']>;
+  lom_languages?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Reporting_Items_Delete_Key_Input = {
+  lom_keywords?: InputMaybe<Scalars['String']>;
+  lom_languages?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "reporting.items" */
+export type Reporting_Items_Insert_Input = {
+  archived_at?: InputMaybe<Scalars['timestamptz']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  depublish_at?: InputMaybe<Scalars['timestamptz']>;
+  depublish_reason?: InputMaybe<Scalars['String']>;
+  duration?: InputMaybe<Scalars['time']>;
+  id?: InputMaybe<Scalars['bpchar']>;
+  is_deleted?: InputMaybe<Scalars['Boolean']>;
+  is_published?: InputMaybe<Scalars['Boolean']>;
+  issued?: InputMaybe<Scalars['date']>;
+  lom_keywords?: InputMaybe<Scalars['jsonb']>;
+  lom_languages?: InputMaybe<Scalars['jsonb']>;
+  org_id?: InputMaybe<Scalars['bpchar']>;
+  publish_at?: InputMaybe<Scalars['timestamptz']>;
+  published_at?: InputMaybe<Scalars['timestamptz']>;
+  series?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Items_Max_Fields = {
+  __typename?: 'reporting_items_max_fields';
+  archived_at?: Maybe<Scalars['timestamptz']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  depublish_at?: Maybe<Scalars['timestamptz']>;
+  depublish_reason?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['bpchar']>;
+  issued?: Maybe<Scalars['date']>;
+  org_id?: Maybe<Scalars['bpchar']>;
+  publish_at?: Maybe<Scalars['timestamptz']>;
+  published_at?: Maybe<Scalars['timestamptz']>;
+  series?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Items_Min_Fields = {
+  __typename?: 'reporting_items_min_fields';
+  archived_at?: Maybe<Scalars['timestamptz']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  depublish_at?: Maybe<Scalars['timestamptz']>;
+  depublish_reason?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['bpchar']>;
+  issued?: Maybe<Scalars['date']>;
+  org_id?: Maybe<Scalars['bpchar']>;
+  publish_at?: Maybe<Scalars['timestamptz']>;
+  published_at?: Maybe<Scalars['timestamptz']>;
+  series?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** response of any mutation on the table "reporting.items" */
+export type Reporting_Items_Mutation_Response = {
+  __typename?: 'reporting_items_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Reporting_Items>;
+};
+
+/** Ordering options when selecting data from "reporting.items". */
+export type Reporting_Items_Order_By = {
+  archived_at?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  depublish_at?: InputMaybe<Order_By>;
+  depublish_reason?: InputMaybe<Order_By>;
+  duration?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  is_deleted?: InputMaybe<Order_By>;
+  is_published?: InputMaybe<Order_By>;
+  issued?: InputMaybe<Order_By>;
+  lom_keywords?: InputMaybe<Order_By>;
+  lom_languages?: InputMaybe<Order_By>;
+  org_id?: InputMaybe<Order_By>;
+  publish_at?: InputMaybe<Order_By>;
+  published_at?: InputMaybe<Order_By>;
+  series?: InputMaybe<Order_By>;
+  type?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Reporting_Items_Prepend_Input = {
+  lom_keywords?: InputMaybe<Scalars['jsonb']>;
+  lom_languages?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "reporting.items" */
+export enum Reporting_Items_Select_Column {
+  /** column name */
+  ArchivedAt = 'archived_at',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  DepublishAt = 'depublish_at',
+  /** column name */
+  DepublishReason = 'depublish_reason',
+  /** column name */
+  Duration = 'duration',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IsDeleted = 'is_deleted',
+  /** column name */
+  IsPublished = 'is_published',
+  /** column name */
+  Issued = 'issued',
+  /** column name */
+  LomKeywords = 'lom_keywords',
+  /** column name */
+  LomLanguages = 'lom_languages',
+  /** column name */
+  OrgId = 'org_id',
+  /** column name */
+  PublishAt = 'publish_at',
+  /** column name */
+  PublishedAt = 'published_at',
+  /** column name */
+  Series = 'series',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "reporting.items" */
+export type Reporting_Items_Set_Input = {
+  archived_at?: InputMaybe<Scalars['timestamptz']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  depublish_at?: InputMaybe<Scalars['timestamptz']>;
+  depublish_reason?: InputMaybe<Scalars['String']>;
+  duration?: InputMaybe<Scalars['time']>;
+  id?: InputMaybe<Scalars['bpchar']>;
+  is_deleted?: InputMaybe<Scalars['Boolean']>;
+  is_published?: InputMaybe<Scalars['Boolean']>;
+  issued?: InputMaybe<Scalars['date']>;
+  lom_keywords?: InputMaybe<Scalars['jsonb']>;
+  lom_languages?: InputMaybe<Scalars['jsonb']>;
+  org_id?: InputMaybe<Scalars['bpchar']>;
+  publish_at?: InputMaybe<Scalars['timestamptz']>;
+  published_at?: InputMaybe<Scalars['timestamptz']>;
+  series?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** Streaming cursor of the table "reporting_items" */
+export type Reporting_Items_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Items_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Items_Stream_Cursor_Value_Input = {
+  archived_at?: InputMaybe<Scalars['timestamptz']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  depublish_at?: InputMaybe<Scalars['timestamptz']>;
+  depublish_reason?: InputMaybe<Scalars['String']>;
+  duration?: InputMaybe<Scalars['time']>;
+  id?: InputMaybe<Scalars['bpchar']>;
+  is_deleted?: InputMaybe<Scalars['Boolean']>;
+  is_published?: InputMaybe<Scalars['Boolean']>;
+  issued?: InputMaybe<Scalars['date']>;
+  lom_keywords?: InputMaybe<Scalars['jsonb']>;
+  lom_languages?: InputMaybe<Scalars['jsonb']>;
+  org_id?: InputMaybe<Scalars['bpchar']>;
+  publish_at?: InputMaybe<Scalars['timestamptz']>;
+  published_at?: InputMaybe<Scalars['timestamptz']>;
+  series?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+export type Reporting_Items_Updates = {
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  _append?: InputMaybe<Reporting_Items_Append_Input>;
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  _delete_at_path?: InputMaybe<Reporting_Items_Delete_At_Path_Input>;
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  _delete_elem?: InputMaybe<Reporting_Items_Delete_Elem_Input>;
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  _delete_key?: InputMaybe<Reporting_Items_Delete_Key_Input>;
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  _prepend?: InputMaybe<Reporting_Items_Prepend_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Reporting_Items_Set_Input>;
+  where: Reporting_Items_Bool_Exp;
+};
+
+/** columns and relationships of "reporting.organisations" */
+export type Reporting_Organisations = {
+  __typename?: 'reporting_organisations';
+  name?: Maybe<Scalars['String']>;
+  or_id?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.organisations" */
+export type Reporting_Organisations_Aggregate = {
+  __typename?: 'reporting_organisations_aggregate';
+  aggregate?: Maybe<Reporting_Organisations_Aggregate_Fields>;
+  nodes: Array<Reporting_Organisations>;
+};
+
+/** aggregate fields of "reporting.organisations" */
+export type Reporting_Organisations_Aggregate_Fields = {
+  __typename?: 'reporting_organisations_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Organisations_Max_Fields>;
+  min?: Maybe<Reporting_Organisations_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.organisations" */
+export type Reporting_Organisations_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Organisations_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.organisations". All fields are combined with a logical 'AND'. */
+export type Reporting_Organisations_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Organisations_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Organisations_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Organisations_Bool_Exp>>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  or_id?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** input type for inserting data into table "reporting.organisations" */
+export type Reporting_Organisations_Insert_Input = {
+  name?: InputMaybe<Scalars['String']>;
+  or_id?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Organisations_Max_Fields = {
+  __typename?: 'reporting_organisations_max_fields';
+  name?: Maybe<Scalars['String']>;
+  or_id?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Organisations_Min_Fields = {
+  __typename?: 'reporting_organisations_min_fields';
+  name?: Maybe<Scalars['String']>;
+  or_id?: Maybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "reporting.organisations" */
+export type Reporting_Organisations_Mutation_Response = {
+  __typename?: 'reporting_organisations_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Reporting_Organisations>;
+};
+
+/** Ordering options when selecting data from "reporting.organisations". */
+export type Reporting_Organisations_Order_By = {
+  name?: InputMaybe<Order_By>;
+  or_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.organisations" */
+export enum Reporting_Organisations_Select_Column {
+  /** column name */
+  Name = 'name',
+  /** column name */
+  OrId = 'or_id'
+}
+
+/** input type for updating data in table "reporting.organisations" */
+export type Reporting_Organisations_Set_Input = {
+  name?: InputMaybe<Scalars['String']>;
+  or_id?: InputMaybe<Scalars['String']>;
+};
+
+/** Streaming cursor of the table "reporting_organisations" */
+export type Reporting_Organisations_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Organisations_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Organisations_Stream_Cursor_Value_Input = {
+  name?: InputMaybe<Scalars['String']>;
+  or_id?: InputMaybe<Scalars['String']>;
+};
+
+export type Reporting_Organisations_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Reporting_Organisations_Set_Input>;
+  where: Reporting_Organisations_Bool_Exp;
+};
+
+/** columns and relationships of "reporting.profile_education_degrees" */
+export type Reporting_Profile_Education_Degrees = {
+  __typename?: 'reporting_profile_education_degrees';
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregated selection of "reporting.profile_education_degrees" */
+export type Reporting_Profile_Education_Degrees_Aggregate = {
+  __typename?: 'reporting_profile_education_degrees_aggregate';
+  aggregate?: Maybe<Reporting_Profile_Education_Degrees_Aggregate_Fields>;
+  nodes: Array<Reporting_Profile_Education_Degrees>;
+};
+
+/** aggregate fields of "reporting.profile_education_degrees" */
+export type Reporting_Profile_Education_Degrees_Aggregate_Fields = {
+  __typename?: 'reporting_profile_education_degrees_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Profile_Education_Degrees_Max_Fields>;
+  min?: Maybe<Reporting_Profile_Education_Degrees_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.profile_education_degrees" */
+export type Reporting_Profile_Education_Degrees_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Profile_Education_Degrees_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.profile_education_degrees". All fields are combined with a logical 'AND'. */
+export type Reporting_Profile_Education_Degrees_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Profile_Education_Degrees_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Profile_Education_Degrees_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Profile_Education_Degrees_Bool_Exp>>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+  profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Profile_Education_Degrees_Max_Fields = {
+  __typename?: 'reporting_profile_education_degrees_max_fields';
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Profile_Education_Degrees_Min_Fields = {
+  __typename?: 'reporting_profile_education_degrees_min_fields';
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** Ordering options when selecting data from "reporting.profile_education_degrees". */
+export type Reporting_Profile_Education_Degrees_Order_By = {
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+  profile_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.profile_education_degrees" */
+export enum Reporting_Profile_Education_Degrees_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label',
+  /** column name */
+  ProfileId = 'profile_id'
+}
+
+/** Streaming cursor of the table "reporting_profile_education_degrees" */
+export type Reporting_Profile_Education_Degrees_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Profile_Education_Degrees_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Profile_Education_Degrees_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** columns and relationships of "reporting.profile_education_levels" */
+export type Reporting_Profile_Education_Levels = {
+  __typename?: 'reporting_profile_education_levels';
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregated selection of "reporting.profile_education_levels" */
+export type Reporting_Profile_Education_Levels_Aggregate = {
+  __typename?: 'reporting_profile_education_levels_aggregate';
+  aggregate?: Maybe<Reporting_Profile_Education_Levels_Aggregate_Fields>;
+  nodes: Array<Reporting_Profile_Education_Levels>;
+};
+
+/** aggregate fields of "reporting.profile_education_levels" */
+export type Reporting_Profile_Education_Levels_Aggregate_Fields = {
+  __typename?: 'reporting_profile_education_levels_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Profile_Education_Levels_Max_Fields>;
+  min?: Maybe<Reporting_Profile_Education_Levels_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.profile_education_levels" */
+export type Reporting_Profile_Education_Levels_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Profile_Education_Levels_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.profile_education_levels". All fields are combined with a logical 'AND'. */
+export type Reporting_Profile_Education_Levels_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Profile_Education_Levels_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Profile_Education_Levels_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Profile_Education_Levels_Bool_Exp>>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+  profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Profile_Education_Levels_Max_Fields = {
+  __typename?: 'reporting_profile_education_levels_max_fields';
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Profile_Education_Levels_Min_Fields = {
+  __typename?: 'reporting_profile_education_levels_min_fields';
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** Ordering options when selecting data from "reporting.profile_education_levels". */
+export type Reporting_Profile_Education_Levels_Order_By = {
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+  profile_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.profile_education_levels" */
+export enum Reporting_Profile_Education_Levels_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label',
+  /** column name */
+  ProfileId = 'profile_id'
+}
+
+/** Streaming cursor of the table "reporting_profile_education_levels" */
+export type Reporting_Profile_Education_Levels_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Profile_Education_Levels_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Profile_Education_Levels_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** columns and relationships of "reporting.profile_educational_organisation_links" */
+export type Reporting_Profile_Educational_Organisation_Links = {
+  __typename?: 'reporting_profile_educational_organisation_links';
+  id?: Maybe<Scalars['uuid']>;
+  organisation_id?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  unit_id?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.profile_educational_organisation_links" */
+export type Reporting_Profile_Educational_Organisation_Links_Aggregate = {
+  __typename?: 'reporting_profile_educational_organisation_links_aggregate';
+  aggregate?: Maybe<Reporting_Profile_Educational_Organisation_Links_Aggregate_Fields>;
+  nodes: Array<Reporting_Profile_Educational_Organisation_Links>;
+};
+
+/** aggregate fields of "reporting.profile_educational_organisation_links" */
+export type Reporting_Profile_Educational_Organisation_Links_Aggregate_Fields = {
+  __typename?: 'reporting_profile_educational_organisation_links_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Profile_Educational_Organisation_Links_Max_Fields>;
+  min?: Maybe<Reporting_Profile_Educational_Organisation_Links_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.profile_educational_organisation_links" */
+export type Reporting_Profile_Educational_Organisation_Links_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Profile_Educational_Organisation_Links_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.profile_educational_organisation_links". All fields are combined with a logical 'AND'. */
+export type Reporting_Profile_Educational_Organisation_Links_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Profile_Educational_Organisation_Links_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Profile_Educational_Organisation_Links_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Profile_Educational_Organisation_Links_Bool_Exp>>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  organisation_id?: InputMaybe<String_Comparison_Exp>;
+  profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  unit_id?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** input type for inserting data into table "reporting.profile_educational_organisation_links" */
+export type Reporting_Profile_Educational_Organisation_Links_Insert_Input = {
+  id?: InputMaybe<Scalars['uuid']>;
+  organisation_id?: InputMaybe<Scalars['String']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  unit_id?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Profile_Educational_Organisation_Links_Max_Fields = {
+  __typename?: 'reporting_profile_educational_organisation_links_max_fields';
+  id?: Maybe<Scalars['uuid']>;
+  organisation_id?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  unit_id?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Profile_Educational_Organisation_Links_Min_Fields = {
+  __typename?: 'reporting_profile_educational_organisation_links_min_fields';
+  id?: Maybe<Scalars['uuid']>;
+  organisation_id?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  unit_id?: Maybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "reporting.profile_educational_organisation_links" */
+export type Reporting_Profile_Educational_Organisation_Links_Mutation_Response = {
+  __typename?: 'reporting_profile_educational_organisation_links_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Reporting_Profile_Educational_Organisation_Links>;
+};
+
+/** Ordering options when selecting data from "reporting.profile_educational_organisation_links". */
+export type Reporting_Profile_Educational_Organisation_Links_Order_By = {
+  id?: InputMaybe<Order_By>;
+  organisation_id?: InputMaybe<Order_By>;
+  profile_id?: InputMaybe<Order_By>;
+  unit_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.profile_educational_organisation_links" */
+export enum Reporting_Profile_Educational_Organisation_Links_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  OrganisationId = 'organisation_id',
+  /** column name */
+  ProfileId = 'profile_id',
+  /** column name */
+  UnitId = 'unit_id'
+}
+
+/** input type for updating data in table "reporting.profile_educational_organisation_links" */
+export type Reporting_Profile_Educational_Organisation_Links_Set_Input = {
+  id?: InputMaybe<Scalars['uuid']>;
+  organisation_id?: InputMaybe<Scalars['String']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  unit_id?: InputMaybe<Scalars['String']>;
+};
+
+/** Streaming cursor of the table "reporting_profile_educational_organisation_links" */
+export type Reporting_Profile_Educational_Organisation_Links_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Profile_Educational_Organisation_Links_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Profile_Educational_Organisation_Links_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['uuid']>;
+  organisation_id?: InputMaybe<Scalars['String']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  unit_id?: InputMaybe<Scalars['String']>;
+};
+
+export type Reporting_Profile_Educational_Organisation_Links_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Reporting_Profile_Educational_Organisation_Links_Set_Input>;
+  where: Reporting_Profile_Educational_Organisation_Links_Bool_Exp;
+};
+
+/** columns and relationships of "reporting.profile_subjects" */
+export type Reporting_Profile_Subjects = {
+  __typename?: 'reporting_profile_subjects';
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregated selection of "reporting.profile_subjects" */
+export type Reporting_Profile_Subjects_Aggregate = {
+  __typename?: 'reporting_profile_subjects_aggregate';
+  aggregate?: Maybe<Reporting_Profile_Subjects_Aggregate_Fields>;
+  nodes: Array<Reporting_Profile_Subjects>;
+};
+
+/** aggregate fields of "reporting.profile_subjects" */
+export type Reporting_Profile_Subjects_Aggregate_Fields = {
+  __typename?: 'reporting_profile_subjects_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Profile_Subjects_Max_Fields>;
+  min?: Maybe<Reporting_Profile_Subjects_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.profile_subjects" */
+export type Reporting_Profile_Subjects_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Profile_Subjects_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.profile_subjects". All fields are combined with a logical 'AND'. */
+export type Reporting_Profile_Subjects_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Profile_Subjects_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Profile_Subjects_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Profile_Subjects_Bool_Exp>>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+  profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Profile_Subjects_Max_Fields = {
+  __typename?: 'reporting_profile_subjects_max_fields';
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Profile_Subjects_Min_Fields = {
+  __typename?: 'reporting_profile_subjects_min_fields';
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** Ordering options when selecting data from "reporting.profile_subjects". */
+export type Reporting_Profile_Subjects_Order_By = {
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+  profile_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.profile_subjects" */
+export enum Reporting_Profile_Subjects_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label',
+  /** column name */
+  ProfileId = 'profile_id'
+}
+
+/** Streaming cursor of the table "reporting_profile_subjects" */
+export type Reporting_Profile_Subjects_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Profile_Subjects_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Profile_Subjects_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** columns and relationships of "reporting.profile_themes" */
+export type Reporting_Profile_Themes = {
+  __typename?: 'reporting_profile_themes';
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregated selection of "reporting.profile_themes" */
+export type Reporting_Profile_Themes_Aggregate = {
+  __typename?: 'reporting_profile_themes_aggregate';
+  aggregate?: Maybe<Reporting_Profile_Themes_Aggregate_Fields>;
+  nodes: Array<Reporting_Profile_Themes>;
+};
+
+/** aggregate fields of "reporting.profile_themes" */
+export type Reporting_Profile_Themes_Aggregate_Fields = {
+  __typename?: 'reporting_profile_themes_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Profile_Themes_Max_Fields>;
+  min?: Maybe<Reporting_Profile_Themes_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.profile_themes" */
+export type Reporting_Profile_Themes_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Profile_Themes_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.profile_themes". All fields are combined with a logical 'AND'. */
+export type Reporting_Profile_Themes_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Profile_Themes_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Profile_Themes_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Profile_Themes_Bool_Exp>>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  lom_id?: InputMaybe<String_Comparison_Exp>;
+  lom_label?: InputMaybe<String_Comparison_Exp>;
+  profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Profile_Themes_Max_Fields = {
+  __typename?: 'reporting_profile_themes_max_fields';
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Profile_Themes_Min_Fields = {
+  __typename?: 'reporting_profile_themes_min_fields';
+  id?: Maybe<Scalars['uuid']>;
+  lom_id?: Maybe<Scalars['String']>;
+  lom_label?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** Ordering options when selecting data from "reporting.profile_themes". */
+export type Reporting_Profile_Themes_Order_By = {
+  id?: InputMaybe<Order_By>;
+  lom_id?: InputMaybe<Order_By>;
+  lom_label?: InputMaybe<Order_By>;
+  profile_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.profile_themes" */
+export enum Reporting_Profile_Themes_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LomId = 'lom_id',
+  /** column name */
+  LomLabel = 'lom_label',
+  /** column name */
+  ProfileId = 'profile_id'
+}
+
+/** Streaming cursor of the table "reporting_profile_themes" */
+export type Reporting_Profile_Themes_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Profile_Themes_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Profile_Themes_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['uuid']>;
+  lom_id?: InputMaybe<Scalars['String']>;
+  lom_label?: InputMaybe<Scalars['String']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** columns and relationships of "reporting.profiles" */
+export type Reporting_Profiles = {
+  __typename?: 'reporting_profiles';
+  business_or_id?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  first_name?: Maybe<Scalars['String']>;
+  is_blocked?: Maybe<Scalars['Boolean']>;
+  is_deleted?: Maybe<Scalars['Boolean']>;
+  is_exception?: Maybe<Scalars['Boolean']>;
+  is_profile_complete?: Maybe<Scalars['Boolean']>;
+  last_login_at?: Maybe<Scalars['timestamptz']>;
+  last_name?: Maybe<Scalars['String']>;
+  mail?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  user_group?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.profiles" */
+export type Reporting_Profiles_Aggregate = {
+  __typename?: 'reporting_profiles_aggregate';
+  aggregate?: Maybe<Reporting_Profiles_Aggregate_Fields>;
+  nodes: Array<Reporting_Profiles>;
+};
+
+/** aggregate fields of "reporting.profiles" */
+export type Reporting_Profiles_Aggregate_Fields = {
+  __typename?: 'reporting_profiles_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Profiles_Max_Fields>;
+  min?: Maybe<Reporting_Profiles_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.profiles" */
+export type Reporting_Profiles_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Profiles_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.profiles". All fields are combined with a logical 'AND'. */
+export type Reporting_Profiles_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Profiles_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Profiles_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Profiles_Bool_Exp>>;
+  business_or_id?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  first_name?: InputMaybe<String_Comparison_Exp>;
+  is_blocked?: InputMaybe<Boolean_Comparison_Exp>;
+  is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
+  is_exception?: InputMaybe<Boolean_Comparison_Exp>;
+  is_profile_complete?: InputMaybe<Boolean_Comparison_Exp>;
+  last_login_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  last_name?: InputMaybe<String_Comparison_Exp>;
+  mail?: InputMaybe<String_Comparison_Exp>;
+  profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  user_group?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Profiles_Max_Fields = {
+  __typename?: 'reporting_profiles_max_fields';
+  business_or_id?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  first_name?: Maybe<Scalars['String']>;
+  last_login_at?: Maybe<Scalars['timestamptz']>;
+  last_name?: Maybe<Scalars['String']>;
+  mail?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  user_group?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Profiles_Min_Fields = {
+  __typename?: 'reporting_profiles_min_fields';
+  business_or_id?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  first_name?: Maybe<Scalars['String']>;
+  last_login_at?: Maybe<Scalars['timestamptz']>;
+  last_name?: Maybe<Scalars['String']>;
+  mail?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  user_group?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "reporting.profiles". */
+export type Reporting_Profiles_Order_By = {
+  business_or_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  first_name?: InputMaybe<Order_By>;
+  is_blocked?: InputMaybe<Order_By>;
+  is_deleted?: InputMaybe<Order_By>;
+  is_exception?: InputMaybe<Order_By>;
+  is_profile_complete?: InputMaybe<Order_By>;
+  last_login_at?: InputMaybe<Order_By>;
+  last_name?: InputMaybe<Order_By>;
+  mail?: InputMaybe<Order_By>;
+  profile_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  user_group?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.profiles" */
+export enum Reporting_Profiles_Select_Column {
+  /** column name */
+  BusinessOrId = 'business_or_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  FirstName = 'first_name',
+  /** column name */
+  IsBlocked = 'is_blocked',
+  /** column name */
+  IsDeleted = 'is_deleted',
+  /** column name */
+  IsException = 'is_exception',
+  /** column name */
+  IsProfileComplete = 'is_profile_complete',
+  /** column name */
+  LastLoginAt = 'last_login_at',
+  /** column name */
+  LastName = 'last_name',
+  /** column name */
+  Mail = 'mail',
+  /** column name */
+  ProfileId = 'profile_id',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  UserGroup = 'user_group'
+}
+
+/** Streaming cursor of the table "reporting_profiles" */
+export type Reporting_Profiles_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Profiles_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Profiles_Stream_Cursor_Value_Input = {
+  business_or_id?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  first_name?: InputMaybe<Scalars['String']>;
+  is_blocked?: InputMaybe<Scalars['Boolean']>;
+  is_deleted?: InputMaybe<Scalars['Boolean']>;
+  is_exception?: InputMaybe<Scalars['Boolean']>;
+  is_profile_complete?: InputMaybe<Scalars['Boolean']>;
+  last_login_at?: InputMaybe<Scalars['timestamptz']>;
+  last_name?: InputMaybe<Scalars['String']>;
+  mail?: InputMaybe<Scalars['String']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+  user_group?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "reporting.quick_share_links" */
+export type Reporting_Quick_Share_Links = {
+  __typename?: 'reporting_quick_share_links';
+  content_id?: Maybe<Scalars['uuid']>;
+  content_type?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  owner_profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  view_mode?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "reporting.quick_share_links" */
+export type Reporting_Quick_Share_Links_Aggregate = {
+  __typename?: 'reporting_quick_share_links_aggregate';
+  aggregate?: Maybe<Reporting_Quick_Share_Links_Aggregate_Fields>;
+  nodes: Array<Reporting_Quick_Share_Links>;
+};
+
+/** aggregate fields of "reporting.quick_share_links" */
+export type Reporting_Quick_Share_Links_Aggregate_Fields = {
+  __typename?: 'reporting_quick_share_links_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Reporting_Quick_Share_Links_Max_Fields>;
+  min?: Maybe<Reporting_Quick_Share_Links_Min_Fields>;
+};
+
+
+/** aggregate fields of "reporting.quick_share_links" */
+export type Reporting_Quick_Share_Links_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Reporting_Quick_Share_Links_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "reporting.quick_share_links". All fields are combined with a logical 'AND'. */
+export type Reporting_Quick_Share_Links_Bool_Exp = {
+  _and?: InputMaybe<Array<Reporting_Quick_Share_Links_Bool_Exp>>;
+  _not?: InputMaybe<Reporting_Quick_Share_Links_Bool_Exp>;
+  _or?: InputMaybe<Array<Reporting_Quick_Share_Links_Bool_Exp>>;
+  content_id?: InputMaybe<Uuid_Comparison_Exp>;
+  content_type?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  view_mode?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** input type for inserting data into table "reporting.quick_share_links" */
+export type Reporting_Quick_Share_Links_Insert_Input = {
+  content_id?: InputMaybe<Scalars['uuid']>;
+  content_type?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  owner_profile_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+  view_mode?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type Reporting_Quick_Share_Links_Max_Fields = {
+  __typename?: 'reporting_quick_share_links_max_fields';
+  content_id?: Maybe<Scalars['uuid']>;
+  content_type?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  owner_profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  view_mode?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Reporting_Quick_Share_Links_Min_Fields = {
+  __typename?: 'reporting_quick_share_links_min_fields';
+  content_id?: Maybe<Scalars['uuid']>;
+  content_type?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  owner_profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  view_mode?: Maybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "reporting.quick_share_links" */
+export type Reporting_Quick_Share_Links_Mutation_Response = {
+  __typename?: 'reporting_quick_share_links_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Reporting_Quick_Share_Links>;
+};
+
+/** Ordering options when selecting data from "reporting.quick_share_links". */
+export type Reporting_Quick_Share_Links_Order_By = {
+  content_id?: InputMaybe<Order_By>;
+  content_type?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  owner_profile_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  view_mode?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "reporting.quick_share_links" */
+export enum Reporting_Quick_Share_Links_Select_Column {
+  /** column name */
+  ContentId = 'content_id',
+  /** column name */
+  ContentType = 'content_type',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  OwnerProfileId = 'owner_profile_id',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  ViewMode = 'view_mode'
+}
+
+/** input type for updating data in table "reporting.quick_share_links" */
+export type Reporting_Quick_Share_Links_Set_Input = {
+  content_id?: InputMaybe<Scalars['uuid']>;
+  content_type?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  owner_profile_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+  view_mode?: InputMaybe<Scalars['String']>;
+};
+
+/** Streaming cursor of the table "reporting_quick_share_links" */
+export type Reporting_Quick_Share_Links_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Reporting_Quick_Share_Links_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Reporting_Quick_Share_Links_Stream_Cursor_Value_Input = {
+  content_id?: InputMaybe<Scalars['uuid']>;
+  content_type?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  owner_profile_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+  view_mode?: InputMaybe<Scalars['String']>;
+};
+
+export type Reporting_Quick_Share_Links_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Reporting_Quick_Share_Links_Set_Input>;
+  where: Reporting_Quick_Share_Links_Bool_Exp;
 };
 
 /** columns and relationships of "shared.collateral" */
@@ -39990,6 +45849,228 @@ export type Subscription_Root = {
   migrate_reference_ids_by_pk?: Maybe<Migrate_Reference_Ids>;
   /** fetch data from the table in a streaming manner: "migrate.reference_ids" */
   migrate_reference_ids_stream: Array<Migrate_Reference_Ids>;
+  /** fetch data from the table: "reporting.assignment_blocks" */
+  reporting_assignment_blocks: Array<Reporting_Assignment_Blocks>;
+  /** fetch aggregated fields from the table: "reporting.assignment_blocks" */
+  reporting_assignment_blocks_aggregate: Reporting_Assignment_Blocks_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.assignment_blocks" */
+  reporting_assignment_blocks_stream: Array<Reporting_Assignment_Blocks>;
+  /** fetch data from the table: "reporting.assignment_contributors" */
+  reporting_assignment_contributors: Array<Reporting_Assignment_Contributors>;
+  /** fetch aggregated fields from the table: "reporting.assignment_contributors" */
+  reporting_assignment_contributors_aggregate: Reporting_Assignment_Contributors_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.assignment_contributors" */
+  reporting_assignment_contributors_stream: Array<Reporting_Assignment_Contributors>;
+  /** fetch data from the table: "reporting.assignment_education_degrees" */
+  reporting_assignment_education_degrees: Array<Reporting_Assignment_Education_Degrees>;
+  /** fetch aggregated fields from the table: "reporting.assignment_education_degrees" */
+  reporting_assignment_education_degrees_aggregate: Reporting_Assignment_Education_Degrees_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.assignment_education_degrees" */
+  reporting_assignment_education_degrees_stream: Array<Reporting_Assignment_Education_Degrees>;
+  /** fetch data from the table: "reporting.assignment_education_levels" */
+  reporting_assignment_education_levels: Array<Reporting_Assignment_Education_Levels>;
+  /** fetch aggregated fields from the table: "reporting.assignment_education_levels" */
+  reporting_assignment_education_levels_aggregate: Reporting_Assignment_Education_Levels_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.assignment_education_levels" */
+  reporting_assignment_education_levels_stream: Array<Reporting_Assignment_Education_Levels>;
+  /** fetch data from the table: "reporting.assignment_response_blocks" */
+  reporting_assignment_response_blocks: Array<Reporting_Assignment_Response_Blocks>;
+  /** fetch aggregated fields from the table: "reporting.assignment_response_blocks" */
+  reporting_assignment_response_blocks_aggregate: Reporting_Assignment_Response_Blocks_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.assignment_response_blocks" */
+  reporting_assignment_response_blocks_stream: Array<Reporting_Assignment_Response_Blocks>;
+  /** fetch data from the table: "reporting.assignment_responses" */
+  reporting_assignment_responses: Array<Reporting_Assignment_Responses>;
+  /** fetch aggregated fields from the table: "reporting.assignment_responses" */
+  reporting_assignment_responses_aggregate: Reporting_Assignment_Responses_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.assignment_responses" */
+  reporting_assignment_responses_stream: Array<Reporting_Assignment_Responses>;
+  /** fetch data from the table: "reporting.assignment_subjects" */
+  reporting_assignment_subjects: Array<Reporting_Assignment_Subjects>;
+  /** fetch aggregated fields from the table: "reporting.assignment_subjects" */
+  reporting_assignment_subjects_aggregate: Reporting_Assignment_Subjects_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.assignment_subjects" */
+  reporting_assignment_subjects_stream: Array<Reporting_Assignment_Subjects>;
+  /** fetch data from the table: "reporting.assignment_themes" */
+  reporting_assignment_themes: Array<Reporting_Assignment_Themes>;
+  /** fetch aggregated fields from the table: "reporting.assignment_themes" */
+  reporting_assignment_themes_aggregate: Reporting_Assignment_Themes_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.assignment_themes" */
+  reporting_assignment_themes_stream: Array<Reporting_Assignment_Themes>;
+  /** fetch data from the table: "reporting.assignments" */
+  reporting_assignments: Array<Reporting_Assignments>;
+  /** fetch aggregated fields from the table: "reporting.assignments" */
+  reporting_assignments_aggregate: Reporting_Assignments_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.assignments" */
+  reporting_assignments_stream: Array<Reporting_Assignments>;
+  /** fetch data from the table: "reporting.bundle_blocks" */
+  reporting_bundle_blocks: Array<Reporting_Bundle_Blocks>;
+  /** fetch aggregated fields from the table: "reporting.bundle_blocks" */
+  reporting_bundle_blocks_aggregate: Reporting_Bundle_Blocks_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.bundle_blocks" */
+  reporting_bundle_blocks_stream: Array<Reporting_Bundle_Blocks>;
+  /** fetch data from the table: "reporting.bundle_education_degrees" */
+  reporting_bundle_education_degrees: Array<Reporting_Bundle_Education_Degrees>;
+  /** fetch aggregated fields from the table: "reporting.bundle_education_degrees" */
+  reporting_bundle_education_degrees_aggregate: Reporting_Bundle_Education_Degrees_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.bundle_education_degrees" */
+  reporting_bundle_education_degrees_stream: Array<Reporting_Bundle_Education_Degrees>;
+  /** fetch data from the table: "reporting.bundle_education_levels" */
+  reporting_bundle_education_levels: Array<Reporting_Bundle_Education_Levels>;
+  /** fetch aggregated fields from the table: "reporting.bundle_education_levels" */
+  reporting_bundle_education_levels_aggregate: Reporting_Bundle_Education_Levels_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.bundle_education_levels" */
+  reporting_bundle_education_levels_stream: Array<Reporting_Bundle_Education_Levels>;
+  /** fetch data from the table: "reporting.bundle_subjects" */
+  reporting_bundle_subjects: Array<Reporting_Bundle_Subjects>;
+  /** fetch aggregated fields from the table: "reporting.bundle_subjects" */
+  reporting_bundle_subjects_aggregate: Reporting_Bundle_Subjects_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.bundle_subjects" */
+  reporting_bundle_subjects_stream: Array<Reporting_Bundle_Subjects>;
+  /** fetch data from the table: "reporting.bundle_themes" */
+  reporting_bundle_themes: Array<Reporting_Bundle_Themes>;
+  /** fetch aggregated fields from the table: "reporting.bundle_themes" */
+  reporting_bundle_themes_aggregate: Reporting_Bundle_Themes_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.bundle_themes" */
+  reporting_bundle_themes_stream: Array<Reporting_Bundle_Themes>;
+  /** fetch data from the table: "reporting.bundles" */
+  reporting_bundles: Array<Reporting_Bundles>;
+  /** fetch aggregated fields from the table: "reporting.bundles" */
+  reporting_bundles_aggregate: Reporting_Bundles_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.bundles" */
+  reporting_bundles_stream: Array<Reporting_Bundles>;
+  /** fetch data from the table: "reporting.collection_blocks" */
+  reporting_collection_blocks: Array<Reporting_Collection_Blocks>;
+  /** fetch aggregated fields from the table: "reporting.collection_blocks" */
+  reporting_collection_blocks_aggregate: Reporting_Collection_Blocks_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.collection_blocks" */
+  reporting_collection_blocks_stream: Array<Reporting_Collection_Blocks>;
+  /** fetch data from the table: "reporting.collection_contributors" */
+  reporting_collection_contributors: Array<Reporting_Collection_Contributors>;
+  /** fetch aggregated fields from the table: "reporting.collection_contributors" */
+  reporting_collection_contributors_aggregate: Reporting_Collection_Contributors_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.collection_contributors" */
+  reporting_collection_contributors_stream: Array<Reporting_Collection_Contributors>;
+  /** fetch data from the table: "reporting.collection_education_degrees" */
+  reporting_collection_education_degrees: Array<Reporting_Collection_Education_Degrees>;
+  /** fetch aggregated fields from the table: "reporting.collection_education_degrees" */
+  reporting_collection_education_degrees_aggregate: Reporting_Collection_Education_Degrees_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.collection_education_degrees" */
+  reporting_collection_education_degrees_stream: Array<Reporting_Collection_Education_Degrees>;
+  /** fetch data from the table: "reporting.collection_education_levels" */
+  reporting_collection_education_levels: Array<Reporting_Collection_Education_Levels>;
+  /** fetch aggregated fields from the table: "reporting.collection_education_levels" */
+  reporting_collection_education_levels_aggregate: Reporting_Collection_Education_Levels_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.collection_education_levels" */
+  reporting_collection_education_levels_stream: Array<Reporting_Collection_Education_Levels>;
+  /** fetch data from the table: "reporting.collection_subjects" */
+  reporting_collection_subjects: Array<Reporting_Collection_Subjects>;
+  /** fetch aggregated fields from the table: "reporting.collection_subjects" */
+  reporting_collection_subjects_aggregate: Reporting_Collection_Subjects_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.collection_subjects" */
+  reporting_collection_subjects_stream: Array<Reporting_Collection_Subjects>;
+  /** fetch data from the table: "reporting.collection_themes" */
+  reporting_collection_themes: Array<Reporting_Collection_Themes>;
+  /** fetch aggregated fields from the table: "reporting.collection_themes" */
+  reporting_collection_themes_aggregate: Reporting_Collection_Themes_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.collection_themes" */
+  reporting_collection_themes_stream: Array<Reporting_Collection_Themes>;
+  /** fetch data from the table: "reporting.collections" */
+  reporting_collections: Array<Reporting_Collections>;
+  /** fetch aggregated fields from the table: "reporting.collections" */
+  reporting_collections_aggregate: Reporting_Collections_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.collections" */
+  reporting_collections_stream: Array<Reporting_Collections>;
+  /** fetch data from the table: "reporting.educational_organisations" */
+  reporting_educational_organisations: Array<Reporting_Educational_Organisations>;
+  /** fetch aggregated fields from the table: "reporting.educational_organisations" */
+  reporting_educational_organisations_aggregate: Reporting_Educational_Organisations_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.educational_organisations" */
+  reporting_educational_organisations_stream: Array<Reporting_Educational_Organisations>;
+  /** fetch data from the table: "reporting.identity_provider_links" */
+  reporting_identity_provider_links: Array<Reporting_Identity_Provider_Links>;
+  /** fetch aggregated fields from the table: "reporting.identity_provider_links" */
+  reporting_identity_provider_links_aggregate: Reporting_Identity_Provider_Links_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.identity_provider_links" */
+  reporting_identity_provider_links_stream: Array<Reporting_Identity_Provider_Links>;
+  /** fetch data from the table: "reporting.item_education_degrees" */
+  reporting_item_education_degrees: Array<Reporting_Item_Education_Degrees>;
+  /** fetch aggregated fields from the table: "reporting.item_education_degrees" */
+  reporting_item_education_degrees_aggregate: Reporting_Item_Education_Degrees_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.item_education_degrees" */
+  reporting_item_education_degrees_stream: Array<Reporting_Item_Education_Degrees>;
+  /** fetch data from the table: "reporting.item_education_levels" */
+  reporting_item_education_levels: Array<Reporting_Item_Education_Levels>;
+  /** fetch aggregated fields from the table: "reporting.item_education_levels" */
+  reporting_item_education_levels_aggregate: Reporting_Item_Education_Levels_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.item_education_levels" */
+  reporting_item_education_levels_stream: Array<Reporting_Item_Education_Levels>;
+  /** fetch data from the table: "reporting.item_subjects" */
+  reporting_item_subjects: Array<Reporting_Item_Subjects>;
+  /** fetch aggregated fields from the table: "reporting.item_subjects" */
+  reporting_item_subjects_aggregate: Reporting_Item_Subjects_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.item_subjects" */
+  reporting_item_subjects_stream: Array<Reporting_Item_Subjects>;
+  /** fetch data from the table: "reporting.item_themes" */
+  reporting_item_themes: Array<Reporting_Item_Themes>;
+  /** fetch aggregated fields from the table: "reporting.item_themes" */
+  reporting_item_themes_aggregate: Reporting_Item_Themes_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.item_themes" */
+  reporting_item_themes_stream: Array<Reporting_Item_Themes>;
+  /** fetch data from the table: "reporting.items" */
+  reporting_items: Array<Reporting_Items>;
+  /** fetch aggregated fields from the table: "reporting.items" */
+  reporting_items_aggregate: Reporting_Items_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.items" */
+  reporting_items_stream: Array<Reporting_Items>;
+  /** fetch data from the table: "reporting.organisations" */
+  reporting_organisations: Array<Reporting_Organisations>;
+  /** fetch aggregated fields from the table: "reporting.organisations" */
+  reporting_organisations_aggregate: Reporting_Organisations_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.organisations" */
+  reporting_organisations_stream: Array<Reporting_Organisations>;
+  /** fetch data from the table: "reporting.profile_education_degrees" */
+  reporting_profile_education_degrees: Array<Reporting_Profile_Education_Degrees>;
+  /** fetch aggregated fields from the table: "reporting.profile_education_degrees" */
+  reporting_profile_education_degrees_aggregate: Reporting_Profile_Education_Degrees_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.profile_education_degrees" */
+  reporting_profile_education_degrees_stream: Array<Reporting_Profile_Education_Degrees>;
+  /** fetch data from the table: "reporting.profile_education_levels" */
+  reporting_profile_education_levels: Array<Reporting_Profile_Education_Levels>;
+  /** fetch aggregated fields from the table: "reporting.profile_education_levels" */
+  reporting_profile_education_levels_aggregate: Reporting_Profile_Education_Levels_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.profile_education_levels" */
+  reporting_profile_education_levels_stream: Array<Reporting_Profile_Education_Levels>;
+  /** fetch data from the table: "reporting.profile_educational_organisation_links" */
+  reporting_profile_educational_organisation_links: Array<Reporting_Profile_Educational_Organisation_Links>;
+  /** fetch aggregated fields from the table: "reporting.profile_educational_organisation_links" */
+  reporting_profile_educational_organisation_links_aggregate: Reporting_Profile_Educational_Organisation_Links_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.profile_educational_organisation_links" */
+  reporting_profile_educational_organisation_links_stream: Array<Reporting_Profile_Educational_Organisation_Links>;
+  /** fetch data from the table: "reporting.profile_subjects" */
+  reporting_profile_subjects: Array<Reporting_Profile_Subjects>;
+  /** fetch aggregated fields from the table: "reporting.profile_subjects" */
+  reporting_profile_subjects_aggregate: Reporting_Profile_Subjects_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.profile_subjects" */
+  reporting_profile_subjects_stream: Array<Reporting_Profile_Subjects>;
+  /** fetch data from the table: "reporting.profile_themes" */
+  reporting_profile_themes: Array<Reporting_Profile_Themes>;
+  /** fetch aggregated fields from the table: "reporting.profile_themes" */
+  reporting_profile_themes_aggregate: Reporting_Profile_Themes_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.profile_themes" */
+  reporting_profile_themes_stream: Array<Reporting_Profile_Themes>;
+  /** fetch data from the table: "reporting.profiles" */
+  reporting_profiles: Array<Reporting_Profiles>;
+  /** fetch aggregated fields from the table: "reporting.profiles" */
+  reporting_profiles_aggregate: Reporting_Profiles_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.profiles" */
+  reporting_profiles_stream: Array<Reporting_Profiles>;
+  /** fetch data from the table: "reporting.quick_share_links" */
+  reporting_quick_share_links: Array<Reporting_Quick_Share_Links>;
+  /** fetch aggregated fields from the table: "reporting.quick_share_links" */
+  reporting_quick_share_links_aggregate: Reporting_Quick_Share_Links_Aggregate;
+  /** fetch data from the table in a streaming manner: "reporting.quick_share_links" */
+  reporting_quick_share_links_stream: Array<Reporting_Quick_Share_Links>;
   /** fetch data from the table: "shared.collateral" */
   shared_collateral: Array<Shared_Collateral>;
   /** fetch aggregated fields from the table: "shared.collateral" */
@@ -40098,6 +46179,12 @@ export type Subscription_Root = {
   users_audit_log_by_pk?: Maybe<Users_Audit_Log>;
   /** fetch data from the table in a streaming manner: "users.audit_log" */
   users_audit_log_stream: Array<Users_Audit_Log>;
+  /** fetch data from the table: "users.common_users" */
+  users_common_users: Array<Users_Common_Users>;
+  /** fetch aggregated fields from the table: "users.common_users" */
+  users_common_users_aggregate: Users_Common_Users_Aggregate;
+  /** fetch data from the table in a streaming manner: "users.common_users" */
+  users_common_users_stream: Array<Users_Common_Users>;
   /** fetch data from the table: "users.email_preferences" */
   users_email_preferences: Array<Users_Email_Preferences>;
   /** fetch aggregated fields from the table: "users.email_preferences" */
@@ -42945,6 +49032,931 @@ export type Subscription_RootMigrate_Reference_Ids_StreamArgs = {
 };
 
 
+export type Subscription_RootReporting_Assignment_BlocksArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Blocks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Blocks_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Assignment_Blocks_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Assignment_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_ContributorsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Contributors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Contributors_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Contributors_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Contributors_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Contributors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Contributors_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Contributors_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Contributors_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Assignment_Contributors_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Assignment_Contributors_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Education_DegreesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Education_Degrees_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Education_Degrees_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Assignment_Education_Degrees_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Assignment_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Education_LevelsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Education_Levels_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Education_Levels_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Education_Levels_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Education_Levels_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Assignment_Education_Levels_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Assignment_Education_Levels_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Response_BlocksArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Response_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Response_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Response_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Response_Blocks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Response_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Response_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Response_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Response_Blocks_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Assignment_Response_Blocks_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Assignment_Response_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_ResponsesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Responses_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Responses_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Responses_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Responses_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Responses_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Responses_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Responses_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Responses_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Assignment_Responses_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Assignment_Responses_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_SubjectsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Subjects_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Subjects_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Subjects_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Subjects_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Assignment_Subjects_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Assignment_Subjects_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_ThemesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Themes_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Themes_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignment_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignment_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Assignment_Themes_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignment_Themes_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Assignment_Themes_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Assignment_Themes_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_AssignmentsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignments_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignments_Order_By>>;
+  where?: InputMaybe<Reporting_Assignments_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignments_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Assignments_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Assignments_Order_By>>;
+  where?: InputMaybe<Reporting_Assignments_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Assignments_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Assignments_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Assignments_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundle_BlocksArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundle_Blocks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundle_Blocks_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Bundle_Blocks_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Bundle_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundle_Education_DegreesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundle_Education_Degrees_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundle_Education_Degrees_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Bundle_Education_Degrees_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Bundle_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundle_Education_LevelsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Education_Levels_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundle_Education_Levels_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Education_Levels_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundle_Education_Levels_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Bundle_Education_Levels_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Bundle_Education_Levels_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundle_SubjectsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Subjects_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundle_Subjects_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Subjects_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundle_Subjects_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Bundle_Subjects_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Bundle_Subjects_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundle_ThemesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Themes_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundle_Themes_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundle_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundle_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Bundle_Themes_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundle_Themes_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Bundle_Themes_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Bundle_Themes_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_BundlesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundles_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundles_Order_By>>;
+  where?: InputMaybe<Reporting_Bundles_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundles_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Bundles_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Bundles_Order_By>>;
+  where?: InputMaybe<Reporting_Bundles_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Bundles_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Bundles_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Bundles_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_BlocksArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_Blocks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Blocks_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_Blocks_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Collection_Blocks_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Collection_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_ContributorsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Contributors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Contributors_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Contributors_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_Contributors_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Contributors_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Contributors_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Contributors_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_Contributors_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Collection_Contributors_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Collection_Contributors_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_Education_DegreesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_Education_Degrees_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_Education_Degrees_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Collection_Education_Degrees_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Collection_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_Education_LevelsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Education_Levels_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_Education_Levels_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Education_Levels_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_Education_Levels_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Collection_Education_Levels_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Collection_Education_Levels_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_SubjectsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Subjects_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_Subjects_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Subjects_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_Subjects_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Collection_Subjects_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Collection_Subjects_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_ThemesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Themes_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_Themes_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collection_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collection_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Collection_Themes_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collection_Themes_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Collection_Themes_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Collection_Themes_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_CollectionsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collections_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collections_Order_By>>;
+  where?: InputMaybe<Reporting_Collections_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collections_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Collections_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Collections_Order_By>>;
+  where?: InputMaybe<Reporting_Collections_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Collections_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Collections_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Collections_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Educational_OrganisationsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Educational_Organisations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Educational_Organisations_Order_By>>;
+  where?: InputMaybe<Reporting_Educational_Organisations_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Educational_Organisations_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Educational_Organisations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Educational_Organisations_Order_By>>;
+  where?: InputMaybe<Reporting_Educational_Organisations_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Educational_Organisations_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Educational_Organisations_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Educational_Organisations_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Identity_Provider_LinksArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Identity_Provider_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Identity_Provider_Links_Order_By>>;
+  where?: InputMaybe<Reporting_Identity_Provider_Links_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Identity_Provider_Links_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Identity_Provider_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Identity_Provider_Links_Order_By>>;
+  where?: InputMaybe<Reporting_Identity_Provider_Links_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Identity_Provider_Links_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Identity_Provider_Links_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Identity_Provider_Links_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Item_Education_DegreesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Item_Education_Degrees_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Item_Education_Degrees_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Item_Education_Degrees_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Item_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Item_Education_LevelsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Education_Levels_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Item_Education_Levels_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Education_Levels_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Item_Education_Levels_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Item_Education_Levels_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Item_Education_Levels_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Item_SubjectsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Subjects_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Item_Subjects_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Subjects_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Item_Subjects_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Item_Subjects_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Item_Subjects_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Item_ThemesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Themes_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Item_Themes_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Item_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Item_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Item_Themes_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Item_Themes_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Item_Themes_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Item_Themes_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_ItemsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Items_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Items_Order_By>>;
+  where?: InputMaybe<Reporting_Items_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Items_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Items_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Items_Order_By>>;
+  where?: InputMaybe<Reporting_Items_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Items_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Items_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Items_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_OrganisationsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Organisations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Organisations_Order_By>>;
+  where?: InputMaybe<Reporting_Organisations_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Organisations_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Organisations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Organisations_Order_By>>;
+  where?: InputMaybe<Reporting_Organisations_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Organisations_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Organisations_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Organisations_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profile_Education_DegreesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profile_Education_Degrees_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Education_Degrees_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Education_Degrees_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profile_Education_Degrees_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Profile_Education_Degrees_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Profile_Education_Degrees_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profile_Education_LevelsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Education_Levels_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profile_Education_Levels_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Education_Levels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Education_Levels_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Education_Levels_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profile_Education_Levels_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Profile_Education_Levels_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Profile_Education_Levels_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profile_Educational_Organisation_LinksArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Educational_Organisation_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Educational_Organisation_Links_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Educational_Organisation_Links_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profile_Educational_Organisation_Links_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Educational_Organisation_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Educational_Organisation_Links_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Educational_Organisation_Links_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profile_Educational_Organisation_Links_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Profile_Educational_Organisation_Links_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Profile_Educational_Organisation_Links_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profile_SubjectsArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Subjects_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profile_Subjects_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Subjects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Subjects_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Subjects_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profile_Subjects_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Profile_Subjects_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Profile_Subjects_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profile_ThemesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Themes_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profile_Themes_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profile_Themes_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profile_Themes_Order_By>>;
+  where?: InputMaybe<Reporting_Profile_Themes_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profile_Themes_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Profile_Themes_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Profile_Themes_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_ProfilesArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profiles_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profiles_Order_By>>;
+  where?: InputMaybe<Reporting_Profiles_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profiles_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Profiles_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Profiles_Order_By>>;
+  where?: InputMaybe<Reporting_Profiles_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Profiles_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Profiles_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Profiles_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Quick_Share_LinksArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Quick_Share_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Quick_Share_Links_Order_By>>;
+  where?: InputMaybe<Reporting_Quick_Share_Links_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Quick_Share_Links_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Reporting_Quick_Share_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Reporting_Quick_Share_Links_Order_By>>;
+  where?: InputMaybe<Reporting_Quick_Share_Links_Bool_Exp>;
+};
+
+
+export type Subscription_RootReporting_Quick_Share_Links_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Reporting_Quick_Share_Links_Stream_Cursor_Input>>;
+  where?: InputMaybe<Reporting_Quick_Share_Links_Bool_Exp>;
+};
+
+
 export type Subscription_RootShared_CollateralArgs = {
   distinct_on?: InputMaybe<Array<Shared_Collateral_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -43362,6 +50374,31 @@ export type Subscription_RootUsers_Audit_Log_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<Users_Audit_Log_Stream_Cursor_Input>>;
   where?: InputMaybe<Users_Audit_Log_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Common_UsersArgs = {
+  distinct_on?: InputMaybe<Array<Users_Common_Users_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Common_Users_Order_By>>;
+  where?: InputMaybe<Users_Common_Users_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Common_Users_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Common_Users_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Common_Users_Order_By>>;
+  where?: InputMaybe<Users_Common_Users_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Common_Users_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Users_Common_Users_Stream_Cursor_Input>>;
+  where?: InputMaybe<Users_Common_Users_Bool_Exp>;
 };
 
 
@@ -44326,6 +51363,626 @@ export type Users_Audit_Log_Variance_Fields = {
 /** order by variance() on columns of table "users.audit_log" */
 export type Users_Audit_Log_Variance_Order_By = {
   id?: InputMaybe<Order_By>;
+};
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_Users = {
+  __typename?: 'users_common_users';
+  alias?: Maybe<Scalars['String']>;
+  /** An array relationship */
+  assignment_labels: Array<App_Assignment_Labels_V2>;
+  /** An aggregate relationship */
+  assignment_labels_aggregate: App_Assignment_Labels_V2_Aggregate;
+  /** An array relationship */
+  assignments_v2: Array<App_Assignments_V2>;
+  /** An aggregate relationship */
+  assignments_v2_aggregate: App_Assignments_V2_Aggregate;
+  /** An array relationship */
+  audit: Array<Users_Audit_Log>;
+  /** An aggregate relationship */
+  audit_aggregate: Users_Audit_Log_Aggregate;
+  avatar?: Maybe<Scalars['String']>;
+  bio?: Maybe<Scalars['String']>;
+  /** An array relationship */
+  bookmark_searches: Array<App_Search_Bookmarks>;
+  /** An aggregate relationship */
+  bookmark_searches_aggregate: App_Search_Bookmarks_Aggregate;
+  business_category?: Maybe<Scalars['String']>;
+  /** An array relationship */
+  collection_bookmarks: Array<App_Collection_Bookmarks>;
+  /** An aggregate relationship */
+  collection_bookmarks_aggregate: App_Collection_Bookmarks_Aggregate;
+  /** An array relationship */
+  collections: Array<App_Collections>;
+  /** An aggregate relationship */
+  collections_aggregate: App_Collections_Aggregate;
+  company_id?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  /** An array relationship */
+  email_preferences: Array<Users_Email_Preferences>;
+  /** An aggregate relationship */
+  email_preferences_aggregate: Users_Email_Preferences_Aggregate;
+  email_preferences_center_access_key?: Maybe<Scalars['uuid']>;
+  first_name?: Maybe<Scalars['String']>;
+  /** An array relationship */
+  idpmaps: Array<Users_Idp_Map>;
+  /** An aggregate relationship */
+  idpmaps_aggregate: Users_Idp_Map_Aggregate;
+  is_blocked?: Maybe<Scalars['Boolean']>;
+  is_deleted?: Maybe<Scalars['Boolean']>;
+  is_exception?: Maybe<Scalars['Boolean']>;
+  /** An array relationship */
+  item_bookmarks: Array<App_Item_Bookmarks>;
+  /** An aggregate relationship */
+  item_bookmarks_aggregate: App_Item_Bookmarks_Aggregate;
+  /** An object relationship */
+  klascement_user_id_info?: Maybe<Users_Profile_Klascement_User_Ids>;
+  language?: Maybe<Scalars['String']>;
+  last_access_at?: Maybe<Scalars['timestamptz']>;
+  /** An object relationship */
+  last_block?: Maybe<Shared_User_Last_Blocked>;
+  last_name?: Maybe<Scalars['String']>;
+  /** An object relationship */
+  last_unblock?: Maybe<Shared_User_Last_Unblocked>;
+  /** An array relationship */
+  loms: Array<Users_Profiles_Lom_Links>;
+  /** An aggregate relationship */
+  loms_aggregate: Users_Profiles_Lom_Links_Aggregate;
+  mail?: Maybe<Scalars['String']>;
+  /** An array relationship */
+  notifications: Array<Users_Notifications>;
+  /** An aggregate relationship */
+  notifications_aggregate: Users_Notifications_Aggregate;
+  /** An object relationship */
+  organisation?: Maybe<Shared_Organisations>;
+  /** An array relationship */
+  profile_educational_organizations: Array<Users_Profile_Educational_Organizations>;
+  /** An aggregate relationship */
+  profile_educational_organizations_aggregate: Users_Profile_Educational_Organizations_Aggregate;
+  /** An array relationship */
+  profile_flags: Array<Users_Profile_Flags>;
+  /** An aggregate relationship */
+  profile_flags_aggregate: Users_Profile_Flags_Aggregate;
+  profile_id?: Maybe<Scalars['uuid']>;
+  /** An array relationship */
+  profile_preferences: Array<Users_Profile_Preferences>;
+  /** An aggregate relationship */
+  profile_preferences_aggregate: Users_Profile_Preferences_Aggregate;
+  stamboek?: Maybe<Scalars['String']>;
+  /** An object relationship */
+  temp_access?: Maybe<Shared_User_Temp_Access>;
+  title?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  /** An object relationship */
+  user_group?: Maybe<Users_Profile_User_Groups>;
+  user_id?: Maybe<Scalars['uuid']>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersAssignment_LabelsArgs = {
+  distinct_on?: InputMaybe<Array<App_Assignment_Labels_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Assignment_Labels_V2_Order_By>>;
+  where?: InputMaybe<App_Assignment_Labels_V2_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersAssignment_Labels_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Assignment_Labels_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Assignment_Labels_V2_Order_By>>;
+  where?: InputMaybe<App_Assignment_Labels_V2_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersAssignments_V2Args = {
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersAssignments_V2_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersAuditArgs = {
+  distinct_on?: InputMaybe<Array<Users_Audit_Log_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Audit_Log_Order_By>>;
+  where?: InputMaybe<Users_Audit_Log_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersAudit_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Audit_Log_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Audit_Log_Order_By>>;
+  where?: InputMaybe<Users_Audit_Log_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersBookmark_SearchesArgs = {
+  distinct_on?: InputMaybe<Array<App_Search_Bookmarks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Search_Bookmarks_Order_By>>;
+  where?: InputMaybe<App_Search_Bookmarks_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersBookmark_Searches_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Search_Bookmarks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Search_Bookmarks_Order_By>>;
+  where?: InputMaybe<App_Search_Bookmarks_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersCollection_BookmarksArgs = {
+  distinct_on?: InputMaybe<Array<App_Collection_Bookmarks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Collection_Bookmarks_Order_By>>;
+  where?: InputMaybe<App_Collection_Bookmarks_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersCollection_Bookmarks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Collection_Bookmarks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Collection_Bookmarks_Order_By>>;
+  where?: InputMaybe<App_Collection_Bookmarks_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersCollectionsArgs = {
+  distinct_on?: InputMaybe<Array<App_Collections_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Collections_Order_By>>;
+  where?: InputMaybe<App_Collections_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersCollections_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Collections_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Collections_Order_By>>;
+  where?: InputMaybe<App_Collections_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersEmail_PreferencesArgs = {
+  distinct_on?: InputMaybe<Array<Users_Email_Preferences_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Email_Preferences_Order_By>>;
+  where?: InputMaybe<Users_Email_Preferences_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersEmail_Preferences_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Email_Preferences_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Email_Preferences_Order_By>>;
+  where?: InputMaybe<Users_Email_Preferences_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersIdpmapsArgs = {
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersIdpmaps_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersItem_BookmarksArgs = {
+  distinct_on?: InputMaybe<Array<App_Item_Bookmarks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Item_Bookmarks_Order_By>>;
+  where?: InputMaybe<App_Item_Bookmarks_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersItem_Bookmarks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Item_Bookmarks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Item_Bookmarks_Order_By>>;
+  where?: InputMaybe<App_Item_Bookmarks_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersLomsArgs = {
+  distinct_on?: InputMaybe<Array<Users_Profiles_Lom_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Profiles_Lom_Links_Order_By>>;
+  where?: InputMaybe<Users_Profiles_Lom_Links_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersLoms_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Profiles_Lom_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Profiles_Lom_Links_Order_By>>;
+  where?: InputMaybe<Users_Profiles_Lom_Links_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersNotificationsArgs = {
+  distinct_on?: InputMaybe<Array<Users_Notifications_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Notifications_Order_By>>;
+  where?: InputMaybe<Users_Notifications_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersNotifications_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Notifications_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Notifications_Order_By>>;
+  where?: InputMaybe<Users_Notifications_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersProfile_Educational_OrganizationsArgs = {
+  distinct_on?: InputMaybe<Array<Users_Profile_Educational_Organizations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Profile_Educational_Organizations_Order_By>>;
+  where?: InputMaybe<Users_Profile_Educational_Organizations_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersProfile_Educational_Organizations_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Profile_Educational_Organizations_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Profile_Educational_Organizations_Order_By>>;
+  where?: InputMaybe<Users_Profile_Educational_Organizations_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersProfile_FlagsArgs = {
+  distinct_on?: InputMaybe<Array<Users_Profile_Flags_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Profile_Flags_Order_By>>;
+  where?: InputMaybe<Users_Profile_Flags_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersProfile_Flags_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Profile_Flags_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Profile_Flags_Order_By>>;
+  where?: InputMaybe<Users_Profile_Flags_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersProfile_PreferencesArgs = {
+  distinct_on?: InputMaybe<Array<Users_Profile_Preferences_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Profile_Preferences_Order_By>>;
+  where?: InputMaybe<Users_Profile_Preferences_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users.common_users" */
+export type Users_Common_UsersProfile_Preferences_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Profile_Preferences_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Profile_Preferences_Order_By>>;
+  where?: InputMaybe<Users_Profile_Preferences_Bool_Exp>;
+};
+
+/** aggregated selection of "users.common_users" */
+export type Users_Common_Users_Aggregate = {
+  __typename?: 'users_common_users_aggregate';
+  aggregate?: Maybe<Users_Common_Users_Aggregate_Fields>;
+  nodes: Array<Users_Common_Users>;
+};
+
+/** aggregate fields of "users.common_users" */
+export type Users_Common_Users_Aggregate_Fields = {
+  __typename?: 'users_common_users_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Users_Common_Users_Max_Fields>;
+  min?: Maybe<Users_Common_Users_Min_Fields>;
+};
+
+
+/** aggregate fields of "users.common_users" */
+export type Users_Common_Users_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Users_Common_Users_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "users.common_users". All fields are combined with a logical 'AND'. */
+export type Users_Common_Users_Bool_Exp = {
+  _and?: InputMaybe<Array<Users_Common_Users_Bool_Exp>>;
+  _not?: InputMaybe<Users_Common_Users_Bool_Exp>;
+  _or?: InputMaybe<Array<Users_Common_Users_Bool_Exp>>;
+  alias?: InputMaybe<String_Comparison_Exp>;
+  assignment_labels?: InputMaybe<App_Assignment_Labels_V2_Bool_Exp>;
+  assignment_labels_aggregate?: InputMaybe<App_Assignment_Labels_V2_Aggregate_Bool_Exp>;
+  assignments_v2?: InputMaybe<App_Assignments_V2_Bool_Exp>;
+  assignments_v2_aggregate?: InputMaybe<App_Assignments_V2_Aggregate_Bool_Exp>;
+  audit?: InputMaybe<Users_Audit_Log_Bool_Exp>;
+  audit_aggregate?: InputMaybe<Users_Audit_Log_Aggregate_Bool_Exp>;
+  avatar?: InputMaybe<String_Comparison_Exp>;
+  bio?: InputMaybe<String_Comparison_Exp>;
+  bookmark_searches?: InputMaybe<App_Search_Bookmarks_Bool_Exp>;
+  bookmark_searches_aggregate?: InputMaybe<App_Search_Bookmarks_Aggregate_Bool_Exp>;
+  business_category?: InputMaybe<String_Comparison_Exp>;
+  collection_bookmarks?: InputMaybe<App_Collection_Bookmarks_Bool_Exp>;
+  collection_bookmarks_aggregate?: InputMaybe<App_Collection_Bookmarks_Aggregate_Bool_Exp>;
+  collections?: InputMaybe<App_Collections_Bool_Exp>;
+  collections_aggregate?: InputMaybe<App_Collections_Aggregate_Bool_Exp>;
+  company_id?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  email_preferences?: InputMaybe<Users_Email_Preferences_Bool_Exp>;
+  email_preferences_aggregate?: InputMaybe<Users_Email_Preferences_Aggregate_Bool_Exp>;
+  email_preferences_center_access_key?: InputMaybe<Uuid_Comparison_Exp>;
+  first_name?: InputMaybe<String_Comparison_Exp>;
+  idpmaps?: InputMaybe<Users_Idp_Map_Bool_Exp>;
+  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_Aggregate_Bool_Exp>;
+  is_blocked?: InputMaybe<Boolean_Comparison_Exp>;
+  is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
+  is_exception?: InputMaybe<Boolean_Comparison_Exp>;
+  item_bookmarks?: InputMaybe<App_Item_Bookmarks_Bool_Exp>;
+  item_bookmarks_aggregate?: InputMaybe<App_Item_Bookmarks_Aggregate_Bool_Exp>;
+  klascement_user_id_info?: InputMaybe<Users_Profile_Klascement_User_Ids_Bool_Exp>;
+  language?: InputMaybe<String_Comparison_Exp>;
+  last_access_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  last_block?: InputMaybe<Shared_User_Last_Blocked_Bool_Exp>;
+  last_name?: InputMaybe<String_Comparison_Exp>;
+  last_unblock?: InputMaybe<Shared_User_Last_Unblocked_Bool_Exp>;
+  loms?: InputMaybe<Users_Profiles_Lom_Links_Bool_Exp>;
+  loms_aggregate?: InputMaybe<Users_Profiles_Lom_Links_Aggregate_Bool_Exp>;
+  mail?: InputMaybe<String_Comparison_Exp>;
+  notifications?: InputMaybe<Users_Notifications_Bool_Exp>;
+  notifications_aggregate?: InputMaybe<Users_Notifications_Aggregate_Bool_Exp>;
+  organisation?: InputMaybe<Shared_Organisations_Bool_Exp>;
+  profile_educational_organizations?: InputMaybe<Users_Profile_Educational_Organizations_Bool_Exp>;
+  profile_educational_organizations_aggregate?: InputMaybe<Users_Profile_Educational_Organizations_Aggregate_Bool_Exp>;
+  profile_flags?: InputMaybe<Users_Profile_Flags_Bool_Exp>;
+  profile_flags_aggregate?: InputMaybe<Users_Profile_Flags_Aggregate_Bool_Exp>;
+  profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  profile_preferences?: InputMaybe<Users_Profile_Preferences_Bool_Exp>;
+  profile_preferences_aggregate?: InputMaybe<Users_Profile_Preferences_Aggregate_Bool_Exp>;
+  stamboek?: InputMaybe<String_Comparison_Exp>;
+  temp_access?: InputMaybe<Shared_User_Temp_Access_Bool_Exp>;
+  title?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  user_group?: InputMaybe<Users_Profile_User_Groups_Bool_Exp>;
+  user_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Users_Common_Users_Max_Fields = {
+  __typename?: 'users_common_users_max_fields';
+  alias?: Maybe<Scalars['String']>;
+  avatar?: Maybe<Scalars['String']>;
+  bio?: Maybe<Scalars['String']>;
+  business_category?: Maybe<Scalars['String']>;
+  company_id?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  email_preferences_center_access_key?: Maybe<Scalars['uuid']>;
+  first_name?: Maybe<Scalars['String']>;
+  language?: Maybe<Scalars['String']>;
+  last_access_at?: Maybe<Scalars['timestamptz']>;
+  last_name?: Maybe<Scalars['String']>;
+  mail?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  stamboek?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  user_id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregate min on columns */
+export type Users_Common_Users_Min_Fields = {
+  __typename?: 'users_common_users_min_fields';
+  alias?: Maybe<Scalars['String']>;
+  avatar?: Maybe<Scalars['String']>;
+  bio?: Maybe<Scalars['String']>;
+  business_category?: Maybe<Scalars['String']>;
+  company_id?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  email_preferences_center_access_key?: Maybe<Scalars['uuid']>;
+  first_name?: Maybe<Scalars['String']>;
+  language?: Maybe<Scalars['String']>;
+  last_access_at?: Maybe<Scalars['timestamptz']>;
+  last_name?: Maybe<Scalars['String']>;
+  mail?: Maybe<Scalars['String']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  stamboek?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  user_id?: Maybe<Scalars['uuid']>;
+};
+
+/** Ordering options when selecting data from "users.common_users". */
+export type Users_Common_Users_Order_By = {
+  alias?: InputMaybe<Order_By>;
+  assignment_labels_aggregate?: InputMaybe<App_Assignment_Labels_V2_Aggregate_Order_By>;
+  assignments_v2_aggregate?: InputMaybe<App_Assignments_V2_Aggregate_Order_By>;
+  audit_aggregate?: InputMaybe<Users_Audit_Log_Aggregate_Order_By>;
+  avatar?: InputMaybe<Order_By>;
+  bio?: InputMaybe<Order_By>;
+  bookmark_searches_aggregate?: InputMaybe<App_Search_Bookmarks_Aggregate_Order_By>;
+  business_category?: InputMaybe<Order_By>;
+  collection_bookmarks_aggregate?: InputMaybe<App_Collection_Bookmarks_Aggregate_Order_By>;
+  collections_aggregate?: InputMaybe<App_Collections_Aggregate_Order_By>;
+  company_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  email_preferences_aggregate?: InputMaybe<Users_Email_Preferences_Aggregate_Order_By>;
+  email_preferences_center_access_key?: InputMaybe<Order_By>;
+  first_name?: InputMaybe<Order_By>;
+  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_Aggregate_Order_By>;
+  is_blocked?: InputMaybe<Order_By>;
+  is_deleted?: InputMaybe<Order_By>;
+  is_exception?: InputMaybe<Order_By>;
+  item_bookmarks_aggregate?: InputMaybe<App_Item_Bookmarks_Aggregate_Order_By>;
+  klascement_user_id_info?: InputMaybe<Users_Profile_Klascement_User_Ids_Order_By>;
+  language?: InputMaybe<Order_By>;
+  last_access_at?: InputMaybe<Order_By>;
+  last_block?: InputMaybe<Shared_User_Last_Blocked_Order_By>;
+  last_name?: InputMaybe<Order_By>;
+  last_unblock?: InputMaybe<Shared_User_Last_Unblocked_Order_By>;
+  loms_aggregate?: InputMaybe<Users_Profiles_Lom_Links_Aggregate_Order_By>;
+  mail?: InputMaybe<Order_By>;
+  notifications_aggregate?: InputMaybe<Users_Notifications_Aggregate_Order_By>;
+  organisation?: InputMaybe<Shared_Organisations_Order_By>;
+  profile_educational_organizations_aggregate?: InputMaybe<Users_Profile_Educational_Organizations_Aggregate_Order_By>;
+  profile_flags_aggregate?: InputMaybe<Users_Profile_Flags_Aggregate_Order_By>;
+  profile_id?: InputMaybe<Order_By>;
+  profile_preferences_aggregate?: InputMaybe<Users_Profile_Preferences_Aggregate_Order_By>;
+  stamboek?: InputMaybe<Order_By>;
+  temp_access?: InputMaybe<Shared_User_Temp_Access_Order_By>;
+  title?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  user_group?: InputMaybe<Users_Profile_User_Groups_Order_By>;
+  user_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "users.common_users" */
+export enum Users_Common_Users_Select_Column {
+  /** column name */
+  Alias = 'alias',
+  /** column name */
+  Avatar = 'avatar',
+  /** column name */
+  Bio = 'bio',
+  /** column name */
+  BusinessCategory = 'business_category',
+  /** column name */
+  CompanyId = 'company_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  EmailPreferencesCenterAccessKey = 'email_preferences_center_access_key',
+  /** column name */
+  FirstName = 'first_name',
+  /** column name */
+  IsBlocked = 'is_blocked',
+  /** column name */
+  IsDeleted = 'is_deleted',
+  /** column name */
+  IsException = 'is_exception',
+  /** column name */
+  Language = 'language',
+  /** column name */
+  LastAccessAt = 'last_access_at',
+  /** column name */
+  LastName = 'last_name',
+  /** column name */
+  Mail = 'mail',
+  /** column name */
+  ProfileId = 'profile_id',
+  /** column name */
+  Stamboek = 'stamboek',
+  /** column name */
+  Title = 'title',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  UserId = 'user_id'
+}
+
+/** Streaming cursor of the table "users_common_users" */
+export type Users_Common_Users_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Users_Common_Users_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Users_Common_Users_Stream_Cursor_Value_Input = {
+  alias?: InputMaybe<Scalars['String']>;
+  avatar?: InputMaybe<Scalars['String']>;
+  bio?: InputMaybe<Scalars['String']>;
+  business_category?: InputMaybe<Scalars['String']>;
+  company_id?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  email_preferences_center_access_key?: InputMaybe<Scalars['uuid']>;
+  first_name?: InputMaybe<Scalars['String']>;
+  is_blocked?: InputMaybe<Scalars['Boolean']>;
+  is_deleted?: InputMaybe<Scalars['Boolean']>;
+  is_exception?: InputMaybe<Scalars['Boolean']>;
+  language?: InputMaybe<Scalars['String']>;
+  last_access_at?: InputMaybe<Scalars['timestamptz']>;
+  last_name?: InputMaybe<Scalars['String']>;
+  mail?: InputMaybe<Scalars['String']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  stamboek?: InputMaybe<Scalars['String']>;
+  title?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+  user_id?: InputMaybe<Scalars['uuid']>;
 };
 
 /** columns and relationships of "users.email_preferences" */

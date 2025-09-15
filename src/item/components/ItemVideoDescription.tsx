@@ -21,8 +21,7 @@ import React, {
 	useState,
 } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { Link } from 'react-router-dom';
 
 import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
 import { ItemMetadata } from '../../shared/components/BlockItemMetadata/ItemMetadata';
@@ -60,7 +59,7 @@ interface ItemVideoDescriptionProps {
 
 const DEFAULT_VIDEO_HEIGHT = 421;
 
-const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComponentProps> = ({
+const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps> = ({
 	itemMetaData,
 	showMetadata = false,
 	enableMetadataLink = false,
@@ -256,4 +255,4 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 	);
 };
 
-export default compose(withRouter, withUser)(ItemVideoDescription) as FC<ItemVideoDescriptionProps>;
+export default withUser(ItemVideoDescription) as FC<ItemVideoDescriptionProps>;

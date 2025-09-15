@@ -36,7 +36,8 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, withRouter } from 'react-router-dom';
+import { useMatch, useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 import { JsonParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
@@ -46,7 +47,6 @@ import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { AssignmentService } from '../../assignment/assignment.service';
 import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
 import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { CONTENT_TYPE_TRANSLATIONS, ContentTypeNumber } from '../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -83,7 +83,7 @@ import { isMobileWidth } from '../../shared/helpers/media-query';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
 import withEmbedFlow, { type EmbedFlowProps } from '../../shared/hocs/withEmbedFlow';
-import withUser from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
@@ -109,7 +109,7 @@ import { type ItemTrimInfo } from '../item.types';
 import './ItemDetail.scss';
 
 interface ItemDetailProps {
-	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
+	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (itemId)
 	renderDetailLink: (
 		linkText: string | ReactNode,
 		id: string,
@@ -140,18 +140,13 @@ const ITEM_ACTIONS = {
 	importToAssignment: 'importToAssignment',
 };
 
-const ItemDetail: FC<
-	ItemDetailProps & DefaultSecureRouteProps<{ id: string }> & EmbedFlowProps
-> = ({
-	history,
-	match,
-	location,
+const ItemDetail: FC<ItemDetailProps & EmbedFlowProps & UserProps> = ({
 	commonUser,
 	id,
 	renderDetailLink = defaultRenderDetailLink,
 	renderSearchLink = defaultRenderSearchLink,
-	goToDetailLink = defaultGoToDetailLink(history),
-	goToSearchLink = defaultGoToSearchLink(history),
+	goToDetailLink,
+	goToSearchLink,
 	enabledMetaData = ALL_SEARCH_FILTERS,
 	relatedObjectTypes = ObjectTypesAll.items,
 	renderActionButtons,
@@ -161,8 +156,12 @@ const ItemDetail: FC<
 	isSmartSchoolEmbedFlow,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id', string>(ITEMS_PATH.ITEM_DETAIL);
+	const itemId = id || match?.params.id;
 
-	const itemId = id || match.params.id;
+	goToDetailLink = goToDetailLink || defaultGoToDetailLink(navigateFunc);
+	goToSearchLink = goToSearchLink || defaultGoToSearchLink(navigateFunc);
 
 	const [cuePoint] = useQueryParam('t', StringParam);
 	const [cutButton, cutModal] = useCutModal();
@@ -216,6 +215,9 @@ const ItemDetail: FC<
 
 	const checkPermissionsAndGetItem = useCallback(async () => {
 		try {
+			if (!itemId) {
+				return;
+			}
 			if (
 				!(
 					PermissionService.hasPerm(
@@ -438,7 +440,7 @@ const ItemDetail: FC<
 			source
 		);
 
-		history.push(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
+		navigateFunc(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
 	};
 
 	const onImportToAssignment = async (importToAssignmentId: string): Promise<void> => {
@@ -995,19 +997,19 @@ const ItemDetail: FC<
 						</Grid>
 					</Container>
 				</Container>
-				{!isNil(match.params.id) &&
+				{!isNil(itemId) &&
 					isAddToCollectionModalOpen &&
 					PermissionService.hasPerm(commonUser, PermissionName.CREATE_COLLECTIONS) && (
 						<AddToCollectionModal
 							itemMetaData={item}
-							externalId={match.params.id as string}
+							externalId={itemId as string}
 							isOpen={isAddToCollectionModalOpen}
 							onClose={() => {
 								setIsAddToCollectionModalOpen(false);
 							}}
 						/>
 					)}
-				{!isNil(match.params.id) &&
+				{!isNil(itemId) &&
 					isAddToFragmentModalOpen &&
 					PermissionService.hasPerm(commonUser, PermissionName.CREATE_ASSIGNMENTS) && (
 						<CutFragmentForAssignmentModal
@@ -1019,9 +1021,9 @@ const ItemDetail: FC<
 							afterCutCallback={doImportToAssignment}
 						/>
 					)}
-				{!renderActionButtons && (
+				{!renderActionButtons && !!itemId && (
 					<ReportItemModal
-						externalId={match.params.id}
+						externalId={itemId}
 						isOpen={isReportItemModalOpen}
 						onClose={() => {
 							setIsReportItemModalOpen(false);
@@ -1105,4 +1107,4 @@ const ItemDetail: FC<
 	);
 };
 
-export default compose(withRouter, withUser, withEmbedFlow)(ItemDetail) as FC<ItemDetailProps>;
+export default compose(withUser, withEmbedFlow)(ItemDetail) as FC<ItemDetailProps>;

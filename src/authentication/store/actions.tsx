@@ -4,7 +4,6 @@ import { subMinutes } from 'date-fns';
 import { compact } from 'lodash-es';
 import queryString from 'query-string';
 import React from 'react';
-import { type RouteComponentProps } from 'react-router-dom';
 import { type Action, type Dispatch } from 'redux';
 
 import { LTI_JWT_TOKEN_HEADER } from '../../embed/embed.types';
@@ -36,7 +35,7 @@ function checkIfSessionExpires(expiresAt: string) {
 		state: {
 			from: { pathname: window.location.pathname, search: window.location.search },
 		},
-	} as unknown as RouteComponentProps['location'];
+	} as unknown as Location;
 	if (subMinutes(date, 5).getTime() < new Date().getTime()) {
 		logoutAndRedirectToLogin(location);
 	} else if (subMinutes(date, 10).getTime() < new Date().getTime()) {

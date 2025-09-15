@@ -1,8 +1,7 @@
 import { IconName, Pill, PillVariants, type TabProps, Tabs } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import React, { type FC, useMemo } from 'react';
-import { type RouteComponentProps } from 'react-router';
-import { withRouter } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -18,8 +17,7 @@ interface AssignmentTeacherTabsProps {
 	isManaged: boolean;
 }
 
-const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps & UserProps> = ({
-	history,
+const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & UserProps> = ({
 	commonUser,
 	activeTab,
 	onTabChange,
@@ -27,6 +25,7 @@ const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps
 	isManaged,
 }) => {
 	const { tText } = useTranslation();
+	const location = useLocation();
 
 	const showAdminTab: boolean = PermissionService.hasAtLeastOnePerm(commonUser, [
 		PermissionName.EDIT_ASSIGNMENT_QUALITY_LABELS,
@@ -52,7 +51,7 @@ const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps
 					label: tText('assignment/hooks/assignment-teacher-tabs___publicatiedetails'),
 					icon: IconName.fileText as IconName,
 				},
-				...(history.location.pathname !== APP_PATH.ASSIGNMENT_CREATE.route
+				...(location.pathname !== APP_PATH.ASSIGNMENT_CREATE.route
 					? [
 							{
 								id: ASSIGNMENT_CREATE_UPDATE_TABS.CLICKS,
@@ -98,7 +97,7 @@ const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps
 				...item,
 				active: item.id === activeTab,
 			})),
-		[tText, history.location.pathname, activeTab, clicksCount, showAdminTab, isManaged]
+		[tText, location.pathname, activeTab, clicksCount, showAdminTab, isManaged]
 	);
 
 	return (
@@ -111,7 +110,4 @@ const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps
 	);
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(AssignmentTeacherTabs) as FC<AssignmentTeacherTabsProps>;
+export default compose(withUser)(AssignmentTeacherTabs) as FC<AssignmentTeacherTabsProps>;

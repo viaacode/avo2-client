@@ -2,7 +2,7 @@ import { Icon, IconName } from '@viaa/avo2-components';
 import { clsx } from 'clsx';
 import { flatten } from 'lodash-es';
 import React, { type FC, type ReactElement, type ReactNode } from 'react';
-import { Link, NavLink, type RouteComponentProps } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 import { APP_PATH } from '../../../../constants';
 import { CustomError } from '../../../../shared/helpers/custom-error';
@@ -29,10 +29,7 @@ const Sidebar: FC<SidebarProps> = ({
 }) => {
 	const { tHtml } = useTranslation();
 
-	const isActiveClass = (
-		item: NavigationItemInfo,
-		location: RouteComponentProps['location']
-	): boolean => {
+	const isActiveClass = (item: NavigationItemInfo, location: Location): boolean => {
 		return (
 			(!!item.location && item.location === location.pathname && !item.exact) ||
 			(!!item.location &&

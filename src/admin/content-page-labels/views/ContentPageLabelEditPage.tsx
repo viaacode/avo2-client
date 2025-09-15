@@ -1,6 +1,5 @@
 import { Flex, Spinner } from '@viaa/avo2-components';
 import React, { type FC, lazy, Suspense } from 'react';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -15,10 +14,7 @@ const ContentPageLabelEdit = lazy(() =>
 	}))
 );
 
-const ContentPageLabelEditPage: FC<DefaultSecureRouteProps<{ id: string }>> = ({
-	match,
-	history,
-}) => {
+const ContentPageLabelEditPage: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match }) => {
 	return (
 		<Suspense
 			fallback={
@@ -41,6 +37,6 @@ const ContentPageLabelEditPage: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	);
 };
 
-export default compose(withAdminCoreConfig, withRouter)(ContentPageLabelEditPage as FC<any>) as FC<
+export default compose(withAdminCoreConfig)(ContentPageLabelEditPage as FC<any>) as FC<
 	DefaultSecureRouteProps<{ id: string }>
 >;

@@ -2,14 +2,13 @@ import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Button, Container, IconName, Spacer } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 
 type StudentTeacherProps = RouteComponentProps;
 
-const StudentTeacher: FC<StudentTeacherProps> = ({ history }) => {
+const StudentTeacher: FC<StudentTeacherProps> = () => {
 	const { tText, tHtml } = useTranslation();
 
 	return (
@@ -34,7 +33,7 @@ const StudentTeacher: FC<StudentTeacherProps> = ({ history }) => {
 					<Spacer margin="bottom-large">
 						<Button
 							type="secondary"
-							onClick={history.goBack}
+							onClick={() => navigateFunc(-1)}
 							icon={IconName.arrowLeft}
 							title={tText(
 								'authentication/views/registration-flow/r-10-student-teacher___ga-terug-naar-de-manuele-account-aanvraag-pagina'

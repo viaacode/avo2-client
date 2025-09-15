@@ -1,7 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 import { get, isString, omit, trimStart } from 'lodash-es';
 import queryString, { stringifyUrl } from 'query-string';
-import { type RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { EmbedCodeService } from '../../embed-code/embed-code-service';
@@ -18,10 +17,7 @@ import { getBaseUrl } from './get-base-url';
  *
  **/
 
-function getRedirectUrl(
-	location: RouteComponentProps['location'],
-	closeTabAfterLogin: boolean
-): string {
+function getRedirectUrl(location: Location, closeTabAfterLogin: boolean): string {
 	return closeTabAfterLogin
 		? getBaseUrl(location) + '/embed/close-browser'
 		: getRedirectAfterLogin(location);
@@ -32,10 +28,7 @@ function getRedirectUrl(
  * @param location
  * @param openInNewTab used for embed iframes that need to login using the separate browser tab and close the ta automatically
  */
-export function redirectToServerLoginPage(
-	location: RouteComponentProps['location'],
-	openInNewTab = false
-): void {
+export function redirectToServerLoginPage(location: Location, openInNewTab = false): void {
 	// Redirect to login form
 	// Url to return to after authentication is completed and server stored auth object in session
 	const returnToUrl = getRedirectUrl(location, openInNewTab);
@@ -55,10 +48,7 @@ export function redirectToServerLoginPage(
 	}
 }
 
-export function redirectToServerLeerIDLogin(
-	location: RouteComponentProps['location'],
-	openInNewTab = false
-): void {
+export function redirectToServerLeerIDLogin(location: Location, openInNewTab = false): void {
 	const returnToUrl = getRedirectUrl(location, openInNewTab);
 	const fullUrl = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
 		returnToUrl,
@@ -72,10 +62,7 @@ export function redirectToServerLeerIDLogin(
 	}
 }
 
-export function redirectToServerACMIDMLogin(
-	location: RouteComponentProps['location'],
-	openInNewTab = false
-): void {
+export function redirectToServerACMIDMLogin(location: Location, openInNewTab = false): void {
 	const returnToUrl = getRedirectUrl(location, openInNewTab);
 	const fullUrl = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
 		returnToUrl,
@@ -88,10 +75,7 @@ export function redirectToServerACMIDMLogin(
 	}
 }
 
-export function redirectToServerSmartschoolLogin(
-	location: RouteComponentProps['location'],
-	openInNewTab = false
-): void {
+export function redirectToServerSmartschoolLogin(location: Location, openInNewTab = false): void {
 	// Redirect to smartschool login form
 	// Url to return to after authentication is completed and server stored auth object in session
 	const returnToUrl = getRedirectUrl(location, openInNewTab);
@@ -106,10 +90,7 @@ export function redirectToServerSmartschoolLogin(
 	}
 }
 
-export function redirectToServerKlascementLogin(
-	location: RouteComponentProps['location'],
-	openInNewTab = false
-): void {
+export function redirectToServerKlascementLogin(location: Location, openInNewTab = false): void {
 	// Redirect to klascement login form
 	// Url to return to after authentication is completed and server stored auth object in session
 	const returnToUrl = getRedirectUrl(location, openInNewTab);
@@ -125,7 +106,7 @@ export function redirectToServerKlascementLogin(
 }
 
 export function redirectToServerArchiefRegistrationIdp(
-	location: RouteComponentProps['location'],
+	location: Location,
 	stamboekNumber: string,
 	openInNewTab = false
 ): void {
@@ -142,10 +123,7 @@ export function redirectToServerArchiefRegistrationIdp(
 	}
 }
 
-export function redirectToServerLogoutPage(
-	location: RouteComponentProps['location'],
-	routeAfterLogout: string
-): void {
+export function redirectToServerLogoutPage(location: Location, routeAfterLogout: string): void {
 	// Url to return to after logout is completed
 	const returnToUrl = `${getBaseUrl(location)}${routeAfterLogout}`;
 	window.location.href = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify({
@@ -153,7 +131,7 @@ export function redirectToServerLogoutPage(
 	})}`;
 }
 
-export function logoutAndRedirectToLogin(location?: RouteComponentProps['location']): void {
+export function logoutAndRedirectToLogin(location?: Location): void {
 	// Url to return to after logout is completed
 	let returnToUrl = window.location.origin + APP_PATH.REGISTER_OR_LOGIN.route;
 
@@ -176,7 +154,7 @@ export function logoutAndRedirectToLogin(location?: RouteComponentProps['locatio
  * @param idpParameters optional query parameters that are sent to the IDP login url
  */
 export function redirectToServerLinkAccount(
-	location: RouteComponentProps['location'],
+	location: Location,
 	idpType: Avo.Auth.IdpType,
 	idpParameters?: string
 ): void {
@@ -188,10 +166,7 @@ export function redirectToServerLinkAccount(
 	})}`;
 }
 
-export function redirectToServerUnlinkAccount(
-	location: RouteComponentProps['location'],
-	idpType: Avo.Auth.IdpType
-): void {
+export function redirectToServerUnlinkAccount(location: Location, idpType: Avo.Auth.IdpType): void {
 	const returnToUrl = getBaseUrl(location) + location.pathname;
 	window.location.href = `${getEnv('PROXY_URL')}/auth/unlink-account?${queryString.stringify({
 		returnToUrl,
@@ -206,7 +181,7 @@ export function redirectToServerUnlinkAccount(
  **/
 
 function getFromPath(
-	location: RouteComponentProps['location'],
+	location: Location,
 	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
 ): string {
 	let fromPath = get(location, 'state.from.pathname') || get(location, 'pathname') || defaultPath;
@@ -218,7 +193,7 @@ function getFromPath(
 }
 
 function getRedirectAfterLogin(
-	location: RouteComponentProps['location'],
+	location: Location,
 	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
 ): string {
 	// From query string

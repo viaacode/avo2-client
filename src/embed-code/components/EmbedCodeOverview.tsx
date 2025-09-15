@@ -4,7 +4,6 @@ import { type Avo } from '@viaa/avo2-types';
 import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import { isEqual } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { useQueryParams } from 'use-query-params';
 
@@ -58,7 +57,7 @@ const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 
 const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = ({
 	commonUser,
-	history,
+
 	onUpdate,
 }) => {
 	const { tText, tHtml } = useTranslation();
@@ -414,4 +413,4 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 	);
 };
 
-export default compose(withRouter, withUser)(EmbedCodeOverview) as FC<EmbedCodeOverviewProps>;
+export default withUser(EmbedCodeOverview) as FC<EmbedCodeOverviewProps>;

@@ -10,7 +10,6 @@ import { compact } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import { type Dispatch } from 'redux';
 
 import { SpecialUserGroupId } from '../../../admin/user-groups/user-group.const';
@@ -26,7 +25,6 @@ import { NotificationService } from '../../../shared/services/notification-servi
 import { ToastService } from '../../../shared/services/toast-service';
 import { Locale } from '../../../shared/translations/translations.types';
 import { type AppState } from '../../../store';
-import { type DefaultSecureRouteProps } from '../../components/SecuredRoute';
 import { redirectToClientPage } from '../../helpers/redirects/redirect-to-client-page';
 import { acceptConditionsAction } from '../../store/actions';
 import { selectLogin } from '../../store/selectors';
@@ -40,9 +38,7 @@ interface AcceptConditionsProps {
 	loginState: Avo.Auth.LoginResponse | null;
 }
 
-const AcceptConditions: FC<AcceptConditionsProps & DefaultSecureRouteProps & UserProps> = ({
-	history,
-	location,
+const AcceptConditions: FC<AcceptConditionsProps & UserProps> = ({
 	acceptConditions,
 	loginState,
 }) => {
@@ -230,4 +226,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AcceptConditions));
+export default connect(mapStateToProps, mapDispatchToProps)(AcceptConditions);

@@ -1,9 +1,11 @@
 import React, { type FC } from 'react';
-import { Redirect } from 'react-router';
-import { type RouteComponentProps, withRouter } from 'react-router-dom';
+import { Navigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
-const AdminRedirect: FC<RouteComponentProps> = ({ location }) => {
-	return <Redirect to={location.pathname.replace(/^\/beheer/g, '/admin') + location.search} />;
+const AdminRedirect: FC = () => {
+	const location = useLocation();
+
+	return <Navigate to={location.pathname.replace(/^\/beheer/g, '/admin') + location.search} />;
 };
 
-export default withRouter(AdminRedirect) as unknown as FC;
+export default AdminRedirect as unknown as FC;

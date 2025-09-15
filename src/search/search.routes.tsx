@@ -7,7 +7,7 @@ import { Search } from './views';
 
 export const renderSearchRoutes = (): ReactNode[] => [
 	<SecuredRoute
-		component={Search}
+		Component={Search}
 		exact
 		path={APP_PATH.SEARCH.route}
 		key={APP_PATH.SEARCH.route}

@@ -22,8 +22,7 @@ import { clsx } from 'clsx';
 import { compact, isEmpty, isNil, noop } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router';
-import { Link, type RouteComponentProps } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 import { BooleanParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
@@ -139,9 +138,11 @@ type CollectionDetailProps = {
 	enabledMetaData: SearchFilter[];
 };
 
-const CollectionDetail: FC<
-	CollectionDetailProps & UserProps & RouteComponentProps<{ id: string }>
-> = ({ history, match, commonUser, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
+const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = ({
+	commonUser,
+	id,
+	enabledMetaData = ALL_SEARCH_FILTERS,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -530,7 +531,7 @@ const CollectionDetail: FC<
 
 	// Listeners
 	const onEditCollection = () => {
-		history.push(
+		navigate(
 			`${generateContentLinkString(ContentTypeString.collection, `${collectionId}`)}/${
 				ROUTE_PARTS.edit
 			}/${CollectionCreateUpdateTab.CONTENT}`
@@ -712,13 +713,13 @@ const CollectionDetail: FC<
 			commonUser,
 			true,
 			async () => await CollectionService.deleteCollectionOrBundle(collectionId),
-			() => history.push(APP_PATH.WORKSPACE.route)
+			() => navigate(APP_PATH.WORKSPACE.route)
 		);
 	};
 
 	const handleDeleteSelfFromCollection = async (): Promise<void> => {
 		await deleteSelfFromCollection(collectionId, commonUser, () =>
-			history.push(APP_PATH.WORKSPACE.route)
+			navigate(APP_PATH.WORKSPACE.route)
 		);
 	};
 
@@ -730,7 +731,7 @@ const CollectionDetail: FC<
 				withDescription
 			);
 
-			history.push(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
+			navigate(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
 		}
 	};
 
@@ -1633,4 +1634,4 @@ const CollectionDetail: FC<
 	return renderPageContent();
 };
 
-export default compose(withRouter, withUser)(CollectionDetail) as FC<CollectionDetailProps>;
+export default withUser(CollectionDetail) as FC<CollectionDetailProps>;

@@ -2,8 +2,6 @@ import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Button, Icon, IconName, Spacer, Table } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode, useState } from 'react';
-import { withRouter } from 'react-router';
-import { type RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
@@ -27,9 +25,12 @@ type ContainedInBundlesTableProps = {
 	emptyTableLabel: string;
 };
 
-const ContainedInBundlesTable: FC<
-	ContainedInBundlesTableProps & RouteComponentProps<{ id: string }>
-> = ({ history, fragmentId, emptyTableLabel, title }) => {
+const ContainedInBundlesTable: FC<ContainedInBundlesTableProps<{ id: string }>> = ({
+	history,
+	fragmentId,
+	emptyTableLabel,
+	title,
+}) => {
 	const [bundleSortColumn, setBundleSortColumn] = useState<BundleSortProp>(BundleSortProp.title);
 	const [bundleSortOrder, setBundleSortOrder] = useState<OrderDirection>(OrderDirection.asc);
 
@@ -162,7 +163,4 @@ const ContainedInBundlesTable: FC<
 	);
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(ContainedInBundlesTable) as FC<ContainedInBundlesTableProps>;
+export default compose(withUser)(ContainedInBundlesTable) as FC<ContainedInBundlesTableProps>;

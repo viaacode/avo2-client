@@ -8,7 +8,7 @@ import { PUPIL_COLLECTIONS_PATH } from './pupil-collection.const';
 export const renderAdminPupilCollectionRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		key={PUPIL_COLLECTIONS_PATH.ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW}
-		component={PupilCollectionsOverview}
+		Component={PupilCollectionsOverview}
 		exact
 		path={PUPIL_COLLECTIONS_PATH.ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW}
 	/>,

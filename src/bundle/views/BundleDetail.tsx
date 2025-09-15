@@ -29,8 +29,7 @@ import { clsx } from 'clsx';
 import { compact, get, noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router';
-import { Link, type RouteComponentProps } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -93,8 +92,7 @@ type BundleDetailProps = {
 	enabledMetaData: SearchFilter[];
 };
 
-const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id: string }>> = ({
-	history,
+const BundleDetail: FC<BundleDetailProps & UserProps<{ id: string }>> = ({
 	match,
 	commonUser,
 	id,
@@ -315,7 +313,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 				commonUser
 			);
 
-			history.push(APP_PATH.WORKSPACE.route);
+			navigate(APP_PATH.WORKSPACE.route);
 			ToastService.success(
 				tHtml('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd')
 			);
@@ -933,4 +931,4 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 	return renderPageContent();
 };
 
-export default compose(withRouter, withUser)(BundleDetail) as FC<BundleDetailProps>;
+export default withUser(BundleDetail) as FC<BundleDetailProps>;

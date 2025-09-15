@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { compact, reverse, sortBy, toPairs } from 'lodash-es';
-import { type match, matchPath } from 'react-router';
+import { type matchPath } from 'react-router';
 
 import { APP_PATH, type RouteId, type RouteInfo } from '../../../../constants';
 import { QUERY_KEYS } from '../../../constants/query-keys';

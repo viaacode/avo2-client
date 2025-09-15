@@ -21,7 +21,6 @@ import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import { compact, noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { StringParam, useQueryParams } from 'use-query-params';
 

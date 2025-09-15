@@ -8,25 +8,25 @@ import { InteractiveTourDetail, InteractiveTourEdit, InteractiveTourOverview } f
 export const renderInteractiveTourRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		key={INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_OVERVIEW}
-		component={InteractiveTourOverview}
+		Component={InteractiveTourOverview}
 		exact
 		path={INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_OVERVIEW}
 	/>,
 	<SecuredRoute
 		key={INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE}
-		component={InteractiveTourEdit}
+		Component={InteractiveTourEdit}
 		exact
 		path={INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE}
 	/>,
 	<SecuredRoute
 		key={INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT}
-		component={InteractiveTourEdit}
+		Component={InteractiveTourEdit}
 		exact
 		path={INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT}
 	/>,
 	<SecuredRoute
 		key={INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL}
-		component={InteractiveTourDetail}
+		Component={InteractiveTourDetail}
 		exact
 		path={INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL}
 	/>,

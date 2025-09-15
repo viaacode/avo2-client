@@ -10,19 +10,19 @@ import UserOverviewPage from './views/UserOverviewPage';
 export const renderAdminUserRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		key={USER_PATH.USER_OVERVIEW}
-		component={UserOverviewPage}
+		Component={UserOverviewPage}
 		exact
 		path={USER_PATH.USER_OVERVIEW}
 	/>,
 	<SecuredRoute
 		key={USER_PATH.USER_DETAIL}
-		component={UserDetailPage}
+		Component={UserDetailPage}
 		exact
 		path={USER_PATH.USER_DETAIL}
 	/>,
 	<SecuredRoute
 		key={USER_PATH.USER_EDIT}
-		component={UserEditPage}
+		Component={UserEditPage}
 		exact
 		path={USER_PATH.USER_EDIT}
 	/>,

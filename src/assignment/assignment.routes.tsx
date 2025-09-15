@@ -10,49 +10,49 @@ import AssignmentResponseAdminEdit from './views/AssignmentResponseEdit/Assignme
 
 export const renderAssignmentRoutes = (): ReactNode[] => [
 	<SecuredRoute
-		component={AssignmentEdit}
+		Component={AssignmentEdit}
 		exact={false}
 		path={APP_PATH.ASSIGNMENT_CREATE.route}
 		key={APP_PATH.ASSIGNMENT_CREATE.route}
 	/>,
 	<SecuredRoute
-		component={AssignmentDetailSwitcher}
+		Component={AssignmentDetailSwitcher}
 		exact
 		path={APP_PATH.ASSIGNMENT_DETAIL.route}
 		key={APP_PATH.ASSIGNMENT_DETAIL.route}
 	/>,
 	<SecuredRoute
-		component={AssignmentEdit}
+		Component={AssignmentEdit}
 		exact
 		path={APP_PATH.ASSIGNMENT_EDIT.route}
 		key={APP_PATH.ASSIGNMENT_EDIT.route}
 	/>,
 	<SecuredRoute
-		component={AssignmentEdit}
+		Component={AssignmentEdit}
 		exact
 		path={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
 		key={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
 	/>,
 	<SecuredRoute
-		component={AssignmentDetailSwitcher}
+		Component={AssignmentDetailSwitcher}
 		exact
 		path={APP_PATH.ASSIGNMENT_RESPONSE_CREATE.route}
 		key={APP_PATH.ASSIGNMENT_RESPONSE_CREATE.route}
 	/>,
 	<SecuredRoute
-		component={AssignmentDetailSwitcher}
+		Component={AssignmentDetailSwitcher}
 		exact
 		path={APP_PATH.ASSIGNMENT_RESPONSE_EDIT.route}
 		key={APP_PATH.ASSIGNMENT_RESPONSE_EDIT.route}
 	/>,
 	<SecuredRoute // view pupil collection response as teacher/admin
-		component={AssignmentPupilCollectionDetail}
+		Component={AssignmentPupilCollectionDetail}
 		exact
 		path={APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route}
 		key={APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route}
 	/>,
 	<SecuredRoute // edit pupil collection response as admin
-		component={AssignmentResponseAdminEdit}
+		Component={AssignmentResponseAdminEdit}
 		exact
 		path={APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route}
 		key={APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route}

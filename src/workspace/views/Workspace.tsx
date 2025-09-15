@@ -24,9 +24,10 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact, get, isEmpty } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { useMatch, useNavigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 import { AssignmentOverview } from '../../assignment/views';
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { CollectionOrBundle } from '../../collection/collection.types';
@@ -64,7 +65,7 @@ import QuickLaneOverview from './QuickLaneOverview';
 
 import './Workspace.scss';
 
-interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
+interface WorkspaceProps {
 	collections: Avo.Collection.Collection | null;
 }
 
@@ -79,8 +80,13 @@ interface WorkspacePermissions {
 	canEmbedItemsOnOtherSites?: boolean;
 }
 
-const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, commonUser }) => {
+const Workspace: FC<WorkspaceProps & UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
+	const location = useLocation();
+	const navigateFunc = useNavigate();
+	const match = useMatch<'tabId', string>(APP_PATH.WORKSPACE_TAB.route);
+
+	const tabIdFromUrl = match?.params.tabId;
 
 	// State
 	const [activeFilter, setActiveFilter] = useState<ReactText>();
@@ -93,9 +99,10 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 	// Methods
 	// react to route changes by navigating back wih the browser history back button
 	useEffect(() => {
-		const param = match.params.tabId;
-		param && setTabId(param);
-	}, [match.params.tabId]);
+		if (tabIdFromUrl) {
+			setTabId(tabIdFromUrl);
+		}
+	}, [tabIdFromUrl]);
 
 	const updatePermissions = useCallback(() => {
 		Promise.all([
@@ -236,7 +243,6 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 		permissions,
 		tText,
 		tHtml,
-		history,
 		location,
 		match,
 		commonUser,
@@ -246,10 +252,16 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 
 	const goToTab = useCallback(
 		(id: ReactText) => {
-			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: id }, undefined, 'replace');
+			navigate(
+				navigateFunc,
+				APP_PATH.WORKSPACE_TAB.route,
+				{ tabId: id },
+				undefined,
+				'replace'
+			);
 			setTabId(String(id));
 		},
-		[history, setTabId]
+		[navigateFunc, setTabId]
 	);
 
 	const getFirstRenderableTab = useCallback(() => {
@@ -319,7 +331,7 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 	const handleMenuContentClick = (menuItemId: ReactText) => setActiveFilter(menuItemId);
 
 	const handleCreateNewAssignmentClick = () => {
-		redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), history);
+		redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), navigateFunc);
 	};
 
 	// Render

@@ -1,7 +1,7 @@
 import { PermissionName } from '@viaa/avo2-types';
 import { every, some } from 'lodash-es';
 import React, { type ReactNode } from 'react';
-import { Switch } from 'react-router';
+import { Routes } from 'react-router-dom';
 
 import { renderErrorRoutes } from '../error/error.routes';
 
@@ -41,7 +41,7 @@ export const renderAdminRoutes = (userPermissions: string[]): ReactNode => {
 	};
 
 	return (
-		<Switch>
+		<Routes>
 			{renderAdminDashboardRoutes()}
 			{renderWithPermissions(renderAdminUserRoutes, [PermissionName.VIEW_USERS])}
 			{renderWithPermissions(renderAdminUserGroupRoutes, [PermissionName.EDIT_USER_GROUPS])}
@@ -77,6 +77,6 @@ export const renderAdminRoutes = (userPermissions: string[]): ReactNode => {
 			])}
 			{/* Default routes */}
 			{renderErrorRoutes()}
-		</Switch>
+		</Routes>
 	);
 };

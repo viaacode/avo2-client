@@ -22,7 +22,7 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact, get, isNil } from 'lodash-es';
 import React, { type FC, type ReactNode, useMemo, useState } from 'react';
-import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 
 import {
@@ -59,7 +59,7 @@ interface AssignmentEditMarcomProps {
 	onFocus?: () => void;
 }
 
-const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps & UserProps> = ({
+const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & UserProps> = ({
 	assignment,
 	setAssignment,
 	onFocus,
@@ -413,4 +413,4 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 	);
 };
 
-export default compose(withRouter, withUser)(AssignmentEditMarcom) as FC<AssignmentEditMarcomProps>;
+export default withUser(AssignmentEditMarcom) as FC<AssignmentEditMarcomProps>;

@@ -1,18 +1,7 @@
-import {
-	Column,
-	Container,
-	DatePicker,
-	Form,
-	FormGroup,
-	Grid,
-	Select,
-	Spacer,
-	TextArea,
-} from '@viaa/avo2-components';
+import { Column, Container, DatePicker, Form, FormGroup, Grid, Select, Spacer, TextArea, } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { type FC } from 'react';
-import { type RouteComponentProps } from 'react-router-dom';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../admin/shared/types';
@@ -26,7 +15,7 @@ import { type CollectionAction } from './CollectionOrBundleEdit.types';
 interface CollectionOrBundleEditQualityCheckProps {
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
-	history: RouteComponentProps['history'];
+	;
 	onFocus?: () => void;
 }
 

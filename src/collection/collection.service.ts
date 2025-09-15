@@ -249,7 +249,7 @@ export class CollectionService {
 	static async updateCollection(
 		initialColl: Omit<Avo.Collection.Collection, 'loms' | 'contributors'> | null,
 		updatedColl: Partial<Avo.Collection.Collection>,
-		commonUser: Avo.User.CommonUser,
+		commonUser: Avo.User.CommonUser | null | undefined,
 		checkValidation = true,
 		isCollection: boolean
 	): Promise<Avo.Collection.Collection | null> {

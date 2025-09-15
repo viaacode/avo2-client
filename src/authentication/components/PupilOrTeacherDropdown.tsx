@@ -1,7 +1,7 @@
 import { Button, Container, Spacer } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
-import { type RouteComponentProps, withRouter } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import { APP_PATH } from '../../constants';
 import { ROUTE_PARTS } from '../../shared/constants';
@@ -12,11 +12,9 @@ interface PupilOrTeacherDropdownProps {
 	closeDropdown?: () => void;
 }
 
-const PupilOrTeacherDropdown: FC<PupilOrTeacherDropdownProps & RouteComponentProps> = ({
-	history,
-	closeDropdown = noop,
-}) => {
+const PupilOrTeacherDropdown: FC<PupilOrTeacherDropdownProps> = ({ closeDropdown = noop }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	return (
 		<Container className="c-register-pupil-or-teacher-dropdown" mode="horizontal">
@@ -38,7 +36,7 @@ const PupilOrTeacherDropdown: FC<PupilOrTeacherDropdownProps & RouteComponentPro
 						)}
 						onClick={() => {
 							closeDropdown();
-							redirectToClientPage(APP_PATH.STAMBOEK.route, history);
+							redirectToClientPage(APP_PATH.STAMBOEK.route, navigateFunc);
 						}}
 					/>
 				</Spacer>
@@ -62,7 +60,7 @@ const PupilOrTeacherDropdown: FC<PupilOrTeacherDropdownProps & RouteComponentPro
 							)}
 							onClick={() => {
 								closeDropdown();
-								redirectToClientPage(`/${ROUTE_PARTS.pupils}`, history);
+								redirectToClientPage(`/${ROUTE_PARTS.pupils}`, navigateFunc);
 							}}
 						/>
 					</Spacer>
@@ -72,4 +70,4 @@ const PupilOrTeacherDropdown: FC<PupilOrTeacherDropdownProps & RouteComponentPro
 	);
 };
 
-export default withRouter(PupilOrTeacherDropdown);
+export default PupilOrTeacherDropdown;

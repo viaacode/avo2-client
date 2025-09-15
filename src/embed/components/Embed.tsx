@@ -4,7 +4,6 @@ import { Alert, Column, Flex, Grid, Icon, IconName, Spinner } from '@viaa/avo2-c
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo } from 'react';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
@@ -253,4 +252,4 @@ const Embed: FC<EmbedProps & UserProps> = ({
 	);
 };
 
-export default compose(withRouter, withUser)(Embed) as FC<EmbedProps>;
+export default withUser(Embed) as FC<EmbedProps>;

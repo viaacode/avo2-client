@@ -7,7 +7,7 @@ import { QuickLaneDetail } from './views';
 
 export const renderQuickLaneRoutes = (): ReactNode[] => [
 	<SecuredRoute
-		component={QuickLaneDetail}
+		Component={QuickLaneDetail}
 		exact
 		path={APP_PATH.QUICK_LANE.route}
 		key={APP_PATH.QUICK_LANE.route}

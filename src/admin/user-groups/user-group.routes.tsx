@@ -8,7 +8,7 @@ import UserGroupOverviewPage from './views/UserGroupOverviewPage';
 export const renderAdminUserGroupRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		key={USER_GROUP_PATH.USER_GROUP_OVERVIEW}
-		component={UserGroupOverviewPage}
+		Component={UserGroupOverviewPage}
 		exact
 		path={USER_GROUP_PATH.USER_GROUP_OVERVIEW}
 	/>,

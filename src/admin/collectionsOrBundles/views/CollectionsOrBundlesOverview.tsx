@@ -4,6 +4,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact, noop, partition } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { useLocation } from 'react-router-dom';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { CollectionService } from '../../../collection/collection.service';
@@ -55,8 +56,9 @@ import {
 	renderCollectionsOrBundlesOverviewCellText,
 } from '../helpers/render-collection-columns';
 
-const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, commonUser }) => {
+const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
+	const location = useLocation();
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
 	const [collectionCount, setCollectionCount] = useState<number>(0);

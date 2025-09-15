@@ -11,7 +11,6 @@ import {
 import type { Requests } from 'node-zendesk';
 import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router';
 import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -244,4 +243,4 @@ const UserItemRequestForm: FC<UserItemRequestFormProps> = ({ history, commonUser
 	);
 };
 
-export default compose(withRouter, withUser)(UserItemRequestForm) as FC;
+export default withUser(UserItemRequestForm) as FC;

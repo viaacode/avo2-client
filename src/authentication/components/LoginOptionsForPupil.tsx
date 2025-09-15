@@ -1,8 +1,6 @@
 import { Button, IconName, Spacer } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
-import { type RouteComponentProps } from 'react-router';
-import { withRouter } from 'react-router-dom';
 
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
@@ -18,8 +16,7 @@ interface LoginOptionsForPupilProps {
 	openInNewTab?: boolean;
 }
 
-const LoginOptionsForPupil: FC<LoginOptionsForPupilProps & RouteComponentProps> = ({
-	location,
+const LoginOptionsForPupil: FC<LoginOptionsForPupilProps> = ({
 	onOptionClicked = noop,
 	openInNewTab = false,
 }) => {
@@ -77,4 +74,4 @@ const LoginOptionsForPupil: FC<LoginOptionsForPupilProps & RouteComponentProps> 
 	));
 };
 
-export default withRouter(LoginOptionsForPupil);
+export default LoginOptionsForPupil;

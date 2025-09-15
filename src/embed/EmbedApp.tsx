@@ -3,8 +3,8 @@ import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import queryString from 'query-string';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
-import { Route, type RouteComponentProps } from 'react-router';
-import { BrowserRouter, withRouter } from 'react-router-dom';
+import { Route } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 import { QueryParamProvider } from 'use-query-params';
 
 import { LoginMessage } from '../authentication/authentication.types';
@@ -211,7 +211,7 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 	return renderApp();
 };
 
-const EmbedAppWithRouter = withRouter(EmbedApp);
+const EmbedAppWithRouter = EmbedApp;
 
 const queryClient = new QueryClient();
 

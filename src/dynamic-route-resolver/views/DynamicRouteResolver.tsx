@@ -12,7 +12,8 @@ import { stringifyUrl } from 'query-string';
 import React, { type ComponentType, type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
-import { Redirect, type RouteComponentProps, withRouter } from 'react-router';
+import { Navigate, useNavigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { compose, type Dispatch } from 'redux';
 
 import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state';
@@ -60,7 +61,7 @@ interface RouteInfo {
 	data: any;
 }
 
-interface DynamicRouteResolverProps extends RouteComponentProps {
+interface DynamicRouteResolverProps {
 	getLoginState: () => Dispatch;
 	loginState: Avo.Auth.LoginResponse | null;
 	loginStateError: boolean;
@@ -69,13 +70,13 @@ interface DynamicRouteResolverProps extends RouteComponentProps {
 
 const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 	getLoginState,
-	history,
-	location,
 	loginState,
 	loginStateError,
 	loginStateLoading,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+	const location = useLocation();
 
 	// State
 	const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
@@ -109,7 +110,7 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 
 			if (pathname === '/' && loginState.message === 'LOGGED_IN') {
 				// Redirect the logged out homepage to the logged in homepage is the user is logged in
-				history.replace('/start');
+				navigateFunc('/start', { replace: true });
 				return;
 			}
 
@@ -123,8 +124,9 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 
 					if (itemExternalId) {
 						// Redirect to the new bundle url, since we want to discourage use of the old avo1 urls
-						history.replace(
-							buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemExternalId })
+						navigateFunc(
+							buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemExternalId }),
+							{ replace: true }
 						);
 						return;
 					} // else keep analysing
@@ -133,9 +135,9 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 					const bundleUuid = await CollectionService.fetchUuidByAvo1Id(avo1Id);
 					if (bundleUuid) {
 						// Redirect to the new bundle url, since we want to discourage use of the old avo1 urls
-						history.replace(
-							buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: bundleUuid })
-						);
+						navigateFunc(buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: bundleUuid }), {
+							replace: true,
+						});
 						return;
 					} // else keep analysing
 				}
@@ -144,7 +146,9 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 			// Check if path is old item id
 			if (/\/pid\/[^/]+/g.test(pathname)) {
 				const itemPid = (pathname.split('/').pop() || '').trim();
-				history.replace(buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemPid }));
+				navigateFunc(buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemPid }), {
+					replace: true,
+				});
 				return;
 			}
 
@@ -156,13 +160,14 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 				commonUserInfo &&
 				PermissionService.hasPerm(commonUserInfo, PermissionName.SEARCH)
 			) {
-				history.replace(
+				navigateFunc(
 					generateSearchLinkString(
 						SearchFilter.serie,
 						'KLAAR',
 						SearchFilter.broadcastDate,
 						OrderDirection.desc
-					)
+					),
+					{ replace: true }
 				);
 				return;
 			}
@@ -311,14 +316,7 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 				!routeUserGroupIds.includes(SpecialPermissionGroups.loggedOutUsers) &&
 				loginState?.message !== 'LOGGED_IN'
 			) {
-				return (
-					<Redirect
-						to={{
-							pathname: APP_PATH.REGISTER_OR_LOGIN.route,
-							state: { from: location },
-						}}
-					/>
-				);
+				return <Navigate to={APP_PATH.REGISTER_OR_LOGIN.route} />;
 			}
 
 			const description =
@@ -450,7 +448,6 @@ const mapDispatchToProps = (dispatch: Dispatch): { getLoginState: () => LoginSta
 });
 
 export default compose(
-	withRouter,
 	connect(mapStateToProps, mapDispatchToProps) as any,
 	withAdminCoreConfig
 )(DynamicRouteResolver as ComponentType) as unknown as FC<DynamicRouteResolverProps>;

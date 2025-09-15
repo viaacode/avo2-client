@@ -20,12 +20,12 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { cloneDeep, compact, get, isNil, noop, uniq } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { useMatch } from 'react-router';
 import { Link } from 'react-router-dom';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -40,7 +40,7 @@ import { formatDate } from '../../shared/helpers/formatters';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
@@ -61,20 +61,21 @@ import { isItemWithMeta } from '../helpers/is-item-with-meta';
 import './AssignmentOverview.scss';
 import './AssignmentResponses.scss';
 
-interface AssignmentResponsesProps
-	extends Omit<DefaultSecureRouteProps<{ id: string }>, 'location'> {
+interface AssignmentResponsesProps {
 	onUpdate: () => void | Promise<void>;
 }
 
 const DEFAULT_SORT_COLUMN = 'updated_at';
 const DEFAULT_SORT_ORDER = OrderDirection.desc;
 
-const AssignmentResponses: FC<AssignmentResponsesProps> = ({
+const AssignmentResponses: FC<AssignmentResponsesProps & UserProps> = ({
 	onUpdate = noop,
-	match,
 	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const match = useMatch<'id', string>(APP_PATH.ASSIGNMENT_EDIT.route);
+
+	const assignmentId = match?.params.id;
 
 	// Data
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
@@ -197,6 +198,9 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 
 	const fetchAssignment = useCallback(async () => {
 		try {
+			if (!assignmentId) {
+				return;
+			}
 			if (!canViewAnAssignment(commonUser)) {
 				setLoadingInfo({
 					message: tHtml(
@@ -206,7 +210,6 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 					state: 'error',
 				});
 			}
-			const assignmentId = match.params.id;
 
 			const assignment = await AssignmentService.fetchAssignmentById(assignmentId);
 
@@ -229,15 +232,16 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 				),
 			});
 		}
-	}, [match, tText, tHtml]);
+	}, [assignmentId, commonUser, tHtml]);
 
 	const fetchAssignmentResponses = useCallback(async () => {
 		try {
+			if (!assignmentId) {
+				return;
+			}
 			if (isNil(canViewAssignmentResponses)) {
 				return;
 			}
-
-			const assignmentId = match.params.id;
 
 			const column = tableColumns.find(
 				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
@@ -277,7 +281,7 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 		}
 	}, [
 		canViewAssignmentResponses,
-		match.params.id,
+		assignmentId,
 		tableColumns,
 		commonUser,
 		sortColumn,
@@ -448,7 +452,7 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 				return renderDataCell(
 					<Link
 						to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route, {
-							assignmentId: match.params.id,
+							assignmentId,
 							responseId: assignmentResponse.id,
 						})}
 					>

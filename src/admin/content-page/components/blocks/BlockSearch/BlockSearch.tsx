@@ -16,7 +16,6 @@ import { type Avo } from '@viaa/avo2-types';
 import { find, get, isNil } from 'lodash-es';
 import React, { type FC, type KeyboardEvent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import { type Dispatch } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
@@ -55,7 +54,6 @@ const BlockSearch: FC<BlockSearchProps & DefaultSecureRouteProps> = ({
 	searchResults,
 	searchResultsLoading,
 	search,
-	history,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -91,7 +89,7 @@ const BlockSearch: FC<BlockSearchProps & DefaultSecureRouteProps> = ({
 
 	// Methods
 	const gotoSearchPage = () => {
-		history.push(generateSearchLinkString(SearchFilter.query, searchTerms));
+		navigate(generateSearchLinkString(SearchFilter.query, searchTerms));
 	};
 
 	const goToSearchResult = (searchResultId: string | undefined) => {
@@ -105,7 +103,7 @@ const BlockSearch: FC<BlockSearchProps & DefaultSecureRouteProps> = ({
 			);
 
 			if (searchResultItem) {
-				history.push(
+				navigate(
 					generateContentLinkString(
 						searchResultItem.administrative_type,
 						searchResultItem.id
@@ -218,6 +216,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default withRouter(
-	connect(mapStateToProps, mapDispatchToProps)(BlockSearch)
-) as unknown as FC<BlockSearchProps>;
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(BlockSearch) as unknown as FC<BlockSearchProps>;

@@ -10,25 +10,25 @@ import ContentPageLabelOverviewPage from './views/ContentPageLabelOverviewPage';
 export const renderAdminContentPageLabelRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		key={CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_OVERVIEW}
-		component={ContentPageLabelOverviewPage}
+		Component={ContentPageLabelOverviewPage}
 		exact
 		path={CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_OVERVIEW}
 	/>,
 	<SecuredRoute
 		key={CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_CREATE}
-		component={ContentPageLabelEditPage}
+		Component={ContentPageLabelEditPage}
 		exact
 		path={CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_CREATE}
 	/>,
 	<SecuredRoute
 		key={CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_EDIT}
-		component={ContentPageLabelEditPage}
+		Component={ContentPageLabelEditPage}
 		exact
 		path={CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_EDIT}
 	/>,
 	<SecuredRoute
 		key={CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_DETAIL}
-		component={ContentPageLabelDetailPage}
+		Component={ContentPageLabelDetailPage}
 		exact
 		path={CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_DETAIL}
 	/>,

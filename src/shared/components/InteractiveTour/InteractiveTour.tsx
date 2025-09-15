@@ -4,7 +4,6 @@ import { compact, debounce } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import Joyride, { type CallBackProps } from 'react-joyride';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import { compose } from 'redux';
 
 import { type SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -36,7 +35,6 @@ const INTERACTIVE_TOUR_IN_PROGRESS_CLASS = 'c-interactive-tour--in-progress';
 const InteractiveTour: FC<InteractiveTourProps & SecuredRouteProps & UiStateProps> = ({
 	showButton,
 	commonUser,
-	location,
 	showNudgingModal,
 }) => {
 	const { tText } = useTranslation();
@@ -243,6 +241,5 @@ const mapStateToProps = (state: AppState) => ({
 
 export default compose(
 	connect(mapStateToProps),
-	withRouter,
 	withUser
 )(InteractiveTour) as FC<InteractiveTourProps>;

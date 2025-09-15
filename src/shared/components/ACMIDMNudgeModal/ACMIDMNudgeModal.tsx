@@ -2,7 +2,6 @@ import { Button, IconName, Modal, ModalBody, Spacer } from '@viaa/avo2-component
 import { Idp } from '@viaa/avo2-types';
 import React, { type FC, useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose, type Dispatch } from 'redux';
 
 import { isProfileComplete } from '../../../authentication/helpers/get-profile-info';
@@ -30,8 +29,7 @@ interface UiStateProps {
 	setShowNudgingModal: (showModal: boolean) => Dispatch;
 }
 
-const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
-	location,
+const ACMIDMNudgeModal: FC<UserProps & UiStateProps> = ({
 	commonUser,
 	showNudgingModal,
 	setShowNudgingModal,
@@ -275,6 +273,5 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 export default compose(
 	connect(mapStateToProps, mapDispatchToProps),
-	withRouter,
 	withUser
 )(ACMIDMNudgeModal) as FC;

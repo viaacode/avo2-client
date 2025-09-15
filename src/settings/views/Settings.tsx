@@ -36,19 +36,22 @@ import {
 	PROFILE_ID,
 	type SettingsTab,
 } from '../settings.const';
+import { useMatch, useNavigate } from 'react-router';
 
-type ForPupilsProps = DefaultSecureRouteProps<{ tabId: string }>;
-
-const Settings: FC<ForPupilsProps & UserProps> = (props) => {
+const Settings: FC<UserProps> = ({commonUser}) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+	const match = useMatch<'tabId', string>(APP_PATH.SETTINGS_TAB.route);
+
+	const tabId = match?.params.tabId;
 
 	const [activeTab, setActiveTab] = useState<SettingsTab>(
-		(props.match.params.tabId as SettingsTab) || PROFILE_ID
+		(tabId as SettingsTab) || PROFILE_ID
 	);
 
 	const isPupil = [SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]
 		.map(String)
-		.includes(String(props.commonUser?.userGroup?.id));
+		.includes(String(commonUser?.userGroup?.id));
 
 	const generateTabHeader = (id: SettingsTab, label: string) => ({
 		id,
@@ -63,7 +66,7 @@ const Settings: FC<ForPupilsProps & UserProps> = (props) => {
 		];
 
 		// Only pupils with an archief account can view the account tab
-		if (!isPupil || !!(props?.commonUser?.idps || {})['HETARCHIEF']) {
+		if (!isPupil || !!(commonUser?.idps || {})['HETARCHIEF']) {
 			tabHeaders.push(
 				generateTabHeader(ACCOUNT_ID, tText('settings/views/settings___account'))
 			);
@@ -73,12 +76,12 @@ const Settings: FC<ForPupilsProps & UserProps> = (props) => {
 			generateTabHeader(LINKED_ACCOUNTS, tText('settings/views/settings___koppelingen'))
 		);
 
-		if (PermissionService.hasPerm(props.commonUser, PermissionName.VIEW_NEWSLETTERS_PAGE)) {
+		if (PermissionService.hasPerm(commonUser, PermissionName.VIEW_NEWSLETTERS_PAGE)) {
 			tabHeaders.push(
 				generateTabHeader(EMAIL_ID, tText('settings/views/settings___e-mail-voorkeuren'))
 			);
 		}
-		if (PermissionService.hasPerm(props.commonUser, PermissionName.VIEW_NOTIFICATIONS_PAGE)) {
+		if (PermissionService.hasPerm(commonUser, PermissionName.VIEW_NOTIFICATIONS_PAGE)) {
 			generateTabHeader(NOTIFICATIONS_ID, tText('settings/views/settings___notifications'));
 		}
 
@@ -87,24 +90,24 @@ const Settings: FC<ForPupilsProps & UserProps> = (props) => {
 
 	const tabContents = {
 		[PROFILE_ID]: {
-			component: <Profile {...props} />,
+			component: <Profile />,
 		},
 		[ACCOUNT_ID]: {
-			component: <Account {...props} />,
+			component: <Account />,
 		},
 		[EMAIL_ID]: {
-			component: <Email {...props} />,
+			component: <Email />,
 		},
 		[NOTIFICATIONS_ID]: {
 			component: <Notifications />,
 		},
 		[LINKED_ACCOUNTS]: {
-			component: <LinkedAccounts {...props} />,
+			component: <LinkedAccounts />,
 		},
 	};
 
 	const goToTab = (tabId: string | ReactText) => {
-		redirectToClientPage(buildLink(APP_PATH.SETTINGS_TAB.route, { tabId }), props.history);
+		redirectToClientPage(buildLink(APP_PATH.SETTINGS_TAB.route, { tabId }), navigateFunc);
 		setActiveTab(tabId as SettingsTab);
 	};
 
@@ -122,11 +125,11 @@ const Settings: FC<ForPupilsProps & UserProps> = (props) => {
 	};
 
 	const viewNewsletterPage = PermissionService.hasPerm(
-		props.commonUser,
+		commonUser,
 		PermissionName.VIEW_NEWSLETTERS_PAGE
 	);
 	const viewNotificationsPage = PermissionService.hasPerm(
-		props.commonUser,
+		commonUser,
 		PermissionName.VIEW_NOTIFICATIONS_PAGE
 	);
 	if (
@@ -136,7 +139,7 @@ const Settings: FC<ForPupilsProps & UserProps> = (props) => {
 	) {
 		return (
 			<ErrorView
-				message={getPageNotFoundError(!!props.commonUser)}
+				message={getPageNotFoundError(!!commonUser)}
 				icon={IconName.search}
 				actionButtons={['home', 'helpdesk']}
 			/>
@@ -177,4 +180,4 @@ const Settings: FC<ForPupilsProps & UserProps> = (props) => {
 	);
 };
 
-export default withUser(Settings) as FC<ForPupilsProps>;
+export default withUser(Settings) as FC;

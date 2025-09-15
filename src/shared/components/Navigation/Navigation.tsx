@@ -17,8 +17,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { last } from 'lodash-es';
 import React, { type FC, type ReactText, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { Link, type RouteComponentProps } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { type Dispatch } from 'redux';
 
 import {
@@ -46,33 +45,26 @@ import { NavigationItem } from './NavigationItem';
 
 import './Navigation.scss';
 
-type NavigationParams = RouteComponentProps;
+interface NavigationProps {
+	loginState: Avo.Auth.LoginResponse | null;
+	loginStateLoading: boolean;
+	loginStateError: boolean;
+	getLoginState: () => Dispatch;
+}
 
 /**
  * Main navigation bar component
- * @param history
- * @param location
- * @param match
  * @param loginMessage
  * @constructor
  */
-const Navigation: FC<
-	NavigationParams & {
-		loginState: Avo.Auth.LoginResponse | null;
-		loginStateLoading: boolean;
-		loginStateError: boolean;
-		getLoginState: () => Dispatch;
-	}
-> = ({
+const Navigation: FC<NavigationProps> = ({
 	loginState,
 	loginStateLoading,
 	loginStateError,
 	getLoginState,
-	history,
-	location,
-	match,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigate = useNavigate();
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -110,9 +102,6 @@ const Navigation: FC<
 				areDropdownsOpen={areDropdownsOpen}
 				setDropdownsOpen={setDropdownsOpen}
 				isMobile={isMobile}
-				history={history}
-				location={location}
-				match={match}
 				onNavigate={() => setMobileMenuOpen(false)}
 			/>
 		));
@@ -222,7 +211,7 @@ const Navigation: FC<
 				redirectToExternalPage(link, navItem.link_target || '_blank');
 			} else {
 				// Internal link to react page or to content block page
-				redirectToClientPage(link, history);
+				redirectToClientPage(link, navigate);
 			}
 			closeAllDropdowns();
 		} catch (err) {
@@ -337,6 +326,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default withRouter(
-	connect(mapStateToProps, mapDispatchToProps)(Navigation)
-) as unknown as FC<NavigationParams>;
+export default connect(mapStateToProps, mapDispatchToProps)(Navigation) as FC<NavigationProps>;

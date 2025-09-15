@@ -28,11 +28,10 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { generatePath } from 'react-router';
+import { generatePath, useMatch, useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { BooleanParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { renderRelatedItems } from '../../collection/collection.helpers';
@@ -115,11 +114,15 @@ type AssignmentDetailProps = {
 	enabledMetaData: SearchFilter[];
 };
 
-const AssignmentDetail: FC<
-	AssignmentDetailProps & DefaultSecureRouteProps<{ id: string }> & UserProps
-> = ({ match, commonUser, history, enabledMetaData = ALL_SEARCH_FILTERS }) => {
+const AssignmentDetail: FC<AssignmentDetailProps & UserProps> = ({
+	commonUser,
+	enabledMetaData = ALL_SEARCH_FILTERS,
+}) => {
 	const { tText, tHtml } = useTranslation();
-	const assignmentId = match.params.id;
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id', string>(APP_PATH.ASSIGNMENT_DETAIL.route);
+
+	const assignmentId = match?.params.id;
 
 	// Data
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
@@ -130,18 +133,18 @@ const AssignmentDetail: FC<
 	const [bookmarkViewCounts, setBookmarkViewCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
-	const { data: editStatuses } = useGetAssignmentsEditStatuses([assignmentId], {
-		enabled: !!permissions?.canEditAssignments,
+	const { data: editStatuses } = useGetAssignmentsEditStatuses([assignmentId as string], {
+		enabled: !!assignmentId && !!permissions?.canEditAssignments,
 		refetchInterval: EDIT_STATUS_REFETCH_TIME,
 		refetchIntervalInBackground: true,
 	});
 
 	const { data: bundlesContainingAssignment, refetch: refetchBundlesContainingAssignment } =
 		useGetCollectionsOrBundlesContainingFragment(
-			assignmentId,
+			assignmentId as string,
 			BundleSortProp.title,
 			OrderDirection.asc,
-			{ enabled: !!assignment }
+			{ enabled: !!assignmentId && !!assignment }
 		);
 
 	// Errors
@@ -189,12 +192,12 @@ const AssignmentDetail: FC<
 	const shareWithPupilsProps: ShareWithPupilsProps = {
 		assignment: assignment || undefined, // Needs to be saved before you can share
 		onContentLinkClicked: () =>
-			navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+			navigate(navigateFunc, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 				id: assignmentId,
 				tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 			}),
 		onDetailLinkClicked: () =>
-			navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+			navigate(navigateFunc, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 				id: assignmentId,
 				tabId: ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS,
 			}),
@@ -237,7 +240,7 @@ const AssignmentDetail: FC<
 
 	const getRelatedAssignments = useCallback(async () => {
 		try {
-			if (isUuid(assignmentId)) {
+			if (!!assignmentId && isUuid(assignmentId)) {
 				setRelatedAssignments(
 					await getRelatedItems(
 						assignmentId,
@@ -264,6 +267,9 @@ const AssignmentDetail: FC<
 
 	const fetchAssignment = useCallback(async () => {
 		try {
+			if (!assignmentId) {
+				return;
+			}
 			setAssignmentLoading(true);
 			setAssignmentError(null);
 
@@ -482,7 +488,7 @@ const AssignmentDetail: FC<
 	};
 
 	const onEditAssignment = () => {
-		history.push(
+		navigateFunc(
 			generatePath(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 				id: assignmentId,
 				tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
@@ -493,20 +499,20 @@ const AssignmentDetail: FC<
 	const onDuplicateAssignment = async (): Promise<void> => {
 		const duplicatedAssignment = await duplicateAssignment(assignment, commonUser);
 		if (duplicatedAssignment) {
-			redirectToClientPage(toAssignmentDetail(duplicatedAssignment), history);
+			redirectToClientPage(toAssignmentDetail(duplicatedAssignment), navigateFunc);
 		}
 	};
 
 	const onDeleteAssignment = async (): Promise<void> => {
 		if (!assignment) return;
 		await deleteAssignment(assignment, commonUser, () =>
-			history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
+			navigateFunc(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
 		);
 	};
 
 	const onDeleteSelfFromAssignment = async (): Promise<void> => {
 		await deleteSelfFromAssignment(assignmentId, commonUser, () =>
-			history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
+			navigateFunc(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
 		);
 	};
 
@@ -545,6 +551,9 @@ const AssignmentDetail: FC<
 	// Render
 
 	const renderAssignmentDropdownOptions = () => {
+		if (!assignmentId) {
+			return null;
+		}
 		const ASSIGNMENT_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				assignmentId,
@@ -553,7 +562,7 @@ const AssignmentDetail: FC<
 				IconName.plus,
 				!!(
 					permissions?.canEditBundles &&
-					commonUser.permissions?.includes(PermissionName.ADD_ASSIGNMENT_TO_BUNDLE)
+					commonUser?.permissions?.includes(PermissionName.ADD_ASSIGNMENT_TO_BUNDLE)
 				)
 			),
 			...createDropdownMenuItem(
@@ -708,6 +717,9 @@ const AssignmentDetail: FC<
 	};
 
 	const renderHeaderButtonsMobile = () => {
+		if (!assignmentId) {
+			return null;
+		}
 		const ASSIGNMENT_DROPDOWN_ITEMS_MOBILE = [
 			...createDropdownMenuItem(
 				assignmentId,
@@ -1002,7 +1014,7 @@ const AssignmentDetail: FC<
 		try {
 			await AssignmentService.declineSharedAssignment(assignment?.id as string, inviteToken);
 
-			navigate(history, APP_PATH.WORKSPACE_ASSIGNMENTS.route);
+			navigate(navigateFunc, APP_PATH.WORKSPACE_ASSIGNMENTS.route);
 
 			ToastService.success(
 				tText('assignment/views/assignment-detail___de-uitnodiging-werd-afgewezen')

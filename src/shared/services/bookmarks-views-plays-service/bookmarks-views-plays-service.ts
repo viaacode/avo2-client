@@ -129,7 +129,7 @@ export class BookmarksViewsPlaysService {
 
 	public static async getItemCounts(
 		itemUuid: string,
-		commonUser: Avo.User.CommonUser | null
+		commonUser?: Avo.User.CommonUser | null
 	): Promise<BookmarkViewPlayCounts> {
 		const response = await dataService.query<
 			GetItemBookmarkViewPlayCountsQuery,
@@ -175,7 +175,7 @@ export class BookmarksViewsPlaysService {
 
 	public static async getAssignmentCounts(
 		assignmentUuid: string,
-		commonUser: Avo.User.CommonUser | null
+		commonUser: Avo.User.CommonUser | null | undefined
 	) {
 		const response = await dataService.query<
 			GetAssignmentBookmarkViewCountsQuery,
@@ -211,7 +211,7 @@ export class BookmarksViewsPlaysService {
 	 */
 	public static async toggleBookmark(
 		contentId: string,
-		commonUser: Avo.User.CommonUser | null,
+		commonUser: Avo.User.CommonUser | null | undefined,
 		type: EventContentType,
 		isBookmarked: boolean
 	): Promise<void> {

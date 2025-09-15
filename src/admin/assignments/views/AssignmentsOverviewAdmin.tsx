@@ -8,8 +8,6 @@ import { type Avo } from '@viaa/avo2-types';
 import { noop, partition } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
 
 import { AssignmentService } from '../../../assignment/assignment.service';
 import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
@@ -55,7 +53,7 @@ import {
 
 import './AssignmentsOverviewAdmin.scss';
 
-const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUser }) => {
+const AssignmentOverviewAdmin: FC<UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
@@ -590,4 +588,4 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 	);
 };
 
-export default compose(withRouter, withUser)(AssignmentOverviewAdmin) as unknown as FC;
+export default withUser(AssignmentOverviewAdmin) as unknown as FC;

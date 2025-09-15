@@ -3,7 +3,6 @@ import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, lazy, Suspense, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteChildrenProps, useParams } from 'react-router';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -63,4 +62,4 @@ const UserDetailPage: FC<UserProps & RouteChildrenProps> = ({ commonUser, histor
 	);
 };
 
-export default compose(withAdminCoreConfig, withUser, withRouter)(UserDetailPage) as FC;
+export default compose(withAdminCoreConfig, withUser)(UserDetailPage) as FC;

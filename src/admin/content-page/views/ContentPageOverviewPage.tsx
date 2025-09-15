@@ -4,7 +4,6 @@ import React, { type FC, lazy, Suspense, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -26,10 +25,7 @@ const ContentPageOverview = lazy(() =>
 
 const { CREATE_CONTENT_PAGES } = PermissionName;
 
-const ContentPageOverviewPage: FC<DefaultSecureRouteProps & UserProps> = ({
-	history,
-	commonUser,
-}) => {
+const ContentPageOverviewPage: FC<UserProps> = ({ commonUser }) => {
 	const { tText } = useTranslation();
 
 	const hasPerm = useCallback(
@@ -66,7 +62,7 @@ const ContentPageOverviewPage: FC<DefaultSecureRouteProps & UserProps> = ({
 						title={tText(
 							'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
 						)}
-						onClick={() => history.push(CONTENT_PAGE_PATH.CONTENT_PAGE_CREATE)}
+						onClick={() => navigate(CONTENT_PAGE_PATH.CONTENT_PAGE_CREATE)}
 					/>
 				)}
 			</AdminLayoutTopBarRight>

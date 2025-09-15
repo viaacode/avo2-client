@@ -3,7 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -50,11 +50,9 @@ import {
 	renderCollectionsOrBundlesMarcomCellText,
 } from '../helpers/render-collection-columns';
 
-const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
-	location,
-	commonUser,
-}) => {
+const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
+	const location = useLocation();
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
 	const [collectionCount, setCollectionCount] = useState<number>(0);
@@ -484,4 +482,4 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
 	);
 };
 
-export default compose(withRouter, withUser)(CollectionOrBundleMarcomOverview) as FC;
+export default withUser(CollectionOrBundleMarcomOverview) as FC;

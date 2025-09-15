@@ -10,25 +10,25 @@ import UserItemRequestFormConfirm from './views/UserItemRequestFormConfirm';
 
 export const renderUserItemRequestFormRoutes = (): ReactNode[] => [
 	<SecuredRoute
-		component={UserItemRequestForm}
+		Component={UserItemRequestForm}
 		exact
 		path={APP_PATH.USER_ITEM_REQUEST_FORM.route}
 		key={APP_PATH.USER_ITEM_REQUEST_FORM.route}
 	/>,
 	<SecuredRoute
-		component={UserItemRequestFormConfirm}
+		Component={UserItemRequestFormConfirm}
 		exact
 		path={APP_PATH.USER_ITEM_REQUEST_FORM_CONFIRM.route}
 		key={APP_PATH.USER_ITEM_REQUEST_FORM_CONFIRM.route}
 	/>,
 	<SecuredRoute
-		component={EducationalAuthorItemRequestForm}
+		Component={EducationalAuthorItemRequestForm}
 		exact
 		path={APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM.route}
 		key={APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM.route}
 	/>,
 	<SecuredRoute
-		component={EducationalAuthorItemRequestFormConfirm}
+		Component={EducationalAuthorItemRequestFormConfirm}
 		exact
 		path={APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM_CONFIRM.route}
 		key={APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM_CONFIRM.route}

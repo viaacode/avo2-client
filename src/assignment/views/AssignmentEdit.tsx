@@ -22,10 +22,9 @@ import { isAfter, isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { matchPath, Redirect } from 'react-router';
-import { Link } from 'react-router-dom';
+import { matchPath, Navigate, useMatch, useNavigate } from 'react-router';
+import { Link, useLocation } from 'react-router-dom';
 
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { BlockList } from '../../collection/components';
@@ -117,20 +116,18 @@ import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 import AssignmentEditMarcom from './AssignmentEditMarcom';
 import AssignmentResponses from './AssignmentResponses';
 
-interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
+interface AssignmentEditProps {
 	onUpdate: () => void | Promise<void>;
 }
 
-const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
-	onUpdate = noop,
-	match,
-	commonUser,
-	history,
-	location,
-}) => {
+const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({ onUpdate = noop, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
+	const location = useLocation();
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id' | 'tabId', string>(APP_PATH.ASSIGNMENT_EDIT.route);
 
-	const assignmentId = match.params.id;
+	const assignmentId = match?.params.id;
+	const tabId = match?.params.tabId;
 
 	// Data
 	const [tab, setTab] = useState<ASSIGNMENT_CREATE_UPDATE_TABS>(
@@ -174,10 +171,10 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 	>({});
 	const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
 	const { data: bundlesContainingAssignment } = useGetCollectionsOrBundlesContainingFragment(
-		assignmentId,
+		assignmentId as string,
 		BundleSortProp.title,
 		OrderDirection.asc,
-		{ enabled: !!assignment }
+		{ enabled: !!assignmentId && !!assignment }
 	);
 
 	// Computed
@@ -216,6 +213,9 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 
 	const releaseAssignmentEditStatus = useCallback(async () => {
 		try {
+			if (!assignmentId) {
+				return;
+			}
 			await AssignmentService.releaseAssignmentEditStatus(assignmentId);
 		} catch (err) {
 			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode !== 409) {
@@ -230,11 +230,14 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 
 	const updateAssignmentEditor = useCallback(async () => {
 		try {
+			if (!assignmentId) {
+				return;
+			}
 			await AssignmentService.updateAssignmentEditor(assignmentId);
 		} catch (err) {
 			redirectToClientPage(
 				buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }),
-				history
+				navigateFunc
 			);
 
 			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode === 409) {
@@ -254,7 +257,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 				);
 			}
 		}
-	}, [assignmentId, history, releaseAssignmentEditStatus, tHtml]);
+	}, [assignmentId, releaseAssignmentEditStatus, tHtml, navigateFunc]);
 
 	const updateAssignmentEditorWithLoading = useCallback(async () => {
 		setIsAssignmentLoading(true);
@@ -262,10 +265,10 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 	}, [updateAssignmentEditor]);
 
 	useEffect(() => {
-		if (match.params.tabId) {
-			setTab(match.params.tabId as ASSIGNMENT_CREATE_UPDATE_TABS);
+		if (tabId) {
+			setTab(tabId as ASSIGNMENT_CREATE_UPDATE_TABS);
 		}
-	}, [match]);
+	}, [match, tabId]);
 
 	useEffect(() => {
 		if (!isCreatingAssignment) {
@@ -295,9 +298,11 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 	// Get query string variables and fetch the existing object
 	const fetchAssignment = useCallback(async () => {
 		try {
+			if (!assignmentId) {
+				return;
+			}
 			setIsAssignmentLoading(true);
 			setAssignmentError(null);
-			const id = match.params.id;
 			let tempAssignment: Avo.Assignment.Assignment | null = null;
 
 			if (
@@ -315,7 +320,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 			}
 
 			try {
-				tempAssignment = await AssignmentService.fetchAssignmentById(id);
+				tempAssignment = await AssignmentService.fetchAssignmentById(assignmentId);
 			} catch (err) {
 				if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
 					setAssignmentError({
@@ -400,7 +405,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 				return;
 			}
 
-			if (checkedPermissions?.canFetchBookmarkAndViewCounts) {
+			if (checkedPermissions?.canFetchBookmarkAndViewCounts && !!assignment) {
 				try {
 					setBookmarkViewCounts(
 						await BookmarksViewsPlaysService.getAssignmentCounts(
@@ -435,7 +440,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 			});
 		}
 		setIsAssignmentLoading(false);
-	}, [match.params.id, assignmentId, commonUser, setAssignmentFormValues, tHtml]);
+	}, [assignmentId, commonUser, setAssignmentFormValues, tHtml]);
 
 	// Events
 
@@ -498,6 +503,9 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 
 	const saveAssignment = async () => {
 		try {
+			if (!assignmentId) {
+				return;
+			}
 			setIsSaving(true);
 			if (isCreatingAssignment) {
 				// Create assignment
@@ -553,7 +561,9 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 
 					// Delay navigation, until isDirty state becomes false, otherwise the "unsaved changes" modal will popup
 					setTimeout(() => {
-						navigate(history, APP_PATH.ASSIGNMENT_DETAIL.route, { id: created.id });
+						navigate(navigateFunc, APP_PATH.ASSIGNMENT_DETAIL.route, {
+							id: created.id,
+						});
 					}, 100);
 				}
 			} else {
@@ -703,7 +713,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 			buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
 				id: assignmentId,
 			}),
-			history
+			navigateFunc
 		);
 	};
 
@@ -958,7 +968,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 				);
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.CLICKS:
-				return <AssignmentResponses history={history} match={match} onUpdate={onUpdate} />;
+				return <AssignmentResponses onUpdate={onUpdate} />;
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.ADMIN:
 				return (
@@ -1018,7 +1028,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 
 		if (assignmentId) {
 			navigate(
-				history,
+				navigateFunc,
 				APP_PATH.ASSIGNMENT_EDIT_TAB.route,
 				{ id: assignmentId, tabId: tabId },
 				undefined,
@@ -1030,7 +1040,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 	const handleDuplicateAssignment = async () => {
 		const duplicatedAssignment = await duplicateAssignment(originalAssignment, commonUser);
 		if (duplicatedAssignment) {
-			navigate(history, APP_PATH.ASSIGNMENT_DETAIL.route, {
+			navigate(navigateFunc, APP_PATH.ASSIGNMENT_DETAIL.route, {
 				id: duplicatedAssignment.id,
 				tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 			});
@@ -1100,7 +1110,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 							buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
 								id: assignmentId,
 							}),
-							history
+							navigateFunc
 						),
 				}}
 				preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
@@ -1110,7 +1120,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 					modal: {
 						confirmCallback: () => {
 							reset();
-							redirectToClientPage(backToOverview(), history);
+							redirectToClientPage(backToOverview(), navigateFunc);
 						},
 					},
 				}}
@@ -1196,7 +1206,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 								warningMessage={tHtml(
 									'assignment/views/assignment-edit___door-inactiviteit-zal-de-opdracht-zichzelf-sluiten'
 								)}
-								currentPath={history.location.pathname}
+								currentPath={location.pathname}
 								editPath={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
 								onForcedExit={onForcedExitPage}
 							/>
@@ -1264,9 +1274,9 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 		return renderEditAssignmentPage();
 	};
 
-	if (matchPath(location.pathname, { path: APP_PATH.ASSIGNMENT_EDIT.route, exact: true })) {
+	if (matchPath(location.pathname, APP_PATH.ASSIGNMENT_EDIT.route)) {
 		return (
-			<Redirect
+			<Navigate
 				to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 					id: assignmentId,
 					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,

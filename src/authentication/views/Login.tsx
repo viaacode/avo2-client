@@ -2,7 +2,7 @@ import { Button, Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { type RouteComponentProps, withRouter } from 'react-router';
+import { type RouteComponentProps } from 'react-router';
 import { type Dispatch } from 'redux';
 
 import { APP_PATH } from '../../constants';
@@ -25,8 +25,6 @@ interface LoginProps extends RouteComponentProps {
 const LOGIN_ATTEMPT_KEY = 'AVO_LOGIN_ATTEMPT';
 
 const Login: FC<LoginProps> = ({
-	history,
-	location,
 	loginState,
 	loginStateLoading,
 	loginStateError,
@@ -52,7 +50,7 @@ const Login: FC<LoginProps> = ({
 				}
 			}
 
-			history.push(path);
+			navigate(path);
 
 			return;
 		}
@@ -115,4 +113,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

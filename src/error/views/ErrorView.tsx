@@ -14,7 +14,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact, isArray, isNil, isString, omit, uniq } from 'lodash-es';
 import queryString from 'query-string';
 import React, { type FC, type ReactNode } from 'react';
-import { type RouteComponentProps, withRouter } from 'react-router';
+import { type RouteComponentProps } from 'react-router';
 import { compose } from 'redux';
 
 import { redirectToServerLogoutPage } from '../../authentication/helpers/redirects';
@@ -45,11 +45,10 @@ interface ErrorViewProps {
 	children?: ReactNode;
 }
 
-const ErrorView: FC<ErrorViewProps & RouteComponentProps & UserProps> = ({
+const ErrorView: FC<ErrorViewProps & UserProps> = ({
 	message,
 	icon,
 	children = null,
-	location,
 	actionButtons = [],
 	user,
 }) => {
@@ -166,4 +165,4 @@ const ErrorView: FC<ErrorViewProps & RouteComponentProps & UserProps> = ({
 	);
 };
 
-export default compose(withRouter, withUser)(ErrorView) as FC<ErrorViewProps>;
+export default withUser(ErrorView) as FC<ErrorViewProps>;

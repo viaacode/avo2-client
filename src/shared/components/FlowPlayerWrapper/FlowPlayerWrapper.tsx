@@ -17,8 +17,6 @@ import React, {
 	useState,
 } from 'react';
 import { connect } from 'react-redux';
-import { type RouteComponentProps } from 'react-router';
-import { withRouter } from 'react-router-dom';
 import { compose, type Dispatch } from 'redux';
 import { useQueryParam } from 'use-query-params';
 
@@ -50,8 +48,7 @@ import { type FlowPlayerWrapperProps } from './FlowPlayerWrapper.types';
  */
 const FlowPlayerWrapper: FC<
 	FlowPlayerWrapperProps &
-		UserProps &
-		RouteComponentProps & { setLastVideoPlayedAt: (lastVideoPlayedAt: Date | null) => Dispatch }
+		UserProps & { setLastVideoPlayedAt: (lastVideoPlayedAt: Date | null) => Dispatch }
 > = ({ placeholder = true, ...props }) => {
 	const item: Avo.Item.Item | undefined = props.item;
 	const poster: string | undefined = props.poster || get(item, 'thumbnail_path');
@@ -428,6 +425,5 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 export default compose(
 	connect(mapStateToProps, mapDispatchToProps),
-	withRouter,
 	withUser
 )(FlowPlayerWrapper) as FC<FlowPlayerWrapperProps>;

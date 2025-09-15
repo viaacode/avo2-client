@@ -1,5 +1,4 @@
 import { type FC } from 'react';
-import { type RouteComponentProps } from 'react-router';
 
 import { APP_PATH } from '../../constants';
 import { ROUTE_PARTS } from '../../shared/constants';
@@ -7,9 +6,7 @@ import { isPupil } from '../../shared/helpers/is-pupil';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { redirectToServerLogoutPage } from '../helpers/redirects';
 
-interface LogoutProps extends RouteComponentProps, UserProps {}
-
-const Logout: FC<LogoutProps> = ({ location, commonUser }) => {
+const Logout: FC<UserProps> = ({ commonUser }) => {
 	redirectToServerLogoutPage(
 		location,
 		isPupil(commonUser?.userGroup?.id) ? '/' + ROUTE_PARTS.pupils : APP_PATH.HOME.route
@@ -17,4 +14,4 @@ const Logout: FC<LogoutProps> = ({ location, commonUser }) => {
 	return null;
 };
 
-export default withUser(Logout) as FC<RouteComponentProps>;
+export default withUser(Logout) as FC;

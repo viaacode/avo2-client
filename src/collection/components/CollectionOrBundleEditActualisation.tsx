@@ -12,7 +12,6 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC } from 'react';
-import { type RouteComponentProps } from 'react-router-dom';
 
 import { getCollectionManagementStatuses } from '../../admin/collectionsOrBundles/collections-or-bundles.const';
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
@@ -27,7 +26,6 @@ import { type CollectionAction } from './CollectionOrBundleEdit.types';
 interface CollectionOrBundleEditActualisationProps {
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
-	history: RouteComponentProps['history'];
 	onFocus?: () => void;
 }
 

@@ -21,7 +21,7 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 import {
 	redirectToServerLinkAccount,
@@ -34,7 +34,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 
 import './LinkedAccounts.scss';
 
-interface AccountProps extends RouteComponentProps {
+interface AccountProps {
 	commonUser: Avo.User.CommonUser;
 }
 
@@ -52,8 +52,9 @@ interface DeleteModalToggle {
 }
 
 // This tab is only loaded if user is NOT a pupil (see Settings.tsx) -- no more checks here
-const LinkedAccounts: FC<AccountProps> = ({ location, commonUser }) => {
+const LinkedAccounts: FC<AccountProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
+	const location = useLocation();
 
 	const [isDeleteVlaamseOverheidModalOpen, setIsDeleteVlaamseOverheidModalOpen] =
 		useState<boolean>(false);

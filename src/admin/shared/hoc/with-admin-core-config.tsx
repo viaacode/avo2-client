@@ -1,7 +1,6 @@
 import { type AdminConfig, AdminConfigManager } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Spinner } from '@viaa/avo2-components';
 import React, { type ComponentType, useCallback, useEffect, useState } from 'react';
-import { withRouter } from 'react-router';
 
 import { getAdminCoreConfig } from './with-admin-core-config.const';
 
@@ -26,5 +25,5 @@ export const withAdminCoreConfig = (WrappedComponent: ComponentType): ComponentT
 		return <WrappedComponent {...(props as Record<string, unknown>)} />;
 	};
 
-	return withRouter(Component as any) as ComponentType;
+	return Component as any as ComponentType;
 };

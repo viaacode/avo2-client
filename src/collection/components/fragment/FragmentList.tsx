@@ -32,7 +32,6 @@ const FragmentList: FC<FragmentListProps & UserProps> = ({
 	linkToItems,
 	collection,
 	commonUser,
-	...rest
 }) => {
 	const { tHtml } = useTranslation();
 	const renderCollectionFragments = () =>
@@ -67,7 +66,6 @@ const FragmentList: FC<FragmentListProps & UserProps> = ({
 							showDescription={showDescription}
 							showMetadata={showMetadata}
 							linkToItems={linkToItems}
-							{...rest}
 						/>
 						{/*</BlockIconWrapper>*/}
 					</li>

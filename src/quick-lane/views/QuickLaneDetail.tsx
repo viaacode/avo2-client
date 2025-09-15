@@ -20,10 +20,9 @@ import { clsx } from 'clsx';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
-import { generatePath } from 'react-router';
+import { generatePath, useMatch, useNavigate } from 'react-router';
 
 import { AssignmentLayout } from '../../assignment/assignment.types';
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { FragmentList } from '../../collection/components';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -35,17 +34,18 @@ import { renderAvatar } from '../../shared/helpers/formatters';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
-import withUser from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { useGetQuickLane } from '../hooks/useGetQuickLane';
 
-type QuickLaneDetailProps = DefaultSecureRouteProps<{ id: string }>;
-
-const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser, ...rest }) => {
+const QuickLaneDetail: FC<UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
-	const quickLaneId = match.params.id;
+	const navigate = useNavigate();
+	const match = useMatch<'id', string>(APP_PATH.QUICK_LANE.route);
+
+	const quickLaneId = match?.params.id;
 
 	// State
 	const canViewQuickLanes = PermissionService.hasPerm(
@@ -56,7 +56,7 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 		data: quickLane,
 		isLoading: isLoadingQuickLane,
 		isError: isErrorQuickLane,
-	} = useGetQuickLane(quickLaneId, { enabled: canViewQuickLanes });
+	} = useGetQuickLane(quickLaneId, { enabled: !!quickLaneId && canViewQuickLanes });
 
 	const canReadOriginal = useMemo(() => {
 		if (!quickLane || !commonUser) {
@@ -144,7 +144,6 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 						showMetadata
 						linkToItems={false}
 						collection={quickLane.content as Avo.Collection.Collection}
-						{...rest}
 					/>
 				);
 			case 'ITEM':
@@ -193,7 +192,7 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 		}
 
 		if (path) {
-			history.push(path);
+			navigate(path);
 		}
 	};
 
@@ -369,4 +368,4 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 	);
 };
 
-export default withUser(QuickLaneDetail) as FC<QuickLaneDetailProps>;
+export default withUser(QuickLaneDetail) as FC;

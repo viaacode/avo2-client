@@ -9,13 +9,13 @@ import PublishItemsOverview from './views/PublishItemsOverview';
 export const renderItemRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		key={ITEMS_PATH.ITEMS_OVERVIEW}
-		component={ItemsOverview}
+		Component={ItemsOverview}
 		exact
 		path={ITEMS_PATH.ITEMS_OVERVIEW}
 	/>,
 	<SecuredRoute
 		key={ITEMS_PATH.ITEM_DETAIL}
-		component={ItemDetail}
+		Component={ItemDetail}
 		exact
 		path={ITEMS_PATH.ITEM_DETAIL}
 	/>,
@@ -24,7 +24,7 @@ export const renderItemRoutes = (): ReactNode[] => [
 export const renderPublishItemRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		key={ITEMS_PATH.PUBLISH_ITEMS_OVERVIEW}
-		component={PublishItemsOverview}
+		Component={PublishItemsOverview}
 		exact
 		path={ITEMS_PATH.PUBLISH_ITEMS_OVERVIEW}
 	/>,

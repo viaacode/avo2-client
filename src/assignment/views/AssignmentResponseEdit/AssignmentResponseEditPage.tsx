@@ -3,7 +3,6 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isString, noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -263,4 +262,4 @@ const AssignmentResponseEditPage: FC<UserProps & DefaultSecureRouteProps<{ id: s
 	);
 };
 
-export default compose(withRouter, withUser)(AssignmentResponseEditPage) as FC;
+export default withUser(AssignmentResponseEditPage) as FC;

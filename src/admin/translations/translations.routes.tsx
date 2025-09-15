@@ -8,7 +8,7 @@ import TranslationsOverviewPage from './views/TranslationsOverviewPage';
 export const renderAdminTranslationsRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		key={TRANSLATIONS_PATH.TRANSLATIONS}
-		component={TranslationsOverviewPage}
+		Component={TranslationsOverviewPage}
 		exact
 		path={TRANSLATIONS_PATH.TRANSLATIONS}
 	/>,

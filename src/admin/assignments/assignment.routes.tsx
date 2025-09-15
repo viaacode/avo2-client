@@ -9,13 +9,13 @@ import AssignmentOverviewAdmin from './views/AssignmentsOverviewAdmin';
 export const renderAdminAssignmentRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		key={ASSIGNMENTS_PATH.ASSIGNMENTS_OVERVIEW}
-		component={AssignmentOverviewAdmin}
+		Component={AssignmentOverviewAdmin}
 		exact
 		path={ASSIGNMENTS_PATH.ASSIGNMENTS_OVERVIEW}
 	/>,
 	<SecuredRoute
 		key={ASSIGNMENTS_PATH.ASSIGNMENTS_MARCOM_OVERVIEW}
-		component={AssignmentMarcomOverview}
+		Component={AssignmentMarcomOverview}
 		exact
 		path={ASSIGNMENTS_PATH.ASSIGNMENTS_MARCOM_OVERVIEW}
 	/>,

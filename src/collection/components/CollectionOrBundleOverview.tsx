@@ -27,7 +27,7 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 import { ArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
@@ -35,7 +35,6 @@ import { type CollectionsOrBundlesOverviewTableCols } from '../../admin/collecti
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { AssignmentService } from '../../assignment/assignment.service';
 import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
-import type { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -90,9 +89,13 @@ interface CollectionOrBundleOverviewProps {
 	onUpdate: () => void | Promise<void>;
 }
 
-const CollectionOrBundleOverview: FC<
-	CollectionOrBundleOverviewProps & DefaultSecureRouteProps & UserProps
-> = ({ numberOfItems, type, onUpdate = noop, history, commonUser }) => {
+const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps> = ({
+	numberOfItems,
+	type,
+	onUpdate = noop,
+	history,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -360,7 +363,7 @@ const CollectionOrBundleOverview: FC<
 	};
 
 	const onClickCreate = () =>
-		history.push(
+		navigate(
 			buildLink(
 				APP_PATH.SEARCH.route,
 				{},
@@ -395,7 +398,7 @@ const CollectionOrBundleOverview: FC<
 				withDescription
 			);
 
-			history.push(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
+			navigate(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
 		}
 	};
 
@@ -961,7 +964,4 @@ const CollectionOrBundleOverview: FC<
 	);
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(CollectionOrBundleOverview) as FC<CollectionOrBundleOverviewProps>;
+export default compose(withUser)(CollectionOrBundleOverview) as FC<CollectionOrBundleOverviewProps>;

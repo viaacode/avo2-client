@@ -11,25 +11,25 @@ export const renderAdminContentPageRoutes = (): ReactNode[] => {
 	return [
 		<SecuredRoute
 			key={CONTENT_PAGE_PATH.CONTENT_PAGE_OVERVIEW}
-			component={ContentPageOverviewPage}
+			Component={ContentPageOverviewPage}
 			exact
 			path={CONTENT_PAGE_PATH.CONTENT_PAGE_OVERVIEW}
 		/>,
 		<SecuredRoute
 			key={CONTENT_PAGE_PATH.CONTENT_PAGE_CREATE}
-			component={ContentPageEditPage}
+			Component={ContentPageEditPage}
 			exact
 			path={CONTENT_PAGE_PATH.CONTENT_PAGE_CREATE}
 		/>,
 		<SecuredRoute
 			key={CONTENT_PAGE_PATH.CONTENT_PAGE_DETAIL}
-			component={ContentPageDetailPage}
+			Component={ContentPageDetailPage}
 			exact
 			path={CONTENT_PAGE_PATH.CONTENT_PAGE_DETAIL}
 		/>,
 		<SecuredRoute
 			key={CONTENT_PAGE_PATH.CONTENT_PAGE_EDIT}
-			component={ContentPageEditPage}
+			Component={ContentPageEditPage}
 			exact
 			path={CONTENT_PAGE_PATH.CONTENT_PAGE_EDIT}
 		/>,

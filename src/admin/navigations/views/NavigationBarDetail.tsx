@@ -1,10 +1,9 @@
 import { Flex, Spinner } from '@viaa/avo2-components';
 import React, { type FC, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
+import { useMatch, useNavigate } from 'react-router';
 import { compose } from 'redux';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -12,6 +11,7 @@ import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 import './NavigationBarDetail.scss';
+import { NAVIGATIONS_PATH } from '../navigations.const';
 
 const NavigationDetail = lazy(() =>
 	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
@@ -19,12 +19,12 @@ const NavigationDetail = lazy(() =>
 	}))
 );
 
-type NavigationBarDetailProps = DefaultSecureRouteProps<{ navigationBarId: string }>;
-
-const NavigationBarDetail: FC<NavigationBarDetailProps> = ({ match, history }) => {
+const NavigationBarDetail: FC = () => {
 	const { tText } = useTranslation();
+	const navigateFunc = useNavigate();
+	const match = useMatch<'navigationBarId', string>(NAVIGATIONS_PATH.NAVIGATIONS_DETAIL);
 
-	const navigationBarId = match.params.navigationBarId;
+	const navigationBarId = match?.params.navigationBarId;
 
 	return (
 		<div className="c-admin__navigation-detail">
@@ -49,15 +49,17 @@ const NavigationBarDetail: FC<NavigationBarDetailProps> = ({ match, history }) =
 					</Flex>
 				}
 			>
-				<NavigationDetail
-					navigationBarId={navigationBarId}
-					onGoBack={() =>
-						goBrowserBackWithFallback(ADMIN_PATH.NAVIGATIONS_OVERVIEW, history)
-					}
-				/>
+				{!!navigationBarId && (
+					<NavigationDetail
+						navigationBarId={navigationBarId}
+						onGoBack={() =>
+							goBrowserBackWithFallback(ADMIN_PATH.NAVIGATIONS_OVERVIEW, navigateFunc)
+						}
+					/>
+				)}
 			</Suspense>
 		</div>
 	);
 };
 
-export default compose(withAdminCoreConfig, withRouter)(NavigationBarDetail) as FC;
+export default compose(withAdminCoreConfig)(NavigationBarDetail) as FC;

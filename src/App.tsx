@@ -6,13 +6,8 @@ import { isEqual, noop, uniq } from 'lodash-es';
 import { wrapHistory } from 'oaf-react-router';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { connect, Provider } from 'react-redux';
-import {
-	Route,
-	type RouteComponentProps,
-	BrowserRouter as Router,
-	useLocation,
-	withRouter,
-} from 'react-router-dom';
+import { useNavigate } from 'react-router';
+import { type Location, Route, BrowserRouter as Router, useLocation } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 import { compose, type Dispatch } from 'redux';
 import { QueryParamProvider } from 'use-query-params';
@@ -52,10 +47,7 @@ import './styles/main.scss';
 const history = createBrowserHistory();
 wrapHistory(history, {
 	smoothScroll: false,
-	shouldHandleAction: (
-		previousLocation: RouteComponentProps['location'],
-		nextLocation: RouteComponentProps['location']
-	) => {
+	shouldHandleAction: (previousLocation: Location, nextLocation: Location) => {
 		// We don't want to set focus when only the hash changes
 		return (
 			previousLocation.pathname !== nextLocation.pathname ||
@@ -65,16 +57,16 @@ wrapHistory(history, {
 });
 
 const App: FC<
-	RouteComponentProps &
-		UserProps & {
-			historyLocations: string[];
-			setHistoryLocations: (locations: string[]) => void;
-			setEmbedFlow: (embedFlow: string) => void;
-		}
+	UserProps & {
+		historyLocations: string[];
+		setHistoryLocations: (locations: string[]) => void;
+		setEmbedFlow: (embedFlow: string) => void;
+	}
 > = ({ setEmbedFlow, ...props }) => {
 	const { tHtml } = useTranslation();
 	const location = useLocation();
-	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
+	const navigate = useNavigate();
+	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(location.pathname);
 	const isPupilUser = [SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]
 		.map(String)
 		.includes(String(props.commonUser?.userGroup?.id));
@@ -90,7 +82,7 @@ const App: FC<
 			document.querySelector(decodedHash)?.scrollIntoView({ behavior: 'smooth' });
 		}
 	}, []);
-	usePageLoaded(handlePageLoaded, !!props.location.hash);
+	usePageLoaded(handlePageLoaded, !!location.hash);
 
 	/**
 	 * Wait for translations to be loaded before rendering the app
@@ -127,10 +119,10 @@ const App: FC<
 			if (hasLinked) {
 				ToastService.success(tHtml('app___je-account-is-gekoppeld'));
 				url.searchParams.delete(linked);
-				history.replace(url.toString().replace(url.origin, ''));
+				navigate(url.toString().replace(url.origin, ''), { replace: true });
 			}
 		}
-	}, [loadingInfo, tHtml]);
+	}, [loadingInfo, tHtml, navigate]);
 
 	/**
 	 * Keep track of route changes and track the 3 last visited pages for tracking events
@@ -172,11 +164,11 @@ const App: FC<
 				"Embed flow query param is present, but the page wasn't opened from another page, so window.opener is undefined. Cannot start the embed flow"
 			);
 		}
-	}, [setEmbedFlow, props.commonUser]);
+	}, [setEmbedFlow, props.commonUser, tHtml]);
 
 	// Render
 	const renderApp = () => {
-		const isLoginRoute = props.location.pathname === APP_PATH.LOGIN.route;
+		const isLoginRoute = location.pathname === APP_PATH.LOGIN.route;
 
 		return (
 			<div
@@ -194,7 +186,7 @@ const App: FC<
 					transition={Slide}
 				/>
 				{isAdminRoute ? (
-					<SecuredRoute component={Admin} exact={false} path={ADMIN_PATH.DASHBOARD} />
+					<SecuredRoute Component={Admin} exact={false} path={ADMIN_PATH.DASHBOARD} />
 				) : (
 					<>
 						{!isLoginRoute && <Navigation {...props} />}
@@ -231,7 +223,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 const AppWithRouter = compose(
 	connect(mapStateToProps, mapDispatchToProps),
-	withRouter,
 	withUser,
 	withAdminCoreConfig
 )(App) as FC;

@@ -7,7 +7,7 @@ import { EmbedCodeDetail } from './views';
 
 export const renderEmbedRoutes = (): ReactNode[] => [
 	<SecuredRoute
-		component={EmbedCodeDetail}
+		Component={EmbedCodeDetail}
 		exact
 		path={APP_PATH.EMBED.route}
 		key={APP_PATH.EMBED.route}

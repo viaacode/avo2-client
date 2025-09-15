@@ -1,7 +1,6 @@
 import { Flex, Spinner } from '@viaa/avo2-components';
 import React, { type FC, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -23,7 +22,7 @@ const NavigationEdit = lazy(() =>
 
 type NavigationItemEditProps = DefaultSecureRouteProps<MenuEditParams>;
 
-const NavigationItemEdit: FC<NavigationItemEditProps> = ({ match, history }) => {
+const NavigationItemEdit: FC<NavigationItemEditProps> = ({ history }) => {
 	const { tText } = useTranslation();
 	const { navigationBarId, navigationItemId } = match.params;
 
@@ -75,4 +74,4 @@ const NavigationItemEdit: FC<NavigationItemEditProps> = ({ match, history }) => 
 	);
 };
 
-export default compose(withAdminCoreConfig, withRouter)(NavigationItemEdit) as FC;
+export default compose(withAdminCoreConfig)(NavigationItemEdit) as FC;

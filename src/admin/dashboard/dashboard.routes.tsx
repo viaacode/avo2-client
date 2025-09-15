@@ -8,7 +8,7 @@ import { Dashboard } from './views';
 export const renderAdminDashboardRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		key={DASHBOARD_PATH.DASHBOARD}
-		component={Dashboard}
+		Component={Dashboard}
 		exact
 		path={DASHBOARD_PATH.DASHBOARD}
 	/>,

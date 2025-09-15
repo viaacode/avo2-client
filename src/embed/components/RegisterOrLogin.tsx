@@ -2,7 +2,6 @@
 import AvoLogo from '@assets/images/avo-logo-centered.svg';
 import { Column, Grid, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
-import { withRouter } from 'react-router';
 
 import LoginOptionsForPupil from '../../authentication/components/LoginOptionsForPupil';
 import './RegisterOrLogin.scss';
@@ -97,4 +96,4 @@ const RegisterOrLogin: FC = () => {
 	);
 };
 
-export default withRouter(RegisterOrLogin);
+export default RegisterOrLogin;

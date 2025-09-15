@@ -33,7 +33,6 @@ import {
 } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { compose, type Dispatch } from 'redux';
 import { type UrlUpdateType } from 'use-query-params';
 
@@ -79,6 +78,7 @@ import { selectSearchError, selectSearchLoading, selectSearchResults } from '../
 
 import SearchFilterControls from './SearchFilterControls';
 import SearchResults from './SearchResults';
+import { useNavigate } from "react-router";
 
 const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	// Manual props
@@ -96,10 +96,12 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	searchResultsLoading,
 	searchResultsError,
 	search,
-	history,
+
 	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+
 	const resultsCount = searchResults?.count ?? 0;
 
 	const urlUpdateType: UrlUpdateType = 'push';
@@ -113,9 +115,9 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 
 	const navigateToItemRequestForm = () => {
 		if (isEducationalUser(commonUser)) {
-			navigate(history, APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM.route);
+			navigate(navigateFunc, APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM.route);
 		} else {
-			navigate(history, APP_PATH.USER_ITEM_REQUEST_FORM.route);
+			navigate(navigateFunc, APP_PATH.USER_ITEM_REQUEST_FORM.route);
 		}
 
 		window.scrollTo(0, 0);
@@ -599,7 +601,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 };
 
 export default compose(
-	withRouter,
 	withUser,
 	connect(mapStateToProps, mapDispatchToProps)
 )(SearchFiltersAndResults) as FC<SearchFiltersAndResultsPropsManual>;

@@ -5,7 +5,7 @@ import type { QuickLaneUrlObject } from '../../shared/types';
 import { QuickLaneService } from '../quick-lane.service';
 
 export const useGetQuickLane = (
-	quickLaneId: string,
+	quickLaneId: string | undefined,
 	options: {
 		enabled?: boolean;
 		refetchInterval?: number | false;
@@ -15,6 +15,9 @@ export const useGetQuickLane = (
 	return useQuery(
 		[QUERY_KEYS.GET_ASSIGNMENTS, quickLaneId],
 		async () => {
+			if (!quickLaneId) {
+				return null;
+			}
 			return QuickLaneService.fetchQuickLaneById(quickLaneId);
 		},
 		{

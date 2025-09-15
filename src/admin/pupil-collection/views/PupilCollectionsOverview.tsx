@@ -8,8 +8,6 @@ import { type Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
@@ -44,7 +42,7 @@ import {
 } from '../pupil-collection.const';
 import { type PupilCollectionsOverviewTableState } from '../pupil-collection.types';
 
-const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonUser }) => {
+const PupilCollectionsOverview: FC<UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [pupilCollections, setPupilCollections] = useState<Avo.Assignment.Response[] | null>(
@@ -460,4 +458,4 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 	);
 };
 
-export default compose(withRouter, withUser)(PupilCollectionsOverview) as unknown as FC;
+export default withUser(PupilCollectionsOverview) as unknown as FC;

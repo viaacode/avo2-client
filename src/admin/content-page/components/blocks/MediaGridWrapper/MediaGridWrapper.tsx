@@ -13,9 +13,6 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { compact, isEmpty, isNil } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
-import { withRouter } from 'react-router';
-import { type RouteComponentProps } from 'react-router-dom';
-import { compose } from 'redux';
 
 import placeholderImage from '../../../../../assets/images/assignment-placeholder.png';
 import {
@@ -58,7 +55,7 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 	ctaButtonAltTitle?: string;
 }
 
-const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentProps> = ({
+const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps> = ({
 	title,
 	buttonLabel,
 	buttonAltTitle,
@@ -84,7 +81,6 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 	results,
 	renderLink,
 	commonUser,
-	location,
 }: any) => {
 	// TODO remove any when typings for admin-core-ui is fixed
 	const { tText, tHtml } = useTranslation();
@@ -533,4 +529,4 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 	);
 };
 
-export default compose(withRouter, withUser)(MediaGridWrapper) as FC<MediaGridWrapperProps>;
+export default withUser(MediaGridWrapper) as FC<MediaGridWrapperProps>;

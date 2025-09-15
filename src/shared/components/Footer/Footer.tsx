@@ -5,7 +5,6 @@ import vlaamseOverheidLogo from '@assets/images/vlaanderen-logo.svg';
 import { Container, Spacer } from '@viaa/avo2-components';
 import { orderBy } from 'lodash-es';
 import React, { type FC, useState } from 'react';
-import { type RouteComponentProps } from 'react-router';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { type BooleanDictionary } from '../../helpers/navigation';
@@ -17,7 +16,7 @@ import { NavigationItem } from '../Navigation/NavigationItem';
 
 import './Footer.scss';
 
-const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match }) => {
+const Footer: FC<UserProps> = ({ history, location, match }) => {
 	const { tText } = useTranslation();
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<BooleanDictionary>({});
@@ -47,9 +46,6 @@ const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match 
 					areDropdownsOpen={areDropdownsOpen}
 					setDropdownsOpen={setDropdownsOpen}
 					onNavigate={() => window?.scrollTo(0, 0)}
-					history={history}
-					location={location}
-					match={match}
 				/>
 			);
 		});

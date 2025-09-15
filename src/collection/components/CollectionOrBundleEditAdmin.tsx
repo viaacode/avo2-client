@@ -16,15 +16,12 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { get, noop, orderBy } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { type RouteComponentProps } from 'react-router-dom';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../admin/shared/types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import ContainedInBundlesTable from '../../bundle/components/ContainedInBundlesTable';
-import AssociatedQuickLaneTable, {
-	AssociatedQuickLaneTableOrderBy,
-} from '../../quick-lane/components/AssociatedQuickLaneTable';
+import AssociatedQuickLaneTable, { AssociatedQuickLaneTableOrderBy, } from '../../quick-lane/components/AssociatedQuickLaneTable';
 import { OrderDirection } from '../../search/search.const';
 import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { CustomError } from '../../shared/helpers/custom-error';
@@ -42,7 +39,7 @@ import { type CollectionAction } from './CollectionOrBundleEdit.types';
 interface CollectionOrBundleEditAdminProps {
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
-	history: RouteComponentProps['history'];
+	;
 	onFocus?: () => void;
 }
 

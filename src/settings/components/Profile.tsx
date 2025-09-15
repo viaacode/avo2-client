@@ -22,7 +22,6 @@ import { stringifyUrl } from 'query-string';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import { type Dispatch } from 'redux';
 
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
@@ -735,4 +734,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default withUser(withRouter(connect(null, mapDispatchToProps)(Profile))) as FC<any>;
+export default withUser(connect(null, mapDispatchToProps)(Profile)) as FC<any>;

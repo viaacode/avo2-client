@@ -14,7 +14,6 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, useEffect, useState } from 'react';
-import { type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
@@ -46,9 +45,12 @@ interface CutFragmentForAssignmentModalProps {
  * @param afterCutCallback
  * @constructor
  */
-const CutFragmentForAssignmentModal: FC<
-	CutFragmentForAssignmentModalProps & RouteComponentProps & UserProps
-> = ({ itemMetaData, isOpen, onClose, afterCutCallback }) => {
+const CutFragmentForAssignmentModal: FC<CutFragmentForAssignmentModalProps & UserProps> = ({
+	itemMetaData,
+	isOpen,
+	onClose,
+	afterCutCallback,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
@@ -172,7 +174,6 @@ const CutFragmentForAssignmentModal: FC<
 	return renderCutFragmentModal();
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(CutFragmentForAssignmentModal) as FC<CutFragmentForAssignmentModalProps>;
+export default compose(withUser)(
+	CutFragmentForAssignmentModal
+) as FC<CutFragmentForAssignmentModalProps>;

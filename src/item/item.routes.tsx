@@ -7,7 +7,7 @@ import { Item } from './views';
 
 export const renderItemRoutes = (): ReactNode[] => [
 	<SecuredRoute
-		component={Item}
+		Component={Item}
 		exact
 		path={APP_PATH.ITEM_DETAIL.route}
 		key={APP_PATH.ITEM_DETAIL.route}

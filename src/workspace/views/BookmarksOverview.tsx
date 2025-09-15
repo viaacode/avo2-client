@@ -13,7 +13,7 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { orderBy } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
@@ -53,9 +53,13 @@ interface BookmarksOverviewProps {
 	onUpdate: () => void | Promise<void>;
 }
 
-const BookmarksOverview: FC<
-	BookmarksOverviewProps & UserProps & RouteComponentProps & EmbedFlowProps
-> = ({ numberOfItems, onUpdate, history, commonUser, isSmartSchoolEmbedFlow }) => {
+const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & EmbedFlowProps> = ({
+	numberOfItems,
+	onUpdate,
+	history,
+	commonUser,
+	isSmartSchoolEmbedFlow,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -385,7 +389,7 @@ const BookmarksOverview: FC<
 					title={tText(
 						'workspace/views/bookmarks-overview___zoek-een-item-en-maak-er-een-bladwijzer-van'
 					)}
-					onClick={() => history.push(APP_PATH.SEARCH.route)}
+					onClick={() => navigate(APP_PATH.SEARCH.route)}
 				/>
 			</Spacer>
 		</ErrorView>
@@ -421,8 +425,4 @@ const BookmarksOverview: FC<
 	);
 };
 
-export default compose(
-	withRouter,
-	withUser,
-	withEmbedFlow
-)(BookmarksOverview) as FC<BookmarksOverviewProps>;
+export default compose(withUser, withEmbedFlow)(BookmarksOverview) as FC<BookmarksOverviewProps>;

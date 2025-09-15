@@ -1,7 +1,7 @@
 import { Button, ButtonToolbar, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps, withRouter } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { navigate } from '../../shared/helpers/link';
@@ -9,8 +9,9 @@ import useTranslation from '../../shared/hooks/useTranslation';
 
 import './LinkYourAccount.scss';
 
-const LinkYourAccount: FC<RouteComponentProps> = ({ history }) => {
+const LinkYourAccount: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	return (
 		<Container mode="horizontal" size="medium">
@@ -79,11 +80,11 @@ const LinkYourAccount: FC<RouteComponentProps> = ({ history }) => {
 				</Spacer>
 				<ButtonToolbar>
 					<Button
-						onClick={() => navigate(history, APP_PATH.REGISTER_OR_LOGIN.route)}
+						onClick={() => navigate(navigateFunc, APP_PATH.REGISTER_OR_LOGIN.route)}
 						label={tText('authentication/views/link-your-account___inloggen')}
 					/>
 					<Button
-						onClick={() => navigate(history, APP_PATH.STAMBOEK.route)}
+						onClick={() => navigate(navigateFunc, APP_PATH.STAMBOEK.route)}
 						type="secondary"
 						label={tText('authentication/views/link-your-account___account-aanmaken')}
 					/>
@@ -93,4 +94,4 @@ const LinkYourAccount: FC<RouteComponentProps> = ({ history }) => {
 	);
 };
 
-export default withRouter(LinkYourAccount);
+export default LinkYourAccount;

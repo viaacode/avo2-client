@@ -9,8 +9,6 @@ import {
 } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
-import { type RouteComponentProps } from 'react-router';
-import { withRouter } from 'react-router-dom';
 
 import { tHtml } from '../../shared/helpers/translate-html';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -28,8 +26,7 @@ interface LoginOptionsForTeacherProps {
 	openInNewTab?: boolean;
 }
 
-const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentProps> = ({
-	location,
+const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
 	onOptionClicked = noop,
 	openInNewTab = false,
 }) => {
@@ -122,4 +119,4 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 	));
 };
 
-export default withRouter(LoginOptionsForTeacher);
+export default LoginOptionsForTeacher;

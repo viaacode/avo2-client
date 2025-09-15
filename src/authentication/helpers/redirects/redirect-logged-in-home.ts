@@ -1,7 +1,5 @@
-import type { RouteComponentProps } from 'react-router-dom';
-
 import { getBaseUrl } from '../get-base-url';
 
-export function redirectToLoggedInHome(location: RouteComponentProps['location']): void {
+export function redirectToLoggedInHome(location: Location): void {
 	window.location.href = `${getBaseUrl(location)}/start`;
 }

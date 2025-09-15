@@ -1,7 +1,7 @@
 import { Button, Container, Spacer } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../constants';
@@ -9,8 +9,9 @@ import useTranslation from '../../shared/hooks/useTranslation';
 
 type UserItemRequestFormProps = DefaultSecureRouteProps;
 
-const UserItemRequestFormConfirm: FC<UserItemRequestFormProps> = ({ history }) => {
+const UserItemRequestFormConfirm: FC<UserItemRequestFormProps> = () => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
@@ -37,7 +38,7 @@ const UserItemRequestFormConfirm: FC<UserItemRequestFormProps> = ({ history }) =
 					<Spacer margin="top-large">
 						<Button
 							type="primary"
-							onClick={history.goBack}
+							onClick={() => navigateFunc(-1)}
 							label={tText(
 								'user-item-request-form/views/user-item-request-form-confirm___doe-nog-een-aanvraag'
 							)}
@@ -55,4 +56,4 @@ const UserItemRequestFormConfirm: FC<UserItemRequestFormProps> = ({ history }) =
 	);
 };
 
-export default withRouter(UserItemRequestFormConfirm);
+export default UserItemRequestFormConfirm;

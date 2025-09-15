@@ -1,8 +1,7 @@
 import { Button, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { type FC, useEffect } from 'react';
-import { type RouteComponentProps } from 'react-router';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { useTabs } from '../../shared/hooks/useTabs';
@@ -24,10 +23,7 @@ interface LoginOptionsProps {
 	onOptionClicked?: () => void;
 }
 
-const LoginOptions: FC<LoginOptionsProps & RouteComponentProps> = ({
-	history,
-	onOptionClicked = noop,
-}) => {
+const LoginOptions: FC<LoginOptionsProps> = ({ onOptionClicked = noop }) => {
 	const { tText, tHtml } = useTranslation();
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
@@ -159,4 +155,4 @@ const LoginOptions: FC<LoginOptionsProps & RouteComponentProps> = ({
 	);
 };
 
-export default withRouter(LoginOptions);
+export default LoginOptions;

@@ -14,7 +14,7 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isEmpty } from 'lodash-es';
 import React, { type FC, type ReactNode, type ReactText, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 import {
 	JsonParam,
@@ -46,7 +46,7 @@ import { type FilterState } from '../search.types';
 
 import './Search.scss';
 
-const Search: FC<UserProps & RouteComponentProps> = ({ commonUser }) => {
+const Search: FC<UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
@@ -192,4 +192,4 @@ const Search: FC<UserProps & RouteComponentProps> = ({ commonUser }) => {
 	);
 };
 
-export default compose(withRouter, withUser)(Search) as FC;
+export default withUser(Search) as FC;

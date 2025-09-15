@@ -36,8 +36,8 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 import {
 	ArrayParam,
 	DelimitedArrayParam,
@@ -114,12 +114,13 @@ const defaultFiltersAndSort = {
 	sort_order: DEFAULT_SORT_ORDER,
 };
 
-const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & UserProps> = ({
+const AssignmentOverview: FC<AssignmentOverviewProps & UserProps> = ({
 	onUpdate = noop,
-	history,
+
 	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [filterString, setFilterString] = useState<string | undefined>(undefined);
@@ -296,7 +297,7 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 		setMarkedAssignment(assignmentRow);
 		switch (actionId) {
 			case AssignmentAction.edit:
-				navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+				navigate(navigateFunc, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 					id: assignmentRow.id,
 					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 				});
@@ -784,7 +785,7 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 	};
 
 	const onClickCreate = () =>
-		redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), history);
+		redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), navigateFunc);
 
 	const getEmptyFallbackTitle = () => {
 		const hasFilters: boolean =
@@ -968,4 +969,4 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 	return <div className="m-assignment-overview">{renderAssignmentsView()}</div>;
 };
 
-export default compose(withRouter, withUser)(AssignmentOverview) as FC<AssignmentOverviewProps>;
+export default withUser(AssignmentOverview) as FC<AssignmentOverviewProps>;

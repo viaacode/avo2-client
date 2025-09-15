@@ -15,7 +15,6 @@ import { compact } from 'lodash-es';
 import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import { type Dispatch } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -334,5 +333,5 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 };
 
 export default withUser(
-	withRouter(connect(null, mapDispatchToProps)(CompleteProfileStep))
+	connect(null, mapDispatchToProps)(CompleteProfileStep)
 ) as FC<CompleteProfileStepProps>;
