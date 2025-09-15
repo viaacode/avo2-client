@@ -1,4 +1,3 @@
-import { useLocalStorage } from '@uidotdev/usehooks';
 import {
 	Button,
 	ButtonToolbar,
@@ -14,11 +13,11 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { type FC, type ReactNode, useMemo } from 'react';
+import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import useTranslation from '../../hooks/useTranslation';
 
-import { RememberConfirmationKeys } from './ConfirmModal.const';
+import { type ConfirmModalRememberKey } from './ConfirmModal.consts';
 
 export interface ConfirmModalProps {
 	title?: string | ReactNode;
@@ -31,7 +30,7 @@ export interface ConfirmModalProps {
 	onClose?: () => void;
 	confirmCallback?: () => void;
 	className?: string;
-	remember?: keyof typeof RememberConfirmationKeys;
+	rememberKey?: ConfirmModalRememberKey;
 }
 
 export const ConfirmModal: FC<ConfirmModalProps> = ({
@@ -45,17 +44,25 @@ export const ConfirmModal: FC<ConfirmModalProps> = ({
 	isOpen,
 	confirmCallback = noop,
 	className,
-	remember,
+	rememberKey,
 }) => {
 	const { tHtml } = useTranslation();
 
-	const rememberKey = useMemo(
-		() => (remember ? RememberConfirmationKeys[remember] : ''),
-		[remember]
-	);
+	const [isRemembered, setIsRemembered] = useState(false);
 
-	const shouldRemember = rememberKey !== '';
-	const [isRemembered, setRemember] = useLocalStorage(rememberKey, false);
+	useEffect(() => {
+		if (rememberKey) {
+			setIsRemembered(localStorage.getItem(rememberKey) === 'true');
+		}
+	}, [rememberKey]);
+
+	const handleSetRemembered = () => {
+		if (rememberKey) {
+			const newValue = !isRemembered;
+			setIsRemembered(newValue);
+			localStorage.setItem(rememberKey, String(newValue));
+		}
+	};
 
 	return (
 		<Modal
@@ -73,7 +80,7 @@ export const ConfirmModal: FC<ConfirmModalProps> = ({
 		>
 			<ModalBody>
 				{!!body && body}
-				{shouldRemember && (
+				{!!rememberKey && (
 					<Spacer margin="top">
 						<FormGroup>
 							<Checkbox
@@ -81,7 +88,7 @@ export const ConfirmModal: FC<ConfirmModalProps> = ({
 									'shared/components/confirm-modal/confirm-modal___deze-boodschap-niet-meer-tonen-in-de-toekomst'
 								)}
 								checked={isRemembered}
-								onChange={setRemember}
+								onChange={handleSetRemembered}
 							/>
 						</FormGroup>
 					</Spacer>
