@@ -11,7 +11,7 @@ replace
 		to: '<script$1src="$2"$3 data-cookieconsent="ignore"></script>',
 	})
 	.then((results: ReplaceResult[]) => {
-		if (results.length === 0) {
+		if (results.length === 0 || results[0].hasChanged === false) {
 			// No replacements were made => throw error
 			console.error(
 				`Failed to add cookiebot ignore attributes. Regex not found: ${regex.source}`
