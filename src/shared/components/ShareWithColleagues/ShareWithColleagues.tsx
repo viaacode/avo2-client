@@ -28,7 +28,7 @@ import { validateEmailAddress } from '../../helpers/validation/email';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import useTranslation from '../../hooks/useTranslation';
 import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
-import { RememberConfirmationKeys } from '../ConfirmModal/ConfirmModal.const';
+import { ConfirmModalRememberKey } from '../ConfirmModal/ConfirmModal.consts';
 
 import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
 import { GET_EDUCATION_LEVEL_DIFFERENCE_DICT } from './ShareWithColleagues.const';
@@ -93,7 +93,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isShareWarningModalOpen, setIsShareWarningModalOpen] = useState<boolean>(false);
 	const [isShareWarningModalRemembered] = useLocalStorage(
-		RememberConfirmationKeys.ShareWithColleagues,
+		ConfirmModalRememberKey.AVO__REMEMBER__SHARE_WITH_COLLEAGUES,
 		false
 	);
 
@@ -502,7 +502,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 						title={tHtml(
 							'shared/components/share-with-colleagues/share-with-colleagues___opdracht-delen-waarschuwing'
 						)}
-						remember="ShareWithColleagues"
+						rememberKey={ConfirmModalRememberKey.AVO__REMEMBER__SHARE_WITH_COLLEAGUES}
 						size="medium"
 					/>
 				</>

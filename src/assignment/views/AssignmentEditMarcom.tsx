@@ -82,7 +82,12 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 		usePublishAssignmentToKlascement();
 
 	const { data: publishInfo, refetch: refetchPublishInfo } =
-		useGetKlascementAssignmentPublishInfo(assignment.id);
+		useGetKlascementAssignmentPublishInfo(assignment.id, {
+			enabled:
+				commonUser?.permissions?.includes(
+					PermissionName.PUBLISH_ASSIGNMENT_TO_KLASCEMENT
+				) || false,
+		});
 	const isPublishedToKlascement = useMemo(
 		() => !isNil(publishInfo?.klascement_id),
 		[publishInfo]

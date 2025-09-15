@@ -47,6 +47,8 @@ export const useGetLoginStateForEmbed = () => {
 			refetchOnMount: true,
 			keepPreviousData: true,
 			enabled: !!EmbedCodeService.getJwtToken(),
+			cacheTime: 0,
+			staleTime: 0,
 		}
 	);
 };

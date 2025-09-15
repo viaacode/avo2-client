@@ -1,0 +1,3 @@
+export enum ConfirmModalRememberKey {
+	AVO__REMEMBER__SHARE_WITH_COLLEAGUES = 'AVO__REMEMBER__SHARE_WITH_COLLEAGUES',
+}
