@@ -425,7 +425,7 @@ function getMarcomLastUpdatedByColumn(): FilterableColumn<AssignmentTableColumns
 		label: tText('admin/assignments/assignments___laatste-bewerkt-door'),
 		sortable: true,
 		visibleByDefault: false,
-		dataType: TableColumnDataType.dateTime,
+		dataType: TableColumnDataType.string,
 	};
 }
 
