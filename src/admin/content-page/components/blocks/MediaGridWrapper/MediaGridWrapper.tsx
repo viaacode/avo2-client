@@ -487,6 +487,11 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 			mapItemOrCollectionOrAssignmentOrPageData
 		);
 
+		const activeItemCuePoints = {
+			start: activeItem?.start_cue_point || null,
+			end: activeItem?.end_cue_point || null,
+		};
+
 		return (
 			<>
 				<BlockMediaGrid
@@ -530,26 +535,8 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 								src={activeItem.src}
 								poster={(activeItem as Avo.Item.Item)?.thumbnail_path}
 								itemMetaData={activeItem as unknown as Avo.Item.Item}
-								cuePointsVideo={{
-									start:
-										(
-											activeItem as ResolvedItemOrCollectionOrAssignmentOrContentPage
-										).start_cue_point || null,
-									end:
-										(
-											activeItem as ResolvedItemOrCollectionOrAssignmentOrContentPage
-										).end_cue_point || null,
-								}}
-								cuePointsLabel={{
-									start:
-										(
-											activeItem as ResolvedItemOrCollectionOrAssignmentOrContentPage
-										).start_cue_point || null,
-									end:
-										(
-											activeItem as ResolvedItemOrCollectionOrAssignmentOrContentPage
-										).end_cue_point || null,
-								}}
+								cuePointsVideo={activeItemCuePoints}
+								cuePointsLabel={activeItemCuePoints}
 								verticalLayout
 								showTitle
 								showMetadata={false}
