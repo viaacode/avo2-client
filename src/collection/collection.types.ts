@@ -26,6 +26,7 @@ export enum ContentTypeString {
 	bundle = 'bundel',
 	assignment = 'opdracht',
 	searchquery = 'zoekopdracht',
+	contentPage = 'contentPagina',
 }
 
 export enum CollectionOrBundle {
@@ -54,6 +55,7 @@ export const CONTENT_TYPE_TRANSLATIONS: Record<Avo.ContentType.Dutch, Avo.Conten
 	zoek: 'search',
 	zoekopdracht: 'searchquery',
 	opdracht: 'assignment',
+	contentPagina: 'contentPage',
 };
 
 export const BLOCK_TYPE_TO_CONTENT_TYPE: Record<Avo.Core.BlockItemType, Avo.ContentType.English> = {

@@ -39,6 +39,7 @@ const FONT_TYPE_TO_VW: Record<HeadingType, number> = {
 
 export type MediaListItem = {
 	category: Avo.ContentType.English;
+	subCategory: Avo.ContentPage.Type;
 	metadata?: MetaDataItemProps[];
 	thumbnail?: {
 		label: string;
@@ -58,6 +59,7 @@ export type MediaListItem = {
 
 interface BlockMediaGridProps extends DefaultProps {
 	title?: string;
+	titleType?: HeadingType;
 	buttonLabel?: string;
 	buttonAltTitle?: string;
 	buttonAction?: ButtonAction;
@@ -84,6 +86,7 @@ interface BlockMediaGridProps extends DefaultProps {
 
 export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 	title,
+	titleType = 'h2',
 	buttonLabel,
 	buttonAltTitle,
 	buttonAction,
@@ -191,14 +194,32 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 	};
 
 	const renderMediaCard = (mediaListItem: MediaListItem) => {
-		const { category, metadata, thumbnail, title, buttonLabel, buttonIcon, buttonType } =
-			mediaListItem;
+		const {
+			category,
+			subCategory,
+			metadata,
+			thumbnail,
+			title,
+			buttonLabel,
+			buttonIcon,
+			buttonType,
+		} = mediaListItem;
 
 		return (
-			<MediaCard category={category} orientation={orientation} title={title}>
+			<MediaCard
+				category={category}
+				subCategory={subCategory}
+				orientation={orientation}
+				title={title}
+			>
 				{thumbnail && (
 					<MediaCardThumbnail>
-						<Thumbnail alt={title} category={category} {...thumbnail} />
+						<Thumbnail
+							alt={title}
+							category={category}
+							subCategory={subCategory}
+							{...thumbnail}
+						/>
 					</MediaCardThumbnail>
 				)}
 				<MediaCardMetaData>
@@ -247,7 +268,7 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 			{(!!title || !!buttonLabel) && (
 				<Toolbar>
 					<ToolbarLeft>
-						{title && <BlockHeading type="h2">{title}</BlockHeading>}
+						{title && <BlockHeading type={titleType}>{title}</BlockHeading>}
 					</ToolbarLeft>
 					<ToolbarRight>
 						{buttonLabel &&
