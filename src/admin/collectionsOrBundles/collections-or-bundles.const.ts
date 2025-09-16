@@ -512,7 +512,7 @@ const getMarcomLastUpdatedByColumn = (): FilterableColumn<CollectionTableColumns
 	),
 	sortable: true,
 	visibleByDefault: false,
-	dataType: TableColumnDataType.dateTime,
+	dataType: TableColumnDataType.string,
 });
 
 export const GET_COLLECTIONS_COLUMNS = (
