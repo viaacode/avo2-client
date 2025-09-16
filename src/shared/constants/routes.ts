@@ -25,6 +25,7 @@ export const ROUTE_PARTS = Object.freeze({
 	forTeachers: 'voor-leerkrachten',
 	help: 'hulp',
 	interactiveTours: 'interactieve-tours',
+	redirects: 'redirects',
 	item: 'item',
 	items: 'items',
 	klaar: 'klaar',
