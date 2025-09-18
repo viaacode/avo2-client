@@ -24,7 +24,7 @@ const ContentPageDetailPage: FC<
 > = ({ match, history, commonUser }) => {
 	const { id } = match.params;
 
-	const [hasUnsavedChanges] = useState<boolean>(true);
+	const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
 
 	useWarningBeforeUnload({
 		when: hasUnsavedChanges,
@@ -42,6 +42,7 @@ const ContentPageDetailPage: FC<
 				className="c-admin-core c-admin__content-page-edit"
 				id={id}
 				commonUser={commonUser}
+				onHasUnsavedChangesChanged={setHasUnsavedChanges}
 				onGoBack={() =>
 					goBrowserBackWithFallback(
 						buildLink(ADMIN_PATH.CONTENT_PAGE_DETAIL, { id }),
