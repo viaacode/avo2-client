@@ -4,7 +4,6 @@ import { Alert, Column, Flex, Grid, Icon, IconName, Spinner } from '@viaa/avo2-c
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo } from 'react';
-import { compose } from 'redux';
 
 import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
 import { createResource } from '../../embed-code/helpers/resourceForTrackEvents';

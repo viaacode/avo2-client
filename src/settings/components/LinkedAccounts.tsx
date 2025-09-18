@@ -12,7 +12,7 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
-import { type Avo, Idp } from '@viaa/avo2-types';
+import { Idp } from '@viaa/avo2-types';
 import React, {
 	type Dispatch,
 	type FC,
@@ -30,13 +30,10 @@ import {
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { isPupil } from '../../shared/helpers/is-pupil';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 import './LinkedAccounts.scss';
-
-interface AccountProps {
-	commonUser: Avo.User.CommonUser;
-}
 
 interface IdpProps {
 	label: ReactNode;
@@ -52,7 +49,7 @@ interface DeleteModalToggle {
 }
 
 // This tab is only loaded if user is NOT a pupil (see Settings.tsx) -- no more checks here
-const LinkedAccounts: FC<AccountProps> = ({ commonUser }) => {
+const LinkedAccounts: FC<UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 
@@ -62,7 +59,7 @@ const LinkedAccounts: FC<AccountProps> = ({ commonUser }) => {
 	const [isDeleteKlascementModalOpen, setIsDeleteKlascementModalOpen] = useState<boolean>(false);
 	const [isDeleteLeerIDModalOpen, setIsDeleteLeerIDModalOpen] = useState<boolean>(false);
 
-	const isUserAPupil = isPupil(commonUser.userGroup?.id);
+	const isUserAPupil = isPupil(commonUser?.userGroup?.id);
 
 	const deleteIdpModals: Record<string, DeleteModalToggle> = {
 		VLAAMSEOVERHEID: {
@@ -97,9 +94,9 @@ const LinkedAccounts: FC<AccountProps> = ({ commonUser }) => {
 	};
 
 	const renderIdpLinkControls = (idpType: Idp) => {
-		let linked = !!(commonUser.idps as any)?.[idpType];
+		let linked = !!(commonUser?.idps as any)?.[idpType];
 		if (!linked && idpType === Idp.VLAAMSEOVERHEID__SUB_ID) {
-			linked = !!commonUser.idps?.VLAAMSEOVERHEID__ACCOUNT_ID;
+			linked = !!commonUser?.idps?.VLAAMSEOVERHEID__ACCOUNT_ID;
 		}
 		const baseIdp = idpType.split('__')[0];
 		const currentIdp = idpProps[baseIdp];
@@ -248,4 +245,4 @@ const LinkedAccounts: FC<AccountProps> = ({ commonUser }) => {
 		</>
 	);
 };
-export default LinkedAccounts;
+export default withUser(LinkedAccounts) as FC;

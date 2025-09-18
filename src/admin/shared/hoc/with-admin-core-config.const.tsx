@@ -10,7 +10,8 @@ import { Icon, IconName, Spinner } from '@viaa/avo2-components';
 import { DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
 import React, { type FC } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { type NavigateFunction } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { APP_PATH, type RouteId } from '../../../constants';
 import FlowPlayerWrapper from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
@@ -65,9 +66,9 @@ const ALERT_ICON_LIST_CONFIG = (): {
 		label: getAlertIconNames()[iconKey] || iconKey,
 	}));
 
-export function getAdminCoreConfig(): AdminConfig {
+export function getAdminCoreConfig(navigateFunc: NavigateFunction): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
-		return <Link {...linkInfo} to={() => linkInfo.to || ''} />;
+		return <Link {...linkInfo} to={linkInfo.to || ''} />;
 	};
 
 	const proxyUrl = getEnv('PROXY_URL') as string;
@@ -259,7 +260,11 @@ export function getAdminCoreConfig(): AdminConfig {
 			},
 			router: {
 				Link: InternalLink as FC<LinkInfo>,
-				useHistory: useHistory,
+				useHistory: () => ({
+					// TODO replace useHistory with single navigate function
+					push: (url: string) => navigateFunc(url),
+					replace: (url: string) => navigateFunc(url, { replace: true }),
+				}),
 			},
 			queryCache: {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars

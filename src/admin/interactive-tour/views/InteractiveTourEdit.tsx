@@ -25,8 +25,9 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
+import { useMatch, useNavigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { OrderDirection } from '../../../search/search.const';
@@ -87,10 +88,13 @@ const BlockHeading = lazy(() =>
 	}))
 );
 
-type InteractiveTourEditProps = DefaultSecureRouteProps<{ id: string }>;
-
-const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ location }) => {
+const InteractiveTourEdit: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const location = useLocation();
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id', string>(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT);
+
+	const interactiveTourId = match?.params.id;
 
 	// Hooks
 	const [formErrors, setFormErrors] = useState<InteractiveTourEditFormErrorState>({});
@@ -142,12 +146,15 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ location }) => {
 			});
 		} else {
 			try {
+				if (!interactiveTourId) {
+					return;
+				}
 				const response = await dataService.query<
 					GetInteractiveTourByIdQuery,
 					GetInteractiveTourByIdQueryVariables
 				>({
 					query: GetInteractiveTourByIdDocument,
-					variables: { id: parseInt(match.params.id) },
+					variables: { id: parseInt(interactiveTourId) },
 				});
 
 				const interactiveTourObj = response.app_interactive_tour[0];
@@ -173,7 +180,7 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ location }) => {
 				console.error(
 					new CustomError('Failed to get interactive tour by id', err, {
 						query: 'GET_INTERACTIVE_TOUR_BY_ID',
-						variables: { id: match.params.id },
+						variables: { id: interactiveTourId },
 					})
 				);
 				setLoadingInfo({
@@ -190,7 +197,7 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ location }) => {
 		tHtml,
 		isCreatePage,
 		getPageType,
-		match.params.id,
+		interactiveTourId,
 	]);
 
 	useEffect(() => {
@@ -205,10 +212,10 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ location }) => {
 
 	const navigateBack = () => {
 		if (isCreatePage) {
-			navigate(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_OVERVIEW);
+			navigateFunc(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_OVERVIEW);
 		} else {
-			navigate(history, INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL, {
-				id: match.params.id,
+			navigate(navigateFunc, INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL, {
+				id: interactiveTourId,
 			});
 		}
 	};
@@ -271,6 +278,9 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ location }) => {
 
 	const handleSave = async () => {
 		try {
+			if (!interactiveTourId) {
+				return;
+			}
 			const errors = getFormErrors();
 			setFormErrors(errors || {});
 			if (errors) {
@@ -301,21 +311,21 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ location }) => {
 				interactiveTourState.currentInteractiveTour
 			);
 
-			let interactiveTourId: number | string;
+			let tempInteractiveTourId: number | string;
 			if (isCreatePage) {
 				// insert the interactive tour
-				interactiveTourId = await InteractiveTourService.insertInteractiveTour(tour);
+				tempInteractiveTourId = await InteractiveTourService.insertInteractiveTour(tour);
 			} else {
 				// Update existing interactive tour
 				await InteractiveTourService.updateInteractiveTour(tour);
-				interactiveTourId = match.params.id;
+				tempInteractiveTourId = interactiveTourId;
 			}
 
 			redirectToClientPage(
 				buildLink(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL, {
-					id: interactiveTourId,
+					id: tempInteractiveTourId,
 				}),
-				history
+				navigateFunc
 			);
 			ToastService.success(
 				tHtml(
@@ -501,7 +511,7 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ location }) => {
 	// Render
 	const renderPage = () => (
 		<AdminLayout
-			onClickBackButton={() => navigate(history, ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW)}
+			onClickBackButton={() => navigate(navigateFunc, ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW)}
 			pageTitle={tText(
 				'admin/interactive-tour/views/interactive-tour-edit___interactive-tour-aanpassen'
 			)}

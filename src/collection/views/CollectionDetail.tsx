@@ -22,8 +22,8 @@ import { clsx } from 'clsx';
 import { compact, isEmpty, isNil, noop } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { useMatch, useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
-import { compose } from 'redux';
 import { BooleanParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
 import { AssignmentService } from '../../assignment/assignment.service';
@@ -138,15 +138,19 @@ type CollectionDetailProps = {
 	enabledMetaData: SearchFilter[];
 };
 
-const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = ({
+const CollectionDetail: FC<CollectionDetailProps & UserProps> = ({
 	commonUser,
 	id,
 	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id', string>(APP_PATH.COLLECTION_DETAIL.route);
+
+	const collectionIdFromUrl: string | undefined = match?.params.id;
 
 	// State
-	const [collectionId, setCollectionId] = useState(id || match.params.id);
+	const [collectionId, setCollectionId] = useState(id || collectionIdFromUrl);
 
 	const [collectionInfo, setCollectionInfo] = useState<CollectionInfo | null>(null);
 	const permissions = collectionInfo?.permissions;
@@ -210,18 +214,18 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 	const [query, setQuery] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
 
-	const { data: editStatuses } = useGetCollectionsEditStatuses([collectionId], {
-		enabled: permissions?.canEditCollections || false,
+	const { data: editStatuses } = useGetCollectionsEditStatuses([collectionId as string], {
+		enabled: !!collectionId && !!permissions?.canEditCollections,
 		refetchInterval: EDIT_STATUS_REFETCH_TIME,
 		refetchIntervalInBackground: true,
 	});
 
 	const { data: bundlesContainingCollection, refetch: refetchBundlesContainingCollection } =
 		useGetCollectionsOrBundlesContainingFragment(
-			collectionId,
+			collectionId as string,
 			BundleSortProp.title,
 			OrderDirection.asc,
-			{ enabled: !!collectionInfo?.collection && !showLoginPopup }
+			{ enabled: !!collectionId && !!collectionInfo?.collection && !showLoginPopup }
 		);
 
 	const isBeingEdited =
@@ -231,6 +235,9 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 
 	const getRelatedCollections = useCallback(async () => {
 		try {
+			if (!collectionId) {
+				return;
+			}
 			if (isUuid(collectionId)) {
 				setRelatedCollections(
 					await getRelatedItems(
@@ -311,8 +318,8 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 	}, [collectionId, commonUser, showLoginPopup, tHtml]);
 
 	useEffect(() => {
-		setCollectionId(id || match.params.id);
-	}, [id, match.params.id]);
+		setCollectionId(id || collectionIdFromUrl);
+	}, [id, collectionIdFromUrl]);
 
 	useEffect(() => {
 		if (!isFirstRender && collection) {
@@ -362,6 +369,9 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
+			if (!collectionId) {
+				return;
+			}
 			setLoadingInfo({
 				state: 'loading',
 			});
@@ -385,7 +395,7 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 
 				// Redirect to new url that uses the collection uuid instead of the collection avo1 id
 				// and continue loading the collection
-				defaultGoToDetailLink(history)(uuid, 'collectie');
+				defaultGoToDetailLink(navigateFunc)(uuid, 'collectie');
 				return;
 			}
 
@@ -508,7 +518,7 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 			});
 		}
 		// Ensure callback only runs once even if user object is set twice // TODO investigate why user object is set twice
-	}, [collectionId, setCollectionInfo, tText, commonUser, history, defaultGoToDetailLink]);
+	}, [collectionId, setCollectionInfo, tText, commonUser, navigateFunc, defaultGoToDetailLink]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection();
@@ -531,7 +541,7 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 
 	// Listeners
 	const onEditCollection = () => {
-		navigate(
+		navigateFunc(
 			`${generateContentLinkString(ContentTypeString.collection, `${collectionId}`)}/${
 				ROUTE_PARTS.edit
 			}/${CollectionCreateUpdateTab.CONTENT}`
@@ -576,7 +586,7 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 						commonUser
 					);
 
-					defaultGoToDetailLink(history)(duplicateCollection.id, 'collectie');
+					defaultGoToDetailLink(navigateFunc)(duplicateCollection.id, 'collectie');
 					setCollectionId(duplicateCollection.id);
 					ToastService.success(
 						tHtml(
@@ -631,6 +641,9 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 				onEditCollection();
 				break;
 			case CollectionMenuAction.openAutoplayCollectionModal:
+				if (!collectionId) {
+					return;
+				}
 				BookmarksViewsPlaysService.action(
 					'play',
 					'collection',
@@ -671,6 +684,9 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 				);
 				return;
 			}
+			if (!collectionId) {
+				return;
+			}
 			await BookmarksViewsPlaysService.toggleBookmark(
 				collectionId,
 				commonUser,
@@ -708,18 +724,21 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 	};
 
 	const handleDeleteCollection = async (): Promise<void> => {
+		if (!collectionId) {
+			return;
+		}
 		await deleteCollection(
 			collectionId,
 			commonUser,
 			true,
 			async () => await CollectionService.deleteCollectionOrBundle(collectionId),
-			() => navigate(APP_PATH.WORKSPACE.route)
+			() => navigateFunc(APP_PATH.WORKSPACE.route)
 		);
 	};
 
 	const handleDeleteSelfFromCollection = async (): Promise<void> => {
 		await deleteSelfFromCollection(collectionId, commonUser, () =>
-			navigate(APP_PATH.WORKSPACE.route)
+			navigateFunc(APP_PATH.WORKSPACE.route)
 		);
 	};
 
@@ -731,7 +750,7 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 				withDescription
 			);
 
-			navigate(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
+			navigateFunc(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
 		}
 	};
 
@@ -849,7 +868,7 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 		try {
 			await CollectionService.declineSharedCollection(collection.id as string, inviteToken);
 
-			navigate(history, APP_PATH.WORKSPACE_COLLECTIONS.route);
+			navigate(navigateFunc, APP_PATH.WORKSPACE_COLLECTIONS.route);
 
 			ToastService.success(
 				tText('collection/views/collection-detail___de-uitnodiging-werd-afgewezen')
@@ -866,6 +885,9 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 	// Render functions
 
 	const renderCollectionDropdownOptions = () => {
+		if (!collectionId) {
+			return null;
+		}
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				collectionId,
@@ -966,7 +988,8 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 					</Dropdown>
 				)}
 				{(isOwner || isEditContributor || permissions?.canEditCollections) &&
-					!inviteToken && (
+					!inviteToken &&
+					!!collectionId && (
 						<ShareDropdown
 							contributors={transformContributorsToSimpleContributors(
 								{
@@ -1075,6 +1098,9 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 	};
 
 	const renderHeaderButtonsMobile = () => {
+		if (!collectionId) {
+			return;
+		}
 		const COLLECTION_DROPDOWN_ITEMS_MOBILE = [
 			...createDropdownMenuItem(
 				collectionId,
@@ -1438,7 +1464,7 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps<{ id: string }>> = 
 					</>
 				)}
 
-				{collection && isMobileWidth() && (
+				{!!collectionId && !!collection && isMobileWidth() && (
 					<ShareModal
 						title={tText(
 							'collection/views/collection-detail___deel-deze-collectie-met-collegas'

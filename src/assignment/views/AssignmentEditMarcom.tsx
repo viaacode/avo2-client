@@ -23,7 +23,6 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact, get, isNil } from 'lodash-es';
 import React, { type FC, type ReactNode, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { compose } from 'redux';
 
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,

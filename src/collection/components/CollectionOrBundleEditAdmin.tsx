@@ -21,7 +21,9 @@ import { ContentPicker } from '../../admin/shared/components/ContentPicker/Conte
 import { type PickerItem } from '../../admin/shared/types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import ContainedInBundlesTable from '../../bundle/components/ContainedInBundlesTable';
-import AssociatedQuickLaneTable, { AssociatedQuickLaneTableOrderBy, } from '../../quick-lane/components/AssociatedQuickLaneTable';
+import AssociatedQuickLaneTable, {
+	AssociatedQuickLaneTableOrderBy,
+} from '../../quick-lane/components/AssociatedQuickLaneTable';
 import { OrderDirection } from '../../search/search.const';
 import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { CustomError } from '../../shared/helpers/custom-error';
@@ -39,7 +41,6 @@ import { type CollectionAction } from './CollectionOrBundleEdit.types';
 interface CollectionOrBundleEditAdminProps {
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
-	;
 	onFocus?: () => void;
 }
 

@@ -15,6 +15,7 @@ import { compact } from 'lodash-es';
 import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
+import { useNavigate } from 'react-router';
 import { type Dispatch } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -49,8 +50,10 @@ const CompleteProfileStep: FC<
 		getLoginState: (forceRefetch: boolean) => Dispatch;
 	} & UserProps &
 		DefaultSecureRouteProps
-> = ({ redirectTo = APP_PATH.LOGGED_IN_HOME.route, history, commonUser, getLoginState }) => {
+> = ({ redirectTo = APP_PATH.LOGGED_IN_HOME.route, commonUser, getLoginState }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
 		Avo.EducationOrganization.Organization[]
 	>(commonUser?.educationalOrganisations || []);
@@ -199,7 +202,7 @@ const CompleteProfileStep: FC<
 
 			// Wait for login response to be set into the store before redirecting
 			setTimeout(() => {
-				redirectToClientPage(redirectTo, history);
+				redirectToClientPage(redirectTo, navigateFunc);
 				setIsSaving(false);
 			}, 0);
 		} catch (err) {

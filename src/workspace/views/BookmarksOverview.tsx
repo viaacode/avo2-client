@@ -13,6 +13,7 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { orderBy } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 
@@ -56,11 +57,11 @@ interface BookmarksOverviewProps {
 const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & EmbedFlowProps> = ({
 	numberOfItems,
 	onUpdate,
-	history,
 	commonUser,
 	isSmartSchoolEmbedFlow,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	// State
 	const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null);
@@ -389,7 +390,7 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & EmbedFlowProps>
 					title={tText(
 						'workspace/views/bookmarks-overview___zoek-een-item-en-maak-er-een-bladwijzer-van'
 					)}
-					onClick={() => navigate(APP_PATH.SEARCH.route)}
+					onClick={() => navigateFunc(APP_PATH.SEARCH.route)}
 				/>
 			</Spacer>
 		</ErrorView>

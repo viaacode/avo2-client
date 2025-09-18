@@ -1,4 +1,5 @@
 import React, { type ReactNode } from 'react';
+import { Navigate } from 'react-router';
 
 import { SecuredRoute } from '../authentication/components';
 import { APP_PATH } from '../constants';

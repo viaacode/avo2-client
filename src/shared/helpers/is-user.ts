@@ -8,7 +8,7 @@ type UserLomsAndUserGroup = Pick<Avo.User.CommonUser, 'loms' | 'userGroup'>;
  * @param user The user to evaluate
  * @returns A boolean indicating if they have both Elementary & Secondary LOM's
  */
-export function isUserSecondaryElementary(user: UserLomsAndUserGroup | null): boolean {
+export function isUserSecondaryElementary(user: UserLomsAndUserGroup | null | undefined): boolean {
 	if (!user) {
 		return false;
 	}

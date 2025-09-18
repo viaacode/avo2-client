@@ -14,8 +14,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact, isArray, isNil, isString, omit, uniq } from 'lodash-es';
 import queryString from 'query-string';
 import React, { type FC, type ReactNode } from 'react';
-import { type RouteComponentProps } from 'react-router';
-import { compose } from 'redux';
+import { useLocation } from 'react-router-dom';
 
 import { redirectToServerLogoutPage } from '../../authentication/helpers/redirects';
 import { redirectToHelp } from '../../authentication/helpers/redirects/redirect-help';
@@ -53,6 +52,7 @@ const ErrorView: FC<ErrorViewProps & UserProps> = ({
 	user,
 }) => {
 	const { tText } = useTranslation();
+	const location = useLocation();
 
 	const queryParams = queryString.parse((location.search || '').substring(1));
 

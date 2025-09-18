@@ -16,6 +16,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { find, get, isNil } from 'lodash-es';
 import React, { type FC, type KeyboardEvent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { useNavigate } from 'react-router';
 import { type Dispatch } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
@@ -56,6 +57,7 @@ const BlockSearch: FC<BlockSearchProps & DefaultSecureRouteProps> = ({
 	search,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	const [searchTerms, setSearchTerms] = useState<string>('');
 	const [isAutocompleteSearchOpen, setAutocompleteSearchOpen] = useState<boolean>(false);
@@ -89,7 +91,7 @@ const BlockSearch: FC<BlockSearchProps & DefaultSecureRouteProps> = ({
 
 	// Methods
 	const gotoSearchPage = () => {
-		navigate(generateSearchLinkString(SearchFilter.query, searchTerms));
+		navigateFunc(generateSearchLinkString(SearchFilter.query, searchTerms));
 	};
 
 	const goToSearchResult = (searchResultId: string | undefined) => {
@@ -103,7 +105,7 @@ const BlockSearch: FC<BlockSearchProps & DefaultSecureRouteProps> = ({
 			);
 
 			if (searchResultItem) {
-				navigate(
+				navigateFunc(
 					generateContentLinkString(
 						searchResultItem.administrative_type,
 						searchResultItem.id

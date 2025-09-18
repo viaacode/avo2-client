@@ -1,4 +1,5 @@
 import { Dropdown, DropdownButton, DropdownContent, Icon } from '@viaa/avo2-components';
+import clsx from 'clsx';
 import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -8,10 +9,9 @@ import { type NavigationItemInfo } from '../../types';
 
 import './Navigation.scss';
 
-interface NavigationItemProps extends RouteComponentProps {
+interface NavigationItemProps {
 	item: NavigationItemInfo;
 	className: string;
-	exact: boolean;
 	showActive: boolean;
 	isMobile?: boolean;
 	areDropdownsOpen: BooleanDictionary;
@@ -22,7 +22,6 @@ interface NavigationItemProps extends RouteComponentProps {
 export const NavigationItem: FC<NavigationItemProps> = ({
 	item,
 	className,
-	exact,
 	showActive,
 	isMobile = false,
 	areDropdownsOpen,
@@ -45,9 +44,9 @@ export const NavigationItem: FC<NavigationItemProps> = ({
 			{!!item.location && !item.location.includes('//') && (
 				<NavLink
 					to={item.location}
-					className={className}
-					activeClassName={showActive ? 'c-nav__item--active' : undefined}
-					exact={exact}
+					className={({ isActive }) =>
+						clsx(className, isActive && showActive ? 'c-nav__item--active' : undefined)
+					}
 					title={item.tooltip}
 				>
 					{item.icon && !isMobile && <Icon name={item.icon} />}

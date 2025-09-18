@@ -29,8 +29,8 @@ import { clsx } from 'clsx';
 import { compact, get, noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { useMatch, useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
-import { compose } from 'redux';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
@@ -92,16 +92,19 @@ type BundleDetailProps = {
 	enabledMetaData: SearchFilter[];
 };
 
-const BundleDetail: FC<BundleDetailProps & UserProps<{ id: string }>> = ({
-	match,
+const BundleDetail: FC<BundleDetailProps & UserProps> = ({
 	commonUser,
 	id,
 	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id', string>(APP_PATH.BUNDLE_DETAIL.route);
+
+	const bundleIdFromUrl = match?.params.id;
 
 	// State
-	const [bundleId, setBundleId] = useState(id || match.params.id);
+	const [bundleId, setBundleId] = useState(id || bundleIdFromUrl);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
@@ -130,7 +133,12 @@ const BundleDetail: FC<BundleDetailProps & UserProps<{ id: string }>> = ({
 		isError: isErrorBundle,
 		isLoading: isLoadingBundle,
 		refetch: refetchBundle,
-	} = useGetCollectionOrBundleByIdOrInviteToken(bundleId, CollectionOrBundle.BUNDLE, undefined);
+	} = useGetCollectionOrBundleByIdOrInviteToken(
+		bundleId as string,
+		CollectionOrBundle.BUNDLE,
+		undefined,
+		{ enabled: !!bundleId }
+	);
 
 	// Computed
 	const isOwner =
@@ -160,7 +168,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps<{ id: string }>> = ({
 	}, [bundleObj]);
 
 	const checkPermissions = useCallback(async () => {
-		if (!bundleObj) {
+		if (!bundleId || !bundleObj) {
 			return;
 		}
 		let showPopup = false;
@@ -295,12 +303,15 @@ const BundleDetail: FC<BundleDetailProps & UserProps<{ id: string }>> = ({
 				id: bundleId,
 				tabId: CollectionCreateUpdateTab.CONTENT,
 			}),
-			history
+			navigateFunc
 		);
 	};
 
 	const onDeleteBundle = async () => {
 		try {
+			if (!bundleId) {
+				return;
+			}
 			setIsDeleteModalOpen(false);
 			await CollectionService.deleteCollectionOrBundle(bundleId);
 
@@ -313,7 +324,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps<{ id: string }>> = ({
 				commonUser
 			);
 
-			navigate(APP_PATH.WORKSPACE.route);
+			navigateFunc(APP_PATH.WORKSPACE.route);
 			ToastService.success(
 				tHtml('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd')
 			);
@@ -359,7 +370,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps<{ id: string }>> = ({
 				commonUser
 			);
 
-			defaultGoToDetailLink(history)(duplicateBundle.id, 'bundel');
+			defaultGoToDetailLink(navigateFunc)(duplicateBundle.id, 'bundel');
 			setBundleId(duplicateBundle.id);
 			ToastService.success(
 				tHtml(
@@ -414,6 +425,9 @@ const BundleDetail: FC<BundleDetailProps & UserProps<{ id: string }>> = ({
 					'bundle/views/bundle-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
 				)
 			);
+			return;
+		}
+		if (!bundleId) {
 			return;
 		}
 		try {
@@ -523,6 +537,9 @@ const BundleDetail: FC<BundleDetailProps & UserProps<{ id: string }>> = ({
 	};
 
 	const renderActionDropdown = () => {
+		if (!bundleId) {
+			return null;
+		}
 		const BUNDLE_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				bundleId,
@@ -553,6 +570,9 @@ const BundleDetail: FC<BundleDetailProps & UserProps<{ id: string }>> = ({
 	};
 
 	const renderActions = () => {
+		if (!bundleId) {
+			return null;
+		}
 		if (isMobileWidth()) {
 			const BUNDLE_DROPDOWN_ITEMS = [
 				...createDropdownMenuItem(

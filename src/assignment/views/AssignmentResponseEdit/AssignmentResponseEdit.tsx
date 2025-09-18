@@ -278,7 +278,7 @@ const AssignmentResponseEdit: FC<AssignmentResponseEditProps & UserProps> = ({
 
 	const renderBackButton = useMemo(
 		() => (
-			<Link className="c-return" to={backToOverview}>
+			<Link className="c-return" to={backToOverview()}>
 				<Icon name={IconName.chevronLeft} size="small" type="arrows" />
 				{tText('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>

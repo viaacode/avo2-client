@@ -2,6 +2,7 @@ import { Button, Flex, Spinner } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import React, { type FC, lazy, Suspense, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
 import { compose } from 'redux';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -27,6 +28,7 @@ const { CREATE_CONTENT_PAGES } = PermissionName;
 
 const ContentPageOverviewPage: FC<UserProps> = ({ commonUser }) => {
 	const { tText } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	const hasPerm = useCallback(
 		(permission: PermissionName) => commonUser?.permissions?.includes(permission),
@@ -62,7 +64,7 @@ const ContentPageOverviewPage: FC<UserProps> = ({ commonUser }) => {
 						title={tText(
 							'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
 						)}
-						onClick={() => navigate(CONTENT_PAGE_PATH.CONTENT_PAGE_CREATE)}
+						onClick={() => navigateFunc(CONTENT_PAGE_PATH.CONTENT_PAGE_CREATE)}
 					/>
 				)}
 			</AdminLayoutTopBarRight>

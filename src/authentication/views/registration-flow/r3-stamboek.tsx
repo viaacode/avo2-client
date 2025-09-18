@@ -2,14 +2,12 @@ import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Alert, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
 import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { StamboekInput } from '../../components/StamboekInput';
 import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
-
-type RegisterStamboekProps = RouteComponentProps;
 
 export type StamboekValidationStatus =
 	| 'INCOMPLETE'
@@ -22,8 +20,9 @@ export type StamboekValidationStatus =
 
 export const STAMBOEK_LOCAL_STORAGE_KEY = 'AVO.stamboek';
 
-const RegisterStamboek: FC<RegisterStamboekProps> = ({ location }) => {
+const RegisterStamboek: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const location = useLocation();
 
 	const [validStamboekNumber, setValidStamboekNumber] = useState<string>('');
 

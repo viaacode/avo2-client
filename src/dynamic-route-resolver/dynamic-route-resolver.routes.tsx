@@ -7,7 +7,7 @@ import DynamicRouteResolver from './views/DynamicRouteResolver';
 
 export const renderDynamicRouteResolverRoutes = (): ReactNode[] => [
 	<Route
-		component={DynamicRouteResolver}
+		Component={DynamicRouteResolver}
 		path={APP_PATH.ALL_ROUTES.route}
 		key={APP_PATH.ALL_ROUTES.route}
 	/>,

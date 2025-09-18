@@ -2,14 +2,14 @@ import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Button, Container, IconName, Spacer } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 
-type StudentTeacherProps = RouteComponentProps;
-
-const StudentTeacher: FC<StudentTeacherProps> = () => {
+const StudentTeacher: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">

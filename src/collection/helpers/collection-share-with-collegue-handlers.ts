@@ -8,10 +8,13 @@ import { CollectionService } from '../collection.service';
 
 export async function onDeleteContributor(
 	info: ContributorInfo,
-	collectionId: string,
-	fetchContributors: () => void
+	collectionId: string | undefined,
+	fetchContributors: () => Promise<void>
 ) {
 	try {
+		if (!collectionId) {
+			return;
+		}
 		await CollectionService.deleteContributor(collectionId, info.contributorId, info.profileId);
 
 		await fetchContributors();

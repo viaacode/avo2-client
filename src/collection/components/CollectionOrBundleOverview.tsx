@@ -27,6 +27,7 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
+import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 import { ArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
@@ -93,10 +94,10 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 	numberOfItems,
 	type,
 	onUpdate = noop,
-	history,
 	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	// State
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -151,6 +152,92 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 		useDeleteCollectionOrBundleByUuidMutation();
 
 	const isCollection = type === 'collection';
+
+	const getColumnsMobile = (): TableColumn[] => {
+		return [
+			{ id: 'thumbnail', label: '', col: '2' },
+			{
+				id: 'title',
+				label: tText('collection/views/collection-overview___titel'),
+				col: '6',
+				sortable: true,
+				dataType: TableColumnDataType.string,
+			},
+			{
+				id: ACTIONS_TABLE_COLUMN_ID,
+				tooltip: tText('collection/components/collection-or-bundle-overview___acties'),
+				col: '1',
+			},
+		];
+	};
+
+	const getColumnsDesktop = useCallback((): TableColumn[] => {
+		return [
+			{
+				id: 'thumbnail',
+				tooltip: tText('collection/components/collection-or-bundle-overview___cover'),
+				col: '2',
+			},
+			{
+				id: 'title',
+				label: tText('collection/views/collection-overview___titel'),
+				col: '6',
+				sortable: true,
+				dataType: TableColumnDataType.string,
+			},
+			{
+				id: 'updated_at',
+				label: tText('collection/views/collection-overview___laatst-bewerkt'),
+				col: '3',
+				sortable: true,
+				dataType: TableColumnDataType.dateTime,
+			},
+			...(isCollection
+				? [
+						{
+							id: 'share_type',
+							label: tText('collection/collection___gedeeld'),
+							sortable: true,
+							dataType: TableColumnDataType.string,
+						},
+				  ]
+				: []),
+			...(showPublicState
+				? [
+						{
+							id: 'is_public',
+							label: tText(
+								'collection/components/collection-or-bundle-overview___is-publiek'
+							),
+							col: '2',
+							sortable: true,
+							dataType: TableColumnDataType.boolean,
+						} as TableColumn,
+				  ]
+				: []),
+			// TODO re-enable once we can put collections in folders https://meemoo.atlassian.net/browse/AVO-591
+			// ...(isCollection
+			// 	? [
+			// 			{
+			// 				id: 'inFolder',
+			// 				label: tText('collection/views/collection-overview___in-map'),
+			// 				col: '2' as any,
+			// 			},
+			// 	  ]
+			// 	: []),
+			// TODO re-enable once users can give share collection view/edit rights with other users
+			// {
+			// 	id: 'access',
+			// 	label: tText('collection/views/collection-overview___toegang'),
+			// 	col: '2',
+			// },
+			{
+				id: ACTIONS_TABLE_COLUMN_ID,
+				tooltip: tText('collection/components/collection-or-bundle-overview___acties'),
+				col: '1',
+			},
+		];
+	}, [isCollection, showPublicState, tText]);
 
 	const fetchCollections = useCallback(async () => {
 		try {
@@ -253,7 +340,16 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 				actionButtons: ['home'],
 			});
 		}
-	}, [commonUser, page, sortColumn, sortOrder, isCollection, tText, query]);
+	}, [
+		getColumnsDesktop,
+		commonUser,
+		page,
+		sortColumn,
+		sortOrder,
+		isCollection,
+		query.selectedShareTypeLabelIds,
+		tText,
+	]);
 
 	useEffect(() => {
 		fetchCollections().then(noop);
@@ -363,7 +459,7 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 	};
 
 	const onClickCreate = () =>
-		navigate(
+		navigateFunc(
 			buildLink(
 				APP_PATH.SEARCH.route,
 				{},
@@ -391,14 +487,14 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 			CollectionOrBundle.COLLECTION,
 			undefined
 		);
-		if (collection) {
+		if (collection && commonUser) {
 			const assignmentId = await AssignmentService.createAssignmentFromCollection(
 				commonUser,
 				collection,
 				withDescription
 			);
 
-			navigate(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
+			navigateFunc(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
 		}
 	};
 
@@ -502,7 +598,7 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 			switch (item) {
 				case CollectionMenuAction.editCollection:
 					navigate(
-						history,
+						navigateFunc,
 						isCollection
 							? APP_PATH.COLLECTION_EDIT_TAB.route
 							: APP_PATH.BUNDLE_EDIT_TAB.route,
@@ -572,7 +668,7 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 							icon={IconName.chevronRight}
 							onClick={() =>
 								navigate(
-									history,
+									navigateFunc,
 									isCollection
 										? APP_PATH.COLLECTION_DETAIL.route
 										: APP_PATH.BUNDLE_DETAIL.route,
@@ -662,92 +758,6 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 			default:
 				return null;
 		}
-	};
-
-	const getColumnsMobile = (): TableColumn[] => {
-		return [
-			{ id: 'thumbnail', label: '', col: '2' },
-			{
-				id: 'title',
-				label: tText('collection/views/collection-overview___titel'),
-				col: '6',
-				sortable: true,
-				dataType: TableColumnDataType.string,
-			},
-			{
-				id: ACTIONS_TABLE_COLUMN_ID,
-				tooltip: tText('collection/components/collection-or-bundle-overview___acties'),
-				col: '1',
-			},
-		];
-	};
-
-	const getColumnsDesktop = (): TableColumn[] => {
-		return [
-			{
-				id: 'thumbnail',
-				tooltip: tText('collection/components/collection-or-bundle-overview___cover'),
-				col: '2',
-			},
-			{
-				id: 'title',
-				label: tText('collection/views/collection-overview___titel'),
-				col: '6',
-				sortable: true,
-				dataType: TableColumnDataType.string,
-			},
-			{
-				id: 'updated_at',
-				label: tText('collection/views/collection-overview___laatst-bewerkt'),
-				col: '3',
-				sortable: true,
-				dataType: TableColumnDataType.dateTime,
-			},
-			...(isCollection
-				? [
-						{
-							id: 'share_type',
-							label: tText('collection/collection___gedeeld'),
-							sortable: true,
-							dataType: TableColumnDataType.string,
-						},
-				  ]
-				: []),
-			...(showPublicState
-				? [
-						{
-							id: 'is_public',
-							label: tText(
-								'collection/components/collection-or-bundle-overview___is-publiek'
-							),
-							col: '2',
-							sortable: true,
-							dataType: TableColumnDataType.boolean,
-						} as TableColumn,
-				  ]
-				: []),
-			// TODO re-enable once we can put collections in folders https://meemoo.atlassian.net/browse/AVO-591
-			// ...(isCollection
-			// 	? [
-			// 			{
-			// 				id: 'inFolder',
-			// 				label: tText('collection/views/collection-overview___in-map'),
-			// 				col: '2' as any,
-			// 			},
-			// 	  ]
-			// 	: []),
-			// TODO re-enable once users can give share collection view/edit rights with other users
-			// {
-			// 	id: 'access',
-			// 	label: tText('collection/views/collection-overview___toegang'),
-			// 	col: '2',
-			// },
-			{
-				id: ACTIONS_TABLE_COLUMN_ID,
-				tooltip: tText('collection/components/collection-or-bundle-overview___acties'),
-				col: '1',
-			},
-		];
 	};
 
 	const renderPagination = () => (

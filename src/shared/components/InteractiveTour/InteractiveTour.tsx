@@ -12,7 +12,7 @@ import { type AppState } from '../../../store';
 import { selectShowNudgingModal } from '../../../store/selectors';
 import { TEAL_BRIGHT } from '../../constants';
 import { CustomError } from '../../helpers/custom-error';
-import withUser from '../../hocs/withUser';
+import withUser, { UserProps } from '../../hocs/withUser';
 import { InteractiveTourService, type TourInfo } from '../../services/interactive-tour.service';
 import Html from '../Html/Html';
 
@@ -32,7 +32,7 @@ interface UiStateProps {
 
 const INTERACTIVE_TOUR_IN_PROGRESS_CLASS = 'c-interactive-tour--in-progress';
 
-const InteractiveTour: FC<InteractiveTourProps & SecuredRouteProps & UiStateProps> = ({
+const InteractiveTour: FC<InteractiveTourProps & SecuredRouteProps & UserProps & UiStateProps> = ({
 	showButton,
 	commonUser,
 	showNudgingModal,

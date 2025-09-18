@@ -450,4 +450,4 @@ const mapDispatchToProps = (dispatch: Dispatch): { getLoginState: () => LoginSta
 export default compose(
 	connect(mapStateToProps, mapDispatchToProps) as any,
 	withAdminCoreConfig
-)(DynamicRouteResolver as ComponentType) as unknown as FC<DynamicRouteResolverProps>;
+)(DynamicRouteResolver as ComponentType) as unknown as FC;

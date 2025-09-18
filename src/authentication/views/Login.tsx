@@ -2,7 +2,8 @@ import { Button, Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { type RouteComponentProps } from 'react-router';
+import { useNavigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { type Dispatch } from 'redux';
 
 import { APP_PATH } from '../../constants';
@@ -15,7 +16,7 @@ import { redirectToServerLoginPage } from '../helpers/redirects';
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
 
-interface LoginProps extends RouteComponentProps {
+interface LoginProps {
 	loginState: Avo.Auth.LoginResponse | null;
 	loginStateLoading: boolean;
 	loginStateError: boolean;
@@ -31,6 +32,8 @@ const Login: FC<LoginProps> = ({
 	getLoginState,
 }) => {
 	const { tText } = useTranslation();
+	const location = useLocation();
+	const navigateFunc = useNavigate();
 
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -50,7 +53,7 @@ const Login: FC<LoginProps> = ({
 				}
 			}
 
-			navigate(path);
+			navigateFunc(path);
 
 			return;
 		}
@@ -63,7 +66,7 @@ const Login: FC<LoginProps> = ({
 		) {
 			redirectToServerLoginPage(location);
 		}
-	}, [getLoginState, loginState, loginStateLoading, loginStateError, history, location]);
+	}, [getLoginState, loginState, loginStateLoading, loginStateError, navigateFunc, location]);
 
 	const tryLoginAgainManually = () => {
 		if (localStorage) {
@@ -113,4 +116,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login) as FC;

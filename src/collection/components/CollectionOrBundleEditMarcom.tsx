@@ -38,9 +38,17 @@ import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
-import { GET_MARCOM_CHANNEL_NAME_OPTIONS, GET_MARCOM_CHANNEL_TYPE_OPTIONS, GET_MARCOM_ENTRY_TABLE_COLUMNS, } from '../collection.const';
+import {
+	GET_MARCOM_CHANNEL_NAME_OPTIONS,
+	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
+	GET_MARCOM_ENTRY_TABLE_COLUMNS,
+} from '../collection.const';
 import { CollectionService } from '../collection.service';
-import { CollectionCreateUpdateTab, type CollectionMarcomEntry, ContentTypeNumber, } from '../collection.types';
+import {
+	CollectionCreateUpdateTab,
+	type CollectionMarcomEntry,
+	ContentTypeNumber,
+} from '../collection.types';
 import { useGetKlascementPublishInfo } from '../hooks/useGetKlascementPublishInfo';
 import { usePublishCollectionToKlascement } from '../hooks/usePublishCollectionToKlascement';
 
@@ -49,7 +57,6 @@ import { type CollectionAction, type MarcomNoteInfo } from './CollectionOrBundle
 interface CollectionOrBundleEditMarcomProps {
 	collection: Avo.Collection.Collection & { marcom_note?: MarcomNoteInfo };
 	changeCollectionState: (action: CollectionAction) => void;
-	;
 	onFocus?: () => void;
 }
 

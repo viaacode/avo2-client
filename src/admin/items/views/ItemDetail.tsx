@@ -21,6 +21,7 @@ import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import { compact, noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { useMatch, useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { StringParam, useQueryParams } from 'use-query-params';
 
@@ -71,10 +72,12 @@ import {
 import { ItemsService } from '../items.service';
 import { type ItemUsedByColumnId, type ItemUsedByEntry } from '../items.types';
 
-type ItemDetailProps = RouteComponentProps<{ id: string }>;
+const ItemDetail: FC = () => {
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id', string>(APP_PATH.ITEM_DETAIL.route);
 
-const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
-	const itemUuid = match.params.id;
+	const itemUuid = match?.params.id;
+
 	// Hooks
 	const [queryParams, setQueryParams] = useQueryParams({
 		sortProp: StringParam,
@@ -84,7 +87,7 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 		data: item,
 		isLoading: itemIsLoading,
 		refetch: refetchItem,
-	} = useGetItemWithRelations(itemUuid);
+	} = useGetItemWithRelations(itemUuid as string, { enabled: !!itemUuid });
 	const { data: itemUsedBy, isError: itemUsedByIsError } = useGetItemUsedBy(
 		{
 			itemUuid: itemUuid as string,
@@ -181,17 +184,17 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 			return;
 		}
 		const link = buildLink(APP_PATH.ITEM_DETAIL.route, { id: item.external_id });
-		redirectToClientPage(link, history);
+		redirectToClientPage(link, navigateFunc);
 	};
 
 	const navigateToCollectionDetail = (id: string) => {
 		const link = buildLink(APP_PATH.COLLECTION_DETAIL.route, { id });
-		redirectToClientPage(link, history);
+		redirectToClientPage(link, navigateFunc);
 	};
 
 	const navigateToAssignmentDetail = (id: string) => {
 		const link = buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id });
-		redirectToClientPage(link, history);
+		redirectToClientPage(link, navigateFunc);
 	};
 
 	const handleColumnClick = (columnId: string) => {
@@ -621,7 +624,7 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 		return (
 			<AdminLayout
 				onClickBackButton={() =>
-					goBrowserBackWithFallback(ADMIN_PATH.ITEMS_OVERVIEW, history)
+					goBrowserBackWithFallback(ADMIN_PATH.ITEMS_OVERVIEW, navigateFunc)
 				}
 				pageTitle={`${tText('admin/items/views/item-detail___item-details')}: ${
 					item.title

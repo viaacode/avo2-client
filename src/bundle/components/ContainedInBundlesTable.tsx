@@ -2,6 +2,7 @@ import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Button, Icon, IconName, Spacer, Table } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { compose } from 'redux';
 
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
@@ -25,12 +26,13 @@ type ContainedInBundlesTableProps = {
 	emptyTableLabel: string;
 };
 
-const ContainedInBundlesTable: FC<ContainedInBundlesTableProps<{ id: string }>> = ({
-	history,
+const ContainedInBundlesTable: FC<ContainedInBundlesTableProps> = ({
 	fragmentId,
 	emptyTableLabel,
 	title,
 }) => {
+	const navigateFunc = useNavigate();
+
 	const [bundleSortColumn, setBundleSortColumn] = useState<BundleSortProp>(BundleSortProp.title);
 	const [bundleSortOrder, setBundleSortOrder] = useState<OrderDirection>(OrderDirection.asc);
 
@@ -42,7 +44,7 @@ const ContainedInBundlesTable: FC<ContainedInBundlesTableProps<{ id: string }>> 
 
 	const navigateToBundleDetail = (id: string) => {
 		const link = buildLink(APP_PATH.BUNDLE_DETAIL.route, { id });
-		redirectToClientPage(link, history);
+		redirectToClientPage(link, navigateFunc);
 	};
 
 	const handleBundleColumnClick = (columnId: BundleColumnId) => {

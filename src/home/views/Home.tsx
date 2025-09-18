@@ -1,7 +1,7 @@
 import { ContentPageRenderer } from '@meemoo/admin-core-ui/dist/client.mjs';
 import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
-import { compose } from 'redux';
+import { useNavigate } from 'react-router';
 
 import { useGetContentPageByPath } from '../../admin/content-page/hooks/get-content-page-by-path';
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
@@ -11,8 +11,10 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 
-const Home: FC<UserProps> = ({ history, commonUser }) => {
+const Home: FC<UserProps> = ({ commonUser }) => {
 	const { tText } = useTranslation();
+	const navigateFunc = useNavigate();
+
 	const { data: contentPageInfo } = useGetContentPageByPath(`/${ROUTE_PARTS.loggedInHome}`);
 	const isPupil = [SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]
 		.map(String)
@@ -20,7 +22,7 @@ const Home: FC<UserProps> = ({ history, commonUser }) => {
 
 	// /start when user is a pupil => should be redirected to /werkruimte/opdrachten
 	if (isPupil) {
-		navigate(APP_PATH.WORKSPACE_ASSIGNMENTS.route);
+		navigateFunc(APP_PATH.WORKSPACE_ASSIGNMENTS.route);
 		return null;
 	}
 	return (

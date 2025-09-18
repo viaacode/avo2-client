@@ -4,7 +4,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import { isEqual } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { compose } from 'redux';
+import { useNavigate } from 'react-router';
 import { useQueryParams } from 'use-query-params';
 
 import type { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -61,6 +61,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 	onUpdate,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	// State
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -337,7 +338,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 										break;
 
 									case EmbedCodeAction.SHOW_ORIGINAL:
-										navigate(history, APP_PATH.ITEM_DETAIL.route, {
+										navigate(navigateFunc, APP_PATH.ITEM_DETAIL.route, {
 											id: (selected.content as Avo.Item.Item).external_id,
 										});
 										break;

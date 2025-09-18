@@ -1,6 +1,7 @@
 import { Button, Container, Spacer } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../constants';
@@ -10,6 +11,7 @@ type UserItemRequestFormProps = DefaultSecureRouteProps;
 
 const UserItemRequestFormConfirm: FC<UserItemRequestFormProps> = () => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">

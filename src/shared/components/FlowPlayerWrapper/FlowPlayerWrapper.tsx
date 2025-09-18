@@ -17,6 +17,7 @@ import React, {
 	useState,
 } from 'react';
 import { connect } from 'react-redux';
+import { useNavigate } from 'react-router';
 import { compose, type Dispatch } from 'redux';
 import { useQueryParam } from 'use-query-params';
 
@@ -50,6 +51,8 @@ const FlowPlayerWrapper: FC<
 	FlowPlayerWrapperProps &
 		UserProps & { setLastVideoPlayedAt: (lastVideoPlayedAt: Date | null) => Dispatch }
 > = ({ placeholder = true, ...props }) => {
+	const navigateFunc = useNavigate();
+
 	const item: Avo.Item.Item | undefined = props.item;
 	const poster: string | undefined = props.poster || get(item, 'thumbnail_path');
 
@@ -97,7 +100,7 @@ const FlowPlayerWrapper: FC<
 				)
 			);
 		}
-	}, [item, setSrc, tText, tHtml]);
+	}, [item, setSrc]);
 
 	useEffect(() => {
 		if (item && (props.autoplay || !placeholder || autoplayVideo === item.external_id)) {
@@ -178,14 +181,14 @@ const FlowPlayerWrapper: FC<
 						query: {
 							// Scroll back down to this video player: https://meemoo.atlassian.net/browse/AVO-3171
 							returnToUrl: stringifyUrl({
-								url: props.location.pathname + (anchorId ? '#' + anchorId : ''),
+								url: location.pathname + (anchorId ? '#' + anchorId : ''),
 								query: {
 									autoplayVideo: item?.external_id,
 								},
 							}),
 						},
 					}),
-					props.history
+					navigateFunc
 				);
 				return;
 			}

@@ -16,7 +16,7 @@ import { NavigationItem } from '../Navigation/NavigationItem';
 
 import './Footer.scss';
 
-const Footer: FC<UserProps> = ({ history, location, match }) => {
+const Footer: FC<UserProps> = () => {
 	const { tText } = useTranslation();
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<BooleanDictionary>({});
@@ -41,7 +41,6 @@ const Footer: FC<UserProps> = ({ history, location, match }) => {
 						tooltip: item.tooltip,
 					}}
 					className="c-nav__item c-nav__item--i"
-					exact={item.content_path === '/'}
 					showActive={false}
 					areDropdownsOpen={areDropdownsOpen}
 					setDropdownsOpen={setDropdownsOpen}
@@ -123,4 +122,4 @@ const Footer: FC<UserProps> = ({ history, location, match }) => {
 	);
 };
 
-export default withUser(Footer) as FC<RouteComponentProps>;
+export default withUser(Footer) as FC;

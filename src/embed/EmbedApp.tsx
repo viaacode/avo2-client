@@ -3,7 +3,7 @@ import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import queryString from 'query-string';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
-import { Route } from 'react-router';
+import { Route, useLocation } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryParamProvider } from 'use-query-params';
 
@@ -24,7 +24,9 @@ import { useGetLoginStateForEmbed } from './hooks/useGetLoginStateForEmbed';
 
 import '../styles/main.scss';
 
-const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
+const EmbedApp: FC = () => {
+	const location = useLocation();
+
 	const [translationsLoaded, setTranslationsLoaded] = useState<boolean>(false);
 	const [originalUrl, setOriginalUrl] = useState<string | null>(null);
 	const [embedId, setEmbedId] = useState<string | null>(null);

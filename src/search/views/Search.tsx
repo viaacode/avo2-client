@@ -15,7 +15,6 @@ import { isEmpty } from 'lodash-es';
 import React, { type FC, type ReactNode, type ReactText, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { compose } from 'redux';
 import {
 	JsonParam,
 	NumberParam,

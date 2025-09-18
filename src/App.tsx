@@ -1,13 +1,12 @@
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
-import { createBrowserHistory } from 'history';
 import { isEqual, noop, uniq } from 'lodash-es';
-import { wrapHistory } from 'oaf-react-router';
+import { wrapRouter } from 'oaf-react-router';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { connect, Provider } from 'react-redux';
-import { useNavigate } from 'react-router';
-import { type Location, Route, BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { RouterProvider, useNavigate } from 'react-router';
+import { createBrowserRouter, type Location, Route, useLocation } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 import { compose, type Dispatch } from 'redux';
 import { QueryParamProvider } from 'use-query-params';
@@ -44,32 +43,23 @@ import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import './App.scss';
 import './styles/main.scss';
 
-const history = createBrowserHistory();
-wrapHistory(history, {
-	smoothScroll: false,
-	shouldHandleAction: (previousLocation: Location, nextLocation: Location) => {
-		// We don't want to set focus when only the hash changes
-		return (
-			previousLocation.pathname !== nextLocation.pathname ||
-			previousLocation.search !== nextLocation.search
-		);
-	},
-});
-
 const App: FC<
 	UserProps & {
 		historyLocations: string[];
 		setHistoryLocations: (locations: string[]) => void;
 		setEmbedFlow: (embedFlow: string) => void;
 	}
-> = ({ setEmbedFlow, ...props }) => {
-	const { tHtml } = useTranslation();
+> = ({ setEmbedFlow, commonUser, historyLocations, setHistoryLocations }) => {
+	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const navigate = useNavigate();
+
+	const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] = useState(false);
+
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(location.pathname);
 	const isPupilUser = [SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]
 		.map(String)
-		.includes(String(props.commonUser?.userGroup?.id));
+		.includes(String(commonUser?.userGroup?.id));
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
@@ -129,15 +119,15 @@ const App: FC<
 	 * Store them in the redux store
 	 */
 	useEffect(() => {
-		const existingHistoryLocations = props.historyLocations;
+		const existingHistoryLocations = historyLocations;
 		const newHistoryLocations = uniq([...existingHistoryLocations, location.pathname]).slice(
 			-3
 		);
 		if (!isEqual(existingHistoryLocations, newHistoryLocations)) {
-			props.setHistoryLocations(newHistoryLocations);
+			setHistoryLocations(newHistoryLocations);
 		}
 		handlePageLoaded();
-	}, [location, props, handlePageLoaded]);
+	}, [location, historyLocations, setHistoryLocations, handlePageLoaded]);
 
 	/**
 	 * Check if this window was opened from somewhere else and get the embed-flow query param
@@ -148,13 +138,8 @@ const App: FC<
 		const embedFlow = url.searchParams.get('embed-flow') || '';
 		const isOpenedByOtherPage = !!window.opener;
 
-		if (isOpenedByOtherPage && !!embedFlow && props.commonUser) {
-			if (
-				PermissionService.hasPerm(
-					props.commonUser,
-					PermissionName.EMBED_ITEMS_ON_OTHER_SITES
-				)
-			) {
+		if (isOpenedByOtherPage && !!embedFlow && commonUser) {
+			if (PermissionService.hasPerm(commonUser, PermissionName.EMBED_ITEMS_ON_OTHER_SITES)) {
 				setEmbedFlow(embedFlow);
 			} else {
 				ToastService.info(tHtml('app___je-hebt-geen-toegang-tot-de-embed-functionaliteit'));
@@ -164,7 +149,7 @@ const App: FC<
 				"Embed flow query param is present, but the page wasn't opened from another page, so window.opener is undefined. Cannot start the embed flow"
 			);
 		}
-	}, [setEmbedFlow, props.commonUser, tHtml]);
+	}, [setEmbedFlow, commonUser, tHtml]);
 
 	// Render
 	const renderApp = () => {
@@ -189,9 +174,9 @@ const App: FC<
 					<SecuredRoute Component={Admin} exact={false} path={ADMIN_PATH.DASHBOARD} />
 				) : (
 					<>
-						{!isLoginRoute && <Navigation {...props} />}
+						{!isLoginRoute && <Navigation />}
 						{renderRoutes()}
-						{!isLoginRoute && <Footer {...props} />}
+						{!isLoginRoute && <Footer />}
 						<ACMIDMNudgeModal />
 					</>
 				)}
@@ -202,11 +187,34 @@ const App: FC<
 
 	return (
 		<>
-			<LoadingErrorLoadedComponent
-				loadingInfo={loadingInfo}
-				dataObject={{}}
-				render={renderApp}
-			/>
+			<QueryParamProvider ReactRouterRoute={Route}>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={{}}
+					render={renderApp}
+				/>
+				<ConfirmModal
+					className="c-modal__unsaved-changes"
+					isOpen={isUnsavedChangesModalOpen}
+					confirmCallback={() => {
+						setIsUnsavedChangesModalOpen(false);
+						(confirmUnsavedChangesCallback || noop)(true);
+						confirmUnsavedChangesCallback = null;
+					}}
+					onClose={() => {
+						setIsUnsavedChangesModalOpen(false);
+						(confirmUnsavedChangesCallback || noop)(false);
+						confirmUnsavedChangesCallback = null;
+					}}
+					cancelLabel={tText('app___blijven')}
+					confirmLabel={tText('app___verlaten')}
+					title={tHtml('app___wijzigingen-opslaan')}
+					body={tHtml(
+						'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
+					)}
+					confirmButtonType="primary"
+				/>
+			</QueryParamProvider>
 		</>
 	);
 };
@@ -240,44 +248,25 @@ const queryClient = new QueryClient({
 	}),
 });
 
-const Root: FC = () => {
-	const { tText, tHtml } = useTranslation();
-	const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] = useState(false);
+const router = createBrowserRouter([{ path: '*', element: <AppWithRouter /> }]);
 
+// Improve usability for screen readers, improves focus and scroll management
+wrapRouter(router, {
+	smoothScroll: false,
+	shouldHandleAction: (previousLocation: Location, nextLocation: Location) => {
+		// We don't want to set focus when only the hash changes
+		return (
+			previousLocation.pathname !== nextLocation.pathname ||
+			previousLocation.search !== nextLocation.search
+		);
+	},
+});
+
+const Root: FC = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Provider store={store}>
-				<Router
-					getUserConfirmation={(_message, callback) => {
-						setIsUnsavedChangesModalOpen(true);
-						confirmUnsavedChangesCallback = callback;
-					}}
-				>
-					<QueryParamProvider ReactRouterRoute={Route}>
-						<AppWithRouter />
-						<ConfirmModal
-							className="c-modal__unsaved-changes"
-							isOpen={isUnsavedChangesModalOpen}
-							confirmCallback={() => {
-								setIsUnsavedChangesModalOpen(false);
-								(confirmUnsavedChangesCallback || noop)(true);
-								confirmUnsavedChangesCallback = null;
-							}}
-							onClose={() => {
-								setIsUnsavedChangesModalOpen(false);
-								(confirmUnsavedChangesCallback || noop)(false);
-								confirmUnsavedChangesCallback = null;
-							}}
-							cancelLabel={tText('app___blijven')}
-							confirmLabel={tText('app___verlaten')}
-							title={tHtml('app___wijzigingen-opslaan')}
-							body={tHtml(
-								'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
-							)}
-							confirmButtonType="primary"
-						/>
-					</QueryParamProvider>
-				</Router>
+				<RouterProvider router={router} />
 			</Provider>
 		</QueryClientProvider>
 	);

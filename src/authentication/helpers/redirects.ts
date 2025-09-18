@@ -1,6 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
 import { get, isString, omit, trimStart } from 'lodash-es';
 import queryString, { stringifyUrl } from 'query-string';
+import { type Location } from 'react-router';
 
 import { APP_PATH } from '../../constants';
 import { EmbedCodeService } from '../../embed-code/embed-code-service';

@@ -10,6 +10,8 @@ import { compact } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
+import { useNavigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { type Dispatch } from 'redux';
 
 import { SpecialUserGroupId } from '../../../admin/user-groups/user-group.const';
@@ -19,7 +21,7 @@ import {
 	type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import { type UserProps } from '../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -43,6 +45,8 @@ const AcceptConditions: FC<AcceptConditionsProps & UserProps> = ({
 	loginState,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+	const location = useLocation();
 
 	// The term of use and the privacy conditions
 	const [pages, setPages] = useState<(ContentPageInfo | null)[]>([]);
@@ -80,7 +84,7 @@ const AcceptConditions: FC<AcceptConditionsProps & UserProps> = ({
 				),
 			});
 		}
-	}, [setLoadingInfo, setPages, tText, commonUser]);
+	}, [isElementaryPupil, tHtml]);
 
 	useEffect(() => {
 		fetchContentPage();
@@ -111,9 +115,9 @@ const AcceptConditions: FC<AcceptConditionsProps & UserProps> = ({
 					{ location }
 				);
 			}
-			redirectToClientPage(fromRoute, history);
+			redirectToClientPage(fromRoute, navigateFunc);
 		}
-	}, [loginState, location, history]);
+	}, [loginState, location, navigateFunc]);
 
 	const handleAcceptConditions = async () => {
 		try {
@@ -226,4 +230,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AcceptConditions);
+export default withUser(connect(mapStateToProps, mapDispatchToProps)(AcceptConditions)) as FC;

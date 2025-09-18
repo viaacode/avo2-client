@@ -10,9 +10,9 @@ import {
 } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import React, { type FC, type ReactElement, type ReactText, useState } from 'react';
+import { useMatch, useNavigate } from 'react-router';
 
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH } from '../../constants';
@@ -36,18 +36,15 @@ import {
 	PROFILE_ID,
 	type SettingsTab,
 } from '../settings.const';
-import { useMatch, useNavigate } from 'react-router';
 
-const Settings: FC<UserProps> = ({commonUser}) => {
+const Settings: FC<UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const match = useMatch<'tabId', string>(APP_PATH.SETTINGS_TAB.route);
 
 	const tabId = match?.params.tabId;
 
-	const [activeTab, setActiveTab] = useState<SettingsTab>(
-		(tabId as SettingsTab) || PROFILE_ID
-	);
+	const [activeTab, setActiveTab] = useState<SettingsTab>((tabId as SettingsTab) || PROFILE_ID);
 
 	const isPupil = [SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]
 		.map(String)

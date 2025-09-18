@@ -2,7 +2,7 @@ import { Flex, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, lazy, Suspense, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteChildrenProps, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { compose } from 'redux';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -21,8 +21,10 @@ const UserDetail = lazy(() =>
 	}))
 );
 
-const UserDetailPage: FC<UserProps & RouteChildrenProps> = ({ commonUser, history }) => {
+const UserDetailPage: FC<UserProps> = ({ commonUser }) => {
 	const { tText } = useTranslation();
+	const navigateFunc = useNavigate();
+
 	const [user, setUser] = useState<{ fullName?: string } | undefined>();
 	const { id } = useParams<{ id: string }>();
 
@@ -50,13 +52,17 @@ const UserDetailPage: FC<UserProps & RouteChildrenProps> = ({ commonUser, histor
 					</Flex>
 				}
 			>
-				<UserDetail
-					id={id}
-					onSetTempAccess={UserService.updateTempAccessByUserId}
-					onLoaded={setUser}
-					onGoBack={() => goBrowserBackWithFallback(ADMIN_PATH.USER_OVERVIEW, history)}
-					commonUser={commonUser as Avo.User.CommonUser}
-				/>
+				{!!id && (
+					<UserDetail
+						id={id}
+						onSetTempAccess={UserService.updateTempAccessByUserId}
+						onLoaded={setUser}
+						onGoBack={() =>
+							goBrowserBackWithFallback(ADMIN_PATH.USER_OVERVIEW, navigateFunc)
+						}
+						commonUser={commonUser as Avo.User.CommonUser}
+					/>
+				)}
 			</Suspense>
 		</>
 	);

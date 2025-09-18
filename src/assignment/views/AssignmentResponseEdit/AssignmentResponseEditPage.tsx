@@ -3,11 +3,10 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isString, noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { compose } from 'redux';
+import { useMatch } from 'react-router';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
-import { GENERATE_SITE_TITLE } from '../../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -25,14 +24,13 @@ import AssignmentResponseEdit from './AssignmentResponseEdit';
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 
-const AssignmentResponseEditPage: FC<UserProps & DefaultSecureRouteProps<{ id: string }>> = ({
-	match,
-	commonUser,
-}) => {
+const AssignmentResponseEditPage: FC<UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
+	const match = useMatch<'id', string>(APP_PATH.ASSIGNMENT_RESPONSE_EDIT.route);
+
+	const assignmentId = match?.params.id;
 
 	// Data
-	const assignmentId = match.params.id;
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
 	const [assignmentError, setAssignmentError] = useState<{
@@ -51,6 +49,9 @@ const AssignmentResponseEditPage: FC<UserProps & DefaultSecureRouteProps<{ id: s
 	// HTTP
 	const fetchAssignment = useCallback(async () => {
 		try {
+			if (!assignmentId) {
+				return;
+			}
 			setAssignmentLoading(true);
 
 			// Check if the user is a teacher, they do not have permission to create a response for assignments and should see a clear error message
@@ -153,7 +154,7 @@ const AssignmentResponseEditPage: FC<UserProps & DefaultSecureRouteProps<{ id: s
 
 	useEffect(() => {
 		fetchAssignment().then(noop);
-	}, []);
+	}, [fetchAssignment]);
 
 	// Events
 

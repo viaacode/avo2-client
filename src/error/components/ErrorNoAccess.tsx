@@ -1,6 +1,6 @@
 import { Blankslate, Button, Container, IconName } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode } from 'react';
-import { compose } from 'redux';
+import { useNavigate } from 'react-router';
 
 import { APP_PATH } from '../../constants';
 import { OrderedList } from '../../shared/components/OrderedList/OrderedList';
@@ -16,9 +16,10 @@ interface ErrorNoAccessProps {
 
 const ErrorNoAccess: FC<ErrorNoAccessProps> = ({ title, message }) => {
 	const { tText } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	const goToWorkspace = () => {
-		navigate(APP_PATH.WORKSPACE.route);
+		navigateFunc(APP_PATH.WORKSPACE.route);
 	};
 
 	return (

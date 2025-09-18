@@ -1,6 +1,7 @@
 import { Button, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { type FC, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
@@ -25,6 +26,8 @@ interface LoginOptionsProps {
 
 const LoginOptions: FC<LoginOptionsProps> = ({ onOptionClicked = noop }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
 			{
@@ -106,7 +109,7 @@ const LoginOptions: FC<LoginOptionsProps> = ({ onOptionClicked = noop }) => {
 						type="primary"
 						onClick={() => {
 							onOptionClicked();
-							redirectToClientPage(APP_PATH.STAMBOEK.route, history);
+							redirectToClientPage(APP_PATH.STAMBOEK.route, navigateFunc);
 						}}
 					/>
 				);

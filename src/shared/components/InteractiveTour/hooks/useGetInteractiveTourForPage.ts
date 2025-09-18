@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { compact, reverse, sortBy, toPairs } from 'lodash-es';
-import { type matchPath } from 'react-router';
+import { matchPath } from 'react-router';
+import { type PathMatch } from 'react-router-dom';
 
 import { APP_PATH, type RouteId, type RouteInfo } from '../../../../constants';
 import { QUERY_KEYS } from '../../../constants/query-keys';
@@ -23,7 +24,7 @@ async function getInteractiveTourForPage(
 		toPairs(APP_PATH).filter((pair) => pair[1].showForInteractiveTour)
 	);
 
-	const matchingRoutePairs: [string, RouteInfo, match][] = compact(
+	const matchingRoutePairs: [string, RouteInfo, PathMatch][] = compact(
 		interactiveRoutePairs.map((pair) => {
 			const route = pair[1].route;
 			const match = matchPath(currentPath, route);
@@ -36,14 +37,14 @@ async function getInteractiveTourForPage(
 	);
 
 	const matchingRoutePairsSorted = sortBy(matchingRoutePairs, (pair) => {
-		if (pair[2].path === pair[2].url) {
+		if (pair[2].pathname === pair[2].pathnameBase) {
 			// Exact match always should be considered first
 			// eg: /opdrachten/maak is better than /opdrachten/:id
 			return -1000;
 		} else {
 			// A more specific path should be used first
 			// eg: /opdrachten/:id/bewerk/:tabId is better than /opdrachten/:id
-			return -pair[2].path.length;
+			return -pair[2].pathname.length;
 		}
 	});
 
