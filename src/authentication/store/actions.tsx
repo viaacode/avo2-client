@@ -4,6 +4,7 @@ import { subMinutes } from 'date-fns';
 import { compact } from 'lodash-es';
 import queryString from 'query-string';
 import React from 'react';
+import { type Location } from 'react-router';
 import { type Action, type Dispatch } from 'redux';
 
 import { LTI_JWT_TOKEN_HEADER } from '../../embed/embed.types';

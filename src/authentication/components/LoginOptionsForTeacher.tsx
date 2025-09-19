@@ -20,6 +20,7 @@ import {
 } from '../helpers/redirects';
 
 import './LoginOptionsForTeacher.scss';
+import { useLocation } from 'react-router-dom';
 
 interface LoginOptionsForTeacherProps {
 	onOptionClicked?: () => void;
@@ -31,6 +32,7 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
 	openInNewTab = false,
 }) => {
 	const { tText } = useTranslation();
+	const location = useLocation();
 
 	const getButtons = () => {
 		return [

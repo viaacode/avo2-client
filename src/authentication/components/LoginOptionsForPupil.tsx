@@ -10,6 +10,7 @@ import {
 } from '../helpers/redirects';
 
 import './LoginOptionsForPupil.scss';
+import { useLocation } from 'react-router-dom';
 
 interface LoginOptionsForPupilProps {
 	onOptionClicked?: () => void;
@@ -21,6 +22,7 @@ const LoginOptionsForPupil: FC<LoginOptionsForPupilProps> = ({
 	openInNewTab = false,
 }) => {
 	const { tText } = useTranslation();
+	const location = useLocation();
 
 	const getButtons = () => {
 		return [

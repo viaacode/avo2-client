@@ -2,6 +2,7 @@ import { Button, IconName, Modal, ModalBody, Spacer } from '@viaa/avo2-component
 import { Idp } from '@viaa/avo2-types';
 import React, { type FC, useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { compose, type Dispatch } from 'redux';
 
 import { isProfileComplete } from '../../../authentication/helpers/get-profile-info';
@@ -35,6 +36,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps> = ({
 	setShowNudgingModal,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const location = useLocation();
 
 	// HTTP
 

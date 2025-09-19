@@ -20,18 +20,11 @@ import { connect } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { type Dispatch } from 'redux';
 
-import {
-	getProfileAvatar,
-	getProfileInitials,
-} from '../../../authentication/helpers/get-profile-info';
+import { getProfileAvatar, getProfileInitials, } from '../../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects/redirect-to-external-page';
 import { getLoginStateAction } from '../../../authentication/store/actions';
-import {
-	selectLogin,
-	selectLoginError,
-	selectLoginLoading,
-} from '../../../authentication/store/selectors';
+import { selectLogin, selectLoginError, selectLoginLoading, } from '../../../authentication/store/selectors';
 import { APP_PATH } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { type AppState } from '../../../store';
@@ -97,7 +90,6 @@ const Navigation: FC<NavigationProps> = ({
 				key={item.key}
 				item={item}
 				className={'c-nav__item c-nav__item--i'}
-				exact={item.location === '/'}
 				showActive={false}
 				areDropdownsOpen={areDropdownsOpen}
 				setDropdownsOpen={setDropdownsOpen}
