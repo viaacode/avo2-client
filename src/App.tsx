@@ -75,6 +75,8 @@ const App: FC<
 	const { tHtml } = useTranslation();
 	const location = useLocation();
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
+	const query = new URLSearchParams(location?.search || '');
+	const isPreviewRoute = query.get('preview') === 'true';
 	const isPupilUser = [SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]
 		.map(String)
 		.includes(String(props.commonUser?.userGroup?.id));
@@ -182,6 +184,7 @@ const App: FC<
 			<div
 				className={clsx('o-app', {
 					'o-app--admin': isAdminRoute,
+					'o-app--preview': isPreviewRoute,
 				})}
 			>
 				<ToastContainer
@@ -197,7 +200,7 @@ const App: FC<
 					<SecuredRoute component={Admin} exact={false} path={ADMIN_PATH.DASHBOARD} />
 				) : (
 					<>
-						{!isLoginRoute && <Navigation {...props} />}
+						{!isLoginRoute && <Navigation {...props} isPreviewRoute={isPreviewRoute} />}
 						{renderRoutes()}
 						{!isLoginRoute && <Footer {...props} />}
 						<ACMIDMNudgeModal />

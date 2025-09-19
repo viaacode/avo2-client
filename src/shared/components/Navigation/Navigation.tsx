@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import AvoLogo from '@assets/images/avo-logo-i.svg';
+import { ContentPagePreviewUserRoleSelector } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import {
 	Avatar,
 	Button,
@@ -46,7 +47,9 @@ import { NavigationItem } from './NavigationItem';
 
 import './Navigation.scss';
 
-type NavigationParams = RouteComponentProps;
+type NavigationParams = RouteComponentProps & {
+	isPreviewRoute: boolean;
+};
 
 /**
  * Main navigation bar component
@@ -71,6 +74,7 @@ const Navigation: FC<
 	history,
 	location,
 	match,
+	isPreviewRoute,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -239,7 +243,17 @@ const Navigation: FC<
 
 	return (
 		<>
-			<Navbar background="inverse" position="fixed" placement="top">
+			<Navbar background="inverse" position="fixed" placement="top" autoHeight={true}>
+				{isPreviewRoute && (
+					<Container background="white">
+						<Container mode="horizontal" className="u-d-flex">
+							<ContentPagePreviewUserRoleSelector
+								className="c-content-page-preview-selector"
+								commonUser={commonUser}
+							/>
+						</Container>
+					</Container>
+				)}
 				<Container mode="horizontal">
 					<Toolbar>
 						<ToolbarLeft>
