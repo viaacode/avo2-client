@@ -6,7 +6,7 @@ import React, { type FC, type ReactNode } from 'react';
 import AlertBar from '../../shared/components/AlertBar/AlertBar';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import AssignmentHeading from './AssignmentHeading';
 

@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router';
 
 import { APP_PATH } from '../../constants';
 import { OrderedList } from '../../shared/components/OrderedList/OrderedList';
-import withUser from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './ErrorNoAccess.scss';
 
@@ -14,7 +13,7 @@ interface ErrorNoAccessProps {
 	message: string | ReactNode;
 }
 
-const ErrorNoAccess: FC<ErrorNoAccessProps> = ({ title, message }) => {
+export const ErrorNoAccess: FC<ErrorNoAccessProps> = ({ title, message }) => {
 	const { tText } = useTranslation();
 	const navigateFunc = useNavigate();
 
@@ -49,5 +48,3 @@ const ErrorNoAccess: FC<ErrorNoAccessProps> = ({ title, message }) => {
 		</div>
 	);
 };
-
-export default withUser(ErrorNoAccess) as FC<ErrorNoAccessProps>;

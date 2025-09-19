@@ -14,7 +14,10 @@ export interface CollectionFragmentTitleProps extends BlockItemComponent {
 	canClickHeading?: boolean;
 }
 
-const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({ block, canClickHeading }) => {
+export const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({
+	block,
+	canClickHeading,
+}) => {
 	const heading = (
 		<BlockHeading type="h2" className="c-collection-fragment-title">
 			{block?.use_custom_fields || block?.type === CollectionBlockType.TEXT
@@ -39,5 +42,3 @@ const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({ block, canC
 
 	return heading;
 };
-
-export default CollectionFragmentTitle;

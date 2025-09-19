@@ -18,8 +18,7 @@ import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { formatTimestamp } from '../../../shared/helpers/formatters';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import withUser from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
@@ -36,7 +35,7 @@ import {
 	type UnpublishedItemsTableState,
 } from '../items.types';
 
-const PublishItemsOverview: FC<DefaultSecureRouteProps> = () => {
+export const PublishItemsOverview: FC<DefaultSecureRouteProps> = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
@@ -387,5 +386,3 @@ const PublishItemsOverview: FC<DefaultSecureRouteProps> = () => {
 		</AdminLayout>
 	);
 };
-
-export default withUser(PublishItemsOverview) as FC;

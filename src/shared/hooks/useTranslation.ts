@@ -7,7 +7,7 @@ import {
 import { tHtml } from '../helpers/translate-html';
 import { tText } from '../helpers/translate-text';
 
-const useTranslation = (): Omit<UseTranslationResponse<DefaultNamespace>, 't'> & {
+export const useTranslation = (): Omit<UseTranslationResponse<DefaultNamespace>, 't'> & {
 	tHtml: typeof tHtml;
 	tText: typeof tText;
 } => {
@@ -15,5 +15,3 @@ const useTranslation = (): Omit<UseTranslationResponse<DefaultNamespace>, 't'> &
 	const { t, ...rest } = useTranslationI18n();
 	return { tHtml, tText, ...rest };
 };
-
-export default useTranslation;

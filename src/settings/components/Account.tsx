@@ -12,9 +12,11 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
 import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { redirectToExternalPage } from '../../authentication/helpers/redirects/redirect-to-external-page';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -22,14 +24,14 @@ import { Users_Idps_Enum } from '../../shared/generated/graphql-db-types';
 import { getEnv } from '../../shared/helpers/env';
 import { formatDate } from '../../shared/helpers/formatters';
 import { isPupil } from '../../shared/helpers/is-pupil';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 // const ssumAccountEditPage = getEnv('SSUM_ACCOUNT_EDIT_URL') as string;
 const ssumPasswordEditPage = getEnv('SSUM_PASSWORD_EDIT_URL') as string;
 
-const Account: FC<UserProps> = ({ commonUser }) => {
+export const Account: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const hasTempAccess = commonUser?.tempAccess?.current?.status === 1;
 
@@ -145,4 +147,3 @@ const Account: FC<UserProps> = ({ commonUser }) => {
 		</>
 	);
 };
-export default withUser(Account) as FC;

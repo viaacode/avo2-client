@@ -3,8 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 import React, { type FC } from 'react';
 
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { showReplacementWarning } from '../../helpers/fragment';
 
 import FragmentDetail from './FragmentDetail';
@@ -25,7 +24,7 @@ interface FragmentListProps {
  * @param showDescriptionNextToVideo
  * @constructor
  */
-const FragmentList: FC<FragmentListProps & UserProps> = ({
+export const FragmentList: FC<FragmentListProps> = ({
 	collectionFragments,
 	showDescription,
 	showMetadata,
@@ -75,5 +74,3 @@ const FragmentList: FC<FragmentListProps & UserProps> = ({
 
 	return <ul className="c-collection-list">{renderCollectionFragments()}</ul>;
 };
-
-export default withUser(FragmentList) as FC<FragmentListProps>;

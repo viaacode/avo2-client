@@ -35,8 +35,7 @@ import { extractKlascementError } from '../../shared/helpers/extract-klascement-
 import { formatDate } from '../../shared/helpers/formatters';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
@@ -60,7 +59,7 @@ interface CollectionOrBundleEditMarcomProps {
 	onFocus?: () => void;
 }
 
-const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserProps> = ({
+export const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps> = ({
 	collection,
 	changeCollectionState,
 	onFocus,
@@ -653,5 +652,3 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 		</>
 	);
 };
-
-export default withUser(CollectionOrBundleEditMarcom) as FC<CollectionOrBundleEditMarcomProps>;

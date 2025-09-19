@@ -28,7 +28,7 @@ import {
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects/redirect-to-external-page';
 import { APP_PATH } from '../../../constants';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
 import { ToastService } from '../../services/toast-service';

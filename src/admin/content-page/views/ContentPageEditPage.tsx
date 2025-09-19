@@ -1,13 +1,12 @@
-import type { ContentPageDetailProps } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Flex, Spinner } from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
 import React, { type FC, lazy, Suspense, useState } from 'react';
 import { useMatch, useNavigate } from 'react-router';
-import { compose } from 'redux';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
 import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
@@ -19,12 +18,13 @@ const ContentPageEdit = lazy(() =>
 	}))
 );
 
-const ContentPageDetailPage: FC<ContentPageDetailProps & UserProps> = ({ commonUser }) => {
+const ContentPageDetailPage: FC = () => {
 	const navigateFunc = useNavigate();
 	const match = useMatch<'id', string>(CONTENT_PAGE_PATH.CONTENT_PAGE_EDIT);
 
 	const contentPageId = match?.params.id;
 
+	const commonUser = useAtomValue(commonUserAtom);
 	const [hasUnsavedChanges] = useState<boolean>(true);
 
 	useWarningBeforeUnload({
@@ -55,4 +55,4 @@ const ContentPageDetailPage: FC<ContentPageDetailProps & UserProps> = ({ commonU
 	);
 };
 
-export default compose(withAdminCoreConfig, withUser)(ContentPageDetailPage) as FC;
+export default withAdminCoreConfig(ContentPageDetailPage) as FC;

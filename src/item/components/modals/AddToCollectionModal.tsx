@@ -18,9 +18,11 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { once } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { CollectionService } from '../../../collection/collection.service';
 import { CollectionOrBundle, ContentTypeNumber } from '../../../collection/collection.types';
 import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
@@ -31,12 +33,11 @@ import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
-import ItemVideoDescription from '../ItemVideoDescription';
+import { ItemVideoDescription } from '../ItemVideoDescription';
 
 import './AddToCollectionModal.scss';
 
@@ -47,14 +48,14 @@ interface AddToCollectionModalProps {
 	onClose: () => void;
 }
 
-const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
+export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
 	externalId,
 	itemMetaData,
 	isOpen,
 	onClose,
-	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 	const [createNewCollection, setCreateNewCollection] = useState<boolean>(false);
@@ -525,5 +526,3 @@ const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 
 	return renderAddToCollectionModal();
 };
-
-export default withUser(AddToCollectionModal) as FC<AddToCollectionModalProps>;

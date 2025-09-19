@@ -21,12 +21,11 @@ import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { getFullNameCommonUser } from '../../../shared/helpers/formatters';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import AddOrRemoveLinkedElementsModal, {
 	type AddOrRemove,
@@ -56,7 +55,7 @@ import {
 	renderCollectionsOrBundlesOverviewCellText,
 } from '../helpers/render-collection-columns';
 
-const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ commonUser }) => {
+export const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 
@@ -749,5 +748,3 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ commonUser 
 		</AdminLayout>
 	);
 };
-
-export default withUser(CollectionsOrBundlesOverview) as FC;

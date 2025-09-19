@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 import { CONTENT_LABEL_TO_ROUTE_PARTS } from '../../../assignment/assignment.const';
 import { CONTENT_TYPE_TRANSLATIONS } from '../../../collection/collection.types';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 
 type ParentType = {
 	content_label: string | null;

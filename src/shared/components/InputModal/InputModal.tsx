@@ -13,7 +13,7 @@ import {
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../services/toast-service';
 
 interface InputModalProps {
@@ -30,7 +30,7 @@ interface InputModalProps {
 	emptyMessage?: string;
 }
 
-const InputModal: FC<InputModalProps> = ({
+export const InputModal: FC<InputModalProps> = ({
 	inputValue,
 	inputCallback,
 	isOpen,
@@ -140,5 +140,3 @@ const InputModal: FC<InputModalProps> = ({
 		</Modal>
 	);
 };
-
-export default InputModal;

@@ -8,12 +8,10 @@ interface LoginOptionsDropdownProps {
 	closeDropdown?: () => void;
 }
 
-const LoginOptionsDropdown: FC<LoginOptionsDropdownProps> = ({ closeDropdown = noop }) => {
+export const LoginOptionsDropdown: FC<LoginOptionsDropdownProps> = ({ closeDropdown = noop }) => {
 	return (
 		<div className="m-login-options-dropdown">
 			<LoginOptions onOptionClicked={closeDropdown} />
 		</div>
 	);
 };
-
-export default LoginOptionsDropdown;

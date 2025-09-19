@@ -2,7 +2,7 @@ import { Button, IconName, Spacer } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
 
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	redirectToServerLeerIDLogin,
 	redirectToServerLoginPage,
@@ -17,7 +17,7 @@ interface LoginOptionsForPupilProps {
 	openInNewTab?: boolean;
 }
 
-const LoginOptionsForPupil: FC<LoginOptionsForPupilProps> = ({
+export const LoginOptionsForPupil: FC<LoginOptionsForPupilProps> = ({
 	onOptionClicked = noop,
 	openInNewTab = false,
 }) => {
@@ -75,5 +75,3 @@ const LoginOptionsForPupil: FC<LoginOptionsForPupilProps> = ({
 		</Spacer>
 	));
 };
-
-export default LoginOptionsForPupil;

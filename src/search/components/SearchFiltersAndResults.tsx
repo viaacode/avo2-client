@@ -36,6 +36,7 @@ import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { type UrlUpdateType } from 'use-query-params';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -43,7 +44,7 @@ import { CustomError } from '../../shared/helpers/custom-error';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { useQualityLabels } from '../../shared/hooks/useQualityLabels';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
@@ -54,7 +55,6 @@ import {
 	type BookmarkStatusLookup,
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../shared/services/toast-service';
-import { commonUserAtom, searchAtom } from '../../store/store';
 import { isEducationalUser } from '../../user-item-request-form/helpers/is-educational-user';
 import {
 	DEFAULT_FILTER_STATE,
@@ -65,15 +65,17 @@ import {
 	SearchFilter,
 	type SearchOrderProperty,
 } from '../search.const';
+import { getSearchResultsAtom, searchAtom } from '../search.store';
 import {
 	type FilterState,
 	type SearchFilterFieldValues,
 	type SearchFilterMultiOptions,
 	type SearchFiltersAndResultsProps,
+	type SearchState,
 } from '../search.types';
 
 import SearchFilterControls from './SearchFilterControls';
-import SearchResults from './SearchResults';
+import { SearchResults } from './SearchResults';
 
 export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	enabledFilters,
@@ -88,11 +90,12 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
-	const searchState = useAtomValue(searchAtom);
+	const searchState: SearchState = useAtomValue(searchAtom);
 	const searchResults = searchState.data;
 	const commonUser = useAtomValue(commonUserAtom);
-	const search = useSetAtom(searchAtom);
-
+	const search = useSetAtom(getSearchResultsAtom);
+	const searchResultsLoading = searchState.loading;
+	const searchResultsError = searchState.error;
 	const resultsCount = searchResults?.count ?? 0;
 
 	const urlUpdateType: UrlUpdateType = 'push';
@@ -359,7 +362,7 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 			}
 			const results = searchResults?.results ?? [];
 			const resultItem: Avo.Search.ResultItem | undefined = results.find(
-				(result) => result.uid === uuid
+				(result: Avo.Search.ResultItem | undefined) => result?.uid === uuid
 			);
 			if (!resultItem) {
 				throw new CustomError('Failed to find search result by id');

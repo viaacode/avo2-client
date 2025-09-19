@@ -11,7 +11,7 @@ import {
 import DateRangeDropdown from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { LANGUAGES } from '../../shared/constants';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { SearchFilter } from '../search.const';
 import { type SearchFilterControlsProps, type SearchFilterMultiOptions } from '../search.types';
 
@@ -21,7 +21,7 @@ const languageCodeToLabel = (code: string): string => {
 	return LANGUAGES.nl[code] || code;
 };
 
-const SearchFilterControls: FC<SearchFilterControlsProps> = ({
+export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
 	filterState,
 	handleFilterFieldChange,
 	multiOptions,
@@ -213,5 +213,3 @@ const SearchFilterControls: FC<SearchFilterControlsProps> = ({
 
 	return renderFilters();
 };
-
-export default SearchFilterControls;

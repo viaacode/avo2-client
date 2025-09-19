@@ -36,24 +36,24 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionFragmentType, type Relation } from '../../collection/collection.types';
-import AddToBundleModal from '../../collection/components/modals/AddToBundleModal';
+import { AddToBundleModal } from '../../collection/components/modals/AddToBundleModal';
 import {
 	BundleSortProp,
 	useGetCollectionsOrBundlesContainingFragment,
 } from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
 import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from '../../collection/views/CollectionDetail.const';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorNoAccess } from '../../error/components';
-import ErrorView, { type ErrorViewQueryParams } from '../../error/views/ErrorView';
+import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
+import { ErrorView, type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
-import BlockList from '../../shared/components/BlockList/BlockList';
+import { BlockList } from '../../shared/components/BlockList/BlockList';
 import CommonMetaData from '../../shared/components/CommonMetaData/CommonMetaData';
-import EditButton from '../../shared/components/EditButton/EditButton';
-import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import MoreOptionsDropdownWrapper from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
-import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
-import ShareModal from '../../shared/components/ShareModal/ShareModal';
+import { EditButton } from '../../shared/components/EditButton/EditButton';
+import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
+import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown';
+import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { type ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
@@ -68,8 +68,7 @@ import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { navigate } from '../../shared/helpers/link';
 import { type EducationLevelId } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
@@ -114,7 +113,7 @@ type AssignmentDetailProps = {
 	enabledMetaData: SearchFilter[];
 };
 
-const AssignmentDetail: FC<AssignmentDetailProps & UserProps> = ({
+export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 	commonUser,
 	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
@@ -1196,5 +1195,3 @@ const AssignmentDetail: FC<AssignmentDetailProps & UserProps> = ({
 		</>
 	);
 };
-
-export default withUser(AssignmentDetail) as FC<AssignmentDetailProps>;

@@ -24,5 +24,3 @@ function useResizeObserver<T extends HTMLElement>(
 
 	return ref;
 }
-
-export default useResizeObserver;

@@ -30,8 +30,7 @@ import {
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { isPupil } from '../../shared/helpers/is-pupil';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './LinkedAccounts.scss';
 
@@ -49,7 +48,7 @@ interface DeleteModalToggle {
 }
 
 // This tab is only loaded if user is NOT a pupil (see Settings.tsx) -- no more checks here
-const LinkedAccounts: FC<UserProps> = ({ commonUser }) => {
+const LinkedAccounts: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 
@@ -245,4 +244,3 @@ const LinkedAccounts: FC<UserProps> = ({ commonUser }) => {
 		</>
 	);
 };
-export default withUser(LinkedAccounts) as FC;

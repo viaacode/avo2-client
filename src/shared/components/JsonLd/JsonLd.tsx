@@ -21,7 +21,7 @@ interface JsonLdProps {
 	keywords?: string[] | null;
 }
 
-const JsonLd: FC<JsonLdProps> = ({
+export const JsonLd: FC<JsonLdProps> = ({
 	url,
 	title,
 	description,
@@ -75,5 +75,3 @@ const JsonLd: FC<JsonLdProps> = ({
 	document.head.append(scriptElem);
 	return null;
 };
-
-export default JsonLd;

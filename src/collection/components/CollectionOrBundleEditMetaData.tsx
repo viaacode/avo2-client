@@ -25,7 +25,7 @@ import RichTextEditorWrapper from '../../shared/components/RichTextEditorWrapper
 import ShortDescriptionField from '../../shared/components/ShortDescriptionField/ShortDescriptionField';
 import ThumbnailStillsModal from '../../shared/components/ThumbnailStillsModal/ThumbnailStillsModal';
 import { stripHtml } from '../../shared/helpers/formatters';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
 import { type CollectionOrBundle } from '../collection.types';
@@ -39,7 +39,7 @@ interface CollectionOrBundleEditMetaDataProps {
 	onFocus?: () => void;
 }
 
-const CollectionOrBundleEditMetaData: FC<CollectionOrBundleEditMetaDataProps> = ({
+export const CollectionOrBundleEditMetaData: FC<CollectionOrBundleEditMetaDataProps> = ({
 	type,
 	collection,
 	changeCollectionState,
@@ -284,5 +284,3 @@ const CollectionOrBundleEditMetaData: FC<CollectionOrBundleEditMetaDataProps> = 
 		</>
 	);
 };
-
-export default CollectionOrBundleEditMetaData;

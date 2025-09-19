@@ -23,7 +23,7 @@ interface ConfirmImportToAssignmentWithResponsesModalProps {
 	};
 }
 
-const ConfirmImportToAssignmentWithResponsesModal: FC<
+export const ConfirmImportToAssignmentWithResponsesModal: FC<
 	ConfirmImportToAssignmentWithResponsesModalProps
 > = ({ isOpen, onClose, confirmCallback, translations }) => {
 	const renderConfirmButtons = () => {
@@ -74,5 +74,3 @@ const ConfirmImportToAssignmentWithResponsesModal: FC<
 		</Modal>
 	);
 };
-
-export default ConfirmImportToAssignmentWithResponsesModal;

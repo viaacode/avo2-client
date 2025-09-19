@@ -31,7 +31,7 @@ type EditShareUserRightsModalProps = {
 	assignment?: Partial<Avo.Assignment.Assignment>;
 };
 
-const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
+export const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 	isOpen,
 	handleClose,
 	handleConfirm,
@@ -126,5 +126,3 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 		</Modal>
 	);
 };
-
-export default EditShareUserRightsModal;

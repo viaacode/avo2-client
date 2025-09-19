@@ -27,11 +27,6 @@ import { type Dispatch } from 'redux';
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { SERVER_LOGOUT_PAGE } from '../../authentication/authentication.const';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import {
-	getLoginResponse,
-	getLoginStateAction,
-	setLoginSuccess,
-} from '../../authentication/store/authentication.store.actions';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
 import CommonMetadata from '../../shared/components/CommonMetaData/CommonMetaData';
@@ -43,16 +38,19 @@ import { getEnv } from '../../shared/helpers/env';
 import { formatDate } from '../../shared/helpers/formatters';
 import { groupLomLinks, groupLoms } from '../../shared/helpers/lom';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { OrganisationService } from '../../shared/services/organizations-service';
 import { ToastService } from '../../shared/services/toast-service';
-import store from '../../store';
 import { USERS_IN_SAME_COMPANY_COLUMNS } from '../settings.const';
 import { SettingsService } from '../settings.service';
 import { type UsersInSameCompanyColumn } from '../settings.types';
 
 import './Profile.scss';
+import { commonUserAtom } from '../../authentication/authentication.store';
+
+import { useAtomValue, useSetAtom } from 'jotai';
+
+import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
 
 type FieldPermissionKey =
 	| 'SUBJECTS'
@@ -74,13 +72,10 @@ interface FieldPermissions {
 	ORGANISATION: FieldPermission & { VIEW_USERS_IN_SAME_COMPANY: boolean };
 }
 
-const Profile: FC<
-	{
-		getLoginState: (forceRefetch: boolean) => Dispatch;
-	} & UserProps &
-		DefaultSecureRouteProps
-> = ({ commonUser, getLoginState }) => {
+export const Profile: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
+	const getLoginState = useSetAtom(getLoginStateAtom);
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
 		Avo.EducationOrganization.Organization[]
 	>(commonUser?.educationalOrganisations || []);
@@ -331,9 +326,6 @@ const Profile: FC<
 			}
 
 			// Refresh the login state, so the profile info will be up-to-date
-			const loginResponse: Avo.Auth.LoginResponse = await getLoginResponse();
-			store.dispatch(setLoginSuccess(loginResponse));
-
 			getLoginState(true);
 			ToastService.success(tHtml('settings/components/profile___opgeslagen'));
 			setIsSaving(false);
@@ -725,13 +717,3 @@ const Profile: FC<
 		</>
 	);
 };
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		getLoginState: (forceRefetch: boolean) => {
-			return dispatch(getLoginStateAction(forceRefetch) as any);
-		},
-	};
-};
-
-export default withUser(connect(null, mapDispatchToProps)(Profile)) as FC<any>;

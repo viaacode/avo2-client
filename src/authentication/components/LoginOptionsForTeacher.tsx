@@ -11,7 +11,7 @@ import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import { tHtml } from '../../shared/helpers/translate-html';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	redirectToServerACMIDMLogin,
 	redirectToServerKlascementLogin,
@@ -27,7 +27,7 @@ interface LoginOptionsForTeacherProps {
 	openInNewTab?: boolean;
 }
 
-const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
+export const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
 	onOptionClicked = noop,
 	openInNewTab = false,
 }) => {
@@ -120,5 +120,3 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
 		</Spacer>
 	));
 };
-
-export default LoginOptionsForTeacher;

@@ -9,17 +9,18 @@ import {
 	type TagOption,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { cloneDeep, get } from 'lodash-es';
 import React, { type FC, type MouseEvent, useCallback, useEffect, useState } from 'react';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { ColorSelect } from '../../shared/components/ColorSelect/ColorSelect';
 import { type Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';
 
-import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
+import { ManageAssignmentLabels } from './modals/ManageAssignmentLabels';
 
 import './AssignmentLabels.scss';
 
@@ -34,15 +35,16 @@ type AssignmentLabelsProps = {
 	type?: Avo.Assignment.LabelType;
 };
 
-const AssignmentLabels: FC<AssignmentLabelsProps & UserProps> = ({
+export const AssignmentLabels: FC<AssignmentLabelsProps> = ({
 	id,
 	labels,
-	commonUser,
 	onChange,
 	type = 'LABEL',
 	...props
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
+
 	const dictionary = {
 		placeholder: tText('assignment/views/assignment-edit___voeg-een-vak-of-project-toe'),
 		empty: tText('assignment/views/assignment-edit___geen-vakken-of-projecten-beschikbaar'),
@@ -178,5 +180,3 @@ const AssignmentLabels: FC<AssignmentLabelsProps & UserProps> = ({
 		</>
 	);
 };
-
-export default withUser(AssignmentLabels) as FC<AssignmentLabelsProps>;

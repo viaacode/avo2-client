@@ -3,12 +3,12 @@ import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import LoginOptions from '../components/LoginOptions';
 
 import './RegisterOrLogin.scss';
 
-const RegisterOrLogin: FC = () => {
+export const RegisterOrLogin: FC = () => {
 	const { tText, tHtml } = useTranslation();
 
 	return (
@@ -56,5 +56,3 @@ const RegisterOrLogin: FC = () => {
 		</Container>
 	);
 };
-
-export default RegisterOrLogin;

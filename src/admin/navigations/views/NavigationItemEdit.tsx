@@ -2,12 +2,11 @@ import { Flex, Spinner } from '@viaa/avo2-components';
 import React, { type FC, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
 import { useMatch, useNavigate } from 'react-router';
-import { compose } from 'redux';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
@@ -78,4 +77,4 @@ const NavigationItemEdit: FC = () => {
 	);
 };
 
-export default compose(withAdminCoreConfig)(NavigationItemEdit) as FC;
+export default withAdminCoreConfig(NavigationItemEdit) as FC;

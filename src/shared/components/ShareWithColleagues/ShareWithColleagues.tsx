@@ -25,8 +25,7 @@ import React, { type FC, useMemo, useState } from 'react';
 
 import { tHtml } from '../../helpers/translate-html';
 import { validateEmailAddress } from '../../helpers/validation/email';
-import withUser, { type UserProps } from '../../hocs/withUser';
-import useTranslation from '../../hooks/useTranslation';
+import { useTranslation } from '../../hooks/useTranslation';
 import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
 import { ConfirmModalRememberKey } from '../ConfirmModal/ConfirmModal.consts';
 
@@ -55,7 +54,7 @@ type ShareWithColleaguesProps = {
 	assignment?: Partial<Avo.Assignment.Assignment>;
 };
 
-const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
+export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
 	assignment,
 	availableRights,
 	commonUser,
@@ -520,5 +519,3 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		</>
 	);
 };
-
-export default withUser(ShareWithColleagues) as FC<ShareWithColleaguesProps>;

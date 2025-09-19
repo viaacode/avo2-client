@@ -15,12 +15,14 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { isNil } from 'lodash-es';
 import React, { createRef, type FC, type ReactNode, useEffect, useState } from 'react';
 import { compose } from 'redux';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
-import EmbedContent from '../../../embed-code/components/EmbedContent';
+import { EmbedContent } from '../../../embed-code/components/EmbedContent';
 import { bookWidgetsLogo, smartSchoolLogo } from '../../../embed-code/embed-code.const';
 import {
 	type EmbedCode,
@@ -31,14 +33,13 @@ import { createResource } from '../../../embed-code/helpers/resourceForTrackEven
 import { toSeconds } from '../../helpers/parsers/duration';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
-import withEmbedFlow, { type EmbedFlowProps } from '../../hocs/withEmbedFlow';
-import withUser, { type UserProps } from '../../hocs/withUser';
 import { useTabs } from '../../hooks/useTabs';
 import { trackEvents } from '../../services/event-logging-service';
-import QuickLaneContent from '../QuickLaneContent/QuickLaneContent';
+import { embedFlowAtom } from '../../store/ui.store';
+import { QuickLaneContent } from '../QuickLaneContent/QuickLaneContent';
 import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';
 import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
-import ShareThroughEmailContent from '../ShareThroughEmailContent/ShareThroughEmailContent';
+import { ShareThroughEmailContent } from '../ShareThroughEmailContent/ShareThroughEmailContent';
 
 import './FragmentShareModal.scss';
 
@@ -49,14 +50,14 @@ type FragmentShareModalProps = {
 	showOnlyEmbedTab?: boolean;
 };
 
-const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProps> = ({
+export const FragmentShareModal: FC<FragmentShareModalProps> = ({
 	item,
 	isOpen,
 	onClose,
 	showOnlyEmbedTab,
-	commonUser,
-	isSmartSchoolEmbedFlow,
 }) => {
+	const commonUser = useAtomValue(commonUserAtom);
+	const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom);
 	showOnlyEmbedTab = isSmartSchoolEmbedFlow ? true : showOnlyEmbedTab;
 
 	const initialTab = ShareDropdownTabs.COLLEAGUES;
@@ -389,4 +390,4 @@ const FragmentShareModal: FC<FragmentShareModalProps & UserProps & EmbedFlowProp
 	);
 };
 
-export default compose(withUser, withEmbedFlow)(FragmentShareModal) as FC<FragmentShareModalProps>;
+compose(withUser, withEmbedFlow)(FragmentShareModal) as FC<FragmentShareModalProps>;

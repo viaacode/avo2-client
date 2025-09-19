@@ -46,4 +46,4 @@ I18n.use(XHR)
 		},
 	});
 
-export default I18n;
+I18n;

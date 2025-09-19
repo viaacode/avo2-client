@@ -6,5 +6,3 @@ import CollectionOrBundleEdit from '../../collection/components/CollectionOrBund
 const BundleEdit: FC = () => {
 	return <CollectionOrBundleEdit type={CollectionOrBundle.BUNDLE} />;
 };
-
-export default BundleEdit;

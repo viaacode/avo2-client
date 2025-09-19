@@ -43,7 +43,7 @@ import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-ba
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTabs } from '../../../shared/hooks/useTabs';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
@@ -58,7 +58,7 @@ import {
 	AdminLayoutHeader,
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
+import { DepublishItemModal } from '../components/DepublishItemModal/DepublishItemModal';
 import { mapItemUsedByToQuickLane } from '../helpers';
 import { useGetItemUsedBy } from '../hooks/useGetItemUsedBy';
 import { useGetItemWithRelations } from '../hooks/useGetItemWithRelations';
@@ -72,7 +72,7 @@ import {
 import { ItemsService } from '../items.service';
 import { type ItemUsedByColumnId, type ItemUsedByEntry } from '../items.types';
 
-const ItemDetail: FC = () => {
+export const ItemDetail: FC = () => {
 	const navigateFunc = useNavigate();
 	const match = useMatch<'id', string>(APP_PATH.ITEM_DETAIL.route);
 
@@ -703,5 +703,3 @@ const ItemDetail: FC = () => {
 		</>
 	);
 };
-
-export default ItemDetail;

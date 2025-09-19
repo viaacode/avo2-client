@@ -1,7 +1,7 @@
 import React, { type FC } from 'react';
 import { useBlocker } from 'react-router-dom';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ROUTE_PARTS } from '../../constants';
 import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
 

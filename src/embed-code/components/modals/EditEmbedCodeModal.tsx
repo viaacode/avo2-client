@@ -14,7 +14,7 @@ type EditEmbedCodeModalProps = {
 	onClose: () => void;
 };
 
-const EditEmbedCodeModal: FC<EditEmbedCodeModalProps> = ({
+export const EditEmbedCodeModal: FC<EditEmbedCodeModalProps> = ({
 	embedCode,
 	isOpen,
 	handleUpdate,
@@ -60,4 +60,4 @@ const EditEmbedCodeModal: FC<EditEmbedCodeModalProps> = ({
 	);
 };
 
-export default EditEmbedCodeModal as FC<EditEmbedCodeModalProps>;
+EditEmbedCodeModal as FC<EditEmbedCodeModalProps>;

@@ -20,16 +20,15 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import ContainedInBundlesTable from '../../bundle/components/ContainedInBundlesTable';
 import { type QualityLabel } from '../../collection/collection.types';
 import { formatTimestamp, getFullName } from '../../shared/helpers/formatters';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useGetQualityLabels } from '../../shared/hooks/useGetQualityLabels';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 interface AssignmentAdminFormEditableProps {
 	assignment: Avo.Assignment.Assignment;
 	setAssignment: (newAssignment: Avo.Assignment.Assignment) => void;
 }
 
-const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserProps> = ({
+export const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps> = ({
 	assignment,
 	setAssignment,
 	commonUser,
@@ -238,5 +237,3 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 		</Container>
 	);
 };
-
-export default withUser(AssignmentAdminFormEditable) as FC<AssignmentAdminFormEditableProps>;

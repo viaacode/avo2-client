@@ -5,23 +5,24 @@ import {
 	TableFilterType,
 } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { IconName, type MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
 import { isEqual } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { useQueryParams } from 'use-query-params';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { QuickLaneService } from '../../quick-lane/quick-lane.service';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
-import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
+import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { QUICK_LANE_DEFAULTS, type QuickLaneColumn } from '../../shared/constants/quick-lane';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { copyQuickLaneToClipboard } from '../../shared/helpers/generate-quick-lane-href';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useDebounce } from '../../shared/hooks/useDebounce';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	type QuickLaneFilters,
 	QuickLaneFilterService,
@@ -48,7 +49,7 @@ enum QuickLaneAction {
 
 const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 
-const QuickLaneOverview: FC<QuickLaneOverviewProps & UserProps> = ({ commonUser }) => {
+export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -58,6 +59,7 @@ const QuickLaneOverview: FC<QuickLaneOverviewProps & UserProps> = ({ commonUser 
 	const [quickLanesCount, setQuickLanesCount] = useState<number>(0);
 	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
 	const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+	const commonUser = useAtomValue(commonUserAtom);
 
 	// Set default sorting
 	const [query, setQuery] = useQueryParams({
@@ -378,5 +380,3 @@ const QuickLaneOverview: FC<QuickLaneOverviewProps & UserProps> = ({ commonUser 
 		</>
 	);
 };
-
-export default withUser(QuickLaneOverview) as FC<QuickLaneOverviewProps>;

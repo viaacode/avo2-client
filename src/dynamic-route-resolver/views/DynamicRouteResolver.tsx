@@ -19,15 +19,16 @@ import { getPublishedDate } from '../../admin/content-page/helpers/get-published
 import { ItemsService } from '../../admin/items/items.service';
 import { withAdminCoreConfig } from '../../admin/shared/hoc/with-admin-core-config';
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
+import { loginAtom } from '../../authentication/authentication.store';
+import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page';
-import { getLoginStateAtom } from '../../authentication/store/authentication.store.actions';
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { OrderDirection, SearchFilter } from '../../search/search.const';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import {
 	LoadingErrorLoadedComponent,
@@ -39,10 +40,9 @@ import { getEnv } from '../../shared/helpers/env';
 import { getFullName, stripHtml } from '../../shared/helpers/formatters';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { generateSearchLinkString } from '../../shared/helpers/link';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Locale } from '../../shared/translations/translations.types';
-import { loginAtom } from '../../store/store';
 import {
 	DynamicRouteType,
 	GET_ERROR_MESSAGES,

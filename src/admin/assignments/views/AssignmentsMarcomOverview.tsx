@@ -15,12 +15,11 @@ import { OrderDirection } from '../../../search/search.const';
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
@@ -39,7 +38,7 @@ import {
 } from '../helpers/render-assignment-columns';
 import { useGetAssignmentsWithMarcomForAdminOverview } from '../hooks/useGetAssignmentsWithMarcomForAdminOverview';
 
-const AssignmentMarcomOverview: FC<UserProps> = ({ commonUser }) => {
+const AssignmentMarcomOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
 
 	const [tableState, setTableState] = useState<Partial<AssignmentMarcomTableState>>({});
@@ -377,5 +376,3 @@ const AssignmentMarcomOverview: FC<UserProps> = ({ commonUser }) => {
 		</AdminLayout>
 	);
 };
-
-export default withUser(AssignmentMarcomOverview) as FC;

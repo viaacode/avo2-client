@@ -5,7 +5,7 @@ import { clsx } from 'clsx';
 import { truncate } from 'lodash-es';
 import React, { type FC } from 'react';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { stripHtml } from '../../helpers/formatters';
 import { GET_BLOCK_ICON } from '../BlockList/BlockIconWrapper/BlockIconWrapper.consts';
 
@@ -15,7 +15,7 @@ interface DraggableBlockProps extends DefaultProps {
 	block?: Avo.Core.BlockItemBase;
 }
 
-const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
+export const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
 	const { tHtml } = useTranslation();
 
 	if (!block) {
@@ -58,5 +58,3 @@ const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
 		</Flex>
 	);
 };
-
-export default DraggableBlock;

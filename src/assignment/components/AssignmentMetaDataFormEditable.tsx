@@ -20,7 +20,7 @@ import ThumbnailStillsModal from '../../shared/components/ThumbnailStillsModal/T
 import { getBottomLoms } from '../../shared/helpers/get-bottom-loms';
 import { EducationLevelType } from '../../shared/helpers/lom';
 import { tHtml } from '../../shared/helpers/translate-html';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 type AssignmentMetaDataFormEditableProps = {
 	assignment: Avo.Assignment.Assignment;
@@ -28,7 +28,7 @@ type AssignmentMetaDataFormEditableProps = {
 	onFocus?: () => void;
 };
 
-const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = ({
+export const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = ({
 	assignment,
 	setAssignment,
 	onFocus,
@@ -182,5 +182,3 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 		</>
 	);
 };
-
-export default AssignmentMetaDataFormEditable;

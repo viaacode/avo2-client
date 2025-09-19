@@ -1,7 +1,6 @@
 import { Flex, Spinner } from '@viaa/avo2-components';
 import React, { type FC, lazy, Suspense } from 'react';
 import { useMatch, useNavigate } from 'react-router';
-import { compose } from 'redux';
 
 import { buildLink } from '../../../shared/helpers/build-link';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
@@ -43,4 +42,4 @@ const ContentPageLabelEditPage: FC = () => {
 	);
 };
 
-export default compose(withAdminCoreConfig)(ContentPageLabelEditPage as FC<any>) as FC;
+export default withAdminCoreConfig(ContentPageLabelEditPage) as FC;

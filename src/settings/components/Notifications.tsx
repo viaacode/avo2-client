@@ -2,7 +2,7 @@ import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 const Notifications: FC = () => {
 	const { tText } = useTranslation();
@@ -29,4 +29,4 @@ const Notifications: FC = () => {
 	);
 };
 
-export default Notifications as FC;
+Notifications as FC;

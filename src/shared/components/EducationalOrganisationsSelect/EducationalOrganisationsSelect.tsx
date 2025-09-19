@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 import { pullAllBy, remove, uniq } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers/custom-error';
 import { stringsToTagList } from '../../helpers/strings-to-taglist';
 import { EducationOrganisationService } from '../../services/education-organizations-service';

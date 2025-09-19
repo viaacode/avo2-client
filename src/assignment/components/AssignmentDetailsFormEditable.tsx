@@ -14,18 +14,18 @@ import {
 } from '@viaa/avo2-components';
 import { clsx } from 'clsx';
 import { isAfter, isPast } from 'date-fns';
+import { useAtomValue } from 'jotai';
 import React, { type FC, useCallback } from 'react';
-import { compose } from 'redux';
 
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { endOfAcademicYear } from '../helpers/academic-year';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels';
 import { type AssignmentFields } from '../hooks/assignment-form';
 
-import AssignmentLabels from './AssignmentLabels';
+import { AssignmentLabels } from './AssignmentLabels';
 
 import './AssignmentDetailsForm.scss';
 
@@ -43,10 +43,11 @@ interface AssignmentDetailsFormEditableProps {
 	onFocus?: () => void;
 }
 
-const AssignmentDetailsFormEditable: FC<
-	AssignmentDetailsFormEditableProps & UserProps & DefaultProps
-> = ({ assignment, setAssignment, className, style, commonUser, onFocus }) => {
+export const AssignmentDetailsFormEditable: FC<
+	AssignmentDetailsFormEditableProps & DefaultProps
+> = ({ assignment, setAssignment, className, style, onFocus }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const getId = useCallback(
 		(key: string | number) => `${assignment.id}--${key}`,
@@ -259,7 +260,3 @@ const AssignmentDetailsFormEditable: FC<
 		</div>
 	);
 };
-
-export default compose(withUser)(
-	AssignmentDetailsFormEditable
-) as FC<AssignmentDetailsFormEditableProps>;

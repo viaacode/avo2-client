@@ -1,35 +1,37 @@
 import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { isString, noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useMatch } from 'react-router';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import { AssignmentRetrieveError } from '../../assignment.types';
-import AssignmentMetadata from '../../components/AssignmentMetadata';
+import { AssignmentMetadata } from '../../components/AssignmentMetadata';
 import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
 import { canViewAnAssignment } from '../../helpers/can-view-an-assignment';
 
-import AssignmentResponseEdit from './AssignmentResponseEdit';
+import { AssignmentResponseEdit } from './AssignmentResponseEdit';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 
-const AssignmentResponseEditPage: FC<UserProps> = ({ commonUser }) => {
+export const AssignmentResponseEditPage: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const match = useMatch<'id', string>(APP_PATH.ASSIGNMENT_RESPONSE_EDIT.route);
 
 	const assignmentId = match?.params.id;
 
+	const commonUser = useAtomValue(commonUserAtom);
 	// Data
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
@@ -262,5 +264,3 @@ const AssignmentResponseEditPage: FC<UserProps> = ({ commonUser }) => {
 		</>
 	);
 };
-
-export default withUser(AssignmentResponseEditPage) as FC;

@@ -2,18 +2,19 @@
 import AvoLogo from '@assets/images/avo-logo-button.svg';
 import { Alert, Column, Flex, Grid, Icon, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo } from 'react';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
 import { createResource } from '../../embed-code/helpers/resourceForTrackEvents';
 import { useGetEmbedCode } from '../../embed-code/hooks/useGetEmbedCode';
-import FlowPlayerWrapper from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { type CustomError } from '../../shared/helpers/custom-error';
 import { reorderDate } from '../../shared/helpers/formatters';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 import { tHtml } from '../../shared/helpers/translate-html';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { trackEvents } from '../../shared/services/event-logging-service';
 
 import { EmbedErrorView } from './EmbedErrorView';
@@ -27,13 +28,8 @@ export interface EmbedProps {
 	onReload: () => void;
 }
 
-const Embed: FC<EmbedProps & UserProps> = ({
-	embedId,
-	showMetadata,
-	parentPage,
-	onReload,
-	commonUser,
-}) => {
+export const Embed: FC<EmbedProps> = ({ embedId, showMetadata, parentPage, onReload }) => {
+	const commonUser = useAtomValue(commonUserAtom);
 	const {
 		data: embedCode,
 		isLoading: isLoadingEmbedCode,
@@ -250,5 +246,3 @@ const Embed: FC<EmbedProps & UserProps> = ({
 		</>
 	);
 };
-
-export default withUser(Embed) as FC<EmbedProps>;

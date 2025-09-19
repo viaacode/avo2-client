@@ -13,7 +13,7 @@ import { CustomError } from '../shared/helpers/custom-error';
 import { getEnv } from '../shared/helpers/env';
 import { tText } from '../shared/helpers/translate-text';
 import { ToastService } from '../shared/services/toast-service';
-import { uiAtom } from '../shared/store/ui.store';
+import { historyLocationsAtom } from '../shared/store/ui.store';
 
 import { loginAtom } from './authentication.store';
 import { LoginMessage, type LoginState } from './authentication.types';
@@ -77,7 +77,7 @@ export const getLoginStateAtom = atom<LoginState | null, [boolean], void>(
 		});
 
 		try {
-			const historyLocations: string[] = get(uiAtom)?.historyLocations || [];
+			const historyLocations: string[] = get(historyLocationsAtom) || [];
 			const loginStateResponse = await getLoginResponse(forceRefetch, historyLocations);
 
 			// Check if session is about to expire and show warning toast
@@ -112,12 +112,14 @@ export const getLoginStateAtom = atom<LoginState | null, [boolean], void>(
 
 			set(loginAtom, {
 				...get(loginAtom),
+				loading: false,
 				data: loginStateResponse,
 			});
 		} catch (err) {
 			console.error(new CustomError('failed to check login state', err, { forceRefetch }));
 			set(loginAtom, {
 				...get(loginAtom),
+				loading: false,
 				error: true,
 			});
 		}

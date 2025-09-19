@@ -4,7 +4,7 @@ import { SecuredRoute } from '../authentication/components';
 import { APP_PATH } from '../constants';
 
 import Profile from './components/Profile';
-import { Settings } from './views';
+import { Settings } from './views/Settings';
 
 export const renderSettingsRoutes = (): ReactNode[] => [
 	<SecuredRoute

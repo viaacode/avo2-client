@@ -14,17 +14,15 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, useEffect, useState } from 'react';
-import { compose } from 'redux';
 
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { type ItemTrimInfo } from '../../item.types';
-import ItemVideoDescription from '../ItemVideoDescription';
+import { ItemVideoDescription } from '../ItemVideoDescription';
 
 import './CutFragmentModal.scss';
 
@@ -45,7 +43,7 @@ interface CutFragmentForAssignmentModalProps {
  * @param afterCutCallback
  * @constructor
  */
-const CutFragmentForAssignmentModal: FC<CutFragmentForAssignmentModalProps & UserProps> = ({
+export const CutFragmentForAssignmentModal: FC<CutFragmentForAssignmentModalProps> = ({
 	itemMetaData,
 	isOpen,
 	onClose,
@@ -173,7 +171,3 @@ const CutFragmentForAssignmentModal: FC<CutFragmentForAssignmentModalProps & Use
 
 	return renderCutFragmentModal();
 };
-
-export default compose(withUser)(
-	CutFragmentForAssignmentModal
-) as FC<CutFragmentForAssignmentModalProps>;

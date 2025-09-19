@@ -3,7 +3,7 @@ import { Route } from 'react-router';
 
 import { APP_PATH } from '../../../constants';
 
-import Email from './Email';
+import { Email } from './Email';
 
 export const renderEmailPreferencesLoggedOutRoutes = (): ReactNode[] => [
 	<Route

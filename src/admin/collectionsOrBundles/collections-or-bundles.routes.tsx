@@ -5,10 +5,10 @@ import { SecuredRoute } from '../../authentication/components';
 import { expandArray } from '../../shared/helpers/conditional-expand-array';
 
 import { COLLECTIONS_OR_BUNDLES_PATH } from './collections-or-bundles.const';
-import { CollectionsOrBundlesOverview } from './views';
-import CollectionOrBundleActualisationOverview from './views/CollectionOrBundleActualisationOverview';
-import CollectionOrBundleMarcomOverview from './views/CollectionOrBundleMarcomOverview';
-import CollectionOrBundleQualityCheckOverview from './views/CollectionOrBundleQualityCheckOverview';
+import { CollectionOrBundleActualisationOverview } from './views/CollectionOrBundleActualisationOverview';
+import { CollectionOrBundleMarcomOverview } from './views/CollectionOrBundleMarcomOverview';
+import { CollectionOrBundleQualityCheckOverview } from './views/CollectionOrBundleQualityCheckOverview';
+import { CollectionsOrBundlesOverview } from './views/CollectionsOrBundlesOverview';
 
 export const renderCollectionOrBundleRoutes = (userPermissions: string[]): ReactNode[] =>
 	expandArray(

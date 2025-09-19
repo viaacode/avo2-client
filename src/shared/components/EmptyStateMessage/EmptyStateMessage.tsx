@@ -11,7 +11,7 @@ interface EmptyStateMessageProps {
 	message: ReactNode;
 }
 
-const EmptyStateMessage: FC<EmptyStateMessageProps> = ({
+export const EmptyStateMessage: FC<EmptyStateMessageProps> = ({
 	img = <TeacherSvg />,
 	title,
 	message,
@@ -28,5 +28,3 @@ const EmptyStateMessage: FC<EmptyStateMessageProps> = ({
 		</Container>
 	);
 };
-
-export default EmptyStateMessage;

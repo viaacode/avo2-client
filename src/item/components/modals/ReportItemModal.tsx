@@ -13,13 +13,14 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
 import type { Requests } from 'node-zendesk';
 import React, { type FC, useState } from 'react';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { getFullNameCommonUser } from '../../../shared/helpers/formatters';
 import { tText } from '../../../shared/helpers/translate-text';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ZendeskService } from '../../../shared/services/zendesk-service';
@@ -38,13 +39,9 @@ const GET_RADIO_BUTTON_LABELS = () => ({
 	copyright: tText('item/components/modals/report-item-modal___schending-auteursrechten'),
 });
 
-const ReportItemModal: FC<ReportItemModalProps & UserProps> = ({
-	externalId,
-	isOpen,
-	onClose,
-	commonUser,
-}) => {
+export const ReportItemModal: FC<ReportItemModalProps> = ({ externalId, isOpen, onClose }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [reason, setReason] = useState<Reason | null>(null);
 	const [extraDetails, setExtraDetails] = useState<string>('');
@@ -214,5 +211,3 @@ const ReportItemModal: FC<ReportItemModalProps & UserProps> = ({
 
 	return renderReportItemModal();
 };
-
-export default withUser(ReportItemModal) as FC<ReportItemModalProps>;

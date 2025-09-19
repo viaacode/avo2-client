@@ -21,7 +21,7 @@ export interface EmbedCodeFilterTableCellProps {
 	actions?: (data?: EmbedCodeFilterTableCellProps['data']) => ReactNode;
 }
 
-const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
+export const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 	id,
 	data,
 	onNameClick,
@@ -130,5 +130,3 @@ const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 
 	return null;
 };
-
-export default EmbedCodeFilterTableCell;

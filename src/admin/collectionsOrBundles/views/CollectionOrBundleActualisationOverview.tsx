@@ -5,11 +5,13 @@ import {
 	getFilters,
 } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
@@ -21,12 +23,11 @@ import {
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { NULL_FILTER } from '../../shared/helpers/filters';
@@ -51,9 +52,10 @@ import {
 	renderCollectionsOrBundleActualisationCellText,
 } from '../helpers/render-collection-columns';
 
-const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({ commonUser }) => {
+export const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
 	const [collectionCount, setCollectionCount] = useState<number>(0);
@@ -452,5 +454,3 @@ const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({ 
 		</AdminLayout>
 	);
 };
-
-export default withUser(CollectionOrBundleActualisationOverview) as FC;

@@ -14,6 +14,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
+import { useAtomValue } from 'jotai';
 import { cloneDeep, isEmpty, isNil, noop, set } from 'lodash-es';
 import React, {
 	type FC,
@@ -32,6 +33,7 @@ import { compose } from 'redux';
 import { ItemsService } from '../../admin/items/items.service';
 import { reorderBlockPositions, setBlockPositionToIndex } from '../../assignment/assignment.helper';
 import { AssignmentService } from '../../assignment/assignment.service';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -40,10 +42,10 @@ import { OrderDirection } from '../../search/search.const';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import DraggableBlock from '../../shared/components/DraggableBlock/DraggableBlock';
 import DraggableListModal from '../../shared/components/DraggableList/DraggableListModal';
-import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
-import InActivityWarningModal from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
+import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
+import { InActivityWarningModal } from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
 import InputModal from '../../shared/components/InputModal/InputModal';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
@@ -65,8 +67,7 @@ import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 import {
 	BookmarksViewsPlaysService,
@@ -107,22 +108,19 @@ import {
 	type CollectionState,
 	ReorderType,
 } from './CollectionOrBundleEdit.types';
-import CollectionOrBundleEditActualisation from './CollectionOrBundleEditActualisation';
-import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
-import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
+import { CollectionOrBundleEditActualisation } from './CollectionOrBundleEditActualisation';
+import { CollectionOrBundleEditAdmin } from './CollectionOrBundleEditAdmin';
+import { CollectionOrBundleEditContent } from './CollectionOrBundleEditContent';
 import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
-import CollectionOrBundleEditMarcom from './CollectionOrBundleEditMarcom';
+import { CollectionOrBundleEditMarcom } from './CollectionOrBundleEditMarcom';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
-import CollectionOrBundleEditQualityCheck from './CollectionOrBundleEditQualityCheck';
+import { CollectionOrBundleEditQualityCheck } from './CollectionOrBundleEditQualityCheck';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
 
-const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps & UserProps> = ({
-	type,
-	commonUser,
-}) => {
+export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }) => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const match = useMatch<'id' | 'tabId', string>(APP_PATH.COLLECTION_EDIT.route);
@@ -130,6 +128,7 @@ const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps & UserProps> = ({
 	const collectionId = match?.params.id;
 	const tabId = match?.params.tabId as CollectionCreateUpdateTab | undefined;
 
+	const commonUser = useAtomValue(commonUserAtom);
 	// State
 	const [currentTab, setCurrentTab] = useState<CollectionCreateUpdateTab | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -1919,4 +1918,4 @@ const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps & UserProps> = ({
 	);
 };
 
-export default compose(withUser)(CollectionOrBundleEdit) as FC<CollectionOrBundleEditProps>;
+compose(withUser)(CollectionOrBundleEdit) as FC<CollectionOrBundleEditProps>;

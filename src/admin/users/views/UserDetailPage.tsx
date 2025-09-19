@@ -3,12 +3,10 @@ import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, lazy, Suspense, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
-import { compose } from 'redux';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { UserService } from '../user.service';
@@ -21,7 +19,7 @@ const UserDetail = lazy(() =>
 	}))
 );
 
-const UserDetailPage: FC<UserProps> = ({ commonUser }) => {
+const UserDetailPage: FC = () => {
 	const { tText } = useTranslation();
 	const navigateFunc = useNavigate();
 
@@ -68,4 +66,4 @@ const UserDetailPage: FC<UserProps> = ({ commonUser }) => {
 	);
 };
 
-export default compose(withAdminCoreConfig, withUser)(UserDetailPage) as FC;
+export default withAdminCoreConfig(UserDetailPage) as FC;

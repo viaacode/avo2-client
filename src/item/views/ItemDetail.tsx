@@ -26,6 +26,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { get, isNil, noop } from 'lodash-es';
 import React, {
 	type FC,
@@ -38,7 +39,6 @@ import React, {
 import { Helmet } from 'react-helmet';
 import { useMatch, useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
-import { compose } from 'redux';
 import { JsonParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
 import { ITEMS_PATH } from '../../admin/items/items.const';
@@ -46,7 +46,8 @@ import { ItemsService } from '../../admin/items/items.service';
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { AssignmentService } from '../../assignment/assignment.service';
 import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
-import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
+import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { CONTENT_TYPE_TRANSLATIONS, ContentTypeNumber } from '../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -82,10 +83,8 @@ import { renderSearchLinks } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
-import withEmbedFlow, { type EmbedFlowProps } from '../../shared/hocs/withEmbedFlow';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
@@ -98,11 +97,12 @@ import {
 	ObjectTypesAll,
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
+import { embedFlowAtom } from '../../shared/store/ui.store';
 import { type UnpublishableItem } from '../../shared/types';
-import ItemVideoDescription from '../components/ItemVideoDescription';
-import AddToCollectionModal from '../components/modals/AddToCollectionModal';
-import CutFragmentForAssignmentModal from '../components/modals/CutFragmentForAssignmentModal';
-import ReportItemModal from '../components/modals/ReportItemModal';
+import { ItemVideoDescription } from '../components/ItemVideoDescription';
+import { AddToCollectionModal } from '../components/modals/AddToCollectionModal';
+import { CutFragmentForAssignmentModal } from '../components/modals/CutFragmentForAssignmentModal';
+import { ReportItemModal } from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { type ItemTrimInfo } from '../item.types';
 
@@ -140,8 +140,7 @@ const ITEM_ACTIONS = {
 	importToAssignment: 'importToAssignment',
 };
 
-const ItemDetail: FC<ItemDetailProps & EmbedFlowProps & UserProps> = ({
-	commonUser,
+export const ItemDetail: FC<ItemDetailProps> = ({
 	id,
 	renderDetailLink = defaultRenderDetailLink,
 	renderSearchLink = defaultRenderSearchLink,
@@ -153,12 +152,13 @@ const ItemDetail: FC<ItemDetailProps & EmbedFlowProps & UserProps> = ({
 	renderBookmarkButton = defaultRenderBookmarkButton,
 	renderBookmarkCount = defaultRenderBookmarkCount,
 	renderInteractiveTour = defaultRenderInteractiveTour,
-	isSmartSchoolEmbedFlow,
 }) => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const match = useMatch<'id', string>(ITEMS_PATH.ITEM_DETAIL);
 	const itemId = id || match?.params.id;
+	const commonUser = useAtomValue(commonUserAtom);
+	const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom);
 
 	goToDetailLink = goToDetailLink || defaultGoToDetailLink(navigateFunc);
 	goToSearchLink = goToSearchLink || defaultGoToSearchLink(navigateFunc);
@@ -1106,5 +1106,3 @@ const ItemDetail: FC<ItemDetailProps & EmbedFlowProps & UserProps> = ({
 		</>
 	);
 };
-
-export default compose(withUser, withEmbedFlow)(ItemDetail) as FC<ItemDetailProps>;

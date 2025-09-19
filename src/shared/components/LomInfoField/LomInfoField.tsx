@@ -17,7 +17,7 @@ type LomInfoFieldProps = {
 	) => ReactNode;
 };
 
-const LomInfoField: FC<LomInfoFieldProps> = ({
+export const LomInfoField: FC<LomInfoFieldProps> = ({
 	id,
 	label,
 	lomLabels,
@@ -38,5 +38,3 @@ const LomInfoField: FC<LomInfoFieldProps> = ({
 		</Spacer>
 	);
 };
-
-export default LomInfoField;

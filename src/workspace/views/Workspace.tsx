@@ -21,21 +21,23 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { compact, get, isEmpty } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useMatch, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
-import { AssignmentOverview } from '../../assignment/views';
+import { AssignmentOverview } from '../../assignment/views/AssignmentOverview';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { CollectionOrBundle } from '../../collection/collection.types';
-import CollectionOrBundleOverview from '../../collection/components/CollectionOrBundleOverview';
+import { CollectionOrBundleOverview } from '../../collection/components/CollectionOrBundleOverview';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import EmbedCodeOverview from '../../embed-code/components/EmbedCodeOverview';
-import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import { EmbedCodeOverview } from '../../embed-code/components/EmbedCodeOverview';
+import { ControlledDropdown } from '../../shared/components/ControlledDropdown/ControlledDropdown';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
@@ -43,8 +45,7 @@ import {
 import { buildLink } from '../../shared/helpers/build-link';
 import { navigate } from '../../shared/helpers/link';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { useGetWorkspaceCounts } from '../hooks/useGetWorkspaceCounts';
 import {
 	ASSIGNMENTS_ID,
@@ -59,9 +60,9 @@ import {
 } from '../workspace.const';
 import { type NavTab, type TabFilter, type TabView, type TabViewMap } from '../workspace.types';
 
-import BookmarksOverview from './BookmarksOverview';
-import OrganisationContentOverview from './OrganisationContentOverview';
-import QuickLaneOverview from './QuickLaneOverview';
+import { BookmarksOverview } from './BookmarksOverview';
+import { OrganisationContentOverview } from './OrganisationContentOverview';
+import { QuickLaneOverview } from './QuickLaneOverview';
 
 import './Workspace.scss';
 
@@ -80,7 +81,7 @@ interface WorkspacePermissions {
 	canEmbedItemsOnOtherSites?: boolean;
 }
 
-const Workspace: FC<WorkspaceProps & UserProps> = ({ commonUser }) => {
+export const Workspace: FC<WorkspaceProps> = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const navigateFunc = useNavigate();
@@ -88,6 +89,7 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ commonUser }) => {
 
 	const tabIdFromUrl = match?.params.tabId;
 
+	const commonUser = useAtomValue(commonUserAtom);
 	// State
 	const [activeFilter, setActiveFilter] = useState<ReactText>();
 	const [tabId, setTabId] = useState<string | null>(null);
@@ -489,5 +491,3 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ commonUser }) => {
 		</>
 	);
 };
-
-export default withUser(Workspace) as FC<WorkspaceProps>;

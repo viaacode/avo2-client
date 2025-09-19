@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 
-export const showNudgingModalAtom = atom<boolean | null>(null);
+export const showNudgingModalAtom = atom<boolean>(false);
 export const lastVideoPlayedAtAtom = atom<Date | null>(null);
-export const historyLocationsAtom = atom<string | null>(null);
-export const embedFlowAtom = atom<string[]>([]);
+export const historyLocationsAtom = atom<string[]>([]);
+export const embedFlowAtom = atom<string>('');

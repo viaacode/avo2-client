@@ -9,16 +9,17 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
 import { keys } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { StringParam, useQueryParams } from 'use-query-params';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import {
 	CampaignMonitorService,
 	type NewsletterPreferences,
@@ -35,8 +36,9 @@ const INITIAL_NEWSLETTER_PREFERENCES_STATE = (): NewsletterPreferences => ({
 	ambassador: false,
 });
 
-const Email: FC<UserProps> = ({ commonUser }) => {
+export const Email: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [{ preferenceCenterKey }] = useQueryParams({
 		preferenceCenterKey: StringParam,
@@ -204,5 +206,3 @@ const Email: FC<UserProps> = ({ commonUser }) => {
 		</Container>
 	);
 };
-
-export default withUser(Email) as FC<any>;

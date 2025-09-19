@@ -11,14 +11,14 @@ import { type Avo } from '@viaa/avo2-types';
 import { noop, once } from 'lodash-es';
 import React, { type FC, useState } from 'react';
 
-import ItemVideoDescription from '../../../item/components/ItemVideoDescription';
+import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription';
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
@@ -40,7 +40,7 @@ export interface CutFragmentModalProps {
 	onConfirm?: (update: Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>) => void;
 }
 
-const CutFragmentModal: FC<CutFragmentModalProps> = ({
+export const CutFragmentModal: FC<CutFragmentModalProps> = ({
 	isOpen,
 	itemMetaData,
 	index,
@@ -230,5 +230,3 @@ const CutFragmentModal: FC<CutFragmentModalProps> = ({
 		</Modal>
 	);
 };
-
-export default CutFragmentModal;

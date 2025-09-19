@@ -26,6 +26,7 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { compact, get, noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -34,7 +35,7 @@ import { Link } from 'react-router-dom';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
-import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
+import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionService } from '../../collection/collection.service';
 import {
@@ -49,13 +50,13 @@ import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/C
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
-import CommonMetaData from '../../shared/components/CommonMetaData/CommonMetaData';
+import { CommonMetaData } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
-import EditButton from '../../shared/components/EditButton/EditButton';
-import Html from '../../shared/components/Html/Html';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import JsonLd from '../../shared/components/JsonLd/JsonLd';
-import ShareThroughEmailModal from '../../shared/components/ShareThroughEmailModal/ShareThroughEmailModal';
+import { EditButton } from '../../shared/components/EditButton/EditButton';
+import { Html } from '../../shared/components/Html/Html';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
+import { ShareThroughEmailModal } from '../../shared/components/ShareThroughEmailModal/ShareThroughEmailModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
@@ -69,8 +70,7 @@ import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { formatDate, getFullName, renderAvatar } from '../../shared/helpers/formatters';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
@@ -86,14 +86,14 @@ import { ToastService } from '../../shared/services/toast-service';
 import { BundleAction } from '../bundle.types';
 
 import './BundleDetail.scss';
+import { commonUserAtom } from '../../authentication/authentication.store';
 
 type BundleDetailProps = {
 	id?: string;
 	enabledMetaData: SearchFilter[];
 };
 
-const BundleDetail: FC<BundleDetailProps & UserProps> = ({
-	commonUser,
+export const BundleDetail: FC<BundleDetailProps> = ({
 	id,
 	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
@@ -103,6 +103,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps> = ({
 
 	const bundleIdFromUrl = match?.params.id;
 
+	const commonUser = useAtomValue(commonUserAtom);
 	// State
 	const [bundleId, setBundleId] = useState(id || bundleIdFromUrl);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -950,5 +951,3 @@ const BundleDetail: FC<BundleDetailProps & UserProps> = ({
 
 	return renderPageContent();
 };
-
-export default withUser(BundleDetail) as FC<BundleDetailProps>;

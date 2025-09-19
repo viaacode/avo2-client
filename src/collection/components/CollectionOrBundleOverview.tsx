@@ -18,6 +18,7 @@ import {
 	ToolbarLeft,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { cloneDeep, compact, fromPairs, isNil, noop } from 'lodash-es';
 import React, {
 	type FC,
@@ -29,13 +30,13 @@ import React, {
 } from 'react';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
-import { compose } from 'redux';
 import { ArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
 import { type CollectionsOrBundlesOverviewTableCols } from '../../admin/collectionsOrBundles/collections-or-bundles.types';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { AssignmentService } from '../../assignment/assignment.service';
-import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
+import { CreateAssignmentModal } from '../../assignment/modals/CreateAssignmentModal';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -49,7 +50,7 @@ import {
 	type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
-import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
+import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generated/graphql-db-react-query';
 import { buildLink } from '../../shared/helpers/build-link';
@@ -62,8 +63,7 @@ import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
@@ -79,7 +79,7 @@ import {
 import { deleteCollection, deleteSelfFromCollection } from '../helpers/delete-collection';
 
 import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './CollectionOrBundleOverview.consts';
-import DeleteCollectionModal from './modals/DeleteCollectionModal';
+import { DeleteCollectionModal } from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
 import './CollectionOrBundleOverview.scss';
@@ -90,14 +90,14 @@ interface CollectionOrBundleOverviewProps {
 	onUpdate: () => void | Promise<void>;
 }
 
-const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps> = ({
+export const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps> = ({
 	numberOfItems,
 	type,
 	onUpdate = noop,
-	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	// State
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -973,5 +973,3 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 		/>
 	);
 };
-
-export default compose(withUser)(CollectionOrBundleOverview) as FC<CollectionOrBundleOverviewProps>;

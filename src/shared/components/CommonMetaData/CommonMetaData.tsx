@@ -19,7 +19,7 @@ type CommonMetadataProps = {
 	) => ReactNode;
 };
 
-const CommonMetadata: FC<CommonMetadataProps> = ({
+export const CommonMetadata: FC<CommonMetadataProps> = ({
 	subject,
 	enabledMetaData,
 	renderSearchLink,
@@ -115,5 +115,3 @@ const CommonMetadata: FC<CommonMetadataProps> = ({
 		</>
 	);
 };
-
-export default CommonMetadata;

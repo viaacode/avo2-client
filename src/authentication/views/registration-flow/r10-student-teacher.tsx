@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 
 const StudentTeacher: FC = () => {
 	const { tText, tHtml } = useTranslation();
@@ -56,5 +56,3 @@ const StudentTeacher: FC = () => {
 		</Container>
 	);
 };
-
-export default StudentTeacher;

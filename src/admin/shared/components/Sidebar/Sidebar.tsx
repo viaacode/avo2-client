@@ -7,7 +7,7 @@ import { Link, type Location, NavLink, useLocation } from 'react-router-dom';
 import { APP_PATH } from '../../../../constants';
 import { CustomError } from '../../../../shared/helpers/custom-error';
 import { tText } from '../../../../shared/helpers/translate-text';
-import useTranslation from '../../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { type NavigationItemInfo } from '../../../../shared/types';
 
 import './Sidebar.scss';
@@ -20,7 +20,7 @@ interface SidebarProps {
 	navItems?: NavigationItemInfo[];
 }
 
-const Sidebar: FC<SidebarProps> = ({
+export const Sidebar: FC<SidebarProps> = ({
 	children,
 	className,
 	headerLink,
@@ -125,5 +125,3 @@ const Sidebar: FC<SidebarProps> = ({
 		</div>
 	);
 };
-
-export default Sidebar;

@@ -22,7 +22,7 @@ import React, {
 	useState,
 } from 'react';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { reorderDate } from '../../helpers/formatters';
 import { ToastService } from '../../services/toast-service';
 import { renderDropdownButton } from '../CheckboxDropdownModal/CheckboxDropdownModal';
@@ -53,7 +53,7 @@ const DEFAULT_FUTURE_DATE_RANGE = {
 	lte: '',
 };
 
-const DateRangeDropdown: FC<DateRangeDropdownProps> = ({
+export const DateRangeDropdown: FC<DateRangeDropdownProps> = ({
 	label,
 	id,
 	range = DEFAULT_DATE_RANGE,
@@ -385,5 +385,3 @@ const DateRangeDropdown: FC<DateRangeDropdownProps> = ({
 		</Dropdown>
 	);
 };
-
-export default DateRangeDropdown;

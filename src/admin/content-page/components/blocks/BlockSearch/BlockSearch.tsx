@@ -21,16 +21,16 @@ import { useNavigate } from 'react-router';
 import { CONTENT_TYPE_TRANSLATIONS } from '../../../../../collection/collection.types';
 import { OrderDirection, SearchFilter } from '../../../../../search/search.const';
 import { fetchSearchResults } from '../../../../../search/search.service';
+import { searchAtom } from '../../../../../search/search.store';
+import { type SearchState } from '../../../../../search/search.types';
 import {
 	generateContentLinkString,
 	generateSearchLinkString,
 } from '../../../../../shared/helpers/link';
 import { useDebounce } from '../../../../../shared/hooks/useDebounce';
-import useTranslation from '../../../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { KeyCode } from '../../../../../shared/types';
-import { searchAtom } from '../../../../../store/store';
-import { type SearchState } from '../../../../../store/store.types';
 import './BlockSearch.scss';
 
 const ITEMS_IN_AUTOCOMPLETE = 5;

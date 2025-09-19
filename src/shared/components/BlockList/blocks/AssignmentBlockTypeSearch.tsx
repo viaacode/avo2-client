@@ -22,7 +22,7 @@ import React, { type FC } from 'react';
 
 import { ReactComponent as NewPartSvg } from '../../../../assets/images/nieuw-onderdeel.svg';
 import { CollectionFragmentRichText } from '../../../../collection/components';
-import useTranslation from '../../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { type EducationLevelId } from '../../../helpers/lom';
 
 import {
@@ -39,7 +39,7 @@ export interface AssignmentBlockTypeSearchProps extends DefaultProps {
 	onCollectionButtonClicked: () => void;
 }
 
-const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
+export const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 	block,
 	showCollectionButton,
 	onCollectionButtonClicked,
@@ -115,5 +115,3 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 		</div>
 	);
 };
-
-export default AssignmentBlockTypeSearch;

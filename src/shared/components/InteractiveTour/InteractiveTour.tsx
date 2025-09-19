@@ -1,19 +1,16 @@
 import { Button, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { compact, debounce } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import Joyride, { type CallBackProps } from 'react-joyride';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
 
-import { type SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
-import useTranslation from '../../../shared/hooks/useTranslation';
-import { type AppState } from '../../../store';
-import { selectShowNudgingModal } from '../../../store/selectors';
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { TEAL_BRIGHT } from '../../constants';
 import { CustomError } from '../../helpers/custom-error';
-import withUser, { UserProps } from '../../hocs/withUser';
 import { InteractiveTourService, type TourInfo } from '../../services/interactive-tour.service';
+import { showNudgingModalAtom } from '../../store/ui.store';
 import Html from '../Html/Html';
 
 import { useGetInteractiveTourForPage } from './hooks/useGetInteractiveTourForPage';
@@ -26,18 +23,13 @@ interface InteractiveTourProps {
 	showButton: boolean;
 }
 
-interface UiStateProps {
-	showNudgingModal: boolean;
-}
-
 const INTERACTIVE_TOUR_IN_PROGRESS_CLASS = 'c-interactive-tour--in-progress';
 
-const InteractiveTour: FC<InteractiveTourProps & SecuredRouteProps & UserProps & UiStateProps> = ({
-	showButton,
-	commonUser,
-	showNudgingModal,
-}) => {
+export const InteractiveTour: FC<InteractiveTourProps> = ({ showButton }) => {
 	const { tText } = useTranslation();
+
+	const commonUser = useAtomValue(commonUserAtom);
+	const showNudgingModal = useAtomValue(showNudgingModalAtom);
 
 	// Sometimes we render things with displayDesktopMobile so elements can be loaded but should not initialize since they are hidden for that media query (eg: mobile)
 	const [tourDisplayDates, setTourDisplayDates] = useState<{ [tourId: string]: string } | null>(
@@ -234,12 +226,3 @@ const InteractiveTour: FC<InteractiveTourProps & SecuredRouteProps & UserProps &
 	}
 	return null;
 };
-
-const mapStateToProps = (state: AppState) => ({
-	showNudgingModal: selectShowNudgingModal(state),
-});
-
-export default compose(
-	connect(mapStateToProps),
-	withUser
-)(InteractiveTour) as FC<InteractiveTourProps>;

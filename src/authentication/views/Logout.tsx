@@ -1,14 +1,17 @@
+import { useAtomValue } from 'jotai';
 import { type FC, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { isPupil } from '../../shared/helpers/is-pupil';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
+import { commonUserAtom } from '../authentication.store';
 import { redirectToServerLogoutPage } from '../helpers/redirects';
 
-const Logout: FC<UserProps> = ({ commonUser }) => {
+export const Logout: FC = () => {
 	const location = useLocation();
+
+	const commonUser = useAtomValue(commonUserAtom);
 
 	useEffect(() => {
 		redirectToServerLogoutPage(
@@ -19,5 +22,3 @@ const Logout: FC<UserProps> = ({ commonUser }) => {
 
 	return null;
 };
-
-export default withUser(Logout) as FC;

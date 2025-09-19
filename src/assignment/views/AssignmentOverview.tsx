@@ -26,6 +26,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { cloneDeep, compact, isArray, isNil, noop } from 'lodash-es';
 import React, {
 	type FC,
@@ -48,6 +49,7 @@ import {
 } from 'use-query-params';
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH } from '../../constants';
@@ -72,8 +74,7 @@ import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { KeyCode } from '../../shared/types';
@@ -91,11 +92,11 @@ import {
 	AssignmentType,
 	AssignmentView,
 } from '../assignment.types';
-import AssignmentDeadline from '../components/AssignmentDeadline';
+import { AssignmentDeadline } from '../components/AssignmentDeadline';
 import { deleteAssignment, deleteSelfFromAssignment } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { useGetAssignments } from '../hooks/useGetAssignments';
-import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
+import { DeleteAssignmentModal } from '../modals/DeleteAssignmentModal';
 
 interface AssignmentOverviewProps {
 	onUpdate: () => void | Promise<void>;
@@ -114,13 +115,10 @@ const defaultFiltersAndSort = {
 	sort_order: DEFAULT_SORT_ORDER,
 };
 
-const AssignmentOverview: FC<AssignmentOverviewProps & UserProps> = ({
-	onUpdate = noop,
-
-	commonUser,
-}) => {
+export const AssignmentOverview: FC<AssignmentOverviewProps> = ({ onUpdate = noop }) => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [filterString, setFilterString] = useState<string | undefined>(undefined);
@@ -968,5 +966,3 @@ const AssignmentOverview: FC<AssignmentOverviewProps & UserProps> = ({
 
 	return <div className="m-assignment-overview">{renderAssignmentsView()}</div>;
 };
-
-export default withUser(AssignmentOverview) as FC<AssignmentOverviewProps>;

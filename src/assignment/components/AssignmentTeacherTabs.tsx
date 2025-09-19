@@ -1,13 +1,14 @@
 import { IconName, Pill, PillVariants, type TabProps, Tabs } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { compose } from 'redux';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 
 interface AssignmentTeacherTabsProps {
@@ -17,8 +18,7 @@ interface AssignmentTeacherTabsProps {
 	isManaged: boolean;
 }
 
-const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & UserProps> = ({
-	commonUser,
+export const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps> = ({
 	activeTab,
 	onTabChange,
 	clicksCount,
@@ -26,6 +26,7 @@ const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & UserProps> = ({
 }) => {
 	const { tText } = useTranslation();
 	const location = useLocation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const showAdminTab: boolean = PermissionService.hasAtLeastOnePerm(commonUser, [
 		PermissionName.EDIT_ASSIGNMENT_QUALITY_LABELS,
@@ -109,5 +110,3 @@ const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & UserProps> = ({
 		/>
 	);
 };
-
-export default compose(withUser)(AssignmentTeacherTabs) as FC<AssignmentTeacherTabsProps>;

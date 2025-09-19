@@ -1,13 +1,12 @@
 import { Flex, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
-import { compose } from 'redux';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 
@@ -17,8 +16,9 @@ const UserOverview = lazy(() =>
 	}))
 );
 
-const UserOverviewPage: FC<UserProps> = ({ commonUser }) => {
+export const UserOverviewPage: FC = () => {
 	const { tText } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	return (
 		<AdminLayout
@@ -55,5 +55,3 @@ const UserOverviewPage: FC<UserProps> = ({ commonUser }) => {
 		</AdminLayout>
 	);
 };
-
-export default compose(withAdminCoreConfig, withUser)(UserOverviewPage) as FC;

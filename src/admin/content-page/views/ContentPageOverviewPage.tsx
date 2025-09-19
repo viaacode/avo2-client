@@ -1,14 +1,13 @@
 import { Button, Flex, Spinner } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, lazy, Suspense, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
-import { compose } from 'redux';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
 	AdminLayoutBody,
@@ -26,9 +25,10 @@ const ContentPageOverview = lazy(() =>
 
 const { CREATE_CONTENT_PAGES } = PermissionName;
 
-const ContentPageOverviewPage: FC<UserProps> = ({ commonUser }) => {
+export const ContentPageOverviewPage: FC = () => {
 	const { tText } = useTranslation();
 	const navigateFunc = useNavigate();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const hasPerm = useCallback(
 		(permission: PermissionName) => commonUser?.permissions?.includes(permission),
@@ -89,5 +89,3 @@ const ContentPageOverviewPage: FC<UserProps> = ({ commonUser }) => {
 		</AdminLayout>
 	);
 };
-
-export default compose(withAdminCoreConfig, withUser)(ContentPageOverviewPage) as FC;

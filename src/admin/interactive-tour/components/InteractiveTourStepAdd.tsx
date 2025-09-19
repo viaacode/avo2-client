@@ -3,7 +3,7 @@ import { cloneDeep } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import { generateRandomId } from '../../../shared/helpers/uuid';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { type InteractiveTourAction } from '../helpers/reducers';
 import {
 	type EditableInteractiveTour,
@@ -17,7 +17,7 @@ interface InteractiveTourAddProps {
 	changeInteractiveTourState: (action: InteractiveTourAction) => void;
 }
 
-const InteractiveTourAdd: FC<InteractiveTourAddProps> = ({
+export const InteractiveTourAdd: FC<InteractiveTourAddProps> = ({
 	index,
 	interactiveTour,
 	changeInteractiveTourState,
@@ -75,5 +75,3 @@ const InteractiveTourAdd: FC<InteractiveTourAddProps> = ({
 		</Container>
 	);
 };
-
-export default InteractiveTourAdd;

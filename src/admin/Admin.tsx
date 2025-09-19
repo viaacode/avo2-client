@@ -9,8 +9,7 @@ import {
 	type LoadingInfo,
 } from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../shared/helpers/custom-error';
-import withUser from '../shared/hocs/withUser';
-import useTranslation from '../shared/hooks/useTranslation';
+import { useTranslation } from '../shared/hooks/useTranslation';
 import { ToastService } from '../shared/services/toast-service';
 import { type NavigationItemInfo } from '../shared/types';
 
@@ -18,7 +17,7 @@ import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
 import { renderAdminRoutes } from './admin.routes';
 import { Sidebar } from './shared/components';
 
-const Admin: FC<{ commonUser: Avo.User.CommonUser }> = ({ commonUser }) => {
+export const Admin: FC<{ commonUser: Avo.User.CommonUser }> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -86,5 +85,3 @@ const Admin: FC<{ commonUser: Avo.User.CommonUser }> = ({ commonUser }) => {
 		/>
 	);
 };
-
-export default withUser(Admin) as FC;

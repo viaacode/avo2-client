@@ -25,14 +25,13 @@ import { Link } from 'react-router-dom';
 
 import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
 import { ItemMetadata } from '../../shared/components/BlockItemMetadata/ItemMetadata';
-import FlowPlayerWrapper from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { type CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.types';
 import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
 import { TEAL_BRIGHT } from '../../shared/constants';
 import { stripHtml } from '../../shared/helpers/formatters';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './ItemVideoDescription.scss';
 
@@ -59,7 +58,7 @@ interface ItemVideoDescriptionProps {
 
 const DEFAULT_VIDEO_HEIGHT = 421;
 
-const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps> = ({
+export const ItemVideoDescription: FC<ItemVideoDescriptionProps> = ({
 	itemMetaData,
 	showMetadata = false,
 	enableMetadataLink = false,
@@ -254,5 +253,3 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps> = ({
 		</Grid>
 	);
 };
-
-export default withUser(ItemVideoDescription) as FC<ItemVideoDescriptionProps>;

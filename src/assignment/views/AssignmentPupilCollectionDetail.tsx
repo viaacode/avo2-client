@@ -1,12 +1,14 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Container, Icon, IconName } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useMatch } from 'react-router';
 import { Link } from 'react-router-dom';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { BlockList } from '../../collection/components';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -16,16 +18,17 @@ import {
 	type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../shared/helpers/custom-error';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { AssignmentService } from '../assignment.service';
-import AssignmentHeading from '../components/AssignmentHeading';
-import AssignmentMetadata from '../components/AssignmentMetadata';
+import { AssignmentHeading } from '../components/AssignmentHeading';
+import { AssignmentMetadata } from '../components/AssignmentMetadata';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
 import { toAssignmentResponsesOverview } from '../helpers/links';
 
-const AssignmentPupilCollectionDetail: FC<UserProps> = ({ commonUser }) => {
+export const AssignmentPupilCollectionDetail: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
+
 	const match = useMatch<'assignmentId' | 'responseId', string>(
 		APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route
 	);
@@ -157,7 +160,7 @@ const AssignmentPupilCollectionDetail: FC<UserProps> = ({ commonUser }) => {
 											PermissionName.VIEW_ANY_PUBLISHED_ITEMS
 										),
 									},
-									buildSeriesLink: (serie) =>
+									buildSeriesLink: (serie: string) =>
 										buildGlobalSearchLink({ filters: { serie: [serie] } }),
 									canOpenOriginal: true,
 								},
@@ -200,5 +203,3 @@ const AssignmentPupilCollectionDetail: FC<UserProps> = ({ commonUser }) => {
 		</>
 	);
 };
-
-export default withUser(AssignmentPupilCollectionDetail) as FC;

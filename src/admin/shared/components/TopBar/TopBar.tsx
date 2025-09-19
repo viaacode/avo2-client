@@ -14,7 +14,7 @@ import {
 } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode } from 'react';
 
-import useTranslation from '../../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../../shared/hooks/useTranslation';
 
 import './TopBar.scss';
 
@@ -26,7 +26,13 @@ interface TopbarProps {
 	size?: 'small' | 'medium' | 'large' | 'full-width';
 }
 
-const TopBarComponent: FC<TopbarProps> = ({ onClickBackButton, title, center, right, size }) => {
+export const TopBarComponent: FC<TopbarProps> = ({
+	onClickBackButton,
+	title,
+	center,
+	right,
+	size,
+}) => {
 	const { tText } = useTranslation();
 
 	return (

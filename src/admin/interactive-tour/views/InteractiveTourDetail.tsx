@@ -1,7 +1,15 @@
-import { Button, ButtonToolbar, Container, HeaderButtons, Spacer, Table, } from '@viaa/avo2-components';
+import {
+	Button,
+	ButtonToolbar,
+	Container,
+	HeaderButtons,
+	Spacer,
+	Table,
+} from '@viaa/avo2-components';
 import { get } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { useMatch, useNavigate } from 'react-router';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
@@ -13,18 +21,24 @@ import {
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { navigate } from '../../../shared/helpers/link';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
-import { renderDateDetailRows, renderDetailRow, renderSimpleDetailRows, } from '../../shared/helpers/render-detail-fields';
+import {
+	renderDateDetailRows,
+	renderDetailRow,
+	renderSimpleDetailRows,
+} from '../../shared/helpers/render-detail-fields';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import {
+	AdminLayoutBody,
+	AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
 import { type InteractiveTour } from '../interactive-tour.types';
-import { useMatch, useNavigate } from 'react-router';
 
-const InteractiveTourDetail: FC = () => {
+export const InteractiveTourDetail: FC = () => {
 	const navigateFunc = useNavigate();
 	const match = useMatch<'id', string>(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL);
 
@@ -253,5 +267,3 @@ const InteractiveTourDetail: FC = () => {
 		</>
 	);
 };
-
-export default InteractiveTourDetail;

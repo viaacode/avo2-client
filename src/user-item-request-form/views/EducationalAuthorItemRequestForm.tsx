@@ -14,7 +14,6 @@ import type { Requests } from 'node-zendesk';
 import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
-import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
@@ -25,8 +24,7 @@ import { DOC_TYPES } from '../../shared/helpers/files';
 import { getFullNameCommonUser } from '../../shared/helpers/formatters';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { validateForm } from '../../shared/helpers/validate-form';
-import withUser from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ZendeskService } from '../../shared/services/zendesk-service';
@@ -47,7 +45,7 @@ interface FormValues {
 	educationLevels: Avo.Lom.LomField[];
 }
 
-const EducationalAuthorItemRequestForm: FC<EducationalAuthorItemRequestFormProps> = ({
+export const EducationalAuthorItemRequestForm: FC<EducationalAuthorItemRequestFormProps> = ({
 	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
@@ -316,7 +314,3 @@ const EducationalAuthorItemRequestForm: FC<EducationalAuthorItemRequestFormProps
 		</Container>
 	);
 };
-
-export default compose(withUser)(
-	EducationalAuthorItemRequestForm
-) as FC<EducationalAuthorItemRequestFormProps>;

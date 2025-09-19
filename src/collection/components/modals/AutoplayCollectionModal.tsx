@@ -3,12 +3,12 @@ import { Flex, Modal, ModalBody, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 
-import FlowPlayerWrapper from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { fetchPlayerTickets } from '../../../shared/services/player-ticket-service';
 
 import './AutoplayCollectionModal.scss';
@@ -19,7 +19,7 @@ interface AutoplayCollectionModalProps {
 	collectionFragments: Avo.Collection.Fragment[];
 }
 
-const AutoplayCollectionModal: FC<AutoplayCollectionModalProps> = ({
+export const AutoplayCollectionModal: FC<AutoplayCollectionModalProps> = ({
 	isOpen,
 	onClose,
 	collectionFragments,
@@ -96,5 +96,3 @@ const AutoplayCollectionModal: FC<AutoplayCollectionModalProps> = ({
 		</Modal>
 	);
 };
-
-export default AutoplayCollectionModal;

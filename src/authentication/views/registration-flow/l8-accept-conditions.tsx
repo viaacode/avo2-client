@@ -20,11 +20,11 @@ import {
 	type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { Locale } from '../../../shared/translations/translations.types';
-import { acceptConditionsAtom, commonUserAtom, loginAtom } from '../../../store/store';
+import { acceptConditionsAtom, commonUserAtom, loginAtom } from '../../authentication.store';
 import { redirectToClientPage } from '../../helpers/redirects/redirect-to-client-page';
 
 import { AcceptElementaryPupilConditions } from './accept-elementary-pupil-conditions';

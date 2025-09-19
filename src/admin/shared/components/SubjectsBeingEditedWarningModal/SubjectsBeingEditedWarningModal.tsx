@@ -5,7 +5,7 @@ import React, { type FC, type ReactNode } from 'react';
 import { type APP_PATH } from '../../../../constants';
 import { ConfirmModal } from '../../../../shared/components/ConfirmModal/ConfirmModal';
 import { buildLink } from '../../../../shared/helpers/build-link';
-import useTranslation from '../../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { type ValueOf } from '../../../../shared/types';
 
 import './SubjectsBeingEditedWarningModal.scss';
@@ -21,7 +21,7 @@ interface SubjectsBeingEditedWarningModalProps {
 	subjects: Avo.Share.EditStatus[];
 }
 
-const SubjectsBeingEditedWarningModal: FC<SubjectsBeingEditedWarningModalProps> = ({
+export const SubjectsBeingEditedWarningModal: FC<SubjectsBeingEditedWarningModalProps> = ({
 	onClose = noop,
 	isOpen,
 	title,
@@ -71,5 +71,3 @@ const SubjectsBeingEditedWarningModal: FC<SubjectsBeingEditedWarningModalProps> 
 		/>
 	);
 };
-
-export default SubjectsBeingEditedWarningModal;

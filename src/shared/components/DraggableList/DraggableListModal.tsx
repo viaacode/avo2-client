@@ -3,7 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { type FC, type ReactNode, useState } from 'react';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 
 import DraggableList from './DraggableList';
 
@@ -17,7 +17,7 @@ export interface DraggableListModalProps {
 	size?: 'small' | 'medium' | 'large' | 'extra-large' | 'fullscreen' | 'fullwidth' | 'auto';
 }
 
-const DraggableListModal: FC<DraggableListModalProps> = ({
+export const DraggableListModal: FC<DraggableListModalProps> = ({
 	items = [],
 	renderItem,
 	isOpen,
@@ -76,5 +76,3 @@ const DraggableListModal: FC<DraggableListModalProps> = ({
 		</Modal>
 	);
 };
-
-export default DraggableListModal;

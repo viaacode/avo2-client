@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { navigate } from '../../shared/helpers/link';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './LinkYourAccount.scss';
 
@@ -93,5 +93,3 @@ const LinkYourAccount: FC = () => {
 		</Container>
 	);
 };
-
-export default LinkYourAccount;

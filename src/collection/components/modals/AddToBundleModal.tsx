@@ -16,11 +16,12 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
@@ -42,15 +43,15 @@ interface AddToBundleModalProps {
 	onClose: () => void;
 }
 
-const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
+export const AddToBundleModal: FC<AddToBundleModalProps> = ({
 	fragmentId,
 	fragmentInfo,
 	fragmentType,
 	isOpen,
 	onClose,
-	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 	const [createNewBundle, setCreateNewBundle] = useState<boolean>(false);
@@ -393,5 +394,3 @@ const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
 		</Modal>
 	);
 };
-
-export default withUser(AddToBundleModal) as FC<AddToBundleModalProps>;

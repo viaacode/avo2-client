@@ -15,7 +15,7 @@ import {
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
-import useTranslation from '../../hooks/useTranslation';
+import { useTranslation } from '../../hooks/useTranslation';
 
 import { type ConfirmModalRememberKey } from './ConfirmModal.consts';
 

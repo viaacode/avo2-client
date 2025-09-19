@@ -3,7 +3,7 @@ import React, { type ReactNode } from 'react';
 import { SecuredRoute } from '../authentication/components';
 import { APP_PATH } from '../constants';
 
-import BundleDetail from './views/BundleDetail';
+import { BundleDetail } from './views/BundleDetail';
 import BundleEdit from './views/BundleEdit';
 
 export const renderBundleRoutes = (): ReactNode[] => [

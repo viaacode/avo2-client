@@ -24,8 +24,7 @@ import { type Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { generateRandomId } from '../../../shared/helpers/uuid';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { MAX_LABEL_LENGTH } from '../../assignment.const';
@@ -41,7 +40,7 @@ export interface ManageAssignmentLabelsProps {
 	type?: Avo.Assignment.LabelType;
 }
 
-const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
+export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
 	isOpen,
 	onClose,
 	type,
@@ -352,5 +351,3 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 		</Modal>
 	);
 };
-
-export default withUser(ManageAssignmentLabels) as FC<ManageAssignmentLabelsProps>;

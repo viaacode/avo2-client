@@ -1,10 +1,10 @@
 import { Button, IconName, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
 import { Idp } from '@viaa/avo2-types';
+import { useAtom, useAtomValue } from 'jotai';
 import React, { type FC, useCallback, useEffect } from 'react';
-import { connect } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { compose, type Dispatch } from 'redux';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { isProfileComplete } from '../../../authentication/helpers/get-profile-info';
 import {
 	getLoginCounter,
@@ -12,31 +12,22 @@ import {
 } from '../../../authentication/helpers/login-counter-before-nudging';
 import { redirectToServerLinkAccount } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
-import useTranslation from '../../../shared/hooks/useTranslation';
-import { type AppState } from '../../../store';
-import { setShowNudgingModalAction } from '../../../store/actions';
-import { selectShowNudgingModal } from '../../../store/selectors';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL, ROUTE_PARTS } from '../../constants';
 import { CustomError } from '../../helpers/custom-error';
 import { isPupil } from '../../helpers/is-pupil';
-import withUser, { type UserProps } from '../../hocs/withUser';
 import { ProfilePreferencesService } from '../../services/profile-preferences.service';
 import { ProfilePreferenceKey } from '../../services/profile-preferences.types';
+import { showNudgingModalAtom } from '../../store/ui.store';
 
 import './ACMIDMNudgeModal.scss';
 
-interface UiStateProps {
-	showNudgingModal: boolean;
-	setShowNudgingModal: (showModal: boolean) => Dispatch;
-}
-
-const ACMIDMNudgeModal: FC<UserProps & UiStateProps> = ({
-	commonUser,
-	showNudgingModal,
-	setShowNudgingModal,
-}) => {
+export const ACMIDMNudgeModal: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
+
+	const commonUser = useAtomValue(commonUserAtom);
+	const [showNudgingModal, setShowNudgingModal] = useAtom(showNudgingModalAtom);
 
 	// HTTP
 
@@ -263,17 +254,3 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps> = ({
 		</Modal>
 	);
 };
-
-const mapStateToProps = (state: AppState) => ({
-	showNudgingModal: selectShowNudgingModal(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-	setShowNudgingModal: (showModal: boolean) =>
-		dispatch(setShowNudgingModalAction(showModal) as any),
-});
-
-export default compose(
-	connect(mapStateToProps, mapDispatchToProps),
-	withUser
-)(ACMIDMNudgeModal) as FC;

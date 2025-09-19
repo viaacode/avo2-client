@@ -3,10 +3,10 @@ import React, { type ReactNode } from 'react';
 import SecuredRoute from '../authentication/components/SecuredRoute';
 import { APP_PATH } from '../constants';
 
-import AssignmentDetailSwitcher from './views/AssignmentDetailSwitcher';
-import AssignmentEdit from './views/AssignmentEdit';
-import AssignmentPupilCollectionDetail from './views/AssignmentPupilCollectionDetail';
-import AssignmentResponseAdminEdit from './views/AssignmentResponseEdit/AssignmentResponseAdminEdit';
+import { AssignmentDetailSwitcher } from './views/AssignmentDetailSwitcher';
+import { AssignmentEdit } from './views/AssignmentEdit';
+import { AssignmentPupilCollectionDetail } from './views/AssignmentPupilCollectionDetail';
+import { AssignmentResponseAdminEdit } from './views/AssignmentResponseEdit/AssignmentResponseAdminEdit';
 
 export const renderAssignmentRoutes = (): ReactNode[] => [
 	<SecuredRoute

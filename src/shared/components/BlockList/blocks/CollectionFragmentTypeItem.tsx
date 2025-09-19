@@ -10,7 +10,7 @@ import CollectionFragmentFlowPlayer, {
 import CollectionFragmentTitle, {
 	type CollectionFragmentTitleProps,
 } from '../../../../collection/components/CollectionFragmentTitle';
-import useTranslation from '../../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { ItemMetadata } from '../../BlockItemMetadata/ItemMetadata';
 import CollapsibleColumn from '../../CollapsibleColumn/CollapsibleColumn';
 import TextWithTimestamps from '../../TextWithTimestamp/TextWithTimestamps';
@@ -25,7 +25,7 @@ export interface CollectionFragmentTypeItemProps extends DefaultProps {
 	canOpenOriginal?: boolean;
 }
 
-const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
+export const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	block,
 	title,
 	buildSeriesLink,
@@ -124,5 +124,3 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 		</div>
 	);
 };
-
-export default CollectionFragmentTypeItem;

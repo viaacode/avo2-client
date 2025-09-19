@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 import { Link, useLocation } from 'react-router-dom';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { StamboekInput } from '../../components/StamboekInput';
 import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
 
@@ -108,5 +108,3 @@ const RegisterStamboek: FC = () => {
 		</Container>
 	);
 };
-
-export default RegisterStamboek;

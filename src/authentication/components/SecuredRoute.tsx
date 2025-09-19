@@ -4,11 +4,11 @@ import React, { type ComponentType, type FC, useEffect } from 'react';
 import { Navigate, Route, useNavigate } from 'react-router';
 import { type Dispatch } from 'redux';
 
-import AssignmentDetailSwitcher from '../../assignment/views/AssignmentDetailSwitcher';
+import { AssignmentDetailSwitcher } from '../../assignment/views/AssignmentDetailSwitcher';
 import { APP_PATH } from '../../constants';
-import QuickLaneDetail from '../../quick-lane/views/QuickLaneDetail';
+import { QuickLaneDetail } from '../../quick-lane/views/QuickLaneDetail';
 import { buildLink } from '../../shared/helpers/build-link';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { LoginMessage } from '../authentication.types';
 import { isProfileComplete } from '../helpers/get-profile-info';
 import { LoginOptionsTabs, setPreferredLoginOption } from '../helpers/login-options-preferred-tab';
@@ -31,7 +31,7 @@ export interface SecuredRouteProps {
 	path?: string;
 }
 
-const SecuredRoute: FC<
+export const SecuredRoute: FC<
 	SecuredRouteProps & {
 		getLoginState: () => Dispatch;
 		loginState: Avo.Auth.LoginResponse | null;
@@ -110,5 +110,3 @@ const SecuredRoute: FC<
 
 	return <Route {...(path ? { path } : {})} element={<SecureRouteBody />} />;
 };
-
-export default SecuredRoute;

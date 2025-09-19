@@ -27,26 +27,26 @@ import { Link } from 'react-router-dom';
 import { BooleanParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
 import { AssignmentService } from '../../assignment/assignment.service';
-import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
-import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
-import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
+import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
+import { CreateAssignmentModal } from '../../assignment/modals/CreateAssignmentModal';
+import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
+import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
-import CommonMetaData from '../../shared/components/CommonMetaData/CommonMetaData';
-import EditButton from '../../shared/components/EditButton/EditButton';
-import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import JsonLd from '../../shared/components/JsonLd/JsonLd';
+import { CommonMetaData } from '../../shared/components/CommonMetaData/CommonMetaData';
+import { EditButton } from '../../shared/components/EditButton/EditButton';
+import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
 import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import MoreOptionsDropdownWrapper from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
+import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
-import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
+import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
-import ShareModal from '../../shared/components/ShareModal/ShareModal';
+import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
@@ -64,8 +64,7 @@ import { getFullName } from '../../shared/helpers/formatters/avatar';
 import { generateContentLinkString, navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { isUuid } from '../../shared/helpers/uuid';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
@@ -89,8 +88,8 @@ import {
 	type Relation,
 } from '../collection.types';
 import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
-import AddToBundleModal from '../components/modals/AddToBundleModal';
-import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
+import { AddToBundleModal } from '../components/modals/AddToBundleModal';
+import { DeleteCollectionModal } from '../components/modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from '../components/modals/DeleteContributorFromCollectionModal';
 import {
 	onAddContributor,
@@ -138,8 +137,7 @@ type CollectionDetailProps = {
 	enabledMetaData: SearchFilter[];
 };
 
-const CollectionDetail: FC<CollectionDetailProps & UserProps> = ({
-	commonUser,
+export const CollectionDetail: FC<CollectionDetailProps> = ({
 	id,
 	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
@@ -149,6 +147,7 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps> = ({
 
 	const collectionIdFromUrl: string | undefined = match?.params.id;
 
+	const commonUser = useAtomValue(commonUserAtom);
 	// State
 	const [collectionId, setCollectionId] = useState(id || collectionIdFromUrl);
 
@@ -1659,5 +1658,3 @@ const CollectionDetail: FC<CollectionDetailProps & UserProps> = ({
 
 	return renderPageContent();
 };
-
-export default withUser(CollectionDetail) as FC<CollectionDetailProps>;

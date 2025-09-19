@@ -21,6 +21,7 @@ import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { APP_PATH } from '../../constants';
 import {
 	LoadingErrorLoadedComponent,
@@ -31,9 +32,8 @@ import { CustomError } from '../../shared/helpers/custom-error';
 import { formatDate, renderAvatar } from '../../shared/helpers/formatters';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks/useTableSort';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import {
@@ -47,6 +47,7 @@ import { type AssignmentTableColumns } from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
 
 import './AddItemsModals.scss';
+import { useAtomValue } from 'jotai';
 
 interface ImportToAssignmentModalProps {
 	isOpen: boolean;
@@ -60,8 +61,7 @@ interface ImportToAssignmentModalProps {
 	};
 }
 
-const ImportToAssignmentModal: FC<ImportToAssignmentModalProps & UserProps> = ({
-	commonUser,
+export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
 	isOpen,
 	onClose,
 	importToAssignmentCallback,
@@ -69,6 +69,7 @@ const ImportToAssignmentModal: FC<ImportToAssignmentModalProps & UserProps> = ({
 	translations,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [createWithDescription, setCreateWithDescription] = useState<boolean>(false);
@@ -320,5 +321,3 @@ const ImportToAssignmentModal: FC<ImportToAssignmentModalProps & UserProps> = ({
 		</Modal>
 	);
 };
-
-export default withUser(ImportToAssignmentModal) as FC<ImportToAssignmentModalProps>;

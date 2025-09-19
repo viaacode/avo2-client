@@ -28,7 +28,7 @@ export interface BlockListProps {
 	};
 }
 
-const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
+export const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 	const renderCollectionFragment = (block: Avo.Core.BlockItemBase) => {
 		const backgroundColor = getBlockColor(block as Avo.Assignment.Block);
 
@@ -101,5 +101,3 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 
 	return <>{blocks.map(renderCollectionFragment)}</>;
 };
-
-export default BlockList;

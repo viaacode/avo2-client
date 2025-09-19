@@ -24,8 +24,7 @@ import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { PHOTO_TYPES } from '../../../shared/helpers/files';
 import { navigate } from '../../../shared/helpers/link';
-import { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
@@ -35,7 +34,7 @@ import {
 import { useGetProfileById } from '../hooks/use-get-profile-by-id';
 import { USER_PATH } from '../user.const';
 
-const UserEditPage: FC<UserProps> = () => {
+export const UserEditPage: FC = () => {
 	const { tText } = useTranslation();
 	const navigateFunc = useNavigate();
 	const match = useMatch<'id', string>(USER_PATH.USER_EDIT);
@@ -244,5 +243,3 @@ const UserEditPage: FC<UserProps> = () => {
 		</>
 	);
 };
-
-export default UserEditPage as FC;

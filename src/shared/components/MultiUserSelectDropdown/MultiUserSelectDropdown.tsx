@@ -17,7 +17,7 @@ import React, { type FC, type ReactText, useCallback, useEffect, useState } from
 
 import { ContentPicker } from '../../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../../admin/shared/types';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers/custom-error';
 import { ToastService } from '../../services/toast-service';
 

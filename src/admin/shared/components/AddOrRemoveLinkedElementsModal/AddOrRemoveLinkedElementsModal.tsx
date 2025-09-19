@@ -16,7 +16,7 @@ import {
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useState } from 'react';
 
-import useTranslation from '../../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../../shared/hooks/useTranslation';
 
 export type AddOrRemove = 'add' | 'remove';
 
@@ -30,7 +30,7 @@ interface AddOrRemoveLinkedElementsProps {
 	callback: (addOrRemove: AddOrRemove, selectedLabels: TagInfo[]) => void;
 }
 
-const AddOrRemoveLinkedElementsModal: FC<AddOrRemoveLinkedElementsProps> = ({
+export const AddOrRemoveLinkedElementsModal: FC<AddOrRemoveLinkedElementsProps> = ({
 	title,
 	addOrRemoveLabel,
 	contentLabel,
@@ -119,5 +119,3 @@ const AddOrRemoveLinkedElementsModal: FC<AddOrRemoveLinkedElementsProps> = ({
 		</Modal>
 	);
 };
-
-export default AddOrRemoveLinkedElementsModal;

@@ -6,6 +6,7 @@ import {
 } from '@meemoo/react-components';
 import { Icon, IconName, MediaCard, MediaCardThumbnail, Thumbnail } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { get, isNil, isString, throttle } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 import React, {
@@ -16,14 +17,12 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { connect } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { compose, type Dispatch } from 'redux';
 import { useQueryParam } from 'use-query-params';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH } from '../../../constants';
-import { setLastVideoPlayedAtAction } from '../../../store/actions';
 import { CustomError } from '../../helpers/custom-error';
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { getEnv } from '../../helpers/env';
@@ -33,11 +32,11 @@ import { isMobileWidth } from '../../helpers/media-query';
 import { toSeconds } from '../../helpers/parsers/duration';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
-import withUser, { type UserProps } from '../../hocs/withUser';
 import { BookmarksViewsPlaysService } from '../../services/bookmarks-views-plays-service';
 import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
 import { ToastService } from '../../services/toast-service';
+import { lastVideoPlayedAtAtom } from '../../store/ui.store';
 
 import { type FlowPlayerWrapperProps } from './FlowPlayerWrapper.types';
 
@@ -47,11 +46,11 @@ import { type FlowPlayerWrapperProps } from './FlowPlayerWrapper.types';
  * @param props
  * @constructor
  */
-const FlowPlayerWrapper: FC<
-	FlowPlayerWrapperProps &
-		UserProps & { setLastVideoPlayedAt: (lastVideoPlayedAt: Date | null) => Dispatch }
-> = ({ placeholder = true, ...props }) => {
+export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({ placeholder = true, ...props }) => {
 	const navigateFunc = useNavigate();
+
+	const commonUser = useAtomValue(commonUserAtom);
+	const setLastVideoPlayedAt = useSetAtom(lastVideoPlayedAtAtom);
 
 	const item: Avo.Item.Item | undefined = props.item;
 	const poster: string | undefined = props.poster || get(item, 'thumbnail_path');
@@ -117,10 +116,10 @@ const FlowPlayerWrapper: FC<
 			item.uid &&
 			item.external_id &&
 			!triggeredForUrlRef.current[playingSrc] &&
-			props.commonUser &&
+			commonUser &&
 			props.trackPlayEvent
 		) {
-			BookmarksViewsPlaysService.action('play', 'item', item.uid, props.commonUser).catch(
+			BookmarksViewsPlaysService.action('play', 'item', item.uid, commonUser).catch(
 				(err: unknown) => {
 					console.error(
 						new CustomError('Failed to track item play event', err, {
@@ -135,7 +134,7 @@ const FlowPlayerWrapper: FC<
 					object_type: 'item',
 					action: 'play',
 				},
-				props.commonUser
+				commonUser
 			);
 
 			if (props.onPlay) {
@@ -161,7 +160,7 @@ const FlowPlayerWrapper: FC<
 			// Keep track of the last time a video was played in the redux store
 			// Since it influences when we want to show the "you are inactive" modal for editing collections and assignments
 			// https://meemoo.atlassian.net/browse/AVO-2983
-			props.setLastVideoPlayedAt(new Date());
+			setLastVideoPlayedAt(new Date());
 		},
 		30000,
 		{ leading: true, trailing: true }
@@ -171,7 +170,7 @@ const FlowPlayerWrapper: FC<
 		setClickedThumbnail(true);
 
 		if (!src) {
-			if (!props.commonUser) {
+			if (!commonUser) {
 				const anchorId = evt.currentTarget
 					.closest('[data-anchor]')
 					?.getAttribute('data-anchor');
@@ -418,15 +417,3 @@ const FlowPlayerWrapper: FC<
 		</>
 	);
 };
-
-const mapStateToProps = () => ({});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-	setLastVideoPlayedAt: (lastVideoPlayedAt: Date | null) =>
-		dispatch(setLastVideoPlayedAtAction(lastVideoPlayedAt) as any),
-});
-
-export default compose(
-	connect(mapStateToProps, mapDispatchToProps),
-	withUser
-)(FlowPlayerWrapper) as FC<FlowPlayerWrapperProps>;

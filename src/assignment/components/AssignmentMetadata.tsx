@@ -3,7 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import React, { type FC } from 'react';
 
 import { formatTimestamp } from '../../shared/helpers/formatters';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './AssignmentMetadata.scss';
 
@@ -13,7 +13,7 @@ type AssignmentMetadataProps = {
 	who: 'teacher' | 'pupil';
 };
 
-const AssignmentMetadata: FC<AssignmentMetadataProps> = ({
+export const AssignmentMetadata: FC<AssignmentMetadataProps> = ({
 	assignment,
 	assignmentResponse,
 	who,
@@ -64,5 +64,3 @@ const AssignmentMetadata: FC<AssignmentMetadataProps> = ({
 		</section>
 	);
 };
-
-export default AssignmentMetadata;

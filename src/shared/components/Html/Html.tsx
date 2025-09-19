@@ -8,7 +8,7 @@ export interface HtmlProps {
 	className?: string;
 }
 
-const Html: FC<HtmlProps> = ({
+export const Html: FC<HtmlProps> = ({
 	content,
 	sanitizePreset = SanitizePreset.link,
 	type = 'p',
@@ -23,5 +23,3 @@ const Html: FC<HtmlProps> = ({
 		/>
 	);
 };
-
-export default Html;

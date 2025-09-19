@@ -14,9 +14,8 @@ import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComp
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { navigate } from '../../shared/helpers/link';
-import withUser from '../../shared/hocs/withUser';
 import { useDebounce } from '../../shared/hooks/useDebounce';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
@@ -34,8 +33,8 @@ import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 import { useDeleteEmbedCode } from '../hooks/useDeleteEmbedCode';
 import { useUpdateEmbedCode } from '../hooks/useUpdateEmbedCode';
 
-import EmbedCodeFilterTableCell from './EmbedCodeFilterTableCell';
-import EditEmbedCodeModal from './modals/EditEmbedCodeModal';
+import { EmbedCodeFilterTableCell } from './EmbedCodeFilterTableCell';
+import { EditEmbedCodeModal } from './modals/EditEmbedCodeModal';
 
 // Typings
 interface EmbedCodeOverviewProps {
@@ -55,7 +54,7 @@ enum EmbedCodeAction {
 
 const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 
-const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = ({
+export const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = ({
 	commonUser,
 
 	onUpdate,
@@ -413,5 +412,3 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 		</>
 	);
 };
-
-export default withUser(EmbedCodeOverview) as FC<EmbedCodeOverviewProps>;

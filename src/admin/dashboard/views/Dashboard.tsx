@@ -2,13 +2,13 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 
 export async function clientLoader({ request }: Route.ClientLoaderArgs) {}
 
-const Dashboard = () => {
+export const Dashboard = () => {
 	const { tText, tHtml } = useTranslation();
 
 	return (
@@ -32,5 +32,3 @@ const Dashboard = () => {
 		</AdminLayout>
 	);
 };
-
-export default Dashboard;

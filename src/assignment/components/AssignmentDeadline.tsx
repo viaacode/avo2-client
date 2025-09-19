@@ -14,7 +14,7 @@ interface AssignmentDeadlineProps {
 	deadline?: string | null | Date;
 }
 
-const AssignmentDeadline: FC<AssignmentDeadlineProps> = ({ deadline }) => {
+export const AssignmentDeadline: FC<AssignmentDeadlineProps> = ({ deadline }) => {
 	const config: [DeadlineIndicatorColors, DeadlineIndicatorShapes] | undefined = useMemo(() => {
 		if (!deadline) return undefined;
 
@@ -47,5 +47,3 @@ const AssignmentDeadline: FC<AssignmentDeadlineProps> = ({ deadline }) => {
 		</Flex>
 	);
 };
-
-export default AssignmentDeadline;

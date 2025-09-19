@@ -44,7 +44,7 @@ import { GetInteractiveTourByIdDocument } from '../../../shared/generated/graphq
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { navigate } from '../../../shared/helpers/link';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { dataService } from '../../../shared/services/data-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
@@ -55,7 +55,7 @@ import {
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { type PickerItem } from '../../shared/types';
-import InteractiveTourAdd from '../components/InteractiveTourStepAdd';
+import { InteractiveTourAdd } from '../components/InteractiveTourStepAdd';
 import {
 	INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
 	type InteractiveTourAction,
@@ -88,7 +88,7 @@ const BlockHeading = lazy(() =>
 	}))
 );
 
-const InteractiveTourEdit: FC = () => {
+export const InteractiveTourEdit: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const navigateFunc = useNavigate();
@@ -575,5 +575,3 @@ const InteractiveTourEdit: FC = () => {
 		</>
 	);
 };
-
-export default InteractiveTourEdit;

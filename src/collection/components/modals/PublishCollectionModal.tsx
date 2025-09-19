@@ -16,8 +16,7 @@ import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { APP_PATH } from '../../../constants';
 import { buildLink } from '../../../shared/helpers/build-link';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
@@ -31,7 +30,7 @@ interface PublishCollectionModalProps {
 	parentBundles: ParentBundle[] | undefined;
 }
 
-const PublishCollectionModal: FC<PublishCollectionModalProps & UserProps> = ({
+export const PublishCollectionModal: FC<PublishCollectionModalProps> = ({
 	onClose,
 	isOpen,
 	collection,
@@ -223,5 +222,3 @@ const PublishCollectionModal: FC<PublishCollectionModalProps & UserProps> = ({
 		</Modal>
 	);
 };
-
-export default withUser(PublishCollectionModal) as FC<PublishCollectionModalProps>;

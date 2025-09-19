@@ -23,5 +23,3 @@ const useTranslation = (): useTranslationsResponse => {
 	const { t, ...rest } = useI18NextTranslation();
 	return { tHtml, tText, ...rest };
 };
-
-export default useTranslation;

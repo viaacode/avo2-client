@@ -20,12 +20,11 @@ import {
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
@@ -49,7 +48,7 @@ import {
 	renderCollectionsOrBundlesMarcomCellText,
 } from '../helpers/render-collection-columns';
 
-const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({ commonUser }) => {
+export const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 
@@ -480,5 +479,3 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({ commonU
 		</AdminLayout>
 	);
 };
-
-export default withUser(CollectionOrBundleMarcomOverview) as FC;

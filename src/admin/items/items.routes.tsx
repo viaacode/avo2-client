@@ -3,8 +3,9 @@ import React, { type ReactNode } from 'react';
 import { SecuredRoute } from '../../authentication/components';
 
 import { ITEMS_PATH } from './items.const';
-import { ItemDetail, ItemsOverview } from './views';
-import PublishItemsOverview from './views/PublishItemsOverview';
+import { ItemDetail } from './views/ItemDetail';
+import { ItemsOverview } from './views/ItemsOverview';
+import { PublishItemsOverview } from './views/PublishItemsOverview';
 
 export const renderItemRoutes = (): ReactNode[] => [
 	<SecuredRoute

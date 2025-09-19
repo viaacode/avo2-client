@@ -15,8 +15,8 @@ import AsyncSelect from 'react-select/async';
 
 import FileUpload from '../../../../shared/components/FileUpload/FileUpload';
 import { CustomError } from '../../../../shared/helpers/custom-error';
-import withUser, { type UserProps } from '../../../../shared/hocs/withUser';
-import useTranslation from '../../../../shared/hooks/useTranslation';
+import withUser from '../../../../shared/hocs/withUser';
+import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../shared/services/toast-service';
 import { type PickerItem, type PickerTypeOption } from '../../types';
 
@@ -38,7 +38,7 @@ interface ContentPickerProps {
 	errors?: string | string[];
 }
 
-const ContentPickerComponent: FC<ContentPickerProps & UserProps> = ({
+export const ContentPickerComponent: FC<ContentPickerProps> = ({
 	allowedTypes = DEFAULT_ALLOWED_TYPES,
 	initialValue,
 	onSelect,

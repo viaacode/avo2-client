@@ -226,5 +226,3 @@ const EmbedRoot: FC = () => {
 		</QueryClientProvider>
 	);
 };
-
-export default EmbedRoot;

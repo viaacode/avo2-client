@@ -20,13 +20,13 @@ import RichTextEditorWrapper from '../../../../shared/components/RichTextEditorW
 import { Lookup_Enum_Relation_Types_Enum } from '../../../../shared/generated/graphql-db-types';
 import { CustomError } from '../../../../shared/helpers/custom-error';
 import { stripHtml } from '../../../../shared/helpers/formatters';
-import useTranslation from '../../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { RelationService } from '../../../../shared/services/relation-service/relation.service';
 import { ToastService } from '../../../../shared/services/toast-service';
-import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
 import { ItemsService } from '../../items.service';
 
 import './DepublishItemModal.scss';
+import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
 
 type DepublishType = 'depublish' | 'depublish_with_reason' | 'depublish_with_replacement';
 
@@ -36,7 +36,11 @@ interface DepublishItemModalProps {
 	onClose?: () => void;
 }
 
-const DepublishItemModal: FC<DepublishItemModalProps> = ({ item, onClose = noop, isOpen }) => {
+export const DepublishItemModal: FC<DepublishItemModalProps> = ({
+	item,
+	onClose = noop,
+	isOpen,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [depublishType, setDepublishType] = useState<DepublishType>('depublish');
@@ -288,5 +292,3 @@ const DepublishItemModal: FC<DepublishItemModalProps> = ({ item, onClose = noop,
 		</Modal>
 	);
 };
-
-export default DepublishItemModal;

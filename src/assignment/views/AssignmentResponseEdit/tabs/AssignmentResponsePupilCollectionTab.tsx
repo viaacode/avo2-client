@@ -26,7 +26,7 @@ import { getMoreOptionsLabel } from '../../../../shared/constants';
 import { isMobileWidth } from '../../../../shared/helpers/media-query';
 import { useBlocksList } from '../../../../shared/hooks/use-blocks-list';
 import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal';
-import useTranslation from '../../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../shared/services/toast-service';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
@@ -41,7 +41,9 @@ import {
 import { AssignmentBlockItemDescriptionType } from '../../../components/AssignmentBlockDescriptionButtons';
 import { buildAssignmentSearchLink } from '../../../helpers/build-search-link';
 import { insertMultipleAtPosition } from '../../../helpers/insert-at-position';
-import { useAssignmentBlockChangeHandler, useBlockListModals, useEditBlocks } from '../../../hooks';
+import { useAssignmentBlockChangeHandler } from '../../../hooks/assignment-block-change-handler';
+import { useBlockListModals } from '../../../hooks/assignment-content-modals';
+import { useEditBlocks } from '../../../hooks/use-edit-blocks';
 
 enum MobileActionId {
 	reorderBlocks = 'reorderBlocks',
@@ -57,7 +59,7 @@ interface AssignmentResponsePupilCollectionTabProps {
 	setFilterState: (state: PupilSearchFilterState, urlPushType?: UrlUpdateType) => void;
 }
 
-const AssignmentResponsePupilCollectionTab: FC<
+export const AssignmentResponsePupilCollectionTab: FC<
 	AssignmentResponsePupilCollectionTabProps &
 		Pick<UseFormReturn<AssignmentResponseFormState>, 'setValue' | 'control'>
 > = ({
@@ -343,5 +345,3 @@ const AssignmentResponsePupilCollectionTab: FC<
 		</Container>
 	);
 };
-
-export default AssignmentResponsePupilCollectionTab;

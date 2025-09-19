@@ -22,8 +22,7 @@ import { getFullNameCommonUser } from '../../shared/helpers/formatters';
 import { groupLomLinks } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { validateForm } from '../../shared/helpers/validate-form';
-import withUser from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ZendeskService } from '../../shared/services/zendesk-service';
@@ -41,7 +40,7 @@ interface FormValues {
 	attachmentUrl: string | null;
 }
 
-const UserItemRequestForm: FC<UserItemRequestFormProps> = ({ commonUser }) => {
+export const UserItemRequestForm: FC<UserItemRequestFormProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
@@ -243,5 +242,3 @@ const UserItemRequestForm: FC<UserItemRequestFormProps> = ({ commonUser }) => {
 		</Container>
 	);
 };
-
-export default withUser(UserItemRequestForm) as FC;

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { useTabs } from '../../shared/hooks/useTabs';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { setLoginCounter } from '../helpers/login-counter-before-nudging';
 import {
 	getPreferredLoginOption,
@@ -24,7 +24,7 @@ interface LoginOptionsProps {
 	onOptionClicked?: () => void;
 }
 
-const LoginOptions: FC<LoginOptionsProps> = ({ onOptionClicked = noop }) => {
+export const LoginOptions: FC<LoginOptionsProps> = ({ onOptionClicked = noop }) => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
@@ -157,5 +157,3 @@ const LoginOptions: FC<LoginOptionsProps> = ({ onOptionClicked = noop }) => {
 		</div>
 	);
 };
-
-export default LoginOptions;

@@ -5,12 +5,12 @@ import React, { type FC, type ReactNode } from 'react';
 import { type FilterState } from '../../../search/search.types';
 import { ItemMetadata } from '../../../shared/components/BlockItemMetadata/ItemMetadata';
 import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm';
-import FlowPlayerWrapper from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import { isRichTextEmpty } from '../../../shared/helpers/is-rich-text-empty';
 import { useCutModal } from '../../../shared/hooks/use-cut-modal';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { type EditableAssignmentBlock, type EditBlockProps } from '../../assignment.types';
 import {

@@ -8,7 +8,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { isEqual } from 'lodash-es';
 import React, { type FC } from 'react';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers/custom-error';
 import { FileUploadService } from '../../services/file-upload-service';
 import { ToastService } from '../../services/toast-service';
@@ -28,7 +28,7 @@ export type RichTextEditorWrapperProps = RichTextEditorProps & {
  * @param props
  * @constructor
  */
-const RichTextEditorWrapper: FC<RichTextEditorWrapperProps> = (props) => {
+export const RichTextEditorWrapper: FC<RichTextEditorWrapperProps> = (props) => {
 	const { tText, tHtml } = useTranslation();
 
 	const { controls, fileType, ownerId, state, onChange, ...rest } = props;
@@ -96,5 +96,3 @@ const RichTextEditorWrapper: FC<RichTextEditorWrapperProps> = (props) => {
 		/>
 	);
 };
-
-export default RichTextEditorWrapper;

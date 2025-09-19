@@ -1,18 +1,19 @@
 import { Alert, Spacer, Tabs } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
-import useTranslation from '../../../shared/hooks/useTranslation';
-import withUser, { type UserProps } from '../../hocs/withUser';
 import { useTabs } from '../../hooks/useTabs';
+import { useTranslation } from '../../hooks/useTranslation';
 import { ToastService } from '../../services/toast-service';
 
 import { isShareable } from './QuickLaneContent.helpers';
 import { type QuickLaneContentProps, QuickLaneTypeEnum } from './QuickLaneContent.types';
-import QuickLaneContentPublicationTab from './QuickLaneContentPublicationTab';
-import QuickLaneContentSharingTab from './QuickLaneContentSharingTab';
+import { QuickLaneContentPublicationTab } from './QuickLaneContentPublicationTab';
+import { QuickLaneContentSharingTab } from './QuickLaneContentSharingTab';
 import './QuickLaneContent.scss';
 
 // State
@@ -52,9 +53,9 @@ const isAllowedToPublish = async (
 
 // Component
 
-const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
-	const { content_label, commonUser } = props;
-	const isCollection = content_label === QuickLaneTypeEnum.COLLECTION;
+export const QuickLaneContent: FC<QuickLaneContentProps> = (props) => {
+	const isCollection = props.content_label === QuickLaneTypeEnum.COLLECTION;
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [content, setContent] = useState<
 		Avo.Assignment.Assignment | Avo.Collection.Collection | Avo.Item.Item | undefined
@@ -98,7 +99,7 @@ const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
 		}
 
 		checkPermissions().then(noop);
-	}, [commonUser, content, content_label]);
+	}, [commonUser, content, isCollection, props.content_label]);
 
 	useEffect(() => {
 		const shouldBePublishedFirst =
@@ -112,7 +113,7 @@ const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
 				? QuickLaneContentTabs.publication
 				: QuickLaneContentTabs.sharing
 		);
-	}, [setActiveTab, isPublishRequired, content_label, content, canPublish]);
+	}, [setActiveTab, isPublishRequired, props.content_label, content, canPublish, isCollection]);
 
 	const getTabs = () => {
 		// AVO-1880
@@ -132,7 +133,7 @@ const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
 	};
 
 	const renderContentNotShareableWarning = (): string => {
-		switch (content_label) {
+		switch (props.content_label) {
 			case QuickLaneTypeEnum.ITEM:
 				return tText(
 					'shared/components/quick-lane-modal/quick-lane-modal___item-is-niet-gepubliceerd'
@@ -179,7 +180,7 @@ const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
 
 	return (
 		<>
-			{commonUser && content && content_label ? (
+			{commonUser && content && props.content_label ? (
 				<>
 					{getTabs().length > 1 && (
 						<Spacer className="m-quick-lane-content__tabs-wrapper" margin={'bottom'}>
@@ -232,5 +233,3 @@ const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
 		</>
 	);
 };
-
-export default withUser(QuickLaneContent) as FC<QuickLaneContentProps>;

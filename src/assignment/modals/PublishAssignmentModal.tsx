@@ -17,8 +17,7 @@ import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 import type { ParentBundle } from '../../collection/collection.types';
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers/build-link';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { getValidationErrorsForPublishAssignment } from '../assignment.helper';
@@ -31,14 +30,14 @@ interface PublishAssignmentModalProps {
 	parentBundles: ParentBundle[] | undefined;
 }
 
-const PublishAssignmentModal: FC<PublishAssignmentModalProps & UserProps> = ({
+export const PublishAssignmentModal: FC<PublishAssignmentModalProps> = ({
 	onClose,
 	isOpen,
 	assignment,
 	parentBundles,
-	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [validationErrors, setValidationErrors] = useState<(string | ReactNode)[]>([]);
 	const [isAssignmentPublic, setIsAssignmentPublic] = useState(assignment.is_public);
@@ -210,5 +209,3 @@ const PublishAssignmentModal: FC<PublishAssignmentModalProps & UserProps> = ({
 		</Modal>
 	);
 };
-
-export default withUser(PublishAssignmentModal) as FC<PublishAssignmentModalProps>;

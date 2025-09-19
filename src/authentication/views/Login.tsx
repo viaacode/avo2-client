@@ -7,11 +7,11 @@ import { useLocation } from 'react-router-dom';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { isPupil } from '../../shared/helpers/is-pupil';
-import useTranslation from '../../shared/hooks/useTranslation';
-import { loginAtom } from '../../store/store';
+import { useTranslation } from '../../shared/hooks/useTranslation';
+import { loginAtom } from '../authentication.store';
+import { getLoginStateAtom } from '../authentication.store.actions';
 import { LoginMessage } from '../authentication.types';
 import { redirectToServerLoginPage } from '../helpers/redirects';
-import { getLoginStateAtom } from '../store/authentication.store.actions';
 
 const LOGIN_ATTEMPT_KEY = 'AVO_LOGIN_ATTEMPT';
 

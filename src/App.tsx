@@ -1,39 +1,39 @@
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual, noop, uniq } from 'lodash-es';
 import { wrapRouter } from 'oaf-react-router';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
-import { connect, Provider } from 'react-redux';
 import { RouterProvider, useNavigate } from 'react-router';
 import { createBrowserRouter, type Location, Route, useLocation } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
-import { compose, type Dispatch } from 'redux';
 import { QueryParamProvider } from 'use-query-params';
 
-import Admin from './admin/Admin';
+import { Admin } from './admin/Admin';
 import { ADMIN_PATH } from './admin/admin.const';
 import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config';
 import { SpecialUserGroupId } from './admin/user-groups/user-group.const';
+import { commonUserAtom } from './authentication/authentication.store';
 import { SecuredRoute } from './authentication/components';
 import { PermissionService } from './authentication/helpers/permission-service';
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
-import ACMIDMNudgeModal from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
+import { ACMIDMNudgeModal } from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
 import { ConfirmModal } from './shared/components/ConfirmModal/ConfirmModal';
-import Footer from './shared/components/Footer/Footer';
+import { Footer } from './shared/components/Footer/Footer';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from './shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import {Navigation} from './shared/components/Navigation/Navigation';
-import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
+import { Navigation } from './shared/components/Navigation/Navigation';
+import { ZendeskWrapper } from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers/custom-error';
-import withUser, { type UserProps } from './shared/hocs/withUser';
 import { usePageLoaded } from './shared/hooks/usePageLoaded';
-import useTranslation from './shared/hooks/useTranslation';
+import { useTranslation } from './shared/hooks/useTranslation';
 import { ToastService } from './shared/services/toast-service';
+import { embedFlowAtom, historyLocationsAtom } from './shared/store/ui.store';
 import { waitForTranslations } from './shared/translations/i18n';
 
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
@@ -45,11 +45,9 @@ const App: FC = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 
-	UserProps & {
-		historyLocations: string[];
-		setHistoryLocations: (locations: string[]) => void;
-		setEmbedFlow: (embedFlow: string) => void;
-	}
+	const commonUser = useAtomValue(commonUserAtom);
+	const [historyLocations, setHistoryLocations] = useAtom(historyLocationsAtom);
+	const setEmbedFlow = useSetAtom(embedFlowAtom);
 
 	const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] = useState(false);
 
@@ -248,9 +246,7 @@ wrapRouter(router, {
 const Root: FC = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
-			<Provider store={store}>
-				<RouterProvider router={router} />
-			</Provider>
+			<RouterProvider router={router} />
 		</QueryClientProvider>
 	);
 };

@@ -17,6 +17,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { isEqual, isNil, isString } from 'lodash-es';
 import React, {
 	type FC,
@@ -29,10 +30,11 @@ import React, {
 import { Link } from 'react-router-dom';
 
 import { buildGlobalSearchLink } from '../../../assignment/helpers/build-search-link';
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { APP_PATH } from '../../../constants';
 import { ItemMetadata } from '../../../shared/components/BlockItemMetadata/ItemMetadata';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
-import FlowPlayerWrapper from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import {
 	RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
 	RICH_TEXT_EDITOR_OPTIONS_DEFAULT,
@@ -41,17 +43,16 @@ import { getMoreOptionsLabel } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { createDropdownMenuItem } from '../../../shared/helpers/dropdown';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { CollectionBlockType } from '../../collection.const';
 import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from '../../views/CollectionDetail.const';
 import { type CollectionAction } from '../CollectionOrBundleEdit.types';
 import { FRAGMENT_EDIT_DELAY } from '../CollectionOrBundleEditContent.consts';
-import CutFragmentModal from '../modals/CutFragmentModal';
+import { CutFragmentModal } from '../modals/CutFragmentModal';
 
-import FragmentAdd from './FragmentAdd';
+import { FragmentAdd } from './FragmentAdd';
 import {
 	COLLECTION_FRAGMENT_TYPE_TO_EVENT_OBJECT_TYPE,
 	GET_FRAGMENT_DELETE_LABELS,
@@ -82,7 +83,7 @@ interface FragmentEditProps {
 	onFocus?: () => void;
 }
 
-const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
+const FragmentEdit: FC<FragmentEditProps> = ({
 	index,
 	collectionId,
 	numberOfFragments,
@@ -93,10 +94,10 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 	fragment,
 	allowedToAddLinks,
 	renderWarning = () => null,
-	user,
 	onFocus,
 }) => {
 	const { tText } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	/**
 	 * https://meemoo.atlassian.net/browse/AVO-3370
@@ -242,7 +243,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 					object_type: eventObjectType,
 					action: 'delete',
 				},
-				user
+				commonUser
 			);
 		}
 
@@ -582,4 +583,4 @@ function areEqual(prevProps: FragmentEditProps, nextProps: FragmentEditProps) {
 	);
 }
 
-export default React.memo(withUser(FragmentEdit) as FC<FragmentEditProps>, areEqual);
+React.memo(FragmentEdit, areEqual);

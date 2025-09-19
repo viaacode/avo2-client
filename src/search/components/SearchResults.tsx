@@ -1,21 +1,22 @@
 import { PaginationBar } from '@meemoo/react-components';
 import { Blankslate, Button, Container, Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { isNil } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import placeholderImage from '../../assets/images/assignment-placeholder.png';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/services/bookmarks-views-plays-service';
 import { ITEMS_PER_PAGE } from '../search.const';
 import { type SearchResultsProps } from '../search.types';
 
 import SearchResultItem from './SearchResultItem';
 
-const SearchResults: FC<SearchResultsProps & UserProps> = ({
+export const SearchResults: FC<SearchResultsProps> = ({
 	loading,
 	data,
 	currentItemIndex,
@@ -27,10 +28,10 @@ const SearchResults: FC<SearchResultsProps & UserProps> = ({
 	renderDetailLink,
 	renderSearchLink,
 	qualityLabels,
-	commonUser,
 	...resultProps
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const getIsBookmarked = (result: Avo.Search.ResultItem) => {
 		if (!bookmarkStatuses) {
@@ -131,5 +132,3 @@ const SearchResults: FC<SearchResultsProps & UserProps> = ({
 		</Container>
 	);
 };
-
-export default withUser(SearchResults) as FC<SearchResultsProps>;

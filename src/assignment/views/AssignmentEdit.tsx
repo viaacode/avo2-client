@@ -19,12 +19,14 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isAfter, isPast } from 'date-fns';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { matchPath, Navigate, useMatch, useNavigate } from 'react-router';
 import { Link, useLocation } from 'react-router-dom';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { BlockList } from '../../collection/components';
@@ -39,14 +41,14 @@ import { ErrorView } from '../../error/views';
 import { type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
-import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
-import InActivityWarningModal from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
+import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
+import { InActivityWarningModal } from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
 import {
 	ListSorterColor,
 	ListSorterPosition,
 	ListSorterSlice,
 } from '../../shared/components/ListSorter';
-import SelectEducationLevelModal from '../../shared/components/SelectEducationLevelModal/SelectEducationLevelModal';
+import { SelectEducationLevelModal } from '../../shared/components/SelectEducationLevelModal/SelectEducationLevelModal';
 import ShareModal from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
@@ -60,11 +62,10 @@ import { navigate } from '../../shared/helpers/link';
 import { type EducationLevelId } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useBlocksList } from '../../shared/hooks/use-blocks-list';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 import {
 	BookmarksViewsPlaysService,
@@ -87,16 +88,16 @@ import {
 	setBlockPositionToIndex,
 } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import AssignmentActions from '../components/AssignmentActions';
-import AssignmentAdminFormEditable from '../components/AssignmentAdminFormEditable';
-import AssignmentConfirmSave from '../components/AssignmentConfirmSave';
-import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
-import AssignmentDetailsFormReadonly from '../components/AssignmentDetailsFormReadonly';
-import AssignmentHeading from '../components/AssignmentHeading';
-import AssignmentMetaDataFormEditable from '../components/AssignmentMetaDataFormEditable';
-import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
-import AssignmentTeacherTabs from '../components/AssignmentTeacherTabs';
-import AssignmentTitle from '../components/AssignmentTitle';
+import { AssignmentActions } from '../components/AssignmentActions';
+import { AssignmentAdminFormEditable } from '../components/AssignmentAdminFormEditable';
+import { AssignmentConfirmSave } from '../components/AssignmentConfirmSave';
+import { AssignmentDetailsFormEditable } from '../components/AssignmentDetailsFormEditable';
+import { AssignmentDetailsFormReadonly } from '../components/AssignmentDetailsFormReadonly';
+import { AssignmentHeading } from '../components/AssignmentHeading';
+import { AssignmentMetaDataFormEditable } from '../components/AssignmentMetaDataFormEditable';
+import { AssignmentPupilPreview } from '../components/AssignmentPupilPreview';
+import { AssignmentTeacherTabs } from '../components/AssignmentTeacherTabs';
+import { AssignmentTitle } from '../components/AssignmentTitle';
 import { endOfAcademicYear } from '../helpers/academic-year';
 import {
 	onAddNewContributor,
@@ -108,19 +109,21 @@ import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descri
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { backToOverview } from '../helpers/links';
-import { useAssignmentBlockChangeHandler, useBlockListModals, useEditBlocks } from '../hooks';
+import { useAssignmentBlockChangeHandler } from '../hooks/assignment-block-change-handler';
+import { useBlockListModals } from '../hooks/assignment-content-modals';
 import { type AssignmentFields } from '../hooks/assignment-form';
+import { useEditBlocks } from '../hooks/use-edit-blocks';
 import { useEducationLevelModal } from '../hooks/use-education-level-modal';
-import PublishAssignmentModal from '../modals/PublishAssignmentModal';
+import { PublishAssignmentModal } from '../modals/PublishAssignmentModal';
 
-import AssignmentEditMarcom from './AssignmentEditMarcom';
+import { AssignmentEditMarcom } from './AssignmentEditMarcom';
 import AssignmentResponses from './AssignmentResponses';
 
 interface AssignmentEditProps {
 	onUpdate: () => void | Promise<void>;
 }
 
-const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({ onUpdate = noop, commonUser }) => {
+export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const navigateFunc = useNavigate();
@@ -128,6 +131,8 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({ onUpdate = noop, 
 
 	const assignmentId = match?.params.id;
 	const tabId = match?.params.tabId;
+
+	const commonUser = useAtomValue(commonUserAtom);
 
 	// Data
 	const [tab, setTab] = useState<ASSIGNMENT_CREATE_UPDATE_TABS>(
@@ -737,7 +742,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({ onUpdate = noop, 
 				responses: originalAssignment?.responses || [],
 			},
 			addCollectionConfig: {
-				addCollectionCallback: (id) => {
+				addCollectionCallback: (id: string) => {
 					// Track import collection into assignment event
 					trackEvents(
 						{
@@ -1383,5 +1388,3 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({ onUpdate = noop, 
 		</>
 	);
 };
-
-export default withUser(AssignmentEdit) as FC<AssignmentEditProps>;

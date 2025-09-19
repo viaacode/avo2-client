@@ -1,5 +1,6 @@
 import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, {
 	type Dispatch,
@@ -13,27 +14,28 @@ import React, {
 import { Helmet } from 'react-helmet';
 import { useMatch } from 'react-router';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AssignmentService } from '../../assignment.service';
-import AssignmentMetadata from '../../components/AssignmentMetadata';
+import { AssignmentMetadata } from '../../components/AssignmentMetadata';
 import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
 
-import AssignmentResponseEdit from './AssignmentResponseEdit';
+import { AssignmentResponseEdit } from './AssignmentResponseEdit';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 
-const AssignmentResponseAdminEdit: FC<UserProps> = ({ commonUser }) => {
+export const AssignmentResponseAdminEdit: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const match = useMatch<'responseId' | 'assignmentId', string>(
 		APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route
 	);
 
+	const commonUser = useAtomValue(commonUserAtom);
 	// Data
 	const assignmentId = match?.params.assignmentId;
 	const assignmentResponseId = match?.params.responseId;
@@ -239,5 +241,3 @@ const AssignmentResponseAdminEdit: FC<UserProps> = ({ commonUser }) => {
 		</>
 	);
 };
-
-export default withUser(AssignmentResponseAdminEdit) as FC;

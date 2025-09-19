@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { CustomError } from '../helpers/custom-error';
 import { OrganisationService } from '../services/organizations-service';
 import { ToastService } from '../services/toast-service';

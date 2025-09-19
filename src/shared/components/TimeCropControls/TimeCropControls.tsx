@@ -3,7 +3,7 @@ import { clsx } from 'clsx';
 import { clamp } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { formatDurationHoursMinutesSeconds } from '../../helpers/formatters';
 import { parseDuration, toSeconds } from '../../helpers/parsers/duration';
@@ -21,7 +21,7 @@ interface TimeCropControlsPops {
 	className?: string;
 }
 
-const TimeCropControls: FC<TimeCropControlsPops> = ({
+export const TimeCropControls: FC<TimeCropControlsPops> = ({
 	startTime,
 	endTime,
 	minTime,
@@ -147,5 +147,3 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 		</Container>
 	);
 };
-
-export default TimeCropControls;

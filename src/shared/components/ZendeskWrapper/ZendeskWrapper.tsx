@@ -69,5 +69,3 @@ const ZendeskWrapper: FC = () => {
 		<Zendesk zendeskKey={getEnv('ZENDESK_KEY') as string} defer={true} onLoaded={onLoaded} />
 	);
 };
-
-export default ZendeskWrapper;

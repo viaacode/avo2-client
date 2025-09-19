@@ -16,8 +16,7 @@ import React, { type FC } from 'react';
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../admin/shared/types';
 import { getFullName, toDateObject } from '../../shared/helpers/formatters';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { booleanToOkNok, okNokToBoolean } from '../helpers/ok-nok-parser';
 
 import { type CollectionAction } from './CollectionOrBundleEdit.types';
@@ -28,9 +27,11 @@ interface CollectionOrBundleEditQualityCheckProps {
 	onFocus?: () => void;
 }
 
-const CollectionOrBundleEditQualityCheck: FC<
-	CollectionOrBundleEditQualityCheckProps & UserProps
-> = ({ collection, changeCollectionState, onFocus }) => {
+export const CollectionOrBundleEditQualityCheck: FC<CollectionOrBundleEditQualityCheckProps> = ({
+	collection,
+	changeCollectionState,
+	onFocus,
+}) => {
 	const { tText } = useTranslation();
 
 	const getApprovedAtDate = (collection: Avo.Collection.Collection): Date | null => {
@@ -227,7 +228,3 @@ const CollectionOrBundleEditQualityCheck: FC<
 		</>
 	);
 };
-
-export default withUser(
-	CollectionOrBundleEditQualityCheck
-) as FC<CollectionOrBundleEditQualityCheckProps>;

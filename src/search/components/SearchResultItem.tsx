@@ -11,7 +11,7 @@ import { type SearchResultItemProps } from '../search.types';
 
 import './SearchResultItem.scss';
 
-const SearchResultItem: FC<SearchResultItemProps> = ({
+export const SearchResultItem: FC<SearchResultItemProps> = ({
 	id,
 	handleBookmarkToggle,
 	handleTagClicked,
@@ -165,5 +165,3 @@ const SearchResultItem: FC<SearchResultItemProps> = ({
 		</div>
 	);
 };
-
-export default SearchResultItem;

@@ -17,10 +17,11 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { compose } from 'redux';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
@@ -31,9 +32,8 @@ import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks/useTableSort';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { type BookmarkInfo } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../shared/services/toast-service';
@@ -88,14 +88,12 @@ const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 };
 
 export interface AddBookmarkFragmentModalProps {
-	commonUser?: Avo.User.CommonUser;
 	isOpen: boolean;
 	onClose?: () => void;
 	addFragmentCallback?: (fragmentId: string) => void;
 }
 
-const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
-	commonUser,
+export const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
 	isOpen,
 	onClose,
 	addFragmentCallback = () => {
@@ -103,6 +101,7 @@ const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
 	},
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null);
@@ -307,5 +306,3 @@ const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
 		</Modal>
 	);
 };
-
-export default compose(withUser)(AddBookmarkFragmentModal) as FC<AddBookmarkFragmentModalProps>;

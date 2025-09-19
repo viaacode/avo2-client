@@ -3,7 +3,7 @@ import React, { type FC } from 'react';
 
 type MoreOptionsDropdownWrapperProps = React.ComponentProps<typeof MoreOptionsDropdown>;
 
-const MoreOptionsDropdownWrapper: FC<MoreOptionsDropdownWrapperProps> = (props) => {
+export const MoreOptionsDropdownWrapper: FC<MoreOptionsDropdownWrapperProps> = (props) => {
 	const { menuItems, onOptionClicked } = props;
 	if (menuItems.length === 0) {
 		return null;
@@ -30,5 +30,3 @@ const MoreOptionsDropdownWrapper: FC<MoreOptionsDropdownWrapperProps> = (props) 
 		/>
 	);
 };
-
-export default MoreOptionsDropdownWrapper;

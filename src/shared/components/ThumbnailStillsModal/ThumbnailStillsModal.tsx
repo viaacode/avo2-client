@@ -20,7 +20,7 @@ import { compact, uniq } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 
 import { STILL_DIMENSIONS } from '../../constants';
-import useTranslation from '../../hooks/useTranslation';
+import { useTranslation } from '../../hooks/useTranslation';
 import { ToastService } from '../../services/toast-service';
 import { VideoStillService } from '../../services/video-stills-service';
 
@@ -30,7 +30,11 @@ interface ThumbnailStillsModalProps {
 	subject: Avo.Collection.Collection | Avo.Assignment.Assignment;
 }
 
-const ThumbnailStillsModal: FC<ThumbnailStillsModalProps> = ({ onClose, isOpen, subject }) => {
+export const ThumbnailStillsModal: FC<ThumbnailStillsModalProps> = ({
+	onClose,
+	isOpen,
+	subject,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [videoStills, setVideoStills] = useState<string[] | null>(null);
@@ -149,5 +153,3 @@ const ThumbnailStillsModal: FC<ThumbnailStillsModalProps> = ({ onClose, isOpen, 
 		</Modal>
 	);
 };
-
-export default ThumbnailStillsModal;

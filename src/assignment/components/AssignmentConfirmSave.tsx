@@ -6,7 +6,7 @@ import {
 	ConfirmModal,
 	type ConfirmModalProps,
 } from '../../shared/components/ConfirmModal/ConfirmModal';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 type AssignmentConfirmSaveProps = DefaultProps & {
 	hasBlocks?: boolean;
@@ -14,7 +14,7 @@ type AssignmentConfirmSaveProps = DefaultProps & {
 	modal?: Partial<ConfirmModalProps>;
 };
 
-const AssignmentConfirmSave: FC<AssignmentConfirmSaveProps> = ({
+export const AssignmentConfirmSave: FC<AssignmentConfirmSaveProps> = ({
 	hasBlocks,
 	hasResponses,
 	modal,
@@ -48,5 +48,3 @@ const AssignmentConfirmSave: FC<AssignmentConfirmSaveProps> = ({
 		/>
 	);
 };
-
-export default AssignmentConfirmSave;

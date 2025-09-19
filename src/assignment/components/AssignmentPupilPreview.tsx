@@ -1,14 +1,15 @@
 import { Button, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type Dispatch, type FC, type SetStateAction, useMemo, useState } from 'react';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import AlertBar from '../../shared/components/AlertBar/AlertBar';
 import { EducationLevelId } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
-import AssignmentResponseEdit from '../views/AssignmentResponseEdit/AssignmentResponseEdit';
+import { useTranslation } from '../../shared/hooks/useTranslation';
+import { AssignmentResponseEdit } from '../views/AssignmentResponseEdit/AssignmentResponseEdit';
 
 type AssignmentPupilPreviewProps = {
 	assignment: Partial<Avo.Assignment.Assignment>;
@@ -16,13 +17,13 @@ type AssignmentPupilPreviewProps = {
 	onClose: () => void;
 };
 
-const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
+export const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps> = ({
 	assignment,
 	isPreview = false,
 	onClose,
-	user,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response>({
 		collection_title: '',
 		pupil_collection_blocks: [],
@@ -31,7 +32,7 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 		owner: {
 			full_name: tText('assignment/components/assignment-pupil-preview___naam-leerling'),
 		},
-		owner_profile_id: user?.profile?.id,
+		owner_profile_id: commonUser?.profileId,
 		id: '///fake-assignment-response-id',
 		created_at: new Date().toISOString(),
 		updated_at: new Date().toISOString(),
@@ -104,5 +105,3 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 		</>
 	);
 };
-
-export default withUser(AssignmentPupilPreview) as FC<AssignmentPupilPreviewProps>;

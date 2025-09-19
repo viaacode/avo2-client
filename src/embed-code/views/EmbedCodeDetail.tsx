@@ -18,31 +18,33 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import { generatePath, useMatch, useNavigate } from 'react-router';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
-import ItemVideoDescription from '../../item/components/ItemVideoDescription';
+import { ItemVideoDescription } from '../../item/components/ItemVideoDescription';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { renderAvatar } from '../../shared/helpers/formatters';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { toSeconds } from '../../shared/helpers/parsers/duration';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { createResource } from '../helpers/resourceForTrackEvents';
 import { useGetEmbedCode } from '../hooks/useGetEmbedCode';
 
-const EmbedCodeDetail: FC<UserProps> = ({ commonUser }) => {
+export const EmbedCodeDetail: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const match = useMatch<'id', string>(APP_PATH.EMBED.route);
 	const embedCodeId = match?.params.id;
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const {
 		data: embedCode,
@@ -303,5 +305,3 @@ const EmbedCodeDetail: FC<UserProps> = ({ commonUser }) => {
 		</>
 	);
 };
-
-export default withUser(EmbedCodeDetail) as FC;

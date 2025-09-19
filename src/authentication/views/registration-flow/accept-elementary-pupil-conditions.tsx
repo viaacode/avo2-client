@@ -25,7 +25,7 @@ import { tText } from '../../../shared/helpers/translate-text';
 import { useDisablePictureInPicture } from '../../../shared/hooks/useDisablePictureInPicture';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { ToastService } from '../../../shared/services/toast-service';
-import { acceptConditionsAtom, commonUserAtom } from '../../../store/store';
+import { acceptConditionsAtom, commonUserAtom } from '../../authentication.store';
 
 const ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE = 'ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE';
 

@@ -5,11 +5,11 @@ import { useNavigate } from 'react-router';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../constants';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 type UserItemRequestFormProps = DefaultSecureRouteProps;
 
-const UserItemRequestFormConfirm: FC<UserItemRequestFormProps> = () => {
+export const UserItemRequestFormConfirm: FC<UserItemRequestFormProps> = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
@@ -55,5 +55,3 @@ const UserItemRequestFormConfirm: FC<UserItemRequestFormProps> = () => {
 		</Container>
 	);
 };
-
-export default UserItemRequestFormConfirm;

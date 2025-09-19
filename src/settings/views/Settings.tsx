@@ -9,22 +9,23 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, type ReactElement, type ReactText, useState } from 'react';
 import { useMatch, useNavigate } from 'react-router';
 
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { buildLink } from '../../shared/helpers/build-link';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import Account from '../components/Account';
-import Email from '../components/Email/Email';
+import { Email } from '../components/Email/Email';
 import LinkedAccounts from '../components/LinkedAccounts';
 import Notifications from '../components/Notifications';
 import Profile from '../components/Profile';
@@ -37,10 +38,11 @@ import {
 	type SettingsTab,
 } from '../settings.const';
 
-const Settings: FC<UserProps> = ({ commonUser }) => {
+export const Settings: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const match = useMatch<'tabId', string>(APP_PATH.SETTINGS_TAB.route);
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const tabId = match?.params.tabId;
 
@@ -176,5 +178,3 @@ const Settings: FC<UserProps> = ({ commonUser }) => {
 		</>
 	);
 };
-
-export default withUser(Settings) as FC;

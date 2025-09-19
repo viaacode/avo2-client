@@ -7,25 +7,23 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, type ReactNode } from 'react';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { getFullName } from '../../helpers/formatters';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
-import withUser from '../../hocs/withUser';
 import { ContributorInfoRight } from '../ShareWithColleagues/ShareWithColleagues.types';
 
 import './HeaderOwnerAndContributors.scss';
 
 type HeaderOwnerAndContributorsProps = {
-	commonUser: Avo.User.CommonUser | null | undefined;
 	subject: Partial<Avo.Assignment.Assignment> | Avo.Collection.Collection;
 };
 
-const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = ({
-	commonUser,
-	subject,
-}) => {
+export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = ({ subject }) => {
+	const commonUser = useAtomValue(commonUserAtom);
 	const { contributors, profile: owner } = subject;
 	const isOwner = owner?.id === commonUser?.profileId;
 	const nonPendingContributors = (
@@ -118,5 +116,3 @@ const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = ({
 		</Spacer>
 	);
 };
-
-export default withUser(HeaderOwnerAndContributors) as FC<HeaderOwnerAndContributorsProps>;

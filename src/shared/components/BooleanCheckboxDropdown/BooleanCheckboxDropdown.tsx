@@ -1,7 +1,7 @@
 import React, { type FC } from 'react';
 
 import { NULL_FILTER } from '../../../admin/shared/helpers/filters';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import {
 	CheckboxDropdownModal,
 	type CheckboxOption,
@@ -20,7 +20,7 @@ export interface BooleanCheckboxDropdownProps {
 	onChange: (value: string[], id: string) => void;
 }
 
-const BooleanCheckboxDropdown: FC<BooleanCheckboxDropdownProps> = ({
+export const BooleanCheckboxDropdown: FC<BooleanCheckboxDropdownProps> = ({
 	label,
 	id,
 	disabled,
@@ -88,5 +88,3 @@ const BooleanCheckboxDropdown: FC<BooleanCheckboxDropdownProps> = ({
 		/>
 	);
 };
-
-export default BooleanCheckboxDropdown;

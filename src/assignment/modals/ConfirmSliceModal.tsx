@@ -13,7 +13,7 @@ import { type Avo } from '@viaa/avo2-types';
 import React, { type FC } from 'react';
 
 import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.consts';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { AssignmentBlockType } from '../assignment.types';
 
 export interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
@@ -23,7 +23,7 @@ export interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onC
 	onConfirm?: () => void;
 }
 
-const ConfirmSliceModal: FC<ConfirmSliceModalProps> = ({
+export const ConfirmSliceModal: FC<ConfirmSliceModalProps> = ({
 	responses = [],
 	block,
 	isPupilCollection,
@@ -112,5 +112,3 @@ const ConfirmSliceModal: FC<ConfirmSliceModalProps> = ({
 		</Modal>
 	);
 };
-
-export default ConfirmSliceModal;

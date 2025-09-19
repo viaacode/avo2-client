@@ -13,5 +13,3 @@ const ControlledDropdown = (props: DropdownProps) => {
 		/>
 	);
 };
-
-export default ControlledDropdown;

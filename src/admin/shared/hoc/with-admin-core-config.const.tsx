@@ -14,7 +14,7 @@ import { type NavigateFunction } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { APP_PATH, type RouteId } from '../../../constants';
-import FlowPlayerWrapper from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { DEFAULT_AUDIO_STILL, ROUTE_PARTS } from '../../../shared/constants';
 import { getEnv } from '../../../shared/helpers/env';
 import { tHtml } from '../../../shared/helpers/translate-html';
@@ -24,7 +24,7 @@ import { ToastService, ToastTypeToAvoToastType } from '../../../shared/services/
 import { Locale } from '../../../shared/translations/translations.types';
 import { ADMIN_PATH } from '../../admin.const';
 import { BlockSearch } from '../../content-page/components/blocks/BlockSearch/BlockSearch';
-import MediaGridWrapper from '../../content-page/components/blocks/MediaGridWrapper/MediaGridWrapper';
+import { MediaGridWrapper } from '../../content-page/components/blocks/MediaGridWrapper/MediaGridWrapper';
 import { GET_ADMIN_ICON_OPTIONS } from '../constants';
 
 const alertIcons: IconName[] = [

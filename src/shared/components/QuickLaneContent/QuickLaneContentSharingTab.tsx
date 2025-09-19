@@ -9,37 +9,37 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
+import { useAtomValue } from 'jotai';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { type AssignmentLayout } from '../../../assignment/assignment.types';
-import ItemVideoDescription from '../../../item/components/ItemVideoDescription';
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription';
 import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
-import useTranslation from '../../../shared/hooks/useTranslation';
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { copyQuickLaneToClipboard } from '../../helpers/generate-quick-lane-href';
 import { isMobileWidth } from '../../helpers/media-query';
 import { toSeconds } from '../../helpers/parsers/duration';
-import withUser, { type UserProps } from '../../hocs/withUser';
 import { useDebounce } from '../../hooks/useDebounce';
+import { useTranslation } from '../../hooks/useTranslation';
 import { ToastService } from '../../services/toast-service';
 import { type QuickLaneUrlObject } from '../../types';
 import { ContentLink } from '../ContentLink/ContentLink';
 import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
-import QuickLaneLink from '../QuickLaneLink/QuickLaneLink';
-import TimeCropControls from '../TimeCropControls/TimeCropControls';
+import { QuickLaneLink } from '../QuickLaneLink/QuickLaneLink';
+import { TimeCropControls } from '../TimeCropControls/TimeCropControls';
 
 import { defaultQuickLaneState, getContentUuid, isShareable } from './QuickLaneContent.helpers';
 import { type QuickLaneContentProps, QuickLaneTypeEnum } from './QuickLaneContent.types';
 
-const QuickLaneContentSharingTab: FC<QuickLaneContentProps & UserProps> = ({
+export const QuickLaneContentSharingTab: FC<QuickLaneContentProps> = ({
 	isOpen,
-	user,
 	content,
 	content_label,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const fragmentDuration = useMemo(
 		() => toSeconds((content as ItemSchema).duration) || 0,
@@ -81,11 +81,11 @@ const QuickLaneContentSharingTab: FC<QuickLaneContentProps & UserProps> = ({
 
 		(async () => {
 			if (isOpen && content && content_label) {
-				if (user && user.profile !== null) {
+				if (commonUser?.profileId) {
 					let items = await QuickLaneService.fetchQuickLanesByContentAndOwnerId(
 						getContentUuid(content, content_label),
 						content_label,
-						(user.profile as Avo.User.Profile).id
+						commonUser.profileId
 					);
 
 					if (items.length === 0 && isShareable(content)) {
@@ -96,7 +96,7 @@ const QuickLaneContentSharingTab: FC<QuickLaneContentProps & UserProps> = ({
 								title: content.title as string,
 								content_label,
 								content_id: getContentUuid(content, content_label),
-								owner_profile_id: (user.profile as Avo.User.Profile).id,
+								owner_profile_id: commonUser.profileId,
 								end_oc: fragmentDuration,
 							},
 						]);
@@ -139,12 +139,12 @@ const QuickLaneContentSharingTab: FC<QuickLaneContentProps & UserProps> = ({
 			if (synced) {
 				setSynced(false);
 			} else if (content && content_label) {
-				if (user && user.profile !== null) {
+				if (commonUser?.profileId) {
 					const updated = await QuickLaneService.updateQuickLaneById(object.id, {
 						...object,
 						content_label,
 						content_id: getContentUuid(content, content_label),
-						owner_profile_id: (user.profile as Avo.User.Profile).id,
+						owner_profile_id: commonUser.profileId,
 					});
 
 					if (updated.length === 1) {
@@ -181,13 +181,13 @@ const QuickLaneContentSharingTab: FC<QuickLaneContentProps & UserProps> = ({
 	}, [isOpen, resetState]);
 
 	const avatar = {
-		name: user?.profile?.organisation?.name,
-		image: user?.profile?.organisation?.logo_url,
+		name: commonUser?.organisation?.name,
+		image: commonUser?.organisation?.logo_url,
 	};
 
 	const [start, end] = getValidStartAndEnd(fragmentStartTime, fragmentEndTime, fragmentDuration);
 
-	return user && content && content_label ? (
+	return commonUser && content && content_label ? (
 		<Form type="standard">
 			{(avatar.name || avatar.image) && (
 				<Spacer margin={['bottom']}>
@@ -329,5 +329,3 @@ const QuickLaneContentSharingTab: FC<QuickLaneContentProps & UserProps> = ({
 		</Form>
 	) : null;
 };
-
-export default withUser(QuickLaneContentSharingTab) as FC<QuickLaneContentProps>;

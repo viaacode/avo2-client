@@ -21,8 +21,7 @@ import {
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { AssignmentsBulkAction } from '../../assignments/assignments.types';
@@ -42,7 +41,7 @@ import {
 } from '../pupil-collection.const';
 import { type PupilCollectionsOverviewTableState } from '../pupil-collection.types';
 
-const PupilCollectionsOverview: FC<UserProps> = ({ commonUser }) => {
+export const PupilCollectionsOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
 
 	const [pupilCollections, setPupilCollections] = useState<Avo.Assignment.Response[] | null>(
@@ -457,5 +456,3 @@ const PupilCollectionsOverview: FC<UserProps> = ({ commonUser }) => {
 		</AdminLayout>
 	);
 };
-
-export default withUser(PupilCollectionsOverview) as unknown as FC;

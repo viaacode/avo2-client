@@ -11,7 +11,10 @@ export interface CollectionFragmentTypeTextProps {
 	block?: Avo.Core.BlockItemBase;
 }
 
-const CollectionFragmentTypeText: FC<CollectionFragmentTypeTextProps> = ({ title, block }) => {
+export const CollectionFragmentTypeText: FC<CollectionFragmentTypeTextProps> = ({
+	title,
+	block,
+}) => {
 	return (
 		<>
 			{title && <CollectionFragmentTitle {...title} />}
@@ -19,5 +22,3 @@ const CollectionFragmentTypeText: FC<CollectionFragmentTypeTextProps> = ({ title
 		</>
 	);
 };
-
-export default CollectionFragmentTypeText;

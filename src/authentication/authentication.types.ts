@@ -1,3 +1,5 @@
+import { type Avo } from '@viaa/avo2-types';
+
 export enum LoginMessage {
 	LOGGED_IN = 'LOGGED_IN',
 	LOGGED_OUT = 'LOGGED_OUT',

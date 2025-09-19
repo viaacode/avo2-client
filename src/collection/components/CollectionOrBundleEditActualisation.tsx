@@ -18,8 +18,7 @@ import { ContentPicker } from '../../admin/shared/components/ContentPicker/Conte
 import { NULL_FILTER } from '../../admin/shared/helpers/filters';
 import { type PickerItem } from '../../admin/shared/types';
 import { getFullName, toDateObject } from '../../shared/helpers/formatters';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import { type CollectionAction } from './CollectionOrBundleEdit.types';
 
@@ -29,9 +28,11 @@ interface CollectionOrBundleEditActualisationProps {
 	onFocus?: () => void;
 }
 
-const CollectionOrBundleEditActualisation: FC<
-	CollectionOrBundleEditActualisationProps & UserProps
-> = ({ collection, changeCollectionState, onFocus }) => {
+export const CollectionOrBundleEditActualisation: FC<CollectionOrBundleEditActualisationProps> = ({
+	collection,
+	changeCollectionState,
+	onFocus,
+}) => {
 	const { tText } = useTranslation();
 
 	const actualisationStatuses = getCollectionManagementStatuses()
@@ -175,7 +176,3 @@ const CollectionOrBundleEditActualisation: FC<
 		</>
 	);
 };
-
-export default withUser(
-	CollectionOrBundleEditActualisation
-) as FC<CollectionOrBundleEditActualisationProps>;

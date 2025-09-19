@@ -9,7 +9,7 @@ import { lomToTagInfo } from '../../helpers/string-to-select-options';
 import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../hooks/useLomSubjects';
 import { useLomThemes } from '../../hooks/useLomThemes';
-import useTranslation from '../../hooks/useTranslation';
+import { useTranslation } from '../../hooks/useTranslation';
 import { type LomFieldsByScheme } from '../../types/lom';
 import MultiThemeSelectDropdown from '../MultiThemeSelectDropdown/MultiThemeSelectDropdown';
 
@@ -47,7 +47,7 @@ type LomFieldsInputProps = {
 	allowMultiSelect?: boolean;
 };
 
-const LomFieldsInput: FC<LomFieldsInputProps> = ({
+export const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	loms,
 	onChange,
 	showEducation = true,
@@ -233,5 +233,3 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 		</Spacer>
 	);
 };
-
-export default LomFieldsInput;

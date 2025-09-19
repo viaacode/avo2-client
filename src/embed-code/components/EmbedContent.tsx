@@ -26,7 +26,7 @@ import { debounce } from 'lodash-es';
 import React, { type FC, type LegacyRef, type ReactNode, useEffect, useState } from 'react';
 import { compose } from 'redux';
 
-import ItemVideoDescription from '../../item/components/ItemVideoDescription';
+import { ItemVideoDescription } from '../../item/components/ItemVideoDescription';
 import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
 import TimeCropControls from '../../shared/components/TimeCropControls/TimeCropControls';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
@@ -36,7 +36,6 @@ import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import withEmbedFlow, { type EmbedFlowProps } from '../../shared/hocs/withEmbedFlow';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useResizeObserver from '../../shared/hooks/useResizeObserver';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -60,7 +59,7 @@ type EmbedProps = {
 	onResize?: () => void;
 };
 
-const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
+export const EmbedContent: FC<EmbedProps & EmbedFlowProps> = ({
 	item,
 	contentDescription,
 	onSave,
@@ -520,4 +519,4 @@ const EmbedContent: FC<EmbedProps & UserProps & EmbedFlowProps> = ({
 	);
 };
 
-export default compose(withUser, withEmbedFlow)(EmbedContent) as FC<EmbedProps>;
+compose(withUser, withEmbedFlow)(EmbedContent) as FC<EmbedProps>;

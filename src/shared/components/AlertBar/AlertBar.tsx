@@ -17,7 +17,7 @@ interface AlertBarProps {
 	contentRight: ReactNode;
 }
 
-const AlertBar: FC<AlertBarProps> = ({ icon, textLeft, contentRight }) => {
+export const AlertBar: FC<AlertBarProps> = ({ icon, textLeft, contentRight }) => {
 	return (
 		<div className="c-alert-bar">
 			<Container mode="horizontal">
@@ -32,5 +32,3 @@ const AlertBar: FC<AlertBarProps> = ({ icon, textLeft, contentRight }) => {
 		</div>
 	);
 };
-
-export default AlertBar;

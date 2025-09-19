@@ -10,7 +10,7 @@ import { LoginOptionsTabs } from '../../authentication/helpers/login-options-pre
 import { getEnv } from '../../shared/helpers/env';
 import { tText } from '../../shared/helpers/translate-text';
 import { useTabs } from '../../shared/hooks/useTabs';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 const RegisterOrLogin: FC = () => {
 	const { tHtml } = useTranslation();
@@ -95,5 +95,3 @@ const RegisterOrLogin: FC = () => {
 		</div>
 	);
 };
-
-export default RegisterOrLogin;

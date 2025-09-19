@@ -25,10 +25,11 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { compose } from 'redux';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { CollectionService } from '../../collection/collection.service';
 import { type Collection, ContentTypeNumber } from '../../collection/collection.types';
 import { OrderDirection } from '../../search/search.const';
@@ -41,9 +42,8 @@ import { formatDate, formatTimestamp } from '../../shared/helpers/formatters';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks/useTableSort';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { type AssignmentTableColumns } from '../assignment.types';
@@ -100,7 +100,7 @@ const BOOKMARKED_COLLECTION_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	}),
 };
 
-export type AddCollectionModalProps = Partial<UserProps> & {
+export type AddCollectionModalProps = {
 	isOpen: boolean;
 	onClose?: () => void;
 	addCollectionCallback?: (fragmentId: string, withDescription: boolean) => void;
@@ -111,13 +111,13 @@ enum AddCollectionTab {
 	bookmarkedCollections = 'bookmarkedcollections',
 }
 
-const AddCollectionModal: FC<AddCollectionModalProps> = ({
-	commonUser,
+export const AddCollectionModal: FC<AddCollectionModalProps> = ({
 	isOpen,
 	onClose = noop,
 	addCollectionCallback,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [createWithDescription, setCreateWithDescription] = useState<boolean>(false);
@@ -425,5 +425,3 @@ const AddCollectionModal: FC<AddCollectionModalProps> = ({
 		</Modal>
 	);
 };
-
-export default compose(withUser)(AddCollectionModal) as FC<AddCollectionModalProps>;

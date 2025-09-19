@@ -21,7 +21,7 @@ import { CustomError } from '../../../shared/helpers/custom-error';
 import { formatDate } from '../../../shared/helpers/formatters';
 import { navigate } from '../../../shared/helpers/link';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
@@ -44,7 +44,7 @@ import {
 
 type InteractiveTourOverviewProps = DefaultSecureRouteProps;
 
-const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = () => {
+export const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
@@ -347,5 +347,3 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = () => {
 		</AdminLayout>
 	);
 };
-
-export default InteractiveTourGroupOverview;

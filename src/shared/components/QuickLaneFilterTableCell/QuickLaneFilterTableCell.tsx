@@ -1,6 +1,6 @@
 import React, { type FC, type ReactNode } from 'react';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { formatDate, formatTimestamp } from '../../helpers/formatters';
 import { type QuickLaneUrlObject } from '../../types';
 import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';
@@ -12,7 +12,7 @@ export interface QuickLaneFilterTableCellProps {
 	actions?: (data?: QuickLaneFilterTableCellProps['data']) => ReactNode;
 }
 
-const QuickLaneFilterTableCell: FC<QuickLaneFilterTableCellProps> = ({
+export const QuickLaneFilterTableCell: FC<QuickLaneFilterTableCellProps> = ({
 	id,
 	data,
 	actions = () => null,
@@ -65,5 +65,3 @@ const QuickLaneFilterTableCell: FC<QuickLaneFilterTableCellProps> = ({
 
 	return null;
 };
-
-export default QuickLaneFilterTableCell;

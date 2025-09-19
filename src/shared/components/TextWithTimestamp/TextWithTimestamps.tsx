@@ -12,7 +12,7 @@ interface TextWithTimestampsProps {
 	content: string;
 }
 
-const TextWithTimestamps: FC<TextWithTimestampsProps> = ({ content }) => {
+export const TextWithTimestamps: FC<TextWithTimestampsProps> = ({ content }) => {
 	const textWrapperRef = useRef<HTMLDivElement>(null);
 
 	const handleTimestampClicked = useCallback((e: MouseEvent) => {
@@ -47,5 +47,3 @@ const TextWithTimestamps: FC<TextWithTimestampsProps> = ({ content }) => {
 		</div>
 	);
 };
-
-export default TextWithTimestamps;

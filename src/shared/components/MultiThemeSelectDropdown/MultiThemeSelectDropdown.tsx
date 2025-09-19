@@ -19,7 +19,7 @@ interface MultiThemeSelectDropdownProps {
 	allowMulti?: boolean;
 }
 
-const MultiThemeSelectDropdown: FC<MultiThemeSelectDropdownProps> = ({
+export const MultiThemeSelectDropdown: FC<MultiThemeSelectDropdownProps> = ({
 	id,
 	value,
 	allThemes,
@@ -52,5 +52,3 @@ const MultiThemeSelectDropdown: FC<MultiThemeSelectDropdownProps> = ({
 		/>
 	);
 };
-
-export default MultiThemeSelectDropdown;

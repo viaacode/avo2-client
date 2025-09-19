@@ -3,7 +3,6 @@ import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Button, Icon, IconName, Spacer, Table } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { compose } from 'redux';
 
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { type ParentBundle } from '../../collection/collection.types';
@@ -17,7 +16,6 @@ import { OrderDirection } from '../../search/search.const';
 import { buildLink } from '../../shared/helpers/build-link';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';
-import withUser from '../../shared/hocs/withUser';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 type ContainedInBundlesTableProps = {
@@ -26,7 +24,7 @@ type ContainedInBundlesTableProps = {
 	emptyTableLabel: string;
 };
 
-const ContainedInBundlesTable: FC<ContainedInBundlesTableProps> = ({
+export const ContainedInBundlesTable: FC<ContainedInBundlesTableProps> = ({
 	fragmentId,
 	emptyTableLabel,
 	title,
@@ -164,5 +162,3 @@ const ContainedInBundlesTable: FC<ContainedInBundlesTableProps> = ({
 		</>
 	);
 };
-
-export default compose(withUser)(ContainedInBundlesTable) as FC<ContainedInBundlesTableProps>;

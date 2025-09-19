@@ -15,7 +15,7 @@ const defaultLabel = (id: string) => {
 	return `${window.location.origin}${generateQuickLaneHref(id)}`;
 };
 
-const QuickLaneLink: FC<QuickLaneLinkProps> = ({ id, label, short }) => {
+export const QuickLaneLink: FC<QuickLaneLinkProps> = ({ id, label, short }) => {
 	const className = clsx({
 		'c-quick-lane-link': true,
 		'c-quick-lane-link--short': short === true,
@@ -29,5 +29,3 @@ const QuickLaneLink: FC<QuickLaneLinkProps> = ({ id, label, short }) => {
 		</a>
 	);
 };
-
-export default QuickLaneLink;

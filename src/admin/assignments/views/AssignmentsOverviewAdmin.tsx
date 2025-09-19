@@ -25,11 +25,10 @@ import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
@@ -53,8 +52,9 @@ import {
 
 import './AssignmentsOverviewAdmin.scss';
 
-const AssignmentOverviewAdmin: FC<UserProps> = ({ commonUser }) => {
+export const AssignmentOverviewAdmin: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
 	const [assignmentCount, setAssignmentCount] = useState<number>(0);
@@ -587,5 +587,3 @@ const AssignmentOverviewAdmin: FC<UserProps> = ({ commonUser }) => {
 		</AdminLayout>
 	);
 };
-
-export default withUser(AssignmentOverviewAdmin) as unknown as FC;
