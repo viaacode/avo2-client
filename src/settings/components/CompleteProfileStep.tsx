@@ -22,7 +22,7 @@ import { getLoginStateAtom } from '../../authentication/authentication.store.act
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
-import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
+import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { isTeacher } from '../../shared/helpers/is-teacher';
 import { EducationLevelId, groupLoms } from '../../shared/helpers/lom';

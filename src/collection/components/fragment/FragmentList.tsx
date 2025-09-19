@@ -1,12 +1,14 @@
 import { Alert, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { sortBy } from 'lodash-es';
 import React, { type FC } from 'react';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { showReplacementWarning } from '../../helpers/fragment';
 
-import FragmentDetail from './FragmentDetail';
+import { FragmentDetail } from './FragmentDetail';
 
 interface FragmentListProps {
 	collectionFragments: Avo.Collection.Fragment[];
@@ -30,9 +32,10 @@ export const FragmentList: FC<FragmentListProps> = ({
 	showMetadata,
 	linkToItems,
 	collection,
-	commonUser,
 }) => {
 	const { tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
+
 	const renderCollectionFragments = () =>
 		sortBy(collectionFragments, 'position').map(
 			(collectionFragment: Avo.Collection.Fragment) => {

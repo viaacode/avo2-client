@@ -11,7 +11,7 @@ import {
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
 } from '../../../collection/collection.const';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import {

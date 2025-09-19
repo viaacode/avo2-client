@@ -17,22 +17,22 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { compact, isNil, map } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { connect } from 'react-redux';
-import { type Dispatch } from 'redux';
 
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { SERVER_LOGOUT_PAGE } from '../../authentication/authentication.const';
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
-import CommonMetadata from '../../shared/components/CommonMetaData/CommonMetaData';
+import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
-import FileUpload from '../../shared/components/FileUpload/FileUpload';
-import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
+import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
+import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
 import { formatDate } from '../../shared/helpers/formatters';
@@ -46,11 +46,6 @@ import { SettingsService } from '../settings.service';
 import { type UsersInSameCompanyColumn } from '../settings.types';
 
 import './Profile.scss';
-import { commonUserAtom } from '../../authentication/authentication.store';
-
-import { useAtomValue, useSetAtom } from 'jotai';
-
-import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
 
 type FieldPermissionKey =
 	| 'SUBJECTS'

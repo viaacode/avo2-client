@@ -1,7 +1,7 @@
 import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
 
-import LoginOptions from './LoginOptions';
+import { LoginOptions } from './LoginOptions';
 import './LoginOptionsDropdown.scss';
 
 interface LoginOptionsDropdownProps {

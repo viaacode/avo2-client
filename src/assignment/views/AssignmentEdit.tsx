@@ -29,18 +29,17 @@ import { Link, useLocation } from 'react-router-dom';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
-import { BlockList } from '../../collection/components';
 import type { MarcomNoteInfo } from '../../collection/components/CollectionOrBundleEdit.types';
 import {
 	BundleSortProp,
 	useGetCollectionsOrBundlesContainingFragment,
 } from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorNoAccess } from '../../error/components';
-import { ErrorView } from '../../error/views';
-import { type ErrorViewQueryParams } from '../../error/views/ErrorView';
+import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
+import { ErrorView, type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
-import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
+import { BlockList } from '../../shared/components/BlockList/BlockList';
+import { EmptyStateMessage } from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import { InActivityWarningModal } from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
 import {
@@ -49,7 +48,7 @@ import {
 	ListSorterSlice,
 } from '../../shared/components/ListSorter';
 import { SelectEducationLevelModal } from '../../shared/components/SelectEducationLevelModal/SelectEducationLevelModal';
-import ShareModal from '../../shared/components/ShareModal/ShareModal';
+import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { buildLink } from '../../shared/helpers/build-link';
@@ -117,7 +116,7 @@ import { useEducationLevelModal } from '../hooks/use-education-level-modal';
 import { PublishAssignmentModal } from '../modals/PublishAssignmentModal';
 
 import { AssignmentEditMarcom } from './AssignmentEditMarcom';
-import AssignmentResponses from './AssignmentResponses';
+import { AssignmentResponses } from './AssignmentResponses';
 
 interface AssignmentEditProps {
 	onUpdate: () => void | Promise<void>;
@@ -853,10 +852,10 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 		}
 		return (
 			<Flex align="start">
-				<HeaderOwnerAndContributors subject={assignment} commonUser={commonUser} />
+				<HeaderOwnerAndContributors subject={assignment} />
 			</Flex>
 		);
-	}, [assignment, commonUser]);
+	}, [assignment]);
 
 	const renderMeta = useMemo(() => {
 		const bookmarks = String(bookmarkViewCounts.bookmarkCount || 0);

@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import {
@@ -44,7 +44,7 @@ import {
 
 type InteractiveTourOverviewProps = DefaultSecureRouteProps;
 
-export const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = () => {
+export const InteractiveTourOverview: FC<InteractiveTourOverviewProps> = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 

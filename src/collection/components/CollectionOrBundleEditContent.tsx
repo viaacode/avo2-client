@@ -10,11 +10,12 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { type CollectionOrBundle } from '../collection.types';
-import { FragmentAdd, FragmentEdit } from '../components';
+import FragmentEdit from '../components/fragment/FragmentEdit';
 import { showReplacementWarning } from '../helpers/fragment';
 
 import { type CollectionAction } from './CollectionOrBundleEdit.types';
 import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
+import { FragmentAdd } from './fragment/FragmentAdd';
 
 import './CollectionOrBundleEditContent.scss';
 

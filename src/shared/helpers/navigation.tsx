@@ -3,8 +3,8 @@ import { type TFunction } from 'i18next';
 import { isNil, kebabCase, sortBy } from 'lodash-es';
 import React from 'react';
 
-import LoginOptionsDropdown from '../../authentication/components/LoginOptionsDropdown';
-import PupilOrTeacherDropdown from '../../authentication/components/PupilOrTeacherDropdown';
+import { LoginOptionsDropdown } from '../../authentication/components/LoginOptionsDropdown';
+import { PupilOrTeacherDropdown } from '../../authentication/components/PupilOrTeacherDropdown';
 import { APP_PATH } from '../../constants';
 import { type AppContentNavElement } from '../services/navigation-items-service';
 import { type NavigationItemInfo } from '../types';

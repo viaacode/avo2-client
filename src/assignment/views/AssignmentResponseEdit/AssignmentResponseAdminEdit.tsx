@@ -17,7 +17,7 @@ import { useMatch } from 'react-router';
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { ErrorView } from '../../../error/views/ErrorView';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AssignmentService } from '../../assignment.service';

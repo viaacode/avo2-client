@@ -27,7 +27,7 @@ import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-lin
 import { ItemMetadata } from '../../shared/components/BlockItemMetadata/ItemMetadata';
 import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { type CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.types';
-import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
+import { TextWithTimestamps } from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
 import { TEAL_BRIGHT } from '../../shared/constants';
 import { stripHtml } from '../../shared/helpers/formatters';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';

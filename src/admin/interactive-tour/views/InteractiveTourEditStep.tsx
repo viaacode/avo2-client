@@ -21,7 +21,7 @@ import { get, isEqual } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
-import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
+import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { stripHtml } from '../../../shared/helpers/formatters';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { type InteractiveTourAction } from '../helpers/reducers';

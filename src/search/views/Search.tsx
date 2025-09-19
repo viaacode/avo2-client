@@ -26,14 +26,14 @@ import {
 
 import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
 import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionGuard } from '../../authentication/components/PermissionGuard';
 import {
-	PermissionGuard,
 	PermissionGuardFail,
 	PermissionGuardPass,
-} from '../../authentication/components';
+} from '../../authentication/components/PermissionGuard.slots';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
@@ -41,10 +41,10 @@ import { generateContentLinkString } from '../../shared/helpers/link';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
+import { SearchFiltersAndResults } from '../components/SearchFiltersAndResults';
 import { type FilterState } from '../search.types';
 
 import './Search.scss';
-import { SearchFiltersAndResults } from '../components/SearchFiltersAndResults';
 
 export const Search: FC = () => {
 	const { tText, tHtml } = useTranslation();

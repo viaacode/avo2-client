@@ -1,7 +1,7 @@
 import { Container, useSlot } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode } from 'react';
 
-import { TopBar } from '../../components';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 import './AdminLayout.scss';
 import {

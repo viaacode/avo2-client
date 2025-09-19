@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 
-import { SecuredRoute } from '../../authentication/components';
+import { SecuredRoute } from '../../authentication/components/SecuredRoute';
 
 import { USER_PATH } from './user.const';
 import UserDetailPage from './views/UserDetailPage';

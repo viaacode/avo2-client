@@ -1,7 +1,7 @@
 import { PermissionName } from '@viaa/avo2-types';
 import React, { type ReactNode } from 'react';
 
-import { SecuredRoute } from '../../authentication/components';
+import { SecuredRoute } from '../../authentication/components/SecuredRoute';
 import { expandArray } from '../../shared/helpers/conditional-expand-array';
 
 import { COLLECTIONS_OR_BUNDLES_PATH } from './collections-or-bundles.const';

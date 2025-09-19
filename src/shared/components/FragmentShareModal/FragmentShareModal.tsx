@@ -18,7 +18,6 @@ import { clsx } from 'clsx';
 import { useAtomValue } from 'jotai';
 import { isNil } from 'lodash-es';
 import React, { createRef, type FC, type ReactNode, useEffect, useState } from 'react';
-import { compose } from 'redux';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
@@ -389,5 +388,3 @@ export const FragmentShareModal: FC<FragmentShareModalProps> = ({
 		</Modal>
 	);
 };
-
-compose(withUser, withEmbedFlow)(FragmentShareModal) as FC<FragmentShareModalProps>;

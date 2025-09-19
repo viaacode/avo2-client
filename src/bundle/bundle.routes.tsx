@@ -1,10 +1,10 @@
 import React, { type ReactNode } from 'react';
 
-import { SecuredRoute } from '../authentication/components';
+import { SecuredRoute } from '../authentication/components/SecuredRoute';
 import { APP_PATH } from '../constants';
 
 import { BundleDetail } from './views/BundleDetail';
-import BundleEdit from './views/BundleEdit';
+import { BundleEdit } from './views/BundleEdit';
 
 export const renderBundleRoutes = (): ReactNode[] => [
 	<SecuredRoute

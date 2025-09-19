@@ -12,8 +12,10 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import type { ParentBundle } from '../../collection/collection.types';
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers/build-link';

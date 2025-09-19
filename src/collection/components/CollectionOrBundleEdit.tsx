@@ -28,7 +28,6 @@ import React, {
 } from 'react';
 import { Helmet } from 'react-helmet';
 import { matchPath, Navigate, useMatch, useNavigate } from 'react-router';
-import { compose } from 'redux';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { reorderBlockPositions, setBlockPositionToIndex } from '../../assignment/assignment.helper';
@@ -37,22 +36,22 @@ import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorNoAccess } from '../../error/components';
+import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
 import { OrderDirection } from '../../search/search.const';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
-import DraggableBlock from '../../shared/components/DraggableBlock/DraggableBlock';
-import DraggableListModal from '../../shared/components/DraggableList/DraggableListModal';
+import { DraggableBlock } from '../../shared/components/DraggableBlock/DraggableBlock';
+import { DraggableListModal } from '../../shared/components/DraggableList/DraggableListModal';
 import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import { InActivityWarningModal } from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
-import InputModal from '../../shared/components/InputModal/InputModal';
+import { InputModal } from '../../shared/components/InputModal/InputModal';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import MoreOptionsDropdownWrapper from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
-import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
-import ShareModal from '../../shared/components/ShareModal/ShareModal';
+import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
+import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown';
+import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
@@ -86,7 +85,6 @@ import {
 	CollectionOrBundle,
 	ContentTypeNumber,
 } from '../collection.types';
-import { CollectionOrBundleTitle, PublishCollectionModal } from '../components';
 import {
 	onAddContributor,
 	onDeleteContributor,
@@ -113,10 +111,12 @@ import { CollectionOrBundleEditAdmin } from './CollectionOrBundleEditAdmin';
 import { CollectionOrBundleEditContent } from './CollectionOrBundleEditContent';
 import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
 import { CollectionOrBundleEditMarcom } from './CollectionOrBundleEditMarcom';
-import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
+import { CollectionOrBundleEditMetaData } from './CollectionOrBundleEditMetaData';
 import { CollectionOrBundleEditQualityCheck } from './CollectionOrBundleEditQualityCheck';
-import DeleteCollectionModal from './modals/DeleteCollectionModal';
+import { CollectionOrBundleTitle } from './CollectionOrBundleTitle';
+import { DeleteCollectionModal } from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
+import { PublishCollectionModal } from './modals/PublishCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
 
@@ -1640,7 +1640,6 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 						<HeaderBottomRowLeft>
 							<HeaderOwnerAndContributors
 								subject={collectionState.currentCollection}
-								commonUser={commonUser}
 							/>
 						</HeaderBottomRowLeft>
 					)}
@@ -1917,5 +1916,3 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 		</>
 	);
 };
-
-compose(withUser)(CollectionOrBundleEdit) as FC<CollectionOrBundleEditProps>;

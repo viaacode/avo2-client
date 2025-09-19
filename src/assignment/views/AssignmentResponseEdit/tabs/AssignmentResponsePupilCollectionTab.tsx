@@ -20,8 +20,8 @@ import { type UrlUpdateType } from 'use-query-params';
 
 import { ReactComponent as PupilSvg } from '../../../../assets/images/leerling.svg';
 import { CollectionBlockType } from '../../../../collection/collection.const';
-import { BlockList } from '../../../../collection/components';
-import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
+import { BlockList } from '../../../../shared/components/BlockList/BlockList';
+import { EmptyStateMessage } from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { getMoreOptionsLabel } from '../../../../shared/constants';
 import { isMobileWidth } from '../../../../shared/helpers/media-query';
 import { useBlocksList } from '../../../../shared/hooks/use-blocks-list';

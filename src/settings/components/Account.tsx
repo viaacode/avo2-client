@@ -19,7 +19,7 @@ import { Helmet } from 'react-helmet';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { redirectToExternalPage } from '../../authentication/helpers/redirects/redirect-to-external-page';
 import { GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { Users_Idps_Enum } from '../../shared/generated/graphql-db-types';
 import { getEnv } from '../../shared/helpers/env';
 import { formatDate } from '../../shared/helpers/formatters';

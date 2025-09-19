@@ -8,7 +8,7 @@ import {
 	CheckboxDropdownModal,
 	type CheckboxOption,
 } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import DateRangeDropdown from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
+import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { LANGUAGES } from '../../shared/constants';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { useTranslation } from '../../shared/hooks/useTranslation';

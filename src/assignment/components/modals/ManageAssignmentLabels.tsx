@@ -16,9 +16,11 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { compact, intersection, sortBy, without } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { ColorSelect } from '../../../shared/components/ColorSelect/ColorSelect';
 import { type Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-db-types';
 import { CustomError } from '../../../shared/helpers/custom-error';
@@ -44,9 +46,9 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
 	isOpen,
 	onClose,
 	type,
-	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<Avo.Assignment.Label[]>(
@@ -77,7 +79,7 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
 				)
 			);
 		}
-	}, [commonUser, setAssignmentLabels, tText, type, tHtml]);
+	}, [profileId, type, commonUser, tHtml]);
 
 	const fetchAssignmentColors = useCallback(async () => {
 		try {

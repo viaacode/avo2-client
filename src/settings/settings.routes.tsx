@@ -1,9 +1,9 @@
 import React, { type ReactNode } from 'react';
 
-import { SecuredRoute } from '../authentication/components';
+import { SecuredRoute } from '../authentication/components/SecuredRoute';
 import { APP_PATH } from '../constants';
 
-import Profile from './components/Profile';
+import { Profile } from './components/Profile';
 import { Settings } from './views/Settings';
 
 export const renderSettingsRoutes = (): ReactNode[] => [

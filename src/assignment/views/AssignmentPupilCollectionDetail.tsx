@@ -10,9 +10,9 @@ import { Link } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { BlockList } from '../../collection/components';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
+import { BlockList } from '../../shared/components/BlockList/BlockList';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,

@@ -22,23 +22,24 @@ import {
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { debounce } from 'lodash-es';
 import React, { type FC, type LegacyRef, type ReactNode, useEffect, useState } from 'react';
-import { compose } from 'redux';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { ItemVideoDescription } from '../../item/components/ItemVideoDescription';
-import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
-import TimeCropControls from '../../shared/components/TimeCropControls/TimeCropControls';
+import { TextWithTimestamps } from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
+import { TimeCropControls } from '../../shared/components/TimeCropControls/TimeCropControls';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { textToHtmlWithTimestamps } from '../../shared/helpers/formatters';
 import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
-import withEmbedFlow, { type EmbedFlowProps } from '../../shared/hocs/withEmbedFlow';
-import useResizeObserver from '../../shared/hooks/useResizeObserver';
+import { useResizeObserver } from '../../shared/hooks/useResizeObserver';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
+import { embedFlowAtom } from '../../shared/store/ui.store';
 import {
 	type EmbedCode,
 	EmbedCodeDescriptionType,
@@ -59,16 +60,16 @@ type EmbedProps = {
 	onResize?: () => void;
 };
 
-export const EmbedContent: FC<EmbedProps & EmbedFlowProps> = ({
+export const EmbedContent: FC<EmbedProps> = ({
 	item,
 	contentDescription,
 	onSave,
 	onClose,
 	onResize,
-	commonUser,
-	isSmartSchoolEmbedFlow,
 }) => {
 	const fragmentDuration = toSeconds((item?.content as Avo.Item.Item)?.duration) || 0;
+	const commonUser = useAtomValue(commonUserAtom);
+	const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom);
 
 	const [title, setTitle] = useState<string | undefined>();
 
@@ -518,5 +519,3 @@ export const EmbedContent: FC<EmbedProps & EmbedFlowProps> = ({
 		</div>
 	);
 };
-
-compose(withUser, withEmbedFlow)(EmbedContent) as FC<EmbedProps>;

@@ -4,7 +4,7 @@ import React, { type FC, useCallback, useEffect, useRef } from 'react';
 
 import { textToHtmlWithTimestamps } from '../../helpers/formatters';
 import { parseDuration } from '../../helpers/parsers/duration';
-import Html from '../Html/Html';
+import { Html } from '../Html/Html';
 
 import './TextWithTimestamps.scss';
 

@@ -5,12 +5,14 @@ import {
 	getFilters,
 } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { get, isNil } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { ErrorView } from '../../../error/views/ErrorView';
 import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
 import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types';
 import { OrderDirection } from '../../../search/search.const';
@@ -25,7 +27,7 @@ import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { AssignmentsBulkAction } from '../../assignments/assignments.types';
-import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
+import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
 import { getDateRangeFilters, getMultiOptionFilters } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
@@ -43,6 +45,7 @@ import { type PupilCollectionsOverviewTableState } from '../pupil-collection.typ
 
 export const PupilCollectionsOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [pupilCollections, setPupilCollections] = useState<Avo.Assignment.Response[] | null>(
 		null

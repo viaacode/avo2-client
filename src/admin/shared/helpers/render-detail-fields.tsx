@@ -1,7 +1,7 @@
 import { get, isBoolean, isNil, isString } from 'lodash-es';
 import React, { type ReactElement, type ReactNode } from 'react';
 
-import Html from '../../../shared/components/Html/Html';
+import { Html } from '../../../shared/components/Html/Html';
 import { formatDate } from '../../../shared/helpers/formatters';
 import { tText } from '../../../shared/helpers/translate-text';
 

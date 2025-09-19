@@ -39,7 +39,7 @@ import { type UrlUpdateType } from 'use-query-params';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
@@ -74,7 +74,7 @@ import {
 	type SearchState,
 } from '../search.types';
 
-import SearchFilterControls from './SearchFilterControls';
+import { SearchFilterControls } from './SearchFilterControls';
 import { SearchResults } from './SearchResults';
 
 export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({

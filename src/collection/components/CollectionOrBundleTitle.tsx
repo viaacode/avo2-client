@@ -12,7 +12,7 @@ type CollectionOrBundleTitleProps = {
 	onFocus?: () => void;
 };
 
-export const CollectionLOrBundleTitle: FC<CollectionOrBundleTitleProps> = ({
+export const CollectionOrBundleTitle: FC<CollectionOrBundleTitleProps> = ({
 	initialTitle,
 	title,
 	onChange,

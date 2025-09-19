@@ -1,9 +1,9 @@
 import React, { type ReactNode } from 'react';
 
-import { SecuredRoute } from '../authentication/components';
+import { SecuredRoute } from '../authentication/components/SecuredRoute';
 import { APP_PATH } from '../constants';
 
-import { QuickLaneDetail } from './views';
+import { QuickLaneDetail } from './views/QuickLaneDetail';
 
 export const renderQuickLaneRoutes = (): ReactNode[] => [
 	<SecuredRoute

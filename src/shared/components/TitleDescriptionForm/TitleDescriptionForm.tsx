@@ -8,7 +8,8 @@ import {
 } from '@viaa/avo2-components';
 import React, { type FC, useEffect, useState } from 'react';
 
-import RichTextEditorWrapper, {
+import {
+	RichTextEditorWrapper,
 	type RichTextEditorWrapperProps,
 } from '../RichTextEditorWrapper/RichTextEditorWrapper';
 

@@ -6,17 +6,16 @@ import { Container, Spacer } from '@viaa/avo2-components';
 import { orderBy } from 'lodash-es';
 import React, { type FC, useState } from 'react';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { type BooleanDictionary } from '../../helpers/navigation';
-import { type UserProps } from '../../hocs/withUser';
 import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
+import { useTranslation } from '../../hooks/useTranslation';
 import { type AppContentNavElement } from '../../services/navigation-items-service';
 import { NavigationBarId } from '../Navigation/Navigation.const';
 import { NavigationItem } from '../Navigation/NavigationItem';
 
 import './Footer.scss';
 
-export const Footer: FC<UserProps> = () => {
+export const Footer: FC = () => {
 	const { tText } = useTranslation();
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<BooleanDictionary>({});

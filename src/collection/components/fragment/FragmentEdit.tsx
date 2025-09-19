@@ -583,4 +583,4 @@ function areEqual(prevProps: FragmentEditProps, nextProps: FragmentEditProps) {
 	);
 }
 
-React.memo(FragmentEdit, areEqual);
+export default React.memo(FragmentEdit, areEqual);

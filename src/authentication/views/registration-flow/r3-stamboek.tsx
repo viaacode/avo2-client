@@ -20,7 +20,7 @@ export type StamboekValidationStatus =
 
 export const STAMBOEK_LOCAL_STORAGE_KEY = 'AVO.stamboek';
 
-const RegisterStamboek: FC = () => {
+export const RegisterStamboek: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 

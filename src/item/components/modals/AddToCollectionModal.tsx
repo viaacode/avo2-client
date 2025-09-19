@@ -27,7 +27,7 @@ import { CollectionService } from '../../../collection/collection.service';
 import { CollectionOrBundle, ContentTypeNumber } from '../../../collection/collection.types';
 import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
 import { OrderDirection } from '../../../search/search.const';
-import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
+import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { isMobileWidth } from '../../../shared/helpers/media-query';

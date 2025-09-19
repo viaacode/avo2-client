@@ -1,12 +1,12 @@
 import React, { type ReactNode } from 'react';
 
-import { SecuredRoute } from '../authentication/components';
+import { SecuredRoute } from '../authentication/components/SecuredRoute';
 import { APP_PATH } from '../constants';
 
-import EducationalAuthorItemRequestForm from './views/EducationalAuthorItemRequestForm';
-import EducationalAuthorItemRequestFormConfirm from './views/EducationalAuthorItemRequestFormConfirm';
-import UserItemRequestForm from './views/UserItemRequestForm';
-import UserItemRequestFormConfirm from './views/UserItemRequestFormConfirm';
+import { EducationalAuthorItemRequestForm } from './views/EducationalAuthorItemRequestForm';
+import { EducationalAuthorItemRequestFormConfirm } from './views/EducationalAuthorItemRequestFormConfirm';
+import { UserItemRequestForm } from './views/UserItemRequestForm';
+import { UserItemRequestFormConfirm } from './views/UserItemRequestFormConfirm';
 
 export const renderUserItemRequestFormRoutes = (): ReactNode[] => [
 	<SecuredRoute

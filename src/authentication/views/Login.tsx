@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 import { loginAtom } from '../authentication.store';

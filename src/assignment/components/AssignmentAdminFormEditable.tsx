@@ -17,11 +17,13 @@ import React, { type FC } from 'react';
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../admin/shared/types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import ContainedInBundlesTable from '../../bundle/components/ContainedInBundlesTable';
+import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable';
 import { type QualityLabel } from '../../collection/collection.types';
 import { formatTimestamp, getFullName } from '../../shared/helpers/formatters';
 import { useGetQualityLabels } from '../../shared/hooks/useGetQualityLabels';
 import { useTranslation } from '../../shared/hooks/useTranslation';
+import { useAtomValue } from 'jotai';
+import { commonUserAtom } from '../../authentication/authentication.store';
 
 interface AssignmentAdminFormEditableProps {
 	assignment: Avo.Assignment.Assignment;
@@ -31,9 +33,9 @@ interface AssignmentAdminFormEditableProps {
 export const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps> = ({
 	assignment,
 	setAssignment,
-	commonUser,
 }) => {
 	const { tText } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 	const { data: allQualityLabels, isLoading } = useGetQualityLabels();
 	const owner: PickerItem | undefined = assignment.profile
 		? {

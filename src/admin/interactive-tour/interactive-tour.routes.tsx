@@ -1,9 +1,11 @@
 import React, { type ReactNode } from 'react';
 
-import { SecuredRoute } from '../../authentication/components';
+import { SecuredRoute } from '../../authentication/components/SecuredRoute';
 
 import { INTERACTIVE_TOUR_PATH } from './interactive-tour.const';
-import { InteractiveTourDetail, InteractiveTourEdit, InteractiveTourOverview } from './views';
+import { InteractiveTourDetail } from './views/InteractiveTourDetail';
+import { InteractiveTourEdit } from './views/InteractiveTourEdit';
+import { InteractiveTourOverview } from './views/InteractiveTourOverview';
 
 export const renderInteractiveTourRoutes = (): ReactNode[] => [
 	<SecuredRoute

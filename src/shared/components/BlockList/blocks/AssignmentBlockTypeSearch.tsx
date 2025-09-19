@@ -21,9 +21,9 @@ import { clsx } from 'clsx';
 import React, { type FC } from 'react';
 
 import { ReactComponent as NewPartSvg } from '../../../../assets/images/nieuw-onderdeel.svg';
-import { CollectionFragmentRichText } from '../../../../collection/components';
-import { useTranslation } from '../../../../shared/hooks/useTranslation';
+import { CollectionFragmentRichText } from '../../../../collection/components/CollectionFragmentRichText';
 import { type EducationLevelId } from '../../../helpers/lom';
+import { useTranslation } from '../../../hooks/useTranslation';
 
 import {
 	GET_EDUCATION_LEVEL_DICT,

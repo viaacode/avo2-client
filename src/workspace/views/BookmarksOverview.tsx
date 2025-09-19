@@ -21,7 +21,7 @@ import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { FragmentShareModal } from '../../shared/components/FragmentShareModal/FragmentShareModal';
 import {

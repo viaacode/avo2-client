@@ -10,7 +10,7 @@ import { type DefaultSecureRouteProps } from '../../../authentication/components
 import { CollectionService } from '../../../collection/collection.service';
 import { useGetCollectionsEditStatuses } from '../../../collection/hooks/useGetCollectionsEditStatuses';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import {
@@ -27,11 +27,12 @@ import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
-import AddOrRemoveLinkedElementsModal, {
+import {
 	type AddOrRemove,
+	AddOrRemoveLinkedElementsModal,
 } from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
-import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
-import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
+import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
+import { SubjectsBeingEditedWarningModal } from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';

@@ -9,15 +9,15 @@ import { QueryParamProvider } from 'use-query-params';
 import { LoginMessage } from '../authentication/authentication.types';
 import { EmbedCodeService } from '../embed-code/embed-code-service';
 import { toEmbedCodeDetail } from '../embed-code/helpers/links';
-import { ErrorView } from '../error/views';
+import { ErrorView } from '../error/views/ErrorView';
 import { CustomError } from '../shared/helpers/custom-error';
 import { isUuid } from '../shared/helpers/isUuid';
 import { tText } from '../shared/helpers/translate-text';
 import { waitForTranslations } from '../shared/translations/i18n';
 
-import Embed from './components/Embed';
+import { Embed } from './components/Embed';
 import { EmbedErrorView } from './components/EmbedErrorView';
-import RegisterOrLogin from './components/RegisterOrLogin';
+import { RegisterOrLogin } from './components/RegisterOrLogin';
 import { useGetLoginStateForEmbed } from './hooks/useGetLoginStateForEmbed';
 
 import '../styles/main.scss';
@@ -215,7 +215,7 @@ const EmbedAppWithRouter = EmbedApp;
 
 const queryClient = new QueryClient();
 
-const EmbedRoot: FC = () => {
+export const EmbedRoot: FC = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<BrowserRouter>

@@ -39,7 +39,7 @@ import { CreateAssignmentModal } from '../../assignment/modals/CreateAssignmentM
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { OrderDirection } from '../../search/search.const';
 import {
 	CheckboxDropdownModal,

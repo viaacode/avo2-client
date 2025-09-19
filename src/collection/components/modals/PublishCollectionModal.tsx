@@ -12,8 +12,10 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { APP_PATH } from '../../../constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
@@ -35,9 +37,9 @@ export const PublishCollectionModal: FC<PublishCollectionModalProps> = ({
 	isOpen,
 	collection,
 	parentBundles,
-	user,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [validationErrors, setValidationErrors] = useState<(string | ReactNode)[]>([]);
 	const [isCollectionPublic, setIsCollectionPublic] = useState(collection.is_public);
@@ -125,7 +127,7 @@ export const PublishCollectionModal: FC<PublishCollectionModalProps> = ({
 					object_type: isCollection() ? 'collection' : 'bundle',
 					action: isPublished ? 'publish' : 'unpublish',
 				},
-				user
+				commonUser
 			);
 		} catch (err) {
 			ToastService.danger(

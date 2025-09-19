@@ -5,7 +5,7 @@ import { noop } from 'lodash-es';
 import React, { type Dispatch, type FC, type SetStateAction, useMemo, useState } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
-import AlertBar from '../../shared/components/AlertBar/AlertBar';
+import { AlertBar } from '../../shared/components/AlertBar/AlertBar';
 import { EducationLevelId } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { useTranslation } from '../../shared/hooks/useTranslation';

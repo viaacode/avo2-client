@@ -1,9 +1,9 @@
 import { Modal, ModalBody, type ModalRef } from '@viaa/avo2-components';
 import React, { createRef, type FC, type ReactNode } from 'react';
 
-import EmbedContent from '../../../embed-code/components/EmbedContent';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { type EmbedCode, EmbedCodeExternalWebsite } from '../../embed-code.types';
+import { EmbedContent } from '../EmbedContent';
 
 import './EditEmbedCodeModal.scss';
 
@@ -59,5 +59,3 @@ export const EditEmbedCodeModal: FC<EditEmbedCodeModalProps> = ({
 		</Modal>
 	);
 };
-
-EditEmbedCodeModal as FC<EditEmbedCodeModalProps>;

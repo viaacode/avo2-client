@@ -17,7 +17,7 @@ import { StringParam, useQueryParams } from 'use-query-params';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { ErrorView } from '../../../error/views/ErrorView';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import {

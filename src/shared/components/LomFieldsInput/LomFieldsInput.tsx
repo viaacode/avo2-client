@@ -11,7 +11,7 @@ import { useLomSubjects } from '../../hooks/useLomSubjects';
 import { useLomThemes } from '../../hooks/useLomThemes';
 import { useTranslation } from '../../hooks/useTranslation';
 import { type LomFieldsByScheme } from '../../types/lom';
-import MultiThemeSelectDropdown from '../MultiThemeSelectDropdown/MultiThemeSelectDropdown';
+import { MultiThemeSelectDropdown } from '../MultiThemeSelectDropdown/MultiThemeSelectDropdown';
 
 import {
 	getParentEducationLevel,

@@ -14,7 +14,7 @@ import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/serv
 import { ITEMS_PER_PAGE } from '../search.const';
 import { type SearchResultsProps } from '../search.types';
 
-import SearchResultItem from './SearchResultItem';
+import { SearchResultItem } from './SearchResultItem';
 
 export const SearchResults: FC<SearchResultsProps> = ({
 	loading,

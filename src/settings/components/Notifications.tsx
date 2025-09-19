@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 
-const Notifications: FC = () => {
+export const Notifications: FC = () => {
 	const { tText } = useTranslation();
 
 	return (
@@ -28,5 +28,3 @@ const Notifications: FC = () => {
 		</>
 	);
 };
-
-Notifications as FC;

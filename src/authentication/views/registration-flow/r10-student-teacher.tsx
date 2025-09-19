@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 
-const StudentTeacher: FC = () => {
+export const StudentTeacher: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 

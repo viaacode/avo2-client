@@ -45,7 +45,7 @@ import { ITEMS_PATH } from '../../admin/items/items.const';
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { AssignmentService } from '../../assignment/assignment.service';
-import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
+import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
 import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -53,7 +53,7 @@ import { CONTENT_TYPE_TRANSLATIONS, ContentTypeNumber } from '../../collection/c
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { type FilterState } from '../../search/search.types';
-import FragmentShareModal from '../../shared/components/FragmentShareModal/FragmentShareModal';
+import { FragmentShareModal } from '../../shared/components/FragmentShareModal/FragmentShareModal';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,

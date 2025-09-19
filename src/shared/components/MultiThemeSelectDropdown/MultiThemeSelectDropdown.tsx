@@ -5,7 +5,7 @@ import { groupBy, map } from 'lodash-es';
 import React, { type FC } from 'react';
 import Select from 'react-select';
 
-import MultiThemeSelectOptionGroupHeading from './MultiThemeSelectOptionGroupHeading';
+import { MultiThemeSelectOptionGroupHeading } from './MultiThemeSelectOptionGroupHeading';
 
 import './MultiThemeSelectDropdown.scss';
 

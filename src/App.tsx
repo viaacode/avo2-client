@@ -15,7 +15,7 @@ import { ADMIN_PATH } from './admin/admin.const';
 import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config';
 import { SpecialUserGroupId } from './admin/user-groups/user-group.const';
 import { commonUserAtom } from './authentication/authentication.store';
-import { SecuredRoute } from './authentication/components';
+import { SecuredRoute } from './authentication/components/SecuredRoute';
 import { PermissionService } from './authentication/helpers/permission-service';
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';

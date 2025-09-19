@@ -16,9 +16,9 @@ import {
 } from '../helpers/login-options-preferred-tab';
 import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';
 
+import { LoginOptionsForPupil } from './LoginOptionsForPupil';
+import { LoginOptionsForTeacher } from './LoginOptionsForTeacher';
 import './LoginOptions.scss';
-import LoginOptionsForPupil from './LoginOptionsForPupil';
-import LoginOptionsForTeacher from './LoginOptionsForTeacher';
 
 interface LoginOptionsProps {
 	onOptionClicked?: () => void;

@@ -8,7 +8,7 @@ import { type UrlUpdateType } from 'use-query-params';
 
 import { commonUserAtom } from '../../../../authentication/authentication.store';
 import { PermissionService } from '../../../../authentication/helpers/permission-service';
-import { ErrorView } from '../../../../error/views';
+import { ErrorView } from '../../../../error/views/ErrorView';
 import { CutFragmentForAssignmentModal } from '../../../../item/components/modals/CutFragmentForAssignmentModal';
 import { type ItemTrimInfo } from '../../../../item/item.types';
 import { ItemDetail } from '../../../../item/views/ItemDetail';

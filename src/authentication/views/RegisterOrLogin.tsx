@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { useTranslation } from '../../shared/hooks/useTranslation';
-import LoginOptions from '../components/LoginOptions';
+import { LoginOptions } from '../components/LoginOptions';
 
 import './RegisterOrLogin.scss';
 

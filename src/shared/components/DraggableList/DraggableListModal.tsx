@@ -3,9 +3,9 @@ import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { type FC, type ReactNode, useState } from 'react';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../hooks/useTranslation';
 
-import DraggableList from './DraggableList';
+import { DraggableList } from './DraggableList';
 
 import './DraggableListModal.scss';
 

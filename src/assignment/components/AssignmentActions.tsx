@@ -14,7 +14,8 @@ import React, { type FC, useCallback, useMemo, useState } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { APP_PATH } from '../../constants';
-import ShareDropdown, {
+import {
+	ShareDropdown,
 	type ShareDropdownProps,
 } from '../../shared/components/ShareDropdown/ShareDropdown';
 import { type ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';

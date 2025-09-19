@@ -1,10 +1,10 @@
 import React, { type ReactNode } from 'react';
 
-import { SecuredRoute } from '../../authentication/components';
+import { SecuredRoute } from '../../authentication/components/SecuredRoute';
 
 import { ASSIGNMENTS_PATH } from './assignments.const';
-import AssignmentMarcomOverview from './views/AssignmentsMarcomOverview';
-import AssignmentOverviewAdmin from './views/AssignmentsOverviewAdmin';
+import { AssignmentMarcomOverview } from './views/AssignmentsMarcomOverview';
+import { AssignmentOverviewAdmin } from './views/AssignmentsOverviewAdmin';
 
 export const renderAdminAssignmentRoutes = (): ReactNode[] => [
 	<SecuredRoute

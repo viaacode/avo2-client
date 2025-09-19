@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 
-import { SecuredRoute } from '../../authentication/components';
+import { SecuredRoute } from '../../authentication/components/SecuredRoute';
 
 import { PUPIL_COLLECTIONS_PATH } from './pupil-collection.const';
 import { PupilCollectionsOverview } from './views/PupilCollectionsOverview';

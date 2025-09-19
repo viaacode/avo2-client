@@ -24,7 +24,7 @@ const GET_CONTENT_TYPE_LABELS: () => { [type: string]: string } = () => ({
 	FILE: tText('admin/shared/components/content-picker/content-picker___bestand'),
 });
 
-export const GET_CONTENT_TYPES: (user?: Avo.User.User) => PickerTypeOption[] = () => {
+export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => {
 	const labels = GET_CONTENT_TYPE_LABELS();
 	return [
 		{

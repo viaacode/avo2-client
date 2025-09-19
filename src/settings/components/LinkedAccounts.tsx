@@ -13,6 +13,7 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { Idp } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, {
 	type Dispatch,
 	type FC,
@@ -23,6 +24,7 @@ import React, {
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import {
 	redirectToServerLinkAccount,
 	redirectToServerUnlinkAccount,
@@ -48,9 +50,10 @@ interface DeleteModalToggle {
 }
 
 // This tab is only loaded if user is NOT a pupil (see Settings.tsx) -- no more checks here
-const LinkedAccounts: FC = () => {
+export const LinkedAccounts: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [isDeleteVlaamseOverheidModalOpen, setIsDeleteVlaamseOverheidModalOpen] =
 		useState<boolean>(false);

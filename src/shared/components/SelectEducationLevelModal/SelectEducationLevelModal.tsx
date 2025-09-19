@@ -17,13 +17,11 @@ import React, { type FC, useCallback, useMemo, useState } from 'react';
 import { EducationLevelId } from '../../helpers/lom';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
-import { type UserProps } from '../../hocs/withUser';
 import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 
-type SelectEducationLevelModalProps = Omit<ModalProps, 'children' | 'ref'> &
-	Partial<UserProps> & {
-		onConfirm?: (lom: Avo.Lom.LomField) => void;
-	};
+type SelectEducationLevelModalProps = Omit<ModalProps, 'children' | 'ref'> & {
+	onConfirm?: (lom: Avo.Lom.LomField) => void;
+};
 
 // Component
 

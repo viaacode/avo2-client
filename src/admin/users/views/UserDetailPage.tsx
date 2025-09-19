@@ -1,9 +1,10 @@
 import { Flex, Spinner } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, lazy, Suspense, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
@@ -22,6 +23,7 @@ const UserDetail = lazy(() =>
 const UserDetailPage: FC = () => {
 	const { tText } = useTranslation();
 	const navigateFunc = useNavigate();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [user, setUser] = useState<{ fullName?: string } | undefined>();
 	const { id } = useParams<{ id: string }>();
@@ -58,7 +60,7 @@ const UserDetailPage: FC = () => {
 						onGoBack={() =>
 							goBrowserBackWithFallback(ADMIN_PATH.USER_OVERVIEW, navigateFunc)
 						}
-						commonUser={commonUser as Avo.User.CommonUser}
+						commonUser={commonUser}
 					/>
 				)}
 			</Suspense>

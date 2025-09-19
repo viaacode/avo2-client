@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 
-import { SecuredRoute } from '../../authentication/components';
+import { SecuredRoute } from '../../authentication/components/SecuredRoute';
 
 import { NAVIGATIONS_PATH } from './navigations.const';
 import { NavigationBarDetail, NavigationBarOverview, NavigationItemEdit } from './views';

@@ -13,9 +13,8 @@ import React, { type FC, useCallback, useEffect, useState } from 'react';
 import ReactSelect, { type ActionMeta, type PropsValue } from 'react-select';
 import AsyncSelect from 'react-select/async';
 
-import FileUpload from '../../../../shared/components/FileUpload/FileUpload';
+import { FileUpload } from '../../../../shared/components/FileUpload/FileUpload';
 import { CustomError } from '../../../../shared/helpers/custom-error';
-import withUser from '../../../../shared/hocs/withUser';
 import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../shared/services/toast-service';
 import { type PickerItem, type PickerTypeOption } from '../../types';
@@ -38,7 +37,7 @@ interface ContentPickerProps {
 	errors?: string | string[];
 }
 
-export const ContentPickerComponent: FC<ContentPickerProps> = ({
+export const ContentPicker: FC<ContentPickerProps> = ({
 	allowedTypes = DEFAULT_ALLOWED_TYPES,
 	initialValue,
 	onSelect,
@@ -46,13 +45,12 @@ export const ContentPickerComponent: FC<ContentPickerProps> = ({
 	hideTypeDropdown = false,
 	hideTargetSwitch = false,
 	errors = [],
-	user,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// filter available options for the type picker
 	const typeOptions = filterTypes(
-		GET_CONTENT_TYPES(user),
+		GET_CONTENT_TYPES(),
 		allowedTypes as Avo.Core.ContentPickerType[]
 	);
 
@@ -374,5 +372,3 @@ export const ContentPickerComponent: FC<ContentPickerProps> = ({
 		</FormGroup>
 	);
 };
-
-export const ContentPicker = withUser(ContentPickerComponent) as FC<ContentPickerProps>;

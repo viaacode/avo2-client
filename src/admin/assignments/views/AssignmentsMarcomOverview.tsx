@@ -1,16 +1,18 @@
 import { ExportAllToCsvModal, FilterTable, getFilters } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Container, Flex, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, type ReactNode, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
 } from '../../../collection/collection.const';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { CustomError } from '../../../shared/helpers/custom-error';
@@ -38,8 +40,9 @@ import {
 } from '../helpers/render-assignment-columns';
 import { useGetAssignmentsWithMarcomForAdminOverview } from '../hooks/useGetAssignmentsWithMarcomForAdminOverview';
 
-const AssignmentMarcomOverview: FC = () => {
+export const AssignmentMarcomOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [tableState, setTableState] = useState<Partial<AssignmentMarcomTableState>>({});
 	const { data: assignmentsWithMarcom, isLoading: isLoadingAssignments } =

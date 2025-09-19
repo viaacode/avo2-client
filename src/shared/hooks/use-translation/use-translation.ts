@@ -18,7 +18,7 @@ type useTranslationsResponse<N extends Namespace = DefaultNamespace> = Omit<
 	tText: (key: string, params?: TOptions | string | undefined) => string;
 };
 
-const useTranslation = (): useTranslationsResponse => {
+export const useTranslation = (): useTranslationsResponse => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { t, ...rest } = useI18NextTranslation();
 	return { tHtml, tText, ...rest };

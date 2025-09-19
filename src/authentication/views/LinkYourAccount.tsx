@@ -9,7 +9,7 @@ import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './LinkYourAccount.scss';
 
-const LinkYourAccount: FC = () => {
+export const LinkYourAccount: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 

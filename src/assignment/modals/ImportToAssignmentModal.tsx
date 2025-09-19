@@ -17,6 +17,7 @@ import {
 	Toggle,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -44,10 +45,9 @@ import {
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import { type AssignmentTableColumns } from '../assignment.types';
-import AssignmentDeadline from '../components/AssignmentDeadline';
+import { AssignmentDeadline } from '../components/AssignmentDeadline';
 
 import './AddItemsModals.scss';
-import { useAtomValue } from 'jotai';
 
 interface ImportToAssignmentModalProps {
 	isOpen: boolean;

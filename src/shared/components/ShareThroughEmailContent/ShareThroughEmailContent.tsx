@@ -1,7 +1,9 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Box, Button, Flex, FlexItem, Spacer, TextInput } from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
 import React, { type FC, useState } from 'react';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { copyToClipboard } from '../../helpers/clipboard';
 import { useTranslation } from '../../hooks/useTranslation';
 import {
@@ -72,7 +74,7 @@ export const ShareThroughEmailContent: FC<AddToCollectionModalProps> = ({
 						object_type: 'mail',
 					},
 				},
-				user
+				commonUser
 			);
 
 			ToastService.success(

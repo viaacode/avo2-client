@@ -14,14 +14,17 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { get, noop, orderBy } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../admin/shared/types';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import ContainedInBundlesTable from '../../bundle/components/ContainedInBundlesTable';
-import AssociatedQuickLaneTable, {
+import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable';
+import {
+	AssociatedQuickLaneTable,
 	AssociatedQuickLaneTableOrderBy,
 } from '../../quick-lane/components/AssociatedQuickLaneTable';
 import { OrderDirection } from '../../search/search.const';
@@ -46,10 +49,10 @@ interface CollectionOrBundleEditAdminProps {
 export const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps> = ({
 	collection,
 	changeCollectionState,
-	commonUser,
 	onFocus,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	// State
 	const [qualityLabels, setQualityLabels] = useState<TagInfo[] | null>(null);

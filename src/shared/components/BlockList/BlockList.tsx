@@ -4,18 +4,21 @@ import React, { type FC } from 'react';
 
 import { AssignmentBlockType } from '../../../assignment/assignment.types';
 import { CollectionBlockType } from '../../../collection/collection.const';
-import {
-	CollectionFragmentTypeItem,
-	CollectionFragmentTypeText,
-} from '../../../collection/components';
 import { getBlockColor } from '../../helpers/get-block-color';
 
 import { BlockIconWrapper } from './BlockIconWrapper/BlockIconWrapper';
-import AssignmentBlockTypeSearch, {
+import {
+	AssignmentBlockTypeSearch,
 	type AssignmentBlockTypeSearchProps,
 } from './blocks/AssignmentBlockTypeSearch';
-import type { CollectionFragmentTypeItemProps } from './blocks/CollectionFragmentTypeItem';
-import type { CollectionFragmentTypeTextProps } from './blocks/CollectionFragmentTypeText';
+import {
+	CollectionFragmentTypeItem,
+	type CollectionFragmentTypeItemProps,
+} from './blocks/CollectionFragmentTypeItem';
+import {
+	CollectionFragmentTypeText,
+	type CollectionFragmentTypeTextProps,
+} from './blocks/CollectionFragmentTypeText';
 
 import './BlockList.scss';
 

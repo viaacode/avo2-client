@@ -25,6 +25,7 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -32,6 +33,7 @@ import { generatePath, useMatch, useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { BooleanParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { renderRelatedItems } from '../../collection/collection.helpers';
@@ -47,7 +49,7 @@ import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
 import { ErrorView, type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
 import { BlockList } from '../../shared/components/BlockList/BlockList';
-import CommonMetaData from '../../shared/components/CommonMetaData/CommonMetaData';
+import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EditButton } from '../../shared/components/EditButton/EditButton';
 import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
@@ -97,8 +99,8 @@ import { deleteAssignment, deleteSelfFromAssignment } from '../helpers/delete-as
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { toAssignmentDetail } from '../helpers/links';
 import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses';
-import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
-import PublishAssignmentModal from '../modals/PublishAssignmentModal';
+import { DeleteAssignmentModal } from '../modals/DeleteAssignmentModal';
+import { PublishAssignmentModal } from '../modals/PublishAssignmentModal';
 
 type AssignmentDetailPermissions = Partial<{
 	canCreateAssignments: boolean;
@@ -114,11 +116,11 @@ type AssignmentDetailProps = {
 };
 
 export const AssignmentDetail: FC<AssignmentDetailProps> = ({
-	commonUser,
 	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
+	const commonUser = useAtomValue(commonUserAtom);
 	const match = useMatch<'id', string>(APP_PATH.ASSIGNMENT_DETAIL.route);
 
 	const assignmentId = match?.params.id;
@@ -838,7 +840,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
 					</HeaderMiddleRowRight>
 					<HeaderBottomRowLeft>
-						<HeaderOwnerAndContributors subject={assignment} commonUser={commonUser} />
+						<HeaderOwnerAndContributors subject={assignment} />
 					</HeaderBottomRowLeft>
 					<HeaderBottomRowRight>
 						<InteractiveTour showButton />
@@ -944,7 +946,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 						</h3>
 						<Grid>
 							{!!assignment && (
-								<CommonMetaData
+								<CommonMetadata
 									subject={assignment}
 									enabledMetaData={enabledMetaData}
 									renderSearchLink={defaultRenderSearchLink}

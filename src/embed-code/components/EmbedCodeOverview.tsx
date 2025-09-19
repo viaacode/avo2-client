@@ -2,12 +2,13 @@ import { FILTER_TABLE_QUERY_PARAM_CONFIG, FilterTable } from '@meemoo/admin-core
 import { IconName, type MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
+import { useAtomValue } from 'jotai';
 import { isEqual } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useQueryParams } from 'use-query-params';
 
-import type { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { APP_PATH } from '../../constants';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
@@ -54,13 +55,10 @@ enum EmbedCodeAction {
 
 const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 
-export const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = ({
-	commonUser,
-
-	onUpdate,
-}) => {
+export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	// State
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });

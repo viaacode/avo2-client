@@ -26,10 +26,10 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page';
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { OrderDirection, SearchFilter } from '../../search/search.const';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
-import JsonLd from '../../shared/components/JsonLd/JsonLd';
+import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,

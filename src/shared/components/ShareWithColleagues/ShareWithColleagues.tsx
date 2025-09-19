@@ -20,16 +20,18 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, type PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { isEmpty, isNil, truncate } from 'lodash-es';
 import React, { type FC, useMemo, useState } from 'react';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { tHtml } from '../../helpers/translate-html';
 import { validateEmailAddress } from '../../helpers/validation/email';
 import { useTranslation } from '../../hooks/useTranslation';
 import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
 import { ConfirmModalRememberKey } from '../ConfirmModal/ConfirmModal.consts';
 
-import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
+import { EditShareUserRightsModal } from './Modals/EditShareUserRightsModal';
 import { GET_EDUCATION_LEVEL_DIFFERENCE_DICT } from './ShareWithColleagues.const';
 import {
 	compareUsersEmail,
@@ -57,27 +59,26 @@ type ShareWithColleaguesProps = {
 export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
 	assignment,
 	availableRights,
-	commonUser,
 	contributors,
 	hasModalOpen,
 	isAdmin,
 	onAddNewContributor,
 	onDeleteContributor,
 	onEditRights,
-	user,
 }) => {
 	const { tText } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 	const currentUser =
 		(contributors.find(
-			(contributor) => contributor.profileId === user?.profile?.id
+			(contributor) => contributor.profileId === commonUser?.profileId
 		) as ContributorInfo) ||
 		({
 			rights: ContributorInfoRight.OWNER,
-			email: user?.mail,
-			firstName: user?.first_name,
-			lastName: user?.last_name,
-			profileId: user?.profile?.id,
-			profileImage: user?.profile?.organisation?.logo_url || user?.profile?.avatar,
+			email: commonUser?.email,
+			firstName: commonUser?.firstName,
+			lastName: commonUser?.lastName,
+			profileId: commonUser?.profileId,
+			profileImage: commonUser?.organisation?.logo_url || commonUser?.avatar,
 		} as ContributorInfo);
 	const [isRightsDropdownOpen, setIsRightsDropdownOpen] = useState<boolean>(false);
 	const [contributor, setNewContributor] = useState<Partial<ContributorInfo>>({

@@ -1,9 +1,11 @@
-import type { ContentPageDetailProps, ContentPageInfo } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import type { ContentPageInfo } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Flex, Spinner } from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
 import React, { type FC, lazy, Suspense, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useMatch, useNavigate } from 'react-router';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
@@ -17,10 +19,11 @@ const ContentPageDetail = lazy(() =>
 	}))
 );
 
-export const ContentPageDetailPage: FC<ContentPageDetailProps> = ({ commonUser }) => {
+const ContentPageDetailPage: FC = () => {
 	const navigateFunc = useNavigate();
 	const match = useMatch<'id', string>(CONTENT_PAGE_PATH.CONTENT_PAGE_DETAIL);
 	const id = match?.params.id;
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const { tText } = useTranslation();
 	const [item, setItem] = useState<ContentPageInfo | undefined>(undefined);

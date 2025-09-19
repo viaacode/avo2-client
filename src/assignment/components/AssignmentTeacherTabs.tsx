@@ -3,7 +3,6 @@ import { PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import React, { type FC, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { compose } from 'redux';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';

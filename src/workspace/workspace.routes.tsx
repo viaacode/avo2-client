@@ -1,11 +1,11 @@
 import React, { type ReactNode } from 'react';
 import { Navigate } from 'react-router';
 
-import { SecuredRoute } from '../authentication/components';
+import { SecuredRoute } from '../authentication/components/SecuredRoute';
 import { APP_PATH } from '../constants';
 import { ROUTE_PARTS } from '../shared/constants';
 
-import { Workspace } from './views';
+import { Workspace } from './views/Workspace';
 
 export const renderWorkspaceRoutes = (): ReactNode[] => [
 	<SecuredRoute

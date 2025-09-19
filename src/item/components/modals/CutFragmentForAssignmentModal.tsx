@@ -15,7 +15,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, useEffect, useState } from 'react';
 
-import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
+import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';

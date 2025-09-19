@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 
-import { SecuredRoute } from '../../authentication/components';
+import { SecuredRoute } from '../../authentication/components/SecuredRoute';
 
 import { CONTENT_PAGE_LABEL_PATH } from './content-page-label.const';
 import ContentPageLabelDetailPage from './views/ContentPageLabelDetailPage';

@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import FileUpload from '../../shared/components/FileUpload/FileUpload';
+import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
 import { DOC_TYPES } from '../../shared/helpers/files';
 import { getFullNameCommonUser } from '../../shared/helpers/formatters';
 import { groupLomLinks } from '../../shared/helpers/lom';

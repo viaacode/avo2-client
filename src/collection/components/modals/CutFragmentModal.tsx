@@ -12,7 +12,7 @@ import { noop, once } from 'lodash-es';
 import React, { type FC, useState } from 'react';
 
 import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription';
-import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
+import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { isMobileWidth } from '../../../shared/helpers/media-query';

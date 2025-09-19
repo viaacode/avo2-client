@@ -1,8 +1,8 @@
 import React, { type FC } from 'react';
 
 import { CollectionOrBundle } from '../collection.types';
-import CollectionOrBundleEdit from '../components/CollectionOrBundleEdit';
+import { CollectionOrBundleEdit } from '../components/CollectionOrBundleEdit';
 
-const CollectionEdit: FC = () => {
+export const CollectionEdit: FC = () => {
 	return <CollectionOrBundleEdit type={CollectionOrBundle.COLLECTION} />;
 };

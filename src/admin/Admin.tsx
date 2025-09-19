@@ -15,7 +15,7 @@ import { type NavigationItemInfo } from '../shared/types';
 
 import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
 import { renderAdminRoutes } from './admin.routes';
-import { Sidebar } from './shared/components';
+import { Sidebar } from './shared/components/Sidebar/Sidebar';
 
 export const Admin: FC<{ commonUser: Avo.User.CommonUser }> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();

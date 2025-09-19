@@ -6,12 +6,12 @@ import React, { type FC, useCallback, useEffect, useState } from 'react';
 import Joyride, { type CallBackProps } from 'react-joyride';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { TEAL_BRIGHT } from '../../constants';
 import { CustomError } from '../../helpers/custom-error';
+import { useTranslation } from '../../hooks/useTranslation';
 import { InteractiveTourService, type TourInfo } from '../../services/interactive-tour.service';
 import { showNudgingModalAtom } from '../../store/ui.store';
-import Html from '../Html/Html';
+import { Html } from '../Html/Html';
 
 import { useGetInteractiveTourForPage } from './hooks/useGetInteractiveTourForPage';
 

@@ -14,7 +14,7 @@ import { commonUserAtom } from '../../authentication/authentication.store';
 import { QuickLaneService } from '../../quick-lane/quick-lane.service';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
+import { QuickLaneFilterTableCell } from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { QUICK_LANE_DEFAULTS, type QuickLaneColumn } from '../../shared/constants/quick-lane';
 import { CustomError } from '../../shared/helpers/custom-error';

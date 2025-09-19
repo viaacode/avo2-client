@@ -34,7 +34,7 @@ import { ZendeskService } from '../../../shared/services/zendesk-service';
 
 import './r4-manual-registration.scss';
 
-const ManualRegistration: FC = () => {
+export const ManualRegistration: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 

@@ -1,9 +1,10 @@
 import React, { type ReactNode } from 'react';
 
-import { SecuredRoute } from '../authentication/components';
+import { SecuredRoute } from '../authentication/components/SecuredRoute';
 import { APP_PATH } from '../constants';
 
-import { CollectionDetail, CollectionEdit } from './views';
+import { CollectionDetail } from './views/CollectionDetail';
+import { CollectionEdit } from './views/CollectionEdit';
 
 export const renderCollectionRoutes = (): ReactNode[] => [
 	<SecuredRoute

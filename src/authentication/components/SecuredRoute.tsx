@@ -2,7 +2,6 @@ import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type ComponentType, type FC, useEffect } from 'react';
 import { Navigate, Route, useNavigate } from 'react-router';
-import { type Dispatch } from 'redux';
 
 import { AssignmentDetailSwitcher } from '../../assignment/views/AssignmentDetailSwitcher';
 import { APP_PATH } from '../../constants';
@@ -31,14 +30,7 @@ export interface SecuredRouteProps {
 	path?: string;
 }
 
-export const SecuredRoute: FC<
-	SecuredRouteProps & {
-		getLoginState: () => Dispatch;
-		loginState: Avo.Auth.LoginResponse | null;
-		loginStateError: boolean;
-		loginStateLoading: boolean;
-	}
-> = ({ Component, getLoginState, loginState, loginStateError, loginStateLoading, path }) => {
+export const SecuredRoute: FC<SecuredRouteProps> = ({ Component, path }) => {
 	const { tText } = useTranslation();
 	const navigateFunc = useNavigate();
 

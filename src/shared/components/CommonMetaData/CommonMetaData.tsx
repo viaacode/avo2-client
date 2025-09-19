@@ -7,7 +7,7 @@ import { type FilterState } from '../../../search/search.types';
 import { formatDate } from '../../helpers/formatters';
 import { getGroupedLomsKeyValue } from '../../helpers/lom';
 import { tText } from '../../helpers/translate-text';
-import LomInfoField from '../LomInfoField/LomInfoField';
+import { LomInfoField } from '../LomInfoField/LomInfoField';
 
 type CommonMetadataProps = {
 	subject: { loms?: Avo.Lom.Lom[] | null; created_at?: string; updated_at?: string; id: string };

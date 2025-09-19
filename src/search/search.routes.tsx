@@ -1,9 +1,9 @@
 import React, { type ReactNode } from 'react';
 
-import { SecuredRoute } from '../authentication/components';
+import { SecuredRoute } from '../authentication/components/SecuredRoute';
 import { APP_PATH } from '../constants';
 
-import { Search } from './views';
+import { Search } from './views/Search';
 
 export const renderSearchRoutes = (): ReactNode[] => [
 	<SecuredRoute

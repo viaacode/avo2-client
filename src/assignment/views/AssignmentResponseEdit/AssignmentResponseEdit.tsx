@@ -55,15 +55,15 @@ import {
 	type PupilCollectionFragment,
 	type PupilSearchFilterState,
 } from '../../assignment.types';
-import AssignmentHeading from '../../components/AssignmentHeading';
-import AssignmentMetadata from '../../components/AssignmentMetadata';
+import { AssignmentHeading } from '../../components/AssignmentHeading';
+import { AssignmentMetadata } from '../../components/AssignmentMetadata';
 import { buildAssignmentSearchLink } from '../../helpers/build-search-link';
 import { cleanupTitleAndDescriptions } from '../../helpers/cleanup-title-and-descriptions';
 import { backToOverview } from '../../helpers/links';
 import { useAssignmentPupilTabs } from '../../hooks/assignment-pupil-tabs';
 
-import AssignmentResponseAssignmentTab from './tabs/AssignmentResponseAssignmentTab';
-import AssignmentResponsePupilCollectionTab from './tabs/AssignmentResponsePupilCollectionTab';
+import { AssignmentResponseAssignmentTab } from './tabs/AssignmentResponseAssignmentTab';
+import { AssignmentResponsePupilCollectionTab } from './tabs/AssignmentResponsePupilCollectionTab';
 import { AssignmentResponseSearchTab } from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';

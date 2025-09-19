@@ -1,11 +1,11 @@
 import React, { type ReactNode } from 'react';
 
-import { SecuredRoute } from '../../authentication/components';
+import { SecuredRoute } from '../../authentication/components/SecuredRoute';
 
 import { CONTENT_PAGE_PATH } from './content-page.consts';
 import ContentPageDetailPage from './views/ContentPageDetailPage';
 import ContentPageEditPage from './views/ContentPageEditPage';
-import ContentPageOverviewPage from './views/ContentPageOverviewPage';
+import { ContentPageOverviewPage } from './views/ContentPageOverviewPage';
 
 export const renderAdminContentPageRoutes = (): ReactNode[] => {
 	return [

@@ -33,6 +33,7 @@ import { Helmet } from 'react-helmet';
 import { useMatch, useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin';
@@ -44,13 +45,13 @@ import {
 	CollectionOrBundle,
 	ContentTypeNumber,
 } from '../../collection/collection.types';
-import { PublishCollectionModal } from '../../collection/components';
+import { PublishCollectionModal } from '../../collection/components/modals/PublishCollectionModal';
 import { useGetCollectionOrBundleByIdOrInviteToken } from '../../collection/hooks/useGetCollectionOrBundleByIdOrInviteToken';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
-import { CommonMetaData } from '../../shared/components/CommonMetaData/CommonMetaData';
+import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { EditButton } from '../../shared/components/EditButton/EditButton';
 import { Html } from '../../shared/components/Html/Html';
@@ -86,7 +87,6 @@ import { ToastService } from '../../shared/services/toast-service';
 import { BundleAction } from '../bundle.types';
 
 import './BundleDetail.scss';
-import { commonUserAtom } from '../../authentication/authentication.store';
 
 type BundleDetailProps = {
 	id?: string;
@@ -695,7 +695,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 						{tText('bundle/views/bundle-detail___over-deze-bundel')}
 					</BlockHeading>
 					<Grid>
-						<CommonMetaData
+						<CommonMetadata
 							subject={bundleObj}
 							enabledMetaData={enabledMetaData}
 							renderSearchLink={defaultRenderSearchLink}

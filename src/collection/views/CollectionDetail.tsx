@@ -19,6 +19,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { compact, isEmpty, isNil, noop } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -30,13 +31,14 @@ import { AssignmentService } from '../../assignment/assignment.service';
 import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
 import { CreateAssignmentModal } from '../../assignment/modals/CreateAssignmentModal';
 import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorNoAccess } from '../../error/components';
-import { ErrorView } from '../../error/views';
+import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
+import { ErrorView } from '../../error/views/ErrorView';
 import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
-import { CommonMetaData } from '../../shared/components/CommonMetaData/CommonMetaData';
+import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EditButton } from '../../shared/components/EditButton/EditButton';
 import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
@@ -45,7 +47,7 @@ import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComp
 import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
 import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal';
-import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
+import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown';
 import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
@@ -60,7 +62,7 @@ import {
 } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { getFullName } from '../../shared/helpers/formatters/avatar';
+import { getFullName } from '../../shared/helpers/formatters';
 import { generateContentLinkString, navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { isUuid } from '../../shared/helpers/uuid';
@@ -87,10 +89,12 @@ import {
 	ContentTypeString,
 	type Relation,
 } from '../collection.types';
-import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
+import { FragmentList } from '../components/fragment/FragmentList';
 import { AddToBundleModal } from '../components/modals/AddToBundleModal';
+import { AutoplayCollectionModal } from '../components/modals/AutoplayCollectionModal';
 import { DeleteCollectionModal } from '../components/modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from '../components/modals/DeleteContributorFromCollectionModal';
+import { PublishCollectionModal } from '../components/modals/PublishCollectionModal';
 import {
 	onAddContributor,
 	onDeleteContributor,
@@ -1244,7 +1248,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 						</h3>
 						<Grid>
 							{!!collection && (
-								<CommonMetaData
+								<CommonMetadata
 									subject={collection}
 									enabledMetaData={enabledMetaData}
 									renderSearchLink={defaultRenderSearchLink}
@@ -1580,10 +1584,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
 						<HeaderBottomRowLeft>
 							<div className="u-flex-space-between">
-								<HeaderOwnerAndContributors
-									subject={collection}
-									commonUser={commonUser}
-								/>
+								<HeaderOwnerAndContributors subject={collection} />
 							</div>
 						</HeaderBottomRowLeft>
 						{!showLoginPopup && (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import AdminRedirect from './admin/AdminRedirect';
+import { AdminRedirect } from './admin/AdminRedirect';
 import { renderAssignmentRoutes } from './assignment/assignment.routes';
 import { renderAuthenticationRoutes } from './authentication/authentication.routes';
 import { renderBundleRoutes } from './bundle/bundle.routes';

@@ -12,7 +12,7 @@ import {
 	type OrganisationContentItem,
 } from '../../collection/collection.service';
 import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { OrderDirection } from '../../search/search.const';
 import {
 	LoadingErrorLoadedComponent,

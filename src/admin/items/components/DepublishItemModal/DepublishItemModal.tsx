@@ -16,17 +16,17 @@ import { type Avo } from '@viaa/avo2-types';
 import { get, noop } from 'lodash-es';
 import React, { type FC, useState } from 'react';
 
-import RichTextEditorWrapper from '../../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
+import { RichTextEditorWrapper } from '../../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../../shared/generated/graphql-db-types';
 import { CustomError } from '../../../../shared/helpers/custom-error';
 import { stripHtml } from '../../../../shared/helpers/formatters';
 import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { RelationService } from '../../../../shared/services/relation-service/relation.service';
 import { ToastService } from '../../../../shared/services/toast-service';
+import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
 import { ItemsService } from '../../items.service';
 
 import './DepublishItemModal.scss';
-import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
 
 type DepublishType = 'depublish' | 'depublish_with_reason' | 'depublish_with_replacement';
 

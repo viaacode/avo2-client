@@ -78,7 +78,7 @@ import {
 	type InteractiveTourStep,
 } from '../interactive-tour.types';
 
-import InteractiveTourEditStep from './InteractiveTourEditStep';
+import { InteractiveTourEditStep } from './InteractiveTourEditStep';
 
 import './InteractiveTourEdit.scss';
 
