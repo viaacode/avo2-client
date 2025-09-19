@@ -1,8 +1,8 @@
 import { tText } from '../../../shared/helpers/translate-text';
 
-import { type ManageAssignmentLabelsProps } from './ManageAssignmentLabels';
+import { type ManageLabelsAndClassesProps } from './ManageLabelsClasses';
 
-export interface ManageAssignmentLabelsTranslations {
+export interface ManageLabelsClassesTranslations {
 	modal: {
 		title: string;
 	};
@@ -17,8 +17,8 @@ export interface ManageAssignmentLabelsTranslations {
 }
 
 export const getManageAssignmentLabelsTranslations = (
-	type: ManageAssignmentLabelsProps['type']
-): ManageAssignmentLabelsTranslations => {
+	type: ManageLabelsAndClassesProps['type']
+): ManageLabelsClassesTranslations => {
 	return type === 'LABEL'
 		? {
 				modal: {

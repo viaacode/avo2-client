@@ -1,6 +1,0 @@
-query getAllAssignmentLabelColors {
-	lookup_enum_colors {
-		label
-		value
-	}
-}

@@ -25,7 +25,7 @@ export interface AssignmentFields {
 	updated_by_profile_id?: string | null;
 	last_user_edit_at?: string | null;
 	blocks?: Avo.Assignment.Block[];
-	labels?: { assignment_label: Avo.Assignment.Label }[];
+	labels?: { assignment_label: Avo.LabelClass.LabelClass }[];
 	share_type?: ShareWithColleagueTypeEnum; // Only available when fetching assignments from the assignments_v2_overview table
 	education_level_id?: string;
 	color?: string;

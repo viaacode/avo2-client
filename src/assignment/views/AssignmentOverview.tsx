@@ -74,7 +74,7 @@ import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
+import { LabelsClassesService } from '../../shared/services/labels-classes';
 import { ToastService } from '../../shared/services/toast-service';
 import { KeyCode } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -121,7 +121,7 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.LabelClass.LabelClass[]>([]);
 	const [filterString, setFilterString] = useState<string | undefined>(undefined);
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<string | null>(
 		null
@@ -259,12 +259,9 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 	};
 
 	const fetchAssignmentLabels = useCallback(async () => {
-		if (commonUser?.profileId) {
-			// Fetch all labels for the current user
-			const labels = await AssignmentLabelsService.getLabelsForProfile(commonUser.profileId);
-			setAllAssignmentLabels(labels);
-		}
-	}, [commonUser, setAllAssignmentLabels]);
+		// Fetch all labels for the current user
+		setAllAssignmentLabels(await LabelsClassesService.getLabelsForProfile());
+	}, [setAllAssignmentLabels]);
 
 	useEffect(() => {
 		if (!isNil(canEditAssignments)) {
@@ -419,7 +416,10 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 		);
 	};
 
-	const renderLabels = (labels: { assignment_label: Avo.Assignment.Label }[], label: string) => {
+	const renderLabels = (
+		labels: { assignment_label: Avo.LabelClass.LabelClass }[],
+		label: string
+	) => {
 		if (labels.length === 0) {
 			return '-';
 		}
@@ -615,11 +615,11 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 		}
 	};
 
-	const getLabelOptions = (labelType: Avo.Assignment.LabelType): CheckboxOption[] => {
+	const getLabelOptions = (labelType: Avo.LabelClass.Type): CheckboxOption[] => {
 		return compact(
 			allAssignmentLabels
-				.filter((labelObj: Avo.Assignment.Label) => labelObj.type === labelType)
-				.map((labelObj: Avo.Assignment.Label): CheckboxOption | null => {
+				.filter((labelObj: Avo.LabelClass.LabelClass) => labelObj.type === labelType)
+				.map((labelObj: Avo.LabelClass.LabelClass): CheckboxOption | null => {
 					if (!labelObj.label) {
 						return null;
 					}

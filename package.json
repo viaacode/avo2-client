@@ -24,6 +24,7 @@
     "build-and-analyse": "npm run build && source-map-explorer 'dist/assets/embed-*.js' --no-border-checks",
     "build-and-analyse:embed": "npm run build:embed && source-map-explorer 'dist/assets/*.js' --no-border-checks",
     "analyse": "source-map-explorer 'dist/assets/embed-*.js' --no-border-checks",
+    "generate-database-types:local": "dotenv -e .env.dev graphql-codegen -- --verbose --config codegen.yml",
     "generate-database-types": "dotenv -e .env.qas graphql-codegen -- --verbose --config codegen.yml",
     "check-bundled-files": "npx depcruise src/embed/main.tsx",
     "graph-bundled-files": "npx depcruise src/embed/main.tsx --include-only \"^src\" --exclude \"(.spec.tsx?|.test.tsx?|node_modules)\" --output-type dot",

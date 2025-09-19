@@ -13,25 +13,24 @@ import { cloneDeep, get } from 'lodash-es';
 import React, { type FC, type MouseEvent, useCallback, useEffect, useState } from 'react';
 
 import { ColorSelect } from '../../shared/components/ColorSelect/ColorSelect';
+import ManageLabelsClasses from '../../shared/components/ManageLabelsClasses/ManageLabelsClasses';
 import { type Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
+import { LabelsClassesService } from '../../shared/services/labels-classes';
 import { ToastService } from '../../shared/services/toast-service';
-
-import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 
 import './AssignmentLabels.scss';
 
 type AssignmentLabelsProps = {
-	labels: { assignment_label: Avo.Assignment.Label }[];
+	labels: { assignment_label: Avo.LabelClass.LabelClass }[];
 	id?: string;
-	onChange: (changed: { assignment_label: Avo.Assignment.Label }[]) => void;
+	onChange: (changed: { assignment_label: Avo.LabelClass.LabelClass }[]) => void;
 	dictionary?: {
 		placeholder: string;
 		empty: string;
 	};
-	type?: Avo.Assignment.LabelType;
+	type?: Avo.LabelClass.Type;
 };
 
 const AssignmentLabels: FC<AssignmentLabelsProps & UserProps> = ({
@@ -49,22 +48,19 @@ const AssignmentLabels: FC<AssignmentLabelsProps & UserProps> = ({
 		...(props.dictionary ? props.dictionary : {}),
 	};
 
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.LabelClass.LabelClass[]>([]);
 	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 
 	const fetchAssignmentLabels = useCallback(async () => {
-		if (commonUser?.profileId) {
-			// Fetch labels every time the manage labels modal closes and once at startup
-			const labels = await AssignmentLabelsService.getLabelsForProfile(commonUser.profileId);
-			setAllAssignmentLabels(labels);
-		}
-	}, [commonUser?.profileId, setAllAssignmentLabels]);
+		// Fetch labels every time the manage labels modal closes and once at startup
+		setAllAssignmentLabels(await LabelsClassesService.getLabelsForProfile());
+	}, [setAllAssignmentLabels]);
 
 	useEffect(() => {
 		fetchAssignmentLabels();
 	}, [fetchAssignmentLabels]);
 
-	const getAssignmentLabelOptions = (labels: Avo.Assignment.Label[]): TagOption[] => {
+	const getAssignmentLabelOptions = (labels: Avo.LabelClass.LabelClass[]): TagOption[] => {
 		return labels.map((labelObj) => ({
 			label: labelObj.label || '',
 			id: labelObj.id,
@@ -79,7 +75,7 @@ const AssignmentLabels: FC<AssignmentLabelsProps & UserProps> = ({
 		setIsManageLabelsModalOpen(false);
 	};
 
-	const getColorOptions = (labels: Avo.Assignment.Label[]): ColorOption[] => {
+	const getColorOptions = (labels: Avo.LabelClass.LabelClass[]): ColorOption[] => {
 		return labels
 			.filter((item) => !type || item.type === type)
 			.map((labelObj) => ({
@@ -170,7 +166,7 @@ const AssignmentLabels: FC<AssignmentLabelsProps & UserProps> = ({
 				</FlexItem>
 			</Flex>
 
-			<ManageAssignmentLabels
+			<ManageLabelsClasses
 				onClose={handleManageAssignmentLabelsModalClosed}
 				isOpen={isManageLabelsModalOpen}
 				type={type}

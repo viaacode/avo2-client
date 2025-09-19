@@ -20,28 +20,26 @@ import { compact, intersection, sortBy, without } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 
 import { ColorSelect } from '../../../shared/components/ColorSelect/ColorSelect';
-import { type Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-db-types';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service';
 import { ToastService } from '../../../shared/services/toast-service';
-import { MAX_LABEL_LENGTH } from '../../assignment.const';
-import { type AssignmentLabelColor } from '../../assignment.types';
+import { LabelsClassesService } from '../../services/labels-classes';
 
-import { getManageAssignmentLabelsTranslations } from './ManageAssignmentLabels.translations';
+import { getManageAssignmentLabelsTranslations } from './ManageLabelsClasses.translations';
+import { MAX_LABEL_LENGTH } from './labels-classes.const';
 
-import './ManageAssignmentLabels.scss';
+import './ManageLabelsClasses.scss';
 
-export interface ManageAssignmentLabelsProps {
+export interface ManageLabelsAndClassesProps {
 	isOpen: boolean;
 	onClose: () => void;
-	type?: Avo.Assignment.LabelType;
+	type?: Avo.LabelClass.Type;
 }
 
-const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
+const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
 	isOpen,
 	onClose,
 	type,
@@ -49,11 +47,9 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
-	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<Avo.Assignment.Label[]>(
-		[]
-	);
-	const [assignmentLabelColors, setAssignmentLabelColors] = useState<AssignmentLabelColor[]>([]);
+	const [labels, setLabels] = useState<Avo.LabelClass.LabelClass[]>([]);
+	const [initialLabels, setInitialLabels] = useState<Avo.LabelClass.LabelClass[]>([]);
+	const [labelColors, setLabelColors] = useState<Avo.LabelClass.LabelClassColor[]>([]);
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
 	const profileId = commonUser?.profileId;
@@ -62,11 +58,11 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 		try {
 			if (profileId) {
 				const labels = sortBy(
-					await AssignmentLabelsService.getLabelsForProfile(profileId, type),
+					await LabelsClassesService.getLabelsForProfile(type),
 					'label'
 				);
-				setAssignmentLabels(labels);
-				setInitialAssignmentLabels(labels);
+				setLabels(labels);
+				setInitialLabels(labels);
 			}
 		} catch (err) {
 			console.error(
@@ -78,11 +74,11 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 				)
 			);
 		}
-	}, [commonUser, setAssignmentLabels, tText, type, tHtml]);
+	}, [commonUser, setLabels, tText, type, tHtml]);
 
 	const fetchAssignmentColors = useCallback(async () => {
 		try {
-			setAssignmentLabelColors(await AssignmentLabelsService.getLabelColors());
+			setLabelColors(await LabelsClassesService.getLabelColors());
 		} catch (err) {
 			console.error(new CustomError('Failed to fetch assignment label colors', err));
 			ToastService.danger(
@@ -91,7 +87,7 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 				)
 			);
 		}
-	}, [setAssignmentLabelColors, tHtml]);
+	}, [setLabelColors, tHtml]);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -102,51 +98,54 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 	}, [fetchAssignmentLabels, fetchAssignmentColors, isOpen]);
 
 	const handleAddLabelClick = () => {
-		setAssignmentLabels([
-			...assignmentLabels,
+		setLabels([
+			...labels,
 			{
 				id: generateRandomId(),
 				label: '',
-				color_enum_value: assignmentLabelColors[0].value,
+				color_enum_value: labelColors[0].value,
 				owner_profile_id: profileId as string,
 				color_override: null,
-				enum_color: assignmentLabelColors[0],
+				enum_color: labelColors[0],
 				type: type || 'LABEL',
 			},
 		]);
 	};
 
 	const handleRowColorChanged = (
-		assignmentLabel: Avo.Assignment.Label,
+		assignmentLabel: Avo.LabelClass.LabelClass,
 		newColor?: ColorOption
 	) => {
 		if (!newColor) {
 			return;
 		}
-		assignmentLabel.color_enum_value = (newColor as AssignmentLabelColor).value;
-		setAssignmentLabels([...assignmentLabels]);
+		assignmentLabel.color_enum_value = (newColor as Avo.LabelClass.LabelClassColor).value;
+		setLabels([...labels]);
 	};
 
-	const handleRowLabelChanged = (assignmentLabel: Avo.Assignment.Label, newLabel: string) => {
+	const handleRowLabelChanged = (
+		assignmentLabel: Avo.LabelClass.LabelClass,
+		newLabel: string
+	) => {
 		assignmentLabel.label = newLabel;
-		setAssignmentLabels([...assignmentLabels]);
+		setLabels([...labels]);
 	};
 
 	const handleRowDelete = (id: string) => {
-		setAssignmentLabels([...assignmentLabels.filter((labelObj) => labelObj.id !== id)]);
+		setLabels([...labels.filter((labelObj) => labelObj.id !== id)]);
 	};
 
-	const labelsExceedMaxLength = (labels: Avo.Assignment.Label[]) => {
+	const labelsExceedMaxLength = (labels: Avo.LabelClass.LabelClass[]) => {
 		return !labels.find((label) => (label.label?.length || 0) > MAX_LABEL_LENGTH);
 	};
 
 	const handleSaveLabels = async () => {
 		try {
 			setIsProcessing(true);
-			const initialAssignmentLabelIds = initialAssignmentLabels.map((l) => l.id);
-			const updatedAssignmentLabelIds = assignmentLabels.map((l) => l.id);
+			const initialAssignmentLabelIds = initialLabels.map((l) => l.id);
+			const updatedAssignmentLabelIds = labels.map((l) => l.id);
 
-			if (!labelsExceedMaxLength(assignmentLabels)) {
+			if (!labelsExceedMaxLength(labels)) {
 				ToastService.danger(
 					tHtml(
 						'assignment/components/modals/manage-assignment-labels___een-of-meerdere-labels-is-langer-dan-max-length-karakters',
@@ -163,15 +162,13 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 			const oldIds = without(initialAssignmentLabelIds, ...updatedAssignmentLabelIds);
 			const updatedIds = intersection(initialAssignmentLabelIds, updatedAssignmentLabelIds);
 
-			const newLabels = compact(
-				newIds.map((newId) => assignmentLabels.find((l) => l.id === newId))
-			);
+			const newLabels = compact(newIds.map((newId) => labels.find((l) => l.id === newId)));
 			const updatedLabels = compact(
-				updatedIds.map((updatedId) => assignmentLabels.find((l) => l.id === updatedId))
+				updatedIds.map((updatedId) => labels.find((l) => l.id === updatedId))
 			);
 
 			await Promise.all([
-				AssignmentLabelsService.insertLabels(
+				LabelsClassesService.insertLabels(
 					newLabels.map((item) =>
 						type
 							? {
@@ -183,14 +180,12 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 				),
 				...(profileId
 					? [
-							AssignmentLabelsService.deleteLabels(profileId, oldIds),
+							LabelsClassesService.deleteLabels(oldIds),
 							updatedLabels.map((l) =>
-								AssignmentLabelsService.updateLabel(
-									profileId,
-									l.id,
-									l.label || '',
-									l.color_enum_value as Lookup_Enum_Colors_Enum
-								)
+								LabelsClassesService.updateLabel(l.id, {
+									label: l.label || '',
+									value: l.color_enum_value,
+								})
 							),
 					  ]
 					: []),
@@ -208,8 +203,8 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to save label changes', err, {
-					initialAssignmentLabels,
-					assignmentLabels,
+					initialAssignmentLabels: initialLabels,
+					assignmentLabels: labels,
 				})
 			);
 			ToastService.danger(
@@ -222,8 +217,8 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 	};
 
 	const renderCell = (rowData: any, columnId: string) => {
-		const assignmentLabel = rowData as Avo.Assignment.Label;
-		const colorOptions: ColorOption[] = assignmentLabelColors.map((assignmentLabelColor) => ({
+		const assignmentLabel = rowData as Avo.LabelClass.LabelClass;
+		const colorOptions: ColorOption[] = labelColors.map((assignmentLabelColor) => ({
 			label: '',
 			value: assignmentLabelColor.value,
 			color: assignmentLabelColor.label,
@@ -285,7 +280,7 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 
 	return (
 		<Modal
-			className="m-manage-assignment-labels"
+			className="m-manage-labels-and-classes"
 			title={getManageAssignmentLabelsTranslations(type).modal.title}
 			size="large"
 			isOpen={isOpen}
@@ -315,7 +310,7 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 						{ label: '', id: ACTIONS_TABLE_COLUMN_ID },
 					]}
 					emptyStateMessage={getManageAssignmentLabelsTranslations(type).emptyState}
-					data={assignmentLabels}
+					data={labels}
 					renderCell={renderCell}
 					rowKey="id"
 				/>
@@ -353,4 +348,4 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 	);
 };
 
-export default withUser(ManageAssignmentLabels) as FC<ManageAssignmentLabelsProps>;
+export default withUser(ManageLabelsClasses) as FC<ManageLabelsAndClassesProps>;
