@@ -26,7 +26,7 @@ import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from './shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import Navigation from './shared/components/Navigation/Navigation';
+import {Navigation} from './shared/components/Navigation/Navigation';
 import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers/custom-error';
@@ -35,24 +35,21 @@ import { usePageLoaded } from './shared/hooks/usePageLoaded';
 import useTranslation from './shared/hooks/useTranslation';
 import { ToastService } from './shared/services/toast-service';
 import { waitForTranslations } from './shared/translations/i18n';
-import store, { type AppState } from './store';
-import { setEmbedFlowAction, setHistoryLocationsAction } from './store/actions';
-import { selectHistoryLocations } from './store/selectors';
 
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import './App.scss';
 import './styles/main.scss';
 
-const App: FC<
+const App: FC = () => {
+	const { tText, tHtml } = useTranslation();
+	const location = useLocation();
+	const navigate = useNavigate();
+
 	UserProps & {
 		historyLocations: string[];
 		setHistoryLocations: (locations: string[]) => void;
 		setEmbedFlow: (embedFlow: string) => void;
 	}
-> = ({ setEmbedFlow, commonUser, historyLocations, setHistoryLocations }) => {
-	const { tText, tHtml } = useTranslation();
-	const location = useLocation();
-	const navigate = useNavigate();
 
 	const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] = useState(false);
 
@@ -219,21 +216,7 @@ const App: FC<
 	);
 };
 
-const mapStateToProps = (state: AppState) => ({
-	historyLocations: selectHistoryLocations(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-	setHistoryLocations: (locations: string[]) =>
-		dispatch(setHistoryLocationsAction(locations) as any),
-	setEmbedFlow: (embedFlow: string) => dispatch(setEmbedFlowAction(embedFlow) as any),
-});
-
-const AppWithRouter = compose(
-	connect(mapStateToProps, mapDispatchToProps),
-	withUser,
-	withAdminCoreConfig
-)(App) as FC;
+const AppWithRouter = withAdminCoreConfig(App) as FC;
 
 let confirmUnsavedChangesCallback: ((navigateAway: boolean) => void) | null;
 

@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { type Avo } from '@viaa/avo2-types';
 
 import { LoginMessage } from '../../authentication/authentication.types';
-import { setLoginSuccess } from '../../authentication/store/actions';
+import { setLoginSuccess } from '../../authentication/store/authentication.store.actions';
 import { EmbedCodeService } from '../../embed-code/embed-code-service';
 import { QUERY_KEYS } from '../../shared/constants/query-keys';
 import { CustomError } from '../../shared/helpers/custom-error';

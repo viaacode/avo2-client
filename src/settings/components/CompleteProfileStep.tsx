@@ -24,7 +24,7 @@ import {
 	getLoginResponse,
 	getLoginStateAction,
 	setLoginSuccess,
-} from '../../authentication/store/actions';
+} from '../../authentication/store/authentication.store.actions';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';

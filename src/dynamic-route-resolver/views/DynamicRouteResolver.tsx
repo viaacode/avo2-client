@@ -7,14 +7,13 @@ import {
 } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtom, useSetAtom } from 'jotai';
 import { keys } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 import React, { type ComponentType, type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { connect } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
-import { compose, type Dispatch } from 'redux';
 
 import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state';
 import { ItemsService } from '../../admin/items/items.service';
@@ -23,13 +22,7 @@ import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page';
-import { getLoginStateAction } from '../../authentication/store/actions';
-import {
-	selectLogin,
-	selectLoginError,
-	selectLoginLoading,
-} from '../../authentication/store/selectors';
-import { type LoginState } from '../../authentication/store/types';
+import { getLoginStateAtom } from '../../authentication/store/authentication.store.actions';
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -49,7 +42,7 @@ import { generateSearchLinkString } from '../../shared/helpers/link';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Locale } from '../../shared/translations/translations.types';
-import { type AppState } from '../../store';
+import { loginAtom } from '../../store/store';
 import {
 	DynamicRouteType,
 	GET_ERROR_MESSAGES,
@@ -61,24 +54,17 @@ interface RouteInfo {
 	data: any;
 }
 
-interface DynamicRouteResolverProps {
-	getLoginState: () => Dispatch;
-	loginState: Avo.Auth.LoginResponse | null;
-	loginStateError: boolean;
-	loginStateLoading: boolean;
-}
-
-const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
-	getLoginState,
-	loginState,
-	loginStateError,
-	loginStateLoading,
-}) => {
+const DynamicRouteResolver: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const location = useLocation();
 
 	// State
+	const [loginAtomValue] = useAtom(loginAtom);
+	const loginState = loginAtomValue.data;
+	const loginStateLoading = loginAtomValue.loading;
+	const loginStateError = loginAtomValue.error;
+	const getLoginState = useSetAtom(getLoginStateAtom);
 	const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
@@ -248,20 +234,12 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 				icon: IconName.search,
 			});
 		}
-	}, [
-		loginState,
-		location.pathname,
-		location.hash,
-		setRouteInfo,
-		setLoadingInfo,
-		history,
-		tHtml,
-	]);
+	}, [loginState, location.pathname, location.hash, tHtml, navigateFunc]);
 
 	// Check if current user is logged in
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
-			getLoginState();
+			getLoginState(false);
 		} else if (loginStateError) {
 			console.error(
 				new CustomError('Login error was encountered', null, {
@@ -431,23 +409,4 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 	);
 };
 
-const mapStateToProps = (
-	state: AppState
-): {
-	loginState: Avo.Auth.LoginResponse | null;
-	loginStateLoading: boolean;
-	loginStateError: boolean;
-} => ({
-	loginState: selectLogin(state),
-	loginStateLoading: selectLoginLoading(state),
-	loginStateError: selectLoginError(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch): { getLoginState: () => LoginState } => ({
-	getLoginState: () => dispatch(getLoginStateAction() as any),
-});
-
-export default compose(
-	connect(mapStateToProps, mapDispatchToProps) as any,
-	withAdminCoreConfig
-)(DynamicRouteResolver as ComponentType) as unknown as FC;
+export default withAdminCoreConfig(DynamicRouteResolver as ComponentType) as unknown as FC;

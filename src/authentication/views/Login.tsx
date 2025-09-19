@@ -1,43 +1,34 @@
 import { Button, Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { useAtom, useSetAtom } from 'jotai';
 import React, { type FC, useEffect } from 'react';
-import { connect } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
-import { type Dispatch } from 'redux';
 
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { type AppState } from '../../store';
+import { loginAtom } from '../../store/store';
 import { LoginMessage } from '../authentication.types';
 import { redirectToServerLoginPage } from '../helpers/redirects';
-import { getLoginStateAction } from '../store/actions';
-import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
-
-interface LoginProps {
-	loginState: Avo.Auth.LoginResponse | null;
-	loginStateLoading: boolean;
-	loginStateError: boolean;
-	getLoginState: () => Dispatch;
-}
+import { getLoginStateAtom } from '../store/authentication.store.actions';
 
 const LOGIN_ATTEMPT_KEY = 'AVO_LOGIN_ATTEMPT';
 
-const Login: FC<LoginProps> = ({
-	loginState,
-	loginStateLoading,
-	loginStateError,
-	getLoginState,
-}) => {
+export const Login: FC = () => {
 	const { tText } = useTranslation();
 	const location = useLocation();
 	const navigateFunc = useNavigate();
 
+	const [loginAtomValue] = useAtom(loginAtom);
+	const loginState = loginAtomValue.data;
+	const loginStateLoading = loginAtomValue.loading;
+	const loginStateError = loginAtomValue.error;
+	const getLoginState = useSetAtom(getLoginStateAtom);
+
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
-			getLoginState();
+			getLoginState(false);
 			return;
 		}
 
@@ -72,7 +63,7 @@ const Login: FC<LoginProps> = ({
 		if (localStorage) {
 			localStorage.removeItem(LOGIN_ATTEMPT_KEY);
 		}
-		getLoginState();
+		getLoginState(false);
 	};
 
 	if (loginStateError) {
@@ -103,17 +94,3 @@ const Login: FC<LoginProps> = ({
 
 	return null;
 };
-
-const mapStateToProps = (state: AppState) => ({
-	loginState: selectLogin(state),
-	loginStateLoading: selectLoginLoading(state),
-	loginStateError: selectLoginError(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		getLoginState: () => dispatch(getLoginStateAction() as any),
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login) as FC;

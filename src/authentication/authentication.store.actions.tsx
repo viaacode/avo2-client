@@ -1,29 +1,23 @@
 import { Button, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { subMinutes } from 'date-fns';
+import { atom } from 'jotai';
 import { compact } from 'lodash-es';
 import queryString from 'query-string';
 import React from 'react';
 import { type Location } from 'react-router';
-import { type Action, type Dispatch } from 'redux';
 
-import { LTI_JWT_TOKEN_HEADER } from '../../embed/embed.types';
-import { EmbedCodeService } from '../../embed-code/embed-code-service';
-import { getEnv } from '../../shared/helpers/env';
-import { tText } from '../../shared/helpers/translate-text';
-import { ToastService } from '../../shared/services/toast-service';
-import store, { type AppState } from '../../store';
-import { LoginMessage } from '../authentication.types';
-import { logoutAndRedirectToLogin } from '../helpers/redirects';
+import { LTI_JWT_TOKEN_HEADER } from '../embed/embed.types';
+import { EmbedCodeService } from '../embed-code/embed-code-service';
+import { CustomError } from '../shared/helpers/custom-error';
+import { getEnv } from '../shared/helpers/env';
+import { tText } from '../shared/helpers/translate-text';
+import { ToastService } from '../shared/services/toast-service';
+import { uiAtom } from '../shared/store/ui.store';
 
-import {
-	LoginActionTypes,
-	type LoginState,
-	type SetAcceptConditionsAction,
-	type SetLoginErrorAction,
-	type SetLoginLoadingAction,
-	type SetLoginSuccessAction,
-} from './types';
+import { loginAtom } from './authentication.store';
+import { LoginMessage, type LoginState } from './authentication.types';
+import { logoutAndRedirectToLogin } from './helpers/redirects';
 
 let checkSessionTimeoutTimerId: number | null = null;
 
@@ -62,12 +56,10 @@ function checkIfSessionExpires(expiresAt: string) {
 	}
 }
 
-export const getLoginStateAction = (forceRefetch = false) => {
-	return async (dispatch: Dispatch, getState: any): Promise<Action | null> => {
-		const state = getState();
-		const loginState: LoginState = state.loginState;
-
-		let response: Action | null = null;
+export const getLoginStateAtom = atom<LoginState | null, [boolean], void>(
+	null,
+	async (get, set, forceRefetch) => {
+		const loginState: LoginState = get(loginAtom);
 
 		// Don't fetch login state if we already logged in
 		if (loginState?.data?.message === LoginMessage.LOGGED_IN && !forceRefetch) {
@@ -79,10 +71,14 @@ export const getLoginStateAction = (forceRefetch = false) => {
 			return null;
 		}
 
-		dispatch(setLoginLoading());
+		set(loginAtom, {
+			...get(loginAtom),
+			loading: true,
+		});
 
 		try {
-			const loginStateResponse = await getLoginResponse(forceRefetch);
+			const historyLocations: string[] = get(uiAtom)?.historyLocations || [];
+			const loginStateResponse = await getLoginResponse(forceRefetch, historyLocations);
 
 			// Check if session is about to expire and show warning toast
 			// Redirect to login page when session actually expires
@@ -114,46 +110,28 @@ export const getLoginStateAction = (forceRefetch = false) => {
 				(window as any)?.dataLayer?.push(event);
 			}
 
-			response = dispatch(setLoginSuccess(loginStateResponse));
+			set(loginAtom, {
+				...get(loginAtom),
+				data: loginStateResponse,
+			});
 		} catch (err) {
-			console.error('failed to check login state', err);
-			response = dispatch(setLoginError());
+			console.error(new CustomError('failed to check login state', err, { forceRefetch }));
+			set(loginAtom, {
+				...get(loginAtom),
+				error: true,
+			});
 		}
-		return response;
-	};
-};
+	}
+);
 
-export const acceptConditionsAction = () => {
-	return async (dispatch: Dispatch): Promise<Action | null> => {
-		return dispatch(setAcceptConditions());
-	};
-};
-
-export const setLoginSuccess = (data: Avo.Auth.LoginResponse | null): SetLoginSuccessAction => ({
-	data,
-	type: LoginActionTypes.SET_LOGIN_SUCCESS,
-});
-
-const setLoginError = (): SetLoginErrorAction => ({
-	type: LoginActionTypes.SET_LOGIN_ERROR,
-	error: true,
-});
-
-const setLoginLoading = (): SetLoginLoadingAction => ({
-	type: LoginActionTypes.SET_LOGIN_LOADING,
-});
-
-const setAcceptConditions = (): SetAcceptConditionsAction => ({
-	type: LoginActionTypes.SET_ACCEPT_CONDITIONS,
-});
-
-export const getLoginResponse = async (force = false): Promise<Avo.Auth.LoginResponse> => {
+export const getLoginResponse = async (
+	force = false,
+	historyLocations: string[]
+): Promise<Avo.Auth.LoginResponse> => {
 	try {
-		const history: string[] =
-			(store.getState() as unknown as AppState)?.uiState?.historyLocations || [];
 		const url = `${getEnv('PROXY_URL')}/auth/check-login?${queryString.stringify({
 			force,
-			history,
+			history: historyLocations,
 		})}`;
 
 		const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');

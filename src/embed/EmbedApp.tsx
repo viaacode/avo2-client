@@ -2,7 +2,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import queryString from 'query-string';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { Provider } from 'react-redux';
 import { Route, useLocation } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryParamProvider } from 'use-query-params';
@@ -15,7 +14,6 @@ import { CustomError } from '../shared/helpers/custom-error';
 import { isUuid } from '../shared/helpers/isUuid';
 import { tText } from '../shared/helpers/translate-text';
 import { waitForTranslations } from '../shared/translations/i18n';
-import store from '../store';
 
 import Embed from './components/Embed';
 import { EmbedErrorView } from './components/EmbedErrorView';
@@ -220,13 +218,11 @@ const queryClient = new QueryClient();
 const EmbedRoot: FC = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
-			<Provider store={store}>
-				<BrowserRouter>
-					<QueryParamProvider ReactRouterRoute={Route}>
-						<EmbedAppWithRouter />
-					</QueryParamProvider>
-				</BrowserRouter>
-			</Provider>
+			<BrowserRouter>
+				<QueryParamProvider ReactRouterRoute={Route}>
+					<EmbedAppWithRouter />
+				</QueryParamProvider>
+			</BrowserRouter>
 		</QueryClientProvider>
 	);
 };

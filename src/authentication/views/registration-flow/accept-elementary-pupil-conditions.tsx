@@ -15,10 +15,8 @@ import {
 	Toolbar,
 	ToolbarCenter,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types/types';
+import { useAtomValue, useSetAtom } from 'jotai';
 import React, { type FC, useRef, useState } from 'react';
-import { connect } from 'react-redux';
-import { type Dispatch } from 'redux';
 
 import poster from '../../../assets/images/elementary-pupil-terms-of-service__poster.png';
 import { CustomError } from '../../../shared/helpers/custom-error';
@@ -27,33 +25,26 @@ import { tText } from '../../../shared/helpers/translate-text';
 import { useDisablePictureInPicture } from '../../../shared/hooks/useDisablePictureInPicture';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { ToastService } from '../../../shared/services/toast-service';
-import { type AppState } from '../../../store';
-import { acceptConditionsAction } from '../../store/actions';
-import { selectLogin } from '../../store/selectors';
-
-type AcceptElementaryPupilConditionsProps = {
-	acceptConditions: () => Dispatch;
-	user: Avo.User.CommonUser;
-};
+import { acceptConditionsAtom, commonUserAtom } from '../../../store/store';
 
 const ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE = 'ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE';
 
-const AcceptElementaryPupilConditions: FC<AcceptElementaryPupilConditionsProps> = ({
-	user,
-	acceptConditions,
-}) => {
+export const AcceptElementaryPupilConditions: FC = () => {
 	const section = useRef<HTMLElement>(null);
 	useDisablePictureInPicture(section);
 
 	const [loading, setLoading] = useState(false);
 	const [finished, setFinished] = useState(false);
 
+	const commonUser = useAtomValue(commonUserAtom);
+	const acceptConditions = useSetAtom(acceptConditionsAtom);
+
 	const handleAcceptPupilConditions = async () => {
 		try {
 			setLoading(true);
 			await NotificationService.setNotification(
 				ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE,
-				user.profileId,
+				commonUser.profileId,
 				true,
 				true
 			);
@@ -64,7 +55,7 @@ const AcceptElementaryPupilConditions: FC<AcceptElementaryPupilConditionsProps> 
 				new CustomError(
 					'Failed to set accept conditions notification in the database',
 					err,
-					{ user }
+					{ commonUser }
 				)
 			);
 
@@ -160,15 +151,3 @@ const AcceptElementaryPupilConditions: FC<AcceptElementaryPupilConditionsProps> 
 		</section>
 	);
 };
-
-const mapStateToProps = (state: AppState) => ({
-	loginState: selectLogin(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		acceptConditions: () => dispatch(acceptConditionsAction() as any),
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AcceptElementaryPupilConditions);

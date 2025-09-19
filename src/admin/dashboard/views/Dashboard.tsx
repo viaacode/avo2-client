@@ -6,6 +6,8 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 
+export async function clientLoader({ request }: Route.ClientLoaderArgs) {}
+
 const Dashboard = () => {
 	const { tText, tHtml } = useTranslation();
 

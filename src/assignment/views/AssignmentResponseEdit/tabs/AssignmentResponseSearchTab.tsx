@@ -1,12 +1,12 @@
 import { Button, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { intersection } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
 import { type UrlUpdateType } from 'use-query-params';
 
+import { commonUserAtom } from '../../../../authentication/authentication.store';
 import { PermissionService } from '../../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../../error/views';
 import CutFragmentForAssignmentModal from '../../../../item/components/modals/CutFragmentForAssignmentModal';
@@ -14,15 +14,13 @@ import { type ItemTrimInfo } from '../../../../item/item.types';
 import ItemDetail from '../../../../item/views/ItemDetail';
 import { PupilCollectionService } from '../../../../pupil-collection/pupil-collection.service';
 import { SearchFiltersAndResults } from '../../../../search/components';
+import { searchAtom } from '../../../../search/search.store';
 import { type FilterState } from '../../../../search/search.types';
-import { selectSearchResults } from '../../../../search/store/selectors';
 import { EducationLevelId } from '../../../../shared/helpers/lom';
-import withUser, { type UserProps } from '../../../../shared/hocs/withUser';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../../shared/services/event-logging-service';
 import { ObjectTypesAll } from '../../../../shared/services/related-items-service';
 import { ToastService } from '../../../../shared/services/toast-service';
-import { type AppState } from '../../../../store';
 import {
 	ENABLED_FILTERS_PUPIL_SEARCH,
 	ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH,
@@ -39,20 +37,18 @@ interface AssignmentResponseSearchTabProps {
 	appendBlockToPupilCollection: (block: Avo.Core.BlockItemBase) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
 }
 
-const AssignmentResponseSearchTab: FC<
-	AssignmentResponseSearchTabProps & { searchResults: Avo.Search.Search } & UserProps
-> = ({
+export const AssignmentResponseSearchTab: FC<AssignmentResponseSearchTabProps> = ({
 	filterState,
 	setFilterState,
 	assignment,
 	assignmentResponse,
 	appendBlockToPupilCollection,
-	searchResults,
-	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// Data
+	const searchResults = useAtomValue(searchAtom);
+	const commonUser = useAtomValue(commonUserAtom);
 
 	// UI
 	const [isAddToAssignmentModalOpen, setIsAddToAssignmentModalOpen] = useState<boolean>(false);
@@ -339,12 +335,3 @@ const AssignmentResponseSearchTab: FC<
 		</>
 	);
 };
-
-const mapStateToProps = (state: AppState) => ({
-	searchResults: selectSearchResults(state),
-});
-
-export default compose(
-	connect(mapStateToProps),
-	withUser
-)(AssignmentResponseSearchTab) as FC<AssignmentResponseSearchTabProps>;

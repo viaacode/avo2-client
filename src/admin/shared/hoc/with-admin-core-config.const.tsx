@@ -23,7 +23,7 @@ import { EducationOrganisationService } from '../../../shared/services/education
 import { ToastService, ToastTypeToAvoToastType } from '../../../shared/services/toast-service';
 import { Locale } from '../../../shared/translations/translations.types';
 import { ADMIN_PATH } from '../../admin.const';
-import BlockSearch from '../../content-page/components/blocks/BlockSearch/BlockSearch';
+import { BlockSearch } from '../../content-page/components/blocks/BlockSearch/BlockSearch';
 import MediaGridWrapper from '../../content-page/components/blocks/MediaGridWrapper/MediaGridWrapper';
 import { GET_ADMIN_ICON_OPTIONS } from '../constants';
 

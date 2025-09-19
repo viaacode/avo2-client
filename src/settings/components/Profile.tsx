@@ -31,7 +31,7 @@ import {
 	getLoginResponse,
 	getLoginStateAction,
 	setLoginSuccess,
-} from '../../authentication/store/actions';
+} from '../../authentication/store/authentication.store.actions';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
 import CommonMetadata from '../../shared/components/CommonMetaData/CommonMetaData';

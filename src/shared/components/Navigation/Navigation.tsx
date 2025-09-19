@@ -14,20 +14,21 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtom, useSetAtom } from 'jotai';
 import { last } from 'lodash-es';
 import React, { type FC, type ReactText, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { type Dispatch } from 'redux';
 
-import { getProfileAvatar, getProfileInitials, } from '../../../authentication/helpers/get-profile-info';
+import { loginAtom } from '../../../authentication/authentication.store';
+import { getLoginStateAtom } from '../../../authentication/authentication.store.actions';
+import {
+	getProfileAvatar,
+	getProfileInitials,
+} from '../../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects/redirect-to-external-page';
-import { getLoginStateAction } from '../../../authentication/store/actions';
-import { selectLogin, selectLoginError, selectLoginLoading, } from '../../../authentication/store/selectors';
 import { APP_PATH } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { type AppState } from '../../../store';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
 import { ToastService } from '../../services/toast-service';
@@ -35,29 +36,20 @@ import { type NavigationItemInfo } from '../../types';
 
 import { NavigationBarId } from './Navigation.const';
 import { NavigationItem } from './NavigationItem';
-
 import './Navigation.scss';
-
-interface NavigationProps {
-	loginState: Avo.Auth.LoginResponse | null;
-	loginStateLoading: boolean;
-	loginStateError: boolean;
-	getLoginState: () => Dispatch;
-}
 
 /**
  * Main navigation bar component
- * @param loginMessage
- * @constructor
  */
-const Navigation: FC<NavigationProps> = ({
-	loginState,
-	loginStateLoading,
-	loginStateError,
-	getLoginState,
-}) => {
+export const Navigation: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigate = useNavigate();
+
+	const [loginAtomValue] = useAtom(loginAtom);
+	const loginState = loginAtomValue.data;
+	const loginStateLoading = loginAtomValue.loading;
+	const loginStateError = loginAtomValue.error;
+	const getLoginState = useSetAtom(getLoginStateAtom);
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -79,7 +71,7 @@ const Navigation: FC<NavigationProps> = ({
 
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
-			getLoginState();
+			getLoginState(false);
 			return;
 		}
 	});
@@ -305,17 +297,3 @@ const Navigation: FC<NavigationProps> = ({
 		</>
 	);
 };
-
-const mapStateToProps = (state: AppState) => ({
-	loginState: selectLogin(state),
-	loginStateLoading: selectLoginLoading(state),
-	loginStateError: selectLoginError(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		getLoginState: () => dispatch(getLoginStateAction() as any),
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Navigation) as FC;

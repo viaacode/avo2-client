@@ -13,17 +13,14 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { find, get, isNil } from 'lodash-es';
-import React, { type FC, type KeyboardEvent, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { useAtom } from 'jotai';
+import { isNil } from 'lodash-es';
+import React, { type FC, type KeyboardEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { type Dispatch } from 'redux';
 
-import { type DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
 import { CONTENT_TYPE_TRANSLATIONS } from '../../../../../collection/collection.types';
 import { OrderDirection, SearchFilter } from '../../../../../search/search.const';
-import { getSearchResults } from '../../../../../search/store/actions';
-import { selectSearchLoading, selectSearchResults } from '../../../../../search/store/selectors';
+import { fetchSearchResults } from '../../../../../search/search.service';
 import {
 	generateContentLinkString,
 	generateSearchLinkString,
@@ -32,50 +29,48 @@ import { useDebounce } from '../../../../../shared/hooks/useDebounce';
 import useTranslation from '../../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { KeyCode } from '../../../../../shared/types';
-import { type AppState } from '../../../../../store';
-
+import { searchAtom } from '../../../../../store/store';
+import { type SearchState } from '../../../../../store/store.types';
 import './BlockSearch.scss';
-
-interface BlockSearchProps {
-	searchResults: Avo.Search.Search | null;
-	searchResultsLoading: boolean;
-	search: (
-		orderProperty: Avo.Search.OrderProperty,
-		orderDirection: Avo.Search.OrderDirection,
-		from: number,
-		size: number,
-		filters?: Partial<Avo.Search.Filters>,
-		filterOptionSearch?: Partial<Avo.Search.FilterOption>
-	) => Dispatch;
-}
 
 const ITEMS_IN_AUTOCOMPLETE = 5;
 
-const BlockSearch: FC<BlockSearchProps & DefaultSecureRouteProps> = ({
-	searchResults,
-	searchResultsLoading,
-	search,
-}) => {
+export const BlockSearch: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
+	const [searchState, setSearchState] = useAtom<SearchState>(searchAtom);
 	const [searchTerms, setSearchTerms] = useState<string>('');
 	const [isAutocompleteSearchOpen, setAutocompleteSearchOpen] = useState<boolean>(false);
 	const debouncedSearchTerms = useDebounce(searchTerms, 200);
+
+	const refetchSearchResults = useCallback(async () => {
+		// Only do initial search after query params have been analysed and have been added to the state
+		const filters = { query: debouncedSearchTerms || '' };
+		const searchResults = await fetchSearchResults(
+			'relevance',
+			OrderDirection.desc,
+			0,
+			ITEMS_IN_AUTOCOMPLETE,
+			filters,
+			{}
+		);
+		setSearchState({
+			...searchState,
+			data: searchResults,
+		});
+	}, [debouncedSearchTerms, searchState, setSearchState]);
 
 	/**
 	 * Trigger a new call to the backend for getting new search results when the searchTerms change
 	 */
 	useEffect(() => {
-		// Only do initial search after query params have been analysed and have been added to the state
-		const filters = { query: debouncedSearchTerms || '' };
-
-		search('relevance', OrderDirection.desc, 0, ITEMS_IN_AUTOCOMPLETE, filters, {});
-	}, [debouncedSearchTerms, search]);
+		refetchSearchResults();
+	}, [refetchSearchResults]);
 
 	// Computed
 	const autocompleteMenuItems = (
-		get(searchResults, 'results', []) as Avo.Search.ResultItem[]
+		(searchState?.data?.results || []) as Avo.Search.ResultItem[]
 	).map(
 		(searchResult: Avo.Search.ResultItem): MenuSearchResultItemInfo => ({
 			label: searchResult.dc_title,
@@ -97,12 +92,9 @@ const BlockSearch: FC<BlockSearchProps & DefaultSecureRouteProps> = ({
 	const goToSearchResult = (searchResultId: string | undefined) => {
 		if (!isNil(searchResultId)) {
 			// Collection ids are numbers and item ids are strings
-			const searchResultItem: Avo.Search.ResultItem | undefined = find(
-				get(searchResults, 'results', []),
-				{
-					id: searchResultId.toString(),
-				}
-			);
+			const searchResultItem: Avo.Search.ResultItem | undefined = (
+				searchState?.data?.results || []
+			).find((searchResult) => searchResult.id === searchResultId.toString());
 
 			if (searchResultItem) {
 				navigateFunc(
@@ -161,7 +153,7 @@ const BlockSearch: FC<BlockSearchProps & DefaultSecureRouteProps> = ({
 							</DropdownButton>
 							<DropdownContent>
 								<div className="c-dropdown-results">
-									{!searchResultsLoading ? (
+									{!searchState.data?.results ? (
 										<MenuSearchResultContent
 											menuItems={autocompleteMenuItems}
 											noResultsLabel={tText(
@@ -189,36 +181,3 @@ const BlockSearch: FC<BlockSearchProps & DefaultSecureRouteProps> = ({
 		</Container>
 	);
 };
-
-const mapStateToProps = (state: AppState) => ({
-	searchResults: selectSearchResults(state),
-	searchResultsLoading: selectSearchLoading(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		search: (
-			orderProperty: Avo.Search.OrderProperty,
-			orderDirection: Avo.Search.OrderDirection,
-			from: number,
-			size: number,
-			filters?: Partial<Avo.Search.Filters>,
-			filterOptionSearch?: Partial<Avo.Search.FilterOption>
-		) =>
-			dispatch(
-				getSearchResults(
-					orderProperty,
-					orderDirection,
-					from,
-					size,
-					filters,
-					filterOptionSearch
-				) as any
-			),
-	};
-};
-
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(BlockSearch) as unknown as FC<BlockSearchProps>;

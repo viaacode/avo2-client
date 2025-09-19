@@ -63,7 +63,7 @@ import { useAssignmentPupilTabs } from '../../hooks/assignment-pupil-tabs';
 
 import AssignmentResponseAssignmentTab from './tabs/AssignmentResponseAssignmentTab';
 import AssignmentResponsePupilCollectionTab from './tabs/AssignmentResponsePupilCollectionTab';
-import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
+import { AssignmentResponseSearchTab } from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';

@@ -1,9 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
 import { type ReactNode } from 'react';
-import { type Dispatch } from 'redux';
 import { type UrlUpdateType } from 'use-query-params';
 
-import { type DefaultSecureRouteProps } from '../authentication/components/SecuredRoute';
 import { type CollectionLabelLookup, type QualityLabel } from '../collection/collection.types';
 import { type BookmarkStatusLookup } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
@@ -12,20 +10,10 @@ import { type SearchOrderAndDirectionProperty, type SearchOrderProperty } from '
 export type SearchFilterFieldValues = string | string[] | Avo.Search.DateRange | null;
 export type SearchFilterMultiOptions = { [key: string]: Avo.Search.OptionProp[] };
 
-export interface SearchFiltersAndResultsProps
-	extends DefaultSecureRouteProps,
-		SearchFiltersAndResultsPropsManual {
-	searchResults: Avo.Search.Search | null;
-	searchResultsLoading: boolean;
-	searchResultsError: boolean;
-	search: (
-		orderProperty: Avo.Search.OrderProperty,
-		orderDirection: Avo.Search.OrderDirection,
-		from: number,
-		size: number,
-		filters?: Partial<Avo.Search.Filters>,
-		filterOptionSearch?: Partial<Avo.Search.FilterOption>
-	) => Dispatch;
+export interface SearchState {
+	readonly data: Avo.Search.Search | null;
+	readonly loading: boolean;
+	readonly error: boolean;
 }
 
 interface RenderLinks {
@@ -41,7 +29,7 @@ interface RenderLinks {
 	) => ReactNode;
 }
 
-export interface SearchFiltersAndResultsPropsManual extends RenderLinks {
+export interface SearchFiltersAndResultsProps extends RenderLinks {
 	enabledFilters?: (keyof Avo.Search.Filters)[];
 	enabledTypeOptions?: Avo.Core.ContentType[];
 	enabledOrderProperties?: SearchOrderAndDirectionProperty[];

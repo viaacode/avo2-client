@@ -6,13 +6,12 @@ import {
 } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { compact } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { connect } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
-import { type Dispatch } from 'redux';
 
 import { SpecialUserGroupId } from '../../../admin/user-groups/user-group.const';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -21,29 +20,18 @@ import {
 	type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { Locale } from '../../../shared/translations/translations.types';
-import { type AppState } from '../../../store';
+import { acceptConditionsAtom, commonUserAtom, loginAtom } from '../../../store/store';
 import { redirectToClientPage } from '../../helpers/redirects/redirect-to-client-page';
-import { acceptConditionsAction } from '../../store/actions';
-import { selectLogin } from '../../store/selectors';
 
-import AcceptElementaryPupilConditions from './accept-elementary-pupil-conditions';
+import { AcceptElementaryPupilConditions } from './accept-elementary-pupil-conditions';
 
 const ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS = 'ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS';
 
-interface AcceptConditionsProps {
-	acceptConditions: () => Dispatch;
-	loginState: Avo.Auth.LoginResponse | null;
-}
-
-const AcceptConditions: FC<AcceptConditionsProps & UserProps> = ({
-	acceptConditions,
-	loginState,
-}) => {
+export const AcceptConditions: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const location = useLocation();
@@ -52,7 +40,10 @@ const AcceptConditions: FC<AcceptConditionsProps & UserProps> = ({
 	const [pages, setPages] = useState<(ContentPageInfo | null)[]>([]);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [acceptInProgress, setAcceptInProgress] = useState<boolean>(false);
-	const commonUser = (loginState as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo;
+	const loginState = useAtomValue(loginAtom);
+	const loggedInLoginState = loginState.data as Avo.Auth.LoginResponseLoggedIn;
+	const commonUser = useAtomValue(commonUserAtom);
+	const acceptConditions = useSetAtom(acceptConditionsAtom);
 	const isElementaryPupil = commonUser?.userGroup?.id === SpecialUserGroupId.PupilElementary;
 	const dataObject = isElementaryPupil ? {} : pages[0];
 
@@ -106,7 +97,7 @@ const AcceptConditions: FC<AcceptConditionsProps & UserProps> = ({
 	}, [pages, tText, tHtml]);
 
 	useEffect(() => {
-		if ((loginState as Avo.Auth.LoginResponseLoggedIn)?.acceptedConditions) {
+		if (loggedInLoginState?.acceptedConditions) {
 			const fromRoute = (location?.state as any)?.from?.pathname;
 			if (!fromRoute) {
 				throw new CustomError(
@@ -117,7 +108,7 @@ const AcceptConditions: FC<AcceptConditionsProps & UserProps> = ({
 			}
 			redirectToClientPage(fromRoute, navigateFunc);
 		}
-	}, [loginState, location, navigateFunc]);
+	}, [loginState, location, navigateFunc, loggedInLoginState?.acceptedConditions]);
 
 	const handleAcceptConditions = async () => {
 		try {
@@ -212,22 +203,10 @@ const AcceptConditions: FC<AcceptConditionsProps & UserProps> = ({
 				dataObject={dataObject}
 				render={
 					isElementaryPupil
-						? () => <AcceptElementaryPupilConditions user={commonUser} />
+						? () => <AcceptElementaryPupilConditions />
 						: renderAcceptConditionsPage
 				}
 			/>
 		</>
 	);
 };
-
-const mapStateToProps = (state: AppState) => ({
-	loginState: selectLogin(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		acceptConditions: () => dispatch(acceptConditionsAction() as any),
-	};
-};
-
-export default withUser(connect(mapStateToProps, mapDispatchToProps)(AcceptConditions)) as FC;

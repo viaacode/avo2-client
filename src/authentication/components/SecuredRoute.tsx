@@ -1,7 +1,6 @@
 import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type ComponentType, type FC, useEffect } from 'react';
-import { connect } from 'react-redux';
 import { Navigate, Route, useNavigate } from 'react-router';
 import { type Dispatch } from 'redux';
 
@@ -10,19 +9,10 @@ import { APP_PATH } from '../../constants';
 import QuickLaneDetail from '../../quick-lane/views/QuickLaneDetail';
 import { buildLink } from '../../shared/helpers/build-link';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { type AppState } from '../../store';
 import { LoginMessage } from '../authentication.types';
 import { isProfileComplete } from '../helpers/get-profile-info';
 import { LoginOptionsTabs, setPreferredLoginOption } from '../helpers/login-options-preferred-tab';
 import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';
-import { getLoginStateAction } from '../store/actions';
-import {
-	selectCommonUser,
-	selectLogin,
-	selectLoginError,
-	selectLoginLoading,
-	selectUser,
-} from '../store/selectors';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export interface DefaultSecureRouteProps {
@@ -121,18 +111,4 @@ const SecuredRoute: FC<
 	return <Route {...(path ? { path } : {})} element={<SecureRouteBody />} />;
 };
 
-const mapStateToProps = (state: AppState) => ({
-	user: selectUser(state),
-	commonUser: selectCommonUser(state),
-	loginState: selectLogin(state),
-	loginStateLoading: selectLoginLoading(state),
-	loginStateError: selectLoginError(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		getLoginState: () => dispatch(getLoginStateAction() as any),
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SecuredRoute) as FC<SecuredRouteProps>;
+export default SecuredRoute;
