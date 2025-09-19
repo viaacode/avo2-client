@@ -110,25 +110,25 @@ import './ItemDetail.scss';
 
 interface ItemDetailProps {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (itemId)
-	renderDetailLink: (
+	renderDetailLink?: (
 		linkText: string | ReactNode,
 		id: string,
 		type: Avo.Core.ContentType,
 		className?: string
 	) => ReactNode;
-	renderSearchLink: (
+	renderSearchLink?: (
 		linkText: string | ReactNode,
 		newFilters: FilterState,
 		className?: string
 	) => ReactNode;
-	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
-	goToSearchLink: (newFilters: FilterState) => void;
-	enabledMetaData: SearchFilter[];
+	goToDetailLink?: (id: string, type: Avo.Core.ContentType) => void;
+	goToSearchLink?: (newFilters: FilterState) => void;
+	enabledMetaData?: SearchFilter[];
 	/**
 	 * Render related objects: only items (video/audio) or all types: video/audio/collections/bundels
 	 * Pupils can only see items
 	 */
-	relatedObjectTypes: ObjectTypesAll;
+	relatedObjectTypes?: ObjectTypesAll;
 	renderActionButtons?: (item: Avo.Item.Item) => ReactNode;
 	renderBookmarkButton?: (props: renderBookmarkButtonProps) => ReactNode;
 	renderBookmarkCount?: (props: renderBookmarkCountProps) => ReactNode;

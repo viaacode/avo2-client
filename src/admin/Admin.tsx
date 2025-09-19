@@ -1,8 +1,10 @@
 import { Flex, IconName } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, useEffect, useState } from 'react';
 import { HorizontalPageSplit } from 'react-page-split';
 
+import { commonUserAtom } from '../authentication/authentication.store';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import {
 	LoadingErrorLoadedComponent,
@@ -17,8 +19,9 @@ import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
 import { renderAdminRoutes } from './admin.routes';
 import { Sidebar } from './shared/components/Sidebar/Sidebar';
 
-export const Admin: FC<{ commonUser: Avo.User.CommonUser }> = ({ commonUser }) => {
+export const Admin: FC<{ commonUser: Avo.User.CommonUser }> = () => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [userPermissions, setUserPermissions] = useState<PermissionName[] | null>(null);

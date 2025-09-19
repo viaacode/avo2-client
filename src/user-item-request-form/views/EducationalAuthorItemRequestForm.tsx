@@ -10,12 +10,13 @@ import {
 	TextArea,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import type { Requests } from 'node-zendesk';
 import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
@@ -34,8 +35,6 @@ import { renderAttachment } from './UserItemRequestForm.helpers';
 
 import './ItemRequestForm.scss';
 
-type EducationalAuthorItemRequestFormProps = DefaultSecureRouteProps;
-
 interface FormValues {
 	description: string;
 	wantsToUploadAttachment: boolean;
@@ -45,11 +44,10 @@ interface FormValues {
 	educationLevels: Avo.Lom.LomField[];
 }
 
-export const EducationalAuthorItemRequestForm: FC<EducationalAuthorItemRequestFormProps> = ({
-	commonUser,
-}) => {
+export const EducationalAuthorItemRequestForm: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [formValues, setFormValues] = useState<FormValues>({
 		description: '',

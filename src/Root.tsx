@@ -10,6 +10,7 @@ import { createBrowserRouter, type Location, Route, useLocation } from 'react-ro
 import { Slide, ToastContainer } from 'react-toastify';
 import { QueryParamProvider } from 'use-query-params';
 
+import { renderRoutes } from './App.routes';
 import { Admin } from './admin/Admin';
 import { ADMIN_PATH } from './admin/admin.const';
 import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config';
@@ -18,7 +19,6 @@ import { commonUserAtom } from './authentication/authentication.store';
 import { SecuredRoute } from './authentication/components/SecuredRoute';
 import { PermissionService } from './authentication/helpers/permission-service';
 import { APP_PATH } from './constants';
-import { renderRoutes } from './routes';
 import { ACMIDMNudgeModal } from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
 import { ConfirmModal } from './shared/components/ConfirmModal/ConfirmModal';
 import { Footer } from './shared/components/Footer/Footer';
@@ -229,7 +229,9 @@ const queryClient = new QueryClient({
 	}),
 });
 
-const router = createBrowserRouter([{ path: '*', element: <AppWithRouter /> }]);
+const router = createBrowserRouter([
+	{ path: '/', Component: AppWithRouter, children: renderRoutes() },
+]);
 
 // Improve usability for screen readers, improves focus and scroll management
 wrapRouter(router, {

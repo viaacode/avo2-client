@@ -2,7 +2,6 @@ import { Flex, Spinner } from '@viaa/avo2-components';
 import React, { type FC, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
@@ -15,9 +14,7 @@ const NavigationOverview = lazy(() =>
 	}))
 );
 
-type NavigationBarOverviewProps = DefaultSecureRouteProps;
-
-export const NavigationBarOverview: FC<NavigationBarOverviewProps> = () => {
+export const NavigationBarOverview: FC = () => {
 	const { tText } = useTranslation();
 
 	return (
@@ -48,4 +45,4 @@ export const NavigationBarOverview: FC<NavigationBarOverviewProps> = () => {
 	);
 };
 
-export default withAdminCoreConfig(NavigationBarOverview as FC) as FC;
+export default withAdminCoreConfig(NavigationBarOverview) as FC;

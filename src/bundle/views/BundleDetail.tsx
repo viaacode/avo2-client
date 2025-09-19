@@ -90,7 +90,7 @@ import './BundleDetail.scss';
 
 type BundleDetailProps = {
 	id?: string;
-	enabledMetaData: SearchFilter[];
+	enabledMetaData?: SearchFilter[];
 };
 
 export const BundleDetail: FC<BundleDetailProps> = ({

@@ -1,11 +1,12 @@
 import { ExportAllToCsvModal, FilterTable, getFilters } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
@@ -48,9 +49,10 @@ import {
 	renderCollectionsOrBundlesMarcomCellText,
 } from '../helpers/render-collection-columns';
 
-export const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({ commonUser }) => {
+export const CollectionOrBundleMarcomOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
 	const [collectionCount, setCollectionCount] = useState<number>(0);

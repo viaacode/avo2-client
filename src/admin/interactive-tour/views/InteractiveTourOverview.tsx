@@ -6,7 +6,6 @@ import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
@@ -42,9 +41,7 @@ import {
 	type InteractiveTourTableState,
 } from '../interactive-tour.types';
 
-type InteractiveTourOverviewProps = DefaultSecureRouteProps;
-
-export const InteractiveTourOverview: FC<InteractiveTourOverviewProps> = () => {
+export const InteractiveTourOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 

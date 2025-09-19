@@ -18,7 +18,7 @@ import React, { type Dispatch, type FC, type SetStateAction, useState } from 're
 import { Controller, type UseFormReturn } from 'react-hook-form';
 import { type UrlUpdateType } from 'use-query-params';
 
-import { ReactComponent as PupilSvg } from '../../../../assets/images/leerling.svg';
+import PupilSvg from '../../../../assets/images/leerling.svg';
 import { CollectionBlockType } from '../../../../collection/collection.const';
 import { BlockList } from '../../../../shared/components/BlockList/BlockList';
 import { EmptyStateMessage } from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';

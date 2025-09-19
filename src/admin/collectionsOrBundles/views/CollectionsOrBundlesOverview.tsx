@@ -1,12 +1,13 @@
 import { ExportAllToCsvModal, FilterTable, getFilters } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { type TagInfo } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { compact, noop, partition } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { CollectionService } from '../../../collection/collection.service';
 import { useGetCollectionsEditStatuses } from '../../../collection/hooks/useGetCollectionsEditStatuses';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
@@ -56,9 +57,10 @@ import {
 	renderCollectionsOrBundlesOverviewCellText,
 } from '../helpers/render-collection-columns';
 
-export const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ commonUser }) => {
+export const CollectionsOrBundlesOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
 	const [collectionCount, setCollectionCount] = useState<number>(0);

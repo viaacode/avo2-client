@@ -5,7 +5,6 @@ import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
@@ -35,7 +34,7 @@ import {
 	type UnpublishedItemsTableState,
 } from '../items.types';
 
-export const PublishItemsOverview: FC<DefaultSecureRouteProps> = () => {
+export const PublishItemsOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 

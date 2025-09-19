@@ -20,7 +20,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import React, { type FC } from 'react';
 
-import { ReactComponent as NewPartSvg } from '../../../../assets/images/nieuw-onderdeel.svg';
+import NewPartSvg from '../../../../assets/images/nieuw-onderdeel.svg';
 import { CollectionFragmentRichText } from '../../../../collection/components/CollectionFragmentRichText';
 import { type EducationLevelId } from '../../../helpers/lom';
 import { useTranslation } from '../../../hooks/useTranslation';

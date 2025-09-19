@@ -3,13 +3,10 @@ import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 
-type UserItemRequestFormProps = DefaultSecureRouteProps;
-
-export const UserItemRequestFormConfirm: FC<UserItemRequestFormProps> = () => {
+export const UserItemRequestFormConfirm: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 

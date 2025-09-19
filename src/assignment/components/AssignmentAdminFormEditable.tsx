@@ -11,19 +11,19 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { isNil } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../admin/shared/types';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable';
 import { type QualityLabel } from '../../collection/collection.types';
 import { formatTimestamp, getFullName } from '../../shared/helpers/formatters';
 import { useGetQualityLabels } from '../../shared/hooks/useGetQualityLabels';
 import { useTranslation } from '../../shared/hooks/useTranslation';
-import { useAtomValue } from 'jotai';
-import { commonUserAtom } from '../../authentication/authentication.store';
 
 interface AssignmentAdminFormEditableProps {
 	assignment: Avo.Assignment.Assignment;

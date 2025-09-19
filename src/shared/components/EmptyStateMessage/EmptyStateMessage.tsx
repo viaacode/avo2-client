@@ -1,7 +1,7 @@
 import { Container, Flex, Spacer } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode } from 'react';
 
-import { ReactComponent as TeacherSvg } from '../../../assets/images/leerkracht.svg';
+import TeacherSvg from '../../../assets/images/leerkracht.svg';
 
 import './EmptyStateMessage.scss';
 

@@ -2,6 +2,7 @@ import { fetchWithLogout } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
 
 import { getEnv } from '../helpers/env';
+import { historyLocationsAtom, store } from '../store/ui.store';
 
 export interface MinimalClientEvent {
 	action: Avo.EventLogging.Action;
@@ -25,8 +26,7 @@ export function trackEvents(
 
 		const eventLogEntries = eventsArray.map(
 			(event: MinimalClientEvent): Avo.EventLogging.Event => {
-				const history =
-					(store.getState() as unknown as AppState)?.uiState?.historyLocations || [];
+				const history = store.get(historyLocationsAtom) || [];
 				return {
 					occurred_at: new Date().toISOString(),
 					source_url: window.location.origin + window.location.pathname, // url when the event was triggered

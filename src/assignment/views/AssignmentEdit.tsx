@@ -119,7 +119,7 @@ import { AssignmentEditMarcom } from './AssignmentEditMarcom';
 import { AssignmentResponses } from './AssignmentResponses';
 
 interface AssignmentEditProps {
-	onUpdate: () => void | Promise<void>;
+	onUpdate?: () => void | Promise<void>;
 }
 
 export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => {

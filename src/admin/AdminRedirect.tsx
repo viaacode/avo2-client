@@ -1,9 +1,17 @@
+import { Flex, Spinner } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
-import { Navigate } from 'react-router';
-import { useLocation } from 'react-router-dom';
+import { type ClientLoaderFunctionArgs, redirect } from 'react-router';
+
+export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
+	throw redirect(request.url.replace(/^\/beheer/g, '/admin'));
+}
+
+clientLoader.hydrate = true as const;
 
 export const AdminRedirect: FC = () => {
-	const location = useLocation();
-
-	return <Navigate to={location.pathname.replace(/^\/beheer/g, '/admin') + location.search} />;
+	return (
+		<Flex orientation="horizontal" center>
+			<Spinner size="large" />
+		</Flex>
+	);
 };

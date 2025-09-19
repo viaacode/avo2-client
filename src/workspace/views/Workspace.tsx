@@ -20,7 +20,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { compact, get, isEmpty } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
@@ -66,10 +66,6 @@ import { QuickLaneOverview } from './QuickLaneOverview';
 
 import './Workspace.scss';
 
-interface WorkspaceProps {
-	collections: Avo.Collection.Collection | null;
-}
-
 interface WorkspacePermissions {
 	canViewOwnCollections?: boolean;
 	canViewOwnBundles?: boolean;
@@ -81,7 +77,7 @@ interface WorkspacePermissions {
 	canEmbedItemsOnOtherSites?: boolean;
 }
 
-export const Workspace: FC<WorkspaceProps> = () => {
+export const Workspace: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const navigateFunc = useNavigate();

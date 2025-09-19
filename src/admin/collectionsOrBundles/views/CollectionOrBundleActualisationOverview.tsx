@@ -12,7 +12,6 @@ import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
@@ -52,7 +51,7 @@ import {
 	renderCollectionsOrBundleActualisationCellText,
 } from '../helpers/render-collection-columns';
 
-export const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = () => {
+export const CollectionOrBundleActualisationOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const commonUser = useAtomValue(commonUserAtom);

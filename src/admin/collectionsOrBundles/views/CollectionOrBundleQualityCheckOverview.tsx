@@ -5,12 +5,13 @@ import {
 	getFilters,
 } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
@@ -50,11 +51,10 @@ import {
 	renderCollectionOrBundleQualityCheckCellText,
 } from '../helpers/render-collection-columns';
 
-export const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
-	commonUser,
-}) => {
+export const CollectionOrBundleQualityCheckOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
 	const [collectionCount, setCollectionCount] = useState<number>(0);

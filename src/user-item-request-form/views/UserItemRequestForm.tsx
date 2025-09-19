@@ -8,12 +8,13 @@ import {
 	Spinner,
 	TextArea,
 } from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
 import type { Requests } from 'node-zendesk';
 import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
@@ -29,10 +30,7 @@ import { ZendeskService } from '../../shared/services/zendesk-service';
 
 import { USER_ITEM_REQUEST_FORM_VALIDATION_SCHEMA } from './UserItemRequestForm.consts';
 import { renderAttachment } from './UserItemRequestForm.helpers';
-
 import './ItemRequestForm.scss';
-
-type UserItemRequestFormProps = DefaultSecureRouteProps;
 
 interface FormValues {
 	description: string;
@@ -40,9 +38,10 @@ interface FormValues {
 	attachmentUrl: string | null;
 }
 
-export const UserItemRequestForm: FC<UserItemRequestFormProps> = ({ commonUser }) => {
+export const UserItemRequestForm: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [formValues, setFormValues] = useState<FormValues>({
 		description: '',

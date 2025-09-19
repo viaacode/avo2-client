@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 
 import pkg from '../package.json';
 
-import App from './App';
+import App from './Root';
 
 // Expose app info through the window object
 window.APP_INFO = {

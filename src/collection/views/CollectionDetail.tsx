@@ -138,7 +138,7 @@ type CollectionInfo = {
 
 type CollectionDetailProps = {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
-	enabledMetaData: SearchFilter[];
+	enabledMetaData?: SearchFilter[];
 };
 
 export const CollectionDetail: FC<CollectionDetailProps> = ({
