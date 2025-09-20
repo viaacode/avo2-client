@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
-import AvoLogo from '@assets/images/avo-logo-centered.svg';
+import AvoLogoSrc from '@assets/images/avo-logo-centered.svg';
 import { Column, Grid, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 
@@ -63,7 +63,7 @@ export const RegisterOrLogin: FC = () => {
 			</Spacer>
 			<Grid className="u-bg-gray-100 u-spacer-bottom" noWrap>
 				<Column size="3-6" className="u-text-center">
-					<img className="avo-logo" alt="Archief voor Onderwijs logo" src={AvoLogo} />
+					<img className="avo-logo" alt="Archief voor Onderwijs logo" src={AvoLogoSrc} />
 					{tab === LoginOptionsTabs.TEACHER && (
 						<span className="account-creation">
 							<Spacer margin={['bottom-small']}>

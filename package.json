@@ -101,7 +101,7 @@
     "to-camel-case": "1.0.0",
     "to-slug-case": "1.0.0",
     "ts-retry-promise": "0.8.1",
-    "use-query-params": "1.2.3",
+    "use-query-params": "2.2.1",
     "yup": "1.4.0"
   },
   "devDependencies": {

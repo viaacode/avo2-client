@@ -20,7 +20,8 @@ import { type Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import React, { type FC } from 'react';
 
-import NewPartSvg from '../../../../assets/images/nieuw-onderdeel.svg';
+// eslint-disable-next-line import/no-unresolved
+import NewPartSvg from '../../../../assets/images/nieuw-onderdeel.svg?react';
 import { CollectionFragmentRichText } from '../../../../collection/components/CollectionFragmentRichText';
 import { type EducationLevelId } from '../../../helpers/lom';
 import { useTranslation } from '../../../hooks/useTranslation';

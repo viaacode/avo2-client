@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-unresolved
 import meemooLogo from '@assets/images/meemoo-logo.png';
 // eslint-disable-next-line import/no-unresolved
-import vlaamseOverheidLogo from '@assets/images/vlaanderen-logo.svg';
+import vlaamseOverheidLogoSrc from '@assets/images/vlaanderen-logo.svg';
 import { Container, Spacer } from '@viaa/avo2-components';
 import { orderBy } from 'lodash-es';
 import React, { type FC, useState } from 'react';
@@ -107,7 +107,7 @@ export const Footer: FC = () => {
 							</span>
 							<Spacer margin="left-small">
 								<img
-									src={vlaamseOverheidLogo}
+									src={vlaamseOverheidLogoSrc}
 									alt={tText(
 										'shared/components/footer/footer___logo-van-vlaamse-overheid'
 									)}

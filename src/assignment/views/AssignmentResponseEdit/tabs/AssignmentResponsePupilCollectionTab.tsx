@@ -18,7 +18,8 @@ import React, { type Dispatch, type FC, type SetStateAction, useState } from 're
 import { Controller, type UseFormReturn } from 'react-hook-form';
 import { type UrlUpdateType } from 'use-query-params';
 
-import PupilSvg from '../../../../assets/images/leerling.svg';
+// eslint-disable-next-line import/no-unresolved
+import PupilSvg from '../../../../assets/images/leerling.svg?react';
 import { CollectionBlockType } from '../../../../collection/collection.const';
 import { BlockList } from '../../../../shared/components/BlockList/BlockList';
 import { EmptyStateMessage } from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';

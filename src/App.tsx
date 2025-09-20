@@ -1,16 +1,13 @@
-import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual, noop, uniq } from 'lodash-es';
-import { wrapRouter } from 'oaf-react-router';
-import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
-import { RouterProvider, useNavigate } from 'react-router';
-import { createBrowserRouter, type Location, Route, useLocation } from 'react-router-dom';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { Outlet, useNavigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 import { QueryParamProvider } from 'use-query-params';
 
-import { renderRoutes } from './App.routes';
 import { Admin } from './admin/Admin';
 import { ADMIN_PATH } from './admin/admin.const';
 import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config';
@@ -30,6 +27,7 @@ import { Navigation } from './shared/components/Navigation/Navigation';
 import { ZendeskWrapper } from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers/custom-error';
+import { ReactRouter7Adapter } from './shared/helpers/react-router-v7-adapter-for-use-query-params';
 import { usePageLoaded } from './shared/hooks/usePageLoaded';
 import { useTranslation } from './shared/hooks/useTranslation';
 import { ToastService } from './shared/services/toast-service';
@@ -170,7 +168,7 @@ const App: FC = () => {
 				) : (
 					<>
 						{!isLoginRoute && <Navigation />}
-						{renderRoutes()}
+						<Outlet />
 						{!isLoginRoute && <Footer />}
 						<ACMIDMNudgeModal />
 					</>
@@ -182,75 +180,41 @@ const App: FC = () => {
 
 	return (
 		<>
-			<QueryParamProvider ReactRouterRoute={Route}>
-				<LoadingErrorLoadedComponent
-					loadingInfo={loadingInfo}
-					dataObject={{}}
-					render={renderApp}
-				/>
-				<ConfirmModal
-					className="c-modal__unsaved-changes"
-					isOpen={isUnsavedChangesModalOpen}
-					confirmCallback={() => {
-						setIsUnsavedChangesModalOpen(false);
-						(confirmUnsavedChangesCallback || noop)(true);
-						confirmUnsavedChangesCallback = null;
-					}}
-					onClose={() => {
-						setIsUnsavedChangesModalOpen(false);
-						(confirmUnsavedChangesCallback || noop)(false);
-						confirmUnsavedChangesCallback = null;
-					}}
-					cancelLabel={tText('app___blijven')}
-					confirmLabel={tText('app___verlaten')}
-					title={tHtml('app___wijzigingen-opslaan')}
-					body={tHtml(
-						'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
-					)}
-					confirmButtonType="primary"
-				/>
+			{/* Use query params*/}
+			<QueryParamProvider adapter={ReactRouter7Adapter}>
+				<>
+					<LoadingErrorLoadedComponent
+						loadingInfo={loadingInfo}
+						dataObject={{}}
+						render={renderApp}
+					/>
+					<ConfirmModal
+						className="c-modal__unsaved-changes"
+						isOpen={isUnsavedChangesModalOpen}
+						confirmCallback={() => {
+							setIsUnsavedChangesModalOpen(false);
+							(confirmUnsavedChangesCallback || noop)(true);
+							confirmUnsavedChangesCallback = null;
+						}}
+						onClose={() => {
+							setIsUnsavedChangesModalOpen(false);
+							(confirmUnsavedChangesCallback || noop)(false);
+							confirmUnsavedChangesCallback = null;
+						}}
+						cancelLabel={tText('app___blijven')}
+						confirmLabel={tText('app___verlaten')}
+						title={tHtml('app___wijzigingen-opslaan')}
+						body={tHtml(
+							'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
+						)}
+						confirmButtonType="primary"
+					/>
+				</>
 			</QueryParamProvider>
 		</>
 	);
 };
 
-const AppWithRouter = withAdminCoreConfig(App) as FC;
+export const AppWithAdminCoreConfig = withAdminCoreConfig(App) as FC;
 
 let confirmUnsavedChangesCallback: ((navigateAway: boolean) => void) | null;
-
-const queryClient = new QueryClient({
-	queryCache: new QueryCache({
-		onError: (error, query) => {
-			if (query.meta?.errorMessage) {
-				console.error(error);
-				ToastService.danger(query.meta.errorMessage as ReactNode | string);
-			}
-		},
-	}),
-});
-
-const router = createBrowserRouter([
-	{ path: '/', Component: AppWithRouter, children: renderRoutes() },
-]);
-
-// Improve usability for screen readers, improves focus and scroll management
-wrapRouter(router, {
-	smoothScroll: false,
-	shouldHandleAction: (previousLocation: Location, nextLocation: Location) => {
-		// We don't want to set focus when only the hash changes
-		return (
-			previousLocation.pathname !== nextLocation.pathname ||
-			previousLocation.search !== nextLocation.search
-		);
-	},
-});
-
-const Root: FC = () => {
-	return (
-		<QueryClientProvider client={queryClient}>
-			<RouterProvider router={router} />
-		</QueryClientProvider>
-	);
-};
-
-export default Root;

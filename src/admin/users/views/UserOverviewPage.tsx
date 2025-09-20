@@ -1,10 +1,7 @@
 import { Flex, Spinner } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
 import React, { type FC, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
@@ -18,7 +15,6 @@ const UserOverview = lazy(() =>
 
 export const UserOverviewPage: FC = () => {
 	const { tText } = useTranslation();
-	const commonUser = useAtomValue(commonUserAtom);
 
 	return (
 		<AdminLayout
@@ -49,7 +45,7 @@ export const UserOverviewPage: FC = () => {
 						</Flex>
 					}
 				>
-					<UserOverview commonUser={commonUser as Avo.User.CommonUser} />
+					<UserOverview />
 				</Suspense>
 			</AdminLayoutBody>
 		</AdminLayout>

@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
-import AvoLogo from '@assets/images/avo-logo-button.svg';
+import AvoLogoSrc from '@assets/images/avo-logo-button.svg';
 import { Alert, Column, Flex, Grid, Icon, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
@@ -234,7 +234,7 @@ export const Embed: FC<EmbedProps> = ({ embedId, showMetadata, parentPage, onRel
 									<img
 										className="c-avo-logo"
 										alt="Archief voor Onderwijs logo"
-										src={AvoLogo}
+										src={AvoLogoSrc}
 									/>
 									<Icon name={IconName.externalLink} subtle />
 								</a>

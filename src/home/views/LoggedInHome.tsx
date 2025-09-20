@@ -12,7 +12,7 @@ import { InteractiveTour } from '../../shared/components/InteractiveTour/Interac
 import { ROUTE_PARTS } from '../../shared/constants';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 
-export const Home: FC = () => {
+export const LoggedInHome: FC = () => {
 	const { tText } = useTranslation();
 	const navigateFunc = useNavigate();
 	const commonUser = useAtomValue(commonUserAtom);

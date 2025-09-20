@@ -284,7 +284,7 @@ export function getAdminCoreConfig(navigateFunc: NavigateFunction): AdminConfig 
 			onExternalLink: noop,
 		},
 		routes: {
-			ADMIN_ALERTS_OVERVIEW: `/${ROUTE_PARTS.alerts}`,
+			ADMIN_ALERTS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.alerts}`,
 			ADMIN_ASSIGNMENTS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.assignments}`,
 			ADMIN_ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.pupilCollections}`,
 			ADMIN_BUNDLES_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.bundles}`,

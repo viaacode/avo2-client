@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
-import AvoLogo from '@assets/images/avo-logo-i.svg';
+import AvoLogoSrc from '@assets/images/avo-logo-i.svg';
 import {
 	Avatar,
 	Button,
@@ -225,7 +225,7 @@ export const Navigation: FC = () => {
 												: APP_PATH.LOGGED_OUT_HOME.route
 										}
 									>
-										<img alt="Archief voor Onderwijs logo" src={AvoLogo} />
+										<img alt="Archief voor Onderwijs logo" src={AvoLogoSrc} />
 									</Link>
 								</h1>
 							</ToolbarItem>

@@ -1,5 +1,5 @@
 import { Flex, IconName } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import React, { type FC, useEffect, useState } from 'react';
 import { HorizontalPageSplit } from 'react-page-split';
@@ -19,7 +19,7 @@ import { type NavigationItemInfo } from '../shared/types';
 import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
 import { Sidebar } from './shared/components/Sidebar/Sidebar';
 
-export const Admin: FC<{ commonUser: Avo.User.CommonUser }> = () => {
+export const Admin: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
