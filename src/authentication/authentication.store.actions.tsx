@@ -80,36 +80,6 @@ export const getLoginStateAtom = atom<LoginState | null, [boolean], void>(
 			const historyLocations: string[] = get(historyLocationsAtom) || [];
 			const loginStateResponse = await getLoginResponse(forceRefetch, historyLocations);
 
-			// Check if session is about to expire and show warning toast
-			// Redirect to login page when session actually expires
-			const expiresAt = (loginStateResponse as Avo.Auth.LoginResponseLoggedIn)
-				?.sessionExpiresAt;
-			if (expiresAt) {
-				if (checkSessionTimeoutTimerId) {
-					clearInterval(checkSessionTimeoutTimerId);
-				}
-				checkSessionTimeoutTimerId = window.setInterval(
-					() => checkIfSessionExpires(expiresAt),
-					5 * 60 * 1000
-				);
-			}
-
-			if (loginStateResponse.message === 'LOGGED_IN') {
-				// Trigger extra Google Analytics event to track what the user group is of the logged-in user
-				// https://meemoo.atlassian.net/browse/AVO-3011
-				const userInfo = (loginStateResponse as Avo.Auth.LoginResponseLoggedIn).userInfo;
-				const event = {
-					event: 'visit',
-					userData: {
-						userGroup: userInfo?.profile?.userGroupIds[0],
-						educationLevels: compact(
-							(userInfo?.profile?.loms || []).map((lom) => lom?.lom?.label)
-						),
-					},
-				};
-				(window as any)?.dataLayer?.push(event);
-			}
-
 			set(loginAtom, {
 				...get(loginAtom),
 				loading: false,
@@ -126,26 +96,56 @@ export const getLoginStateAtom = atom<LoginState | null, [boolean], void>(
 	}
 );
 
-export const getLoginResponse = async (
-	force = false,
+export async function getLoginResponse(
+	forceRefetch = false,
 	historyLocations: string[]
-): Promise<Avo.Auth.LoginResponse> => {
+): Promise<Avo.Auth.LoginResponse> {
 	try {
 		const url = `${getEnv('PROXY_URL')}/auth/check-login?${queryString.stringify({
-			force,
+			force: forceRefetch,
 			history: historyLocations,
 		})}`;
 
 		const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
-		return fetchWithLogoutJson<Avo.Auth.LoginResponse>(url, {
+		const loginStateResponse = await fetchWithLogoutJson<Avo.Auth.LoginResponse>(url, {
 			forceLogout: false,
 			headers: {
 				'Content-Type': 'application/json',
 				[LTI_JWT_TOKEN_HEADER]: EmbedCodeService.getJwtToken() || '',
 			},
 		});
+
+		// Check if session is about to expire and show warning toast
+		// Redirect to login page when session actually expires
+		const expiresAt = (loginStateResponse as Avo.Auth.LoginResponseLoggedIn)?.sessionExpiresAt;
+		if (expiresAt) {
+			if (checkSessionTimeoutTimerId) {
+				clearInterval(checkSessionTimeoutTimerId);
+			}
+			checkSessionTimeoutTimerId = window.setInterval(
+				() => checkIfSessionExpires(expiresAt),
+				5 * 60 * 1000
+			);
+		}
+
+		if (loginStateResponse.message === 'LOGGED_IN') {
+			// Trigger extra Google Analytics event to track what the user group is of the logged-in user
+			// https://meemoo.atlassian.net/browse/AVO-3011
+			const userInfo = (loginStateResponse as Avo.Auth.LoginResponseLoggedIn).userInfo;
+			const event = {
+				event: 'visit',
+				userData: {
+					userGroup: userInfo?.profile?.userGroupIds[0],
+					educationLevels: compact(
+						(userInfo?.profile?.loms || []).map((lom) => lom?.lom?.label)
+					),
+				},
+			};
+			(window as any)?.dataLayer?.push(event);
+		}
+		return loginStateResponse;
 	} catch (err) {
 		console.error('failed to check login state', err);
 		throw err;
 	}
-};
+}

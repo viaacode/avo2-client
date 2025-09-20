@@ -27,7 +27,6 @@ import { Navigation } from './shared/components/Navigation/Navigation';
 import { ZendeskWrapper } from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers/custom-error';
-import { ReactRouter7Adapter } from './shared/helpers/react-router-v7-adapter-for-use-query-params';
 import { usePageLoaded } from './shared/hooks/usePageLoaded';
 import { useTranslation } from './shared/hooks/useTranslation';
 import { ToastService } from './shared/services/toast-service';
@@ -37,6 +36,7 @@ import { waitForTranslations } from './shared/translations/i18n';
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import './App.scss';
 import './styles/main.scss';
+import { ReactRouter7Adapter } from './shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
 
 const App: FC = () => {
 	const { tText, tHtml } = useTranslation();
