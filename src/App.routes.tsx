@@ -1,3 +1,4 @@
+import { MaintenanceAlertsOverviewPage } from '@meemoo/admin-core-ui/dist/modules/alerts/MaintenanceAlertsOverviewPage';
 import { type RouteObject } from 'react-router';
 
 import { AdminRedirect } from './admin/AdminRedirect';
@@ -340,6 +341,12 @@ export const renderRoutes = (): RouteObject[] => [
 	{
 		Component: UserEditPage,
 		path: USER_PATH.USER_EDIT,
+	},
+
+	// Admin core routes
+	{
+		Component: MaintenanceAlertsOverviewPage,
+		path: `/${ROUTE_PARTS.alerts}`,
 	},
 
 	// UNAUTHENTICATED

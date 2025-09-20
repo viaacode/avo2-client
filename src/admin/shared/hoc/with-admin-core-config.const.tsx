@@ -7,12 +7,13 @@ import {
 } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { ContentBlockType, ContentPageWidth } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
-import { DatabaseType } from '@viaa/avo2-types';
+import { type Avo, DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
 import React, { type FC } from 'react';
 import { type NavigateFunction } from 'react-router';
 import { Link } from 'react-router-dom';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { APP_PATH, type RouteId } from '../../../constants';
 import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { DEFAULT_AUDIO_STILL, ROUTE_PARTS } from '../../../shared/constants';
@@ -21,6 +22,7 @@ import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
 import { ToastService, ToastTypeToAvoToastType } from '../../../shared/services/toast-service';
+import { store } from '../../../shared/store/ui.store';
 import { Locale } from '../../../shared/translations/translations.types';
 import { ADMIN_PATH } from '../../admin.const';
 import { BlockSearch } from '../../content-page/components/blocks/BlockSearch/BlockSearch';
@@ -325,6 +327,9 @@ export function getAdminCoreConfig(navigateFunc: NavigateFunction): AdminConfig 
 				UserBulkAction.EXPORT_SELECTION,
 				UserBulkAction.EXPORT_ALL,
 			],
+			getCommonUser: (): Avo.User.CommonUser | null => {
+				return store.get(commonUserAtom);
+			},
 		},
 		locale: Locale.Nl as any,
 		env: {

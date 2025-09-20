@@ -3,6 +3,7 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import React, { type FC, useEffect, useState } from 'react';
 import { HorizontalPageSplit } from 'react-page-split';
+import { Outlet } from 'react-router';
 
 import { commonUserAtom } from '../authentication/authentication.store';
 import { PermissionService } from '../authentication/helpers/permission-service';
@@ -16,7 +17,6 @@ import { ToastService } from '../shared/services/toast-service';
 import { type NavigationItemInfo } from '../shared/types';
 
 import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
-import { renderAdminRoutes } from './admin.routes';
 import { Sidebar } from './shared/components/Sidebar/Sidebar';
 
 export const Admin: FC<{ commonUser: Avo.User.CommonUser }> = () => {
@@ -74,7 +74,7 @@ export const Admin: FC<{ commonUser: Avo.User.CommonUser }> = () => {
 					className="o-app--admin__sidebar"
 				/>
 				<Flex className="o-app--admin__main u-flex-auto u-scroll" orientation="vertical">
-					{renderAdminRoutes(userPermissions)}
+					<Outlet />
 				</Flex>
 			</HorizontalPageSplit>
 		);
