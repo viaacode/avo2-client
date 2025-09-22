@@ -57,6 +57,7 @@ import {
 	CheckboxDropdownModal,
 	type CheckboxOption,
 } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import LabelsClassesDropdownFilter from '../../shared/components/ManageLabelsClasses/LabelsClassesDropdownFilter';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
 	ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
@@ -74,7 +75,6 @@ import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { LabelsClassesService } from '../../shared/services/labels-classes';
 import { ToastService } from '../../shared/services/toast-service';
 import { KeyCode } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -121,9 +121,6 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.LabelOrClass.LabelOrClass[]>(
-		[]
-	);
 	const [filterString, setFilterString] = useState<string | undefined>(undefined);
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<string | null>(
 		null
@@ -260,17 +257,11 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 		resetFiltersAndSort();
 	};
 
-	const fetchAssignmentLabels = useCallback(async () => {
-		// Fetch all labels for the current user
-		setAllAssignmentLabels(await LabelsClassesService.getLabelsForProfile());
-	}, [setAllAssignmentLabels]);
-
 	useEffect(() => {
 		if (!isNil(canEditAssignments)) {
 			refetchAssignments();
-			fetchAssignmentLabels();
 		}
-	}, [canEditAssignments, refetchAssignments, fetchAssignmentLabels]);
+	}, [canEditAssignments, refetchAssignments]);
 
 	const handleSearchFieldKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
 		if (evt.keyCode === KeyCode.Enter) {
@@ -617,26 +608,6 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 		}
 	};
 
-	const getLabelOptions = (labelType: Avo.LabelOrClass.Type): CheckboxOption[] => {
-		return compact(
-			allAssignmentLabels
-				.filter((labelObj: Avo.LabelOrClass.LabelOrClass) => labelObj.type === labelType)
-				.map((labelObj: Avo.LabelOrClass.LabelOrClass): CheckboxOption | null => {
-					if (!labelObj.label) {
-						return null;
-					}
-					return {
-						label: labelObj.label,
-						id: labelObj.id,
-						checked: [
-							...(query.selectedAssignmentLabelIds || []),
-							...(query.selectedClassLabelIds || []),
-						].includes(labelObj.id),
-					};
-				})
-		);
-	};
-
 	const getShareTypeLabels = (): CheckboxOption[] => {
 		return compact([
 			{
@@ -736,10 +707,10 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 											)
 										}
 									/>
-									<CheckboxDropdownModal
-										label={tText('assignment/views/assignment-overview___klas')}
-										id="Klas"
-										options={getLabelOptions('CLASS')}
+									<LabelsClassesDropdownFilter
+										type={'CLASS'}
+										selectedLabelIds={query.selectedAssignmentLabelIds ?? []}
+										selectedClassLabelIds={query.selectedClassLabelIds ?? []}
 										onChange={(selectedClasses) =>
 											handleQueryChanged(
 												selectedClasses,
@@ -747,12 +718,10 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 											)
 										}
 									/>
-									<CheckboxDropdownModal
-										label={tText(
-											'assignment/views/assignment-overview___label'
-										)}
-										id="Label"
-										options={getLabelOptions('LABEL')}
+									<LabelsClassesDropdownFilter
+										type={'LABEL'}
+										selectedLabelIds={query.selectedAssignmentLabelIds ?? []}
+										selectedClassLabelIds={query.selectedClassLabelIds ?? []}
 										onChange={(selectedLabels) =>
 											handleQueryChanged(
 												selectedLabels,
