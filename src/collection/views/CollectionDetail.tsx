@@ -747,10 +747,7 @@ const CollectionDetail: FC<
 		setImportWithDescription(withDescription);
 
 		// check if assignment has responses. If so: show additional confirmation modal
-		const responses = await AssignmentService.getAssignmentResponses(
-			commonUser?.profileId,
-			importToAssignmentId
-		);
+		const responses = await AssignmentService.getAssignmentResponses(importToAssignmentId);
 		if (responses.length > 0) {
 			setIsConfirmImportToAssignmentWithResponsesModalOpen(true);
 		} else {
@@ -781,7 +778,7 @@ const CollectionDetail: FC<
 			trackEvents(
 				{
 					object: importToAssignmentId,
-					object_type: 'avo_assignment',
+					object_type: 'assignment',
 					action: 'add',
 					resource: {
 						type: 'collection',

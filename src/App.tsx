@@ -174,7 +174,7 @@ const App: FC<
 				"Embed flow query param is present, but the page wasn't opened from another page, so window.opener is undefined. Cannot start the embed flow"
 			);
 		}
-	}, [setEmbedFlow, props.commonUser]);
+	}, [setEmbedFlow, props.commonUser, tHtml]);
 
 	// Render
 	const renderApp = () => {

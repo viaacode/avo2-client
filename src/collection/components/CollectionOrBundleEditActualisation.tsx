@@ -121,7 +121,7 @@ const CollectionOrBundleEditActualisation: FC<
 															label:
 																getFullName(
 																	collection?.management
-																		?.manager as unknown as Avo.User.Profile,
+																		?.manager as unknown as Avo.User.CommonUser,
 																	false,
 																	true
 																) || '',

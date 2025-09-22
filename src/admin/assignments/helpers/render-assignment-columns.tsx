@@ -240,8 +240,8 @@ export function renderAssignmentCellReact(
 		case 'last_user_edit_profile': {
 			// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
 			return (
-				assignment?.updated_by?.user?.full_name ||
-				(assignment as any)?.last_user_edit_profile?.usersByuserId?.full_name ||
+				assignment?.updated_by?.fullName ||
+				assignment?.last_user_edit_profile?.fullName ||
 				(assignment as any)?.last_editor?.full_name ||
 				(assignment as any)?.last_editor_name ||
 				'-'
@@ -454,8 +454,8 @@ export function renderAssignmentCellText(
 		case 'last_user_edit_profile': {
 			// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
 			return (
-				assignment?.updated_by?.user?.full_name ||
-				(assignment as any)?.last_user_edit_profile?.usersByuserId?.full_name ||
+				assignment?.updated_by?.fullName ||
+				assignment?.last_user_edit_profile?.fullName ||
 				'-'
 			);
 		}

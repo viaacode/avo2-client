@@ -461,9 +461,9 @@ const Profile: FC<
 			}
 
 			case 'temp_access': {
-				const tempAccess = profile?.user?.temp_access;
+				const tempAccess = profile?.temp_access;
 
-				return tempAccess?.current?.status === 1
+				return tempAccess?.has_currently_access?.status
 					? `${tText('settings/components/profile___van')} ${formatDate(
 							tempAccess?.from
 					  )} ${tText('settings/components/profile___tot')} ${formatDate(

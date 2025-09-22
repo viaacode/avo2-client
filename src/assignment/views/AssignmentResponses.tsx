@@ -247,7 +247,6 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 
 			const response = await AssignmentService.fetchAssignmentResponses(
 				assignmentId,
-				commonUser,
 				sortColumn,
 				sortOrder,
 				columnDataType,

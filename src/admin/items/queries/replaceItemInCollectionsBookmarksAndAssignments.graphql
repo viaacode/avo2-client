@@ -1,8 +1,8 @@
 mutation replaceItemInCollectionsBookmarksAndAssignments(
 	$oldItemUid: uuid!
-	$oldItemExternalId: String!
+	$oldItemExternalId: bpchar!
 	$newItemUid: uuid!
-	$newItemExternalId: String!
+	$newItemExternalId: bpchar!
 	$usersWithBothBookmarks: [uuid!]!
 ) {
 	update_app_collection_fragments(

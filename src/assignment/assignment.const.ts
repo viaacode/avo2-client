@@ -16,7 +16,6 @@ import {
 	type AssignmentColumn,
 	type AssignmentResponseColumn,
 	type AssignmentResponseFormState,
-	type AssignmentResponseTableColumns,
 	type AssignmentTableColumns,
 	AssignmentType,
 } from './assignment.types';
@@ -171,48 +170,6 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 	...getActionsColumn(canEditAssignments),
 ];
 
-/// Zoek & bouw
-export const ASSIGNMENT_FORM_SCHEMA = (tText: TFunction): Schema<Avo.Assignment.Assignment> => {
-	return object({
-		id: string().optional(),
-		title: string()
-			.required(tText('assignment/assignment___titel-is-verplicht'))
-			.max(
-				110,
-				tText('assignment/assignment___de-titel-mag-maximum-110-karakters-lang-zijn')
-			),
-		description: string().max(
-			300,
-			tText(
-				'assignment/assignment___de-korte-beschrijving-mag-maximaal-300-karakters-lang-zijn'
-			)
-		),
-		labels: array(
-			object({
-				assignment_label: object()
-					.shape({
-						id: string().required(),
-						label: string().nullable(),
-						color_enum_value: string().required(),
-						color_override: string().nullable(),
-						owner_profile_id: string().required(),
-						enum_color: object({
-							label: string().required(),
-							value: string().required(),
-						}).optional(),
-						type: string().is(['LABEL', 'CLASS']).required(),
-						profile: object().optional(),
-					})
-					.required(),
-			})
-		),
-		blocks: array(),
-		answer_url: string().nullable().optional(),
-		available_at: string().nullable().optional(),
-		deadline_at: string().nullable().optional(),
-	}) as any;
-};
-
 export const PUPIL_COLLECTION_FORM_SCHEMA = (
 	tText: TFunction
 ): Schema<Partial<AssignmentResponseFormState>> => {
@@ -289,21 +246,6 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 	{ id: ACTIONS_TABLE_COLUMN_ID, label: '' },
 ];
 
-export const RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
-	[columnId in AssignmentResponseTableColumns]: (order: Avo.Search.OrderDirection) => any;
-}> = {
-	pupil: (order: Avo.Search.OrderDirection) => ({
-		owner: {
-			full_name: order,
-		},
-	}),
-	pupil_collection_block_count: (order: Avo.Search.OrderDirection) => ({
-		pupil_collection_blocks_aggregate: {
-			count: order,
-		},
-	}),
-};
-
 export const ENABLED_FILTERS_PUPIL_SEARCH: SearchFilter[] = [
 	SearchFilter.type,
 	SearchFilter.serie,
@@ -323,10 +265,6 @@ export const ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH: SearchOrderAndDirectionPrope
 ];
 
 export const NEW_ASSIGNMENT_BLOCK_ID_PREFIX = 'tmp///';
-
-export const isNewAssignmentBlock = (item: Pick<Avo.Core.BlockItemBase, 'id'>): boolean => {
-	return String(item.id).startsWith(NEW_ASSIGNMENT_BLOCK_ID_PREFIX);
-};
 
 export const GET_EDUCATION_LEVEL_DICT: () => Partial<Record<EducationLevelId, ReactNode>> = () => ({
 	[EducationLevelId.lagerOnderwijs]: tHtml(
