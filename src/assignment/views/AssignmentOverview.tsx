@@ -121,7 +121,9 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.LabelClass.LabelClass[]>([]);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.LabelOrClass.LabelOrClass[]>(
+		[]
+	);
 	const [filterString, setFilterString] = useState<string | undefined>(undefined);
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<string | null>(
 		null
@@ -417,7 +419,7 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 	};
 
 	const renderLabels = (
-		labels: { assignment_label: Avo.LabelClass.LabelClass }[],
+		labels: { assignment_label: Avo.LabelOrClass.LabelOrClass }[],
 		label: string
 	) => {
 		if (labels.length === 0) {
@@ -615,11 +617,11 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 		}
 	};
 
-	const getLabelOptions = (labelType: Avo.LabelClass.Type): CheckboxOption[] => {
+	const getLabelOptions = (labelType: Avo.LabelOrClass.Type): CheckboxOption[] => {
 		return compact(
 			allAssignmentLabels
-				.filter((labelObj: Avo.LabelClass.LabelClass) => labelObj.type === labelType)
-				.map((labelObj: Avo.LabelClass.LabelClass): CheckboxOption | null => {
+				.filter((labelObj: Avo.LabelOrClass.LabelOrClass) => labelObj.type === labelType)
+				.map((labelObj: Avo.LabelOrClass.LabelOrClass): CheckboxOption | null => {
 					if (!labelObj.label) {
 						return null;
 					}

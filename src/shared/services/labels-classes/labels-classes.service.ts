@@ -5,7 +5,9 @@ import { CustomError } from '../../helpers/custom-error';
 import { getEnv } from '../../helpers/env';
 
 export class LabelsClassesService {
-	public static async getLabelsForProfile(type?: string): Promise<Avo.LabelClass.LabelClass[]> {
+	public static async getLabelsForProfile(
+		type?: string
+	): Promise<Avo.LabelOrClass.LabelOrClass[]> {
 		let url: string | undefined = undefined;
 
 		try {
@@ -17,7 +19,7 @@ export class LabelsClassesService {
 			});
 
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
-			return fetchWithLogoutJson<Avo.LabelClass.LabelClass[]>(url);
+			return fetchWithLogoutJson<Avo.LabelOrClass.LabelOrClass[]>(url);
 		} catch (err) {
 			const error = new CustomError('Failed to get labels and classes for user', err, {
 				url,
@@ -28,14 +30,14 @@ export class LabelsClassesService {
 		}
 	}
 
-	public static async getLabels(): Promise<Avo.LabelClass.LabelClass[]> {
+	public static async getLabels(): Promise<Avo.LabelOrClass.LabelOrClass[]> {
 		let url: string | undefined = undefined;
 
 		try {
 			url = `${getEnv('PROXY_URL')}/labels-classes/all`;
 
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
-			return fetchWithLogoutJson<Avo.LabelClass.LabelClass[]>(url);
+			return fetchWithLogoutJson<Avo.LabelOrClass.LabelOrClass[]>(url);
 		} catch (err) {
 			const error = new CustomError('Failed to get labels and classes', err, {
 				url,
@@ -45,7 +47,7 @@ export class LabelsClassesService {
 		}
 	}
 
-	public static async insertLabels(labels: Avo.LabelClass.LabelClass[]): Promise<number[]> {
+	public static async insertLabels(labels: Avo.LabelOrClass.LabelOrClass[]): Promise<number[]> {
 		let url: string | undefined = undefined;
 
 		try {
@@ -65,13 +67,9 @@ export class LabelsClassesService {
 		}
 	}
 
-	public static async updateLabel(
-		labelId: string,
-		value: Avo.LabelClass.LabelClassColor
-	): Promise<void> {
+	public static async updateLabel(labelId: string, value: Avo.LabelOrClass.Color): Promise<void> {
 		let url: string | undefined = undefined;
 
-		debugger;
 		try {
 			url = `${getEnv('PROXY_URL')}/labels-classes/${labelId}`;
 
@@ -112,14 +110,14 @@ export class LabelsClassesService {
 		}
 	}
 
-	public static async getLabelColors(): Promise<Avo.LabelClass.LabelClassColor[]> {
+	public static async getLabelColors(): Promise<Avo.LabelOrClass.Color[]> {
 		let url: string | undefined = undefined;
 
 		try {
 			url = `${getEnv('PROXY_URL')}/labels-classes/colors`;
 
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
-			return fetchWithLogoutJson<Avo.LabelClass.LabelClassColor[]>(url);
+			return fetchWithLogoutJson<Avo.LabelOrClass.Color[]>(url);
 		} catch (err) {
 			const error = new CustomError('Failed to get labels and classes colors', err, {
 				url,

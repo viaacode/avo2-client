@@ -26,11 +26,11 @@ const AssignmentDetailsFormReadonly: FC<AssignmentDetailsFormReadonlyProps & Def
 					<p>
 						{(assignment.labels || [])
 							.filter(
-								(item: { assignment_label: Avo.LabelClass.LabelClass }) =>
+								(item: { assignment_label: Avo.LabelOrClass.LabelOrClass }) =>
 									item.assignment_label.type === 'CLASS'
 							)
 							.map(
-								(item: { assignment_label: Avo.LabelClass.LabelClass }) =>
+								(item: { assignment_label: Avo.LabelOrClass.LabelOrClass }) =>
 									item.assignment_label.label
 							)
 							.join(', ') || '-'}
@@ -41,11 +41,11 @@ const AssignmentDetailsFormReadonly: FC<AssignmentDetailsFormReadonlyProps & Def
 					<p>
 						{(assignment.labels || [])
 							.filter(
-								(item: { assignment_label: Avo.LabelClass.LabelClass }) =>
+								(item: { assignment_label: Avo.LabelOrClass.LabelOrClass }) =>
 									item.assignment_label.type === 'LABEL'
 							)
 							.map(
-								(item: { assignment_label: Avo.LabelClass.LabelClass }) =>
+								(item: { assignment_label: Avo.LabelOrClass.LabelOrClass }) =>
 									item.assignment_label.label
 							)
 							.join(', ') || '-'}

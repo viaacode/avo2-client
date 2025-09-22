@@ -32,7 +32,7 @@ export class AssignmentHelper {
 	public static getLabels(
 		assignment: Avo.Assignment.Assignment,
 		type: string
-	): { assignment_label: Avo.LabelClass.LabelClass }[] {
+	): { assignment_label: Avo.LabelOrClass.LabelOrClass }[] {
 		return assignment?.labels?.filter((label) => label.assignment_label.type === type) || [];
 	}
 }

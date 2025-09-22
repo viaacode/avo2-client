@@ -14,14 +14,14 @@ import { ToastService } from '../../shared/services/toast-service';
 import './AssignmentLabels.scss';
 
 type AssignmentLabelsProps = {
-	labels: { assignment_label: Avo.LabelClass.LabelClass }[];
+	labels: { assignment_label: Avo.LabelOrClass.LabelOrClass }[];
 	id?: string;
-	onChange: (changed: { assignment_label: Avo.LabelClass.LabelClass }[]) => void;
+	onChange: (changed: { assignment_label: Avo.LabelOrClass.LabelOrClass }[]) => void;
 	dictionary?: {
 		placeholder: string;
 		empty: string;
 	};
-	type?: Avo.LabelClass.Type;
+	type?: Avo.LabelOrClass.Type;
 };
 
 const AssignmentLabels: FC<AssignmentLabelsProps> = ({
@@ -38,7 +38,9 @@ const AssignmentLabels: FC<AssignmentLabelsProps> = ({
 		...(props.dictionary ? props.dictionary : {}),
 	};
 
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.LabelClass.LabelClass[]>([]);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.LabelOrClass.LabelOrClass[]>(
+		[]
+	);
 
 	const fetchAssignmentLabels = useCallback(async () => {
 		// Fetch labels every time the manage labels modal closes and once at startup
@@ -49,7 +51,7 @@ const AssignmentLabels: FC<AssignmentLabelsProps> = ({
 		fetchAssignmentLabels();
 	}, [fetchAssignmentLabels]);
 
-	const getAssignmentLabelOptions = (labels: Avo.LabelClass.LabelClass[]): TagOption[] => {
+	const getAssignmentLabelOptions = (labels: Avo.LabelOrClass.LabelOrClass[]): TagOption[] => {
 		return labels.map((labelObj) => ({
 			label: labelObj.label || '',
 			id: labelObj.id,
@@ -63,7 +65,7 @@ const AssignmentLabels: FC<AssignmentLabelsProps> = ({
 		fetchAssignmentLabels();
 	};
 
-	const getColorOptions = (labels: Avo.LabelClass.LabelClass[]): ColorOption[] => {
+	const getColorOptions = (labels: Avo.LabelOrClass.LabelOrClass[]): ColorOption[] => {
 		return labels
 			.filter((item) => !type || item.type === type)
 			.map((labelObj) => ({

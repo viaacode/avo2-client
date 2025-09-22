@@ -35,7 +35,7 @@ import './ManageLabelsClasses.scss';
 
 export interface ManageLabelsAndClassesProps {
 	onClose: () => void;
-	type?: Avo.LabelClass.Type;
+	type?: Avo.LabelOrClass.Type;
 }
 
 const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
@@ -45,9 +45,9 @@ const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
 }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const [labels, setLabels] = useState<Avo.LabelClass.LabelClass[]>([]);
-	const [initialLabels, setInitialLabels] = useState<Avo.LabelClass.LabelClass[]>([]);
-	const [labelColors, setLabelColors] = useState<Avo.LabelClass.LabelClassColor[]>([]);
+	const [labels, setLabels] = useState<Avo.LabelOrClass.LabelOrClass[]>([]);
+	const [initialLabels, setInitialLabels] = useState<Avo.LabelOrClass.LabelOrClass[]>([]);
+	const [labelColors, setLabelColors] = useState<Avo.LabelOrClass.Color[]>([]);
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 
@@ -117,18 +117,18 @@ const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
 	};
 
 	const handleRowColorChanged = (
-		assignmentLabel: Avo.LabelClass.LabelClass,
+		assignmentLabel: Avo.LabelOrClass.LabelOrClass,
 		newColor?: ColorOption
 	) => {
 		if (!newColor) {
 			return;
 		}
-		assignmentLabel.color_enum_value = (newColor as Avo.LabelClass.LabelClassColor).value;
+		assignmentLabel.color_enum_value = (newColor as Avo.LabelOrClass.Color).value;
 		setLabels([...labels]);
 	};
 
 	const handleRowLabelChanged = (
-		assignmentLabel: Avo.LabelClass.LabelClass,
+		assignmentLabel: Avo.LabelOrClass.LabelOrClass,
 		newLabel: string
 	) => {
 		assignmentLabel.label = newLabel;
@@ -139,7 +139,7 @@ const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
 		setLabels([...labels.filter((labelObj) => labelObj.id !== id)]);
 	};
 
-	const labelsExceedMaxLength = (labels: Avo.LabelClass.LabelClass[]) => {
+	const labelsExceedMaxLength = (labels: Avo.LabelOrClass.LabelOrClass[]) => {
 		return !labels.find((label) => (label.label?.length || 0) > MAX_LABEL_LENGTH);
 	};
 
@@ -221,7 +221,7 @@ const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
 	};
 
 	const renderCell = (rowData: any, columnId: string) => {
-		const assignmentLabel = rowData as Avo.LabelClass.LabelClass;
+		const assignmentLabel = rowData as Avo.LabelOrClass.LabelOrClass;
 		const colorOptions: ColorOption[] = labelColors.map((assignmentLabelColor) => ({
 			label: '',
 			value: assignmentLabelColor.value,
