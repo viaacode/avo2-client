@@ -1,3 +1,5 @@
+@import "../settings/variables";
+
 /* ==========================================================================
     Object: App
    ========================================================================== */
@@ -6,7 +8,7 @@
 	display: flex;
 	flex-direction: column;
 	min-height: 100vh;
-	padding-top: 6.4rem;
+	padding-top: $main-header-height;
 
 	> .c-navbar {
 		max-width: 100vw;
@@ -21,4 +23,8 @@
 	&__main {
 		height: 100vh;
 	}
+}
+
+.o-app--preview {
+	padding-top: calc($main-header-height + $user-group-selector-height);
 }
