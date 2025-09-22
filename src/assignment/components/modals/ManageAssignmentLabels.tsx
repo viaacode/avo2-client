@@ -16,16 +16,17 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { compact, intersection, sortBy, without } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { ColorSelect } from '../../../shared/components/ColorSelect/ColorSelect';
 import { type Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-db-types';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { generateRandomId } from '../../../shared/helpers/uuid';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { MAX_LABEL_LENGTH } from '../../assignment.const';
@@ -41,13 +42,13 @@ export interface ManageAssignmentLabelsProps {
 	type?: Avo.Assignment.LabelType;
 }
 
-const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
+export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
 	isOpen,
 	onClose,
 	type,
-	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<Avo.Assignment.Label[]>(
@@ -78,7 +79,7 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 				)
 			);
 		}
-	}, [commonUser, setAssignmentLabels, tText, type, tHtml]);
+	}, [profileId, type, commonUser, tHtml]);
 
 	const fetchAssignmentColors = useCallback(async () => {
 		try {
@@ -352,5 +353,3 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 		</Modal>
 	);
 };
-
-export default withUser(ManageAssignmentLabels) as FC<ManageAssignmentLabelsProps>;

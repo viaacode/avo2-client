@@ -1,26 +1,27 @@
 import { ExportAllToCsvModal, FilterTable, getFilters } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Container, Flex, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, type ReactNode, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
 } from '../../../collection/collection.const';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
@@ -39,8 +40,9 @@ import {
 } from '../helpers/render-assignment-columns';
 import { useGetAssignmentsWithMarcomForAdminOverview } from '../hooks/useGetAssignmentsWithMarcomForAdminOverview';
 
-const AssignmentMarcomOverview: FC<UserProps> = ({ commonUser }) => {
+export const AssignmentMarcomOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [tableState, setTableState] = useState<Partial<AssignmentMarcomTableState>>({});
 	const { data: assignmentsWithMarcom, isLoading: isLoadingAssignments } =
@@ -243,6 +245,7 @@ const AssignmentMarcomOverview: FC<UserProps> = ({ commonUser }) => {
 			return (
 				<Container mode="vertical">
 					<Flex orientation="horizontal" center>
+						{/* AssignmentsMarcomOverview */}
 						<Spinner size="large" />
 					</Flex>
 				</Container>
@@ -377,5 +380,3 @@ const AssignmentMarcomOverview: FC<UserProps> = ({ commonUser }) => {
 		</AdminLayout>
 	);
 };
-
-export default withUser(AssignmentMarcomOverview) as FC;

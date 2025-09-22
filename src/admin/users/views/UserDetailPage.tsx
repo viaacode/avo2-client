@@ -1,15 +1,13 @@
 import { Flex, Spinner } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, lazy, Suspense, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteChildrenProps, useParams } from 'react-router';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { useNavigate, useParams } from 'react-router';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { UserService } from '../user.service';
@@ -22,8 +20,11 @@ const UserDetail = lazy(() =>
 	}))
 );
 
-const UserDetailPage: FC<UserProps & RouteChildrenProps> = ({ commonUser, history }) => {
+const UserDetailPage: FC = () => {
 	const { tText } = useTranslation();
+	const navigateFunc = useNavigate();
+	const commonUser = useAtomValue(commonUserAtom);
+
 	const [user, setUser] = useState<{ fullName?: string } | undefined>();
 	const { id } = useParams<{ id: string }>();
 
@@ -51,16 +52,20 @@ const UserDetailPage: FC<UserProps & RouteChildrenProps> = ({ commonUser, histor
 					</Flex>
 				}
 			>
-				<UserDetail
-					id={id}
-					onSetTempAccess={UserService.updateTempAccessByUserId}
-					onLoaded={setUser}
-					onGoBack={() => goBrowserBackWithFallback(ADMIN_PATH.USER_OVERVIEW, history)}
-					commonUser={commonUser as Avo.User.CommonUser}
-				/>
+				{!!id && (
+					<UserDetail
+						id={id}
+						onSetTempAccess={UserService.updateTempAccessByUserId}
+						onLoaded={setUser}
+						onGoBack={() =>
+							goBrowserBackWithFallback(ADMIN_PATH.USER_OVERVIEW, navigateFunc)
+						}
+						commonUser={commonUser}
+					/>
+				)}
 			</Suspense>
 		</>
 	);
 };
 
-export default compose(withAdminCoreConfig, withUser, withRouter)(UserDetailPage) as FC;
+export default withAdminCoreConfig(UserDetailPage) as FC;

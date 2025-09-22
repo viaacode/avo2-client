@@ -1,19 +1,18 @@
 // eslint-disable-next-line import/no-unresolved
-import AvoLogo from '@assets/images/avo-logo-centered.svg';
+import AvoLogoSrc from '@assets/images/avo-logo-centered.svg';
 import { Column, Grid, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
-import { withRouter } from 'react-router';
 
-import LoginOptionsForPupil from '../../authentication/components/LoginOptionsForPupil';
+import { LoginOptionsForPupil } from '../../authentication/components/LoginOptionsForPupil';
 import './RegisterOrLogin.scss';
-import LoginOptionsForTeacher from '../../authentication/components/LoginOptionsForTeacher';
+import { LoginOptionsForTeacher } from '../../authentication/components/LoginOptionsForTeacher';
 import { LoginOptionsTabs } from '../../authentication/helpers/login-options-preferred-tab';
 import { getEnv } from '../../shared/helpers/env';
 import { tText } from '../../shared/helpers/translate-text';
 import { useTabs } from '../../shared/hooks/useTabs';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
-const RegisterOrLogin: FC = () => {
+export const RegisterOrLogin: FC = () => {
 	const { tHtml } = useTranslation();
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
@@ -64,7 +63,7 @@ const RegisterOrLogin: FC = () => {
 			</Spacer>
 			<Grid className="u-bg-gray-100 u-spacer-bottom" noWrap>
 				<Column size="3-6" className="u-text-center">
-					<img className="avo-logo" alt="Archief voor Onderwijs logo" src={AvoLogo} />
+					<img className="avo-logo" alt="Archief voor Onderwijs logo" src={AvoLogoSrc} />
 					{tab === LoginOptionsTabs.TEACHER && (
 						<span className="account-creation">
 							<Spacer margin={['bottom-small']}>
@@ -96,5 +95,3 @@ const RegisterOrLogin: FC = () => {
 		</div>
 	);
 };
-
-export default withRouter(RegisterOrLogin);

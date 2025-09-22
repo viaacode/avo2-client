@@ -14,7 +14,7 @@ import {
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useState } from 'react';
 
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 interface CreateAssignmentModalProps {
 	isOpen: boolean;
@@ -27,7 +27,7 @@ interface CreateAssignmentModalProps {
 	};
 }
 
-const CreateAssignmentModal: FC<CreateAssignmentModalProps> = ({
+export const CreateAssignmentModal: FC<CreateAssignmentModalProps> = ({
 	isOpen,
 	onClose,
 	createAssignmentCallback,
@@ -98,5 +98,3 @@ const CreateAssignmentModal: FC<CreateAssignmentModalProps> = ({
 		</Modal>
 	);
 };
-
-export default CreateAssignmentModal;

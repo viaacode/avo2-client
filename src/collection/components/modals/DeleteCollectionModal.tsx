@@ -2,7 +2,7 @@ import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 
 interface DeleteCollectionModalProps {
 	isOpen: boolean;
@@ -14,7 +14,7 @@ interface DeleteCollectionModalProps {
 	isCollection: boolean;
 }
 
-const DeleteCollectionModal: FC<DeleteCollectionModalProps> = ({
+export const DeleteCollectionModal: FC<DeleteCollectionModalProps> = ({
 	isOpen,
 	onClose = noop,
 	deleteCallback,
@@ -96,5 +96,3 @@ const DeleteCollectionModal: FC<DeleteCollectionModalProps> = ({
 		/>
 	);
 };
-
-export default DeleteCollectionModal;

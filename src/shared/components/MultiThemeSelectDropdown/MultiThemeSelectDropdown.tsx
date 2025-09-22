@@ -5,7 +5,7 @@ import { groupBy, map } from 'lodash-es';
 import React, { type FC } from 'react';
 import Select from 'react-select';
 
-import MultiThemeSelectOptionGroupHeading from './MultiThemeSelectOptionGroupHeading';
+import { MultiThemeSelectOptionGroupHeading } from './MultiThemeSelectOptionGroupHeading';
 
 import './MultiThemeSelectDropdown.scss';
 
@@ -19,7 +19,7 @@ interface MultiThemeSelectDropdownProps {
 	allowMulti?: boolean;
 }
 
-const MultiThemeSelectDropdown: FC<MultiThemeSelectDropdownProps> = ({
+export const MultiThemeSelectDropdown: FC<MultiThemeSelectDropdownProps> = ({
 	id,
 	value,
 	allThemes,
@@ -52,5 +52,3 @@ const MultiThemeSelectDropdown: FC<MultiThemeSelectDropdownProps> = ({
 		/>
 	);
 };
-
-export default MultiThemeSelectDropdown;

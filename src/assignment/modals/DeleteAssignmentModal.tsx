@@ -2,7 +2,7 @@ import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode } from 'react';
 
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 interface DeleteAssignmentModalProps {
 	isOpen: boolean;
@@ -19,7 +19,7 @@ interface DeleteAssignmentModalProps {
 	shouldDeleteSelfFromAssignment: boolean;
 }
 
-const DeleteAssignmentModal: FC<DeleteAssignmentModalProps> = ({
+export const DeleteAssignmentModal: FC<DeleteAssignmentModalProps> = ({
 	isOpen,
 	onClose = noop,
 	deleteAssignmentCallback,
@@ -122,5 +122,3 @@ const DeleteAssignmentModal: FC<DeleteAssignmentModalProps> = ({
 		/>
 	);
 };
-
-export default DeleteAssignmentModal;

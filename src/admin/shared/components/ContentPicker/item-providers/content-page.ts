@@ -12,8 +12,8 @@ export const retrieveContentPages = async (
 	try {
 		const { ContentPageService } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
 		const contentItems: Pick<DbContentPage, 'path' | 'title'>[] | null = title
-			? await ContentPageService.getPublicContentItemsByTitle(`%${title}%`, limit)
-			: await ContentPageService.getPublicContentItemsByTitle(undefined, limit);
+			? await ContentPageService.getPublicContentItemsByTitle(`%${title}%`, undefined, limit)
+			: await ContentPageService.getPublicContentItemsByTitle(undefined, undefined, limit);
 
 		return parseContentPages(contentItems || []);
 	} catch (err) {

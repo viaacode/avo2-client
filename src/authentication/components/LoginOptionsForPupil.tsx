@@ -1,10 +1,8 @@
 import { Button, IconName, Spacer } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
-import { type RouteComponentProps } from 'react-router';
-import { withRouter } from 'react-router-dom';
 
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	redirectToServerLeerIDLogin,
 	redirectToServerLoginPage,
@@ -12,18 +10,19 @@ import {
 } from '../helpers/redirects';
 
 import './LoginOptionsForPupil.scss';
+import { useLocation } from 'react-router-dom';
 
 interface LoginOptionsForPupilProps {
 	onOptionClicked?: () => void;
 	openInNewTab?: boolean;
 }
 
-const LoginOptionsForPupil: FC<LoginOptionsForPupilProps & RouteComponentProps> = ({
-	location,
+export const LoginOptionsForPupil: FC<LoginOptionsForPupilProps> = ({
 	onOptionClicked = noop,
 	openInNewTab = false,
 }) => {
 	const { tText } = useTranslation();
+	const location = useLocation();
 
 	const getButtons = () => {
 		return [
@@ -76,5 +75,3 @@ const LoginOptionsForPupil: FC<LoginOptionsForPupilProps & RouteComponentProps> 
 		</Spacer>
 	));
 };
-
-export default withRouter(LoginOptionsForPupil);

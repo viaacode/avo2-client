@@ -1,12 +1,12 @@
 import { Button, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { type FC, useEffect } from 'react';
-import { type RouteComponentProps } from 'react-router';
-import { Link, withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { useTabs } from '../../shared/hooks/useTabs';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { setLoginCounter } from '../helpers/login-counter-before-nudging';
 import {
 	getPreferredLoginOption,
@@ -16,19 +16,18 @@ import {
 } from '../helpers/login-options-preferred-tab';
 import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';
 
+import { LoginOptionsForPupil } from './LoginOptionsForPupil';
+import { LoginOptionsForTeacher } from './LoginOptionsForTeacher';
 import './LoginOptions.scss';
-import LoginOptionsForPupil from './LoginOptionsForPupil';
-import LoginOptionsForTeacher from './LoginOptionsForTeacher';
 
 interface LoginOptionsProps {
 	onOptionClicked?: () => void;
 }
 
-const LoginOptions: FC<LoginOptionsProps & RouteComponentProps> = ({
-	history,
-	onOptionClicked = noop,
-}) => {
+export const LoginOptions: FC<LoginOptionsProps> = ({ onOptionClicked = noop }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
 			{
@@ -110,7 +109,7 @@ const LoginOptions: FC<LoginOptionsProps & RouteComponentProps> = ({
 						type="primary"
 						onClick={() => {
 							onOptionClicked();
-							redirectToClientPage(APP_PATH.STAMBOEK.route, history);
+							redirectToClientPage(APP_PATH.STAMBOEK.route, navigateFunc);
 						}}
 					/>
 				);
@@ -158,5 +157,3 @@ const LoginOptions: FC<LoginOptionsProps & RouteComponentProps> = ({
 		</div>
 	);
 };
-
-export default withRouter(LoginOptions);

@@ -2,29 +2,30 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import queryString from 'query-string';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { Provider } from 'react-redux';
-import { Route, type RouteComponentProps } from 'react-router';
-import { BrowserRouter, withRouter } from 'react-router-dom';
+import { useLocation } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 import { QueryParamProvider } from 'use-query-params';
 
 import { LoginMessage } from '../authentication/authentication.types';
 import { EmbedCodeService } from '../embed-code/embed-code-service';
 import { toEmbedCodeDetail } from '../embed-code/helpers/links';
-import { ErrorView } from '../error/views';
+import { ErrorView } from '../error/views/ErrorView';
 import { CustomError } from '../shared/helpers/custom-error';
 import { isUuid } from '../shared/helpers/isUuid';
 import { tText } from '../shared/helpers/translate-text';
 import { waitForTranslations } from '../shared/translations/i18n';
-import store from '../store';
 
-import Embed from './components/Embed';
+import { Embed } from './components/Embed';
 import { EmbedErrorView } from './components/EmbedErrorView';
-import RegisterOrLogin from './components/RegisterOrLogin';
+import { RegisterOrLogin } from './components/RegisterOrLogin';
 import { useGetLoginStateForEmbed } from './hooks/useGetLoginStateForEmbed';
 
 import '../styles/main.scss';
+import { ReactRouter7Adapter } from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
 
-const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
+const EmbedApp: FC = () => {
+	const location = useLocation();
+
 	const [translationsLoaded, setTranslationsLoaded] = useState<boolean>(false);
 	const [originalUrl, setOriginalUrl] = useState<string | null>(null);
 	const [embedId, setEmbedId] = useState<string | null>(null);
@@ -211,22 +212,18 @@ const EmbedApp: FC<RouteComponentProps> = ({ location }) => {
 	return renderApp();
 };
 
-const EmbedAppWithRouter = withRouter(EmbedApp);
+const EmbedAppWithRouter = EmbedApp;
 
 const queryClient = new QueryClient();
 
-const EmbedRoot: FC = () => {
+export const EmbedRoot: FC = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
-			<Provider store={store}>
-				<BrowserRouter>
-					<QueryParamProvider ReactRouterRoute={Route}>
-						<EmbedAppWithRouter />
-					</QueryParamProvider>
-				</BrowserRouter>
-			</Provider>
+			<BrowserRouter>
+				<QueryParamProvider adapter={ReactRouter7Adapter}>
+					<EmbedAppWithRouter />
+				</QueryParamProvider>
+			</BrowserRouter>
 		</QueryClientProvider>
 	);
 };
-
-export default EmbedRoot;

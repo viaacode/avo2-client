@@ -3,13 +3,11 @@ import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { get, isNil, truncate } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { useNavigate } from 'react-router';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
 import {
 	LoadingErrorLoadedComponent,
@@ -19,8 +17,7 @@ import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { formatTimestamp } from '../../../shared/helpers/formatters';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import withUser from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
@@ -37,8 +34,9 @@ import {
 	type UnpublishedItemsTableState,
 } from '../items.types';
 
-const PublishItemsOverview: FC<DefaultSecureRouteProps> = ({ history }) => {
+export const PublishItemsOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	const [items, setItems] = useState<UnpublishedItem[] | null>(null);
 	const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
@@ -126,7 +124,7 @@ const PublishItemsOverview: FC<DefaultSecureRouteProps> = ({ history }) => {
 			return;
 		}
 		const link = buildLink(APP_PATH.ITEM_DETAIL.route, { id: externalId });
-		redirectToClientPage(link, history);
+		redirectToClientPage(link, navigateFunc);
 	};
 
 	const navigateToAdminItemDetail = (uuid: string | undefined) => {
@@ -137,7 +135,7 @@ const PublishItemsOverview: FC<DefaultSecureRouteProps> = ({ history }) => {
 			return;
 		}
 		const link = buildLink(ADMIN_PATH.ITEM_DETAIL, { id: uuid });
-		redirectToClientPage(link, history);
+		redirectToClientPage(link, navigateFunc);
 	};
 
 	const publishSelection = async () => {
@@ -387,5 +385,3 @@ const PublishItemsOverview: FC<DefaultSecureRouteProps> = ({ history }) => {
 		</AdminLayout>
 	);
 };
-
-export default compose(withRouter, withUser)(PublishItemsOverview) as FC;

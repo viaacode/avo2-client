@@ -3,7 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 import React, { type FC } from 'react';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
 import { useLomSubjects } from '../../hooks/useLomSubjects';
 
@@ -12,7 +12,7 @@ interface SubjectsFieldProps {
 	value: string[] | null; // id of lom field (collections, assignments, profiles) or string label (videos and audio)
 }
 
-const SubjectsField: FC<SubjectsFieldProps> = ({ onChange, value }) => {
+export const SubjectsField: FC<SubjectsFieldProps> = ({ onChange, value }) => {
 	const { tText } = useTranslation();
 
 	const [subjects] = useLomSubjects();
@@ -38,5 +38,3 @@ const SubjectsField: FC<SubjectsFieldProps> = ({ onChange, value }) => {
 		</FormGroup>
 	);
 };
-
-export default SubjectsField;

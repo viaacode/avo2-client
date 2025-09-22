@@ -13,19 +13,18 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { useMatch, useNavigate } from 'react-router';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { SettingsService } from '../../../settings/settings.service';
-import FileUpload from '../../../shared/components/FileUpload/FileUpload';
-import LomFieldsInput from '../../../shared/components/LomFieldsInput/LomFieldsInput';
+import { FileUpload } from '../../../shared/components/FileUpload/FileUpload';
+import { LomFieldsInput } from '../../../shared/components/LomFieldsInput/LomFieldsInput';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { PHOTO_TYPES } from '../../../shared/helpers/files';
 import { navigate } from '../../../shared/helpers/link';
-import { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
@@ -35,13 +34,15 @@ import {
 import { useGetProfileById } from '../hooks/use-get-profile-by-id';
 import { USER_PATH } from '../user.const';
 
-type UserEditPageProps = DefaultSecureRouteProps<{ id: string }>;
-
-const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => {
+export const UserEditPage: FC = () => {
 	const { tText } = useTranslation();
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id', string>(USER_PATH.USER_EDIT);
+
+	const profileId = match?.params.id;
 
 	// Hooks
-	const { data: profile, isLoading } = useGetProfileById(match.params.id);
+	const { data: profile, isLoading } = useGetProfileById(profileId);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [profileErrors, setProfileErrors] = useState<
 		Partial<{ [prop in keyof Avo.User.UpdateProfileValues]: string }>
@@ -73,8 +74,8 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => 
 	}, [profile]);
 
 	const navigateBack = () => {
-		navigate(history, USER_PATH.USER_DETAIL, {
-			id: match.params.id,
+		navigate(navigateFunc, USER_PATH.USER_DETAIL, {
+			id: profileId,
 		});
 	};
 
@@ -123,10 +124,7 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => 
 				throw err;
 			}
 
-			redirectToClientPage(
-				buildLink(USER_PATH.USER_DETAIL, { id: match.params.id }),
-				history
-			);
+			redirectToClientPage(buildLink(USER_PATH.USER_DETAIL, { id: profileId }), navigateFunc);
 
 			ToastService.success(tText('admin/users/views/user-edit___de-gebruiker-is-aangepast'));
 		} catch (err) {
@@ -156,14 +154,14 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => 
 					<Box backgroundColor="gray">
 						<Form>
 							<FormGroup label={tText('admin/users/views/user-detail___avatar')}>
-								{!companyId && (
+								{!companyId && !!profileId && (
 									<FileUpload
 										urls={avatar ? [avatar] : []}
 										onChange={(urls) => setAvatar(urls[0])}
 										assetType="PROFILE_AVATAR"
 										allowMulti={false}
 										allowedTypes={PHOTO_TYPES}
-										ownerId={match.params.id}
+										ownerId={profileId}
 									/>
 								)}
 								{!!companyId && !!companyLogo && (
@@ -245,5 +243,3 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => 
 		</>
 	);
 };
-
-export default UserEditPage as FC;

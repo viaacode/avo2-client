@@ -1,19 +1,21 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Alert, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { get, isNil } from 'lodash-es';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { type CollectionOrBundle } from '../collection.types';
-import { FragmentAdd, FragmentEdit } from '../components';
+import FragmentEdit from '../components/fragment/FragmentEdit';
 import { showReplacementWarning } from '../helpers/fragment';
 
 import { type CollectionAction } from './CollectionOrBundleEdit.types';
 import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
+import { FragmentAdd } from './fragment/FragmentAdd';
 
 import './CollectionOrBundleEditContent.scss';
 
@@ -24,14 +26,14 @@ interface CollectionOrBundleEditContentProps {
 	onFocus?: () => void;
 }
 
-const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & UserProps> = ({
+export const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps> = ({
 	type,
 	collection,
 	changeCollectionState,
-	commonUser,
 	onFocus,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	// State
 	const [openOptionsId, setOpenOptionsId] = useState<number | string | null>(null);
@@ -113,7 +115,9 @@ const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & Use
 				index={index}
 				collectionId={collection.id}
 				numberOfFragments={endIndex - startIndex}
-				changeCollectionState={(action) => handleChangedCollectionState(action, startIndex)}
+				changeCollectionState={(action: CollectionAction) =>
+					handleChangedCollectionState(action, startIndex)
+				}
 				openOptionsId={openOptionsId}
 				setOpenOptionsId={setOpenOptionsId}
 				isParentACollection={isCollection}
@@ -147,7 +151,9 @@ const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & Use
 						index={-1}
 						collectionId={collection.id}
 						numberOfFragments={fragments.length}
-						changeCollectionState={(action) => handleChangedCollectionState(action, 0)}
+						changeCollectionState={(action: CollectionAction) =>
+							handleChangedCollectionState(action, 0)
+						}
 					/>
 					{fragments.map((fragment, index) =>
 						renderFragmentEditor(fragment, index, 0, fragments.length)
@@ -227,7 +233,3 @@ const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & Use
 		</Container>
 	);
 };
-
-export default withUser(
-	React.memo(CollectionOrBundleEditContent)
-) as FC<CollectionOrBundleEditContentProps>;

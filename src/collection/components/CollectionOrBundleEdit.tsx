@@ -14,6 +14,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
+import { useAtomValue } from 'jotai';
 import { cloneDeep, isEmpty, isNil, noop, set } from 'lodash-es';
 import React, {
 	type FC,
@@ -26,32 +27,31 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { matchPath, Redirect, withRouter } from 'react-router';
-import { compose } from 'redux';
+import { matchPath, Navigate, useMatch, useNavigate } from 'react-router';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { reorderBlockPositions, setBlockPositionToIndex } from '../../assignment/assignment.helper';
 import { AssignmentService } from '../../assignment/assignment.service';
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorNoAccess } from '../../error/components';
+import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
 import { OrderDirection } from '../../search/search.const';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
-import DraggableBlock from '../../shared/components/DraggableBlock/DraggableBlock';
-import DraggableListModal from '../../shared/components/DraggableList/DraggableListModal';
-import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
-import InActivityWarningModal from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
-import InputModal from '../../shared/components/InputModal/InputModal';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import { DraggableBlock } from '../../shared/components/DraggableBlock/DraggableBlock';
+import { DraggableListModal } from '../../shared/components/DraggableList/DraggableListModal';
+import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
+import { InActivityWarningModal } from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
+import { InputModal } from '../../shared/components/InputModal/InputModal';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import MoreOptionsDropdownWrapper from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
-import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
-import ShareModal from '../../shared/components/ShareModal/ShareModal';
+import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
+import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown';
+import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
@@ -66,8 +66,7 @@ import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 import {
 	BookmarksViewsPlaysService,
@@ -86,7 +85,6 @@ import {
 	CollectionOrBundle,
 	ContentTypeNumber,
 } from '../collection.types';
-import { CollectionOrBundleTitle, PublishCollectionModal } from '../components';
 import {
 	onAddContributor,
 	onDeleteContributor,
@@ -108,27 +106,30 @@ import {
 	type CollectionState,
 	ReorderType,
 } from './CollectionOrBundleEdit.types';
-import CollectionOrBundleEditActualisation from './CollectionOrBundleEditActualisation';
-import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
-import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
+import { CollectionOrBundleEditActualisation } from './CollectionOrBundleEditActualisation';
+import { CollectionOrBundleEditAdmin } from './CollectionOrBundleEditAdmin';
+import { CollectionOrBundleEditContent } from './CollectionOrBundleEditContent';
 import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
-import CollectionOrBundleEditMarcom from './CollectionOrBundleEditMarcom';
-import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
-import CollectionOrBundleEditQualityCheck from './CollectionOrBundleEditQualityCheck';
-import DeleteCollectionModal from './modals/DeleteCollectionModal';
+import { CollectionOrBundleEditMarcom } from './CollectionOrBundleEditMarcom';
+import { CollectionOrBundleEditMetaData } from './CollectionOrBundleEditMetaData';
+import { CollectionOrBundleEditQualityCheck } from './CollectionOrBundleEditQualityCheck';
+import { CollectionOrBundleTitle } from './CollectionOrBundleTitle';
+import { DeleteCollectionModal } from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
+import { PublishCollectionModal } from './modals/PublishCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
 
-const CollectionOrBundleEdit: FC<
-	CollectionOrBundleEditProps &
-		DefaultSecureRouteProps<{ id: string; tabId: CollectionCreateUpdateTab | undefined }> &
-		UserProps
-> = ({ type, history, match, commonUser }) => {
+export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id' | 'tabId', string>(APP_PATH.COLLECTION_EDIT.route);
 
+	const collectionId = match?.params.id;
+	const tabId = match?.params.tabId as CollectionCreateUpdateTab | undefined;
+
+	const commonUser = useAtomValue(commonUserAtom);
 	// State
-	const [collectionId] = useState<string>(match.params.id);
 	const [currentTab, setCurrentTab] = useState<CollectionCreateUpdateTab | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
@@ -165,8 +166,8 @@ const CollectionOrBundleEdit: FC<
 
 	const isCollection = type === 'collection';
 	const isAdmin = isCollection
-		? commonUser.permissions?.includes(PermissionName.EDIT_ANY_COLLECTIONS)
-		: commonUser.permissions?.includes(PermissionName.EDIT_ANY_BUNDLES);
+		? commonUser?.permissions?.includes(PermissionName.EDIT_ANY_COLLECTIONS)
+		: commonUser?.permissions?.includes(PermissionName.EDIT_ANY_BUNDLES);
 	const noRightsError = useMemo(
 		() =>
 			({
@@ -185,6 +186,9 @@ const CollectionOrBundleEdit: FC<
 
 	const releaseCollectionEditStatus = useCallback(async () => {
 		try {
+			if (!collectionId) {
+				return;
+			}
 			await CollectionService.releaseCollectionEditStatus(collectionId);
 		} catch (err) {
 			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode !== 409) {
@@ -199,11 +203,14 @@ const CollectionOrBundleEdit: FC<
 
 	const updateCollectionEditor = useCallback(async () => {
 		try {
+			if (!collectionId) {
+				return;
+			}
 			await CollectionService.updateCollectionEditor(collectionId);
 		} catch (err) {
 			redirectToClientPage(
 				buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: collectionId }),
-				history
+				navigateFunc
 			);
 
 			if ((err as CustomError).innerException?.additionalInfo?.statusCode === 409) {
@@ -223,7 +230,7 @@ const CollectionOrBundleEdit: FC<
 				);
 			}
 		}
-	}, [collectionId, history, releaseCollectionEditStatus, tHtml]);
+	}, [collectionId, navigateFunc, releaseCollectionEditStatus, tHtml]);
 
 	const updateCollectionEditorWithLoading = useCallback(async () => {
 		if (!isCollection) {
@@ -463,10 +470,10 @@ const CollectionOrBundleEdit: FC<
 	const shouldDeleteSelfFromCollection = isContributor && !permissions.canDelete;
 
 	const { data: bundlesContainingCollection } = useGetCollectionsOrBundlesContainingFragment(
-		collectionId,
+		collectionId as string,
 		BundleSortProp.title,
 		OrderDirection.asc,
-		{ enabled: !!collectionState.currentCollection }
+		{ enabled: !!collectionId && !!collectionState.currentCollection }
 	);
 
 	useEffect(() => {
@@ -494,6 +501,9 @@ const CollectionOrBundleEdit: FC<
 
 	const checkPermissionsAndGetCollection = useCallback(async (): Promise<void> => {
 		try {
+			if (!collectionId) {
+				return;
+			}
 			const permissionObj = await PermissionService.checkPermissions(
 				{
 					canEdit: [
@@ -680,14 +690,14 @@ const CollectionOrBundleEdit: FC<
 
 	// react to route changes by navigating back wih the browser history back button
 	useEffect(() => {
-		setCurrentTab(match.params.tabId || CollectionCreateUpdateTab.CONTENT);
-	}, [match.params.tabId]);
+		setCurrentTab(tabId || CollectionCreateUpdateTab.CONTENT);
+	}, [tabId]);
 
 	// Change page on tab selection
 	const selectTab = (selectedTab: ReactText) => {
 		const tabName = String(selectedTab) as CollectionCreateUpdateTab;
 		navigate(
-			history,
+			navigateFunc,
 			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
 			{ id: collectionId, tabId: tabName }
 		);
@@ -784,7 +794,8 @@ const CollectionOrBundleEdit: FC<
 				!!collectionState.currentCollection?.management_quality_check?.[0]) &&
 			!collectionState.currentCollection?.management_language_check?.[0]?.assignee_profile_id
 		) {
-			history.push(
+			navigate(
+				navigateFunc,
 				buildLink(
 					isCollection
 						? APP_PATH.COLLECTION_EDIT_TAB.route
@@ -807,6 +818,9 @@ const CollectionOrBundleEdit: FC<
 	};
 
 	const updateCollection = async (checkValidation = true) => {
+		if (!collectionId) {
+			return;
+		}
 		if (isNil(collectionState.currentCollection)) {
 			console.error('Current collection state is nil');
 			ToastService.danger(
@@ -921,18 +935,21 @@ const CollectionOrBundleEdit: FC<
 	};
 
 	const handleDeleteCollection = async () => {
+		if (!collectionId) {
+			return;
+		}
 		await deleteCollection(
 			collectionId,
 			commonUser,
 			isCollection,
 			async () => await CollectionService.deleteCollectionOrBundle(collectionId),
-			() => navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: COLLECTIONS_ID })
+			() => navigate(navigateFunc, APP_PATH.WORKSPACE_TAB.route, { tabId: COLLECTIONS_ID })
 		);
 	};
 
 	const handleDeleteSelfFromCollection = async () => {
 		await deleteSelfFromCollection(collectionId, commonUser, () =>
-			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: COLLECTIONS_ID })
+			navigate(navigateFunc, APP_PATH.WORKSPACE_TAB.route, { tabId: COLLECTIONS_ID })
 		);
 	};
 
@@ -976,10 +993,10 @@ const CollectionOrBundleEdit: FC<
 							? APP_PATH.COLLECTION_DETAIL.route
 							: APP_PATH.BUNDLE_DETAIL.route,
 						{
-							id: match.params.id,
+							id: collectionId,
 						}
 					),
-					history
+					navigateFunc
 				);
 				break;
 
@@ -1228,7 +1245,7 @@ const CollectionOrBundleEdit: FC<
 			buildLink(APP_PATH.COLLECTION_DETAIL.route, {
 				id: collectionId,
 			}),
-			history
+			navigateFunc
 		);
 	};
 
@@ -1258,7 +1275,6 @@ const CollectionOrBundleEdit: FC<
 						<CollectionOrBundleEditAdmin
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
-							history={history}
 							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
@@ -1267,7 +1283,6 @@ const CollectionOrBundleEdit: FC<
 						<CollectionOrBundleEditActualisation
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
-							history={history}
 							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
@@ -1276,7 +1291,6 @@ const CollectionOrBundleEdit: FC<
 						<CollectionOrBundleEditQualityCheck
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
-							history={history}
 							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
@@ -1285,7 +1299,6 @@ const CollectionOrBundleEdit: FC<
 						<CollectionOrBundleEditMarcom
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
-							history={history}
 							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
@@ -1306,6 +1319,9 @@ const CollectionOrBundleEdit: FC<
 		PermissionName.ADD_ASSIGNMENT_TO_BUNDLE
 	);
 	const renderHeaderButtons = () => {
+		if (!collectionId) {
+			return null;
+		}
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				collectionId,
@@ -1496,6 +1512,9 @@ const CollectionOrBundleEdit: FC<
 	};
 
 	const renderHeaderButtonsMobile = () => {
+		if (!collectionId) {
+			return;
+		}
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				collectionId,
@@ -1621,7 +1640,6 @@ const CollectionOrBundleEdit: FC<
 						<HeaderBottomRowLeft>
 							<HeaderOwnerAndContributors
 								subject={collectionState.currentCollection}
-								commonUser={commonUser}
 							/>
 						</HeaderBottomRowLeft>
 					)}
@@ -1665,6 +1683,7 @@ const CollectionOrBundleEdit: FC<
 				)}
 
 				{collectionState.currentCollection &&
+					!!collectionId &&
 					renderMobileDesktop({
 						mobile: (
 							<ShareModal
@@ -1772,7 +1791,7 @@ const CollectionOrBundleEdit: FC<
 						warningMessage={tHtml(
 							'collection/components/collection-or-bundle-edit___door-inactiviteit-zal-de-collectie-zichzelf-sluiten'
 						)}
-						currentPath={history.location.pathname}
+						currentPath={location.pathname}
 						editPath={APP_PATH.COLLECTION_EDIT_TAB.route}
 						onForcedExit={onForcedExitPage}
 					/>
@@ -1849,9 +1868,9 @@ const CollectionOrBundleEdit: FC<
 		);
 	};
 
-	if (matchPath(location.pathname, { path: APP_PATH.BUNDLE_EDIT.route, exact: true })) {
+	if (matchPath(location.pathname, APP_PATH.BUNDLE_EDIT.route)) {
 		return (
-			<Redirect
+			<Navigate
 				to={buildLink(APP_PATH.BUNDLE_EDIT_TAB.route, {
 					id: collectionId,
 					tabId: CollectionCreateUpdateTab.CONTENT,
@@ -1860,9 +1879,9 @@ const CollectionOrBundleEdit: FC<
 		);
 	}
 
-	if (matchPath(location.pathname, { path: APP_PATH.COLLECTION_EDIT.route, exact: true })) {
+	if (matchPath(location.pathname, APP_PATH.COLLECTION_EDIT.route)) {
 		return (
-			<Redirect
+			<Navigate
 				to={buildLink(APP_PATH.COLLECTION_EDIT_TAB.route, {
 					id: collectionId,
 					tabId: CollectionCreateUpdateTab.CONTENT,
@@ -1897,8 +1916,3 @@ const CollectionOrBundleEdit: FC<
 		</>
 	);
 };
-
-export default compose(
-	withRouter,
-	withUser
-)(CollectionOrBundleEdit) as FC<CollectionOrBundleEditProps>;

@@ -2,15 +2,14 @@ import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Button, Container, IconName, Spacer } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 
-type StudentTeacherProps = RouteComponentProps;
-
-const StudentTeacher: FC<StudentTeacherProps> = ({ history }) => {
+export const StudentTeacher: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
@@ -34,7 +33,7 @@ const StudentTeacher: FC<StudentTeacherProps> = ({ history }) => {
 					<Spacer margin="bottom-large">
 						<Button
 							type="secondary"
-							onClick={history.goBack}
+							onClick={() => navigateFunc(-1)}
 							icon={IconName.arrowLeft}
 							title={tText(
 								'authentication/views/registration-flow/r-10-student-teacher___ga-terug-naar-de-manuele-account-aanvraag-pagina'
@@ -57,5 +56,3 @@ const StudentTeacher: FC<StudentTeacherProps> = ({ history }) => {
 		</Container>
 	);
 };
-
-export default StudentTeacher;

@@ -5,17 +5,17 @@ import {
 	getFilters,
 } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop, partition } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
 
 import { AssignmentService } from '../../../assignment/assignment.service';
 import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
 import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetAssignmentsEditStatuses';
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
@@ -27,15 +27,14 @@ import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
-import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
-import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
+import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
+import { SubjectsBeingEditedWarningModal } from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
@@ -55,8 +54,9 @@ import {
 
 import './AssignmentsOverviewAdmin.scss';
 
-const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUser }) => {
+export const AssignmentOverviewAdmin: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
 	const [assignmentCount, setAssignmentCount] = useState<number>(0);
@@ -589,5 +589,3 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 		</AdminLayout>
 	);
 };
-
-export default compose(withRouter, withUser)(AssignmentOverviewAdmin) as unknown as FC;

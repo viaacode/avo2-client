@@ -25,36 +25,37 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { generatePath } from 'react-router';
+import { generatePath, useMatch, useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { BooleanParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionFragmentType, type Relation } from '../../collection/collection.types';
-import AddToBundleModal from '../../collection/components/modals/AddToBundleModal';
+import { AddToBundleModal } from '../../collection/components/modals/AddToBundleModal';
 import {
 	BundleSortProp,
 	useGetCollectionsOrBundlesContainingFragment,
 } from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
 import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from '../../collection/views/CollectionDetail.const';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorNoAccess } from '../../error/components';
-import ErrorView, { type ErrorViewQueryParams } from '../../error/views/ErrorView';
+import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
+import { ErrorView, type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
-import BlockList from '../../shared/components/BlockList/BlockList';
-import CommonMetaData from '../../shared/components/CommonMetaData/CommonMetaData';
-import EditButton from '../../shared/components/EditButton/EditButton';
-import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import MoreOptionsDropdownWrapper from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
-import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
-import ShareModal from '../../shared/components/ShareModal/ShareModal';
+import { BlockList } from '../../shared/components/BlockList/BlockList';
+import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
+import { EditButton } from '../../shared/components/EditButton/EditButton';
+import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
+import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown';
+import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { type ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
@@ -69,8 +70,7 @@ import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { navigate } from '../../shared/helpers/link';
 import { type EducationLevelId } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
@@ -99,8 +99,8 @@ import { deleteAssignment, deleteSelfFromAssignment } from '../helpers/delete-as
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { toAssignmentDetail } from '../helpers/links';
 import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses';
-import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
-import PublishAssignmentModal from '../modals/PublishAssignmentModal';
+import { DeleteAssignmentModal } from '../modals/DeleteAssignmentModal';
+import { PublishAssignmentModal } from '../modals/PublishAssignmentModal';
 
 type AssignmentDetailPermissions = Partial<{
 	canCreateAssignments: boolean;
@@ -115,11 +115,15 @@ type AssignmentDetailProps = {
 	enabledMetaData: SearchFilter[];
 };
 
-const AssignmentDetail: FC<
-	AssignmentDetailProps & DefaultSecureRouteProps<{ id: string }> & UserProps
-> = ({ match, commonUser, history, enabledMetaData = ALL_SEARCH_FILTERS }) => {
+export const AssignmentDetail: FC<AssignmentDetailProps> = ({
+	enabledMetaData = ALL_SEARCH_FILTERS,
+}) => {
 	const { tText, tHtml } = useTranslation();
-	const assignmentId = match.params.id;
+	const navigateFunc = useNavigate();
+	const commonUser = useAtomValue(commonUserAtom);
+	const match = useMatch<'id', string>(APP_PATH.ASSIGNMENT_DETAIL.route);
+
+	const assignmentId = match?.params.id;
 
 	// Data
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
@@ -130,18 +134,18 @@ const AssignmentDetail: FC<
 	const [bookmarkViewCounts, setBookmarkViewCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
-	const { data: editStatuses } = useGetAssignmentsEditStatuses([assignmentId], {
-		enabled: !!permissions?.canEditAssignments,
+	const { data: editStatuses } = useGetAssignmentsEditStatuses([assignmentId as string], {
+		enabled: !!assignmentId && !!permissions?.canEditAssignments,
 		refetchInterval: EDIT_STATUS_REFETCH_TIME,
 		refetchIntervalInBackground: true,
 	});
 
 	const { data: bundlesContainingAssignment, refetch: refetchBundlesContainingAssignment } =
 		useGetCollectionsOrBundlesContainingFragment(
-			assignmentId,
+			assignmentId as string,
 			BundleSortProp.title,
 			OrderDirection.asc,
-			{ enabled: !!assignment }
+			{ enabled: !!assignmentId && !!assignment }
 		);
 
 	// Errors
@@ -183,18 +187,19 @@ const AssignmentDetail: FC<
 
 	const isBeingEdited =
 		editStatuses &&
+		assignmentId &&
 		!!editStatuses[assignmentId] &&
 		editStatuses[assignmentId]?.editingUserId !== commonUser?.profileId;
 
 	const shareWithPupilsProps: ShareWithPupilsProps = {
 		assignment: assignment || undefined, // Needs to be saved before you can share
 		onContentLinkClicked: () =>
-			navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+			navigate(navigateFunc, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 				id: assignmentId,
 				tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 			}),
 		onDetailLinkClicked: () =>
-			navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+			navigate(navigateFunc, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 				id: assignmentId,
 				tabId: ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS,
 			}),
@@ -237,7 +242,7 @@ const AssignmentDetail: FC<
 
 	const getRelatedAssignments = useCallback(async () => {
 		try {
-			if (isUuid(assignmentId)) {
+			if (!!assignmentId && isUuid(assignmentId)) {
 				setRelatedAssignments(
 					await getRelatedItems(
 						assignmentId,
@@ -264,6 +269,9 @@ const AssignmentDetail: FC<
 
 	const fetchAssignment = useCallback(async () => {
 		try {
+			if (!assignmentId) {
+				return;
+			}
 			setAssignmentLoading(true);
 			setAssignmentError(null);
 
@@ -482,7 +490,7 @@ const AssignmentDetail: FC<
 	};
 
 	const onEditAssignment = () => {
-		history.push(
+		navigateFunc(
 			generatePath(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 				id: assignmentId,
 				tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
@@ -493,20 +501,20 @@ const AssignmentDetail: FC<
 	const onDuplicateAssignment = async (): Promise<void> => {
 		const duplicatedAssignment = await duplicateAssignment(assignment, commonUser);
 		if (duplicatedAssignment) {
-			redirectToClientPage(toAssignmentDetail(duplicatedAssignment), history);
+			redirectToClientPage(toAssignmentDetail(duplicatedAssignment), navigateFunc);
 		}
 	};
 
 	const onDeleteAssignment = async (): Promise<void> => {
 		if (!assignment) return;
 		await deleteAssignment(assignment, commonUser, () =>
-			history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
+			navigateFunc(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
 		);
 	};
 
 	const onDeleteSelfFromAssignment = async (): Promise<void> => {
 		await deleteSelfFromAssignment(assignmentId, commonUser, () =>
-			history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
+			navigateFunc(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
 		);
 	};
 
@@ -545,6 +553,9 @@ const AssignmentDetail: FC<
 	// Render
 
 	const renderAssignmentDropdownOptions = () => {
+		if (!assignmentId) {
+			return null;
+		}
 		const ASSIGNMENT_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				assignmentId,
@@ -553,7 +564,7 @@ const AssignmentDetail: FC<
 				IconName.plus,
 				!!(
 					permissions?.canEditBundles &&
-					commonUser.permissions?.includes(PermissionName.ADD_ASSIGNMENT_TO_BUNDLE)
+					commonUser?.permissions?.includes(PermissionName.ADD_ASSIGNMENT_TO_BUNDLE)
 				)
 			),
 			...createDropdownMenuItem(
@@ -708,6 +719,9 @@ const AssignmentDetail: FC<
 	};
 
 	const renderHeaderButtonsMobile = () => {
+		if (!assignmentId) {
+			return null;
+		}
 		const ASSIGNMENT_DROPDOWN_ITEMS_MOBILE = [
 			...createDropdownMenuItem(
 				assignmentId,
@@ -827,7 +841,7 @@ const AssignmentDetail: FC<
 						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
 					</HeaderMiddleRowRight>
 					<HeaderBottomRowLeft>
-						<HeaderOwnerAndContributors subject={assignment} commonUser={commonUser} />
+						<HeaderOwnerAndContributors subject={assignment} />
 					</HeaderBottomRowLeft>
 					<HeaderBottomRowRight>
 						<InteractiveTour showButton />
@@ -933,7 +947,7 @@ const AssignmentDetail: FC<
 						</h3>
 						<Grid>
 							{!!assignment && (
-								<CommonMetaData
+								<CommonMetadata
 									subject={assignment}
 									enabledMetaData={enabledMetaData}
 									renderSearchLink={defaultRenderSearchLink}
@@ -1002,7 +1016,7 @@ const AssignmentDetail: FC<
 		try {
 			await AssignmentService.declineSharedAssignment(assignment?.id as string, inviteToken);
 
-			navigate(history, APP_PATH.WORKSPACE_ASSIGNMENTS.route);
+			navigate(navigateFunc, APP_PATH.WORKSPACE_ASSIGNMENTS.route);
 
 			ToastService.success(
 				tText('assignment/views/assignment-detail___de-uitnodiging-werd-afgewezen')
@@ -1184,5 +1198,3 @@ const AssignmentDetail: FC<
 		</>
 	);
 };
-
-export default withUser(AssignmentDetail) as FC<AssignmentDetailProps>;

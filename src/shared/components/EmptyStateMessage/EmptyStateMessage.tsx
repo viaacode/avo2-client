@@ -1,7 +1,8 @@
 import { Container, Flex, Spacer } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode } from 'react';
 
-import { ReactComponent as TeacherSvg } from '../../../assets/images/leerkracht.svg';
+// eslint-disable-next-line import/no-unresolved
+import TeacherSvg from '../../../assets/images/leerkracht.svg?react';
 
 import './EmptyStateMessage.scss';
 
@@ -11,7 +12,7 @@ interface EmptyStateMessageProps {
 	message: ReactNode;
 }
 
-const EmptyStateMessage: FC<EmptyStateMessageProps> = ({
+export const EmptyStateMessage: FC<EmptyStateMessageProps> = ({
 	img = <TeacherSvg />,
 	title,
 	message,
@@ -28,5 +29,3 @@ const EmptyStateMessage: FC<EmptyStateMessageProps> = ({
 		</Container>
 	);
 };
-
-export default EmptyStateMessage;

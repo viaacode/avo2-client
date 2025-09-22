@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 import React, { type FC } from 'react';
 
 import { formatTimestamp } from '../../shared/helpers/formatters';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './AssignmentDetailsForm.scss';
 
@@ -12,11 +12,9 @@ interface AssignmentDetailsFormReadonlyProps {
 	assignment: Avo.Assignment.Assignment;
 }
 
-const AssignmentDetailsFormReadonly: FC<AssignmentDetailsFormReadonlyProps & DefaultProps> = ({
-	assignment,
-	className,
-	style,
-}) => {
+export const AssignmentDetailsFormReadonly: FC<
+	AssignmentDetailsFormReadonlyProps & DefaultProps
+> = ({ assignment, className, style }) => {
 	const { tText } = useTranslation();
 
 	return (
@@ -71,5 +69,3 @@ const AssignmentDetailsFormReadonly: FC<AssignmentDetailsFormReadonlyProps & Def
 		</div>
 	);
 };
-
-export default AssignmentDetailsFormReadonly;

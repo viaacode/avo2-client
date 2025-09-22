@@ -18,38 +18,39 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
-import { generatePath } from 'react-router';
+import { generatePath, useMatch, useNavigate } from 'react-router';
 
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorView } from '../../error/views';
-import ItemVideoDescription from '../../item/components/ItemVideoDescription';
+import { ErrorView } from '../../error/views/ErrorView';
+import { ItemVideoDescription } from '../../item/components/ItemVideoDescription';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { renderAvatar } from '../../shared/helpers/formatters';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { toSeconds } from '../../shared/helpers/parsers/duration';
-import withUser from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { createResource } from '../helpers/resourceForTrackEvents';
 import { useGetEmbedCode } from '../hooks/useGetEmbedCode';
 
-type EmbedCodeDetailProps = DefaultSecureRouteProps<{ id: string }>;
-
-const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser }) => {
+export const EmbedCodeDetail: FC = () => {
 	const { tText, tHtml } = useTranslation();
-	const embedCodeId = match.params.id;
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id', string>(APP_PATH.EMBED.route);
+	const embedCodeId = match?.params.id;
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const {
 		data: embedCode,
 		isLoading: isLoadingEmbedCode,
 		isError: isErrorEmbedCode,
-	} = useGetEmbedCode(embedCodeId);
+	} = useGetEmbedCode(embedCodeId as string, !!embedCodeId);
 
 	const canReadOriginal = useMemo(() => {
 		if (!embedCode || !commonUser) {
@@ -176,7 +177,7 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 		}
 
 		if (path) {
-			history.push(path);
+			navigateFunc(path);
 		}
 	};
 
@@ -304,5 +305,3 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 		</>
 	);
 };
-
-export default withUser(EmbedCodeDetail) as FC<EmbedCodeDetailProps>;

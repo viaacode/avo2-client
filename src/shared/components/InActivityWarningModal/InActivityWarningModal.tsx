@@ -1,13 +1,10 @@
 import { Modal, ModalBody } from '@viaa/avo2-components';
 import { addMinutes, differenceInSeconds, isAfter } from 'date-fns';
+import { useAtomValue } from 'jotai';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
-import { connect } from 'react-redux';
 import { matchPath } from 'react-router';
-import { compose } from 'redux';
 
-import { type AppState } from '../../../store';
-import { selectLastVideoPlayedAt } from '../../../store/selectors';
 import {
 	EDIT_STATUS_REFETCH_TIME,
 	IDLE_TIME_UNTIL_WARNING,
@@ -16,6 +13,7 @@ import {
 import { formatDurationMinutesSeconds } from '../../helpers/formatters';
 import { tHtml } from '../../helpers/translate-html';
 import { useBeforeUnload } from '../../hooks/useBeforeUnload';
+import { lastVideoPlayedAtAtom } from '../../store/ui.store';
 
 type InActivityWarningModalProps = {
 	onActivity: () => void;
@@ -26,16 +24,13 @@ type InActivityWarningModalProps = {
 	currentPath: string;
 };
 
-const InActivityWarningModal: FC<
-	InActivityWarningModalProps & { lastVideoPlayedAt: Date | null }
-> = ({
+export const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 	onActivity,
 	onExit,
 	onForcedExit,
 	warningMessage,
 	editPath,
 	currentPath,
-	lastVideoPlayedAt,
 }) => {
 	const maxIdleTime = MAX_EDIT_IDLE_TIME / 1000;
 	const [remainingTime, setRemainingTime] = useState<number>(maxIdleTime);
@@ -43,6 +38,8 @@ const InActivityWarningModal: FC<
 	const [isTimedOut, setIsTimedOut] = useState<boolean>(false);
 	const [idleStart, setIdleStart] = useState<Date | null>(null);
 	const [documentTitle] = useState(document.title);
+
+	const lastVideoPlayedAt = useAtomValue(lastVideoPlayedAtAtom);
 
 	useEffect(() => {
 		if (!isTimedOut) {
@@ -141,10 +138,3 @@ const InActivityWarningModal: FC<
 		</Modal>
 	);
 };
-const mapStateToProps = (state: AppState) => ({
-	lastVideoPlayedAt: selectLastVideoPlayedAt(state),
-});
-
-export default compose(connect(mapStateToProps))(
-	InActivityWarningModal
-) as FC<InActivityWarningModalProps>;

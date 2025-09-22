@@ -2,9 +2,7 @@ import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Button, Icon, IconName, Spacer, Table } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode, useState } from 'react';
-import { withRouter } from 'react-router';
-import { type RouteComponentProps } from 'react-router-dom';
-import { compose } from 'redux';
+import { useNavigate } from 'react-router';
 
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { type ParentBundle } from '../../collection/collection.types';
@@ -18,7 +16,6 @@ import { OrderDirection } from '../../search/search.const';
 import { buildLink } from '../../shared/helpers/build-link';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';
-import withUser from '../../shared/hocs/withUser';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 type ContainedInBundlesTableProps = {
@@ -27,9 +24,13 @@ type ContainedInBundlesTableProps = {
 	emptyTableLabel: string;
 };
 
-const ContainedInBundlesTable: FC<
-	ContainedInBundlesTableProps & RouteComponentProps<{ id: string }>
-> = ({ history, fragmentId, emptyTableLabel, title }) => {
+export const ContainedInBundlesTable: FC<ContainedInBundlesTableProps> = ({
+	fragmentId,
+	emptyTableLabel,
+	title,
+}) => {
+	const navigateFunc = useNavigate();
+
 	const [bundleSortColumn, setBundleSortColumn] = useState<BundleSortProp>(BundleSortProp.title);
 	const [bundleSortOrder, setBundleSortOrder] = useState<OrderDirection>(OrderDirection.asc);
 
@@ -41,7 +42,7 @@ const ContainedInBundlesTable: FC<
 
 	const navigateToBundleDetail = (id: string) => {
 		const link = buildLink(APP_PATH.BUNDLE_DETAIL.route, { id });
-		redirectToClientPage(link, history);
+		redirectToClientPage(link, navigateFunc);
 	};
 
 	const handleBundleColumnClick = (columnId: BundleColumnId) => {
@@ -161,8 +162,3 @@ const ContainedInBundlesTable: FC<
 		</>
 	);
 };
-
-export default compose(
-	withRouter,
-	withUser
-)(ContainedInBundlesTable) as FC<ContainedInBundlesTableProps>;

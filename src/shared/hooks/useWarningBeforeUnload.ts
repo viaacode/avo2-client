@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 export const useWarningBeforeUnload = ({
 	when,

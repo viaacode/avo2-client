@@ -21,19 +21,17 @@ import React, {
 	useState,
 } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { Link } from 'react-router-dom';
 
 import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
 import { ItemMetadata } from '../../shared/components/BlockItemMetadata/ItemMetadata';
-import FlowPlayerWrapper from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { type CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.types';
-import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
+import { TextWithTimestamps } from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
 import { TEAL_BRIGHT } from '../../shared/constants';
 import { stripHtml } from '../../shared/helpers/formatters';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './ItemVideoDescription.scss';
 
@@ -60,7 +58,7 @@ interface ItemVideoDescriptionProps {
 
 const DEFAULT_VIDEO_HEIGHT = 421;
 
-const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComponentProps> = ({
+export const ItemVideoDescription: FC<ItemVideoDescriptionProps> = ({
 	itemMetaData,
 	showMetadata = false,
 	enableMetadataLink = false,
@@ -255,5 +253,3 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 		</Grid>
 	);
 };
-
-export default compose(withRouter, withUser)(ItemVideoDescription) as FC<ItemVideoDescriptionProps>;

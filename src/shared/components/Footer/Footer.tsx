@@ -1,23 +1,21 @@
 // eslint-disable-next-line import/no-unresolved
 import meemooLogo from '@assets/images/meemoo-logo.png';
 // eslint-disable-next-line import/no-unresolved
-import vlaamseOverheidLogo from '@assets/images/vlaanderen-logo.svg';
+import vlaamseOverheidLogoSrc from '@assets/images/vlaanderen-logo.svg';
 import { Container, Spacer } from '@viaa/avo2-components';
 import { orderBy } from 'lodash-es';
 import React, { type FC, useState } from 'react';
-import { type RouteComponentProps } from 'react-router';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
 import { type BooleanDictionary } from '../../helpers/navigation';
-import withUser, { type UserProps } from '../../hocs/withUser';
 import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
+import { useTranslation } from '../../hooks/useTranslation';
 import { type AppContentNavElement } from '../../services/navigation-items-service';
 import { NavigationBarId } from '../Navigation/Navigation.const';
 import { NavigationItem } from '../Navigation/NavigationItem';
 
 import './Footer.scss';
 
-const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match }) => {
+export const Footer: FC = () => {
 	const { tText } = useTranslation();
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<BooleanDictionary>({});
@@ -42,14 +40,10 @@ const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match 
 						tooltip: item.tooltip,
 					}}
 					className="c-nav__item c-nav__item--i"
-					exact={item.content_path === '/'}
 					showActive={false}
 					areDropdownsOpen={areDropdownsOpen}
 					setDropdownsOpen={setDropdownsOpen}
 					onNavigate={() => window?.scrollTo(0, 0)}
-					history={history}
-					location={location}
-					match={match}
 				/>
 			);
 		});
@@ -113,7 +107,7 @@ const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match 
 							</span>
 							<Spacer margin="left-small">
 								<img
-									src={vlaamseOverheidLogo}
+									src={vlaamseOverheidLogoSrc}
 									alt={tText(
 										'shared/components/footer/footer___logo-van-vlaamse-overheid'
 									)}
@@ -126,5 +120,3 @@ const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match 
 		</footer>
 	);
 };
-
-export default withUser(Footer) as FC<RouteComponentProps>;

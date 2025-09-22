@@ -5,7 +5,7 @@ import React, { type FC, useEffect, useState } from 'react';
 import { tText } from '../../helpers/translate-text';
 import { useTabs } from '../../hooks/useTabs';
 import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
-import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
+import { ShareWithColleagues } from '../ShareWithColleagues/ShareWithColleagues';
 import {
 	type ContributorInfo,
 	type ContributorInfoRight,
@@ -34,7 +34,7 @@ type ShareModalProps = {
 	assignment?: Partial<Avo.Assignment.Assignment>;
 };
 
-const ShareModal: FC<ShareModalProps> = ({
+export const ShareModal: FC<ShareModalProps> = ({
 	assignment,
 	availableRights,
 	contributors,
@@ -124,5 +124,3 @@ const ShareModal: FC<ShareModalProps> = ({
 		</Modal>
 	);
 };
-
-export default ShareModal;

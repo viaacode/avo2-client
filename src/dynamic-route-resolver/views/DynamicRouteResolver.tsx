@@ -7,35 +7,30 @@ import {
 } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtom, useSetAtom } from 'jotai';
 import { keys } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 import React, { type ComponentType, type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { connect } from 'react-redux';
-import { Redirect, type RouteComponentProps, withRouter } from 'react-router';
-import { compose, type Dispatch } from 'redux';
+import { Navigate, useNavigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state';
 import { ItemsService } from '../../admin/items/items.service';
 import { withAdminCoreConfig } from '../../admin/shared/hoc/with-admin-core-config';
 import { UrlRedirectsService } from '../../admin/url-redirects/url-redirects.service';
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
+import { loginAtom } from '../../authentication/authentication.store';
+import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page';
-import { getLoginStateAction } from '../../authentication/store/actions';
-import {
-	selectLogin,
-	selectLoginError,
-	selectLoginLoading,
-} from '../../authentication/store/selectors';
-import { type LoginState } from '../../authentication/store/types';
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { OrderDirection, SearchFilter } from '../../search/search.const';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import JsonLd from '../../shared/components/JsonLd/JsonLd';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
@@ -46,35 +41,32 @@ import { getEnv } from '../../shared/helpers/env';
 import { getFullName, stripHtml } from '../../shared/helpers/formatters';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { generateSearchLinkString } from '../../shared/helpers/link';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Locale } from '../../shared/translations/translations.types';
 import { type AppState } from '../../store';
-import { DynamicRouteType, GET_ERROR_MESSAGES } from '../dynamic-route-resolver.const';
+import {
+	DynamicRouteType,
+	GET_ERROR_MESSAGES,
+	GET_REDIRECTS,
+} from '../dynamic-route-resolver.const';
 
 interface RouteInfo {
 	type: DynamicRouteType;
 	data: any;
 }
 
-interface DynamicRouteResolverProps extends RouteComponentProps {
-	getLoginState: () => Dispatch;
-	loginState: Avo.Auth.LoginResponse | null;
-	loginStateError: boolean;
-	loginStateLoading: boolean;
-}
-
-const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
-	getLoginState,
-	history,
-	location,
-	loginState,
-	loginStateError,
-	loginStateLoading,
-}) => {
+const DynamicRouteResolver: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+	const location = useLocation();
 
 	// State
+	const [loginAtomValue] = useAtom(loginAtom);
+	const loginState = loginAtomValue.data;
+	const loginStateLoading = loginAtomValue.loading;
+	const loginStateError = loginAtomValue.error;
+	const getLoginState = useSetAtom(getLoginStateAtom);
 	const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
@@ -106,7 +98,7 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 
 			if (pathname === '/' && loginState.message === 'LOGGED_IN') {
 				// Redirect the logged out homepage to the logged in homepage is the user is logged in
-				history.replace('/start');
+				navigateFunc('/start', { replace: true });
 				return;
 			}
 
@@ -120,8 +112,9 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 
 					if (itemExternalId) {
 						// Redirect to the new bundle url, since we want to discourage use of the old avo1 urls
-						history.replace(
-							buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemExternalId })
+						navigateFunc(
+							buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemExternalId }),
+							{ replace: true }
 						);
 						return;
 					} // else keep analysing
@@ -130,9 +123,9 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 					const bundleUuid = await CollectionService.fetchUuidByAvo1Id(avo1Id);
 					if (bundleUuid) {
 						// Redirect to the new bundle url, since we want to discourage use of the old avo1 urls
-						history.replace(
-							buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: bundleUuid })
-						);
+						navigateFunc(buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: bundleUuid }), {
+							replace: true,
+						});
 						return;
 					} // else keep analysing
 				}
@@ -141,7 +134,9 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 			// Check if path is old item id
 			if (/\/pid\/[^/]+/g.test(pathname)) {
 				const itemPid = (pathname.split('/').pop() || '').trim();
-				history.replace(buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemPid }));
+				navigateFunc(buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemPid }), {
+					replace: true,
+				});
 				return;
 			}
 
@@ -153,13 +148,14 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 				commonUserInfo &&
 				PermissionService.hasPerm(commonUserInfo, PermissionName.SEARCH)
 			) {
-				history.replace(
+				navigateFunc(
 					generateSearchLinkString(
 						SearchFilter.serie,
 						'KLAAR',
 						SearchFilter.broadcastDate,
 						OrderDirection.desc
-					)
+					),
+					{ replace: true }
 				);
 				return;
 			}
@@ -240,20 +236,12 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 				icon: IconName.search,
 			});
 		}
-	}, [
-		loginState,
-		location.pathname,
-		location.hash,
-		setRouteInfo,
-		setLoadingInfo,
-		history,
-		tHtml,
-	]);
+	}, [loginState, location.pathname, location.hash, tHtml, navigateFunc]);
 
 	// Check if current user is logged in
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
-			getLoginState();
+			getLoginState(false);
 		} else if (loginStateError) {
 			console.error(
 				new CustomError('Login error was encountered', null, {
@@ -308,14 +296,7 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 				!routeUserGroupIds.includes(SpecialPermissionGroups.loggedOutUsers) &&
 				loginState?.message !== 'LOGGED_IN'
 			) {
-				return (
-					<Redirect
-						to={{
-							pathname: APP_PATH.REGISTER_OR_LOGIN.route,
-							state: { from: location },
-						}}
-					/>
-				);
+				return <Navigate to={APP_PATH.REGISTER_OR_LOGIN.route} />;
 			}
 
 			const description =
@@ -430,24 +411,4 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 	);
 };
 
-const mapStateToProps = (
-	state: AppState
-): {
-	loginState: Avo.Auth.LoginResponse | null;
-	loginStateLoading: boolean;
-	loginStateError: boolean;
-} => ({
-	loginState: selectLogin(state),
-	loginStateLoading: selectLoginLoading(state),
-	loginStateError: selectLoginError(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch): { getLoginState: () => LoginState } => ({
-	getLoginState: () => dispatch(getLoginStateAction() as any),
-});
-
-export default compose(
-	withRouter,
-	connect(mapStateToProps, mapDispatchToProps) as any,
-	withAdminCoreConfig
-)(DynamicRouteResolver as ComponentType) as unknown as FC<DynamicRouteResolverProps>;
+export default withAdminCoreConfig(DynamicRouteResolver as ComponentType) as unknown as FC;

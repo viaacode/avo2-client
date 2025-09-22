@@ -1,13 +1,14 @@
 import { type Avo } from '@viaa/avo2-types';
 import React, { type ReactNode } from 'react';
-import { Link, type RouteComponentProps } from 'react-router-dom';
+import { type NavigateFunction } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { generateContentLinkString } from './link';
 
 export const defaultGoToDetailLink =
-	(history: RouteComponentProps['history']) =>
+	(navigate: NavigateFunction) =>
 	(id: string, type: Avo.Core.ContentType): void => {
-		history.push(generateContentLinkString(type, id));
+		navigate(generateContentLinkString(type, id));
 	};
 
 export const defaultRenderDetailLink = (

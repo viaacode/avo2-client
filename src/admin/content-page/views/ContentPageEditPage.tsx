@@ -1,17 +1,16 @@
-import type { ContentPageDetailProps } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Flex, Spinner } from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
 import React, { type FC, lazy, Suspense, useState } from 'react';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { useMatch, useNavigate } from 'react-router';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
 import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
+import { CONTENT_PAGE_PATH } from '../content-page.consts';
 
 const ContentPageEdit = lazy(() =>
 	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
@@ -19,12 +18,14 @@ const ContentPageEdit = lazy(() =>
 	}))
 );
 
-const ContentPageDetailPage: FC<
-	DefaultSecureRouteProps<{ id: string }> & ContentPageDetailProps & UserProps
-> = ({ match, history, commonUser }) => {
-	const { id } = match.params;
+const ContentPageDetailPage: FC = () => {
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id', string>(CONTENT_PAGE_PATH.CONTENT_PAGE_EDIT);
 
-	const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
+	const contentPageId = match?.params.id;
+
+	const commonUser = useAtomValue(commonUserAtom);
+	const [hasUnsavedChanges] = useState<boolean>(false);
 
 	useWarningBeforeUnload({
 		when: hasUnsavedChanges,
@@ -40,13 +41,13 @@ const ContentPageDetailPage: FC<
 		>
 			<ContentPageEdit
 				className="c-admin-core c-admin__content-page-edit"
-				id={id}
+				id={contentPageId}
 				commonUser={commonUser}
 				onHasUnsavedChangesChanged={setHasUnsavedChanges}
 				onGoBack={() =>
 					goBrowserBackWithFallback(
-						buildLink(ADMIN_PATH.CONTENT_PAGE_DETAIL, { id }),
-						history
+						buildLink(ADMIN_PATH.CONTENT_PAGE_DETAIL, { id: contentPageId }),
+						navigateFunc
 					)
 				}
 			/>
@@ -55,4 +56,4 @@ const ContentPageDetailPage: FC<
 	);
 };
 
-export default compose(withAdminCoreConfig, withUser, withRouter)(ContentPageDetailPage) as FC;
+export default withAdminCoreConfig(ContentPageDetailPage) as FC;

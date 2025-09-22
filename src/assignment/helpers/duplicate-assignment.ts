@@ -7,7 +7,7 @@ import { AssignmentService } from '../assignment.service';
 
 export async function duplicateAssignment(
 	assignment: Avo.Assignment.Assignment | null | undefined,
-	commonUser: Avo.User.CommonUser
+	commonUser?: Avo.User.CommonUser
 ): Promise<Avo.Assignment.Assignment | null> {
 	try {
 		if (!assignment) {

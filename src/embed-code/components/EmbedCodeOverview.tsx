@@ -2,22 +2,21 @@ import { FILTER_TABLE_QUERY_PARAM_CONFIG, FilterTable } from '@meemoo/admin-core
 import { IconName, type MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
+import { useAtomValue } from 'jotai';
 import { isEqual } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { useNavigate } from 'react-router';
 import { useQueryParams } from 'use-query-params';
 
-import type { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { APP_PATH } from '../../constants';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { navigate } from '../../shared/helpers/link';
-import withUser from '../../shared/hocs/withUser';
 import { useDebounce } from '../../shared/hooks/useDebounce';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
@@ -35,8 +34,8 @@ import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 import { useDeleteEmbedCode } from '../hooks/useDeleteEmbedCode';
 import { useUpdateEmbedCode } from '../hooks/useUpdateEmbedCode';
 
-import EmbedCodeFilterTableCell from './EmbedCodeFilterTableCell';
-import EditEmbedCodeModal from './modals/EditEmbedCodeModal';
+import { EmbedCodeFilterTableCell } from './EmbedCodeFilterTableCell';
+import { EditEmbedCodeModal } from './modals/EditEmbedCodeModal';
 
 // Typings
 interface EmbedCodeOverviewProps {
@@ -56,12 +55,10 @@ enum EmbedCodeAction {
 
 const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 
-const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = ({
-	commonUser,
-	history,
-	onUpdate,
-}) => {
+export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	// State
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -338,7 +335,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 										break;
 
 									case EmbedCodeAction.SHOW_ORIGINAL:
-										navigate(history, APP_PATH.ITEM_DETAIL.route, {
+										navigate(navigateFunc, APP_PATH.ITEM_DETAIL.route, {
 											id: (selected.content as Avo.Item.Item).external_id,
 										});
 										break;
@@ -413,5 +410,3 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 		</>
 	);
 };
-
-export default compose(withRouter, withUser)(EmbedCodeOverview) as FC<EmbedCodeOverviewProps>;

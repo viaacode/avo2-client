@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 
 import teacherCardAppImage from '../../../src/assets/images/lerarenkaart-app.jpg';
 import { APP_PATH } from '../../constants';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { AvoToastType } from '../../shared/services/toast-service';
 import { verifyStamboekNumber } from '../authentication.service';
 import { type StamboekValidationStatus } from '../views/registration-flow/r3-stamboek';

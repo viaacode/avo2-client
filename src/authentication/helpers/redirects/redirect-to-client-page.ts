@@ -1,5 +1,5 @@
-import type { RouteComponentProps } from 'react-router-dom';
+import { type NavigateFunction } from 'react-router';
 
-export function redirectToClientPage(path: string, history: RouteComponentProps['history']): void {
-	history.push(path);
+export function redirectToClientPage(path: string, navigate: NavigateFunction): void {
+	navigate(path);
 }

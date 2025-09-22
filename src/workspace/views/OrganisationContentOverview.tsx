@@ -1,16 +1,18 @@
 import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { PaginationBar } from '@meemoo/react-components';
 import { IconName, Spacer, Table, type TableColumn } from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import {
 	CollectionService,
 	type OrganisationContentItem,
 } from '../../collection/collection.service';
 import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { OrderDirection } from '../../search/search.const';
 import {
 	LoadingErrorLoadedComponent,
@@ -20,8 +22,7 @@ import { buildLink } from '../../shared/helpers/build-link';
 import { formatDate, formatTimestamp } from '../../shared/helpers/formatters';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 // Constants
@@ -37,11 +38,11 @@ interface OrganisationContentOverviewProps {
 
 // Component
 
-const OrganisationContentOverview: FC<OrganisationContentOverviewProps & UserProps> = ({
+export const OrganisationContentOverview: FC<OrganisationContentOverviewProps> = ({
 	numberOfItems,
-	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	// State
 	const [organisationContent, setOrganisationContent] = useState<
@@ -308,5 +309,3 @@ const OrganisationContentOverview: FC<OrganisationContentOverviewProps & UserPro
 		/>
 	);
 };
-
-export default withUser(OrganisationContentOverview) as FC<OrganisationContentOverviewProps>;

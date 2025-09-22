@@ -4,25 +4,26 @@ import React, { useState } from 'react';
 import { ItemsService } from '../../admin/items/items.service';
 import { CollectionService } from '../../collection/collection.service';
 import { CollectionOrBundle } from '../../collection/collection.types';
-import CutFragmentForAssignmentModal from '../../item/components/modals/CutFragmentForAssignmentModal';
+import { CutFragmentForAssignmentModal } from '../../item/components/modals/CutFragmentForAssignmentModal';
 import { type ItemTrimInfo } from '../../item/item.types';
 import {
 	type SingleEntityModal,
 	useSingleEntityModal,
 } from '../../shared/hooks/useSingleEntityModal';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { VideoStillService } from '../../shared/services/video-stills-service';
 import { type Positioned } from '../../shared/types';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
 import { AssignmentBlockType } from '../assignment.types';
 import { insertMultipleAtPosition } from '../helpers/insert-at-position';
-import AddBlockModal, { type AddBlockModalProps } from '../modals/AddBlockModal';
-import AddBookmarkFragmentModal, {
+import { AddBlockModal, type AddBlockModalProps } from '../modals/AddBlockModal';
+import {
+	AddBookmarkFragmentModal,
 	type AddBookmarkFragmentModalProps,
 } from '../modals/AddBookmarkFragmentModal';
-import AddCollectionModal, { type AddCollectionModalProps } from '../modals/AddCollectionModal';
-import ConfirmSliceModal, { type ConfirmSliceModalProps } from '../modals/ConfirmSliceModal';
+import { AddCollectionModal, type AddCollectionModalProps } from '../modals/AddCollectionModal';
+import { ConfirmSliceModal, type ConfirmSliceModalProps } from '../modals/ConfirmSliceModal';
 
 export function useBlockListModals(
 	blocks: Avo.Core.BlockItemBase[],
@@ -187,7 +188,10 @@ export function useBlockListModals(
 						{...config?.addCollectionConfig}
 						isOpen={isAddCollectionModalOpen}
 						onClose={() => setIsAddCollectionModalOpen(false)}
-						addCollectionCallback={async (id, withDescription) => {
+						addCollectionCallback={async (
+							collectionId: string,
+							withDescription: boolean
+						) => {
 							if (blockPosition === undefined) {
 								return;
 							}
@@ -195,7 +199,7 @@ export function useBlockListModals(
 							// fetch collection details
 							const collection =
 								await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
-									id,
+									collectionId,
 									CollectionOrBundle.COLLECTION,
 									undefined
 								);
@@ -264,7 +268,7 @@ export function useBlockListModals(
 
 								// Finish by triggering any configured callback
 								const callback = config?.addCollectionConfig?.addCollectionCallback;
-								callback && callback(id, withDescription);
+								callback && callback(collectionId, withDescription);
 							}
 						}}
 					/>

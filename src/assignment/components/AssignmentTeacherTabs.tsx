@@ -1,14 +1,13 @@
 import { IconName, Pill, PillVariants, type TabProps, Tabs } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, useMemo } from 'react';
-import { type RouteComponentProps } from 'react-router';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { useLocation } from 'react-router-dom';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 
 interface AssignmentTeacherTabsProps {
@@ -18,15 +17,15 @@ interface AssignmentTeacherTabsProps {
 	isManaged: boolean;
 }
 
-const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps & UserProps> = ({
-	history,
-	commonUser,
+export const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps> = ({
 	activeTab,
 	onTabChange,
 	clicksCount,
 	isManaged,
 }) => {
 	const { tText } = useTranslation();
+	const location = useLocation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const showAdminTab: boolean = PermissionService.hasAtLeastOnePerm(commonUser, [
 		PermissionName.EDIT_ASSIGNMENT_QUALITY_LABELS,
@@ -52,7 +51,7 @@ const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps
 					label: tText('assignment/hooks/assignment-teacher-tabs___publicatiedetails'),
 					icon: IconName.fileText as IconName,
 				},
-				...(history.location.pathname !== APP_PATH.ASSIGNMENT_CREATE.route
+				...(location.pathname !== APP_PATH.ASSIGNMENT_CREATE.route
 					? [
 							{
 								id: ASSIGNMENT_CREATE_UPDATE_TABS.CLICKS,
@@ -98,7 +97,7 @@ const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps
 				...item,
 				active: item.id === activeTab,
 			})),
-		[tText, history.location.pathname, activeTab, clicksCount, showAdminTab, isManaged]
+		[tText, location.pathname, activeTab, clicksCount, showAdminTab, isManaged]
 	);
 
 	return (
@@ -110,8 +109,3 @@ const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps
 		/>
 	);
 };
-
-export default compose(
-	withRouter,
-	withUser
-)(AssignmentTeacherTabs) as FC<AssignmentTeacherTabsProps>;

@@ -7,7 +7,7 @@ import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { type Permissions, PermissionService } from '../helpers/permission-service';
 
 import { PermissionGuardFail, PermissionGuardPass } from './PermissionGuard.slots';
@@ -19,7 +19,7 @@ interface PermissionGuardProps {
 	noPermissionsMessage?: string;
 }
 
-const PermissionGuard: FC<PermissionGuardProps> = ({
+export const PermissionGuard: FC<PermissionGuardProps> = ({
 	children,
 	permissions,
 	commonUser,
@@ -74,5 +74,3 @@ const PermissionGuard: FC<PermissionGuardProps> = ({
 		/>
 	);
 };
-
-export default PermissionGuard;

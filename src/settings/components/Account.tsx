@@ -12,29 +12,26 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps } from 'react-router';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { redirectToExternalPage } from '../../authentication/helpers/redirects/redirect-to-external-page';
 import { GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { Users_Idps_Enum } from '../../shared/generated/graphql-db-types';
 import { getEnv } from '../../shared/helpers/env';
 import { formatDate } from '../../shared/helpers/formatters';
 import { isPupil } from '../../shared/helpers/is-pupil';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 // const ssumAccountEditPage = getEnv('SSUM_ACCOUNT_EDIT_URL') as string;
 const ssumPasswordEditPage = getEnv('SSUM_PASSWORD_EDIT_URL') as string;
 
-export interface AccountProps extends RouteComponentProps {
-	commonUser: Avo.User.CommonUser;
-}
-
-const Account: FC<AccountProps> = ({ commonUser }) => {
+export const Account: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const hasTempAccess = commonUser?.tempAccess?.current?.status === 1;
 
@@ -150,4 +147,3 @@ const Account: FC<AccountProps> = ({ commonUser }) => {
 		</>
 	);
 };
-export default Account;

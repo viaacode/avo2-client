@@ -10,7 +10,7 @@ type EditButtonProps = {
 	toolTipContent: string | ReactNode;
 };
 
-const EditButton: FC<EditButtonProps> = ({
+export const EditButton: FC<EditButtonProps> = ({
 	title,
 	label,
 	onClick,
@@ -41,5 +41,3 @@ const EditButton: FC<EditButtonProps> = ({
 	}
 	return button;
 };
-
-export default EditButton;

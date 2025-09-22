@@ -10,14 +10,10 @@ export const useGetCollectionOrBundleByIdOrInviteToken = (
 	type: CollectionOrBundle,
 	inviteToken: string | undefined,
 	options: {
-		enabled: boolean;
-		refetchInterval: number | false;
+		enabled?: boolean;
+		refetchInterval?: number | false;
 		refetchIntervalInBackground?: boolean;
-	} = {
-		enabled: true,
-		refetchInterval: false,
-		refetchIntervalInBackground: false,
-	}
+	} = {}
 ) => {
 	return useQuery<Avo.Collection.Collection | null>(
 		[
@@ -33,6 +29,11 @@ export const useGetCollectionOrBundleByIdOrInviteToken = (
 				inviteToken
 			);
 		},
-		options
+		{
+			enabled: true,
+			refetchInterval: false,
+			refetchIntervalInBackground: false,
+			...options,
+		}
 	);
 };

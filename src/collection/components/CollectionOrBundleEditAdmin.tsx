@@ -14,23 +14,24 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { get, noop, orderBy } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { type RouteComponentProps } from 'react-router-dom';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../admin/shared/types';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import ContainedInBundlesTable from '../../bundle/components/ContainedInBundlesTable';
-import AssociatedQuickLaneTable, {
+import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable';
+import {
+	AssociatedQuickLaneTable,
 	AssociatedQuickLaneTableOrderBy,
 } from '../../quick-lane/components/AssociatedQuickLaneTable';
 import { OrderDirection } from '../../search/search.const';
 import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { formatTimestamp, getFullName } from '../../shared/helpers/formatters';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { QualityLabelsService } from '../../shared/services/quality-labels.service';
 import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -42,17 +43,16 @@ import { type CollectionAction } from './CollectionOrBundleEdit.types';
 interface CollectionOrBundleEditAdminProps {
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
-	history: RouteComponentProps['history'];
 	onFocus?: () => void;
 }
 
-const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps & UserProps> = ({
+export const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps> = ({
 	collection,
 	changeCollectionState,
-	commonUser,
 	onFocus,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	// State
 	const [qualityLabels, setQualityLabels] = useState<TagInfo[] | null>(null);
@@ -371,5 +371,3 @@ const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps & UserPro
 		</>
 	);
 };
-
-export default withUser(CollectionOrBundleEditAdmin) as FC<CollectionOrBundleEditAdminProps>;

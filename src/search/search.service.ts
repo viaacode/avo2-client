@@ -13,7 +13,7 @@ export const fetchSearchResults = (
 	filterOptionSearch?: Partial<Avo.Search.FilterOption>,
 	requestedAggs?: Avo.Search.FilterProp[],
 	aggsSize?: number
-): [Promise<Avo.Search.Search>, AbortController] => {
+): Promise<Avo.Search.Search> => {
 	const controller = new AbortController();
 
 	if (filters) {
@@ -27,21 +27,18 @@ export const fetchSearchResults = (
 		}
 	}
 
-	return [
-		fetchWithLogoutJson(`${getEnv('PROXY_URL')}/search`, {
-			method: 'POST',
-			body: JSON.stringify({
-				filters,
-				filterOptionSearch,
-				orderProperty,
-				orderDirection,
-				from,
-				size,
-				requestedAggs,
-				aggsSize,
-			}),
-			signal: controller.signal,
+	return fetchWithLogoutJson(`${getEnv('PROXY_URL')}/search`, {
+		method: 'POST',
+		body: JSON.stringify({
+			filters,
+			filterOptionSearch,
+			orderProperty,
+			orderDirection,
+			from,
+			size,
+			requestedAggs,
+			aggsSize,
 		}),
-		controller,
-	];
+		signal: controller.signal,
+	});
 };

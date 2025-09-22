@@ -2,10 +2,10 @@ import { IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode } from 'react';
 
-import { ErrorView } from '../../../../error/views';
+import { ErrorView } from '../../../../error/views/ErrorView';
 import { type FilterState } from '../../../../search/search.types';
-import BlockList from '../../../../shared/components/BlockList/BlockList';
-import useTranslation from '../../../../shared/hooks/useTranslation';
+import { BlockList } from '../../../../shared/components/BlockList/BlockList';
+import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment.const';
 
 interface AssignmentResponseAssignmentTabProps {
@@ -15,7 +15,7 @@ interface AssignmentResponseAssignmentTabProps {
 	buildSearchLink: (props: Partial<FilterState>) => ReactNode | string;
 }
 
-const AssignmentResponseAssignmentTab: FC<AssignmentResponseAssignmentTabProps> = ({
+export const AssignmentResponseAssignmentTab: FC<AssignmentResponseAssignmentTabProps> = ({
 	blocks,
 	pastDeadline,
 	setTab,
@@ -64,5 +64,3 @@ const AssignmentResponseAssignmentTab: FC<AssignmentResponseAssignmentTabProps> 
 
 	return renderAssignmentBlocks();
 };
-
-export default AssignmentResponseAssignmentTab as FC<AssignmentResponseAssignmentTabProps>;

@@ -2,13 +2,13 @@ import { type FlowPlayerWrapperProps } from '@meemoo/admin-core-ui/dist/admin.mj
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC } from 'react';
 
-import FlowPlayerWrapper from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 import { type BlockItemComponent } from '../collection.types';
 
 export type CollectionFragmentFlowPlayerProps = BlockItemComponent & FlowPlayerWrapperProps;
 
-const CollectionFragmentFlowPlayer: FC<CollectionFragmentFlowPlayerProps> = (props) => {
+export const CollectionFragmentFlowPlayer: FC<CollectionFragmentFlowPlayerProps> = (props) => {
 	const { block, ...rest } = props;
 
 	const meta = block?.item_meta as Avo.Item.Item | undefined;
@@ -40,5 +40,3 @@ const CollectionFragmentFlowPlayer: FC<CollectionFragmentFlowPlayerProps> = (pro
 		/>
 	);
 };
-
-export default CollectionFragmentFlowPlayer;

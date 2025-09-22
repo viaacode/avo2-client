@@ -3,7 +3,7 @@ import { FormControl } from '@meemoo/react-components';
 import { ContentInput, Flex, Icon, IconName } from '@viaa/avo2-components';
 import React, { type FC, useState } from 'react';
 
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { MAX_TITLE_LENGTH } from '../assignment.const';
 
 type AssignmentTitleProps = {
@@ -13,7 +13,7 @@ type AssignmentTitleProps = {
 	onFocus?: () => void;
 };
 
-const AssignmentTitle: FC<AssignmentTitleProps> = ({ error, value, onChange, onFocus }) => {
+export const AssignmentTitle: FC<AssignmentTitleProps> = ({ error, value, onChange, onFocus }) => {
 	const { tText } = useTranslation();
 	const [isActive, setIsActive] = useState<boolean>(false);
 	const [titleTemp, setTitleTemp] = useState(value);
@@ -54,5 +54,3 @@ const AssignmentTitle: FC<AssignmentTitleProps> = ({ error, value, onChange, onF
 		</Flex>
 	);
 };
-
-export default AssignmentTitle;

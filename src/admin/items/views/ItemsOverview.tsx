@@ -5,14 +5,14 @@ import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react
 import { Helmet } from 'react-helmet';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { useCompanies } from '../../../shared/hooks/useCompanies';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
@@ -28,7 +28,7 @@ import { type ItemsOverviewTableCols, type ItemsTableState } from '../items.type
 
 import { ItemBulkAction } from './ItemsOverview.types';
 
-const ItemsOverview: FC = () => {
+export const ItemsOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
 
 	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
@@ -226,5 +226,3 @@ const ItemsOverview: FC = () => {
 		</AdminLayout>
 	);
 };
-
-export default ItemsOverview;

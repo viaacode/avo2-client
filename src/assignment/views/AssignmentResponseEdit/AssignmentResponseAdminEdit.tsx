@@ -1,5 +1,6 @@
 import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, {
 	type Dispatch,
@@ -11,33 +12,33 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { useMatch } from 'react-router';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
-import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { ErrorView } from '../../../error/views/ErrorView';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AssignmentService } from '../../assignment.service';
-import AssignmentMetadata from '../../components/AssignmentMetadata';
+import { AssignmentMetadata } from '../../components/AssignmentMetadata';
 import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
 
-import AssignmentResponseEdit from './AssignmentResponseEdit';
+import { AssignmentResponseEdit } from './AssignmentResponseEdit';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 
-const AssignmentResponseAdminEdit: FC<
-	UserProps & DefaultSecureRouteProps<{ assignmentId: string; responseId: string }>
-> = ({ match, commonUser }) => {
+export const AssignmentResponseAdminEdit: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const match = useMatch<'responseId' | 'assignmentId', string>(
+		APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route
+	);
 
+	const commonUser = useAtomValue(commonUserAtom);
 	// Data
-	const assignmentId = match.params.assignmentId;
-	const assignmentResponseId = match.params.responseId;
+	const assignmentId = match?.params.assignmentId;
+	const assignmentResponseId = match?.params.responseId;
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
 	const [assignmentError, setAssignmentError] = useState<{
@@ -55,6 +56,9 @@ const AssignmentResponseAdminEdit: FC<
 	// HTTP
 	const fetchAssignment = useCallback(async () => {
 		try {
+			if (!assignmentId || !assignmentResponseId) {
+				return;
+			}
 			setAssignmentLoading(true);
 
 			// Check if the user is a teacher, they do not have permission to create a response for assignments and should see a clear error message
@@ -114,13 +118,13 @@ const AssignmentResponseAdminEdit: FC<
 			});
 		}
 		setAssignmentLoading(false);
-	}, [assignmentId, tHtml, tText]);
+	}, [assignmentId, assignmentResponseId, tHtml, tText]);
 
 	// Effects
 
 	useEffect(() => {
 		fetchAssignment().then(noop);
-	}, []);
+	}, [fetchAssignment]);
 
 	// Events
 
@@ -237,5 +241,3 @@ const AssignmentResponseAdminEdit: FC<
 		</>
 	);
 };
-
-export default compose(withRouter, withUser)(AssignmentResponseAdminEdit) as FC;

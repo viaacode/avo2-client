@@ -1,18 +1,18 @@
 import { ExportAllToCsvModal, FilterTable, getFilters } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { useLocation } from 'react-router-dom';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
 } from '../../../collection/collection.const';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import {
@@ -21,12 +21,11 @@ import {
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
@@ -50,11 +49,10 @@ import {
 	renderCollectionsOrBundlesMarcomCellText,
 } from '../helpers/render-collection-columns';
 
-const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
-	location,
-	commonUser,
-}) => {
+export const CollectionOrBundleMarcomOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const location = useLocation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
 	const [collectionCount, setCollectionCount] = useState<number>(0);
@@ -483,5 +481,3 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
 		</AdminLayout>
 	);
 };
-
-export default compose(withRouter, withUser)(CollectionOrBundleMarcomOverview) as FC;

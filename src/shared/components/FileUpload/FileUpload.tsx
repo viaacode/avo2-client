@@ -13,7 +13,7 @@ import { compact, isString } from 'lodash-es';
 import queryString from 'query-string';
 import React, { type FC, useState } from 'react';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers/custom-error';
 import { getUrlInfo, isPhoto, isVideo, PHOTO_TYPES } from '../../helpers/files';
 import { FileUploadService } from '../../services/file-upload-service';
@@ -43,7 +43,7 @@ interface FileUploadDimensions {
 	maxHeight: number;
 }
 
-const FileUpload: FC<FileUploadProps> = ({
+export const FileUpload: FC<FileUploadProps> = ({
 	icon,
 	label,
 	allowedTypes = PHOTO_TYPES,
@@ -339,5 +339,3 @@ const FileUpload: FC<FileUploadProps> = ({
 		</div>
 	);
 };
-
-export default FileUpload;

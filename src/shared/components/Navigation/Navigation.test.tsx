@@ -33,7 +33,7 @@
 // 	const links = menuItems.find(Link);
 
 // 	links.forEach((link) => {
-// 		const to = link.prop('to') as RouteComponentProps['location'];
+// 		const to = link.prop('to') as Location;
 // 		if (to) {
 // 			expect(link.text()).toBeTruthy();
 // 			expect(

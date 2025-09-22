@@ -26,6 +26,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { get, isNil, noop } from 'lodash-es';
 import React, {
 	type FC,
@@ -36,23 +37,23 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { useMatch, useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 import { JsonParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
 import { ITEMS_PATH } from '../../admin/items/items.const';
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { AssignmentService } from '../../assignment/assignment.service';
-import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
-import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
+import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { CONTENT_TYPE_TRANSLATIONS, ContentTypeNumber } from '../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { type FilterState } from '../../search/search.types';
-import FragmentShareModal from '../../shared/components/FragmentShareModal/FragmentShareModal';
+import { FragmentShareModal } from '../../shared/components/FragmentShareModal/FragmentShareModal';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
@@ -82,10 +83,8 @@ import { renderSearchLinks } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
-import withEmbedFlow, { type EmbedFlowProps } from '../../shared/hocs/withEmbedFlow';
-import withUser from '../../shared/hocs/withUser';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
@@ -98,37 +97,38 @@ import {
 	ObjectTypesAll,
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
+import { embedFlowAtom } from '../../shared/store/ui.store';
 import { type UnpublishableItem } from '../../shared/types';
-import ItemVideoDescription from '../components/ItemVideoDescription';
-import AddToCollectionModal from '../components/modals/AddToCollectionModal';
-import CutFragmentForAssignmentModal from '../components/modals/CutFragmentForAssignmentModal';
-import ReportItemModal from '../components/modals/ReportItemModal';
+import { ItemVideoDescription } from '../components/ItemVideoDescription';
+import { AddToCollectionModal } from '../components/modals/AddToCollectionModal';
+import { CutFragmentForAssignmentModal } from '../components/modals/CutFragmentForAssignmentModal';
+import { ReportItemModal } from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { type ItemTrimInfo } from '../item.types';
 
 import './ItemDetail.scss';
 
 interface ItemDetailProps {
-	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
-	renderDetailLink: (
+	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (itemId)
+	renderDetailLink?: (
 		linkText: string | ReactNode,
 		id: string,
 		type: Avo.Core.ContentType,
 		className?: string
 	) => ReactNode;
-	renderSearchLink: (
+	renderSearchLink?: (
 		linkText: string | ReactNode,
 		newFilters: FilterState,
 		className?: string
 	) => ReactNode;
-	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
-	goToSearchLink: (newFilters: FilterState) => void;
-	enabledMetaData: SearchFilter[];
+	goToDetailLink?: (id: string, type: Avo.Core.ContentType) => void;
+	goToSearchLink?: (newFilters: FilterState) => void;
+	enabledMetaData?: SearchFilter[];
 	/**
 	 * Render related objects: only items (video/audio) or all types: video/audio/collections/bundels
 	 * Pupils can only see items
 	 */
-	relatedObjectTypes: ObjectTypesAll;
+	relatedObjectTypes?: ObjectTypesAll;
 	renderActionButtons?: (item: Avo.Item.Item) => ReactNode;
 	renderBookmarkButton?: (props: renderBookmarkButtonProps) => ReactNode;
 	renderBookmarkCount?: (props: renderBookmarkCountProps) => ReactNode;
@@ -140,29 +140,28 @@ const ITEM_ACTIONS = {
 	importToAssignment: 'importToAssignment',
 };
 
-const ItemDetail: FC<
-	ItemDetailProps & DefaultSecureRouteProps<{ id: string }> & EmbedFlowProps
-> = ({
-	history,
-	match,
-	location,
-	commonUser,
+export const ItemDetail: FC<ItemDetailProps> = ({
 	id,
 	renderDetailLink = defaultRenderDetailLink,
 	renderSearchLink = defaultRenderSearchLink,
-	goToDetailLink = defaultGoToDetailLink(history),
-	goToSearchLink = defaultGoToSearchLink(history),
+	goToDetailLink,
+	goToSearchLink,
 	enabledMetaData = ALL_SEARCH_FILTERS,
 	relatedObjectTypes = ObjectTypesAll.items,
 	renderActionButtons,
 	renderBookmarkButton = defaultRenderBookmarkButton,
 	renderBookmarkCount = defaultRenderBookmarkCount,
 	renderInteractiveTour = defaultRenderInteractiveTour,
-	isSmartSchoolEmbedFlow,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id', string>(ITEMS_PATH.ITEM_DETAIL);
+	const itemId = id || match?.params.id;
+	const commonUser = useAtomValue(commonUserAtom);
+	const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom);
 
-	const itemId = id || match.params.id;
+	goToDetailLink = goToDetailLink || defaultGoToDetailLink(navigateFunc);
+	goToSearchLink = goToSearchLink || defaultGoToSearchLink(navigateFunc);
 
 	const [cuePoint] = useQueryParam('t', StringParam);
 	const [cutButton, cutModal] = useCutModal();
@@ -216,6 +215,9 @@ const ItemDetail: FC<
 
 	const checkPermissionsAndGetItem = useCallback(async () => {
 		try {
+			if (!itemId) {
+				return;
+			}
 			if (
 				!(
 					PermissionService.hasPerm(
@@ -279,7 +281,7 @@ const ItemDetail: FC<
 			if (itemObj.replacement_for) {
 				// Item was replaced by another item
 				// We should reload the page, to update the url
-				goToDetailLink(itemObj.external_id, 'video');
+				goToDetailLink?.(itemObj.external_id, 'video');
 				return;
 			}
 
@@ -438,7 +440,7 @@ const ItemDetail: FC<
 			source
 		);
 
-		history.push(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
+		navigateFunc(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
 	};
 
 	const onImportToAssignment = async (importToAssignmentId: string): Promise<void> => {
@@ -649,7 +651,7 @@ const ItemDetail: FC<
 								item.lom_keywords || [],
 								null,
 								(tagId: string | number) =>
-									goToSearchLink({
+									goToSearchLink?.({
 										filters: {
 											keyword: [tagId as string],
 										},
@@ -995,19 +997,19 @@ const ItemDetail: FC<
 						</Grid>
 					</Container>
 				</Container>
-				{!isNil(match.params.id) &&
+				{!isNil(itemId) &&
 					isAddToCollectionModalOpen &&
 					PermissionService.hasPerm(commonUser, PermissionName.CREATE_COLLECTIONS) && (
 						<AddToCollectionModal
 							itemMetaData={item}
-							externalId={match.params.id as string}
+							externalId={itemId as string}
 							isOpen={isAddToCollectionModalOpen}
 							onClose={() => {
 								setIsAddToCollectionModalOpen(false);
 							}}
 						/>
 					)}
-				{!isNil(match.params.id) &&
+				{!isNil(itemId) &&
 					isAddToFragmentModalOpen &&
 					PermissionService.hasPerm(commonUser, PermissionName.CREATE_ASSIGNMENTS) && (
 						<CutFragmentForAssignmentModal
@@ -1019,9 +1021,9 @@ const ItemDetail: FC<
 							afterCutCallback={doImportToAssignment}
 						/>
 					)}
-				{!renderActionButtons && (
+				{!renderActionButtons && !!itemId && (
 					<ReportItemModal
-						externalId={match.params.id}
+						externalId={itemId}
 						isOpen={isReportItemModalOpen}
 						onClose={() => {
 							setIsReportItemModalOpen(false);
@@ -1104,5 +1106,3 @@ const ItemDetail: FC<
 		</>
 	);
 };
-
-export default compose(withRouter, withUser, withEmbedFlow)(ItemDetail) as FC<ItemDetailProps>;

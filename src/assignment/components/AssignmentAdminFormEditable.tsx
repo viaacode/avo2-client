@@ -11,30 +11,31 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { isNil } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../admin/shared/types';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import ContainedInBundlesTable from '../../bundle/components/ContainedInBundlesTable';
+import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable';
 import { type QualityLabel } from '../../collection/collection.types';
 import { formatTimestamp, getFullName } from '../../shared/helpers/formatters';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useGetQualityLabels } from '../../shared/hooks/useGetQualityLabels';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 interface AssignmentAdminFormEditableProps {
 	assignment: Avo.Assignment.Assignment;
 	setAssignment: (newAssignment: Avo.Assignment.Assignment) => void;
 }
 
-const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserProps> = ({
+export const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps> = ({
 	assignment,
 	setAssignment,
-	commonUser,
 }) => {
 	const { tText } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 	const { data: allQualityLabels, isLoading } = useGetQualityLabels();
 	const owner: PickerItem | undefined = assignment.profile
 		? {
@@ -238,5 +239,3 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 		</Container>
 	);
 };
-
-export default withUser(AssignmentAdminFormEditable) as FC<AssignmentAdminFormEditableProps>;

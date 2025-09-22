@@ -26,6 +26,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { cloneDeep, compact, isArray, isNil, noop } from 'lodash-es';
 import React, {
 	type FC,
@@ -36,8 +37,8 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 import {
 	ArrayParam,
 	DelimitedArrayParam,
@@ -48,10 +49,11 @@ import {
 } from 'use-query-params';
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { OrderDirection } from '../../search/search.const';
 import {
 	CheckboxDropdownModal,
@@ -72,8 +74,7 @@ import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { KeyCode } from '../../shared/types';
@@ -91,11 +92,11 @@ import {
 	AssignmentType,
 	AssignmentView,
 } from '../assignment.types';
-import AssignmentDeadline from '../components/AssignmentDeadline';
+import { AssignmentDeadline } from '../components/AssignmentDeadline';
 import { deleteAssignment, deleteSelfFromAssignment } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { useGetAssignments } from '../hooks/useGetAssignments';
-import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
+import { DeleteAssignmentModal } from '../modals/DeleteAssignmentModal';
 
 interface AssignmentOverviewProps {
 	onUpdate: () => void | Promise<void>;
@@ -114,12 +115,10 @@ const defaultFiltersAndSort = {
 	sort_order: DEFAULT_SORT_ORDER,
 };
 
-const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & UserProps> = ({
-	onUpdate = noop,
-	history,
-	commonUser,
-}) => {
+export const AssignmentOverview: FC<AssignmentOverviewProps> = ({ onUpdate = noop }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [filterString, setFilterString] = useState<string | undefined>(undefined);
@@ -296,7 +295,7 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 		setMarkedAssignment(assignmentRow);
 		switch (actionId) {
 			case AssignmentAction.edit:
-				navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+				navigate(navigateFunc, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 					id: assignmentRow.id,
 					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 				});
@@ -784,7 +783,7 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 	};
 
 	const onClickCreate = () =>
-		redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), history);
+		redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), navigateFunc);
 
 	const getEmptyFallbackTitle = () => {
 		const hasFilters: boolean =
@@ -967,5 +966,3 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 
 	return <div className="m-assignment-overview">{renderAssignmentsView()}</div>;
 };
-
-export default compose(withRouter, withUser)(AssignmentOverview) as FC<AssignmentOverviewProps>;

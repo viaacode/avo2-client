@@ -1,7 +1,7 @@
 import { Button, Container, IconName, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { NEW_FRAGMENT } from '../../collection.const';
 import { type CollectionAction } from '../CollectionOrBundleEdit.types';
 
@@ -12,7 +12,7 @@ interface FragmentAddProps {
 	changeCollectionState: (action: CollectionAction) => void;
 }
 
-const FragmentAdd: FC<FragmentAddProps> = ({
+export const FragmentAdd: FC<FragmentAddProps> = ({
 	index,
 	collectionId,
 	numberOfFragments,
@@ -64,5 +64,3 @@ const FragmentAdd: FC<FragmentAddProps> = ({
 		</Container>
 	);
 };
-
-export default FragmentAdd;

@@ -18,6 +18,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
+import { useAtomValue, useSetAtom } from 'jotai';
 import {
 	cloneDeep,
 	every,
@@ -32,20 +33,18 @@ import {
 	set,
 } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { compose, type Dispatch } from 'redux';
+import { useNavigate } from 'react-router';
 import { type UrlUpdateType } from 'use-query-params';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import withUser from '../../shared/hocs/withUser';
 import { useQualityLabels } from '../../shared/hooks/useQualityLabels';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
@@ -56,7 +55,6 @@ import {
 	type BookmarkStatusLookup,
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../shared/services/toast-service';
-import { type AppState } from '../../store';
 import { isEducationalUser } from '../../user-item-request-form/helpers/is-educational-user';
 import {
 	DEFAULT_FILTER_STATE,
@@ -67,21 +65,19 @@ import {
 	SearchFilter,
 	type SearchOrderProperty,
 } from '../search.const';
+import { getSearchResultsAtom, searchAtom } from '../search.store';
 import {
 	type FilterState,
 	type SearchFilterFieldValues,
 	type SearchFilterMultiOptions,
 	type SearchFiltersAndResultsProps,
-	type SearchFiltersAndResultsPropsManual,
+	type SearchState,
 } from '../search.types';
-import { getSearchResults } from '../store/actions';
-import { selectSearchError, selectSearchLoading, selectSearchResults } from '../store/selectors';
 
-import SearchFilterControls from './SearchFilterControls';
-import SearchResults from './SearchResults';
+import { SearchFilterControls } from './SearchFilterControls';
+import { SearchResults } from './SearchResults';
 
-const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
-	// Manual props
+export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	enabledFilters,
 	enabledTypeOptions,
 	enabledOrderProperties,
@@ -90,16 +86,16 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	setFilterState,
 	renderDetailLink,
 	renderSearchLink,
-
-	// Automatically injected props
-	searchResults,
-	searchResultsLoading,
-	searchResultsError,
-	search,
-	history,
-	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+
+	const searchState: SearchState = useAtomValue(searchAtom);
+	const searchResults = searchState.data;
+	const commonUser = useAtomValue(commonUserAtom);
+	const search = useSetAtom(getSearchResultsAtom);
+	const searchResultsLoading = searchState.loading;
+	const searchResultsError = searchState.error;
 	const resultsCount = searchResults?.count ?? 0;
 
 	const urlUpdateType: UrlUpdateType = 'push';
@@ -113,9 +109,9 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 
 	const navigateToItemRequestForm = () => {
 		if (isEducationalUser(commonUser)) {
-			navigate(history, APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM.route);
+			navigate(navigateFunc, APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM.route);
 		} else {
-			navigate(history, APP_PATH.USER_ITEM_REQUEST_FORM.route);
+			navigate(navigateFunc, APP_PATH.USER_ITEM_REQUEST_FORM.route);
 		}
 
 		window.scrollTo(0, 0);
@@ -366,7 +362,7 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 			}
 			const results = searchResults?.results ?? [];
 			const resultItem: Avo.Search.ResultItem | undefined = results.find(
-				(result) => result.uid === uuid
+				(result: Avo.Search.ResultItem | undefined) => result?.uid === uuid
 			);
 			if (!resultItem) {
 				throw new CustomError('Failed to find search result by id');
@@ -568,38 +564,3 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 
 	return renderSearchPage();
 };
-
-const mapStateToProps = (state: AppState) => ({
-	searchResults: selectSearchResults(state),
-	searchResultsLoading: selectSearchLoading(state),
-	searchResultsError: selectSearchError(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		search: (
-			orderProperty: Avo.Search.OrderProperty,
-			orderDirection: Avo.Search.OrderDirection,
-			from: number,
-			size: number,
-			filters?: Partial<Avo.Search.Filters>,
-			filterOptionSearch?: Partial<Avo.Search.FilterOption>
-		) =>
-			dispatch(
-				getSearchResults(
-					orderProperty,
-					orderDirection,
-					from,
-					size,
-					filters,
-					filterOptionSearch
-				) as any
-			),
-	};
-};
-
-export default compose(
-	withRouter,
-	withUser,
-	connect(mapStateToProps, mapDispatchToProps)
-)(SearchFiltersAndResults) as FC<SearchFiltersAndResultsPropsManual>;

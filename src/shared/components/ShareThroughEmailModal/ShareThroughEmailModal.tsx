@@ -1,9 +1,8 @@
 import { Modal, ModalBody } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode } from 'react';
 
-import withUser, { type UserProps } from '../../hocs/withUser';
 import { type EmailTemplateType } from '../../services/campaign-monitor-service';
-import ShareThroughEmailContent from '../ShareThroughEmailContent/ShareThroughEmailContent';
+import { ShareThroughEmailContent } from '../ShareThroughEmailContent/ShareThroughEmailContent';
 
 interface AddToCollectionModalProps {
 	modalTitle: string | ReactNode;
@@ -14,7 +13,7 @@ interface AddToCollectionModalProps {
 	onClose: () => void;
 }
 
-const ShareThroughEmailModal: FC<AddToCollectionModalProps & UserProps> = ({
+export const ShareThroughEmailModal: FC<AddToCollectionModalProps> = ({
 	modalTitle,
 	type,
 	emailLinkHref,
@@ -42,5 +41,3 @@ const ShareThroughEmailModal: FC<AddToCollectionModalProps & UserProps> = ({
 		</Modal>
 	);
 };
-
-export default withUser(ShareThroughEmailModal) as FC<AddToCollectionModalProps>;

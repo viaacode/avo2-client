@@ -1,12 +1,10 @@
 import { Blankslate, Button, Container, IconName } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode } from 'react';
-import { type RouteComponentProps, withRouter } from 'react-router';
-import { compose } from 'redux';
+import { useNavigate } from 'react-router';
 
 import { APP_PATH } from '../../constants';
 import { OrderedList } from '../../shared/components/OrderedList/OrderedList';
-import withUser from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './ErrorNoAccess.scss';
 
@@ -15,15 +13,12 @@ interface ErrorNoAccessProps {
 	message: string | ReactNode;
 }
 
-const ErrorNoAccess: FC<ErrorNoAccessProps & RouteComponentProps> = ({
-	title,
-	message,
-	history,
-}) => {
+export const ErrorNoAccess: FC<ErrorNoAccessProps> = ({ title, message }) => {
 	const { tText } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	const goToWorkspace = () => {
-		history.push(APP_PATH.WORKSPACE.route);
+		navigateFunc(APP_PATH.WORKSPACE.route);
 	};
 
 	return (
@@ -53,5 +48,3 @@ const ErrorNoAccess: FC<ErrorNoAccessProps & RouteComponentProps> = ({
 		</div>
 	);
 };
-
-export default compose(withRouter, withUser)(ErrorNoAccess) as FC<ErrorNoAccessProps>;

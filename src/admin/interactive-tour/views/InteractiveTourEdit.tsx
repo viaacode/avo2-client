@@ -25,8 +25,9 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
+import { useMatch, useNavigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { OrderDirection } from '../../../search/search.const';
@@ -43,7 +44,7 @@ import { GetInteractiveTourByIdDocument } from '../../../shared/generated/graphq
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { navigate } from '../../../shared/helpers/link';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { dataService } from '../../../shared/services/data-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
@@ -54,7 +55,7 @@ import {
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { type PickerItem } from '../../shared/types';
-import InteractiveTourAdd from '../components/InteractiveTourStepAdd';
+import { InteractiveTourAdd } from '../components/InteractiveTourStepAdd';
 import {
 	INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
 	type InteractiveTourAction,
@@ -77,7 +78,7 @@ import {
 	type InteractiveTourStep,
 } from '../interactive-tour.types';
 
-import InteractiveTourEditStep from './InteractiveTourEditStep';
+import { InteractiveTourEditStep } from './InteractiveTourEditStep';
 
 import './InteractiveTourEdit.scss';
 
@@ -87,10 +88,13 @@ const BlockHeading = lazy(() =>
 	}))
 );
 
-type InteractiveTourEditProps = DefaultSecureRouteProps<{ id: string }>;
-
-const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, location }) => {
+export const InteractiveTourEdit: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const location = useLocation();
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id', string>(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT);
+
+	const interactiveTourId = match?.params.id;
 
 	// Hooks
 	const [formErrors, setFormErrors] = useState<InteractiveTourEditFormErrorState>({});
@@ -142,12 +146,15 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, loc
 			});
 		} else {
 			try {
+				if (!interactiveTourId) {
+					return;
+				}
 				const response = await dataService.query<
 					GetInteractiveTourByIdQuery,
 					GetInteractiveTourByIdQueryVariables
 				>({
 					query: GetInteractiveTourByIdDocument,
-					variables: { id: parseInt(match.params.id) },
+					variables: { id: parseInt(interactiveTourId) },
 				});
 
 				const interactiveTourObj = response.app_interactive_tour[0];
@@ -173,7 +180,7 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, loc
 				console.error(
 					new CustomError('Failed to get interactive tour by id', err, {
 						query: 'GET_INTERACTIVE_TOUR_BY_ID',
-						variables: { id: match.params.id },
+						variables: { id: interactiveTourId },
 					})
 				);
 				setLoadingInfo({
@@ -190,7 +197,7 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, loc
 		tHtml,
 		isCreatePage,
 		getPageType,
-		match.params.id,
+		interactiveTourId,
 	]);
 
 	useEffect(() => {
@@ -205,10 +212,10 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, loc
 
 	const navigateBack = () => {
 		if (isCreatePage) {
-			history.push(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_OVERVIEW);
+			navigateFunc(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_OVERVIEW);
 		} else {
-			navigate(history, INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL, {
-				id: match.params.id,
+			navigate(navigateFunc, INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL, {
+				id: interactiveTourId,
 			});
 		}
 	};
@@ -271,6 +278,9 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, loc
 
 	const handleSave = async () => {
 		try {
+			if (!interactiveTourId) {
+				return;
+			}
 			const errors = getFormErrors();
 			setFormErrors(errors || {});
 			if (errors) {
@@ -301,21 +311,21 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, loc
 				interactiveTourState.currentInteractiveTour
 			);
 
-			let interactiveTourId: number | string;
+			let tempInteractiveTourId: number | string;
 			if (isCreatePage) {
 				// insert the interactive tour
-				interactiveTourId = await InteractiveTourService.insertInteractiveTour(tour);
+				tempInteractiveTourId = await InteractiveTourService.insertInteractiveTour(tour);
 			} else {
 				// Update existing interactive tour
 				await InteractiveTourService.updateInteractiveTour(tour);
-				interactiveTourId = match.params.id;
+				tempInteractiveTourId = interactiveTourId;
 			}
 
 			redirectToClientPage(
 				buildLink(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL, {
-					id: interactiveTourId,
+					id: tempInteractiveTourId,
 				}),
-				history
+				navigateFunc
 			);
 			ToastService.success(
 				tHtml(
@@ -501,7 +511,7 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, loc
 	// Render
 	const renderPage = () => (
 		<AdminLayout
-			onClickBackButton={() => navigate(history, ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW)}
+			onClickBackButton={() => navigate(navigateFunc, ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW)}
 			pageTitle={tText(
 				'admin/interactive-tour/views/interactive-tour-edit___interactive-tour-aanpassen'
 			)}
@@ -565,5 +575,3 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, loc
 		</>
 	);
 };
-
-export default InteractiveTourEdit;

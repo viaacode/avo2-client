@@ -1,13 +1,13 @@
 import { Table, type TableColumn, type TableProps } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 
-import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
+import { QuickLaneFilterTableCell } from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { type QuickLaneUrlObject } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
-const AssociatedQuickLaneTable: FC<TableProps> = ({
+export const AssociatedQuickLaneTable: FC<TableProps> = ({
 	onColumnClick,
 	sortColumn,
 	sortOrder,
@@ -74,8 +74,6 @@ const AssociatedQuickLaneTable: FC<TableProps> = ({
 		</>
 	);
 };
-
-export default AssociatedQuickLaneTable as FC<TableProps>;
 
 export const AssociatedQuickLaneTableOrderBy: Partial<Record<string, string>> = {
 	author: 'owner.user.full_name',

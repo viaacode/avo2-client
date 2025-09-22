@@ -12,7 +12,7 @@ import {
 import { clsx } from 'clsx';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 
 interface AssignmentHeadingProps {
 	actions?: ReactNode;
@@ -23,7 +23,7 @@ interface AssignmentHeadingProps {
 	tour?: ReactNode | null;
 }
 
-const AssignmentHeading: FC<AssignmentHeadingProps> = ({
+export const AssignmentHeading: FC<AssignmentHeadingProps> = ({
 	actions,
 	back,
 	info,
@@ -110,5 +110,3 @@ const AssignmentHeading: FC<AssignmentHeadingProps> = ({
 		</>
 	);
 };
-
-export default AssignmentHeading;

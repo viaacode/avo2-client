@@ -20,13 +20,15 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { compact, get, isNil, uniq } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, type RouteComponentProps } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { AssignmentService } from '../../assignment/assignment.service';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { APP_PATH } from '../../constants';
-import FileUpload from '../../shared/components/FileUpload/FileUpload';
+import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
 import { type App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types';
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
@@ -35,8 +37,7 @@ import { extractKlascementError } from '../../shared/helpers/extract-klascement-
 import { formatDate } from '../../shared/helpers/formatters';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
@@ -57,17 +58,16 @@ import { type CollectionAction, type MarcomNoteInfo } from './CollectionOrBundle
 interface CollectionOrBundleEditMarcomProps {
 	collection: Avo.Collection.Collection & { marcom_note?: MarcomNoteInfo };
 	changeCollectionState: (action: CollectionAction) => void;
-	history: RouteComponentProps['history'];
 	onFocus?: () => void;
 }
 
-const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserProps> = ({
+export const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps> = ({
 	collection,
 	changeCollectionState,
 	onFocus,
-	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const isCollection = collection.type_id === ContentTypeNumber.collection;
 
@@ -654,5 +654,3 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 		</>
 	);
 };
-
-export default withUser(CollectionOrBundleEditMarcom) as FC<CollectionOrBundleEditMarcomProps>;

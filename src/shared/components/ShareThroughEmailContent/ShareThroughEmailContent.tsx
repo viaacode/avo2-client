@@ -1,10 +1,11 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Box, Button, Flex, FlexItem, Spacer, TextInput } from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
 import React, { type FC, useState } from 'react';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { copyToClipboard } from '../../helpers/clipboard';
-import withUser, { type UserProps } from '../../hocs/withUser';
-import useTranslation from '../../hooks/useTranslation';
+import { useTranslation } from '../../hooks/useTranslation';
 import {
 	CampaignMonitorService,
 	type EmailTemplateType,
@@ -20,14 +21,14 @@ interface AddToCollectionModalProps {
 	onSendMail: () => void;
 }
 
-const ShareThroughEmailContent: FC<AddToCollectionModalProps & UserProps> = ({
+export const ShareThroughEmailContent: FC<AddToCollectionModalProps> = ({
 	type,
 	emailLinkHref,
 	emailLinkTitle,
 	onSendMail,
-	user,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [emailAddress, setEmailAddress] = useState<string>('');
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -44,7 +45,7 @@ const ShareThroughEmailContent: FC<AddToCollectionModalProps & UserProps> = ({
 					object_type: 'link',
 				},
 			},
-			user
+			commonUser
 		);
 
 		ToastService.success(
@@ -73,7 +74,7 @@ const ShareThroughEmailContent: FC<AddToCollectionModalProps & UserProps> = ({
 						object_type: 'mail',
 					},
 				},
-				user
+				commonUser
 			);
 
 			ToastService.success(
@@ -173,5 +174,3 @@ const ShareThroughEmailContent: FC<AddToCollectionModalProps & UserProps> = ({
 		</>
 	);
 };
-
-export default withUser(ShareThroughEmailContent) as FC<AddToCollectionModalProps>;

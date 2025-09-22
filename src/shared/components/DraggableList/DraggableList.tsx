@@ -11,7 +11,7 @@ interface DraggableListProps {
 	generateKey?: (item: any) => string;
 }
 
-const DraggableList: FC<DraggableListProps> = ({
+export const DraggableList: FC<DraggableListProps> = ({
 	items,
 	renderItem,
 	onListChange,
@@ -85,5 +85,3 @@ const DraggableList: FC<DraggableListProps> = ({
 		</div>
 	);
 };
-
-export default DraggableList;

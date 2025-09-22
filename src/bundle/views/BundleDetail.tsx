@@ -26,16 +26,17 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { compact, get, noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router';
-import { Link, type RouteComponentProps } from 'react-router-dom';
-import { compose } from 'redux';
+import { useMatch, useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
-import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
+import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionService } from '../../collection/collection.service';
 import {
@@ -44,19 +45,19 @@ import {
 	CollectionOrBundle,
 	ContentTypeNumber,
 } from '../../collection/collection.types';
-import { PublishCollectionModal } from '../../collection/components';
+import { PublishCollectionModal } from '../../collection/components/modals/PublishCollectionModal';
 import { useGetCollectionOrBundleByIdOrInviteToken } from '../../collection/hooks/useGetCollectionOrBundleByIdOrInviteToken';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
-import CommonMetaData from '../../shared/components/CommonMetaData/CommonMetaData';
+import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
-import EditButton from '../../shared/components/EditButton/EditButton';
-import Html from '../../shared/components/Html/Html';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import JsonLd from '../../shared/components/JsonLd/JsonLd';
-import ShareThroughEmailModal from '../../shared/components/ShareThroughEmailModal/ShareThroughEmailModal';
+import { EditButton } from '../../shared/components/EditButton/EditButton';
+import { Html } from '../../shared/components/Html/Html';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
+import { ShareThroughEmailModal } from '../../shared/components/ShareThroughEmailModal/ShareThroughEmailModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
@@ -70,8 +71,7 @@ import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { formatDate, getFullName, renderAvatar } from '../../shared/helpers/formatters';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
@@ -90,20 +90,22 @@ import './BundleDetail.scss';
 
 type BundleDetailProps = {
 	id?: string;
-	enabledMetaData: SearchFilter[];
+	enabledMetaData?: SearchFilter[];
 };
 
-const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id: string }>> = ({
-	history,
-	match,
-	commonUser,
+export const BundleDetail: FC<BundleDetailProps> = ({
 	id,
 	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id', string>(APP_PATH.BUNDLE_DETAIL.route);
 
+	const bundleIdFromUrl = match?.params.id;
+
+	const commonUser = useAtomValue(commonUserAtom);
 	// State
-	const [bundleId, setBundleId] = useState(id || match.params.id);
+	const [bundleId, setBundleId] = useState(id || bundleIdFromUrl);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
@@ -132,7 +134,12 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 		isError: isErrorBundle,
 		isLoading: isLoadingBundle,
 		refetch: refetchBundle,
-	} = useGetCollectionOrBundleByIdOrInviteToken(bundleId, CollectionOrBundle.BUNDLE, undefined);
+	} = useGetCollectionOrBundleByIdOrInviteToken(
+		bundleId as string,
+		CollectionOrBundle.BUNDLE,
+		undefined,
+		{ enabled: !!bundleId }
+	);
 
 	// Computed
 	const isOwner =
@@ -162,7 +169,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 	}, [bundleObj]);
 
 	const checkPermissions = useCallback(async () => {
-		if (!bundleObj) {
+		if (!bundleId || !bundleObj) {
 			return;
 		}
 		let showPopup = false;
@@ -297,12 +304,15 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 				id: bundleId,
 				tabId: CollectionCreateUpdateTab.CONTENT,
 			}),
-			history
+			navigateFunc
 		);
 	};
 
 	const onDeleteBundle = async () => {
 		try {
+			if (!bundleId) {
+				return;
+			}
 			setIsDeleteModalOpen(false);
 			await CollectionService.deleteCollectionOrBundle(bundleId);
 
@@ -315,7 +325,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 				commonUser
 			);
 
-			history.push(APP_PATH.WORKSPACE.route);
+			navigateFunc(APP_PATH.WORKSPACE.route);
 			ToastService.success(
 				tHtml('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd')
 			);
@@ -361,7 +371,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 				commonUser
 			);
 
-			defaultGoToDetailLink(history)(duplicateBundle.id, 'bundel');
+			defaultGoToDetailLink(navigateFunc)(duplicateBundle.id, 'bundel');
 			setBundleId(duplicateBundle.id);
 			ToastService.success(
 				tHtml(
@@ -416,6 +426,9 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 					'bundle/views/bundle-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
 				)
 			);
+			return;
+		}
+		if (!bundleId) {
 			return;
 		}
 		try {
@@ -525,6 +538,9 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 	};
 
 	const renderActionDropdown = () => {
+		if (!bundleId) {
+			return null;
+		}
 		const BUNDLE_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				bundleId,
@@ -555,6 +571,9 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 	};
 
 	const renderActions = () => {
+		if (!bundleId) {
+			return null;
+		}
 		if (isMobileWidth()) {
 			const BUNDLE_DROPDOWN_ITEMS = [
 				...createDropdownMenuItem(
@@ -676,7 +695,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 						{tText('bundle/views/bundle-detail___over-deze-bundel')}
 					</BlockHeading>
 					<Grid>
-						<CommonMetaData
+						<CommonMetadata
 							subject={bundleObj}
 							enabledMetaData={enabledMetaData}
 							renderSearchLink={defaultRenderSearchLink}
@@ -932,5 +951,3 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 
 	return renderPageContent();
 };
-
-export default compose(withRouter, withUser)(BundleDetail) as FC<BundleDetailProps>;

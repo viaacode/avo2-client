@@ -8,33 +8,29 @@ import {
 	Spinner,
 	TextArea,
 } from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
 import type { Requests } from 'node-zendesk';
 import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router';
-import { compose } from 'redux';
+import { useNavigate } from 'react-router';
 
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import FileUpload from '../../shared/components/FileUpload/FileUpload';
+import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
 import { DOC_TYPES } from '../../shared/helpers/files';
 import { getFullNameCommonUser } from '../../shared/helpers/formatters';
 import { groupLomLinks } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { validateForm } from '../../shared/helpers/validate-form';
-import withUser from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ZendeskService } from '../../shared/services/zendesk-service';
 
 import { USER_ITEM_REQUEST_FORM_VALIDATION_SCHEMA } from './UserItemRequestForm.consts';
 import { renderAttachment } from './UserItemRequestForm.helpers';
-
 import './ItemRequestForm.scss';
-
-type UserItemRequestFormProps = DefaultSecureRouteProps;
 
 interface FormValues {
 	description: string;
@@ -42,8 +38,10 @@ interface FormValues {
 	attachmentUrl: string | null;
 }
 
-const UserItemRequestForm: FC<UserItemRequestFormProps> = ({ history, commonUser }) => {
+export const UserItemRequestForm: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [formValues, setFormValues] = useState<FormValues>({
 		description: '',
@@ -131,7 +129,7 @@ const UserItemRequestForm: FC<UserItemRequestFormProps> = ({ history, commonUser
 					'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt'
 				)
 			);
-			redirectToClientPage(APP_PATH.USER_ITEM_REQUEST_FORM_CONFIRM.route, history);
+			redirectToClientPage(APP_PATH.USER_ITEM_REQUEST_FORM_CONFIRM.route, navigateFunc);
 		} catch (err) {
 			console.error('Failed to create zendesk ticket', err, ticket);
 			ToastService.danger(
@@ -243,5 +241,3 @@ const UserItemRequestForm: FC<UserItemRequestFormProps> = ({ history, commonUser
 		</Container>
 	);
 };
-
-export default compose(withRouter, withUser)(UserItemRequestForm) as FC;

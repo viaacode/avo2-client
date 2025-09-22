@@ -1,8 +1,6 @@
 import { Flex, Spinner } from '@viaa/avo2-components';
 import React, { type FC, lazy, Suspense } from 'react';
-import { compose } from 'redux';
 
-import withUser from '../../../shared/hocs/withUser';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 const ContentPageLabelOverview = lazy(() =>
@@ -25,4 +23,4 @@ const ContentPageLabelOverviewPage: FC = () => {
 	);
 };
 
-export default compose(withAdminCoreConfig, withUser)(ContentPageLabelOverviewPage) as FC;
+export default withAdminCoreConfig(ContentPageLabelOverviewPage) as FC;

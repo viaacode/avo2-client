@@ -4,16 +4,18 @@ import { clsx } from 'clsx';
 import React, { type FC, type ReactNode, useMemo } from 'react';
 
 import { CollectionBlockType } from '../../../../collection/collection.const';
-import CollectionFragmentFlowPlayer, {
+import {
+	CollectionFragmentFlowPlayer,
 	type CollectionFragmentFlowPlayerProps,
 } from '../../../../collection/components/CollectionFragmentFlowPlayer';
-import CollectionFragmentTitle, {
+import {
+	CollectionFragmentTitle,
 	type CollectionFragmentTitleProps,
 } from '../../../../collection/components/CollectionFragmentTitle';
-import useTranslation from '../../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../hooks/useTranslation';
 import { ItemMetadata } from '../../BlockItemMetadata/ItemMetadata';
-import CollapsibleColumn from '../../CollapsibleColumn/CollapsibleColumn';
-import TextWithTimestamps from '../../TextWithTimestamp/TextWithTimestamps';
+import { CollapsibleColumn } from '../../CollapsibleColumn/CollapsibleColumn';
+import { TextWithTimestamps } from '../../TextWithTimestamp/TextWithTimestamps';
 
 import './CollectionFragmentTypeItem.scss';
 
@@ -25,7 +27,7 @@ export interface CollectionFragmentTypeItemProps extends DefaultProps {
 	canOpenOriginal?: boolean;
 }
 
-const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
+export const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	block,
 	title,
 	buildSeriesLink,
@@ -124,5 +126,3 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 		</div>
 	);
 };
-
-export default CollectionFragmentTypeItem;

@@ -2,12 +2,12 @@ import { Icon, IconName } from '@viaa/avo2-components';
 import { clsx } from 'clsx';
 import { flatten } from 'lodash-es';
 import React, { type FC, type ReactElement, type ReactNode } from 'react';
-import { Link, NavLink, type RouteComponentProps } from 'react-router-dom';
+import { Link, type Location, NavLink, useLocation } from 'react-router-dom';
 
 import { APP_PATH } from '../../../../constants';
 import { CustomError } from '../../../../shared/helpers/custom-error';
 import { tText } from '../../../../shared/helpers/translate-text';
-import useTranslation from '../../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { type NavigationItemInfo } from '../../../../shared/types';
 
 import './Sidebar.scss';
@@ -20,7 +20,7 @@ interface SidebarProps {
 	navItems?: NavigationItemInfo[];
 }
 
-const Sidebar: FC<SidebarProps> = ({
+export const Sidebar: FC<SidebarProps> = ({
 	children,
 	className,
 	headerLink,
@@ -28,11 +28,9 @@ const Sidebar: FC<SidebarProps> = ({
 	navItems,
 }) => {
 	const { tHtml } = useTranslation();
+	const location = useLocation();
 
-	const isActiveClass = (
-		item: NavigationItemInfo,
-		location: RouteComponentProps['location']
-	): boolean => {
+	const isActiveClass = (item: NavigationItemInfo, location: Location): boolean => {
 		return (
 			(!!item.location && item.location === location.pathname && !item.exact) ||
 			(!!item.location &&
@@ -63,9 +61,12 @@ const Sidebar: FC<SidebarProps> = ({
 				})}
 			>
 				<NavLink
-					className={clsx('o-sidebar__avo__nav-item')}
-					activeClassName="o-sidebar__avo__nav-item--active"
-					isActive={(_match, location) => isActiveClass(navItem, location)}
+					className={clsx(
+						'o-sidebar__avo__nav-item',
+						isActiveClass(navItem, location)
+							? 'o-sidebar__avo__nav-item--active'
+							: undefined
+					)}
 					to={navItem.location || '/'}
 				>
 					{navItem.label}
@@ -124,5 +125,3 @@ const Sidebar: FC<SidebarProps> = ({
 		</div>
 	);
 };
-
-export default Sidebar;

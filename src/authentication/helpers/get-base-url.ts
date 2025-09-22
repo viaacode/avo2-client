@@ -1,7 +1,7 @@
 import { trimEnd } from 'lodash-es';
-import type { RouteComponentProps } from 'react-router-dom';
+import { type Location } from 'react-router';
 
-export function getBaseUrl(location: RouteComponentProps['location']): string {
+export function getBaseUrl(location: Location): string {
 	if (location.pathname === '/') {
 		return trimEnd(window.location.href, '/');
 	}

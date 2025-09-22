@@ -4,7 +4,7 @@ import React, { type FC, lazy, Suspense, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import useTranslation from '../../../shared/hooks/use-translation/use-translation';
+import { useTranslation } from '../../../shared/hooks/use-translation/use-translation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {

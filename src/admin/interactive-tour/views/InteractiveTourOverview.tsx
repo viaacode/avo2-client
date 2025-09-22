@@ -3,12 +3,12 @@ import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
 import { get, isNil } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import {
@@ -20,7 +20,7 @@ import { CustomError } from '../../../shared/helpers/custom-error';
 import { formatDate } from '../../../shared/helpers/formatters';
 import { navigate } from '../../../shared/helpers/link';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
@@ -41,10 +41,9 @@ import {
 	type InteractiveTourTableState,
 } from '../interactive-tour.types';
 
-type InteractiveTourOverviewProps = DefaultSecureRouteProps;
-
-const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ history }) => {
+export const InteractiveTourOverview: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	const [interactiveTourIdToDelete, setInteractiveTourIdToDelete] = useState<number | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
@@ -186,9 +185,13 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 							type="secondary"
 							icon={IconName.eye}
 							onClick={() =>
-								navigate(history, INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL, {
-									id: rowData.id,
-								})
+								navigate(
+									navigateFunc,
+									INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL,
+									{
+										id: rowData.id,
+									}
+								)
 							}
 							title={tText(
 								'admin/interactive-tour/views/interactive-tour-overview___bekijk-de-rondleiding-detail-pagina'
@@ -200,9 +203,13 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 						<Button
 							icon={IconName.edit}
 							onClick={() =>
-								navigate(history, INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT, {
-									id: rowData.id,
-								})
+								navigate(
+									navigateFunc,
+									INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT,
+									{
+										id: rowData.id,
+									}
+								)
 							}
 							size="small"
 							title={tText(
@@ -251,7 +258,7 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 						label={tText(
 							'admin/interactive-tour/views/interactive-tour-overview___interactieve-tour-aanmaken'
 						)}
-						onClick={() => history.push(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE)}
+						onClick={() => navigateFunc(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE)}
 					/>
 				</Spacer>
 			</ErrorView>
@@ -307,7 +314,7 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 					onClick={() => {
 						redirectToClientPage(
 							INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE,
-							history
+							navigateFunc
 						);
 					}}
 				/>
@@ -337,5 +344,3 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 		</AdminLayout>
 	);
 };
-
-export default InteractiveTourGroupOverview;

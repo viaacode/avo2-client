@@ -1,6 +1,6 @@
 import React, { type FC } from 'react';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { StickyBar } from '../StickyBar/StickyBar';
 
 interface StickySaveBarProps {

@@ -8,11 +8,14 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, useCallback, useMemo, useState } from 'react';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { APP_PATH } from '../../constants';
-import ShareDropdown, {
+import {
+	ShareDropdown,
 	type ShareDropdownProps,
 } from '../../shared/components/ShareDropdown/ShareDropdown';
 import { type ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
@@ -20,15 +23,14 @@ import { type ShareWithPupilsProps } from '../../shared/components/ShareWithPupi
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	onAddNewContributor,
 	onDeleteContributor,
 	onEditContributor,
 } from '../helpers/assignment-share-with-collegue-handlers';
 
-import DeleteAssignmentButton, { type DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
+import { DeleteAssignmentButton, type DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
 
 interface ShareProps extends ShareWithPupilsProps {
 	contributors: Avo.Assignment.Contributor[];
@@ -54,10 +56,9 @@ interface AssignmentActionsProps {
 	assignment?: Partial<Avo.Assignment.Assignment>;
 }
 
-const AssignmentActions: FC<AssignmentActionsProps & UserProps> = ({
+export const AssignmentActions: FC<AssignmentActionsProps> = ({
 	isCreating,
 	assignment,
-	commonUser,
 	onDuplicate,
 	overflow,
 	preview,
@@ -69,6 +70,7 @@ const AssignmentActions: FC<AssignmentActionsProps & UserProps> = ({
 	view,
 }) => {
 	const { tText } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
 
 	const renderViewButton = useCallback(
@@ -350,5 +352,3 @@ const AssignmentActions: FC<AssignmentActionsProps & UserProps> = ({
 		]
 	);
 };
-
-export default withUser(AssignmentActions) as FC<AssignmentActionsProps>;

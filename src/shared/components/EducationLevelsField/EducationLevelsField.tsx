@@ -3,7 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 import React, { type FC } from 'react';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
 import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 
@@ -12,7 +12,7 @@ interface EducationLevelsFieldProps {
 	value: string[] | null; // id of lom field (collections, assignments, profiles) or string label (videos and audio)
 }
 
-const EducationLevelsField: FC<EducationLevelsFieldProps> = ({ onChange, value }) => {
+export const EducationLevelsField: FC<EducationLevelsFieldProps> = ({ onChange, value }) => {
 	const { tText } = useTranslation();
 
 	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
@@ -38,5 +38,3 @@ const EducationLevelsField: FC<EducationLevelsFieldProps> = ({ onChange, value }
 		</FormGroup>
 	);
 };
-
-export default EducationLevelsField;

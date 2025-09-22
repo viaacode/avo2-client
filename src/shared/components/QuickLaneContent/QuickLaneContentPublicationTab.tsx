@@ -1,15 +1,16 @@
 import { Button, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { compact, map } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { CollectionService } from '../../../collection/collection.service';
-import useTranslation from '../../../shared/hooks/useTranslation';
-import withUser, { type UserProps } from '../../hocs/withUser';
-import EducationLevelsField from '../EducationLevelsField/EducationLevelsField';
-import LomFieldsInput from '../LomFieldsInput/LomFieldsInput';
-import ShortDescriptionField from '../ShortDescriptionField/ShortDescriptionField';
-import SubjectsField from '../SubjectsField/SubjectsField';
+import { useTranslation } from '../../hooks/useTranslation';
+import { EducationLevelsField } from '../EducationLevelsField/EducationLevelsField';
+import { LomFieldsInput } from '../LomFieldsInput/LomFieldsInput';
+import { ShortDescriptionField } from '../ShortDescriptionField/ShortDescriptionField';
+import { SubjectsField } from '../SubjectsField/SubjectsField';
 
 import { isShareable } from './QuickLaneContent.helpers';
 import { type QuickLaneContentProps, QuickLaneTypeEnum } from './QuickLaneContent.types';
@@ -18,10 +19,11 @@ interface QuickLaneContentPublicationTabProps {
 	onComplete?: () => void;
 }
 
-const QuickLaneContentPublicationTab: FC<
-	QuickLaneContentProps & QuickLaneContentPublicationTabProps & UserProps
-> = ({ content, content_label, commonUser, onComplete, onUpdate }) => {
+export const QuickLaneContentPublicationTab: FC<
+	QuickLaneContentProps & QuickLaneContentPublicationTabProps
+> = ({ content, content_label, onComplete, onUpdate }) => {
 	const { tText } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [model, setModel] = useState(content);
 	const isCollection = content_label === QuickLaneTypeEnum.COLLECTION;
@@ -138,7 +140,3 @@ const QuickLaneContentPublicationTab: FC<
 		</>
 	) : null;
 };
-
-export default withUser(QuickLaneContentPublicationTab) as FC<
-	QuickLaneContentProps & QuickLaneContentPublicationTabProps
->;

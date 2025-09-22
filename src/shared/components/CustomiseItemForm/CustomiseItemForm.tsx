@@ -11,7 +11,8 @@ import {
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { type LabeledFormField } from '../../types';
-import RichTextEditorWrapper, {
+import {
+	RichTextEditorWrapper,
 	type RichTextEditorWrapperProps,
 } from '../RichTextEditorWrapper/RichTextEditorWrapper';
 

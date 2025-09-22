@@ -1,32 +1,31 @@
 import { Button, type ButtonProps, type DefaultProps, IconName } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, useState } from 'react';
-import { compose } from 'redux';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import {
 	ConfirmModal,
 	type ConfirmModalProps,
 } from '../../shared/components/ConfirmModal/ConfirmModal';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
 
-export type DeleteAssignmentButtonProps = DefaultProps &
-	Partial<UserProps> & {
-		assignment?: Avo.Assignment.Assignment;
-		button?: Partial<ButtonProps>;
-		modal?: Partial<ConfirmModalProps>;
-	};
+export type DeleteAssignmentButtonProps = DefaultProps & {
+	assignment?: Avo.Assignment.Assignment;
+	button?: Partial<ButtonProps>;
+	modal?: Partial<ConfirmModalProps>;
+};
 
-const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
+export const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 	assignment,
 	button,
 	modal,
-	commonUser,
 }) => {
 	const { tText } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [isOpen, setOpen] = useState<boolean>(false);
 	const canDeleteAnyAssignments = PermissionService.hasPerm(
@@ -95,5 +94,3 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 		</>
 	);
 };
-
-export default compose(withUser)(DeleteAssignmentButton) as FC<DeleteAssignmentButtonProps>;

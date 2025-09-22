@@ -13,6 +13,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import React, {
 	type Dispatch,
 	type FC,
@@ -31,15 +32,15 @@ import {
 	useQueryParams,
 } from 'use-query-params';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { CollectionBlockType } from '../../../collection/collection.const';
 import { type FilterState } from '../../../search/search.types';
 import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
-import InteractiveTour from '../../../shared/components/InteractiveTour/InteractiveTour';
+import { InteractiveTour } from '../../../shared/components/InteractiveTour/InteractiveTour';
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
 import { formatTimestamp } from '../../../shared/helpers/formatters';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useAssignmentPastDeadline } from '../../../shared/hooks/useAssignmentPastDeadline';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
 import { ToastService } from '../../../shared/services/toast-service';
 import {
@@ -54,16 +55,16 @@ import {
 	type PupilCollectionFragment,
 	type PupilSearchFilterState,
 } from '../../assignment.types';
-import AssignmentHeading from '../../components/AssignmentHeading';
-import AssignmentMetadata from '../../components/AssignmentMetadata';
+import { AssignmentHeading } from '../../components/AssignmentHeading';
+import { AssignmentMetadata } from '../../components/AssignmentMetadata';
 import { buildAssignmentSearchLink } from '../../helpers/build-search-link';
 import { cleanupTitleAndDescriptions } from '../../helpers/cleanup-title-and-descriptions';
 import { backToOverview } from '../../helpers/links';
 import { useAssignmentPupilTabs } from '../../hooks/assignment-pupil-tabs';
 
-import AssignmentResponseAssignmentTab from './tabs/AssignmentResponseAssignmentTab';
-import AssignmentResponsePupilCollectionTab from './tabs/AssignmentResponsePupilCollectionTab';
-import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
+import { AssignmentResponseAssignmentTab } from './tabs/AssignmentResponseAssignmentTab';
+import { AssignmentResponsePupilCollectionTab } from './tabs/AssignmentResponsePupilCollectionTab';
+import { AssignmentResponseSearchTab } from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
@@ -80,7 +81,7 @@ interface AssignmentResponseEditProps {
 	onShowPreviewClicked: () => void;
 }
 
-const AssignmentResponseEdit: FC<AssignmentResponseEditProps & UserProps> = ({
+export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
 	assignment,
 	assignmentResponse,
 	onAssignmentChanged,
@@ -88,10 +89,10 @@ const AssignmentResponseEdit: FC<AssignmentResponseEditProps & UserProps> = ({
 	showBackButton,
 	isPreview = false,
 	onShowPreviewClicked,
-	user,
 }) => {
 	const { tText, tHtml } = useTranslation();
 	const [isSaving, setIsSaving] = useState(false);
+	const commonUser = useAtomValue(commonUserAtom);
 
 	// Data
 	const [assignmentResponseOriginal, setAssignmentResponseOriginal] = useState<Omit<
@@ -200,7 +201,7 @@ const AssignmentResponseEdit: FC<AssignmentResponseEditProps & UserProps> = ({
 				setIsSaving(false);
 				return;
 			}
-			if (!user?.profile?.id || !assignmentResponse || !assignmentResponseOriginal) {
+			if (!commonUser?.profileId || !assignmentResponse || !assignmentResponseOriginal) {
 				setIsSaving(false);
 				return;
 			}
@@ -278,7 +279,7 @@ const AssignmentResponseEdit: FC<AssignmentResponseEditProps & UserProps> = ({
 
 	const renderBackButton = useMemo(
 		() => (
-			<Link className="c-return" to={backToOverview}>
+			<Link className="c-return" to={backToOverview()}>
 				<Icon name={IconName.chevronLeft} size="small" type="arrows" />
 				{tText('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
@@ -450,5 +451,3 @@ const AssignmentResponseEdit: FC<AssignmentResponseEditProps & UserProps> = ({
 
 	return renderAssignmentResponseEditView();
 };
-
-export default withUser(AssignmentResponseEdit) as FC<AssignmentResponseEditProps>;

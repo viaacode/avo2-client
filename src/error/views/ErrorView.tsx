@@ -11,12 +11,13 @@ import {
 	ToolbarCenter,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { compact, isArray, isNil, isString, omit, uniq } from 'lodash-es';
 import queryString from 'query-string';
 import React, { type FC, type ReactNode } from 'react';
-import { type RouteComponentProps, withRouter } from 'react-router';
-import { compose } from 'redux';
+import { useLocation } from 'react-router-dom';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { redirectToServerLogoutPage } from '../../authentication/helpers/redirects';
 import { redirectToHelp } from '../../authentication/helpers/redirects/redirect-help';
 import { redirectToLoggedInHome } from '../../authentication/helpers/redirects/redirect-logged-in-home';
@@ -24,8 +25,7 @@ import { redirectToPupils } from '../../authentication/helpers/redirects/redirec
 import { redirectToLoggedOutHome } from '../../authentication/helpers/redirects/redirect-to-logged-out-home';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 
 import './ErrorView.scss';
@@ -45,15 +45,15 @@ interface ErrorViewProps {
 	children?: ReactNode;
 }
 
-const ErrorView: FC<ErrorViewProps & RouteComponentProps & UserProps> = ({
+export const ErrorView: FC<ErrorViewProps> = ({
 	message,
 	icon,
 	children = null,
-	location,
 	actionButtons = [],
-	user,
 }) => {
 	const { tText } = useTranslation();
+	const location = useLocation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const queryParams = queryString.parse((location.search || '').substring(1));
 
@@ -74,7 +74,7 @@ const ErrorView: FC<ErrorViewProps & RouteComponentProps & UserProps> = ({
 
 	const messageText: string | ReactNode = (queryParams.message as string) || message || '';
 	const errorMessage: string | ReactNode = isNil(messageText)
-		? getPageNotFoundError(!!user)
+		? getPageNotFoundError(!!commonUser)
 		: messageText;
 	const errorIcon: IconName =
 		(queryParams.icon as IconName | undefined) || icon || IconName.search;
@@ -101,7 +101,7 @@ const ErrorView: FC<ErrorViewProps & RouteComponentProps & UserProps> = ({
 	}
 
 	const goToHome = () => {
-		if (user) {
+		if (commonUser) {
 			redirectToLoggedInHome(location);
 		} else {
 			redirectToLoggedOutHome(location);
@@ -165,5 +165,3 @@ const ErrorView: FC<ErrorViewProps & RouteComponentProps & UserProps> = ({
 		</Container>
 	);
 };
-
-export default compose(withRouter, withUser)(ErrorView) as FC<ErrorViewProps>;

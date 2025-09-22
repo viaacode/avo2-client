@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
-import AvoLogo from '@assets/images/avo-logo-i.svg';
+import AvoLogoSrc from '@assets/images/avo-logo-i.svg';
 import {
 	Avatar,
 	Button,
@@ -14,28 +14,21 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtom, useSetAtom } from 'jotai';
 import { last } from 'lodash-es';
 import React, { type FC, type ReactText, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { Link, type RouteComponentProps } from 'react-router-dom';
-import { type Dispatch } from 'redux';
+import { Link, useNavigate } from 'react-router-dom';
 
+import { loginAtom } from '../../../authentication/authentication.store';
+import { getLoginStateAtom } from '../../../authentication/authentication.store.actions';
 import {
 	getProfileAvatar,
 	getProfileInitials,
 } from '../../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects/redirect-to-external-page';
-import { getLoginStateAction } from '../../../authentication/store/actions';
-import {
-	selectLogin,
-	selectLoginError,
-	selectLoginLoading,
-} from '../../../authentication/store/selectors';
 import { APP_PATH } from '../../../constants';
-import useTranslation from '../../../shared/hooks/useTranslation';
-import { type AppState } from '../../../store';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
 import { ToastService } from '../../services/toast-service';
@@ -43,36 +36,20 @@ import { type NavigationItemInfo } from '../../types';
 
 import { NavigationBarId } from './Navigation.const';
 import { NavigationItem } from './NavigationItem';
-
 import './Navigation.scss';
-
-type NavigationParams = RouteComponentProps;
 
 /**
  * Main navigation bar component
- * @param history
- * @param location
- * @param match
- * @param loginMessage
- * @constructor
  */
-const Navigation: FC<
-	NavigationParams & {
-		loginState: Avo.Auth.LoginResponse | null;
-		loginStateLoading: boolean;
-		loginStateError: boolean;
-		getLoginState: () => Dispatch;
-	}
-> = ({
-	loginState,
-	loginStateLoading,
-	loginStateError,
-	getLoginState,
-	history,
-	location,
-	match,
-}) => {
+export const Navigation: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const navigate = useNavigate();
+
+	const [loginAtomValue] = useAtom(loginAtom);
+	const loginState = loginAtomValue.data;
+	const loginStateLoading = loginAtomValue.loading;
+	const loginStateError = loginAtomValue.error;
+	const getLoginState = useSetAtom(getLoginStateAtom);
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -94,7 +71,7 @@ const Navigation: FC<
 
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
-			getLoginState();
+			getLoginState(false);
 			return;
 		}
 	});
@@ -105,14 +82,10 @@ const Navigation: FC<
 				key={item.key}
 				item={item}
 				className={'c-nav__item c-nav__item--i'}
-				exact={item.location === '/'}
 				showActive={false}
 				areDropdownsOpen={areDropdownsOpen}
 				setDropdownsOpen={setDropdownsOpen}
 				isMobile={isMobile}
-				history={history}
-				location={location}
-				match={match}
 				onNavigate={() => setMobileMenuOpen(false)}
 			/>
 		));
@@ -222,7 +195,7 @@ const Navigation: FC<
 				redirectToExternalPage(link, navItem.link_target || '_blank');
 			} else {
 				// Internal link to react page or to content block page
-				redirectToClientPage(link, history);
+				redirectToClientPage(link, navigate);
 			}
 			closeAllDropdowns();
 		} catch (err) {
@@ -252,7 +225,7 @@ const Navigation: FC<
 												: APP_PATH.LOGGED_OUT_HOME.route
 										}
 									>
-										<img alt="Archief voor Onderwijs logo" src={AvoLogo} />
+										<img alt="Archief voor Onderwijs logo" src={AvoLogoSrc} />
 									</Link>
 								</h1>
 							</ToolbarItem>
@@ -324,19 +297,3 @@ const Navigation: FC<
 		</>
 	);
 };
-
-const mapStateToProps = (state: AppState) => ({
-	loginState: selectLogin(state),
-	loginStateLoading: selectLoginLoading(state),
-	loginStateError: selectLoginError(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		getLoginState: () => dispatch(getLoginStateAction() as any),
-	};
-};
-
-export default withRouter(
-	connect(mapStateToProps, mapDispatchToProps)(Navigation)
-) as unknown as FC<NavigationParams>;

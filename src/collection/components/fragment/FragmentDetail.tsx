@@ -4,7 +4,7 @@ import { get } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import { APP_PATH } from '../../../constants';
-import ItemVideoDescription from '../../../item/components/ItemVideoDescription';
+import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
@@ -28,7 +28,7 @@ interface FragmentDetailProps {
  * @param showDescriptionNextToVideo
  * @constructor
  */
-const FragmentDetail: FC<FragmentDetailProps> = ({
+export const FragmentDetail: FC<FragmentDetailProps> = ({
 	collectionFragment,
 	showDescription,
 	showMetadata,
@@ -99,5 +99,3 @@ const FragmentDetail: FC<FragmentDetailProps> = ({
 		/>
 	);
 };
-
-export default FragmentDetail;

@@ -1,5 +1,6 @@
 import React, { type ReactNode } from 'react';
-import { Link, type RouteComponentProps } from 'react-router-dom';
+import { type NavigateFunction } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { type SearchFilter } from '../../search/search.const';
 import { type FilterState } from '../../search/search.types';
@@ -7,13 +8,14 @@ import { type FilterState } from '../../search/search.types';
 import { generateSearchLinkString } from './link';
 
 export const defaultGoToSearchLink =
-	(history: RouteComponentProps['history']) =>
+	(navigate: NavigateFunction) =>
 	(newFilters: FilterState): void => {
+		// Get the first filter prop and value (there should only be one)
 		const filterProp = Object.keys(newFilters.filters || {})[0] as SearchFilter | undefined;
 		const filterValue = (newFilters.filters || {})[filterProp as SearchFilter] as
 			| string
 			| undefined;
-		history.push(
+		navigate(
 			generateSearchLinkString(
 				filterProp,
 				filterValue,

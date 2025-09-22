@@ -19,35 +19,36 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
+import { useAtomValue } from 'jotai';
 import { compact, isEmpty, isNil, noop } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router';
-import { Link, type RouteComponentProps } from 'react-router-dom';
-import { compose } from 'redux';
+import { useMatch, useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 import { BooleanParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
 import { AssignmentService } from '../../assignment/assignment.service';
-import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
-import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
-import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
+import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
+import { CreateAssignmentModal } from '../../assignment/modals/CreateAssignmentModal';
+import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
+import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorNoAccess } from '../../error/components';
-import { ErrorView } from '../../error/views';
+import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
+import { ErrorView } from '../../error/views/ErrorView';
 import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
-import CommonMetaData from '../../shared/components/CommonMetaData/CommonMetaData';
-import EditButton from '../../shared/components/EditButton/EditButton';
-import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import JsonLd from '../../shared/components/JsonLd/JsonLd';
+import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
+import { EditButton } from '../../shared/components/EditButton/EditButton';
+import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
 import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import MoreOptionsDropdownWrapper from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
+import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
-import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
-import ShareDropdown from '../../shared/components/ShareDropdown/ShareDropdown';
-import ShareModal from '../../shared/components/ShareModal/ShareModal';
+import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal';
+import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown';
+import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
@@ -61,12 +62,11 @@ import {
 } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { getFullName } from '../../shared/helpers/formatters/avatar';
+import { getFullName } from '../../shared/helpers/formatters';
 import { generateContentLinkString, navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { isUuid } from '../../shared/helpers/uuid';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
@@ -89,10 +89,12 @@ import {
 	ContentTypeString,
 	type Relation,
 } from '../collection.types';
-import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
-import AddToBundleModal from '../components/modals/AddToBundleModal';
-import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
+import { FragmentList } from '../components/fragment/FragmentList';
+import { AddToBundleModal } from '../components/modals/AddToBundleModal';
+import { AutoplayCollectionModal } from '../components/modals/AutoplayCollectionModal';
+import { DeleteCollectionModal } from '../components/modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from '../components/modals/DeleteContributorFromCollectionModal';
+import { PublishCollectionModal } from '../components/modals/PublishCollectionModal';
 import {
 	onAddContributor,
 	onDeleteContributor,
@@ -136,16 +138,22 @@ type CollectionInfo = {
 
 type CollectionDetailProps = {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
-	enabledMetaData: SearchFilter[];
+	enabledMetaData?: SearchFilter[];
 };
 
-const CollectionDetail: FC<
-	CollectionDetailProps & UserProps & RouteComponentProps<{ id: string }>
-> = ({ history, match, commonUser, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
+export const CollectionDetail: FC<CollectionDetailProps> = ({
+	id,
+	enabledMetaData = ALL_SEARCH_FILTERS,
+}) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id', string>(APP_PATH.COLLECTION_DETAIL.route);
 
+	const collectionIdFromUrl: string | undefined = match?.params.id;
+
+	const commonUser = useAtomValue(commonUserAtom);
 	// State
-	const [collectionId, setCollectionId] = useState(id || match.params.id);
+	const [collectionId, setCollectionId] = useState(id || collectionIdFromUrl);
 
 	const [collectionInfo, setCollectionInfo] = useState<CollectionInfo | null>(null);
 	const permissions = collectionInfo?.permissions;
@@ -209,27 +217,31 @@ const CollectionDetail: FC<
 	const [query, setQuery] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
 
-	const { data: editStatuses } = useGetCollectionsEditStatuses([collectionId], {
-		enabled: permissions?.canEditCollections || false,
+	const { data: editStatuses } = useGetCollectionsEditStatuses([collectionId as string], {
+		enabled: !!collectionId && !!permissions?.canEditCollections,
 		refetchInterval: EDIT_STATUS_REFETCH_TIME,
 		refetchIntervalInBackground: true,
 	});
 
 	const { data: bundlesContainingCollection, refetch: refetchBundlesContainingCollection } =
 		useGetCollectionsOrBundlesContainingFragment(
-			collectionId,
+			collectionId as string,
 			BundleSortProp.title,
 			OrderDirection.asc,
-			{ enabled: !!collectionInfo?.collection && !showLoginPopup }
+			{ enabled: !!collectionId && !!collectionInfo?.collection && !showLoginPopup }
 		);
 
 	const isBeingEdited =
+		collectionId &&
 		editStatuses &&
 		!!editStatuses[collectionId] &&
 		editStatuses[collectionId]?.editingUserId !== commonUser?.profileId;
 
 	const getRelatedCollections = useCallback(async () => {
 		try {
+			if (!collectionId) {
+				return;
+			}
 			if (isUuid(collectionId)) {
 				setRelatedCollections(
 					await getRelatedItems(
@@ -310,8 +322,8 @@ const CollectionDetail: FC<
 	}, [collectionId, commonUser, showLoginPopup, tHtml]);
 
 	useEffect(() => {
-		setCollectionId(id || match.params.id);
-	}, [id, match.params.id]);
+		setCollectionId(id || collectionIdFromUrl);
+	}, [id, collectionIdFromUrl]);
 
 	useEffect(() => {
 		if (!isFirstRender && collection) {
@@ -361,6 +373,9 @@ const CollectionDetail: FC<
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
+			if (!collectionId) {
+				return;
+			}
 			setLoadingInfo({
 				state: 'loading',
 			});
@@ -384,7 +399,7 @@ const CollectionDetail: FC<
 
 				// Redirect to new url that uses the collection uuid instead of the collection avo1 id
 				// and continue loading the collection
-				defaultGoToDetailLink(history)(uuid, 'collectie');
+				defaultGoToDetailLink(navigateFunc)(uuid, 'collectie');
 				return;
 			}
 
@@ -507,7 +522,7 @@ const CollectionDetail: FC<
 			});
 		}
 		// Ensure callback only runs once even if user object is set twice // TODO investigate why user object is set twice
-	}, [collectionId, setCollectionInfo, tText, commonUser, history, defaultGoToDetailLink]);
+	}, [collectionId, setCollectionInfo, tText, commonUser, navigateFunc, defaultGoToDetailLink]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection();
@@ -530,7 +545,7 @@ const CollectionDetail: FC<
 
 	// Listeners
 	const onEditCollection = () => {
-		history.push(
+		navigateFunc(
 			`${generateContentLinkString(ContentTypeString.collection, `${collectionId}`)}/${
 				ROUTE_PARTS.edit
 			}/${CollectionCreateUpdateTab.CONTENT}`
@@ -575,7 +590,7 @@ const CollectionDetail: FC<
 						commonUser
 					);
 
-					defaultGoToDetailLink(history)(duplicateCollection.id, 'collectie');
+					defaultGoToDetailLink(navigateFunc)(duplicateCollection.id, 'collectie');
 					setCollectionId(duplicateCollection.id);
 					ToastService.success(
 						tHtml(
@@ -630,6 +645,9 @@ const CollectionDetail: FC<
 				onEditCollection();
 				break;
 			case CollectionMenuAction.openAutoplayCollectionModal:
+				if (!collectionId) {
+					return;
+				}
 				BookmarksViewsPlaysService.action(
 					'play',
 					'collection',
@@ -670,6 +688,9 @@ const CollectionDetail: FC<
 				);
 				return;
 			}
+			if (!collectionId) {
+				return;
+			}
 			await BookmarksViewsPlaysService.toggleBookmark(
 				collectionId,
 				commonUser,
@@ -707,18 +728,21 @@ const CollectionDetail: FC<
 	};
 
 	const handleDeleteCollection = async (): Promise<void> => {
+		if (!collectionId) {
+			return;
+		}
 		await deleteCollection(
 			collectionId,
 			commonUser,
 			true,
 			async () => await CollectionService.deleteCollectionOrBundle(collectionId),
-			() => history.push(APP_PATH.WORKSPACE.route)
+			() => navigateFunc(APP_PATH.WORKSPACE.route)
 		);
 	};
 
 	const handleDeleteSelfFromCollection = async (): Promise<void> => {
 		await deleteSelfFromCollection(collectionId, commonUser, () =>
-			history.push(APP_PATH.WORKSPACE.route)
+			navigateFunc(APP_PATH.WORKSPACE.route)
 		);
 	};
 
@@ -730,7 +754,7 @@ const CollectionDetail: FC<
 				withDescription
 			);
 
-			history.push(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
+			navigateFunc(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
 		}
 	};
 
@@ -848,7 +872,7 @@ const CollectionDetail: FC<
 		try {
 			await CollectionService.declineSharedCollection(collection.id as string, inviteToken);
 
-			navigate(history, APP_PATH.WORKSPACE_COLLECTIONS.route);
+			navigate(navigateFunc, APP_PATH.WORKSPACE_COLLECTIONS.route);
 
 			ToastService.success(
 				tText('collection/views/collection-detail___de-uitnodiging-werd-afgewezen')
@@ -865,6 +889,9 @@ const CollectionDetail: FC<
 	// Render functions
 
 	const renderCollectionDropdownOptions = () => {
+		if (!collectionId) {
+			return null;
+		}
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				collectionId,
@@ -965,7 +992,8 @@ const CollectionDetail: FC<
 					</Dropdown>
 				)}
 				{(isOwner || isEditContributor || permissions?.canEditCollections) &&
-					!inviteToken && (
+					!inviteToken &&
+					!!collectionId && (
 						<ShareDropdown
 							contributors={transformContributorsToSimpleContributors(
 								{
@@ -1074,6 +1102,9 @@ const CollectionDetail: FC<
 	};
 
 	const renderHeaderButtonsMobile = () => {
+		if (!collectionId) {
+			return;
+		}
 		const COLLECTION_DROPDOWN_ITEMS_MOBILE = [
 			...createDropdownMenuItem(
 				collectionId,
@@ -1218,7 +1249,7 @@ const CollectionDetail: FC<
 						</h3>
 						<Grid>
 							{!!collection && (
-								<CommonMetaData
+								<CommonMetadata
 									subject={collection}
 									enabledMetaData={enabledMetaData}
 									renderSearchLink={defaultRenderSearchLink}
@@ -1437,7 +1468,7 @@ const CollectionDetail: FC<
 					</>
 				)}
 
-				{collection && isMobileWidth() && (
+				{!!collectionId && !!collection && isMobileWidth() && (
 					<ShareModal
 						title={tText(
 							'collection/views/collection-detail___deel-deze-collectie-met-collegas'
@@ -1554,10 +1585,7 @@ const CollectionDetail: FC<
 
 						<HeaderBottomRowLeft>
 							<div className="u-flex-space-between">
-								<HeaderOwnerAndContributors
-									subject={collection}
-									commonUser={commonUser}
-								/>
+								<HeaderOwnerAndContributors subject={collection} />
 							</div>
 						</HeaderBottomRowLeft>
 						{!showLoginPopup && (
@@ -1632,5 +1660,3 @@ const CollectionDetail: FC<
 
 	return renderPageContent();
 };
-
-export default compose(withRouter, withUser)(CollectionDetail) as FC<CollectionDetailProps>;

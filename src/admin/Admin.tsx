@@ -1,25 +1,27 @@
 import { Flex, IconName } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, useEffect, useState } from 'react';
 import { HorizontalPageSplit } from 'react-page-split';
+import { Outlet } from 'react-router';
 
+import { commonUserAtom } from '../authentication/authentication.store';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../shared/helpers/custom-error';
-import withUser from '../shared/hocs/withUser';
-import useTranslation from '../shared/hooks/useTranslation';
+import { useTranslation } from '../shared/hooks/useTranslation';
 import { ToastService } from '../shared/services/toast-service';
 import { type NavigationItemInfo } from '../shared/types';
 
 import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
-import { renderAdminRoutes } from './admin.routes';
-import { Sidebar } from './shared/components';
+import { Sidebar } from './shared/components/Sidebar/Sidebar';
 
-const Admin: FC<{ commonUser: Avo.User.CommonUser }> = ({ commonUser }) => {
+export const Admin: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [userPermissions, setUserPermissions] = useState<PermissionName[] | null>(null);
@@ -72,7 +74,7 @@ const Admin: FC<{ commonUser: Avo.User.CommonUser }> = ({ commonUser }) => {
 					className="o-app--admin__sidebar"
 				/>
 				<Flex className="o-app--admin__main u-flex-auto u-scroll" orientation="vertical">
-					{renderAdminRoutes(userPermissions)}
+					<Outlet />
 				</Flex>
 			</HorizontalPageSplit>
 		);
@@ -86,5 +88,3 @@ const Admin: FC<{ commonUser: Avo.User.CommonUser }> = ({ commonUser }) => {
 		/>
 	);
 };
-
-export default withUser(Admin) as FC;

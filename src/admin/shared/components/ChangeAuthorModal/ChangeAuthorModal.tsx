@@ -11,7 +11,7 @@ import {
 import { noop } from 'lodash-es';
 import React, { type FC, useState } from 'react';
 
-import useTranslation from '../../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { type PickerItem } from '../../types';
 import { ContentPicker } from '../ContentPicker/ContentPicker';
 
@@ -22,7 +22,7 @@ interface ChangeAuthorModalProps {
 	callback: (authorProfileId: PickerItem) => void;
 }
 
-const ChangeAuthorModal: FC<ChangeAuthorModalProps> = ({
+export const ChangeAuthorModal: FC<ChangeAuthorModalProps> = ({
 	onClose = noop,
 	isOpen,
 	initialAuthor,
@@ -93,5 +93,3 @@ const ChangeAuthorModal: FC<ChangeAuthorModalProps> = ({
 		</Modal>
 	);
 };
-
-export default ChangeAuthorModal;

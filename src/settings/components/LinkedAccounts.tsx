@@ -12,7 +12,8 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
-import { type Avo, Idp } from '@viaa/avo2-types';
+import { Idp } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, {
 	type Dispatch,
 	type FC,
@@ -21,8 +22,9 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import {
 	redirectToServerLinkAccount,
 	redirectToServerUnlinkAccount,
@@ -30,13 +32,9 @@ import {
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { isPupil } from '../../shared/helpers/is-pupil';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './LinkedAccounts.scss';
-
-interface AccountProps extends RouteComponentProps {
-	commonUser: Avo.User.CommonUser;
-}
 
 interface IdpProps {
 	label: ReactNode;
@@ -52,8 +50,10 @@ interface DeleteModalToggle {
 }
 
 // This tab is only loaded if user is NOT a pupil (see Settings.tsx) -- no more checks here
-const LinkedAccounts: FC<AccountProps> = ({ location, commonUser }) => {
+export const LinkedAccounts: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const location = useLocation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [isDeleteVlaamseOverheidModalOpen, setIsDeleteVlaamseOverheidModalOpen] =
 		useState<boolean>(false);
@@ -61,7 +61,7 @@ const LinkedAccounts: FC<AccountProps> = ({ location, commonUser }) => {
 	const [isDeleteKlascementModalOpen, setIsDeleteKlascementModalOpen] = useState<boolean>(false);
 	const [isDeleteLeerIDModalOpen, setIsDeleteLeerIDModalOpen] = useState<boolean>(false);
 
-	const isUserAPupil = isPupil(commonUser.userGroup?.id);
+	const isUserAPupil = isPupil(commonUser?.userGroup?.id);
 
 	const deleteIdpModals: Record<string, DeleteModalToggle> = {
 		VLAAMSEOVERHEID: {
@@ -96,9 +96,9 @@ const LinkedAccounts: FC<AccountProps> = ({ location, commonUser }) => {
 	};
 
 	const renderIdpLinkControls = (idpType: Idp) => {
-		let linked = !!(commonUser.idps as any)?.[idpType];
+		let linked = !!(commonUser?.idps as any)?.[idpType];
 		if (!linked && idpType === Idp.VLAAMSEOVERHEID__SUB_ID) {
-			linked = !!commonUser.idps?.VLAAMSEOVERHEID__ACCOUNT_ID;
+			linked = !!commonUser?.idps?.VLAAMSEOVERHEID__ACCOUNT_ID;
 		}
 		const baseIdp = idpType.split('__')[0];
 		const currentIdp = idpProps[baseIdp];
@@ -247,4 +247,3 @@ const LinkedAccounts: FC<AccountProps> = ({ location, commonUser }) => {
 		</>
 	);
 };
-export default LinkedAccounts;

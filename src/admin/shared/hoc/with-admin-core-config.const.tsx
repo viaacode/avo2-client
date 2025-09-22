@@ -7,23 +7,26 @@ import {
 } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { ContentBlockType, ContentPageWidth } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
-import { DatabaseType } from '@viaa/avo2-types';
+import { type Avo, DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
 import React, { type FC } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { type NavigateFunction } from 'react-router';
+import { Link } from 'react-router-dom';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { APP_PATH, type RouteId } from '../../../constants';
-import FlowPlayerWrapper from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { DEFAULT_AUDIO_STILL, ROUTE_PARTS } from '../../../shared/constants';
 import { getEnv } from '../../../shared/helpers/env';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
 import { ToastService, ToastTypeToAvoToastType } from '../../../shared/services/toast-service';
+import { store } from '../../../shared/store/ui.store';
 import { Locale } from '../../../shared/translations/translations.types';
 import { ADMIN_PATH } from '../../admin.const';
-import BlockSearch from '../../content-page/components/blocks/BlockSearch/BlockSearch';
-import MediaGridWrapper from '../../content-page/components/blocks/MediaGridWrapper/MediaGridWrapper';
+import { BlockSearch } from '../../content-page/components/blocks/BlockSearch/BlockSearch';
+import { MediaGridWrapper } from '../../content-page/components/blocks/MediaGridWrapper/MediaGridWrapper';
 import { GET_ADMIN_ICON_OPTIONS } from '../constants';
 
 const alertIcons: IconName[] = [
@@ -65,9 +68,9 @@ const ALERT_ICON_LIST_CONFIG = (): {
 		label: getAlertIconNames()[iconKey] || iconKey,
 	}));
 
-export function getAdminCoreConfig(): AdminConfig {
+export function getAdminCoreConfig(navigateFunc: NavigateFunction): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
-		return <Link {...linkInfo} to={() => linkInfo.to || ''} />;
+		return <Link {...linkInfo} to={linkInfo.to || ''} />;
 	};
 
 	const proxyUrl = getEnv('PROXY_URL') as string;
@@ -259,7 +262,11 @@ export function getAdminCoreConfig(): AdminConfig {
 			},
 			router: {
 				Link: InternalLink as FC<LinkInfo>,
-				useHistory: useHistory,
+				useHistory: () => ({
+					// TODO replace useHistory with single navigate function
+					push: (url: string) => navigateFunc(url),
+					replace: (url: string) => navigateFunc(url, { replace: true }),
+				}),
 			},
 			queryCache: {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -277,7 +284,7 @@ export function getAdminCoreConfig(): AdminConfig {
 			onExternalLink: noop,
 		},
 		routes: {
-			ADMIN_ALERTS_OVERVIEW: `/${ROUTE_PARTS.alerts}`,
+			ADMIN_ALERTS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.alerts}`,
 			ADMIN_ASSIGNMENTS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.assignments}`,
 			ADMIN_ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.pupilCollections}`,
 			ADMIN_BUNDLES_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.bundles}`,
@@ -320,6 +327,9 @@ export function getAdminCoreConfig(): AdminConfig {
 				UserBulkAction.EXPORT_SELECTION,
 				UserBulkAction.EXPORT_ALL,
 			],
+			getCommonUser: (): Avo.User.CommonUser | null => {
+				return store.get(commonUserAtom);
+			},
 		},
 		locale: Locale.Nl as any,
 		env: {

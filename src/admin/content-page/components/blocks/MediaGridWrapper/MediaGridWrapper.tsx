@@ -12,19 +12,18 @@ import {
 	type RenderLinkFunction,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { compact, isEmpty, isNil } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
-import { withRouter } from 'react-router';
-import { type RouteComponentProps } from 'react-router-dom';
-import { compose } from 'redux';
 
 import placeholderImage from '../../../../../assets/images/assignment-placeholder.png';
+import { commonUserAtom } from '../../../../../authentication/authentication.store';
 import {
 	CONTENT_TYPE_TRANSLATIONS,
 	ContentTypeString,
 } from '../../../../../collection/collection.types';
 import { APP_PATH } from '../../../../../constants';
-import ItemVideoDescription from '../../../../../item/components/ItemVideoDescription';
+import { ItemVideoDescription } from '../../../../../item/components/ItemVideoDescription';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
@@ -36,8 +35,7 @@ import { defaultRenderBookmarkButton } from '../../../../../shared/helpers/defau
 import { formatDate } from '../../../../../shared/helpers/formatters';
 import { isMobileWidth } from '../../../../../shared/helpers/media-query';
 import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
-import withUser, { type UserProps } from '../../../../../shared/hocs/withUser';
-import useTranslation from '../../../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../../../../shared/services/bookmarks-views-plays-service';
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../../../admin.const';
@@ -59,7 +57,7 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 	ctaButtonAltTitle?: string;
 }
 
-const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentProps> = ({
+export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 	title,
 	titleType = 'h2',
 	buttonLabel,
@@ -85,11 +83,11 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 	elements,
 	results,
 	renderLink,
-	commonUser,
-	location,
 }: any) => {
 	// TODO remove any when typings for admin-core-ui is fixed
 	const { tText, tHtml } = useTranslation();
+
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [resolvedResults, setResolvedResults] = useState<
@@ -588,5 +586,3 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 		/>
 	);
 };
-
-export default compose(withRouter, withUser)(MediaGridWrapper) as FC<MediaGridWrapperProps>;

@@ -1,16 +1,18 @@
 import { type AdminConfig, AdminConfigManager } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Spinner } from '@viaa/avo2-components';
 import React, { type ComponentType, useCallback, useEffect, useState } from 'react';
-import { withRouter } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import { getAdminCoreConfig } from './with-admin-core-config.const';
 
 export const withAdminCoreConfig = (WrappedComponent: ComponentType): ComponentType => {
 	const Component = (props: { [key: string]: unknown }) => {
+		const navigateFunc = useNavigate();
+
 		const [adminCoreConfig, setAdminCoreConfig] = useState<AdminConfig | null>(null);
 
 		const initConfigValue = useCallback(() => {
-			const config: AdminConfig = getAdminCoreConfig();
+			const config: AdminConfig = getAdminCoreConfig(navigateFunc);
 			AdminConfigManager.setConfig(config);
 			setAdminCoreConfig(config);
 		}, []);
@@ -26,5 +28,5 @@ export const withAdminCoreConfig = (WrappedComponent: ComponentType): ComponentT
 		return <WrappedComponent {...(props as Record<string, unknown>)} />;
 	};
 
-	return withRouter(Component as any) as ComponentType;
+	return Component as any as ComponentType;
 };

@@ -1,13 +1,14 @@
 import { Alert, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { sortBy } from 'lodash-es';
 import React, { type FC } from 'react';
 
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { showReplacementWarning } from '../../helpers/fragment';
 
-import FragmentDetail from './FragmentDetail';
+import { FragmentDetail } from './FragmentDetail';
 
 interface FragmentListProps {
 	collectionFragments: Avo.Collection.Fragment[];
@@ -25,16 +26,16 @@ interface FragmentListProps {
  * @param showDescriptionNextToVideo
  * @constructor
  */
-const FragmentList: FC<FragmentListProps & UserProps> = ({
+export const FragmentList: FC<FragmentListProps> = ({
 	collectionFragments,
 	showDescription,
 	showMetadata,
 	linkToItems,
 	collection,
-	commonUser,
-	...rest
 }) => {
 	const { tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
+
 	const renderCollectionFragments = () =>
 		sortBy(collectionFragments, 'position').map(
 			(collectionFragment: Avo.Collection.Fragment) => {
@@ -67,7 +68,6 @@ const FragmentList: FC<FragmentListProps & UserProps> = ({
 							showDescription={showDescription}
 							showMetadata={showMetadata}
 							linkToItems={linkToItems}
-							{...rest}
 						/>
 						{/*</BlockIconWrapper>*/}
 					</li>
@@ -77,5 +77,3 @@ const FragmentList: FC<FragmentListProps & UserProps> = ({
 
 	return <ul className="c-collection-list">{renderCollectionFragments()}</ul>;
 };
-
-export default withUser(FragmentList) as FC<FragmentListProps>;

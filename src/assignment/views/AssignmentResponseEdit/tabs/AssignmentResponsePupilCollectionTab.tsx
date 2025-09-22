@@ -18,15 +18,16 @@ import React, { type Dispatch, type FC, type SetStateAction, useState } from 're
 import { Controller, type UseFormReturn } from 'react-hook-form';
 import { type UrlUpdateType } from 'use-query-params';
 
-import { ReactComponent as PupilSvg } from '../../../../assets/images/leerling.svg';
+// eslint-disable-next-line import/no-unresolved
+import PupilSvg from '../../../../assets/images/leerling.svg?react';
 import { CollectionBlockType } from '../../../../collection/collection.const';
-import { BlockList } from '../../../../collection/components';
-import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
+import { BlockList } from '../../../../shared/components/BlockList/BlockList';
+import { EmptyStateMessage } from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { getMoreOptionsLabel } from '../../../../shared/constants';
 import { isMobileWidth } from '../../../../shared/helpers/media-query';
 import { useBlocksList } from '../../../../shared/hooks/use-blocks-list';
 import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal';
-import useTranslation from '../../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../shared/services/toast-service';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
@@ -41,7 +42,9 @@ import {
 import { AssignmentBlockItemDescriptionType } from '../../../components/AssignmentBlockDescriptionButtons';
 import { buildAssignmentSearchLink } from '../../../helpers/build-search-link';
 import { insertMultipleAtPosition } from '../../../helpers/insert-at-position';
-import { useAssignmentBlockChangeHandler, useBlockListModals, useEditBlocks } from '../../../hooks';
+import { useAssignmentBlockChangeHandler } from '../../../hooks/assignment-block-change-handler';
+import { useBlockListModals } from '../../../hooks/assignment-content-modals';
+import { useEditBlocks } from '../../../hooks/use-edit-blocks';
 
 enum MobileActionId {
 	reorderBlocks = 'reorderBlocks',
@@ -57,7 +60,7 @@ interface AssignmentResponsePupilCollectionTabProps {
 	setFilterState: (state: PupilSearchFilterState, urlPushType?: UrlUpdateType) => void;
 }
 
-const AssignmentResponsePupilCollectionTab: FC<
+export const AssignmentResponsePupilCollectionTab: FC<
 	AssignmentResponsePupilCollectionTabProps &
 		Pick<UseFormReturn<AssignmentResponseFormState>, 'setValue' | 'control'>
 > = ({
@@ -343,5 +346,3 @@ const AssignmentResponsePupilCollectionTab: FC<
 		</Container>
 	);
 };
-
-export default AssignmentResponsePupilCollectionTab;

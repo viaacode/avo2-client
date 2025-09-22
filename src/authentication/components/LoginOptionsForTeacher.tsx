@@ -9,11 +9,9 @@ import {
 } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
-import { type RouteComponentProps } from 'react-router';
-import { withRouter } from 'react-router-dom';
 
 import { tHtml } from '../../shared/helpers/translate-html';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	redirectToServerACMIDMLogin,
 	redirectToServerKlascementLogin,
@@ -22,18 +20,19 @@ import {
 } from '../helpers/redirects';
 
 import './LoginOptionsForTeacher.scss';
+import { useLocation } from 'react-router-dom';
 
 interface LoginOptionsForTeacherProps {
 	onOptionClicked?: () => void;
 	openInNewTab?: boolean;
 }
 
-const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentProps> = ({
-	location,
+export const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
 	onOptionClicked = noop,
 	openInNewTab = false,
 }) => {
 	const { tText } = useTranslation();
+	const location = useLocation();
 
 	const getButtons = () => {
 		return [
@@ -121,5 +120,3 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 		</Spacer>
 	));
 };
-
-export default withRouter(LoginOptionsForTeacher);

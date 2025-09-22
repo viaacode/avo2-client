@@ -11,11 +11,11 @@ import {
 	ToolbarTitle,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { isEmpty } from 'lodash-es';
 import React, { type FC, type ReactNode, type ReactText, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { Link } from 'react-router-dom';
 import {
 	JsonParam,
 	NumberParam,
@@ -25,29 +25,30 @@ import {
 } from 'use-query-params';
 
 import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionGuard } from '../../authentication/components/PermissionGuard';
 import {
-	PermissionGuard,
 	PermissionGuardFail,
 	PermissionGuardPass,
-} from '../../authentication/components';
+} from '../../authentication/components/PermissionGuard.slots';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorView } from '../../error/views';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import { ErrorView } from '../../error/views/ErrorView';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { generateContentLinkString } from '../../shared/helpers/link';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
-import { SearchFiltersAndResults } from '../components';
+import { SearchFiltersAndResults } from '../components/SearchFiltersAndResults';
 import { type FilterState } from '../search.types';
 
 import './Search.scss';
 
-const Search: FC<UserProps & RouteComponentProps> = ({ commonUser }) => {
+export const Search: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
 	const queryParamConfig = {
@@ -191,5 +192,3 @@ const Search: FC<UserProps & RouteComponentProps> = ({ commonUser }) => {
 		</>
 	);
 };
-
-export default compose(withRouter, withUser)(Search) as FC;

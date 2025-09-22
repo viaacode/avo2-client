@@ -10,8 +10,8 @@ import { type Avo, type PermissionName } from '@viaa/avo2-types';
 import React, { type FC, useState } from 'react';
 
 import { useTabs } from '../../hooks/useTabs';
-import useTranslation from '../../hooks/useTranslation';
-import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
+import { useTranslation } from '../../hooks/useTranslation';
+import { ShareWithColleagues } from '../ShareWithColleagues/ShareWithColleagues';
 import {
 	type ContributorInfo,
 	type ContributorInfoRight,
@@ -42,7 +42,7 @@ export type ShareDropdownProps = {
 	isAssignmentExpired?: boolean;
 	assignment?: Partial<Avo.Assignment.Assignment>;
 };
-const ShareDropdown: FC<ShareDropdownProps> = ({
+export const ShareDropdown: FC<ShareDropdownProps> = ({
 	assignment,
 	availableRights,
 	buttonProps,
@@ -133,5 +133,3 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 		</Dropdown>
 	);
 };
-
-export default ShareDropdown;

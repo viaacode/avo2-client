@@ -21,23 +21,22 @@ import { type Avo } from '@viaa/avo2-types';
 import type { Requests } from 'node-zendesk';
 import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps, withRouter } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { validateEmailAddress } from '../../../shared/helpers/validation/email';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ZendeskService } from '../../../shared/services/zendesk-service';
 
 import './r4-manual-registration.scss';
 
-type ManualRegistrationProps = RouteComponentProps;
-
-const ManualRegistration: FC<ManualRegistrationProps> = ({ history }) => {
+export const ManualRegistration: FC = () => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
 
 	const [firstName, setFirstName] = useState<string>('');
 	const [lastName, setLastName] = useState<string>('');
@@ -197,7 +196,7 @@ const ManualRegistration: FC<ManualRegistrationProps> = ({ history }) => {
 				<Spacer margin="bottom-large">
 					<Button
 						type="secondary"
-						onClick={history.goBack}
+						onClick={() => navigateFunc(-1)}
 						icon={IconName.arrowLeft}
 						title={tText(
 							'authentication/views/registration-flow/r-4-manual-registration___ga-terug-naar-de-stamboek-pagina'
@@ -366,5 +365,3 @@ const ManualRegistration: FC<ManualRegistrationProps> = ({ history }) => {
 		</Container>
 	);
 };
-
-export default withRouter(ManualRegistration);

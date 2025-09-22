@@ -17,17 +17,18 @@ import React, { type FC, useCallback, useMemo, useState } from 'react';
 import { EducationLevelId } from '../../helpers/lom';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
-import withUser, { type UserProps } from '../../hocs/withUser';
 import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 
-type SelectEducationLevelModalProps = Omit<ModalProps, 'children' | 'ref'> &
-	Partial<UserProps> & {
-		onConfirm?: (lom: Avo.Lom.LomField) => void;
-	};
+type SelectEducationLevelModalProps = Omit<ModalProps, 'children' | 'ref'> & {
+	onConfirm?: (lom: Avo.Lom.LomField) => void;
+};
 
 // Component
 
-const SelectEducationLevelModal: FC<SelectEducationLevelModalProps> = ({ onConfirm, ...modal }) => {
+export const SelectEducationLevelModal: FC<SelectEducationLevelModalProps> = ({
+	onConfirm,
+	...modal
+}) => {
 	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 	const [selected, setSelected] = useState<Avo.Lom.LomField | undefined>(undefined);
 
@@ -109,5 +110,3 @@ const SelectEducationLevelModal: FC<SelectEducationLevelModalProps> = ({ onConfi
 		</Modal>
 	);
 };
-
-export default withUser(SelectEducationLevelModal) as FC<SelectEducationLevelModalProps>;

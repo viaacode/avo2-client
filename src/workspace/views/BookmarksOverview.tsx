@@ -11,17 +11,19 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { orderBy } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
-import FragmentShareModal from '../../shared/components/FragmentShareModal/FragmentShareModal';
+import { FragmentShareModal } from '../../shared/components/FragmentShareModal/FragmentShareModal';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
@@ -32,9 +34,7 @@ import { formatDate, fromNow } from '../../shared/helpers/formatters';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withEmbedFlow, { type EmbedFlowProps } from '../../shared/hocs/withEmbedFlow';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
@@ -44,6 +44,7 @@ import {
 	type EventContentType,
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../shared/services/toast-service';
+import { embedFlowAtom } from '../../shared/store/ui.store';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 const ITEMS_PER_PAGE = 5;
@@ -53,10 +54,11 @@ interface BookmarksOverviewProps {
 	onUpdate: () => void | Promise<void>;
 }
 
-const BookmarksOverview: FC<
-	BookmarksOverviewProps & UserProps & RouteComponentProps & EmbedFlowProps
-> = ({ numberOfItems, onUpdate, history, commonUser, isSmartSchoolEmbedFlow }) => {
+export const BookmarksOverview: FC<BookmarksOverviewProps> = ({ numberOfItems, onUpdate }) => {
 	const { tText, tHtml } = useTranslation();
+	const navigateFunc = useNavigate();
+	const commonUser = useAtomValue(commonUserAtom);
+	const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom);
 
 	// State
 	const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null);
@@ -385,7 +387,7 @@ const BookmarksOverview: FC<
 					title={tText(
 						'workspace/views/bookmarks-overview___zoek-een-item-en-maak-er-een-bladwijzer-van'
 					)}
-					onClick={() => history.push(APP_PATH.SEARCH.route)}
+					onClick={() => navigateFunc(APP_PATH.SEARCH.route)}
 				/>
 			</Spacer>
 		</ErrorView>
@@ -420,9 +422,3 @@ const BookmarksOverview: FC<
 		/>
 	);
 };
-
-export default compose(
-	withRouter,
-	withUser,
-	withEmbedFlow
-)(BookmarksOverview) as FC<BookmarksOverviewProps>;

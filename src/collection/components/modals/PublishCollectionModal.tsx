@@ -12,12 +12,13 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { APP_PATH } from '../../../constants';
 import { buildLink } from '../../../shared/helpers/build-link';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
@@ -31,14 +32,14 @@ interface PublishCollectionModalProps {
 	parentBundles: ParentBundle[] | undefined;
 }
 
-const PublishCollectionModal: FC<PublishCollectionModalProps & UserProps> = ({
+export const PublishCollectionModal: FC<PublishCollectionModalProps> = ({
 	onClose,
 	isOpen,
 	collection,
 	parentBundles,
-	user,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [validationErrors, setValidationErrors] = useState<(string | ReactNode)[]>([]);
 	const [isCollectionPublic, setIsCollectionPublic] = useState(collection.is_public);
@@ -126,7 +127,7 @@ const PublishCollectionModal: FC<PublishCollectionModalProps & UserProps> = ({
 					object_type: isCollection() ? 'collection' : 'bundle',
 					action: isPublished ? 'publish' : 'unpublish',
 				},
-				user
+				commonUser
 			);
 		} catch (err) {
 			ToastService.danger(
@@ -223,5 +224,3 @@ const PublishCollectionModal: FC<PublishCollectionModalProps & UserProps> = ({
 		</Modal>
 	);
 };
-
-export default withUser(PublishCollectionModal) as FC<PublishCollectionModalProps>;

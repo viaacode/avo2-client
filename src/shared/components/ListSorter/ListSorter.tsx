@@ -35,7 +35,9 @@ export interface ListSorterProps<T> {
 
 // Default renderers
 
-const ListSorterThumbnail: FC<{ item: ListSorterItem }> = ({ item }) => <Icon name={item.icon} />;
+export const ListSorterThumbnail: FC<{ item: ListSorterItem }> = ({ item }) => (
+	<Icon name={item.icon} />
+);
 
 export const ListSorterPosition: FC<{ item: ListSorterItem; i?: number }> = ({ item, i }) => {
 	const isFirst = useMemo(() => i === 0, [i]);

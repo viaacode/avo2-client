@@ -21,19 +21,19 @@ import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import { compact, noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps } from 'react-router';
+import { useMatch, useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { StringParam, useQueryParams } from 'use-query-params';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import EmbedCodeFilterTableCell from '../../../embed-code/components/EmbedCodeFilterTableCell';
+import { EmbedCodeFilterTableCell } from '../../../embed-code/components/EmbedCodeFilterTableCell';
 import { type EmbedCode } from '../../../embed-code/embed-code.types';
 import { toEmbedCodeDetail } from '../../../embed-code/helpers/links';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
-import QuickLaneFilterTableCell from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
+import { QuickLaneFilterTableCell } from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
-import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
+import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
@@ -43,7 +43,7 @@ import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-ba
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTabs } from '../../../shared/hooks/useTabs';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
@@ -58,7 +58,7 @@ import {
 	AdminLayoutHeader,
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
+import { DepublishItemModal } from '../components/DepublishItemModal/DepublishItemModal';
 import { mapItemUsedByToQuickLane } from '../helpers';
 import { useGetItemUsedBy } from '../hooks/useGetItemUsedBy';
 import { useGetItemWithRelations } from '../hooks/useGetItemWithRelations';
@@ -72,10 +72,12 @@ import {
 import { ItemsService } from '../items.service';
 import { type ItemUsedByColumnId, type ItemUsedByEntry } from '../items.types';
 
-type ItemDetailProps = RouteComponentProps<{ id: string }>;
+export const ItemDetail: FC = () => {
+	const navigateFunc = useNavigate();
+	const match = useMatch<'id', string>(APP_PATH.ITEM_DETAIL.route);
 
-const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
-	const itemUuid = match.params.id;
+	const itemUuid = match?.params.id;
+
 	// Hooks
 	const [queryParams, setQueryParams] = useQueryParams({
 		sortProp: StringParam,
@@ -85,7 +87,7 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 		data: item,
 		isLoading: itemIsLoading,
 		refetch: refetchItem,
-	} = useGetItemWithRelations(itemUuid);
+	} = useGetItemWithRelations(itemUuid as string, { enabled: !!itemUuid });
 	const { data: itemUsedBy, isError: itemUsedByIsError } = useGetItemUsedBy(
 		{
 			itemUuid: itemUuid as string,
@@ -182,17 +184,17 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 			return;
 		}
 		const link = buildLink(APP_PATH.ITEM_DETAIL.route, { id: item.external_id });
-		redirectToClientPage(link, history);
+		redirectToClientPage(link, navigateFunc);
 	};
 
 	const navigateToCollectionDetail = (id: string) => {
 		const link = buildLink(APP_PATH.COLLECTION_DETAIL.route, { id });
-		redirectToClientPage(link, history);
+		redirectToClientPage(link, navigateFunc);
 	};
 
 	const navigateToAssignmentDetail = (id: string) => {
 		const link = buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id });
-		redirectToClientPage(link, history);
+		redirectToClientPage(link, navigateFunc);
 	};
 
 	const handleColumnClick = (columnId: string) => {
@@ -622,7 +624,7 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 		return (
 			<AdminLayout
 				onClickBackButton={() =>
-					goBrowserBackWithFallback(ADMIN_PATH.ITEMS_OVERVIEW, history)
+					goBrowserBackWithFallback(ADMIN_PATH.ITEMS_OVERVIEW, navigateFunc)
 				}
 				pageTitle={`${tText('admin/items/views/item-detail___item-details')}: ${
 					item.title
@@ -701,5 +703,3 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 		</>
 	);
 };
-
-export default ItemDetail;

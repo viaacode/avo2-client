@@ -7,7 +7,7 @@ import { APP_PATH } from '../../../constants';
 import { buildLink } from '../../helpers/build-link';
 import { copyToClipboard } from '../../helpers/clipboard';
 import { useAssignmentPastDeadline } from '../../hooks/useAssignmentPastDeadline';
-import useTranslation from '../../hooks/useTranslation';
+import { useTranslation } from '../../hooks/useTranslation';
 import { ToastService } from '../../services/toast-service';
 
 import './ShareWithPupils.scss';

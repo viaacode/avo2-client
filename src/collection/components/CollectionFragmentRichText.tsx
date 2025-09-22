@@ -1,7 +1,7 @@
 import { convertToHtml } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 
-import Html, { type HtmlProps } from '../../shared/components/Html/Html';
+import { Html, type HtmlProps } from '../../shared/components/Html/Html';
 import { CollectionBlockType } from '../collection.const';
 import { type BlockItemComponent } from '../collection.types';
 
@@ -11,7 +11,7 @@ type CollectionFragmentRichTextProps = BlockItemComponent &
 		ref?: React.MutableRefObject<HTMLDivElement | null>;
 	};
 
-const CollectionFragmentRichText: FC<CollectionFragmentRichTextProps> = (props) => {
+export const CollectionFragmentRichText: FC<CollectionFragmentRichTextProps> = (props) => {
 	const { block, ...rest } = props;
 
 	return (
@@ -30,5 +30,3 @@ const CollectionFragmentRichText: FC<CollectionFragmentRichTextProps> = (props) 
 		</div>
 	);
 };
-
-export default CollectionFragmentRichText;

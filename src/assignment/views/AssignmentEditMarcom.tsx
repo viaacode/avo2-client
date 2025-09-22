@@ -20,11 +20,12 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { compact, get, isNil } from 'lodash-es';
 import React, { type FC, type ReactNode, useMemo, useState } from 'react';
-import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { Link } from 'react-router-dom';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
@@ -42,8 +43,7 @@ import { extractKlascementError } from '../../shared/helpers/extract-klascement-
 import { formatDate } from '../../shared/helpers/formatters';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { useDeleteAssignmentMarcomEntry } from '../hooks/useDeleteAssignmentMarcomEntry';
 import { useGetAssignmentMarcomEntries } from '../hooks/useGetAssignmentMarcomEntries';
@@ -59,13 +59,13 @@ interface AssignmentEditMarcomProps {
 	onFocus?: () => void;
 }
 
-const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps & UserProps> = ({
+export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
 	assignment,
 	setAssignment,
 	onFocus,
-	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const commonUser = useAtomValue(commonUserAtom);
 
 	const [marcomDate, setMarcomDate] = useState<Date | null>(new Date());
 	const [marcomChannelType, setMarcomChannelType] = useState<string | null>();
@@ -412,5 +412,3 @@ const AssignmentEditMarcom: FC<AssignmentEditMarcomProps & RouteComponentProps &
 		</>
 	);
 };
-
-export default compose(withRouter, withUser)(AssignmentEditMarcom) as FC<AssignmentEditMarcomProps>;

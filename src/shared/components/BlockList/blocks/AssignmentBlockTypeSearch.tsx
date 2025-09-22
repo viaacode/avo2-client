@@ -20,10 +20,11 @@ import { type Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import React, { type FC } from 'react';
 
-import { ReactComponent as NewPartSvg } from '../../../../assets/images/nieuw-onderdeel.svg';
-import { CollectionFragmentRichText } from '../../../../collection/components';
-import useTranslation from '../../../../shared/hooks/useTranslation';
+// eslint-disable-next-line import/no-unresolved
+import NewPartSvg from '../../../../assets/images/nieuw-onderdeel.svg?react';
+import { CollectionFragmentRichText } from '../../../../collection/components/CollectionFragmentRichText';
 import { type EducationLevelId } from '../../../helpers/lom';
+import { useTranslation } from '../../../hooks/useTranslation';
 
 import {
 	GET_EDUCATION_LEVEL_DICT,
@@ -39,7 +40,7 @@ export interface AssignmentBlockTypeSearchProps extends DefaultProps {
 	onCollectionButtonClicked: () => void;
 }
 
-const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
+export const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 	block,
 	showCollectionButton,
 	onCollectionButtonClicked,
@@ -115,5 +116,3 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 		</div>
 	);
 };
-
-export default AssignmentBlockTypeSearch;

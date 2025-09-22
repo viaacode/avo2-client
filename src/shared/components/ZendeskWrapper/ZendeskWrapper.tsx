@@ -7,7 +7,7 @@ declare const ResizeObserver: any;
 
 const FOOTER_HEIGHT = 373;
 
-const ZendeskWrapper: FC = () => {
+export const ZendeskWrapper: FC = () => {
 	/**
 	 * Change the bottom margin of the zendesk widget so it doesn't overlap with the footer
 	 */
@@ -69,5 +69,3 @@ const ZendeskWrapper: FC = () => {
 		<Zendesk zendeskKey={getEnv('ZENDESK_KEY') as string} defer={true} onLoaded={onLoaded} />
 	);
 };
-
-export default ZendeskWrapper;

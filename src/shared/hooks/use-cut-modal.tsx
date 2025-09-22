@@ -1,10 +1,11 @@
 import { Button, type ButtonProps, IconName } from '@viaa/avo2-components';
 import React, { type ReactNode, useState } from 'react';
 
-import CutFragmentModal, {
+import {
+	CutFragmentModal,
 	type CutFragmentModalProps,
 } from '../../collection/components/modals/CutFragmentModal';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 export function useCutModal(): [
 	(props?: Partial<ButtonProps>) => ReactNode,
