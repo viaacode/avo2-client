@@ -3,7 +3,7 @@ import { type ButtonAction } from '@viaa/avo2-components';
 
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { getEnv } from '../../../shared/helpers/env';
-import { type ResolvedItemOrCollectionOrAssignment } from '../components/blocks/MediaGridWrapper/MediaGridWrapper.types';
+import { type ResolvedItemOrCollectionOrAssignmentOrContentPage } from '../components/blocks/MediaGridWrapper/MediaGridWrapper.types';
 
 export class ContentPageService {
 	public static async resolveMediaItems(
@@ -14,7 +14,7 @@ export class ContentPageService {
 					mediaItem: ButtonAction;
 			  }[]
 			| undefined
-	): Promise<ResolvedItemOrCollectionOrAssignment[]> {
+	): Promise<ResolvedItemOrCollectionOrAssignmentOrContentPage[]> {
 		let url: string | undefined = undefined;
 		let body: any | undefined = undefined;
 		try {
