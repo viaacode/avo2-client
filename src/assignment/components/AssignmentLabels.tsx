@@ -1,13 +1,5 @@
 import { type ColorOption } from '@meemoo/admin-core-ui/dist/admin.mjs';
-import {
-	Button,
-	Flex,
-	FlexItem,
-	IconName,
-	Spacer,
-	TagList,
-	type TagOption,
-} from '@viaa/avo2-components';
+import { Flex, FlexItem, Spacer, TagList, type TagOption } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { cloneDeep, get } from 'lodash-es';
 import React, { type FC, type MouseEvent, useCallback, useEffect, useState } from 'react';
@@ -15,7 +7,6 @@ import React, { type FC, type MouseEvent, useCallback, useEffect, useState } fro
 import { ColorSelect } from '../../shared/components/ColorSelect/ColorSelect';
 import ManageLabelsClasses from '../../shared/components/ManageLabelsClasses/ManageLabelsClasses';
 import { type Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { LabelsClassesService } from '../../shared/services/labels-classes';
 import { ToastService } from '../../shared/services/toast-service';
@@ -33,10 +24,9 @@ type AssignmentLabelsProps = {
 	type?: Avo.LabelClass.Type;
 };
 
-const AssignmentLabels: FC<AssignmentLabelsProps & UserProps> = ({
+const AssignmentLabels: FC<AssignmentLabelsProps> = ({
 	id,
 	labels,
-	commonUser,
 	onChange,
 	type = 'LABEL',
 	...props
@@ -49,7 +39,6 @@ const AssignmentLabels: FC<AssignmentLabelsProps & UserProps> = ({
 	};
 
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.LabelClass.LabelClass[]>([]);
-	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 
 	const fetchAssignmentLabels = useCallback(async () => {
 		// Fetch labels every time the manage labels modal closes and once at startup
@@ -72,7 +61,6 @@ const AssignmentLabels: FC<AssignmentLabelsProps & UserProps> = ({
 
 	const handleManageAssignmentLabelsModalClosed = () => {
 		fetchAssignmentLabels();
-		setIsManageLabelsModalOpen(false);
 	};
 
 	const getColorOptions = (labels: Avo.LabelClass.LabelClass[]): ColorOption[] => {
@@ -128,10 +116,6 @@ const AssignmentLabels: FC<AssignmentLabelsProps & UserProps> = ({
 		allAssignmentLabels.filter((item) => !assignmentLabelIds.includes(item.id))
 	);
 
-	const tooltip =
-		type === 'LABEL'
-			? tText('assignment/components/assignment-labels___beheer-je-labels')
-			: tText('assignment/components/assignment-labels___beheer-je-klassen');
 	return (
 		<>
 			<TagList
@@ -154,25 +138,14 @@ const AssignmentLabels: FC<AssignmentLabelsProps & UserProps> = ({
 					</Spacer>
 				</FlexItem>
 				<FlexItem shrink>
-					<Button
-						icon={IconName.settings}
-						title={tooltip}
-						ariaLabel={tooltip}
-						type="borderless"
-						size="large"
-						className="c-button__labels"
-						onClick={() => setIsManageLabelsModalOpen(true)}
+					<ManageLabelsClasses
+						onClose={handleManageAssignmentLabelsModalClosed}
+						type={type}
 					/>
 				</FlexItem>
 			</Flex>
-
-			<ManageLabelsClasses
-				onClose={handleManageAssignmentLabelsModalClosed}
-				isOpen={isManageLabelsModalOpen}
-				type={type}
-			/>
 		</>
 	);
 };
 
-export default withUser(AssignmentLabels) as FC<AssignmentLabelsProps>;
+export default AssignmentLabels as FC<AssignmentLabelsProps>;

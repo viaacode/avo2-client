@@ -34,13 +34,11 @@ import { MAX_LABEL_LENGTH } from './labels-classes.const';
 import './ManageLabelsClasses.scss';
 
 export interface ManageLabelsAndClassesProps {
-	isOpen: boolean;
 	onClose: () => void;
 	type?: Avo.LabelClass.Type;
 }
 
 const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
-	isOpen,
 	onClose,
 	type,
 	commonUser,
@@ -51,6 +49,7 @@ const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
 	const [initialLabels, setInitialLabels] = useState<Avo.LabelClass.LabelClass[]>([]);
 	const [labelColors, setLabelColors] = useState<Avo.LabelClass.LabelClassColor[]>([]);
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
+	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 
 	const profileId = commonUser?.profileId;
 
@@ -66,7 +65,7 @@ const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
 			}
 		} catch (err) {
 			console.error(
-				new CustomError('Failed to fetch assignment labels for user', err, { commonUser })
+				new CustomError('Failed to fetch assignment labels for user', err, { profileId })
 			);
 			ToastService.danger(
 				tHtml(
@@ -74,7 +73,7 @@ const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
 				)
 			);
 		}
-	}, [commonUser, setLabels, tText, type, tHtml]);
+	}, [profileId, type, tHtml]);
 
 	const fetchAssignmentColors = useCallback(async () => {
 		try {
@@ -90,12 +89,17 @@ const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
 	}, [setLabelColors, tHtml]);
 
 	useEffect(() => {
-		if (isOpen) {
+		if (isManageLabelsModalOpen) {
 			// Fetch labels and colors when modal opens
 			fetchAssignmentLabels();
 			fetchAssignmentColors();
 		}
-	}, [fetchAssignmentLabels, fetchAssignmentColors, isOpen]);
+	}, [fetchAssignmentLabels, fetchAssignmentColors, isManageLabelsModalOpen]);
+
+	const handleOnClose = () => {
+		setIsManageLabelsModalOpen(false);
+		onClose();
+	};
 
 	const handleAddLabelClick = () => {
 		setLabels([
@@ -190,7 +194,7 @@ const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
 					  ]
 					: []),
 			]);
-			onClose();
+			handleOnClose();
 			ToastService.success(
 				type === 'LABEL'
 					? tHtml(
@@ -278,73 +282,89 @@ const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
 		}
 	};
 
+	const tooltip =
+		type === 'LABEL'
+			? tText('assignment/components/assignment-labels___beheer-je-labels')
+			: tText('assignment/components/assignment-labels___beheer-je-klassen');
+
 	return (
-		<Modal
-			className="m-manage-labels-and-classes"
-			title={getManageAssignmentLabelsTranslations(type).modal.title}
-			size="large"
-			isOpen={isOpen}
-			onClose={onClose}
-			scrollable
-		>
-			<ModalBody>
-				<Spacer margin="bottom-large">
-					<Button
-						label={getManageAssignmentLabelsTranslations(type).buttons.addLabel}
-						icon={IconName.plus}
-						onClick={handleAddLabelClick}
-						type="secondary"
+		<>
+			<Button
+				icon={IconName.settings}
+				title={tooltip}
+				ariaLabel={tooltip}
+				type="borderless"
+				size="large"
+				className="c-button__labels"
+				onClick={() => setIsManageLabelsModalOpen(true)}
+			/>
+			<Modal
+				className="m-manage-labels-and-classes"
+				title={getManageAssignmentLabelsTranslations(type).modal.title}
+				size="large"
+				isOpen={isManageLabelsModalOpen}
+				onClose={handleOnClose}
+				scrollable
+			>
+				<ModalBody>
+					<Spacer margin="bottom-large">
+						<Button
+							label={getManageAssignmentLabelsTranslations(type).buttons.addLabel}
+							icon={IconName.plus}
+							onClick={handleAddLabelClick}
+							type="secondary"
+						/>
+					</Spacer>
+					<Table
+						columns={[
+							{
+								label: getManageAssignmentLabelsTranslations(type).columns.color,
+								id: 'color',
+								col: '2',
+							},
+							{
+								label: getManageAssignmentLabelsTranslations(type).columns.type,
+								id: 'label',
+							},
+							{ label: '', id: ACTIONS_TABLE_COLUMN_ID },
+						]}
+						emptyStateMessage={getManageAssignmentLabelsTranslations(type).emptyState}
+						data={labels}
+						renderCell={renderCell}
+						rowKey="id"
 					/>
-				</Spacer>
-				<Table
-					columns={[
-						{
-							label: getManageAssignmentLabelsTranslations(type).columns.color,
-							id: 'color',
-							col: '2',
-						},
-						{
-							label: getManageAssignmentLabelsTranslations(type).columns.type,
-							id: 'label',
-						},
-						{ label: '', id: ACTIONS_TABLE_COLUMN_ID },
-					]}
-					emptyStateMessage={getManageAssignmentLabelsTranslations(type).emptyState}
-					data={labels}
-					renderCell={renderCell}
-					rowKey="id"
-				/>
-			</ModalBody>
-			<ModalFooterRight>
-				<Toolbar spaced>
-					<ToolbarRight>
-						<ToolbarItem>
-							<ButtonToolbar>
-								{isProcessing && <Spinner />}
-								<Button
-									label={tText(
-										'assignment/components/modals/manage-assignment-labels___annuleren'
-									)}
-									type="secondary"
-									block
-									onClick={onClose}
-									disabled={isProcessing}
-								/>
-								<Button
-									label={tText(
-										'assignment/components/modals/manage-assignment-labels___opslaan'
-									)}
-									type="primary"
-									block
-									disabled={isProcessing}
-									onClick={handleSaveLabels}
-								/>
-							</ButtonToolbar>
-						</ToolbarItem>
-					</ToolbarRight>
-				</Toolbar>
-			</ModalFooterRight>
-		</Modal>
+				</ModalBody>
+				<ModalFooterRight>
+					<Toolbar spaced>
+						<ToolbarRight>
+							<ToolbarItem>
+								<ButtonToolbar>
+									{isProcessing && <Spinner />}
+									<Button
+										label={tText(
+											'assignment/components/modals/manage-assignment-labels___annuleren'
+										)}
+										type="secondary"
+										block
+										onClick={onClose}
+										disabled={isProcessing}
+									/>
+									<Button
+										label={tText(
+											'assignment/components/modals/manage-assignment-labels___opslaan'
+										)}
+										type="primary"
+										block
+										disabled={isProcessing}
+										onClick={handleSaveLabels}
+									/>
+								</ButtonToolbar>
+							</ToolbarItem>
+						</ToolbarRight>
+					</Toolbar>
+				</ModalFooterRight>
+			</Modal>
+		</>
 	);
 };
 
