@@ -232,6 +232,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 		);
 
 	const isBeingEdited =
+		collectionId &&
 		editStatuses &&
 		!!editStatuses[collectionId] &&
 		editStatuses[collectionId]?.editingUserId !== commonUser?.profileId;

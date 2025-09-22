@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import queryString from 'query-string';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { Route, useLocation } from 'react-router';
+import { useLocation } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryParamProvider } from 'use-query-params';
 
@@ -21,6 +21,7 @@ import { RegisterOrLogin } from './components/RegisterOrLogin';
 import { useGetLoginStateForEmbed } from './hooks/useGetLoginStateForEmbed';
 
 import '../styles/main.scss';
+import { ReactRouter7Adapter } from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
 
 const EmbedApp: FC = () => {
 	const location = useLocation();
@@ -219,7 +220,7 @@ export const EmbedRoot: FC = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<BrowserRouter>
-				<QueryParamProvider ReactRouterRoute={Route}>
+				<QueryParamProvider adapter={ReactRouter7Adapter}>
 					<EmbedAppWithRouter />
 				</QueryParamProvider>
 			</BrowserRouter>

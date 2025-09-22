@@ -187,6 +187,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 
 	const isBeingEdited =
 		editStatuses &&
+		assignmentId &&
 		!!editStatuses[assignmentId] &&
 		editStatuses[assignmentId]?.editingUserId !== commonUser?.profileId;
 

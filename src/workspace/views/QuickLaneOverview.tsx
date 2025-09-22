@@ -333,7 +333,7 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
 						  )
 						: ''
 				}
-				onTableStateChanged={(state) => {
+				onTableStateChanged={(state: { [id: string]: any }) => {
 					// NOTE: prevents recursion loop but hits theoretical performance
 					if (!isEqual(filters, state)) {
 						setFilters(state as QuickLaneOverviewFilterState);

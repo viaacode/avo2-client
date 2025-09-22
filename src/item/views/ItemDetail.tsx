@@ -281,7 +281,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 			if (itemObj.replacement_for) {
 				// Item was replaced by another item
 				// We should reload the page, to update the url
-				goToDetailLink(itemObj.external_id, 'video');
+				goToDetailLink?.(itemObj.external_id, 'video');
 				return;
 			}
 
@@ -651,7 +651,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 								item.lom_keywords || [],
 								null,
 								(tagId: string | number) =>
-									goToSearchLink({
+									goToSearchLink?.({
 										filters: {
 											keyword: [tagId as string],
 										},
