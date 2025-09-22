@@ -1,9 +1,9 @@
 import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import React, { type FC } from 'react';
 
 import useTranslation from '../../hooks/use-translation/use-translation';
-import { LabelsClassesService } from '../../services/labels-classes';
+import { useGetLabelsForProfile } from '../../hooks/useGetLabelsForProfile';
 import {
 	CheckboxDropdownModal,
 	type CheckboxOption,
@@ -24,20 +24,11 @@ const LabelsClassesDropdownFilter: FC<LabelsClassesDropdownFilterProps> = ({
 }) => {
 	const { tText } = useTranslation();
 
-	const [allLabels, setAllLabels] = useState<Avo.LabelOrClass.LabelOrClass[]>([]);
-
-	const fetchLabels = useCallback(async () => {
-		// Fetch all labels for the current user
-		setAllLabels(await LabelsClassesService.getLabelsForProfile());
-	}, [setAllLabels]);
-
-	useEffect(() => {
-		fetchLabels();
-	}, [fetchLabels]);
+	const { data: allLabels } = useGetLabelsForProfile();
 
 	const getLabelOptions = (labelType: Avo.LabelOrClass.Type): CheckboxOption[] => {
 		return compact(
-			allLabels
+			(allLabels || [])
 				.filter((labelObj: Avo.LabelOrClass.LabelOrClass) => labelObj.type === labelType)
 				.map((labelObj: Avo.LabelOrClass.LabelOrClass): CheckboxOption | null => {
 					if (!labelObj.label) {

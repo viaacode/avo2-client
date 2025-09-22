@@ -17,7 +17,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { compact, intersection, sortBy, without } from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 
 import { ColorSelect } from '../../../shared/components/ColorSelect/ColorSelect';
 import { CustomError } from '../../../shared/helpers/custom-error';
@@ -26,6 +26,8 @@ import { generateRandomId } from '../../../shared/helpers/uuid';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
+import { useGetLabelColors } from '../../hooks/useGetLabelColors';
+import { useGetLabelsForProfile } from '../../hooks/useGetLabelsForProfile';
 import { LabelsClassesService } from '../../services/labels-classes';
 
 import { getManageLabelsTranslations } from './ManageLabelsClasses.translations';
@@ -46,45 +48,21 @@ const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
 	const { tText, tHtml } = useTranslation();
 
 	const [labels, setLabels] = useState<Avo.LabelOrClass.LabelOrClass[]>([]);
-	const [initialLabels, setInitialLabels] = useState<Avo.LabelOrClass.LabelOrClass[]>([]);
-	const [labelColors, setLabelColors] = useState<Avo.LabelOrClass.Color[]>([]);
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 
 	const profileId = commonUser?.profileId;
 
-	const fetchLabels = useCallback(async () => {
-		try {
-			if (profileId) {
-				const labels = sortBy(
-					await LabelsClassesService.getLabelsForProfile(type),
-					'label'
-				);
-				setLabels(labels);
-				setInitialLabels(labels);
-			}
-		} catch (err) {
-			console.error(new CustomError('Failed to fetch labels for user', err, { profileId }));
-			ToastService.danger(tHtml('Het ophalen van je labels is mislukt'));
-		}
-	}, [profileId, type, tHtml]);
-
-	const fetchLabelColors = useCallback(async () => {
-		try {
-			setLabelColors(await LabelsClassesService.getLabelColors());
-		} catch (err) {
-			console.error(new CustomError('Failed to fetch label colors', err));
-			ToastService.danger(tHtml('Het ophalen van je label kleuren is mislukt'));
-		}
-	}, [setLabelColors, tHtml]);
+	const { data: initialLabels } = useGetLabelsForProfile(type, {
+		enabled: isManageLabelsModalOpen,
+	});
+	const { data: labelColors } = useGetLabelColors({
+		enabled: isManageLabelsModalOpen,
+	});
 
 	useEffect(() => {
-		if (isManageLabelsModalOpen) {
-			// Fetch labels and colors when modal opens
-			fetchLabels();
-			fetchLabelColors();
-		}
-	}, [fetchLabels, fetchLabelColors, isManageLabelsModalOpen]);
+		setLabels(sortBy(initialLabels, 'label'));
+	}, [initialLabels]);
 
 	const handleOnClose = () => {
 		setIsManageLabelsModalOpen(false);
@@ -97,10 +75,10 @@ const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
 			{
 				id: generateRandomId(),
 				label: '',
-				color_enum_value: labelColors[0].value,
+				color_enum_value: (labelColors || [])[0].value,
 				owner_profile_id: profileId as string,
 				color_override: null,
-				enum_color: labelColors[0],
+				enum_color: (labelColors || [])[0],
 				type: type || 'LABEL',
 			},
 		]);
@@ -133,7 +111,7 @@ const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
 	const handleSaveLabels = async () => {
 		try {
 			setIsProcessing(true);
-			const initialLabelIds = initialLabels.map((l) => l.id);
+			const initialLabelIds = (initialLabels || []).map((l) => l.id);
 			const updatedLabelIds = labels.map((l) => l.id);
 
 			if (!labelsExceedMaxLength(labels)) {
@@ -198,7 +176,7 @@ const ManageLabelsClasses: FC<ManageLabelsAndClassesProps & UserProps> = ({
 
 	const renderCell = (rowData: any, columnId: string) => {
 		const label = rowData as Avo.LabelOrClass.LabelOrClass;
-		const colorOptions: ColorOption[] = labelColors.map((labelColor) => ({
+		const colorOptions: ColorOption[] = (labelColors || []).map((labelColor) => ({
 			label: '',
 			value: labelColor.value,
 			color: labelColor.label,

@@ -16,7 +16,6 @@ import {
 	Spacer,
 	Spinner,
 	Table,
-	TagList,
 	TextInput,
 	Toolbar,
 	ToolbarItem,
@@ -57,6 +56,7 @@ import {
 	CheckboxDropdownModal,
 	type CheckboxOption,
 } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import LabelsClassesDisplay from '../../shared/components/ManageLabelsClasses/LabelsClassesDisplay';
 import LabelsClassesDropdownFilter from '../../shared/components/ManageLabelsClasses/LabelsClassesDropdownFilter';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
@@ -411,11 +411,15 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 
 	const renderLabels = (
 		labels: { assignment_label: Avo.LabelOrClass.LabelOrClass }[],
-		label: string
+		type: Avo.LabelOrClass.Type
 	) => {
-		if (labels.length === 0) {
-			return '-';
-		}
+		return (
+			<LabelsClassesDisplay
+				type={type}
+				selectedLabels={labels.map((item) => item.assignment_label.id) as string[]}
+			/>
+		);
+		/*
 		return renderMobileDesktop({
 			mobile: renderDataCell(
 				labels.map((label) => label.assignment_label.label).join(', '),
@@ -434,6 +438,7 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 				/>
 			),
 		});
+		 */
 	};
 
 	const renderDataCell = (value: ReactNode, label?: ReactNode, className?: string) =>
@@ -528,14 +533,14 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 			}
 
 			case 'labels':
-				return renderLabels(labels, tText('assignment/views/assignment-overview___labels'));
+				return renderLabels(labels, 'LABEL');
 
 			case 'class_room':
 				return renderLabels(
 					(assignment.labels || []).filter(
 						({ assignment_label: item }) => item.type === 'CLASS'
 					),
-					tText('assignment/views/assignment-overview___klas')
+					'CLASS'
 				);
 
 			case 'author': {

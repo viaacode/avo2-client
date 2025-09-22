@@ -2,13 +2,13 @@ import { type ColorOption } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Flex, FlexItem, Spacer, TagList, type TagOption } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { cloneDeep, get } from 'lodash-es';
-import React, { type FC, type MouseEvent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, type MouseEvent } from 'react';
 
 import { ColorSelect } from '../../shared/components/ColorSelect/ColorSelect';
 import ManageLabelsClasses from '../../shared/components/ManageLabelsClasses/ManageLabelsClasses';
 import { type Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
+import { useGetLabelsForProfile } from '../../shared/hooks/useGetLabelsForProfile';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { LabelsClassesService } from '../../shared/services/labels-classes';
 import { ToastService } from '../../shared/services/toast-service';
 
 import './AssignmentLabels.scss';
@@ -38,18 +38,7 @@ const AssignmentLabels: FC<AssignmentLabelsProps> = ({
 		...(props.dictionary ? props.dictionary : {}),
 	};
 
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.LabelOrClass.LabelOrClass[]>(
-		[]
-	);
-
-	const fetchAssignmentLabels = useCallback(async () => {
-		// Fetch labels every time the manage labels modal closes and once at startup
-		setAllAssignmentLabels(await LabelsClassesService.getLabelsForProfile());
-	}, [setAllAssignmentLabels]);
-
-	useEffect(() => {
-		fetchAssignmentLabels();
-	}, [fetchAssignmentLabels]);
+	const { data: allAssignmentLabels, refetch: reloadAssignmentLabels } = useGetLabelsForProfile();
 
 	const getAssignmentLabelOptions = (labels: Avo.LabelOrClass.LabelOrClass[]): TagOption[] => {
 		return labels.map((labelObj) => ({
@@ -62,7 +51,7 @@ const AssignmentLabels: FC<AssignmentLabelsProps> = ({
 	};
 
 	const handleManageAssignmentLabelsModalClosed = () => {
-		fetchAssignmentLabels();
+		reloadAssignmentLabels();
 	};
 
 	const getColorOptions = (labels: Avo.LabelOrClass.LabelOrClass[]): ColorOption[] => {
@@ -87,7 +76,7 @@ const AssignmentLabels: FC<AssignmentLabelsProps> = ({
 			return;
 		}
 
-		const assignmentLabel = allAssignmentLabels.find(
+		const assignmentLabel = (allAssignmentLabels || []).find(
 			(labelObj) => String(labelObj.id) === (labelOption as ColorOption).value
 		);
 
@@ -115,7 +104,7 @@ const AssignmentLabels: FC<AssignmentLabelsProps> = ({
 
 	const assignmentLabelIds = labels.map((item) => item.assignment_label.id);
 	const unselectedLabels = cloneDeep(
-		allAssignmentLabels.filter((item) => !assignmentLabelIds.includes(item.id))
+		(allAssignmentLabels || []).filter((item) => !assignmentLabelIds.includes(item.id))
 	);
 
 	return (
