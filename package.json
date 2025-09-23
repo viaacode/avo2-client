@@ -1,6 +1,6 @@
 {
   "name": "avo2-client",
-  "version": "1.31.31",
+  "version": "1.32.0",
   "private": true,
   "scripts": {
     "__prepare": "husky install",
@@ -27,7 +27,7 @@
     "generate-database-types": "dotenv -e .env.qas graphql-codegen -- --verbose --config codegen.yml",
     "check-bundled-files": "npx depcruise src/embed/main.tsx",
     "graph-bundled-files": "npx depcruise src/embed/main.tsx --include-only \"^src\" --exclude \"(.spec.tsx?|.test.tsx?|node_modules)\" --output-type dot",
-    "bump": "bump-package-versions --part=patch --strategy=highest ./package.json"
+    "bump": "bump-package-versions --part=minor --strategy=highest ./package.json"
   },
   "contributors": [
     "Bert Verhelst <bert.verhelst@studiohyperdrive.be>",
