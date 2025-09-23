@@ -21854,6 +21854,252 @@ export type App_Translations_Updates = {
   where: App_Translations_Bool_Exp;
 };
 
+/** columns and relationships of "app.url_redirects" */
+export type App_Url_Redirects = {
+  __typename?: 'app_url_redirects';
+  created_at: Scalars['timestamptz'];
+  id: Scalars['Int'];
+  new_path: Scalars['String'];
+  old_path: Scalars['String'];
+  old_path_pattern: Scalars['String'];
+  updated_at: Scalars['timestamptz'];
+};
+
+/** aggregated selection of "app.url_redirects" */
+export type App_Url_Redirects_Aggregate = {
+  __typename?: 'app_url_redirects_aggregate';
+  aggregate?: Maybe<App_Url_Redirects_Aggregate_Fields>;
+  nodes: Array<App_Url_Redirects>;
+};
+
+/** aggregate fields of "app.url_redirects" */
+export type App_Url_Redirects_Aggregate_Fields = {
+  __typename?: 'app_url_redirects_aggregate_fields';
+  avg?: Maybe<App_Url_Redirects_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<App_Url_Redirects_Max_Fields>;
+  min?: Maybe<App_Url_Redirects_Min_Fields>;
+  stddev?: Maybe<App_Url_Redirects_Stddev_Fields>;
+  stddev_pop?: Maybe<App_Url_Redirects_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<App_Url_Redirects_Stddev_Samp_Fields>;
+  sum?: Maybe<App_Url_Redirects_Sum_Fields>;
+  var_pop?: Maybe<App_Url_Redirects_Var_Pop_Fields>;
+  var_samp?: Maybe<App_Url_Redirects_Var_Samp_Fields>;
+  variance?: Maybe<App_Url_Redirects_Variance_Fields>;
+};
+
+
+/** aggregate fields of "app.url_redirects" */
+export type App_Url_Redirects_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<App_Url_Redirects_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** aggregate avg on columns */
+export type App_Url_Redirects_Avg_Fields = {
+  __typename?: 'app_url_redirects_avg_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** Boolean expression to filter rows from the table "app.url_redirects". All fields are combined with a logical 'AND'. */
+export type App_Url_Redirects_Bool_Exp = {
+  _and?: InputMaybe<Array<App_Url_Redirects_Bool_Exp>>;
+  _not?: InputMaybe<App_Url_Redirects_Bool_Exp>;
+  _or?: InputMaybe<Array<App_Url_Redirects_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  new_path?: InputMaybe<String_Comparison_Exp>;
+  old_path?: InputMaybe<String_Comparison_Exp>;
+  old_path_pattern?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "app.url_redirects" */
+export enum App_Url_Redirects_Constraint {
+  /** unique or primary key constraint on columns "old_path" */
+  UrlRedirectsOldPathKey = 'url_redirects_old_path_key',
+  /** unique or primary key constraint on columns "id" */
+  UrlRedirectsPkey = 'url_redirects_pkey'
+}
+
+/** input type for incrementing numeric columns in table "app.url_redirects" */
+export type App_Url_Redirects_Inc_Input = {
+  id?: InputMaybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "app.url_redirects" */
+export type App_Url_Redirects_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['Int']>;
+  new_path?: InputMaybe<Scalars['String']>;
+  old_path?: InputMaybe<Scalars['String']>;
+  old_path_pattern?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type App_Url_Redirects_Max_Fields = {
+  __typename?: 'app_url_redirects_max_fields';
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['Int']>;
+  new_path?: Maybe<Scalars['String']>;
+  old_path?: Maybe<Scalars['String']>;
+  old_path_pattern?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type App_Url_Redirects_Min_Fields = {
+  __typename?: 'app_url_redirects_min_fields';
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['Int']>;
+  new_path?: Maybe<Scalars['String']>;
+  old_path?: Maybe<Scalars['String']>;
+  old_path_pattern?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** response of any mutation on the table "app.url_redirects" */
+export type App_Url_Redirects_Mutation_Response = {
+  __typename?: 'app_url_redirects_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<App_Url_Redirects>;
+};
+
+/** on_conflict condition type for table "app.url_redirects" */
+export type App_Url_Redirects_On_Conflict = {
+  constraint: App_Url_Redirects_Constraint;
+  update_columns?: Array<App_Url_Redirects_Update_Column>;
+  where?: InputMaybe<App_Url_Redirects_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "app.url_redirects". */
+export type App_Url_Redirects_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  new_path?: InputMaybe<Order_By>;
+  old_path?: InputMaybe<Order_By>;
+  old_path_pattern?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: app.url_redirects */
+export type App_Url_Redirects_Pk_Columns_Input = {
+  id: Scalars['Int'];
+};
+
+/** select columns of table "app.url_redirects" */
+export enum App_Url_Redirects_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  NewPath = 'new_path',
+  /** column name */
+  OldPath = 'old_path',
+  /** column name */
+  OldPathPattern = 'old_path_pattern',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "app.url_redirects" */
+export type App_Url_Redirects_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['Int']>;
+  new_path?: InputMaybe<Scalars['String']>;
+  old_path?: InputMaybe<Scalars['String']>;
+  old_path_pattern?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate stddev on columns */
+export type App_Url_Redirects_Stddev_Fields = {
+  __typename?: 'app_url_redirects_stddev_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type App_Url_Redirects_Stddev_Pop_Fields = {
+  __typename?: 'app_url_redirects_stddev_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type App_Url_Redirects_Stddev_Samp_Fields = {
+  __typename?: 'app_url_redirects_stddev_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** Streaming cursor of the table "app_url_redirects" */
+export type App_Url_Redirects_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: App_Url_Redirects_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type App_Url_Redirects_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['Int']>;
+  new_path?: InputMaybe<Scalars['String']>;
+  old_path?: InputMaybe<Scalars['String']>;
+  old_path_pattern?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate sum on columns */
+export type App_Url_Redirects_Sum_Fields = {
+  __typename?: 'app_url_redirects_sum_fields';
+  id?: Maybe<Scalars['Int']>;
+};
+
+/** update columns of table "app.url_redirects" */
+export enum App_Url_Redirects_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  NewPath = 'new_path',
+  /** column name */
+  OldPath = 'old_path',
+  /** column name */
+  OldPathPattern = 'old_path_pattern',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+export type App_Url_Redirects_Updates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<App_Url_Redirects_Inc_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<App_Url_Redirects_Set_Input>;
+  where: App_Url_Redirects_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type App_Url_Redirects_Var_Pop_Fields = {
+  __typename?: 'app_url_redirects_var_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate var_samp on columns */
+export type App_Url_Redirects_Var_Samp_Fields = {
+  __typename?: 'app_url_redirects_var_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate variance on columns */
+export type App_Url_Redirects_Variance_Fields = {
+  __typename?: 'app_url_redirects_variance_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
 /** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
 export type Bigint_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['bigint']>;
@@ -22947,6 +23193,7 @@ export enum Lookup_Enum_Content_Block_Types_Enum {
   Iframe = 'IFRAME',
   Image = 'IMAGE',
   ImageGrid = 'IMAGE_GRID',
+  ImageTextBackground = 'IMAGE_TEXT_BACKGROUND',
   ImageTitleTextButton = 'IMAGE_TITLE_TEXT_BUTTON',
   Intro = 'INTRO',
   Klaar = 'KLAAR',
@@ -26064,6 +26311,10 @@ export type Mutation_Root = {
   delete_app_translations?: Maybe<App_Translations_Mutation_Response>;
   /** delete single row from the table: "app.translations" */
   delete_app_translations_by_pk?: Maybe<App_Translations>;
+  /** delete data from the table: "app.url_redirects" */
+  delete_app_url_redirects?: Maybe<App_Url_Redirects_Mutation_Response>;
+  /** delete single row from the table: "app.url_redirects" */
+  delete_app_url_redirects_by_pk?: Maybe<App_Url_Redirects>;
   /** delete data from the table: "lookup.enum_assignment_content_labels" */
   delete_lookup_enum_assignment_content_labels?: Maybe<Lookup_Enum_Assignment_Content_Labels_Mutation_Response>;
   /** delete single row from the table: "lookup.enum_assignment_content_labels" */
@@ -26278,6 +26529,10 @@ export type Mutation_Root = {
   delete_users_profiles_lom_links?: Maybe<Users_Profiles_Lom_Links_Mutation_Response>;
   /** delete single row from the table: "users.profiles_lom_links" */
   delete_users_profiles_lom_links_by_pk?: Maybe<Users_Profiles_Lom_Links>;
+  /** delete data from the table: "users.table_column_preferences" */
+  delete_users_table_column_preferences?: Maybe<Users_Table_Column_Preferences_Mutation_Response>;
+  /** delete single row from the table: "users.table_column_preferences" */
+  delete_users_table_column_preferences_by_pk?: Maybe<Users_Table_Column_Preferences>;
   /** delete data from the table: "users.users_sync_cm" */
   delete_users_users_sync_cm?: Maybe<Users_Users_Sync_Cm_Mutation_Response>;
   /** delete single row from the table: "users.users_sync_cm" */
@@ -26486,6 +26741,10 @@ export type Mutation_Root = {
   insert_app_translations?: Maybe<App_Translations_Mutation_Response>;
   /** insert a single row into the table: "app.translations" */
   insert_app_translations_one?: Maybe<App_Translations>;
+  /** insert data into the table: "app.url_redirects" */
+  insert_app_url_redirects?: Maybe<App_Url_Redirects_Mutation_Response>;
+  /** insert a single row into the table: "app.url_redirects" */
+  insert_app_url_redirects_one?: Maybe<App_Url_Redirects>;
   /** insert data into the table: "lookup.enum_assignment_content_labels" */
   insert_lookup_enum_assignment_content_labels?: Maybe<Lookup_Enum_Assignment_Content_Labels_Mutation_Response>;
   /** insert a single row into the table: "lookup.enum_assignment_content_labels" */
@@ -26722,6 +26981,10 @@ export type Mutation_Root = {
   insert_users_profiles_lom_links_one?: Maybe<Users_Profiles_Lom_Links>;
   /** insert a single row into the table: "users.profiles" */
   insert_users_profiles_one?: Maybe<Users_Profiles>;
+  /** insert data into the table: "users.table_column_preferences" */
+  insert_users_table_column_preferences?: Maybe<Users_Table_Column_Preferences_Mutation_Response>;
+  /** insert a single row into the table: "users.table_column_preferences" */
+  insert_users_table_column_preferences_one?: Maybe<Users_Table_Column_Preferences>;
   /** insert data into the table: "users.users_sync_cm" */
   insert_users_users_sync_cm?: Maybe<Users_Users_Sync_Cm_Mutation_Response>;
   /** insert a single row into the table: "users.users_sync_cm" */
@@ -27030,6 +27293,12 @@ export type Mutation_Root = {
   update_app_translations_by_pk?: Maybe<App_Translations>;
   /** update multiples rows of table: "app.translations" */
   update_app_translations_many?: Maybe<Array<Maybe<App_Translations_Mutation_Response>>>;
+  /** update data of the table: "app.url_redirects" */
+  update_app_url_redirects?: Maybe<App_Url_Redirects_Mutation_Response>;
+  /** update single row of the table: "app.url_redirects" */
+  update_app_url_redirects_by_pk?: Maybe<App_Url_Redirects>;
+  /** update multiples rows of table: "app.url_redirects" */
+  update_app_url_redirects_many?: Maybe<Array<Maybe<App_Url_Redirects_Mutation_Response>>>;
   /** update data of the table: "lookup.enum_assignment_content_labels" */
   update_lookup_enum_assignment_content_labels?: Maybe<Lookup_Enum_Assignment_Content_Labels_Mutation_Response>;
   /** update single row of the table: "lookup.enum_assignment_content_labels" */
@@ -27362,6 +27631,12 @@ export type Mutation_Root = {
   update_users_profiles_lom_links_many?: Maybe<Array<Maybe<Users_Profiles_Lom_Links_Mutation_Response>>>;
   /** update multiples rows of table: "users.profiles" */
   update_users_profiles_many?: Maybe<Array<Maybe<Users_Profiles_Mutation_Response>>>;
+  /** update data of the table: "users.table_column_preferences" */
+  update_users_table_column_preferences?: Maybe<Users_Table_Column_Preferences_Mutation_Response>;
+  /** update single row of the table: "users.table_column_preferences" */
+  update_users_table_column_preferences_by_pk?: Maybe<Users_Table_Column_Preferences>;
+  /** update multiples rows of table: "users.table_column_preferences" */
+  update_users_table_column_preferences_many?: Maybe<Array<Maybe<Users_Table_Column_Preferences_Mutation_Response>>>;
   /** update data of the table: "users.users_sync_cm" */
   update_users_users_sync_cm?: Maybe<Users_Users_Sync_Cm_Mutation_Response>;
   /** update single row of the table: "users.users_sync_cm" */
@@ -27977,6 +28252,18 @@ export type Mutation_RootDelete_App_Translations_By_PkArgs = {
   key: Scalars['String'];
   language: Lookup_Languages_Enum;
   location: Scalars['String'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_App_Url_RedirectsArgs = {
+  where: App_Url_Redirects_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_App_Url_Redirects_By_PkArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -28621,6 +28908,18 @@ export type Mutation_RootDelete_Users_Profiles_Lom_LinksArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Users_Profiles_Lom_Links_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Users_Table_Column_PreferencesArgs = {
+  where: Users_Table_Column_Preferences_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Users_Table_Column_Preferences_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -29346,6 +29645,20 @@ export type Mutation_RootInsert_App_TranslationsArgs = {
 export type Mutation_RootInsert_App_Translations_OneArgs = {
   object: App_Translations_Insert_Input;
   on_conflict?: InputMaybe<App_Translations_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_App_Url_RedirectsArgs = {
+  objects: Array<App_Url_Redirects_Insert_Input>;
+  on_conflict?: InputMaybe<App_Url_Redirects_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_App_Url_Redirects_OneArgs = {
+  object: App_Url_Redirects_Insert_Input;
+  on_conflict?: InputMaybe<App_Url_Redirects_On_Conflict>;
 };
 
 
@@ -30150,6 +30463,20 @@ export type Mutation_RootInsert_Users_Profiles_Lom_Links_OneArgs = {
 export type Mutation_RootInsert_Users_Profiles_OneArgs = {
   object: Users_Profiles_Insert_Input;
   on_conflict?: InputMaybe<Users_Profiles_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Users_Table_Column_PreferencesArgs = {
+  objects: Array<Users_Table_Column_Preferences_Insert_Input>;
+  on_conflict?: InputMaybe<Users_Table_Column_Preferences_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Users_Table_Column_Preferences_OneArgs = {
+  object: Users_Table_Column_Preferences_Insert_Input;
+  on_conflict?: InputMaybe<Users_Table_Column_Preferences_On_Conflict>;
 };
 
 
@@ -31344,6 +31671,28 @@ export type Mutation_RootUpdate_App_Translations_By_PkArgs = {
 /** mutation root */
 export type Mutation_RootUpdate_App_Translations_ManyArgs = {
   updates: Array<App_Translations_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_App_Url_RedirectsArgs = {
+  _inc?: InputMaybe<App_Url_Redirects_Inc_Input>;
+  _set?: InputMaybe<App_Url_Redirects_Set_Input>;
+  where: App_Url_Redirects_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_App_Url_Redirects_By_PkArgs = {
+  _inc?: InputMaybe<App_Url_Redirects_Inc_Input>;
+  _set?: InputMaybe<App_Url_Redirects_Set_Input>;
+  pk_columns: App_Url_Redirects_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_App_Url_Redirects_ManyArgs = {
+  updates: Array<App_Url_Redirects_Updates>;
 };
 
 
@@ -32567,6 +32916,36 @@ export type Mutation_RootUpdate_Users_Profiles_ManyArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Users_Table_Column_PreferencesArgs = {
+  _append?: InputMaybe<Users_Table_Column_Preferences_Append_Input>;
+  _delete_at_path?: InputMaybe<Users_Table_Column_Preferences_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Users_Table_Column_Preferences_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Users_Table_Column_Preferences_Delete_Key_Input>;
+  _prepend?: InputMaybe<Users_Table_Column_Preferences_Prepend_Input>;
+  _set?: InputMaybe<Users_Table_Column_Preferences_Set_Input>;
+  where: Users_Table_Column_Preferences_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Users_Table_Column_Preferences_By_PkArgs = {
+  _append?: InputMaybe<Users_Table_Column_Preferences_Append_Input>;
+  _delete_at_path?: InputMaybe<Users_Table_Column_Preferences_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Users_Table_Column_Preferences_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Users_Table_Column_Preferences_Delete_Key_Input>;
+  _prepend?: InputMaybe<Users_Table_Column_Preferences_Prepend_Input>;
+  _set?: InputMaybe<Users_Table_Column_Preferences_Set_Input>;
+  pk_columns: Users_Table_Column_Preferences_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Users_Table_Column_Preferences_ManyArgs = {
+  updates: Array<Users_Table_Column_Preferences_Updates>;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_Users_Users_Sync_CmArgs = {
   _append?: InputMaybe<Users_Users_Sync_Cm_Append_Input>;
   _delete_at_path?: InputMaybe<Users_Users_Sync_Cm_Delete_At_Path_Input>;
@@ -32991,6 +33370,12 @@ export type Query_Root = {
   app_translations_aggregate: App_Translations_Aggregate;
   /** fetch data from the table: "app.translations" using primary key columns */
   app_translations_by_pk?: Maybe<App_Translations>;
+  /** fetch data from the table: "app.url_redirects" */
+  app_url_redirects: Array<App_Url_Redirects>;
+  /** fetch aggregated fields from the table: "app.url_redirects" */
+  app_url_redirects_aggregate: App_Url_Redirects_Aggregate;
+  /** fetch data from the table: "app.url_redirects" using primary key columns */
+  app_url_redirects_by_pk?: Maybe<App_Url_Redirects>;
   /** fetch data from the table: "lookup.enum_assignment_content_labels" */
   lookup_enum_assignment_content_labels: Array<Lookup_Enum_Assignment_Content_Labels>;
   /** fetch aggregated fields from the table: "lookup.enum_assignment_content_labels" */
@@ -33479,6 +33864,12 @@ export type Query_Root = {
   users_summary_view: Array<Users_Summary_View>;
   /** fetch aggregated fields from the table: "users.summary_view" */
   users_summary_view_aggregate: Users_Summary_View_Aggregate;
+  /** fetch data from the table: "users.table_column_preferences" */
+  users_table_column_preferences: Array<Users_Table_Column_Preferences>;
+  /** fetch aggregated fields from the table: "users.table_column_preferences" */
+  users_table_column_preferences_aggregate: Users_Table_Column_Preferences_Aggregate;
+  /** fetch data from the table: "users.table_column_preferences" using primary key columns */
+  users_table_column_preferences_by_pk?: Maybe<Users_Table_Column_Preferences>;
   /** fetch data from the table: "users.users_sync_cm" */
   users_users_sync_cm: Array<Users_Users_Sync_Cm>;
   /** fetch aggregated fields from the table: "users.users_sync_cm" */
@@ -34980,6 +35371,29 @@ export type Query_RootApp_Translations_By_PkArgs = {
   key: Scalars['String'];
   language: Lookup_Languages_Enum;
   location: Scalars['String'];
+};
+
+
+export type Query_RootApp_Url_RedirectsArgs = {
+  distinct_on?: InputMaybe<Array<App_Url_Redirects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Url_Redirects_Order_By>>;
+  where?: InputMaybe<App_Url_Redirects_Bool_Exp>;
+};
+
+
+export type Query_RootApp_Url_Redirects_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Url_Redirects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Url_Redirects_Order_By>>;
+  where?: InputMaybe<App_Url_Redirects_Bool_Exp>;
+};
+
+
+export type Query_RootApp_Url_Redirects_By_PkArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -36987,6 +37401,29 @@ export type Query_RootUsers_Summary_View_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Users_Summary_View_Order_By>>;
   where?: InputMaybe<Users_Summary_View_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Table_Column_PreferencesArgs = {
+  distinct_on?: InputMaybe<Array<Users_Table_Column_Preferences_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Table_Column_Preferences_Order_By>>;
+  where?: InputMaybe<Users_Table_Column_Preferences_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Table_Column_Preferences_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Table_Column_Preferences_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Table_Column_Preferences_Order_By>>;
+  where?: InputMaybe<Users_Table_Column_Preferences_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Table_Column_Preferences_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -45687,6 +46124,14 @@ export type Subscription_Root = {
   app_translations_by_pk?: Maybe<App_Translations>;
   /** fetch data from the table in a streaming manner: "app.translations" */
   app_translations_stream: Array<App_Translations>;
+  /** fetch data from the table: "app.url_redirects" */
+  app_url_redirects: Array<App_Url_Redirects>;
+  /** fetch aggregated fields from the table: "app.url_redirects" */
+  app_url_redirects_aggregate: App_Url_Redirects_Aggregate;
+  /** fetch data from the table: "app.url_redirects" using primary key columns */
+  app_url_redirects_by_pk?: Maybe<App_Url_Redirects>;
+  /** fetch data from the table in a streaming manner: "app.url_redirects" */
+  app_url_redirects_stream: Array<App_Url_Redirects>;
   /** fetch data from the table: "lookup.enum_assignment_content_labels" */
   lookup_enum_assignment_content_labels: Array<Lookup_Enum_Assignment_Content_Labels>;
   /** fetch aggregated fields from the table: "lookup.enum_assignment_content_labels" */
@@ -46371,6 +46816,14 @@ export type Subscription_Root = {
   users_summary_view_aggregate: Users_Summary_View_Aggregate;
   /** fetch data from the table in a streaming manner: "users.summary_view" */
   users_summary_view_stream: Array<Users_Summary_View>;
+  /** fetch data from the table: "users.table_column_preferences" */
+  users_table_column_preferences: Array<Users_Table_Column_Preferences>;
+  /** fetch aggregated fields from the table: "users.table_column_preferences" */
+  users_table_column_preferences_aggregate: Users_Table_Column_Preferences_Aggregate;
+  /** fetch data from the table: "users.table_column_preferences" using primary key columns */
+  users_table_column_preferences_by_pk?: Maybe<Users_Table_Column_Preferences>;
+  /** fetch data from the table in a streaming manner: "users.table_column_preferences" */
+  users_table_column_preferences_stream: Array<Users_Table_Column_Preferences>;
   /** fetch data from the table: "users.users_sync_cm" */
   users_users_sync_cm: Array<Users_Users_Sync_Cm>;
   /** fetch aggregated fields from the table: "users.users_sync_cm" */
@@ -48357,6 +48810,36 @@ export type Subscription_RootApp_Translations_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<App_Translations_Stream_Cursor_Input>>;
   where?: InputMaybe<App_Translations_Bool_Exp>;
+};
+
+
+export type Subscription_RootApp_Url_RedirectsArgs = {
+  distinct_on?: InputMaybe<Array<App_Url_Redirects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Url_Redirects_Order_By>>;
+  where?: InputMaybe<App_Url_Redirects_Bool_Exp>;
+};
+
+
+export type Subscription_RootApp_Url_Redirects_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Url_Redirects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Url_Redirects_Order_By>>;
+  where?: InputMaybe<App_Url_Redirects_Bool_Exp>;
+};
+
+
+export type Subscription_RootApp_Url_Redirects_By_PkArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type Subscription_RootApp_Url_Redirects_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<App_Url_Redirects_Stream_Cursor_Input>>;
+  where?: InputMaybe<App_Url_Redirects_Bool_Exp>;
 };
 
 
@@ -51053,6 +51536,36 @@ export type Subscription_RootUsers_Summary_View_StreamArgs = {
 };
 
 
+export type Subscription_RootUsers_Table_Column_PreferencesArgs = {
+  distinct_on?: InputMaybe<Array<Users_Table_Column_Preferences_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Table_Column_Preferences_Order_By>>;
+  where?: InputMaybe<Users_Table_Column_Preferences_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Table_Column_Preferences_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Table_Column_Preferences_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Table_Column_Preferences_Order_By>>;
+  where?: InputMaybe<Users_Table_Column_Preferences_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Table_Column_Preferences_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootUsers_Table_Column_Preferences_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Users_Table_Column_Preferences_Stream_Cursor_Input>>;
+  where?: InputMaybe<Users_Table_Column_Preferences_Bool_Exp>;
+};
+
+
 export type Subscription_RootUsers_Users_Sync_CmArgs = {
   distinct_on?: InputMaybe<Array<Users_Users_Sync_Cm_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -53698,7 +54211,7 @@ export enum Users_Idps_Enum {
   Hetarchief = 'HETARCHIEF',
   /** OAuth service van Klascement op oauth.klascement.be */
   Klascement = 'KLASCEMENT',
-  /** lti idp for embedding videos on external platforms without a user being logged in on the external platform */
+  /** anonymous idp flow for embedding videos from an external platform without the user being logged in on the external platform */
   LtiAnonymous = 'LTI_ANONYMOUS',
   /** bookwidgets lti idp flow for embedding videos in their platform */
   LtiBookwidgets = 'LTI_BOOKWIDGETS',
@@ -58051,6 +58564,228 @@ export type Users_Summary_View_Variance_Fields = {
   __typename?: 'users_summary_view_variance_fields';
   group_id?: Maybe<Scalars['Float']>;
   role_id?: Maybe<Scalars['Float']>;
+};
+
+/** columns and relationships of "users.table_column_preferences" */
+export type Users_Table_Column_Preferences = {
+  __typename?: 'users_table_column_preferences';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id: Scalars['uuid'];
+  profile_id: Scalars['uuid'];
+  updated_at?: Maybe<Scalars['timestamp']>;
+  url_key: Scalars['String'];
+  visible_columns: Scalars['jsonb'];
+};
+
+
+/** columns and relationships of "users.table_column_preferences" */
+export type Users_Table_Column_PreferencesVisible_ColumnsArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "users.table_column_preferences" */
+export type Users_Table_Column_Preferences_Aggregate = {
+  __typename?: 'users_table_column_preferences_aggregate';
+  aggregate?: Maybe<Users_Table_Column_Preferences_Aggregate_Fields>;
+  nodes: Array<Users_Table_Column_Preferences>;
+};
+
+/** aggregate fields of "users.table_column_preferences" */
+export type Users_Table_Column_Preferences_Aggregate_Fields = {
+  __typename?: 'users_table_column_preferences_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Users_Table_Column_Preferences_Max_Fields>;
+  min?: Maybe<Users_Table_Column_Preferences_Min_Fields>;
+};
+
+
+/** aggregate fields of "users.table_column_preferences" */
+export type Users_Table_Column_Preferences_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Users_Table_Column_Preferences_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Users_Table_Column_Preferences_Append_Input = {
+  visible_columns?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "users.table_column_preferences". All fields are combined with a logical 'AND'. */
+export type Users_Table_Column_Preferences_Bool_Exp = {
+  _and?: InputMaybe<Array<Users_Table_Column_Preferences_Bool_Exp>>;
+  _not?: InputMaybe<Users_Table_Column_Preferences_Bool_Exp>;
+  _or?: InputMaybe<Array<Users_Table_Column_Preferences_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  url_key?: InputMaybe<String_Comparison_Exp>;
+  visible_columns?: InputMaybe<Jsonb_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "users.table_column_preferences" */
+export enum Users_Table_Column_Preferences_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  TableColumnPreferencesPkey = 'table_column_preferences_pkey',
+  /** unique or primary key constraint on columns "url_key", "profile_id" */
+  TableColumnPreferencesProfileIdUrlKeyKey = 'table_column_preferences_profile_id_url_key_key'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Users_Table_Column_Preferences_Delete_At_Path_Input = {
+  visible_columns?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Users_Table_Column_Preferences_Delete_Elem_Input = {
+  visible_columns?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Users_Table_Column_Preferences_Delete_Key_Input = {
+  visible_columns?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "users.table_column_preferences" */
+export type Users_Table_Column_Preferences_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  url_key?: InputMaybe<Scalars['String']>;
+  visible_columns?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** aggregate max on columns */
+export type Users_Table_Column_Preferences_Max_Fields = {
+  __typename?: 'users_table_column_preferences_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+  url_key?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Users_Table_Column_Preferences_Min_Fields = {
+  __typename?: 'users_table_column_preferences_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+  url_key?: Maybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "users.table_column_preferences" */
+export type Users_Table_Column_Preferences_Mutation_Response = {
+  __typename?: 'users_table_column_preferences_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Users_Table_Column_Preferences>;
+};
+
+/** on_conflict condition type for table "users.table_column_preferences" */
+export type Users_Table_Column_Preferences_On_Conflict = {
+  constraint: Users_Table_Column_Preferences_Constraint;
+  update_columns?: Array<Users_Table_Column_Preferences_Update_Column>;
+  where?: InputMaybe<Users_Table_Column_Preferences_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "users.table_column_preferences". */
+export type Users_Table_Column_Preferences_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  profile_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  url_key?: InputMaybe<Order_By>;
+  visible_columns?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: users.table_column_preferences */
+export type Users_Table_Column_Preferences_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Users_Table_Column_Preferences_Prepend_Input = {
+  visible_columns?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "users.table_column_preferences" */
+export enum Users_Table_Column_Preferences_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ProfileId = 'profile_id',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  UrlKey = 'url_key',
+  /** column name */
+  VisibleColumns = 'visible_columns'
+}
+
+/** input type for updating data in table "users.table_column_preferences" */
+export type Users_Table_Column_Preferences_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  url_key?: InputMaybe<Scalars['String']>;
+  visible_columns?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Streaming cursor of the table "users_table_column_preferences" */
+export type Users_Table_Column_Preferences_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Users_Table_Column_Preferences_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Users_Table_Column_Preferences_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  url_key?: InputMaybe<Scalars['String']>;
+  visible_columns?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** update columns of table "users.table_column_preferences" */
+export enum Users_Table_Column_Preferences_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ProfileId = 'profile_id',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  UrlKey = 'url_key',
+  /** column name */
+  VisibleColumns = 'visible_columns'
+}
+
+export type Users_Table_Column_Preferences_Updates = {
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  _append?: InputMaybe<Users_Table_Column_Preferences_Append_Input>;
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  _delete_at_path?: InputMaybe<Users_Table_Column_Preferences_Delete_At_Path_Input>;
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  _delete_elem?: InputMaybe<Users_Table_Column_Preferences_Delete_Elem_Input>;
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  _delete_key?: InputMaybe<Users_Table_Column_Preferences_Delete_Key_Input>;
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  _prepend?: InputMaybe<Users_Table_Column_Preferences_Prepend_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Users_Table_Column_Preferences_Set_Input>;
+  where: Users_Table_Column_Preferences_Bool_Exp;
 };
 
 /** columns and relationships of "users.users_sync_cm" */

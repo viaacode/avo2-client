@@ -24,7 +24,7 @@ export const GET_URL_REDIRECT_OVERVIEW_TABLE_COLS: () => FilterableColumn<UrlRed
 	() => [
 		{
 			id: 'oldPathPattern',
-			label: tText('Oude url patroon'),
+			label: tText('admin/url-redirects/url-redirects___oude-url-patroon'),
 			sortable: true,
 			visibleByDefault: true,
 			filterType: TableFilterType.CheckboxDropdownModal,
@@ -35,21 +35,21 @@ export const GET_URL_REDIRECT_OVERVIEW_TABLE_COLS: () => FilterableColumn<UrlRed
 		},
 		{
 			id: 'oldPath',
-			label: tText('Oude url'),
+			label: tText('admin/url-redirects/url-redirects___oude-url'),
 			sortable: true,
 			visibleByDefault: true,
 			dataType: TableColumnDataType.string,
 		},
 		{
 			id: 'newPath',
-			label: tText('Nieuwe url'),
+			label: tText('admin/url-redirects/url-redirects___nieuwe-url'),
 			sortable: true,
 			visibleByDefault: true,
 			dataType: TableColumnDataType.string,
 		},
 		{
 			id: 'createdAt',
-			label: tText('Aangemaakt op'),
+			label: tText('admin/url-redirects/url-redirects___aangemaakt-op'),
 			sortable: true,
 			visibleByDefault: true,
 			filterType: TableFilterType.DateRangeDropdown,
@@ -57,7 +57,7 @@ export const GET_URL_REDIRECT_OVERVIEW_TABLE_COLS: () => FilterableColumn<UrlRed
 		},
 		{
 			id: 'updatedAt',
-			label: tText('Aangepast op'),
+			label: tText('admin/url-redirects/url-redirects___aangepast-op'),
 			sortable: true,
 			visibleByDefault: true,
 			filterType: TableFilterType.DateRangeDropdown,
@@ -65,7 +65,7 @@ export const GET_URL_REDIRECT_OVERVIEW_TABLE_COLS: () => FilterableColumn<UrlRed
 		},
 		{
 			id: ACTIONS_TABLE_COLUMN_ID,
-			tooltip: tText('Acties'),
+			tooltip: tText('admin/url-redirects/url-redirects___acties'),
 			visibleByDefault: true,
 		},
 	];
@@ -74,12 +74,12 @@ export const URL_REDIRECT_PATTERN_OPTIONS = () => [
 	{
 		id: String(UrlRedirectPathPattern.PLAIN_TEXT),
 		value: UrlRedirectPathPattern.PLAIN_TEXT,
-		label: tText('Tekst'),
+		label: tText('admin/url-redirects/url-redirects___tekst'),
 	},
 	{
 		id: String(UrlRedirectPathPattern.REGEX),
 		value: UrlRedirectPathPattern.REGEX,
-		label: tText('Reguliere expressie'),
+		label: tText('admin/url-redirects/url-redirects___reguliere-expressie'),
 	},
 ];
 

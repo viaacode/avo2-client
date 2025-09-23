@@ -141,7 +141,7 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 		try {
 			setIsLoading(true);
 
-			const [pupilCollectionsTemp, pupilCollectionsCountTemp] =
+			const { assignmentResponses, count } =
 				await PupilCollectionService.fetchPupilCollectionsForAdmin(
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
@@ -151,8 +151,8 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 					generateWhereObject(getFilters(tableState))
 				);
 
-			setPupilCollections(pupilCollectionsTemp);
-			setPupilCollectionsCount(pupilCollectionsCountTemp);
+			setPupilCollections(assignmentResponses);
+			setPupilCollectionsCount(count);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get pupil collections from the database', err, {
@@ -399,7 +399,7 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 							getColumnDataType(),
 							{}
 						);
-						return response[1];
+						return response.count;
 					}}
 					fetchMoreItems={async (offset: number, limit: number) => {
 						const response = await PupilCollectionService.fetchPupilCollectionsForAdmin(
@@ -411,7 +411,7 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 							getColumnDataType(),
 							generateWhereObject(getFilters(tableState))
 						);
-						return response[0];
+						return response.assignmentResponses;
 					}}
 					renderValue={(pupilCollection: any, columnId: string) =>
 						renderPupilCollectionTableCellText(

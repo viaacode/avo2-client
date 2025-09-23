@@ -17,7 +17,10 @@ export class PupilCollectionService {
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
 		where: any = {}
-	): Promise<[Avo.Assignment.Response[], number]> {
+	): Promise<{
+		assignmentResponses: Avo.Assignment.Response[];
+		count: number;
+	}> {
 		let url: string | undefined = undefined;
 
 		try {
@@ -29,7 +32,7 @@ export class PupilCollectionService {
 					sortColumn,
 					sortOrder,
 					tableColumnDataType,
-					filters: where,
+					filters: JSON.stringify(where),
 				},
 			});
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
@@ -48,7 +51,7 @@ export class PupilCollectionService {
 			url = stringifyUrl({
 				url: `${getEnv('PROXY_URL')}/pupil-collection/collection-ids`,
 				query: {
-					filters: where,
+					filters: JSON.stringify(where),
 				},
 			});
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');

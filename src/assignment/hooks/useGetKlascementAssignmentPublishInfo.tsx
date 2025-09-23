@@ -2,7 +2,10 @@ import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '../../shared/constants/query-keys';
 import { tHtml } from '../../shared/helpers/translate-html';
-import { type KlascementAssignmentPublishInfo, KlascementService, } from '../../shared/services/klascement-service';
+import {
+	type KlascementAssignmentPublishInfo,
+	KlascementService,
+} from '../../shared/services/klascement-service';
 
 export const useGetKlascementAssignmentPublishInfo = (
 	assignmentId: string,

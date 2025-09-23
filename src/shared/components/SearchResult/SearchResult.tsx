@@ -72,8 +72,12 @@ export const SearchResult: FC<SearchResultProps> = ({
 							<div className="c-button-toolbar">
 								{defaultRenderBookmarkButton({
 									active: isBookmarked,
-									ariaLabel: tText('toggle bookmark'),
-									title: tText('toggle bookmark'),
+									ariaLabel: tText(
+										'shared/components/search-result/search-result___toggle-bookmark'
+									),
+									title: tText(
+										'shared/components/search-result/search-result___toggle-bookmark'
+									),
 									onClick: (active: boolean) => onToggleBookmark(active),
 									type: undefined,
 								})}

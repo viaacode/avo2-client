@@ -123,13 +123,13 @@ const ErrorView: FC<ErrorViewProps & RouteComponentProps & UserProps> = ({
 				{btns.includes('help') && (
 					<Button
 						onClick={() => redirectToHelp(location)}
-						label={tText('Ga naar de hulppagina')}
+						label={tText('error/views/error-view___ga-naar-de-hulppagina')}
 					/>
 				)}
 				{btns.includes('pupils') && (
 					<Button
 						onClick={() => redirectToPupils(location)}
-						label={tText('Ga naar de startpagina')}
+						label={tText('error/views/error-view___ga-naar-de-startpagina')}
 					/>
 				)}
 				{btns.includes('helpdesk') && (

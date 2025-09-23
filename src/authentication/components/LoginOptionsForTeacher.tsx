@@ -79,8 +79,8 @@ const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps & RouteComponentPro
 				className="c-button-itsme"
 				icon={IconName.itsme}
 				iconType="multicolor"
-				label={tText('itsme of eID')}
-				title={tText('itsme of eID')}
+				label={tText('authentication/components/login-options-for-teacher___itsme-of-e-id')}
+				title={tText('authentication/components/login-options-for-teacher___itsme-of-e-id')}
 				onClick={() => {
 					onOptionClicked();
 					redirectToServerACMIDMLogin(location, openInNewTab);

@@ -76,17 +76,23 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 	const getFormErrors = (): UrlRedirectEditFormErrorState | null => {
 		if (!updatedUrlRedirect?.oldPath) {
 			return {
-				old_path: tText('Een oude url is verplicht'),
+				old_path: tText(
+					'admin/url-redirects/views/url-redirect-edit___een-oude-url-is-verplicht'
+				),
 			};
 		} else if (!updatedUrlRedirect.oldPath.startsWith('/')) {
 			return {
-				old_path: tText('De url moet starten met /'),
+				old_path: tText(
+					'admin/url-redirects/views/url-redirect-edit___de-url-moet-starten-met'
+				),
 			};
 		}
 
 		if (!updatedUrlRedirect?.newPath) {
 			return {
-				new_path: tText('Een nieuwe url is verplicht'),
+				new_path: tText(
+					'admin/url-redirects/views/url-redirect-edit___een-nieuwe-url-is-verplicht'
+				),
 			};
 		} else if (
 			!(
@@ -95,7 +101,9 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 			)
 		) {
 			return {
-				new_path: tText('De url moet starten met / of {{PROXY_URL}}'),
+				new_path: tText(
+					'admin/url-redirects/views/url-redirect-edit___de-url-moet-starten-met-of-proxy-url'
+				),
 			};
 		}
 		return null;
@@ -106,7 +114,9 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 			const errors = getFormErrors();
 			setFormErrors(errors || {});
 			if (errors) {
-				ToastService.danger(tHtml('De invoer is ongeldig'));
+				ToastService.danger(
+					tHtml('admin/url-redirects/views/url-redirect-edit___de-invoer-is-ongeldig')
+				);
 				return;
 			}
 
@@ -119,7 +129,9 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 			}
 
 			redirectToClientPage(buildLink(URL_REDIRECT_PATH.URL_REDIRECT_OVERVIEW), history);
-			ToastService.success(tHtml('De url redirect is opgeslagen'));
+			ToastService.success(
+				tHtml('admin/url-redirects/views/url-redirect-edit___de-url-redirect-is-opgeslagen')
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to save url redirect', err, {
@@ -129,7 +141,9 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 
 			ToastService.danger(
 				(err as CustomError)?.additionalInfo?.errorMessage ||
-					tHtml('Het opslaan van de url redirect is mislukt')
+					tHtml(
+						'admin/url-redirects/views/url-redirect-edit___het-opslaan-van-de-url-redirect-is-mislukt'
+					)
 			);
 		}
 		setIsSaving(false);
@@ -149,7 +163,9 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 		if (error || !loadedUrlRedirect) {
 			return (
 				<ErrorView
-					message={tHtml('Het ophalen van de url redirect is mislukt')}
+					message={tHtml(
+						'admin/url-redirects/views/url-redirect-edit___het-ophalen-van-de-url-redirect-is-mislukt'
+					)}
 					icon={IconName.alertTriangle}
 				/>
 			);
@@ -161,7 +177,9 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 					<Grid>
 						<Column size="7">
 							<FormGroup
-								label={tText('Oude url')}
+								label={tText(
+									'admin/url-redirects/views/url-redirect-edit___oude-url'
+								)}
 								error={formErrors.old_path}
 								required
 							>
@@ -178,7 +196,9 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 						</Column>
 						<Column size="5">
 							<FormGroup
-								label={tText('Oude url patroon')}
+								label={tText(
+									'admin/url-redirects/views/url-redirect-edit___oude-url-patroon'
+								)}
 								error={formErrors.oldPathPattern}
 							>
 								<Select
@@ -195,7 +215,11 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 							</FormGroup>
 						</Column>
 					</Grid>
-					<FormGroup label={tText('Nieuwe url')} error={formErrors.new_path} required>
+					<FormGroup
+						label={tText('admin/url-redirects/views/url-redirect-edit___nieuwe-url')}
+						error={formErrors.new_path}
+						required
+					>
 						<TextInput
 							value={updatedUrlRedirect.newPath || ''}
 							onChange={(newValue: string) =>
@@ -217,16 +241,26 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 			<AdminLayout
 				onClickBackButton={() => navigate(history, ADMIN_PATH.URL_REDIRECT_OVERVIEW)}
 				pageTitle={
-					isCreatePage ? tText('Url redirect aanmaken') : tText('Url redirect aanpassen')
+					isCreatePage
+						? tText(
+								'admin/url-redirects/views/url-redirect-edit___url-redirect-aanmaken'
+						  )
+						: tText(
+								'admin/url-redirects/views/url-redirect-edit___url-redirect-aanpassen'
+						  )
 				}
 				size="full-width"
 			>
 				<AdminLayoutTopBarRight>
 					<ButtonToolbar>
-						<Button label={tText('Annuleer')} onClick={navigateBack} type="secondary" />
+						<Button
+							label={tText('admin/url-redirects/views/url-redirect-edit___annuleer')}
+							onClick={navigateBack}
+							type="secondary"
+						/>
 						<Button
 							disabled={isLoading || !!error || isSaving}
-							label={tText('Opslaan')}
+							label={tText('admin/url-redirects/views/url-redirect-edit___opslaan')}
 							onClick={handleSave}
 							type="primary"
 						/>
@@ -243,16 +277,24 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 				<title>
 					{GENERATE_SITE_TITLE(
 						isCreatePage
-							? tText('url redirect beheer aanmaak pagina titel')
-							: tText('url redirect beheer bewerk pagina titel')
+							? tText(
+									'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-aanmaak-pagina-titel'
+							  )
+							: tText(
+									'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-bewerk-pagina-titel'
+							  )
 					)}
 				</title>
 				<meta
 					name="description"
 					content={
 						isCreatePage
-							? tText('url redirect beheer aanmaak pagina beschrijving')
-							: tText('url redirect beheer bewerk pagina beschrijving')
+							? tText(
+									'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-aanmaak-pagina-beschrijving'
+							  )
+							: tText(
+									'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-bewerk-pagina-beschrijving'
+							  )
 					}
 				/>
 			</Helmet>

@@ -336,7 +336,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			exact: false,
 		}),
 		...hasPermissions([PermissionName.EDIT_REDIRECTS], 'OR', userPermissions, {
-			label: tText('Redirects'),
+			label: tText('admin/admin___redirects'),
 			location: ADMIN_PATH.URL_REDIRECT_OVERVIEW,
 			target: '_self',
 			key: 'redirects',
