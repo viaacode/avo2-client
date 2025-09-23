@@ -4,6 +4,8 @@ import { QueryClient } from '@tanstack/react-query';
 import {
 	Button,
 	ButtonToolbar,
+	Form,
+	FormGroup,
 	Icon,
 	IconName,
 	MetaData,
@@ -12,15 +14,19 @@ import {
 	Spacer,
 	Table,
 	type TableColumn,
+	TextInput,
 	Thumbnail,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
+	ToolbarRight,
+	useKeyPress,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { cloneDeep, compact, fromPairs, isNil, noop } from 'lodash-es';
 import React, {
 	type FC,
+	type KeyboardEvent,
 	type ReactNode,
 	type ReactText,
 	useCallback,
@@ -29,7 +35,13 @@ import React, {
 } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-import { ArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
+import {
+	ArrayParam,
+	DelimitedArrayParam,
+	NumberParam,
+	StringParam,
+	useQueryParams,
+} from 'use-query-params';
 
 import { type CollectionsOrBundlesOverviewTableCols } from '../../admin/collectionsOrBundles/collections-or-bundles.types';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
@@ -48,6 +60,7 @@ import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import LabelsClassesDropdownFilter from '../../shared/components/ManageLabelsClasses/LabelsClassesDropdownFilter';
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
@@ -55,7 +68,6 @@ import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generate
 import { buildLink } from '../../shared/helpers/build-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { formatDate, formatTimestamp } from '../../shared/helpers/formatters';
-import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
@@ -65,6 +77,7 @@ import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service';
+import { KeyCode } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CollectionService } from '../collection.service';
@@ -78,7 +91,6 @@ import {
 } from '../collection.types';
 import { deleteCollection, deleteSelfFromCollection } from '../helpers/delete-collection';
 
-import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './CollectionOrBundleOverview.consts';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
@@ -126,11 +138,15 @@ const CollectionOrBundleOverview: FC<
 			| 'CREATE_ASSIGNMENT';
 	} | null>(null);
 
+	const [filterString, setFilterString] = useState<string | undefined>(undefined);
 	const [query, setQuery] = useQueryParams({
+		selectedCollectionLabelIds: DelimitedArrayParam,
+		selectedClassLabelIds: DelimitedArrayParam,
 		selectedShareTypeLabelIds: ArrayParam,
 		page: NumberParam,
 		sortColumn: StringParam,
 		sortOrder: StringParam,
+		filter: StringParam,
 	});
 
 	const isContributor =
@@ -158,18 +174,16 @@ const CollectionOrBundleOverview: FC<
 				TableColumnDataType.string) as TableColumnDataType;
 			const collections =
 				await CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
-					commonUser,
 					page * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
-					getOrderObject(
-						sortColumn,
-						sortOrder,
-						columnDataType,
-						COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
-					),
+					sortColumn,
+					sortOrder,
+					columnDataType,
 					isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
-					undefined,
-					query.selectedShareTypeLabelIds as string[]
+					query.filter || '',
+					query.selectedShareTypeLabelIds as string[],
+					query.selectedCollectionLabelIds as string[],
+					query.selectedClassLabelIds as string[]
 				);
 
 			// Check edit and delete permissions for every row, so we can show the correct dropdown list of operations
@@ -304,6 +318,18 @@ const CollectionOrBundleOverview: FC<
 			setSortOrder(query.sortOrder as OrderDirection);
 		}
 	}, []);
+
+	const copySearchTermsToQueryState = () => {
+		handleQueryChanged(filterString, 'filter');
+	};
+
+	useKeyPress('Enter', copySearchTermsToQueryState);
+
+	const handleSearchFieldKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
+		if (evt.keyCode === KeyCode.Enter) {
+			copySearchTermsToQueryState();
+		}
+	};
 
 	const handleQueryChanged = (value: any, id: string) => {
 		let newQuery: any = cloneDeep(query);
@@ -672,6 +698,17 @@ const CollectionOrBundleOverview: FC<
 				dataType: TableColumnDataType.string,
 			},
 			{
+				id: 'labels',
+				label: tText('Label'),
+				sortable: false,
+			},
+			{
+				id: 'class_room',
+				label: tText('Klas'),
+				sortable: false,
+				dataType: TableColumnDataType.string,
+			},
+			{
 				id: ACTIONS_TABLE_COLUMN_ID,
 				tooltip: tText('collection/components/collection-or-bundle-overview___acties'),
 				col: '1',
@@ -689,8 +726,18 @@ const CollectionOrBundleOverview: FC<
 			{
 				id: 'title',
 				label: tText('collection/views/collection-overview___titel'),
-				col: '6',
 				sortable: true,
+				dataType: TableColumnDataType.string,
+			},
+			{
+				id: 'labels',
+				label: tText('Label'),
+				sortable: false,
+			},
+			{
+				id: 'class_room',
+				label: tText('Klas'),
+				sortable: false,
 				dataType: TableColumnDataType.string,
 			},
 			{
@@ -793,9 +840,41 @@ const CollectionOrBundleOverview: FC<
 									)
 								}
 							/>
+							<LabelsClassesDropdownFilter
+								type={'CLASS'}
+								selectedLabelIds={query.selectedCollectionLabelIds ?? []}
+								selectedClassLabelIds={query.selectedClassLabelIds ?? []}
+								onChange={(selectedClasses) =>
+									handleQueryChanged(selectedClasses, 'selectedClassLabelIds')
+								}
+							/>
+							<LabelsClassesDropdownFilter
+								type={'LABEL'}
+								selectedLabelIds={query.selectedCollectionLabelIds ?? []}
+								selectedClassLabelIds={query.selectedClassLabelIds ?? []}
+								onChange={(selectedLabels) =>
+									handleQueryChanged(selectedLabels, 'selectedCollectionLabelIds')
+								}
+							/>
 						</ButtonToolbar>
 					</ToolbarItem>
 				</ToolbarLeft>
+				<ToolbarRight>
+					<ToolbarItem>
+						<Form type="inline">
+							<FormGroup inlineMode="grow">
+								<TextInput
+									className="m-assignment-overview__search-input"
+									icon={IconName.filter}
+									value={filterString}
+									onChange={setFilterString}
+									onKeyUp={handleSearchFieldKeyUp}
+									disabled={!collections}
+								/>
+							</FormGroup>
+						</Form>
+					</ToolbarItem>
+				</ToolbarRight>
 			</Toolbar>
 		);
 	};
@@ -941,7 +1020,7 @@ const CollectionOrBundleOverview: FC<
 	const renderCollections = () => {
 		return (
 			<>
-				{isCollection && renderHeader()}
+				{renderHeader()}
 				{collections && collections.length
 					? renderTable(collections)
 					: renderEmptyFallback()}

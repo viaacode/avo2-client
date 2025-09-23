@@ -36,6 +36,7 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
+import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import ItemVideoDescription from '../ItemVideoDescription';
 
 import './AddToCollectionModal.scss';
@@ -72,11 +73,14 @@ const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 	const fetchCollections = React.useCallback(
 		() =>
 			CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
-				commonUser,
 				0,
 				500,
-				{ created_at: OrderDirection.desc },
+				'created_at',
+				OrderDirection.desc,
+				TableColumnDataType.dateTime,
 				ContentTypeNumber.collection,
+				undefined,
+				undefined,
 				undefined,
 				undefined,
 				[

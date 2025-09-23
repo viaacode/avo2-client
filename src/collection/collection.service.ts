@@ -47,8 +47,6 @@ import {
 	type GetCollectionMarcomEntriesQueryVariables,
 	type GetCollectionsByItemUuidQuery,
 	type GetCollectionsByItemUuidQueryVariables,
-	type GetCollectionsByOwnerOrContributorQuery,
-	type GetCollectionsByOwnerOrContributorQueryVariables,
 	type GetCollectionTitlesByOwnerQuery,
 	type GetCollectionTitlesByOwnerQueryVariables,
 	type GetContributorsByCollectionUuidQuery,
@@ -99,7 +97,6 @@ import {
 	GetCollectionByTitleOrDescriptionDocument,
 	GetCollectionMarcomEntriesDocument,
 	GetCollectionsByItemUuidDocument,
-	GetCollectionsByOwnerOrContributorDocument,
 	GetCollectionTitlesByOwnerDocument,
 	GetContributorsByCollectionUuidDocument,
 	GetOrganisationContentDocument,
@@ -135,6 +132,7 @@ import { RelationService } from '../shared/services/relation-service/relation.se
 import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import { type Positioned } from '../shared/types';
+import type { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
 	cleanCollectionBeforeSave,
@@ -1336,50 +1334,42 @@ export class CollectionService {
 	}
 
 	static async fetchCollectionsByOwnerOrContributorProfileId(
-		commonUser: Avo.User.CommonUser | null | undefined,
 		offset: number,
 		limit: number | null,
-		order: Record<string, OrderDirection> | Record<string, OrderDirection>[],
+		sortColumn: string,
+		sortOrder: Avo.Search.OrderDirection,
+		tableColumnDataType: TableColumnDataType,
 		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
 		filterString: string | undefined,
 		shareTypeIds: string[] | undefined,
+		labelIds?: string[],
+		classIds?: string[],
 		where: any[] = []
 	): Promise<Partial<Avo.Collection.Collection>[]> {
-		let variables: GetCollectionsByOwnerOrContributorQueryVariables | null = null;
-		try {
-			const trimmedFilterString = filterString && filterString.trim();
-			const filterArray: any[] = [...where];
-			if (trimmedFilterString) {
-				filterArray.push({
-					title: { _ilike: `%${trimmedFilterString}%` },
-				});
-			}
-			if (shareTypeIds?.length) {
-				filterArray.push({
-					share_type: { _in: shareTypeIds },
-				});
-			}
-			variables = {
-				offset,
-				limit,
-				order,
-				type_id: contentTypeId,
-				collaborator_profile_id: commonUser?.profileId,
-				where: filterArray.length ? filterArray : {},
-			};
-			const response = await dataService.query<
-				GetCollectionsByOwnerOrContributorQuery,
-				GetCollectionsByOwnerOrContributorQueryVariables
-			>({
-				query: GetCollectionsByOwnerOrContributorDocument,
-				variables,
-			});
+		let url = '';
 
-			return response.app_collections_overview as unknown as Avo.Collection.Collection[];
+		try {
+			url = stringifyUrl({
+				url: `${getEnv('PROXY_URL')}/collections`,
+				query: {
+					sortColumn,
+					sortOrder,
+					tableColumnDataType,
+					offset,
+					limit,
+					filterString: filterString,
+					labelIds: labelIds?.join(','),
+					classIds: classIds?.join(','),
+					shareTypeIds: shareTypeIds?.join(','),
+					contentTypeId,
+					where,
+				},
+			});
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			return fetchWithLogoutJson<Avo.Collection.Collection[]>(url);
 		} catch (err) {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
-				variables,
-				query: 'GET_COLLECTIONS_BY_OWNER',
+				url,
 			});
 		}
 	}

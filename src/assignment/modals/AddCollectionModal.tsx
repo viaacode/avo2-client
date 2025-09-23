@@ -72,20 +72,6 @@ const GET_ADD_COLLECTION_COLUMNS = (): TableColumn[] => [
 	},
 ];
 
-const OWN_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
-	[columnId in keyof Avo.Collection.Collection]: (order: Avo.Search.OrderDirection) => any;
-}> = {
-	title: (order: Avo.Search.OrderDirection) => ({
-		title: order,
-	}),
-	updated_at: (order: Avo.Search.OrderDirection) => ({
-		updated_at: order,
-	}),
-	is_public: (order: Avo.Search.OrderDirection) => ({
-		is_public: order,
-	}),
-};
-
 const BOOKMARKED_COLLECTION_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	[columnId in keyof Avo.Collection.Collection]: (order: Avo.Search.OrderDirection) => any;
 }> = {
@@ -145,15 +131,11 @@ const AddCollectionModal: FC<AddCollectionModalProps> = ({
 			let collections: Partial<Avo.Collection.Collection>[];
 			if (activeView === AddCollectionTab.myCollections) {
 				collections = await CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
-					commonUser,
 					0,
 					null,
-					getOrderObject(
-						sortColumn,
-						sortOrder,
-						columnDataType,
-						OWN_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
-					),
+					sortColumn,
+					sortOrder,
+					columnDataType,
 					ContentTypeNumber.collection,
 					filterString,
 					undefined
