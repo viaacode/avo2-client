@@ -1345,7 +1345,7 @@ export class CollectionService {
 		labelIds?: string[],
 		classIds?: string[],
 		where: any[] = []
-	): Promise<Partial<Avo.Collection.Collection>[]> {
+	): Promise<Avo.Collection.Collection[]> {
 		let url = '';
 
 		try {

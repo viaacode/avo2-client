@@ -1,4 +1,4 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { cleanupFilterTableState, toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { PaginationBar } from '@meemoo/react-components';
 import { QueryClient } from '@tanstack/react-query';
 import {
@@ -46,6 +46,7 @@ import {
 import { type CollectionsOrBundlesOverviewTableCols } from '../../admin/collectionsOrBundles/collections-or-bundles.types';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { AssignmentService } from '../../assignment/assignment.service';
+import type { AssignmentTableColumns } from '../../assignment/assignment.types';
 import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
 import type { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -102,6 +103,9 @@ interface CollectionOrBundleOverviewProps {
 	onUpdate: () => void | Promise<void>;
 }
 
+const DEFAULT_SORT_COLUMN = 'updated_at';
+const DEFAULT_SORT_ORDER = OrderDirection.desc;
+
 const CollectionOrBundleOverview: FC<
 	CollectionOrBundleOverviewProps & DefaultSecureRouteProps & UserProps
 > = ({ numberOfItems, type, onUpdate = noop, history, commonUser }) => {
@@ -125,10 +129,6 @@ const CollectionOrBundleOverview: FC<
 		Avo.Collection.Collection | undefined
 	>(undefined);
 	const [selectedCollection, setSelectedCollection] = useState<Collection | undefined>(undefined);
-	const [sortColumn, setSortColumn] =
-		useState<CollectionsOrBundlesOverviewTableCols>('updated_at');
-	const [sortOrder, setSortOrder] = useState<OrderDirection>(OrderDirection.desc);
-	const [page, setPage] = useState<number>(0);
 	const [activeModalInfo, setActiveModalInfo] = useState<{
 		collectionUuid: string;
 		activeModal:
@@ -167,6 +167,7 @@ const CollectionOrBundleOverview: FC<
 
 	const fetchCollections = useCallback(async () => {
 		try {
+			const sortColumn = query.sortColumn || DEFAULT_SORT_COLUMN;
 			const column = getColumnsDesktop().find(
 				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
 			);
@@ -174,10 +175,10 @@ const CollectionOrBundleOverview: FC<
 				TableColumnDataType.string) as TableColumnDataType;
 			const collections =
 				await CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
-					page * ITEMS_PER_PAGE,
+					query.page || 0,
 					ITEMS_PER_PAGE,
 					sortColumn,
-					sortOrder,
+					(query.sortOrder || DEFAULT_SORT_ORDER) as Avo.Search.OrderDirection,
 					columnDataType,
 					isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
 					query.filter || '',
@@ -264,7 +265,7 @@ const CollectionOrBundleOverview: FC<
 				actionButtons: ['home'],
 			});
 		}
-	}, [commonUser, page, sortColumn, sortOrder, isCollection, tText, query]);
+	}, [commonUser, isCollection, tText, query]);
 
 	useEffect(() => {
 		fetchCollections().then(noop);
@@ -309,15 +310,6 @@ const CollectionOrBundleOverview: FC<
 			setSelectedCollectionDetail(undefined);
 		}
 	}, [activeModalInfo?.collectionUuid, isCollection]);
-
-	useEffect(() => {
-		if (query.sortColumn) {
-			setSortColumn(query.sortColumn as CollectionsOrBundlesOverviewTableCols);
-		}
-		if (query.sortOrder) {
-			setSortOrder(query.sortOrder as OrderDirection);
-		}
-	}, []);
 
 	const copySearchTermsToQueryState = () => {
 		handleQueryChanged(filterString, 'filter');
@@ -396,16 +388,16 @@ const CollectionOrBundleOverview: FC<
 			)
 		);
 
-	// TODO: Make shared function because also used in assignments
 	const onClickColumn = (columnId: CollectionsOrBundlesOverviewTableCols) => {
-		if (sortColumn === columnId) {
-			// Change column sort order
-			setSortOrder(toggleSortOrder(sortOrder));
-		} else {
-			// Initial column sort order
-			setSortColumn(columnId);
-			setSortOrder(OrderDirection.asc);
-		}
+		let newQuery: any = cloneDeep(query);
+
+		newQuery = cleanupFilterTableState({
+			...newQuery,
+			sortColumn: columnId,
+			sortOrder: toggleSortOrder(query.sortOrder),
+		});
+
+		setQuery(newQuery, 'pushIn');
 	};
 
 	const onCreateAssignmentFromCollection = async (withDescription: boolean): Promise<void> => {
@@ -797,10 +789,10 @@ const CollectionOrBundleOverview: FC<
 	const renderPagination = () => (
 		<PaginationBar
 			{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
-			startItem={page * ITEMS_PER_PAGE}
+			startItem={(query.page || 0) * ITEMS_PER_PAGE}
 			itemsPerPage={ITEMS_PER_PAGE}
 			totalItems={numberOfItems}
-			onPageChange={setPage}
+			onPageChange={(newPage: number) => handleQueryChanged(newPage, 'page')}
 		/>
 	);
 
@@ -892,8 +884,8 @@ const CollectionOrBundleOverview: FC<
 					rowKey="id"
 					variant="styled"
 					onColumnClick={onClickColumn as any}
-					sortColumn={sortColumn}
-					sortOrder={sortOrder}
+					sortColumn={query.sortColumn as AssignmentTableColumns}
+					sortOrder={query.sortOrder as OrderDirection}
 				/>
 				<Spacer margin="top-large">{renderPagination()}</Spacer>
 			</>
