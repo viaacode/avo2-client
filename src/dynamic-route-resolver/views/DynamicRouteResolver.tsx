@@ -46,6 +46,7 @@ import { getEnv } from '../../shared/helpers/env';
 import { getFullName, stripHtml } from '../../shared/helpers/formatters';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { generateSearchLinkString } from '../../shared/helpers/link';
+import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Locale } from '../../shared/translations/translations.types';
@@ -300,7 +301,7 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 	const renderRouteComponent = () => {
 		if (routeInfo && routeInfo.type === DynamicRouteType.CONTENT_PAGE) {
 			const routeUserGroupIds = ((routeInfo.data as DbContentPage).userGroupIds ?? []).map(
-				(id) => String(id)
+				(id: string) => String(id)
 			);
 			// Check if the page requires the user to be logged in and not both logged in or out
 			if (
@@ -352,6 +353,7 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 								renderFakeTitle={
 									(routeInfo.data as ContentPageInfo).contentType === 'FAQ_ITEM'
 								}
+								renderNoAccessError={renderWrongUserRoleError}
 							/>
 						</>
 					)}
@@ -389,13 +391,7 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 			);
 		}
 		if (routeInfo && routeInfo.type === DynamicRouteType.WRONG_USER_GROUP_PAGE) {
-			return (
-				<ErrorView
-					icon={IconName.clock}
-					actionButtons={['help', 'helpdesk']}
-					message={GET_ERROR_MESSAGES()[`OTHER_ROLES`]}
-				/>
-			);
+			return renderWrongUserRoleError();
 		}
 		console.error(
 			new CustomError("Route doesn't seem to be a bundle or content page", null, {

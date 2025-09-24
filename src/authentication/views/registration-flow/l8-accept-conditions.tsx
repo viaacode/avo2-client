@@ -20,6 +20,7 @@ import {
 	type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../../shared/helpers/custom-error';
+import { renderWrongUserRoleError } from '../../../shared/helpers/render-wrong-user-role-error';
 import { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { NotificationService } from '../../../shared/services/notification-service';
@@ -156,6 +157,7 @@ const AcceptConditions: FC<AcceptConditionsProps & DefaultSecureRouteProps & Use
 						<ContentPageRenderer
 							contentPageInfo={pages[0] as ContentPageInfo}
 							commonUser={commonUser}
+							renderNoAccessError={renderWrongUserRoleError}
 						/>
 					)}
 					{/* privacy conditions */}
@@ -163,6 +165,7 @@ const AcceptConditions: FC<AcceptConditionsProps & DefaultSecureRouteProps & Use
 						<ContentPageRenderer
 							contentPageInfo={pages[1] as ContentPageInfo}
 							commonUser={commonUser}
+							renderNoAccessError={renderWrongUserRoleError}
 						/>
 					)}
 				</Spacer>

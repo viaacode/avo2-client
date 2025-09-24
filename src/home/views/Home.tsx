@@ -9,6 +9,7 @@ import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
+import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 
@@ -41,6 +42,7 @@ const Home: FC<UserProps & RouteComponentProps> = ({ history, commonUser }) => {
 					<ContentPageRenderer
 						contentPageInfo={contentPageInfo}
 						commonUser={commonUser}
+						renderNoAccessError={renderWrongUserRoleError}
 					/>
 				</>
 			)}
