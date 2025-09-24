@@ -156,6 +156,13 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			key: 'navigatie',
 			exact: false,
 		}),
+		...hasPermissions([PermissionName.EDIT_REDIRECTS], 'OR', userPermissions, {
+			label: tText('admin/admin___redirects'),
+			location: ADMIN_PATH.URL_REDIRECT_OVERVIEW,
+			target: '_self',
+			key: 'redirects',
+			exact: false,
+		}),
 		...hasPermissions(
 			['EDIT_ANY_CONTENT_PAGES', 'EDIT_OWN_CONTENT_PAGES'],
 			'OR',
@@ -333,13 +340,6 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			location: ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW,
 			target: '_self',
 			key: 'interactiveTours',
-			exact: false,
-		}),
-		...hasPermissions([PermissionName.EDIT_REDIRECTS], 'OR', userPermissions, {
-			label: tText('admin/admin___redirects'),
-			location: ADMIN_PATH.URL_REDIRECT_OVERVIEW,
-			target: '_self',
-			key: 'redirects',
 			exact: false,
 		}),
 		...hasPermissions([PermissionName.EDIT_TRANSLATIONS], 'OR', userPermissions, {
