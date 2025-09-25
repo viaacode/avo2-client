@@ -1,7 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 import { compact, fromPairs, get, groupBy, noop } from 'lodash-es';
 
-import { WorkspaceService } from '../../../workspace/workspace.service';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
 import {
 	type DeleteAssignmentBookmarksForUserMutationVariables,
@@ -298,20 +297,6 @@ export class BookmarksViewsPlaysService {
 		const itemBookmarkInfos: (BookmarkInfo | null)[] =
 			BookmarksViewsPlaysService.getItemBookmarkInfos(itemBookmarks);
 		return compact(itemBookmarkInfos);
-	}
-
-	/**
-	 * Gets all bookmarks for user without pagination
-	 * since we cannot order items across both tables: item_bookmarks and collection_bookmarks
-	 */
-	public static async getAllBookmarksForUser(): Promise<BookmarkInfo[]> {
-		const bookmarks = await WorkspaceService.getAllBookmarksForUser();
-
-		return bookmarks.map((item) => ({
-			...item,
-			contentThumbnailPath:
-				item.contentType === 'audio' ? DEFAULT_AUDIO_STILL : item.contentThumbnailPath,
-		}));
 	}
 
 	private static getQueryAndVariables(
