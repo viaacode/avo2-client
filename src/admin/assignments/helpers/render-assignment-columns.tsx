@@ -242,6 +242,8 @@ export function renderAssignmentCellReact(
 			return (
 				assignment?.updated_by?.user?.full_name ||
 				(assignment as any)?.last_user_edit_profile?.usersByuserId?.full_name ||
+				(assignment as any)?.last_editor?.full_name ||
+				(assignment as any)?.last_editor_name ||
 				'-'
 			);
 		}

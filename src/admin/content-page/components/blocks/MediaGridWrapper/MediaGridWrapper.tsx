@@ -2,6 +2,7 @@ import {
 	type MediaGridBlockComponentState,
 	type MediaGridBlockState,
 } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import type { DbContentPage } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
 	type ButtonAction,
@@ -41,7 +42,7 @@ import { ADMIN_PATH } from '../../../../admin.const';
 import { ContentPageService } from '../../../services/content-page.service';
 
 import { BlockMediaGrid, type MediaListItem } from './BlockMediaGrid';
-import { type ResolvedItemOrCollectionOrAssignment } from './MediaGridWrapper.types';
+import { type ResolvedItemOrCollectionOrAssignmentOrContentPage } from './MediaGridWrapper.types';
 
 interface MediaGridWrapperProps extends MediaGridBlockState {
 	searchQuery?: ButtonAction;
@@ -50,7 +51,7 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 		mediaItem: ButtonAction;
 		copyrightOwnerOrId: string | 'NO_COPYRIGHT_NOTICE';
 	}[];
-	results: ResolvedItemOrCollectionOrAssignment[];
+	results: ResolvedItemOrCollectionOrAssignmentOrContentPage[];
 	renderLink: RenderLinkFunction;
 	buttonAltTitle?: string;
 	ctaButtonAltTitle?: string;
@@ -58,6 +59,7 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 
 export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 	title,
+	titleType = 'h2',
 	buttonLabel,
 	buttonAltTitle,
 	buttonAction,
@@ -89,7 +91,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [resolvedResults, setResolvedResults] = useState<
-		ResolvedItemOrCollectionOrAssignment[] | null
+		ResolvedItemOrCollectionOrAssignmentOrContentPage[] | null
 	>(null);
 
 	// cache search results
@@ -97,7 +99,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 	const [lastSearchQueryLimit, setLastSearchQueryLimit] = useState<number | null>(null);
 
 	const [activeItem, setActiveItem] = useState<
-		(Avo.Item.Item & ResolvedItemOrCollectionOrAssignment) | null
+		(Avo.Item.Item & ResolvedItemOrCollectionOrAssignmentOrContentPage) | null
 	>(null);
 	const [activeItemBookmarkStatus, setActiveItemBookmarkStatus] = useState<boolean | null>(null);
 	const [activeCopyright, setActiveCopyright] = useState<Avo.Organization.Organization | null>(
@@ -263,15 +265,32 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 	};
 
 	const getThumbnailFromItem = (
-		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignment | null
+		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignmentOrContentPage | null
 	) => {
 		if (itemOrCollectionOrAssignment?.type?.label === 'audio') {
 			return DEFAULT_AUDIO_STILL;
 		}
 		if (itemOrCollectionOrAssignment?.type?.label === 'opdracht') {
-			return itemOrCollectionOrAssignment?.thumbnail_path || placeholderImage;
+			return (
+				(itemOrCollectionOrAssignment as Avo.Assignment.Assignment)?.thumbnail_path ||
+				placeholderImage
+			);
 		}
-		return itemOrCollectionOrAssignment?.thumbnail_path || '';
+		return (itemOrCollectionOrAssignment as Avo.Item.Item)?.thumbnail_path || '';
+	};
+
+	const getLabelFromItem = (
+		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignmentOrContentPage | null
+	): string => {
+		if ((itemOrCollectionOrAssignment as any)?.type?.label) {
+			return (itemOrCollectionOrAssignment as any)?.type?.label;
+		}
+
+		if ((itemOrCollectionOrAssignment as any)?.content_type) {
+			return 'contentPagina';
+		}
+
+		return 'item';
 	};
 
 	const ITEM_LABEL_TO_TYPE: Partial<Record<ContentTypeString, Avo.Core.ContentPickerType>> = {
@@ -280,15 +299,15 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 		collectie: 'COLLECTION',
 		bundel: 'BUNDLE',
 		opdracht: 'ASSIGNMENT',
+		contentPagina: 'CONTENT_PAGE',
 	};
 
 	const getThumbnailMetadata = (itemOrCollectionOrAssignment: any): string | null => {
-		const itemLabel =
-			(itemOrCollectionOrAssignment as Avo.Item.Item | Avo.Collection.Collection)?.type
-				?.label || 'item';
+		const itemLabel = getLabelFromItem(itemOrCollectionOrAssignment);
 		const itemDuration = String((itemOrCollectionOrAssignment as Avo.Item.Item)?.duration || 0);
 		const collectionItems =
 			(itemOrCollectionOrAssignment as Avo.Collection.Collection)?.item_count || 0;
+
 		return (
 			{
 				item: itemDuration,
@@ -309,6 +328,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 						  )
 				}`,
 				opdracht: null,
+				contentPagina: null,
 			}[itemLabel] || null
 		);
 	};
@@ -322,30 +342,40 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 		setActiveCopyright(orgInfo);
 	};
 
-	const mapItemOrCollectionOrAssignmentData = (
-		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignment,
+	const mapItemOrCollectionOrAssignmentOrPageData = (
+		itemOrCollectionOrAssignmentOrPage: ResolvedItemOrCollectionOrAssignmentOrContentPage,
 		index: number
 	): MediaListItem => {
-		const itemLabel = itemOrCollectionOrAssignment?.type?.label || 'video';
-		const viewCount = itemOrCollectionOrAssignment?.view_count || 0;
+		const itemLabel = getLabelFromItem(itemOrCollectionOrAssignmentOrPage);
+		const viewCount = itemOrCollectionOrAssignmentOrPage?.view_count || 0;
 
 		const element: MediaGridBlockComponentState = (elements || [])[index] || ({} as any);
 
 		// Show copy right notice when the block requires it and the user is not logged in, or when they are editing the content page (preview)
 		// https://meemoo.atlassian.net/browse/AVO-3015
 		const showCopyrightNotice =
-			!!itemOrCollectionOrAssignment.copyright_organisation &&
+			!!itemOrCollectionOrAssignmentOrPage.copyright_organisation &&
 			(!commonUser || location.pathname.startsWith(ADMIN_PATH.DASHBOARD));
+		const createdAt =
+			(
+				itemOrCollectionOrAssignmentOrPage as
+					| Avo.Item.Item
+					| Avo.Collection.Collection
+					| Avo.Assignment.Assignment
+			)?.created_at || (itemOrCollectionOrAssignmentOrPage as DbContentPage)?.createdAt;
 
 		return {
-			category:
-				CONTENT_TYPE_TRANSLATIONS[itemOrCollectionOrAssignment?.type?.label || 'video'],
-			metadata: [
-				...(itemLabel !== ContentTypeString.assignment
-					? [{ icon: IconName.eye, label: String(viewCount || 0) }]
-					: []),
-				{ label: formatDate(itemOrCollectionOrAssignment?.created_at) },
-			],
+			category: CONTENT_TYPE_TRANSLATIONS[itemLabel],
+			subCategory: (itemOrCollectionOrAssignmentOrPage as any).content_type,
+			metadata:
+				itemLabel === ContentTypeString.contentPage
+					? []
+					: [
+							...(itemLabel !== ContentTypeString.assignment
+								? [{ icon: IconName.eye, label: String(viewCount || 0) }]
+								: []),
+							{ label: formatDate(createdAt) },
+					  ],
 			buttonLabel: element.buttonLabel,
 			buttonAltTitle: element.buttonAltTitle,
 			buttonType: element.buttonType,
@@ -353,30 +383,40 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 			itemAction:
 				element.mediaItem ||
 				({
-					type: ITEM_LABEL_TO_TYPE[itemLabel],
+					type: ITEM_LABEL_TO_TYPE[itemLabel as ContentTypeString],
 					value:
-						(itemOrCollectionOrAssignment as Avo.Item.Item | Avo.Collection.Collection)
-							?.external_id || itemOrCollectionOrAssignment?.id,
+						(
+							itemOrCollectionOrAssignmentOrPage as
+								| Avo.Item.Item
+								| Avo.Collection.Collection
+						)?.external_id ||
+						(itemOrCollectionOrAssignmentOrPage as DbContentPage)?.path ||
+						itemOrCollectionOrAssignmentOrPage?.id,
 					target: searchQuery?.target || '_self',
 				} as ButtonAction),
 			buttonAction: element.buttonAction,
-			title: itemOrCollectionOrAssignment?.title || '',
-			description: itemOrCollectionOrAssignment?.description || '',
-			issued: (itemOrCollectionOrAssignment as Avo.Item.Item)?.issued || '',
+			title:
+				itemOrCollectionOrAssignmentOrPage?.media_item_label ||
+				itemOrCollectionOrAssignmentOrPage?.title ||
+				'',
+			description: itemOrCollectionOrAssignmentOrPage?.description || '',
+			issued: (itemOrCollectionOrAssignmentOrPage as Avo.Item.Item)?.issued || '',
 			organisation:
-				(itemOrCollectionOrAssignment as Avo.Item.Item | Avo.Collection.Collection)
+				(itemOrCollectionOrAssignmentOrPage as Avo.Item.Item | Avo.Collection.Collection)
 					?.organisation || '',
 			thumbnail: {
 				label: itemLabel,
-				meta: getThumbnailMetadata(itemOrCollectionOrAssignment),
-				src: element.copyrightImage || getThumbnailFromItem(itemOrCollectionOrAssignment),
+				meta: getThumbnailMetadata(itemOrCollectionOrAssignmentOrPage),
+				src:
+					element.copyrightImage ||
+					getThumbnailFromItem(itemOrCollectionOrAssignmentOrPage),
 				topRight: showCopyrightNotice && (
 					<Button
 						type="inline-link"
 						onClick={(evt) =>
 							handleCopyrightClicked(
 								evt,
-								itemOrCollectionOrAssignment.copyright_organisation as Avo.Organization.Organization
+								itemOrCollectionOrAssignmentOrPage.copyright_organisation as Avo.Organization.Organization
 							)
 						}
 						label={tText(
@@ -388,14 +428,18 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 					/>
 				),
 			},
-			src: itemOrCollectionOrAssignment?.src,
+			src: itemOrCollectionOrAssignmentOrPage?.src,
 			item_collaterals:
-				(itemOrCollectionOrAssignment as Avo.Item.Item)?.item_collaterals || null,
+				(itemOrCollectionOrAssignmentOrPage as Avo.Item.Item)?.item_collaterals || null,
 		} as any;
 	};
 
 	const openInModal = (mediaListItem: MediaListItem): boolean => {
-		return openMediaInModal && mediaListItem?.itemAction?.type === 'ITEM';
+		return (
+			openMediaInModal &&
+			(mediaListItem?.itemAction?.type === 'ITEM' ||
+				mediaListItem?.itemAction?.type === 'ITEM_WITH_CUE_POINTS')
+		);
 	};
 
 	const renderMediaCardWrapper = (mediaCard: ReactNode, item: MediaListItem) => {
@@ -406,7 +450,8 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 						setActiveItem(
 							(resolvedResults?.find((resultItem) => resultItem.src === item.src) ||
 								null) as
-								| (Avo.Item.Item & ResolvedItemOrCollectionOrAssignment)
+								| (Avo.Item.Item &
+										ResolvedItemOrCollectionOrAssignmentOrContentPage)
 								| null
 						)
 					}
@@ -436,11 +481,20 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 
 	// Render
 	const renderMediaGridBlock = () => {
-		const elements = compact(resolvedResults || []).map(mapItemOrCollectionOrAssignmentData);
+		const elements = compact(resolvedResults || []).map(
+			mapItemOrCollectionOrAssignmentOrPageData
+		);
+
+		const activeItemCuePoints = {
+			start: activeItem?.start_cue_point || null,
+			end: activeItem?.end_cue_point || null,
+		};
+
 		return (
 			<>
 				<BlockMediaGrid
 					title={title}
+					titleType={titleType}
 					buttonLabel={buttonLabel}
 					buttonAltTitle={buttonAltTitle}
 					buttonAction={buttonAction || searchQuery}
@@ -479,6 +533,8 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 								src={activeItem.src}
 								poster={(activeItem as Avo.Item.Item)?.thumbnail_path}
 								itemMetaData={activeItem as unknown as Avo.Item.Item}
+								cuePointsVideo={activeItemCuePoints}
+								cuePointsLabel={activeItemCuePoints}
 								verticalLayout
 								showTitle
 								showMetadata={false}
