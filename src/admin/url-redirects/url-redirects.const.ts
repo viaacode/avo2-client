@@ -1,6 +1,4 @@
 import { type FilterableColumn, TableFilterType } from '@meemoo/admin-core-ui/dist/admin.mjs';
-
-import type { CheckboxDropdownModalProps } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';
@@ -22,17 +20,6 @@ export const ITEMS_PER_PAGE = 10;
 
 export const GET_URL_REDIRECT_OVERVIEW_TABLE_COLS: () => FilterableColumn<UrlRedirectOverviewTableCols>[] =
 	() => [
-		{
-			id: 'oldPathPattern',
-			label: tText('admin/url-redirects/url-redirects___oude-url-patroon'),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: TableFilterType.CheckboxDropdownModal,
-			filterProps: {
-				options: URL_REDIRECT_PATTERN_OPTIONS(),
-			} as unknown as CheckboxDropdownModalProps,
-			dataType: TableColumnDataType.string,
-		},
 		{
 			id: 'oldPath',
 			label: tText('admin/url-redirects/url-redirects___oude-url'),
