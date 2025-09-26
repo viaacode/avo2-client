@@ -198,13 +198,18 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 				) {
 					const contentPageUserGroups = (err as any)?.innerException?.additionalInfo
 						?.responseBody?.additionalInfo?.contentPageUserGroups as string[];
+					const nonPupilsRoles = contentPageUserGroups.filter(
+						(userGroup) => !isPupil(userGroup)
+					);
 
 					if (
+						contentPageUserGroups.length > 1 &&
+						nonPupilsRoles.length === 1 &&
 						contentPageUserGroups.every(
-							(userGroup) =>
-								isPupil(userGroup) || userGroup === SpecialUserGroupId.Admin
+							(userGroup) => isPupil(userGroup) || userGroup === nonPupilsRoles[0]
 						)
 					) {
+						// The page is for pupils and the role that created the page (so technically a pupils only page was the intention)
 						setRouteInfo({
 							type: DynamicRouteType.PUPIL_ONLY_PAGE,
 							data: null,
@@ -213,6 +218,7 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 						contentPageUserGroups.every((userGroup) => !isPupil(userGroup)) &&
 						isPupil(commonUserInfo.userGroup?.id)
 					) {
+						// THe page was not for pupils and the current user is a pupil
 						setRouteInfo({
 							type: DynamicRouteType.NOT_FOR_PUPIL_PAGE,
 							data: null,
