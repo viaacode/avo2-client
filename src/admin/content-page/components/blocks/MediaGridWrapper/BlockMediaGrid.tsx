@@ -26,7 +26,7 @@ import {
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import clsx from 'clsx';
-import React, { type FC, type ReactNode, useEffect, useState } from 'react';
+import React, { type FC, type ReactNode, useEffect, useMemo, useState } from 'react';
 
 import './BlockMediaGrid.scss';
 
@@ -114,6 +114,7 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 	const hasCTA = ctaTitle || ctaButtonLabel || ctaContent;
 
 	const [blockWidth, setBlockWidth] = useState<number | null>(null); // pixels
+	const [windowWidth, setWindowWidth] = useState<number>(0); // pixels
 
 	useEffect(() => {
 		if (ref.current) {
@@ -121,22 +122,31 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 		}
 	}, [ref]);
 
-	const renderCTA = () => {
-		let sizing = {};
+	useEffect(() => {
+		const handleResize = () => {
+			setWindowWidth(window.innerWidth);
+		};
 
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
+	}, []);
+
+	const sizing = useMemo(() => {
 		if (!fullWidth) {
 			const fontSize =
-				(FONT_TYPE_TO_VW[ctaTitleSize] * (blockWidth || window.innerWidth)) /
-				window.innerWidth;
+				(FONT_TYPE_TO_VW[ctaTitleSize] * (blockWidth || windowWidth)) / windowWidth;
 			const lineHeightTitle = fontSize * 1.2;
 			const fontWeight = ctaTitleSize === 'h4' ? 'normal' : 'inherit';
-			sizing = {
+			return {
 				fontSize: `${fontSize * 3.5}vw`,
 				lineHeight: `${lineHeightTitle}vw`,
 				fontWeight,
 			};
 		}
+		return {};
+	}, [blockWidth, ctaTitleSize, fullWidth, windowWidth]);
 
+	const renderCTA = () => {
 		return (
 			<>
 				<div className="c-media-card-thumb">
