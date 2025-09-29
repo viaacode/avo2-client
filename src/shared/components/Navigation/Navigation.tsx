@@ -39,6 +39,7 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { type AppState } from '../../../store';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
+import { useHideZendeskWidget } from '../../hooks/useHideZendeskWidget';
 import { ToastService } from '../../services/toast-service';
 import { type NavigationItemInfo } from '../../types';
 
@@ -80,6 +81,7 @@ const Navigation: FC<
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+	const [isUserGroupSelectorOpen, setIsUserGroupSelectorOpen] = useState(false);
 
 	const { data: allNavItems } = useAllGetNavItems();
 
@@ -95,6 +97,8 @@ const Navigation: FC<
 	const navItemsLeft = allNavItems?.[NavigationBarId.MAIN_NAVIGATION_LEFT] || [];
 	const navItemsRight = allNavItems?.[NavigationBarId.MAIN_NAVIGATION_RIGHT] || [];
 	const navItemsProfileDropdown = allNavItems?.[NavigationBarId.PROFILE_DROPDOWN] || [];
+
+	useHideZendeskWidget(location, commonUser, isUserGroupSelectorOpen);
 
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -250,6 +254,7 @@ const Navigation: FC<
 							<ContentPagePreviewUserRoleSelector
 								className="c-content-page-preview-selector"
 								commonUser={commonUser}
+								onToggleMenu={setIsUserGroupSelectorOpen}
 							/>
 						</Container>
 					</Container>
