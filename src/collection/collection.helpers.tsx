@@ -386,6 +386,7 @@ export const cleanCollectionBeforeSave = (
 		'__typename',
 		'type',
 		'profile',
+		'owner',
 		'updated_by',
 		'collection_labels',
 		'lom_typical_age_range',
