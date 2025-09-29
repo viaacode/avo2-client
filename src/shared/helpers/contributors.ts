@@ -22,14 +22,15 @@ export const transformContributorsToSimpleContributors = (
 
 	if (contributors) {
 		const mappedContributors = contributors.map((contributor) => {
+			console.log(contributor);
 			return {
-				email: contributor.profile?.user.mail,
+				email: contributor.profile?.user?.mail || contributor.profile?.mail,
 				inviteEmail: contributor.invite_email,
 				rights: ContributorInfoRight[
 					contributor.rights as keyof typeof ContributorInfoRight
 				],
-				firstName: contributor.profile?.user.first_name,
-				lastName: contributor.profile?.user.last_name,
+				firstName: contributor.profile?.user?.first_name || contributor.profile?.first_name,
+				lastName: contributor.profile?.user?.last_name || contributor.profile?.last_name,
 				profileImage:
 					contributor?.profile?.organisation?.logo_url || contributor.profile?.avatar,
 				profileId: contributor.profile_id,
@@ -37,6 +38,7 @@ export const transformContributorsToSimpleContributors = (
 				loms: contributor.profile?.loms,
 			} as ContributorInfo;
 		});
+
 		return defaultContributors.concat(mappedContributors);
 	}
 
