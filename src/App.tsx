@@ -20,7 +20,6 @@ import { QueryParamProvider } from 'use-query-params';
 import Admin from './admin/Admin';
 import { ADMIN_PATH } from './admin/admin.const';
 import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config';
-import { SpecialUserGroupId } from './admin/user-groups/user-group.const';
 import { SecuredRoute } from './authentication/components';
 import { PermissionService } from './authentication/helpers/permission-service';
 import { APP_PATH } from './constants';
@@ -37,6 +36,7 @@ import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers/custom-error';
 import withUser, { type UserProps } from './shared/hocs/withUser';
+import { useHideZendeskWidget } from './shared/hooks/useHideZendeskWidget';
 import { usePageLoaded } from './shared/hooks/usePageLoaded';
 import useTranslation from './shared/hooks/useTranslation';
 import { ToastService } from './shared/services/toast-service';
@@ -77,9 +77,6 @@ const App: FC<
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
 	const query = new URLSearchParams(location?.search || '');
 	const isPreviewRoute = query.get('preview') === 'true';
-	const isPupilUser = [SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]
-		.map(String)
-		.includes(String(props.commonUser?.userGroup?.id));
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
@@ -110,13 +107,7 @@ const App: FC<
 	/**
 	 * Hide zendesk when a pupil is logged in
 	 */
-	useEffect(() => {
-		if (isPupilUser || isAdminRoute) {
-			document.body.classList.add('hide-zendesk-widget');
-		} else {
-			document.body.classList.remove('hide-zendesk-widget');
-		}
-	}, [isPupilUser, isAdminRoute]);
+	useHideZendeskWidget(props.location, props.commonUser);
 
 	/**
 	 * Redirect after linking an account the the hetarchief account (eg: leerid, smartschool, klascement)
