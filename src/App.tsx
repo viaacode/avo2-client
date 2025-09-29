@@ -111,12 +111,12 @@ const App: FC<
 	 * Hide zendesk when a pupil is logged in
 	 */
 	useEffect(() => {
-		if (isPupilUser || isAdminRoute) {
+		if (isPupilUser || isAdminRoute || isPreviewRoute) {
 			document.body.classList.add('hide-zendesk-widget');
 		} else {
 			document.body.classList.remove('hide-zendesk-widget');
 		}
-	}, [isPupilUser, isAdminRoute]);
+	}, [isPupilUser, isAdminRoute, isPreviewRoute]);
 
 	/**
 	 * Redirect after linking an account the the hetarchief account (eg: leerid, smartschool, klascement)
