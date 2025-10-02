@@ -1,5 +1,6 @@
 import { Icon, IconName } from '@viaa/avo2-components';
 import { clsx } from 'clsx';
+import { debounce } from 'lodash-es';
 import React, { type FC, type ReactNode, useState } from 'react';
 
 import './DraggableList.scss';
@@ -30,21 +31,27 @@ const DraggableList: FC<DraggableListProps> = ({
 		}
 	};
 
-	const onDragOver = (index: number) => {
-		// Update currentlyBeingDragged if list was updated
-		if (!currentlyBeingDragged) {
-			setCurrentlyBeingDragged(items[index]);
-		}
+	const onDragOver = debounce(
+		(index: number) => {
+			// Update currentlyBeingDragged if list was updated
+			if (!currentlyBeingDragged) {
+				setCurrentlyBeingDragged(items[index]);
+			}
 
-		if (currentlyBeingDragged && currentlyBeingDragged !== items[index]) {
-			// Update list of items
-			const updatedList = items.filter((item: JSX.Element) => item !== currentlyBeingDragged);
-			updatedList.splice(index, 0, currentlyBeingDragged);
+			if (currentlyBeingDragged && currentlyBeingDragged !== items[index]) {
+				// Update list of items
+				const updatedList = items.filter(
+					(item: JSX.Element) => item !== currentlyBeingDragged
+				);
+				updatedList.splice(index, 0, currentlyBeingDragged);
 
-			// Return updated list
-			return onListChange(updatedList);
-		}
-	};
+				// Return updated list
+				return onListChange(updatedList);
+			}
+		},
+		8,
+		{ leading: true, trailing: false }
+	);
 
 	const onDragEnd = () => setCurrentlyBeingDragged(null);
 
