@@ -383,6 +383,7 @@ const FlowPlayerWrapper: FC<
 							seekable={props.seekable}
 							ui={props.ui}
 							controls={props.controls}
+							enableRestartCuePointsButton={true}
 						/>
 
 						{!placeholder && !clickedThumbnail && renderCutOverlay()}
