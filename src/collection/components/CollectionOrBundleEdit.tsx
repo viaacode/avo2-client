@@ -7,7 +7,6 @@ import {
 	HeaderBottomRowLeft,
 	HeaderMiddleRowRight,
 	IconName,
-	MoreOptionsDropdown,
 	Navbar,
 	type TabProps,
 	Tabs,
@@ -1552,7 +1551,7 @@ const CollectionOrBundleEdit: FC<
 		];
 		return (
 			<ButtonToolbar>
-				<MoreOptionsDropdown
+				<MoreOptionsDropdownWrapper
 					isOpen={isOptionsMenuOpen}
 					onOpen={() => setIsOptionsMenuOpen(true)}
 					onClose={() => setIsOptionsMenuOpen(false)}

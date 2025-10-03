@@ -7,7 +7,6 @@ import {
 	FormGroup,
 	Grid,
 	IconName,
-	MoreOptionsDropdown,
 	TextInput,
 	Thumbnail,
 	Toggle,
@@ -33,6 +32,7 @@ import { APP_PATH } from '../../../constants';
 import { ItemMetadata } from '../../../shared/components/BlockItemMetadata/ItemMetadata';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import FlowPlayerWrapper from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import MoreOptionsDropdownWrapper from '../../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
 import {
 	RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
 	RICH_TEXT_EDITOR_OPTIONS_DEFAULT,
@@ -507,7 +507,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 						</ToolbarItem>
 					)}
 					<ToolbarItem>
-						<MoreOptionsDropdown
+						<MoreOptionsDropdownWrapper
 							isOpen={openOptionsId === fragment.id}
 							onOpen={() => setOpenOptionsId(fragment.id)}
 							onClose={() => setOpenOptionsId(null)}
