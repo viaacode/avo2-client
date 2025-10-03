@@ -523,7 +523,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 						) as Avo.Assignment.Block[],
 						owner_profile_id: commonUser?.profileId,
 					} as Partial<Avo.Assignment.Assignment>,
-					commonUser?.profileId
+					commonUser
 				);
 
 				if (created) {

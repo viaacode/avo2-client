@@ -7,6 +7,7 @@ import { type AssignmentsOverviewTableState } from '../admin/assignments/assignm
 import { ItemsService } from '../admin/items/items.service';
 import { CollectionService } from '../collection/collection.service';
 import { type AssignmentMarcomEntry } from '../collection/collection.types';
+import { canManageEditorial } from '../collection/helpers/can-manage-editorial';
 import { type ItemTrimInfo } from '../item/item.types';
 import {
 	type ContributorInfo,
@@ -285,15 +286,21 @@ export class AssignmentService {
 
 	static async insertAssignment(
 		assignment: Partial<Avo.Assignment.Assignment>,
-		profileId: string
+		commonUser: Avo.User.CommonUser
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
 			const assignmentToSave = await AssignmentService.transformAssignment(
 				{
 					...assignment,
 				},
-				profileId
+				commonUser?.profileId
 			);
+
+			// Check is_managed status
+			// Should be copied to new assignment if user group is one of [redacteur, eindredacteur, beheerder]
+			// Otherwise should be false
+			// https://meemoo.atlassian.net/browse/AVO-3787
+			assignmentToSave.is_managed = canManageEditorial(commonUser);
 
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			return await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/assignments`, {
@@ -343,6 +350,12 @@ export class AssignmentService {
 			loms: [],
 			quality_labels: [],
 			education_level_id: isUserSecondaryElementary(commonUser) ? null : undefined,
+
+			// Check is_managed status
+			// Should be copied to new assignment if user group is one of [redacteur, eindredacteur, beheerder]
+			// Otherwise should be false
+			// https://meemoo.atlassian.net/browse/AVO-3787
+			is_managed: canManageEditorial(commonUser),
 		};
 
 		delete newAssignment.owner;
@@ -356,7 +369,7 @@ export class AssignmentService {
 				...newAssignment,
 				blocks,
 			},
-			ownerProfileId
+			commonUser
 		);
 
 		if (!duplicatedAssignment) {
@@ -827,7 +840,7 @@ export class AssignmentService {
 				description: collection.description ?? undefined,
 				owner_profile_id: commonUser.profileId,
 			},
-			commonUser.profileId
+			commonUser
 		);
 
 		const assignmentId = assignment?.id;
@@ -895,7 +908,7 @@ export class AssignmentService {
 					},
 				] as Avo.Assignment.Assignment['blocks'],
 			},
-			commonUser.profileId
+			commonUser
 		);
 
 		if (!assignment) {
