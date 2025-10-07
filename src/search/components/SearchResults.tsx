@@ -1,11 +1,12 @@
 import { PaginationBar } from '@meemoo/react-components';
-import { Blankslate, Button, Container, Flex, IconName, Spinner } from '@viaa/avo2-components';
+import { Blankslate, Box, Button, Container, Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import placeholderImage from '../../assets/images/assignment-placeholder.png';
+import { ReactComponent as TeacherSvg } from '../../assets/images/leerkracht.svg';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -68,6 +69,34 @@ const SearchResults: FC<SearchResultsProps & UserProps> = ({
 		);
 	};
 
+	const renderTooManyResults = () => {
+		const currentPage = currentItemIndex / ITEMS_PER_PAGE;
+		if (totalItemCount <= 10000 || currentPage < 999) {
+			return null;
+		}
+
+		return (
+			<Box backgroundColor="gray" className="c-search-too-many-results">
+				<Flex
+					orientation="horizontal"
+					center
+					spaced="wide"
+					className="u-padding-left-xl u-padding-right-xl"
+				>
+					<TeacherSvg className="u-padding-left-xl" style={{ height: '16rem' }} />
+					<h3
+						className="c-search-result__title u-padding-left-l u-padding-right-xl"
+						style={{ alignSelf: 'center' }}
+					>
+						{tText(
+							'Er zijn te veel resultaten bij deze zoekopdracht. Verfijn je vraag via de zoekbalk of de filters.'
+						)}
+					</h3>
+				</Flex>
+			</Box>
+		);
+	};
+
 	const renderResultsOrNoResults = () => {
 		if (loading) {
 			return (
@@ -81,13 +110,15 @@ const SearchResults: FC<SearchResultsProps & UserProps> = ({
 				<>
 					<ul className="c-search-result-list">
 						{data.results.map(renderSearchResultItem)}
+						{renderTooManyResults()}
 					</ul>
 					<PaginationBar
 						className="u-m-t-l u-m-b-l"
 						{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
 						startItem={currentItemIndex}
 						itemsPerPage={ITEMS_PER_PAGE}
-						totalItems={totalItemCount}
+						totalItems={Math.min(totalItemCount, 10000)}
+						visualTotalItems={totalItemCount}
 						onPageChange={(newPage: number) =>
 							setCurrentItemIndex(newPage * ITEMS_PER_PAGE)
 						}
