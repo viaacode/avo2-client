@@ -89,7 +89,7 @@ const SearchResults: FC<SearchResultsProps & UserProps> = ({
 						style={{ alignSelf: 'center' }}
 					>
 						{tText(
-							'Er zijn te veel resultaten bij deze zoekopdracht. Verfijn je vraag via de zoekbalk of de filters.'
+							'search/components/search-results___er-zijn-te-veel-resultaten-bij-deze-zoekopdracht-verfijn-je-vraag-via-de-zoekbalk-of-de-filters'
 						)}
 					</h3>
 				</Flex>
