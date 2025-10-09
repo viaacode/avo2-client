@@ -1,6 +1,6 @@
 import { Button, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { type FC, useEffect } from 'react';
+import React, { type FC, useCallback, useEffect } from 'react';
 import { type RouteComponentProps } from 'react-router';
 import { Link, withRouter } from 'react-router-dom';
 
@@ -45,11 +45,16 @@ const LoginOptions: FC<LoginOptionsProps & RouteComponentProps> = ({
 		getPreferredLoginOption()
 	);
 
-	// Whenever a user sees the LoginOptions, reset their nudging and increase their login counter
+	// Whenever a user sees the LoginOptions, reset their nudging
 	useEffect(() => {
 		removePreferredLoginOption();
-		setLoginCounter();
 	}, []);
+
+	const handleOnLoginOptionClick = useCallback(() => {
+		// Whenever a user clicks the option clicked, we assume the user has logged in, and thus we increase their login counter
+		setLoginCounter();
+		onOptionClicked?.();
+	}, [onOptionClicked]);
 
 	const renderTitle = () => {
 		switch (tab) {
@@ -69,14 +74,17 @@ const LoginOptions: FC<LoginOptionsProps & RouteComponentProps> = ({
 			case LoginOptionsTabs.TEACHER:
 				return (
 					<LoginOptionsForTeacher
-						onOptionClicked={onOptionClicked}
+						onOptionClicked={handleOnLoginOptionClick}
 						openInNewTab={false}
 					/>
 				);
 
 			case LoginOptionsTabs.STUDENT:
 				return (
-					<LoginOptionsForPupil onOptionClicked={onOptionClicked} openInNewTab={false} />
+					<LoginOptionsForPupil
+						onOptionClicked={handleOnLoginOptionClick}
+						openInNewTab={false}
+					/>
 				);
 
 			default:
