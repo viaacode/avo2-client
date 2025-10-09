@@ -172,26 +172,6 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 
 								{PermissionService.hasPerm(
 									commonUser,
-									PermissionName.EDIT_ASSIGNMENT_AUTHOR
-								) && (
-									<FormGroup
-										label={tText(
-											'collection/components/collection-or-bundle-edit-admin___eigenaar'
-										)}
-										required
-									>
-										<ContentPicker
-											initialValue={owner}
-											hideTargetSwitch
-											hideTypeDropdown
-											allowedTypes={['PROFILE']}
-											onSelect={handleOwnerChange}
-										/>
-									</FormGroup>
-								)}
-
-								{PermissionService.hasPerm(
-									commonUser,
 									PermissionName.EDIT_ASSIGNMENT_EDITORIAL_STATUS
 								) ? (
 									<FormGroup>
