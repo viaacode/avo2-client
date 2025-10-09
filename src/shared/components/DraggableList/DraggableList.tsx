@@ -1,7 +1,6 @@
 import { Icon, IconName } from '@viaa/avo2-components';
 import { clsx } from 'clsx';
-import { debounce } from 'lodash-es';
-import React, { type FC, type ReactNode, useState } from 'react';
+import React, { type FC, type ReactNode, useCallback, useState } from 'react';
 
 import './DraggableList.scss';
 
@@ -20,18 +19,21 @@ const DraggableList: FC<DraggableListProps> = ({
 }) => {
 	const [currentlyBeingDragged, setCurrentlyBeingDragged] = useState<any | null>(null);
 
-	const onDragStart = (e: any, index: number) => {
-		setCurrentlyBeingDragged(items[index]);
+	const onDragStart = useCallback(
+		(e: any, index: number) => {
+			setCurrentlyBeingDragged(items[index]);
 
-		// Drag animation/metadata
-		if (e.dataTransfer && e.target) {
-			e.dataTransfer.effectAllowed = 'move';
-			e.dataTransfer.setData('text/html', e.target);
-			e.dataTransfer.setDragImage(e.target, 20, 20);
-		}
-	};
+			// Drag animation/metadata
+			if (e.dataTransfer && e.target) {
+				e.dataTransfer.effectAllowed = 'move';
+				e.dataTransfer.setData('text/html', e.target);
+				e.dataTransfer.setDragImage(e.target, 20, 20);
+			}
+		},
+		[items]
+	);
 
-	const onDragOver = debounce(
+	const onDragEnter = useCallback(
 		(index: number) => {
 			// Update currentlyBeingDragged if list was updated
 			if (!currentlyBeingDragged) {
@@ -49,11 +51,10 @@ const DraggableList: FC<DraggableListProps> = ({
 				return onListChange(updatedList);
 			}
 		},
-		8,
-		{ leading: true, trailing: false }
+		[currentlyBeingDragged, items, onListChange]
 	);
 
-	const onDragEnd = () => setCurrentlyBeingDragged(null);
+	const onDragEnd = useCallback(() => setCurrentlyBeingDragged(null), []);
 
 	return (
 		<div
@@ -73,7 +74,7 @@ const DraggableList: FC<DraggableListProps> = ({
 						},
 						{ 'draggable--over': item === currentlyBeingDragged }
 					)}
-					onDragOver={() => onDragOver(index)}
+					onDragEnter={() => onDragEnter(index)}
 					onDragEnd={onDragEnd}
 					onDragStart={(e) => onDragStart(e, index)}
 					draggable
