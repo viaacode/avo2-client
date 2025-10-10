@@ -17,9 +17,11 @@ import { clsx } from 'clsx';
 import { isNil, noop, truncate } from 'lodash-es';
 import React, { type FC, type ReactNode, type ReactText } from 'react';
 
-import './SearchResult.scss';
 import { defaultRenderBookmarkButton } from '../../helpers/default-render-bookmark-button';
 import { tText } from '../../helpers/translate-text';
+import EducationLevelsTagList from '../EducationLevelsTagList/EducationLevelsTagList';
+
+import './SearchResult.scss';
 
 interface SearchResultProps extends DefaultProps {
 	title: ReactNode;
@@ -35,7 +37,7 @@ interface SearchResultProps extends DefaultProps {
 	bookmarkCount: number | null; // null hides the counter
 	viewCount: number;
 	typeTags?: (TagOption & { dark?: boolean })[];
-	qualityTags?: TagOption[];
+	loms?: string[];
 	onToggleBookmark?: (active: boolean) => void;
 	onTagClicked?: (tagId: string) => void;
 }
@@ -54,7 +56,7 @@ export const SearchResult: FC<SearchResultProps> = ({
 	bookmarkCount,
 	viewCount,
 	typeTags = [],
-	qualityTags = [],
+	loms = [],
 	onToggleBookmark = noop,
 	onTagClicked = noop,
 }) => {
@@ -89,7 +91,7 @@ export const SearchResult: FC<SearchResultProps> = ({
 					{truncate(description, { length: maxDescriptionLength })}
 				</p>
 				<Spacer margin="bottom-small">
-					<Flex justify="between" wrap>
+					<Flex justify="between" wrap align="baseline">
 						<MetaData category={type}>
 							<Tooltip position="right">
 								<TooltipTrigger>
@@ -110,12 +112,12 @@ export const SearchResult: FC<SearchResultProps> = ({
 								/>
 							)}
 						</MetaData>
-
-						<TagList
-							tags={qualityTags}
-							swatches={false}
-							onTagClicked={(tagId: ReactText) => onTagClicked(tagId.toString())}
-						/>
+						<FlexItem>
+							<EducationLevelsTagList
+								className="c-search_result__education-levels"
+								loms={loms}
+							/>
+						</FlexItem>
 					</Flex>
 				</Spacer>
 

@@ -11,6 +11,7 @@ import {
 	HeaderBottomRowLeft,
 	HeaderBottomRowRight,
 	HeaderMiddleRowRight,
+	HeaderTopRowLeft,
 	IconName,
 	MenuContent,
 	MoreOptionsDropdown,
@@ -39,6 +40,7 @@ import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
 import CommonMetaData from '../../shared/components/CommonMetaData/CommonMetaData';
 import EditButton from '../../shared/components/EditButton/EditButton';
+import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList';
 import HeaderOwnerAndContributors from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
@@ -63,6 +65,7 @@ import { defaultRenderSearchLink } from '../../shared/helpers/default-render-sea
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { getFullName } from '../../shared/helpers/formatters/avatar';
 import { generateContentLinkString, navigate } from '../../shared/helpers/link';
+import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { isUuid } from '../../shared/helpers/uuid';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -1480,6 +1483,11 @@ const CollectionDetail: FC<
 		);
 	};
 
+	const renderHeaderEducationLevel = () => {
+		const groupedLomsLabels = getGroupedLomsKeyValue(collection?.loms || [], 'label');
+		return <EducationLevelsTagList loms={groupedLomsLabels.educationLevel} />;
+	};
+
 	const renderCollection = () => {
 		if (loadingInfo.state === 'loading') {
 			return (
@@ -1541,6 +1549,7 @@ const CollectionDetail: FC<
 						bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
 						views={String(bookmarkViewPlayCounts.viewCount || 0)}
 					>
+						<HeaderTopRowLeft>{renderHeaderEducationLevel()}</HeaderTopRowLeft>
 						{!showLoginPopup && (
 							<HeaderMiddleRowRight>
 								{isMobileWidth()

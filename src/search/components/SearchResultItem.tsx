@@ -1,4 +1,4 @@
-import { Avatar, IconName, type TagOption, Thumbnail } from '@viaa/avo2-components';
+import { Avatar, Flex, IconName, TagList, type TagOption, Thumbnail } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, isNil, trimStart } from 'lodash-es';
 import React, { type FC } from 'react';
@@ -95,23 +95,34 @@ const SearchResultItem: FC<SearchResultItemProps> = ({
 		return !['collectie', 'bundel', 'opdracht'].includes(result.administrative_type);
 	};
 
-	const renderAuthorOrOrganization = (result: Avo.Search.ResultItem) => {
+	const renderAuthorOrOrganizationWithQualityTags = (result: Avo.Search.ResultItem) => {
 		if (!isItem(result)) {
 			const name = `${result.owner?.firstname || ''} ${result.owner?.lastname || ''}`;
 			const initials = `${result.owner?.firstname?.[0] || ''}${
 				result.owner?.lastname?.[0] || ''
 			}`;
+			const qualityTags = getTags(result).qualityTags;
 
 			return (
-				<Avatar
-					image={
-						result.owner?.company_avatar_path || result.owner?.avatar_path || undefined
-					}
-					name={name}
-					initials={initials.toLocaleUpperCase()}
-					size={isNil(result.owner?.avatar_path) ? 'small' : undefined}
-					dark
-				/>
+				<Flex spaced="wide">
+					<Avatar
+						image={
+							result.owner?.company_avatar_path ||
+							result.owner?.avatar_path ||
+							undefined
+						}
+						name={name}
+						initials={initials.toLocaleUpperCase()}
+						size={isNil(result.owner?.avatar_path) ? 'small' : undefined}
+						dark
+					/>
+					<TagList
+						className="c-search_result__quality-tags"
+						tags={qualityTags}
+						swatches={false}
+						selectable={false}
+					/>
+				</Flex>
 			);
 		}
 
@@ -143,9 +154,9 @@ const SearchResultItem: FC<SearchResultItemProps> = ({
 				date={formatDate(date)}
 				dateTooltip={dateTooltip}
 				typeTags={getTags(result).typeTags}
-				qualityTags={getTags(result).qualityTags}
 				viewCount={result.views_count || 0}
 				bookmarkCount={bookmarkButton ? result.bookmarks_count || 0 : null}
+				loms={result.lom_context ?? []}
 				description={stripMarkdownLinks(result.dcterms_abstract || '')}
 				isBookmarked={bookmarkButton ? isBookmarked : null}
 				onToggleBookmark={(active: boolean) => handleBookmarkToggle(result.uid, active)}
@@ -155,7 +166,7 @@ const SearchResultItem: FC<SearchResultItemProps> = ({
 					result.external_id || result.uid || result.id,
 					result.administrative_type
 				)}
-				subTitle={renderAuthorOrOrganization(result)}
+				subTitle={renderAuthorOrOrganizationWithQualityTags(result)}
 				thumbnail={renderDetailLink(
 					renderThumbnail(result),
 					result.external_id || result.uid || result.id,
