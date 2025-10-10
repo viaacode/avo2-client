@@ -1,0 +1,41 @@
+@import "../../../styles/settings/colors";
+@import "../../../styles/settings/variables";
+
+.c-education-levels-tag {
+	border-width: 2px;
+	width: 14rem;
+	display: inline-flex;
+	font-size: 1.4rem;
+	font-weight: 500;
+	align-self: center;
+	padding: .3rem 0;
+	background-color: transparent;
+
+	> * {
+		margin: auto;
+	}
+
+	&__kleuteronderwijs {
+		border-color: $color-ocean-green;
+	}
+
+	&__lageronderwijs {
+		border-color: $color-teal-bright;
+	}
+
+	&__secundaironderwijs {
+		border-color: $color-dark-orange;
+	}
+
+	&__deeltijdskunstonderwijs {
+		border-color: $color-tapestry;
+	}
+
+	&__hogeronderwijs {
+		border-color: $color-green;
+	}
+
+	&__volwassenenonderwijs {
+		border-color: $color-yellow;
+	}
+}

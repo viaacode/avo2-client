@@ -53,6 +53,7 @@ import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const
 import CommonMetaData from '../../shared/components/CommonMetaData/CommonMetaData';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import EditButton from '../../shared/components/EditButton/EditButton';
+import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList';
 import Html from '../../shared/components/Html/Html';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
@@ -68,6 +69,7 @@ import {
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { formatDate, getFullName, renderAvatar } from '../../shared/helpers/formatters';
+import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -711,6 +713,8 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 		const assignmentFragments = (bundleObj?.collection_fragments || []).filter(
 			(f) => f.type === 'ASSIGNMENT'
 		);
+		const groupedLomsLabels = getGroupedLomsKeyValue(bundleObj?.loms || [], 'label');
+
 		return (
 			<>
 				<Helmet>
@@ -799,6 +803,9 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 															bookmarkViewPlayCounts.bookmarkCount ||
 																0
 														)}
+													/>
+													<EducationLevelsTagList
+														loms={groupedLomsLabels.educationLevel}
 													/>
 												</MetaData>
 												<Spacer margin="top-small">

@@ -12,6 +12,10 @@
 			// This is so dirty but seems to fix the issue of not aligning the tooltip for the bookmark
 			margin-left: $g-spacer-unit * 3;
 		}
+
+		.c-toolbar__left{
+			flex: 1 1 auto;
+		}
 	}
 
 	.c-bundle-toolbar__mobile {
