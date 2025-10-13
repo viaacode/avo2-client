@@ -60,6 +60,17 @@ export const SearchResult: FC<SearchResultProps> = ({
 	onToggleBookmark = noop,
 	onTagClicked = noop,
 }) => {
+	const renderEducationLevels = () => {
+		if (type !== 'collection' && type !== 'bundle' && type !== 'assignment') {
+			return null;
+		}
+		return (
+			<FlexItem>
+				<EducationLevelsTagList className="c-search_result__education-levels" loms={loms} />
+			</FlexItem>
+		);
+	};
+
 	return (
 		<div className={clsx(className, 'c-search-result')}>
 			<div className="c-search-result__image">{thumbnail}</div>
@@ -112,12 +123,7 @@ export const SearchResult: FC<SearchResultProps> = ({
 								/>
 							)}
 						</MetaData>
-						<FlexItem>
-							<EducationLevelsTagList
-								className="c-search_result__education-levels"
-								loms={loms}
-							/>
-						</FlexItem>
+						{renderEducationLevels()}
 					</Flex>
 				</Spacer>
 
