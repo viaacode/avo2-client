@@ -26,13 +26,27 @@ const preferredOrder: Record<EducationLevel, number> = {
 };
 
 const GET_EDUCATION_LEVEL_LABELS: () => Record<EducationLevel, string> = () => ({
-	[EducationLevel.kleuteronderwijs]: tText('Kleuter'),
-	[EducationLevel.lageronderwijs]: tText('Lager'),
-	[EducationLevel.secundaironderwijs]: tText('Secundair'),
-	[EducationLevel.deeltijdskunstonderwijs]: tText('DKO'),
-	[EducationLevel.hogeronderwijs]: tText('Hoger'),
-	[EducationLevel.volwassenenonderwijs]: tText('Volwassenen'),
-	[EducationLevel.andere]: tText('Ander'),
+	[EducationLevel.kleuteronderwijs]: tText(
+		'shared/components/education-levels-tag-list/education-levels-tag-list___kleuter'
+	),
+	[EducationLevel.lageronderwijs]: tText(
+		'shared/components/education-levels-tag-list/education-levels-tag-list___lager'
+	),
+	[EducationLevel.secundaironderwijs]: tText(
+		'shared/components/education-levels-tag-list/education-levels-tag-list___secundair'
+	),
+	[EducationLevel.deeltijdskunstonderwijs]: tText(
+		'shared/components/education-levels-tag-list/education-levels-tag-list___dko'
+	),
+	[EducationLevel.hogeronderwijs]: tText(
+		'shared/components/education-levels-tag-list/education-levels-tag-list___hoger'
+	),
+	[EducationLevel.volwassenenonderwijs]: tText(
+		'shared/components/education-levels-tag-list/education-levels-tag-list___volwassenen'
+	),
+	[EducationLevel.andere]: tText(
+		'shared/components/education-levels-tag-list/education-levels-tag-list___ander'
+	),
 });
 
 interface EducationLevelsTagListProps {
