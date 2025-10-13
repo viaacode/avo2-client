@@ -269,10 +269,13 @@ export class AssignmentService {
 	): Promise<Omit<Avo.Assignment.Response, 'assignment'> | null> {
 		try {
 			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
-			return await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/assignments/${original.id}`, {
-				method: 'PATCH',
-				body: JSON.stringify(update),
-			});
+			return await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/assignment-responses/${original.id}`,
+				{
+					method: 'PATCH',
+					body: JSON.stringify(update),
+				}
+			);
 		} catch (err) {
 			const error = new CustomError('Failed to update assignment', err, {
 				original,
