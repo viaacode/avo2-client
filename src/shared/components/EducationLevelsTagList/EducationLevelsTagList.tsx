@@ -20,8 +20,8 @@ const preferredOrder: Record<EducationLevel, number> = {
 	[EducationLevel.lageronderwijs]: 2,
 	[EducationLevel.secundaironderwijs]: 3,
 	[EducationLevel.deeltijdskunstonderwijs]: 4,
-	[EducationLevel.hogeronderwijs]: 5,
-	[EducationLevel.volwassenenonderwijs]: 6,
+	[EducationLevel.volwassenenonderwijs]: 5,
+	[EducationLevel.hogeronderwijs]: 6,
 	[EducationLevel.andere]: 7,
 };
 
