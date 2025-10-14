@@ -23,7 +23,7 @@ const MoreOptionsDropdownWrapper: FC<MoreOptionsDropdownWrapperProps> = (props) 
 	return (
 		<Button
 			type="secondary"
-			title={singleButton.label}
+			tooltip={singleButton.label}
 			ariaLabel={singleButton.label}
 			icon={singleButton.icon}
 			onClick={() => onOptionClicked?.(singleButton.id)}
