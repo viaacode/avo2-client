@@ -94,6 +94,7 @@ const AssignmentResponseSearchTab: FC<
 			selectedSearchResultId: id,
 			focus: undefined,
 		});
+		scrollTo({ top: 0 });
 	};
 
 	const goToSearchLink = (newFilters: FilterState): void => {
