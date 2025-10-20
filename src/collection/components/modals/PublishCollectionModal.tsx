@@ -16,6 +16,7 @@ import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { APP_PATH } from '../../../constants';
 import { buildLink } from '../../../shared/helpers/build-link';
+import { CustomError } from '../../../shared/helpers/custom-error';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
@@ -129,6 +130,12 @@ const PublishCollectionModal: FC<PublishCollectionModalProps & UserProps> = ({
 				user
 			);
 		} catch (err) {
+			console.error(
+				new CustomError('Failed to save changes to collection/bundle publish status', err, {
+					isCollectionPublic,
+					collection,
+				})
+			);
 			ToastService.danger(
 				tHtml(
 					'collection/components/modals/share-collection-modal___de-aanpassingen-kunnen-niet-worden-opgeslagen'
