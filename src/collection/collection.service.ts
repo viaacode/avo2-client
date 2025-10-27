@@ -430,16 +430,25 @@ export class CollectionService {
 
 				const addedLabels: string[] = without(updatedLabels, ...initialLabels);
 				const deletedLabels: string[] = without(initialLabels, ...updatedLabels);
-				await Promise.all([
-					CollectionService.addLabelsToCollection(
-						newCollection.id as string,
-						addedLabels
-					),
-					CollectionService.deleteLabelsFromCollection(
-						newCollection.id as string,
-						deletedLabels
-					),
-				]);
+				try {
+					await Promise.all([
+						CollectionService.addLabelsToCollection(
+							newCollection.id as string,
+							addedLabels
+						),
+						CollectionService.deleteLabelsFromCollection(
+							newCollection.id as string,
+							deletedLabels
+						),
+					]);
+				} catch (err) {
+					console.error('Failed to update collection/bundle labels', err);
+					ToastService.danger(
+						isCollection
+							? tHtml('Het updaten van de labels van de collectie is mislukt')
+							: tHtml('Het updaten van de labels van de bundel is mislukt')
+					);
+				}
 			}
 
 			// Update collection management
