@@ -1789,6 +1789,14 @@ export const UpdateCollectionByIdDocument = `
     _set: $collection
   ) {
     affected_rows
+    returning {
+      id
+      title
+      collection_labels {
+        label
+        id
+      }
+    }
   }
 }
     `;

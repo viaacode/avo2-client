@@ -410,7 +410,10 @@ export class CollectionService {
 				cleanedCollection.loms = [];
 			}
 
-			await this.updateCollectionProperties(newCollection.id as string, cleanedCollection);
+			const savedCollection = await this.updateCollectionProperties(
+				newCollection.id as string,
+				cleanedCollection
+			);
 
 			// Update collection labels
 			if (
@@ -420,35 +423,27 @@ export class CollectionService {
 				) ||
 				PermissionService.hasPerm(commonUser, PermissionName.EDIT_BUNDLE_QUALITY_LABELS)
 			) {
-				// Update collection labels
-				const initialLabels: string[] = this.getLabels(initialCollection).map(
-					(labelObj: any) => labelObj.label
-				);
+				// Update collection labels, use the labels of the updated collection when we have them
+				// https://meemoo.atlassian.net/browse/AVO-3823
+				const initialLabels: string[] = this.getLabels(
+					savedCollection || initialCollection
+				).map((labelObj: any) => labelObj.label);
 				const updatedLabels: string[] = this.getLabels(newCollection).map(
 					(labelObj: any) => labelObj.label
 				);
 
 				const addedLabels: string[] = without(updatedLabels, ...initialLabels);
 				const deletedLabels: string[] = without(initialLabels, ...updatedLabels);
-				try {
-					await Promise.all([
-						CollectionService.addLabelsToCollection(
-							newCollection.id as string,
-							addedLabels
-						),
-						CollectionService.deleteLabelsFromCollection(
-							newCollection.id as string,
-							deletedLabels
-						),
-					]);
-				} catch (err) {
-					console.error('Failed to update collection/bundle labels', err);
-					ToastService.danger(
-						isCollection
-							? tHtml('Het updaten van de labels van de collectie is mislukt')
-							: tHtml('Het updaten van de labels van de bundel is mislukt')
-					);
-				}
+				await Promise.all([
+					CollectionService.addLabelsToCollection(
+						newCollection.id as string,
+						addedLabels
+					),
+					CollectionService.deleteLabelsFromCollection(
+						newCollection.id as string,
+						deletedLabels
+					),
+				]);
 			}
 
 			// Update collection management
@@ -719,7 +714,7 @@ export class CollectionService {
 	static updateCollectionProperties = async (
 		id: string,
 		collection: Partial<Avo.Collection.Collection>
-	): Promise<void> => {
+	): Promise<Partial<Avo.Collection.Collection> | undefined> => {
 		try {
 			const dbCollection = cleanCollectionBeforeSave(collection);
 
@@ -727,13 +722,16 @@ export class CollectionService {
 				id,
 				collection: dbCollection,
 			};
-			await dataService.query<
+			const updatedCollection = await dataService.query<
 				UpdateCollectionByIdMutation,
 				UpdateCollectionByIdMutationVariables
 			>({
 				query: UpdateCollectionByIdDocument,
 				variables,
 			});
+
+			return updatedCollection.update_app_collections
+				?.returning?.[0] as Partial<Avo.Collection.Collection>;
 		} catch (err) {
 			throw new CustomError('Failed to update collection properties', err, {
 				id,
@@ -1211,6 +1209,7 @@ export class CollectionService {
 	static async addLabelsToCollection(collectionId: string, labels: string[]): Promise<void> {
 		let variables: InsertCollectionLabelsMutationVariables | undefined = undefined;
 		try {
+			debugger;
 			variables = {
 				objects: labels.map((label) => ({
 					label,

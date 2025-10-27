@@ -501,7 +501,7 @@ export type UpdateCollectionByIdMutationVariables = Exact<{
 }>;
 
 
-export type UpdateCollectionByIdMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number } | null };
+export type UpdateCollectionByIdMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_collections', id: any, title: string, collection_labels: Array<{ __typename?: 'app_collection_labels', label: string, id: number }> }> } | null };
 
 export type UpdateCollectionFragmentByIdMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -859,7 +859,7 @@ export type GetUsersByCompanyIdQueryVariables = Exact<{
 }>;
 
 
-export type GetUsersByCompanyIdQuery = { __typename?: 'query_root', users_profiles: Array<{ __typename?: 'users_profiles', id: any, user?: { __typename?: 'shared_users', uid: any, full_name?: string | null, mail?: string | null, is_blocked?: boolean | null, last_access_at?: any | null } | null, temp_access?: { __typename?: 'shared_user_temp_access_v2', from: any, until: any, has_currently_access?: { __typename?: 'shared_user_temp_access_status_v2', status?: boolean | null } | null } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', id: number, label: string } } | null }> };
+export type GetUsersByCompanyIdQuery = { __typename?: 'query_root', users_profiles: Array<{ __typename?: 'users_profiles', id: any, user?: { __typename?: 'shared_users', uid: any, full_name?: string | null, mail?: string | null, is_blocked?: boolean | null, last_access_at?: any | null } | null, temp_access?: { __typename?: 'shared_user_temp_access_v2', from?: any | null, until?: any | null, has_currently_access?: { __typename?: 'shared_user_temp_access_status_v2', status?: boolean | null } | null } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', id: number, label: string } } | null }> };
 
 export type InsertNotificationMutationVariables = Exact<{
   key: Scalars['String'];
