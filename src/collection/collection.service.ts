@@ -1209,7 +1209,6 @@ export class CollectionService {
 	static async addLabelsToCollection(collectionId: string, labels: string[]): Promise<void> {
 		let variables: InsertCollectionLabelsMutationVariables | undefined = undefined;
 		try {
-			debugger;
 			variables = {
 				objects: labels.map((label) => ({
 					label,
