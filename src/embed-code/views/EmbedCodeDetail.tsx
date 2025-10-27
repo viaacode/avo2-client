@@ -86,7 +86,7 @@ const EmbedCodeDetail: FC<EmbedCodeDetailProps> = ({ history, match, commonUser 
 			await BookmarksViewsPlaysService.action(
 				'view',
 				'item',
-				(embedCode.content as Avo.Item.Item).external_id,
+				(embedCode.content as Avo.Item.Item).uid,
 				commonUser
 			).then(noop);
 		}
