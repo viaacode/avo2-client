@@ -160,7 +160,9 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 		},
 	},
 	{
-		error: tText('De bundel heeft collecties of opdrachten die verwijderd zijn'),
+		error: tText(
+			'collection/collection___de-bundel-heeft-collecties-of-opdrachten-die-verwijderd-zijn'
+		),
 		isValid: (bundle: Partial<Avo.Collection.Collection>) => {
 			if (bundle.type_id === ContentTypeNumber.collection) {
 				return true; // Only applies to bundles
