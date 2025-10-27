@@ -160,7 +160,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 		},
 	},
 	{
-		error: tText('De bundel heeft collecties of opdrachten die verwijderd is'),
+		error: tText('De bundel heeft collecties of opdrachten die verwijderd zijn'),
 		isValid: (bundle: Partial<Avo.Collection.Collection>) => {
 			if (bundle.type_id === ContentTypeNumber.collection) {
 				return true; // Only applies to bundles
@@ -194,7 +194,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 					| Avo.Collection.Collection
 					| Avo.Assignment.Assignment
 					| undefined;
-				return collectionOrAssignment?.is_public || true; // Only complain if not public, do not complain if deleted (that's a separate check)
+				return collectionOrAssignment?.is_public ?? true; // Only complain if not public, do not complain if deleted (that's a separate check)
 			});
 		},
 	},
