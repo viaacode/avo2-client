@@ -160,19 +160,42 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 		},
 	},
 	{
+		error: tText('De bundel heeft collecties of opdrachten die verwijderd zijn'),
+		isValid: (bundle: Partial<Avo.Collection.Collection>) => {
+			if (bundle.type_id === ContentTypeNumber.collection) {
+				return true; // Only applies to bundles
+			}
+			if (!bundle.collection_fragments || !bundle.collection_fragments.length) {
+				return true; // No fragments, no problem
+			}
+			// Check that all collections/assignments in the bundle still exist (have not been deleted)
+			return bundle.collection_fragments.every((fragment) => {
+				return fragment?.item_meta as
+					| Avo.Collection.Collection
+					| Avo.Assignment.Assignment
+					| undefined;
+			});
+		},
+	},
+	{
 		error: tText(
 			'collection/collection___de-bundel-heeft-niet-publieke-collecties-of-opdrachten'
 		),
 		isValid: (bundle: Partial<Avo.Collection.Collection>) => {
-			return (
-				bundle.type_id === ContentTypeNumber.collection ||
-				!bundle.collection_fragments ||
-				bundle.collection_fragments.every((fragment) => {
-					return (
-						fragment.item_meta as Avo.Collection.Collection | Avo.Assignment.Assignment
-					).is_public;
-				})
-			);
+			if (bundle.type_id === ContentTypeNumber.collection) {
+				return true; // Only applies to bundles
+			}
+			if (!bundle.collection_fragments || !bundle.collection_fragments.length) {
+				return true; // No fragments, no problem
+			}
+			// Check that all collections/assignments in the bundle are public
+			return bundle.collection_fragments.every((fragment) => {
+				const collectionOrAssignment = fragment?.item_meta as
+					| Avo.Collection.Collection
+					| Avo.Assignment.Assignment
+					| undefined;
+				return collectionOrAssignment?.is_public ?? true; // Only complain if not public, do not complain if deleted (that's a separate check)
+			});
 		},
 	},
 	// TODO: Add check if owner or write-rights.
