@@ -320,15 +320,9 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 						? tText('search/components/media-grid-wrapper/media-grid-wrapper___item')
 						: tText('search/components/media-grid-wrapper/media-grid-wrapper___items')
 				}`,
-				bundel: `${collectionItems} ${
-					collectionItems === 1
-						? tText(
-								'search/components/media-grid-wrapper/media-grid-wrapper___collectie'
-						  )
-						: tText(
-								'search/components/media-grid-wrapper/media-grid-wrapper___collecties'
-						  )
-				}`,
+				// Do not show number of collections since a bundle can contain collections and assignments now
+				// https://meemoo.atlassian.net/browse/AVO-3828
+				bundel: null,
 				opdracht: null,
 				contentPagina: null,
 			}[itemLabel] || null
@@ -344,7 +338,7 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 		setActiveCopyright(orgInfo);
 	};
 
-	const mapItemOrCollectionOrAssignmentOrPageData = (
+	const mapItemOrCollectionOrAssignmentOrBundleOrPageData = (
 		itemOrCollectionOrAssignmentOrPage: ResolvedItemOrCollectionOrAssignmentOrContentPage,
 		index: number
 	): MediaListItem => {
@@ -484,7 +478,7 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 	// Render
 	const renderMediaGridBlock = () => {
 		const elements = compact(resolvedResults || []).map(
-			mapItemOrCollectionOrAssignmentOrPageData
+			mapItemOrCollectionOrAssignmentOrBundleOrPageData
 		);
 
 		const activeItemCuePoints = {
