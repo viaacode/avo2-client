@@ -21,7 +21,7 @@ module.exports = {
 				path: '^src/embed/main\\.tsx$',
 			},
 			to: {
-				path: '.*@meemoo/admin-core-ui/dist/admin.d.mts$',
+				path: '.*@meemoo/admin-core-ui/admin$',
 				reachable: true,
 			},
 		},

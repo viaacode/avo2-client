@@ -1,5 +1,5 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
 	Checkbox,
 	Column,

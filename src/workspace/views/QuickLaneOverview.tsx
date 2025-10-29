@@ -3,7 +3,7 @@ import {
 	type FilterableColumn,
 	FilterTable,
 	TableFilterType,
-} from '@meemoo/admin-core-ui/dist/admin.mjs';
+} from '@meemoo/admin-core-ui/admin';
 import { IconName, type MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
 import { isEqual } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';

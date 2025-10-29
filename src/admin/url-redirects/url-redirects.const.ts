@@ -1,4 +1,4 @@
-import { type FilterableColumn, TableFilterType } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { type FilterableColumn, TableFilterType } from '@meemoo/admin-core-ui/admin';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';

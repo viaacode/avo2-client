@@ -1,4 +1,4 @@
-import { type FilterableColumn, TableFilterType } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { type FilterableColumn, TableFilterType } from '@meemoo/admin-core-ui/admin';
 import { type ButtonType, IconName, type SelectOption } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 

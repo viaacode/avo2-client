@@ -19,7 +19,7 @@ export const useGetProfileById = (
 			if (!id) {
 				return null;
 			}
-			const { UserService } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			const { UserService } = await import('@meemoo/admin-core-ui/admin');
 			return UserService.getUserById(String(id));
 		},
 		options

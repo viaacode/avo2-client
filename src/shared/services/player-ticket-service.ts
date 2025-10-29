@@ -1,4 +1,4 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 
 import { LTI_JWT_TOKEN_HEADER } from '../../embed/embed.types';
 import { EmbedCodeService } from '../../embed-code/embed-code-service';

@@ -4,7 +4,7 @@ import {
 	ContentPageService,
 	convertDbContentPageToContentPageInfo,
 	type DbContentPage,
-} from '@meemoo/admin-core-ui/dist/client.mjs';
+} from '@meemoo/admin-core-ui/client';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { keys } from 'lodash-es';

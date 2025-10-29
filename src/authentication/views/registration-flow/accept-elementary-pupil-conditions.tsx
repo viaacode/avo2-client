@@ -4,7 +4,7 @@ import {
 	BlockHeading,
 	BlockRichText,
 	BlockVideoWrapper,
-} from '@meemoo/admin-core-ui/dist/client.mjs';
+} from '@meemoo/admin-core-ui/client';
 import {
 	Button,
 	Column,

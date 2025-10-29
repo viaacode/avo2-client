@@ -12,7 +12,7 @@ export class UrlRedirectsService {
 		const url = `${getEnv('PROXY_URL')}/url-redirects/map`;
 
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			const urlRedirects = await fetchWithLogoutJson<{ [avo1Path: string]: string }>(url);
 
 			return Object.fromEntries(
@@ -48,7 +48,7 @@ export class UrlRedirectsService {
 				},
 			});
 
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson<{
 				urlRedirects: UrlRedirect[];
 				count: number;
@@ -81,7 +81,7 @@ export class UrlRedirectsService {
 		try {
 			url = `${getEnv('PROXY_URL')}/url-redirects/${urlRedirectId}`;
 
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson<UrlRedirect>(url);
 		} catch (err) {
 			const error = new CustomError('Failed to get url redirect', err, {
@@ -99,7 +99,7 @@ export class UrlRedirectsService {
 		try {
 			url = `${getEnv('PROXY_URL')}/url-redirects/`;
 
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			const responseData = await fetchWithLogoutJson<{
 				message: 'success';
 				createdUrlRedirect: UrlRedirect;
@@ -127,7 +127,7 @@ export class UrlRedirectsService {
 		try {
 			url = `${getEnv('PROXY_URL')}/url-redirects/${urlRedirect.id}`;
 
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson<UrlRedirect>(url, {
 				method: 'PATCH',
 				body: JSON.stringify(urlRedirect),
@@ -150,7 +150,7 @@ export class UrlRedirectsService {
 		try {
 			url = `${getEnv('PROXY_URL')}/url-redirects/${urlRedirectId}`;
 
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			await fetchWithLogoutJson<{
 				message: 'success';
 			}>(url, {

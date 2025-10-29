@@ -14,7 +14,7 @@ import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import './NavigationBarDetail.scss';
 
 const NavigationDetail = lazy(() =>
-	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
 		default: adminCoreModule.NavigationBarDetail,
 	}))
 );

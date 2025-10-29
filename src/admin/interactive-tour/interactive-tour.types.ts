@@ -1,4 +1,4 @@
-import { type FilterableTableState } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { type FilterableTableState } from '@meemoo/admin-core-ui/admin';
 import { type RichEditorState } from '@meemoo/react-components';
 
 import { type GetInteractiveTourByIdQuery } from '../../shared/generated/graphql-db-operations';

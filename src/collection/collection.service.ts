@@ -1,4 +1,4 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
 import { endOfDay, startOfDay } from 'date-fns';

@@ -1,4 +1,4 @@
-import { type FilterableTableState } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { type FilterableTableState } from '@meemoo/admin-core-ui/admin';
 
 export interface PupilCollectionsOverviewTableState extends FilterableTableState {
 	title: string;

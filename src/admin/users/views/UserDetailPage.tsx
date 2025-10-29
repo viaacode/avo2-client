@@ -17,7 +17,7 @@ import { UserService } from '../user.service';
 import './UserDetailPage.scss';
 
 const UserDetail = lazy(() =>
-	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
 		default: adminCoreModule.UserDetail,
 	}))
 );

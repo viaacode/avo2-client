@@ -76,7 +76,7 @@ export class EmbedCodeService {
 		try {
 			url = `${getEnv('PROXY_URL')}/embed-codes/`;
 
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			const responseData = await fetchWithLogoutJson<{
 				message: 'success';
 				createdEmbed: EmbedCode;
@@ -102,7 +102,7 @@ export class EmbedCodeService {
 		try {
 			url = `${getEnv('PROXY_URL')}/embed-codes/${data.id}`;
 
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			await fetchWithLogoutJson<{
 				message: 'success';
 				createdEmbed: EmbedCode;
@@ -138,7 +138,7 @@ export class EmbedCodeService {
 				},
 			});
 
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson<{
 				embedCodes: EmbedCode[];
 				count: number;
@@ -161,7 +161,7 @@ export class EmbedCodeService {
 		try {
 			url = `${getEnv('PROXY_URL')}/embed-codes/${embedCodeId}`;
 
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			await fetchWithLogoutJson<{
 				message: 'success';
 				createdEmbed: EmbedCode;

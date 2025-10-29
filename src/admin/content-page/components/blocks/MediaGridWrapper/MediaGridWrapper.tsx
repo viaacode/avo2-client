@@ -1,8 +1,8 @@
 import {
 	type MediaGridBlockComponentState,
 	type MediaGridBlockState,
-} from '@meemoo/admin-core-ui/dist/admin.mjs';
-import type { DbContentPage } from '@meemoo/admin-core-ui/dist/client.mjs';
+} from '@meemoo/admin-core-ui/admin';
+import type { DbContentPage } from '@meemoo/admin-core-ui/client';
 import {
 	Button,
 	type ButtonAction,

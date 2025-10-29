@@ -1,4 +1,4 @@
-import { type FilterableColumn, TableFilterType } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { type FilterableColumn, TableFilterType } from '@meemoo/admin-core-ui/admin';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';

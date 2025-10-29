@@ -1,4 +1,4 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 
 import { CustomError } from '../shared/helpers/custom-error';
 import { getEnv } from '../shared/helpers/env';

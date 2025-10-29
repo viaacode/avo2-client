@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
 	Button,
 	ButtonToolbar,

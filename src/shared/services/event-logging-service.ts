@@ -1,4 +1,4 @@
-import { fetchWithLogout } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { fetchWithLogout } from '@meemoo/admin-core-ui/client';
 import { type Avo } from '@viaa/avo2-types';
 
 import store, { type AppState } from '../../store';

@@ -1,4 +1,4 @@
-import { ToastType } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { ToastType } from '@meemoo/admin-core-ui/client';
 import { Alert, type AlertProps, Spacer } from '@viaa/avo2-components';
 import { isNil } from 'lodash-es';
 import React, { type FC, type ReactNode } from 'react';

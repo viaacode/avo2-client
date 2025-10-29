@@ -1,4 +1,4 @@
-import { ExportAllToCsvModal, FilterTable, getFilters } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { ExportAllToCsvModal, FilterTable, getFilters } from '@meemoo/admin-core-ui/admin';
 import { type TagInfo } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, noop, partition } from 'lodash-es';

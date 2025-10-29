@@ -1,4 +1,4 @@
-import { type FlowPlayerWrapperProps } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { type FlowPlayerWrapperProps } from '@meemoo/admin-core-ui/admin';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC } from 'react';
 

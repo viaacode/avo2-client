@@ -118,7 +118,7 @@ async function getContentPageDetailRouteByPath(
 	infoOnly = false
 ): Promise<string | undefined> {
 	try {
-		const { ContentPageService } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+		const { ContentPageService } = await import('@meemoo/admin-core-ui/admin');
 		const page = await ContentPageService.getContentPageByLanguageAndPath(
 			Locale.Nl as any,
 			path,

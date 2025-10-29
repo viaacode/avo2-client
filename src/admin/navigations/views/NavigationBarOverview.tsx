@@ -10,7 +10,7 @@ import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import './NavigationBarOverview.scss';
 
 const NavigationOverview = lazy(() =>
-	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
 		default: adminCoreModule.NavigationBarOverview,
 	}))
 );

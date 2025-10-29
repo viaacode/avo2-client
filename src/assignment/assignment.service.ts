@@ -1,4 +1,4 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 import { type Avo } from '@viaa/avo2-types';
 import { cloneDeep, isNil } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
@@ -100,7 +100,7 @@ export class AssignmentService {
 					inviteToken: inviteToken || undefined,
 				},
 			});
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			const assignment: Avo.Assignment.Assignment = await fetchWithLogoutJson(url, {
 				method: 'GET',
 			});
@@ -127,7 +127,7 @@ export class AssignmentService {
 
 	static async fetchAssignmentBlocks(assignmentId: string): Promise<Avo.Assignment.Block[]> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/blocks`,
 				{
@@ -191,7 +191,7 @@ export class AssignmentService {
 
 	static async deleteAssignment(assignmentId: string): Promise<void> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/assignments/${assignmentId}`, {
 				method: 'DELETE',
 			});
@@ -204,7 +204,7 @@ export class AssignmentService {
 
 	static async deleteAssignments(assignmentIds: string[]): Promise<void> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/assignments`, {
 				method: 'DELETE',
 				body: JSON.stringify(assignmentIds),
@@ -223,7 +223,7 @@ export class AssignmentService {
 		try {
 			const updatedAssignment = await this.transformAssignment(assignment, profileId);
 
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignments/${updatedAssignment.id}`,
 				{
@@ -243,7 +243,7 @@ export class AssignmentService {
 
 	static async updateAssignmentUpdatedAtDate(assignmentId: string): Promise<void> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/updated-at`,
 				{
@@ -268,7 +268,7 @@ export class AssignmentService {
 		}
 	): Promise<Omit<Avo.Assignment.Response, 'assignment'> | null> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignment-responses/${original.id}`,
 				{
@@ -305,7 +305,7 @@ export class AssignmentService {
 			// https://meemoo.atlassian.net/browse/AVO-3787
 			assignmentToSave.is_managed = canManageEditorial(commonUser);
 
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/assignments`, {
 				method: 'POST',
 				body: JSON.stringify(assignmentToSave),
@@ -482,7 +482,7 @@ export class AssignmentService {
 				},
 			});
 
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(url, {
 				method: 'GET',
 			});
@@ -501,7 +501,7 @@ export class AssignmentService {
 
 	static async deleteAssignmentResponse(assignmentResponseId: string): Promise<void> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignment-responses/${assignmentResponseId}`,
 				{
@@ -519,7 +519,7 @@ export class AssignmentService {
 
 	static async deleteAssignmentResponses(assignmentResponseIds: string[]): Promise<void> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/assignment-responses}`, {
 				method: 'DELETE',
 				body: JSON.stringify(assignmentResponseIds),
@@ -582,7 +582,7 @@ export class AssignmentService {
 	 */
 	static async getAssignmentResponses(assignmentId: string): Promise<Avo.Assignment.Response[]> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 
 			return (await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignment-responses/${assignmentId}/multiple`,
@@ -607,7 +607,7 @@ export class AssignmentService {
 		assignmentId: string
 	): Promise<Omit<Avo.Assignment.Response, 'assignment'> | undefined> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			const assignmentResponse = (await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignment-responses/${assignmentId}/personal`,
 				{
@@ -641,7 +641,7 @@ export class AssignmentService {
 		assignmentResponseId: string
 	): Promise<Avo.Assignment.Response | null> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			const assignmentResponse = (await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignment-responses/${assignmentResponseId}`,
 				{
@@ -747,7 +747,7 @@ export class AssignmentService {
 
 	static async getAssignmentBlockMaxPosition(assignmentId: string): Promise<number | null> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/block-max-position`,
 				{
@@ -1022,7 +1022,7 @@ export class AssignmentService {
 		byDescription: boolean;
 	}> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			const url = stringifyUrl({
 				url: `${getEnv('PROXY_URL')}/assignments/search`,
 				query: {
@@ -1066,7 +1066,7 @@ export class AssignmentService {
 
 	static async increaseViewCount(assignmentId: string): Promise<number> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/view-count`,
 				{
@@ -1161,7 +1161,7 @@ export class AssignmentService {
 		}
 
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/add-contributor`,
@@ -1203,7 +1203,7 @@ export class AssignmentService {
 		rights: ContributorInfoRight
 	): Promise<void> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv(
@@ -1231,7 +1231,7 @@ export class AssignmentService {
 		profileId?: string
 	): Promise<void> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv(
@@ -1257,7 +1257,7 @@ export class AssignmentService {
 		inviteToken: string
 	): Promise<Avo.Assignment.Contributor> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/accept-invite`,
@@ -1277,7 +1277,7 @@ export class AssignmentService {
 
 	static async declineSharedAssignment(assignmentId: string, inviteToken: string): Promise<void> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/reject-invite`,
@@ -1300,7 +1300,7 @@ export class AssignmentService {
 		contributorProfileId: string
 	): Promise<void> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			await fetchWithLogoutJson(
 				`${getEnv(
 					'PROXY_URL'
@@ -1316,7 +1316,7 @@ export class AssignmentService {
 
 	static async updateAssignmentEditor(assignmentId: string): Promise<void> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv(
@@ -1334,7 +1334,7 @@ export class AssignmentService {
 
 	static async getAssignmentsEditStatuses(ids: string[]): Promise<Avo.Share.EditStatusResponse> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/assignments/share/edit-status`,
@@ -1353,7 +1353,7 @@ export class AssignmentService {
 		assignmentId: string
 	): Promise<Avo.Share.EditStatusResponse> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv(
@@ -1390,7 +1390,7 @@ export class AssignmentService {
 
 	public static async insertMarcomEntry(marcomEntry: AssignmentMarcomEntry): Promise<string> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignments/${marcomEntry.assignment_id}/marcom`,
 				{ method: 'POST', body: JSON.stringify(marcomEntry) }
@@ -1440,7 +1440,7 @@ export class AssignmentService {
 		let url: string | undefined = undefined;
 		try {
 			url = `${getEnv('PROXY_URL')}/assignments/${assignmentId}/marcom/${marcomEntryId}`;
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(url, { method: 'DELETE' });
 		} catch (err) {
 			throw new CustomError('Failed to delete a marcom entry for the database', err, {

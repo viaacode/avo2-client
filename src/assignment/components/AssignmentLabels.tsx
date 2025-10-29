@@ -1,4 +1,4 @@
-import { type ColorOption } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { type ColorOption } from '@meemoo/admin-core-ui/admin';
 import {
 	Button,
 	Flex,

@@ -1,5 +1,5 @@
-import { cleanupFilterTableState } from '@meemoo/admin-core-ui/dist/admin.mjs';
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { cleanupFilterTableState } from '@meemoo/admin-core-ui/admin';
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import { PaginationBar } from '@meemoo/react-components';
 import {
 	Button,

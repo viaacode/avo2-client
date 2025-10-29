@@ -19,7 +19,7 @@ import { CONTENT_PAGE_PATH } from '../content-page.consts';
 import './ContentPage.scss';
 
 const ContentPageOverview = lazy(() =>
-	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
 		default: adminCoreModule.ContentPageOverview,
 	}))
 );

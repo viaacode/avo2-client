@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import AvoLogo from '@assets/images/avo-logo-i.svg';
-import { ContentPagePreviewUserRoleSelector } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { ContentPagePreviewUserRoleSelector } from '@meemoo/admin-core-ui/admin';
 import {
 	Avatar,
 	Button,

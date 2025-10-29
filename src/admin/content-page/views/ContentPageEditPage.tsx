@@ -1,4 +1,4 @@
-import type { ContentPageDetailProps } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import type { ContentPageDetailProps } from '@meemoo/admin-core-ui/admin';
 import { Flex, Spinner } from '@viaa/avo2-components';
 import React, { type FC, lazy, Suspense, useState } from 'react';
 import { withRouter } from 'react-router-dom';
@@ -14,7 +14,7 @@ import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 const ContentPageEdit = lazy(() =>
-	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
 		default: adminCoreModule.ContentPageEdit,
 	}))
 );

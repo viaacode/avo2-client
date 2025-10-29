@@ -1,4 +1,4 @@
-import { type AdminConfig, AdminConfigManager } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { type AdminConfig, AdminConfigManager } from '@meemoo/admin-core-ui/client';
 import { Spinner } from '@viaa/avo2-components';
 import React, { type ComponentType, useCallback, useEffect, useState } from 'react';
 import { withRouter } from 'react-router';

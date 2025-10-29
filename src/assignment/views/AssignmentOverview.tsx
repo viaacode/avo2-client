@@ -1,6 +1,6 @@
 import './AssignmentOverview.scss';
 
-import { cleanupFilterTableState, toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { cleanupFilterTableState, toggleSortOrder } from '@meemoo/admin-core-ui/admin';
 import { PaginationBar } from '@meemoo/react-components';
 import {
 	Button,

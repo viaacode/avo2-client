@@ -35,7 +35,7 @@ export class PupilCollectionService {
 					filters: JSON.stringify(where),
 				},
 			});
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return fetchWithLogoutJson(url);
 		} catch (err) {
 			throw new CustomError('Failed to get pupil collections from the database', err, {
@@ -54,7 +54,7 @@ export class PupilCollectionService {
 					filters: JSON.stringify(where),
 				},
 			});
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return fetchWithLogoutJson(url);
 		} catch (err) {
 			throw new CustomError('Failed to get pupil collection ids from the database', err, {
@@ -68,7 +68,7 @@ export class PupilCollectionService {
 		pupilCollectionIds: string[]
 	): Promise<number> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/pupil-collection/update-author`,
 				{
@@ -100,7 +100,7 @@ export class PupilCollectionService {
 		itemTrimInfo?: ItemTrimInfo
 	): Promise<Avo.Core.BlockItemBase> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/pupil-collection/${assignmentResponseId}/import-fragment`,
 				{

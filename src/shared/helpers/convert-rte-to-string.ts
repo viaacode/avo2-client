@@ -1,4 +1,4 @@
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client';
 import { type Avo } from '@viaa/avo2-types';
 import { cloneDeep } from 'lodash-es';
 

@@ -1,4 +1,4 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
 import { PaginationBar } from '@meemoo/react-components';
 import { QueryClient } from '@tanstack/react-query';
 import {

@@ -1,4 +1,4 @@
-import { FILTER_TABLE_QUERY_PARAM_CONFIG, FilterTable } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { FILTER_TABLE_QUERY_PARAM_CONFIG, FilterTable } from '@meemoo/admin-core-ui/admin';
 import { IconName, type MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';

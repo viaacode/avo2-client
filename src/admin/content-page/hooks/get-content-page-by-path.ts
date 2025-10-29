@@ -1,7 +1,7 @@
 import {
 	ContentPageService,
 	convertDbContentPageToContentPageInfo,
-} from '@meemoo/admin-core-ui/dist/client.mjs';
+} from '@meemoo/admin-core-ui/client';
 import { useQuery } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '../../../shared/constants/query-keys';

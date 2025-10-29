@@ -1,4 +1,4 @@
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client';
 import {
 	Box,
 	Button,
@@ -82,7 +82,7 @@ import InteractiveTourEditStep from './InteractiveTourEditStep';
 import './InteractiveTourEdit.scss';
 
 const BlockHeading = lazy(() =>
-	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
 		default: adminCoreModule.BlockHeading,
 	}))
 );
