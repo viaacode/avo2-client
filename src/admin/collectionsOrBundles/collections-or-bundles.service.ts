@@ -41,7 +41,7 @@ export class CollectionsOrBundlesService {
 		includeRelations: boolean
 	): Promise<{ collections: Avo.Collection.Collection[]; total: number }> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/admin');
 			return await fetchWithLogoutJson<{
 				collections: Avo.Collection.Collection[];
 				total: number;
@@ -82,7 +82,7 @@ export class CollectionsOrBundlesService {
 		includeRelations: boolean
 	): Promise<{ collections: Avo.Collection.Collection[]; total: number }> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/admin');
 			return await fetchWithLogoutJson<{
 				collections: Avo.Collection.Collection[];
 				total: number;
@@ -119,7 +119,7 @@ export class CollectionsOrBundlesService {
 
 	static async getCollectionIds(filters: any, isCollection: boolean): Promise<string[]> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/admin');
 			const response = await fetchWithLogoutJson<{
 				collectionIds: string[];
 			}>(

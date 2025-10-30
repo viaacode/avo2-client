@@ -13,7 +13,7 @@ import './NavigationBarDetail.scss';
 import { NAVIGATIONS_PATH } from '../navigations.const';
 
 const NavigationDetail = lazy(() =>
-	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
 		default: adminCoreModule.NavigationBarDetail,
 	}))
 );

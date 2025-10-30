@@ -1,0 +1,8 @@
+mutation removeQuickLanes($ids: [uuid!]!, $profileId: uuid!) {
+	delete_app_quick_lanes(where: { id: { _in: $ids }, owner_profile_id: { _eq: $profileId } }) {
+		affected_rows
+		returning {
+			id
+		}
+	}
+}

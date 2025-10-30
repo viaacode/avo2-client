@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
 	Button,
 	ButtonToolbar,
@@ -19,6 +19,8 @@ import { commonUserAtom } from '../../../authentication/authentication.store';
 import { APP_PATH } from '../../../constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
@@ -130,6 +132,12 @@ export const PublishCollectionModal: FC<PublishCollectionModalProps> = ({
 				commonUser
 			);
 		} catch (err) {
+			console.error(
+				new CustomError('Failed to save changes to collection/bundle publish status', err, {
+					isCollectionPublic,
+					collection,
+				})
+			);
 			ToastService.danger(
 				tHtml(
 					'collection/components/modals/share-collection-modal___de-aanpassingen-kunnen-niet-worden-opgeslagen'

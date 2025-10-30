@@ -19,7 +19,7 @@ import { type Translation, type TranslationsState } from '../translations.types'
 import './TranslationsOverviewPage.scss';
 
 const TranslationsOverview = lazy(() =>
-	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
 		default: adminCoreModule.TranslationsOverview,
 	}))
 );

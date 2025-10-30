@@ -3,7 +3,7 @@ import {
 	ContentPageRenderer,
 	ContentPageService,
 	convertDbContentPagesToContentPageInfos,
-} from '@meemoo/admin-core-ui/dist/client.mjs';
+} from '@meemoo/admin-core-ui/client';
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { useAtomValue, useSetAtom } from 'jotai';
@@ -147,6 +147,7 @@ export const AcceptConditions: FC = () => {
 						<ContentPageRenderer
 							contentPageInfo={pages[0] as ContentPageInfo}
 							commonUser={commonUser}
+							renderNoAccessError={renderWrongUserRoleError}
 						/>
 					)}
 					{/* privacy conditions */}
@@ -154,6 +155,7 @@ export const AcceptConditions: FC = () => {
 						<ContentPageRenderer
 							contentPageInfo={pages[1] as ContentPageInfo}
 							commonUser={commonUser}
+							renderNoAccessError={renderWrongUserRoleError}
 						/>
 					)}
 				</Spacer>

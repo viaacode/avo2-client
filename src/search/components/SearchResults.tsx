@@ -1,5 +1,5 @@
 import { PaginationBar } from '@meemoo/react-components';
-import { Blankslate, Button, Container, Flex, IconName, Spinner } from '@viaa/avo2-components';
+import { Blankslate, Box, Button, Container, Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { isNil } from 'lodash-es';
@@ -8,6 +8,7 @@ import React, { type FC } from 'react';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import placeholderImage from '../../assets/images/assignment-placeholder.png';
 import { commonUserAtom } from '../../authentication/authentication.store';
+import { ReactComponent as TeacherSvg } from '../../assets/images/leerkracht.svg';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/services/bookmarks-views-plays-service';
@@ -69,6 +70,34 @@ export const SearchResults: FC<SearchResultsProps> = ({
 		);
 	};
 
+	const renderTooManyResults = () => {
+		const currentPage = currentItemIndex / ITEMS_PER_PAGE;
+		if (totalItemCount <= 10000 || currentPage < 999) {
+			return null;
+		}
+
+		return (
+			<Box backgroundColor="gray" className="c-search-too-many-results">
+				<Flex
+					orientation="horizontal"
+					center
+					spaced="wide"
+					className="u-padding-left-xl u-padding-right-xl"
+				>
+					<TeacherSvg className="u-padding-left-xl" style={{ height: '16rem' }} />
+					<h3
+						className="c-search-result__title u-padding-left-l u-padding-right-xl"
+						style={{ alignSelf: 'center' }}
+					>
+						{tText(
+							'search/components/search-results___er-zijn-te-veel-resultaten-bij-deze-zoekopdracht-verfijn-je-vraag-via-de-zoekbalk-of-de-filters'
+						)}
+					</h3>
+				</Flex>
+			</Box>
+		);
+	};
+
 	const renderResultsOrNoResults = () => {
 		if (loading) {
 			return (
@@ -82,13 +111,15 @@ export const SearchResults: FC<SearchResultsProps> = ({
 				<>
 					<ul className="c-search-result-list">
 						{data.results.map(renderSearchResultItem)}
+						{renderTooManyResults()}
 					</ul>
 					<PaginationBar
 						className="u-m-t-l u-m-b-l"
 						{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
 						startItem={currentItemIndex}
 						itemsPerPage={ITEMS_PER_PAGE}
-						totalItems={totalItemCount}
+						totalItems={Math.min(totalItemCount, 10000)}
+						visualTotalItems={totalItemCount}
 						onPageChange={(newPage: number) =>
 							setCurrentItemIndex(newPage * ITEMS_PER_PAGE)
 						}

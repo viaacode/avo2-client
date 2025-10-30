@@ -1,5 +1,5 @@
-import { cleanupFilterTableState } from '@meemoo/admin-core-ui/dist/admin.mjs';
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { cleanupFilterTableState } from '@meemoo/admin-core-ui/admin';
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import { PaginationBar } from '@meemoo/react-components';
 import {
 	Button,
@@ -250,7 +250,6 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({ onUpdate = n
 
 			const response = await AssignmentService.fetchAssignmentResponses(
 				assignmentId,
-				commonUser,
 				sortColumn,
 				sortOrder,
 				columnDataType,

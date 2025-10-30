@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import AvoLogoSrc from '@assets/images/avo-logo-i.svg';
+import { ContentPagePreviewUserRoleSelector } from '@meemoo/admin-core-ui/admin';
 import {
 	Avatar,
 	Button,
@@ -31,6 +32,7 @@ import { APP_PATH } from '../../../constants';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
+import { useHideZendeskWidget } from '../../hooks/useHideZendeskWidget';
 import { ToastService } from '../../services/toast-service';
 import { type NavigationItemInfo } from '../../types';
 
@@ -38,10 +40,30 @@ import { NavigationBarId } from './Navigation.const';
 import { NavigationItem } from './NavigationItem';
 import './Navigation.scss';
 
+type NavigationParams = RouteComponentProps & {
+	isPreviewRoute: boolean;
+};
+
 /**
  * Main navigation bar component
  */
-export const Navigation: FC = () => {
+const Navigation: FC<
+	NavigationParams & {
+		loginState: Avo.Auth.LoginResponse | null;
+		loginStateLoading: boolean;
+		loginStateError: boolean;
+		getLoginState: () => Dispatch;
+	}
+> = ({
+	loginState,
+	loginStateLoading,
+	loginStateError,
+	getLoginState,
+	history,
+	location,
+	match,
+	isPreviewRoute,
+}) => {
 	const { tText, tHtml } = useTranslation();
 	const navigate = useNavigate();
 
@@ -53,6 +75,7 @@ export const Navigation: FC = () => {
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+	const [isUserGroupSelectorOpen, setIsUserGroupSelectorOpen] = useState(false);
 
 	const { data: allNavItems } = useAllGetNavItems();
 
@@ -68,6 +91,8 @@ export const Navigation: FC = () => {
 	const navItemsLeft = allNavItems?.[NavigationBarId.MAIN_NAVIGATION_LEFT] || [];
 	const navItemsRight = allNavItems?.[NavigationBarId.MAIN_NAVIGATION_RIGHT] || [];
 	const navItemsProfileDropdown = allNavItems?.[NavigationBarId.PROFILE_DROPDOWN] || [];
+
+	useHideZendeskWidget(location, commonUser, isUserGroupSelectorOpen);
 
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -212,7 +237,18 @@ export const Navigation: FC = () => {
 
 	return (
 		<>
-			<Navbar background="inverse" position="fixed" placement="top">
+			<Navbar background="inverse" position="fixed" placement="top" autoHeight={true}>
+				{isPreviewRoute && (
+					<Container background="white">
+						<Container mode="horizontal" className="u-d-flex">
+							<ContentPagePreviewUserRoleSelector
+								className="c-content-page-preview-selector"
+								commonUser={commonUser}
+								onToggleMenu={setIsUserGroupSelectorOpen}
+							/>
+						</Container>
+					</Container>
+				)}
 				<Container mode="horizontal">
 					<Toolbar>
 						<ToolbarLeft>

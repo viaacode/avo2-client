@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import { Box, Button, Flex, FlexItem, Spacer, TextInput } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
 import React, { type FC, useState } from 'react';

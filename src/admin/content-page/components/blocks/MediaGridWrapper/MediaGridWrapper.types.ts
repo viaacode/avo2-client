@@ -1,4 +1,4 @@
-import { type DbContentPage } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { type DbContentPage } from '@meemoo/admin-core-ui/client';
 import { type Avo } from '@viaa/avo2-types';
 
 export type ResolvedItemOrCollectionOrAssignmentOrContentPage = Partial<

@@ -1,4 +1,4 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
 import { type Avo } from '@viaa/avo2-types';
 import { type Dispatch, type SetStateAction, useState } from 'react';
 

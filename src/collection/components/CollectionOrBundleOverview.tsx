@@ -1,4 +1,4 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
 import { PaginationBar } from '@meemoo/react-components';
 import { QueryClient } from '@tanstack/react-query';
 import {
@@ -8,7 +8,6 @@ import {
 	IconName,
 	MetaData,
 	MetaDataItem,
-	MoreOptionsDropdown,
 	Spacer,
 	Table,
 	type TableColumn,
@@ -49,6 +48,7 @@ import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import MoreOptionsDropdownWrapper from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
 import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
@@ -645,7 +645,7 @@ export const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps> = (
 
 		return (
 			<ButtonToolbar>
-				<MoreOptionsDropdown
+				<MoreOptionsDropdownWrapper
 					isOpen={dropdownOpenForCollectionUuid === collectionUuid}
 					onOpen={() => {
 						setSelectedCollection(collections?.find((c) => c.id === collectionUuid));

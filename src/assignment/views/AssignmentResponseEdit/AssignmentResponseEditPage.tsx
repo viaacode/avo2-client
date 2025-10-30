@@ -123,7 +123,7 @@ export const AssignmentResponseEditPage: FC = () => {
 			trackEvents(
 				{
 					object: assignmentOrError.id,
-					object_type: 'avo_assignment',
+					object_type: 'assignment',
 					action: 'view',
 					resource: {
 						education_level: String(assignment?.education_level_id),

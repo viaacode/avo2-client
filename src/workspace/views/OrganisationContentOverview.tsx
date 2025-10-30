@@ -1,4 +1,4 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
 import { PaginationBar } from '@meemoo/react-components';
 import { IconName, Spacer, Table, type TableColumn } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';

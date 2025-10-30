@@ -442,7 +442,7 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 			<SearchResults
 				currentItemIndex={(filterState.page || 0) * ITEMS_PER_PAGE}
 				// elasticsearch can only handle 10000 results efficiently
-				totalItemCount={Math.min(resultsCount, 10000)}
+				totalItemCount={resultsCount}
 				setCurrentItemIndex={(newCurrentItemIndex: number) =>
 					setFilterState({
 						...filterState,

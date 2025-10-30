@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import { FormControl } from '@meemoo/react-components';
 import { ContentInput, Flex, Icon, IconName } from '@viaa/avo2-components';
 import React, { type FC, useState } from 'react';

@@ -8,7 +8,7 @@ import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { CONTENT_PAGE_LABEL_PATH } from '../content-page-label.const';
 
 const ContentPageLabelDetail = lazy(() =>
-	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
 		default: adminCoreModule.ContentPageLabelDetail,
 	}))
 );

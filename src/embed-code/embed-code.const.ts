@@ -2,7 +2,7 @@
 import bookwidgetsLogoInternal from '@assets/images/bookwidget_logo.png';
 // eslint-disable-next-line import/no-unresolved
 import smartschoolLogoInternal from '@assets/images/smartschool_logo.png';
-import type { FilterableColumn } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import type { FilterableColumn } from '@meemoo/admin-core-ui/admin';
 
 import { isMobileWidth } from '../shared/helpers/media-query';
 import { tText } from '../shared/helpers/translate-text';

@@ -67,7 +67,7 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 				content: (
 					<p>
 						{tHtml(
-							'Je kan de link enkel delen met leerlingen die Smartschool of LeerID hebben.'
+							'shared/components/share-with-pupils/share-with-pupils___je-kan-de-link-enkel-delen-met-leerlingen-die-smartschool-of-leer-id-hebben'
 						)}
 					</p>
 				),

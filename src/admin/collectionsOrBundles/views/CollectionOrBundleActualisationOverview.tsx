@@ -3,7 +3,7 @@ import {
 	type FilterableColumn,
 	FilterTable,
 	getFilters,
-} from '@meemoo/admin-core-ui/dist/admin.mjs';
+} from '@meemoo/admin-core-ui/admin';
 import { type Avo } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';

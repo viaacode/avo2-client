@@ -4,7 +4,7 @@ import {
 	ContentPageService,
 	convertDbContentPageToContentPageInfo,
 	type DbContentPage,
-} from '@meemoo/admin-core-ui/dist/client.mjs';
+} from '@meemoo/admin-core-ui/client';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtom, useSetAtom } from 'jotai';
@@ -42,6 +42,7 @@ import { getFullName, stripHtml } from '../../shared/helpers/formatters';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { generateSearchLinkString } from '../../shared/helpers/link';
 import { useTranslation } from '../../shared/hooks/useTranslation';
+import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Locale } from '../../shared/translations/translations.types';
 import { type AppState } from '../../store';
@@ -193,13 +194,18 @@ const DynamicRouteResolver: FC = () => {
 				) {
 					const contentPageUserGroups = (err as any)?.innerException?.additionalInfo
 						?.responseBody?.additionalInfo?.contentPageUserGroups as string[];
+					const nonPupilsRoles = contentPageUserGroups.filter(
+						(userGroup) => !isPupil(userGroup)
+					);
 
 					if (
+						contentPageUserGroups.length > 1 &&
+						nonPupilsRoles.length === 1 &&
 						contentPageUserGroups.every(
-							(userGroup) =>
-								isPupil(userGroup) || userGroup === SpecialUserGroupId.Admin
+							(userGroup) => isPupil(userGroup) || userGroup === nonPupilsRoles[0]
 						)
 					) {
+						// The page is for pupils and the role that created the page (so technically a pupils only page was the intention)
 						setRouteInfo({
 							type: DynamicRouteType.PUPIL_ONLY_PAGE,
 							data: null,
@@ -208,6 +214,7 @@ const DynamicRouteResolver: FC = () => {
 						contentPageUserGroups.every((userGroup) => !isPupil(userGroup)) &&
 						isPupil(commonUserInfo.userGroup?.id)
 					) {
+						// THe page was not for pupils and the current user is a pupil
 						setRouteInfo({
 							type: DynamicRouteType.NOT_FOR_PUPIL_PAGE,
 							data: null,
@@ -288,7 +295,7 @@ const DynamicRouteResolver: FC = () => {
 	const renderRouteComponent = () => {
 		if (routeInfo && routeInfo.type === DynamicRouteType.CONTENT_PAGE) {
 			const routeUserGroupIds = ((routeInfo.data as DbContentPage).userGroupIds ?? []).map(
-				(id) => String(id)
+				(id: string) => String(id)
 			);
 			// Check if the page requires the user to be logged in and not both logged in or out
 			if (
@@ -333,6 +340,7 @@ const DynamicRouteResolver: FC = () => {
 								renderFakeTitle={
 									(routeInfo.data as ContentPageInfo).contentType === 'FAQ_ITEM'
 								}
+								renderNoAccessError={renderWrongUserRoleError}
 							/>
 						</>
 					)}
@@ -370,13 +378,7 @@ const DynamicRouteResolver: FC = () => {
 			);
 		}
 		if (routeInfo && routeInfo.type === DynamicRouteType.WRONG_USER_GROUP_PAGE) {
-			return (
-				<ErrorView
-					icon={IconName.clock}
-					actionButtons={['help', 'helpdesk']}
-					message={GET_ERROR_MESSAGES()[`OTHER_ROLES`]}
-				/>
-			);
+			return renderWrongUserRoleError();
 		}
 		console.error(
 			new CustomError("Route doesn't seem to be a bundle or content page", null, {

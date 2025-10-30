@@ -1,4 +1,4 @@
-import { type FilterableTableState } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { type FilterableTableState } from '@meemoo/admin-core-ui/admin';
 
 import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 

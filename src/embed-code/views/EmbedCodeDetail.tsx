@@ -1,6 +1,6 @@
 import './EmbedCodeDetail.scss';
 
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
 	Alert,
 	Button,
@@ -87,7 +87,7 @@ export const EmbedCodeDetail: FC = () => {
 			await BookmarksViewsPlaysService.action(
 				'view',
 				'item',
-				(embedCode.content as Avo.Item.Item).external_id,
+				(embedCode.content as Avo.Item.Item).uid,
 				commonUser
 			).then(noop);
 		}

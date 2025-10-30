@@ -1,4 +1,4 @@
-import { FilterTable, getFilters } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { FilterTable, getFilters } from '@meemoo/admin-core-ui/admin';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { get, isNil, truncate } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';

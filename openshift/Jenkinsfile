@@ -168,7 +168,6 @@ pipeline {
 			}
 		}//end stage
 		stage('e2e') {
-			agent { label 'node' }
 			when {
 				anyOf {
 					changeRequest target: 'develop'//'master'
@@ -177,6 +176,8 @@ pipeline {
 				}
 			}
 			steps {
+				agent { label 'node' }
+
 				script {
 					configFileProvider(
 						[configFile(fileId: 'end2end_env', variable: 'end2end_env')]) {

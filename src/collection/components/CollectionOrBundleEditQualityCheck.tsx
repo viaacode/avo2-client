@@ -39,7 +39,7 @@ export const CollectionOrBundleEditQualityCheck: FC<CollectionOrBundleEditQualit
 			collection?.management_language_check?.[0]?.qc_status &&
 			collection?.management_quality_check?.[0]?.qc_status
 		) {
-			return toDateObject(collection?.management_final_check?.[0].created_at);
+			return toDateObject(collection?.management_final_check?.[0]?.created_at);
 		}
 		return null;
 	};

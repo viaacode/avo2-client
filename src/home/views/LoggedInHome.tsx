@@ -11,6 +11,8 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { useTranslation } from '../../shared/hooks/useTranslation';
+import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 
 export const LoggedInHome: FC = () => {
 	const { tText } = useTranslation();
@@ -44,6 +46,7 @@ export const LoggedInHome: FC = () => {
 					<ContentPageRenderer
 						contentPageInfo={contentPageInfo}
 						commonUser={commonUser}
+						renderNoAccessError={renderWrongUserRoleError}
 					/>
 				</>
 			)}

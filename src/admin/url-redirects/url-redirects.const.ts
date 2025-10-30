@@ -1,6 +1,4 @@
-import { type FilterableColumn, TableFilterType } from '@meemoo/admin-core-ui/dist/admin.mjs';
-
-import type { CheckboxDropdownModalProps } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { type FilterableColumn, TableFilterType } from '@meemoo/admin-core-ui/admin';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';
@@ -23,33 +21,22 @@ export const ITEMS_PER_PAGE = 10;
 export const GET_URL_REDIRECT_OVERVIEW_TABLE_COLS: () => FilterableColumn<UrlRedirectOverviewTableCols>[] =
 	() => [
 		{
-			id: 'oldPathPattern',
-			label: tText('Oude url patroon'),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: TableFilterType.CheckboxDropdownModal,
-			filterProps: {
-				options: URL_REDIRECT_PATTERN_OPTIONS(),
-			} as unknown as CheckboxDropdownModalProps,
-			dataType: TableColumnDataType.string,
-		},
-		{
 			id: 'oldPath',
-			label: tText('Oude url'),
+			label: tText('admin/url-redirects/url-redirects___oude-url'),
 			sortable: true,
 			visibleByDefault: true,
 			dataType: TableColumnDataType.string,
 		},
 		{
 			id: 'newPath',
-			label: tText('Nieuwe url'),
+			label: tText('admin/url-redirects/url-redirects___nieuwe-url'),
 			sortable: true,
 			visibleByDefault: true,
 			dataType: TableColumnDataType.string,
 		},
 		{
 			id: 'createdAt',
-			label: tText('Aangemaakt op'),
+			label: tText('admin/url-redirects/url-redirects___aangemaakt-op'),
 			sortable: true,
 			visibleByDefault: true,
 			filterType: TableFilterType.DateRangeDropdown,
@@ -57,7 +44,7 @@ export const GET_URL_REDIRECT_OVERVIEW_TABLE_COLS: () => FilterableColumn<UrlRed
 		},
 		{
 			id: 'updatedAt',
-			label: tText('Aangepast op'),
+			label: tText('admin/url-redirects/url-redirects___aangepast-op'),
 			sortable: true,
 			visibleByDefault: true,
 			filterType: TableFilterType.DateRangeDropdown,
@@ -65,7 +52,7 @@ export const GET_URL_REDIRECT_OVERVIEW_TABLE_COLS: () => FilterableColumn<UrlRed
 		},
 		{
 			id: ACTIONS_TABLE_COLUMN_ID,
-			tooltip: tText('Acties'),
+			tooltip: tText('admin/url-redirects/url-redirects___acties'),
 			visibleByDefault: true,
 		},
 	];
@@ -74,12 +61,12 @@ export const URL_REDIRECT_PATTERN_OPTIONS = () => [
 	{
 		id: String(UrlRedirectPathPattern.PLAIN_TEXT),
 		value: UrlRedirectPathPattern.PLAIN_TEXT,
-		label: tText('Tekst'),
+		label: tText('admin/url-redirects/url-redirects___tekst'),
 	},
 	{
 		id: String(UrlRedirectPathPattern.REGEX),
 		value: UrlRedirectPathPattern.REGEX,
-		label: tText('Reguliere expressie'),
+		label: tText('admin/url-redirects/url-redirects___reguliere-expressie'),
 	},
 ];
 

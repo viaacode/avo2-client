@@ -73,7 +73,7 @@ export class ItemsService {
 		filters: any
 	): Promise<{ items: Avo.Item.Item[]; total: number }> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/admin');
 			return await fetchWithLogoutJson<{
 				items: Avo.Item.Item[];
 				total: number;
@@ -147,7 +147,7 @@ export class ItemsService {
 	): Promise<Avo.Item.Item> {
 		let url: string | null = null;
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			url = stringifyUrl({
 				url: `${getEnv('PROXY_URL')}/items/${uuid}`,
 				query: {
@@ -348,7 +348,7 @@ export class ItemsService {
 		mediamosaId: string
 	): Promise<string | null> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 
 			const response = await fetchWithLogoutJson<{ externalId: string } | null>(
 				`${getEnv(
@@ -368,7 +368,7 @@ export class ItemsService {
 
 	public static async fetchItemUuidByExternalId(externalId: string): Promise<string | null> {
 		try {
-			const { fetchWithLogout } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			const { fetchWithLogout } = await import('@meemoo/admin-core-ui/admin');
 			const response = await fetchWithLogout(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/admin/items/ids`,
@@ -547,7 +547,7 @@ export class ItemsService {
 	public static async triggerMamSync(): Promise<'SCHEDULED' | string> {
 		let url: string | undefined = undefined;
 		try {
-			const { fetchWithLogout } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			const { fetchWithLogout } = await import('@meemoo/admin-core-ui/admin');
 			url = `${getEnv('PROXY_URL')}/mam-syncrator/trigger-delta-sync`;
 			const response = await fetchWithLogout(url, {
 				method: 'POST',
@@ -597,7 +597,7 @@ export class ItemsService {
 	): Promise<ItemUsedByResponse> {
 		let url: string | null = null;
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			url = stringifyUrl({
 				url: `${getEnv('PROXY_URL')}/items/${itemUuid}/used-by`,
 				query: {

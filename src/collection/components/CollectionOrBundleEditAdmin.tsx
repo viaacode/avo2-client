@@ -1,5 +1,5 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
 	Checkbox,
 	Column,
@@ -32,6 +32,9 @@ import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { formatTimestamp, getFullName } from '../../shared/helpers/formatters';
 import { useTranslation } from '../../shared/hooks/useTranslation';
+import { formatTimestamp, getFullNameCommonUser } from '../../shared/helpers/formatters';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { QualityLabelsService } from '../../shared/services/quality-labels.service';
 import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -206,8 +209,11 @@ export const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps> =
 										<TextInput
 											disabled
 											value={
-												getFullName(collection.updated_by, true, false) ||
-												'-'
+												getFullNameCommonUser(
+													collection.updated_by,
+													true,
+													false
+												) || '-'
 											}
 										/>
 									</FormGroup>

@@ -535,14 +535,14 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 						) as Avo.Assignment.Block[],
 						owner_profile_id: commonUser?.profileId,
 					} as Partial<Avo.Assignment.Assignment>,
-					commonUser?.profileId
+					commonUser
 				);
 
 				if (created) {
 					trackEvents(
 						{
 							object: String(created.id),
-							object_type: 'avo_assignment',
+							object_type: 'assignment',
 							action: 'create',
 							resource: created.education_level_id
 								? {
@@ -619,7 +619,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 					trackEvents(
 						{
 							object: String(assignment.id),
-							object_type: 'avo_assignment',
+							object_type: 'assignment',
 							action: 'edit',
 							resource: {
 								is_public: assignment.is_public || false,
@@ -746,7 +746,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 					trackEvents(
 						{
 							object: assignment?.id || '',
-							object_type: 'avo_assignment',
+							object_type: 'assignment',
 							action: 'add',
 							resource: {
 								id,

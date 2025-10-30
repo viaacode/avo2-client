@@ -90,6 +90,7 @@ export const AssignmentResponseSearchTab: FC<AssignmentResponseSearchTabProps> =
 			selectedSearchResultId: id,
 			focus: undefined,
 		});
+		scrollTo({ top: 0 });
 	};
 
 	const goToSearchLink = (newFilters: FilterState): void => {
@@ -156,7 +157,7 @@ export const AssignmentResponseSearchTab: FC<AssignmentResponseSearchTabProps> =
 			trackEvents(
 				{
 					object: assignment.id,
-					object_type: 'avo_assignment',
+					object_type: 'assignment',
 					action: 'search',
 					resource: {
 						...newFilterState.filters,

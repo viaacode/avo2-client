@@ -107,7 +107,7 @@ export type App_Assignment_Blocks_V2 = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  fragment_id?: Maybe<Scalars['String']>;
+  fragment_id?: Maybe<Scalars['bpchar']>;
   id: Scalars['uuid'];
   is_deleted: Scalars['Boolean'];
   original_description?: Maybe<Scalars['String']>;
@@ -226,7 +226,7 @@ export type App_Assignment_Blocks_V2_Bool_Exp = {
   custom_description?: InputMaybe<String_Comparison_Exp>;
   custom_title?: InputMaybe<String_Comparison_Exp>;
   end_oc?: InputMaybe<Int_Comparison_Exp>;
-  fragment_id?: InputMaybe<String_Comparison_Exp>;
+  fragment_id?: InputMaybe<Bpchar_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
   original_description?: InputMaybe<String_Comparison_Exp>;
@@ -261,7 +261,7 @@ export type App_Assignment_Blocks_V2_Insert_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  fragment_id?: InputMaybe<Scalars['String']>;
+  fragment_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   original_description?: InputMaybe<Scalars['String']>;
@@ -283,7 +283,7 @@ export type App_Assignment_Blocks_V2_Max_Fields = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  fragment_id?: Maybe<Scalars['String']>;
+  fragment_id?: Maybe<Scalars['bpchar']>;
   id?: Maybe<Scalars['uuid']>;
   original_description?: Maybe<Scalars['String']>;
   original_title?: Maybe<Scalars['String']>;
@@ -322,7 +322,7 @@ export type App_Assignment_Blocks_V2_Min_Fields = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  fragment_id?: Maybe<Scalars['String']>;
+  fragment_id?: Maybe<Scalars['bpchar']>;
   id?: Maybe<Scalars['uuid']>;
   original_description?: Maybe<Scalars['String']>;
   original_title?: Maybe<Scalars['String']>;
@@ -457,7 +457,7 @@ export type App_Assignment_Blocks_V2_Set_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  fragment_id?: InputMaybe<Scalars['String']>;
+  fragment_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   original_description?: InputMaybe<Scalars['String']>;
@@ -531,7 +531,7 @@ export type App_Assignment_Blocks_V2_Stream_Cursor_Value_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  fragment_id?: InputMaybe<Scalars['String']>;
+  fragment_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   original_description?: InputMaybe<Scalars['String']>;
@@ -661,7 +661,7 @@ export type App_Assignment_Labels_V2 = {
   label?: Maybe<Scalars['String']>;
   owner_profile_id: Scalars['uuid'];
   /** An object relationship */
-  profile: Users_Profiles;
+  profile?: Maybe<Users_Common_Users>;
   type: Scalars['String'];
 };
 
@@ -723,7 +723,7 @@ export type App_Assignment_Labels_V2_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   label?: InputMaybe<String_Comparison_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
+  profile?: InputMaybe<Users_Common_Users_Bool_Exp>;
   type?: InputMaybe<String_Comparison_Exp>;
 };
 
@@ -741,7 +741,7 @@ export type App_Assignment_Labels_V2_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   label?: InputMaybe<Scalars['String']>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  profile?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   type?: InputMaybe<Scalars['String']>;
 };
 
@@ -814,7 +814,7 @@ export type App_Assignment_Labels_V2_Order_By = {
   id?: InputMaybe<Order_By>;
   label?: InputMaybe<Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
+  profile?: InputMaybe<Users_Common_Users_Order_By>;
   type?: InputMaybe<Order_By>;
 };
 
@@ -899,10 +899,8 @@ export type App_Assignment_Responses_V2 = {
   created_at: Scalars['timestamptz'];
   id: Scalars['uuid'];
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id: Scalars['uuid'];
-  /** An object relationship */
-  profile: Users_Profiles;
   /** An array relationship */
   pupil_collection_blocks: Array<App_Pupil_Collection_Blocks>;
   /** An aggregate relationship */
@@ -987,9 +985,8 @@ export type App_Assignment_Responses_V2_Bool_Exp = {
   collection_title?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
   pupil_collection_blocks?: InputMaybe<App_Pupil_Collection_Blocks_Bool_Exp>;
   pupil_collection_blocks_aggregate?: InputMaybe<App_Pupil_Collection_Blocks_Aggregate_Bool_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -1008,9 +1005,8 @@ export type App_Assignment_Responses_V2_Insert_Input = {
   collection_title?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  owner?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
+  owner?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
   pupil_collection_blocks?: InputMaybe<App_Pupil_Collection_Blocks_Arr_Rel_Insert_Input>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
@@ -1087,9 +1083,8 @@ export type App_Assignment_Responses_V2_Order_By = {
   collection_title?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
   pupil_collection_blocks_aggregate?: InputMaybe<App_Pupil_Collection_Blocks_Aggregate_Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -1445,10 +1440,10 @@ export type App_Assignments_V2 = {
   /** An aggregate relationship */
   labels_aggregate: App_Assignments_V2_Assignment_Labels_V2_Aggregate;
   /** An object relationship */
-  last_editor?: Maybe<Users_Summary_View>;
+  last_editor?: Maybe<Users_Common_Users>;
   last_user_edit_at?: Maybe<Scalars['timestamptz']>;
   /** An object relationship */
-  last_user_edit_profile?: Maybe<Users_Profiles>;
+  last_user_edit_profile?: Maybe<Users_Common_Users>;
   last_user_edit_profile_id?: Maybe<Scalars['uuid']>;
   lom_learning_resource_type?: Maybe<Scalars['jsonb']>;
   /** An array relationship */
@@ -1467,10 +1462,10 @@ export type App_Assignments_V2 = {
   marcom_notes_aggregate: App_Assignments_V2_Marcom_Notes_Aggregate;
   note?: Maybe<Scalars['String']>;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id: Scalars['uuid'];
   /** An object relationship */
-  profile: Users_Profiles;
+  profile?: Maybe<Users_Profiles>;
   published_at?: Maybe<Scalars['timestamptz']>;
   /** An array relationship */
   quality_labels: Array<App_Assignments_V2_Quality_Labels>;
@@ -1491,7 +1486,7 @@ export type App_Assignments_V2 = {
   type_id: Scalars['Int'];
   updated_at: Scalars['timestamptz'];
   /** An object relationship */
-  updated_by?: Maybe<Users_Profiles>;
+  updated_by?: Maybe<Users_Common_Users>;
   updated_by_profile_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   view_count?: Maybe<App_Assignment_V2_Views>;
@@ -2114,7 +2109,7 @@ export type App_Assignments_V2_Bookmarks = {
   created_at: Scalars['timestamptz'];
   id: Scalars['uuid'];
   /** An object relationship */
-  profile: Users_Profiles;
+  profile?: Maybe<Users_Common_Users>;
   profile_id: Scalars['uuid'];
   updated_at: Scalars['timestamptz'];
 };
@@ -2175,7 +2170,7 @@ export type App_Assignments_V2_Bookmarks_Bool_Exp = {
   assignment_id?: InputMaybe<Uuid_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
+  profile?: InputMaybe<Users_Common_Users_Bool_Exp>;
   profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
@@ -2194,7 +2189,7 @@ export type App_Assignments_V2_Bookmarks_Insert_Input = {
   assignment_id?: InputMaybe<Scalars['uuid']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  profile?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   profile_id?: InputMaybe<Scalars['uuid']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
@@ -2259,7 +2254,7 @@ export type App_Assignments_V2_Bookmarks_Order_By = {
   assignment_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
+  profile?: InputMaybe<Users_Common_Users_Order_By>;
   profile_id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -2358,9 +2353,9 @@ export type App_Assignments_V2_Bool_Exp = {
   is_public?: InputMaybe<Boolean_Comparison_Exp>;
   labels?: InputMaybe<App_Assignments_V2_Assignment_Labels_V2_Bool_Exp>;
   labels_aggregate?: InputMaybe<App_Assignments_V2_Assignment_Labels_V2_Aggregate_Bool_Exp>;
-  last_editor?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  last_editor?: InputMaybe<Users_Common_Users_Bool_Exp>;
   last_user_edit_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  last_user_edit_profile?: InputMaybe<Users_Profiles_Bool_Exp>;
+  last_user_edit_profile?: InputMaybe<Users_Common_Users_Bool_Exp>;
   last_user_edit_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   lom_learning_resource_type?: InputMaybe<Jsonb_Comparison_Exp>;
   loms?: InputMaybe<App_Assignments_V2_Lom_Links_Bool_Exp>;
@@ -2371,7 +2366,7 @@ export type App_Assignments_V2_Bool_Exp = {
   marcom_notes?: InputMaybe<App_Assignments_V2_Marcom_Notes_Bool_Exp>;
   marcom_notes_aggregate?: InputMaybe<App_Assignments_V2_Marcom_Notes_Aggregate_Bool_Exp>;
   note?: InputMaybe<String_Comparison_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   profile?: InputMaybe<Users_Profiles_Bool_Exp>;
   published_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -2386,7 +2381,7 @@ export type App_Assignments_V2_Bool_Exp = {
   type?: InputMaybe<Shared_Types_Bool_Exp>;
   type_id?: InputMaybe<Int_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  updated_by?: InputMaybe<Users_Profiles_Bool_Exp>;
+  updated_by?: InputMaybe<Users_Common_Users_Bool_Exp>;
   updated_by_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   view_count?: InputMaybe<App_Assignment_V2_Views_Bool_Exp>;
 };
@@ -2410,7 +2405,7 @@ export type App_Assignments_V2_Contributors = {
   invite_email?: Maybe<Scalars['String']>;
   invite_token?: Maybe<Scalars['uuid']>;
   /** An object relationship */
-  profile?: Maybe<Users_Profiles>;
+  profile?: Maybe<Users_Common_Users>;
   profile_id?: Maybe<Scalars['uuid']>;
   rights: Lookup_Enum_Right_Types_Enum;
   updated_at: Scalars['timestamptz'];
@@ -2475,7 +2470,7 @@ export type App_Assignments_V2_Contributors_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   invite_email?: InputMaybe<String_Comparison_Exp>;
   invite_token?: InputMaybe<Uuid_Comparison_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
+  profile?: InputMaybe<Users_Common_Users_Bool_Exp>;
   profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   rights?: InputMaybe<Lookup_Enum_Right_Types_Enum_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -2498,7 +2493,7 @@ export type App_Assignments_V2_Contributors_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   invite_email?: InputMaybe<Scalars['String']>;
   invite_token?: InputMaybe<Scalars['uuid']>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  profile?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   profile_id?: InputMaybe<Scalars['uuid']>;
   rights?: InputMaybe<Lookup_Enum_Right_Types_Enum>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
@@ -2575,7 +2570,7 @@ export type App_Assignments_V2_Contributors_Order_By = {
   id?: InputMaybe<Order_By>;
   invite_email?: InputMaybe<Order_By>;
   invite_token?: InputMaybe<Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
+  profile?: InputMaybe<Users_Common_Users_Order_By>;
   profile_id?: InputMaybe<Order_By>;
   rights?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
@@ -3032,9 +3027,9 @@ export type App_Assignments_V2_Insert_Input = {
   is_managed?: InputMaybe<Scalars['Boolean']>;
   is_public?: InputMaybe<Scalars['Boolean']>;
   labels?: InputMaybe<App_Assignments_V2_Assignment_Labels_V2_Arr_Rel_Insert_Input>;
-  last_editor?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
+  last_editor?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   last_user_edit_at?: InputMaybe<Scalars['timestamptz']>;
-  last_user_edit_profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  last_user_edit_profile?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   last_user_edit_profile_id?: InputMaybe<Scalars['uuid']>;
   lom_learning_resource_type?: InputMaybe<Scalars['jsonb']>;
   loms?: InputMaybe<App_Assignments_V2_Lom_Links_Arr_Rel_Insert_Input>;
@@ -3042,7 +3037,7 @@ export type App_Assignments_V2_Insert_Input = {
   marcom_note?: InputMaybe<App_Assignments_V2_Marcom_Notes_Obj_Rel_Insert_Input>;
   marcom_notes?: InputMaybe<App_Assignments_V2_Marcom_Notes_Arr_Rel_Insert_Input>;
   note?: InputMaybe<Scalars['String']>;
-  owner?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
+  owner?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
   published_at?: InputMaybe<Scalars['timestamptz']>;
@@ -3054,7 +3049,7 @@ export type App_Assignments_V2_Insert_Input = {
   type?: InputMaybe<Shared_Types_Obj_Rel_Insert_Input>;
   type_id?: InputMaybe<Scalars['Int']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
-  updated_by?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  updated_by?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   updated_by_profile_id?: InputMaybe<Scalars['uuid']>;
   view_count?: InputMaybe<App_Assignment_V2_Views_Obj_Rel_Insert_Input>;
 };
@@ -4119,14 +4114,14 @@ export type App_Assignments_V2_Marcom_Overview = {
   is_public?: Maybe<Scalars['Boolean']>;
   klascement?: Maybe<Scalars['Boolean']>;
   /** An object relationship */
-  last_editor?: Maybe<Shared_User_Names>;
+  last_editor?: Maybe<Users_Common_Users>;
   last_marcom_date?: Maybe<Scalars['timestamp']>;
   /** An array relationship */
   loms: Array<App_Assignments_V2_Lom_Links>;
   /** An aggregate relationship */
   loms_aggregate: App_Assignments_V2_Lom_Links_Aggregate;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   parent_collection_id?: Maybe<Scalars['uuid']>;
   /** An array relationship */
@@ -4212,11 +4207,11 @@ export type App_Assignments_V2_Marcom_Overview_Bool_Exp = {
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   is_public?: InputMaybe<Boolean_Comparison_Exp>;
   klascement?: InputMaybe<Boolean_Comparison_Exp>;
-  last_editor?: InputMaybe<Shared_User_Names_Bool_Exp>;
+  last_editor?: InputMaybe<Users_Common_Users_Bool_Exp>;
   last_marcom_date?: InputMaybe<Timestamp_Comparison_Exp>;
   loms?: InputMaybe<App_Assignments_V2_Lom_Links_Bool_Exp>;
   loms_aggregate?: InputMaybe<App_Assignments_V2_Lom_Links_Aggregate_Bool_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   parent_collection_id?: InputMaybe<Uuid_Comparison_Exp>;
   quality_labels?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
@@ -4265,10 +4260,10 @@ export type App_Assignments_V2_Marcom_Overview_Order_By = {
   created_at?: InputMaybe<Order_By>;
   is_public?: InputMaybe<Order_By>;
   klascement?: InputMaybe<Order_By>;
-  last_editor?: InputMaybe<Shared_User_Names_Order_By>;
+  last_editor?: InputMaybe<Users_Common_Users_Order_By>;
   last_marcom_date?: InputMaybe<Order_By>;
   loms_aggregate?: InputMaybe<App_Assignments_V2_Lom_Links_Aggregate_Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   parent_collection_id?: InputMaybe<Order_By>;
   quality_labels_aggregate?: InputMaybe<App_Assignments_V2_Quality_Labels_Aggregate_Order_By>;
@@ -4468,9 +4463,9 @@ export type App_Assignments_V2_Order_By = {
   is_managed?: InputMaybe<Order_By>;
   is_public?: InputMaybe<Order_By>;
   labels_aggregate?: InputMaybe<App_Assignments_V2_Assignment_Labels_V2_Aggregate_Order_By>;
-  last_editor?: InputMaybe<Users_Summary_View_Order_By>;
+  last_editor?: InputMaybe<Users_Common_Users_Order_By>;
   last_user_edit_at?: InputMaybe<Order_By>;
-  last_user_edit_profile?: InputMaybe<Users_Profiles_Order_By>;
+  last_user_edit_profile?: InputMaybe<Users_Common_Users_Order_By>;
   last_user_edit_profile_id?: InputMaybe<Order_By>;
   lom_learning_resource_type?: InputMaybe<Order_By>;
   loms_aggregate?: InputMaybe<App_Assignments_V2_Lom_Links_Aggregate_Order_By>;
@@ -4478,7 +4473,7 @@ export type App_Assignments_V2_Order_By = {
   marcom_note?: InputMaybe<App_Assignments_V2_Marcom_Notes_Order_By>;
   marcom_notes_aggregate?: InputMaybe<App_Assignments_V2_Marcom_Notes_Aggregate_Order_By>;
   note?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   profile?: InputMaybe<Users_Profiles_Order_By>;
   published_at?: InputMaybe<Order_By>;
@@ -4490,7 +4485,7 @@ export type App_Assignments_V2_Order_By = {
   type?: InputMaybe<Shared_Types_Order_By>;
   type_id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
-  updated_by?: InputMaybe<Users_Profiles_Order_By>;
+  updated_by?: InputMaybe<Users_Common_Users_Order_By>;
   updated_by_profile_id?: InputMaybe<Order_By>;
   view_count?: InputMaybe<App_Assignment_V2_Views_Order_By>;
 };
@@ -4531,7 +4526,7 @@ export type App_Assignments_V2_Overview = {
   /** An aggregate relationship */
   loms_aggregate: App_Assignments_V2_Lom_Links_Aggregate;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   profile?: Maybe<Users_Profiles>;
@@ -4763,7 +4758,7 @@ export type App_Assignments_V2_Overview_Bool_Exp = {
   lom_learning_resource_type?: InputMaybe<Jsonb_Comparison_Exp>;
   loms?: InputMaybe<App_Assignments_V2_Lom_Links_Bool_Exp>;
   loms_aggregate?: InputMaybe<App_Assignments_V2_Lom_Links_Aggregate_Bool_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   profile?: InputMaybe<Users_Profiles_Bool_Exp>;
   published_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -4839,7 +4834,7 @@ export type App_Assignments_V2_Overview_Order_By = {
   labels_aggregate?: InputMaybe<App_Assignments_V2_Assignment_Labels_V2_Aggregate_Order_By>;
   lom_learning_resource_type?: InputMaybe<Order_By>;
   loms_aggregate?: InputMaybe<App_Assignments_V2_Lom_Links_Aggregate_Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   profile?: InputMaybe<Users_Profiles_Order_By>;
   published_at?: InputMaybe<Order_By>;
@@ -5931,7 +5926,7 @@ export type App_Collection_Actualisation_Overview = {
   /** An aggregate relationship */
   labels_aggregate: App_Collection_Labels_Aggregate;
   /** An object relationship */
-  last_editor?: Maybe<Shared_User_Names>;
+  last_editor?: Maybe<Users_Common_Users>;
   lom_classification?: Maybe<Scalars['jsonb']>;
   lom_context?: Maybe<Scalars['jsonb']>;
   /** An array relationship */
@@ -5939,7 +5934,7 @@ export type App_Collection_Actualisation_Overview = {
   /** An aggregate relationship */
   loms_aggregate: App_Collections_Lom_Links_Aggregate;
   /** An object relationship */
-  manager?: Maybe<Shared_User_Names>;
+  manager?: Maybe<Users_Common_Users>;
   mgmt_created_at?: Maybe<Scalars['timestamptz']>;
   mgmt_current_status?: Maybe<Scalars['String']>;
   mgmt_last_eindcheck_date?: Maybe<Scalars['timestamptz']>;
@@ -5947,7 +5942,7 @@ export type App_Collection_Actualisation_Overview = {
   mgmt_status_expires_at?: Maybe<Scalars['timestamptz']>;
   mgmt_updated_at?: Maybe<Scalars['timestamptz']>;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   title?: Maybe<Scalars['String']>;
   /** An object relationship */
@@ -6055,19 +6050,19 @@ export type App_Collection_Actualisation_Overview_Bool_Exp = {
   is_public?: InputMaybe<Boolean_Comparison_Exp>;
   labels?: InputMaybe<App_Collection_Labels_Bool_Exp>;
   labels_aggregate?: InputMaybe<App_Collection_Labels_Aggregate_Bool_Exp>;
-  last_editor?: InputMaybe<Shared_User_Names_Bool_Exp>;
+  last_editor?: InputMaybe<Users_Common_Users_Bool_Exp>;
   lom_classification?: InputMaybe<Jsonb_Comparison_Exp>;
   lom_context?: InputMaybe<Jsonb_Comparison_Exp>;
   loms?: InputMaybe<App_Collections_Lom_Links_Bool_Exp>;
   loms_aggregate?: InputMaybe<App_Collections_Lom_Links_Aggregate_Bool_Exp>;
-  manager?: InputMaybe<Shared_User_Names_Bool_Exp>;
+  manager?: InputMaybe<Users_Common_Users_Bool_Exp>;
   mgmt_created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   mgmt_current_status?: InputMaybe<String_Comparison_Exp>;
   mgmt_last_eindcheck_date?: InputMaybe<Timestamptz_Comparison_Exp>;
   mgmt_manager_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   mgmt_status_expires_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   mgmt_updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
   type?: InputMaybe<Shared_Types_Bool_Exp>;
@@ -6118,18 +6113,18 @@ export type App_Collection_Actualisation_Overview_Order_By = {
   created_at?: InputMaybe<Order_By>;
   is_public?: InputMaybe<Order_By>;
   labels_aggregate?: InputMaybe<App_Collection_Labels_Aggregate_Order_By>;
-  last_editor?: InputMaybe<Shared_User_Names_Order_By>;
+  last_editor?: InputMaybe<Users_Common_Users_Order_By>;
   lom_classification?: InputMaybe<Order_By>;
   lom_context?: InputMaybe<Order_By>;
   loms_aggregate?: InputMaybe<App_Collections_Lom_Links_Aggregate_Order_By>;
-  manager?: InputMaybe<Shared_User_Names_Order_By>;
+  manager?: InputMaybe<Users_Common_Users_Order_By>;
   mgmt_created_at?: InputMaybe<Order_By>;
   mgmt_current_status?: InputMaybe<Order_By>;
   mgmt_last_eindcheck_date?: InputMaybe<Order_By>;
   mgmt_manager_profile_id?: InputMaybe<Order_By>;
   mgmt_status_expires_at?: InputMaybe<Order_By>;
   mgmt_updated_at?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
   type?: InputMaybe<Shared_Types_Order_By>;
@@ -6463,7 +6458,7 @@ export type App_Collection_Bookmarks = {
   created_at: Scalars['timestamptz'];
   id: Scalars['Int'];
   /** An object relationship */
-  profile: Users_Profiles;
+  profile?: Maybe<Users_Common_Users>;
   profile_id: Scalars['uuid'];
   updated_at: Scalars['timestamptz'];
 };
@@ -6551,7 +6546,7 @@ export type App_Collection_Bookmarks_Bool_Exp = {
   collection_uuid?: InputMaybe<Uuid_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
+  profile?: InputMaybe<Users_Common_Users_Bool_Exp>;
   profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
@@ -6575,7 +6570,7 @@ export type App_Collection_Bookmarks_Insert_Input = {
   collection_uuid?: InputMaybe<Scalars['uuid']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  profile?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   profile_id?: InputMaybe<Scalars['uuid']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
@@ -6640,7 +6635,7 @@ export type App_Collection_Bookmarks_Order_By = {
   collection_uuid?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
+  profile?: InputMaybe<Users_Common_Users_Order_By>;
   profile_id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -7081,7 +7076,7 @@ export type App_Collection_Fragments = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  external_id?: Maybe<Scalars['String']>;
+  external_id?: Maybe<Scalars['bpchar']>;
   id: Scalars['Int'];
   is_copy_of?: Maybe<Scalars['uuid']>;
   is_deleted: Scalars['Boolean'];
@@ -7201,7 +7196,7 @@ export type App_Collection_Fragments_Bool_Exp = {
   custom_description?: InputMaybe<String_Comparison_Exp>;
   custom_title?: InputMaybe<String_Comparison_Exp>;
   end_oc?: InputMaybe<Int_Comparison_Exp>;
-  external_id?: InputMaybe<String_Comparison_Exp>;
+  external_id?: InputMaybe<Bpchar_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   is_copy_of?: InputMaybe<Uuid_Comparison_Exp>;
   is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
@@ -7235,7 +7230,7 @@ export type App_Collection_Fragments_Insert_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  external_id?: InputMaybe<Scalars['String']>;
+  external_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['Int']>;
   is_copy_of?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
@@ -7257,7 +7252,7 @@ export type App_Collection_Fragments_Max_Fields = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  external_id?: Maybe<Scalars['String']>;
+  external_id?: Maybe<Scalars['bpchar']>;
   id?: Maybe<Scalars['Int']>;
   is_copy_of?: Maybe<Scalars['uuid']>;
   position?: Maybe<Scalars['Int']>;
@@ -7296,7 +7291,7 @@ export type App_Collection_Fragments_Min_Fields = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  external_id?: Maybe<Scalars['String']>;
+  external_id?: Maybe<Scalars['bpchar']>;
   id?: Maybe<Scalars['Int']>;
   is_copy_of?: Maybe<Scalars['uuid']>;
   position?: Maybe<Scalars['Int']>;
@@ -7427,7 +7422,7 @@ export type App_Collection_Fragments_Set_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  external_id?: InputMaybe<Scalars['String']>;
+  external_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['Int']>;
   is_copy_of?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
@@ -7507,7 +7502,7 @@ export type App_Collection_Fragments_Stream_Cursor_Value_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  external_id?: InputMaybe<Scalars['String']>;
+  external_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['Int']>;
   is_copy_of?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
@@ -8002,7 +7997,7 @@ export type App_Collection_Management = {
   current_status?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   /** An object relationship */
-  manager?: Maybe<Users_Summary_View>;
+  manager?: Maybe<Users_Common_Users>;
   manager_profile_id?: Maybe<Scalars['uuid']>;
   note?: Maybe<Scalars['String']>;
   /** An object relationship */
@@ -8035,7 +8030,7 @@ export type App_Collection_ManagementQc_AggregateArgs = {
 export type App_Collection_Management_Qc = {
   __typename?: 'app_collection_management_QC';
   /** An object relationship */
-  assignee?: Maybe<Shared_User_Names>;
+  assignee?: Maybe<Users_Common_Users>;
   assignee_profile_id: Scalars['uuid'];
   /** An object relationship */
   collection: App_Collections;
@@ -8145,7 +8140,7 @@ export type App_Collection_Management_Qc_Bool_Exp = {
   _and?: InputMaybe<Array<App_Collection_Management_Qc_Bool_Exp>>;
   _not?: InputMaybe<App_Collection_Management_Qc_Bool_Exp>;
   _or?: InputMaybe<Array<App_Collection_Management_Qc_Bool_Exp>>;
-  assignee?: InputMaybe<Shared_User_Names_Bool_Exp>;
+  assignee?: InputMaybe<Users_Common_Users_Bool_Exp>;
   assignee_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   collection?: InputMaybe<App_Collections_Bool_Exp>;
   collection_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -8171,7 +8166,7 @@ export type App_Collection_Management_Qc_Inc_Input = {
 
 /** input type for inserting data into table "app.collection_management_QC" */
 export type App_Collection_Management_Qc_Insert_Input = {
-  assignee?: InputMaybe<Shared_User_Names_Obj_Rel_Insert_Input>;
+  assignee?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   assignee_profile_id?: InputMaybe<Scalars['uuid']>;
   collection?: InputMaybe<App_Collections_Obj_Rel_Insert_Input>;
   collection_id?: InputMaybe<Scalars['uuid']>;
@@ -8244,7 +8239,7 @@ export type App_Collection_Management_Qc_On_Conflict = {
 
 /** Ordering options when selecting data from "app.collection_management_QC". */
 export type App_Collection_Management_Qc_Order_By = {
-  assignee?: InputMaybe<Shared_User_Names_Order_By>;
+  assignee?: InputMaybe<Users_Common_Users_Order_By>;
   assignee_profile_id?: InputMaybe<Order_By>;
   collection?: InputMaybe<App_Collections_Order_By>;
   collection_id?: InputMaybe<Order_By>;
@@ -8479,7 +8474,7 @@ export type App_Collection_Management_Bool_Exp = {
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   current_status?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
-  manager?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  manager?: InputMaybe<Users_Common_Users_Bool_Exp>;
   manager_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   note?: InputMaybe<String_Comparison_Exp>;
   status?: InputMaybe<Lookup_Enum_Collection_Management_Status_Bool_Exp>;
@@ -8508,7 +8503,7 @@ export type App_Collection_Management_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   current_status?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['Int']>;
-  manager?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
+  manager?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   manager_profile_id?: InputMaybe<Scalars['uuid']>;
   note?: InputMaybe<Scalars['String']>;
   status?: InputMaybe<Lookup_Enum_Collection_Management_Status_Obj_Rel_Insert_Input>;
@@ -8573,7 +8568,7 @@ export type App_Collection_Management_Order_By = {
   created_at?: InputMaybe<Order_By>;
   current_status?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  manager?: InputMaybe<Users_Summary_View_Order_By>;
+  manager?: InputMaybe<Users_Common_Users_Order_By>;
   manager_profile_id?: InputMaybe<Order_By>;
   note?: InputMaybe<Order_By>;
   status?: InputMaybe<Lookup_Enum_Collection_Management_Status_Order_By>;
@@ -9591,7 +9586,7 @@ export type App_Collection_Marcom_Overview = {
   is_public?: Maybe<Scalars['Boolean']>;
   klascement?: Maybe<Scalars['Boolean']>;
   /** An object relationship */
-  last_editor?: Maybe<Shared_User_Names>;
+  last_editor?: Maybe<Users_Common_Users>;
   last_marcom_date?: Maybe<Scalars['timestamptz']>;
   lom_classification?: Maybe<Scalars['jsonb']>;
   lom_context?: Maybe<Scalars['jsonb']>;
@@ -9600,7 +9595,7 @@ export type App_Collection_Marcom_Overview = {
   /** An aggregate relationship */
   loms_aggregate: App_Collections_Lom_Links_Aggregate;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   parent_collection_id?: Maybe<Scalars['uuid']>;
   /** An array relationship */
@@ -9714,13 +9709,13 @@ export type App_Collection_Marcom_Overview_Bool_Exp = {
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   is_public?: InputMaybe<Boolean_Comparison_Exp>;
   klascement?: InputMaybe<Boolean_Comparison_Exp>;
-  last_editor?: InputMaybe<Shared_User_Names_Bool_Exp>;
+  last_editor?: InputMaybe<Users_Common_Users_Bool_Exp>;
   last_marcom_date?: InputMaybe<Timestamptz_Comparison_Exp>;
   lom_classification?: InputMaybe<Jsonb_Comparison_Exp>;
   lom_context?: InputMaybe<Jsonb_Comparison_Exp>;
   loms?: InputMaybe<App_Collections_Lom_Links_Bool_Exp>;
   loms_aggregate?: InputMaybe<App_Collections_Lom_Links_Aggregate_Bool_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   parent_collection_id?: InputMaybe<Uuid_Comparison_Exp>;
   quality_labels?: InputMaybe<App_Collection_Labels_Bool_Exp>;
@@ -9772,12 +9767,12 @@ export type App_Collection_Marcom_Overview_Order_By = {
   created_at?: InputMaybe<Order_By>;
   is_public?: InputMaybe<Order_By>;
   klascement?: InputMaybe<Order_By>;
-  last_editor?: InputMaybe<Shared_User_Names_Order_By>;
+  last_editor?: InputMaybe<Users_Common_Users_Order_By>;
   last_marcom_date?: InputMaybe<Order_By>;
   lom_classification?: InputMaybe<Order_By>;
   lom_context?: InputMaybe<Order_By>;
   loms_aggregate?: InputMaybe<App_Collections_Lom_Links_Aggregate_Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   parent_collection_id?: InputMaybe<Order_By>;
   quality_labels_aggregate?: InputMaybe<App_Collection_Labels_Aggregate_Order_By>;
@@ -10157,7 +10152,7 @@ export type App_Collection_Qc_Overview = {
   /** An aggregate relationship */
   labels_aggregate: App_Collection_Labels_Aggregate;
   /** An object relationship */
-  last_editor?: Maybe<Shared_User_Names>;
+  last_editor?: Maybe<Users_Common_Users>;
   lom_classification?: Maybe<Scalars['jsonb']>;
   lom_context?: Maybe<Scalars['jsonb']>;
   /** An array relationship */
@@ -10168,7 +10163,7 @@ export type App_Collection_Qc_Overview = {
   mgmt_language_check?: Maybe<Scalars['Boolean']>;
   mgmt_quality_check?: Maybe<Scalars['Boolean']>;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   title?: Maybe<Scalars['String']>;
   /** An object relationship */
@@ -10276,7 +10271,7 @@ export type App_Collection_Qc_Overview_Bool_Exp = {
   is_public?: InputMaybe<Boolean_Comparison_Exp>;
   labels?: InputMaybe<App_Collection_Labels_Bool_Exp>;
   labels_aggregate?: InputMaybe<App_Collection_Labels_Aggregate_Bool_Exp>;
-  last_editor?: InputMaybe<Shared_User_Names_Bool_Exp>;
+  last_editor?: InputMaybe<Users_Common_Users_Bool_Exp>;
   lom_classification?: InputMaybe<Jsonb_Comparison_Exp>;
   lom_context?: InputMaybe<Jsonb_Comparison_Exp>;
   loms?: InputMaybe<App_Collections_Lom_Links_Bool_Exp>;
@@ -10284,7 +10279,7 @@ export type App_Collection_Qc_Overview_Bool_Exp = {
   mgmt_eind_check_date?: InputMaybe<Timestamptz_Comparison_Exp>;
   mgmt_language_check?: InputMaybe<Boolean_Comparison_Exp>;
   mgmt_quality_check?: InputMaybe<Boolean_Comparison_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
   type?: InputMaybe<Shared_Types_Bool_Exp>;
@@ -10325,14 +10320,14 @@ export type App_Collection_Qc_Overview_Order_By = {
   created_at?: InputMaybe<Order_By>;
   is_public?: InputMaybe<Order_By>;
   labels_aggregate?: InputMaybe<App_Collection_Labels_Aggregate_Order_By>;
-  last_editor?: InputMaybe<Shared_User_Names_Order_By>;
+  last_editor?: InputMaybe<Users_Common_Users_Order_By>;
   lom_classification?: InputMaybe<Order_By>;
   lom_context?: InputMaybe<Order_By>;
   loms_aggregate?: InputMaybe<App_Collections_Lom_Links_Aggregate_Order_By>;
   mgmt_eind_check_date?: InputMaybe<Order_By>;
   mgmt_language_check?: InputMaybe<Order_By>;
   mgmt_quality_check?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
   type?: InputMaybe<Shared_Types_Order_By>;
@@ -11126,10 +11121,10 @@ export type App_Collections = {
   is_managed?: Maybe<Scalars['Boolean']>;
   is_public: Scalars['Boolean'];
   /** An object relationship */
-  last_editor?: Maybe<Users_Summary_View>;
+  last_editor?: Maybe<Users_Common_Users>;
   last_user_edit_at?: Maybe<Scalars['timestamptz']>;
   /** An object relationship */
-  last_user_edit_profile?: Maybe<Users_Profiles>;
+  last_user_edit_profile?: Maybe<Users_Common_Users>;
   last_user_edit_profile_id?: Maybe<Scalars['uuid']>;
   lom_classification?: Maybe<Scalars['jsonb']>;
   lom_context?: Maybe<Scalars['jsonb']>;
@@ -11158,7 +11153,7 @@ export type App_Collections = {
   organisation?: Maybe<Shared_Organisations>;
   organisation_id?: Maybe<Scalars['String']>;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   /** Het profiel van de eigenaar van de collectie. */
   owner_profile_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
@@ -11179,7 +11174,7 @@ export type App_Collections = {
   type_id: Scalars['Int'];
   updated_at: Scalars['timestamptz'];
   /** An object relationship */
-  updated_by?: Maybe<Users_Profiles>;
+  updated_by?: Maybe<Users_Common_Users>;
   updated_by_profile_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   view_count?: Maybe<App_Collection_Views>;
@@ -11541,9 +11536,9 @@ export type App_Collections_Bool_Exp = {
   is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
   is_managed?: InputMaybe<Boolean_Comparison_Exp>;
   is_public?: InputMaybe<Boolean_Comparison_Exp>;
-  last_editor?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  last_editor?: InputMaybe<Users_Common_Users_Bool_Exp>;
   last_user_edit_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  last_user_edit_profile?: InputMaybe<Users_Profiles_Bool_Exp>;
+  last_user_edit_profile?: InputMaybe<Users_Common_Users_Bool_Exp>;
   last_user_edit_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   lom_classification?: InputMaybe<Jsonb_Comparison_Exp>;
   lom_context?: InputMaybe<Jsonb_Comparison_Exp>;
@@ -11562,7 +11557,7 @@ export type App_Collections_Bool_Exp = {
   note?: InputMaybe<String_Comparison_Exp>;
   organisation?: InputMaybe<Shared_Organisations_Bool_Exp>;
   organisation_id?: InputMaybe<String_Comparison_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   play_count?: InputMaybe<App_Collection_Plays_Bool_Exp>;
   profile?: InputMaybe<Users_Profiles_Bool_Exp>;
@@ -11576,7 +11571,7 @@ export type App_Collections_Bool_Exp = {
   type?: InputMaybe<Shared_Types_Bool_Exp>;
   type_id?: InputMaybe<Int_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  updated_by?: InputMaybe<Users_Profiles_Bool_Exp>;
+  updated_by?: InputMaybe<Users_Common_Users_Bool_Exp>;
   updated_by_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   view_count?: InputMaybe<App_Collection_Views_Bool_Exp>;
 };
@@ -11604,7 +11599,7 @@ export type App_Collections_Contributors = {
   invite_email?: Maybe<Scalars['String']>;
   invite_token?: Maybe<Scalars['uuid']>;
   /** An object relationship */
-  profile?: Maybe<Users_Profiles>;
+  profile?: Maybe<Users_Common_Users>;
   profile_id?: Maybe<Scalars['uuid']>;
   rights: Lookup_Enum_Right_Types_Enum;
   updated_at: Scalars['timestamptz'];
@@ -11669,7 +11664,7 @@ export type App_Collections_Contributors_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   invite_email?: InputMaybe<String_Comparison_Exp>;
   invite_token?: InputMaybe<Uuid_Comparison_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
+  profile?: InputMaybe<Users_Common_Users_Bool_Exp>;
   profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   rights?: InputMaybe<Lookup_Enum_Right_Types_Enum_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -11692,7 +11687,7 @@ export type App_Collections_Contributors_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   invite_email?: InputMaybe<Scalars['String']>;
   invite_token?: InputMaybe<Scalars['uuid']>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  profile?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   profile_id?: InputMaybe<Scalars['uuid']>;
   rights?: InputMaybe<Lookup_Enum_Right_Types_Enum>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
@@ -11769,7 +11764,7 @@ export type App_Collections_Contributors_Order_By = {
   id?: InputMaybe<Order_By>;
   invite_email?: InputMaybe<Order_By>;
   invite_token?: InputMaybe<Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
+  profile?: InputMaybe<Users_Common_Users_Order_By>;
   profile_id?: InputMaybe<Order_By>;
   rights?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
@@ -12032,9 +12027,9 @@ export type App_Collections_Insert_Input = {
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   is_managed?: InputMaybe<Scalars['Boolean']>;
   is_public?: InputMaybe<Scalars['Boolean']>;
-  last_editor?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
+  last_editor?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   last_user_edit_at?: InputMaybe<Scalars['timestamptz']>;
-  last_user_edit_profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  last_user_edit_profile?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   last_user_edit_profile_id?: InputMaybe<Scalars['uuid']>;
   lom_classification?: InputMaybe<Scalars['jsonb']>;
   lom_context?: InputMaybe<Scalars['jsonb']>;
@@ -12050,7 +12045,7 @@ export type App_Collections_Insert_Input = {
   note?: InputMaybe<Scalars['String']>;
   organisation?: InputMaybe<Shared_Organisations_Obj_Rel_Insert_Input>;
   organisation_id?: InputMaybe<Scalars['String']>;
-  owner?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
+  owner?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   /** Het profiel van de eigenaar van de collectie. */
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   play_count?: InputMaybe<App_Collection_Plays_Obj_Rel_Insert_Input>;
@@ -12064,7 +12059,7 @@ export type App_Collections_Insert_Input = {
   type?: InputMaybe<Shared_Types_Obj_Rel_Insert_Input>;
   type_id?: InputMaybe<Scalars['Int']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
-  updated_by?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  updated_by?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   updated_by_profile_id?: InputMaybe<Scalars['uuid']>;
   view_count?: InputMaybe<App_Collection_Views_Obj_Rel_Insert_Input>;
 };
@@ -12671,9 +12666,9 @@ export type App_Collections_Order_By = {
   is_deleted?: InputMaybe<Order_By>;
   is_managed?: InputMaybe<Order_By>;
   is_public?: InputMaybe<Order_By>;
-  last_editor?: InputMaybe<Users_Summary_View_Order_By>;
+  last_editor?: InputMaybe<Users_Common_Users_Order_By>;
   last_user_edit_at?: InputMaybe<Order_By>;
-  last_user_edit_profile?: InputMaybe<Users_Profiles_Order_By>;
+  last_user_edit_profile?: InputMaybe<Users_Common_Users_Order_By>;
   last_user_edit_profile_id?: InputMaybe<Order_By>;
   lom_classification?: InputMaybe<Order_By>;
   lom_context?: InputMaybe<Order_By>;
@@ -12689,7 +12684,7 @@ export type App_Collections_Order_By = {
   note?: InputMaybe<Order_By>;
   organisation?: InputMaybe<Shared_Organisations_Order_By>;
   organisation_id?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   play_count?: InputMaybe<App_Collection_Plays_Order_By>;
   profile?: InputMaybe<Users_Profiles_Order_By>;
@@ -12702,7 +12697,7 @@ export type App_Collections_Order_By = {
   type?: InputMaybe<Shared_Types_Order_By>;
   type_id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
-  updated_by?: InputMaybe<Users_Profiles_Order_By>;
+  updated_by?: InputMaybe<Users_Common_Users_Order_By>;
   updated_by_profile_id?: InputMaybe<Order_By>;
   view_count?: InputMaybe<App_Collection_Views_Order_By>;
 };
@@ -12750,7 +12745,7 @@ export type App_Collections_Overview = {
   is_managed?: Maybe<Scalars['Boolean']>;
   is_public?: Maybe<Scalars['Boolean']>;
   /** An object relationship */
-  last_editor?: Maybe<Users_Summary_View>;
+  last_editor?: Maybe<Users_Common_Users>;
   lom_intendedenduserrole?: Maybe<Scalars['jsonb']>;
   lom_keywords?: Maybe<Scalars['jsonb']>;
   lom_languages?: Maybe<Scalars['jsonb']>;
@@ -12776,7 +12771,7 @@ export type App_Collections_Overview = {
   organisation?: Maybe<Shared_Organisations>;
   organisation_id?: Maybe<Scalars['String']>;
   /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   play_count?: Maybe<App_Collection_Plays>;
@@ -12797,7 +12792,7 @@ export type App_Collections_Overview = {
   type_id?: Maybe<Scalars['Int']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
   /** An object relationship */
-  updated_by?: Maybe<Users_Profiles>;
+  updated_by?: Maybe<Users_Common_Users>;
   updated_by_profile_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   view_count?: Maybe<App_Collection_Views>;
@@ -13083,7 +13078,7 @@ export type App_Collections_Overview_Bool_Exp = {
   is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
   is_managed?: InputMaybe<Boolean_Comparison_Exp>;
   is_public?: InputMaybe<Boolean_Comparison_Exp>;
-  last_editor?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  last_editor?: InputMaybe<Users_Common_Users_Bool_Exp>;
   lom_intendedenduserrole?: InputMaybe<Jsonb_Comparison_Exp>;
   lom_keywords?: InputMaybe<Jsonb_Comparison_Exp>;
   lom_languages?: InputMaybe<Jsonb_Comparison_Exp>;
@@ -13099,7 +13094,7 @@ export type App_Collections_Overview_Bool_Exp = {
   note?: InputMaybe<String_Comparison_Exp>;
   organisation?: InputMaybe<Shared_Organisations_Bool_Exp>;
   organisation_id?: InputMaybe<String_Comparison_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   play_count?: InputMaybe<App_Collection_Plays_Bool_Exp>;
   profile?: InputMaybe<Users_Profiles_Bool_Exp>;
@@ -13114,7 +13109,7 @@ export type App_Collections_Overview_Bool_Exp = {
   type?: InputMaybe<Shared_Types_Bool_Exp>;
   type_id?: InputMaybe<Int_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  updated_by?: InputMaybe<Users_Profiles_Bool_Exp>;
+  updated_by?: InputMaybe<Users_Common_Users_Bool_Exp>;
   updated_by_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   view_count?: InputMaybe<App_Collection_Views_Bool_Exp>;
 };
@@ -13199,7 +13194,7 @@ export type App_Collections_Overview_Order_By = {
   is_deleted?: InputMaybe<Order_By>;
   is_managed?: InputMaybe<Order_By>;
   is_public?: InputMaybe<Order_By>;
-  last_editor?: InputMaybe<Users_Summary_View_Order_By>;
+  last_editor?: InputMaybe<Users_Common_Users_Order_By>;
   lom_intendedenduserrole?: InputMaybe<Order_By>;
   lom_keywords?: InputMaybe<Order_By>;
   lom_languages?: InputMaybe<Order_By>;
@@ -13212,7 +13207,7 @@ export type App_Collections_Overview_Order_By = {
   note?: InputMaybe<Order_By>;
   organisation?: InputMaybe<Shared_Organisations_Order_By>;
   organisation_id?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   play_count?: InputMaybe<App_Collection_Plays_Order_By>;
   profile?: InputMaybe<Users_Profiles_Order_By>;
@@ -13226,7 +13221,7 @@ export type App_Collections_Overview_Order_By = {
   type?: InputMaybe<Shared_Types_Order_By>;
   type_id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
-  updated_by?: InputMaybe<Users_Profiles_Order_By>;
+  updated_by?: InputMaybe<Users_Common_Users_Order_By>;
   updated_by_profile_id?: InputMaybe<Order_By>;
   view_count?: InputMaybe<App_Collection_Views_Order_By>;
 };
@@ -13784,6 +13779,7 @@ export type App_Content = {
   content_width: Scalars['String'];
   created_at: Scalars['timestamptz'];
   depublish_at?: Maybe<Scalars['timestamptz']>;
+  depublished_at?: Maybe<Scalars['timestamptz']>;
   description?: Maybe<Scalars['String']>;
   /** An object relationship */
   enum_content_type: Lookup_Enum_Content_Types;
@@ -14661,6 +14657,7 @@ export type App_Content_Bool_Exp = {
   content_width?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   depublish_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  depublished_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
   enum_content_type?: InputMaybe<Lookup_Enum_Content_Types_Bool_Exp>;
   header_path?: InputMaybe<String_Comparison_Exp>;
@@ -15098,6 +15095,7 @@ export type App_Content_Insert_Input = {
   content_width?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   depublish_at?: InputMaybe<Scalars['timestamptz']>;
+  depublished_at?: InputMaybe<Scalars['timestamptz']>;
   description?: InputMaybe<Scalars['String']>;
   enum_content_type?: InputMaybe<Lookup_Enum_Content_Types_Obj_Rel_Insert_Input>;
   header_path?: InputMaybe<Scalars['String']>;
@@ -15646,6 +15644,7 @@ export type App_Content_Max_Fields = {
   content_width?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   depublish_at?: Maybe<Scalars['timestamptz']>;
+  depublished_at?: Maybe<Scalars['timestamptz']>;
   description?: Maybe<Scalars['String']>;
   header_path?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['Int']>;
@@ -15672,6 +15671,7 @@ export type App_Content_Max_Order_By = {
   content_width?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   depublish_at?: InputMaybe<Order_By>;
+  depublished_at?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
   header_path?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -15699,6 +15699,7 @@ export type App_Content_Min_Fields = {
   content_width?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   depublish_at?: Maybe<Scalars['timestamptz']>;
+  depublished_at?: Maybe<Scalars['timestamptz']>;
   description?: Maybe<Scalars['String']>;
   header_path?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['Int']>;
@@ -15725,6 +15726,7 @@ export type App_Content_Min_Order_By = {
   content_width?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   depublish_at?: InputMaybe<Order_By>;
+  depublished_at?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
   header_path?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -16387,6 +16389,7 @@ export type App_Content_Order_By = {
   content_width?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   depublish_at?: InputMaybe<Order_By>;
+  depublished_at?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
   enum_content_type?: InputMaybe<Lookup_Enum_Content_Types_Order_By>;
   header_path?: InputMaybe<Order_By>;
@@ -16438,6 +16441,8 @@ export enum App_Content_Select_Column {
   CreatedAt = 'created_at',
   /** column name */
   DepublishAt = 'depublish_at',
+  /** column name */
+  DepublishedAt = 'depublished_at',
   /** column name */
   Description = 'description',
   /** column name */
@@ -16512,6 +16517,7 @@ export type App_Content_Set_Input = {
   content_width?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   depublish_at?: InputMaybe<Scalars['timestamptz']>;
+  depublished_at?: InputMaybe<Scalars['timestamptz']>;
   description?: InputMaybe<Scalars['String']>;
   header_path?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['Int']>;
@@ -16591,6 +16597,7 @@ export type App_Content_Stream_Cursor_Value_Input = {
   content_width?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   depublish_at?: InputMaybe<Scalars['timestamptz']>;
+  depublished_at?: InputMaybe<Scalars['timestamptz']>;
   description?: InputMaybe<Scalars['String']>;
   header_path?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['Int']>;
@@ -16640,6 +16647,8 @@ export enum App_Content_Update_Column {
   CreatedAt = 'created_at',
   /** column name */
   DepublishAt = 'depublish_at',
+  /** column name */
+  DepublishedAt = 'depublished_at',
   /** column name */
   Description = 'description',
   /** column name */
@@ -16752,7 +16761,7 @@ export type App_Embed_Codes = {
   content_assignment?: Maybe<App_Assignments_V2>;
   /** An object relationship */
   content_collection?: Maybe<App_Collections>;
-  content_id: Scalars['String'];
+  content_id: Scalars['bpchar'];
   /** An object relationship */
   content_item?: Maybe<App_Item_Meta>;
   content_type: Scalars['String'];
@@ -16763,7 +16772,7 @@ export type App_Embed_Codes = {
   external_website: Scalars['String'];
   id: Scalars['uuid'];
   /** An object relationship */
-  owner: Users_Profiles;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id: Scalars['uuid'];
   start_oc?: Maybe<Scalars['Int']>;
   thumbnail_path?: Maybe<Scalars['String']>;
@@ -16815,7 +16824,7 @@ export type App_Embed_Codes_Bool_Exp = {
   _or?: InputMaybe<Array<App_Embed_Codes_Bool_Exp>>;
   content_assignment?: InputMaybe<App_Assignments_V2_Bool_Exp>;
   content_collection?: InputMaybe<App_Collections_Bool_Exp>;
-  content_id?: InputMaybe<String_Comparison_Exp>;
+  content_id?: InputMaybe<Bpchar_Comparison_Exp>;
   content_item?: InputMaybe<App_Item_Meta_Bool_Exp>;
   content_type?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
@@ -16824,7 +16833,7 @@ export type App_Embed_Codes_Bool_Exp = {
   end_oc?: InputMaybe<Int_Comparison_Exp>;
   external_website?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  owner?: InputMaybe<Users_Profiles_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   start_oc?: InputMaybe<Int_Comparison_Exp>;
   thumbnail_path?: InputMaybe<String_Comparison_Exp>;
@@ -16848,7 +16857,7 @@ export type App_Embed_Codes_Inc_Input = {
 export type App_Embed_Codes_Insert_Input = {
   content_assignment?: InputMaybe<App_Assignments_V2_Obj_Rel_Insert_Input>;
   content_collection?: InputMaybe<App_Collections_Obj_Rel_Insert_Input>;
-  content_id?: InputMaybe<Scalars['String']>;
+  content_id?: InputMaybe<Scalars['bpchar']>;
   content_item?: InputMaybe<App_Item_Meta_Obj_Rel_Insert_Input>;
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
@@ -16857,7 +16866,7 @@ export type App_Embed_Codes_Insert_Input = {
   end_oc?: InputMaybe<Scalars['Int']>;
   external_website?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
-  owner?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  owner?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   start_oc?: InputMaybe<Scalars['Int']>;
   thumbnail_path?: InputMaybe<Scalars['String']>;
@@ -16868,7 +16877,7 @@ export type App_Embed_Codes_Insert_Input = {
 /** aggregate max on columns */
 export type App_Embed_Codes_Max_Fields = {
   __typename?: 'app_embed_codes_max_fields';
-  content_id?: Maybe<Scalars['String']>;
+  content_id?: Maybe<Scalars['bpchar']>;
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamp']>;
   description?: Maybe<Scalars['String']>;
@@ -17069,7 +17078,7 @@ export type App_Embed_Codes_Metadata_Api_Keys_Updates = {
 /** aggregate min on columns */
 export type App_Embed_Codes_Min_Fields = {
   __typename?: 'app_embed_codes_min_fields';
-  content_id?: Maybe<Scalars['String']>;
+  content_id?: Maybe<Scalars['bpchar']>;
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamp']>;
   description?: Maybe<Scalars['String']>;
@@ -17113,7 +17122,7 @@ export type App_Embed_Codes_Order_By = {
   end_oc?: InputMaybe<Order_By>;
   external_website?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Profiles_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   start_oc?: InputMaybe<Order_By>;
   thumbnail_path?: InputMaybe<Order_By>;
@@ -17158,7 +17167,7 @@ export enum App_Embed_Codes_Select_Column {
 
 /** input type for updating data in table "app.embed_codes" */
 export type App_Embed_Codes_Set_Input = {
-  content_id?: InputMaybe<Scalars['String']>;
+  content_id?: InputMaybe<Scalars['bpchar']>;
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   description?: InputMaybe<Scalars['String']>;
@@ -17204,7 +17213,7 @@ export type App_Embed_Codes_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type App_Embed_Codes_Stream_Cursor_Value_Input = {
-  content_id?: InputMaybe<Scalars['String']>;
+  content_id?: InputMaybe<Scalars['bpchar']>;
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   description?: InputMaybe<Scalars['String']>;
@@ -17579,7 +17588,7 @@ export type App_Item_Bookmarks = {
   id: Scalars['Int'];
   item_id: Scalars['uuid'];
   /** An object relationship */
-  profile: Users_Profiles;
+  profile?: Maybe<Users_Common_Users>;
   profile_id: Scalars['uuid'];
   updated_at: Scalars['timestamptz'];
 };
@@ -17667,7 +17676,7 @@ export type App_Item_Bookmarks_Bool_Exp = {
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   item_id?: InputMaybe<Uuid_Comparison_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
+  profile?: InputMaybe<Users_Common_Users_Bool_Exp>;
   profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
@@ -17691,7 +17700,7 @@ export type App_Item_Bookmarks_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
   item_id?: InputMaybe<Scalars['uuid']>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  profile?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   profile_id?: InputMaybe<Scalars['uuid']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
@@ -17756,7 +17765,7 @@ export type App_Item_Bookmarks_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   item_id?: InputMaybe<Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
+  profile?: InputMaybe<Users_Common_Users_Order_By>;
   profile_id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -20338,7 +20347,7 @@ export type App_Pupil_Collection_Blocks = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  fragment_id?: Maybe<Scalars['String']>;
+  fragment_id?: Maybe<Scalars['bpchar']>;
   id: Scalars['uuid'];
   is_deleted: Scalars['Boolean'];
   position: Scalars['Int'];
@@ -20454,7 +20463,7 @@ export type App_Pupil_Collection_Blocks_Bool_Exp = {
   custom_description?: InputMaybe<String_Comparison_Exp>;
   custom_title?: InputMaybe<String_Comparison_Exp>;
   end_oc?: InputMaybe<Int_Comparison_Exp>;
-  fragment_id?: InputMaybe<String_Comparison_Exp>;
+  fragment_id?: InputMaybe<Bpchar_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
   position?: InputMaybe<Int_Comparison_Exp>;
@@ -20486,7 +20495,7 @@ export type App_Pupil_Collection_Blocks_Insert_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  fragment_id?: InputMaybe<Scalars['String']>;
+  fragment_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   position?: InputMaybe<Scalars['Int']>;
@@ -20505,7 +20514,7 @@ export type App_Pupil_Collection_Blocks_Max_Fields = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  fragment_id?: Maybe<Scalars['String']>;
+  fragment_id?: Maybe<Scalars['bpchar']>;
   id?: Maybe<Scalars['uuid']>;
   position?: Maybe<Scalars['Int']>;
   start_oc?: Maybe<Scalars['Int']>;
@@ -20538,7 +20547,7 @@ export type App_Pupil_Collection_Blocks_Min_Fields = {
   custom_description?: Maybe<Scalars['String']>;
   custom_title?: Maybe<Scalars['String']>;
   end_oc?: Maybe<Scalars['Int']>;
-  fragment_id?: Maybe<Scalars['String']>;
+  fragment_id?: Maybe<Scalars['bpchar']>;
   id?: Maybe<Scalars['uuid']>;
   position?: Maybe<Scalars['Int']>;
   start_oc?: Maybe<Scalars['Int']>;
@@ -20658,7 +20667,7 @@ export type App_Pupil_Collection_Blocks_Set_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  fragment_id?: InputMaybe<Scalars['String']>;
+  fragment_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   position?: InputMaybe<Scalars['Int']>;
@@ -20729,7 +20738,7 @@ export type App_Pupil_Collection_Blocks_Stream_Cursor_Value_Input = {
   custom_description?: InputMaybe<Scalars['String']>;
   custom_title?: InputMaybe<Scalars['String']>;
   end_oc?: InputMaybe<Scalars['Int']>;
-  fragment_id?: InputMaybe<Scalars['String']>;
+  fragment_id?: InputMaybe<Scalars['bpchar']>;
   id?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   position?: InputMaybe<Scalars['Int']>;
@@ -20849,7 +20858,7 @@ export type App_Quick_Lanes = {
   end_oc?: Maybe<Scalars['Int']>;
   id: Scalars['uuid'];
   /** An object relationship */
-  owner: Users_Profiles;
+  owner?: Maybe<Users_Common_Users>;
   owner_profile_id: Scalars['uuid'];
   start_oc?: Maybe<Scalars['Int']>;
   title: Scalars['String'];
@@ -20904,7 +20913,7 @@ export type App_Quick_Lanes_Bool_Exp = {
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   end_oc?: InputMaybe<Int_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  owner?: InputMaybe<Users_Profiles_Bool_Exp>;
+  owner?: InputMaybe<Users_Common_Users_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   start_oc?: InputMaybe<Int_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
@@ -20931,7 +20940,7 @@ export type App_Quick_Lanes_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   end_oc?: InputMaybe<Scalars['Int']>;
   id?: InputMaybe<Scalars['uuid']>;
-  owner?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  owner?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   start_oc?: InputMaybe<Scalars['Int']>;
   title?: InputMaybe<Scalars['String']>;
@@ -20992,7 +21001,7 @@ export type App_Quick_Lanes_Order_By = {
   created_at?: InputMaybe<Order_By>;
   end_oc?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Profiles_Order_By>;
+  owner?: InputMaybe<Users_Common_Users_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   start_oc?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
@@ -21955,6 +21964,252 @@ export type App_Translations_Updates = {
   /** sets the columns of the filtered rows to the given values */
   _set?: InputMaybe<App_Translations_Set_Input>;
   where: App_Translations_Bool_Exp;
+};
+
+/** columns and relationships of "app.url_redirects" */
+export type App_Url_Redirects = {
+  __typename?: 'app_url_redirects';
+  created_at: Scalars['timestamptz'];
+  id: Scalars['Int'];
+  new_path: Scalars['String'];
+  old_path: Scalars['String'];
+  old_path_pattern: Scalars['String'];
+  updated_at: Scalars['timestamptz'];
+};
+
+/** aggregated selection of "app.url_redirects" */
+export type App_Url_Redirects_Aggregate = {
+  __typename?: 'app_url_redirects_aggregate';
+  aggregate?: Maybe<App_Url_Redirects_Aggregate_Fields>;
+  nodes: Array<App_Url_Redirects>;
+};
+
+/** aggregate fields of "app.url_redirects" */
+export type App_Url_Redirects_Aggregate_Fields = {
+  __typename?: 'app_url_redirects_aggregate_fields';
+  avg?: Maybe<App_Url_Redirects_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<App_Url_Redirects_Max_Fields>;
+  min?: Maybe<App_Url_Redirects_Min_Fields>;
+  stddev?: Maybe<App_Url_Redirects_Stddev_Fields>;
+  stddev_pop?: Maybe<App_Url_Redirects_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<App_Url_Redirects_Stddev_Samp_Fields>;
+  sum?: Maybe<App_Url_Redirects_Sum_Fields>;
+  var_pop?: Maybe<App_Url_Redirects_Var_Pop_Fields>;
+  var_samp?: Maybe<App_Url_Redirects_Var_Samp_Fields>;
+  variance?: Maybe<App_Url_Redirects_Variance_Fields>;
+};
+
+
+/** aggregate fields of "app.url_redirects" */
+export type App_Url_Redirects_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<App_Url_Redirects_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** aggregate avg on columns */
+export type App_Url_Redirects_Avg_Fields = {
+  __typename?: 'app_url_redirects_avg_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** Boolean expression to filter rows from the table "app.url_redirects". All fields are combined with a logical 'AND'. */
+export type App_Url_Redirects_Bool_Exp = {
+  _and?: InputMaybe<Array<App_Url_Redirects_Bool_Exp>>;
+  _not?: InputMaybe<App_Url_Redirects_Bool_Exp>;
+  _or?: InputMaybe<Array<App_Url_Redirects_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  new_path?: InputMaybe<String_Comparison_Exp>;
+  old_path?: InputMaybe<String_Comparison_Exp>;
+  old_path_pattern?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "app.url_redirects" */
+export enum App_Url_Redirects_Constraint {
+  /** unique or primary key constraint on columns "old_path" */
+  UrlRedirectsOldPathKey = 'url_redirects_old_path_key',
+  /** unique or primary key constraint on columns "id" */
+  UrlRedirectsPkey = 'url_redirects_pkey'
+}
+
+/** input type for incrementing numeric columns in table "app.url_redirects" */
+export type App_Url_Redirects_Inc_Input = {
+  id?: InputMaybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "app.url_redirects" */
+export type App_Url_Redirects_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['Int']>;
+  new_path?: InputMaybe<Scalars['String']>;
+  old_path?: InputMaybe<Scalars['String']>;
+  old_path_pattern?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type App_Url_Redirects_Max_Fields = {
+  __typename?: 'app_url_redirects_max_fields';
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['Int']>;
+  new_path?: Maybe<Scalars['String']>;
+  old_path?: Maybe<Scalars['String']>;
+  old_path_pattern?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type App_Url_Redirects_Min_Fields = {
+  __typename?: 'app_url_redirects_min_fields';
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['Int']>;
+  new_path?: Maybe<Scalars['String']>;
+  old_path?: Maybe<Scalars['String']>;
+  old_path_pattern?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** response of any mutation on the table "app.url_redirects" */
+export type App_Url_Redirects_Mutation_Response = {
+  __typename?: 'app_url_redirects_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<App_Url_Redirects>;
+};
+
+/** on_conflict condition type for table "app.url_redirects" */
+export type App_Url_Redirects_On_Conflict = {
+  constraint: App_Url_Redirects_Constraint;
+  update_columns?: Array<App_Url_Redirects_Update_Column>;
+  where?: InputMaybe<App_Url_Redirects_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "app.url_redirects". */
+export type App_Url_Redirects_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  new_path?: InputMaybe<Order_By>;
+  old_path?: InputMaybe<Order_By>;
+  old_path_pattern?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: app.url_redirects */
+export type App_Url_Redirects_Pk_Columns_Input = {
+  id: Scalars['Int'];
+};
+
+/** select columns of table "app.url_redirects" */
+export enum App_Url_Redirects_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  NewPath = 'new_path',
+  /** column name */
+  OldPath = 'old_path',
+  /** column name */
+  OldPathPattern = 'old_path_pattern',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "app.url_redirects" */
+export type App_Url_Redirects_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['Int']>;
+  new_path?: InputMaybe<Scalars['String']>;
+  old_path?: InputMaybe<Scalars['String']>;
+  old_path_pattern?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate stddev on columns */
+export type App_Url_Redirects_Stddev_Fields = {
+  __typename?: 'app_url_redirects_stddev_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type App_Url_Redirects_Stddev_Pop_Fields = {
+  __typename?: 'app_url_redirects_stddev_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type App_Url_Redirects_Stddev_Samp_Fields = {
+  __typename?: 'app_url_redirects_stddev_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** Streaming cursor of the table "app_url_redirects" */
+export type App_Url_Redirects_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: App_Url_Redirects_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type App_Url_Redirects_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['Int']>;
+  new_path?: InputMaybe<Scalars['String']>;
+  old_path?: InputMaybe<Scalars['String']>;
+  old_path_pattern?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate sum on columns */
+export type App_Url_Redirects_Sum_Fields = {
+  __typename?: 'app_url_redirects_sum_fields';
+  id?: Maybe<Scalars['Int']>;
+};
+
+/** update columns of table "app.url_redirects" */
+export enum App_Url_Redirects_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  NewPath = 'new_path',
+  /** column name */
+  OldPath = 'old_path',
+  /** column name */
+  OldPathPattern = 'old_path_pattern',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+export type App_Url_Redirects_Updates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<App_Url_Redirects_Inc_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<App_Url_Redirects_Set_Input>;
+  where: App_Url_Redirects_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type App_Url_Redirects_Var_Pop_Fields = {
+  __typename?: 'app_url_redirects_var_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate var_samp on columns */
+export type App_Url_Redirects_Var_Samp_Fields = {
+  __typename?: 'app_url_redirects_var_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate variance on columns */
+export type App_Url_Redirects_Variance_Fields = {
+  __typename?: 'app_url_redirects_variance_fields';
+  id?: Maybe<Scalars['Float']>;
 };
 
 /** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
@@ -23063,6 +23318,7 @@ export enum Lookup_Enum_Content_Block_Types_Enum {
   Quote = 'QUOTE',
   RichText = 'RICH_TEXT',
   RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
+  ScrollDownNudge = 'SCROLL_DOWN_NUDGE',
   Search = 'SEARCH',
   Spotlight = 'SPOTLIGHT',
   Subtitle = 'SUBTITLE',
@@ -26167,6 +26423,10 @@ export type Mutation_Root = {
   delete_app_translations?: Maybe<App_Translations_Mutation_Response>;
   /** delete single row from the table: "app.translations" */
   delete_app_translations_by_pk?: Maybe<App_Translations>;
+  /** delete data from the table: "app.url_redirects" */
+  delete_app_url_redirects?: Maybe<App_Url_Redirects_Mutation_Response>;
+  /** delete single row from the table: "app.url_redirects" */
+  delete_app_url_redirects_by_pk?: Maybe<App_Url_Redirects>;
   /** delete data from the table: "lookup.enum_assignment_content_labels" */
   delete_lookup_enum_assignment_content_labels?: Maybe<Lookup_Enum_Assignment_Content_Labels_Mutation_Response>;
   /** delete single row from the table: "lookup.enum_assignment_content_labels" */
@@ -26305,10 +26565,10 @@ export type Mutation_Root = {
   delete_shared_user_roles?: Maybe<Shared_User_Roles_Mutation_Response>;
   /** delete single row from the table: "shared.user_roles" */
   delete_shared_user_roles_by_pk?: Maybe<Shared_User_Roles>;
-  /** delete data from the table: "shared.user_temp_access" */
-  delete_shared_user_temp_access?: Maybe<Shared_User_Temp_Access_Mutation_Response>;
-  /** delete single row from the table: "shared.user_temp_access" */
-  delete_shared_user_temp_access_by_pk?: Maybe<Shared_User_Temp_Access>;
+  /** delete data from the table: "shared.user_temp_access_v2" */
+  delete_shared_user_temp_access_v2?: Maybe<Shared_User_Temp_Access_V2_Mutation_Response>;
+  /** delete single row from the table: "shared.user_temp_access_v2" */
+  delete_shared_user_temp_access_v2_by_pk?: Maybe<Shared_User_Temp_Access_V2>;
   /** delete data from the table: "shared.users" */
   delete_shared_users?: Maybe<Shared_Users_Mutation_Response>;
   /** delete single row from the table: "shared.users" */
@@ -26329,10 +26589,10 @@ export type Mutation_Root = {
   delete_users_groups?: Maybe<Users_Groups_Mutation_Response>;
   /** delete single row from the table: "users.groups" */
   delete_users_groups_by_pk?: Maybe<Users_Groups>;
-  /** delete data from the table: "users.idp_map" */
-  delete_users_idp_map?: Maybe<Users_Idp_Map_Mutation_Response>;
-  /** delete single row from the table: "users.idp_map" */
-  delete_users_idp_map_by_pk?: Maybe<Users_Idp_Map>;
+  /** delete data from the table: "users.idp_map_v2" */
+  delete_users_idp_map_v2?: Maybe<Users_Idp_Map_V2_Mutation_Response>;
+  /** delete single row from the table: "users.idp_map_v2" */
+  delete_users_idp_map_v2_by_pk?: Maybe<Users_Idp_Map_V2>;
   /** delete data from the table: "users.idps" */
   delete_users_idps?: Maybe<Users_Idps_Mutation_Response>;
   /** delete single row from the table: "users.idps" */
@@ -26381,6 +26641,10 @@ export type Mutation_Root = {
   delete_users_profiles_lom_links?: Maybe<Users_Profiles_Lom_Links_Mutation_Response>;
   /** delete single row from the table: "users.profiles_lom_links" */
   delete_users_profiles_lom_links_by_pk?: Maybe<Users_Profiles_Lom_Links>;
+  /** delete data from the table: "users.table_column_preferences" */
+  delete_users_table_column_preferences?: Maybe<Users_Table_Column_Preferences_Mutation_Response>;
+  /** delete single row from the table: "users.table_column_preferences" */
+  delete_users_table_column_preferences_by_pk?: Maybe<Users_Table_Column_Preferences>;
   /** delete data from the table: "users.users_sync_cm" */
   delete_users_users_sync_cm?: Maybe<Users_Users_Sync_Cm_Mutation_Response>;
   /** delete single row from the table: "users.users_sync_cm" */
@@ -26589,6 +26853,10 @@ export type Mutation_Root = {
   insert_app_translations?: Maybe<App_Translations_Mutation_Response>;
   /** insert a single row into the table: "app.translations" */
   insert_app_translations_one?: Maybe<App_Translations>;
+  /** insert data into the table: "app.url_redirects" */
+  insert_app_url_redirects?: Maybe<App_Url_Redirects_Mutation_Response>;
+  /** insert a single row into the table: "app.url_redirects" */
+  insert_app_url_redirects_one?: Maybe<App_Url_Redirects>;
   /** insert data into the table: "lookup.enum_assignment_content_labels" */
   insert_lookup_enum_assignment_content_labels?: Maybe<Lookup_Enum_Assignment_Content_Labels_Mutation_Response>;
   /** insert a single row into the table: "lookup.enum_assignment_content_labels" */
@@ -26749,10 +27017,10 @@ export type Mutation_Root = {
   insert_shared_user_roles?: Maybe<Shared_User_Roles_Mutation_Response>;
   /** insert a single row into the table: "shared.user_roles" */
   insert_shared_user_roles_one?: Maybe<Shared_User_Roles>;
-  /** insert data into the table: "shared.user_temp_access" */
-  insert_shared_user_temp_access?: Maybe<Shared_User_Temp_Access_Mutation_Response>;
-  /** insert a single row into the table: "shared.user_temp_access" */
-  insert_shared_user_temp_access_one?: Maybe<Shared_User_Temp_Access>;
+  /** insert data into the table: "shared.user_temp_access_v2" */
+  insert_shared_user_temp_access_v2?: Maybe<Shared_User_Temp_Access_V2_Mutation_Response>;
+  /** insert a single row into the table: "shared.user_temp_access_v2" */
+  insert_shared_user_temp_access_v2_one?: Maybe<Shared_User_Temp_Access_V2>;
   /** insert data into the table: "shared.users" */
   insert_shared_users?: Maybe<Shared_Users_Mutation_Response>;
   /** insert a single row into the table: "shared.users" */
@@ -26773,10 +27041,10 @@ export type Mutation_Root = {
   insert_users_groups?: Maybe<Users_Groups_Mutation_Response>;
   /** insert a single row into the table: "users.groups" */
   insert_users_groups_one?: Maybe<Users_Groups>;
-  /** insert data into the table: "users.idp_map" */
-  insert_users_idp_map?: Maybe<Users_Idp_Map_Mutation_Response>;
-  /** insert a single row into the table: "users.idp_map" */
-  insert_users_idp_map_one?: Maybe<Users_Idp_Map>;
+  /** insert data into the table: "users.idp_map_v2" */
+  insert_users_idp_map_v2?: Maybe<Users_Idp_Map_V2_Mutation_Response>;
+  /** insert a single row into the table: "users.idp_map_v2" */
+  insert_users_idp_map_v2_one?: Maybe<Users_Idp_Map_V2>;
   /** insert data into the table: "users.idps" */
   insert_users_idps?: Maybe<Users_Idps_Mutation_Response>;
   /** insert a single row into the table: "users.idps" */
@@ -26825,6 +27093,10 @@ export type Mutation_Root = {
   insert_users_profiles_lom_links_one?: Maybe<Users_Profiles_Lom_Links>;
   /** insert a single row into the table: "users.profiles" */
   insert_users_profiles_one?: Maybe<Users_Profiles>;
+  /** insert data into the table: "users.table_column_preferences" */
+  insert_users_table_column_preferences?: Maybe<Users_Table_Column_Preferences_Mutation_Response>;
+  /** insert a single row into the table: "users.table_column_preferences" */
+  insert_users_table_column_preferences_one?: Maybe<Users_Table_Column_Preferences>;
   /** insert data into the table: "users.users_sync_cm" */
   insert_users_users_sync_cm?: Maybe<Users_Users_Sync_Cm_Mutation_Response>;
   /** insert a single row into the table: "users.users_sync_cm" */
@@ -27133,6 +27405,12 @@ export type Mutation_Root = {
   update_app_translations_by_pk?: Maybe<App_Translations>;
   /** update multiples rows of table: "app.translations" */
   update_app_translations_many?: Maybe<Array<Maybe<App_Translations_Mutation_Response>>>;
+  /** update data of the table: "app.url_redirects" */
+  update_app_url_redirects?: Maybe<App_Url_Redirects_Mutation_Response>;
+  /** update single row of the table: "app.url_redirects" */
+  update_app_url_redirects_by_pk?: Maybe<App_Url_Redirects>;
+  /** update multiples rows of table: "app.url_redirects" */
+  update_app_url_redirects_many?: Maybe<Array<Maybe<App_Url_Redirects_Mutation_Response>>>;
   /** update data of the table: "lookup.enum_assignment_content_labels" */
   update_lookup_enum_assignment_content_labels?: Maybe<Lookup_Enum_Assignment_Content_Labels_Mutation_Response>;
   /** update single row of the table: "lookup.enum_assignment_content_labels" */
@@ -27351,12 +27629,12 @@ export type Mutation_Root = {
   update_shared_user_roles_by_pk?: Maybe<Shared_User_Roles>;
   /** update multiples rows of table: "shared.user_roles" */
   update_shared_user_roles_many?: Maybe<Array<Maybe<Shared_User_Roles_Mutation_Response>>>;
-  /** update data of the table: "shared.user_temp_access" */
-  update_shared_user_temp_access?: Maybe<Shared_User_Temp_Access_Mutation_Response>;
-  /** update single row of the table: "shared.user_temp_access" */
-  update_shared_user_temp_access_by_pk?: Maybe<Shared_User_Temp_Access>;
-  /** update multiples rows of table: "shared.user_temp_access" */
-  update_shared_user_temp_access_many?: Maybe<Array<Maybe<Shared_User_Temp_Access_Mutation_Response>>>;
+  /** update data of the table: "shared.user_temp_access_v2" */
+  update_shared_user_temp_access_v2?: Maybe<Shared_User_Temp_Access_V2_Mutation_Response>;
+  /** update single row of the table: "shared.user_temp_access_v2" */
+  update_shared_user_temp_access_v2_by_pk?: Maybe<Shared_User_Temp_Access_V2>;
+  /** update multiples rows of table: "shared.user_temp_access_v2" */
+  update_shared_user_temp_access_v2_many?: Maybe<Array<Maybe<Shared_User_Temp_Access_V2_Mutation_Response>>>;
   /** update data of the table: "shared.users" */
   update_shared_users?: Maybe<Shared_Users_Mutation_Response>;
   /** update single row of the table: "shared.users" */
@@ -27387,12 +27665,12 @@ export type Mutation_Root = {
   update_users_groups_by_pk?: Maybe<Users_Groups>;
   /** update multiples rows of table: "users.groups" */
   update_users_groups_many?: Maybe<Array<Maybe<Users_Groups_Mutation_Response>>>;
-  /** update data of the table: "users.idp_map" */
-  update_users_idp_map?: Maybe<Users_Idp_Map_Mutation_Response>;
-  /** update single row of the table: "users.idp_map" */
-  update_users_idp_map_by_pk?: Maybe<Users_Idp_Map>;
-  /** update multiples rows of table: "users.idp_map" */
-  update_users_idp_map_many?: Maybe<Array<Maybe<Users_Idp_Map_Mutation_Response>>>;
+  /** update data of the table: "users.idp_map_v2" */
+  update_users_idp_map_v2?: Maybe<Users_Idp_Map_V2_Mutation_Response>;
+  /** update single row of the table: "users.idp_map_v2" */
+  update_users_idp_map_v2_by_pk?: Maybe<Users_Idp_Map_V2>;
+  /** update multiples rows of table: "users.idp_map_v2" */
+  update_users_idp_map_v2_many?: Maybe<Array<Maybe<Users_Idp_Map_V2_Mutation_Response>>>;
   /** update data of the table: "users.idps" */
   update_users_idps?: Maybe<Users_Idps_Mutation_Response>;
   /** update single row of the table: "users.idps" */
@@ -27465,6 +27743,12 @@ export type Mutation_Root = {
   update_users_profiles_lom_links_many?: Maybe<Array<Maybe<Users_Profiles_Lom_Links_Mutation_Response>>>;
   /** update multiples rows of table: "users.profiles" */
   update_users_profiles_many?: Maybe<Array<Maybe<Users_Profiles_Mutation_Response>>>;
+  /** update data of the table: "users.table_column_preferences" */
+  update_users_table_column_preferences?: Maybe<Users_Table_Column_Preferences_Mutation_Response>;
+  /** update single row of the table: "users.table_column_preferences" */
+  update_users_table_column_preferences_by_pk?: Maybe<Users_Table_Column_Preferences>;
+  /** update multiples rows of table: "users.table_column_preferences" */
+  update_users_table_column_preferences_many?: Maybe<Array<Maybe<Users_Table_Column_Preferences_Mutation_Response>>>;
   /** update data of the table: "users.users_sync_cm" */
   update_users_users_sync_cm?: Maybe<Users_Users_Sync_Cm_Mutation_Response>;
   /** update single row of the table: "users.users_sync_cm" */
@@ -28084,6 +28368,18 @@ export type Mutation_RootDelete_App_Translations_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootDelete_App_Url_RedirectsArgs = {
+  where: App_Url_Redirects_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_App_Url_Redirects_By_PkArgs = {
+  id: Scalars['Int'];
+};
+
+
+/** mutation root */
 export type Mutation_RootDelete_Lookup_Enum_Assignment_Content_LabelsArgs = {
   where: Lookup_Enum_Assignment_Content_Labels_Bool_Exp;
 };
@@ -28501,14 +28797,14 @@ export type Mutation_RootDelete_Shared_User_Roles_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_Shared_User_Temp_AccessArgs = {
-  where: Shared_User_Temp_Access_Bool_Exp;
+export type Mutation_RootDelete_Shared_User_Temp_Access_V2Args = {
+  where: Shared_User_Temp_Access_V2_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootDelete_Shared_User_Temp_Access_By_PkArgs = {
-  user_id: Scalars['uuid'];
+export type Mutation_RootDelete_Shared_User_Temp_Access_V2_By_PkArgs = {
+  profile_id: Scalars['uuid'];
 };
 
 
@@ -28573,13 +28869,13 @@ export type Mutation_RootDelete_Users_Groups_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_Users_Idp_MapArgs = {
-  where: Users_Idp_Map_Bool_Exp;
+export type Mutation_RootDelete_Users_Idp_Map_V2Args = {
+  where: Users_Idp_Map_V2_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootDelete_Users_Idp_Map_By_PkArgs = {
+export type Mutation_RootDelete_Users_Idp_Map_V2_By_PkArgs = {
   id: Scalars['Int'];
 };
 
@@ -28724,6 +29020,18 @@ export type Mutation_RootDelete_Users_Profiles_Lom_LinksArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Users_Profiles_Lom_Links_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Users_Table_Column_PreferencesArgs = {
+  where: Users_Table_Column_Preferences_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Users_Table_Column_Preferences_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -29453,6 +29761,20 @@ export type Mutation_RootInsert_App_Translations_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_App_Url_RedirectsArgs = {
+  objects: Array<App_Url_Redirects_Insert_Input>;
+  on_conflict?: InputMaybe<App_Url_Redirects_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_App_Url_Redirects_OneArgs = {
+  object: App_Url_Redirects_Insert_Input;
+  on_conflict?: InputMaybe<App_Url_Redirects_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_Lookup_Enum_Assignment_Content_LabelsArgs = {
   objects: Array<Lookup_Enum_Assignment_Content_Labels_Insert_Input>;
   on_conflict?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_On_Conflict>;
@@ -29991,16 +30313,16 @@ export type Mutation_RootInsert_Shared_User_Roles_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_Shared_User_Temp_AccessArgs = {
-  objects: Array<Shared_User_Temp_Access_Insert_Input>;
-  on_conflict?: InputMaybe<Shared_User_Temp_Access_On_Conflict>;
+export type Mutation_RootInsert_Shared_User_Temp_Access_V2Args = {
+  objects: Array<Shared_User_Temp_Access_V2_Insert_Input>;
+  on_conflict?: InputMaybe<Shared_User_Temp_Access_V2_On_Conflict>;
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_Shared_User_Temp_Access_OneArgs = {
-  object: Shared_User_Temp_Access_Insert_Input;
-  on_conflict?: InputMaybe<Shared_User_Temp_Access_On_Conflict>;
+export type Mutation_RootInsert_Shared_User_Temp_Access_V2_OneArgs = {
+  object: Shared_User_Temp_Access_V2_Insert_Input;
+  on_conflict?: InputMaybe<Shared_User_Temp_Access_V2_On_Conflict>;
 };
 
 
@@ -30075,16 +30397,16 @@ export type Mutation_RootInsert_Users_Groups_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_Users_Idp_MapArgs = {
-  objects: Array<Users_Idp_Map_Insert_Input>;
-  on_conflict?: InputMaybe<Users_Idp_Map_On_Conflict>;
+export type Mutation_RootInsert_Users_Idp_Map_V2Args = {
+  objects: Array<Users_Idp_Map_V2_Insert_Input>;
+  on_conflict?: InputMaybe<Users_Idp_Map_V2_On_Conflict>;
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_Users_Idp_Map_OneArgs = {
-  object: Users_Idp_Map_Insert_Input;
-  on_conflict?: InputMaybe<Users_Idp_Map_On_Conflict>;
+export type Mutation_RootInsert_Users_Idp_Map_V2_OneArgs = {
+  object: Users_Idp_Map_V2_Insert_Input;
+  on_conflict?: InputMaybe<Users_Idp_Map_V2_On_Conflict>;
 };
 
 
@@ -30253,6 +30575,20 @@ export type Mutation_RootInsert_Users_Profiles_Lom_Links_OneArgs = {
 export type Mutation_RootInsert_Users_Profiles_OneArgs = {
   object: Users_Profiles_Insert_Input;
   on_conflict?: InputMaybe<Users_Profiles_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Users_Table_Column_PreferencesArgs = {
+  objects: Array<Users_Table_Column_Preferences_Insert_Input>;
+  on_conflict?: InputMaybe<Users_Table_Column_Preferences_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Users_Table_Column_Preferences_OneArgs = {
+  object: Users_Table_Column_Preferences_Insert_Input;
+  on_conflict?: InputMaybe<Users_Table_Column_Preferences_On_Conflict>;
 };
 
 
@@ -31451,6 +31787,28 @@ export type Mutation_RootUpdate_App_Translations_ManyArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_App_Url_RedirectsArgs = {
+  _inc?: InputMaybe<App_Url_Redirects_Inc_Input>;
+  _set?: InputMaybe<App_Url_Redirects_Set_Input>;
+  where: App_Url_Redirects_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_App_Url_Redirects_By_PkArgs = {
+  _inc?: InputMaybe<App_Url_Redirects_Inc_Input>;
+  _set?: InputMaybe<App_Url_Redirects_Set_Input>;
+  pk_columns: App_Url_Redirects_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_App_Url_Redirects_ManyArgs = {
+  updates: Array<App_Url_Redirects_Updates>;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_Lookup_Enum_Assignment_Content_LabelsArgs = {
   _set?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Set_Input>;
   where: Lookup_Enum_Assignment_Content_Labels_Bool_Exp;
@@ -32242,22 +32600,22 @@ export type Mutation_RootUpdate_Shared_User_Roles_ManyArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Shared_User_Temp_AccessArgs = {
-  _set?: InputMaybe<Shared_User_Temp_Access_Set_Input>;
-  where: Shared_User_Temp_Access_Bool_Exp;
+export type Mutation_RootUpdate_Shared_User_Temp_Access_V2Args = {
+  _set?: InputMaybe<Shared_User_Temp_Access_V2_Set_Input>;
+  where: Shared_User_Temp_Access_V2_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Shared_User_Temp_Access_By_PkArgs = {
-  _set?: InputMaybe<Shared_User_Temp_Access_Set_Input>;
-  pk_columns: Shared_User_Temp_Access_Pk_Columns_Input;
+export type Mutation_RootUpdate_Shared_User_Temp_Access_V2_By_PkArgs = {
+  _set?: InputMaybe<Shared_User_Temp_Access_V2_Set_Input>;
+  pk_columns: Shared_User_Temp_Access_V2_Pk_Columns_Input;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Shared_User_Temp_Access_ManyArgs = {
-  updates: Array<Shared_User_Temp_Access_Updates>;
+export type Mutation_RootUpdate_Shared_User_Temp_Access_V2_ManyArgs = {
+  updates: Array<Shared_User_Temp_Access_V2_Updates>;
 };
 
 
@@ -32380,24 +32738,24 @@ export type Mutation_RootUpdate_Users_Groups_ManyArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Users_Idp_MapArgs = {
-  _inc?: InputMaybe<Users_Idp_Map_Inc_Input>;
-  _set?: InputMaybe<Users_Idp_Map_Set_Input>;
-  where: Users_Idp_Map_Bool_Exp;
+export type Mutation_RootUpdate_Users_Idp_Map_V2Args = {
+  _inc?: InputMaybe<Users_Idp_Map_V2_Inc_Input>;
+  _set?: InputMaybe<Users_Idp_Map_V2_Set_Input>;
+  where: Users_Idp_Map_V2_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Users_Idp_Map_By_PkArgs = {
-  _inc?: InputMaybe<Users_Idp_Map_Inc_Input>;
-  _set?: InputMaybe<Users_Idp_Map_Set_Input>;
-  pk_columns: Users_Idp_Map_Pk_Columns_Input;
+export type Mutation_RootUpdate_Users_Idp_Map_V2_By_PkArgs = {
+  _inc?: InputMaybe<Users_Idp_Map_V2_Inc_Input>;
+  _set?: InputMaybe<Users_Idp_Map_V2_Set_Input>;
+  pk_columns: Users_Idp_Map_V2_Pk_Columns_Input;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Users_Idp_Map_ManyArgs = {
-  updates: Array<Users_Idp_Map_Updates>;
+export type Mutation_RootUpdate_Users_Idp_Map_V2_ManyArgs = {
+  updates: Array<Users_Idp_Map_V2_Updates>;
 };
 
 
@@ -32666,6 +33024,36 @@ export type Mutation_RootUpdate_Users_Profiles_Lom_Links_ManyArgs = {
 /** mutation root */
 export type Mutation_RootUpdate_Users_Profiles_ManyArgs = {
   updates: Array<Users_Profiles_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Users_Table_Column_PreferencesArgs = {
+  _append?: InputMaybe<Users_Table_Column_Preferences_Append_Input>;
+  _delete_at_path?: InputMaybe<Users_Table_Column_Preferences_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Users_Table_Column_Preferences_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Users_Table_Column_Preferences_Delete_Key_Input>;
+  _prepend?: InputMaybe<Users_Table_Column_Preferences_Prepend_Input>;
+  _set?: InputMaybe<Users_Table_Column_Preferences_Set_Input>;
+  where: Users_Table_Column_Preferences_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Users_Table_Column_Preferences_By_PkArgs = {
+  _append?: InputMaybe<Users_Table_Column_Preferences_Append_Input>;
+  _delete_at_path?: InputMaybe<Users_Table_Column_Preferences_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Users_Table_Column_Preferences_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Users_Table_Column_Preferences_Delete_Key_Input>;
+  _prepend?: InputMaybe<Users_Table_Column_Preferences_Prepend_Input>;
+  _set?: InputMaybe<Users_Table_Column_Preferences_Set_Input>;
+  pk_columns: Users_Table_Column_Preferences_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Users_Table_Column_Preferences_ManyArgs = {
+  updates: Array<Users_Table_Column_Preferences_Updates>;
 };
 
 
@@ -33094,6 +33482,12 @@ export type Query_Root = {
   app_translations_aggregate: App_Translations_Aggregate;
   /** fetch data from the table: "app.translations" using primary key columns */
   app_translations_by_pk?: Maybe<App_Translations>;
+  /** fetch data from the table: "app.url_redirects" */
+  app_url_redirects: Array<App_Url_Redirects>;
+  /** fetch aggregated fields from the table: "app.url_redirects" */
+  app_url_redirects_aggregate: App_Url_Redirects_Aggregate;
+  /** fetch data from the table: "app.url_redirects" using primary key columns */
+  app_url_redirects_by_pk?: Maybe<App_Url_Redirects>;
   /** fetch data from the table: "lookup.enum_assignment_content_labels" */
   lookup_enum_assignment_content_labels: Array<Lookup_Enum_Assignment_Content_Labels>;
   /** fetch aggregated fields from the table: "lookup.enum_assignment_content_labels" */
@@ -33444,12 +33838,20 @@ export type Query_Root = {
   shared_user_temp_access: Array<Shared_User_Temp_Access>;
   /** fetch aggregated fields from the table: "shared.user_temp_access" */
   shared_user_temp_access_aggregate: Shared_User_Temp_Access_Aggregate;
-  /** fetch data from the table: "shared.user_temp_access" using primary key columns */
-  shared_user_temp_access_by_pk?: Maybe<Shared_User_Temp_Access>;
   /** fetch data from the table: "shared.user_temp_access_status" */
   shared_user_temp_access_status: Array<Shared_User_Temp_Access_Status>;
   /** fetch aggregated fields from the table: "shared.user_temp_access_status" */
   shared_user_temp_access_status_aggregate: Shared_User_Temp_Access_Status_Aggregate;
+  /** fetch data from the table: "shared.user_temp_access_status_v2" */
+  shared_user_temp_access_status_v2: Array<Shared_User_Temp_Access_Status_V2>;
+  /** fetch aggregated fields from the table: "shared.user_temp_access_status_v2" */
+  shared_user_temp_access_status_v2_aggregate: Shared_User_Temp_Access_Status_V2_Aggregate;
+  /** fetch data from the table: "shared.user_temp_access_v2" */
+  shared_user_temp_access_v2: Array<Shared_User_Temp_Access_V2>;
+  /** fetch aggregated fields from the table: "shared.user_temp_access_v2" */
+  shared_user_temp_access_v2_aggregate: Shared_User_Temp_Access_V2_Aggregate;
+  /** fetch data from the table: "shared.user_temp_access_v2" using primary key columns */
+  shared_user_temp_access_v2_by_pk?: Maybe<Shared_User_Temp_Access_V2>;
   /** fetch data from the table: "shared.users" */
   shared_users: Array<Shared_Users>;
   /** fetch aggregated fields from the table: "shared.users" */
@@ -33488,8 +33890,12 @@ export type Query_Root = {
   users_idp_map: Array<Users_Idp_Map>;
   /** fetch aggregated fields from the table: "users.idp_map" */
   users_idp_map_aggregate: Users_Idp_Map_Aggregate;
-  /** fetch data from the table: "users.idp_map" using primary key columns */
-  users_idp_map_by_pk?: Maybe<Users_Idp_Map>;
+  /** fetch data from the table: "users.idp_map_v2" */
+  users_idp_map_v2: Array<Users_Idp_Map_V2>;
+  /** fetch aggregated fields from the table: "users.idp_map_v2" */
+  users_idp_map_v2_aggregate: Users_Idp_Map_V2_Aggregate;
+  /** fetch data from the table: "users.idp_map_v2" using primary key columns */
+  users_idp_map_v2_by_pk?: Maybe<Users_Idp_Map_V2>;
   /** fetch data from the table: "users.idps" */
   users_idps: Array<Users_Idps>;
   /** fetch aggregated fields from the table: "users.idps" */
@@ -33570,6 +33976,12 @@ export type Query_Root = {
   users_summary_view: Array<Users_Summary_View>;
   /** fetch aggregated fields from the table: "users.summary_view" */
   users_summary_view_aggregate: Users_Summary_View_Aggregate;
+  /** fetch data from the table: "users.table_column_preferences" */
+  users_table_column_preferences: Array<Users_Table_Column_Preferences>;
+  /** fetch aggregated fields from the table: "users.table_column_preferences" */
+  users_table_column_preferences_aggregate: Users_Table_Column_Preferences_Aggregate;
+  /** fetch data from the table: "users.table_column_preferences" using primary key columns */
+  users_table_column_preferences_by_pk?: Maybe<Users_Table_Column_Preferences>;
   /** fetch data from the table: "users.users_sync_cm" */
   users_users_sync_cm: Array<Users_Users_Sync_Cm>;
   /** fetch aggregated fields from the table: "users.users_sync_cm" */
@@ -35074,6 +35486,29 @@ export type Query_RootApp_Translations_By_PkArgs = {
 };
 
 
+export type Query_RootApp_Url_RedirectsArgs = {
+  distinct_on?: InputMaybe<Array<App_Url_Redirects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Url_Redirects_Order_By>>;
+  where?: InputMaybe<App_Url_Redirects_Bool_Exp>;
+};
+
+
+export type Query_RootApp_Url_Redirects_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Url_Redirects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Url_Redirects_Order_By>>;
+  where?: InputMaybe<App_Url_Redirects_Bool_Exp>;
+};
+
+
+export type Query_RootApp_Url_Redirects_By_PkArgs = {
+  id: Scalars['Int'];
+};
+
+
 export type Query_RootLookup_Enum_Assignment_Content_LabelsArgs = {
   distinct_on?: InputMaybe<Array<Lookup_Enum_Assignment_Content_Labels_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -36536,11 +36971,6 @@ export type Query_RootShared_User_Temp_Access_AggregateArgs = {
 };
 
 
-export type Query_RootShared_User_Temp_Access_By_PkArgs = {
-  user_id: Scalars['uuid'];
-};
-
-
 export type Query_RootShared_User_Temp_Access_StatusArgs = {
   distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_Status_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -36556,6 +36986,47 @@ export type Query_RootShared_User_Temp_Access_Status_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Shared_User_Temp_Access_Status_Order_By>>;
   where?: InputMaybe<Shared_User_Temp_Access_Status_Bool_Exp>;
+};
+
+
+export type Query_RootShared_User_Temp_Access_Status_V2Args = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_Status_V2_Bool_Exp>;
+};
+
+
+export type Query_RootShared_User_Temp_Access_Status_V2_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_Status_V2_Bool_Exp>;
+};
+
+
+export type Query_RootShared_User_Temp_Access_V2Args = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
+};
+
+
+export type Query_RootShared_User_Temp_Access_V2_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
+};
+
+
+export type Query_RootShared_User_Temp_Access_V2_By_PkArgs = {
+  profile_id: Scalars['uuid'];
 };
 
 
@@ -36710,7 +37181,25 @@ export type Query_RootUsers_Idp_Map_AggregateArgs = {
 };
 
 
-export type Query_RootUsers_Idp_Map_By_PkArgs = {
+export type Query_RootUsers_Idp_Map_V2Args = {
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Idp_Map_V2_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Idp_Map_V2_By_PkArgs = {
   id: Scalars['Int'];
 };
 
@@ -37024,6 +37513,29 @@ export type Query_RootUsers_Summary_View_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Users_Summary_View_Order_By>>;
   where?: InputMaybe<Users_Summary_View_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Table_Column_PreferencesArgs = {
+  distinct_on?: InputMaybe<Array<Users_Table_Column_Preferences_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Table_Column_Preferences_Order_By>>;
+  where?: InputMaybe<Users_Table_Column_Preferences_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Table_Column_Preferences_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Table_Column_Preferences_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Table_Column_Preferences_Order_By>>;
+  where?: InputMaybe<Users_Table_Column_Preferences_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Table_Column_Preferences_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -43856,17 +44368,6 @@ export type Shared_User_Names_Bool_Exp = {
   user_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
-/** input type for inserting data into table "shared.user_names" */
-export type Shared_User_Names_Insert_Input = {
-  first_name?: InputMaybe<Scalars['String']>;
-  full_name?: InputMaybe<Scalars['String']>;
-  full_name_lower?: InputMaybe<Scalars['String']>;
-  last_name?: InputMaybe<Scalars['String']>;
-  mail?: InputMaybe<Scalars['String']>;
-  profile_id?: InputMaybe<Scalars['uuid']>;
-  user_id?: InputMaybe<Scalars['uuid']>;
-};
-
 /** aggregate max on columns */
 export type Shared_User_Names_Max_Fields = {
   __typename?: 'shared_user_names_max_fields';
@@ -43889,11 +44390,6 @@ export type Shared_User_Names_Min_Fields = {
   mail?: Maybe<Scalars['String']>;
   profile_id?: Maybe<Scalars['uuid']>;
   user_id?: Maybe<Scalars['uuid']>;
-};
-
-/** input type for inserting object relation for remote table "shared.user_names" */
-export type Shared_User_Names_Obj_Rel_Insert_Input = {
-  data: Shared_User_Names_Insert_Input;
 };
 
 /** Ordering options when selecting data from "shared.user_names". */
@@ -44189,18 +44685,14 @@ export type Shared_User_Roles_Variance_Fields = {
   id?: Maybe<Scalars['Float']>;
 };
 
-/** Tabel om de tijdelijke toegang van gebruikers te beheren. */
+/** columns and relationships of "shared.user_temp_access" */
 export type Shared_User_Temp_Access = {
   __typename?: 'shared_user_temp_access';
-  created_at: Scalars['timestamptz'];
-  /** An object relationship */
-  current?: Maybe<Shared_User_Temp_Access_Status>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   from?: Maybe<Scalars['date']>;
-  until: Scalars['date'];
-  updated_at: Scalars['timestamptz'];
-  /** An object relationship */
-  user: Shared_Users;
-  user_id: Scalars['uuid'];
+  until?: Maybe<Scalars['date']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+  user_id?: Maybe<Scalars['uuid']>;
 };
 
 /** aggregated selection of "shared.user_temp_access" */
@@ -44231,29 +44723,10 @@ export type Shared_User_Temp_Access_Bool_Exp = {
   _not?: InputMaybe<Shared_User_Temp_Access_Bool_Exp>;
   _or?: InputMaybe<Array<Shared_User_Temp_Access_Bool_Exp>>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  current?: InputMaybe<Shared_User_Temp_Access_Status_Bool_Exp>;
   from?: InputMaybe<Date_Comparison_Exp>;
   until?: InputMaybe<Date_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  user?: InputMaybe<Shared_Users_Bool_Exp>;
   user_id?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "shared.user_temp_access" */
-export enum Shared_User_Temp_Access_Constraint {
-  /** unique or primary key constraint on columns "user_id" */
-  UserTempAccessPkey = 'user_temp_access_pkey'
-}
-
-/** input type for inserting data into table "shared.user_temp_access" */
-export type Shared_User_Temp_Access_Insert_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  current?: InputMaybe<Shared_User_Temp_Access_Status_Obj_Rel_Insert_Input>;
-  from?: InputMaybe<Scalars['date']>;
-  until?: InputMaybe<Scalars['date']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-  user?: InputMaybe<Shared_Users_Obj_Rel_Insert_Input>;
-  user_id?: InputMaybe<Scalars['uuid']>;
 };
 
 /** aggregate max on columns */
@@ -44276,43 +44749,13 @@ export type Shared_User_Temp_Access_Min_Fields = {
   user_id?: Maybe<Scalars['uuid']>;
 };
 
-/** response of any mutation on the table "shared.user_temp_access" */
-export type Shared_User_Temp_Access_Mutation_Response = {
-  __typename?: 'shared_user_temp_access_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Shared_User_Temp_Access>;
-};
-
-/** input type for inserting object relation for remote table "shared.user_temp_access" */
-export type Shared_User_Temp_Access_Obj_Rel_Insert_Input = {
-  data: Shared_User_Temp_Access_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Shared_User_Temp_Access_On_Conflict>;
-};
-
-/** on_conflict condition type for table "shared.user_temp_access" */
-export type Shared_User_Temp_Access_On_Conflict = {
-  constraint: Shared_User_Temp_Access_Constraint;
-  update_columns?: Array<Shared_User_Temp_Access_Update_Column>;
-  where?: InputMaybe<Shared_User_Temp_Access_Bool_Exp>;
-};
-
 /** Ordering options when selecting data from "shared.user_temp_access". */
 export type Shared_User_Temp_Access_Order_By = {
   created_at?: InputMaybe<Order_By>;
-  current?: InputMaybe<Shared_User_Temp_Access_Status_Order_By>;
   from?: InputMaybe<Order_By>;
   until?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
-  user?: InputMaybe<Shared_Users_Order_By>;
   user_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: shared.user_temp_access */
-export type Shared_User_Temp_Access_Pk_Columns_Input = {
-  user_id: Scalars['uuid'];
 };
 
 /** select columns of table "shared.user_temp_access" */
@@ -44329,20 +44772,11 @@ export enum Shared_User_Temp_Access_Select_Column {
   UserId = 'user_id'
 }
 
-/** input type for updating data in table "shared.user_temp_access" */
-export type Shared_User_Temp_Access_Set_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  from?: InputMaybe<Scalars['date']>;
-  until?: InputMaybe<Scalars['date']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-  user_id?: InputMaybe<Scalars['uuid']>;
-};
-
 /** columns and relationships of "shared.user_temp_access_status" */
 export type Shared_User_Temp_Access_Status = {
   __typename?: 'shared_user_temp_access_status';
-  status?: Maybe<Scalars['Int']>;
-  uid?: Maybe<Scalars['uuid']>;
+  status?: Maybe<Scalars['Boolean']>;
+  user_id?: Maybe<Scalars['uuid']>;
 };
 
 /** aggregated selection of "shared.user_temp_access_status" */
@@ -44355,17 +44789,9 @@ export type Shared_User_Temp_Access_Status_Aggregate = {
 /** aggregate fields of "shared.user_temp_access_status" */
 export type Shared_User_Temp_Access_Status_Aggregate_Fields = {
   __typename?: 'shared_user_temp_access_status_aggregate_fields';
-  avg?: Maybe<Shared_User_Temp_Access_Status_Avg_Fields>;
   count: Scalars['Int'];
   max?: Maybe<Shared_User_Temp_Access_Status_Max_Fields>;
   min?: Maybe<Shared_User_Temp_Access_Status_Min_Fields>;
-  stddev?: Maybe<Shared_User_Temp_Access_Status_Stddev_Fields>;
-  stddev_pop?: Maybe<Shared_User_Temp_Access_Status_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Shared_User_Temp_Access_Status_Stddev_Samp_Fields>;
-  sum?: Maybe<Shared_User_Temp_Access_Status_Sum_Fields>;
-  var_pop?: Maybe<Shared_User_Temp_Access_Status_Var_Pop_Fields>;
-  var_samp?: Maybe<Shared_User_Temp_Access_Status_Var_Samp_Fields>;
-  variance?: Maybe<Shared_User_Temp_Access_Status_Variance_Fields>;
 };
 
 
@@ -44375,50 +44801,31 @@ export type Shared_User_Temp_Access_Status_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']>;
 };
 
-/** aggregate avg on columns */
-export type Shared_User_Temp_Access_Status_Avg_Fields = {
-  __typename?: 'shared_user_temp_access_status_avg_fields';
-  status?: Maybe<Scalars['Float']>;
-};
-
 /** Boolean expression to filter rows from the table "shared.user_temp_access_status". All fields are combined with a logical 'AND'. */
 export type Shared_User_Temp_Access_Status_Bool_Exp = {
   _and?: InputMaybe<Array<Shared_User_Temp_Access_Status_Bool_Exp>>;
   _not?: InputMaybe<Shared_User_Temp_Access_Status_Bool_Exp>;
   _or?: InputMaybe<Array<Shared_User_Temp_Access_Status_Bool_Exp>>;
-  status?: InputMaybe<Int_Comparison_Exp>;
-  uid?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** input type for inserting data into table "shared.user_temp_access_status" */
-export type Shared_User_Temp_Access_Status_Insert_Input = {
-  status?: InputMaybe<Scalars['Int']>;
-  uid?: InputMaybe<Scalars['uuid']>;
+  status?: InputMaybe<Boolean_Comparison_Exp>;
+  user_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
 /** aggregate max on columns */
 export type Shared_User_Temp_Access_Status_Max_Fields = {
   __typename?: 'shared_user_temp_access_status_max_fields';
-  status?: Maybe<Scalars['Int']>;
-  uid?: Maybe<Scalars['uuid']>;
+  user_id?: Maybe<Scalars['uuid']>;
 };
 
 /** aggregate min on columns */
 export type Shared_User_Temp_Access_Status_Min_Fields = {
   __typename?: 'shared_user_temp_access_status_min_fields';
-  status?: Maybe<Scalars['Int']>;
-  uid?: Maybe<Scalars['uuid']>;
-};
-
-/** input type for inserting object relation for remote table "shared.user_temp_access_status" */
-export type Shared_User_Temp_Access_Status_Obj_Rel_Insert_Input = {
-  data: Shared_User_Temp_Access_Status_Insert_Input;
+  user_id?: Maybe<Scalars['uuid']>;
 };
 
 /** Ordering options when selecting data from "shared.user_temp_access_status". */
 export type Shared_User_Temp_Access_Status_Order_By = {
   status?: InputMaybe<Order_By>;
-  uid?: InputMaybe<Order_By>;
+  user_id?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "shared.user_temp_access_status" */
@@ -44426,26 +44833,8 @@ export enum Shared_User_Temp_Access_Status_Select_Column {
   /** column name */
   Status = 'status',
   /** column name */
-  Uid = 'uid'
+  UserId = 'user_id'
 }
-
-/** aggregate stddev on columns */
-export type Shared_User_Temp_Access_Status_Stddev_Fields = {
-  __typename?: 'shared_user_temp_access_status_stddev_fields';
-  status?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Shared_User_Temp_Access_Status_Stddev_Pop_Fields = {
-  __typename?: 'shared_user_temp_access_status_stddev_pop_fields';
-  status?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Shared_User_Temp_Access_Status_Stddev_Samp_Fields = {
-  __typename?: 'shared_user_temp_access_status_stddev_samp_fields';
-  status?: Maybe<Scalars['Float']>;
-};
 
 /** Streaming cursor of the table "shared_user_temp_access_status" */
 export type Shared_User_Temp_Access_Status_Stream_Cursor_Input = {
@@ -44457,32 +44846,97 @@ export type Shared_User_Temp_Access_Status_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Shared_User_Temp_Access_Status_Stream_Cursor_Value_Input = {
-  status?: InputMaybe<Scalars['Int']>;
-  uid?: InputMaybe<Scalars['uuid']>;
+  status?: InputMaybe<Scalars['Boolean']>;
+  user_id?: InputMaybe<Scalars['uuid']>;
 };
 
-/** aggregate sum on columns */
-export type Shared_User_Temp_Access_Status_Sum_Fields = {
-  __typename?: 'shared_user_temp_access_status_sum_fields';
-  status?: Maybe<Scalars['Int']>;
+/** columns and relationships of "shared.user_temp_access_status_v2" */
+export type Shared_User_Temp_Access_Status_V2 = {
+  __typename?: 'shared_user_temp_access_status_v2';
+  id?: Maybe<Scalars['uuid']>;
+  status?: Maybe<Scalars['Boolean']>;
 };
 
-/** aggregate var_pop on columns */
-export type Shared_User_Temp_Access_Status_Var_Pop_Fields = {
-  __typename?: 'shared_user_temp_access_status_var_pop_fields';
-  status?: Maybe<Scalars['Float']>;
+/** aggregated selection of "shared.user_temp_access_status_v2" */
+export type Shared_User_Temp_Access_Status_V2_Aggregate = {
+  __typename?: 'shared_user_temp_access_status_v2_aggregate';
+  aggregate?: Maybe<Shared_User_Temp_Access_Status_V2_Aggregate_Fields>;
+  nodes: Array<Shared_User_Temp_Access_Status_V2>;
 };
 
-/** aggregate var_samp on columns */
-export type Shared_User_Temp_Access_Status_Var_Samp_Fields = {
-  __typename?: 'shared_user_temp_access_status_var_samp_fields';
-  status?: Maybe<Scalars['Float']>;
+/** aggregate fields of "shared.user_temp_access_status_v2" */
+export type Shared_User_Temp_Access_Status_V2_Aggregate_Fields = {
+  __typename?: 'shared_user_temp_access_status_v2_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Shared_User_Temp_Access_Status_V2_Max_Fields>;
+  min?: Maybe<Shared_User_Temp_Access_Status_V2_Min_Fields>;
 };
 
-/** aggregate variance on columns */
-export type Shared_User_Temp_Access_Status_Variance_Fields = {
-  __typename?: 'shared_user_temp_access_status_variance_fields';
-  status?: Maybe<Scalars['Float']>;
+
+/** aggregate fields of "shared.user_temp_access_status_v2" */
+export type Shared_User_Temp_Access_Status_V2_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "shared.user_temp_access_status_v2". All fields are combined with a logical 'AND'. */
+export type Shared_User_Temp_Access_Status_V2_Bool_Exp = {
+  _and?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Bool_Exp>>;
+  _not?: InputMaybe<Shared_User_Temp_Access_Status_V2_Bool_Exp>;
+  _or?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Bool_Exp>>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  status?: InputMaybe<Boolean_Comparison_Exp>;
+};
+
+/** input type for inserting data into table "shared.user_temp_access_status_v2" */
+export type Shared_User_Temp_Access_Status_V2_Insert_Input = {
+  id?: InputMaybe<Scalars['uuid']>;
+  status?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** aggregate max on columns */
+export type Shared_User_Temp_Access_Status_V2_Max_Fields = {
+  __typename?: 'shared_user_temp_access_status_v2_max_fields';
+  id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregate min on columns */
+export type Shared_User_Temp_Access_Status_V2_Min_Fields = {
+  __typename?: 'shared_user_temp_access_status_v2_min_fields';
+  id?: Maybe<Scalars['uuid']>;
+};
+
+/** input type for inserting object relation for remote table "shared.user_temp_access_status_v2" */
+export type Shared_User_Temp_Access_Status_V2_Obj_Rel_Insert_Input = {
+  data: Shared_User_Temp_Access_Status_V2_Insert_Input;
+};
+
+/** Ordering options when selecting data from "shared.user_temp_access_status_v2". */
+export type Shared_User_Temp_Access_Status_V2_Order_By = {
+  id?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "shared.user_temp_access_status_v2" */
+export enum Shared_User_Temp_Access_Status_V2_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Status = 'status'
+}
+
+/** Streaming cursor of the table "shared_user_temp_access_status_v2" */
+export type Shared_User_Temp_Access_Status_V2_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Shared_User_Temp_Access_Status_V2_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Shared_User_Temp_Access_Status_V2_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['uuid']>;
+  status?: InputMaybe<Scalars['Boolean']>;
 };
 
 /** Streaming cursor of the table "shared_user_temp_access" */
@@ -44502,24 +44956,190 @@ export type Shared_User_Temp_Access_Stream_Cursor_Value_Input = {
   user_id?: InputMaybe<Scalars['uuid']>;
 };
 
-/** update columns of table "shared.user_temp_access" */
-export enum Shared_User_Temp_Access_Update_Column {
+/** contains the dates for which certain users have access to the avo platform */
+export type Shared_User_Temp_Access_V2 = {
+  __typename?: 'shared_user_temp_access_v2';
+  /** An object relationship */
+  common_user?: Maybe<Users_Common_Users>;
+  created_at: Scalars['timestamp'];
+  from?: Maybe<Scalars['date']>;
+  /** An object relationship */
+  has_currently_access?: Maybe<Shared_User_Temp_Access_Status_V2>;
+  profile_id: Scalars['uuid'];
+  until?: Maybe<Scalars['date']>;
+  updated_at: Scalars['timestamp'];
+};
+
+/** aggregated selection of "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Aggregate = {
+  __typename?: 'shared_user_temp_access_v2_aggregate';
+  aggregate?: Maybe<Shared_User_Temp_Access_V2_Aggregate_Fields>;
+  nodes: Array<Shared_User_Temp_Access_V2>;
+};
+
+/** aggregate fields of "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Aggregate_Fields = {
+  __typename?: 'shared_user_temp_access_v2_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Shared_User_Temp_Access_V2_Max_Fields>;
+  min?: Maybe<Shared_User_Temp_Access_V2_Min_Fields>;
+};
+
+
+/** aggregate fields of "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Shared_User_Temp_Access_V2_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "shared.user_temp_access_v2". All fields are combined with a logical 'AND'. */
+export type Shared_User_Temp_Access_V2_Bool_Exp = {
+  _and?: InputMaybe<Array<Shared_User_Temp_Access_V2_Bool_Exp>>;
+  _not?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
+  _or?: InputMaybe<Array<Shared_User_Temp_Access_V2_Bool_Exp>>;
+  common_user?: InputMaybe<Users_Common_Users_Bool_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  from?: InputMaybe<Date_Comparison_Exp>;
+  has_currently_access?: InputMaybe<Shared_User_Temp_Access_Status_V2_Bool_Exp>;
+  profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  until?: InputMaybe<Date_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "shared.user_temp_access_v2" */
+export enum Shared_User_Temp_Access_V2_Constraint {
+  /** unique or primary key constraint on columns "profile_id" */
+  UserTempAccessV2Pkey = 'user_temp_access_v2_pkey'
+}
+
+/** input type for inserting data into table "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Insert_Input = {
+  common_user?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  from?: InputMaybe<Scalars['date']>;
+  has_currently_access?: InputMaybe<Shared_User_Temp_Access_Status_V2_Obj_Rel_Insert_Input>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  until?: InputMaybe<Scalars['date']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** aggregate max on columns */
+export type Shared_User_Temp_Access_V2_Max_Fields = {
+  __typename?: 'shared_user_temp_access_v2_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  from?: Maybe<Scalars['date']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  until?: Maybe<Scalars['date']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** aggregate min on columns */
+export type Shared_User_Temp_Access_V2_Min_Fields = {
+  __typename?: 'shared_user_temp_access_v2_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  from?: Maybe<Scalars['date']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  until?: Maybe<Scalars['date']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+};
+
+/** response of any mutation on the table "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Mutation_Response = {
+  __typename?: 'shared_user_temp_access_v2_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Shared_User_Temp_Access_V2>;
+};
+
+/** input type for inserting object relation for remote table "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Obj_Rel_Insert_Input = {
+  data: Shared_User_Temp_Access_V2_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Shared_User_Temp_Access_V2_On_Conflict>;
+};
+
+/** on_conflict condition type for table "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_On_Conflict = {
+  constraint: Shared_User_Temp_Access_V2_Constraint;
+  update_columns?: Array<Shared_User_Temp_Access_V2_Update_Column>;
+  where?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "shared.user_temp_access_v2". */
+export type Shared_User_Temp_Access_V2_Order_By = {
+  common_user?: InputMaybe<Users_Common_Users_Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  from?: InputMaybe<Order_By>;
+  has_currently_access?: InputMaybe<Shared_User_Temp_Access_Status_V2_Order_By>;
+  profile_id?: InputMaybe<Order_By>;
+  until?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: shared.user_temp_access_v2 */
+export type Shared_User_Temp_Access_V2_Pk_Columns_Input = {
+  profile_id: Scalars['uuid'];
+};
+
+/** select columns of table "shared.user_temp_access_v2" */
+export enum Shared_User_Temp_Access_V2_Select_Column {
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
   From = 'from',
   /** column name */
+  ProfileId = 'profile_id',
+  /** column name */
   Until = 'until',
   /** column name */
-  UpdatedAt = 'updated_at',
-  /** column name */
-  UserId = 'user_id'
+  UpdatedAt = 'updated_at'
 }
 
-export type Shared_User_Temp_Access_Updates = {
+/** input type for updating data in table "shared.user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  from?: InputMaybe<Scalars['date']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  until?: InputMaybe<Scalars['date']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** Streaming cursor of the table "shared_user_temp_access_v2" */
+export type Shared_User_Temp_Access_V2_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Shared_User_Temp_Access_V2_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Shared_User_Temp_Access_V2_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  from?: InputMaybe<Scalars['date']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  until?: InputMaybe<Scalars['date']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+};
+
+/** update columns of table "shared.user_temp_access_v2" */
+export enum Shared_User_Temp_Access_V2_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  From = 'from',
+  /** column name */
+  ProfileId = 'profile_id',
+  /** column name */
+  Until = 'until',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+export type Shared_User_Temp_Access_V2_Updates = {
   /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Shared_User_Temp_Access_Set_Input>;
-  where: Shared_User_Temp_Access_Bool_Exp;
+  _set?: InputMaybe<Shared_User_Temp_Access_V2_Set_Input>;
+  where: Shared_User_Temp_Access_V2_Bool_Exp;
 };
 
 /** columns and relationships of "shared.users" */
@@ -44536,10 +45156,6 @@ export type Shared_Users = {
   /** computed full name from first_name,last_name */
   full_name?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
-  /** An array relationship */
-  idpmaps: Array<Users_Idp_Map>;
-  /** An aggregate relationship */
-  idpmaps_aggregate: Users_Idp_Map_Aggregate;
   is_blocked?: Maybe<Scalars['Boolean']>;
   last_access_at?: Maybe<Scalars['timestamptz']>;
   /** An object relationship */
@@ -44558,8 +45174,6 @@ export type Shared_Users = {
   /** An object relationship */
   role?: Maybe<Shared_User_Roles>;
   role_id?: Maybe<Scalars['Int']>;
-  /** An object relationship */
-  temp_access?: Maybe<Shared_User_Temp_Access>;
   type_label?: Maybe<Scalars['String']>;
   uid: Scalars['uuid'];
   updated_at: Scalars['timestamptz'];
@@ -44583,26 +45197,6 @@ export type Shared_UsersAudit_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Users_Audit_Log_Order_By>>;
   where?: InputMaybe<Users_Audit_Log_Bool_Exp>;
-};
-
-
-/** columns and relationships of "shared.users" */
-export type Shared_UsersIdpmapsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Idp_Map_Order_By>>;
-  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
-};
-
-
-/** columns and relationships of "shared.users" */
-export type Shared_UsersIdpmaps_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Idp_Map_Order_By>>;
-  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
 };
 
 
@@ -44732,8 +45326,6 @@ export type Shared_Users_Bool_Exp = {
   first_name?: InputMaybe<String_Comparison_Exp>;
   full_name?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
-  idpmaps?: InputMaybe<Users_Idp_Map_Bool_Exp>;
-  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_Aggregate_Bool_Exp>;
   is_blocked?: InputMaybe<Boolean_Comparison_Exp>;
   last_access_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   last_block?: InputMaybe<Shared_User_Last_Blocked_Bool_Exp>;
@@ -44745,7 +45337,6 @@ export type Shared_Users_Bool_Exp = {
   profiles_aggregate?: InputMaybe<Users_Profiles_Aggregate_Bool_Exp>;
   role?: InputMaybe<Shared_User_Roles_Bool_Exp>;
   role_id?: InputMaybe<Int_Comparison_Exp>;
-  temp_access?: InputMaybe<Shared_User_Temp_Access_Bool_Exp>;
   type_label?: InputMaybe<String_Comparison_Exp>;
   uid?: InputMaybe<Uuid_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -44772,7 +45363,6 @@ export type Shared_Users_Insert_Input = {
   external_uid?: InputMaybe<Scalars['Int']>;
   first_name?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['Int']>;
-  idpmaps?: InputMaybe<Users_Idp_Map_Arr_Rel_Insert_Input>;
   is_blocked?: InputMaybe<Scalars['Boolean']>;
   last_access_at?: InputMaybe<Scalars['timestamptz']>;
   last_block?: InputMaybe<Shared_User_Last_Blocked_Obj_Rel_Insert_Input>;
@@ -44784,7 +45374,6 @@ export type Shared_Users_Insert_Input = {
   profiles?: InputMaybe<Users_Profiles_Arr_Rel_Insert_Input>;
   role?: InputMaybe<Shared_User_Roles_Obj_Rel_Insert_Input>;
   role_id?: InputMaybe<Scalars['Int']>;
-  temp_access?: InputMaybe<Shared_User_Temp_Access_Obj_Rel_Insert_Input>;
   type_label?: InputMaybe<Scalars['String']>;
   uid?: InputMaybe<Scalars['uuid']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
@@ -44892,7 +45481,6 @@ export type Shared_Users_Order_By = {
   first_name?: InputMaybe<Order_By>;
   full_name?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_Aggregate_Order_By>;
   is_blocked?: InputMaybe<Order_By>;
   last_access_at?: InputMaybe<Order_By>;
   last_block?: InputMaybe<Shared_User_Last_Blocked_Order_By>;
@@ -44903,7 +45491,6 @@ export type Shared_Users_Order_By = {
   profiles_aggregate?: InputMaybe<Users_Profiles_Aggregate_Order_By>;
   role?: InputMaybe<Shared_User_Roles_Order_By>;
   role_id?: InputMaybe<Order_By>;
-  temp_access?: InputMaybe<Shared_User_Temp_Access_Order_By>;
   type_label?: InputMaybe<Order_By>;
   uid?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
@@ -45659,6 +46246,14 @@ export type Subscription_Root = {
   app_translations_by_pk?: Maybe<App_Translations>;
   /** fetch data from the table in a streaming manner: "app.translations" */
   app_translations_stream: Array<App_Translations>;
+  /** fetch data from the table: "app.url_redirects" */
+  app_url_redirects: Array<App_Url_Redirects>;
+  /** fetch aggregated fields from the table: "app.url_redirects" */
+  app_url_redirects_aggregate: App_Url_Redirects_Aggregate;
+  /** fetch data from the table: "app.url_redirects" using primary key columns */
+  app_url_redirects_by_pk?: Maybe<App_Url_Redirects>;
+  /** fetch data from the table in a streaming manner: "app.url_redirects" */
+  app_url_redirects_stream: Array<App_Url_Redirects>;
   /** fetch data from the table: "lookup.enum_assignment_content_labels" */
   lookup_enum_assignment_content_labels: Array<Lookup_Enum_Assignment_Content_Labels>;
   /** fetch aggregated fields from the table: "lookup.enum_assignment_content_labels" */
@@ -46153,16 +46748,28 @@ export type Subscription_Root = {
   shared_user_temp_access: Array<Shared_User_Temp_Access>;
   /** fetch aggregated fields from the table: "shared.user_temp_access" */
   shared_user_temp_access_aggregate: Shared_User_Temp_Access_Aggregate;
-  /** fetch data from the table: "shared.user_temp_access" using primary key columns */
-  shared_user_temp_access_by_pk?: Maybe<Shared_User_Temp_Access>;
   /** fetch data from the table: "shared.user_temp_access_status" */
   shared_user_temp_access_status: Array<Shared_User_Temp_Access_Status>;
   /** fetch aggregated fields from the table: "shared.user_temp_access_status" */
   shared_user_temp_access_status_aggregate: Shared_User_Temp_Access_Status_Aggregate;
   /** fetch data from the table in a streaming manner: "shared.user_temp_access_status" */
   shared_user_temp_access_status_stream: Array<Shared_User_Temp_Access_Status>;
+  /** fetch data from the table: "shared.user_temp_access_status_v2" */
+  shared_user_temp_access_status_v2: Array<Shared_User_Temp_Access_Status_V2>;
+  /** fetch aggregated fields from the table: "shared.user_temp_access_status_v2" */
+  shared_user_temp_access_status_v2_aggregate: Shared_User_Temp_Access_Status_V2_Aggregate;
+  /** fetch data from the table in a streaming manner: "shared.user_temp_access_status_v2" */
+  shared_user_temp_access_status_v2_stream: Array<Shared_User_Temp_Access_Status_V2>;
   /** fetch data from the table in a streaming manner: "shared.user_temp_access" */
   shared_user_temp_access_stream: Array<Shared_User_Temp_Access>;
+  /** fetch data from the table: "shared.user_temp_access_v2" */
+  shared_user_temp_access_v2: Array<Shared_User_Temp_Access_V2>;
+  /** fetch aggregated fields from the table: "shared.user_temp_access_v2" */
+  shared_user_temp_access_v2_aggregate: Shared_User_Temp_Access_V2_Aggregate;
+  /** fetch data from the table: "shared.user_temp_access_v2" using primary key columns */
+  shared_user_temp_access_v2_by_pk?: Maybe<Shared_User_Temp_Access_V2>;
+  /** fetch data from the table in a streaming manner: "shared.user_temp_access_v2" */
+  shared_user_temp_access_v2_stream: Array<Shared_User_Temp_Access_V2>;
   /** fetch data from the table: "shared.users" */
   shared_users: Array<Shared_Users>;
   /** fetch aggregated fields from the table: "shared.users" */
@@ -46213,10 +46820,16 @@ export type Subscription_Root = {
   users_idp_map: Array<Users_Idp_Map>;
   /** fetch aggregated fields from the table: "users.idp_map" */
   users_idp_map_aggregate: Users_Idp_Map_Aggregate;
-  /** fetch data from the table: "users.idp_map" using primary key columns */
-  users_idp_map_by_pk?: Maybe<Users_Idp_Map>;
   /** fetch data from the table in a streaming manner: "users.idp_map" */
   users_idp_map_stream: Array<Users_Idp_Map>;
+  /** fetch data from the table: "users.idp_map_v2" */
+  users_idp_map_v2: Array<Users_Idp_Map_V2>;
+  /** fetch aggregated fields from the table: "users.idp_map_v2" */
+  users_idp_map_v2_aggregate: Users_Idp_Map_V2_Aggregate;
+  /** fetch data from the table: "users.idp_map_v2" using primary key columns */
+  users_idp_map_v2_by_pk?: Maybe<Users_Idp_Map_V2>;
+  /** fetch data from the table in a streaming manner: "users.idp_map_v2" */
+  users_idp_map_v2_stream: Array<Users_Idp_Map_V2>;
   /** fetch data from the table: "users.idps" */
   users_idps: Array<Users_Idps>;
   /** fetch aggregated fields from the table: "users.idps" */
@@ -46325,6 +46938,14 @@ export type Subscription_Root = {
   users_summary_view_aggregate: Users_Summary_View_Aggregate;
   /** fetch data from the table in a streaming manner: "users.summary_view" */
   users_summary_view_stream: Array<Users_Summary_View>;
+  /** fetch data from the table: "users.table_column_preferences" */
+  users_table_column_preferences: Array<Users_Table_Column_Preferences>;
+  /** fetch aggregated fields from the table: "users.table_column_preferences" */
+  users_table_column_preferences_aggregate: Users_Table_Column_Preferences_Aggregate;
+  /** fetch data from the table: "users.table_column_preferences" using primary key columns */
+  users_table_column_preferences_by_pk?: Maybe<Users_Table_Column_Preferences>;
+  /** fetch data from the table in a streaming manner: "users.table_column_preferences" */
+  users_table_column_preferences_stream: Array<Users_Table_Column_Preferences>;
   /** fetch data from the table: "users.users_sync_cm" */
   users_users_sync_cm: Array<Users_Users_Sync_Cm>;
   /** fetch aggregated fields from the table: "users.users_sync_cm" */
@@ -48314,6 +48935,36 @@ export type Subscription_RootApp_Translations_StreamArgs = {
 };
 
 
+export type Subscription_RootApp_Url_RedirectsArgs = {
+  distinct_on?: InputMaybe<Array<App_Url_Redirects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Url_Redirects_Order_By>>;
+  where?: InputMaybe<App_Url_Redirects_Bool_Exp>;
+};
+
+
+export type Subscription_RootApp_Url_Redirects_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Url_Redirects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Url_Redirects_Order_By>>;
+  where?: InputMaybe<App_Url_Redirects_Bool_Exp>;
+};
+
+
+export type Subscription_RootApp_Url_Redirects_By_PkArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type Subscription_RootApp_Url_Redirects_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<App_Url_Redirects_Stream_Cursor_Input>>;
+  where?: InputMaybe<App_Url_Redirects_Bool_Exp>;
+};
+
+
 export type Subscription_RootLookup_Enum_Assignment_Content_LabelsArgs = {
   distinct_on?: InputMaybe<Array<Lookup_Enum_Assignment_Content_Labels_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -50280,11 +50931,6 @@ export type Subscription_RootShared_User_Temp_Access_AggregateArgs = {
 };
 
 
-export type Subscription_RootShared_User_Temp_Access_By_PkArgs = {
-  user_id: Scalars['uuid'];
-};
-
-
 export type Subscription_RootShared_User_Temp_Access_StatusArgs = {
   distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_Status_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -50310,10 +50956,65 @@ export type Subscription_RootShared_User_Temp_Access_Status_StreamArgs = {
 };
 
 
+export type Subscription_RootShared_User_Temp_Access_Status_V2Args = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_Status_V2_Bool_Exp>;
+};
+
+
+export type Subscription_RootShared_User_Temp_Access_Status_V2_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_Status_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_Status_V2_Bool_Exp>;
+};
+
+
+export type Subscription_RootShared_User_Temp_Access_Status_V2_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Shared_User_Temp_Access_Status_V2_Stream_Cursor_Input>>;
+  where?: InputMaybe<Shared_User_Temp_Access_Status_V2_Bool_Exp>;
+};
+
+
 export type Subscription_RootShared_User_Temp_Access_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<Shared_User_Temp_Access_Stream_Cursor_Input>>;
   where?: InputMaybe<Shared_User_Temp_Access_Bool_Exp>;
+};
+
+
+export type Subscription_RootShared_User_Temp_Access_V2Args = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
+};
+
+
+export type Subscription_RootShared_User_Temp_Access_V2_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Shared_User_Temp_Access_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_User_Temp_Access_V2_Order_By>>;
+  where?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
+};
+
+
+export type Subscription_RootShared_User_Temp_Access_V2_By_PkArgs = {
+  profile_id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootShared_User_Temp_Access_V2_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Shared_User_Temp_Access_V2_Stream_Cursor_Input>>;
+  where?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
 };
 
 
@@ -50510,15 +51211,40 @@ export type Subscription_RootUsers_Idp_Map_AggregateArgs = {
 };
 
 
-export type Subscription_RootUsers_Idp_Map_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
 export type Subscription_RootUsers_Idp_Map_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<Users_Idp_Map_Stream_Cursor_Input>>;
   where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Idp_Map_V2Args = {
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Idp_Map_V2_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Idp_Map_V2_By_PkArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type Subscription_RootUsers_Idp_Map_V2_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Users_Idp_Map_V2_Stream_Cursor_Input>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
 };
 
 
@@ -50929,6 +51655,36 @@ export type Subscription_RootUsers_Summary_View_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<Users_Summary_View_Stream_Cursor_Input>>;
   where?: InputMaybe<Users_Summary_View_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Table_Column_PreferencesArgs = {
+  distinct_on?: InputMaybe<Array<Users_Table_Column_Preferences_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Table_Column_Preferences_Order_By>>;
+  where?: InputMaybe<Users_Table_Column_Preferences_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Table_Column_Preferences_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Table_Column_Preferences_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Table_Column_Preferences_Order_By>>;
+  where?: InputMaybe<Users_Table_Column_Preferences_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Table_Column_Preferences_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootUsers_Table_Column_Preferences_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Users_Table_Column_Preferences_Stream_Cursor_Input>>;
+  where?: InputMaybe<Users_Table_Column_Preferences_Bool_Exp>;
 };
 
 
@@ -52958,17 +53714,17 @@ export type Users_Groups_Variance_Order_By = {
   id?: InputMaybe<Order_By>;
 };
 
-/** Mapping voor externe idp ID naar lokale user ID. */
+/** columns and relationships of "users.idp_map" */
 export type Users_Idp_Map = {
   __typename?: 'users_idp_map';
-  id: Scalars['Int'];
-  idp: Users_Idps_Enum;
+  id?: Maybe<Scalars['Int']>;
+  idp?: Maybe<Scalars['String']>;
   /** An object relationship */
-  idpByIdp: Users_Idps;
-  idp_user_id: Scalars['String'];
+  idpByIdp?: Maybe<Users_Idps>;
+  idp_user_id?: Maybe<Scalars['String']>;
   /** An object relationship */
-  local_user?: Maybe<Shared_Users>;
-  local_user_id: Scalars['uuid'];
+  local_user?: Maybe<Users_Common_Users>;
+  local_user_id?: Maybe<Scalars['uuid']>;
 };
 
 /** aggregated selection of "users.idp_map" */
@@ -52976,17 +53732,6 @@ export type Users_Idp_Map_Aggregate = {
   __typename?: 'users_idp_map_aggregate';
   aggregate?: Maybe<Users_Idp_Map_Aggregate_Fields>;
   nodes: Array<Users_Idp_Map>;
-};
-
-export type Users_Idp_Map_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Users_Idp_Map_Aggregate_Bool_Exp_Count>;
-};
-
-export type Users_Idp_Map_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<Users_Idp_Map_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
 };
 
 /** aggregate fields of "users.idp_map" */
@@ -53012,37 +53757,10 @@ export type Users_Idp_Map_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']>;
 };
 
-/** order by aggregate values of table "users.idp_map" */
-export type Users_Idp_Map_Aggregate_Order_By = {
-  avg?: InputMaybe<Users_Idp_Map_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Users_Idp_Map_Max_Order_By>;
-  min?: InputMaybe<Users_Idp_Map_Min_Order_By>;
-  stddev?: InputMaybe<Users_Idp_Map_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<Users_Idp_Map_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<Users_Idp_Map_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<Users_Idp_Map_Sum_Order_By>;
-  var_pop?: InputMaybe<Users_Idp_Map_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<Users_Idp_Map_Var_Samp_Order_By>;
-  variance?: InputMaybe<Users_Idp_Map_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "users.idp_map" */
-export type Users_Idp_Map_Arr_Rel_Insert_Input = {
-  data: Array<Users_Idp_Map_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Users_Idp_Map_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Users_Idp_Map_Avg_Fields = {
   __typename?: 'users_idp_map_avg_fields';
   id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Avg_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "users.idp_map". All fields are combined with a logical 'AND'. */
@@ -53051,82 +53769,29 @@ export type Users_Idp_Map_Bool_Exp = {
   _not?: InputMaybe<Users_Idp_Map_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Idp_Map_Bool_Exp>>;
   id?: InputMaybe<Int_Comparison_Exp>;
-  idp?: InputMaybe<Users_Idps_Enum_Comparison_Exp>;
+  idp?: InputMaybe<String_Comparison_Exp>;
   idpByIdp?: InputMaybe<Users_Idps_Bool_Exp>;
   idp_user_id?: InputMaybe<String_Comparison_Exp>;
-  local_user?: InputMaybe<Shared_Users_Bool_Exp>;
+  local_user?: InputMaybe<Users_Common_Users_Bool_Exp>;
   local_user_id?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "users.idp_map" */
-export enum Users_Idp_Map_Constraint {
-  /** unique or primary key constraint on columns "idp_user_id" */
-  IdpMapIdpUserIdKey = 'idp_map_idp_user_id_key',
-  /** unique or primary key constraint on columns "id" */
-  IdpMapPkey = 'idp_map_pkey',
-  /** unique or primary key constraint on columns "idp_user_id", "idp", "local_user_id" */
-  LocalUserIdIdpIdpUserId = 'local_user_id_idp_idp_user_id'
-}
-
-/** input type for incrementing numeric columns in table "users.idp_map" */
-export type Users_Idp_Map_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "users.idp_map" */
-export type Users_Idp_Map_Insert_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  idp?: InputMaybe<Users_Idps_Enum>;
-  idpByIdp?: InputMaybe<Users_Idps_Obj_Rel_Insert_Input>;
-  idp_user_id?: InputMaybe<Scalars['String']>;
-  local_user?: InputMaybe<Shared_Users_Obj_Rel_Insert_Input>;
-  local_user_id?: InputMaybe<Scalars['uuid']>;
 };
 
 /** aggregate max on columns */
 export type Users_Idp_Map_Max_Fields = {
   __typename?: 'users_idp_map_max_fields';
   id?: Maybe<Scalars['Int']>;
+  idp?: Maybe<Scalars['String']>;
   idp_user_id?: Maybe<Scalars['String']>;
   local_user_id?: Maybe<Scalars['uuid']>;
-};
-
-/** order by max() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Max_Order_By = {
-  id?: InputMaybe<Order_By>;
-  idp_user_id?: InputMaybe<Order_By>;
-  local_user_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Users_Idp_Map_Min_Fields = {
   __typename?: 'users_idp_map_min_fields';
   id?: Maybe<Scalars['Int']>;
+  idp?: Maybe<Scalars['String']>;
   idp_user_id?: Maybe<Scalars['String']>;
   local_user_id?: Maybe<Scalars['uuid']>;
-};
-
-/** order by min() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Min_Order_By = {
-  id?: InputMaybe<Order_By>;
-  idp_user_id?: InputMaybe<Order_By>;
-  local_user_id?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "users.idp_map" */
-export type Users_Idp_Map_Mutation_Response = {
-  __typename?: 'users_idp_map_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Users_Idp_Map>;
-};
-
-/** on_conflict condition type for table "users.idp_map" */
-export type Users_Idp_Map_On_Conflict = {
-  constraint: Users_Idp_Map_Constraint;
-  update_columns?: Array<Users_Idp_Map_Update_Column>;
-  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
 };
 
 /** Ordering options when selecting data from "users.idp_map". */
@@ -53135,13 +53800,8 @@ export type Users_Idp_Map_Order_By = {
   idp?: InputMaybe<Order_By>;
   idpByIdp?: InputMaybe<Users_Idps_Order_By>;
   idp_user_id?: InputMaybe<Order_By>;
-  local_user?: InputMaybe<Shared_Users_Order_By>;
+  local_user?: InputMaybe<Users_Common_Users_Order_By>;
   local_user_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: users.idp_map */
-export type Users_Idp_Map_Pk_Columns_Input = {
-  id: Scalars['Int'];
 };
 
 /** select columns of table "users.idp_map" */
@@ -53156,23 +53816,10 @@ export enum Users_Idp_Map_Select_Column {
   LocalUserId = 'local_user_id'
 }
 
-/** input type for updating data in table "users.idp_map" */
-export type Users_Idp_Map_Set_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  idp?: InputMaybe<Users_Idps_Enum>;
-  idp_user_id?: InputMaybe<Scalars['String']>;
-  local_user_id?: InputMaybe<Scalars['uuid']>;
-};
-
 /** aggregate stddev on columns */
 export type Users_Idp_Map_Stddev_Fields = {
   __typename?: 'users_idp_map_stddev_fields';
   id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Stddev_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
@@ -53181,20 +53828,10 @@ export type Users_Idp_Map_Stddev_Pop_Fields = {
   id?: Maybe<Scalars['Float']>;
 };
 
-/** order by stddev_pop() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Stddev_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** aggregate stddev_samp on columns */
 export type Users_Idp_Map_Stddev_Samp_Fields = {
   __typename?: 'users_idp_map_stddev_samp_fields';
   id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Stddev_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** Streaming cursor of the table "users_idp_map" */
@@ -53208,7 +53845,7 @@ export type Users_Idp_Map_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Users_Idp_Map_Stream_Cursor_Value_Input = {
   id?: InputMaybe<Scalars['Int']>;
-  idp?: InputMaybe<Users_Idps_Enum>;
+  idp?: InputMaybe<Scalars['String']>;
   idp_user_id?: InputMaybe<Scalars['String']>;
   local_user_id?: InputMaybe<Scalars['uuid']>;
 };
@@ -53219,13 +53856,199 @@ export type Users_Idp_Map_Sum_Fields = {
   id?: Maybe<Scalars['Int']>;
 };
 
-/** order by sum() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Sum_Order_By = {
+/** contains the links between identity providers and the users in the hetarchief database. */
+export type Users_Idp_Map_V2 = {
+  __typename?: 'users_idp_map_v2';
+  /** An object relationship */
+  common_user?: Maybe<Users_Common_Users>;
+  id: Scalars['Int'];
+  idp: Users_Idps_Enum;
+  /** An object relationship */
+  idp_type: Users_Idps;
+  idp_user_id: Scalars['String'];
+  local_profile_id: Scalars['uuid'];
+  /** An object relationship */
+  profile: Users_Profiles;
+};
+
+/** aggregated selection of "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Aggregate = {
+  __typename?: 'users_idp_map_v2_aggregate';
+  aggregate?: Maybe<Users_Idp_Map_V2_Aggregate_Fields>;
+  nodes: Array<Users_Idp_Map_V2>;
+};
+
+export type Users_Idp_Map_V2_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Users_Idp_Map_V2_Aggregate_Bool_Exp_Count>;
+};
+
+export type Users_Idp_Map_V2_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+  filter?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Aggregate_Fields = {
+  __typename?: 'users_idp_map_v2_aggregate_fields';
+  avg?: Maybe<Users_Idp_Map_V2_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Users_Idp_Map_V2_Max_Fields>;
+  min?: Maybe<Users_Idp_Map_V2_Min_Fields>;
+  stddev?: Maybe<Users_Idp_Map_V2_Stddev_Fields>;
+  stddev_pop?: Maybe<Users_Idp_Map_V2_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Users_Idp_Map_V2_Stddev_Samp_Fields>;
+  sum?: Maybe<Users_Idp_Map_V2_Sum_Fields>;
+  var_pop?: Maybe<Users_Idp_Map_V2_Var_Pop_Fields>;
+  var_samp?: Maybe<Users_Idp_Map_V2_Var_Samp_Fields>;
+  variance?: Maybe<Users_Idp_Map_V2_Variance_Fields>;
+};
+
+
+/** aggregate fields of "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Aggregate_Order_By = {
+  avg?: InputMaybe<Users_Idp_Map_V2_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Users_Idp_Map_V2_Max_Order_By>;
+  min?: InputMaybe<Users_Idp_Map_V2_Min_Order_By>;
+  stddev?: InputMaybe<Users_Idp_Map_V2_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Users_Idp_Map_V2_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Users_Idp_Map_V2_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Users_Idp_Map_V2_Sum_Order_By>;
+  var_pop?: InputMaybe<Users_Idp_Map_V2_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Users_Idp_Map_V2_Var_Samp_Order_By>;
+  variance?: InputMaybe<Users_Idp_Map_V2_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Arr_Rel_Insert_Input = {
+  data: Array<Users_Idp_Map_V2_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Users_Idp_Map_V2_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type Users_Idp_Map_V2_Avg_Fields = {
+  __typename?: 'users_idp_map_v2_avg_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Avg_Order_By = {
   id?: InputMaybe<Order_By>;
 };
 
-/** update columns of table "users.idp_map" */
-export enum Users_Idp_Map_Update_Column {
+/** Boolean expression to filter rows from the table "users.idp_map_v2". All fields are combined with a logical 'AND'. */
+export type Users_Idp_Map_V2_Bool_Exp = {
+  _and?: InputMaybe<Array<Users_Idp_Map_V2_Bool_Exp>>;
+  _not?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+  _or?: InputMaybe<Array<Users_Idp_Map_V2_Bool_Exp>>;
+  common_user?: InputMaybe<Users_Common_Users_Bool_Exp>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  idp?: InputMaybe<Users_Idps_Enum_Comparison_Exp>;
+  idp_type?: InputMaybe<Users_Idps_Bool_Exp>;
+  idp_user_id?: InputMaybe<String_Comparison_Exp>;
+  local_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
+};
+
+/** unique or primary key constraints on table "users.idp_map_v2" */
+export enum Users_Idp_Map_V2_Constraint {
+  /** unique or primary key constraint on columns "idp_user_id" */
+  IdpMapV2IdpUserIdKey = 'idp_map_v2_idp_user_id_key',
+  /** unique or primary key constraint on columns "local_profile_id", "idp_user_id" */
+  IdpMapV2IdpUserIdLocalProfileIdKey = 'idp_map_v2_idp_user_id_local_profile_id_key',
+  /** unique or primary key constraint on columns "id" */
+  IdpMapV2Pkey = 'idp_map_v2_pkey'
+}
+
+/** input type for incrementing numeric columns in table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Inc_Input = {
+  id?: InputMaybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Insert_Input = {
+  common_user?: InputMaybe<Users_Common_Users_Obj_Rel_Insert_Input>;
+  id?: InputMaybe<Scalars['Int']>;
+  idp?: InputMaybe<Users_Idps_Enum>;
+  idp_type?: InputMaybe<Users_Idps_Obj_Rel_Insert_Input>;
+  idp_user_id?: InputMaybe<Scalars['String']>;
+  local_profile_id?: InputMaybe<Scalars['uuid']>;
+  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+};
+
+/** aggregate max on columns */
+export type Users_Idp_Map_V2_Max_Fields = {
+  __typename?: 'users_idp_map_v2_max_fields';
+  id?: Maybe<Scalars['Int']>;
+  idp_user_id?: Maybe<Scalars['String']>;
+  local_profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by max() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Max_Order_By = {
+  id?: InputMaybe<Order_By>;
+  idp_user_id?: InputMaybe<Order_By>;
+  local_profile_id?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Users_Idp_Map_V2_Min_Fields = {
+  __typename?: 'users_idp_map_v2_min_fields';
+  id?: Maybe<Scalars['Int']>;
+  idp_user_id?: Maybe<Scalars['String']>;
+  local_profile_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by min() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Min_Order_By = {
+  id?: InputMaybe<Order_By>;
+  idp_user_id?: InputMaybe<Order_By>;
+  local_profile_id?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Mutation_Response = {
+  __typename?: 'users_idp_map_v2_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Users_Idp_Map_V2>;
+};
+
+/** on_conflict condition type for table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_On_Conflict = {
+  constraint: Users_Idp_Map_V2_Constraint;
+  update_columns?: Array<Users_Idp_Map_V2_Update_Column>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "users.idp_map_v2". */
+export type Users_Idp_Map_V2_Order_By = {
+  common_user?: InputMaybe<Users_Common_Users_Order_By>;
+  id?: InputMaybe<Order_By>;
+  idp?: InputMaybe<Order_By>;
+  idp_type?: InputMaybe<Users_Idps_Order_By>;
+  idp_user_id?: InputMaybe<Order_By>;
+  local_profile_id?: InputMaybe<Order_By>;
+  profile?: InputMaybe<Users_Profiles_Order_By>;
+};
+
+/** primary key columns input for table: users.idp_map_v2 */
+export type Users_Idp_Map_V2_Pk_Columns_Input = {
+  id: Scalars['Int'];
+};
+
+/** select columns of table "users.idp_map_v2" */
+export enum Users_Idp_Map_V2_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
@@ -53233,15 +54056,128 @@ export enum Users_Idp_Map_Update_Column {
   /** column name */
   IdpUserId = 'idp_user_id',
   /** column name */
-  LocalUserId = 'local_user_id'
+  LocalProfileId = 'local_profile_id'
 }
 
-export type Users_Idp_Map_Updates = {
+/** input type for updating data in table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Set_Input = {
+  id?: InputMaybe<Scalars['Int']>;
+  idp?: InputMaybe<Users_Idps_Enum>;
+  idp_user_id?: InputMaybe<Scalars['String']>;
+  local_profile_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** aggregate stddev on columns */
+export type Users_Idp_Map_V2_Stddev_Fields = {
+  __typename?: 'users_idp_map_v2_stddev_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Stddev_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Users_Idp_Map_V2_Stddev_Pop_Fields = {
+  __typename?: 'users_idp_map_v2_stddev_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Stddev_Pop_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Users_Idp_Map_V2_Stddev_Samp_Fields = {
+  __typename?: 'users_idp_map_v2_stddev_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Stddev_Samp_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** Streaming cursor of the table "users_idp_map_v2" */
+export type Users_Idp_Map_V2_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Users_Idp_Map_V2_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Users_Idp_Map_V2_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['Int']>;
+  idp?: InputMaybe<Users_Idps_Enum>;
+  idp_user_id?: InputMaybe<Scalars['String']>;
+  local_profile_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** aggregate sum on columns */
+export type Users_Idp_Map_V2_Sum_Fields = {
+  __typename?: 'users_idp_map_v2_sum_fields';
+  id?: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Sum_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** update columns of table "users.idp_map_v2" */
+export enum Users_Idp_Map_V2_Update_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Idp = 'idp',
+  /** column name */
+  IdpUserId = 'idp_user_id',
+  /** column name */
+  LocalProfileId = 'local_profile_id'
+}
+
+export type Users_Idp_Map_V2_Updates = {
   /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Users_Idp_Map_Inc_Input>;
+  _inc?: InputMaybe<Users_Idp_Map_V2_Inc_Input>;
   /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Users_Idp_Map_Set_Input>;
-  where: Users_Idp_Map_Bool_Exp;
+  _set?: InputMaybe<Users_Idp_Map_V2_Set_Input>;
+  where: Users_Idp_Map_V2_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Users_Idp_Map_V2_Var_Pop_Fields = {
+  __typename?: 'users_idp_map_v2_var_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Var_Pop_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Users_Idp_Map_V2_Var_Samp_Fields = {
+  __typename?: 'users_idp_map_v2_var_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Var_Samp_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Users_Idp_Map_V2_Variance_Fields = {
+  __typename?: 'users_idp_map_v2_variance_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "users.idp_map_v2" */
+export type Users_Idp_Map_V2_Variance_Order_By = {
+  id?: InputMaybe<Order_By>;
 };
 
 /** aggregate var_pop on columns */
@@ -53250,31 +54186,16 @@ export type Users_Idp_Map_Var_Pop_Fields = {
   id?: Maybe<Scalars['Float']>;
 };
 
-/** order by var_pop() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Var_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** aggregate var_samp on columns */
 export type Users_Idp_Map_Var_Samp_Fields = {
   __typename?: 'users_idp_map_var_samp_fields';
   id?: Maybe<Scalars['Float']>;
 };
 
-/** order by var_samp() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Var_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** aggregate variance on columns */
 export type Users_Idp_Map_Variance_Fields = {
   __typename?: 'users_idp_map_variance_fields';
   id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "users.idp_map" */
-export type Users_Idp_Map_Variance_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "users.idps" */
@@ -56130,6 +57051,8 @@ export type Users_Profiles = {
   /** An aggregate relationship */
   profile_user_groups_aggregate: Users_Profile_User_Groups_Aggregate;
   stamboek?: Maybe<Scalars['String']>;
+  /** An object relationship */
+  temp_access?: Maybe<Shared_User_Temp_Access_V2>;
   title?: Maybe<Scalars['String']>;
   updated_at: Scalars['timestamptz'];
   user_id?: Maybe<Scalars['uuid']>;
@@ -56551,6 +57474,7 @@ export type Users_Profiles_Bool_Exp = {
   profile_user_groups?: InputMaybe<Users_Profile_User_Groups_Bool_Exp>;
   profile_user_groups_aggregate?: InputMaybe<Users_Profile_User_Groups_Aggregate_Bool_Exp>;
   stamboek?: InputMaybe<String_Comparison_Exp>;
+  temp_access?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   user_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -56605,6 +57529,7 @@ export type Users_Profiles_Insert_Input = {
   profile_user_group?: InputMaybe<Users_Profile_User_Groups_Obj_Rel_Insert_Input>;
   profile_user_groups?: InputMaybe<Users_Profile_User_Groups_Arr_Rel_Insert_Input>;
   stamboek?: InputMaybe<Scalars['String']>;
+  temp_access?: InputMaybe<Shared_User_Temp_Access_V2_Obj_Rel_Insert_Input>;
   title?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
   user_id?: InputMaybe<Scalars['uuid']>;
@@ -56945,6 +57870,7 @@ export type Users_Profiles_Order_By = {
   profile_user_group?: InputMaybe<Users_Profile_User_Groups_Order_By>;
   profile_user_groups_aggregate?: InputMaybe<Users_Profile_User_Groups_Aggregate_Order_By>;
   stamboek?: InputMaybe<Order_By>;
+  temp_access?: InputMaybe<Shared_User_Temp_Access_V2_Order_By>;
   title?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
   user_id?: InputMaybe<Order_By>;
@@ -57145,9 +58071,9 @@ export type Users_Summary_View = {
   group_id?: Maybe<Scalars['Int']>;
   group_name?: Maybe<Scalars['String']>;
   /** An array relationship */
-  idps: Array<Users_Idp_Map>;
+  idps: Array<Users_Idp_Map_V2>;
   /** An aggregate relationship */
-  idps_aggregate: Users_Idp_Map_Aggregate;
+  idps_aggregate: Users_Idp_Map_V2_Aggregate;
   is_blocked?: Maybe<Scalars['Boolean']>;
   is_deleted?: Maybe<Scalars['Boolean']>;
   is_exception?: Maybe<Scalars['Boolean']>;
@@ -57299,21 +58225,21 @@ export type Users_Summary_ViewEducational_Organizations_AggregateArgs = {
 
 /** columns and relationships of "users.summary_view" */
 export type Users_Summary_ViewIdpsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Idp_Map_Order_By>>;
-  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
 };
 
 
 /** columns and relationships of "users.summary_view" */
 export type Users_Summary_ViewIdps_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Idp_Map_Order_By>>;
-  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
 };
 
 
@@ -57401,8 +58327,8 @@ export type Users_Summary_View_Bool_Exp = {
   full_name?: InputMaybe<String_Comparison_Exp>;
   group_id?: InputMaybe<Int_Comparison_Exp>;
   group_name?: InputMaybe<String_Comparison_Exp>;
-  idps?: InputMaybe<Users_Idp_Map_Bool_Exp>;
-  idps_aggregate?: InputMaybe<Users_Idp_Map_Aggregate_Bool_Exp>;
+  idps?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+  idps_aggregate?: InputMaybe<Users_Idp_Map_V2_Aggregate_Bool_Exp>;
   is_blocked?: InputMaybe<Boolean_Comparison_Exp>;
   is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
   is_exception?: InputMaybe<Boolean_Comparison_Exp>;
@@ -57444,7 +58370,7 @@ export type Users_Summary_View_Insert_Input = {
   full_name?: InputMaybe<Scalars['String']>;
   group_id?: InputMaybe<Scalars['Int']>;
   group_name?: InputMaybe<Scalars['String']>;
-  idps?: InputMaybe<Users_Idp_Map_Arr_Rel_Insert_Input>;
+  idps?: InputMaybe<Users_Idp_Map_V2_Arr_Rel_Insert_Input>;
   is_blocked?: InputMaybe<Scalars['Boolean']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   is_exception?: InputMaybe<Scalars['Boolean']>;
@@ -57542,7 +58468,7 @@ export type Users_Summary_View_Order_By = {
   full_name?: InputMaybe<Order_By>;
   group_id?: InputMaybe<Order_By>;
   group_name?: InputMaybe<Order_By>;
-  idps_aggregate?: InputMaybe<Users_Idp_Map_Aggregate_Order_By>;
+  idps_aggregate?: InputMaybe<Users_Idp_Map_V2_Aggregate_Order_By>;
   is_blocked?: InputMaybe<Order_By>;
   is_deleted?: InputMaybe<Order_By>;
   is_exception?: InputMaybe<Order_By>;
@@ -57701,11 +58627,233 @@ export type Users_Summary_View_Variance_Fields = {
   role_id?: Maybe<Scalars['Float']>;
 };
 
+/** columns and relationships of "users.table_column_preferences" */
+export type Users_Table_Column_Preferences = {
+  __typename?: 'users_table_column_preferences';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id: Scalars['uuid'];
+  profile_id: Scalars['uuid'];
+  updated_at?: Maybe<Scalars['timestamp']>;
+  url_key: Scalars['String'];
+  visible_columns: Scalars['jsonb'];
+};
+
+
+/** columns and relationships of "users.table_column_preferences" */
+export type Users_Table_Column_PreferencesVisible_ColumnsArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "users.table_column_preferences" */
+export type Users_Table_Column_Preferences_Aggregate = {
+  __typename?: 'users_table_column_preferences_aggregate';
+  aggregate?: Maybe<Users_Table_Column_Preferences_Aggregate_Fields>;
+  nodes: Array<Users_Table_Column_Preferences>;
+};
+
+/** aggregate fields of "users.table_column_preferences" */
+export type Users_Table_Column_Preferences_Aggregate_Fields = {
+  __typename?: 'users_table_column_preferences_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Users_Table_Column_Preferences_Max_Fields>;
+  min?: Maybe<Users_Table_Column_Preferences_Min_Fields>;
+};
+
+
+/** aggregate fields of "users.table_column_preferences" */
+export type Users_Table_Column_Preferences_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Users_Table_Column_Preferences_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Users_Table_Column_Preferences_Append_Input = {
+  visible_columns?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "users.table_column_preferences". All fields are combined with a logical 'AND'. */
+export type Users_Table_Column_Preferences_Bool_Exp = {
+  _and?: InputMaybe<Array<Users_Table_Column_Preferences_Bool_Exp>>;
+  _not?: InputMaybe<Users_Table_Column_Preferences_Bool_Exp>;
+  _or?: InputMaybe<Array<Users_Table_Column_Preferences_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  url_key?: InputMaybe<String_Comparison_Exp>;
+  visible_columns?: InputMaybe<Jsonb_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "users.table_column_preferences" */
+export enum Users_Table_Column_Preferences_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  TableColumnPreferencesPkey = 'table_column_preferences_pkey',
+  /** unique or primary key constraint on columns "url_key", "profile_id" */
+  TableColumnPreferencesProfileIdUrlKeyKey = 'table_column_preferences_profile_id_url_key_key'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Users_Table_Column_Preferences_Delete_At_Path_Input = {
+  visible_columns?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Users_Table_Column_Preferences_Delete_Elem_Input = {
+  visible_columns?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Users_Table_Column_Preferences_Delete_Key_Input = {
+  visible_columns?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "users.table_column_preferences" */
+export type Users_Table_Column_Preferences_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  url_key?: InputMaybe<Scalars['String']>;
+  visible_columns?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** aggregate max on columns */
+export type Users_Table_Column_Preferences_Max_Fields = {
+  __typename?: 'users_table_column_preferences_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+  url_key?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Users_Table_Column_Preferences_Min_Fields = {
+  __typename?: 'users_table_column_preferences_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  profile_id?: Maybe<Scalars['uuid']>;
+  updated_at?: Maybe<Scalars['timestamp']>;
+  url_key?: Maybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "users.table_column_preferences" */
+export type Users_Table_Column_Preferences_Mutation_Response = {
+  __typename?: 'users_table_column_preferences_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Users_Table_Column_Preferences>;
+};
+
+/** on_conflict condition type for table "users.table_column_preferences" */
+export type Users_Table_Column_Preferences_On_Conflict = {
+  constraint: Users_Table_Column_Preferences_Constraint;
+  update_columns?: Array<Users_Table_Column_Preferences_Update_Column>;
+  where?: InputMaybe<Users_Table_Column_Preferences_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "users.table_column_preferences". */
+export type Users_Table_Column_Preferences_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  profile_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  url_key?: InputMaybe<Order_By>;
+  visible_columns?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: users.table_column_preferences */
+export type Users_Table_Column_Preferences_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Users_Table_Column_Preferences_Prepend_Input = {
+  visible_columns?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "users.table_column_preferences" */
+export enum Users_Table_Column_Preferences_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ProfileId = 'profile_id',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  UrlKey = 'url_key',
+  /** column name */
+  VisibleColumns = 'visible_columns'
+}
+
+/** input type for updating data in table "users.table_column_preferences" */
+export type Users_Table_Column_Preferences_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  url_key?: InputMaybe<Scalars['String']>;
+  visible_columns?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Streaming cursor of the table "users_table_column_preferences" */
+export type Users_Table_Column_Preferences_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Users_Table_Column_Preferences_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Users_Table_Column_Preferences_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  profile_id?: InputMaybe<Scalars['uuid']>;
+  updated_at?: InputMaybe<Scalars['timestamp']>;
+  url_key?: InputMaybe<Scalars['String']>;
+  visible_columns?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** update columns of table "users.table_column_preferences" */
+export enum Users_Table_Column_Preferences_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ProfileId = 'profile_id',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  UrlKey = 'url_key',
+  /** column name */
+  VisibleColumns = 'visible_columns'
+}
+
+export type Users_Table_Column_Preferences_Updates = {
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  _append?: InputMaybe<Users_Table_Column_Preferences_Append_Input>;
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  _delete_at_path?: InputMaybe<Users_Table_Column_Preferences_Delete_At_Path_Input>;
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  _delete_elem?: InputMaybe<Users_Table_Column_Preferences_Delete_Elem_Input>;
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  _delete_key?: InputMaybe<Users_Table_Column_Preferences_Delete_Key_Input>;
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  _prepend?: InputMaybe<Users_Table_Column_Preferences_Prepend_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Users_Table_Column_Preferences_Set_Input>;
+  where: Users_Table_Column_Preferences_Bool_Exp;
+};
+
 /** columns and relationships of "users.users_sync_cm" */
 export type Users_Users_Sync_Cm = {
   __typename?: 'users_users_sync_cm';
   action: Scalars['String'];
-  avo_user_id?: Maybe<Scalars['uuid']>;
+  avo_profile_id?: Maybe<Scalars['uuid']>;
   cm_email?: Maybe<Scalars['String']>;
   created_at: Scalars['timestamptz'];
   expected_info?: Maybe<Scalars['jsonb']>;
@@ -57777,7 +58925,7 @@ export type Users_Users_Sync_Cm_Bool_Exp = {
   _not?: InputMaybe<Users_Users_Sync_Cm_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Users_Sync_Cm_Bool_Exp>>;
   action?: InputMaybe<String_Comparison_Exp>;
-  avo_user_id?: InputMaybe<Uuid_Comparison_Exp>;
+  avo_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   cm_email?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   expected_info?: InputMaybe<Jsonb_Comparison_Exp>;
@@ -57791,7 +58939,7 @@ export type Users_Users_Sync_Cm_Bool_Exp = {
 
 /** unique or primary key constraints on table "users.users_sync_cm" */
 export enum Users_Users_Sync_Cm_Constraint {
-  /** unique or primary key constraint on columns "avo_user_id" */
+  /** unique or primary key constraint on columns "avo_profile_id" */
   UsersSyncCmAvoUserIdKey = 'users_sync_cm_avo_user_id_key',
   /** unique or primary key constraint on columns "cm_email" */
   UsersSyncCmCmEmailKey = 'users_sync_cm_cm_email_key',
@@ -57827,7 +58975,7 @@ export type Users_Users_Sync_Cm_Inc_Input = {
 /** input type for inserting data into table "users.users_sync_cm" */
 export type Users_Users_Sync_Cm_Insert_Input = {
   action?: InputMaybe<Scalars['String']>;
-  avo_user_id?: InputMaybe<Scalars['uuid']>;
+  avo_profile_id?: InputMaybe<Scalars['uuid']>;
   cm_email?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   expected_info?: InputMaybe<Scalars['jsonb']>;
@@ -57843,7 +58991,7 @@ export type Users_Users_Sync_Cm_Insert_Input = {
 export type Users_Users_Sync_Cm_Max_Fields = {
   __typename?: 'users_users_sync_cm_max_fields';
   action?: Maybe<Scalars['String']>;
-  avo_user_id?: Maybe<Scalars['uuid']>;
+  avo_profile_id?: Maybe<Scalars['uuid']>;
   cm_email?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   failed_sync_count?: Maybe<Scalars['Int']>;
@@ -57857,7 +59005,7 @@ export type Users_Users_Sync_Cm_Max_Fields = {
 export type Users_Users_Sync_Cm_Min_Fields = {
   __typename?: 'users_users_sync_cm_min_fields';
   action?: Maybe<Scalars['String']>;
-  avo_user_id?: Maybe<Scalars['uuid']>;
+  avo_profile_id?: Maybe<Scalars['uuid']>;
   cm_email?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   failed_sync_count?: Maybe<Scalars['Int']>;
@@ -57886,7 +59034,7 @@ export type Users_Users_Sync_Cm_On_Conflict = {
 /** Ordering options when selecting data from "users.users_sync_cm". */
 export type Users_Users_Sync_Cm_Order_By = {
   action?: InputMaybe<Order_By>;
-  avo_user_id?: InputMaybe<Order_By>;
+  avo_profile_id?: InputMaybe<Order_By>;
   cm_email?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   expected_info?: InputMaybe<Order_By>;
@@ -57914,7 +59062,7 @@ export enum Users_Users_Sync_Cm_Select_Column {
   /** column name */
   Action = 'action',
   /** column name */
-  AvoUserId = 'avo_user_id',
+  AvoProfileId = 'avo_profile_id',
   /** column name */
   CmEmail = 'cm_email',
   /** column name */
@@ -57938,7 +59086,7 @@ export enum Users_Users_Sync_Cm_Select_Column {
 /** input type for updating data in table "users.users_sync_cm" */
 export type Users_Users_Sync_Cm_Set_Input = {
   action?: InputMaybe<Scalars['String']>;
-  avo_user_id?: InputMaybe<Scalars['uuid']>;
+  avo_profile_id?: InputMaybe<Scalars['uuid']>;
   cm_email?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   expected_info?: InputMaybe<Scalars['jsonb']>;
@@ -57979,7 +59127,7 @@ export type Users_Users_Sync_Cm_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Users_Users_Sync_Cm_Stream_Cursor_Value_Input = {
   action?: InputMaybe<Scalars['String']>;
-  avo_user_id?: InputMaybe<Scalars['uuid']>;
+  avo_profile_id?: InputMaybe<Scalars['uuid']>;
   cm_email?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   expected_info?: InputMaybe<Scalars['jsonb']>;
@@ -58002,7 +59150,7 @@ export enum Users_Users_Sync_Cm_Update_Column {
   /** column name */
   Action = 'action',
   /** column name */
-  AvoUserId = 'avo_user_id',
+  AvoProfileId = 'avo_profile_id',
   /** column name */
   CmEmail = 'cm_email',
   /** column name */

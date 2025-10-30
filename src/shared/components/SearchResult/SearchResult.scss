@@ -94,10 +94,17 @@
 			background-color: $color-grey-blue;
 			pointer-events: none;
 		}
-
-		&.c-search-result-item__quality-label-tag {
-			background-color: $color-navy;
-			color: white;
-		}
 	}
+}
+
+.c-search_result__quality-tags {
+	align-self: center;
+
+	.c-tag {
+		font-size: 1.2rem;
+	}
+}
+
+.c-search_result__education-levels {
+	justify-content: flex-end;
 }

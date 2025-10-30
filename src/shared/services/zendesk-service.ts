@@ -1,4 +1,4 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 // eslint-disable-next-line import/no-unresolved
 import { type Requests } from 'node-zendesk';
 

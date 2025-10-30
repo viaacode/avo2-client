@@ -1,6 +1,6 @@
 mutation deleteCollectionOrBundleByUuid(
 	$collectionOrBundleUuid: uuid!
-	$collectionOrBundleUuidAsText: String!
+	$collectionOrBundleUuidAsText: bpchar!
 ) {
 	update_app_collections(
 		where: { id: { _eq: $collectionOrBundleUuid } }

@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import { type DefaultProps, Flex, FlexItem, Icon } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';

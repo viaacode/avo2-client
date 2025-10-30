@@ -1,4 +1,4 @@
-import type { ContentPageInfo } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import type { ContentPageDetailProps, ContentPageInfo } from '@meemoo/admin-core-ui/admin';
 import { Flex, Spinner } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
 import React, { type FC, lazy, Suspense, useState } from 'react';
@@ -14,7 +14,7 @@ import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { CONTENT_PAGE_PATH } from '../content-page.consts';
 
 const ContentPageDetail = lazy(() =>
-	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
 		default: adminCoreModule.ContentPageDetail,
 	}))
 );

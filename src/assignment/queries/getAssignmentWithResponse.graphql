@@ -97,13 +97,13 @@ query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 			profile {
 				avatar
 				user_id
-				user: usersByuserId {
+				user {
 					last_name
 					first_name
 					mail
 					full_name
 				}
-				id
+				id: profile_id
 				organisation {
 					name
 					logo_url

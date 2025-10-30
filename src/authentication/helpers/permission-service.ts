@@ -1,4 +1,4 @@
-import { type ContentPageInfo } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { type ContentPageInfo } from '@meemoo/admin-core-ui/admin';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isString, some } from 'lodash-es';
 
@@ -208,7 +208,7 @@ export class PermissionService {
 			case PermissionName.EDIT_OWN_CONTENT_PAGES: {
 				try {
 					const { ContentPageService } = await import(
-						'@meemoo/admin-core-ui/dist/admin.mjs'
+						'@meemoo/admin-core-ui/admin'
 					);
 					const contentPage: ContentPageInfo = isString(obj)
 						? await ContentPageService.getContentPageByLanguageAndPath(

@@ -11,6 +11,7 @@ import {
 	HeaderBottomRowLeft,
 	HeaderBottomRowRight,
 	HeaderMiddleRowRight,
+	HeaderTopRowLeft,
 	IconName,
 	MenuContent,
 	MoreOptionsDropdown,
@@ -64,6 +65,7 @@ import { defaultRenderSearchLink } from '../../shared/helpers/default-render-sea
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { getFullName } from '../../shared/helpers/formatters';
 import { generateContentLinkString, navigate } from '../../shared/helpers/link';
+import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { isUuid } from '../../shared/helpers/uuid';
 import { useTranslation } from '../../shared/hooks/useTranslation';
@@ -771,10 +773,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 		setImportWithDescription(withDescription);
 
 		// check if assignment has responses. If so: show additional confirmation modal
-		const responses = await AssignmentService.getAssignmentResponses(
-			commonUser?.profileId,
-			importToAssignmentId
-		);
+		const responses = await AssignmentService.getAssignmentResponses(importToAssignmentId);
 		if (responses.length > 0) {
 			setIsConfirmImportToAssignmentWithResponsesModalOpen(true);
 		} else {
@@ -805,7 +804,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 			trackEvents(
 				{
 					object: importToAssignmentId,
-					object_type: 'avo_assignment',
+					object_type: 'assignment',
 					action: 'add',
 					resource: {
 						type: 'collection',
@@ -1514,6 +1513,11 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 		);
 	};
 
+	const renderHeaderEducationLevel = () => {
+		const groupedLomsLabels = getGroupedLomsKeyValue(collection?.loms || [], 'label');
+		return <EducationLevelsTagList loms={groupedLomsLabels.educationLevel} />;
+	};
+
 	const renderCollection = () => {
 		if (loadingInfo.state === 'loading') {
 			return (
@@ -1575,6 +1579,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 						bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
 						views={String(bookmarkViewPlayCounts.viewCount || 0)}
 					>
+						<HeaderTopRowLeft>{renderHeaderEducationLevel()}</HeaderTopRowLeft>
 						{!showLoginPopup && (
 							<HeaderMiddleRowRight>
 								{isMobileWidth()

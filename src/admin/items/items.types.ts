@@ -1,4 +1,4 @@
-import { type FilterableTableState } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { type FilterableTableState } from '@meemoo/admin-core-ui/admin';
 import { type Avo } from '@viaa/avo2-types';
 
 import { type EmbedCodeExternalWebsite } from '../../embed-code/embed-code.types';

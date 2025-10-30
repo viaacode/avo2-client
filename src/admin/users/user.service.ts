@@ -83,7 +83,7 @@ export class UserService {
 				sendEmail,
 			};
 
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 			await fetchWithLogoutJson(url, {
 				method: 'POST',
 				body: JSON.stringify(body),

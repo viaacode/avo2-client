@@ -27,6 +27,8 @@ import { Navigation } from './shared/components/Navigation/Navigation';
 import { ZendeskWrapper } from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers/custom-error';
+import withUser, { type UserProps } from './shared/hocs/withUser';
+import { useHideZendeskWidget } from './shared/hooks/useHideZendeskWidget';
 import { usePageLoaded } from './shared/hooks/usePageLoaded';
 import { useTranslation } from './shared/hooks/useTranslation';
 import { ToastService } from './shared/services/toast-service';
@@ -53,6 +55,8 @@ const App: FC = () => {
 	const isPupilUser = [SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]
 		.map(String)
 		.includes(String(commonUser?.userGroup?.id));
+	const query = new URLSearchParams(location?.search || '');
+	const isPreviewRoute = query.get('preview') === 'true';
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
@@ -83,13 +87,7 @@ const App: FC = () => {
 	/**
 	 * Hide zendesk when a pupil is logged in
 	 */
-	useEffect(() => {
-		if (isPupilUser || isAdminRoute) {
-			document.body.classList.add('hide-zendesk-widget');
-		} else {
-			document.body.classList.remove('hide-zendesk-widget');
-		}
-	}, [isPupilUser, isAdminRoute]);
+	useHideZendeskWidget(props.location, props.commonUser);
 
 	/**
 	 * Redirect after linking an account the the hetarchief account (eg: leerid, smartschool, klascement)
@@ -152,6 +150,7 @@ const App: FC = () => {
 			<div
 				className={clsx('o-app', {
 					'o-app--admin': isAdminRoute,
+					'o-app--preview': isPreviewRoute,
 				})}
 			>
 				<ToastContainer
@@ -167,7 +166,7 @@ const App: FC = () => {
 					<SecuredRoute Component={Admin} exact={false} path={ADMIN_PATH.DASHBOARD} />
 				) : (
 					<>
-						{!isLoginRoute && <Navigation />}
+						{!isLoginRoute && <Navigation isPreviewRoute={isPreviewRoute} />}
 						<Outlet />
 						{!isLoginRoute && <Footer />}
 						<ACMIDMNudgeModal />

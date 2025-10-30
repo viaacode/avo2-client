@@ -53,7 +53,7 @@ export const MultiUserSelectDropdown: FC<MultiUserSelectDropdownProps> = ({
 			if (!values.length) {
 				return;
 			}
-			const { UserService } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			const { UserService } = await import('@meemoo/admin-core-ui/admin');
 			const users: Partial<Avo.User.CommonUser>[] =
 				await UserService.getNamesByProfileIds(values);
 

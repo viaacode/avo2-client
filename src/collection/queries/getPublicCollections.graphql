@@ -17,7 +17,7 @@ query getPublicCollections($limit: Int!, $typeId: Int!) {
 					logo_url
 					or_id
 				}
-				user: usersByuserId {
+				user {
 					first_name
 					full_name
 					last_name

@@ -21,7 +21,7 @@ import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable';
 import { type QualityLabel } from '../../collection/collection.types';
-import { formatTimestamp, getFullName } from '../../shared/helpers/formatters';
+import { formatTimestamp, getFullNameCommonUser } from '../../shared/helpers/formatters';
 import { useGetQualityLabels } from '../../shared/hooks/useGetQualityLabels';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 
@@ -107,7 +107,11 @@ export const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps> =
 									<TextInput
 										disabled
 										value={
-											getFullName(assignment.updated_by, true, false) || '-'
+											getFullNameCommonUser(
+												assignment.updated_by,
+												true,
+												false
+											) || '-'
 										}
 									/>
 								</FormGroup>
@@ -144,26 +148,6 @@ export const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps> =
 												onChange={handleQualityLabelChange}
 											/>
 										)}
-									</FormGroup>
-								)}
-
-								{PermissionService.hasPerm(
-									commonUser,
-									PermissionName.EDIT_ASSIGNMENT_AUTHOR
-								) && (
-									<FormGroup
-										label={tText(
-											'collection/components/collection-or-bundle-edit-admin___eigenaar'
-										)}
-										required
-									>
-										<ContentPicker
-											initialValue={owner}
-											hideTargetSwitch
-											hideTypeDropdown
-											allowedTypes={['PROFILE']}
-											onSelect={handleOwnerChange}
-										/>
 									</FormGroup>
 								)}
 

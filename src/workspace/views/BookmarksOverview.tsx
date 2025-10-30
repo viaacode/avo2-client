@@ -1,4 +1,4 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
 import { OrderDirection, PaginationBar } from '@meemoo/react-components';
 import {
 	Button,

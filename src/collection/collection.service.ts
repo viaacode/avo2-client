@@ -1,4 +1,4 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
 import { endOfDay, startOfDay } from 'date-fns';
@@ -410,7 +410,10 @@ export class CollectionService {
 				cleanedCollection.loms = [];
 			}
 
-			await this.updateCollectionProperties(newCollection.id as string, cleanedCollection);
+			const savedCollection = await this.updateCollectionProperties(
+				newCollection.id as string,
+				cleanedCollection
+			);
 
 			// Update collection labels
 			if (
@@ -420,10 +423,11 @@ export class CollectionService {
 				) ||
 				PermissionService.hasPerm(commonUser, PermissionName.EDIT_BUNDLE_QUALITY_LABELS)
 			) {
-				// Update collection labels
-				const initialLabels: string[] = this.getLabels(initialCollection).map(
-					(labelObj: any) => labelObj.label
-				);
+				// Update collection labels, use the labels of the updated collection when we have them
+				// https://meemoo.atlassian.net/browse/AVO-3823
+				const initialLabels: string[] = this.getLabels(
+					savedCollection || initialCollection
+				).map((labelObj: any) => labelObj.label);
 				const updatedLabels: string[] = this.getLabels(newCollection).map(
 					(labelObj: any) => labelObj.label
 				);
@@ -710,7 +714,7 @@ export class CollectionService {
 	static updateCollectionProperties = async (
 		id: string,
 		collection: Partial<Avo.Collection.Collection>
-	): Promise<void> => {
+	): Promise<Partial<Avo.Collection.Collection> | undefined> => {
 		try {
 			const dbCollection = cleanCollectionBeforeSave(collection);
 
@@ -718,13 +722,16 @@ export class CollectionService {
 				id,
 				collection: dbCollection,
 			};
-			await dataService.query<
+			const updatedCollection = await dataService.query<
 				UpdateCollectionByIdMutation,
 				UpdateCollectionByIdMutationVariables
 			>({
 				query: UpdateCollectionByIdDocument,
 				variables,
 			});
+
+			return updatedCollection.update_app_collections
+				?.returning?.[0] as Partial<Avo.Collection.Collection>;
 		} catch (err) {
 			throw new CustomError('Failed to update collection properties', err, {
 				id,

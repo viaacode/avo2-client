@@ -16,7 +16,7 @@ import { type UserGroupOverviewRef } from '../../shared/services/user-groups/use
 import './UserGroupOverviewPage.scss';
 
 const UserGroupOverview = lazy(() =>
-	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
 		default: adminCoreModule.UserGroupOverview,
 	}))
 );

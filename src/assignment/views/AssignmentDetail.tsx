@@ -12,17 +12,11 @@ import {
 	HeaderBottomRowRight,
 	HeaderMiddleRowRight,
 	HeaderTopRowLeft,
-	Icon,
 	IconName,
 	isUuid,
-	MetaData,
-	MetaDataItem,
 	MoreOptionsDropdown,
 	Spacer,
 	Spinner,
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
@@ -68,7 +62,7 @@ import { defaultRenderDetailLink } from '../../shared/helpers/default-render-det
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { navigate } from '../../shared/helpers/link';
-import { type EducationLevelId } from '../../shared/helpers/lom';
+import { type EducationLevelId, getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
@@ -83,11 +77,7 @@ import {
 	ObjectTypesAll,
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
-import {
-	ASSIGNMENT_CREATE_UPDATE_TABS,
-	GET_EDUCATION_LEVEL_DICT,
-	GET_EDUCATION_LEVEL_TOOLTIP_DICT,
-} from '../assignment.const';
+import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentAction, AssignmentType } from '../assignment.types';
 import {
@@ -385,7 +375,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 		trackEvents(
 			{
 				object: assignment?.id,
-				object_type: 'avo_assignment',
+				object_type: 'assignment',
 				action: 'view',
 				resource: {
 					is_public: assignment?.is_public || false,
@@ -793,37 +783,8 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 	};
 
 	const renderHeaderEducationLevel = () => {
-		const contributor = assignment?.contributors?.find(
-			(c) => c.profile_id === commonUser?.profileId
-		);
-		if (
-			!permissions?.canEditAssignments ||
-			contributor?.rights === ContributorInfoRight.VIEWER
-		) {
-			// No assignment edit rights, no contributor and no owner
-			return null;
-		}
-
-		const label =
-			GET_EDUCATION_LEVEL_DICT()[assignment?.education_level_id as EducationLevelId];
-		const tooltip =
-			GET_EDUCATION_LEVEL_TOOLTIP_DICT()[assignment?.education_level_id as EducationLevelId];
-
-		return (
-			<MetaData category="assignment">
-				<Tooltip position="top">
-					<TooltipTrigger>
-						<MetaDataItem icon={IconName.userStudent}>
-							<Icon name={IconName.userStudent} />
-
-							{label}
-						</MetaDataItem>
-					</TooltipTrigger>
-
-					<TooltipContent>{tooltip}</TooltipContent>
-				</Tooltip>
-			</MetaData>
-		);
+		const groupedLomsLabels = getGroupedLomsKeyValue(assignment?.loms || [], 'label');
+		return <EducationLevelsTagList loms={groupedLomsLabels.educationLevel} />;
 	};
 
 	const renderHeader = () => {

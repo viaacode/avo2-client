@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
 	Button,
 	ButtonToolbar,
@@ -69,6 +69,7 @@ import {
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { formatDate, getFullName, renderAvatar } from '../../shared/helpers/formatters';
+import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { useTranslation } from '../../shared/hooks/useTranslation';
@@ -730,6 +731,8 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 		const assignmentFragments = (bundleObj?.collection_fragments || []).filter(
 			(f) => f.type === 'ASSIGNMENT'
 		);
+		const groupedLomsLabels = getGroupedLomsKeyValue(bundleObj?.loms || [], 'label');
+
 		return (
 			<>
 				<Helmet>
@@ -818,6 +821,9 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 															bookmarkViewPlayCounts.bookmarkCount ||
 																0
 														)}
+													/>
+													<EducationLevelsTagList
+														loms={groupedLomsLabels.educationLevel}
 													/>
 												</MetaData>
 												<Spacer margin="top-small">

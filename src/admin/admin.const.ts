@@ -118,7 +118,7 @@ async function getContentPageDetailRouteByPath(
 	infoOnly = false
 ): Promise<string | undefined> {
 	try {
-		const { ContentPageService } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+		const { ContentPageService } = await import('@meemoo/admin-core-ui/admin');
 		const page = await ContentPageService.getContentPageByLanguageAndPath(
 			Locale.Nl as any,
 			path,
@@ -154,6 +154,13 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			location: ADMIN_PATH.NAVIGATIONS_OVERVIEW,
 			target: '_self',
 			key: 'navigatie',
+			exact: false,
+		}),
+		...hasPermissions([PermissionName.EDIT_REDIRECTS], 'OR', userPermissions, {
+			label: tText('admin/admin___redirects'),
+			location: ADMIN_PATH.URL_REDIRECT_OVERVIEW,
+			target: '_self',
+			key: 'redirects',
 			exact: false,
 		}),
 		...hasPermissions(
@@ -333,13 +340,6 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			location: ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW,
 			target: '_self',
 			key: 'interactiveTours',
-			exact: false,
-		}),
-		...hasPermissions([PermissionName.EDIT_REDIRECTS], 'OR', userPermissions, {
-			label: tText('Redirects'),
-			location: ADMIN_PATH.URL_REDIRECT_OVERVIEW,
-			target: '_self',
-			key: 'redirects',
 			exact: false,
 		}),
 		...hasPermissions([PermissionName.EDIT_TRANSLATIONS], 'OR', userPermissions, {

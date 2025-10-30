@@ -17,7 +17,7 @@ export class AssignmentsAdminService {
 		includeRelations: boolean
 	): Promise<{ assignments: Avo.Collection.Collection[]; total: number }> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/admin');
 			return await fetchWithLogoutJson<{
 				assignments: Avo.Collection.Collection[];
 				total: number;
@@ -56,7 +56,7 @@ export class AssignmentsAdminService {
 		includeRelations: boolean
 	): Promise<{ assignments: Avo.Assignment.Assignment[]; total: number }> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/admin');
 			return await fetchWithLogoutJson<{
 				assignments: Avo.Assignment.Assignment[];
 				total: number;
@@ -90,7 +90,7 @@ export class AssignmentsAdminService {
 
 	static async getAssignmentIds(filters: any): Promise<string[]> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/admin');
 			const response = await fetchWithLogoutJson<{
 				assignmentIds: string[];
 			}>(
@@ -111,7 +111,7 @@ export class AssignmentsAdminService {
 
 	static async getAssignmentMarcomIds(filters: any): Promise<string[]> {
 		try {
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/admin');
 			const response = await fetchWithLogoutJson<{
 				assignmentIds: string[];
 			}>(

@@ -1,5 +1,5 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/dist/admin.mjs';
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client';
 import { type RichEditorState } from '@meemoo/react-components';
 import {
 	Button,

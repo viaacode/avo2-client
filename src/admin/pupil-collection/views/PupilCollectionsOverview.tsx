@@ -3,7 +3,7 @@ import {
 	type FilterableColumn,
 	FilterTable,
 	getFilters,
-} from '@meemoo/admin-core-ui/dist/admin.mjs';
+} from '@meemoo/admin-core-ui/admin';
 import { type Avo } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { get, isNil } from 'lodash-es';
@@ -11,6 +11,7 @@ import React, { type FC, type ReactText, useCallback, useEffect, useMemo, useSta
 import { Helmet } from 'react-helmet';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
+import { AssignmentService } from '../../../assignment/assignment.service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
@@ -140,7 +141,7 @@ export const PupilCollectionsOverview: FC = () => {
 		try {
 			setIsLoading(true);
 
-			const [pupilCollectionsTemp, pupilCollectionsCountTemp] =
+			const { assignmentResponses, count } =
 				await PupilCollectionService.fetchPupilCollectionsForAdmin(
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
@@ -150,8 +151,8 @@ export const PupilCollectionsOverview: FC = () => {
 					generateWhereObject(getFilters(tableState))
 				);
 
-			setPupilCollections(pupilCollectionsTemp);
-			setPupilCollectionsCount(pupilCollectionsCountTemp);
+			setPupilCollections(assignmentResponses);
+			setPupilCollectionsCount(count);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get pupil collections from the database', err, {
@@ -238,7 +239,7 @@ export const PupilCollectionsOverview: FC = () => {
 		setIsLoading(true);
 		setPupilCollectionsDeleteModalOpen(false);
 		try {
-			await PupilCollectionService.deleteAssignmentResponses(selectedPupilCollectionIds);
+			await AssignmentService.deleteAssignmentResponses(selectedPupilCollectionIds);
 			await fetchPupilCollections();
 			ToastService.success(
 				tHtml(
@@ -398,7 +399,7 @@ export const PupilCollectionsOverview: FC = () => {
 							getColumnDataType(),
 							{}
 						);
-						return response[1];
+						return response.count;
 					}}
 					fetchMoreItems={async (offset: number, limit: number) => {
 						const response = await PupilCollectionService.fetchPupilCollectionsForAdmin(
@@ -410,7 +411,7 @@ export const PupilCollectionsOverview: FC = () => {
 							getColumnDataType(),
 							generateWhereObject(getFilters(tableState))
 						);
-						return response[0];
+						return response.assignmentResponses;
 					}}
 					renderValue={(pupilCollection: any, columnId: string) =>
 						renderPupilCollectionTableCellText(

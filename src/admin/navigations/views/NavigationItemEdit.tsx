@@ -14,7 +14,7 @@ import './NavigationItemEdit.scss';
 import { NAVIGATIONS_PATH } from '../navigations.const';
 
 const NavigationEdit = lazy(() =>
-	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
 		default: adminCoreModule.NavigationItemEdit,
 	}))
 );

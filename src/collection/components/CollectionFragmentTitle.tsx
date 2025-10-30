@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC } from 'react';
 import { Link } from 'react-router-dom';

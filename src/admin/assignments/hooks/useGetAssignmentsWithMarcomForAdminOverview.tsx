@@ -1,4 +1,4 @@
-import { getFilters } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { getFilters } from '@meemoo/admin-core-ui/admin';
 import { useQuery } from '@tanstack/react-query';
 import { type Avo } from '@viaa/avo2-types';
 

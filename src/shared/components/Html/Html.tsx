@@ -1,4 +1,4 @@
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client';
 import React, { type FC } from 'react';
 
 export interface HtmlProps {

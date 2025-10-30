@@ -44,11 +44,16 @@ export const LoginOptions: FC<LoginOptionsProps> = ({ onOptionClicked = noop }) 
 		getPreferredLoginOption()
 	);
 
-	// Whenever a user sees the LoginOptions, reset their nudging and increase their login counter
+	// Whenever a user sees the LoginOptions, reset their nudging
 	useEffect(() => {
 		removePreferredLoginOption();
-		setLoginCounter();
 	}, []);
+
+	const handleOnLoginOptionClick = useCallback(() => {
+		// Whenever a user clicks the option clicked, we assume the user has logged in, and thus we increase their login counter
+		setLoginCounter();
+		onOptionClicked?.();
+	}, [onOptionClicked]);
 
 	const renderTitle = () => {
 		switch (tab) {
@@ -68,14 +73,17 @@ export const LoginOptions: FC<LoginOptionsProps> = ({ onOptionClicked = noop }) 
 			case LoginOptionsTabs.TEACHER:
 				return (
 					<LoginOptionsForTeacher
-						onOptionClicked={onOptionClicked}
+						onOptionClicked={handleOnLoginOptionClick}
 						openInNewTab={false}
 					/>
 				);
 
 			case LoginOptionsTabs.STUDENT:
 				return (
-					<LoginOptionsForPupil onOptionClicked={onOptionClicked} openInNewTab={false} />
+					<LoginOptionsForPupil
+						onOptionClicked={handleOnLoginOptionClick}
+						openInNewTab={false}
+					/>
 				);
 
 			default:
