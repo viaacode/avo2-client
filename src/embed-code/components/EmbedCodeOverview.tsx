@@ -386,7 +386,7 @@ const EmbedCodeOverview: FC<EmbedCodeOverviewProps & DefaultSecureRouteProps> = 
 				rowKey="id"
 				variant="styled"
 				isLoading={loadingInfo.state === 'loading'}
-				hideTableColumnsButton
+				showColumnsVisibility={false}
 				showCheckboxes={false}
 			/>
 
