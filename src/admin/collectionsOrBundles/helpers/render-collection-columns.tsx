@@ -631,7 +631,7 @@ export function renderCollectionCellReact(
 		}
 
 		case 'actualisation_approved_at':
-			return formatDate(collection?.management_final_check?.[0].created_at) || '-';
+			return formatDate(collection?.management_final_check?.[0]?.created_at) || '-';
 		case 'mgmt_last_eindcheck_date': // TODO replace db view with actualisation_approved_at columns
 			return formatDate((collection as any)?.mgmt_last_eindcheck_date) || '-';
 
@@ -817,7 +817,7 @@ export function renderCollectionCellText(
 		}
 
 		case 'actualisation_approved_at':
-			return formatDate(collection?.management_final_check?.[0].created_at) || '-';
+			return formatDate(collection?.management_final_check?.[0]?.created_at) || '-';
 		case 'mgmt_last_eindcheck_date': // TODO replace db view with actualisation_approved_at columns
 			return formatDate((collection as any)?.mgmt_last_eindcheck_date) || '-';
 
