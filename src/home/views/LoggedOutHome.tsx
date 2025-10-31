@@ -1,4 +1,4 @@
-import { ContentPageRenderer } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { ContentPageRenderer } from '@meemoo/admin-core-ui/client';
 import { Flex, Spinner } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
 import React, { type FC, useEffect } from 'react';
@@ -10,6 +10,7 @@ import { useGetContentPageByPath } from '../../admin/content-page/hooks/get-cont
 import { commonUserAtom, loginAtom } from '../../authentication/authentication.store';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 
 export const LoggedOutHome: FC = () => {
@@ -48,6 +49,7 @@ export const LoggedOutHome: FC = () => {
 					<ContentPageRenderer
 						contentPageInfo={contentPageInfo}
 						commonUser={commonUser}
+						renderNoAccessError={renderWrongUserRoleError}
 					/>
 				</>
 			)}

@@ -1,6 +1,6 @@
 import { Button, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { type FC, useEffect } from 'react';
+import React, { type FC, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 

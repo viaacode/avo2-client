@@ -19,7 +19,6 @@ import { getPublishedDate } from '../../admin/content-page/helpers/get-published
 import { ItemsService } from '../../admin/items/items.service';
 import { withAdminCoreConfig } from '../../admin/shared/hoc/with-admin-core-config';
 import { UrlRedirectsService } from '../../admin/url-redirects/url-redirects.service';
-import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { loginAtom } from '../../authentication/authentication.store';
 import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
@@ -41,16 +40,11 @@ import { getEnv } from '../../shared/helpers/env';
 import { getFullName, stripHtml } from '../../shared/helpers/formatters';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { generateSearchLinkString } from '../../shared/helpers/link';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Locale } from '../../shared/translations/translations.types';
-import { type AppState } from '../../store';
-import {
-	DynamicRouteType,
-	GET_ERROR_MESSAGES,
-	GET_REDIRECTS,
-} from '../dynamic-route-resolver.const';
+import { DynamicRouteType, GET_ERROR_MESSAGES } from '../dynamic-route-resolver.const';
 
 interface RouteInfo {
 	type: DynamicRouteType;

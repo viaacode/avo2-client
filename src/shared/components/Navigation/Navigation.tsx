@@ -29,10 +29,10 @@ import {
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects/redirect-to-external-page';
 import { APP_PATH } from '../../../constants';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
 import { useHideZendeskWidget } from '../../hooks/useHideZendeskWidget';
+import { useTranslation } from '../../hooks/useTranslation';
 import { ToastService } from '../../services/toast-service';
 import { type NavigationItemInfo } from '../../types';
 
@@ -40,32 +40,16 @@ import { NavigationBarId } from './Navigation.const';
 import { NavigationItem } from './NavigationItem';
 import './Navigation.scss';
 
-type NavigationParams = RouteComponentProps & {
+type NavigationParams = {
 	isPreviewRoute: boolean;
 };
 
 /**
  * Main navigation bar component
  */
-const Navigation: FC<
-	NavigationParams & {
-		loginState: Avo.Auth.LoginResponse | null;
-		loginStateLoading: boolean;
-		loginStateError: boolean;
-		getLoginState: () => Dispatch;
-	}
-> = ({
-	loginState,
-	loginStateLoading,
-	loginStateError,
-	getLoginState,
-	history,
-	location,
-	match,
-	isPreviewRoute,
-}) => {
+export const Navigation: FC<NavigationParams> = ({ isPreviewRoute }) => {
 	const { tText, tHtml } = useTranslation();
-	const navigate = useNavigate();
+	const navigateFunc = useNavigate();
 
 	const [loginAtomValue] = useAtom(loginAtom);
 	const loginState = loginAtomValue.data;
@@ -92,7 +76,7 @@ const Navigation: FC<
 	const navItemsRight = allNavItems?.[NavigationBarId.MAIN_NAVIGATION_RIGHT] || [];
 	const navItemsProfileDropdown = allNavItems?.[NavigationBarId.PROFILE_DROPDOWN] || [];
 
-	useHideZendeskWidget(location, commonUser, isUserGroupSelectorOpen);
+	useHideZendeskWidget(commonUser, isUserGroupSelectorOpen);
 
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -220,7 +204,7 @@ const Navigation: FC<
 				redirectToExternalPage(link, navItem.link_target || '_blank');
 			} else {
 				// Internal link to react page or to content block page
-				redirectToClientPage(link, navigate);
+				redirectToClientPage(link, navigateFunc);
 			}
 			closeAllDropdowns();
 		} catch (err) {

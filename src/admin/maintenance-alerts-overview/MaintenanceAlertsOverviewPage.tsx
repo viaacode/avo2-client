@@ -1,4 +1,4 @@
-import { MaintenanceAlertsOverview } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { MaintenanceAlertsOverview } from '@meemoo/admin-core-ui/admin';
 import { Button, Modal } from '@meemoo/react-components';
 import type { FC, ReactNode } from 'react';
 import React from 'react';

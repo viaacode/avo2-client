@@ -24,13 +24,15 @@ export const transformContributorsToSimpleContributors = (
 		const mappedContributors = contributors.map((contributor) => {
 			console.log(contributor);
 			return {
-				email: contributor.profile?.user?.mail || contributor.profile?.mail,
+				email: contributor.profile?.user?.mail || contributor.profile?.user?.mail,
 				inviteEmail: contributor.invite_email,
 				rights: ContributorInfoRight[
 					contributor.rights as keyof typeof ContributorInfoRight
 				],
-				firstName: contributor.profile?.user?.first_name || contributor.profile?.first_name,
-				lastName: contributor.profile?.user?.last_name || contributor.profile?.last_name,
+				firstName:
+					contributor.profile?.user?.first_name || contributor.profile?.user?.first_name,
+				lastName:
+					contributor.profile?.user?.last_name || contributor.profile?.user?.last_name,
 				profileImage:
 					contributor?.profile?.organisation?.logo_url || contributor.profile?.avatar,
 				profileId: contributor.profile_id,

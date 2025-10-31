@@ -30,11 +30,9 @@ import {
 import { OrderDirection } from '../../search/search.const';
 import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { CustomError } from '../../shared/helpers/custom-error';
-import { formatTimestamp, getFullName } from '../../shared/helpers/formatters';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { formatTimestamp, getFullNameCommonUser } from '../../shared/helpers/formatters';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { QualityLabelsService } from '../../shared/services/quality-labels.service';
 import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -54,7 +52,6 @@ export const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps> =
 	changeCollectionState,
 	onFocus,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	// State

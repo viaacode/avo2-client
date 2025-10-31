@@ -7,8 +7,9 @@ import React, { type FC } from 'react';
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import placeholderImage from '../../assets/images/assignment-placeholder.png';
+// eslint-disable-next-line import/no-unresolved
+import TeacherSvg from '../../assets/images/leerkracht.svg?react';
 import { commonUserAtom } from '../../authentication/authentication.store';
-import { ReactComponent as TeacherSvg } from '../../assets/images/leerkracht.svg';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/services/bookmarks-views-plays-service';

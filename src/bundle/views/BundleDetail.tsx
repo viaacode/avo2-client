@@ -88,6 +88,7 @@ import { ToastService } from '../../shared/services/toast-service';
 import { BundleAction } from '../bundle.types';
 
 import './BundleDetail.scss';
+import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList';
 
 type BundleDetailProps = {
 	id?: string;

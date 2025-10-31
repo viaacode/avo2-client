@@ -92,6 +92,8 @@ import { UserItemRequestForm } from './user-item-request-form/views/UserItemRequ
 import { UserItemRequestFormConfirm } from './user-item-request-form/views/UserItemRequestFormConfirm';
 import { Workspace } from './workspace/views/Workspace';
 import { WorkspaceAssignmentRedirect } from './workspace/views/WorkspaceAssignmentRedirect';
+import { UrlRedirectEdit, UrlRedirectOverview } from './admin/url-redirects/views';
+import { URL_REDIRECT_PATH } from './admin/url-redirects/url-redirects.const';
 
 async function logRoutesMiddleware({ request }: Parameters<MiddlewareFunction>[0]) {
 	console.log(`Starting navigation: ${request.url}`);
@@ -502,6 +504,21 @@ function getAdminRoutes(): RouteObject[] {
 			Component: NavigationItemEdit,
 			loader: hasPermissionLoader(PermissionName.EDIT_NAVIGATION_BARS),
 			path: NAVIGATIONS_PATH.NAVIGATIONS_ITEM_EDIT,
+		},
+		{
+			Component: UrlRedirectOverview,
+			loader: hasPermissionLoader(PermissionName.EDIT_REDIRECTS),
+			path: URL_REDIRECT_PATH.URL_REDIRECT_OVERVIEW,
+		},
+		{
+			Component: UrlRedirectEdit,
+			loader: hasPermissionLoader(PermissionName.EDIT_REDIRECTS),
+			path: URL_REDIRECT_PATH.URL_REDIRECT_CREATE,
+		},
+		{
+			Component: UrlRedirectEdit,
+			loader: hasPermissionLoader(PermissionName.EDIT_REDIRECTS),
+			path: URL_REDIRECT_PATH.URL_REDIRECT_EDIT,
 		},
 		{
 			Component: PupilCollectionsOverview,

@@ -263,11 +263,7 @@ export function getAdminCoreConfig(navigateFunc: NavigateFunction): AdminConfig 
 			},
 			router: {
 				Link: InternalLink as FC<LinkInfo>,
-				useHistory: () => ({
-					// TODO replace useHistory with single navigate function
-					push: (url: string) => navigateFunc(url),
-					replace: (url: string) => navigateFunc(url, { replace: true }),
-				}),
+				navigateFunc,
 			},
 			queryCache: {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars

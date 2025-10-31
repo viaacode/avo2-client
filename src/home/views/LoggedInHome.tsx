@@ -1,4 +1,4 @@
-import { ContentPageRenderer } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { ContentPageRenderer } from '@meemoo/admin-core-ui/client';
 import { useAtomValue } from 'jotai';
 import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
@@ -10,9 +10,8 @@ import { commonUserAtom } from '../../authentication/authentication.store';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
+import { useTranslation } from '../../shared/hooks/useTranslation';
 
 export const LoggedInHome: FC = () => {
 	const { tText } = useTranslation();

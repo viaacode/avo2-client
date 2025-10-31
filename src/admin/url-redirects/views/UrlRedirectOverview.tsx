@@ -3,19 +3,20 @@ import { Button, ButtonToolbar, Flex, IconName, Spacer, Spinner } from '@viaa/av
 import { isEqual, isNil } from 'lodash-es';
 import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { ErrorView } from '../../../error/views/ErrorView';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { formatDate } from '../../../shared/helpers/formatters';
 import { navigate } from '../../../shared/helpers/link';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { useDebounce } from '../../../shared/hooks/useDebounce';
-import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
@@ -40,11 +41,8 @@ import {
 	type UrlRedirectOverviewTableCols,
 } from '../url-redirects.types';
 
-type RedirectsOverviewProps = DefaultSecureRouteProps;
-
-const UrlRedirectOverview: FC<RedirectsOverviewProps> = ({ history }) => {
-	const { tText, tHtml } = useTranslation();
-
+const UrlRedirectOverview: FC = () => {
+	const navigateFunc = useNavigate();
 	// State
 	const [selected, setSelected] = useState<UrlRedirect | undefined>(undefined);
 	const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -144,7 +142,7 @@ const UrlRedirectOverview: FC<RedirectsOverviewProps> = ({ history }) => {
 						<Button
 							icon={IconName.edit}
 							onClick={() =>
-								navigate(history, URL_REDIRECT_PATH.URL_REDIRECT_EDIT, {
+								navigate(navigateFunc, URL_REDIRECT_PATH.URL_REDIRECT_EDIT, {
 									id: rowData.id,
 								})
 							}
@@ -195,7 +193,7 @@ const UrlRedirectOverview: FC<RedirectsOverviewProps> = ({ history }) => {
 						label={tText(
 							'admin/url-redirects/views/url-redirect-overview___url-redirect-aanmaken'
 						)}
-						onClick={() => history.push(URL_REDIRECT_PATH.URL_REDIRECT_CREATE)}
+						onClick={() => navigateFunc(URL_REDIRECT_PATH.URL_REDIRECT_CREATE)}
 					/>
 				</Spacer>
 			</ErrorView>
@@ -272,7 +270,7 @@ const UrlRedirectOverview: FC<RedirectsOverviewProps> = ({ history }) => {
 						'admin/url-redirects/views/url-redirect-overview___url-redirect-toevoegen'
 					)}
 					onClick={() => {
-						redirectToClientPage(URL_REDIRECT_PATH.URL_REDIRECT_CREATE, history);
+						redirectToClientPage(URL_REDIRECT_PATH.URL_REDIRECT_CREATE, navigateFunc);
 					}}
 				/>
 			</AdminLayoutTopBarRight>

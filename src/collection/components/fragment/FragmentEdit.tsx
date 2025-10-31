@@ -34,7 +34,7 @@ import { APP_PATH } from '../../../constants';
 import { ItemMetadata } from '../../../shared/components/BlockItemMetadata/ItemMetadata';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
-import MoreOptionsDropdownWrapper from '../../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
+import { MoreOptionsDropdownWrapper } from '../../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
 import {
 	RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
 	RICH_TEXT_EDITOR_OPTIONS_DEFAULT,

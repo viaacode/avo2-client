@@ -20,6 +20,7 @@ import {
 	type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../../shared/helpers/custom-error';
+import { renderWrongUserRoleError } from '../../../shared/helpers/render-wrong-user-role-error';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { ToastService } from '../../../shared/services/toast-service';

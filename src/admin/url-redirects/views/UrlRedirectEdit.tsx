@@ -15,16 +15,17 @@ import {
 } from '@viaa/avo2-components';
 import React, { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { useNavigate, useParams } from 'react-router';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views';
+import { ErrorView } from '../../../error/views/ErrorView';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { navigate } from '../../../shared/helpers/link';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
@@ -47,8 +48,10 @@ import {
 	type UrlRedirectPathPattern,
 } from '../url-redirects.types';
 
-const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, history }) => {
-	const { tText, tHtml } = useTranslation();
+const UrlRedirectEdit: FC = () => {
+	const { id } = useParams<{ id: string }>();
+
+	const navigateFunc = useNavigate();
 
 	const [formErrors, setFormErrors] = useState<UrlRedirectEditFormErrorState>({});
 	const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -57,7 +60,7 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 	);
 
 	const isCreatePage: boolean = location.pathname.includes(`/${ROUTE_PARTS.create}`);
-	const urlRedirectId = parseInt(match.params.id);
+	const urlRedirectId = parseInt(id as string, 10);
 
 	const { mutateAsync: createUrlRedirect } = useCreateUrlRedirect();
 	const { mutateAsync: updateUrlRedirect } = useUpdateUrlRedirect();
@@ -70,7 +73,7 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 	}, [loadedUrlRedirect]);
 
 	const navigateBack = () => {
-		history.push(URL_REDIRECT_PATH.URL_REDIRECT_OVERVIEW);
+		navigateFunc(URL_REDIRECT_PATH.URL_REDIRECT_OVERVIEW);
 	};
 
 	const getFormErrors = (): UrlRedirectEditFormErrorState | null => {
@@ -128,7 +131,7 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 				await updateUrlRedirect(updatedUrlRedirect);
 			}
 
-			redirectToClientPage(buildLink(URL_REDIRECT_PATH.URL_REDIRECT_OVERVIEW), history);
+			redirectToClientPage(buildLink(URL_REDIRECT_PATH.URL_REDIRECT_OVERVIEW), navigateFunc);
 			ToastService.success(
 				tHtml('admin/url-redirects/views/url-redirect-edit___de-url-redirect-is-opgeslagen')
 			);
@@ -239,7 +242,7 @@ const UrlRedirectEdit: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match, h
 	const renderPage = () => {
 		return (
 			<AdminLayout
-				onClickBackButton={() => navigate(history, ADMIN_PATH.URL_REDIRECT_OVERVIEW)}
+				onClickBackButton={() => navigate(navigateFunc, ADMIN_PATH.URL_REDIRECT_OVERVIEW)}
 				pageTitle={
 					isCreatePage
 						? tText(

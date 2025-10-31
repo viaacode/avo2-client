@@ -458,7 +458,6 @@ export class AssignmentService {
 	// Fetch assignment responses for response overview page
 	static async fetchAssignmentResponses(
 		assignmentId: string,
-		commonUser: Avo.User.CommonUser | null | undefined,
 		sortColumn: AssignmentTableColumns,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,

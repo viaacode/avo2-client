@@ -33,7 +33,7 @@ export const Account: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
-	const hasTempAccess = commonUser?.tempAccess?.current?.status === 1;
+	const hasTempAccess = commonUser?.tempAccess?.has_currently_access?.status;
 
 	if (!commonUser) {
 		return (

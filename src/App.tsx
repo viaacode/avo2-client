@@ -27,7 +27,7 @@ import { Navigation } from './shared/components/Navigation/Navigation';
 import { ZendeskWrapper } from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers/custom-error';
-import withUser, { type UserProps } from './shared/hocs/withUser';
+import { ReactRouter7Adapter } from './shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
 import { useHideZendeskWidget } from './shared/hooks/useHideZendeskWidget';
 import { usePageLoaded } from './shared/hooks/usePageLoaded';
 import { useTranslation } from './shared/hooks/useTranslation';
@@ -38,12 +38,11 @@ import { waitForTranslations } from './shared/translations/i18n';
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import './App.scss';
 import './styles/main.scss';
-import { ReactRouter7Adapter } from './shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
 
 const App: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
-	const navigate = useNavigate();
+	const navigateFunc = useNavigate();
 
 	const commonUser = useAtomValue(commonUserAtom);
 	const [historyLocations, setHistoryLocations] = useAtom(historyLocationsAtom);
@@ -87,7 +86,7 @@ const App: FC = () => {
 	/**
 	 * Hide zendesk when a pupil is logged in
 	 */
-	useHideZendeskWidget(props.location, props.commonUser);
+	useHideZendeskWidget(commonUser, isPupilUser);
 
 	/**
 	 * Redirect after linking an account the the hetarchief account (eg: leerid, smartschool, klascement)
@@ -100,10 +99,10 @@ const App: FC = () => {
 			if (hasLinked) {
 				ToastService.success(tHtml('app___je-account-is-gekoppeld'));
 				url.searchParams.delete(linked);
-				navigate(url.toString().replace(url.origin, ''), { replace: true });
+				navigateFunc(url.toString().replace(url.origin, ''), { replace: true });
 			}
 		}
-	}, [loadingInfo, tHtml, navigate]);
+	}, [loadingInfo, tHtml, navigateFunc]);
 
 	/**
 	 * Keep track of route changes and track the 3 last visited pages for tracking events

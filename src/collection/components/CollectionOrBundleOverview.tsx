@@ -48,7 +48,7 @@ import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import MoreOptionsDropdownWrapper from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
+import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
 import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel } from '../../shared/constants';

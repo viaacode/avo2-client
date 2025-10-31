@@ -347,7 +347,8 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
 				rowKey="id"
 				variant="styled"
 				isLoading={loadingInfo.state === 'loading'}
-				hideTableColumnsButton // Hidden due to: https://meemoo.atlassian.net/browse/AVO-1753?focusedCommentId=24892
+				// Hidden due to: https://meemoo.atlassian.net/browse/AVO-1753?focusedCommentId=24892
+				showColumnsVisibility={false}
 				showCheckboxes={false}
 			/>
 

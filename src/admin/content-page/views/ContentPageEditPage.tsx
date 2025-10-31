@@ -1,4 +1,3 @@
-import type { ContentPageDetailProps } from '@meemoo/admin-core-ui/admin';
 import { Flex, Spinner } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
 import React, { type FC, lazy, Suspense, useState } from 'react';
@@ -26,7 +25,7 @@ const ContentPageDetailPage: FC = () => {
 	const contentPageId = match?.params.id;
 
 	const commonUser = useAtomValue(commonUserAtom);
-	const [hasUnsavedChanges] = useState<boolean>(false);
+	const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
 
 	useWarningBeforeUnload({
 		when: hasUnsavedChanges,

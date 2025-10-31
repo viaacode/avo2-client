@@ -43,7 +43,7 @@ import { useGetQuickLane } from '../hooks/useGetQuickLane';
 
 export const QuickLaneDetail: FC = () => {
 	const { tText, tHtml } = useTranslation();
-	const navigate = useNavigate();
+	const navigateFunc = useNavigate();
 	const match = useMatch<'id', string>(APP_PATH.QUICK_LANE.route);
 	const commonUser = useAtomValue(commonUserAtom);
 
@@ -194,7 +194,7 @@ export const QuickLaneDetail: FC = () => {
 		}
 
 		if (path) {
-			navigate(path);
+			navigateFunc(path);
 		}
 	};
 

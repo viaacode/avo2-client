@@ -45,6 +45,7 @@ import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const
 import { BlockList } from '../../shared/components/BlockList/BlockList';
 import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EditButton } from '../../shared/components/EditButton/EditButton';
+import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList';
 import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';

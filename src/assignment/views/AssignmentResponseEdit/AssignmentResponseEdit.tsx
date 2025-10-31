@@ -131,10 +131,7 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
 		selectedSearchResultId: StringParam, // Search result of which the detail page should be shown
 		focus: StringParam, // Search result that should be scrolled into view
 	};
-	const [filterState, setFilterState] = useQueryParams(queryParamConfig) as [
-		PupilSearchFilterState,
-		(FilterState: PupilSearchFilterState, updateType?: UrlUpdateType) => void,
-	];
+	const [filterState, setFilterState] = useQueryParams(queryParamConfig);
 	const [tabs, activeTab, setTab, onTabClick, animatePill] = useAssignmentPupilTabs(
 		assignment,
 		assignmentResponse?.pupil_collection_blocks?.filter(

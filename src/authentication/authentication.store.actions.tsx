@@ -106,7 +106,7 @@ export async function getLoginResponse(
 			history: historyLocations,
 		})}`;
 
-		const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+		const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
 		const loginStateResponse = await fetchWithLogoutJson<Avo.Auth.LoginResponse>(url, {
 			forceLogout: false,
 			headers: {

@@ -1,4 +1,4 @@
-import type { ContentPageDetailProps, ContentPageInfo } from '@meemoo/admin-core-ui/admin';
+import type { ContentPageInfo } from '@meemoo/admin-core-ui/admin';
 import { Flex, Spinner } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
 import React, { type FC, lazy, Suspense, useState } from 'react';

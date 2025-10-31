@@ -18,9 +18,9 @@ import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { APP_PATH } from '../../../constants';
 import { buildLink } from '../../../shared/helpers/build-link';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
@@ -40,7 +40,6 @@ export const PublishCollectionModal: FC<PublishCollectionModalProps> = ({
 	collection,
 	parentBundles,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [validationErrors, setValidationErrors] = useState<(string | ReactNode)[]>([]);
