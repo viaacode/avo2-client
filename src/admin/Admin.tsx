@@ -4,6 +4,7 @@ import { useAtomValue } from 'jotai';
 import React, { type FC, useEffect, useState } from 'react';
 import { HorizontalPageSplit } from 'react-page-split';
 import { Outlet } from 'react-router';
+import { QueryParamProvider } from 'use-query-params';
 
 import { commonUserAtom } from '../authentication/authentication.store';
 import { PermissionService } from '../authentication/helpers/permission-service';
@@ -12,6 +13,7 @@ import {
 	type LoadingInfo,
 } from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../shared/helpers/custom-error';
+import { ReactRouter7Adapter } from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
 import { useTranslation } from '../shared/hooks/useTranslation';
 import { ToastService } from '../shared/services/toast-service';
 import { type NavigationItemInfo } from '../shared/types';
@@ -81,10 +83,12 @@ export const Admin: FC = () => {
 	};
 
 	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={{}}
-			render={renderAdminPage}
-		/>
+		<QueryParamProvider adapter={ReactRouter7Adapter}>
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={{}}
+				render={renderAdminPage}
+			/>
+		</QueryParamProvider>
 	);
 };

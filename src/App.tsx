@@ -8,23 +8,15 @@ import { useLocation } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 import { QueryParamProvider } from 'use-query-params';
 
-import { Admin } from './admin/Admin';
-import { ADMIN_PATH } from './admin/admin.const';
 import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config';
 import { SpecialUserGroupId } from './admin/user-groups/user-group.const';
 import { commonUserAtom } from './authentication/authentication.store';
-import { SecuredRoute } from './authentication/components/SecuredRoute';
 import { PermissionService } from './authentication/helpers/permission-service';
-import { APP_PATH } from './constants';
-import { ACMIDMNudgeModal } from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
 import { ConfirmModal } from './shared/components/ConfirmModal/ConfirmModal';
-import { Footer } from './shared/components/Footer/Footer';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from './shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { Navigation } from './shared/components/Navigation/Navigation';
-import { ZendeskWrapper } from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers/custom-error';
 import { ReactRouter7Adapter } from './shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
@@ -38,6 +30,10 @@ import { waitForTranslations } from './shared/translations/i18n';
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import './App.scss';
 import './styles/main.scss';
+import { ZendeskWrapper } from './shared/components/ZendeskWrapper/ZendeskWrapper';
+import { Navigation } from './shared/components/Navigation/Navigation';
+import { Footer } from './shared/components/Footer/Footer';
+import { ACMIDMNudgeModal } from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
 
 const App: FC = () => {
 	const { tText, tHtml } = useTranslation();
@@ -143,8 +139,6 @@ const App: FC = () => {
 
 	// Render
 	const renderApp = () => {
-		const isLoginRoute = location.pathname === APP_PATH.LOGIN.route;
-
 		return (
 			<div
 				className={clsx('o-app', {
@@ -161,16 +155,10 @@ const App: FC = () => {
 					position="bottom-left"
 					transition={Slide}
 				/>
-				{isAdminRoute ? (
-					<SecuredRoute Component={Admin} exact={false} path={ADMIN_PATH.DASHBOARD} />
-				) : (
-					<>
-						{!isLoginRoute && <Navigation isPreviewRoute={isPreviewRoute} />}
-						<Outlet />
-						{!isLoginRoute && <Footer />}
-						<ACMIDMNudgeModal />
-					</>
-				)}
+				<Navigation isPreviewRoute={isPreviewRoute} />
+				<Outlet />
+				<Footer />
+				<ACMIDMNudgeModal />
 				<ZendeskWrapper />
 			</div>
 		);

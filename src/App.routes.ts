@@ -40,6 +40,8 @@ import { PUPIL_COLLECTIONS_PATH } from './admin/pupil-collection/pupil-collectio
 import { PupilCollectionsOverview } from './admin/pupil-collection/views/PupilCollectionsOverview';
 import { TRANSLATIONS_PATH } from './admin/translations/translations.const';
 import TranslationsOverviewPage from './admin/translations/views/TranslationsOverviewPage';
+import { URL_REDIRECT_PATH } from './admin/url-redirects/url-redirects.const';
+import { UrlRedirectEdit, UrlRedirectOverview } from './admin/url-redirects/views';
 import { USER_GROUP_PATH } from './admin/user-groups/user-group.const';
 import UserGroupOverviewPage from './admin/user-groups/views/UserGroupOverviewPage';
 import { USER_PATH } from './admin/users/user.const';
@@ -92,8 +94,6 @@ import { UserItemRequestForm } from './user-item-request-form/views/UserItemRequ
 import { UserItemRequestFormConfirm } from './user-item-request-form/views/UserItemRequestFormConfirm';
 import { Workspace } from './workspace/views/Workspace';
 import { WorkspaceAssignmentRedirect } from './workspace/views/WorkspaceAssignmentRedirect';
-import { UrlRedirectEdit, UrlRedirectOverview } from './admin/url-redirects/views';
-import { URL_REDIRECT_PATH } from './admin/url-redirects/url-redirects.const';
 
 async function logRoutesMiddleware({ request }: Parameters<MiddlewareFunction>[0]) {
 	console.log(`Starting navigation: ${request.url}`);
@@ -124,6 +124,11 @@ export const getAppRoutes = (): RouteObject[] => [
 			////////////////////////////////////////////////////////////////////////////////////////
 			// CLIENT ROUTES
 			////////////////////////////////////////////////////////////////////////////////////////
+			{
+				// Login route doesn't need navigation or footer
+				path: APP_PATH.LOGIN.route,
+				Component: Login,
+			},
 			{
 				path: '/',
 				Component: AppWithAdminCoreConfig,
@@ -158,7 +163,6 @@ export const getAppRoutes = (): RouteObject[] => [
 function getUnauthenticatedClientRoutes(): RouteObject[] {
 	return [
 		{ index: true, Component: LoggedOutHome },
-		{ path: APP_PATH.LOGIN.route, Component: Login },
 		{ path: APP_PATH.LOGOUT.route, Component: Logout },
 		{ path: APP_PATH.STAMBOEK.route, Component: RegisterStamboek },
 		{ path: APP_PATH.MANUAL_ACCESS_REQUEST.route, Component: ManualRegistration },
