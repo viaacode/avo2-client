@@ -65,7 +65,9 @@ export const BlockSearch: FC = () => {
 	 * Trigger a new call to the backend for getting new search results when the searchTerms change
 	 */
 	useEffect(() => {
-		refetchSearchResults();
+		if (debouncedSearchTerms.trim().length > 0) {
+			refetchSearchResults();
+		}
 	}, [refetchSearchResults]);
 
 	// Computed

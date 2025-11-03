@@ -4,12 +4,10 @@ import {
 	Container,
 	DatePicker,
 	type DefaultProps,
-	Flex,
 	Form,
 	FormGroup,
 	Grid,
 	Spacer,
-	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
 import { clsx } from 'clsx';
@@ -18,6 +16,7 @@ import { useAtomValue } from 'jotai';
 import React, { type FC, useCallback } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { endOfAcademicYear } from '../helpers/academic-year';
@@ -57,13 +56,7 @@ export const AssignmentDetailsFormEditable: FC<
 	// Render
 
 	if (!commonUser) {
-		return (
-			<Spacer margin="top-extra-large">
-				<Flex orientation="horizontal" center>
-					<Spinner size="large" />
-				</Flex>
-			</Spacer>
-		);
+		return <FullPageSpinner />;
 	}
 
 	const deadline = assignment.deadline_at ? new Date(assignment.deadline_at) : null;

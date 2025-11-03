@@ -14,7 +14,6 @@ import {
 	MoreOptionsDropdown,
 	Select,
 	Spacer,
-	Spinner,
 	Table,
 	TagList,
 	TextInput,
@@ -59,6 +58,7 @@ import {
 	CheckboxDropdownModal,
 	type CheckboxOption,
 } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
 	ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
@@ -923,11 +923,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({ onUpdate = noo
 
 	const renderAssignmentsView = () => {
 		if (isLoadingAssignments) {
-			return (
-				<Flex orientation="horizontal" center>
-					<Spinner size="large" />
-				</Flex>
-			);
+			return <FullPageSpinner />;
 		}
 		if (!assignments.length) {
 			return renderEmptyFallback();

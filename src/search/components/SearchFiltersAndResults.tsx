@@ -1,14 +1,12 @@
 import {
 	Button,
 	Container,
-	Flex,
 	Form,
 	FormGroup,
 	IconName,
 	Navbar,
 	Select,
 	Spacer,
-	Spinner,
 	TextInput,
 	Toolbar,
 	ToolbarItem,
@@ -40,6 +38,7 @@ import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
@@ -421,14 +420,8 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	useKeyPress('Enter', copySearchTermsToFormState);
 
 	const renderSearchResults = () => {
-		if (searchResultsLoading) {
-			return (
-				<Spacer margin="top-extra-large">
-					<Flex orientation="horizontal" center>
-						<Spinner size="large" />
-					</Flex>
-				</Spacer>
-			);
+		if (searchResultsLoading || (!searchResultsError && !searchResults)) {
+			return <FullPageSpinner />;
 		}
 		if (searchResultsError) {
 			return (
@@ -467,55 +460,73 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 		);
 	};
 
+	const renderSearchInputField = () => {
+		return (
+			<Form type="inline">
+				<FormGroup inlineMode="grow">
+					<TextInput
+						id="query"
+						placeholder={tText('search/views/search___vul-uw-zoekterm-in')}
+						value={searchTerms}
+						className="c-search-term-input-field"
+						icon={IconName.search}
+						onChange={setSearchTerms}
+					/>
+				</FormGroup>
+				<FormGroup inlineMode="shrink">
+					<Button
+						label={tText('search/views/search___zoeken')}
+						type="primary"
+						className="c-search-button"
+						onClick={copySearchTermsToFormState}
+					/>
+				</FormGroup>
+				{hasFilters && (
+					<FormGroup inlineMode="shrink">
+						<Button
+							label={
+								isMobileWidth()
+									? ''
+									: tText('search/views/search___verwijder-alle-filters')
+							}
+							ariaLabel={tText('search/views/search___verwijder-alle-filters')}
+							icon={isMobileWidth() ? IconName.delete : undefined}
+							type={isMobileWidth() ? 'borderless' : 'link'}
+							onClick={deleteAllFilters}
+						/>
+					</FormGroup>
+				)}
+			</Form>
+		);
+	};
+
+	const renderSortControl = () => {
+		return (
+			<Form type="inline">
+				<FormGroup label={tText('search/views/search___sorteer-op')} labelFor="sortBy">
+					<Select
+						className="c-search-view__sort-select"
+						id="sortBy"
+						options={GET_SEARCH_ORDER_OPTIONS().filter(
+							(option) =>
+								!enabledOrderProperties ||
+								enabledOrderProperties.includes(option.value)
+						)}
+						value={defaultOrder}
+						onChange={(value) => handleOrderChanged(value)}
+					/>
+				</FormGroup>
+			</Form>
+		);
+	};
+
 	const renderSearchPage = () => (
 		<div className="c-search-view">
 			<Navbar autoHeight>
 				<Container mode="horizontal">
 					<Spacer margin="top-large">
 						<Spacer margin="bottom-large">
-							<div className="u-limit-width-bp3">
-								<Form type="inline">
-									<FormGroup inlineMode="grow">
-										<TextInput
-											id="query"
-											placeholder={tText(
-												'search/views/search___vul-uw-zoekterm-in'
-											)}
-											value={searchTerms}
-											className="c-search-term-input-field"
-											icon={IconName.search}
-											onChange={setSearchTerms}
-										/>
-									</FormGroup>
-									<FormGroup inlineMode="shrink">
-										<Button
-											label={tText('search/views/search___zoeken')}
-											type="primary"
-											className="c-search-button"
-											onClick={copySearchTermsToFormState}
-										/>
-									</FormGroup>
-									{hasFilters && (
-										<FormGroup inlineMode="shrink">
-											<Button
-												label={
-													isMobileWidth()
-														? ''
-														: tText(
-																'search/views/search___verwijder-alle-filters'
-														  )
-												}
-												ariaLabel={tText(
-													'search/views/search___verwijder-alle-filters'
-												)}
-												icon={isMobileWidth() ? IconName.delete : undefined}
-												type={isMobileWidth() ? 'borderless' : 'link'}
-												onClick={deleteAllFilters}
-											/>
-										</FormGroup>
-									)}
-								</Form>
-							</div>
+							<div className="u-limit-width-bp3">{renderSearchInputField()}</div>
 						</Spacer>
 						<SearchFilterControls
 							filterState={filterState.filters || DEFAULT_FILTER_STATE}
@@ -536,26 +547,7 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 							</span>
 						</ToolbarItem>
 					</ToolbarLeft>
-					<ToolbarRight>
-						<Form type="inline">
-							<FormGroup
-								label={tText('search/views/search___sorteer-op')}
-								labelFor="sortBy"
-							>
-								<Select
-									className="c-search-view__sort-select"
-									id="sortBy"
-									options={GET_SEARCH_ORDER_OPTIONS().filter(
-										(option) =>
-											!enabledOrderProperties ||
-											enabledOrderProperties.includes(option.value)
-									)}
-									value={defaultOrder}
-									onChange={(value) => handleOrderChanged(value)}
-								/>
-							</FormGroup>
-						</Form>
-					</ToolbarRight>
+					<ToolbarRight>{renderSortControl()}</ToolbarRight>
 				</Toolbar>
 			</Container>
 			{renderSearchResults()}

@@ -23,11 +23,7 @@ export const SecuredRoute: FC<SecuredRouteProps> = (
 	// if ((!loginState || loginStateLoading) && !loginStateError) {
 	// 	// Wait for login check
 	// 	return (
-	// 		<Spacer margin={['top-large', 'bottom-large']}>
-	// 			<Flex center>
-	// 				<Spinner size="large" />
-	// 			</Flex>
-	// 		</Spacer>
+	// 		<FullPageSpinner />
 	// 	);
 	// }
 	//

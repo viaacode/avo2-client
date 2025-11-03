@@ -4,7 +4,7 @@ import {
 	FilterTable,
 	getFilters,
 } from '@meemoo/admin-core-ui/admin';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { noop, partition } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
@@ -14,6 +14,7 @@ import { AssignmentService } from '../../../assignment/assignment.service';
 import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
 import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetAssignmentsEditStatuses';
 import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
@@ -560,32 +561,34 @@ export const AssignmentOverviewAdmin: FC = () => {
 	};
 
 	return (
-		<AdminLayout
-			pageTitle={tText('admin/assignments/views/assignments-overview-admin___opdrachten')}
-			size="full-width"
-		>
-			<AdminLayoutBody>
-				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							tText(
-								'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-titel'
-							)
-						)}
-					</title>
-					<meta
-						name="description"
-						content={tText(
-							'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-beschrijving'
-						)}
+		<PermissionGuard permissions={[PermissionName.VIEW_ANY_ASSIGNMENTS]}>
+			<AdminLayout
+				pageTitle={tText('admin/assignments/views/assignments-overview-admin___opdrachten')}
+				size="full-width"
+			>
+				<AdminLayoutBody>
+					<Helmet>
+						<title>
+							{GENERATE_SITE_TITLE(
+								tText(
+									'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-titel'
+								)
+							)}
+						</title>
+						<meta
+							name="description"
+							content={tText(
+								'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-beschrijving'
+							)}
+						/>
+					</Helmet>
+					<LoadingErrorLoadedComponent
+						loadingInfo={loadingInfo}
+						dataObject={assignments}
+						render={renderAssignmentOverview}
 					/>
-				</Helmet>
-				<LoadingErrorLoadedComponent
-					loadingInfo={loadingInfo}
-					dataObject={assignments}
-					render={renderAssignmentOverview}
-				/>
-			</AdminLayoutBody>
-		</AdminLayout>
+				</AdminLayoutBody>
+			</AdminLayout>
+		</PermissionGuard>
 	);
 };

@@ -1,15 +1,18 @@
 import { FilterTable } from '@meemoo/admin-core-ui/admin';
-import { Button, ButtonToolbar, Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import { isEqual, isNil } from 'lodash-es';
 import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { formatDate } from '../../../shared/helpers/formatters';
 import { navigate } from '../../../shared/helpers/link';
@@ -202,13 +205,7 @@ const UrlRedirectOverview: FC = () => {
 
 	const renderRedirectsPageBody = () => {
 		if (isLoading) {
-			return (
-				<Spacer margin={['top-large', 'bottom-large']}>
-					<Flex center>
-						<Spinner size="large" />
-					</Flex>
-				</Spacer>
-			);
+			return <FullPageSpinner />;
 		}
 
 		if (error || !urlRedirectsAndCount) {
@@ -258,41 +255,46 @@ const UrlRedirectOverview: FC = () => {
 	};
 
 	return (
-		<AdminLayout
-			pageTitle={tText(
-				'admin/url-redirects/views/url-redirect-overview___url-redirects-overview'
-			)}
-			size="full-width"
-		>
-			<AdminLayoutTopBarRight>
-				<Button
-					label={tText(
-						'admin/url-redirects/views/url-redirect-overview___url-redirect-toevoegen'
-					)}
-					onClick={() => {
-						redirectToClientPage(URL_REDIRECT_PATH.URL_REDIRECT_CREATE, navigateFunc);
-					}}
-				/>
-			</AdminLayoutTopBarRight>
-			<AdminLayoutBody>
-				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							tText(
-								'admin/url-redirects/views/url-redirect-overview___url-redirect-beheer-overview-pagina-titel'
-							)
+		<PermissionGuard permissions={[PermissionName.EDIT_REDIRECTS]}>
+			<AdminLayout
+				pageTitle={tText(
+					'admin/url-redirects/views/url-redirect-overview___url-redirects-overview'
+				)}
+				size="full-width"
+			>
+				<AdminLayoutTopBarRight>
+					<Button
+						label={tText(
+							'admin/url-redirects/views/url-redirect-overview___url-redirect-toevoegen'
 						)}
-					</title>
-					<meta
-						name="description"
-						content={tText(
-							'admin/url-redirects/views/url-redirect-overview___url-redirect-beheer-overview-pagina-beschrijving'
-						)}
+						onClick={() => {
+							redirectToClientPage(
+								URL_REDIRECT_PATH.URL_REDIRECT_CREATE,
+								navigateFunc
+							);
+						}}
 					/>
-				</Helmet>
-				{renderRedirectsPageBody()}
-			</AdminLayoutBody>
-		</AdminLayout>
+				</AdminLayoutTopBarRight>
+				<AdminLayoutBody>
+					<Helmet>
+						<title>
+							{GENERATE_SITE_TITLE(
+								tText(
+									'admin/url-redirects/views/url-redirect-overview___url-redirect-beheer-overview-pagina-titel'
+								)
+							)}
+						</title>
+						<meta
+							name="description"
+							content={tText(
+								'admin/url-redirects/views/url-redirect-overview___url-redirect-beheer-overview-pagina-beschrijving'
+							)}
+						/>
+					</Helmet>
+					{renderRedirectsPageBody()}
+				</AdminLayoutBody>
+			</AdminLayout>
+		</PermissionGuard>
 	);
 };
 

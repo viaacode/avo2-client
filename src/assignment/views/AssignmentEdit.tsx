@@ -12,7 +12,6 @@ import {
 	MetaData,
 	MetaDataItem,
 	Spacer,
-	Spinner,
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
@@ -40,6 +39,7 @@ import { ErrorView, type ErrorViewQueryParams } from '../../error/views/ErrorVie
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { BlockList } from '../../shared/components/BlockList/BlockList';
 import { EmptyStateMessage } from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import { InActivityWarningModal } from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
 import {
@@ -934,13 +934,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 				if (pastDeadline) {
 					if (!assignment) {
 						if (!assignment) {
-							return (
-								<Spacer margin="top-extra-large">
-									<Flex orientation="horizontal" center>
-										<Spinner size="large" />
-									</Flex>
-								</Spacer>
-							);
+							return <FullPageSpinner />;
 						}
 					}
 					return (
@@ -1238,13 +1232,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 
 	const renderPageContent = () => {
 		if (isAssignmentLoading && !originalAssignment) {
-			return (
-				<Spacer margin="top-extra-large">
-					<Flex orientation="horizontal" center>
-						<Spinner size="large" />
-					</Flex>
-				</Spacer>
-			);
+			return <FullPageSpinner />;
 		}
 		if (assignmentError) {
 			return <ErrorView {...assignmentError} />;

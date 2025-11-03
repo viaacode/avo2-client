@@ -4,7 +4,6 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
-	Flex,
 	Grid,
 	HeaderContentType,
 	Icon,
@@ -16,7 +15,6 @@ import {
 	MetaDataItem,
 	MoreOptionsDropdown,
 	Spacer,
-	Spinner,
 	Thumbnail,
 	Toolbar,
 	ToolbarItem,
@@ -89,6 +87,7 @@ import { BundleAction } from '../bundle.types';
 
 import './BundleDetail.scss';
 import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 
 type BundleDetailProps = {
 	id?: string;
@@ -936,11 +935,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 
 	const renderPageContent = () => {
 		if (isLoadingBundle) {
-			return (
-				<Flex center>
-					<Spinner size="large" />
-				</Flex>
-			);
+			return <FullPageSpinner />;
 		}
 		if (isErrorBundle) {
 			return (

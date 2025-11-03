@@ -1,11 +1,13 @@
 import { FilterTable } from '@meemoo/admin-core-ui/admin';
 import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
@@ -300,47 +302,49 @@ export const InteractiveTourOverview: FC = () => {
 	};
 
 	return (
-		<AdminLayout
-			pageTitle={tText(
-				'admin/interactive-tour/views/interactive-tour-overview___interactieve-tours'
-			)}
-			size="full-width"
-		>
-			<AdminLayoutTopBarRight>
-				<Button
-					label={tText(
-						'admin/interactive-tour/views/interactive-tour-overview___interactieve-tour-toevoegen'
-					)}
-					onClick={() => {
-						redirectToClientPage(
-							INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE,
-							navigateFunc
-						);
-					}}
-				/>
-			</AdminLayoutTopBarRight>
-			<AdminLayoutBody>
-				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							tText(
-								'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-titel'
-							)
+		<PermissionGuard permissions={[PermissionName.EDIT_INTERACTIVE_TOURS]}>
+			<AdminLayout
+				pageTitle={tText(
+					'admin/interactive-tour/views/interactive-tour-overview___interactieve-tours'
+				)}
+				size="full-width"
+			>
+				<AdminLayoutTopBarRight>
+					<Button
+						label={tText(
+							'admin/interactive-tour/views/interactive-tour-overview___interactieve-tour-toevoegen'
 						)}
-					</title>
-					<meta
-						name="description"
-						content={tText(
-							'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-beschrijving'
-						)}
+						onClick={() => {
+							redirectToClientPage(
+								INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE,
+								navigateFunc
+							);
+						}}
 					/>
-				</Helmet>
-				<LoadingErrorLoadedComponent
-					loadingInfo={loadingInfo}
-					dataObject={interactiveTours}
-					render={renderInteractiveTourPageBody}
-				/>
-			</AdminLayoutBody>
-		</AdminLayout>
+				</AdminLayoutTopBarRight>
+				<AdminLayoutBody>
+					<Helmet>
+						<title>
+							{GENERATE_SITE_TITLE(
+								tText(
+									'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-titel'
+								)
+							)}
+						</title>
+						<meta
+							name="description"
+							content={tText(
+								'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-beschrijving'
+							)}
+						/>
+					</Helmet>
+					<LoadingErrorLoadedComponent
+						loadingInfo={loadingInfo}
+						dataObject={interactiveTours}
+						render={renderInteractiveTourPageBody}
+					/>
+				</AdminLayoutBody>
+			</AdminLayout>
+		</PermissionGuard>
 	);
 };

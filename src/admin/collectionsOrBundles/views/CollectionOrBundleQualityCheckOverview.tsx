@@ -4,7 +4,7 @@ import {
 	FilterTable,
 	getFilters,
 } from '@meemoo/admin-core-ui/admin';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
@@ -12,6 +12,7 @@ import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
@@ -412,50 +413,60 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
 	};
 
 	return (
-		<AdminLayout
-			pageTitle={
-				isCollection
-					? tText(
-							'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collecties-kwaliteitscontrole'
-					  )
-					: tText(
-							'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundels-kwaliteitscontrole'
-					  )
-			}
-			size="full-width"
+		<PermissionGuard
+			permissions={[
+				PermissionName.VIEW_COLLECTIONS_OVERVIEW,
+				PermissionName.VIEW_COLLECTION_EDITORIAL_OVERVIEWS,
+
+				PermissionName.VIEW_BUNDLES_OVERVIEW,
+				PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS,
+			]}
 		>
-			<AdminLayoutBody>
-				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							isCollection
-								? tText(
-										'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collectie-kwaliteitscontrole-beheer-overview-pagina-titel'
-								  )
-								: tText(
-										'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundel-kwaliteitscontrole-beheer-overview-pagina-titel'
-								  )
-						)}
-					</title>
-					<meta
-						name="description"
-						content={
-							isCollection
-								? tText(
-										'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collectie-kwaliteitscontrole-beheer-overview-pagina-beschrijving'
-								  )
-								: tText(
-										'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundel-kwaliteitscontrole-beheer-overview-pagina-beschrijving'
-								  )
-						}
+			<AdminLayout
+				pageTitle={
+					isCollection
+						? tText(
+								'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collecties-kwaliteitscontrole'
+						  )
+						: tText(
+								'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundels-kwaliteitscontrole'
+						  )
+				}
+				size="full-width"
+			>
+				<AdminLayoutBody>
+					<Helmet>
+						<title>
+							{GENERATE_SITE_TITLE(
+								isCollection
+									? tText(
+											'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collectie-kwaliteitscontrole-beheer-overview-pagina-titel'
+									  )
+									: tText(
+											'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundel-kwaliteitscontrole-beheer-overview-pagina-titel'
+									  )
+							)}
+						</title>
+						<meta
+							name="description"
+							content={
+								isCollection
+									? tText(
+											'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collectie-kwaliteitscontrole-beheer-overview-pagina-beschrijving'
+									  )
+									: tText(
+											'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundel-kwaliteitscontrole-beheer-overview-pagina-beschrijving'
+									  )
+							}
+						/>
+					</Helmet>
+					<LoadingErrorLoadedComponent
+						loadingInfo={loadingInfo}
+						dataObject={collections}
+						render={renderCollectionOrBundleQualityCheckOverview}
 					/>
-				</Helmet>
-				<LoadingErrorLoadedComponent
-					loadingInfo={loadingInfo}
-					dataObject={collections}
-					render={renderCollectionOrBundleQualityCheckOverview}
-				/>
-			</AdminLayoutBody>
-		</AdminLayout>
+				</AdminLayoutBody>
+			</AdminLayout>
+		</PermissionGuard>
 	);
 };

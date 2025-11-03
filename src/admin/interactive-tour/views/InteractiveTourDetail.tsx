@@ -6,11 +6,13 @@ import {
 	Spacer,
 	Table,
 } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useMatch, useNavigate } from 'react-router';
 
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
@@ -243,27 +245,29 @@ export const InteractiveTourDetail: FC = () => {
 
 	return (
 		<>
-			<Helmet>
-				<title>
-					{GENERATE_SITE_TITLE(
-						get(interactiveTour, 'name'),
-						tText(
-							'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-titel'
-						)
-					)}
-				</title>
-				<meta
-					name="description"
-					content={tText(
-						'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-beschrijving'
-					)}
+			<PermissionGuard permissions={[PermissionName.EDIT_INTERACTIVE_TOURS]}>
+				<Helmet>
+					<title>
+						{GENERATE_SITE_TITLE(
+							get(interactiveTour, 'name'),
+							tText(
+								'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-titel'
+							)
+						)}
+					</title>
+					<meta
+						name="description"
+						content={tText(
+							'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-beschrijving'
+						)}
+					/>
+				</Helmet>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={interactiveTour}
+					render={renderInteractiveTourDetailPage}
 				/>
-			</Helmet>
-			<LoadingErrorLoadedComponent
-				loadingInfo={loadingInfo}
-				dataObject={interactiveTour}
-				render={renderInteractiveTourDetailPage}
-			/>
+			</PermissionGuard>
 		</>
 	);
 };

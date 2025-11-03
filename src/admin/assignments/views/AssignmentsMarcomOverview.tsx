@@ -1,12 +1,12 @@
 import { ExportAllToCsvModal, FilterTable, getFilters } from '@meemoo/admin-core-ui/admin';
-import { Container, Flex, Spinner } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import React, { type FC, type ReactNode, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
 import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
@@ -15,6 +15,7 @@ import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
@@ -242,14 +243,7 @@ export const AssignmentMarcomOverview: FC = () => {
 
 	const renderAssignmentMarcomOverview = () => {
 		if (isLoadingAssignments || isLoadingAssignmentIds) {
-			return (
-				<Container mode="vertical">
-					<Flex orientation="horizontal" center>
-						{/* AssignmentsMarcomOverview */}
-						<Spinner size="large" />
-					</Flex>
-				</Container>
-			);
+			return <FullPageSpinner />;
 		}
 		return (
 			<>
@@ -353,30 +347,32 @@ export const AssignmentMarcomOverview: FC = () => {
 	};
 
 	return (
-		<AdminLayout
-			pageTitle={tText(
-				'admin/assignments/views/assignments-marcom-overview___opdrachten-marcom'
-			)}
-			size="full-width"
-		>
-			<AdminLayoutBody>
-				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							tText(
-								'admin/assignments/views/assignments-marcom-overview___collectie-marcom-beheer-overview-pagina-titel'
-							)
-						)}
-					</title>
-					<meta
-						name="description"
-						content={tText(
-							'admin/assignments/views/assignments-marcom-overview___collectie-marcom-beheer-overview-pagina-beschrijving'
-						)}
-					/>
-				</Helmet>
-				{renderAssignmentMarcomOverview()}
-			</AdminLayoutBody>
-		</AdminLayout>
+		<PermissionGuard permissions={[PermissionName.VIEW_ANY_ASSIGNMENTS]}>
+			<AdminLayout
+				pageTitle={tText(
+					'admin/assignments/views/assignments-marcom-overview___opdrachten-marcom'
+				)}
+				size="full-width"
+			>
+				<AdminLayoutBody>
+					<Helmet>
+						<title>
+							{GENERATE_SITE_TITLE(
+								tText(
+									'admin/assignments/views/assignments-marcom-overview___collectie-marcom-beheer-overview-pagina-titel'
+								)
+							)}
+						</title>
+						<meta
+							name="description"
+							content={tText(
+								'admin/assignments/views/assignments-marcom-overview___collectie-marcom-beheer-overview-pagina-beschrijving'
+							)}
+						/>
+					</Helmet>
+					{renderAssignmentMarcomOverview()}
+				</AdminLayoutBody>
+			</AdminLayout>
+		</PermissionGuard>
 	);
 };

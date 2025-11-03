@@ -14,7 +14,6 @@ import {
 	IconName,
 	Select,
 	Spacer,
-	Spinner,
 	Table,
 	TextArea,
 	TextInput,
@@ -29,6 +28,7 @@ import { AssignmentService } from '../../assignment/assignment.service';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { APP_PATH } from '../../constants';
 import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { type App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types';
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
@@ -402,11 +402,7 @@ export const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps>
 						/>
 					</>
 				) : (
-					<Spacer margin={['top-large', 'bottom-large']}>
-						<Flex center>
-							<Spinner size="large" />
-						</Flex>
-					</Spacer>
+					<FullPageSpinner />
 				)}
 			</>
 		);

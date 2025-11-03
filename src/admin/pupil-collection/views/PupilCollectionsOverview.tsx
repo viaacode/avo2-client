@@ -4,14 +4,15 @@ import {
 	FilterTable,
 	getFilters,
 } from '@meemoo/admin-core-ui/admin';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { get, isNil } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
 import { AssignmentService } from '../../../assignment/assignment.service';
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
@@ -429,34 +430,36 @@ export const PupilCollectionsOverview: FC = () => {
 	};
 
 	return (
-		<AdminLayout
-			pageTitle={tText(
-				'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties'
-			)}
-			size="full-width"
-		>
-			<AdminLayoutBody>
-				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							tText(
-								'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-titel'
-							)
-						)}
-					</title>
-					<meta
-						name="description"
-						content={tText(
-							'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-beschrijving'
-						)}
+		<PermissionGuard permissions={[PermissionName.VIEW_ANY_PUPIL_COLLECTIONS]}>
+			<AdminLayout
+				pageTitle={tText(
+					'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties'
+				)}
+				size="full-width"
+			>
+				<AdminLayoutBody>
+					<Helmet>
+						<title>
+							{GENERATE_SITE_TITLE(
+								tText(
+									'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-titel'
+								)
+							)}
+						</title>
+						<meta
+							name="description"
+							content={tText(
+								'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-beschrijving'
+							)}
+						/>
+					</Helmet>
+					<LoadingErrorLoadedComponent
+						loadingInfo={loadingInfo}
+						dataObject={pupilCollections}
+						render={renderAssignmentOverview}
 					/>
-				</Helmet>
-				<LoadingErrorLoadedComponent
-					loadingInfo={loadingInfo}
-					dataObject={pupilCollections}
-					render={renderAssignmentOverview}
-				/>
-			</AdminLayoutBody>
-		</AdminLayout>
+				</AdminLayoutBody>
+			</AdminLayout>
+		</PermissionGuard>
 	);
 };

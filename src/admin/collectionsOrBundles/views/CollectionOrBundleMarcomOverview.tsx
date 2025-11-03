@@ -1,5 +1,5 @@
 import { ExportAllToCsvModal, FilterTable, getFilters } from '@meemoo/admin-core-ui/admin';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
@@ -434,50 +435,60 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
 	};
 
 	return (
-		<AdminLayout
-			pageTitle={
-				isCollection
-					? tText(
-							'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___collecties-marcom'
-					  )
-					: tText(
-							'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___bundels-marcom'
-					  )
-			}
-			size="full-width"
+		<PermissionGuard
+			permissions={[
+				PermissionName.VIEW_COLLECTIONS_OVERVIEW,
+				PermissionName.VIEW_COLLECTION_EDITORIAL_OVERVIEWS,
+
+				PermissionName.VIEW_BUNDLES_OVERVIEW,
+				PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS,
+			]}
 		>
-			<AdminLayoutBody>
-				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							isCollection
-								? tText(
-										'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___collectie-marcom-beheer-overview-pagina-titel'
-								  )
-								: tText(
-										'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___bundel-marcom-beheer-overview-pagina-titel'
-								  )
-						)}
-					</title>
-					<meta
-						name="description"
-						content={
-							isCollection
-								? tText(
-										'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___collectie-marcom-beheer-overview-pagina-beschrijving'
-								  )
-								: tText(
-										'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___bundel-marcom-beheer-overview-pagina-beschrijving'
-								  )
-						}
+			<AdminLayout
+				pageTitle={
+					isCollection
+						? tText(
+								'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___collecties-marcom'
+						  )
+						: tText(
+								'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___bundels-marcom'
+						  )
+				}
+				size="full-width"
+			>
+				<AdminLayoutBody>
+					<Helmet>
+						<title>
+							{GENERATE_SITE_TITLE(
+								isCollection
+									? tText(
+											'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___collectie-marcom-beheer-overview-pagina-titel'
+									  )
+									: tText(
+											'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___bundel-marcom-beheer-overview-pagina-titel'
+									  )
+							)}
+						</title>
+						<meta
+							name="description"
+							content={
+								isCollection
+									? tText(
+											'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___collectie-marcom-beheer-overview-pagina-beschrijving'
+									  )
+									: tText(
+											'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___bundel-marcom-beheer-overview-pagina-beschrijving'
+									  )
+							}
+						/>
+					</Helmet>
+					<LoadingErrorLoadedComponent
+						loadingInfo={loadingInfo}
+						dataObject={collections}
+						render={renderCollectionOrBundleMarcomOverview}
 					/>
-				</Helmet>
-				<LoadingErrorLoadedComponent
-					loadingInfo={loadingInfo}
-					dataObject={collections}
-					render={renderCollectionOrBundleMarcomOverview}
-				/>
-			</AdminLayoutBody>
-		</AdminLayout>
+				</AdminLayoutBody>
+			</AdminLayout>
+		</PermissionGuard>
 	);
 };

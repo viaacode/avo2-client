@@ -5,7 +5,6 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
-	Flex,
 	Grid,
 	Header,
 	HeaderBottomRowLeft,
@@ -16,7 +15,6 @@ import {
 	isUuid,
 	MoreOptionsDropdown,
 	Spacer,
-	Spinner,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
@@ -46,6 +44,7 @@ import { BlockList } from '../../shared/components/BlockList/BlockList';
 import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EditButton } from '../../shared/components/EditButton/EditButton';
 import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
@@ -994,13 +993,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 
 	const renderPageContent = () => {
 		if (assignmentLoading) {
-			return (
-				<Spacer margin="top-extra-large">
-					<Flex orientation="horizontal" center>
-						<Spinner size="large" />
-					</Flex>
-				</Spacer>
-			);
+			return <FullPageSpinner />;
 		}
 		if (assignmentError) {
 			return <ErrorView {...assignmentError} />;

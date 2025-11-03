@@ -5,7 +5,6 @@ import {
 	Column,
 	Container,
 	Dropdown,
-	Flex,
 	Grid,
 	Header,
 	HeaderBottomRowLeft,
@@ -16,7 +15,6 @@ import {
 	MenuContent,
 	MoreOptionsDropdown,
 	Spacer,
-	Spinner,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
@@ -113,6 +111,7 @@ import {
 import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from './CollectionDetail.const';
 
 import './CollectionDetail.scss';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -1521,13 +1520,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
 	const renderCollection = () => {
 		if (loadingInfo.state === 'loading') {
-			return (
-				<Flex center className="c-filter-table__loading">
-					<Spacer margin={['top-large', 'bottom-large']}>
-						<Spinner size="large" />
-					</Spacer>
-				</Flex>
-			);
+			return <FullPageSpinner />;
 		}
 
 		if (showNoAccessPopup) {

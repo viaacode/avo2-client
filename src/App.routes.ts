@@ -1,9 +1,7 @@
-import { PermissionName } from '@viaa/avo2-types';
 import { type MiddlewareFunction, redirect, type RouteObject } from 'react-router';
 
 import { AppWithAdminCoreConfig } from './App';
 import { Admin } from './admin/Admin';
-import { AdminRedirect } from './admin/AdminRedirect';
 import { ASSIGNMENTS_PATH } from './admin/assignments/assignments.const';
 import { AssignmentMarcomOverview } from './admin/assignments/views/AssignmentsMarcomOverview';
 import { AssignmentOverviewAdmin } from './admin/assignments/views/AssignmentsOverviewAdmin';
@@ -80,43 +78,38 @@ import { Profile } from './settings/components/Profile';
 import { Settings } from './settings/views/Settings';
 import { FullPageSpinner } from './shared/components/FullPageSpinner/FullPageSpinner';
 import { ROUTE_PARTS } from './shared/constants';
-import {
-	checkLoginLoaderAsync,
-	hasAllPermissionsLoader,
-	hasAnyPermissionLoader,
-	hasPermissionLoader,
-	isLoggedInLoader,
-	routeLoaders,
-} from './shared/helpers/routing/route-loaders';
 import { EducationalAuthorItemRequestForm } from './user-item-request-form/views/EducationalAuthorItemRequestForm';
 import { EducationalAuthorItemRequestFormConfirm } from './user-item-request-form/views/EducationalAuthorItemRequestFormConfirm';
 import { UserItemRequestForm } from './user-item-request-form/views/UserItemRequestForm';
 import { UserItemRequestFormConfirm } from './user-item-request-form/views/UserItemRequestFormConfirm';
 import { Workspace } from './workspace/views/Workspace';
-import { WorkspaceAssignmentRedirect } from './workspace/views/WorkspaceAssignmentRedirect';
+import { AppClientLayout } from './AppClientLayout';
 
 async function logRoutesMiddleware({ request }: Parameters<MiddlewareFunction>[0]) {
-	console.log(`Starting navigation: ${request.url}`);
+	console.log(`${request.method} ${request.url}`);
 }
 
 export const getAppRoutes = (): RouteObject[] => [
 	{
+		id: 'root',
 		path: '/',
 		middleware: [logRoutesMiddleware],
-		loader: checkLoginLoaderAsync(),
+		Component: AppWithAdminCoreConfig,
 		children: [
 			////////////////////////////////////////////////////////////////////////////////////////
 			// ADMIN ROUTES
 			////////////////////////////////////////////////////////////////////////////////////////
 			{
+				// Redirect /beheer to /admin
+				id: 'beheer',
 				path: `/${ROUTE_PARTS.beheer}`,
 				loader: () => {
-					console.log('Redirecting to /admin');
 					return redirect(`/${ROUTE_PARTS.admin}`);
 				},
 				Component: FullPageSpinner,
 			},
 			{
+				id: 'admin',
 				path: `/${ROUTE_PARTS.admin}`,
 				Component: Admin,
 				children: getAdminRoutes(),
@@ -125,13 +118,14 @@ export const getAppRoutes = (): RouteObject[] => [
 			// CLIENT ROUTES
 			////////////////////////////////////////////////////////////////////////////////////////
 			{
+				id: 'login',
 				// Login route doesn't need navigation or footer
 				path: APP_PATH.LOGIN.route,
 				Component: Login,
 			},
 			{
-				path: '/',
-				Component: AppWithAdminCoreConfig,
+				id: 'app-client-layout',
+				Component: AppClientLayout,
 				children: [
 					////////////////////////////////////////////////////////////////////////////////////////
 					// UNAUTHENTICATED
@@ -142,7 +136,7 @@ export const getAppRoutes = (): RouteObject[] => [
 					// AUTHENTICATED ROUTES
 					////////////////////////////////////////////////////////////////////////////////////////
 					{
-						loader: isLoggedInLoader(),
+						id: 'authenticated-client-routes',
 						children: getAuthenticatedClientRoutes(),
 					},
 
@@ -162,18 +156,38 @@ export const getAppRoutes = (): RouteObject[] => [
 ////////////////////////////////////////////////////////////////////////////////////////
 function getUnauthenticatedClientRoutes(): RouteObject[] {
 	return [
-		{ index: true, Component: LoggedOutHome },
-		{ path: APP_PATH.LOGOUT.route, Component: Logout },
-		{ path: APP_PATH.STAMBOEK.route, Component: RegisterStamboek },
-		{ path: APP_PATH.MANUAL_ACCESS_REQUEST.route, Component: ManualRegistration },
-		{ path: APP_PATH.STUDENT_TEACHER.route, Component: StudentTeacher },
-		{ path: APP_PATH.REGISTER_OR_LOGIN.route, Component: RegisterOrLogin },
-		{ path: APP_PATH.LINK_YOUR_ACCOUNT.route, Component: LinkYourAccount },
-		{ path: APP_PATH.ACCEPT_CONDITIONS.route, Component: AcceptConditions },
-		{ path: APP_PATH.COMPLETE_PROFILE.route, Component: CompleteProfileStep },
-		{ path: APP_PATH.ERROR.route, Component: ErrorView },
-		{ path: APP_PATH.COOKIE_POLICY.route, Component: CookiePolicy },
-		{ path: APP_PATH.EMAIL_PREFERENCES_LOGGED_OUT.route, Component: Email },
+		{ id: 'LoggedOutHome', index: true, Component: LoggedOutHome },
+		{ id: 'Logout', path: APP_PATH.LOGOUT.route, Component: Logout },
+		{ id: 'RegisterStamboek', path: APP_PATH.STAMBOEK.route, Component: RegisterStamboek },
+		{
+			id: 'ManualRegistration',
+			path: APP_PATH.MANUAL_ACCESS_REQUEST.route,
+			Component: ManualRegistration,
+		},
+		{ id: 'StudentTeacher', path: APP_PATH.STUDENT_TEACHER.route, Component: StudentTeacher },
+		{
+			id: 'RegisterOrLogin',
+			path: APP_PATH.REGISTER_OR_LOGIN.route,
+			Component: RegisterOrLogin,
+		},
+		{
+			id: 'LinkYourAccount',
+			path: APP_PATH.LINK_YOUR_ACCOUNT.route,
+			Component: LinkYourAccount,
+		},
+		{
+			id: 'AcceptConditions',
+			path: APP_PATH.ACCEPT_CONDITIONS.route,
+			Component: AcceptConditions,
+		},
+		{
+			id: 'CompleteProfileStep',
+			path: APP_PATH.COMPLETE_PROFILE.route,
+			Component: CompleteProfileStep,
+		},
+		{ id: 'ErrorView', path: APP_PATH.ERROR.route, Component: ErrorView },
+		{ id: 'CookiePolicy', path: APP_PATH.COOKIE_POLICY.route, Component: CookiePolicy },
+		{ id: 'Email', path: APP_PATH.EMAIL_PREFERENCES_LOGGED_OUT.route, Component: Email },
 	];
 }
 
@@ -185,83 +199,105 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 		{
 			path: APP_PATH.LOGGED_IN_HOME.route,
 			Component: LoggedInHome,
+			id: 'LoggedInHome',
 		},
 		{
 			path: `/${ROUTE_PARTS.beheer}`,
-			Component: AdminRedirect,
+			Component: FullPageSpinner,
+			id: 'AdminRedirect',
 		},
 		{
 			path: APP_PATH.SEARCH.route,
-			loader: isLoggedInLoader(),
 			Component: Search,
+			id: 'Search',
 		},
 		{
 			path: APP_PATH.ITEM_DETAIL.route,
 			Component: ItemDetailRoute,
+			id: 'ItemDetailRoute',
 		},
 		{
 			path: APP_PATH.COLLECTION_DETAIL.route,
 			Component: CollectionDetail,
+			id: 'CollectionDetail',
 		},
 		{
 			path: APP_PATH.COLLECTION_EDIT.route,
 			Component: CollectionEdit,
+			id: 'CollectionEdit',
 		},
 		{
 			path: APP_PATH.COLLECTION_EDIT_TAB.route,
 			Component: CollectionEdit,
+			id: 'CollectionEdit tab',
 		},
 		{
 			path: APP_PATH.BUNDLE_DETAIL.route,
 			Component: BundleDetail,
+			id: 'BundleDetail',
 		},
 		{
 			path: APP_PATH.BUNDLE_EDIT.route,
-			loader: isLoggedInLoader(),
 			Component: BundleEdit,
+			id: 'BundleEdit',
 		},
 		{
 			path: APP_PATH.BUNDLE_EDIT_TAB.route,
 			Component: BundleEdit,
+			id: 'BundleEdit tab',
 		},
 		{
 			path: APP_PATH.ASSIGNMENT_CREATE.route,
 			Component: AssignmentEdit,
+			id: 'AssignmentEdit create',
 		},
 		{
 			path: APP_PATH.ASSIGNMENT_DETAIL.route,
 			Component: AssignmentDetailSwitcher,
+			id: 'AssignmentDetailSwitcher',
 		},
 		{
 			path: APP_PATH.ASSIGNMENT_EDIT.route,
 			Component: AssignmentEdit,
+			id: 'AssignmentEdit edit',
 		},
 		{
 			path: APP_PATH.ASSIGNMENT_EDIT_TAB.route,
 			Component: AssignmentEdit,
+			id: 'AssignmentEdit edit tab',
 		},
 		{
 			path: APP_PATH.ASSIGNMENT_RESPONSE_CREATE.route,
 			Component: AssignmentDetailSwitcher,
+			id: 'AssignmentDetailSwitcher create',
 		},
 		{
 			path: APP_PATH.ASSIGNMENT_RESPONSE_EDIT.route,
 			Component: AssignmentDetailSwitcher,
+			id: 'AssignmentDetailSwitcher edit',
 		},
 		// view pupil collection response as teacher/ad{min
 		{
 			path: APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route,
 			Component: AssignmentPupilCollectionDetail,
+			id: 'AssignmentPupilCollectionDetail',
 		},
 		// edit pupil collection response as admin
 		{
 			path: APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route,
 			Component: AssignmentResponseAdminEdit,
+			id: 'AssignmentResponseAdminEdit',
 		},
 		{
 			path: APP_PATH.WORKSPACE.route,
-			loader: isLoggedInLoader(),
+
 			Component: Workspace,
+			id: 'Workspace',
+		},
+		{
+			path: APP_PATH.WORKSPACE_TAB.route,
+			Component: Workspace,
+			id: 'Workspace tab',
 		},
 		{
 			path: `${APP_PATH.WORKSPACE.route}${APP_PATH.ASSIGNMENT_DETAIL.route}`,
@@ -269,45 +305,48 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 				const assignmentId = props.params?.assignmentId;
 				return redirect(`/${ROUTE_PARTS.assignments}/${assignmentId}${location.search}`);
 			},
-			Component: WorkspaceAssignmentRedirect,
-		},
-		{
-			path: APP_PATH.WORKSPACE_TAB.route,
-			Component: Workspace,
+			Component: FullPageSpinner,
+			id: 'WorkspaceAssignmentRedirect',
 		},
 		{
 			path: APP_PATH.SETTINGS.route,
-			loader: isLoggedInLoader(),
 			Component: Settings,
+			id: 'Settings',
 		},
 		{
 			path: APP_PATH.SETTINGS_TAB.route,
-			loader: isLoggedInLoader(),
 			Component: Settings,
+			id: 'Settings tab',
 		},
 		{
 			path: APP_PATH.COMPLETE_PROFILE.route,
 			Component: Profile,
+			id: 'Profile',
 		},
 		{
 			path: APP_PATH.USER_ITEM_REQUEST_FORM.route,
 			Component: UserItemRequestForm,
+			id: 'UserItemRequestForm',
 		},
 		{
 			path: APP_PATH.USER_ITEM_REQUEST_FORM_CONFIRM.route,
 			Component: UserItemRequestFormConfirm,
+			id: 'UserItemRequestFormConfirm',
 		},
 		{
 			path: APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM.route,
 			Component: EducationalAuthorItemRequestForm,
+			id: 'EducationalAuthorItemRequestForm',
 		},
 		{
 			path: APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM_CONFIRM.route,
 			Component: EducationalAuthorItemRequestFormConfirm,
+			id: 'EducationalAuthorItemRequestFormConfirm',
 		},
 		{
 			path: APP_PATH.QUICK_LANE.route,
 			Component: QuickLaneDetail,
+			id: 'QuickLaneDetail',
 		},
 		{ path: APP_PATH.EMBED.route, Component: EmbedCodeDetail },
 	];
@@ -316,247 +355,203 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 function getAdminRoutes(): RouteObject[] {
 	return [
 		{
+			id: 'Dashboard',
 			Component: Dashboard,
 			index: true,
 		},
 		{
+			id: 'AssignmentOverviewAdmin',
 			Component: AssignmentOverviewAdmin,
-			loader: hasPermissionLoader(PermissionName.VIEW_ANY_ASSIGNMENTS),
 			path: ASSIGNMENTS_PATH.ASSIGNMENTS_OVERVIEW,
 		},
 		{
+			id: 'AssignmentMarcomOverview',
 			Component: AssignmentMarcomOverview,
-			loader: hasPermissionLoader(PermissionName.VIEW_ANY_ASSIGNMENTS),
 			path: ASSIGNMENTS_PATH.ASSIGNMENTS_MARCOM_OVERVIEW,
 		},
 		{
+			id: 'CollectionsOverview',
 			Component: CollectionsOrBundlesOverview,
-			loader: routeLoaders(
-				(permissions) =>
-					permissions.includes(PermissionName.VIEW_COLLECTIONS_OVERVIEW) &&
-					(permissions.includes(PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS) ||
-						permissions.includes(PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS))
-			),
 			path: COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW,
 		},
 		{
+			id: 'CollectionActualisationOverview',
 			Component: CollectionOrBundleActualisationOverview,
-			loader: hasAllPermissionsLoader(
-				PermissionName.VIEW_COLLECTIONS_OVERVIEW,
-				PermissionName.VIEW_COLLECTION_EDITORIAL_OVERVIEWS
-			),
 			path: COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_ACTUALISATION_OVERVIEW,
 		},
 		{
+			id: 'CollectionQualityCheckOverview',
 			Component: CollectionOrBundleQualityCheckOverview,
-			loader: hasAllPermissionsLoader(
-				PermissionName.VIEW_COLLECTIONS_OVERVIEW,
-				PermissionName.VIEW_COLLECTION_EDITORIAL_OVERVIEWS
-			),
 			path: COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_QUALITYCHECK_OVERVIEW,
 		},
 		{
+			id: 'CollectionMarcomOverview',
 			Component: CollectionOrBundleMarcomOverview,
-			loader: hasAllPermissionsLoader(
-				PermissionName.VIEW_COLLECTIONS_OVERVIEW,
-				PermissionName.VIEW_COLLECTION_EDITORIAL_OVERVIEWS
-			),
 			path: COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_MARCOM_OVERVIEW,
 		},
 		{
+			id: 'BundlesOverview',
 			Component: CollectionsOrBundlesOverview,
-			loader: routeLoaders(
-				(permissions) =>
-					permissions.includes(PermissionName.VIEW_BUNDLES_OVERVIEW) &&
-					(permissions.includes(PermissionName.VIEW_ANY_PUBLISHED_BUNDLES) ||
-						permissions.includes(PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES))
-			),
 			path: COLLECTIONS_OR_BUNDLES_PATH.BUNDLES_OVERVIEW,
 		},
 		{
+			id: 'BundleActualisationOverview',
 			Component: CollectionOrBundleActualisationOverview,
-			loader: hasAllPermissionsLoader(
-				PermissionName.VIEW_BUNDLES_OVERVIEW,
-				PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS
-			),
 			path: COLLECTIONS_OR_BUNDLES_PATH.BUNDLE_ACTUALISATION_OVERVIEW,
 		},
 		{
+			id: 'BundleQualityCheckOverview',
 			Component: CollectionOrBundleQualityCheckOverview,
-			loader: hasAllPermissionsLoader(
-				PermissionName.VIEW_BUNDLES_OVERVIEW,
-				PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS
-			),
 			path: COLLECTIONS_OR_BUNDLES_PATH.BUNDLE_QUALITYCHECK_OVERVIEW,
 		},
 		{
+			id: 'BundleMarcomOverview',
 			Component: CollectionOrBundleMarcomOverview,
-			loader: hasAllPermissionsLoader(
-				PermissionName.VIEW_BUNDLES_OVERVIEW,
-				PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS
-			),
 			path: COLLECTIONS_OR_BUNDLES_PATH.BUNDLE_MARCOM_OVERVIEW,
 		},
 		{
+			id: 'ContentPageOverviewPage',
 			Component: ContentPageOverviewPage,
-			loader: hasAnyPermissionLoader(
-				PermissionName.EDIT_OWN_CONTENT_PAGES,
-				PermissionName.EDIT_ANY_CONTENT_PAGES
-			),
 			path: CONTENT_PAGE_PATH.CONTENT_PAGE_OVERVIEW,
 		},
 		{
+			id: 'ContentPageEditPage create',
 			Component: ContentPageEditPage,
-			loader: hasAnyPermissionLoader(
-				PermissionName.EDIT_OWN_CONTENT_PAGES,
-				PermissionName.EDIT_ANY_CONTENT_PAGES
-			),
 			path: CONTENT_PAGE_PATH.CONTENT_PAGE_CREATE,
 		},
 		{
-			Component: ContentPageDetailPage,
-			loader: hasAnyPermissionLoader(
-				PermissionName.EDIT_OWN_CONTENT_PAGES,
-				PermissionName.EDIT_ANY_CONTENT_PAGES
-			),
-			path: CONTENT_PAGE_PATH.CONTENT_PAGE_DETAIL,
-		},
-		{
+			id: 'ContentPageEditPage edit',
 			Component: ContentPageEditPage,
-			loader: hasAnyPermissionLoader(
-				PermissionName.EDIT_OWN_CONTENT_PAGES,
-				PermissionName.EDIT_ANY_CONTENT_PAGES
-			),
 			path: CONTENT_PAGE_PATH.CONTENT_PAGE_EDIT,
 		},
 		{
+			id: 'ContentPageDetailPage',
+			Component: ContentPageDetailPage,
+			path: CONTENT_PAGE_PATH.CONTENT_PAGE_DETAIL,
+		},
+		{
+			id: 'ContentPageLabelOverviewPage',
 			Component: ContentPageLabelOverviewPage,
-			loader: hasPermissionLoader(PermissionName.EDIT_CONTENT_PAGE_LABELS),
 			path: CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_OVERVIEW,
 		},
 		{
+			id: 'ContentPageLabelEditPage create',
 			Component: ContentPageLabelEditPage,
-			loader: hasPermissionLoader(PermissionName.EDIT_CONTENT_PAGE_LABELS),
 			path: CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_CREATE,
 		},
 		{
+			id: 'ContentPageLabelEditPage edit',
 			Component: ContentPageLabelEditPage,
-			loader: hasPermissionLoader(PermissionName.EDIT_CONTENT_PAGE_LABELS),
 			path: CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_EDIT,
 		},
 		{
+			id: 'ContentPageLabelDetailPage',
 			Component: ContentPageLabelDetailPage,
-			loader: hasPermissionLoader(PermissionName.EDIT_CONTENT_PAGE_LABELS),
 			path: CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_DETAIL,
 		},
 		{
+			id: 'InteractiveTourOverview',
 			Component: InteractiveTourOverview,
-			loader: hasPermissionLoader(PermissionName.EDIT_INTERACTIVE_TOURS),
 			path: INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_OVERVIEW,
 		},
 		{
+			id: 'InteractiveTourEdit create',
 			Component: InteractiveTourEdit,
-			loader: hasPermissionLoader(PermissionName.EDIT_INTERACTIVE_TOURS),
 			path: INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE,
 		},
 		{
+			id: 'InteractiveTourEdit edit',
 			Component: InteractiveTourEdit,
-			loader: hasPermissionLoader(PermissionName.EDIT_INTERACTIVE_TOURS),
 			path: INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT,
 		},
 		{
+			id: 'InteractiveTourDetail',
 			Component: InteractiveTourDetail,
-			loader: hasPermissionLoader(PermissionName.EDIT_INTERACTIVE_TOURS),
 			path: INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL,
 		},
 		{
+			id: 'ItemsOverview',
 			Component: ItemsOverview,
-			loader: hasPermissionLoader(PermissionName.VIEW_ITEMS_OVERVIEW),
 			path: ITEMS_PATH.ITEMS_OVERVIEW,
 		},
 		{
+			id: 'ItemDetail',
 			Component: ItemDetail,
-			loader: hasPermissionLoader(PermissionName.VIEW_ITEMS_OVERVIEW),
 			path: ITEMS_PATH.ITEM_DETAIL,
 		},
 		{
+			id: 'PublishItemsOverview',
 			Component: PublishItemsOverview,
-			loader: hasPermissionLoader(PermissionName.PUBLISH_ITEMS),
 			path: ITEMS_PATH.PUBLISH_ITEMS_OVERVIEW,
 		},
 		{
+			id: 'NavigationBarOverview',
 			Component: NavigationBarOverview,
-			loader: hasPermissionLoader(PermissionName.EDIT_NAVIGATION_BARS),
 			path: NAVIGATIONS_PATH.NAVIGATIONS_OVERVIEW,
 		},
 		{
-			Component: NavigationItemEdit,
-			loader: hasPermissionLoader(PermissionName.EDIT_NAVIGATION_BARS),
-			path: NAVIGATIONS_PATH.NAVIGATIONS_CREATE,
-		},
-		{
+			id: 'NavigationBarDetail',
 			Component: NavigationBarDetail,
-			loader: hasPermissionLoader(PermissionName.EDIT_NAVIGATION_BARS),
 			path: NAVIGATIONS_PATH.NAVIGATIONS_DETAIL,
 		},
 		{
+			id: 'NavigationItemEdit create',
 			Component: NavigationItemEdit,
-			loader: hasPermissionLoader(PermissionName.EDIT_NAVIGATION_BARS),
 			path: NAVIGATIONS_PATH.NAVIGATIONS_ITEM_CREATE,
 		},
 		{
+			id: 'NavigationItemEdit edit',
 			Component: NavigationItemEdit,
-			loader: hasPermissionLoader(PermissionName.EDIT_NAVIGATION_BARS),
 			path: NAVIGATIONS_PATH.NAVIGATIONS_ITEM_EDIT,
 		},
 		{
+			id: 'UrlRedirectOverview',
 			Component: UrlRedirectOverview,
-			loader: hasPermissionLoader(PermissionName.EDIT_REDIRECTS),
 			path: URL_REDIRECT_PATH.URL_REDIRECT_OVERVIEW,
 		},
 		{
+			id: 'UrlRedirectEdit create',
 			Component: UrlRedirectEdit,
-			loader: hasPermissionLoader(PermissionName.EDIT_REDIRECTS),
 			path: URL_REDIRECT_PATH.URL_REDIRECT_CREATE,
 		},
 		{
+			id: 'UrlRedirectEdit edit',
 			Component: UrlRedirectEdit,
-			loader: hasPermissionLoader(PermissionName.EDIT_REDIRECTS),
 			path: URL_REDIRECT_PATH.URL_REDIRECT_EDIT,
 		},
 		{
+			id: 'PupilCollectionsOverview',
 			Component: PupilCollectionsOverview,
-			loader: hasPermissionLoader(PermissionName.VIEW_ANY_PUPIL_COLLECTIONS),
 			path: PUPIL_COLLECTIONS_PATH.ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW,
 		},
 		{
+			id: 'TranslationsOverviewPage',
 			Component: TranslationsOverviewPage,
-			loader: hasPermissionLoader(PermissionName.EDIT_TRANSLATIONS),
 			path: TRANSLATIONS_PATH.TRANSLATIONS,
 		},
 		{
+			id: 'UserGroupOverviewPage',
 			Component: UserGroupOverviewPage,
-			loader: hasPermissionLoader(PermissionName.EDIT_USER_GROUPS),
 			path: USER_GROUP_PATH.USER_GROUP_OVERVIEW,
 		},
 		{
+			id: 'UserOverviewPage',
 			Component: UserOverviewPage,
-			loader: hasPermissionLoader(PermissionName.VIEW_USERS),
 			path: USER_PATH.USER_OVERVIEW,
 		},
 		{
+			id: 'UserDetailPage',
 			Component: UserDetailPage,
-			loader: hasPermissionLoader(PermissionName.VIEW_USERS),
 			path: USER_PATH.USER_DETAIL,
 		},
 		{
+			id: 'UserEditPage',
 			Component: UserEditPage,
-			loader: hasPermissionLoader(PermissionName.VIEW_USERS),
 			path: USER_PATH.USER_EDIT,
 		},
 		{
+			id: 'MaintenanceAlertsOverviewPage',
 			Component: MaintenanceAlertsOverviewPage,
-			loader: hasPermissionLoader(PermissionName.VIEW_ANY_MAINTENANCE_ALERTS),
 			path: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.alerts}`,
 		},
 	];

@@ -125,7 +125,7 @@ export const Search: FC = () => {
 					content={tText('search/views/search___zoeken-pagina-beschrijving')}
 				/>
 			</Helmet>
-			<PermissionGuard permissions={PermissionName.SEARCH} commonUser={commonUser || null}>
+			<PermissionGuard permissions={[PermissionName.SEARCH]}>
 				<PermissionGuardPass>
 					<Navbar>
 						<Container mode="horizontal">

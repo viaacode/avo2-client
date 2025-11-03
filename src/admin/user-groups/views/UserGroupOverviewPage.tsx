@@ -1,9 +1,12 @@
 import { Button } from '@meemoo/react-components';
-import { Flex, Icon, IconName, Spinner, Toolbar, ToolbarRight } from '@viaa/avo2-components';
+import { Icon, IconName, Toolbar, ToolbarRight } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import React, { type FC, lazy, Suspense, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { useTranslation } from '../../../shared/hooks/use-translation/use-translation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
@@ -76,13 +79,7 @@ const UserGroupGroupOverviewPage: FC = () => {
 	const renderPageContent = () => {
 		return (
 			<>
-				<Suspense
-					fallback={
-						<Flex orientation="horizontal" center>
-							<Spinner size="large" />
-						</Flex>
-					}
-				>
+				<Suspense fallback={<FullPageSpinner />}>
 					<UserGroupOverview
 						renderSearchButtons={renderSearchButtons}
 						ref={permissionsRef}
@@ -99,35 +96,37 @@ const UserGroupGroupOverviewPage: FC = () => {
 	};
 
 	return (
-		<AdminLayout
-			pageTitle={tText(
-				'admin/user-groups/views/user-group-overview-page___groepen-en-permissies'
-			)}
-			size="full-width"
-			className="p-admin__user-group-overview"
-		>
-			<AdminLayoutTopBarRight>
-				{hasChanges && <>{renderActionButtons()}</>}
-			</AdminLayoutTopBarRight>
-			<AdminLayoutBody>
-				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							tText(
-								'admin/user-groups/views/user-group-overview___gebruikersgroepen-beheer-overzicht-pagina-titel'
-							)
-						)}
-					</title>
-					<meta
-						name="description"
-						content={tText(
-							'admin/user-groups/views/user-group-overview___gebruikersgroepen-beheer-overzicht-pagina-beschrijving'
-						)}
-					/>
-				</Helmet>
-				{renderPageContent()}
-			</AdminLayoutBody>
-		</AdminLayout>
+		<PermissionGuard permissions={[PermissionName.EDIT_USER_GROUPS]}>
+			<AdminLayout
+				pageTitle={tText(
+					'admin/user-groups/views/user-group-overview-page___groepen-en-permissies'
+				)}
+				size="full-width"
+				className="p-admin__user-group-overview"
+			>
+				<AdminLayoutTopBarRight>
+					{hasChanges && <>{renderActionButtons()}</>}
+				</AdminLayoutTopBarRight>
+				<AdminLayoutBody>
+					<Helmet>
+						<title>
+							{GENERATE_SITE_TITLE(
+								tText(
+									'admin/user-groups/views/user-group-overview___gebruikersgroepen-beheer-overzicht-pagina-titel'
+								)
+							)}
+						</title>
+						<meta
+							name="description"
+							content={tText(
+								'admin/user-groups/views/user-group-overview___gebruikersgroepen-beheer-overzicht-pagina-beschrijving'
+							)}
+						/>
+					</Helmet>
+					{renderPageContent()}
+				</AdminLayoutBody>
+			</AdminLayout>
+		</PermissionGuard>
 	);
 };
 

@@ -3,14 +3,12 @@ import {
 	Button,
 	Column,
 	Container,
-	Flex,
 	Form,
 	FormGroup,
 	Grid,
 	Icon,
 	IconName,
 	Spacer,
-	Spinner,
 } from '@viaa/avo2-components';
 import { Idp } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
@@ -35,6 +33,7 @@ import { isPupil } from '../../shared/helpers/is-pupil';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './LinkedAccounts.scss';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 
 interface IdpProps {
 	label: ReactNode;
@@ -194,11 +193,7 @@ export const LinkedAccounts: FC = () => {
 	};
 
 	if (!commonUser) {
-		return (
-			<Flex center>
-				<Spinner size="large" />
-			</Flex>
-		);
+		return <FullPageSpinner />;
 	}
 
 	return (

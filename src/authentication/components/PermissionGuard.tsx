@@ -1,36 +1,38 @@
 import { useSlot } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, type PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import { isNil } from 'lodash-es';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
-import {
-	LoadingErrorLoadedComponent,
-	type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { useTranslation } from '../../shared/hooks/useTranslation';
-import { type Permissions, PermissionService } from '../helpers/permission-service';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
+import { loginAtom } from '../authentication.store';
+import { PermissionService } from '../helpers/permission-service';
 
 import { PermissionGuardFail, PermissionGuardPass } from './PermissionGuard.slots';
 
 interface PermissionGuardProps {
 	children: ReactNode;
-	permissions: Permissions;
-	commonUser: Avo.User.CommonUser | null;
-	noPermissionsMessage?: string;
+	permissions: PermissionName[];
 }
 
-export const PermissionGuard: FC<PermissionGuardProps> = ({
-	children,
-	permissions,
-	commonUser,
-	noPermissionsMessage,
-}) => {
-	const { tText } = useTranslation();
+interface LoggedInGuardProps {
+	children: ReactNode;
+	hasToBeLoggedIn: boolean;
+}
+
+export const PermissionGuard: FC<PermissionGuardProps | LoggedInGuardProps> = (props) => {
+	const { children } = props;
+	const permissions = (props as PermissionGuardProps).permissions || [];
+	const hasToBeLoggedIn = (props as LoggedInGuardProps).hasToBeLoggedIn || false;
+	const loginStatus = useAtomValue(loginAtom);
+	const commonUser: Avo.User.CommonUser | undefined = (
+		loginStatus?.data as Avo.Auth.LoginResponseLoggedIn | undefined
+	)?.commonUserInfo;
 
 	const childrenIfPassed = useSlot(PermissionGuardPass, children);
 	const childrenIfFailed = useSlot(PermissionGuardFail, children);
 
-	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
 	useEffect(() => {
@@ -40,37 +42,25 @@ export const PermissionGuard: FC<PermissionGuardProps> = ({
 			})
 			.catch((err) => {
 				console.error('Failed to get permissions', err, { permissions, commonUser });
-				setLoadingInfo({
-					state: 'error',
-					message:
-						noPermissionsMessage ||
-						tText(
-							'authentication/components/permission-guard___er-ging-iets-mis-tijdens-het-controleren-van-de-rechten-van-je-account'
-						),
-				});
 			});
 	});
 
-	useEffect(() => {
-		if (!isNil(hasPermission)) {
-			setLoadingInfo({ state: 'loaded' });
-		}
-	}, [hasPermission]);
-
-	const renderPermissionGuard = () => {
-		return hasPermission ? (
-			<>{childrenIfPassed ? childrenIfPassed : children}</>
-		) : (
-			<>{childrenIfFailed}</>
-		);
+	const renderSuccess = () => {
+		return childrenIfPassed ? childrenIfPassed : children;
 	};
 
-	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={{}} // Empty object so it doesn't wait for a valid object from the database
-			render={renderPermissionGuard}
-			showSpinner={true}
-		/>
-	);
+	const renderFailure = () => {
+		return childrenIfFailed ? childrenIfFailed : renderWrongUserRoleError();
+	};
+
+	if (!loginStatus.data || isNil(hasPermission)) {
+		return <FullPageSpinner />;
+	}
+	if (hasToBeLoggedIn && !commonUser) {
+		return renderFailure();
+	}
+	if (permissions.length && !hasPermission) {
+		return renderFailure();
+	}
+	return renderSuccess();
 };

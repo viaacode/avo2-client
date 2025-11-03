@@ -1,4 +1,4 @@
-import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
+import { IconName } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { isString, noop } from 'lodash-es';
@@ -24,6 +24,7 @@ import { AssignmentResponseEdit } from './AssignmentResponseEdit';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 
 export const AssignmentResponseEditPage: FC = () => {
 	const { tText, tHtml } = useTranslation();
@@ -164,13 +165,7 @@ export const AssignmentResponseEditPage: FC = () => {
 
 	const renderPageContent = () => {
 		if (assignmentLoading) {
-			return (
-				<Spacer margin="top-extra-large">
-					<Flex orientation="horizontal" center>
-						<Spinner size="large" />
-					</Flex>
-				</Spacer>
-			);
+			return <FullPageSpinner />;
 		}
 		if (assignmentError) {
 			return (

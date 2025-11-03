@@ -1,12 +1,14 @@
 import type { ContentPageInfo } from '@meemoo/admin-core-ui/admin';
-import { Flex, Spinner } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import React, { type FC, lazy, Suspense, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useMatch, useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ADMIN_PATH } from '../../admin.const';
@@ -43,27 +45,28 @@ const ContentPageDetailPage: FC = () => {
 					<meta name="description" content={item.seoDescription || ''} />
 				</Helmet>
 			)}
-			<Suspense
-				fallback={
-					<Flex orientation="horizontal" center>
-						<Spinner size="large" />
-					</Flex>
-				}
-			>
-				{!!id && (
-					<ContentPageDetail
-						className="c-admin-core"
-						id={id}
-						loaded={setItem}
-						commonUser={commonUser}
-						onGoBack={() =>
-							goBrowserBackWithFallback(
-								ADMIN_PATH.CONTENT_PAGE_OVERVIEWS,
-								navigateFunc
-							)
-						}
-					/>
-				)}
+			<Suspense fallback={<FullPageSpinner />}>
+				<PermissionGuard
+					permissions={[
+						PermissionName.EDIT_OWN_CONTENT_PAGES,
+						PermissionName.EDIT_ANY_CONTENT_PAGES,
+					]}
+				>
+					{!!id && (
+						<ContentPageDetail
+							className="c-admin-core"
+							id={id}
+							loaded={setItem}
+							commonUser={commonUser}
+							onGoBack={() =>
+								goBrowserBackWithFallback(
+									ADMIN_PATH.CONTENT_PAGE_OVERVIEWS,
+									navigateFunc
+								)
+							}
+						/>
+					)}
+				</PermissionGuard>
 			</Suspense>
 		</>
 	);

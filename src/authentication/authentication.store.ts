@@ -31,6 +31,8 @@ export const acceptConditionsAtom = atom<boolean | null, [], void>(null, (get, s
 			...(get(loginAtom).data as Avo.Auth.LoginResponse),
 			acceptedConditions: true,
 		},
+		loading: false,
+		error: false,
 	};
 	set(loginAtom, newLoginState);
 });

@@ -14,6 +14,7 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import { cloneDeep, compact, get, isEmpty, map, orderBy } from 'lodash-es';
 import React, {
 	type FC,
@@ -28,6 +29,7 @@ import { Helmet } from 'react-helmet';
 import { useMatch, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { OrderDirection } from '../../../search/search.const';
@@ -541,37 +543,39 @@ export const InteractiveTourEdit: FC = () => {
 
 	return (
 		<>
-			<Helmet>
-				<title>
-					{GENERATE_SITE_TITLE(
-						get(interactiveTourState.currentInteractiveTour, 'name'),
-						isCreatePage
-							? tText(
-									'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-aanmaak-pagina-titel'
-							  )
-							: tText(
-									'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-bewerk-pagina-titel'
-							  )
-					)}
-				</title>
-				<meta
-					name="description"
-					content={
-						isCreatePage
-							? tText(
-									'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-aanmaak-pagina-beschrijving'
-							  )
-							: tText(
-									'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-bewerk-pagina-beschrijving'
-							  )
-					}
+			<PermissionGuard permissions={[PermissionName.EDIT_INTERACTIVE_TOURS]}>
+				<Helmet>
+					<title>
+						{GENERATE_SITE_TITLE(
+							get(interactiveTourState.currentInteractiveTour, 'name'),
+							isCreatePage
+								? tText(
+										'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-aanmaak-pagina-titel'
+								  )
+								: tText(
+										'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-bewerk-pagina-titel'
+								  )
+						)}
+					</title>
+					<meta
+						name="description"
+						content={
+							isCreatePage
+								? tText(
+										'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-aanmaak-pagina-beschrijving'
+								  )
+								: tText(
+										'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-bewerk-pagina-beschrijving'
+								  )
+						}
+					/>
+				</Helmet>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={interactiveTourState.currentInteractiveTour}
+					render={renderPage}
 				/>
-			</Helmet>
-			<LoadingErrorLoadedComponent
-				loadingInfo={loadingInfo}
-				dataObject={interactiveTourState.currentInteractiveTour}
-				render={renderPage}
-			/>
+			</PermissionGuard>
 		</>
 	);
 };

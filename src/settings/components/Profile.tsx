@@ -5,13 +5,11 @@ import {
 	Button,
 	Column,
 	Container,
-	Flex,
 	Form,
 	FormGroup,
 	Grid,
 	Select,
 	Spacer,
-	Spinner,
 	Table,
 	TextArea,
 	TextInput,
@@ -46,6 +44,7 @@ import { SettingsService } from '../settings.service';
 import { type UsersInSameCompanyColumn } from '../settings.types';
 
 import './Profile.scss';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 
 type FieldPermissionKey =
 	| 'SUBJECTS'
@@ -687,13 +686,10 @@ export const Profile: FC = () => {
 		);
 	};
 
-	return isSaving ? (
-		<Spacer margin="top-extra-large">
-			<Flex orientation="horizontal" center>
-				<Spinner size="large" />
-			</Flex>
-		</Spacer>
-	) : (
+	if (isSaving) {
+		return <FullPageSpinner />;
+	}
+	return (
 		<>
 			<Helmet>
 				<title>

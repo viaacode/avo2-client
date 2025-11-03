@@ -14,7 +14,6 @@ import {
 	IconName,
 	Select,
 	Spacer,
-	Spinner,
 	Table,
 	TextArea,
 	TextInput,
@@ -37,6 +36,7 @@ import {
 } from '../../collection/collection.types';
 import { type MarcomNoteInfo } from '../../collection/components/CollectionOrBundleEdit.types';
 import { APP_PATH } from '../../constants';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { buildLink } from '../../shared/helpers/build-link';
 import { getEnv } from '../../shared/helpers/env';
 import { extractKlascementError } from '../../shared/helpers/extract-klascement-error';
@@ -239,11 +239,7 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
 						/>
 					</>
 				) : (
-					<Spacer margin={['top-large', 'bottom-large']}>
-						<Flex center>
-							<Spinner size="large" />
-						</Flex>
-					</Spacer>
+					<FullPageSpinner />
 				)}
 			</>
 		);

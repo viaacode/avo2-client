@@ -1,6 +1,8 @@
-import { Flex, Spinner } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import React, { type FC, lazy, Suspense } from 'react';
 
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 const ContentPageLabelOverview = lazy(() =>
@@ -11,14 +13,10 @@ const ContentPageLabelOverview = lazy(() =>
 
 const ContentPageLabelOverviewPage: FC = () => {
 	return (
-		<Suspense
-			fallback={
-				<Flex orientation="horizontal" center>
-					<Spinner size="large" />
-				</Flex>
-			}
-		>
-			<ContentPageLabelOverview className="c-admin-core c-admin__content-page-label-overview" />
+		<Suspense fallback={<FullPageSpinner />}>
+			<PermissionGuard permissions={[PermissionName.EDIT_CONTENT_PAGE_LABELS]}>
+				<ContentPageLabelOverview className="c-admin-core c-admin__content-page-label-overview" />
+			</PermissionGuard>
 		</Suspense>
 	);
 };

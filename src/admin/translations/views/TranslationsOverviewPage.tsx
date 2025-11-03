@@ -1,9 +1,11 @@
-import { Button, Flex, Modal, ModalBody, ModalFooterRight, Spinner } from '@viaa/avo2-components';
+import { Button, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
 import { flatten, fromPairs, get, groupBy, isNil, map } from 'lodash-es';
 import React, { type FC, lazy, type ReactNode, Suspense, useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -17,6 +19,7 @@ import { fetchTranslations, updateTranslations } from '../translations.service';
 import { type Translation, type TranslationsState } from '../translations.types';
 
 import './TranslationsOverviewPage.scss';
+import { PermissionName } from '@viaa/avo2-types';
 
 const TranslationsOverview = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -187,43 +190,39 @@ const TranslationsOverviewPage: FC = () => {
 	};
 
 	return (
-		<AdminLayout
-			pageTitle={tText('admin/translations/views/translations-overview___vertalingen')}
-			size="full-width"
-		>
-			<AdminLayoutTopBarRight>
-				<Button label="Opslaan" onClick={onSaveTranslations} />
-			</AdminLayoutTopBarRight>
-			<AdminLayoutBody>
-				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							tText(
-								'admin/translations/views/translations-overview___vertalingen-beheer-pagina-titel'
-							)
-						)}
-					</title>
-					<meta
-						name="description"
-						content={tText(
-							'admin/translations/views/translations-overview___vertalingen-beheer-pagina-beschrijving'
-						)}
-					/>
-				</Helmet>
-				<Suspense
-					fallback={
-						<Flex orientation="horizontal" center>
-							<Spinner size="large" />
-						</Flex>
-					}
-				>
-					<TranslationsOverview
-						renderPopup={renderPopup}
-						className="c-translations-overview"
-					/>
-				</Suspense>
-			</AdminLayoutBody>
-		</AdminLayout>
+		<PermissionGuard permissions={[PermissionName.EDIT_TRANSLATIONS]}>
+			<AdminLayout
+				pageTitle={tText('admin/translations/views/translations-overview___vertalingen')}
+				size="full-width"
+			>
+				<AdminLayoutTopBarRight>
+					<Button label="Opslaan" onClick={onSaveTranslations} />
+				</AdminLayoutTopBarRight>
+				<AdminLayoutBody>
+					<Helmet>
+						<title>
+							{GENERATE_SITE_TITLE(
+								tText(
+									'admin/translations/views/translations-overview___vertalingen-beheer-pagina-titel'
+								)
+							)}
+						</title>
+						<meta
+							name="description"
+							content={tText(
+								'admin/translations/views/translations-overview___vertalingen-beheer-pagina-beschrijving'
+							)}
+						/>
+					</Helmet>
+					<Suspense fallback={<FullPageSpinner />}>
+						<TranslationsOverview
+							renderPopup={renderPopup}
+							className="c-translations-overview"
+						/>
+					</Suspense>
+				</AdminLayoutBody>
+			</AdminLayout>
+		</PermissionGuard>
 	);
 };
 

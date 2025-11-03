@@ -1,4 +1,3 @@
-import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
 import React, { type FC } from 'react';
 
@@ -11,18 +10,13 @@ import { AssignmentResponseEditPage } from './AssignmentResponseEdit/AssignmentR
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 
 export const AssignmentDetailSwitcher: FC = () => {
 	const commonUser = useAtomValue(commonUserAtom);
 
 	if (!commonUser?.userGroup?.id) {
-		return (
-			<Spacer margin="top-extra-large">
-				<Flex orientation="horizontal" center>
-					<Spinner size="large" />
-				</Flex>
-			</Spacer>
-		);
+		return <FullPageSpinner />;
 	}
 	if (
 		[SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]

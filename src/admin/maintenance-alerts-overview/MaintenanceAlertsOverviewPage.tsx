@@ -1,8 +1,10 @@
 import { MaintenanceAlertsOverview } from '@meemoo/admin-core-ui/admin';
 import { Button, Modal } from '@meemoo/react-components';
+import { PermissionName } from '@viaa/avo2-types';
 import type { FC, ReactNode } from 'react';
 import React from 'react';
 
+import { PermissionGuard } from '../../authentication/components/PermissionGuard';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 
 export const MaintenanceAlertsOverviewPage: FC = () => {
@@ -50,5 +52,9 @@ export const MaintenanceAlertsOverviewPage: FC = () => {
 		);
 	};
 
-	return <MaintenanceAlertsOverview className="c-alerts-overview" renderPopup={renderPopup} />;
+	return (
+		<PermissionGuard permissions={[PermissionName.VIEW_ANY_MAINTENANCE_ALERTS]}>
+			<MaintenanceAlertsOverview className="c-alerts-overview" renderPopup={renderPopup} />
+		</PermissionGuard>
+	);
 };

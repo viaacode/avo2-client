@@ -1,7 +1,9 @@
-import { Flex, Spinner } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import React, { type FC, lazy, Suspense } from 'react';
 import { useMatch, useNavigate } from 'react-router';
 
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
@@ -20,25 +22,21 @@ const ContentPageLabelDetailPage: FC = () => {
 	const id = match?.params.id;
 
 	return (
-		<Suspense
-			fallback={
-				<Flex orientation="horizontal" center>
-					<Spinner size="large" />
-				</Flex>
-			}
-		>
-			{!!id && (
-				<ContentPageLabelDetail
-					contentPageLabelId={id}
-					className="c-admin-core c-admin__content-page-label-detail"
-					onGoBack={() =>
-						goBrowserBackWithFallback(
-							ADMIN_PATH.CONTENT_PAGE_LABEL_OVERVIEW,
-							navigateFunc
-						)
-					}
-				/>
-			)}
+		<Suspense fallback={<FullPageSpinner />}>
+			<PermissionGuard permissions={[PermissionName.EDIT_CONTENT_PAGE_LABELS]}>
+				{!!id && (
+					<ContentPageLabelDetail
+						contentPageLabelId={id}
+						className="c-admin-core c-admin__content-page-label-detail"
+						onGoBack={() =>
+							goBrowserBackWithFallback(
+								ADMIN_PATH.CONTENT_PAGE_LABEL_OVERVIEW,
+								navigateFunc
+							)
+						}
+					/>
+				)}
+			</PermissionGuard>
 		</Suspense>
 	);
 };

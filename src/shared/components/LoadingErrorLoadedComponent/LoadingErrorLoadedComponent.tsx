@@ -1,8 +1,9 @@
-import { Container, Flex, IconName, Spinner } from '@viaa/avo2-components';
+import { IconName } from '@viaa/avo2-components';
 import React, { type FC, type ReactElement } from 'react';
 
 import { ErrorView, type ErrorViewQueryParams } from '../../../error/views/ErrorView';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { FullPageSpinner } from '../FullPageSpinner/FullPageSpinner';
 
 export type LoadingState = 'loading' | 'loaded' | 'error' | 'forbidden';
 
@@ -27,13 +28,7 @@ export const LoadingErrorLoadedComponent: FC<LoadingErrorLoadedComponentProps> =
 }) => {
 	const { tHtml } = useTranslation();
 
-	const renderSpinner = () => (
-		<Container mode="vertical">
-			<Flex orientation="horizontal" center>
-				<Spinner size="large" />
-			</Flex>
-		</Container>
-	);
+	const renderSpinner = () => <FullPageSpinner />;
 
 	const renderError = () => (
 		<ErrorView

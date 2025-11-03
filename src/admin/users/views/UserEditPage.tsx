@@ -5,20 +5,21 @@ import {
 	Container,
 	Form,
 	FormGroup,
-	Spinner,
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useMatch, useNavigate } from 'react-router';
 
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { SettingsService } from '../../../settings/settings.service';
 import { FileUpload } from '../../../shared/components/FileUpload/FileUpload';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { LomFieldsInput } from '../../../shared/components/LomFieldsInput/LomFieldsInput';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
@@ -143,7 +144,7 @@ export const UserEditPage: FC = () => {
 
 	const renderUserEdit = () => {
 		if (isLoading) {
-			return <Spinner size="large" />;
+			return <FullPageSpinner />;
 		}
 
 		const companyLogo = profile?.organisation?.logo_url || null;
@@ -224,22 +225,24 @@ export const UserEditPage: FC = () => {
 
 	return (
 		<>
-			<Helmet>
-				<title>
-					{GENERATE_SITE_TITLE(
-						profile?.fullName,
-						tText('admin/users/views/user-detail___item-detail-pagina-titel')
-					)}
-				</title>
-				<meta
-					name="description"
-					content={tText(
-						'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving'
-					)}
-				/>
-			</Helmet>
+			<PermissionGuard permissions={[PermissionName.VIEW_USERS]}>
+				<Helmet>
+					<title>
+						{GENERATE_SITE_TITLE(
+							profile?.fullName,
+							tText('admin/users/views/user-detail___item-detail-pagina-titel')
+						)}
+					</title>
+					<meta
+						name="description"
+						content={tText(
+							'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving'
+						)}
+					/>
+				</Helmet>
 
-			{renderUserEditPage()}
+				{renderUserEditPage()}
+			</PermissionGuard>
 		</>
 	);
 };

@@ -5,7 +5,7 @@ import {
 	convertDbContentPageToContentPageInfo,
 	type DbContentPage,
 } from '@meemoo/admin-core-ui/client';
-import { Flex, IconName, Spinner } from '@viaa/avo2-components';
+import { IconName } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtom, useSetAtom } from 'jotai';
 import { keys } from 'lodash-es';
@@ -28,6 +28,7 @@ import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { OrderDirection, SearchFilter } from '../../search/search.const';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
 import {
@@ -391,11 +392,7 @@ const DynamicRouteResolver: FC = () => {
 			}),
 			'_self'
 		);
-		return (
-			<Flex orientation="horizontal" center>
-				<Spinner size="large" />
-			</Flex>
-		);
+		return <FullPageSpinner />;
 	};
 
 	return (

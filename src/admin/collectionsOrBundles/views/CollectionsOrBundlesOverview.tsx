@@ -1,6 +1,6 @@
 import { ExportAllToCsvModal, FilterTable, getFilters } from '@meemoo/admin-core-ui/admin';
 import { type TagInfo } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { compact, noop, partition } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
@@ -8,6 +8,7 @@ import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { CollectionService } from '../../../collection/collection.service';
 import { useGetCollectionsEditStatuses } from '../../../collection/hooks/useGetCollectionsEditStatuses';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
@@ -704,50 +705,62 @@ export const CollectionsOrBundlesOverview: FC = () => {
 	};
 
 	return (
-		<AdminLayout
-			pageTitle={
-				isCollection
-					? tText(
-							'admin/collections-or-bundles/views/collections-or-bundles-overview___collecties'
-					  )
-					: tText(
-							'admin/collections-or-bundles/views/collections-or-bundles-overview___bundels'
-					  )
-			}
-			size="full-width"
+		<PermissionGuard
+			permissions={[
+				PermissionName.VIEW_COLLECTIONS_OVERVIEW,
+				PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS,
+				PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS,
+
+				PermissionName.VIEW_BUNDLES_OVERVIEW,
+				PermissionName.VIEW_ANY_PUBLISHED_BUNDLES,
+				PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES,
+			]}
 		>
-			<AdminLayoutBody>
-				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							isCollection
-								? tText(
-										'admin/collections-or-bundles/views/collections-or-bundles-overview___collectie-beheer-overview-pagina-titel'
-								  )
-								: tText(
-										'admin/collections-or-bundles/views/collections-or-bundles-overview___bundel-beheer-overview-pagina-titel'
-								  )
-						)}
-					</title>
-					<meta
-						name="description"
-						content={
-							isCollection
-								? tText(
-										'admin/collections-or-bundles/views/collections-or-bundles-overview___collectie-beheer-overview-pagina-beschrijving'
-								  )
-								: tText(
-										'admin/collections-or-bundles/views/collections-or-bundles-overview___bundel-beheer-overview-pagina-beschrijving'
-								  )
-						}
+			<AdminLayout
+				pageTitle={
+					isCollection
+						? tText(
+								'admin/collections-or-bundles/views/collections-or-bundles-overview___collecties'
+						  )
+						: tText(
+								'admin/collections-or-bundles/views/collections-or-bundles-overview___bundels'
+						  )
+				}
+				size="full-width"
+			>
+				<AdminLayoutBody>
+					<Helmet>
+						<title>
+							{GENERATE_SITE_TITLE(
+								isCollection
+									? tText(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___collectie-beheer-overview-pagina-titel'
+									  )
+									: tText(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___bundel-beheer-overview-pagina-titel'
+									  )
+							)}
+						</title>
+						<meta
+							name="description"
+							content={
+								isCollection
+									? tText(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___collectie-beheer-overview-pagina-beschrijving'
+									  )
+									: tText(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___bundel-beheer-overview-pagina-beschrijving'
+									  )
+							}
+						/>
+					</Helmet>
+					<LoadingErrorLoadedComponent
+						loadingInfo={loadingInfo}
+						dataObject={collections}
+						render={renderCollectionsOrBundlesOverview}
 					/>
-				</Helmet>
-				<LoadingErrorLoadedComponent
-					loadingInfo={loadingInfo}
-					dataObject={collections}
-					render={renderCollectionsOrBundlesOverview}
-				/>
-			</AdminLayoutBody>
-		</AdminLayout>
+				</AdminLayoutBody>
+			</AdminLayout>
+		</PermissionGuard>
 	);
 };

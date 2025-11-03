@@ -11,7 +11,7 @@ import { type SearchState } from './search.types';
 export const searchAtom = atom<SearchState>({
 	data: null,
 	loading: false,
-	error: false,
+	error: null,
 });
 
 export const getSearchResultsAtom = atom<
@@ -85,11 +85,13 @@ export const getSearchResultsAtom = atom<
 			set(searchAtom, {
 				...get(searchAtom),
 				data: processedData,
+				loading: false,
+				error: false,
 			});
-		} catch (e) {
+		} catch (err) {
 			set(searchAtom, {
 				...get(searchAtom),
-				error: true,
+				error: err,
 			});
 		}
 	}

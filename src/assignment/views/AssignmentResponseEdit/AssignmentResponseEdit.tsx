@@ -1,16 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import {
-	Alert,
-	Box,
-	Container,
-	Flex,
-	Icon,
-	IconName,
-	Spacer,
-	Spinner,
-	Tabs,
-} from '@viaa/avo2-components';
+import { Alert, Box, Container, Flex, Icon, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { useAtomValue } from 'jotai';
@@ -68,6 +58,7 @@ import { AssignmentResponseSearchTab } from './tabs/AssignmentResponseSearchTab'
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment;
@@ -336,13 +327,7 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
 					return null;
 				}
 				if (!assignmentResponse) {
-					return (
-						<Spacer margin="top-extra-large">
-							<Flex orientation="horizontal" center>
-								<Spinner size="large" />
-							</Flex>
-						</Spacer>
-					);
+					return <FullPageSpinner />;
 				}
 				return (
 					<AssignmentResponsePupilCollectionTab

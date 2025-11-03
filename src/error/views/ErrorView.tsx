@@ -3,10 +3,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
-	Flex,
 	IconName,
-	Spacer,
-	Spinner,
 	Toolbar,
 	ToolbarCenter,
 } from '@viaa/avo2-components';
@@ -29,6 +26,7 @@ import { useTranslation } from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 
 import './ErrorView.scss';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 
 type ErrorActionButton = Avo.Auth.ErrorActionButton | 'help' | 'pupils';
 
@@ -58,18 +56,12 @@ export const ErrorView: FC<ErrorViewProps> = ({
 	const queryParams = queryString.parse((location.search || '').substring(1));
 
 	if (queryParams.logout === 'true') {
-		// redirect to logout route and afterwards redirect back to the error page
+		// redirect to log-out route and afterward redirect back to the error page
 		redirectToServerLogoutPage(
 			location,
 			`/error?${queryString.stringify(omit(queryParams, 'logout'))}`
 		);
-		return (
-			<Spacer margin={['top-large', 'bottom-large']}>
-				<Flex center>
-					<Spinner size="large" />
-				</Flex>
-			</Spacer>
-		);
+		return <FullPageSpinner />;
 	}
 
 	const messageText: string | ReactNode = (queryParams.message as string) || message || '';

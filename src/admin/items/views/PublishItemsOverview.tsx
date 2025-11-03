@@ -1,10 +1,12 @@
 import { FilterTable, getFilters } from '@meemoo/admin-core-ui/admin';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import { get, isNil, truncate } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
@@ -335,53 +337,55 @@ export const PublishItemsOverview: FC = () => {
 	};
 
 	return (
-		<AdminLayout
-			pageTitle={tText('admin/items/views/items-overview___items')}
-			size="full-width"
-		>
-			<AdminLayoutTopBarRight>
-				<ButtonToolbar>
-					<Button
-						icon={IconName.externalLink}
-						type="danger"
-						label={tText('admin/items/views/publish-items-overview___publiceren')}
-						onClick={publishSelection}
+		<PermissionGuard permissions={[PermissionName.PUBLISH_ITEMS]}>
+			<AdminLayout
+				pageTitle={tText('admin/items/views/items-overview___items')}
+				size="full-width"
+			>
+				<AdminLayoutTopBarRight>
+					<ButtonToolbar>
+						<Button
+							icon={IconName.externalLink}
+							type="danger"
+							label={tText('admin/items/views/publish-items-overview___publiceren')}
+							onClick={publishSelection}
+						/>
+						<Button
+							icon={IconName.download}
+							type="primary"
+							label={tText(
+								'admin/items/views/publish-items-overview___synchroniseren-met-mam'
+							)}
+							title={tText(
+								'admin/items/views/publish-items-overview___kopieer-nieuwe-en-aangepaste-items-van-het-mam-naar-de-avo-database'
+							)}
+							onClick={triggerMamSync}
+						/>
+					</ButtonToolbar>
+				</AdminLayoutTopBarRight>
+				<AdminLayoutBody>
+					<Helmet>
+						<title>
+							{GENERATE_SITE_TITLE(
+								tText(
+									'admin/items/views/publish-items-overview___publiceer-items-beheer-overview-pagina-titel'
+								)
+							)}
+						</title>
+						<meta
+							name="description"
+							content={tText(
+								'admin/items/views/publish-items-overview___unpublished-item-beheer-overview-pagina-beschrijving'
+							)}
+						/>
+					</Helmet>
+					<LoadingErrorLoadedComponent
+						loadingInfo={loadingInfo}
+						dataObject={items}
+						render={renderItemsOverview}
 					/>
-					<Button
-						icon={IconName.download}
-						type="primary"
-						label={tText(
-							'admin/items/views/publish-items-overview___synchroniseren-met-mam'
-						)}
-						title={tText(
-							'admin/items/views/publish-items-overview___kopieer-nieuwe-en-aangepaste-items-van-het-mam-naar-de-avo-database'
-						)}
-						onClick={triggerMamSync}
-					/>
-				</ButtonToolbar>
-			</AdminLayoutTopBarRight>
-			<AdminLayoutBody>
-				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							tText(
-								'admin/items/views/publish-items-overview___publiceer-items-beheer-overview-pagina-titel'
-							)
-						)}
-					</title>
-					<meta
-						name="description"
-						content={tText(
-							'admin/items/views/publish-items-overview___unpublished-item-beheer-overview-pagina-beschrijving'
-						)}
-					/>
-				</Helmet>
-				<LoadingErrorLoadedComponent
-					loadingInfo={loadingInfo}
-					dataObject={items}
-					render={renderItemsOverview}
-				/>
-			</AdminLayoutBody>
-		</AdminLayout>
+				</AdminLayoutBody>
+			</AdminLayout>
+		</PermissionGuard>
 	);
 };

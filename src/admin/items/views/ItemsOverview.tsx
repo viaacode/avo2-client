@@ -1,9 +1,10 @@
 import { ExportAllToCsvModal, FilterTable } from '@meemoo/admin-core-ui/admin';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { OrderDirection } from '../../../search/search.const';
@@ -201,28 +202,30 @@ export const ItemsOverview: FC = () => {
 	};
 
 	return (
-		<AdminLayout
-			pageTitle={tText('admin/items/views/items-overview___items')}
-			size="full-width"
-		>
-			<AdminLayoutBody>
-				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							tText(
-								'admin/items/views/items-overview___item-beheer-overview-pagina-titel'
-							)
-						)}
-					</title>
-					<meta
-						name="description"
-						content={tText(
-							'admin/items/views/items-overview___item-beheer-overview-pagina-beschrijving'
-						)}
-					/>
-				</Helmet>
-				{renderItemsOverview()}
-			</AdminLayoutBody>
-		</AdminLayout>
+		<PermissionGuard permissions={[PermissionName.VIEW_ITEMS_OVERVIEW]}>
+			<AdminLayout
+				pageTitle={tText('admin/items/views/items-overview___items')}
+				size="full-width"
+			>
+				<AdminLayoutBody>
+					<Helmet>
+						<title>
+							{GENERATE_SITE_TITLE(
+								tText(
+									'admin/items/views/items-overview___item-beheer-overview-pagina-titel'
+								)
+							)}
+						</title>
+						<meta
+							name="description"
+							content={tText(
+								'admin/items/views/items-overview___item-beheer-overview-pagina-beschrijving'
+							)}
+						/>
+					</Helmet>
+					{renderItemsOverview()}
+				</AdminLayoutBody>
+			</AdminLayout>
+		</PermissionGuard>
 	);
 };

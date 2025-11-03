@@ -8,9 +8,12 @@ import { useLocation } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 import { QueryParamProvider } from 'use-query-params';
 
+import pkg from '../package.json';
+
 import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config';
 import { SpecialUserGroupId } from './admin/user-groups/user-group.const';
 import { commonUserAtom } from './authentication/authentication.store';
+import { getLoginStateAtom } from './authentication/authentication.store.actions';
 import { PermissionService } from './authentication/helpers/permission-service';
 import { ConfirmModal } from './shared/components/ConfirmModal/ConfirmModal';
 import {
@@ -19,6 +22,7 @@ import {
 } from './shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers/custom-error';
+import { getEnv } from './shared/helpers/env';
 import { ReactRouter7Adapter } from './shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
 import { useHideZendeskWidget } from './shared/hooks/useHideZendeskWidget';
 import { usePageLoaded } from './shared/hooks/usePageLoaded';
@@ -30,15 +34,12 @@ import { waitForTranslations } from './shared/translations/i18n';
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import './App.scss';
 import './styles/main.scss';
-import { ZendeskWrapper } from './shared/components/ZendeskWrapper/ZendeskWrapper';
-import { Navigation } from './shared/components/Navigation/Navigation';
-import { Footer } from './shared/components/Footer/Footer';
-import { ACMIDMNudgeModal } from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
 
 const App: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const navigateFunc = useNavigate();
+	const getLoginState = useSetAtom(getLoginStateAtom);
 
 	const commonUser = useAtomValue(commonUserAtom);
 	const [historyLocations, setHistoryLocations] = useAtom(historyLocationsAtom);
@@ -54,6 +55,19 @@ const App: FC = () => {
 	const isPreviewRoute = query.get('preview') === 'true';
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+
+	const consoleLogClientAndServerVersions = useCallback(async () => {
+		console.info(`%c client version: ${pkg.version}`, 'color: #bada55');
+		const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
+		const proxyUrl = getEnv('PROXY_URL');
+		if (!proxyUrl) {
+			console.warn('PROXY_URL is not defined, cannot fetch server version');
+			return;
+		}
+		const response = await fetchWithLogoutJson<{ version: string }>(proxyUrl);
+
+		console.info(`%c server version: ${response.version}`, 'color: #bada55');
+	}, []);
 
 	/**
 	 * Scroll to the element with the id that is in the hash of the url
@@ -78,6 +92,20 @@ const App: FC = () => {
 				console.error(new CustomError('Failed to wait for translations', err));
 			});
 	}, [setLoadingInfo]);
+
+	/**
+	 * Load login status as soon as possible
+	 */
+	useEffect(() => {
+		getLoginState(false);
+	}, [getLoginState]);
+
+	/**
+	 * Write the client and server versions to the console
+	 */
+	useEffect(() => {
+		consoleLogClientAndServerVersions();
+	}, [consoleLogClientAndServerVersions]);
 
 	/**
 	 * Hide zendesk when a pupil is logged in
@@ -155,11 +183,7 @@ const App: FC = () => {
 					position="bottom-left"
 					transition={Slide}
 				/>
-				<Navigation isPreviewRoute={isPreviewRoute} />
 				<Outlet />
-				<Footer />
-				<ACMIDMNudgeModal />
-				<ZendeskWrapper />
 			</div>
 		);
 	};

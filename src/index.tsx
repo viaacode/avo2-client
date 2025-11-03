@@ -3,19 +3,11 @@ import { setDefaultOptions } from 'date-fns';
 import { nlBE } from 'date-fns/locale';
 import React, { type FC, type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { RouterProvider } from 'react-router';
+import { type LoaderFunction, RouterProvider } from 'react-router';
 import { createBrowserRouter } from 'react-router-dom';
-
-import pkg from '../package.json';
 
 import { getAppRoutes } from './App.routes';
 import { ToastService } from './shared/services/toast-service';
-
-// Expose app info through the window object
-window.APP_INFO = {
-	mode: (process.env.NODE_ENV || 'development') as 'development' | 'production' | 'test',
-	version: pkg.version,
-};
 
 // Set moment language to Dutch
 setDefaultOptions({
@@ -32,7 +24,20 @@ const queryClient = new QueryClient({
 	}),
 });
 
-const router = createBrowserRouter(getAppRoutes());
+function wrapLoader(id: string | undefined, loaderFn: true | LoaderFunction<any>) {
+	return async (args: any) => {
+		console.debug(`[loader start] route ${id}`, { args });
+		const result = await (loaderFn as LoaderFunction<any>)(args);
+		console.debug(`[loader end] route ${id}`, { result });
+		return result;
+	};
+}
+
+const instrumentedRoutes = getAppRoutes().map((route) => ({
+	...route,
+	loader: route.loader ? wrapLoader(route.id || route.path, route.loader) : undefined,
+}));
+const router = createBrowserRouter(instrumentedRoutes);
 
 const Root: FC = () => {
 	return (

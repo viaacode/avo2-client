@@ -13,7 +13,7 @@ export type SearchFilterMultiOptions = { [key: string]: Avo.Search.OptionProp[] 
 export interface SearchState {
 	readonly data: Avo.Search.Search | null;
 	readonly loading: boolean;
-	readonly error: boolean;
+	readonly error: any | null;
 }
 
 interface RenderLinks {

@@ -1,10 +1,12 @@
-import { Flex, Spinner } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import React, { type FC, lazy, Suspense, useState } from 'react';
 import { useMatch, useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
@@ -32,26 +34,29 @@ const ContentPageDetailPage: FC = () => {
 	});
 
 	return (
-		<Suspense
-			fallback={
-				<Flex orientation="horizontal" center>
-					<Spinner size="large" />
-				</Flex>
-			}
-		>
-			<ContentPageEdit
-				className="c-admin-core c-admin__content-page-edit"
-				id={contentPageId}
-				commonUser={commonUser}
-				onHasUnsavedChangesChanged={setHasUnsavedChanges}
-				onGoBack={() =>
-					goBrowserBackWithFallback(
-						buildLink(ADMIN_PATH.CONTENT_PAGE_DETAIL, { id: contentPageId }),
-						navigateFunc
-					)
-				}
-			/>
-			<BeforeUnloadPrompt when={hasUnsavedChanges} />
+		<Suspense fallback={<FullPageSpinner />}>
+			<PermissionGuard
+				permissions={[
+					PermissionName.EDIT_OWN_CONTENT_PAGES,
+					PermissionName.EDIT_ANY_CONTENT_PAGES,
+				]}
+			>
+				<ContentPageEdit
+					className="c-admin-core c-admin__content-page-edit"
+					id={contentPageId}
+					commonUser={commonUser}
+					onHasUnsavedChangesChanged={(state) => {
+						setHasUnsavedChanges(state);
+					}}
+					onGoBack={() =>
+						goBrowserBackWithFallback(
+							buildLink(ADMIN_PATH.CONTENT_PAGE_DETAIL, { id: contentPageId }),
+							navigateFunc
+						)
+					}
+				/>
+				<BeforeUnloadPrompt when={hasUnsavedChanges} />
+			</PermissionGuard>
 		</Suspense>
 	);
 };

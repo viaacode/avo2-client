@@ -1,15 +1,5 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import {
-	Alert,
-	Button,
-	Checkbox,
-	Container,
-	Flex,
-	Form,
-	FormGroup,
-	Spacer,
-	Spinner,
-} from '@viaa/avo2-components';
+import { Alert, Button, Checkbox, Container, Form, FormGroup, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { compact } from 'lodash-es';
@@ -32,6 +22,7 @@ import { useGetEmailPreferences } from '../hooks/useGetEmailPreferences';
 import { useUpdateEmailPreferences } from '../hooks/useUpdateEmailPreferences';
 import { SettingsService } from '../settings.service';
 import './Profile.scss';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 
 interface CompleteProfileStepProps {
 	redirectTo?: string;
@@ -290,11 +281,7 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
 	};
 
 	return isSaving ? (
-		<Spacer margin="top-extra-large">
-			<Flex orientation="horizontal" center>
-				<Spinner size="large" />
-			</Flex>
-		</Spacer>
+		<FullPageSpinner />
 	) : (
 		<>
 			<Helmet>

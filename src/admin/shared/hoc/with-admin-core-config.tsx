@@ -1,7 +1,8 @@
 import { type AdminConfig, AdminConfigManager } from '@meemoo/admin-core-ui/client';
-import { Spinner } from '@viaa/avo2-components';
 import React, { type ComponentType, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 
 import { getAdminCoreConfig } from './with-admin-core-config.const';
 
@@ -22,7 +23,7 @@ export const withAdminCoreConfig = (WrappedComponent: ComponentType): ComponentT
 		}, [initConfigValue]);
 
 		if (!adminCoreConfig) {
-			return <Spinner size="large" />;
+			return <FullPageSpinner />;
 		}
 
 		return <WrappedComponent {...(props as Record<string, unknown>)} />;

@@ -3,23 +3,23 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
-	Flex,
 	Form,
 	FormGroup,
 	Grid,
 	IconName,
 	Select,
-	Spacer,
-	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import React, { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
@@ -154,13 +154,7 @@ const UrlRedirectEdit: FC = () => {
 
 	const renderEditPage = () => {
 		if (isLoading) {
-			return (
-				<Spacer margin={['top-large', 'bottom-large']}>
-					<Flex center>
-						<Spinner size="large" />
-					</Flex>
-				</Spacer>
-			);
+			return <FullPageSpinner />;
 		}
 
 		if (error || !loadedUrlRedirect) {
@@ -276,32 +270,34 @@ const UrlRedirectEdit: FC = () => {
 
 	return (
 		<>
-			<Helmet>
-				<title>
-					{GENERATE_SITE_TITLE(
-						isCreatePage
-							? tText(
-									'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-aanmaak-pagina-titel'
-							  )
-							: tText(
-									'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-bewerk-pagina-titel'
-							  )
-					)}
-				</title>
-				<meta
-					name="description"
-					content={
-						isCreatePage
-							? tText(
-									'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-aanmaak-pagina-beschrijving'
-							  )
-							: tText(
-									'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-bewerk-pagina-beschrijving'
-							  )
-					}
-				/>
-			</Helmet>
-			{renderPage()}
+			<PermissionGuard permissions={[PermissionName.EDIT_REDIRECTS]}>
+				<Helmet>
+					<title>
+						{GENERATE_SITE_TITLE(
+							isCreatePage
+								? tText(
+										'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-aanmaak-pagina-titel'
+								  )
+								: tText(
+										'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-bewerk-pagina-titel'
+								  )
+						)}
+					</title>
+					<meta
+						name="description"
+						content={
+							isCreatePage
+								? tText(
+										'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-aanmaak-pagina-beschrijving'
+								  )
+								: tText(
+										'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-bewerk-pagina-beschrijving'
+								  )
+						}
+					/>
+				</Helmet>
+				{renderPage()}
+			</PermissionGuard>
 		</>
 	);
 };

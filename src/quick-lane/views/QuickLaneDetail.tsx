@@ -9,7 +9,6 @@ import {
 	HeaderBottomRowLeft,
 	IconName,
 	Navbar,
-	Spinner,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
@@ -30,6 +29,7 @@ import { FragmentList } from '../../collection/components/fragment/FragmentList'
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { ItemVideoDescription } from '../../item/components/ItemVideoDescription';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { renderAvatar } from '../../shared/helpers/formatters';
@@ -272,13 +272,7 @@ export const QuickLaneDetail: FC = () => {
 
 	const renderPageContent = (): ReactNode | null => {
 		if (isLoadingQuickLane) {
-			return (
-				<Container mode="vertical">
-					<Flex orientation="horizontal" center>
-						<Spinner size="large" />
-					</Flex>
-				</Container>
-			);
+			return <FullPageSpinner />;
 		}
 
 		if (isErrorQuickLane) {

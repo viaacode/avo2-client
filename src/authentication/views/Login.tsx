@@ -1,4 +1,4 @@
-import { Button, Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
+import { Button, IconName } from '@viaa/avo2-components';
 import { useAtom, useSetAtom } from 'jotai';
 import React, { type FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 import { loginAtom } from '../authentication.store';
@@ -83,13 +84,7 @@ export const Login: FC = () => {
 
 	if (!loginState || loginStateLoading) {
 		// Wait for login check
-		return (
-			<Spacer margin={['top-large', 'bottom-large']}>
-				<Flex center>
-					<Spinner size="large" />
-				</Flex>
-			</Spacer>
-		);
+		return <FullPageSpinner />;
 	}
 
 	return null;

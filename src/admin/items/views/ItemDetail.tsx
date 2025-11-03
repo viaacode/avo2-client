@@ -17,6 +17,7 @@ import {
 	Toolbar,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import { compact, noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useState } from 'react';
@@ -25,6 +26,7 @@ import { useMatch, useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { StringParam, useQueryParams } from 'use-query-params';
 
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { EmbedCodeFilterTableCell } from '../../../embed-code/components/EmbedCodeFilterTableCell';
@@ -690,16 +692,18 @@ export const ItemDetail: FC = () => {
 
 	return (
 		<>
-			<Helmet>
-				<title>
-					{GENERATE_SITE_TITLE(
-						item?.title,
-						tText('admin/items/views/item-detail___item-beheer-detail-pagina-titel')
-					)}
-				</title>
-				<meta name="description" content={item?.description || ''} />
-			</Helmet>
-			{renderItemDetailPage()}
+			<PermissionGuard permissions={[PermissionName.VIEW_ITEMS_OVERVIEW]}>
+				<Helmet>
+					<title>
+						{GENERATE_SITE_TITLE(
+							item?.title,
+							tText('admin/items/views/item-detail___item-beheer-detail-pagina-titel')
+						)}
+					</title>
+					<meta name="description" content={item?.description || ''} />
+				</Helmet>
+				{renderItemDetailPage()}
+			</PermissionGuard>
 		</>
 	);
 };

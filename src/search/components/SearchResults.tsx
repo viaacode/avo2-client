@@ -1,5 +1,5 @@
 import { PaginationBar } from '@meemoo/react-components';
-import { Blankslate, Box, Button, Container, Flex, IconName, Spinner } from '@viaa/avo2-components';
+import { Blankslate, Box, Button, Container, Flex, IconName } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { isNil } from 'lodash-es';
@@ -11,6 +11,7 @@ import placeholderImage from '../../assets/images/assignment-placeholder.png';
 import TeacherSvg from '../../assets/images/leerkracht.svg?react';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/services/bookmarks-views-plays-service';
 import { ITEMS_PER_PAGE } from '../search.const';
@@ -101,11 +102,7 @@ export const SearchResults: FC<SearchResultsProps> = ({
 
 	const renderResultsOrNoResults = () => {
 		if (loading) {
-			return (
-				<Flex orientation="horizontal" center>
-					<Spinner size="large" />
-				</Flex>
-			);
+			return <FullPageSpinner />;
 		}
 		if (data && data.results && data.count !== 0) {
 			return (
