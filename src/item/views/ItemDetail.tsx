@@ -37,7 +37,7 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { useMatch, useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { JsonParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
@@ -155,8 +155,8 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 }) => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
-	const match = useMatch<'id', string>(ITEMS_PATH.ITEM_DETAIL);
-	const itemId = id || match?.params.id;
+	const { id: idFromUrl } = useParams<{ id: string }>();
+	const itemId = id || idFromUrl;
 	const commonUser = useAtomValue(commonUserAtom);
 	const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom);
 
@@ -332,7 +332,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 		// Avoid calling this function too many times
 		// TODO switch fetching to react-query so these called are cached
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [itemId, setItem, tText, history, commonUser]);
+	}, [itemId, setItem, tText, commonUser]);
 
 	useEffect(() => {
 		if (item) {

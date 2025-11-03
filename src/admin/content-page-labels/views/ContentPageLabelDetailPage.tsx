@@ -1,13 +1,12 @@
 import { PermissionName } from '@viaa/avo2-types';
 import React, { type FC, lazy, Suspense } from 'react';
-import { useMatch, useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
-import { CONTENT_PAGE_LABEL_PATH } from '../content-page-label.const';
 
 const ContentPageLabelDetail = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -17,9 +16,7 @@ const ContentPageLabelDetail = lazy(() =>
 
 const ContentPageLabelDetailPage: FC = () => {
 	const navigateFunc = useNavigate();
-	const match = useMatch<'id', string>(CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_DETAIL);
-
-	const id = match?.params.id;
+	const { id } = useParams<{ id: string }>();
 
 	return (
 		<Suspense fallback={<FullPageSpinner />}>

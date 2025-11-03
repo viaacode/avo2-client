@@ -1,7 +1,7 @@
 import { PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import React, { type FC, lazy, Suspense, useState } from 'react';
-import { useMatch, useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
@@ -12,7 +12,6 @@ import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-ba
 import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
 import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
-import { CONTENT_PAGE_PATH } from '../content-page.consts';
 
 const ContentPageEdit = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -22,9 +21,7 @@ const ContentPageEdit = lazy(() =>
 
 const ContentPageDetailPage: FC = () => {
 	const navigateFunc = useNavigate();
-	const match = useMatch<'id', string>(CONTENT_PAGE_PATH.CONTENT_PAGE_EDIT);
-
-	const contentPageId = match?.params.id;
+	const { id: contentPageId } = useParams<{ id: string }>();
 
 	const commonUser = useAtomValue(commonUserAtom);
 	const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);

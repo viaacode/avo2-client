@@ -26,7 +26,7 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { matchPath, Navigate, useMatch, useNavigate } from 'react-router';
+import { matchPath, Navigate, useNavigate, useParams } from 'react-router';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { reorderBlockPositions, setBlockPositionToIndex } from '../../assignment/assignment.helper';
@@ -116,16 +116,18 @@ import { CollectionOrBundleTitle } from './CollectionOrBundleTitle';
 import { DeleteCollectionModal } from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 import { PublishCollectionModal } from './modals/PublishCollectionModal';
+import { ErrorView } from '../../error/views/ErrorView';
 
 import './CollectionOrBundleEdit.scss';
 
 export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }) => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
-	const match = useMatch<'id' | 'tabId', string>(APP_PATH.COLLECTION_EDIT.route);
 
-	const collectionId = match?.params.id;
-	const tabId = match?.params.tabId as CollectionCreateUpdateTab | undefined;
+	const { id: collectionId, tabId } = useParams<{
+		id: string;
+		tabId: CollectionCreateUpdateTab;
+	}>();
 
 	const commonUser = useAtomValue(commonUserAtom);
 	// State
@@ -861,7 +863,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 	};
 
 	// Listeners
-	const onSaveCollection = async () => {
+	const onSaveCollection = useCallback(async () => {
 		setIsSavingCollection(true);
 		try {
 			const validationError: ReactNode | null = isCollectionValid();
@@ -926,7 +928,19 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 			);
 		}
 		setIsSavingCollection(false);
-	};
+	}, [
+		checkPermissionsAndGetCollection,
+		collectionState.currentCollection,
+		commonUser,
+		contributors,
+		fetchContributors,
+		isAdmin,
+		isCollection,
+		isCollectionValid,
+		tHtml,
+		type,
+		updateCollection,
+	]);
 
 	const onClickDelete = () => {
 		setIsOptionsMenuOpen(false);
@@ -955,66 +969,79 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 	// TODO: DISABLED FEATURE
 	// const onPreviewCollection = () => {};
 
-	const executeAction = async (item: CollectionMenuAction) => {
-		setIsOptionsMenuOpen(false);
-		switch (item) {
-			case CollectionMenuAction.deleteCollection:
-				onClickDelete();
-				break;
+	const executeAction = useCallback(
+		async (item: CollectionMenuAction) => {
+			setIsOptionsMenuOpen(false);
+			switch (item) {
+				case CollectionMenuAction.deleteCollection:
+					onClickDelete();
+					break;
 
-			case CollectionMenuAction.deleteContributor:
-				setIsOptionsMenuOpen(false);
-				setIsDeleteContributorModalOpen(true);
-				break;
+				case CollectionMenuAction.deleteContributor:
+					setIsOptionsMenuOpen(false);
+					setIsDeleteContributorModalOpen(true);
+					break;
 
-			case CollectionMenuAction.save:
-				if (!isSavingCollection) {
-					await onSaveCollection();
-				}
-				break;
+				case CollectionMenuAction.save:
+					if (!isSavingCollection) {
+						await onSaveCollection();
+					}
+					break;
 
-			case CollectionMenuAction.openPublishModal:
-				if (unsavedChanges && !collectionState?.initialCollection?.is_public) {
-					ToastService.info(
-						tHtml(
-							'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
-						)
+				case CollectionMenuAction.openPublishModal:
+					if (unsavedChanges && !collectionState?.initialCollection?.is_public) {
+						ToastService.info(
+							tHtml(
+								'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
+							)
+						);
+					} else {
+						setIsPublishModalOpen(!isPublishModalOpen);
+					}
+					break;
+
+				case CollectionMenuAction.redirectToDetail:
+					redirectToClientPage(
+						buildLink(
+							isCollection
+								? APP_PATH.COLLECTION_DETAIL.route
+								: APP_PATH.BUNDLE_DETAIL.route,
+							{
+								id: collectionId,
+							}
+						),
+						navigateFunc
 					);
-				} else {
-					setIsPublishModalOpen(!isPublishModalOpen);
-				}
-				break;
+					break;
 
-			case CollectionMenuAction.redirectToDetail:
-				redirectToClientPage(
-					buildLink(
-						isCollection
-							? APP_PATH.COLLECTION_DETAIL.route
-							: APP_PATH.BUNDLE_DETAIL.route,
-						{
-							id: collectionId,
-						}
-					),
-					navigateFunc
-				);
-				break;
+				case CollectionMenuAction.addItemById:
+					setEnterItemIdModalOpen(true);
+					break;
 
-			case CollectionMenuAction.addItemById:
-				setEnterItemIdModalOpen(true);
-				break;
+				case CollectionMenuAction.addAssignmentById:
+					setEnterAssignmentIdModalOpen(true);
+					break;
 
-			case CollectionMenuAction.addAssignmentById:
-				setEnterAssignmentIdModalOpen(true);
-				break;
+				case CollectionMenuAction.share:
+					setIsShareModalOpen(true);
+					break;
 
-			case CollectionMenuAction.share:
-				setIsShareModalOpen(true);
-				break;
-
-			default:
-				return null;
-		}
-	};
+				default:
+					return null;
+			}
+		},
+		[
+			collectionId,
+			collectionState?.initialCollection?.is_public,
+			isCollection,
+			isPublishModalOpen,
+			isSavingCollection,
+			navigateFunc,
+			onSaveCollection,
+			tHtml,
+			unsavedChanges,
+		]
+	);
 
 	/**
 	 * https://meemoo.atlassian.net/browse/AVO-3370
@@ -1885,6 +1912,15 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 					id: collectionId,
 					tabId: CollectionCreateUpdateTab.CONTENT,
 				})}
+			/>
+		);
+	}
+	if (!collectionId) {
+		return (
+			<ErrorView
+				icon={IconName.search}
+				message={'De collectie id kon niet worden gevonden'}
+				actionButtons={['home', 'helpdesk']}
 			/>
 		);
 	}

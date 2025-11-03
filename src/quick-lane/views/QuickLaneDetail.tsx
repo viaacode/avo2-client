@@ -20,7 +20,7 @@ import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
-import { generatePath, useMatch, useNavigate } from 'react-router';
+import { generatePath, useNavigate, useParams } from 'react-router';
 
 import { AssignmentLayout } from '../../assignment/assignment.types';
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -44,10 +44,8 @@ import { useGetQuickLane } from '../hooks/useGetQuickLane';
 export const QuickLaneDetail: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
-	const match = useMatch<'id', string>(APP_PATH.QUICK_LANE.route);
+	const { id: quickLaneId } = useParams<{ id: string }>();
 	const commonUser = useAtomValue(commonUserAtom);
-
-	const quickLaneId = match?.params.id;
 
 	// State
 	const canViewQuickLanes = PermissionService.hasPerm(

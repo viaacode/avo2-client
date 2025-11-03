@@ -11,7 +11,7 @@ import {
 import { PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import React, { type FC, type ReactElement, type ReactText, useState } from 'react';
-import { useMatch, useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -41,10 +41,8 @@ import {
 export const Settings: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
-	const match = useMatch<'tabId', string>(APP_PATH.SETTINGS_TAB.route);
+	const { tabId } = useParams<{ tabId: string }>();
 	const commonUser = useAtomValue(commonUserAtom);
-
-	const tabId = match?.params.tabId;
 
 	const [activeTab, setActiveTab] = useState<SettingsTab>((tabId as SettingsTab) || PROFILE_ID);
 

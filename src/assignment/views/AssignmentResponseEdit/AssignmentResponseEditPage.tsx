@@ -4,12 +4,13 @@ import { useAtomValue } from 'jotai';
 import { isString, noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { useMatch } from 'react-router';
+import { useParams } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -24,13 +25,11 @@ import { AssignmentResponseEdit } from './AssignmentResponseEdit';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 
 export const AssignmentResponseEditPage: FC = () => {
 	const { tText, tHtml } = useTranslation();
-	const match = useMatch<'id', string>(APP_PATH.ASSIGNMENT_RESPONSE_EDIT.route);
 
-	const assignmentId = match?.params.id;
+	const { id: assignmentId } = useParams<{ id: string }>();
 
 	const commonUser = useAtomValue(commonUserAtom);
 	// Data

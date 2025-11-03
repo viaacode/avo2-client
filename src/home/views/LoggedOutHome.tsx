@@ -43,7 +43,7 @@ export const LoggedOutHome: FC = () => {
 		return (
 			<ErrorView
 				message={tText(
-					'Het laden van deze pagina is mislukt. Pagina kon niet worden opgehaald van de server'
+					'home/views/logged-out-home___het-laden-van-deze-pagina-is-mislukt-pagina-kon-niet-worden-opgehaald-van-de-server'
 				)}
 				actionButtons={['home', 'helpdesk']}
 				icon={IconName.alertTriangle}
@@ -53,8 +53,17 @@ export const LoggedOutHome: FC = () => {
 	return (
 		<>
 			<Helmet>
-				<title>{GENERATE_SITE_TITLE(tText('Uitgelogde-start-pagina-titel'))}</title>
-				<meta name="description" content={tText('Uitgelogde-start-pagina-beschrijving')} />
+				<title>
+					{GENERATE_SITE_TITLE(
+						tText('home/views/logged-out-home___uitgelogde-start-pagina-titel')
+					)}
+				</title>
+				<meta
+					name="description"
+					content={tText(
+						'home/views/logged-out-home___uitgelogde-start-pagina-beschrijving'
+					)}
+				/>
 			</Helmet>
 			{contentPageInfo && (
 				<>

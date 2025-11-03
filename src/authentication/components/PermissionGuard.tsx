@@ -2,12 +2,16 @@ import { useSlot } from '@viaa/avo2-components';
 import { type Avo, type PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { isNil } from 'lodash-es';
+import { stringifyUrl } from 'query-string';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 
+import { APP_PATH } from '../../constants';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
 import { loginAtom } from '../authentication.store';
 import { PermissionService } from '../helpers/permission-service';
+import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';
 
 import { PermissionGuardFail, PermissionGuardPass } from './PermissionGuard.slots';
 
@@ -29,6 +33,7 @@ export const PermissionGuard: FC<PermissionGuardProps | LoggedInGuardProps> = (p
 	const commonUser: Avo.User.CommonUser | undefined = (
 		loginStatus?.data as Avo.Auth.LoginResponseLoggedIn | undefined
 	)?.commonUserInfo;
+	const navigateFunc = useNavigate();
 
 	const childrenIfPassed = useSlot(PermissionGuardPass, children);
 	const childrenIfFailed = useSlot(PermissionGuardFail, children);
@@ -44,6 +49,20 @@ export const PermissionGuard: FC<PermissionGuardProps | LoggedInGuardProps> = (p
 				console.error('Failed to get permissions', err, { permissions, commonUser });
 			});
 	});
+
+	useEffect(() => {
+		if (!loginStatus.loading && !commonUser) {
+			redirectToClientPage(
+				stringifyUrl({
+					url: APP_PATH.REGISTER_OR_LOGIN.route,
+					query: {
+						returnToUrl: location.href,
+					},
+				}),
+				navigateFunc
+			);
+		}
+	}, [commonUser, loginStatus.loading, navigateFunc]);
 
 	const renderSuccess = () => {
 		return childrenIfPassed ? childrenIfPassed : children;

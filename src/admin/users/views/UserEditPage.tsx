@@ -12,7 +12,7 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { useMatch, useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
@@ -38,9 +38,8 @@ import { USER_PATH } from '../user.const';
 export const UserEditPage: FC = () => {
 	const { tText } = useTranslation();
 	const navigateFunc = useNavigate();
-	const match = useMatch<'id', string>(USER_PATH.USER_EDIT);
 
-	const profileId = match?.params.id;
+	const { id: profileId } = useParams<{ id: string }>();
 
 	// Hooks
 	const { data: profile, isLoading } = useGetProfileById(profileId);

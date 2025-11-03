@@ -10,7 +10,7 @@ import { PermissionName } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { useMatch, useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
@@ -42,9 +42,7 @@ import { type InteractiveTour } from '../interactive-tour.types';
 
 export const InteractiveTourDetail: FC = () => {
 	const navigateFunc = useNavigate();
-	const match = useMatch<'id', string>(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL);
-
-	const interactiveTourId = match?.params.id;
+	const { id: interactiveTourId } = useParams<{ id: string }>();
 
 	// Hooks
 	const [interactiveTour, setInteractiveTour] = useState<InteractiveTour | null>(null);

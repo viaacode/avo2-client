@@ -1,0 +1,9 @@
+@import "../../../styles/settings/colors";
+
+.c-error-boundary__error-message {
+	display: inline-block;
+	margin: 2rem;
+	padding: 2rem;
+	background-color: $white;
+	border-radius: 0.4rem;
+}

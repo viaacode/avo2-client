@@ -22,7 +22,7 @@ import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
-import { generatePath, useMatch, useNavigate } from 'react-router';
+import { generatePath, useNavigate, useParams } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -42,8 +42,8 @@ import { useGetEmbedCode } from '../hooks/useGetEmbedCode';
 export const EmbedCodeDetail: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
-	const match = useMatch<'id', string>(APP_PATH.EMBED.route);
-	const embedCodeId = match?.params.id;
+	const { id: embedCodeId } = useParams<{ id: string }>();
+
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const {

@@ -18,7 +18,13 @@ const ContentPageLabelEdit = lazy(() =>
 
 const ContentPageLabelEditPage: FC = () => {
 	const navigateFunc = useNavigate();
-	const match = useMatch<'id', string>(CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_EDIT);
+	const matchContentPageLabelCreate = useMatch<'id', string>(
+		CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_CREATE
+	);
+	const matchContentPageLabelEdit = useMatch<'id', string>(
+		CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_EDIT
+	);
+	const match = matchContentPageLabelCreate || matchContentPageLabelEdit;
 
 	const contentPageLabelId = match?.params.id;
 

@@ -22,7 +22,7 @@ import { useAtomValue } from 'jotai';
 import { compact, isEmpty, isNil, noop } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { useMatch, useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { BooleanParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
@@ -149,9 +149,8 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 }) => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
-	const match = useMatch<'id', string>(APP_PATH.COLLECTION_DETAIL.route);
 
-	const collectionIdFromUrl: string | undefined = match?.params.id;
+	const { id: collectionIdFromUrl } = useParams<{ id: string }>();
 
 	const commonUser = useAtomValue(commonUserAtom);
 	// State
@@ -454,11 +453,13 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 				return;
 			}
 
-			const collectionObj = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
-				uuid,
-				CollectionOrBundle.COLLECTION,
-				inviteToken || undefined
-			);
+			const collectionObj = uuid
+				? await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
+						uuid as string,
+						CollectionOrBundle.COLLECTION,
+						inviteToken || undefined
+				  )
+				: null;
 
 			if (!collectionObj) {
 				setLoadingInfo({

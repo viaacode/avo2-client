@@ -26,7 +26,7 @@ export function trackEvents(
 
 		const eventLogEntries = eventsArray.map(
 			(event: MinimalClientEvent): Avo.EventLogging.Event => {
-				const history = store.get(historyLocationsAtom) || [];
+				const eventHistory = store.get(historyLocationsAtom) || [];
 				return {
 					occurred_at: new Date().toISOString(),
 					source_url: window.location.origin + window.location.pathname, // url when the event was triggered
@@ -40,7 +40,7 @@ export function trackEvents(
 					message: '', // AVO-1675: message should be anonymous and is redundant: leave it empty
 					resource: {
 						...event.resource,
-						history,
+						history: eventHistory,
 					},
 				};
 			}

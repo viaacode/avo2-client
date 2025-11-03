@@ -22,7 +22,6 @@ export const transformContributorsToSimpleContributors = (
 
 	if (contributors) {
 		const mappedContributors = contributors.map((contributor) => {
-			console.log(contributor);
 			return {
 				email: contributor.profile?.user?.mail || contributor.profile?.user?.mail,
 				inviteEmail: contributor.invite_email,

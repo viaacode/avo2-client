@@ -17,9 +17,7 @@ export const useUserGroups = (includeSpecialGroups: boolean): UseUserGroupsTuple
 		UserGroupService.fetchAllUserGroups()
 			.then(async (groups) => {
 				if (groups) {
-					const { preferredUserGroupOrder } = await import(
-						'@meemoo/admin-core-ui/admin'
-					);
+					const { preferredUserGroupOrder } = await import('@meemoo/admin-core-ui/admin');
 					setUserGroups([
 						...(includeSpecialGroups ? GET_SPECIAL_USER_GROUPS() : []),
 						...sortBy(

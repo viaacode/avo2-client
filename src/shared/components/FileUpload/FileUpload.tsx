@@ -169,9 +169,7 @@ export const FileUpload: FC<FileUploadProps> = ({
 				const newUrls = [...urls];
 				for (let i = newUrls.length - 1; i >= 0; i -= 1) {
 					if (newUrls[i] === url) {
-						const { AssetsService } = await import(
-							'@meemoo/admin-core-ui/admin'
-						);
+						const { AssetsService } = await import('@meemoo/admin-core-ui/admin');
 						await AssetsService.deleteFile(url);
 						newUrls.splice(i, 1);
 					}

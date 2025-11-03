@@ -7,6 +7,7 @@ import { Outlet } from 'react-router';
 import { QueryParamProvider } from 'use-query-params';
 
 import { commonUserAtom } from '../authentication/authentication.store';
+import { PermissionGuard } from '../authentication/components/PermissionGuard';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import {
 	LoadingErrorLoadedComponent,
@@ -84,11 +85,13 @@ export const Admin: FC = () => {
 
 	return (
 		<QueryParamProvider adapter={ReactRouter7Adapter}>
-			<LoadingErrorLoadedComponent
-				loadingInfo={loadingInfo}
-				dataObject={{}}
-				render={renderAdminPage}
-			/>
+			<PermissionGuard permissions={[PermissionName.VIEW_ADMIN_DASHBOARD]}>
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={{}}
+					render={renderAdminPage}
+				/>
+			</PermissionGuard>
 		</QueryParamProvider>
 	);
 };

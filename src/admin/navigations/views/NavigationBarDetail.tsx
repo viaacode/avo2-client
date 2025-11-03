@@ -1,6 +1,7 @@
+import { PermissionName } from '@viaa/avo2-types';
 import React, { type FC, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
-import { useMatch, useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -11,9 +12,6 @@ import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 import './NavigationBarDetail.scss';
-import { NAVIGATIONS_PATH } from '../navigations.const';
-
-import { PermissionName } from '@viaa/avo2-types';
 
 const NavigationDetail = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -24,9 +22,7 @@ const NavigationDetail = lazy(() =>
 const NavigationBarDetail: FC = () => {
 	const { tText } = useTranslation();
 	const navigateFunc = useNavigate();
-	const match = useMatch<'navigationBarId', string>(NAVIGATIONS_PATH.NAVIGATIONS_DETAIL);
-
-	const navigationBarId = match?.params.navigationBarId;
+	const { navigationBarId } = useParams<{ navigationBarId: string }>();
 
 	return (
 		<PermissionGuard permissions={[PermissionName.EDIT_NAVIGATION_BARS]}>

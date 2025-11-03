@@ -28,7 +28,7 @@ import { useAtomValue } from 'jotai';
 import { compact, get, noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { useMatch, useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -52,6 +52,8 @@ import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const
 import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { EditButton } from '../../shared/components/EditButton/EditButton';
+import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { Html } from '../../shared/components/Html/Html';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
@@ -86,8 +88,6 @@ import { ToastService } from '../../shared/services/toast-service';
 import { BundleAction } from '../bundle.types';
 
 import './BundleDetail.scss';
-import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 
 type BundleDetailProps = {
 	id?: string;
@@ -100,9 +100,8 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 }) => {
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
-	const match = useMatch<'id', string>(APP_PATH.BUNDLE_DETAIL.route);
 
-	const bundleIdFromUrl = match?.params.id;
+	const { id: bundleIdFromUrl } = useParams<{ id: string }>();
 
 	const commonUser = useAtomValue(commonUserAtom);
 	// State

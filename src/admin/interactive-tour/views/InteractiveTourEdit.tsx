@@ -26,7 +26,7 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { useMatch, useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
@@ -94,9 +94,8 @@ export const InteractiveTourEdit: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const navigateFunc = useNavigate();
-	const match = useMatch<'id', string>(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT);
 
-	const interactiveTourId = match?.params.id;
+	const { id: interactiveTourId } = useParams<{ id: string }>();
 
 	// Hooks
 	const [formErrors, setFormErrors] = useState<InteractiveTourEditFormErrorState>({});

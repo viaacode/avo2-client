@@ -1,22 +1,20 @@
 import React, { type FC } from 'react';
 import { useBlocker } from 'react-router-dom';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ROUTE_PARTS } from '../../constants';
+import { tText } from '../../helpers/translate-text';
 import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
 
 export const BeforeUnloadPrompt: FC<{ when: boolean; message?: string }> = ({ when, message }) => {
-	const { tText } = useTranslation();
-
 	const blocker = useBlocker(({ currentLocation, nextLocation }) => {
 		// Form has no unsaved changes => do not show the "before unload" message
 		if (!when) {
-			return true;
+			return false;
 		}
 
 		// Same page url => do not show the "before unload" message
 		if (currentLocation.pathname === nextLocation.pathname) {
-			return true;
+			return false;
 		}
 
 		// Specific tab on the same edit page => do not show the "before unload" message
@@ -28,10 +26,10 @@ export const BeforeUnloadPrompt: FC<{ when: boolean; message?: string }> = ({ wh
 		const nextRouteWithoutTab =
 			nextLocation.pathname.split(`/${ROUTE_PARTS.edit}/`)[0] + `/${ROUTE_PARTS.edit}`;
 		if (currentRouteWithoutTab === nextRouteWithoutTab) {
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	});
 
 	if (blocker.state !== 'blocked') {
@@ -40,7 +38,9 @@ export const BeforeUnloadPrompt: FC<{ when: boolean; message?: string }> = ({ wh
 	return (
 		<ConfirmModal
 			isOpen={true}
-			title={tText('Ben je zeker dat je de pagina wilt verlaten?')}
+			title={tText(
+				'shared/components/before-unload-prompt/before-unload-prompt___ben-je-zeker-dat-je-de-pagina-wilt-verlaten'
+			)}
 			body={
 				message ||
 				tText(
@@ -49,8 +49,12 @@ export const BeforeUnloadPrompt: FC<{ when: boolean; message?: string }> = ({ wh
 			}
 			confirmCallback={() => blocker.proceed()}
 			onClose={() => blocker.reset()}
-			confirmLabel={tText('Verlaten')}
-			cancelLabel={tText('Blijven')}
+			confirmLabel={tText(
+				'shared/components/before-unload-prompt/before-unload-prompt___verlaten'
+			)}
+			cancelLabel={tText(
+				'shared/components/before-unload-prompt/before-unload-prompt___blijven'
+			)}
 		/>
 	);
 };

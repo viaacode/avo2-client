@@ -22,7 +22,7 @@ import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import { compact, noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { useMatch, useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { StringParam, useQueryParams } from 'use-query-params';
 
@@ -76,9 +76,8 @@ import { type ItemUsedByColumnId, type ItemUsedByEntry } from '../items.types';
 
 export const ItemDetail: FC = () => {
 	const navigateFunc = useNavigate();
-	const match = useMatch<'id', string>(APP_PATH.ITEM_DETAIL.route);
 
-	const itemUuid = match?.params.id;
+	const { id: itemUuid } = useParams<{ id: string }>();
 
 	// Hooks
 	const [queryParams, setQueryParams] = useQueryParams({

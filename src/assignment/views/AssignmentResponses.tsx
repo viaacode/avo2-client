@@ -21,7 +21,7 @@ import { clsx } from 'clsx';
 import { useAtomValue } from 'jotai';
 import { cloneDeep, compact, get, isNil, noop, uniq } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { useMatch } from 'react-router';
+import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
@@ -71,9 +71,8 @@ const DEFAULT_SORT_ORDER = OrderDirection.desc;
 
 export const AssignmentResponses: FC<AssignmentResponsesProps> = ({ onUpdate = noop }) => {
 	const { tText, tHtml } = useTranslation();
-	const match = useMatch<'id', string>(APP_PATH.ASSIGNMENT_EDIT.route);
 
-	const assignmentId = match?.params.id;
+	const { id: assignmentId } = useParams<{ id: string }>();
 
 	const commonUser = useAtomValue(commonUserAtom);
 	// Data
@@ -314,7 +313,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({ onUpdate = n
 
 	useEffect(() => {
 		fetchAssignment();
-	}, [fetchAssignment, match]);
+	}, [fetchAssignment]);
 
 	useEffect(() => {
 		fetchAssignmentResponsesFragments(assignmentResponsesFragments);

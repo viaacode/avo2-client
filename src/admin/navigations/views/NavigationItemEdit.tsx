@@ -1,6 +1,6 @@
 import React, { type FC, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
-import { useMatch, useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -12,7 +12,6 @@ import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 import './NavigationItemEdit.scss';
-import { NAVIGATIONS_PATH } from '../navigations.const';
 
 import { PermissionName } from '@viaa/avo2-types';
 
@@ -25,12 +24,10 @@ const NavigationEdit = lazy(() =>
 const NavigationItemEdit: FC = () => {
 	const { tText } = useTranslation();
 	const navigateFunc = useNavigate();
-	const match = useMatch<'navigationBarId' | 'navigationItemId', string>(
-		NAVIGATIONS_PATH.NAVIGATIONS_ITEM_EDIT
-	);
-
-	const navigationBarId = match?.params.navigationBarId;
-	const navigationItemId = match?.params.navigationItemId;
+	const { navigationBarId, navigationItemId } = useParams<{
+		navigationBarId: string;
+		navigationItemId: string;
+	}>();
 
 	// Render
 	return (

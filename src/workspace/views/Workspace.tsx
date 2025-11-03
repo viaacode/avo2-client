@@ -25,7 +25,7 @@ import { useAtomValue } from 'jotai';
 import { compact, get, isEmpty } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { useMatch, useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
 import { AssignmentOverview } from '../../assignment/views/AssignmentOverview';
@@ -81,9 +81,7 @@ export const Workspace: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const navigateFunc = useNavigate();
-	const match = useMatch<'tabId', string>(APP_PATH.WORKSPACE_TAB.route);
-
-	const tabIdFromUrl = match?.params.tabId;
+	const { tabId: tabIdFromUrl } = useParams<{ tabId: string }>();
 
 	const commonUser = useAtomValue(commonUserAtom);
 	// State
@@ -242,7 +240,6 @@ export const Workspace: FC = () => {
 		tText,
 		tHtml,
 		location,
-		match,
 		commonUser,
 		updatePermissions,
 		refetchWorkspaceCounts,

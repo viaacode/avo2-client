@@ -22,7 +22,7 @@ import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { matchPath, Navigate, useMatch, useNavigate } from 'react-router';
+import { matchPath, Navigate, useNavigate, useParams } from 'react-router';
 import { Link, useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -126,10 +126,8 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const navigateFunc = useNavigate();
-	const match = useMatch<'id' | 'tabId', string>(APP_PATH.ASSIGNMENT_EDIT.route);
 
-	const assignmentId = match?.params.id;
-	const tabId = match?.params.tabId;
+	const { id: assignmentId, tabId } = useParams<{ id: string; tabId: string }>();
 
 	const commonUser = useAtomValue(commonUserAtom);
 
@@ -272,7 +270,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 		if (tabId) {
 			setTab(tabId as ASSIGNMENT_CREATE_UPDATE_TABS);
 		}
-	}, [match, tabId]);
+	}, [tabId]);
 
 	useEffect(() => {
 		if (!isCreatingAssignment) {
@@ -993,8 +991,6 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 		draggableListButton,
 		assignment,
 		pastDeadline,
-		match,
-		history,
 		onUpdate,
 		handleAssignmentFieldUpdate,
 		assignmentFormValues,

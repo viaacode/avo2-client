@@ -12,12 +12,13 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { useMatch } from 'react-router';
+import { useParams } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AssignmentService } from '../../assignment.service';
@@ -28,18 +29,16 @@ import { AssignmentResponseEdit } from './AssignmentResponseEdit';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 
 export const AssignmentResponseAdminEdit: FC = () => {
 	const { tText, tHtml } = useTranslation();
-	const match = useMatch<'responseId' | 'assignmentId', string>(
-		APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route
-	);
+	const { assignmentId, responseId: assignmentResponseId } = useParams<{
+		assignmentId: string;
+		responseId: string;
+	}>();
 
 	const commonUser = useAtomValue(commonUserAtom);
 	// Data
-	const assignmentId = match?.params.assignmentId;
-	const assignmentResponseId = match?.params.responseId;
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
 	const [assignmentError, setAssignmentError] = useState<{

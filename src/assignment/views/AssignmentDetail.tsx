@@ -21,7 +21,7 @@ import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { generatePath, useMatch, useNavigate } from 'react-router';
+import { generatePath, useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { BooleanParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
@@ -111,9 +111,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const commonUser = useAtomValue(commonUserAtom);
-	const match = useMatch<'id', string>(APP_PATH.ASSIGNMENT_DETAIL.route);
-
-	const assignmentId = match?.params.id;
+	const { id: assignmentId } = useParams<{ id: string }>();
 
 	// Data
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);

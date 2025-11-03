@@ -3,17 +3,16 @@ import { PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import React, { type FC, lazy, Suspense, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { useMatch, useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tText } from '../../../shared/helpers/translate-text';
 import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
-import { CONTENT_PAGE_PATH } from '../content-page.consts';
 
 const ContentPageDetail = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -23,11 +22,9 @@ const ContentPageDetail = lazy(() =>
 
 const ContentPageDetailPage: FC = () => {
 	const navigateFunc = useNavigate();
-	const match = useMatch<'id', string>(CONTENT_PAGE_PATH.CONTENT_PAGE_DETAIL);
-	const id = match?.params.id;
+	const { id } = useParams<{ id: string }>();
 	const commonUser = useAtomValue(commonUserAtom);
 
-	const { tText } = useTranslation();
 	const [item, setItem] = useState<ContentPageInfo | undefined>(undefined);
 
 	return (

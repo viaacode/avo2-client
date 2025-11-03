@@ -5,12 +5,12 @@ import { useAtomValue } from 'jotai';
 import { noop } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { useMatch } from 'react-router';
+import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { BlockList } from '../../shared/components/BlockList/BlockList';
 import {
@@ -29,12 +29,10 @@ export const AssignmentPupilCollectionDetail: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
-	const match = useMatch<'assignmentId' | 'responseId', string>(
-		APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route
-	);
-
-	const assignmentId = match?.params.assignmentId;
-	const assignmentResponseId = match?.params.responseId;
+	const { assignmentId, responseId: assignmentResponseId } = useParams<{
+		assignmentId: string;
+		responseId: string;
+	}>();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
