@@ -361,3 +361,5 @@ export const QuickLaneDetail: FC = () => {
 		</>
 	);
 };
+
+export default QuickLaneDetail;

@@ -213,3 +213,5 @@ export const AcceptConditions: FC = () => {
 		</>
 	);
 };
+
+export default AcceptConditions;

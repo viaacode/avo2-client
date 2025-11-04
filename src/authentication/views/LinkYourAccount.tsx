@@ -93,3 +93,5 @@ export const LinkYourAccount: FC = () => {
 		</Container>
 	);
 };
+
+export default LinkYourAccount;

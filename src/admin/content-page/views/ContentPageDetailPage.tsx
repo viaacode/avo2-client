@@ -12,7 +12,6 @@ import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/Full
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { tText } from '../../../shared/helpers/translate-text';
 import { ADMIN_PATH } from '../../admin.const';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 const ContentPageDetail = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -69,4 +68,4 @@ const ContentPageDetailPage: FC = () => {
 	);
 };
 
-export default withAdminCoreConfig(ContentPageDetailPage) as FC;
+export default ContentPageDetailPage;

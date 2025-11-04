@@ -592,3 +592,5 @@ export const AssignmentOverviewAdmin: FC = () => {
 		</PermissionGuard>
 	);
 };
+
+export default AssignmentOverviewAdmin;

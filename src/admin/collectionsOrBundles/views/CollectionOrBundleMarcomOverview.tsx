@@ -492,3 +492,5 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
 		</PermissionGuard>
 	);
 };
+
+export default CollectionOrBundleMarcomOverview;

@@ -5,7 +5,6 @@ import { Helmet } from 'react-helmet';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 import './NavigationBarOverview.scss';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
@@ -45,4 +44,4 @@ export const NavigationBarOverview: FC = () => {
 	);
 };
 
-export default withAdminCoreConfig(NavigationBarOverview) as FC;
+export default NavigationBarOverview;

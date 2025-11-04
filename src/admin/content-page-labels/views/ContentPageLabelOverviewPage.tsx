@@ -3,7 +3,6 @@ import React, { type FC, lazy, Suspense } from 'react';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 const ContentPageLabelOverview = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -21,4 +20,4 @@ const ContentPageLabelOverviewPage: FC = () => {
 	);
 };
 
-export default withAdminCoreConfig(ContentPageLabelOverviewPage) as FC;
+export default ContentPageLabelOverviewPage;

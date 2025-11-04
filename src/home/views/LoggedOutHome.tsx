@@ -78,3 +78,5 @@ export const LoggedOutHome: FC = () => {
 		</>
 	);
 };
+
+export default LoggedOutHome;

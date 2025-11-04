@@ -11,7 +11,6 @@ import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/Full
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ADMIN_PATH } from '../../admin.const';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { UserService } from '../user.service';
 
 import './UserDetailPage.scss';
@@ -66,4 +65,4 @@ const UserDetailPage: FC = () => {
 	);
 };
 
-export default withAdminCoreConfig(UserDetailPage) as FC;
+export default UserDetailPage;

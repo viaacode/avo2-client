@@ -245,3 +245,5 @@ export const UserEditPage: FC = () => {
 		</>
 	);
 };
+
+export default UserEditPage;

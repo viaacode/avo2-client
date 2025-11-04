@@ -235,3 +235,5 @@ export const AssignmentResponseAdminEdit: FC = () => {
 		</>
 	);
 };
+
+export default AssignmentResponseAdminEdit;

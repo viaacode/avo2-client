@@ -389,3 +389,5 @@ export const PublishItemsOverview: FC = () => {
 		</PermissionGuard>
 	);
 };
+
+export default PublishItemsOverview;

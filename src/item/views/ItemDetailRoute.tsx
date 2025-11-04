@@ -10,3 +10,5 @@ export const ItemDetailRoute: FC = () => {
 
 	return <ItemDetail key={'item-detail'} id={id} />;
 };
+
+export default ItemDetailRoute;

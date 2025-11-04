@@ -9,7 +9,6 @@ import { buildLink } from '../../../shared/helpers/build-link';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ADMIN_PATH } from '../../admin.const';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 import './NavigationItemEdit.scss';
 
@@ -73,4 +72,4 @@ const NavigationItemEdit: FC = () => {
 	);
 };
 
-export default withAdminCoreConfig(NavigationItemEdit) as FC;
+export default NavigationItemEdit;

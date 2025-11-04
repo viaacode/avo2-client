@@ -229,3 +229,5 @@ export const ItemsOverview: FC = () => {
 		</PermissionGuard>
 	);
 };
+
+export default ItemsOverview;

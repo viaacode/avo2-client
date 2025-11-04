@@ -9,7 +9,6 @@ import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/Full
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ADMIN_PATH } from '../../admin.const';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 import './NavigationBarDetail.scss';
 
@@ -59,4 +58,4 @@ const NavigationBarDetail: FC = () => {
 	);
 };
 
-export default withAdminCoreConfig(NavigationBarDetail) as FC;
+export default NavigationBarDetail;

@@ -241,3 +241,5 @@ export const UserItemRequestForm: FC = () => {
 		</Container>
 	);
 };
+
+export default UserItemRequestForm;

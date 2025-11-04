@@ -1371,3 +1371,5 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 		</>
 	);
 };
+
+export default AssignmentEdit;

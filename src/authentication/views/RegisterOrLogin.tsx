@@ -56,3 +56,5 @@ export const RegisterOrLogin: FC = () => {
 		</Container>
 	);
 };
+
+export default RegisterOrLogin;

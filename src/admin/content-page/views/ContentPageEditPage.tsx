@@ -11,7 +11,6 @@ import { buildLink } from '../../../shared/helpers/build-link';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
 import { ADMIN_PATH } from '../../admin.const';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 const ContentPageEdit = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -58,4 +57,4 @@ const ContentPageDetailPage: FC = () => {
 	);
 };
 
-export default withAdminCoreConfig(ContentPageDetailPage) as FC;
+export default ContentPageDetailPage;

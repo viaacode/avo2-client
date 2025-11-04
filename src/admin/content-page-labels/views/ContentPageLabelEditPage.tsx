@@ -7,7 +7,6 @@ import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/Full
 import { buildLink } from '../../../shared/helpers/build-link';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { ADMIN_PATH } from '../../admin.const';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { CONTENT_PAGE_LABEL_PATH } from '../content-page-label.const';
 
 const ContentPageLabelEdit = lazy(() =>
@@ -46,4 +45,4 @@ const ContentPageLabelEditPage: FC = () => {
 	);
 };
 
-export default withAdminCoreConfig(ContentPageLabelEditPage) as FC;
+export default ContentPageLabelEditPage;

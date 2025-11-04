@@ -22,8 +22,8 @@ import ContentPageLabelOverviewPage from './admin/content-page-labels/views/Cont
 import { Dashboard } from './admin/dashboard/views/Dashboard';
 import { INTERACTIVE_TOUR_PATH } from './admin/interactive-tour/interactive-tour.const';
 import { InteractiveTourDetail } from './admin/interactive-tour/views/InteractiveTourDetail';
-import { InteractiveTourEdit } from './admin/interactive-tour/views/InteractiveTourEdit';
-import { InteractiveTourOverview } from './admin/interactive-tour/views/InteractiveTourOverview';
+import InteractiveTourEdit from './admin/interactive-tour/views/InteractiveTourEdit';
+import InteractiveTourOverview from './admin/interactive-tour/views/InteractiveTourOverview';
 import { ITEMS_PATH } from './admin/items/items.const';
 import { ItemDetail } from './admin/items/views/ItemDetail';
 import { ItemsOverview } from './admin/items/views/ItemsOverview';
@@ -379,7 +379,6 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 		},
 		{
 			path: APP_PATH.WORKSPACE.route,
-
 			Component: Workspace,
 			id: 'Workspace',
 			ErrorBoundary: ErrorBoundary,

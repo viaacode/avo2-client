@@ -57,3 +57,5 @@ export const LoggedInHome: FC = () => {
 		</>
 	);
 };
+
+export default LoggedInHome;

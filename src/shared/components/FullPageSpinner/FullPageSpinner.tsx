@@ -8,3 +8,5 @@ export const FullPageSpinner: FC = () => {
 		</div>
 	);
 };
+
+export default FullPageSpinner;

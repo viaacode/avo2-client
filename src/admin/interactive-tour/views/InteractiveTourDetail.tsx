@@ -269,3 +269,5 @@ export const InteractiveTourDetail: FC = () => {
 		</>
 	);
 };
+
+export default InteractiveTourDetail;

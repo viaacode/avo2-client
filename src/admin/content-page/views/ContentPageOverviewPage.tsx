@@ -94,3 +94,5 @@ export const ContentPageOverviewPage: FC = () => {
 		</PermissionGuard>
 	);
 };
+
+export default ContentPageOverviewPage;

@@ -464,3 +464,5 @@ export const CollectionOrBundleActualisationOverview: FC = () => {
 		</PermissionGuard>
 	);
 };
+
+export default CollectionOrBundleActualisationOverview;

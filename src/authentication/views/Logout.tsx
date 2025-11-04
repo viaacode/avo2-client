@@ -22,3 +22,5 @@ export const Logout: FC = () => {
 
 	return null;
 };
+
+export default Logout;

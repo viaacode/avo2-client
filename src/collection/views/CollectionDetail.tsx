@@ -1660,3 +1660,5 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
 	return renderPageContent();
 };
+
+export default CollectionDetail;

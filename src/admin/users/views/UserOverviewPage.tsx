@@ -49,3 +49,5 @@ export const UserOverviewPage: FC = () => {
 		</PermissionGuard>
 	);
 };
+
+export default UserOverviewPage;

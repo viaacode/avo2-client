@@ -376,3 +376,5 @@ export const AssignmentMarcomOverview: FC = () => {
 		</PermissionGuard>
 	);
 };
+
+export default AssignmentMarcomOverview;

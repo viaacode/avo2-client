@@ -301,3 +301,5 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
 		</>
 	);
 };
+
+export default CompleteProfileStep;

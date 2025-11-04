@@ -52,3 +52,5 @@ export const EducationalAuthorItemRequestFormConfirm: FC = () => {
 		</Container>
 	);
 };
+
+export default EducationalAuthorItemRequestFormConfirm;

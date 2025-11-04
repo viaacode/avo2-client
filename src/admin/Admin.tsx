@@ -95,3 +95,5 @@ export const Admin: FC = () => {
 		</QueryParamProvider>
 	);
 };
+
+export default Admin;

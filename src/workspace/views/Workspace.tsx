@@ -484,3 +484,5 @@ export const Workspace: FC = () => {
 		</>
 	);
 };
+
+export default Workspace;

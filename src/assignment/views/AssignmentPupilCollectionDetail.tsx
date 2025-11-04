@@ -201,3 +201,5 @@ export const AssignmentPupilCollectionDetail: FC = () => {
 		</>
 	);
 };
+
+export default AssignmentPupilCollectionDetail;

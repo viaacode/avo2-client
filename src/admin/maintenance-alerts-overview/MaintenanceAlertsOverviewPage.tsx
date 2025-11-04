@@ -58,3 +58,5 @@ export const MaintenanceAlertsOverviewPage: FC = () => {
 		</PermissionGuard>
 	);
 };
+
+export default MaintenanceAlertsOverviewPage;

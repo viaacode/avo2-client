@@ -44,3 +44,5 @@ export const Dashboard = () => {
 		</AdminLayout>
 	);
 };
+
+export default Dashboard;

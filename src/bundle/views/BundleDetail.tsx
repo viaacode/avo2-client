@@ -952,3 +952,5 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 
 	return renderPageContent();
 };
+
+export default BundleDetail;

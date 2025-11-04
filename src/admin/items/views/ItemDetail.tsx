@@ -706,3 +706,5 @@ export const ItemDetail: FC = () => {
 		</>
 	);
 };
+
+export default ItemDetail;

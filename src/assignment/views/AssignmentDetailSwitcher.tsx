@@ -29,3 +29,5 @@ export const AssignmentDetailSwitcher: FC = () => {
 	// Render teacher assignment detail page
 	return <AssignmentDetail enabledMetaData={ALL_SEARCH_FILTERS} />;
 };
+
+export default AssignmentDetailSwitcher;

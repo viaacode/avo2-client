@@ -206,3 +206,5 @@ export const Email: FC = () => {
 		</Container>
 	);
 };
+
+export default Email;

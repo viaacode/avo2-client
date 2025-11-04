@@ -348,3 +348,5 @@ export const InteractiveTourOverview: FC = () => {
 		</PermissionGuard>
 	);
 };
+
+export default InteractiveTourOverview;

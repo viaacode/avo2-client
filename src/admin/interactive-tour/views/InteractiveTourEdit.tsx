@@ -578,3 +578,5 @@ export const InteractiveTourEdit: FC = () => {
 		</>
 	);
 };
+
+export default InteractiveTourEdit;

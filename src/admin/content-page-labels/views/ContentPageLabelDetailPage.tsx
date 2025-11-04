@@ -6,7 +6,6 @@ import { PermissionGuard } from '../../../authentication/components/PermissionGu
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { ADMIN_PATH } from '../../admin.const';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 const ContentPageLabelDetail = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -38,4 +37,4 @@ const ContentPageLabelDetailPage: FC = () => {
 	);
 };
 
-export default withAdminCoreConfig(ContentPageLabelDetailPage as FC<any>) as FC;
+export default ContentPageLabelDetailPage;

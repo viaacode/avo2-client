@@ -176,3 +176,5 @@ export const Settings: FC = () => {
 		</>
 	);
 };
+
+export default Settings;

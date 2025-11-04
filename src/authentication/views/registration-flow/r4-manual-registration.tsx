@@ -365,3 +365,5 @@ export const ManualRegistration: FC = () => {
 		</Container>
 	);
 };
+
+export default ManualRegistration;

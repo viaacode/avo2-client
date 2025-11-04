@@ -157,3 +157,5 @@ export const ErrorView: FC<ErrorViewProps> = ({
 		</Container>
 	);
 };
+
+export default ErrorView;

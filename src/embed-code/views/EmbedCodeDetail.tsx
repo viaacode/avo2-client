@@ -305,3 +305,5 @@ export const EmbedCodeDetail: FC = () => {
 		</>
 	);
 };
+
+export default EmbedCodeDetail;

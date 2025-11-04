@@ -192,3 +192,5 @@ export const Search: FC = () => {
 		</>
 	);
 };
+
+export default Search;

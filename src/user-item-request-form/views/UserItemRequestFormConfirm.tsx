@@ -52,3 +52,5 @@ export const UserItemRequestFormConfirm: FC = () => {
 		</Container>
 	);
 };
+
+export default UserItemRequestFormConfirm;

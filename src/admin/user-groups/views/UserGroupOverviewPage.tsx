@@ -8,7 +8,6 @@ import { PermissionGuard } from '../../../authentication/components/PermissionGu
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { useTranslation } from '../../../shared/hooks/use-translation/use-translation';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
 	AdminLayoutBody,
@@ -130,4 +129,4 @@ const UserGroupGroupOverviewPage: FC = () => {
 	);
 };
 
-export default withAdminCoreConfig(UserGroupGroupOverviewPage);
+export default UserGroupGroupOverviewPage;

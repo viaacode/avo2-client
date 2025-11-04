@@ -9,7 +9,6 @@ import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/Full
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
 	AdminLayoutBody,
@@ -226,4 +225,4 @@ const TranslationsOverviewPage: FC = () => {
 	);
 };
 
-export default withAdminCoreConfig(TranslationsOverviewPage) as FC;
+export default TranslationsOverviewPage;

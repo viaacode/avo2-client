@@ -312,3 +312,5 @@ export const EducationalAuthorItemRequestForm: FC = () => {
 		</Container>
 	);
 };
+
+export default EducationalAuthorItemRequestForm;

@@ -89,3 +89,5 @@ export const Login: FC = () => {
 
 	return null;
 };
+
+export default Login;

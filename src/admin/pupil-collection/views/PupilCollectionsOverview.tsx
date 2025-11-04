@@ -463,3 +463,5 @@ export const PupilCollectionsOverview: FC = () => {
 		</PermissionGuard>
 	);
 };
+
+export default PupilCollectionsOverview;

@@ -108,3 +108,5 @@ export const RegisterStamboek: FC = () => {
 		</Container>
 	);
 };
+
+export default RegisterStamboek;

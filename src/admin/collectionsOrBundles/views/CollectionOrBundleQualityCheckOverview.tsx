@@ -470,3 +470,5 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
 		</PermissionGuard>
 	);
 };
+
+export default CollectionOrBundleQualityCheckOverview;

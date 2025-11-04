@@ -21,3 +21,5 @@ export const AppClientLayout: FC = () => {
 		</>
 	);
 };
+
+export default AppClientLayout;

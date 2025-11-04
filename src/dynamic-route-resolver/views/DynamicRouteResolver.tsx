@@ -10,14 +10,13 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtom, useSetAtom } from 'jotai';
 import { keys } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
-import React, { type ComponentType, type FC, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Navigate, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
 import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state';
 import { ItemsService } from '../../admin/items/items.service';
-import { withAdminCoreConfig } from '../../admin/shared/hoc/with-admin-core-config';
 import { UrlRedirectsService } from '../../admin/url-redirects/url-redirects.service';
 import { loginAtom } from '../../authentication/authentication.store';
 import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
@@ -404,4 +403,4 @@ const DynamicRouteResolver: FC = () => {
 	);
 };
 
-export default withAdminCoreConfig(DynamicRouteResolver as ComponentType) as unknown as FC;
+export default DynamicRouteResolver;
