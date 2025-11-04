@@ -1,6 +1,6 @@
 import path from 'path';
 
-import react from '@vitejs/plugin-react';
+import { reactRouter } from '@react-router/dev/vite';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import { defineConfig } from 'vite';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
@@ -37,7 +37,7 @@ export default defineConfig(() => {
 			port: 8080,
 		},
 		plugins: [
-			react(),
+			reactRouter(),
 			viteTsconfigPaths(),
 			svgrPlugin(),
 			cssInjectedByJsPlugin({

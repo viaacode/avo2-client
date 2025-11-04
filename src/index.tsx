@@ -1,7 +1,7 @@
-import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { setDefaultOptions } from 'date-fns';
 import { nlBE } from 'date-fns/locale';
-import React, { type FC, type ReactNode } from 'react';
+import React, { type FC } from 'react';
 import { createRoot } from 'react-dom/client';
 import { type LoaderFunction, RouterProvider } from 'react-router';
 import { createBrowserRouter } from 'react-router-dom';
@@ -12,16 +12,6 @@ import { ToastService } from './shared/services/toast-service';
 // Set moment language to Dutch
 setDefaultOptions({
 	locale: nlBE,
-});
-const queryClient = new QueryClient({
-	queryCache: new QueryCache({
-		onError: (error, query) => {
-			if (query.meta?.errorMessage) {
-				console.error(error);
-				ToastService.danger(query.meta.errorMessage as ReactNode | string);
-			}
-		},
-	}),
 });
 
 function wrapLoader(id: string | undefined, loaderFn: true | LoaderFunction<any>) {

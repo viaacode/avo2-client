@@ -88,7 +88,7 @@ const App: FC = () => {
 			.then(() => {
 				setLoadingInfo({ state: 'loaded' });
 			})
-			.catch((err) => {
+			.catch((err: any) => {
 				console.error(new CustomError('Failed to wait for translations', err));
 			});
 	}, [setLoadingInfo]);
