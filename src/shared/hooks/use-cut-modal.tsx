@@ -5,14 +5,12 @@ import {
 	CutFragmentModal,
 	type CutFragmentModalProps,
 } from '../../collection/components/modals/CutFragmentModal';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../helpers/translate-text';
 
 export function useCutModal(): [
 	(props?: Partial<ButtonProps>) => ReactNode,
 	(props?: Partial<CutFragmentModalProps>) => ReactNode,
 ] {
-	const { tText } = useTranslation();
-
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 
 	const renderButton = (props?: Partial<ButtonProps>) => {

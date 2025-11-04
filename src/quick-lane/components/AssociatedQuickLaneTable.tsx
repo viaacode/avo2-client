@@ -3,7 +3,7 @@ import React, { type FC } from 'react';
 
 import { QuickLaneFilterTableCell } from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../../shared/helpers/translate-text';
 import { type QuickLaneUrlObject } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
@@ -14,8 +14,6 @@ export const AssociatedQuickLaneTable: FC<TableProps> = ({
 	data,
 	emptyStateMessage,
 }) => {
-	const { tText } = useTranslation();
-
 	const renderAssociatedQuickLaneTableCell = (data: QuickLaneUrlObject, id: string) => (
 		<QuickLaneFilterTableCell id={id} data={data} />
 	);

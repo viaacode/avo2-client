@@ -5,7 +5,7 @@ import { sortBy } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
 import { showReplacementWarning } from '../../helpers/fragment';
 
 import { FragmentDetail } from './FragmentDetail';
@@ -33,7 +33,6 @@ export const FragmentList: FC<FragmentListProps> = ({
 	linkToItems,
 	collection,
 }) => {
-	const { tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const renderCollectionFragments = () =>

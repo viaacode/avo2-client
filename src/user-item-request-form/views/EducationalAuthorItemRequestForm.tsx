@@ -25,7 +25,6 @@ import { DOC_TYPES } from '../../shared/helpers/files';
 import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { validateForm } from '../../shared/helpers/validate-form';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ZendeskService } from '../../shared/services/zendesk-service';
@@ -34,6 +33,8 @@ import { EDUCATIONAL_AUTHOR_ITEM_REQUEST_FORM_VALIDATION_SCHEMA } from './Educat
 import { renderAttachment } from './UserItemRequestForm.helpers';
 
 import './ItemRequestForm.scss';
+import { tText } from '../../shared/helpers/translate-text';
+import { tHtml } from '../../shared/helpers/translate-html';
 
 interface FormValues {
 	description: string;
@@ -45,7 +46,6 @@ interface FormValues {
 }
 
 export const EducationalAuthorItemRequestForm: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const commonUser = useAtomValue(commonUserAtom);
 

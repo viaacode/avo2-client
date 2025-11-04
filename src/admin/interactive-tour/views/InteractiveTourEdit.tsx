@@ -46,7 +46,6 @@ import { GetInteractiveTourByIdDocument } from '../../../shared/generated/graphq
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { navigate } from '../../../shared/helpers/link';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { dataService } from '../../../shared/services/data-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
@@ -83,6 +82,8 @@ import {
 import { InteractiveTourEditStep } from './InteractiveTourEditStep';
 
 import './InteractiveTourEdit.scss';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 
 const BlockHeading = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -91,7 +92,6 @@ const BlockHeading = lazy(() =>
 );
 
 export const InteractiveTourEdit: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const navigateFunc = useNavigate();
 
@@ -192,14 +192,7 @@ export const InteractiveTourEdit: FC = () => {
 				});
 			}
 		}
-	}, [
-		setLoadingInfo,
-		changeInteractiveTourState,
-		tHtml,
-		isCreatePage,
-		getPageType,
-		interactiveTourId,
-	]);
+	}, [setLoadingInfo, changeInteractiveTourState, isCreatePage, getPageType, interactiveTourId]);
 
 	useEffect(() => {
 		initOrFetchInteractiveTour();

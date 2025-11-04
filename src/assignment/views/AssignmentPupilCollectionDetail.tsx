@@ -18,7 +18,8 @@ import {
 	type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../shared/helpers/custom-error';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentHeading } from '../components/AssignmentHeading';
 import { AssignmentMetadata } from '../components/AssignmentMetadata';
@@ -26,7 +27,6 @@ import { buildGlobalSearchLink } from '../helpers/build-search-link';
 import { toAssignmentResponsesOverview } from '../helpers/links';
 
 export const AssignmentPupilCollectionDetail: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const { assignmentId, responseId: assignmentResponseId } = useParams<{
@@ -64,7 +64,7 @@ export const AssignmentPupilCollectionDetail: FC = () => {
 
 			return AssignmentService.getAssignmentResponseById(assignmentResponseId);
 		},
-		[setAssignmentResponse, assignmentResponseId, tHtml]
+		[setAssignmentResponse, assignmentResponseId]
 	);
 
 	const fetchAssignment = useCallback(async () => {
@@ -92,13 +92,13 @@ export const AssignmentPupilCollectionDetail: FC = () => {
 				),
 			});
 		}
-	}, [assignmentId, fetchAssignmentResponse, commonUser, assignmentResponseId, tHtml]);
+	}, [assignmentId, fetchAssignmentResponse, commonUser, assignmentResponseId]);
 
 	// Effects
 
 	useEffect(() => {
 		fetchAssignment().then(noop);
-	}, [fetchAssignment, commonUser, tText]);
+	}, [fetchAssignment, commonUser]);
 
 	useEffect(() => {
 		if (assignment && assignmentResponse) {
@@ -118,7 +118,7 @@ export const AssignmentPupilCollectionDetail: FC = () => {
 					{tText('assignment/views/assignment-pupil-collection-detail___alle-responsen')}
 				</Link>
 			),
-		[tText, assignment]
+		[assignment]
 	);
 
 	const renderReadOnlyPupilCollectionBlocks = () => {

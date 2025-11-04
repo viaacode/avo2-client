@@ -38,16 +38,16 @@ import { InteractiveTour } from '../../shared/components/InteractiveTour/Interac
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { generateContentLinkString } from '../../shared/helpers/link';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { SearchFiltersAndResults } from '../components/SearchFiltersAndResults';
 import { type FilterState } from '../search.types';
 
 import './Search.scss';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 export const Search: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);

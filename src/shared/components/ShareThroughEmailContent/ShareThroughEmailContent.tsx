@@ -5,7 +5,8 @@ import React, { type FC, useState } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { copyToClipboard } from '../../helpers/clipboard';
-import { useTranslation } from '../../hooks/useTranslation';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import {
 	CampaignMonitorService,
 	type EmailTemplateType,
@@ -27,7 +28,6 @@ export const ShareThroughEmailContent: FC<AddToCollectionModalProps> = ({
 	emailLinkTitle,
 	onSendMail,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [emailAddress, setEmailAddress] = useState<string>('');

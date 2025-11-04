@@ -2,13 +2,12 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 
 export const Dashboard = () => {
-	const { tText, tHtml } = useTranslation();
-
 	return (
 		<AdminLayout pageTitle={tText('admin/dashboard/views/dashboard___dashboard')} size="large">
 			<AdminLayoutBody>

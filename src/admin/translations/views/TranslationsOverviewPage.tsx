@@ -1,4 +1,5 @@
 import { Button, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import { flatten, fromPairs, get, groupBy, isNil, map } from 'lodash-es';
 import React, { type FC, lazy, type ReactNode, Suspense, useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -7,7 +8,7 @@ import { PermissionGuard } from '../../../authentication/components/PermissionGu
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
@@ -18,7 +19,7 @@ import { fetchTranslations, updateTranslations } from '../translations.service';
 import { type Translation, type TranslationsState } from '../translations.types';
 
 import './TranslationsOverviewPage.scss';
-import { PermissionName } from '@viaa/avo2-types';
+import { tText } from '../../../shared/helpers/translate-text';
 
 const TranslationsOverview = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -27,8 +28,6 @@ const TranslationsOverview = lazy(() =>
 );
 
 const TranslationsOverviewPage: FC = () => {
-	const { tText, tHtml } = useTranslation();
-
 	const [initialTranslations, setInitialTranslations] = useState<Translation[]>([]);
 	const [translations, setTranslations] = useState<Translation[]>([]);
 
@@ -47,7 +46,7 @@ const TranslationsOverviewPage: FC = () => {
 					)
 				);
 			});
-	}, [tHtml]);
+	}, []);
 
 	const onSaveTranslations = async () => {
 		// convert translations to db format and save translations

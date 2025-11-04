@@ -1,16 +1,14 @@
 import { type Avo } from '@viaa/avo2-types';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { CustomError } from '../helpers/custom-error';
+import { tHtml } from '../helpers/translate-html';
 import { LomService } from '../services/lom.service';
 import { ToastService } from '../services/toast-service';
 
 type UseLomSubjectsTuple = [Avo.Lom.LomField[], boolean];
 
 export const useLomSubjects = (): UseLomSubjectsTuple => {
-	const { tText, tHtml } = useTranslation();
-
 	const [subjects, setSubjects] = useState<Avo.Lom.LomField[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -30,7 +28,7 @@ export const useLomSubjects = (): UseLomSubjectsTuple => {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [tHtml, tText]);
+	}, []);
 
 	return [subjects, isLoading];
 };

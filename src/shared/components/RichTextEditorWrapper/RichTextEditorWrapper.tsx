@@ -8,8 +8,9 @@ import { type Avo } from '@viaa/avo2-types';
 import { isEqual } from 'lodash-es';
 import React, { type FC } from 'react';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers/custom-error';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import { FileUploadService } from '../../services/file-upload-service';
 import { ToastService } from '../../services/toast-service';
 
@@ -29,8 +30,6 @@ export type RichTextEditorWrapperProps = RichTextEditorProps & {
  * @constructor
  */
 export const RichTextEditorWrapper: FC<RichTextEditorWrapperProps> = (props) => {
-	const { tText, tHtml } = useTranslation();
-
 	const { controls, fileType, ownerId, state, onChange, ...rest } = props;
 
 	if ((controls || []).includes('media') && !fileType) {

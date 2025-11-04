@@ -21,8 +21,9 @@ import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { copyQuickLaneToClipboard } from '../../helpers/generate-quick-lane-href';
 import { isMobileWidth } from '../../helpers/media-query';
 import { toSeconds } from '../../helpers/parsers/duration';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import { useDebounce } from '../../hooks/useDebounce';
-import { useTranslation } from '../../hooks/useTranslation';
 import { ToastService } from '../../services/toast-service';
 import { type QuickLaneUrlObject } from '../../types';
 import { ContentLink } from '../ContentLink/ContentLink';
@@ -38,7 +39,6 @@ export const QuickLaneContentSharingTab: FC<QuickLaneContentProps> = ({
 	content,
 	content_label,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const fragmentDuration = useMemo(
@@ -124,7 +124,7 @@ export const QuickLaneContentSharingTab: FC<QuickLaneContentProps> = ({
 				}
 			}
 		})();
-	}, [content, exists, isOpen, tHtml]);
+	}, [content, exists, isOpen]);
 
 	// When debounced changes occur, synchronise the changes with the database
 	useEffect(() => {
@@ -163,7 +163,7 @@ export const QuickLaneContentSharingTab: FC<QuickLaneContentProps> = ({
 				}
 			}
 		})();
-	}, [debounced, tHtml]);
+	}, [debounced]);
 
 	// Ensure end_oc is never exactly 0
 	useEffect(() => {

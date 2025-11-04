@@ -8,7 +8,7 @@ import Joyride, { type CallBackProps } from 'react-joyride';
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { TEAL_BRIGHT } from '../../constants';
 import { CustomError } from '../../helpers/custom-error';
-import { useTranslation } from '../../hooks/useTranslation';
+import { tText } from '../../helpers/translate-text';
 import { InteractiveTourService, type TourInfo } from '../../services/interactive-tour.service';
 import { showNudgingModalAtom } from '../../store/ui.store';
 import { Html } from '../Html/Html';
@@ -26,8 +26,6 @@ interface InteractiveTourProps {
 const INTERACTIVE_TOUR_IN_PROGRESS_CLASS = 'c-interactive-tour--in-progress';
 
 export const InteractiveTour: FC<InteractiveTourProps> = ({ showButton }) => {
-	const { tText } = useTranslation();
-
 	const commonUser = useAtomValue(commonUserAtom);
 	const showNudgingModal = useAtomValue(showNudgingModalAtom);
 

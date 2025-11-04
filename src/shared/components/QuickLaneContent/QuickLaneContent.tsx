@@ -6,8 +6,9 @@ import React, { type FC, useEffect, useState } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import { useTabs } from '../../hooks/useTabs';
-import { useTranslation } from '../../hooks/useTranslation';
 import { ToastService } from '../../services/toast-service';
 
 import { isShareable } from './QuickLaneContent.helpers';
@@ -60,8 +61,6 @@ export const QuickLaneContent: FC<QuickLaneContentProps> = (props) => {
 	const [content, setContent] = useState<
 		Avo.Assignment.Assignment | Avo.Collection.Collection | Avo.Item.Item | undefined
 	>(props.content);
-
-	const { tText, tHtml } = useTranslation();
 
 	const [isPublishRequired, setIsPublishRequired] = useState(false);
 	const [canPublish, setCanPublish] = useState(false);

@@ -13,9 +13,10 @@ import { compact, isString } from 'lodash-es';
 import queryString from 'query-string';
 import React, { type FC, useState } from 'react';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers/custom-error';
 import { getUrlInfo, isPhoto, isVideo, PHOTO_TYPES } from '../../helpers/files';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import { FileUploadService } from '../../services/file-upload-service';
 import { ToastService } from '../../services/toast-service';
 import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
@@ -56,7 +57,6 @@ export const FileUpload: FC<FileUploadProps> = ({
 	disabled = false,
 	onChange,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const [urlToDelete, setUrlToDelete] = useState<string | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);

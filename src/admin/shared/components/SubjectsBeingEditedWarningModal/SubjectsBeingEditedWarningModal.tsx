@@ -5,10 +5,10 @@ import React, { type FC, type ReactNode } from 'react';
 import { type APP_PATH } from '../../../../constants';
 import { ConfirmModal } from '../../../../shared/components/ConfirmModal/ConfirmModal';
 import { buildLink } from '../../../../shared/helpers/build-link';
-import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { type ValueOf } from '../../../../shared/types';
 
 import './SubjectsBeingEditedWarningModal.scss';
+import { tText } from '../../../../shared/helpers/translate-text';
 
 interface SubjectsBeingEditedWarningModalProps {
 	isOpen: boolean;
@@ -31,8 +31,6 @@ export const SubjectsBeingEditedWarningModal: FC<SubjectsBeingEditedWarningModal
 	confirmCallback,
 	subjects,
 }) => {
-	const { tText } = useTranslation();
-
 	const renderAssignmentBeingEditedMessage = () => {
 		return (
 			<>

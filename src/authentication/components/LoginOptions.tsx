@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { useTabs } from '../../shared/hooks/useTabs';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { setLoginCounter } from '../helpers/login-counter-before-nudging';
 import {
 	getPreferredLoginOption,
@@ -25,7 +26,6 @@ interface LoginOptionsProps {
 }
 
 export const LoginOptions: FC<LoginOptionsProps> = ({ onOptionClicked = noop }) => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
 	const [tab, setActiveTab, tabs] = useTabs(

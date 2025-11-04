@@ -15,7 +15,8 @@ import AsyncSelect from 'react-select/async';
 
 import { FileUpload } from '../../../../shared/components/FileUpload/FileUpload';
 import { CustomError } from '../../../../shared/helpers/custom-error';
-import { useTranslation } from '../../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../../shared/helpers/translate-html';
+import { tText } from '../../../../shared/helpers/translate-text';
 import { ToastService } from '../../../../shared/services/toast-service';
 import { type PickerItem, type PickerTypeOption } from '../../types/content-picker';
 
@@ -46,8 +47,6 @@ export const ContentPicker: FC<ContentPickerProps> = ({
 	hideTargetSwitch = false,
 	errors = [],
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	// filter available options for the type picker
 	const typeOptions = filterTypes(
 		GET_CONTENT_TYPES(),
@@ -116,7 +115,7 @@ export const ContentPicker: FC<ContentPickerProps> = ({
 				return [];
 			}
 		},
-		[selectedType, hasAppliedInitialItem, initialValue, tHtml]
+		[selectedType, hasAppliedInitialItem, initialValue]
 	);
 
 	// when selecting a type, reset `selectedItem` and retrieve new item options

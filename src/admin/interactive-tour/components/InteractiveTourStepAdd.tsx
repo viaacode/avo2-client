@@ -2,8 +2,8 @@ import { Button, Container, IconName, Toolbar, ToolbarItem } from '@viaa/avo2-co
 import { cloneDeep } from 'lodash-es';
 import React, { type FC } from 'react';
 
+import { tText } from '../../../shared/helpers/translate-text';
 import { generateRandomId } from '../../../shared/helpers/uuid';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { type InteractiveTourAction } from '../helpers/reducers';
 import {
 	type EditableInteractiveTour,
@@ -22,8 +22,6 @@ export const InteractiveTourAdd: FC<InteractiveTourAddProps> = ({
 	interactiveTour,
 	changeInteractiveTourState,
 }) => {
-	const { tText } = useTranslation();
-
 	const getStepsAfterInsertNewStep = (): EditableStep[] => {
 		const steps = cloneDeep(interactiveTour.steps || []);
 

@@ -25,9 +25,10 @@ import { useNavigate } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ROUTE_PARTS } from '../../../shared/constants';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { validateEmailAddress } from '../../../shared/helpers/validation/email';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ZendeskService } from '../../../shared/services/zendesk-service';
@@ -35,7 +36,6 @@ import { ZendeskService } from '../../../shared/services/zendesk-service';
 import './r4-manual-registration.scss';
 
 export const ManualRegistration: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
 	const [firstName, setFirstName] = useState<string>('');

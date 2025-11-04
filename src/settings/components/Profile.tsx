@@ -37,7 +37,8 @@ import { getEnv } from '../../shared/helpers/env';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { groupLomLinks, groupLoms } from '../../shared/helpers/lom';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { OrganisationService } from '../../shared/services/organizations-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { USERS_IN_SAME_COMPANY_COLUMNS } from '../settings.const';
@@ -67,7 +68,6 @@ interface FieldPermissions {
 }
 
 export const Profile: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 	const getLoginState = useSetAtom(getLoginStateAtom);
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
@@ -218,7 +218,7 @@ export const Profile: FC = () => {
 					);
 				});
 		}
-	}, [uiPermissions, tText, commonUser, setAllOrganisations, tHtml]);
+	}, [uiPermissions, commonUser, setAllOrganisations]);
 
 	const areRequiredFieldsFilledIn = (profileInfo: Partial<Avo.User.UpdateProfileValues>) => {
 		if (!uiPermissions) {

@@ -73,7 +73,6 @@ import { formatDate } from '../../shared/helpers/formatters/date';
 import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -87,6 +86,8 @@ import { ToastService } from '../../shared/services/toast-service';
 import { BundleAction } from '../bundle.types';
 
 import './BundleDetail.scss';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 type BundleDetailProps = {
 	id?: string;
@@ -97,7 +98,6 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 	id,
 	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
 	const { id: bundleIdFromUrl } = useParams<{ id: string }>();
@@ -282,7 +282,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 
 		setShowLoginPopup(showPopup);
 		setPermissions(permissionObj || {});
-	}, [bundleId, bundleObj, commonUser, tHtml]);
+	}, [bundleId, bundleObj, commonUser]);
 
 	useEffect(() => {
 		if (bundleObj) {

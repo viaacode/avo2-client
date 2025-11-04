@@ -8,7 +8,8 @@ import { commonUserAtom } from '../../authentication/authentication.store';
 import { AlertBar } from '../../shared/components/AlertBar/AlertBar';
 import { EducationLevelId } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { AssignmentResponseEdit } from '../views/AssignmentResponseEdit/AssignmentResponseEdit';
 
 type AssignmentPupilPreviewProps = {
@@ -22,7 +23,6 @@ export const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps> = ({
 	isPreview = false,
 	onClose,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response>({
 		collection_title: '',
@@ -71,7 +71,7 @@ export const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps> = ({
 					'assignment/components/assignment-pupil-preview___je-bent-aan-het-kijken-als-leerling'
 				);
 		}
-	}, [assignment, tHtml]);
+	}, [assignment]);
 
 	return (
 		<>

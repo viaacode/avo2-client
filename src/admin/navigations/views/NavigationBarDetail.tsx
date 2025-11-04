@@ -7,7 +7,7 @@ import { PermissionGuard } from '../../../authentication/components/PermissionGu
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tText } from '../../../shared/helpers/translate-text';
 import { ADMIN_PATH } from '../../admin.const';
 
 import './NavigationBarDetail.scss';
@@ -19,7 +19,6 @@ const NavigationDetail = lazy(() =>
 );
 
 const NavigationBarDetail: FC = () => {
-	const { tText } = useTranslation();
 	const navigateFunc = useNavigate();
 	const { navigationBarId } = useParams<{ navigationBarId: string }>();
 

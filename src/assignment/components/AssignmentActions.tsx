@@ -23,7 +23,7 @@ import { type ShareWithPupilsProps } from '../../shared/components/ShareWithPupi
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../../shared/helpers/translate-text';
 import {
 	onAddNewContributor,
 	onDeleteContributor,
@@ -69,7 +69,6 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
 	shareWithColleaguesOrPupilsProps,
 	view,
 }) => {
-	const { tText } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
 
@@ -94,7 +93,7 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
 				{...buttonProps}
 			/>
 		),
-		[preview, tText]
+		[preview]
 	);
 
 	const renderOverflowButton = useCallback(
@@ -108,7 +107,7 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
 				{...buttonProps}
 			/>
 		),
-		[overflow, tText]
+		[overflow]
 	);
 
 	const renderPublishButton = useCallback(
@@ -193,7 +192,7 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
 				});
 			}
 		},
-		[assignment, commonUser, refetchAssignment, route, shareWithColleaguesOrPupilsProps, tText]
+		[assignment, commonUser, refetchAssignment, route, shareWithColleaguesOrPupilsProps]
 	);
 
 	const renderDuplicateButton = useCallback(() => {
@@ -224,7 +223,7 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
 				}}
 			/>
 		);
-	}, [isCreating, onDuplicate, tText]);
+	}, [isCreating, onDuplicate]);
 
 	const renderDeleteButton = useCallback(
 		(deleteAssignmentButtonProps?: Partial<DeleteAssignmentButtonProps>) => {
@@ -348,7 +347,6 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
 			renderDuplicateButton,
 			renderDeleteButton,
 			renderShareButton,
-			tText,
 		]
 	);
 };

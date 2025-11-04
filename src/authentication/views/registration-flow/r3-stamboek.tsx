@@ -5,7 +5,8 @@ import { Helmet } from 'react-helmet';
 import { Link, useLocation } from 'react-router-dom';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { StamboekInput } from '../../components/StamboekInput';
 import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
 
@@ -21,7 +22,6 @@ export type StamboekValidationStatus =
 export const STAMBOEK_LOCAL_STORAGE_KEY = 'AVO.stamboek';
 
 export const RegisterStamboek: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 
 	const [validStamboekNumber, setValidStamboekNumber] = useState<string>('');

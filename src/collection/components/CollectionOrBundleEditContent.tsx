@@ -7,7 +7,8 @@ import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { ToastService } from '../../shared/services/toast-service';
 import { type CollectionOrBundle } from '../collection.types';
 import FragmentEdit from '../components/fragment/FragmentEdit';
@@ -32,7 +33,6 @@ export const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProp
 	changeCollectionState,
 	onFocus,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	// State
@@ -62,7 +62,7 @@ export const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProp
 					)
 				);
 			});
-	}, [commonUser, tHtml, tText]);
+	}, [commonUser]);
 
 	const getFragmentKey = (fragment: Avo.Collection.Fragment) => {
 		return `fragment_${fragment.id}-${get(fragment, 'created_at')}-${get(

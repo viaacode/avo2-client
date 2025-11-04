@@ -42,8 +42,9 @@ import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPag
 import { CustomError } from '../../shared/helpers/custom-error';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { useQualityLabels } from '../../shared/hooks/useQualityLabels';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import {
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
@@ -86,7 +87,6 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	renderDetailLink,
 	renderSearchLink,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
 	const searchState: SearchState = useAtomValue(searchAtom);
@@ -234,7 +234,7 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 				tHtml('search/views/search___het-ophalen-van-de-bladwijzer-statusen-is-mislukt')
 			);
 		}
-	}, [tHtml, setBookmarkStatuses, searchResults, commonUser]);
+	}, [setBookmarkStatuses, searchResults, commonUser]);
 
 	useEffect(() => {
 		if (PermissionService.hasPerm(commonUser, PermissionName.CREATE_BOOKMARKS)) {

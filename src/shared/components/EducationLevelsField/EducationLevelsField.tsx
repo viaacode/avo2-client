@@ -3,8 +3,8 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 import React, { type FC } from 'react';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
+import { tText } from '../../helpers/translate-text';
 import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 
 interface EducationLevelsFieldProps {
@@ -13,8 +13,6 @@ interface EducationLevelsFieldProps {
 }
 
 export const EducationLevelsField: FC<EducationLevelsFieldProps> = ({ onChange, value }) => {
-	const { tText } = useTranslation();
-
 	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 
 	return (

@@ -7,8 +7,8 @@ import { orderBy } from 'lodash-es';
 import React, { type FC, useState } from 'react';
 
 import { type BooleanDictionary } from '../../helpers/navigation';
+import { tText } from '../../helpers/translate-text';
 import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
-import { useTranslation } from '../../hooks/useTranslation';
 import { type AppContentNavElement } from '../../services/navigation-items-service';
 import { NavigationBarId } from '../Navigation/Navigation.const';
 import { NavigationItem } from '../Navigation/NavigationItem';
@@ -16,8 +16,6 @@ import { NavigationItem } from '../Navigation/NavigationItem';
 import './Footer.scss';
 
 export const Footer: FC = () => {
-	const { tText } = useTranslation();
-
 	const [areDropdownsOpen, setDropdownsOpen] = useState<BooleanDictionary>({});
 
 	const { data: allNavItems } = useAllGetNavItems();

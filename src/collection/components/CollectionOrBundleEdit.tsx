@@ -66,7 +66,6 @@ import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
@@ -117,9 +116,10 @@ import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/Del
 import { PublishCollectionModal } from './modals/PublishCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
+import { tText } from '../../shared/helpers/translate-text';
+import { tHtml } from '../../shared/helpers/translate-html';
 
 export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }) => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
 	const { id: collectionId, tabId } = useParams<{
@@ -198,7 +198,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 				);
 			}
 		}
-	}, [collectionId, tHtml]);
+	}, [collectionId]);
 
 	const updateCollectionEditor = useCallback(async () => {
 		try {
@@ -229,7 +229,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 				);
 			}
 		}
-	}, [collectionId, navigateFunc, releaseCollectionEditStatus, tHtml]);
+	}, [collectionId, navigateFunc, releaseCollectionEditStatus]);
 
 	const updateCollectionEditorWithLoading = useCallback(async () => {
 		if (!isCollection) {
@@ -659,17 +659,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 				icon: IconName.alertTriangle,
 			});
 		}
-	}, [
-		isCollection,
-		collectionId,
-		commonUser,
-		isAdmin,
-		type,
-		contributors,
-		noRightsError,
-		tText,
-		tHtml,
-	]);
+	}, [isCollection, collectionId, commonUser, isAdmin, type, contributors, noRightsError]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection().then(noop);
@@ -935,7 +925,6 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 		isAdmin,
 		isCollection,
 		isCollectionValid,
-		tHtml,
 		type,
 		updateCollection,
 	]);
@@ -1036,7 +1025,6 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 			isSavingCollection,
 			navigateFunc,
 			onSaveCollection,
-			tHtml,
 			unsavedChanges,
 		]
 	);

@@ -6,8 +6,8 @@ import { Link, type Location, NavLink, useLocation } from 'react-router-dom';
 
 import { APP_PATH } from '../../../../constants';
 import { CustomError } from '../../../../shared/helpers/custom-error';
+import { tHtml } from '../../../../shared/helpers/translate-html';
 import { tText } from '../../../../shared/helpers/translate-text';
-import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { type NavigationItemInfo } from '../../../../shared/types';
 
 import './Sidebar.scss';
@@ -27,7 +27,6 @@ export const Sidebar: FC<SidebarProps> = ({
 	light = false,
 	navItems,
 }) => {
-	const { tHtml } = useTranslation();
 	const location = useLocation();
 
 	const isActiveClass = (item: NavigationItemInfo, location: Location): boolean => {

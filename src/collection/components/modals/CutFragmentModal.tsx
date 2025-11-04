@@ -18,7 +18,6 @@ import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
@@ -26,6 +25,7 @@ import { ContentTypeNumber } from '../../collection.types';
 import { type CollectionAction } from '../CollectionOrBundleEdit.types';
 
 import './CutFragmentModal.scss';
+import { tText } from '../../../shared/helpers/translate-text';
 
 export interface CutFragmentModalProps {
 	isOpen: boolean;
@@ -49,8 +49,6 @@ export const CutFragmentModal: FC<CutFragmentModalProps> = ({
 	onClose,
 	onConfirm,
 }) => {
-	const { tText } = useTranslation();
-
 	// Save initial state for reusability purposes
 	const [start, end] = getValidStartAndEnd(
 		fragment.start_oc,

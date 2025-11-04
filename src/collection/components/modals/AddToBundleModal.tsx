@@ -21,7 +21,8 @@ import React, { type FC, useCallback, useEffect, useState } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
@@ -50,7 +51,6 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
 	isOpen,
 	onClose,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -77,7 +77,7 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
 						)
 					);
 				}),
-		[commonUser, tHtml]
+		[commonUser]
 	);
 
 	useEffect(() => {
@@ -89,7 +89,7 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
 				)
 			);
 		});
-	}, [fetchBundles, tHtml, tText]);
+	}, [fetchBundles]);
 
 	useEffect(() => {
 		isOpen && fetchBundles();

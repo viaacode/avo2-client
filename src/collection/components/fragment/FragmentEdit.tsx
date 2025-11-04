@@ -43,7 +43,6 @@ import { getMoreOptionsLabel } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { createDropdownMenuItem } from '../../../shared/helpers/dropdown';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { CollectionBlockType } from '../../collection.const';
@@ -63,6 +62,7 @@ import {
 import { FragmentEditAction } from './FragmentEdit.types';
 
 import './FragmentEdit.scss';
+import { tText } from '../../../shared/helpers/translate-text';
 
 interface FragmentEditProps {
 	index: number;
@@ -96,7 +96,6 @@ const FragmentEdit: FC<FragmentEditProps> = ({
 	renderWarning = () => null,
 	onFocus,
 }) => {
-	const { tText } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	/**

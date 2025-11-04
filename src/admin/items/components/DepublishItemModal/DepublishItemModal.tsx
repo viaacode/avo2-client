@@ -20,7 +20,8 @@ import { RichTextEditorWrapper } from '../../../../shared/components/RichTextEdi
 import { Lookup_Enum_Relation_Types_Enum } from '../../../../shared/generated/graphql-db-types';
 import { CustomError } from '../../../../shared/helpers/custom-error';
 import { stripHtml } from '../../../../shared/helpers/formatters/strip-html';
-import { useTranslation } from '../../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../../shared/helpers/translate-html';
+import { tText } from '../../../../shared/helpers/translate-text';
 import { RelationService } from '../../../../shared/services/relation-service/relation.service';
 import { ToastService } from '../../../../shared/services/toast-service';
 import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
@@ -41,8 +42,6 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
 	onClose = noop,
 	isOpen,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const [depublishType, setDepublishType] = useState<DepublishType>('depublish');
 	const [reason, setReason] = useState<RichEditorState | null>(null);
 	const [replacementExternalId, setReplacementExternalId] = useState<string | null>(null);

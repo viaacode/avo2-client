@@ -84,7 +84,6 @@ import { isMobileWidth } from '../../shared/helpers/media-query';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -105,6 +104,8 @@ import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { type ItemTrimInfo } from '../item.types';
 
 import './ItemDetail.scss';
+import { tText } from '../../shared/helpers/translate-text';
+import { tHtml } from '../../shared/helpers/translate-html';
 
 interface ItemDetailProps {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (itemId)
@@ -151,7 +152,6 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 	renderBookmarkCount = defaultRenderBookmarkCount,
 	renderInteractiveTour = defaultRenderInteractiveTour,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const { id: idFromUrl } = useParams<{ id: string }>();
 	const itemId = id || idFromUrl;
@@ -208,7 +208,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 					);
 				});
 		},
-		[filterState, relatedObjectTypes, tHtml]
+		[filterState, relatedObjectTypes]
 	);
 
 	const checkPermissionsAndGetItem = useCallback(async () => {
@@ -330,7 +330,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 		// Avoid calling this function too many times
 		// TODO switch fetching to react-query so these called are cached
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [itemId, setItem, tText, commonUser]);
+	}, [itemId, setItem, commonUser]);
 
 	useEffect(() => {
 		if (item) {

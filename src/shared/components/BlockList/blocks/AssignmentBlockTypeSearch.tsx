@@ -24,7 +24,8 @@ import React, { type FC } from 'react';
 import NewPartSvg from '../../../../assets/images/nieuw-onderdeel.svg?react';
 import { CollectionFragmentRichText } from '../../../../collection/components/CollectionFragmentRichText';
 import { type EducationLevelId } from '../../../helpers/lom';
-import { useTranslation } from '../../../hooks/useTranslation';
+import { tHtml } from '../../../helpers/translate-html';
+import { tText } from '../../../helpers/translate-text';
 
 import {
 	GET_EDUCATION_LEVEL_DICT,
@@ -49,8 +50,6 @@ export const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 	pastDeadline,
 	className,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const educationLevelLabel = educationLevelId && GET_EDUCATION_LEVEL_DICT()[educationLevelId];
 	const educationLevelTooltip =
 		educationLevelId && GET_EDUCATION_LEVEL_TOOLTIP_DICT()[educationLevelId];

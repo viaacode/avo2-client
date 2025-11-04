@@ -2,7 +2,8 @@ import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 
 interface DeleteCollectionModalProps {
 	isOpen: boolean;
@@ -21,8 +22,6 @@ export const DeleteCollectionModal: FC<DeleteCollectionModalProps> = ({
 	contributorCount,
 	isCollection,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const handleDelete = async () => {
 		deleteCallback();
 		onClose();

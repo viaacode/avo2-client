@@ -36,13 +36,13 @@ import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { useGetQuickLane } from '../hooks/useGetQuickLane';
 
 export const QuickLaneDetail: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const { id: quickLaneId } = useParams<{ id: string }>();
 	const commonUser = useAtomValue(commonUserAtom);

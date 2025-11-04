@@ -1,6 +1,7 @@
 import React, { type FC } from 'react';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import { StickyBar } from '../StickyBar/StickyBar';
 
 interface StickySaveBarProps {
@@ -16,8 +17,6 @@ export const StickySaveBar: FC<StickySaveBarProps> = ({
 	onSave,
 	onCancel,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	if (!isVisible) {
 		return null;
 	}

@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router';
 
 import { APP_PATH } from '../../constants';
 import { OrderedList } from '../../shared/components/OrderedList/OrderedList';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './ErrorNoAccess.scss';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface ErrorNoAccessProps {
 	title: string | ReactNode;
@@ -14,7 +14,6 @@ interface ErrorNoAccessProps {
 }
 
 export const ErrorNoAccess: FC<ErrorNoAccessProps> = ({ title, message }) => {
-	const { tText } = useTranslation();
 	const navigateFunc = useNavigate();
 
 	const goToWorkspace = () => {

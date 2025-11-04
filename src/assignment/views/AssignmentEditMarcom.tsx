@@ -42,8 +42,9 @@ import { getEnv } from '../../shared/helpers/env';
 import { extractKlascementError } from '../../shared/helpers/extract-klascement-error';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { useDeleteAssignmentMarcomEntry } from '../hooks/useDeleteAssignmentMarcomEntry';
 import { useGetAssignmentMarcomEntries } from '../hooks/useGetAssignmentMarcomEntries';
@@ -64,7 +65,6 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
 	setAssignment,
 	onFocus,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [marcomDate, setMarcomDate] = useState<Date | null>(new Date());

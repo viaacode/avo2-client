@@ -21,8 +21,9 @@ import {
 import { buildLink } from '../../shared/helpers/build-link';
 import { formatDate, formatTimestamp } from '../../shared/helpers/formatters/date';
 import { isMobileWidth } from '../../shared/helpers/media-query';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 // Constants
@@ -41,7 +42,6 @@ interface OrganisationContentOverviewProps {
 export const OrganisationContentOverview: FC<OrganisationContentOverviewProps> = ({
 	numberOfItems,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	// State
@@ -91,7 +91,7 @@ export const OrganisationContentOverview: FC<OrganisationContentOverviewProps> =
 				actionButtons: ['home'],
 			});
 		}
-	}, [page, sortColumn, sortOrder, tHtml, commonUser]);
+	}, [page, sortColumn, sortOrder, commonUser]);
 
 	useEffect(() => {
 		fetchOrganisationContent();

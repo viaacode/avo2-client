@@ -19,7 +19,8 @@ import { PermissionService } from '../../../authentication/helpers/permission-se
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AssignmentService } from '../../assignment.service';
 import { AssignmentMetadata } from '../../components/AssignmentMetadata';
@@ -31,7 +32,6 @@ import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 
 export const AssignmentResponseAdminEdit: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const { assignmentId, responseId: assignmentResponseId } = useParams<{
 		assignmentId: string;
 		responseId: string;
@@ -118,7 +118,7 @@ export const AssignmentResponseAdminEdit: FC = () => {
 			});
 		}
 		setAssignmentLoading(false);
-	}, [assignmentId, assignmentResponseId, tHtml, tText]);
+	}, [assignmentId, assignmentResponseId]);
 
 	// Effects
 

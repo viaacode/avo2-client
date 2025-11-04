@@ -26,8 +26,8 @@ import React, { type FC, useMemo, useState } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import { validateEmailAddress } from '../../helpers/validation/email';
-import { useTranslation } from '../../hooks/useTranslation';
 import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
 import { ConfirmModalRememberKey } from '../ConfirmModal/ConfirmModal.consts';
 
@@ -66,7 +66,6 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
 	onDeleteContributor,
 	onEditRights,
 }) => {
-	const { tText } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 	const currentUser =
 		(contributors.find(
@@ -341,7 +340,7 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
 			});
 		}
 		return options;
-	}, [commonUser?.permissions, currentUser.rights, getContributorRightLabel, tText]);
+	}, [commonUser?.permissions, currentUser.rights, getContributorRightLabel]);
 
 	const rightsDropdownOptions = [
 		...(commonUser?.permissions?.includes(availableRights.CONTRIBUTOR)

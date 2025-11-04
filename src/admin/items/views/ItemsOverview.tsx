@@ -12,8 +12,9 @@ import { type CheckboxOption } from '../../../shared/components/CheckboxDropdown
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { useCompanies } from '../../../shared/hooks/useCompanies';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
@@ -30,8 +31,6 @@ import { type ItemsOverviewTableCols, type ItemsTableState } from '../items.type
 import { ItemBulkAction } from './ItemsOverview.types';
 
 export const ItemsOverview: FC = () => {
-	const { tText, tHtml } = useTranslation();
-
 	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
 	const {
 		data: itemsWithFilters,
@@ -82,7 +81,7 @@ export const ItemsOverview: FC = () => {
 				)
 			);
 		}
-	}, [tHtml]);
+	}, []);
 
 	useEffect(() => {
 		fetchAllSeries();

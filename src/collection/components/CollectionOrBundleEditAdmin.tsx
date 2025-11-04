@@ -86,7 +86,7 @@ export const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps> =
 				)
 			);
 		}
-	}, [tHtml]);
+	}, []);
 
 	const fetchAssociatedQuickLanes = useCallback(async () => {
 		try {
@@ -111,7 +111,7 @@ export const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps> =
 				)
 			);
 		}
-	}, [collection, tHtml]);
+	}, [collection]);
 
 	useEffect(() => {
 		fetchQualityLabels().then(noop);

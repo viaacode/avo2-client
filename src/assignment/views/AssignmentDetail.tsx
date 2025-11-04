@@ -64,7 +64,8 @@ import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { navigate } from '../../shared/helpers/link';
 import { type EducationLevelId, getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -106,7 +107,6 @@ type AssignmentDetailProps = {
 export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const commonUser = useAtomValue(commonUserAtom);
 	const { id: assignmentId } = useParams<{ id: string }>();
@@ -251,7 +251,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 				)
 			);
 		}
-	}, [assignmentId, tHtml]);
+	}, [assignmentId]);
 
 	const fetchAssignment = useCallback(async () => {
 		try {
@@ -345,7 +345,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 		}
 
 		setAssignmentLoading(false);
-	}, [commonUser, getRelatedAssignments, tHtml, assignmentId, inviteToken, getPermissions]);
+	}, [commonUser, getRelatedAssignments, assignmentId, inviteToken, getPermissions]);
 
 	const fetchContributors = useCallback(async () => {
 		if (!assignmentId || !assignment) {
@@ -406,7 +406,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 				);
 			}
 		}
-	}, [tHtml, assignment, commonUser]);
+	}, [assignment, commonUser]);
 
 	// Fetch initial data
 	useEffect(() => {

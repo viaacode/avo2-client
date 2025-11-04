@@ -6,8 +6,9 @@ import React, { type FC } from 'react';
 import { APP_PATH } from '../../../constants';
 import { buildLink } from '../../helpers/build-link';
 import { copyToClipboard } from '../../helpers/clipboard';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import { useAssignmentPastDeadline } from '../../hooks/useAssignmentPastDeadline';
-import { useTranslation } from '../../hooks/useTranslation';
 import { ToastService } from '../../services/toast-service';
 
 import './ShareWithPupils.scss';
@@ -23,8 +24,6 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 	onDetailLinkClicked,
 	onContentLinkClicked,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const isAssignmentExpired = useAssignmentPastDeadline(assignment);
 
 	// Computed

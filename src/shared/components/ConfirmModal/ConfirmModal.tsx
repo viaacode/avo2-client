@@ -15,7 +15,7 @@ import {
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
-import { useTranslation } from '../../hooks/useTranslation';
+import { tHtml } from '../../helpers/translate-html';
 
 import { type ConfirmModalRememberKey } from './ConfirmModal.consts';
 
@@ -46,8 +46,6 @@ export const ConfirmModal: FC<ConfirmModalProps> = ({
 	className,
 	rememberKey,
 }) => {
-	const { tHtml } = useTranslation();
-
 	const [isRemembered, setIsRemembered] = useState(false);
 
 	useEffect(() => {

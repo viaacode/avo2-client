@@ -8,7 +8,7 @@ import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { isPupil } from '../../shared/helpers/is-pupil';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../../shared/helpers/translate-text';
 import { loginAtom } from '../authentication.store';
 import { getLoginStateAtom } from '../authentication.store.actions';
 import { LoginMessage } from '../authentication.types';
@@ -17,7 +17,6 @@ import { redirectToServerLoginPage } from '../helpers/redirects';
 const LOGIN_ATTEMPT_KEY = 'AVO_LOGIN_ATTEMPT';
 
 export const Login: FC = () => {
-	const { tText } = useTranslation();
 	const location = useLocation();
 	const navigateFunc = useNavigate();
 

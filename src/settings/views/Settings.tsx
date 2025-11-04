@@ -21,7 +21,8 @@ import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { buildLink } from '../../shared/helpers/build-link';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { ToastService } from '../../shared/services/toast-service';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Account } from '../components/Account';
@@ -39,7 +40,6 @@ import {
 } from '../settings.const';
 
 export const Settings: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const { tabId } = useParams<{ tabId: string }>();
 	const commonUser = useAtomValue(commonUserAtom);

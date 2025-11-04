@@ -35,7 +35,8 @@ import { defaultRenderBookmarkButton } from '../../../../../shared/helpers/defau
 import { formatDate } from '../../../../../shared/helpers/formatters/date';
 import { isMobileWidth } from '../../../../../shared/helpers/media-query';
 import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
-import { useTranslation } from '../../../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../../../shared/helpers/translate-html';
+import { tText } from '../../../../../shared/helpers/translate-text';
 import { BookmarksViewsPlaysService } from '../../../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../../../admin.const';
@@ -85,7 +86,6 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 	renderLink,
 }: any) => {
 	// TODO remove any when typings for admin-core-ui is fixed
-	const { tText, tHtml } = useTranslation();
 
 	const commonUser = useAtomValue(commonUserAtom);
 
@@ -188,7 +188,6 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 		lastSearchQueryLimit,
 		setResolvedResults,
 		setLoadingInfo,
-		tHtml,
 	]);
 
 	useEffect(() => {

@@ -1,7 +1,7 @@
 import React, { type FC } from 'react';
 
 import { NULL_FILTER } from '../../../admin/shared/helpers/filters';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tText } from '../../helpers/translate-text';
 import {
 	CheckboxDropdownModal,
 	type CheckboxOption,
@@ -32,8 +32,6 @@ export const BooleanCheckboxDropdown: FC<BooleanCheckboxDropdownProps> = ({
 	includeEmpty = false,
 	onChange,
 }) => {
-	const { tText } = useTranslation();
-
 	const getOptions = (): CheckboxOption[] => {
 		return [
 			{

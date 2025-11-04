@@ -16,7 +16,8 @@ import React, { type FC, type MouseEvent, useCallback, useEffect, useState } fro
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { ColorSelect } from '../../shared/components/ColorSelect/ColorSelect';
 import { type Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service';
 import { ToastService } from '../../shared/services/toast-service';
 
@@ -42,7 +43,6 @@ export const AssignmentLabels: FC<AssignmentLabelsProps> = ({
 	type = 'LABEL',
 	...props
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const dictionary = {

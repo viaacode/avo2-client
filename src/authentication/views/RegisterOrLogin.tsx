@@ -3,14 +3,13 @@ import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { LoginOptions } from '../components/LoginOptions';
 
 import './RegisterOrLogin.scss';
+import { tText } from '../../shared/helpers/translate-text';
+import { tHtml } from '../../shared/helpers/translate-html';
 
 export const RegisterOrLogin: FC = () => {
-	const { tText, tHtml } = useTranslation();
-
 	return (
 		<Container className="c-register-login-view" mode="horizontal">
 			<Container mode="vertical">

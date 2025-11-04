@@ -19,7 +19,8 @@ import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { formatTimestamp } from '../../../shared/helpers/formatters/date';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
@@ -37,7 +38,6 @@ import {
 } from '../items.types';
 
 export const PublishItemsOverview: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
 	const [items, setItems] = useState<UnpublishedItem[] | null>(null);
@@ -104,7 +104,7 @@ export const PublishItemsOverview: FC = () => {
 			});
 		}
 		setIsLoading(false);
-	}, [tableState, generateWhereObject, tHtml]);
+	}, [tableState, generateWhereObject]);
 
 	useEffect(() => {
 		fetchItems();

@@ -17,7 +17,7 @@ import { ContentPicker } from '../../admin/shared/components/ContentPicker/Conte
 import { type PickerItem } from '../../admin/shared/types/content-picker';
 import { getFullName } from '../../shared/helpers/formatters/avatar';
 import { toDateObject } from '../../shared/helpers/formatters/date';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../../shared/helpers/translate-text';
 import { booleanToOkNok, okNokToBoolean } from '../helpers/ok-nok-parser';
 
 import { type CollectionAction } from './CollectionOrBundleEdit.types';
@@ -33,8 +33,6 @@ export const CollectionOrBundleEditQualityCheck: FC<CollectionOrBundleEditQualit
 	changeCollectionState,
 	onFocus,
 }) => {
-	const { tText } = useTranslation();
-
 	const getApprovedAtDate = (collection: Avo.Collection.Collection): Date | null => {
 		if (
 			collection?.management_language_check?.[0]?.qc_status &&

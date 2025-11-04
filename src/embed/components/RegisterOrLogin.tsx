@@ -8,12 +8,11 @@ import './RegisterOrLogin.scss';
 import { LoginOptionsForTeacher } from '../../authentication/components/LoginOptionsForTeacher';
 import { LoginOptionsTabs } from '../../authentication/helpers/login-options-preferred-tab';
 import { getEnv } from '../../shared/helpers/env';
+import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { useTabs } from '../../shared/hooks/useTabs';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 
 export const RegisterOrLogin: FC = () => {
-	const { tHtml } = useTranslation();
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
 			{

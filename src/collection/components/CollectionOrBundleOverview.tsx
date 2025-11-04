@@ -62,8 +62,9 @@ import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
@@ -95,7 +96,6 @@ export const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps> = (
 	type,
 	onUpdate = noop,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const commonUser = useAtomValue(commonUserAtom);
 
@@ -237,7 +237,7 @@ export const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps> = (
 				col: '1',
 			},
 		];
-	}, [isCollection, showPublicState, tText]);
+	}, [isCollection, showPublicState]);
 
 	const fetchCollections = useCallback(async () => {
 		try {
@@ -348,7 +348,6 @@ export const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps> = (
 		sortOrder,
 		isCollection,
 		query.selectedShareTypeLabelIds,
-		tText,
 	]);
 
 	useEffect(() => {

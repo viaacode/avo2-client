@@ -25,7 +25,8 @@ import {
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { AssignmentsBulkAction } from '../../assignments/assignments.types';
@@ -46,7 +47,6 @@ import {
 import { type PupilCollectionsOverviewTableState } from '../pupil-collection.types';
 
 export const PupilCollectionsOverview: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [pupilCollections, setPupilCollections] = useState<Avo.Assignment.Response[] | null>(
@@ -168,7 +168,7 @@ export const PupilCollectionsOverview: FC = () => {
 			});
 		}
 		setIsLoading(false);
-	}, [tableState, getColumnDataType, generateWhereObject, tHtml]);
+	}, [tableState, getColumnDataType, generateWhereObject]);
 
 	useEffect(() => {
 		fetchPupilCollections();

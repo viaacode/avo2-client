@@ -3,11 +3,11 @@ import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { type FC, type ReactNode, useState } from 'react';
 
-import { useTranslation } from '../../hooks/useTranslation';
-
 import { DraggableList } from './DraggableList';
 
 import './DraggableListModal.scss';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 
 export interface DraggableListModalProps {
 	items?: any[];
@@ -24,8 +24,6 @@ export const DraggableListModal: FC<DraggableListModalProps> = ({
 	onClose,
 	size = 'medium',
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const [reorderedElements, setReorderedElements] = useState<any[] | null>(null);
 
 	const getFragmentKey = (fragment: Avo.Collection.Fragment) => {

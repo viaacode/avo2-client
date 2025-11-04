@@ -9,7 +9,7 @@ import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tText } from '../../../shared/helpers/translate-text';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
 	AdminLayoutBody,
@@ -28,7 +28,6 @@ const ContentPageOverview = lazy(() =>
 const { CREATE_CONTENT_PAGES } = PermissionName;
 
 export const ContentPageOverviewPage: FC = () => {
-	const { tText } = useTranslation();
 	const navigateFunc = useNavigate();
 	const commonUser = useAtomValue(commonUserAtom);
 

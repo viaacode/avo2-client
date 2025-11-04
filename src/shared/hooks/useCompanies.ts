@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { CustomError } from '../helpers/custom-error';
+import { tHtml } from '../helpers/translate-html';
 import { OrganisationService } from '../services/organizations-service';
 import { ToastService } from '../services/toast-service';
 
@@ -13,8 +13,6 @@ export type BasicOrganisation = {
 type UseCompaniesTuple = [BasicOrganisation[], boolean];
 
 export const useCompanies = (onlyWithItems: boolean): UseCompaniesTuple => {
-	const { tHtml } = useTranslation();
-
 	const [companies, setCompanies] = useState<BasicOrganisation[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -40,14 +38,12 @@ export const useCompanies = (onlyWithItems: boolean): UseCompaniesTuple => {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [tHtml, onlyWithItems]);
+	}, [onlyWithItems]);
 
 	return [companies, isLoading];
 };
 
 export const useCompaniesWithUsers = (): UseCompaniesTuple => {
-	const { tHtml } = useTranslation();
-
 	const [companies, setCompanies] = useState<BasicOrganisation[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -73,7 +69,7 @@ export const useCompaniesWithUsers = (): UseCompaniesTuple => {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [tHtml]);
+	}, []);
 
 	return [companies, isLoading];
 };

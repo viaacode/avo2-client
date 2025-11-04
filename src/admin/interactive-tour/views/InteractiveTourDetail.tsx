@@ -23,7 +23,8 @@ import {
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { navigate } from '../../../shared/helpers/link';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import {
@@ -48,8 +49,6 @@ export const InteractiveTourDetail: FC = () => {
 	const [interactiveTour, setInteractiveTour] = useState<InteractiveTour | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
-
-	const { tText, tHtml } = useTranslation();
 
 	const fetchInteractiveTourById = useCallback(async () => {
 		try {
@@ -81,7 +80,7 @@ export const InteractiveTourDetail: FC = () => {
 				),
 			});
 		}
-	}, [interactiveTourId, tHtml]);
+	}, [interactiveTourId]);
 
 	useEffect(() => {
 		fetchInteractiveTourById();

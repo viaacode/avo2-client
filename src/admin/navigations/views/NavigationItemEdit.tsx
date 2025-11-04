@@ -7,7 +7,7 @@ import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tText } from '../../../shared/helpers/translate-text';
 import { ADMIN_PATH } from '../../admin.const';
 
 import './NavigationItemEdit.scss';
@@ -21,7 +21,6 @@ const NavigationEdit = lazy(() =>
 );
 
 const NavigationItemEdit: FC = () => {
-	const { tText } = useTranslation();
 	const navigateFunc = useNavigate();
 	const { navigationBarId, navigationItemId } = useParams<{
 		navigationBarId: string;

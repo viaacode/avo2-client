@@ -30,7 +30,6 @@ import { InteractiveTour } from '../../../shared/components/InteractiveTour/Inte
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
 import { formatTimestamp } from '../../../shared/helpers/formatters/date';
 import { useAssignmentPastDeadline } from '../../../shared/hooks/useAssignmentPastDeadline';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
 import { ToastService } from '../../../shared/services/toast-service';
 import {
@@ -59,6 +58,8 @@ import { AssignmentResponseSearchTab } from './tabs/AssignmentResponseSearchTab'
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { tText } from '../../../shared/helpers/translate-text';
+import { tHtml } from '../../../shared/helpers/translate-html';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment;
@@ -81,7 +82,6 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
 	isPreview = false,
 	onShowPreviewClicked,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const [isSaving, setIsSaving] = useState(false);
 	const commonUser = useAtomValue(commonUserAtom);
 
@@ -272,7 +272,7 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
 				{tText('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
-		[tText]
+		[]
 	);
 
 	const renderedTitle = useMemo(

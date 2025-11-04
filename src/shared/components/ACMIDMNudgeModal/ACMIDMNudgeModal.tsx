@@ -12,7 +12,6 @@ import {
 } from '../../../authentication/helpers/login-counter-before-nudging';
 import { redirectToServerLinkAccount } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL, ROUTE_PARTS } from '../../constants';
 import { CustomError } from '../../helpers/custom-error';
 import { isPupil } from '../../helpers/is-pupil';
@@ -21,9 +20,10 @@ import { ProfilePreferenceKey } from '../../services/profile-preferences.types';
 import { showNudgingModalAtom } from '../../store/ui.store';
 
 import './ACMIDMNudgeModal.scss';
+import { tText } from '../../helpers/translate-text';
+import { tHtml } from '../../helpers/translate-html';
 
 export const ACMIDMNudgeModal: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 
 	const commonUser = useAtomValue(commonUserAtom);

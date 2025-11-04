@@ -17,7 +17,8 @@ import { SearchFiltersAndResults } from '../../../../search/components/SearchFil
 import { searchAtom } from '../../../../search/search.store';
 import { type FilterState } from '../../../../search/search.types';
 import { EducationLevelId } from '../../../../shared/helpers/lom';
-import { useTranslation } from '../../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../../shared/helpers/translate-html';
+import { tText } from '../../../../shared/helpers/translate-text';
 import { trackEvents } from '../../../../shared/services/event-logging-service';
 import { ObjectTypesAll } from '../../../../shared/services/related-items-service';
 import { ToastService } from '../../../../shared/services/toast-service';
@@ -44,8 +45,6 @@ export const AssignmentResponseSearchTab: FC<AssignmentResponseSearchTabProps> =
 	assignmentResponse,
 	appendBlockToPupilCollection,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	// Data
 	const searchResults = useAtomValue(searchAtom);
 	const commonUser = useAtomValue(commonUserAtom);
@@ -311,15 +310,7 @@ export const AssignmentResponseSearchTab: FC<AssignmentResponseSearchTabProps> =
 				/>
 			</Spacer>
 		);
-	}, [
-		filterState,
-		handleNewFilterState,
-		renderDetailLink,
-		renderSearchLink,
-		commonUser,
-		tText,
-		tHtml,
-	]);
+	}, [filterState, handleNewFilterState, renderDetailLink, renderSearchLink, commonUser]);
 
 	return (
 		<>

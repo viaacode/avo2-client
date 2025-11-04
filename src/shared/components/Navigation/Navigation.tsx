@@ -32,13 +32,15 @@ import { APP_PATH } from '../../../constants';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
 import { useHideZendeskWidget } from '../../hooks/useHideZendeskWidget';
-import { useTranslation } from '../../hooks/useTranslation';
 import { ToastService } from '../../services/toast-service';
 import { type NavigationItemInfo } from '../../types';
 
 import { NavigationBarId } from './Navigation.const';
 import { NavigationItem } from './NavigationItem';
+
 import './Navigation.scss';
+import { tText } from '../../helpers/translate-text';
+import { tHtml } from '../../helpers/translate-html';
 
 type NavigationParams = {
 	isPreviewRoute: boolean;
@@ -48,7 +50,6 @@ type NavigationParams = {
  * Main navigation bar component
  */
 export const Navigation: FC<NavigationParams> = ({ isPreviewRoute }) => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
 	const [loginAtomValue] = useAtom(loginAtom);

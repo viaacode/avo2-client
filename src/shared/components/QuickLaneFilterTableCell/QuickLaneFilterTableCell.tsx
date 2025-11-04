@@ -1,7 +1,7 @@
 import React, { type FC, type ReactNode } from 'react';
 
 import { formatDate, formatTimestamp } from '../../helpers/formatters/date';
-import { useTranslation } from '../../hooks/useTranslation';
+import { tHtml } from '../../helpers/translate-html';
 import { type QuickLaneUrlObject } from '../../types';
 import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';
 import { QuickLaneLink } from '../QuickLaneLink/QuickLaneLink';
@@ -17,8 +17,6 @@ export const QuickLaneFilterTableCell: FC<QuickLaneFilterTableCellProps> = ({
 	data,
 	actions = () => null,
 }) => {
-	const { tHtml } = useTranslation();
-
 	const getItemTypeLabel = (data: Pick<QuickLaneUrlObject, 'content_label'>): ReactNode => {
 		let label: ReactNode = tHtml('workspace/views/quick-lane-overview___unknown-type');
 

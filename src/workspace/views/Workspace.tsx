@@ -45,7 +45,6 @@ import {
 import { buildLink } from '../../shared/helpers/build-link';
 import { navigate } from '../../shared/helpers/link';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { useGetWorkspaceCounts } from '../hooks/useGetWorkspaceCounts';
 import {
 	ASSIGNMENTS_ID,
@@ -65,6 +64,8 @@ import { OrganisationContentOverview } from './OrganisationContentOverview';
 import { QuickLaneOverview } from './QuickLaneOverview';
 
 import './Workspace.scss';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface WorkspacePermissions {
 	canViewOwnCollections?: boolean;
@@ -78,7 +79,6 @@ interface WorkspacePermissions {
 }
 
 export const Workspace: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const navigateFunc = useNavigate();
 	const { tabId: tabIdFromUrl } = useParams<{ tabId: string }>();
@@ -145,7 +145,7 @@ export const Workspace: FC = () => {
 					),
 				});
 			});
-	}, [commonUser, tHtml]);
+	}, [commonUser]);
 
 	// Make map for available tab views
 	useEffect(() => {
@@ -237,8 +237,6 @@ export const Workspace: FC = () => {
 	}, [
 		workspaceCounts,
 		permissions,
-		tText,
-		tHtml,
 		location,
 		commonUser,
 		updatePermissions,
@@ -296,7 +294,7 @@ export const Workspace: FC = () => {
 				});
 			}
 		}
-	}, [setLoadingInfo, getActiveTab, tText, tHtml, permissions, tabs]);
+	}, [setLoadingInfo, getActiveTab, permissions, tabs]);
 
 	const getNavTabs = useCallback(() => {
 		return compact(

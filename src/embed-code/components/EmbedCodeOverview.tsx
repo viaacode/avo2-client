@@ -15,8 +15,9 @@ import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComp
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { navigate } from '../../shared/helpers/link';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { useDebounce } from '../../shared/hooks/useDebounce';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
@@ -56,7 +57,6 @@ enum EmbedCodeAction {
 const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 
 export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const commonUser = useAtomValue(commonUserAtom);
 
@@ -131,7 +131,7 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
 				),
 			});
 		}
-	}, [commonUser, setEmbedCodes, setLoadingInfo, tText, debouncedFilters]); // eslint-disable-line
+	}, [commonUser, setEmbedCodes, setLoadingInfo, debouncedFilters]); // eslint-disable-line
 
 	const reloadEmbedCodes = async () => {
 		await fetchEmbedCodes();

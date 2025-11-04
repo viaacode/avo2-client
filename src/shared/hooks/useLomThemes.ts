@@ -1,16 +1,14 @@
 import { type Avo } from '@viaa/avo2-types';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { CustomError } from '../helpers/custom-error';
+import { tHtml } from '../helpers/translate-html';
 import { LomService } from '../services/lom.service';
 import { ToastService } from '../services/toast-service';
 
 type UseLomThemesTuple = [Avo.Lom.LomField[], boolean];
 
 export const useLomThemes = (): UseLomThemesTuple => {
-	const { tText, tHtml } = useTranslation();
-
 	const [themes, setThemes] = useState<Avo.Lom.LomField[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -30,7 +28,7 @@ export const useLomThemes = (): UseLomThemesTuple => {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [tText, tHtml]);
+	}, []);
 
 	return [themes, isLoading];
 };

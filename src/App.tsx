@@ -24,9 +24,10 @@ import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers/custom-error';
 import { getEnv } from './shared/helpers/env';
 import { ReactRouter7Adapter } from './shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
+import { tHtml } from './shared/helpers/translate-html';
+import { tText } from './shared/helpers/translate-text';
 import { useHideZendeskWidget } from './shared/hooks/useHideZendeskWidget';
 import { usePageLoaded } from './shared/hooks/usePageLoaded';
-import { useTranslation } from './shared/hooks/useTranslation';
 import { ToastService } from './shared/services/toast-service';
 import { embedFlowAtom, historyLocationsAtom } from './shared/store/ui.store';
 import { waitForTranslations } from './shared/translations/i18n';
@@ -36,7 +37,6 @@ import './App.scss';
 import './styles/main.scss';
 
 const App: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const navigateFunc = useNavigate();
 	const getLoginState = useSetAtom(getLoginStateAtom);
@@ -126,7 +126,7 @@ const App: FC = () => {
 				navigateFunc(url.toString().replace(url.origin, ''), { replace: true });
 			}
 		}
-	}, [loadingInfo, tHtml, navigateFunc]);
+	}, [loadingInfo, navigateFunc]);
 
 	/**
 	 * Keep track of route changes and track the 3 last visited pages for tracking events
@@ -163,7 +163,7 @@ const App: FC = () => {
 				"Embed flow query param is present, but the page wasn't opened from another page, so window.opener is undefined. Cannot start the embed flow"
 			);
 		}
-	}, [setEmbedFlow, commonUser, tHtml]);
+	}, [setEmbedFlow, commonUser]);
 
 	// Render
 	const renderApp = () => {

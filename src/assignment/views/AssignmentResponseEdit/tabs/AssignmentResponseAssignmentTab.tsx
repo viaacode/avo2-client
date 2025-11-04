@@ -5,7 +5,7 @@ import React, { type FC, type ReactNode } from 'react';
 import { ErrorView } from '../../../../error/views/ErrorView';
 import { type FilterState } from '../../../../search/search.types';
 import { BlockList } from '../../../../shared/components/BlockList/BlockList';
-import { useTranslation } from '../../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../../shared/helpers/translate-html';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment.const';
 
 interface AssignmentResponseAssignmentTabProps {
@@ -20,8 +20,6 @@ export const AssignmentResponseAssignmentTab: FC<AssignmentResponseAssignmentTab
 	pastDeadline,
 	setTab,
 }) => {
-	const { tHtml } = useTranslation();
-
 	// Render
 
 	const renderAssignmentBlocks = () => {

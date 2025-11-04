@@ -22,7 +22,8 @@ import { CustomError } from '../../../shared/helpers/custom-error';
 import { formatDate } from '../../../shared/helpers/formatters/date';
 import { navigate } from '../../../shared/helpers/link';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
@@ -44,7 +45,6 @@ import {
 } from '../interactive-tour.types';
 
 export const InteractiveTourOverview: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
 	const [interactiveTourIdToDelete, setInteractiveTourIdToDelete] = useState<number | null>(null);
@@ -94,7 +94,7 @@ export const InteractiveTourOverview: FC = () => {
 			});
 		}
 		setIsLoading(false);
-	}, [tHtml, tableState]);
+	}, [tableState]);
 
 	useEffect(() => {
 		fetchInteractiveTours();

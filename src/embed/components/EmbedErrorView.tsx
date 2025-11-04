@@ -9,9 +9,8 @@ import {
 } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode } from 'react';
 
-import { useTranslation } from '../../shared/hooks/useTranslation';
-
 import './EmbedErrorView.scss';
+import { tText } from '../../shared/helpers/translate-text';
 
 export interface EmbedErrorViewProps {
 	message: string | ReactNode;
@@ -20,8 +19,6 @@ export interface EmbedErrorViewProps {
 }
 
 export const EmbedErrorView: FC<EmbedErrorViewProps> = ({ message, icon, onReload }) => {
-	const { tText } = useTranslation();
-
 	return (
 		<Container mode="vertical" background="alt" className="m-error-view">
 			<Container size="medium" mode="horizontal">

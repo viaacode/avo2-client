@@ -16,7 +16,7 @@ import {
 	BLOCK_TYPE_TO_ICON_NAME,
 	BlockType,
 } from '../../shared/components/BlockList/BlockIconWrapper/BlockIconWrapper.consts';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
 import { AssignmentBlockType } from '../assignment.types';
 
 import './AddBlockModal.scss';
@@ -41,8 +41,6 @@ export interface AddBlockModalProps extends Pick<ModalProps, 'isOpen' | 'onClose
 }
 
 export const AddBlockModal: FC<AddBlockModalProps> = ({ blocks, isOpen, onClose, onConfirm }) => {
-	const { tHtml } = useTranslation();
-
 	const disableSearchBlock = !!blocks.find(
 		(block) =>
 			block.type === AssignmentBlockType.ZOEK || block.type === AssignmentBlockType.BOUW
@@ -87,7 +85,7 @@ export const AddBlockModal: FC<AddBlockModalProps> = ({ blocks, isOpen, onClose,
 				),
 			},
 		],
-		[disableSearchBlock, tHtml]
+		[disableSearchBlock]
 	);
 
 	return (

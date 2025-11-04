@@ -26,10 +26,10 @@ import { clsx } from 'clsx';
 import { clone, compact, fromPairs, take } from 'lodash-es';
 import React, { type FC, type MouseEvent, useState } from 'react';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { isMobileWidth } from '../../helpers/media-query';
 
 import './CheckboxDropdownModal.scss';
+import { tText } from '../../helpers/translate-text';
 
 interface CheckedState {
 	[checkboxId: string]: boolean;
@@ -73,8 +73,6 @@ export const CheckboxDropdownModal: FC<CheckboxDropdownModalProps> = ({
 	onChange,
 	onSearch,
 }) => {
-	const { tText } = useTranslation();
-
 	// Computed
 	const optionsFromPairs = fromPairs(
 		options.map(({ checked, ...option }: CheckboxOption) => [option.id, checked])

@@ -11,7 +11,6 @@ import { PermissionService } from '../../../authentication/helpers/permission-se
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { getAssignmentErrorObj } from '../../assignment.helper';
@@ -25,10 +24,10 @@ import { AssignmentResponseEdit } from './AssignmentResponseEdit';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 
 export const AssignmentResponseEditPage: FC = () => {
-	const { tText, tHtml } = useTranslation();
-
 	const { id: assignmentId } = useParams<{ id: string }>();
 
 	const commonUser = useAtomValue(commonUserAtom);
@@ -150,7 +149,7 @@ export const AssignmentResponseEditPage: FC = () => {
 			});
 		}
 		setAssignmentLoading(false);
-	}, [assignment?.education_level_id, assignmentId, commonUser, tHtml]);
+	}, [assignment?.education_level_id, assignmentId, commonUser]);
 
 	// Effects
 

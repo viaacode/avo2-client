@@ -43,7 +43,6 @@ import { isMobileWidth } from '../../shared/helpers/media-query';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks/useTableSort';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -61,6 +60,8 @@ import { isItemWithMeta } from '../helpers/is-item-with-meta';
 
 import './AssignmentOverview.scss';
 import './AssignmentResponses.scss';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface AssignmentResponsesProps {
 	onUpdate: () => void | Promise<void>;
@@ -70,8 +71,6 @@ const DEFAULT_SORT_COLUMN = 'updated_at';
 const DEFAULT_SORT_ORDER = OrderDirection.desc;
 
 export const AssignmentResponses: FC<AssignmentResponsesProps> = ({ onUpdate = noop }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const { id: assignmentId } = useParams<{ id: string }>();
 
 	const commonUser = useAtomValue(commonUserAtom);
@@ -192,7 +191,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({ onUpdate = n
 				)
 			);
 		}
-	}, [setCanViewAssignmentResponses, commonUser, tHtml]);
+	}, [setCanViewAssignmentResponses, commonUser]);
 
 	const fetchAssignment = useCallback(async () => {
 		try {
@@ -230,7 +229,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({ onUpdate = n
 				),
 			});
 		}
-	}, [assignmentId, commonUser, tHtml]);
+	}, [assignmentId, commonUser]);
 
 	const fetchAssignmentResponses = useCallback(async () => {
 		try {
@@ -285,7 +284,6 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({ onUpdate = n
 		sortOrder,
 		query.page,
 		query.filter,
-		tHtml,
 	]);
 
 	const fetchAssignmentResponsesFragments = async (items: string[]) => {
@@ -332,7 +330,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({ onUpdate = n
 				state: 'error',
 			});
 		}
-	}, [canViewAssignmentResponses, fetchAssignmentResponses, tHtml]);
+	}, [canViewAssignmentResponses, fetchAssignmentResponses]);
 
 	useEffect(() => {
 		if (!isNil(assignmentResponses) && !isNil(assignmentResponsesCount) && !isNil(assignment)) {

@@ -22,11 +22,11 @@ import { redirectToPupils } from '../../authentication/helpers/redirects/redirec
 import { redirectToLoggedOutHome } from '../../authentication/helpers/redirects/redirect-to-logged-out-home';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 
 import './ErrorView.scss';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { tText } from '../../shared/helpers/translate-text';
 
 type ErrorActionButton = Avo.Auth.ErrorActionButton | 'help' | 'pupils';
 
@@ -49,7 +49,6 @@ export const ErrorView: FC<ErrorViewProps> = ({
 	children = null,
 	actionButtons = [],
 }) => {
-	const { tText } = useTranslation();
 	const location = useLocation();
 	const commonUser = useAtomValue(commonUserAtom);
 

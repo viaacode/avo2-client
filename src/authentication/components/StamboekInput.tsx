@@ -15,7 +15,8 @@ import { Link } from 'react-router-dom';
 
 import teacherCardAppImage from '../../../src/assets/images/lerarenkaart-app.jpg';
 import { APP_PATH } from '../../constants';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { AvoToastType } from '../../shared/services/toast-service';
 import { verifyStamboekNumber } from '../authentication.service';
 import { type StamboekValidationStatus } from '../views/registration-flow/r3-stamboek';
@@ -28,8 +29,6 @@ interface StamboekInputProps {
 }
 
 export const StamboekInput: FC<StamboekInputProps> = ({ onChange, value = '' }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const [stamboekValidationStatus, setStamboekValidationStatus] =
 		useState<StamboekValidationStatus>('INCOMPLETE');
 	const [rawStamboekNumber, setRawStamboekNumber] = useState<string>(value);

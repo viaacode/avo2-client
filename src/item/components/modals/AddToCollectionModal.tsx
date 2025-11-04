@@ -33,7 +33,8 @@ import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
@@ -54,7 +55,6 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
 	isOpen,
 	onClose,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -106,7 +106,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
 						)
 					);
 				}),
-		[commonUser, tHtml]
+		[commonUser]
 	);
 
 	useEffect(() => {
@@ -118,7 +118,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
 				)
 			);
 		});
-	}, [fetchCollections, tHtml, tText]);
+	}, [fetchCollections]);
 
 	useEffect(() => {
 		isOpen && fetchCollections();

@@ -9,8 +9,8 @@ import {
 import { type Avo, type PermissionName } from '@viaa/avo2-types';
 import React, { type FC, useState } from 'react';
 
+import { tText } from '../../helpers/translate-text';
 import { useTabs } from '../../hooks/useTabs';
-import { useTranslation } from '../../hooks/useTranslation';
 import { ShareWithColleagues } from '../ShareWithColleagues/ShareWithColleagues';
 import {
 	type ContributorInfo,
@@ -55,7 +55,6 @@ export const ShareDropdown: FC<ShareDropdownProps> = ({
 	shareWithPupilsProps,
 	withPupils = true,
 }) => {
-	const { tText } = useTranslation();
 	const [isShareDropdownOpen, setIsShareDropdownOpen] = useState<boolean>(false);
 	const [tab, setActiveTab, tabs] = useTabs(
 		[

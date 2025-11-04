@@ -4,9 +4,10 @@ import { clsx } from 'clsx';
 import { pullAllBy, remove, uniq } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers/custom-error';
 import { stringsToTagList } from '../../helpers/strings-to-taglist';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import { EducationOrganisationService } from '../../services/education-organizations-service';
 import { ToastService } from '../../services/toast-service';
 
@@ -24,8 +25,6 @@ export const EducationalOrganisationsSelect: FC<EducationalOrganisationsSelectPr
 	onChange,
 	disabled = false,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const [cities, setCities] = useState<string[]>([]);
 	const [organisationsInCity, setOrganisationsInCity] = useState<
 		Avo.EducationOrganization.Organization[]
@@ -49,7 +48,7 @@ export const EducationalOrganisationsSelect: FC<EducationalOrganisationsSelectPr
 					tHtml('settings/components/organisation___het-ophalen-van-de-steden-is-mislukt')
 				);
 			});
-	}, [setCities, tHtml]);
+	}, [setCities]);
 
 	useEffect(() => {
 		(async () => {

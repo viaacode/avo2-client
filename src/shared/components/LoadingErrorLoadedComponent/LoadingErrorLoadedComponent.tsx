@@ -2,7 +2,7 @@ import { IconName } from '@viaa/avo2-components';
 import React, { type FC, type ReactElement } from 'react';
 
 import { ErrorView, type ErrorViewQueryParams } from '../../../error/views/ErrorView';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../helpers/translate-html';
 import { FullPageSpinner } from '../FullPageSpinner/FullPageSpinner';
 
 export type LoadingState = 'loading' | 'loaded' | 'error' | 'forbidden';
@@ -26,8 +26,6 @@ export const LoadingErrorLoadedComponent: FC<LoadingErrorLoadedComponentProps> =
 	dataObject,
 	render,
 }) => {
-	const { tHtml } = useTranslation();
-
 	const renderSpinner = () => <FullPageSpinner />;
 
 	const renderError = () => (

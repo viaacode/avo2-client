@@ -14,7 +14,7 @@ import {
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useState } from 'react';
 
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
 
 interface CreateAssignmentModalProps {
 	isOpen: boolean;
@@ -33,8 +33,6 @@ export const CreateAssignmentModal: FC<CreateAssignmentModalProps> = ({
 	createAssignmentCallback,
 	translations,
 }) => {
-	const { tHtml } = useTranslation();
-
 	const [createWithDescription, setCreateWithDescription] = useState<boolean>(false);
 
 	const handleCreateAssignment = () => {

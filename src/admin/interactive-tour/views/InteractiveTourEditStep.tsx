@@ -23,7 +23,8 @@ import React, { type FC } from 'react';
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { stripHtml } from '../../../shared/helpers/formatters/strip-html';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { type InteractiveTourAction } from '../helpers/reducers';
 import { type EditableStep, InteractiveTourEditActionType } from '../interactive-tour.types';
 
@@ -44,8 +45,6 @@ export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
 	stepErrors,
 	changeInteractiveTourState,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const renderReorderButton = (index: number, direction: 'up' | 'down', disabled: boolean) => (
 		<Button
 			type="secondary"

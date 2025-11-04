@@ -19,7 +19,8 @@ import { commonUserAtom } from '../../../authentication/authentication.store';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import {
 	CampaignMonitorService,
 	type NewsletterPreferences,
@@ -37,7 +38,6 @@ const INITIAL_NEWSLETTER_PREFERENCES_STATE = (): NewsletterPreferences => ({
 });
 
 export const Email: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [{ preferenceCenterKey }] = useQueryParams({

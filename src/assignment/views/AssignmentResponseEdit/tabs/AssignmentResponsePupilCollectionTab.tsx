@@ -25,9 +25,10 @@ import { BlockList } from '../../../../shared/components/BlockList/BlockList';
 import { EmptyStateMessage } from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { getMoreOptionsLabel } from '../../../../shared/constants';
 import { isMobileWidth } from '../../../../shared/helpers/media-query';
+import { tHtml } from '../../../../shared/helpers/translate-html';
+import { tText } from '../../../../shared/helpers/translate-text';
 import { useBlocksList } from '../../../../shared/hooks/use-blocks-list';
 import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal';
-import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../shared/services/toast-service';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
@@ -73,7 +74,6 @@ export const AssignmentResponsePupilCollectionTab: FC<
 	setTab,
 	setFilterState,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const [isMobileOptionsMenuOpen, setIsMobileOptionsMenuOpen] = useState<boolean>(false);
 	const [isDraggableListModalOpen, setIsDraggableListModalOpen] = useState<boolean>(false);
 

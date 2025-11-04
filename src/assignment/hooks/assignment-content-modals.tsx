@@ -6,11 +6,11 @@ import { CollectionService } from '../../collection/collection.service';
 import { CollectionOrBundle } from '../../collection/collection.types';
 import { CutFragmentForAssignmentModal } from '../../item/components/modals/CutFragmentForAssignmentModal';
 import { type ItemTrimInfo } from '../../item/item.types';
+import { tHtml } from '../../shared/helpers/translate-html';
 import {
 	type SingleEntityModal,
 	useSingleEntityModal,
 } from '../../shared/hooks/useSingleEntityModal';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { VideoStillService } from '../../shared/services/video-stills-service';
 import { type Positioned } from '../../shared/types';
@@ -36,8 +36,6 @@ export function useBlockListModals(
 		addCollectionConfig?: Partial<AddCollectionModalProps>;
 	}
 ): [JSX.Element, SingleEntityModal<Pick<Avo.Assignment.Block, 'id'>>, SingleEntityModal<number>] {
-	const { tHtml } = useTranslation();
-
 	const slice = useSingleEntityModal<Pick<Avo.Assignment.Block, 'id'>>();
 	const {
 		isOpen: isConfirmSliceModalOpen,

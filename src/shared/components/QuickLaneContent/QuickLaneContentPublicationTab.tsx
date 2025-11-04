@@ -6,7 +6,7 @@ import React, { type FC, useEffect, useState } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { CollectionService } from '../../../collection/collection.service';
-import { useTranslation } from '../../hooks/useTranslation';
+import { tText } from '../../helpers/translate-text';
 import { EducationLevelsField } from '../EducationLevelsField/EducationLevelsField';
 import { LomFieldsInput } from '../LomFieldsInput/LomFieldsInput';
 import { ShortDescriptionField } from '../ShortDescriptionField/ShortDescriptionField';
@@ -22,7 +22,6 @@ interface QuickLaneContentPublicationTabProps {
 export const QuickLaneContentPublicationTab: FC<
 	QuickLaneContentProps & QuickLaneContentPublicationTabProps
 > = ({ content, content_label, onComplete, onUpdate }) => {
-	const { tText } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [model, setModel] = useState(content);

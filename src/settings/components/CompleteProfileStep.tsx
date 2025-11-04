@@ -12,17 +12,18 @@ import { getLoginStateAtom } from '../../authentication/authentication.store.act
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { isTeacher } from '../../shared/helpers/is-teacher';
 import { EducationLevelId, groupLoms } from '../../shared/helpers/lom';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { useGetEmailPreferences } from '../hooks/useGetEmailPreferences';
 import { useUpdateEmailPreferences } from '../hooks/useUpdateEmailPreferences';
 import { SettingsService } from '../settings.service';
 import './Profile.scss';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { tText } from '../../shared/helpers/translate-text';
+import { tHtml } from '../../shared/helpers/translate-html';
 
 interface CompleteProfileStepProps {
 	redirectTo?: string;
@@ -31,7 +32,6 @@ interface CompleteProfileStepProps {
 export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
 	redirectTo = APP_PATH.LOGGED_IN_HOME.route,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
 	const commonUser = useAtomValue(commonUserAtom);

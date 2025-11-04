@@ -28,10 +28,11 @@ import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
@@ -56,7 +57,6 @@ import {
 import './AssignmentsOverviewAdmin.scss';
 
 export const AssignmentOverviewAdmin: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
@@ -109,7 +109,7 @@ export const AssignmentOverviewAdmin: FC = () => {
 				checked: (tableState.author_user_group || ([] as string[])).includes(NULL_FILTER),
 			},
 		],
-		[tableState, userGroups, tText]
+		[tableState, userGroups]
 	);
 
 	const assignmentLabelOptions = useMemo(
@@ -127,7 +127,7 @@ export const AssignmentOverviewAdmin: FC = () => {
 				})
 			),
 		],
-		[allQualityLabels, tText, tableState]
+		[allQualityLabels, tableState]
 	);
 
 	const tableColumns = useMemo(
@@ -175,7 +175,7 @@ export const AssignmentOverviewAdmin: FC = () => {
 			});
 		}
 		setIsLoading(false);
-	}, [tableState, getColumnDataType, tHtml]);
+	}, [tableState, getColumnDataType]);
 
 	useEffect(() => {
 		if (commonUser && educationLevelsAndDegrees?.length) {

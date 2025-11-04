@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tText } from '../../../shared/helpers/translate-text';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 
@@ -16,8 +16,6 @@ const UserOverview = lazy(() =>
 );
 
 export const UserOverviewPage: FC = () => {
-	const { tText } = useTranslation();
-
 	return (
 		<PermissionGuard permissions={[PermissionName.VIEW_USERS]}>
 			<AdminLayout

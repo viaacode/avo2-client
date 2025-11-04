@@ -11,7 +11,6 @@ import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import { tHtml } from '../../shared/helpers/translate-html';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	redirectToServerACMIDMLogin,
 	redirectToServerKlascementLogin,
@@ -22,6 +21,8 @@ import {
 import './LoginOptionsForTeacher.scss';
 import { useLocation } from 'react-router-dom';
 
+import { tText } from '../../shared/helpers/translate-text';
+
 interface LoginOptionsForTeacherProps {
 	onOptionClicked?: () => void;
 	openInNewTab?: boolean;
@@ -31,7 +32,6 @@ export const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
 	onOptionClicked = noop,
 	openInNewTab = false,
 }) => {
-	const { tText } = useTranslation();
 	const location = useLocation();
 
 	const getButtons = () => {

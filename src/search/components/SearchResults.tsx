@@ -12,7 +12,8 @@ import TeacherSvg from '../../assets/images/leerkracht.svg?react';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { ITEMS_PER_PAGE } from '../search.const';
 import { type SearchResultsProps } from '../search.types';
@@ -33,7 +34,6 @@ export const SearchResults: FC<SearchResultsProps> = ({
 	qualityLabels,
 	...resultProps
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const getIsBookmarked = (result: Avo.Search.ResultItem) => {

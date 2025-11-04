@@ -11,7 +11,7 @@ import {
 import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { LANGUAGES } from '../../shared/constants';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../../shared/helpers/translate-text';
 import { SearchFilter } from '../search.const';
 import { type SearchFilterControlsProps, type SearchFilterMultiOptions } from '../search.types';
 
@@ -29,8 +29,6 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
 	enabledFilters,
 	collectionLabels,
 }) => {
-	const { tText } = useTranslation();
-
 	const getCombinedMultiOptions = useMemo(() => {
 		const combinedMultiOptions: SearchFilterMultiOptions = cloneDeep(multiOptions);
 		const arrayFilters = omit(filterState, [

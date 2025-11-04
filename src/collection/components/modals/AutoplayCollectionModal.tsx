@@ -8,7 +8,7 @@ import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
 import { fetchPlayerTickets } from '../../../shared/services/player-ticket-service';
 
 import './AutoplayCollectionModal.scss';
@@ -24,7 +24,6 @@ export const AutoplayCollectionModal: FC<AutoplayCollectionModalProps> = ({
 	onClose,
 	collectionFragments,
 }) => {
-	const { tHtml } = useTranslation();
 	const [sourceList, setSourceList] = useState<FlowplayerSourceList | null>(null);
 
 	const fetchPlayableUrls = useCallback(async () => {

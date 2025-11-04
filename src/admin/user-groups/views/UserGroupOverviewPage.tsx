@@ -7,7 +7,8 @@ import { Helmet } from 'react-helmet';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { useTranslation } from '../../../shared/hooks/use-translation/use-translation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
 	AdminLayoutBody,
@@ -24,8 +25,6 @@ const UserGroupOverview = lazy(() =>
 );
 
 const UserGroupGroupOverviewPage: FC = () => {
-	const { tText, tHtml } = useTranslation();
-
 	// Access child functions
 	const permissionsRef = useRef<UserGroupOverviewRef>();
 

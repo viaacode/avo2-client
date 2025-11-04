@@ -2,9 +2,9 @@ import { Button, type ButtonProps, type DefaultProps, IconName } from '@viaa/avo
 import React, { type FC, type ReactNode, useState } from 'react';
 
 import { useResizeObserver } from '../../hooks/useResizeObserver';
-import { useTranslation } from '../../hooks/useTranslation';
 
 import './CollapsibleColumn.scss';
+import { tText } from '../../helpers/translate-text';
 
 type CollapsibleColumnProps = DefaultProps & {
 	children?: ReactNode;
@@ -20,8 +20,6 @@ export const CollapsibleColumn: FC<CollapsibleColumnProps> = ({
 	children,
 	button,
 }) => {
-	const { tText } = useTranslation();
-
 	const [overflowing, setOverflowing] = useState(false);
 	const [expanded, setExpanded] = useState(false);
 

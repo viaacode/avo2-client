@@ -6,7 +6,8 @@ import React, { type FC, type ReactNode } from 'react';
 import { AlertBar } from '../../shared/components/AlertBar/AlertBar';
 import { BlockList } from '../../shared/components/BlockList/BlockList';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 import { AssignmentHeading } from './AssignmentHeading';
 
@@ -21,8 +22,6 @@ export const PupilCollectionForTeacherPreview: FC<PupilCollectionForTeacherPrevi
 	assignmentResponse,
 	metadata,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const closeButton = (
 		<Button
 			icon={IconName.close}

@@ -61,10 +61,11 @@ import { navigate } from '../../shared/helpers/link';
 import { type EducationLevelId } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { useBlocksList } from '../../shared/hooks/use-blocks-list';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
@@ -121,7 +122,6 @@ interface AssignmentEditProps {
 }
 
 export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => {
-	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const navigateFunc = useNavigate();
 
@@ -226,7 +226,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 				);
 			}
 		}
-	}, [assignmentId, tHtml]);
+	}, [assignmentId]);
 
 	const updateAssignmentEditor = useCallback(async () => {
 		try {
@@ -257,7 +257,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 				);
 			}
 		}
-	}, [assignmentId, releaseAssignmentEditStatus, tHtml, navigateFunc]);
+	}, [assignmentId, releaseAssignmentEditStatus, navigateFunc]);
 
 	const updateAssignmentEditorWithLoading = useCallback(async () => {
 		setIsAssignmentLoading(true);
@@ -440,7 +440,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 			});
 		}
 		setIsAssignmentLoading(false);
-	}, [assignmentId, commonUser, setAssignmentFormValues, tHtml]);
+	}, [assignmentId, commonUser, setAssignmentFormValues]);
 
 	// Events
 
@@ -836,7 +836,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 				{tText('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
-		[tText]
+		[]
 	);
 
 	const renderContributors = useMemo(() => {
@@ -851,7 +851,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 				<HeaderOwnerAndContributors subject={assignment} />
 			</Flex>
 		);
-	}, [assignment]);
+	}, [assignment, isCreatingAssignment]);
 
 	const renderMeta = useMemo(() => {
 		const bookmarks = String(bookmarkViewCounts.bookmarkCount || 0);
@@ -884,7 +884,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 				</Tooltip>
 			</MetaData>
 		);
-	}, [bookmarkViewCounts, tText, assignment]);
+	}, [bookmarkViewCounts, assignment]);
 
 	const renderAssignmentBlocks = () => {
 		if (!assignment?.blocks?.length) {

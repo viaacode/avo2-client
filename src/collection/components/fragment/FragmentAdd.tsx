@@ -1,7 +1,7 @@
 import { Button, Container, IconName, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tText } from '../../../shared/helpers/translate-text';
 import { NEW_FRAGMENT } from '../../collection.const';
 import { type CollectionAction } from '../CollectionOrBundleEdit.types';
 
@@ -18,8 +18,6 @@ export const FragmentAdd: FC<FragmentAddProps> = ({
 	numberOfFragments,
 	changeCollectionState,
 }) => {
-	const { tText } = useTranslation();
-
 	const TEXT_BLOCK_FRAGMENT: any = {
 		...NEW_FRAGMENT.text,
 		id: -numberOfFragments,

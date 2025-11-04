@@ -19,8 +19,8 @@ import React, { type FC, useState } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { getFullNameCommonUser } from '../../../shared/helpers/formatters/avatar';
+import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ZendeskService } from '../../../shared/services/zendesk-service';
@@ -40,7 +40,6 @@ const GET_RADIO_BUTTON_LABELS = () => ({
 });
 
 export const ReportItemModal: FC<ReportItemModalProps> = ({ externalId, isOpen, onClose }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [reason, setReason] = useState<Reason | null>(null);

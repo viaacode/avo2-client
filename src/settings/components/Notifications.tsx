@@ -2,11 +2,9 @@ import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../../shared/helpers/translate-text';
 
 export const Notifications: FC = () => {
-	const { tText } = useTranslation();
-
 	return (
 		<>
 			<Helmet>

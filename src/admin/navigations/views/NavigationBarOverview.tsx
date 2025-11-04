@@ -4,10 +4,10 @@ import { Helmet } from 'react-helmet';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 
 import './NavigationBarOverview.scss';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { tText } from '../../../shared/helpers/translate-text';
 
 const NavigationOverview = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -16,8 +16,6 @@ const NavigationOverview = lazy(() =>
 );
 
 export const NavigationBarOverview: FC = () => {
-	const { tText } = useTranslation();
-
 	return (
 		<PermissionGuard permissions={[PermissionName.EDIT_NAVIGATION_BARS]}>
 			<div className="c-admin__navigation-overview">

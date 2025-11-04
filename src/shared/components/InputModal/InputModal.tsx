@@ -13,7 +13,8 @@ import {
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import { ToastService } from '../../services/toast-service';
 
 interface InputModalProps {
@@ -43,8 +44,6 @@ export const InputModal: FC<InputModalProps> = ({
 	onClose = noop,
 	emptyMessage,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const [input, setInput] = useState<string>('');
 
 	useEffect(() => {

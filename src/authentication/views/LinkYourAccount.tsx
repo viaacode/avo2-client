@@ -5,12 +5,12 @@ import { useNavigate } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { navigate } from '../../shared/helpers/link';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './LinkYourAccount.scss';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 export const LinkYourAccount: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
 	return (

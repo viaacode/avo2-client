@@ -30,10 +30,11 @@ import {
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { isPupil } from '../../shared/helpers/is-pupil';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './LinkedAccounts.scss';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface IdpProps {
 	label: ReactNode;
@@ -50,7 +51,6 @@ interface DeleteModalToggle {
 
 // This tab is only loaded if user is NOT a pupil (see Settings.tsx) -- no more checks here
 export const LinkedAccounts: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const commonUser = useAtomValue(commonUserAtom);
 

@@ -6,7 +6,8 @@ import {
 	ConfirmModal,
 	type ConfirmModalProps,
 } from '../../shared/components/ConfirmModal/ConfirmModal';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 type AssignmentConfirmSaveProps = DefaultProps & {
 	hasBlocks?: boolean;
@@ -19,8 +20,6 @@ export const AssignmentConfirmSave: FC<AssignmentConfirmSaveProps> = ({
 	hasResponses,
 	modal,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	let bodyHtml: ReactNode = tHtml(
 		'assignment/components/assignment-confirm-save___weet-je-zeker-dat-je-de-wijzigingen-wil-opslaan'
 	);

@@ -26,7 +26,6 @@ import { type Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { generateRandomId } from '../../../shared/helpers/uuid';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service/assignment-labels.service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { MAX_LABEL_LENGTH } from '../../assignment.const';
@@ -35,6 +34,8 @@ import { type AssignmentLabelColor } from '../../assignment.types';
 import { getManageAssignmentLabelsTranslations } from './ManageAssignmentLabels.translations';
 
 import './ManageAssignmentLabels.scss';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 
 export interface ManageAssignmentLabelsProps {
 	isOpen: boolean;
@@ -47,7 +48,6 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
 	onClose,
 	type,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
@@ -79,7 +79,7 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
 				)
 			);
 		}
-	}, [profileId, type, commonUser, tHtml]);
+	}, [profileId, type, commonUser]);
 
 	const fetchAssignmentColors = useCallback(async () => {
 		try {
@@ -92,7 +92,7 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
 				)
 			);
 		}
-	}, [setAssignmentLabelColors, tHtml]);
+	}, [setAssignmentLabelColors]);
 
 	useEffect(() => {
 		if (isOpen) {

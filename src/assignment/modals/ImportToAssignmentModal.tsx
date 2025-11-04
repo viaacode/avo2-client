@@ -35,7 +35,6 @@ import { formatDate } from '../../shared/helpers/formatters/date';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks/useTableSort';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import {
@@ -49,6 +48,8 @@ import { type AssignmentTableColumns } from '../assignment.types';
 import { AssignmentDeadline } from '../components/AssignmentDeadline';
 
 import './AddItemsModals.scss';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface ImportToAssignmentModalProps {
 	isOpen: boolean;
@@ -69,7 +70,6 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
 	showToggle,
 	translations,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -118,7 +118,7 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
 				),
 			});
 		}
-	}, [commonUser, tableColumns, sortColumn, sortOrder, filterString, tHtml]);
+	}, [commonUser, tableColumns, sortColumn, sortOrder, filterString]);
 
 	useEffect(() => {
 		if (assignments) {

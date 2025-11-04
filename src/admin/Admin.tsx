@@ -15,7 +15,7 @@ import {
 } from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../shared/helpers/custom-error';
 import { ReactRouter7Adapter } from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
-import { useTranslation } from '../shared/hooks/useTranslation';
+import { tHtml } from '../shared/helpers/translate-html';
 import { ToastService } from '../shared/services/toast-service';
 import { type NavigationItemInfo } from '../shared/types';
 
@@ -23,7 +23,6 @@ import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
 import { Sidebar } from './shared/components/Sidebar/Sidebar';
 
 export const Admin: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -57,7 +56,7 @@ export const Admin: FC = () => {
 				actionButtons: ['home', 'helpdesk'],
 			});
 		}
-	}, [commonUser, setLoadingInfo, tText, tHtml]);
+	}, [commonUser, setLoadingInfo]);
 
 	useEffect(() => {
 		if (userPermissions && navigationItems) {

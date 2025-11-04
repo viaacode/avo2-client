@@ -17,7 +17,8 @@ import React, { type FC, useCallback } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { ToastService } from '../../shared/services/toast-service';
 import { endOfAcademicYear } from '../helpers/academic-year';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
@@ -45,7 +46,6 @@ interface AssignmentDetailsFormEditableProps {
 export const AssignmentDetailsFormEditable: FC<
 	AssignmentDetailsFormEditableProps & DefaultProps
 > = ({ assignment, setAssignment, className, style, onFocus }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const getId = useCallback(

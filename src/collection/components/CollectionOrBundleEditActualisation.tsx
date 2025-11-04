@@ -19,7 +19,7 @@ import { NULL_FILTER } from '../../admin/shared/helpers/filters';
 import { type PickerItem } from '../../admin/shared/types/content-picker';
 import { getFullName } from '../../shared/helpers/formatters/avatar';
 import { toDateObject } from '../../shared/helpers/formatters/date';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../../shared/helpers/translate-text';
 
 import { type CollectionAction } from './CollectionOrBundleEdit.types';
 
@@ -34,8 +34,6 @@ export const CollectionOrBundleEditActualisation: FC<CollectionOrBundleEditActua
 	changeCollectionState,
 	onFocus,
 }) => {
-	const { tText } = useTranslation();
-
 	const actualisationStatuses = getCollectionManagementStatuses()
 		.filter((option) => option.id !== NULL_FILTER)
 		.map(

@@ -2,8 +2,9 @@ import { IconName, Pill, PillVariants, type TabProps } from '@viaa/avo2-componen
 import { type Avo } from '@viaa/avo2-types';
 import React, { useCallback, useMemo, useState } from 'react';
 
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
 import { AssignmentType } from '../assignment.types';
 
@@ -19,8 +20,6 @@ export function useAssignmentPupilTabs(
 	(id: string | number) => void,
 	() => void, // Start pill animation
 ] {
-	const { tText, tHtml } = useTranslation();
-
 	const [animatePill, setAnimatePill] = useState(false);
 	const pastDeadline = useAssignmentPastDeadline(assignment);
 
@@ -80,7 +79,7 @@ export function useAssignmentPupilTabs(
 				...item,
 				active: item.id === activeTab,
 			})),
-		[assignment, tText, tHtml, activeTab, numOfPupilCollectionFragments, animatePill]
+		[assignment, activeTab, numOfPupilCollectionFragments, animatePill]
 	);
 
 	const onTabClick = useCallback(

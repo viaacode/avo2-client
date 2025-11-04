@@ -14,7 +14,8 @@ import { clsx } from 'clsx';
 import React, { type FC, type MouseEvent, useEffect, useState } from 'react';
 
 import { NULL_FILTER } from '../../../admin/shared/helpers/filters';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import { EducationalOrganisationsSelect } from '../EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 
 import './MultiEducationalOrganisationSelectModal.scss';
@@ -31,8 +32,6 @@ interface MultiEducationalOrganisationSelectModalProps {
 export const MultiEducationalOrganisationSelectModal: FC<
 	MultiEducationalOrganisationSelectModalProps
 > = ({ label, id, values, disabled, onChange, showSelectedValuesOnCollapsed = true }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [includeEmpty, setIncludeEmpty] = useState<boolean>(false);
 	const [selectedOrganisations, setSelectedOrganisations] =

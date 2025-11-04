@@ -28,15 +28,15 @@ import {
 	generateSearchLinkString,
 } from '../../../../../shared/helpers/link';
 import { useDebounce } from '../../../../../shared/hooks/useDebounce';
-import { useTranslation } from '../../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { KeyCode } from '../../../../../shared/types';
 import './BlockSearch.scss';
+import { tHtml } from '../../../../../shared/helpers/translate-html';
+import { tText } from '../../../../../shared/helpers/translate-text';
 
 const ITEMS_IN_AUTOCOMPLETE = 5;
 
 export const BlockSearch: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
 	const [searchState, setSearchState] = useAtom<SearchState>(searchAtom);

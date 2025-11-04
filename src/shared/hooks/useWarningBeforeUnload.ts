@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../helpers/translate-text';
 
 export const useWarningBeforeUnload = ({
 	when,
@@ -9,7 +9,6 @@ export const useWarningBeforeUnload = ({
 	when: boolean;
 	message?: string;
 }): void => {
-	const { tText } = useTranslation();
 	const messageOrDefault: any =
 		message ||
 		tText(

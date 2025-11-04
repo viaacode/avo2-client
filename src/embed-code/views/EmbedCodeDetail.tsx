@@ -33,14 +33,14 @@ import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { toSeconds } from '../../shared/helpers/parsers/duration';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { createResource } from '../helpers/resourceForTrackEvents';
 import { useGetEmbedCode } from '../hooks/useGetEmbedCode';
 
 export const EmbedCodeDetail: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const { id: embedCodeId } = useParams<{ id: string }>();
 

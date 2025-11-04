@@ -36,8 +36,9 @@ import { getEnv } from '../../shared/helpers/env';
 import { extractKlascementError } from '../../shared/helpers/extract-klascement-error';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
@@ -66,7 +67,6 @@ export const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps>
 	changeCollectionState,
 	onFocus,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const isCollection = collection.type_id === ContentTypeNumber.collection;
@@ -116,7 +116,7 @@ export const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps>
 				)
 			);
 		}
-	}, [collection.id, tHtml]);
+	}, [collection.id]);
 
 	const handlePublish = async () => {
 		if (!klascementImageUrl) {

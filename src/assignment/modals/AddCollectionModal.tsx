@@ -43,12 +43,12 @@ import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks/useTableSort';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { type AssignmentTableColumns } from '../assignment.types';
 
 import './AddItemsModals.scss';
+import { tHtml } from '../../shared/helpers/translate-html';
 
 // Column definitions
 const GET_ADD_COLLECTION_COLUMNS = (): TableColumn[] => [
@@ -116,7 +116,6 @@ export const AddCollectionModal: FC<AddCollectionModalProps> = ({
 	onClose = noop,
 	addCollectionCallback,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -182,7 +181,7 @@ export const AddCollectionModal: FC<AddCollectionModalProps> = ({
 				),
 			});
 		}
-	}, [commonUser, tableColumns, activeView, sortColumn, sortOrder, filterString, tHtml]);
+	}, [commonUser, tableColumns, activeView, sortColumn, sortOrder, filterString]);
 
 	useEffect(() => {
 		if (collections) {

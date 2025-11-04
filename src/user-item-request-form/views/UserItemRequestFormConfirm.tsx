@@ -4,10 +4,10 @@ import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 export const UserItemRequestFormConfirm: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
 	return (

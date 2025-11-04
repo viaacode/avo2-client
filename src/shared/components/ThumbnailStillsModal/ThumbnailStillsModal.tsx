@@ -20,7 +20,8 @@ import { compact, uniq } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 
 import { STILL_DIMENSIONS } from '../../constants';
-import { useTranslation } from '../../hooks/useTranslation';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import { ToastService } from '../../services/toast-service';
 import { VideoStillService } from '../../services/video-stills-service';
 
@@ -35,8 +36,6 @@ export const ThumbnailStillsModal: FC<ThumbnailStillsModalProps> = ({
 	isOpen,
 	subject,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const [videoStills, setVideoStills] = useState<string[] | null>(null);
 	const [selectedCoverImages, setSelectedCoverImages] = useState<string[]>(
 		subject.thumbnail_path ? [subject.thumbnail_path] : []
@@ -74,7 +73,7 @@ export const ThumbnailStillsModal: FC<ThumbnailStillsModalProps> = ({
 		};
 
 		fetchThumbnailImages();
-	}, [isOpen, subject, tHtml]);
+	}, [isOpen, subject]);
 
 	const saveCoverImage = () => {
 		onClose({ ...subject, thumbnail_path: selectedCoverImages[0] });

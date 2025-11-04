@@ -20,7 +20,7 @@ import { ThumbnailStillsModal } from '../../shared/components/ThumbnailStillsMod
 import { getBottomLoms } from '../../shared/helpers/get-bottom-loms';
 import { EducationLevelType } from '../../shared/helpers/lom';
 import { tHtml } from '../../shared/helpers/translate-html';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../../shared/helpers/translate-text';
 
 type AssignmentMetaDataFormEditableProps = {
 	assignment: Avo.Assignment.Assignment;
@@ -33,7 +33,6 @@ export const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditablePr
 	setAssignment,
 	onFocus,
 }) => {
-	const { tText } = useTranslation();
 	const [isAssignmentStillsModalOpen, setIsAssignmentStillsModalOpen] = useState<boolean>(false);
 
 	const mappedLoms: Avo.Lom.LomField[] = (assignment?.loms || []).map((item) => ({

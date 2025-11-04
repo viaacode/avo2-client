@@ -18,11 +18,12 @@ import { type CheckboxOption } from '../../../shared/components/CheckboxDropdown
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
@@ -42,7 +43,6 @@ import {
 import { useGetAssignmentsWithMarcomForAdminOverview } from '../hooks/useGetAssignmentsWithMarcomForAdminOverview';
 
 export const AssignmentMarcomOverview: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [tableState, setTableState] = useState<Partial<AssignmentMarcomTableState>>({});
@@ -81,7 +81,7 @@ export const AssignmentMarcomOverview: FC = () => {
 				checked: ((tableState?.author_user_group || []) as string[]).includes(NULL_FILTER),
 			},
 		];
-	}, [tableState, userGroups, tText]);
+	}, [tableState, userGroups]);
 
 	const assignmentLabelOptions = useMemo(
 		() => [
@@ -100,7 +100,7 @@ export const AssignmentMarcomOverview: FC = () => {
 				})
 			),
 		],
-		[allQualityLabels, tText, tableState]
+		[allQualityLabels, tableState]
 	);
 
 	const organisationOptions = useMemo(
@@ -122,7 +122,7 @@ export const AssignmentMarcomOverview: FC = () => {
 				})
 			),
 		],
-		[organisations, tText, tableState]
+		[organisations, tableState]
 	);
 
 	const channelNameOptions = useMemo(() => {
@@ -143,7 +143,7 @@ export const AssignmentMarcomOverview: FC = () => {
 			},
 			...options,
 		];
-	}, [tText, tableState?.marcom_last_communication_channel_name]);
+	}, [tableState?.marcom_last_communication_channel_name]);
 
 	const channelTypeOptions = useMemo(
 		() => [

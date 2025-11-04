@@ -16,7 +16,7 @@ import {
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useState } from 'react';
 
-import { useTranslation } from '../../../../shared/hooks/useTranslation';
+import { tText } from '../../../../shared/helpers/translate-text';
 
 export type AddOrRemove = 'add' | 'remove';
 
@@ -39,8 +39,6 @@ export const AddOrRemoveLinkedElementsModal: FC<AddOrRemoveLinkedElementsProps> 
 	labels,
 	callback,
 }) => {
-	const { tText } = useTranslation();
-
 	const [selectedLabels, setSelectedLabels] = useState<TagInfo[] | undefined>(undefined);
 	const [addOrRemove, setAddOrRemove] = useState<AddOrRemove>('add');
 

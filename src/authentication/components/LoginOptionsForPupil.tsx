@@ -2,7 +2,6 @@ import { Button, IconName, Spacer } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { type FC } from 'react';
 
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	redirectToServerLeerIDLogin,
 	redirectToServerLoginPage,
@@ -11,6 +10,8 @@ import {
 
 import './LoginOptionsForPupil.scss';
 import { useLocation } from 'react-router-dom';
+
+import { tText } from '../../shared/helpers/translate-text';
 
 interface LoginOptionsForPupilProps {
 	onOptionClicked?: () => void;
@@ -21,7 +22,6 @@ export const LoginOptionsForPupil: FC<LoginOptionsForPupilProps> = ({
 	onOptionClicked = noop,
 	openInNewTab = false,
 }) => {
-	const { tText } = useTranslation();
 	const location = useLocation();
 
 	const getButtons = () => {

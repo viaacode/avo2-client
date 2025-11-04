@@ -6,10 +6,10 @@ import React, { type FC, useMemo } from 'react';
 import { getBottomLoms } from '../../helpers/get-bottom-loms';
 import { groupLoms } from '../../helpers/lom';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
+import { tText } from '../../helpers/translate-text';
 import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../hooks/useLomSubjects';
 import { useLomThemes } from '../../hooks/useLomThemes';
-import { useTranslation } from '../../hooks/useTranslation';
 import { type LomFieldsByScheme } from '../../types/lom';
 import { MultiThemeSelectDropdown } from '../MultiThemeSelectDropdown/MultiThemeSelectDropdown';
 
@@ -69,7 +69,6 @@ export const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	filterSubjects = () => true,
 	allowMultiSelect = true,
 }) => {
-	const { tText } = useTranslation();
 	const lomFields = useMemo(() => groupLoms(loms), [loms]);
 	const { data: educationLevelsAndDegrees, isLoading: isEducationLevelsLoading } =
 		useLomEducationLevelsAndDegrees();

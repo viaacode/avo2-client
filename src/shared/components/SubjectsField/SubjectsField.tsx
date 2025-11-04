@@ -3,8 +3,8 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 import React, { type FC } from 'react';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
+import { tText } from '../../helpers/translate-text';
 import { useLomSubjects } from '../../hooks/useLomSubjects';
 
 interface SubjectsFieldProps {
@@ -13,8 +13,6 @@ interface SubjectsFieldProps {
 }
 
 export const SubjectsField: FC<SubjectsFieldProps> = ({ onChange, value }) => {
-	const { tText } = useTranslation();
-
 	const [subjects] = useLomSubjects();
 
 	return (

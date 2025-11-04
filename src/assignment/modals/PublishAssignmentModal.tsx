@@ -19,7 +19,8 @@ import { commonUserAtom } from '../../authentication/authentication.store';
 import type { ParentBundle } from '../../collection/collection.types';
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers/build-link';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { getValidationErrorsForPublishAssignment } from '../assignment.helper';
@@ -38,7 +39,6 @@ export const PublishAssignmentModal: FC<PublishAssignmentModalProps> = ({
 	assignment,
 	parentBundles,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [validationErrors, setValidationErrors] = useState<(string | ReactNode)[]>([]);

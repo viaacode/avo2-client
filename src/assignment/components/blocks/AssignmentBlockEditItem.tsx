@@ -9,8 +9,8 @@ import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/
 import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import { isRichTextEmpty } from '../../../shared/helpers/is-rich-text-empty';
+import { tText } from '../../../shared/helpers/translate-text';
 import { useCutModal } from '../../../shared/hooks/use-cut-modal';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { type EditableAssignmentBlock, type EditBlockProps } from '../../assignment.types';
 import {
@@ -37,8 +37,6 @@ export const AssignmentBlockEditItem: FC<
 		buildSearchLink?: (props: Partial<FilterState>) => ReactNode | string;
 	}
 > = ({ block, setBlock, AssignmentBlockItemDescriptionTypes, buildSearchLink }) => {
-	const { tText } = useTranslation();
-
 	const [cutButton, cutModal] = useCutModal();
 	const editableBlock = {
 		...block,

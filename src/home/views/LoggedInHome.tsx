@@ -12,10 +12,9 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../../shared/helpers/translate-text';
 
 export const LoggedInHome: FC = () => {
-	const { tText } = useTranslation();
 	const navigateFunc = useNavigate();
 	const commonUser = useAtomValue(commonUserAtom);
 

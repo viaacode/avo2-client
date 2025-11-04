@@ -21,7 +21,8 @@ import {
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { renderWrongUserRoleError } from '../../../shared/helpers/render-wrong-user-role-error';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { Locale } from '../../../shared/translations/translations.types';
@@ -33,7 +34,6 @@ import { AcceptElementaryPupilConditions } from './accept-elementary-pupil-condi
 const ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS = 'ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS';
 
 export const AcceptConditions: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const location = useLocation();
 
@@ -76,7 +76,7 @@ export const AcceptConditions: FC = () => {
 				),
 			});
 		}
-	}, [isElementaryPupil, tHtml]);
+	}, [isElementaryPupil]);
 
 	useEffect(() => {
 		fetchContentPage();
@@ -95,7 +95,7 @@ export const AcceptConditions: FC = () => {
 				});
 			}
 		}
-	}, [pages, tText, tHtml]);
+	}, [pages]);
 
 	useEffect(() => {
 		if (loggedInLoginState?.acceptedConditions) {

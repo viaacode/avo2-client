@@ -22,11 +22,12 @@ import {
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
@@ -51,7 +52,6 @@ import {
 } from '../helpers/render-collection-columns';
 
 export const CollectionOrBundleMarcomOverview: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const commonUser = useAtomValue(commonUserAtom);
 
@@ -89,7 +89,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
 				checked: ((tableState?.author_user_group || []) as string[]).includes(NULL_FILTER),
 			},
 		];
-	}, [tableState, userGroups, tText]);
+	}, [tableState, userGroups]);
 
 	const collectionLabelOptions = useMemo(
 		() => [
@@ -110,7 +110,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
 				})
 			),
 		],
-		[allQualityLabels, tText, tableState]
+		[allQualityLabels, tableState]
 	);
 
 	const organisationOptions = useMemo(
@@ -132,7 +132,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
 				})
 			),
 		],
-		[organisations, tText, tableState]
+		[organisations, tableState]
 	);
 
 	const channelNameOptions = useMemo(() => {
@@ -155,7 +155,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
 			},
 			...options,
 		];
-	}, [tText, tableState?.marcom_last_communication_channel_name]);
+	}, [tableState?.marcom_last_communication_channel_name]);
 
 	const channelTypeOptions = useMemo(
 		() => [
@@ -231,7 +231,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
 			});
 		}
 		setIsLoading(false);
-	}, [tableState, isCollection, tText]);
+	}, [tableState, isCollection]);
 
 	useEffect(() => {
 		if (commonUser && educationLevelsAndDegrees?.length) {

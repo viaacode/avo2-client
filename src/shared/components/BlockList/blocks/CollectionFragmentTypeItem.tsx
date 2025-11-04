@@ -12,7 +12,8 @@ import {
 	CollectionFragmentTitle,
 	type CollectionFragmentTitleProps,
 } from '../../../../collection/components/CollectionFragmentTitle';
-import { useTranslation } from '../../../hooks/useTranslation';
+import { tHtml } from '../../../helpers/translate-html';
+import { tText } from '../../../helpers/translate-text';
 import { ItemMetadata } from '../../BlockItemMetadata/ItemMetadata';
 import { CollapsibleColumn } from '../../CollapsibleColumn/CollapsibleColumn';
 import { TextWithTimestamps } from '../../TextWithTimestamp/TextWithTimestamps';
@@ -35,8 +36,6 @@ export const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = (
 	className,
 	canOpenOriginal,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const custom = block.use_custom_fields && block.custom_description;
 	const original =
 		(block as Avo.Assignment.Block).original_description || block.item_meta?.description;
@@ -61,7 +60,7 @@ export const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = (
 				/>
 			</>
 		),
-		[canOpenOriginal, block, tHtml]
+		[canOpenOriginal, block]
 	);
 
 	const originalDescription = useMemo(
@@ -78,7 +77,7 @@ export const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = (
 				<TextWithTimestamps content={original || ''} />
 			</>
 		),
-		[canOpenOriginal, original, tHtml]
+		[canOpenOriginal, original]
 	);
 
 	return (

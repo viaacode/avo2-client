@@ -77,7 +77,7 @@ export const MultiUserSelectDropdown: FC<MultiUserSelectDropdownProps> = ({
 				)
 			);
 		}
-	}, [tHtml, values]);
+	}, [values]);
 
 	useEffect(() => {
 		if (selectedProfile) {
@@ -87,7 +87,7 @@ export const MultiUserSelectDropdown: FC<MultiUserSelectDropdownProps> = ({
 
 	useEffect(() => {
 		getProfilesByName();
-	}, [setSelectedProfiles, tHtml, getProfilesByName]);
+	}, [setSelectedProfiles, getProfilesByName]);
 
 	const closeDropdown = () => {
 		setSelectedProfiles([]);

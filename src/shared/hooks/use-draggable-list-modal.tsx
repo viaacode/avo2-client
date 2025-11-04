@@ -7,15 +7,13 @@ import {
 	DraggableListModal,
 	type DraggableListModalProps,
 } from '../components/DraggableList/DraggableListModal';
-
-import { useTranslation } from './useTranslation';
+import { tText } from '../helpers/translate-text';
 
 export function useDraggableListModal(config?: {
 	button?: Partial<ButtonProps>;
 	modal?: Partial<DraggableListModalProps>;
 	setIsOpen?: (isOpen: boolean) => void; // Optional, if not passed, the hook will keep track of the open state
 }): [ReactNode, ReactNode] {
-	const { tText } = useTranslation();
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 
 	const button = (

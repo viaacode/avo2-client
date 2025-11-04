@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router';
 
 import { APP_PATH } from '../../constants';
 import { ROUTE_PARTS } from '../../shared/constants';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';
 
 interface PupilOrTeacherDropdownProps {
@@ -15,7 +16,6 @@ interface PupilOrTeacherDropdownProps {
 export const PupilOrTeacherDropdown: FC<PupilOrTeacherDropdownProps> = ({
 	closeDropdown = noop,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
 	return (

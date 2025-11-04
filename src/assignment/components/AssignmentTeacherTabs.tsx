@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../../shared/helpers/translate-text';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 
 interface AssignmentTeacherTabsProps {
@@ -23,7 +23,6 @@ export const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps> = ({
 	clicksCount,
 	isManaged,
 }) => {
-	const { tText } = useTranslation();
 	const location = useLocation();
 	const commonUser = useAtomValue(commonUserAtom);
 
@@ -97,7 +96,7 @@ export const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps> = ({
 				...item,
 				active: item.id === activeTab,
 			})),
-		[tText, location.pathname, activeTab, clicksCount, showAdminTab, isManaged]
+		[location.pathname, activeTab, clicksCount, showAdminTab, isManaged]
 	);
 
 	return (

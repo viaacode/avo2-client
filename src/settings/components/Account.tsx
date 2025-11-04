@@ -23,13 +23,13 @@ import { Users_Idps_Enum } from '../../shared/generated/graphql-db-types';
 import { getEnv } from '../../shared/helpers/env';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { isPupil } from '../../shared/helpers/is-pupil';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 // const ssumAccountEditPage = getEnv('SSUM_ACCOUNT_EDIT_URL') as string;
 const ssumPasswordEditPage = getEnv('SSUM_PASSWORD_EDIT_URL') as string;
 
 export const Account: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const hasTempAccess = commonUser?.tempAccess?.has_currently_access?.status;

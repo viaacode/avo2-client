@@ -13,10 +13,9 @@ import { ErrorView } from '../../error/views/ErrorView';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../../shared/helpers/translate-text';
 
 export const LoggedOutHome: FC = () => {
-	const { tText } = useTranslation();
 	const location = useLocation();
 	const navigateFunc = useNavigate();
 	const loginState = useAtomValue(loginAtom);

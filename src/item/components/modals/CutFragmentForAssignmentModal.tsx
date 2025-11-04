@@ -20,7 +20,8 @@ import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { type ItemTrimInfo } from '../../item.types';
 import { ItemVideoDescription } from '../ItemVideoDescription';
 
@@ -49,8 +50,6 @@ export const CutFragmentForAssignmentModal: FC<CutFragmentForAssignmentModalProp
 	onClose,
 	afterCutCallback,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
 		toSeconds(itemMetaData.duration) || 0

@@ -43,9 +43,10 @@ import { formatDate, formatTimestamp } from '../../../shared/helpers/formatters/
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTabs } from '../../../shared/hooks/useTabs';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
@@ -104,7 +105,6 @@ export const ItemDetail: FC = () => {
 	const [noteEditorState, setNoteEditorState] = useState<RichEditorState>();
 
 	const [activeTab, setActiveTab, tabs] = useTabs(GET_TABS(), ITEMS_TABS.GENERAL);
-	const { tText, tHtml } = useTranslation();
 
 	const getTabCount = (tab: string | number) => {
 		switch (tab) {

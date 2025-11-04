@@ -30,10 +30,10 @@ import { CustomError } from '../../shared/helpers/custom-error';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { isMobileWidth } from '../../shared/helpers/media-query';
+import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks/useTableSort';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { type BookmarkInfo } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../shared/services/toast-service';
@@ -100,7 +100,6 @@ export const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
 		return;
 	},
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -145,7 +144,7 @@ export const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
 				),
 			});
 		}
-	}, [tableColumns, commonUser, filterString, sortColumn, sortOrder, tHtml]);
+	}, [tableColumns, commonUser, filterString, sortColumn, sortOrder]);
 
 	useEffect(() => {
 		if (bookmarks) {

@@ -14,9 +14,8 @@ import {
 } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode } from 'react';
 
-import { useTranslation } from '../../../../shared/hooks/useTranslation';
-
 import './TopBar.scss';
+import { tText } from '../../../../shared/helpers/translate-text';
 
 interface TopbarProps {
 	onClickBackButton?: () => void;
@@ -33,8 +32,6 @@ export const TopBarComponent: FC<TopbarProps> = ({
 	right,
 	size,
 }) => {
-	const { tText } = useTranslation();
-
 	return (
 		<Navbar className="c-top-bar">
 			<Container mode="horizontal" size={size}>

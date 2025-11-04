@@ -4,9 +4,9 @@ import { clsx } from 'clsx';
 import React, { type FC } from 'react';
 
 import { formatTimestamp } from '../../shared/helpers/formatters/date';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './AssignmentDetailsForm.scss';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface AssignmentDetailsFormReadonlyProps {
 	assignment: Avo.Assignment.Assignment;
@@ -15,8 +15,6 @@ interface AssignmentDetailsFormReadonlyProps {
 export const AssignmentDetailsFormReadonly: FC<
 	AssignmentDetailsFormReadonlyProps & DefaultProps
 > = ({ assignment, className, style }) => {
-	const { tText } = useTranslation();
-
 	return (
 		<div className={clsx('c-assignment-details-form', className)} style={style}>
 			<Form>

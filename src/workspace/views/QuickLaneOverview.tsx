@@ -22,7 +22,6 @@ import { copyQuickLaneToClipboard } from '../../shared/helpers/generate-quick-la
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane';
 import { useDebounce } from '../../shared/hooks/useDebounce';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import {
 	type QuickLaneFilters,
 	QuickLaneFilterService,
@@ -33,6 +32,8 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../workspace.const';
 
 import './QuickLaneOverview.scss';
+import { tText } from '../../shared/helpers/translate-text';
+import { tHtml } from '../../shared/helpers/translate-html';
 
 // Typings
 
@@ -50,8 +51,6 @@ enum QuickLaneAction {
 const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 
 export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
-	const { tText, tHtml } = useTranslation();
-
 	// State
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [quickLanes, setQuickLanes] = useState<QuickLaneUrlObject[]>([]);
@@ -219,7 +218,7 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
 				),
 			});
 		}
-	}, [commonUser, setQuickLanes, setLoadingInfo, tText, debouncedFilters]); // eslint-disable-line
+	}, [commonUser, setQuickLanes, setLoadingInfo, debouncedFilters]); // eslint-disable-line
 
 	const removeQuickLane = (id: QuickLaneUrlObject['id']) => {
 		if (!commonUser?.profileId) {

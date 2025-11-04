@@ -4,7 +4,7 @@ import React, { type FC } from 'react';
 
 import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../../collection/collection.const';
 import { getValidationFeedbackForDescription } from '../../../collection/collection.helpers';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tText } from '../../helpers/translate-text';
 
 interface ShortDescriptionFieldProps extends Pick<FormGroupProps, 'error'> {
 	onChange: (value: string) => void;
@@ -19,8 +19,6 @@ export const ShortDescriptionField: FC<ShortDescriptionFieldProps> = ({
 	placeholder,
 	onFocus,
 }) => {
-	const { tText } = useTranslation();
-
 	const error = (isError?: boolean): string =>
 		getValidationFeedbackForDescription(
 			value || '',

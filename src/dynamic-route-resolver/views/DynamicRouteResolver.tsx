@@ -42,7 +42,7 @@ import { stripHtml } from '../../shared/helpers/formatters/strip-html';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { generateSearchLinkString } from '../../shared/helpers/link';
 import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Locale } from '../../shared/translations/translations.types';
 import { DynamicRouteType, GET_ERROR_MESSAGES } from '../dynamic-route-resolver.const';
@@ -53,7 +53,6 @@ interface RouteInfo {
 }
 
 const DynamicRouteResolver: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 	const location = useLocation();
 
@@ -238,7 +237,7 @@ const DynamicRouteResolver: FC = () => {
 				icon: IconName.search,
 			});
 		}
-	}, [loginState, location.pathname, location.hash, tHtml, navigateFunc]);
+	}, [loginState, location.pathname, location.hash, navigateFunc]);
 
 	// Check if current user is logged in
 	useEffect(() => {
@@ -261,7 +260,7 @@ const DynamicRouteResolver: FC = () => {
 				location
 			);
 		}
-	}, [getLoginState, loginState, loginStateError, loginStateLoading, tText, tHtml, location]);
+	}, [getLoginState, loginState, loginStateError, loginStateLoading, location]);
 
 	useEffect(() => {
 		if (loginState && location.pathname) {

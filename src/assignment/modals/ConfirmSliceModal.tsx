@@ -13,7 +13,8 @@ import { type Avo } from '@viaa/avo2-types';
 import React, { type FC } from 'react';
 
 import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.consts';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { AssignmentBlockType } from '../assignment.types';
 
 export interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
@@ -31,8 +32,6 @@ export const ConfirmSliceModal: FC<ConfirmSliceModalProps> = ({
 	onClose,
 	onConfirm,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const label = {
 		type: block
 			? BLOCK_ITEM_LABELS(isPupilCollection)[block.type as Avo.Core.BlockItemType]

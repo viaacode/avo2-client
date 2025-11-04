@@ -9,7 +9,7 @@ import {
 	ConfirmModal,
 	type ConfirmModalProps,
 } from '../../shared/components/ConfirmModal/ConfirmModal';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../../shared/helpers/translate-text';
 import { ToastService } from '../../shared/services/toast-service';
 import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
 
@@ -24,7 +24,6 @@ export const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 	button,
 	modal,
 }) => {
-	const { tText } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const [isOpen, setOpen] = useState<boolean>(false);

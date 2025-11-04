@@ -2,7 +2,7 @@ import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import { ContentInput, Flex, Icon, IconName } from '@viaa/avo2-components';
 import React, { type FC, useMemo, useState } from 'react';
 
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../../shared/helpers/translate-text';
 
 type CollectionOrBundleTitleProps = {
 	initialTitle: string | undefined;
@@ -19,7 +19,6 @@ export const CollectionOrBundleTitle: FC<CollectionOrBundleTitleProps> = ({
 	maxLength,
 	onFocus,
 }) => {
-	const { tText } = useTranslation();
 	const [isActive, setIsActive] = useState<boolean>(false);
 
 	const handleTitleChange = (title: string) => {
@@ -54,6 +53,6 @@ export const CollectionOrBundleTitle: FC<CollectionOrBundleTitleProps> = ({
 				</BlockHeading>
 			</Flex>
 		),
-		[tText, title, onChange, isActive]
+		[title, onChange, isActive]
 	);
 };

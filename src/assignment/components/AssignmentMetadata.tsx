@@ -3,9 +3,9 @@ import { type Avo } from '@viaa/avo2-types';
 import React, { type FC } from 'react';
 
 import { formatTimestamp } from '../../shared/helpers/formatters/date';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './AssignmentMetadata.scss';
+import { tHtml } from '../../shared/helpers/translate-html';
 
 type AssignmentMetadataProps = {
 	assignment: Avo.Assignment.Assignment;
@@ -18,8 +18,6 @@ export const AssignmentMetadata: FC<AssignmentMetadataProps> = ({
 	assignmentResponse,
 	who,
 }) => {
-	const { tHtml } = useTranslation();
-
 	if (!assignment) {
 		return null;
 	}

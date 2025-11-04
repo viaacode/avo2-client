@@ -31,9 +31,9 @@ import { TextWithTimestamps } from '../../shared/components/TextWithTimestamp/Te
 import { TEAL_BRIGHT } from '../../shared/constants';
 import { stripHtml } from '../../shared/helpers/formatters/strip-html';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './ItemVideoDescription.scss';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface ItemVideoDescriptionProps {
 	itemMetaData: Avo.Item.Item;
@@ -78,7 +78,6 @@ export const ItemVideoDescription: FC<ItemVideoDescriptionProps> = ({
 	onPlay,
 	trackPlayEvent,
 }) => {
-	const { tText } = useTranslation();
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 	const descriptionScrollableRef: RefObject<PerfectScrollbar> = createRef();
 	const descriptionRef = useRef<HTMLDivElement | null>(null);

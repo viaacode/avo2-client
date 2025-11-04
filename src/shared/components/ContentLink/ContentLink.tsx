@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 import { CONTENT_LABEL_TO_ROUTE_PARTS } from '../../../assignment/assignment.const';
 import { CONTENT_TYPE_TRANSLATIONS } from '../../../collection/collection.types';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../helpers/translate-html';
 
 type ParentType = {
 	content_label: string | null;
@@ -18,8 +18,6 @@ interface ContentLinkProps {
 }
 
 export const ContentLink: FC<ContentLinkProps> = ({ parent, content }) => {
-	const { tHtml } = useTranslation();
-
 	const dutchLabel = ((content as any)?.type?.label ||
 		(parent.content_label || '').toLowerCase()) as Avo.ContentType.Dutch;
 

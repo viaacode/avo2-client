@@ -5,11 +5,9 @@ import type { FC, ReactNode } from 'react';
 import React from 'react';
 
 import { PermissionGuard } from '../../authentication/components/PermissionGuard';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../../shared/helpers/translate-text';
 
 export const MaintenanceAlertsOverviewPage: FC = () => {
-	const { tText } = useTranslation();
-
 	const renderPopup = ({
 		title,
 		body,

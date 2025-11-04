@@ -23,11 +23,12 @@ import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { getFullNameCommonUser } from '../../../shared/helpers/formatters/avatar';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import {
 	type AddOrRemove,
@@ -59,7 +60,6 @@ import {
 } from '../helpers/render-collection-columns';
 
 export const CollectionsOrBundlesOverview: FC = () => {
-	const { tText, tHtml } = useTranslation();
 	const location = useLocation();
 	const commonUser = useAtomValue(commonUserAtom);
 
@@ -113,7 +113,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
 				checked: ((tableState?.author_user_group || []) as string[]).includes(NULL_FILTER),
 			},
 		];
-	}, [tableState, userGroups, tText]);
+	}, [tableState, userGroups]);
 
 	const collectionLabelOptions = useMemo(
 		() => [
@@ -134,7 +134,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
 				})
 			),
 		],
-		[allQualityLabels, tText, tableState]
+		[allQualityLabels, tableState]
 	);
 
 	const organisationOptions = useMemo(
@@ -156,7 +156,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
 				})
 			),
 		],
-		[organisations, tText, tableState]
+		[organisations, tableState]
 	);
 
 	const isCollection = location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW;
@@ -216,7 +216,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
 		}
 
 		setIsLoading(false);
-	}, [tableState, isCollection, tText]);
+	}, [tableState, isCollection]);
 
 	useEffect(() => {
 		if (commonUser && educationLevelsAndDegrees?.length) {

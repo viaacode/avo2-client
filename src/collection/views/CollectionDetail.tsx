@@ -68,7 +68,6 @@ import { generateContentLinkString, navigate } from '../../shared/helpers/link';
 import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { isUuid } from '../../shared/helpers/uuid';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -110,6 +109,8 @@ import {
 import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from './CollectionDetail.const';
 
 import './CollectionDetail.scss';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -145,7 +146,6 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 	id,
 	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
-	const { tText, tHtml } = useTranslation();
 	const navigateFunc = useNavigate();
 
 	const { id: collectionIdFromUrl } = useParams<{ id: string }>();
@@ -264,7 +264,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 				)
 			);
 		}
-	}, [collectionId, tHtml]);
+	}, [collectionId]);
 
 	const fetchContributors = useCallback(async () => {
 		if (!collectionId || !collectionInfo || showLoginPopup) {
@@ -318,7 +318,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 				);
 			}
 		}
-	}, [collectionId, commonUser, showLoginPopup, tHtml]);
+	}, [collectionId, commonUser, showLoginPopup]);
 
 	useEffect(() => {
 		setCollectionId(id || collectionIdFromUrl);
@@ -523,7 +523,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 			});
 		}
 		// Ensure callback only runs once even if user object is set twice // TODO investigate why user object is set twice
-	}, [collectionId, setCollectionInfo, tText, commonUser, navigateFunc, defaultGoToDetailLink]);
+	}, [collectionId, setCollectionInfo, commonUser, navigateFunc, defaultGoToDetailLink]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection();

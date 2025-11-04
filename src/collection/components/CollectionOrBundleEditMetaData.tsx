@@ -25,7 +25,7 @@ import { RichTextEditorWrapper } from '../../shared/components/RichTextEditorWra
 import { ShortDescriptionField } from '../../shared/components/ShortDescriptionField/ShortDescriptionField';
 import { ThumbnailStillsModal } from '../../shared/components/ThumbnailStillsModal/ThumbnailStillsModal';
 import { stripHtml } from '../../shared/helpers/formatters/strip-html';
-import { useTranslation } from '../../shared/hooks/useTranslation';
+import { tText } from '../../shared/helpers/translate-text';
 import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
 import { type CollectionOrBundle } from '../collection.types';
@@ -45,8 +45,6 @@ export const CollectionOrBundleEditMetaData: FC<CollectionOrBundleEditMetaDataPr
 	changeCollectionState,
 	onFocus,
 }) => {
-	const { tText } = useTranslation();
-
 	// State
 	const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] = useState<boolean>(false);
 	const [descriptionLongEditorState, setDescriptionLongEditorState] = useState<

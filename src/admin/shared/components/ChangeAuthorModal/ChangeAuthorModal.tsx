@@ -11,7 +11,8 @@ import {
 import { noop } from 'lodash-es';
 import React, { type FC, useState } from 'react';
 
-import { useTranslation } from '../../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../../shared/helpers/translate-html';
+import { tText } from '../../../../shared/helpers/translate-text';
 import { type PickerItem } from '../../types/content-picker';
 import { ContentPicker } from '../ContentPicker/ContentPicker';
 
@@ -28,8 +29,6 @@ export const ChangeAuthorModal: FC<ChangeAuthorModalProps> = ({
 	initialAuthor,
 	callback,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const [author, setAuthor] = useState<PickerItem | undefined>(initialAuthor);
 
 	const handleClose = () => {
