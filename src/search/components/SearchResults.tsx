@@ -13,7 +13,7 @@ import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { useTranslation } from '../../shared/hooks/useTranslation';
-import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/services/bookmarks-views-plays-service';
+import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { ITEMS_PER_PAGE } from '../search.const';
 import { type SearchResultsProps } from '../search.types';
 

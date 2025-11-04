@@ -14,7 +14,7 @@ import { ErrorView } from '../../../error/views/ErrorView';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import { formatDate } from '../../../shared/helpers/formatters';
+import { formatDate } from '../../../shared/helpers/formatters/date';
 import { navigate } from '../../../shared/helpers/link';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { tHtml } from '../../../shared/helpers/translate-html';

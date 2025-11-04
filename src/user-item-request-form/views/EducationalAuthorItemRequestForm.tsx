@@ -22,7 +22,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { DOC_TYPES } from '../../shared/helpers/files';
-import { getFullNameCommonUser } from '../../shared/helpers/formatters';
+import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { validateForm } from '../../shared/helpers/validate-form';
 import { useTranslation } from '../../shared/hooks/useTranslation';

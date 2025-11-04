@@ -17,7 +17,7 @@ import { FileUpload } from '../../../../shared/components/FileUpload/FileUpload'
 import { CustomError } from '../../../../shared/helpers/custom-error';
 import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../shared/services/toast-service';
-import { type PickerItem, type PickerTypeOption } from '../../types';
+import { type PickerItem, type PickerTypeOption } from '../../types/content-picker';
 
 import {
 	DEFAULT_ALLOWED_TYPES,

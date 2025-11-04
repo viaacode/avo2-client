@@ -55,7 +55,7 @@ import { getMoreOptionsLabel } from '../../shared/constants';
 import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generated/graphql-db-react-query';
 import { buildLink } from '../../shared/helpers/build-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { formatDate, formatTimestamp } from '../../shared/helpers/formatters';
+import { formatDate, formatTimestamp } from '../../shared/helpers/formatters/date';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';

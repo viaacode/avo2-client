@@ -33,7 +33,7 @@ import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/Cha
 import { getDateRangeFilters, getMultiOptionFilters } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { type PickerItem } from '../../shared/types';
+import { type PickerItem } from '../../shared/types/content-picker';
 import {
 	renderPupilCollectionTableCellReact,
 	renderPupilCollectionTableCellText,

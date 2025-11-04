@@ -19,7 +19,7 @@ import { get, noop, orderBy } from 'lodash-es';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
-import { type PickerItem } from '../../admin/shared/types';
+import { type PickerItem } from '../../admin/shared/types/content-picker';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable';
@@ -30,7 +30,8 @@ import {
 import { OrderDirection } from '../../search/search.const';
 import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { CustomError } from '../../shared/helpers/custom-error';
-import { formatTimestamp, getFullNameCommonUser } from '../../shared/helpers/formatters';
+import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar';
+import { formatTimestamp } from '../../shared/helpers/formatters/date';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { QualityLabelsService } from '../../shared/services/quality-labels.service';

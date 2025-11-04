@@ -1,7 +1,7 @@
 import { type ContentPageInfo, type DbContentPage } from '@meemoo/admin-core-ui/admin';
 
 import { CustomError } from '../../../../../shared/helpers/custom-error';
-import { type PickerItem } from '../../../types';
+import { type PickerItem } from '../../../types/content-picker';
 import { parsePickerItem } from '../helpers/parse-picker';
 
 // Fetch content items from GQL

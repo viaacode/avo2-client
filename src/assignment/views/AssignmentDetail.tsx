@@ -65,10 +65,8 @@ import { navigate } from '../../shared/helpers/link';
 import { type EducationLevelId, getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { useTranslation } from '../../shared/hooks/useTranslation';
-import {
-	BookmarksViewsPlaysService,
-	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
-} from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {

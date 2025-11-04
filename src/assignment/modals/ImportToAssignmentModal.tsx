@@ -30,7 +30,8 @@ import {
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
-import { formatDate, renderAvatar } from '../../shared/helpers/formatters';
+import { renderAvatar } from '../../shared/helpers/formatters/avatar';
+import { formatDate } from '../../shared/helpers/formatters/date';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks/useTableSort';

@@ -14,8 +14,9 @@ import { get } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
-import { type PickerItem } from '../../admin/shared/types';
-import { getFullName, toDateObject } from '../../shared/helpers/formatters';
+import { type PickerItem } from '../../admin/shared/types/content-picker';
+import { getFullName } from '../../shared/helpers/formatters/avatar';
+import { toDateObject } from '../../shared/helpers/formatters/date';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 import { booleanToOkNok, okNokToBoolean } from '../helpers/ok-nok-parser';
 

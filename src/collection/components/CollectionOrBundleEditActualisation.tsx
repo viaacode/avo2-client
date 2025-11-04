@@ -16,8 +16,9 @@ import React, { type FC } from 'react';
 import { getCollectionManagementStatuses } from '../../admin/collectionsOrBundles/collections-or-bundles.const';
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { NULL_FILTER } from '../../admin/shared/helpers/filters';
-import { type PickerItem } from '../../admin/shared/types';
-import { getFullName, toDateObject } from '../../shared/helpers/formatters';
+import { type PickerItem } from '../../admin/shared/types/content-picker';
+import { getFullName } from '../../shared/helpers/formatters/avatar';
+import { toDateObject } from '../../shared/helpers/formatters/date';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import { type CollectionAction } from './CollectionOrBundleEdit.types';

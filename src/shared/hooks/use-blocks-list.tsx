@@ -8,7 +8,7 @@ import {
 	BlockListSorter,
 	type ListSorterItem,
 	type ListSorterProps,
-} from '../components/ListSorter';
+} from '../components/ListSorter/ListSorter';
 import { getBlockColor } from '../helpers/get-block-color';
 
 export function useBlocksList(

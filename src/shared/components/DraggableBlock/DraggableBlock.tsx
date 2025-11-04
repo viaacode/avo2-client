@@ -5,19 +5,17 @@ import { clsx } from 'clsx';
 import { truncate } from 'lodash-es';
 import React, { type FC } from 'react';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
-import { stripHtml } from '../../helpers/formatters';
+import { stripHtml } from '../../helpers/formatters/strip-html';
 import { GET_BLOCK_ICON } from '../BlockList/BlockIconWrapper/BlockIconWrapper.consts';
 
 import './DraggableBlock.scss';
+import { tHtml } from '../../helpers/translate-html';
 
 interface DraggableBlockProps extends DefaultProps {
 	block?: Avo.Core.BlockItemBase;
 }
 
 export const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
-	const { tHtml } = useTranslation();
-
 	if (!block) {
 		return null;
 	}

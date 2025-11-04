@@ -17,7 +17,7 @@ import { commonUserAtom } from '../../authentication/authentication.store';
 import { ColorSelect } from '../../shared/components/ColorSelect/ColorSelect';
 import { type Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
 import { useTranslation } from '../../shared/hooks/useTranslation';
-import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
+import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service';
 import { ToastService } from '../../shared/services/toast-service';
 
 import { ManageAssignmentLabels } from './modals/ManageAssignmentLabels';

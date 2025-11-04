@@ -11,7 +11,7 @@ import { useAtomValue } from 'jotai';
 import React, { type FC, type ReactNode } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
-import { getFullName } from '../../helpers/formatters';
+import { getFullName } from '../../helpers/formatters/avatar';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import { ContributorInfoRight } from '../ShareWithColleagues/ShareWithColleagues.types';

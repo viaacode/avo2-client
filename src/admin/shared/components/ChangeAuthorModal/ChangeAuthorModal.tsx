@@ -12,7 +12,7 @@ import { noop } from 'lodash-es';
 import React, { type FC, useState } from 'react';
 
 import { useTranslation } from '../../../../shared/hooks/useTranslation';
-import { type PickerItem } from '../../types';
+import { type PickerItem } from '../../types/content-picker';
 import { ContentPicker } from '../ContentPicker/ContentPicker';
 
 interface ChangeAuthorModalProps {

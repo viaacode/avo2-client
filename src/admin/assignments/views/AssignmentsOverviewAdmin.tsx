@@ -39,7 +39,7 @@ import { SubjectsBeingEditedWarningModal } from '../../shared/components/Subject
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { type PickerItem } from '../../shared/types';
+import { type PickerItem } from '../../shared/types/content-picker';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import { AssignmentsAdminService } from '../assignments.admin.service';
 import {

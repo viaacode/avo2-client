@@ -46,7 +46,7 @@ import {
 	ListSorterColor,
 	ListSorterPosition,
 	ListSorterSlice,
-} from '../../shared/components/ListSorter';
+} from '../../shared/components/ListSorter/ListSorter';
 import { SelectEducationLevelModal } from '../../shared/components/SelectEducationLevelModal/SelectEducationLevelModal';
 import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
@@ -66,10 +66,8 @@ import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-mod
 import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
-import {
-	BookmarksViewsPlaysService,
-	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
-} from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';

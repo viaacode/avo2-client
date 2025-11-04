@@ -56,7 +56,7 @@ import {
 	AdminLayoutBody,
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { type PickerItem } from '../../shared/types';
+import { type PickerItem } from '../../shared/types/content-picker';
 import { InteractiveTourAdd } from '../components/InteractiveTourStepAdd';
 import {
 	INTERACTIVE_TOUR_EDIT_INITIAL_STATE,

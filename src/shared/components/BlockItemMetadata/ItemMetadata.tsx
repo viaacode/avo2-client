@@ -1,8 +1,8 @@
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode } from 'react';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
-import { formatDate } from '../../helpers/formatters';
+import { formatDate } from '../../helpers/formatters/date';
+import { tHtml } from '../../helpers/translate-html';
 
 export type ItemMetadataProps = {
 	item: Avo.Item.Item;
@@ -13,8 +13,6 @@ export const ItemMetadata: FC<ItemMetadataProps> = ({
 	item,
 	buildSeriesLink = (series: string) => series,
 }) => {
-	const { tHtml } = useTranslation();
-
 	const organisation = item?.organisation?.name;
 	const broadcastDate = item?.issued;
 	const series = item?.series;

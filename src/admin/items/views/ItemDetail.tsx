@@ -39,7 +39,7 @@ import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditor
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import { formatDate, formatTimestamp } from '../../../shared/helpers/formatters';
+import { formatDate, formatTimestamp } from '../../../shared/helpers/formatters/date';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
@@ -61,7 +61,7 @@ import {
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { DepublishItemModal } from '../components/DepublishItemModal/DepublishItemModal';
-import { mapItemUsedByToQuickLane } from '../helpers';
+import { mapItemUsedByToQuickLane } from '../helpers/map-item-used-by-to-quick-lane';
 import { useGetItemUsedBy } from '../hooks/useGetItemUsedBy';
 import { useGetItemWithRelations } from '../hooks/useGetItemWithRelations';
 import {

@@ -4,7 +4,7 @@ import React, { type FC, type ReactNode } from 'react';
 
 import { type FilterState } from '../../../search/search.types';
 import { ItemMetadata } from '../../../shared/components/BlockItemMetadata/ItemMetadata';
-import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm';
+import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm/CustomiseItemForm';
 import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';

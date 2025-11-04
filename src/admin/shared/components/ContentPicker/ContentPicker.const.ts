@@ -1,7 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
 
 import { tText } from '../../../../shared/helpers/translate-text';
-import { type PickerTypeOption } from '../../types';
+import { type PickerTypeOption } from '../../types/content-picker';
 
 import { retrieveAnchors } from './item-providers/anchors';
 import { retrieveBundles, retrieveCollections } from './item-providers/collection';

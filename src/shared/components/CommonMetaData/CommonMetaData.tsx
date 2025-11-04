@@ -4,7 +4,7 @@ import React, { type FC, type ReactNode } from 'react';
 
 import { SearchFilter } from '../../../search/search.const';
 import { type FilterState } from '../../../search/search.types';
-import { formatDate } from '../../helpers/formatters';
+import { formatDate } from '../../helpers/formatters/date';
 import { getGroupedLomsKeyValue } from '../../helpers/lom';
 import { tText } from '../../helpers/translate-text';
 import { LomInfoField } from '../LomInfoField/LomInfoField';

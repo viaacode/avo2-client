@@ -21,7 +21,7 @@ import {
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import { getFullNameCommonUser } from '../../../shared/helpers/formatters';
+import { getFullNameCommonUser } from '../../../shared/helpers/formatters/avatar';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
@@ -38,7 +38,7 @@ import { SubjectsBeingEditedWarningModal } from '../../shared/components/Subject
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { type PickerItem } from '../../shared/types';
+import type { PickerItem } from '../../shared/types/content-picker';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,

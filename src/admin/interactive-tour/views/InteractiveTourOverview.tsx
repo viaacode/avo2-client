@@ -19,7 +19,7 @@ import {
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import { formatDate } from '../../../shared/helpers/formatters';
+import { formatDate } from '../../../shared/helpers/formatters/date';
 import { navigate } from '../../../shared/helpers/link';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { useTranslation } from '../../../shared/hooks/useTranslation';

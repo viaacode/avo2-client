@@ -16,12 +16,13 @@ import { uniqBy } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 
 import { ContentPicker } from '../../../admin/shared/components/ContentPicker/ContentPicker';
-import { type PickerItem } from '../../../admin/shared/types';
-import { useTranslation } from '../../../shared/hooks/useTranslation';
+import { type PickerItem } from '../../../admin/shared/types/content-picker';
 import { CustomError } from '../../helpers/custom-error';
-import { ToastService } from '../../services/toast-service';
 
 import './MultiUserSelectDropdown.scss';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
+import { ToastService } from '../../services/toast-service';
 
 interface MultiUserSelectDropdownProps {
 	label: string;
@@ -42,8 +43,6 @@ export const MultiUserSelectDropdown: FC<MultiUserSelectDropdownProps> = ({
 	onChange,
 	showSelectedValuesOnCollapsed = true,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [selectedProfiles, setSelectedProfiles] = useState<PickerItem[]>([]);
 	const [selectedProfile, setSelectedProfile] = useState<PickerItem | undefined>(undefined);

@@ -138,7 +138,8 @@ export const AssignmentResponsePupilCollectionTab: FC<
 		updateBlocksInAssignmentResponseState,
 		{
 			listSorter: {
-				content: (item) => item && renderBlockContent(item),
+				content: (item: Avo.Core.BlockItemBase | undefined) =>
+					item && renderBlockContent(item),
 				divider: (position: number) => (
 					<Button
 						icon={IconName.plus}

@@ -3,13 +3,13 @@ import { clsx } from 'clsx';
 import { clamp } from 'lodash-es';
 import React, { type FC, useEffect, useState } from 'react';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
-import { formatDurationHoursMinutesSeconds } from '../../helpers/formatters';
+import { formatDurationHoursMinutesSeconds } from '../../helpers/formatters/duration';
 import { parseDuration, toSeconds } from '../../helpers/parsers/duration';
 import { ToastService } from '../../services/toast-service';
 
 import './TimeCropControls.scss';
+import { tHtml } from '../../helpers/translate-html';
 
 interface TimeCropControlsPops {
 	startTime: number;
@@ -30,7 +30,6 @@ export const TimeCropControls: FC<TimeCropControlsPops> = ({
 	onChange,
 	className,
 }) => {
-	const { tHtml } = useTranslation();
 	const [fragmentStartString, setFragmentStartString] = useState<string>(
 		formatDurationHoursMinutesSeconds(startTime)
 	);

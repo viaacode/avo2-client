@@ -12,7 +12,7 @@ import { createResource } from '../../embed-code/helpers/resourceForTrackEvents'
 import { useGetEmbedCode } from '../../embed-code/hooks/useGetEmbedCode';
 import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { type CustomError } from '../../shared/helpers/custom-error';
-import { reorderDate } from '../../shared/helpers/formatters';
+import { reorderDate } from '../../shared/helpers/formatters/date';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { trackEvents } from '../../shared/services/event-logging-service';

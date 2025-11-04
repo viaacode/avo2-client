@@ -2,17 +2,14 @@ import { IconName, MetaData, MetaDataItem, Thumbnail } from '@viaa/avo2-componen
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode } from 'react';
 
-import {
-	formatDate,
-	formatDurationHoursMinutesSeconds,
-	formatTimestamp,
-} from '../../shared/helpers/formatters';
+import { formatDate, formatTimestamp } from '../../shared/helpers/formatters/date';
 import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { bookWidgetsLogo, smartSchoolLogo } from '../embed-code.const';
 import { type EmbedCode, EmbedCodeExternalWebsite } from '../embed-code.types';
 
 import './EmbedCodeFilterTableCell.scss';
+import { formatDurationHoursMinutesSeconds } from '../../shared/helpers/formatters/duration';
 
 export interface EmbedCodeFilterTableCellProps {
 	id: string;

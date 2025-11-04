@@ -2,7 +2,7 @@ import { SanitizePreset } from '@meemoo/admin-core-ui/client';
 import { setPlayingVideoSeekTime } from '@meemoo/react-components';
 import React, { type FC, useCallback, useEffect, useRef } from 'react';
 
-import { textToHtmlWithTimestamps } from '../../helpers/formatters';
+import { textToHtmlWithTimestamps } from '../../helpers/formatters/text-to-html-with-timestamps';
 import { parseDuration } from '../../helpers/parsers/duration';
 import { Html } from '../Html/Html';
 

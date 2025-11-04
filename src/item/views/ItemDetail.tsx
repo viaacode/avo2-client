@@ -78,17 +78,15 @@ import {
 	defaultGoToSearchLink,
 	defaultRenderSearchLink,
 } from '../../shared/helpers/default-render-search-link';
-import { reorderDate } from '../../shared/helpers/formatters';
+import { reorderDate } from '../../shared/helpers/formatters/date';
 import { renderSearchLinks } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
 import { useTranslation } from '../../shared/hooks/useTranslation';
-import {
-	BookmarksViewsPlaysService,
-	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
-} from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {

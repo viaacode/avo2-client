@@ -10,7 +10,7 @@ import {
 	IDLE_TIME_UNTIL_WARNING,
 	MAX_EDIT_IDLE_TIME,
 } from '../../constants';
-import { formatDurationMinutesSeconds } from '../../helpers/formatters';
+import { formatDurationMinutesSeconds } from '../../helpers/formatters/duration';
 import { tHtml } from '../../helpers/translate-html';
 import { useBeforeUnload } from '../../hooks/useBeforeUnload';
 import { lastVideoPlayedAtAtom } from '../../store/ui.store';

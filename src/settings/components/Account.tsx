@@ -21,7 +21,7 @@ import { ErrorView } from '../../error/views/ErrorView';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { Users_Idps_Enum } from '../../shared/generated/graphql-db-types';
 import { getEnv } from '../../shared/helpers/env';
-import { formatDate } from '../../shared/helpers/formatters';
+import { formatDate } from '../../shared/helpers/formatters/date';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 

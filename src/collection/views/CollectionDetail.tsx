@@ -40,6 +40,7 @@ import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const
 import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EditButton } from '../../shared/components/EditButton/EditButton';
 import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
@@ -62,16 +63,14 @@ import {
 } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { getFullName } from '../../shared/helpers/formatters';
+import { getFullName } from '../../shared/helpers/formatters/avatar';
 import { generateContentLinkString, navigate } from '../../shared/helpers/link';
 import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { isUuid } from '../../shared/helpers/uuid';
 import { useTranslation } from '../../shared/hooks/useTranslation';
-import {
-	BookmarksViewsPlaysService,
-	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
-} from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
@@ -111,7 +110,6 @@ import {
 import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from './CollectionDetail.const';
 
 import './CollectionDetail.scss';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;

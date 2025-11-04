@@ -19,7 +19,7 @@ import React, { type FC, useState } from 'react';
 import { RichTextEditorWrapper } from '../../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../../shared/generated/graphql-db-types';
 import { CustomError } from '../../../../shared/helpers/custom-error';
-import { stripHtml } from '../../../../shared/helpers/formatters';
+import { stripHtml } from '../../../../shared/helpers/formatters/strip-html';
 import { useTranslation } from '../../../../shared/hooks/useTranslation';
 import { RelationService } from '../../../../shared/services/relation-service/relation.service';
 import { ToastService } from '../../../../shared/services/toast-service';

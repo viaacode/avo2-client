@@ -16,14 +16,15 @@ import { isNil } from 'lodash-es';
 import React, { type FC } from 'react';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
-import { type PickerItem } from '../../admin/shared/types';
+import { type PickerItem } from '../../admin/shared/types/content-picker';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable';
 import { type QualityLabel } from '../../collection/collection.types';
-import { formatTimestamp, getFullNameCommonUser } from '../../shared/helpers/formatters';
+import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar';
+import { formatTimestamp } from '../../shared/helpers/formatters/date';
+import { tText } from '../../shared/helpers/translate-text';
 import { useGetQualityLabels } from '../../shared/hooks/useGetQualityLabels';
-import { useTranslation } from '../../shared/hooks/useTranslation';
 
 interface AssignmentAdminFormEditableProps {
 	assignment: Avo.Assignment.Assignment;
@@ -34,7 +35,6 @@ export const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps> =
 	assignment,
 	setAssignment,
 }) => {
-	const { tText } = useTranslation();
 	const commonUser = useAtomValue(commonUserAtom);
 	const { data: allQualityLabels, isLoading } = useGetQualityLabels();
 	const owner: PickerItem | undefined = assignment.profile

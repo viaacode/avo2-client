@@ -3,7 +3,7 @@ import { get } from 'lodash-es';
 
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { CustomError } from '../../shared/helpers/custom-error';
-import { getProfile } from '../../shared/helpers/formatters';
+import { getProfile } from '../../shared/helpers/formatters/avatar';
 
 export const getUserGroupLabel = (
 	userOrProfile: Avo.User.Profile | { profile: Avo.User.Profile } | null | undefined

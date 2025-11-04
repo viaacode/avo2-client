@@ -14,7 +14,7 @@ import {
 } from '../../shared/generated/graphql-db-react-query';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
-import { toIsoDate } from '../../shared/helpers/formatters';
+import { toIsoDate } from '../../shared/helpers/formatters/date';
 import { dataService } from '../../shared/services/data-service';
 
 export class UserService {

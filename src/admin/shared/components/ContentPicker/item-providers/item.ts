@@ -1,6 +1,6 @@
 import { type ItemMeta } from '../../../../../shared/types/item';
 import { ItemsService } from '../../../../items/items.service';
-import { type PickerItem } from '../../../types';
+import { type PickerItem } from '../../../types/content-picker';
 import { parsePickerItem } from '../helpers/parse-picker';
 
 // Fetch content items from GQL

@@ -1,7 +1,7 @@
 import { compact, sortBy } from 'lodash-es';
 
 import { APP_PATH, type RouteId } from '../../../../../constants';
-import { type PickerItem } from '../../../types';
+import { type PickerItem } from '../../../types/content-picker';
 import { parsePickerItem } from '../helpers/parse-picker';
 
 // Return InternalLinkItems items from APP_PATH

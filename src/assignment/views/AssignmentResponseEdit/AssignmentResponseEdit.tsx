@@ -28,7 +28,7 @@ import { type FilterState } from '../../../search/search.types';
 import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { InteractiveTour } from '../../../shared/components/InteractiveTour/InteractiveTour';
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
-import { formatTimestamp } from '../../../shared/helpers/formatters';
+import { formatTimestamp } from '../../../shared/helpers/formatters/date';
 import { useAssignmentPastDeadline } from '../../../shared/hooks/useAssignmentPastDeadline';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';

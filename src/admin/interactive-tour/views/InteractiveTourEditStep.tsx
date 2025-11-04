@@ -22,7 +22,7 @@ import React, { type FC } from 'react';
 
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
-import { stripHtml } from '../../../shared/helpers/formatters';
+import { stripHtml } from '../../../shared/helpers/formatters/strip-html';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
 import { type InteractiveTourAction } from '../helpers/reducers';
 import { type EditableStep, InteractiveTourEditActionType } from '../interactive-tour.types';

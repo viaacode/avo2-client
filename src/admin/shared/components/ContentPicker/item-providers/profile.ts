@@ -4,7 +4,7 @@ import { stringifyUrl } from 'query-string';
 
 import { CustomError } from '../../../../../shared/helpers/custom-error';
 import { getEnv } from '../../../../../shared/helpers/env';
-import { type PickerItem } from '../../../types';
+import { type PickerItem } from '../../../types/content-picker';
 import { parsePickerItem } from '../helpers/parse-picker';
 
 // Fetch profiles from GQL

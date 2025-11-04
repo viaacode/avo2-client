@@ -32,7 +32,7 @@ import { TextWithTimestamps } from '../../shared/components/TextWithTimestamp/Te
 import { TimeCropControls } from '../../shared/components/TimeCropControls/TimeCropControls';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
-import { textToHtmlWithTimestamps } from '../../shared/helpers/formatters';
+import { textToHtmlWithTimestamps } from '../../shared/helpers/formatters/text-to-html-with-timestamps';
 import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';

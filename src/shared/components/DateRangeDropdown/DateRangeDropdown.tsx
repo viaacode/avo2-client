@@ -22,8 +22,9 @@ import React, {
 	useState,
 } from 'react';
 
-import { useTranslation } from '../../../shared/hooks/useTranslation';
-import { reorderDate } from '../../helpers/formatters';
+import { reorderDate } from '../../helpers/formatters/date';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import { ToastService } from '../../services/toast-service';
 import { renderDropdownButton } from '../CheckboxDropdownModal/CheckboxDropdownModal';
 
@@ -61,8 +62,6 @@ export const DateRangeDropdown: FC<DateRangeDropdownProps> = ({
 	defaultControls = 'year',
 	onChange,
 }) => {
-	const { tText, tHtml } = useTranslation();
-
 	// Internal range state (copied to external range state when the user clicks on the apply button
 	const [rangeState, setRangeState] = useState<DateRange>(range);
 	const [dateControls, setDateControls] = useState<DateRangeControls>(defaultControls);

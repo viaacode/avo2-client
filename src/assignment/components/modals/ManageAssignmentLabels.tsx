@@ -27,7 +27,7 @@ import { CustomError } from '../../../shared/helpers/custom-error';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import { useTranslation } from '../../../shared/hooks/useTranslation';
-import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service';
+import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service/assignment-labels.service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { MAX_LABEL_LENGTH } from '../../assignment.const';
 import { type AssignmentLabelColor } from '../../assignment.types';

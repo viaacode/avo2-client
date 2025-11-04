@@ -1,6 +1,6 @@
 import React, { type FC, type ReactNode } from 'react';
 
-import { formatDate, formatTimestamp } from '../../helpers/formatters';
+import { formatDate, formatTimestamp } from '../../helpers/formatters/date';
 import { useTranslation } from '../../hooks/useTranslation';
 import { type QuickLaneUrlObject } from '../../types';
 import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';

@@ -5,7 +5,7 @@ import { type ReactNode } from 'react';
 
 import { CollectionFragmentType } from '../collection/collection.types';
 import { OrderDirection } from '../search/search.const';
-import { stripHtml } from '../shared/helpers/formatters';
+import { stripHtml } from '../shared/helpers/formatters/strip-html';
 import { EducationLevelId } from '../shared/helpers/lom';
 import { tHtml } from '../shared/helpers/translate-html';
 import { tText } from '../shared/helpers/translate-text';

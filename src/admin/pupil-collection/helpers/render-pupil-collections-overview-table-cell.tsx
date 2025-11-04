@@ -7,7 +7,7 @@ import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment/assi
 import { APP_PATH } from '../../../constants';
 import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types';
 import { buildLink } from '../../../shared/helpers/build-link';
-import { formatDate } from '../../../shared/helpers/formatters';
+import { formatDate } from '../../../shared/helpers/formatters/date';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../../shared/helpers/truncate';

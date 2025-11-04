@@ -14,7 +14,7 @@ import { compact, isNil, omit } from 'lodash-es';
 import React, { type ReactNode } from 'react';
 
 import { reorderBlockPositions } from '../assignment/assignment.helper';
-import { stripHtml } from '../shared/helpers/formatters';
+import { stripHtml } from '../shared/helpers/formatters/strip-html';
 import { tHtml } from '../shared/helpers/translate-html';
 import { tText } from '../shared/helpers/translate-text';
 import { type Positioned } from '../shared/types';

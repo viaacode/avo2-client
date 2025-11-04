@@ -30,10 +30,11 @@ import { SearchFilter } from '../../search/search.const';
 import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
-import { formatDate } from '../../shared/helpers/formatters';
+import { formatDate } from '../../shared/helpers/formatters/date';
 import { groupLomLinks, groupLoms } from '../../shared/helpers/lom';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { useTranslation } from '../../shared/hooks/useTranslation';
@@ -44,7 +45,6 @@ import { SettingsService } from '../settings.service';
 import { type UsersInSameCompanyColumn } from '../settings.types';
 
 import './Profile.scss';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 
 type FieldPermissionKey =
 	| 'SUBJECTS'

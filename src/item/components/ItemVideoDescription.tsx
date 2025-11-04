@@ -29,7 +29,7 @@ import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/Flo
 import { type CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.types';
 import { TextWithTimestamps } from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
 import { TEAL_BRIGHT } from '../../shared/constants';
-import { stripHtml } from '../../shared/helpers/formatters';
+import { stripHtml } from '../../shared/helpers/formatters/strip-html';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 

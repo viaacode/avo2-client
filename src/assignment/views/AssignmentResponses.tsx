@@ -38,7 +38,7 @@ import {
 	type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink } from '../../shared/helpers/build-link';
-import { formatDate } from '../../shared/helpers/formatters';
+import { formatDate } from '../../shared/helpers/formatters/date';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';

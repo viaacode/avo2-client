@@ -30,15 +30,13 @@ import {
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
-import { formatDate, fromNow } from '../../shared/helpers/formatters';
+import { formatDate, fromNow } from '../../shared/helpers/formatters/date';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTranslation } from '../../shared/hooks/useTranslation';
-import {
-	BookmarksViewsPlaysService,
-	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
-} from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import {
 	type BookmarkInfo,
 	type EventContentType,

@@ -67,7 +67,8 @@ import {
 import { buildLink } from '../../shared/helpers/build-link';
 import { getContributorType } from '../../shared/helpers/contributors';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { formatDate, renderAvatar } from '../../shared/helpers/formatters';
+import { renderAvatar } from '../../shared/helpers/formatters/avatar';
+import { formatDate } from '../../shared/helpers/formatters/date';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
@@ -75,7 +76,7 @@ import { createShareIconTableOverview } from '../../shared/helpers/share-icon-ta
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTranslation } from '../../shared/hooks/useTranslation';
-import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
+import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service';
 import { ToastService } from '../../shared/services/toast-service';
 import { KeyCode } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';

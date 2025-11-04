@@ -3,7 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import React, { type FC } from 'react';
 
-import { formatTimestamp } from '../../shared/helpers/formatters';
+import { formatTimestamp } from '../../shared/helpers/formatters/date';
 import { useTranslation } from '../../shared/hooks/useTranslation';
 
 import './AssignmentDetailsForm.scss';

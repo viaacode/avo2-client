@@ -1,7 +1,7 @@
 import { LinkTarget } from '@viaa/avo2-components';
 
 import { CustomError } from '../../../../../shared/helpers/custom-error';
-import { type PickerItem } from '../../../types';
+import { type PickerItem } from '../../../types/content-picker';
 
 export const retrieveAnchors = async (name: string | null, limit = 5): Promise<PickerItem[]> => {
 	try {

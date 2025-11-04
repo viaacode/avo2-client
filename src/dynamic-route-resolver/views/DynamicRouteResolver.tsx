@@ -37,7 +37,8 @@ import {
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
-import { getFullName, stripHtml } from '../../shared/helpers/formatters';
+import { getFullName } from '../../shared/helpers/formatters/avatar';
+import { stripHtml } from '../../shared/helpers/formatters/strip-html';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { generateSearchLinkString } from '../../shared/helpers/link';
 import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';

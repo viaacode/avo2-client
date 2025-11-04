@@ -19,7 +19,7 @@ import {
 	type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink } from '../../shared/helpers/build-link';
-import { formatDate, formatTimestamp } from '../../shared/helpers/formatters';
+import { formatDate, formatTimestamp } from '../../shared/helpers/formatters/date';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTranslation } from '../../shared/hooks/useTranslation';

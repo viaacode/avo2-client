@@ -34,7 +34,7 @@ import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
 import { extractKlascementError } from '../../shared/helpers/extract-klascement-error';
-import { formatDate } from '../../shared/helpers/formatters';
+import { formatDate } from '../../shared/helpers/formatters/date';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTranslation } from '../../shared/hooks/useTranslation';

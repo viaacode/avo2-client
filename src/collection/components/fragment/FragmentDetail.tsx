@@ -9,7 +9,7 @@ import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
 import { ContentTypeNumber } from '../../collection.types';
-import { getFragmentProperty } from '../../helpers';
+import { getFragmentProperty } from '../../helpers/fragment';
 
 import './FragmentDetail.scss';
 

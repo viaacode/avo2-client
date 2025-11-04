@@ -44,11 +44,11 @@ import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { useQualityLabels } from '../../shared/hooks/useQualityLabels';
 import { useTranslation } from '../../shared/hooks/useTranslation';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import {
-	BookmarksViewsPlaysService,
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED,
-} from '../../shared/services/bookmarks-views-plays-service';
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import {
 	type BookmarkRequestInfo,
 	type BookmarkStatusLookup,

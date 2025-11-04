@@ -32,12 +32,12 @@ import { ItemVideoDescription } from '../../item/components/ItemVideoDescription
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
-import { renderAvatar } from '../../shared/helpers/formatters';
+import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { toSeconds } from '../../shared/helpers/parsers/duration';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
 import { useTranslation } from '../../shared/hooks/useTranslation';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { useGetQuickLane } from '../hooks/useGetQuickLane';
 
