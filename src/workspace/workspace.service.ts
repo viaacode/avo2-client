@@ -1,33 +1,33 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
 
-import { CustomError } from '../shared/helpers/custom-error.js';
-import { getEnv } from '../shared/helpers/env.js';
-import type { BookmarkInfo } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
+import { CustomError } from '../shared/helpers/custom-error.js'
+import { getEnv } from '../shared/helpers/env.js'
+import type { BookmarkInfo } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js'
 
-import { type WorkspaceCounts } from './workspace.types.js';
+import { type WorkspaceCounts } from './workspace.types.js'
 
 export class WorkspaceService {
-	public static getWorkspaceCounts(): Promise<WorkspaceCounts> {
-		let url: string | null = null;
-		try {
-			url = (getEnv('PROXY_URL') as string) + '/workspace/counts';
-			return fetchWithLogoutJson<WorkspaceCounts>(url, {
-				method: 'GET',
-			});
-		} catch (err) {
-			throw new CustomError('Failed to get workspace counts', err, { url });
-		}
-	}
+  public static getWorkspaceCounts(): Promise<WorkspaceCounts> {
+    let url: string | null = null
+    try {
+      url = (getEnv('PROXY_URL') as string) + '/workspace/counts'
+      return fetchWithLogoutJson<WorkspaceCounts>(url, {
+        method: 'GET',
+      })
+    } catch (err) {
+      throw new CustomError('Failed to get workspace counts', err, { url })
+    }
+  }
 
-	public static getAllBookmarksForUser(): Promise<BookmarkInfo[]> {
-		let url: string | null = null;
-		try {
-			url = (getEnv('PROXY_URL') as string) + '/workspace/bookmarks';
-			return fetchWithLogoutJson<BookmarkInfo[]>(url, {
-				method: 'GET',
-			});
-		} catch (err) {
-			throw new CustomError('Failed to get bookmarks', err, { url });
-		}
-	}
+  public static getAllBookmarksForUser(): Promise<BookmarkInfo[]> {
+    let url: string | null = null
+    try {
+      url = (getEnv('PROXY_URL') as string) + '/workspace/bookmarks'
+      return fetchWithLogoutJson<BookmarkInfo[]>(url, {
+        method: 'GET',
+      })
+    } catch (err) {
+      throw new CustomError('Failed to get bookmarks', err, { url })
+    }
+  }
 }

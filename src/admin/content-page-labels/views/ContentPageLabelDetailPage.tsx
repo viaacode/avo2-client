@@ -1,40 +1,40 @@
-import { PermissionName } from '@viaa/avo2-types';
-import React, { type FC, lazy, Suspense } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { PermissionName } from '@viaa/avo2-types'
+import React, { type FC, lazy, Suspense } from 'react'
+import { useNavigate, useParams } from 'react-router'
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js';
-import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback.js';
-import { ADMIN_PATH } from '../../admin.const.js';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js'
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback.js'
+import { ADMIN_PATH } from '../../admin.const.js'
 
 const ContentPageLabelDetail = lazy(() =>
-	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
-		default: adminCoreModule.ContentPageLabelDetail,
-	}))
-);
+  import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
+    default: adminCoreModule.ContentPageLabelDetail,
+  })),
+)
 
 const ContentPageLabelDetailPage: FC = () => {
-	const navigateFunc = useNavigate();
-	const { id } = useParams<{ id: string }>();
+  const navigateFunc = useNavigate()
+  const { id } = useParams<{ id: string }>()
 
-	return (
-		<Suspense fallback={<FullPageSpinner />}>
-			<PermissionGuard permissions={[PermissionName.EDIT_CONTENT_PAGE_LABELS]}>
-				{!!id && (
-					<ContentPageLabelDetail
-						contentPageLabelId={id}
-						className="c-admin-core c-admin__content-page-label-detail"
-						onGoBack={() =>
-							goBrowserBackWithFallback(
-								ADMIN_PATH.CONTENT_PAGE_LABEL_OVERVIEW,
-								navigateFunc
-							)
-						}
-					/>
-				)}
-			</PermissionGuard>
-		</Suspense>
-	);
-};
+  return (
+    <Suspense fallback={<FullPageSpinner />}>
+      <PermissionGuard permissions={[PermissionName.EDIT_CONTENT_PAGE_LABELS]}>
+        {!!id && (
+          <ContentPageLabelDetail
+            contentPageLabelId={id}
+            className="c-admin-core c-admin__content-page-label-detail"
+            onGoBack={() =>
+              goBrowserBackWithFallback(
+                ADMIN_PATH.CONTENT_PAGE_LABEL_OVERVIEW,
+                navigateFunc,
+              )
+            }
+          />
+        )}
+      </PermissionGuard>
+    </Suspense>
+  )
+}
 
-export default ContentPageLabelDetailPage;
+export default ContentPageLabelDetailPage

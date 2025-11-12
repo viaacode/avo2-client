@@ -1,36 +1,36 @@
 query getQuickLaneByContentAndOwner(
-	$contentId: uuid = ""
-	$contentLabel: String = ""
-	$profileId: uuid = ""
+  $contentId: uuid = ""
+  $contentLabel: String = ""
+  $profileId: uuid = ""
 ) {
-	app_quick_lanes(
-		where: {
-			content_id: { _eq: $contentId }
-			content_label: { _eq: $contentLabel }
-			owner_profile_id: { _eq: $profileId }
-		}
-	) {
-		id
-		content_id
-		content_label
-		title
-		view_mode
-		created_at
-		updated_at
-		start_oc
-		end_oc
-		owner {
-			first_name
-			last_name
-			full_name
-			profile_id
-			mail
-			avatar
-			organisation {
-				name
-				logo_url
-				or_id
-			}
-		}
-	}
+  app_quick_lanes(
+    where: {
+      content_id: { _eq: $contentId }
+      content_label: { _eq: $contentLabel }
+      owner_profile_id: { _eq: $profileId }
+    }
+  ) {
+    id
+    content_id
+    content_label
+    title
+    view_mode
+    created_at
+    updated_at
+    start_oc
+    end_oc
+    owner {
+      first_name
+      last_name
+      full_name
+      profile_id
+      mail
+      avatar
+      organisation {
+        name
+        logo_url
+        or_id
+      }
+    }
+  }
 }

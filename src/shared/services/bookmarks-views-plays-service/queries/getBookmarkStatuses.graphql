@@ -1,20 +1,28 @@
 query getBookmarkStatuses(
-	$profileId: uuid!
-	$itemUuids: [uuid!]!
-	$collectionUuids: [uuid!]!
-	$assignmentUuids: [uuid!]!
+  $profileId: uuid!
+  $itemUuids: [uuid!]!
+  $collectionUuids: [uuid!]!
+  $assignmentUuids: [uuid!]!
 ) {
-	app_collection_bookmarks(
-		where: { profile_id: { _eq: $profileId }, collection_uuid: { _in: $collectionUuids } }
-	) {
-		collection_uuid
-	}
-	app_item_bookmarks(where: { profile_id: { _eq: $profileId }, item_id: { _in: $itemUuids } }) {
-		item_id
-	}
-	app_assignments_v2_bookmarks(
-		where: { profile_id: { _eq: $profileId }, assignment_id: { _in: $assignmentUuids } }
-	) {
-		assignment_id
-	}
+  app_collection_bookmarks(
+    where: {
+      profile_id: { _eq: $profileId }
+      collection_uuid: { _in: $collectionUuids }
+    }
+  ) {
+    collection_uuid
+  }
+  app_item_bookmarks(
+    where: { profile_id: { _eq: $profileId }, item_id: { _in: $itemUuids } }
+  ) {
+    item_id
+  }
+  app_assignments_v2_bookmarks(
+    where: {
+      profile_id: { _eq: $profileId }
+      assignment_id: { _in: $assignmentUuids }
+    }
+  ) {
+    assignment_id
+  }
 }

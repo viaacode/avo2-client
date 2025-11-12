@@ -1,5 +1,11 @@
-mutation updateTranslations($name: String!, $translations: app_site_variables_set_input!) {
-	update_app_site_variables(where: { name: { _eq: $name } }, _set: $translations) {
-		affected_rows
-	}
+mutation updateTranslations(
+  $name: String!
+  $translations: app_site_variables_set_input!
+) {
+  update_app_site_variables(
+    where: { name: { _eq: $name } }
+    _set: $translations
+  ) {
+    affected_rows
+  }
 }

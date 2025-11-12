@@ -1,7 +1,7 @@
 query getDistinctSeries {
-	app_item_meta(distinct_on: series, where: { series: { _is_null: false } }) {
-		series
-		is_published
-		is_deleted
-	}
+  app_item_meta(distinct_on: series, where: { series: { _is_null: false } }) {
+    series
+    is_published
+    is_deleted
+  }
 }

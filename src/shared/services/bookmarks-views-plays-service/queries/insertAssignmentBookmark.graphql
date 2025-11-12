@@ -1,5 +1,7 @@
-mutation insertAssignmentBookmark($bookmarkAssignment: app_assignments_v2_bookmarks_insert_input!) {
-	insert_app_assignments_v2_bookmarks_one(object: $bookmarkAssignment) {
-		id
-	}
+mutation insertAssignmentBookmark(
+  $bookmarkAssignment: app_assignments_v2_bookmarks_insert_input!
+) {
+  insert_app_assignments_v2_bookmarks_one(object: $bookmarkAssignment) {
+    id
+  }
 }

@@ -1,16 +1,19 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
 // eslint-disable-next-line import/no-unresolved
-import { type Requests } from 'node-zendesk';
+import { type Requests } from 'node-zendesk'
 
-import { getEnv } from '../helpers/env.js';
+import { getEnv } from '../helpers/env.js'
 
 export class ZendeskService {
-	public static async createTicket(
-		request: Requests.CreateModel
-	): Promise<Requests.ResponseModel> {
-		return fetchWithLogoutJson<Requests.ResponseModel>(`${getEnv('PROXY_URL')}/zendesk`, {
-			method: 'POST',
-			body: JSON.stringify(request),
-		});
-	}
+  public static async createTicket(
+    request: Requests.CreateModel,
+  ): Promise<Requests.ResponseModel> {
+    return fetchWithLogoutJson<Requests.ResponseModel>(
+      `${getEnv('PROXY_URL')}/zendesk`,
+      {
+        method: 'POST',
+        body: JSON.stringify(request),
+      },
+    )
+  }
 }

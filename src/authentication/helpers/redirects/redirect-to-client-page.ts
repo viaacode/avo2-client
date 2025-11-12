@@ -1,5 +1,8 @@
-import { type NavigateFunction } from 'react-router';
+import { type NavigateFunction } from 'react-router'
 
-export function redirectToClientPage(path: string, navigate: NavigateFunction): void {
-	navigate(path);
+export function redirectToClientPage(
+  path: string,
+  navigate: NavigateFunction,
+): void {
+  navigate(path)
 }

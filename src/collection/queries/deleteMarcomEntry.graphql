@@ -1,5 +1,5 @@
 mutation deleteMarcomEntry($id: Int) {
-	delete_app_collection_marcom_log(where: { id: { _eq: $id } }) {
-		affected_rows
-	}
+  delete_app_collection_marcom_log(where: { id: { _eq: $id } }) {
+    affected_rows
+  }
 }

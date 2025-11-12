@@ -1,7 +1,10 @@
 mutation updateMarcomNote($id: Int, $note: String) {
-	update_app_collection_marcom_notes(where: { id: { _eq: $id } }, _set: { note: $note }) {
-		returning {
-			id
-		}
-	}
+  update_app_collection_marcom_notes(
+    where: { id: { _eq: $id } }
+    _set: { note: $note }
+  ) {
+    returning {
+      id
+    }
+  }
 }

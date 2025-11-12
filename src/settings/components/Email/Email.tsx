@@ -1,197 +1,218 @@
-import {BlockHeading} from '@meemoo/admin-core-ui/client';
-import {Button, Checkbox, CheckboxGroup, Container, Form, FormGroup, Spacer, Spinner,} from '@viaa/avo2-components';
-import {useAtomValue} from 'jotai';
-import React, {type FC, useEffect, useState} from 'react';
-import {Helmet} from 'react-helmet';
-import {StringParam, useQueryParams} from 'use-query-params';
+import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import {
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  Container,
+  Form,
+  FormGroup,
+  Spacer,
+  Spinner,
+} from '@viaa/avo2-components'
+import { useAtomValue } from 'jotai'
+import React, { type FC, useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet'
+import { StringParam, useQueryParams } from 'use-query-params'
 
-import {commonUserAtom} from '../../../authentication/authentication.store.js';
-import {GENERATE_SITE_TITLE} from '../../../constants.js';
-import {ErrorView} from '../../../error/views/ErrorView.js';
-import {CustomError} from '../../../shared/helpers/custom-error.js';
-import {tHtml} from '../../../shared/helpers/translate-html.js';
-import {tText} from '../../../shared/helpers/translate-text.js';
-import {CampaignMonitorService, type NewsletterPreferences,} from '../../../shared/services/campaign-monitor-service.js';
-import {ToastService} from '../../../shared/services/toast-service.js';
-import {type NewsletterList} from '../../../shared/types/index.js';
-import {GET_NEWSLETTER_LABELS} from '../../settings.const.js';
+import { commonUserAtom } from '../../../authentication/authentication.store.js'
+import { GENERATE_SITE_TITLE } from '../../../constants.js'
+import { ErrorView } from '../../../error/views/ErrorView.js'
+import { CustomError } from '../../../shared/helpers/custom-error.js'
+import { tHtml } from '../../../shared/helpers/translate-html.js'
+import { tText } from '../../../shared/helpers/translate-text.js'
+import {
+  CampaignMonitorService,
+  type NewsletterPreferences,
+} from '../../../shared/services/campaign-monitor-service.js'
+import { ToastService } from '../../../shared/services/toast-service.js'
+import { type NewsletterList } from '../../../shared/types/index.js'
+import { GET_NEWSLETTER_LABELS } from '../../settings.const.js'
 
-import {useGetEmailPreferences} from './hooks/getEmailPreferences.js';
+import { useGetEmailPreferences } from './hooks/getEmailPreferences.js'
 
 const INITIAL_NEWSLETTER_PREFERENCES_STATE = (): NewsletterPreferences => ({
-	newsletter: false,
-	workshop: false,
-	ambassador: false,
-});
+  newsletter: false,
+  workshop: false,
+  ambassador: false,
+})
 
 export const Email: FC = () => {
-	const commonUser = useAtomValue(commonUserAtom);
+  const commonUser = useAtomValue(commonUserAtom)
 
-	const [{ preferenceCenterKey }] = useQueryParams({
-		preferenceCenterKey: StringParam,
-	});
+  const [{ preferenceCenterKey }] = useQueryParams({
+    preferenceCenterKey: StringParam,
+  })
 
-	const {
-		data: fetchedNewsletterPreferences,
-		isLoading: isLoadingGetPreferences,
-		isError: getPreferencesIsError,
-	} = useGetEmailPreferences(preferenceCenterKey as string, {
-		enabled: !!preferenceCenterKey || !!commonUser?.profileId,
-	});
+  const {
+    data: fetchedNewsletterPreferences,
+    isLoading: isLoadingGetPreferences,
+    isError: getPreferencesIsError,
+  } = useGetEmailPreferences(preferenceCenterKey as string, {
+    enabled: !!preferenceCenterKey || !!commonUser?.profileId,
+  })
 
-	const [isLoadingUpdatePreferences, setIsLoadingUpdatePreferences] = useState<boolean>(false);
+  const [isLoadingUpdatePreferences, setIsLoadingUpdatePreferences] =
+    useState<boolean>(false)
 
-	const [initialNewsletterPreferences, setInitialNewsletterPreferences] =
-		useState<NewsletterPreferences>(INITIAL_NEWSLETTER_PREFERENCES_STATE());
-	const [currentNewsletterPreferences, setCurrentNewsletterPreferences] =
-		useState<NewsletterPreferences>(INITIAL_NEWSLETTER_PREFERENCES_STATE());
+  const [initialNewsletterPreferences, setInitialNewsletterPreferences] =
+    useState<NewsletterPreferences>(INITIAL_NEWSLETTER_PREFERENCES_STATE())
+  const [currentNewsletterPreferences, setCurrentNewsletterPreferences] =
+    useState<NewsletterPreferences>(INITIAL_NEWSLETTER_PREFERENCES_STATE())
 
-	const newsletterLabels = GET_NEWSLETTER_LABELS();
+  const newsletterLabels = GET_NEWSLETTER_LABELS()
 
-	useEffect(() => {
-		if (fetchedNewsletterPreferences) {
-			setInitialNewsletterPreferences(fetchedNewsletterPreferences);
-			setCurrentNewsletterPreferences(fetchedNewsletterPreferences);
-		}
-	}, [fetchedNewsletterPreferences]);
+  useEffect(() => {
+    if (fetchedNewsletterPreferences) {
+      setInitialNewsletterPreferences(fetchedNewsletterPreferences)
+      setCurrentNewsletterPreferences(fetchedNewsletterPreferences)
+    }
+  }, [fetchedNewsletterPreferences])
 
-	const onChangePreference = (preference: Partial<NewsletterPreferences>) => {
-		setCurrentNewsletterPreferences((currentPreferences) => {
-			return {
-				...currentPreferences,
-				...preference,
-			};
-		});
-	};
+  const onChangePreference = (preference: Partial<NewsletterPreferences>) => {
+    setCurrentNewsletterPreferences((currentPreferences) => {
+      return {
+        ...currentPreferences,
+        ...preference,
+      }
+    })
+  }
 
-	const onSavePreferences = async () => {
-		try {
-			setIsLoadingUpdatePreferences(true);
+  const onSavePreferences = async () => {
+    try {
+      setIsLoadingUpdatePreferences(true)
 
-			await CampaignMonitorService.updateNewsletterPreferences(
-				currentNewsletterPreferences,
-				preferenceCenterKey as string | undefined
-			);
+      await CampaignMonitorService.updateNewsletterPreferences(
+        currentNewsletterPreferences,
+        preferenceCenterKey as string | undefined,
+      )
 
-			// No await for logging events
-			CampaignMonitorService.triggerEventsForNewsletterPreferences(
-				initialNewsletterPreferences,
-				currentNewsletterPreferences,
-				commonUser,
-				preferenceCenterKey
-			);
+      // No await for logging events
+      CampaignMonitorService.triggerEventsForNewsletterPreferences(
+        initialNewsletterPreferences,
+        currentNewsletterPreferences,
+        commonUser,
+        preferenceCenterKey,
+      )
 
-			setInitialNewsletterPreferences({
-				...initialNewsletterPreferences,
-				...currentNewsletterPreferences,
-			});
+      setInitialNewsletterPreferences({
+        ...initialNewsletterPreferences,
+        ...currentNewsletterPreferences,
+      })
 
-			ToastService.success(
-				tHtml('settings/components/email___je-voorkeuren-zijn-opgeslagen')
-			);
-		} catch (err) {
-			console.error(new CustomError('Failed to update newsletter preferences', err));
+      ToastService.success(
+        tHtml('settings/components/email___je-voorkeuren-zijn-opgeslagen'),
+      )
+    } catch (err) {
+      console.error(
+        new CustomError('Failed to update newsletter preferences', err),
+      )
 
-			setCurrentNewsletterPreferences({
-				...initialNewsletterPreferences,
-			});
+      setCurrentNewsletterPreferences({
+        ...initialNewsletterPreferences,
+      })
 
-			ToastService.danger(
-				tHtml(
-					'settings/components/email___de-nieuwsbriefvoorkeuren-konden-niet-worden-geupdatet'
-				)
-			);
-		}
+      ToastService.danger(
+        tHtml(
+          'settings/components/email___de-nieuwsbriefvoorkeuren-konden-niet-worden-geupdatet',
+        ),
+      )
+    }
 
-		setIsLoadingUpdatePreferences(false);
-	};
+    setIsLoadingUpdatePreferences(false)
+  }
 
-	const renderFetchPreferencesError = () => {
-		return (
-			<ErrorView
-				message={tHtml(
-					'settings/components/email___het-ophalen-van-je-email-voorkeuren-is-mislukt'
-				)}
-			>
-				<p>
-					{commonUser
-						? tHtml(
-								'settings/components/email___probeer-uit-te-loggen-en-opnieuw-in-te-loggen-als-het-probleem-zich-blijft-voordoen-contacteer-dan-de-helpdesk'
-						  )
-						: tHtml(
-								'settings/components/email___controleer-of-de-url-correct-is-en-contacteer-indien-nodig-de-helpdesk'
-						  )}
-				</p>
-			</ErrorView>
-		);
-	};
+  const renderFetchPreferencesError = () => {
+    return (
+      <ErrorView
+        message={tHtml(
+          'settings/components/email___het-ophalen-van-je-email-voorkeuren-is-mislukt',
+        )}
+      >
+        <p>
+          {commonUser
+            ? tHtml(
+                'settings/components/email___probeer-uit-te-loggen-en-opnieuw-in-te-loggen-als-het-probleem-zich-blijft-voordoen-contacteer-dan-de-helpdesk',
+              )
+            : tHtml(
+                'settings/components/email___controleer-of-de-url-correct-is-en-contacteer-indien-nodig-de-helpdesk',
+              )}
+        </p>
+      </ErrorView>
+    )
+  }
 
-	if (getPreferencesIsError) {
-		return renderFetchPreferencesError();
-	}
+  if (getPreferencesIsError) {
+    return renderFetchPreferencesError()
+  }
 
-	return (
-		<Container mode="horizontal">
-			<Container mode="vertical">
-				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							tText('settings/components/email___nieuwsbrief-voorkeuren-pagina-titel')
-						)}
-					</title>
-					<meta
-						name="description"
-						content={tText(
-							'settings/components/email___nieuwsbrief-voorkeuren-pagina-beschrijving'
-						)}
-					/>
-				</Helmet>
-				<Spacer margin="bottom-small">
-					<BlockHeading type="h3">
-						{tText('settings/components/email___e-mail-nieuwsbrief-voorkeuren')}
-					</BlockHeading>
-				</Spacer>
-				{tHtml('settings/components/email___e-mail-nieuwsbrief-voorkeuren-beschrijving')}
-				<Spacer margin="top">
-					<Form>
-						<FormGroup labelFor="newsletter" required>
-							<CheckboxGroup>
-								{(Object.keys(newsletterLabels) as any).map(
-									(newsletterKey: NewsletterList) => (
-										<Checkbox
-											key={`newsletter_${newsletterKey}`}
-											label={(newsletterLabels as any)[newsletterKey]}
-											checked={currentNewsletterPreferences[newsletterKey]}
-											onChange={() => {
-												onChangePreference({
-													[newsletterKey]:
-														!currentNewsletterPreferences[
-															newsletterKey
-														],
-												});
-											}}
-										/>
-									)
-								)}
-							</CheckboxGroup>
-						</FormGroup>
-					</Form>
-				</Spacer>
-				<Spacer margin="top">
-					{tHtml(
-						'settings/components/email/email___we-kunnen-je-wel-nog-account-gerelateerde-mails-sturen-zoals-wachtwoord-opnieuw-instellen'
-					)}
-				</Spacer>
-				<Spacer margin="top">
-					{isLoadingGetPreferences || isLoadingUpdatePreferences ? (
-						<Spinner />
-					) : (
-						<Button label="Opslaan" type="primary" onClick={onSavePreferences} />
-					)}
-				</Spacer>
-			</Container>
-		</Container>
-	);
-};
+  return (
+    <Container mode="horizontal">
+      <Container mode="vertical">
+        <Helmet>
+          <title>
+            {GENERATE_SITE_TITLE(
+              tText(
+                'settings/components/email___nieuwsbrief-voorkeuren-pagina-titel',
+              ),
+            )}
+          </title>
+          <meta
+            name="description"
+            content={tText(
+              'settings/components/email___nieuwsbrief-voorkeuren-pagina-beschrijving',
+            )}
+          />
+        </Helmet>
+        <Spacer margin="bottom-small">
+          <BlockHeading type="h3">
+            {tText('settings/components/email___e-mail-nieuwsbrief-voorkeuren')}
+          </BlockHeading>
+        </Spacer>
+        {tHtml(
+          'settings/components/email___e-mail-nieuwsbrief-voorkeuren-beschrijving',
+        )}
+        <Spacer margin="top">
+          <Form>
+            <FormGroup labelFor="newsletter" required>
+              <CheckboxGroup>
+                {(Object.keys(newsletterLabels) as any).map(
+                  (newsletterKey: NewsletterList) => (
+                    <Checkbox
+                      key={`newsletter_${newsletterKey}`}
+                      label={(newsletterLabels as any)[newsletterKey]}
+                      checked={currentNewsletterPreferences[newsletterKey]}
+                      onChange={() => {
+                        onChangePreference({
+                          [newsletterKey]:
+                            !currentNewsletterPreferences[newsletterKey],
+                        })
+                      }}
+                    />
+                  ),
+                )}
+              </CheckboxGroup>
+            </FormGroup>
+          </Form>
+        </Spacer>
+        <Spacer margin="top">
+          {tHtml(
+            'settings/components/email/email___we-kunnen-je-wel-nog-account-gerelateerde-mails-sturen-zoals-wachtwoord-opnieuw-instellen',
+          )}
+        </Spacer>
+        <Spacer margin="top">
+          {isLoadingGetPreferences || isLoadingUpdatePreferences ? (
+            <Spinner />
+          ) : (
+            <Button
+              label="Opslaan"
+              type="primary"
+              onClick={onSavePreferences}
+            />
+          )}
+        </Spacer>
+      </Container>
+    </Container>
+  )
+}
 
-export default Email;
+export default Email

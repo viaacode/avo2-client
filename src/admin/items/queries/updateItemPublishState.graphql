@@ -1,5 +1,8 @@
 mutation updateItemPublishedState($itemUuid: uuid!, $isPublished: Boolean!) {
-	update_app_item_meta(where: { uid: { _eq: $itemUuid } }, _set: { is_published: $isPublished }) {
-		affected_rows
-	}
+  update_app_item_meta(
+    where: { uid: { _eq: $itemUuid } }
+    _set: { is_published: $isPublished }
+  ) {
+    affected_rows
+  }
 }

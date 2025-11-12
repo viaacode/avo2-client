@@ -1,40 +1,43 @@
 mutation replaceItemInCollectionsBookmarksAndAssignments(
-	$oldItemUid: uuid!
-	$oldItemExternalId: bpchar!
-	$newItemUid: uuid!
-	$newItemExternalId: bpchar!
-	$usersWithBothBookmarks: [uuid!]!
+  $oldItemUid: uuid!
+  $oldItemExternalId: bpchar!
+  $newItemUid: uuid!
+  $newItemExternalId: bpchar!
+  $usersWithBothBookmarks: [uuid!]!
 ) {
-	update_app_collection_fragments(
-		where: { external_id: { _eq: $oldItemExternalId } }
-		_set: { external_id: $newItemExternalId, start_oc: null, end_oc: null }
-	) {
-		affected_rows
-	}
-	update_app_item_bookmarks(
-		where: {
-			item_id: { _eq: $oldItemUid }
-			_not: { profile_id: { _in: $usersWithBothBookmarks } }
-		}
-		_set: { item_id: $newItemUid }
-	) {
-		affected_rows
-	}
-	delete_app_item_bookmarks(
-		where: { item_id: { _eq: $oldItemUid }, profile_id: { _in: $usersWithBothBookmarks } }
-	) {
-		affected_rows
-	}
-	update_app_assignment_blocks_v2(
-		where: { fragment_id: { _eq: $oldItemExternalId }, type: { _eq: "ITEM" } }
-		_set: { fragment_id: $newItemExternalId }
-	) {
-		affected_rows
-	}
-	update_app_pupil_collection_blocks(
-		where: { fragment_id: { _eq: $oldItemExternalId }, type: { _eq: "ITEM" } }
-		_set: { fragment_id: $newItemExternalId }
-	) {
-		affected_rows
-	}
+  update_app_collection_fragments(
+    where: { external_id: { _eq: $oldItemExternalId } }
+    _set: { external_id: $newItemExternalId, start_oc: null, end_oc: null }
+  ) {
+    affected_rows
+  }
+  update_app_item_bookmarks(
+    where: {
+      item_id: { _eq: $oldItemUid }
+      _not: { profile_id: { _in: $usersWithBothBookmarks } }
+    }
+    _set: { item_id: $newItemUid }
+  ) {
+    affected_rows
+  }
+  delete_app_item_bookmarks(
+    where: {
+      item_id: { _eq: $oldItemUid }
+      profile_id: { _in: $usersWithBothBookmarks }
+    }
+  ) {
+    affected_rows
+  }
+  update_app_assignment_blocks_v2(
+    where: { fragment_id: { _eq: $oldItemExternalId }, type: { _eq: "ITEM" } }
+    _set: { fragment_id: $newItemExternalId }
+  ) {
+    affected_rows
+  }
+  update_app_pupil_collection_blocks(
+    where: { fragment_id: { _eq: $oldItemExternalId }, type: { _eq: "ITEM" } }
+    _set: { fragment_id: $newItemExternalId }
+  ) {
+    affected_rows
+  }
 }

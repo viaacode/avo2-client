@@ -1,9 +1,12 @@
-query getProfilePreference($profileId: uuid!, $key: lookup_enum_profile_preferences_keys_enum!) {
-	users_profile_preferences(
-		where: { _and: { key: { _eq: $key }, profile_id: { _eq: $profileId } } }
-	) {
-		id
-		profile_id
-		key
-	}
+query getProfilePreference(
+  $profileId: uuid!
+  $key: lookup_enum_profile_preferences_keys_enum!
+) {
+  users_profile_preferences(
+    where: { _and: { key: { _eq: $key }, profile_id: { _eq: $profileId } } }
+  ) {
+    id
+    profile_id
+    key
+  }
 }

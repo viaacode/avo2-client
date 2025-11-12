@@ -1,4 +1,4 @@
 export enum FragmentEditAction {
-	DETAIL = 'DETAIL',
-	DELETE = 'DELETE',
+  DETAIL = 'DETAIL',
+  DELETE = 'DELETE',
 }

@@ -1,13 +1,13 @@
 query getCollectionTitlesByOwner($owner_profile_id: uuid) {
-	app_collections(
-		where: {
-			type_id: { _eq: 3 }
-			owner_profile_id: { _eq: $owner_profile_id }
-			is_deleted: { _eq: false }
-		}
-		order_by: { updated_at: desc }
-	) {
-		id
-		title
-	}
+  app_collections(
+    where: {
+      type_id: { _eq: 3 }
+      owner_profile_id: { _eq: $owner_profile_id }
+      is_deleted: { _eq: false }
+    }
+    order_by: { updated_at: desc }
+  ) {
+    id
+    title
+  }
 }

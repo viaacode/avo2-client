@@ -1,45 +1,45 @@
 mutation insertAssignmentResponse(
-	$assignmentResponses: [app_assignment_responses_v2_insert_input!]!
+  $assignmentResponses: [app_assignment_responses_v2_insert_input!]!
 ) {
-	insert_app_assignment_responses_v2(objects: $assignmentResponses) {
-		affected_rows
-		returning {
-			id
-			created_at
-			owner_profile_id
-			assignment_id
-			collection_title
-			updated_at
-			owner {
-				full_name
-			}
-			assignment {
-				id
-				title
-				deadline_at
-				owner {
-					full_name
-				}
-				owner_profile_id
-			}
-			pupil_collection_blocks(
-				where: { is_deleted: { _eq: false } }
-				order_by: { position: asc }
-			) {
-				id
-				fragment_id
-				use_custom_fields
-				custom_title
-				custom_description
-				start_oc
-				end_oc
-				position
-				created_at
-				updated_at
-				type
-				thumbnail_path
-				assignment_response_id
-			}
-		}
-	}
+  insert_app_assignment_responses_v2(objects: $assignmentResponses) {
+    affected_rows
+    returning {
+      id
+      created_at
+      owner_profile_id
+      assignment_id
+      collection_title
+      updated_at
+      owner {
+        full_name
+      }
+      assignment {
+        id
+        title
+        deadline_at
+        owner {
+          full_name
+        }
+        owner_profile_id
+      }
+      pupil_collection_blocks(
+        where: { is_deleted: { _eq: false } }
+        order_by: { position: asc }
+      ) {
+        id
+        fragment_id
+        use_custom_fields
+        custom_title
+        custom_description
+        start_oc
+        end_oc
+        position
+        created_at
+        updated_at
+        type
+        thumbnail_path
+        assignment_response_id
+      }
+    }
+  }
 }

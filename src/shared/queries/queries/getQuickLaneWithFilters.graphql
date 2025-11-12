@@ -1,78 +1,78 @@
 query getQuickLanesWithFilters(
-	$filterString: String
-	$filters: [app_quick_lanes_bool_exp!]
-	$orderBy: [app_quick_lanes_order_by!]
-	$limit: Int = 100
-	$offset: Int = 0
+  $filterString: String
+  $filters: [app_quick_lanes_bool_exp!]
+  $orderBy: [app_quick_lanes_order_by!]
+  $limit: Int = 100
+  $offset: Int = 0
 ) {
-	app_quick_lanes(
-		where: {
-			_and: [
-				{
-					_or: [
-						{ title: { _ilike: $filterString } }
-						{
-							owner: {
-								_or: [
-									{ first_name: { _ilike: $filterString } }
-									{ last_name: { _ilike: $filterString } }
-								]
-							}
-						}
-					]
-				}
-				{ _and: $filters }
-			]
-		}
-		order_by: $orderBy
-		offset: $offset
-		limit: $limit
-	) {
-		id
-		content_id
-		content_label
-		title
-		view_mode
-		start_oc
-		end_oc
-		created_at
-		updated_at
-		owner {
-			first_name
-			last_name
-			full_name
-			profile_id
-			mail
-			avatar
-			organisation {
-				name
-				logo_url
-				or_id
-			}
-		}
-	}
-	app_quick_lanes_aggregate(
-		where: {
-			_and: [
-				{
-					_or: [
-						{ title: { _ilike: $filterString } }
-						{
-							owner: {
-								_or: [
-									{ first_name: { _ilike: $filterString } }
-									{ last_name: { _ilike: $filterString } }
-								]
-							}
-						}
-					]
-				}
-				{ _and: $filters }
-			]
-		}
-	) {
-		aggregate {
-			count
-		}
-	}
+  app_quick_lanes(
+    where: {
+      _and: [
+        {
+          _or: [
+            { title: { _ilike: $filterString } }
+            {
+              owner: {
+                _or: [
+                  { first_name: { _ilike: $filterString } }
+                  { last_name: { _ilike: $filterString } }
+                ]
+              }
+            }
+          ]
+        }
+        { _and: $filters }
+      ]
+    }
+    order_by: $orderBy
+    offset: $offset
+    limit: $limit
+  ) {
+    id
+    content_id
+    content_label
+    title
+    view_mode
+    start_oc
+    end_oc
+    created_at
+    updated_at
+    owner {
+      first_name
+      last_name
+      full_name
+      profile_id
+      mail
+      avatar
+      organisation {
+        name
+        logo_url
+        or_id
+      }
+    }
+  }
+  app_quick_lanes_aggregate(
+    where: {
+      _and: [
+        {
+          _or: [
+            { title: { _ilike: $filterString } }
+            {
+              owner: {
+                _or: [
+                  { first_name: { _ilike: $filterString } }
+                  { last_name: { _ilike: $filterString } }
+                ]
+              }
+            }
+          ]
+        }
+        { _and: $filters }
+      ]
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
 }

@@ -1,37 +1,41 @@
-import {type Avo} from '@viaa/avo2-types';
-import {atom} from 'jotai';
-import {selectAtom} from 'jotai/utils';
+import { type Avo } from '@viaa/avo2-types'
+import { atom } from 'jotai'
+import { selectAtom } from 'jotai/utils'
 
-import {type LoginState} from './authentication.types.js';
+import { type LoginState } from './authentication.types.js'
 
 export const loginAtom = atom<LoginState>({
-	data: null,
-	loading: false,
-	error: false,
-});
+  data: null,
+  loading: false,
+  error: false,
+})
 
 export const commonUserAtom = selectAtom(
-	loginAtom,
-	(loginState) => (loginState.data as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo
-);
+  loginAtom,
+  (loginState) =>
+    (loginState.data as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo,
+)
 
 /**
  * @deprecated please use commonUserAtom instead
  */
 export const userAtom = selectAtom(
-	loginAtom,
-	(loginState) => (loginState.data as Avo.Auth.LoginResponseLoggedIn)?.userInfo
-);
+  loginAtom,
+  (loginState) => (loginState.data as Avo.Auth.LoginResponseLoggedIn)?.userInfo,
+)
 
-export const acceptConditionsAtom = atom<boolean | null, [], void>(null, (get, set) => {
-	const newLoginState = {
-		...get(loginAtom),
-		data: {
-			...(get(loginAtom).data as Avo.Auth.LoginResponse),
-			acceptedConditions: true,
-		},
-		loading: false,
-		error: false,
-	};
-	set(loginAtom, newLoginState);
-});
+export const acceptConditionsAtom = atom<boolean | null, [], void>(
+  null,
+  (get, set) => {
+    const newLoginState = {
+      ...get(loginAtom),
+      data: {
+        ...(get(loginAtom).data as Avo.Auth.LoginResponse),
+        acceptedConditions: true,
+      },
+      loading: false,
+      error: false,
+    }
+    set(loginAtom, newLoginState)
+  },
+)

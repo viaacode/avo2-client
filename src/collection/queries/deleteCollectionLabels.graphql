@@ -1,7 +1,7 @@
 mutation deleteCollectionLabels($labels: [String!]!, $collectionId: uuid!) {
-	delete_app_collection_labels(
-		where: { label: { _in: $labels }, collection_uuid: { _eq: $collectionId } }
-	) {
-		affected_rows
-	}
+  delete_app_collection_labels(
+    where: { label: { _in: $labels }, collection_uuid: { _eq: $collectionId } }
+  ) {
+    affected_rows
+  }
 }

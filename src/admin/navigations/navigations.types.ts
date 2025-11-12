@@ -1,4 +1,4 @@
 export interface MenuEditParams {
-	navigationBarId?: string;
-	navigationItemId?: string;
+  navigationBarId?: string
+  navigationItemId?: string
 }

@@ -1,37 +1,37 @@
 query getItemBookmarksForUser(
-	$profileId: uuid!
-	$filter: [app_item_bookmarks_bool_exp!]
-	$order: [app_item_bookmarks_order_by!]! = [{ created_at: desc }]
+  $profileId: uuid!
+  $filter: [app_item_bookmarks_bool_exp!]
+  $order: [app_item_bookmarks_order_by!]! = [{ created_at: desc }]
 ) {
-	app_item_bookmarks(
-		where: { profile_id: { _eq: $profileId }, _and: $filter }
-		order_by: $order
-	) {
-		bookmarkedItem {
-			title
-			thumbnail_path
-			duration
-			issued
-			item {
-				external_id
-				item_meta {
-					organisation {
-						name
-					}
-					is_deleted
-					is_published
-					type_id
-					type {
-						id
-						label
-					}
-				}
-			}
-			view_count {
-				count
-			}
-		}
-		item_id
-		created_at
-	}
+  app_item_bookmarks(
+    where: { profile_id: { _eq: $profileId }, _and: $filter }
+    order_by: $order
+  ) {
+    bookmarkedItem {
+      title
+      thumbnail_path
+      duration
+      issued
+      item {
+        external_id
+        item_meta {
+          organisation {
+            name
+          }
+          is_deleted
+          is_published
+          type_id
+          type {
+            id
+            label
+          }
+        }
+      }
+      view_count {
+        count
+      }
+    }
+    item_id
+    created_at
+  }
 }

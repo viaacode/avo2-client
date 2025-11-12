@@ -1,26 +1,28 @@
 mutation insertCollectionManagementEntry(
-	$collection_id: uuid!
-	$current_status: String
-	$manager_profile_id: uuid
-	$status_valid_until: timestamptz
-	$note: String
-	$updated_at: timestamptz
+  $collection_id: uuid!
+  $current_status: String
+  $manager_profile_id: uuid
+  $status_valid_until: timestamptz
+  $note: String
+  $updated_at: timestamptz
 ) {
-	delete_app_collection_management(where: { collection_id: { _eq: $collection_id } }) {
-		affected_rows
-	}
-	insert_app_collection_management(
-		objects: [
-			{
-				collection_id: $collection_id
-				current_status: $current_status
-				manager_profile_id: $manager_profile_id
-				status_valid_until: $status_valid_until
-				note: $note
-				updated_at: $updated_at
-			}
-		]
-	) {
-		affected_rows
-	}
+  delete_app_collection_management(
+    where: { collection_id: { _eq: $collection_id } }
+  ) {
+    affected_rows
+  }
+  insert_app_collection_management(
+    objects: [
+      {
+        collection_id: $collection_id
+        current_status: $current_status
+        manager_profile_id: $manager_profile_id
+        status_valid_until: $status_valid_until
+        note: $note
+        updated_at: $updated_at
+      }
+    ]
+  ) {
+    affected_rows
+  }
 }

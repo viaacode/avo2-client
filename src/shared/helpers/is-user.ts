@@ -1,21 +1,25 @@
-import {type Avo} from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types'
 
-import {EducationLevelId} from './lom.js';
+import { EducationLevelId } from './lom.js'
 
-type UserLomsAndUserGroup = Partial<Pick<Avo.User.CommonUser, 'loms' | 'userGroup'>>;
+type UserLomsAndUserGroup = Partial<
+  Pick<Avo.User.CommonUser, 'loms' | 'userGroup'>
+>
 
 /**
  * @param user The user to evaluate
  * @returns A boolean indicating if they have both Elementary & Secondary LOM's
  */
-export function isUserSecondaryElementary(user: UserLomsAndUserGroup | null | undefined): boolean {
-	if (!user) {
-		return false;
-	}
-	return isUserLevel(user, [
-		EducationLevelId.lagerOnderwijs,
-		EducationLevelId.secundairOnderwijs,
-	]);
+export function isUserSecondaryElementary(
+  user: UserLomsAndUserGroup | null | undefined,
+): boolean {
+  if (!user) {
+    return false
+  }
+  return isUserLevel(user, [
+    EducationLevelId.lagerOnderwijs,
+    EducationLevelId.secundairOnderwijs,
+  ])
 }
 
 /**
@@ -24,15 +28,13 @@ export function isUserSecondaryElementary(user: UserLomsAndUserGroup | null | un
  * @param levels
  */
 export function isUserLevel(
-	user: Partial<Pick<UserLomsAndUserGroup, 'loms'>>,
-	levels: EducationLevelId[]
+  user: Partial<Pick<UserLomsAndUserGroup, 'loms'>>,
+  levels: EducationLevelId[],
 ) {
-	return levels.every(
-		(level) => {
-			const userLoms = (user.loms || []) as Avo.Lom.Lom[];
-			return userLoms.find(({ lom, lom_id }) => {
-				return (lom_id || lom?.id) === level
-			})
-		}
-	);
+  return levels.every((level) => {
+    const userLoms = (user.loms || []) as Avo.Lom.Lom[]
+    return userLoms.find(({ lom, lom_id }) => {
+      return (lom_id || lom?.id) === level
+    })
+  })
 }

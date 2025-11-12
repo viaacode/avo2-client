@@ -1,5 +1,5 @@
 query getUnpublishedItemPids($where: shared_items_bool_exp!) {
-	shared_items(where: $where) {
-		pid
-	}
+  shared_items(where: $where) {
+    pid
+  }
 }

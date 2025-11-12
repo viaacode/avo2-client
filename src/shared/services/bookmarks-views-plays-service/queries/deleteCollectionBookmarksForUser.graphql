@@ -1,7 +1,13 @@
-mutation deleteCollectionBookmarksForUser($collectionUuid: uuid!, $profileId: uuid) {
-	delete_app_collection_bookmarks(
-		where: { collection_uuid: { _eq: $collectionUuid }, profile_id: { _eq: $profileId } }
-	) {
-		affected_rows
-	}
+mutation deleteCollectionBookmarksForUser(
+  $collectionUuid: uuid!
+  $profileId: uuid
+) {
+  delete_app_collection_bookmarks(
+    where: {
+      collection_uuid: { _eq: $collectionUuid }
+      profile_id: { _eq: $profileId }
+    }
+  ) {
+    affected_rows
+  }
 }

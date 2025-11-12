@@ -1,67 +1,70 @@
-import { PermissionName } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import React, { type FC, lazy, Suspense, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { useNavigate, useParams } from 'react-router';
+import { PermissionName } from '@viaa/avo2-types'
+import { useAtomValue } from 'jotai'
+import React, { type FC, lazy, Suspense, useState } from 'react'
+import { Helmet } from 'react-helmet'
+import { useNavigate, useParams } from 'react-router'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js';
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
-import { GENERATE_SITE_TITLE } from '../../../constants.js';
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js';
-import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback.js';
-import { ADMIN_PATH } from '../../admin.const.js';
-import { UserService } from '../user.service.js';
+import { commonUserAtom } from '../../../authentication/authentication.store.js'
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
+import { GENERATE_SITE_TITLE } from '../../../constants.js'
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js'
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback.js'
+import { ADMIN_PATH } from '../../admin.const.js'
+import { UserService } from '../user.service.js'
 
-import './UserDetailPage.scss';
-import { tText } from '../../../shared/helpers/translate-text.js';
+import './UserDetailPage.scss'
+import { tText } from '../../../shared/helpers/translate-text.js'
 
 const UserDetail = lazy(() =>
-	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
-		default: adminCoreModule.UserDetail,
-	}))
-);
+  import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
+    default: adminCoreModule.UserDetail,
+  })),
+)
 
 const UserDetailPage: FC = () => {
-	const navigateFunc = useNavigate();
-	const commonUser = useAtomValue(commonUserAtom);
+  const navigateFunc = useNavigate()
+  const commonUser = useAtomValue(commonUserAtom)
 
-	const [user, setUser] = useState<{ fullName?: string } | undefined>();
-	const { id } = useParams<{ id: string }>();
+  const [user, setUser] = useState<{ fullName?: string } | undefined>()
+  const { id } = useParams<{ id: string }>()
 
-	return (
-		<>
-			<PermissionGuard permissions={[PermissionName.VIEW_USERS]}>
-				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							user?.fullName,
-							tText('admin/users/views/user-detail___item-detail-pagina-titel')
-						)}
-					</title>
-					<meta
-						name="description"
-						content={tText(
-							'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving'
-						)}
-					/>
-				</Helmet>
+  return (
+    <>
+      <PermissionGuard permissions={[PermissionName.VIEW_USERS]}>
+        <Helmet>
+          <title>
+            {GENERATE_SITE_TITLE(
+              user?.fullName,
+              tText('admin/users/views/user-detail___item-detail-pagina-titel'),
+            )}
+          </title>
+          <meta
+            name="description"
+            content={tText(
+              'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving',
+            )}
+          />
+        </Helmet>
 
-				<Suspense fallback={<FullPageSpinner />}>
-					{!!id && (
-						<UserDetail
-							id={id}
-							onSetTempAccess={UserService.updateTempAccessByUserId}
-							onLoaded={setUser}
-							onGoBack={() =>
-								goBrowserBackWithFallback(ADMIN_PATH.USER_OVERVIEW, navigateFunc)
-							}
-							commonUser={commonUser}
-						/>
-					)}
-				</Suspense>
-			</PermissionGuard>
-		</>
-	);
-};
+        <Suspense fallback={<FullPageSpinner />}>
+          {!!id && (
+            <UserDetail
+              id={id}
+              onSetTempAccess={UserService.updateTempAccessByUserId}
+              onLoaded={setUser}
+              onGoBack={() =>
+                goBrowserBackWithFallback(
+                  ADMIN_PATH.USER_OVERVIEW,
+                  navigateFunc,
+                )
+              }
+              commonUser={commonUser}
+            />
+          )}
+        </Suspense>
+      </PermissionGuard>
+    </>
+  )
+}
 
-export default UserDetailPage;
+export default UserDetailPage

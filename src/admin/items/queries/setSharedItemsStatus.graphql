@@ -1,5 +1,11 @@
-mutation setSharedItemsStatus($pids: [String!]!, $status: item_publishing_status) {
-	update_shared_items(where: { pid: { _in: $pids } }, _set: { status: $status }) {
-		affected_rows
-	}
+mutation setSharedItemsStatus(
+  $pids: [String!]!
+  $status: item_publishing_status
+) {
+  update_shared_items(
+    where: { pid: { _in: $pids } }
+    _set: { status: $status }
+  ) {
+    affected_rows
+  }
 }

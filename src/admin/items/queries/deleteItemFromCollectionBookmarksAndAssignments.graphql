@@ -1,11 +1,13 @@
 mutation deleteItemFromCollectionBookmarksAndAssignments(
-	$itemExternalId: bpchar!
-	$itemUid: uuid!
+  $itemExternalId: bpchar!
+  $itemUid: uuid!
 ) {
-	delete_app_collection_fragments(where: { external_id: { _eq: $itemExternalId } }) {
-		affected_rows
-	}
-	delete_app_item_bookmarks(where: { item_id: { _eq: $itemUid } }) {
-		affected_rows
-	}
+  delete_app_collection_fragments(
+    where: { external_id: { _eq: $itemExternalId } }
+  ) {
+    affected_rows
+  }
+  delete_app_item_bookmarks(where: { item_id: { _eq: $itemUid } }) {
+    affected_rows
+  }
 }

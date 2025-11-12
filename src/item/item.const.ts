@@ -1,1 +1,1 @@
-export const RELATED_ITEMS_AMOUNT = 5;
+export const RELATED_ITEMS_AMOUNT = 5

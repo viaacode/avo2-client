@@ -1,9 +1,9 @@
 query getItemViewCount($itemUuid: uuid!) {
-	app_item_meta(where: { uid: { _eq: $itemUuid } }) {
-		view_count {
-			count
-		}
-		is_deleted
-		is_published
-	}
+  app_item_meta(where: { uid: { _eq: $itemUuid } }) {
+    view_count {
+      count
+    }
+    is_deleted
+    is_published
+  }
 }

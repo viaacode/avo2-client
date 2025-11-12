@@ -1,31 +1,31 @@
 query getOrganisationContent(
-	$offset: Int = 0
-	$limit: Int
-	$order: [app_collections_order_by!] = { updated_at: desc }
-	$company_id: String!
+  $offset: Int = 0
+  $limit: Int
+  $order: [app_collections_order_by!] = { updated_at: desc }
+  $company_id: String!
 ) {
-	app_collections(
-		where: {
-			owner: { company_id: { _eq: $company_id } }
-			is_deleted: { _eq: false }
-			is_public: { _eq: true }
-		}
-		offset: $offset
-		limit: $limit
-		order_by: $order
-	) {
-		id
-		created_at
-		title
-		updated_at
-		type {
-			label
-		}
-		last_editor {
-			full_name
-		}
-		owner {
-			full_name
-		}
-	}
+  app_collections(
+    where: {
+      owner: { company_id: { _eq: $company_id } }
+      is_deleted: { _eq: false }
+      is_public: { _eq: true }
+    }
+    offset: $offset
+    limit: $limit
+    order_by: $order
+  ) {
+    id
+    created_at
+    title
+    updated_at
+    type {
+      label
+    }
+    last_editor {
+      full_name
+    }
+    owner {
+      full_name
+    }
+  }
 }

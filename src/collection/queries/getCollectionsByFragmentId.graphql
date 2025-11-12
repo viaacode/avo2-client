@@ -1,23 +1,23 @@
 query getCollectionsByItemUuid($fragmentId: bpchar!) {
-	app_collections(
-		where: {
-			collection_fragments: { external_id: { _eq: $fragmentId } }
-			is_deleted: { _eq: false }
-		}
-	) {
-		id
-		title
-		is_public
-		profile {
-			user: usersByuserId {
-				first_name
-				last_name
-				id
-			}
-			id
-			organisation {
-				name
-			}
-		}
-	}
+  app_collections(
+    where: {
+      collection_fragments: { external_id: { _eq: $fragmentId } }
+      is_deleted: { _eq: false }
+    }
+  ) {
+    id
+    title
+    is_public
+    profile {
+      user: usersByuserId {
+        first_name
+        last_name
+        id
+      }
+      id
+      organisation {
+        name
+      }
+    }
+  }
 }

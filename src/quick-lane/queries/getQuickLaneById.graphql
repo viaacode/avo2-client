@@ -1,26 +1,26 @@
 query getQuickLaneById($id: uuid = "") {
-	app_quick_lanes(where: { id: { _eq: $id } }) {
-		id
-		content_id
-		content_label
-		title
-		view_mode
-		start_oc
-		end_oc
-		created_at
-		updated_at
-		owner {
-			first_name
-			last_name
-			full_name
-			profile_id
-			mail
-			avatar
-			organisation {
-				name
-				logo_url
-				or_id
-			}
-		}
-	}
+  app_quick_lanes(where: { id: { _eq: $id } }) {
+    id
+    content_id
+    content_label
+    title
+    view_mode
+    start_oc
+    end_oc
+    created_at
+    updated_at
+    owner {
+      first_name
+      last_name
+      full_name
+      profile_id
+      mail
+      avatar
+      organisation {
+        name
+        logo_url
+        or_id
+      }
+    }
+  }
 }

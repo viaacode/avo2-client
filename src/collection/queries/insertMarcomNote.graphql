@@ -1,7 +1,9 @@
 mutation insertMarcomNote($collectionId: uuid, $note: String) {
-	insert_app_collection_marcom_notes(objects: { note: $note, collection_id: $collectionId }) {
-		returning {
-			id
-		}
-	}
+  insert_app_collection_marcom_notes(
+    objects: { note: $note, collection_id: $collectionId }
+  ) {
+    returning {
+      id
+    }
+  }
 }

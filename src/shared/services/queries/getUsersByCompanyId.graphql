@@ -1,28 +1,28 @@
 query getUsersByCompanyId($companyId: String!) {
-	users_profiles(
-		order_by: { usersByuserId: { first_name: asc } }
-		where: { company_id: { _eq: $companyId }, is_deleted: { _eq: false } }
-	) {
-		id
-		user: usersByuserId {
-			uid
-			full_name
-			mail
-			is_blocked
-			last_access_at
-		}
-		temp_access {
-			from
-			until
-			has_currently_access {
-				status
-			}
-		}
-		profile_user_group {
-			group {
-				id
-				label
-			}
-		}
-	}
+  users_profiles(
+    order_by: { usersByuserId: { first_name: asc } }
+    where: { company_id: { _eq: $companyId }, is_deleted: { _eq: false } }
+  ) {
+    id
+    user: usersByuserId {
+      uid
+      full_name
+      mail
+      is_blocked
+      last_access_at
+    }
+    temp_access {
+      from
+      until
+      has_currently_access {
+        status
+      }
+    }
+    profile_user_group {
+      group {
+        id
+        label
+      }
+    }
+  }
 }

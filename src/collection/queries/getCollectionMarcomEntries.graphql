@@ -1,18 +1,18 @@
 query getCollectionMarcomEntries($collectionUuid: uuid!) {
-	app_collection_marcom_log(
-		where: { collection_id: { _eq: $collectionUuid } }
-		limit: 10
-		order_by: [{ created_at: desc_nulls_last }]
-	) {
-		id
-		channel_name
-		channel_type
-		external_link
-		publish_date
-		collection_id
-		parent_collection {
-			id
-			title
-		}
-	}
+  app_collection_marcom_log(
+    where: { collection_id: { _eq: $collectionUuid } }
+    limit: 10
+    order_by: [{ created_at: desc_nulls_last }]
+  ) {
+    id
+    channel_name
+    channel_type
+    external_link
+    publish_date
+    collection_id
+    parent_collection {
+      id
+      title
+    }
+  }
 }

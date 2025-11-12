@@ -1,26 +1,31 @@
 query getUnpublishedItemsWithFilters(
-	$where: shared_items_bool_exp!
-	$orderBy: [shared_items_order_by!]
-	$offset: Int!
-	$limit: Int!
+  $where: shared_items_bool_exp!
+  $orderBy: [shared_items_order_by!]
+  $offset: Int!
+  $limit: Int!
 ) {
-	shared_items(where: $where, order_by: $orderBy, offset: $offset, limit: $limit) {
-		id
-		pid
-		updated_at
-		title
-		status
-		item_meta {
-			id
-			external_id
-			uid
-			is_published
-			is_deleted
-		}
-	}
-	shared_items_aggregate(where: $where) {
-		aggregate {
-			count
-		}
-	}
+  shared_items(
+    where: $where
+    order_by: $orderBy
+    offset: $offset
+    limit: $limit
+  ) {
+    id
+    pid
+    updated_at
+    title
+    status
+    item_meta {
+      id
+      external_id
+      uid
+      is_published
+      is_deleted
+    }
+  }
+  shared_items_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
 }

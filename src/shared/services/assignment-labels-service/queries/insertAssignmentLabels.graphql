@@ -1,7 +1,9 @@
-mutation insertAssignmentLabels($objects: [app_assignment_labels_v2_insert_input!]!) {
-	insert_app_assignment_labels_v2(objects: $objects) {
-		returning {
-			id
-		}
-	}
+mutation insertAssignmentLabels(
+  $objects: [app_assignment_labels_v2_insert_input!]!
+) {
+  insert_app_assignment_labels_v2(objects: $objects) {
+    returning {
+      id
+    }
+  }
 }

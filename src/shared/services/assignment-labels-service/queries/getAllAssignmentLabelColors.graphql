@@ -1,6 +1,6 @@
 query getAllAssignmentLabelColors {
-	lookup_enum_colors {
-		label
-		value
-	}
+  lookup_enum_colors {
+    label
+    value
+  }
 }

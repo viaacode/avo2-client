@@ -1,5 +1,7 @@
-mutation insertMarcomEntry($objects: [app_collection_marcom_log_insert_input!]!) {
-	insert_app_collection_marcom_log(objects: $objects) {
-		affected_rows
-	}
+mutation insertMarcomEntry(
+  $objects: [app_collection_marcom_log_insert_input!]!
+) {
+  insert_app_collection_marcom_log(objects: $objects) {
+    affected_rows
+  }
 }

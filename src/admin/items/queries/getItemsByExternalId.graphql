@@ -1,57 +1,57 @@
 query getItemsByExternalId($externalIds: [bpchar!] = []) {
-	app_item_meta(
-		where: {
-			external_id: { _in: $externalIds }
-			is_deleted: { _eq: false }
-			is_published: { _eq: true }
-		}
-	) {
-		created_at
-		depublish_at
-		description
-		duration
-		expiry_date
-		external_id
-		id
-		uid
-		is_deleted
-		is_orphaned
-		is_published
-		issued
-		issued_edtf
-		lom_classification
-		lom_thema
-		lom_context
-		lom_intendedenduserrole
-		lom_keywords
-		lom_languages
-		lom_typical_age_range: lom_typicalagerange
-		org_id
-		organisation {
-			or_id
-			name
-			logo_url
-			overlay
-		}
-		publish_at
-		published_at
-		series
-		thumbnail_path
-		title
-		type {
-			id
-			label
-		}
-		type_id
-		updated_at
-		note
-		item_collaterals(where: { description: { _eq: "subtitle" } }) {
-			path
-			description
-			external_id
-		}
-		view_count {
-			count
-		}
-	}
+  app_item_meta(
+    where: {
+      external_id: { _in: $externalIds }
+      is_deleted: { _eq: false }
+      is_published: { _eq: true }
+    }
+  ) {
+    created_at
+    depublish_at
+    description
+    duration
+    expiry_date
+    external_id
+    id
+    uid
+    is_deleted
+    is_orphaned
+    is_published
+    issued
+    issued_edtf
+    lom_classification
+    lom_thema
+    lom_context
+    lom_intendedenduserrole
+    lom_keywords
+    lom_languages
+    lom_typical_age_range: lom_typicalagerange
+    org_id
+    organisation {
+      or_id
+      name
+      logo_url
+      overlay
+    }
+    publish_at
+    published_at
+    series
+    thumbnail_path
+    title
+    type {
+      id
+      label
+    }
+    type_id
+    updated_at
+    note
+    item_collaterals(where: { description: { _eq: "subtitle" } }) {
+      path
+      description
+      external_id
+    }
+    view_count {
+      count
+    }
+  }
 }

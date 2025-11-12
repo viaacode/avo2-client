@@ -1,6 +1,6 @@
 query getOrganisationsWithUsers {
-	shared_organisations_with_users {
-		or_id: company_id
-		name
-	}
+  shared_organisations_with_users {
+    or_id: company_id
+    name
+  }
 }

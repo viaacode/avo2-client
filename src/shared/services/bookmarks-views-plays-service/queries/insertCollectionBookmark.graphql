@@ -1,5 +1,7 @@
-mutation insertCollectionBookmark($bookmarkItem: app_collection_bookmarks_insert_input!) {
-	insert_app_collection_bookmarks(objects: [$bookmarkItem]) {
-		affected_rows
-	}
+mutation insertCollectionBookmark(
+  $bookmarkItem: app_collection_bookmarks_insert_input!
+) {
+  insert_app_collection_bookmarks(objects: [$bookmarkItem]) {
+    affected_rows
+  }
 }

@@ -1,24 +1,24 @@
-import {BlockIntro} from '@meemoo/admin-core-ui/client';
-import {type Avo} from '@viaa/avo2-types';
+import { BlockIntro } from '@meemoo/admin-core-ui/client'
+import { type Avo } from '@viaa/avo2-types'
 
-import React, {type FC} from 'react';
+import React, { type FC } from 'react'
 
-import {APP_PATH} from '../../../constants.js';
-import {ItemVideoDescription} from '../../../item/components/ItemVideoDescription.js';
-import {DEFAULT_AUDIO_STILL} from '../../../shared/constants/index.js';
-import {buildLink} from '../../../shared/helpers/build-link.js';
-import {isMobileWidth} from '../../../shared/helpers/media-query.js';
-import {ContentTypeNumber} from '../../collection.types.js';
-import {getFragmentProperty} from '../../helpers/fragment.js';
+import { APP_PATH } from '../../../constants.js'
+import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription.js'
+import { DEFAULT_AUDIO_STILL } from '../../../shared/constants/index.js'
+import { buildLink } from '../../../shared/helpers/build-link.js'
+import { isMobileWidth } from '../../../shared/helpers/media-query.js'
+import { ContentTypeNumber } from '../../collection.types.js'
+import { getFragmentProperty } from '../../helpers/fragment.js'
 
-import './FragmentDetail.scss';
+import './FragmentDetail.scss'
 
 interface FragmentDetailProps {
-	collectionFragment: Avo.Collection.Fragment;
-	showDescription: boolean;
-	showMetadata: boolean;
-	linkToItems: boolean;
-	canPlay?: boolean;
+  collectionFragment: Avo.Collection.Fragment
+  showDescription: boolean
+  showMetadata: boolean
+  linkToItems: boolean
+  canPlay?: boolean
 }
 
 /**
@@ -29,73 +29,75 @@ interface FragmentDetailProps {
  * @constructor
  */
 export const FragmentDetail: FC<FragmentDetailProps> = ({
-	collectionFragment,
-	showDescription,
-	showMetadata,
-	linkToItems,
+  collectionFragment,
+  showDescription,
+  showMetadata,
+  linkToItems,
 }) => {
-	if ((collectionFragment?.item_meta as Avo.Item.Item)?.type?.label === 'audio') {
-		collectionFragment.thumbnail_path = DEFAULT_AUDIO_STILL;
-	}
+  if (
+    (collectionFragment?.item_meta as Avo.Item.Item)?.type?.label === 'audio'
+  ) {
+    collectionFragment.thumbnail_path = DEFAULT_AUDIO_STILL
+  }
 
-	const getTitleLink = (): string | undefined => {
-		if (
-			linkToItems &&
-			collectionFragment.item_meta &&
-			[ContentTypeNumber.video, ContentTypeNumber.audio].includes(
-				collectionFragment.item_meta.type_id
-			)
-		) {
-			return buildLink(APP_PATH.ITEM_DETAIL.route, {
-				id: (collectionFragment.item_meta as Avo.Item.Item).external_id,
-			});
-		}
-		return undefined;
-	};
+  const getTitleLink = (): string | undefined => {
+    if (
+      linkToItems &&
+      collectionFragment.item_meta &&
+      [ContentTypeNumber.video, ContentTypeNumber.audio].includes(
+        collectionFragment.item_meta.type_id,
+      )
+    ) {
+      return buildLink(APP_PATH.ITEM_DETAIL.route, {
+        id: (collectionFragment.item_meta as Avo.Item.Item).external_id,
+      })
+    }
+    return undefined
+  }
 
-	return collectionFragment.item_meta ? (
-		<ItemVideoDescription
-			showDescription={showDescription}
-			showMetadata={showMetadata}
-			enableMetadataLink={false}
-			showTitle
-			itemMetaData={{
-				...(collectionFragment.item_meta as Avo.Item.Item),
-				thumbnail_path:
-					collectionFragment.thumbnail_path ||
-					(collectionFragment.item_meta as Avo.Item.Item).thumbnail_path,
-			}}
-			title={getFragmentProperty(
-				collectionFragment.item_meta as Avo.Item.Item,
-				collectionFragment,
-				collectionFragment.use_custom_fields,
-				'title'
-			)}
-			description={getFragmentProperty(
-				collectionFragment.item_meta as Avo.Item.Item,
-				collectionFragment,
-				collectionFragment.use_custom_fields,
-				'description'
-			)}
-			titleLink={getTitleLink()}
-			cuePointsVideo={{
-				start: collectionFragment.start_oc,
-				end: collectionFragment.end_oc,
-			}}
-			cuePointsLabel={{
-				start: collectionFragment.start_oc,
-				end: collectionFragment.end_oc,
-			}}
-			verticalLayout={isMobileWidth()}
-			trackPlayEvent={true}
-		/>
-	) : (
-		<BlockIntro
-			content={collectionFragment.custom_description || ''}
-			title={collectionFragment.custom_title || ''}
-			headingType="h3"
-			align="center"
-			className="c-fragment-detail__intro-block"
-		/>
-	);
-};
+  return collectionFragment.item_meta ? (
+    <ItemVideoDescription
+      showDescription={showDescription}
+      showMetadata={showMetadata}
+      enableMetadataLink={false}
+      showTitle
+      itemMetaData={{
+        ...(collectionFragment.item_meta as Avo.Item.Item),
+        thumbnail_path:
+          collectionFragment.thumbnail_path ||
+          (collectionFragment.item_meta as Avo.Item.Item).thumbnail_path,
+      }}
+      title={getFragmentProperty(
+        collectionFragment.item_meta as Avo.Item.Item,
+        collectionFragment,
+        collectionFragment.use_custom_fields,
+        'title',
+      )}
+      description={getFragmentProperty(
+        collectionFragment.item_meta as Avo.Item.Item,
+        collectionFragment,
+        collectionFragment.use_custom_fields,
+        'description',
+      )}
+      titleLink={getTitleLink()}
+      cuePointsVideo={{
+        start: collectionFragment.start_oc,
+        end: collectionFragment.end_oc,
+      }}
+      cuePointsLabel={{
+        start: collectionFragment.start_oc,
+        end: collectionFragment.end_oc,
+      }}
+      verticalLayout={isMobileWidth()}
+      trackPlayEvent={true}
+    />
+  ) : (
+    <BlockIntro
+      content={collectionFragment.custom_description || ''}
+      title={collectionFragment.custom_title || ''}
+      headingType="h3"
+      align="center"
+      className="c-fragment-detail__intro-block"
+    />
+  )
+}

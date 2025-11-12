@@ -1,48 +1,50 @@
-import { PermissionName } from '@viaa/avo2-types';
-import React, { type FC, lazy, Suspense } from 'react';
-import { useMatch, useNavigate } from 'react-router';
+import { PermissionName } from '@viaa/avo2-types'
+import React, { type FC, lazy, Suspense } from 'react'
+import { useMatch, useNavigate } from 'react-router'
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js';
-import { buildLink } from '../../../shared/helpers/build-link.js';
-import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback.js';
-import { ADMIN_PATH } from '../../admin.const.js';
-import { CONTENT_PAGE_LABEL_PATH } from '../content-page-label.const.js';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js'
+import { buildLink } from '../../../shared/helpers/build-link.js'
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback.js'
+import { ADMIN_PATH } from '../../admin.const.js'
+import { CONTENT_PAGE_LABEL_PATH } from '../content-page-label.const.js'
 
 const ContentPageLabelEdit = lazy(() =>
-	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
-		default: adminCoreModule.ContentPageLabelEdit,
-	}))
-);
+  import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
+    default: adminCoreModule.ContentPageLabelEdit,
+  })),
+)
 
 const ContentPageLabelEditPage: FC = () => {
-	const navigateFunc = useNavigate();
-	const matchContentPageLabelCreate = useMatch<'id', string>(
-		CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_CREATE
-	);
-	const matchContentPageLabelEdit = useMatch<'id', string>(
-		CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_EDIT
-	);
-	const match = matchContentPageLabelCreate || matchContentPageLabelEdit;
+  const navigateFunc = useNavigate()
+  const matchContentPageLabelCreate = useMatch<'id', string>(
+    CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_CREATE,
+  )
+  const matchContentPageLabelEdit = useMatch<'id', string>(
+    CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_EDIT,
+  )
+  const match = matchContentPageLabelCreate || matchContentPageLabelEdit
 
-	const contentPageLabelId = match?.params.id;
+  const contentPageLabelId = match?.params.id
 
-	return (
-		<Suspense fallback={<FullPageSpinner />}>
-			<PermissionGuard permissions={[PermissionName.EDIT_CONTENT_PAGE_LABELS]}>
-				<ContentPageLabelEdit
-					className="c-admin-core c-admin__content-page-label-edit"
-					contentPageLabelId={contentPageLabelId}
-					onGoBack={() =>
-						goBrowserBackWithFallback(
-							buildLink(ADMIN_PATH.CONTENT_PAGE_DETAIL, { id: contentPageLabelId }),
-							navigateFunc
-						)
-					}
-				/>
-			</PermissionGuard>
-		</Suspense>
-	);
-};
+  return (
+    <Suspense fallback={<FullPageSpinner />}>
+      <PermissionGuard permissions={[PermissionName.EDIT_CONTENT_PAGE_LABELS]}>
+        <ContentPageLabelEdit
+          className="c-admin-core c-admin__content-page-label-edit"
+          contentPageLabelId={contentPageLabelId}
+          onGoBack={() =>
+            goBrowserBackWithFallback(
+              buildLink(ADMIN_PATH.CONTENT_PAGE_DETAIL, {
+                id: contentPageLabelId,
+              }),
+              navigateFunc,
+            )
+          }
+        />
+      </PermissionGuard>
+    </Suspense>
+  )
+}
 
-export default ContentPageLabelEditPage;
+export default ContentPageLabelEditPage

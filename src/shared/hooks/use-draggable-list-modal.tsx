@@ -1,51 +1,55 @@
-import { Button, type ButtonProps, IconName } from '@viaa/avo2-components';
-import { isNil } from 'es-toolkit';
-import React, { type ReactNode, useState } from 'react';
+import { Button, type ButtonProps, IconName } from '@viaa/avo2-components'
+import { isNil } from 'es-toolkit'
+import React, { type ReactNode, useState } from 'react'
 
-import { DraggableBlock } from '../components/DraggableBlock/DraggableBlock.js';
+import { DraggableBlock } from '../components/DraggableBlock/DraggableBlock.js'
 import {
-	DraggableListModal,
-	type DraggableListModalProps,
-} from '../components/DraggableList/DraggableListModal.js';
-import { tText } from '../helpers/translate-text.js';
+  DraggableListModal,
+  type DraggableListModalProps,
+} from '../components/DraggableList/DraggableListModal.js'
+import { tText } from '../helpers/translate-text.js'
 
 export function useDraggableListModal(config?: {
-	button?: Partial<ButtonProps>;
-	modal?: Partial<DraggableListModalProps>;
-	setIsOpen?: (isOpen: boolean) => void; // Optional, if not passed, the hook will keep track of the open state
+  button?: Partial<ButtonProps>
+  modal?: Partial<DraggableListModalProps>
+  setIsOpen?: (isOpen: boolean) => void // Optional, if not passed, the hook will keep track of the open state
 }): [ReactNode, ReactNode] {
-	const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
-	const button = (
-		<Button
-			icon={IconName.shuffle}
-			{...config?.button}
-			type="secondary"
-			label={
-				config?.button?.label ||
-				tText('collection/components/collection-or-bundle-edit___herorden-fragmenten')
-			}
-			title={tText(
-				'shared/hooks/use-draggable-list-modal___herorden-de-onderdelen-via-drag-and-drop'
-			)}
-			onClick={(e) => {
-				(config?.setIsOpen || setIsOpen)(true);
-				config?.button?.onClick?.(e);
-			}}
-		/>
-	);
+  const button = (
+    <Button
+      icon={IconName.shuffle}
+      {...config?.button}
+      type="secondary"
+      label={
+        config?.button?.label ||
+        tText(
+          'collection/components/collection-or-bundle-edit___herorden-fragmenten',
+        )
+      }
+      title={tText(
+        'shared/hooks/use-draggable-list-modal___herorden-de-onderdelen-via-drag-and-drop',
+      )}
+      onClick={(e) => {
+        ;(config?.setIsOpen || setIsOpen)(true)
+        config?.button?.onClick?.(e)
+      }}
+    />
+  )
 
-	const modal = (
-		<DraggableListModal
-			{...config?.modal}
-			renderItem={(item) => <DraggableBlock block={item} />}
-			isOpen={isNil(config?.modal?.isOpen) ? isOpen : config?.modal?.isOpen || false} // Allow external config to open modal, if not provided, internal isOpen state will be used
-			onClose={(update?: any[]) => {
-				(config?.setIsOpen || setIsOpen)(false);
-				config?.modal?.onClose?.(update);
-			}}
-		/>
-	);
+  const modal = (
+    <DraggableListModal
+      {...config?.modal}
+      renderItem={(item) => <DraggableBlock block={item} />}
+      isOpen={
+        isNil(config?.modal?.isOpen) ? isOpen : config?.modal?.isOpen || false
+      } // Allow external config to open modal, if not provided, internal isOpen state will be used
+      onClose={(update?: any[]) => {
+        ;(config?.setIsOpen || setIsOpen)(false)
+        config?.modal?.onClose?.(update)
+      }}
+    />
+  )
 
-	return [button, modal];
+  return [button, modal]
 }

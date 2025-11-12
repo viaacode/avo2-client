@@ -1,7 +1,10 @@
-mutation bulkDeleteLabelsFromCollections($labels: [String!]!, $collectionIds: [uuid!]!) {
-	delete_app_collection_labels(
-		where: { label: { _in: $labels }, collection_uuid: { _in: $collectionIds } }
-	) {
-		affected_rows
-	}
+mutation bulkDeleteLabelsFromCollections(
+  $labels: [String!]!
+  $collectionIds: [uuid!]!
+) {
+  delete_app_collection_labels(
+    where: { label: { _in: $labels }, collection_uuid: { _in: $collectionIds } }
+  ) {
+    affected_rows
+  }
 }

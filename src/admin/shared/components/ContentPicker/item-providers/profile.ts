@@ -1,41 +1,53 @@
-import {fetchWithLogoutJson} from '@meemoo/admin-core-ui/client';
-import {Avo} from '@viaa/avo2-types';
-import {stringifyUrl} from 'query-string';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
+import { Avo } from '@viaa/avo2-types'
+import { stringifyUrl } from 'query-string'
 
-import {CustomError} from '../../../../../shared/helpers/custom-error.js';
-import {getEnv} from '../../../../../shared/helpers/env.js';
-import {type PickerItem} from '../../../types/content-picker.js';
-import {parsePickerItem} from '../helpers/parse-picker.js';
+import { CustomError } from '../../../../../shared/helpers/custom-error.js'
+import { getEnv } from '../../../../../shared/helpers/env.js'
+import { type PickerItem } from '../../../types/content-picker.js'
+import { parsePickerItem } from '../helpers/parse-picker.js'
 
 // Fetch profiles from GQL
-export const retrieveProfiles = async (name: string | null, limit = 5): Promise<PickerItem[]> => {
-	try {
-		return await getUsers(limit, name);
-	} catch (err) {
-		throw new CustomError('Failed to get profiles for content picker', err, { name, limit });
-	}
-};
+export const retrieveProfiles = async (
+  name: string | null,
+  limit = 5,
+): Promise<PickerItem[]> => {
+  try {
+    return await getUsers(limit, name)
+  } catch (err) {
+    throw new CustomError('Failed to get profiles for content picker', err, {
+      name,
+      limit,
+    })
+  }
+}
 
 // Convert profiles to react-select options
 const parseProfiles = (users: Partial<Avo.User.CommonUser>[]): PickerItem[] => {
-	return users.map(
-		(user): PickerItem => ({
-			...parsePickerItem(Avo.Core.ContentPickerType.PROFILE, user.profileId as string),
-			label: `${user.fullName} (${user.email})`,
-		})
-	);
-};
+  return users.map(
+    (user): PickerItem => ({
+      ...parsePickerItem(
+        Avo.Core.ContentPickerType.PROFILE,
+        user.profileId as string,
+      ),
+      label: `${user.fullName} (${user.email})`,
+    }),
+  )
+}
 
-async function getUsers(limit: number, partialName: string | null): Promise<PickerItem[]> {
-	const url = stringifyUrl({
-		url: `${getEnv('PROXY_URL')}/user/get-names-and-emails`,
-		query: {
-			offset: 0,
-			limit,
-			name: partialName,
-		},
-	});
-	const users = await fetchWithLogoutJson<Partial<Avo.User.CommonUser>[]>(url);
+async function getUsers(
+  limit: number,
+  partialName: string | null,
+): Promise<PickerItem[]> {
+  const url = stringifyUrl({
+    url: `${getEnv('PROXY_URL')}/user/get-names-and-emails`,
+    query: {
+      offset: 0,
+      limit,
+      name: partialName,
+    },
+  })
+  const users = await fetchWithLogoutJson<Partial<Avo.User.CommonUser>[]>(url)
 
-	return parseProfiles(users);
+  return parseProfiles(users)
 }

@@ -1,38 +1,38 @@
-import { FormGroup, type TagInfo, TagsInput } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { compact } from 'es-toolkit';
-import React, { type FC } from 'react';
+import { FormGroup, type TagInfo, TagsInput } from '@viaa/avo2-components'
+import { type Avo } from '@viaa/avo2-types'
+import { compact } from 'es-toolkit'
+import React, { type FC } from 'react'
 
-import { lomToTagInfo } from '../../helpers/string-to-select-options.js';
-import { tText } from '../../helpers/translate-text.js';
-import { useLomSubjects } from '../../hooks/useLomSubjects.js';
+import { lomToTagInfo } from '../../helpers/string-to-select-options.js'
+import { tText } from '../../helpers/translate-text.js'
+import { useLomSubjects } from '../../hooks/useLomSubjects.js'
 
 interface SubjectsFieldProps {
-	onChange?: (values: TagInfo[]) => void;
-	value: string[] | null; // id of lom field (collections, assignments, profiles) or string label (videos and audio)
+  onChange?: (values: TagInfo[]) => void
+  value: string[] | null // id of lom field (collections, assignments, profiles) or string label (videos and audio)
 }
 
 export const SubjectsField: FC<SubjectsFieldProps> = ({ onChange, value }) => {
-	const [subjects] = useLomSubjects();
+  const [subjects] = useLomSubjects()
 
-	return (
-		<FormGroup
-			label={tText('collection/views/collection-edit-meta-data___vakken')}
-			labelFor="subjectsId"
-		>
-			<TagsInput
-				options={subjects.map(lomToTagInfo)}
-				value={compact(
-					(value || []).map((stringValue): Avo.Lom.LomField | undefined =>
-						subjects.find(
-							(subject) =>
-								subject.label.toLowerCase() === stringValue ||
-								subject.id === stringValue
-						)
-					)
-				).map(lomToTagInfo)}
-				onChange={onChange}
-			/>
-		</FormGroup>
-	);
-};
+  return (
+    <FormGroup
+      label={tText('collection/views/collection-edit-meta-data___vakken')}
+      labelFor="subjectsId"
+    >
+      <TagsInput
+        options={subjects.map(lomToTagInfo)}
+        value={compact(
+          (value || []).map((stringValue): Avo.Lom.LomField | undefined =>
+            subjects.find(
+              (subject) =>
+                subject.label.toLowerCase() === stringValue ||
+                subject.id === stringValue,
+            ),
+          ),
+        ).map(lomToTagInfo)}
+        onChange={onChange}
+      />
+    </FormGroup>
+  )
+}

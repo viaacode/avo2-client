@@ -1,34 +1,38 @@
-import { type Avo } from '@viaa/avo2-types';
-import { useEffect, useState } from 'react';
+import { type Avo } from '@viaa/avo2-types'
+import { useEffect, useState } from 'react'
 
-import { CustomError } from '../helpers/custom-error.js';
-import { tHtml } from '../helpers/translate-html.js';
-import { LomService } from '../services/lom.service.js';
-import { ToastService } from '../services/toast-service.js';
+import { CustomError } from '../helpers/custom-error.js'
+import { tHtml } from '../helpers/translate-html.js'
+import { LomService } from '../services/lom.service.js'
+import { ToastService } from '../services/toast-service.js'
 
-type UseLomSubjectsTuple = [Avo.Lom.LomField[], boolean];
+type UseLomSubjectsTuple = [Avo.Lom.LomField[], boolean]
 
 export const useLomSubjects = (): UseLomSubjectsTuple => {
-	const [subjects, setSubjects] = useState<Avo.Lom.LomField[]>([]);
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [subjects, setSubjects] = useState<Avo.Lom.LomField[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
-	useEffect(() => {
-		setIsLoading(true);
+  useEffect(() => {
+    setIsLoading(true)
 
-		LomService.fetchSubjects()
-			.then((subjects: Avo.Lom.LomField[]) => {
-				setSubjects(subjects);
-			})
-			.catch((err) => {
-				console.error(new CustomError('Failed to get subjects from the database', err));
-				ToastService.danger(
-					tHtml('settings/components/profile___het-ophalen-van-de-vakken-is-mislukt')
-				);
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
-	}, []);
+    LomService.fetchSubjects()
+      .then((subjects: Avo.Lom.LomField[]) => {
+        setSubjects(subjects)
+      })
+      .catch((err) => {
+        console.error(
+          new CustomError('Failed to get subjects from the database', err),
+        )
+        ToastService.danger(
+          tHtml(
+            'settings/components/profile___het-ophalen-van-de-vakken-is-mislukt',
+          ),
+        )
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }, [])
 
-	return [subjects, isLoading];
-};
+  return [subjects, isLoading]
+}

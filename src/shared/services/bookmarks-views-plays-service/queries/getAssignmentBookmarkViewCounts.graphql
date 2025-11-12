@@ -1,15 +1,25 @@
-query getAssignmentBookmarkViewCounts($assignmentUuid: uuid!, $profileId: uuid!) {
-	app_assignments_v2_bookmarks_aggregate(where: { assignment_id: { _eq: $assignmentUuid } }) {
-		aggregate {
-			count
-		}
-	}
-	app_assignment_v2_views(where: { assignment_uuid: { _eq: $assignmentUuid } }) {
-		count
-	}
-	app_assignments_v2_bookmarks(
-		where: { assignment_id: { _eq: $assignmentUuid }, profile_id: { _eq: $profileId } }
-	) {
-		id
-	}
+query getAssignmentBookmarkViewCounts(
+  $assignmentUuid: uuid!
+  $profileId: uuid!
+) {
+  app_assignments_v2_bookmarks_aggregate(
+    where: { assignment_id: { _eq: $assignmentUuid } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  app_assignment_v2_views(
+    where: { assignment_uuid: { _eq: $assignmentUuid } }
+  ) {
+    count
+  }
+  app_assignments_v2_bookmarks(
+    where: {
+      assignment_id: { _eq: $assignmentUuid }
+      profile_id: { _eq: $profileId }
+    }
+  ) {
+    id
+  }
 }

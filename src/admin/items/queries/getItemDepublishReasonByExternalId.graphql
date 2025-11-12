@@ -1,13 +1,13 @@
 query getItemDepublishReasonByExternalId($externalId: bpchar!) {
-	app_item_meta(
-		where: {
-			external_id: { _eq: $externalId }
-			is_deleted: { _eq: false }
-			is_published: { _eq: false }
-		}
-	) {
-		depublish_reason
-		is_published
-		is_deleted
-	}
+  app_item_meta(
+    where: {
+      external_id: { _eq: $externalId }
+      is_deleted: { _eq: false }
+      is_published: { _eq: false }
+    }
+  ) {
+    depublish_reason
+    is_published
+    is_deleted
+  }
 }

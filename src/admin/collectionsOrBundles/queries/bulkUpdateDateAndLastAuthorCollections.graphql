@@ -1,12 +1,12 @@
 mutation bulkUpdateDateAndLastAuthorCollections(
-	$collectionIds: [uuid!]!
-	$now: timestamptz!
-	$updatedByProfileId: uuid!
+  $collectionIds: [uuid!]!
+  $now: timestamptz!
+  $updatedByProfileId: uuid!
 ) {
-	update_app_collections(
-		where: { id: { _in: $collectionIds }, is_deleted: { _eq: false } }
-		_set: { updated_at: $now, updated_by_profile_id: $updatedByProfileId }
-	) {
-		affected_rows
-	}
+  update_app_collections(
+    where: { id: { _in: $collectionIds }, is_deleted: { _eq: false } }
+    _set: { updated_at: $now, updated_by_profile_id: $updatedByProfileId }
+  ) {
+    affected_rows
+  }
 }

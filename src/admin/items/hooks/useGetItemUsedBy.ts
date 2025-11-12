@@ -1,23 +1,27 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query'
 
-import { QUERY_KEYS } from '../../../shared/constants/query-keys.js';
-import { ItemsService } from '../items.service.js';
+import { QUERY_KEYS } from '../../../shared/constants/query-keys.js'
+import { ItemsService } from '../items.service.js'
 
 export const useGetItemUsedBy = (
-	{
-		itemUuid,
-		sortProp,
-		sortDirection,
-	}: { itemUuid: string; sortProp: string | undefined; sortDirection: string | undefined },
-	options: {
-		enabled: boolean;
-	} = { enabled: true }
+  {
+    itemUuid,
+    sortProp,
+    sortDirection,
+  }: {
+    itemUuid: string
+    sortProp: string | undefined
+    sortDirection: string | undefined
+  },
+  options: {
+    enabled: boolean
+  } = { enabled: true },
 ) => {
-	return useQuery(
-		[QUERY_KEYS.GET_ITEM_USED_BY, itemUuid, sortProp, sortDirection],
-		() => {
-			return ItemsService.getItemUsedBy(itemUuid, sortProp, sortDirection);
-		},
-		{ ...options, keepPreviousData: true }
-	);
-};
+  return useQuery(
+    [QUERY_KEYS.GET_ITEM_USED_BY, itemUuid, sortProp, sortDirection],
+    () => {
+      return ItemsService.getItemUsedBy(itemUuid, sortProp, sortDirection)
+    },
+    { ...options, keepPreviousData: true },
+  )
+}

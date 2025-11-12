@@ -1,73 +1,78 @@
-import { Button, Container, Spacer } from '@viaa/avo2-components';
-import { noop } from 'es-toolkit';
-import React, { type FC } from 'react';
-import { useNavigate } from 'react-router';
+import { Button, Container, Spacer } from '@viaa/avo2-components'
+import { noop } from 'es-toolkit'
+import React, { type FC } from 'react'
+import { useNavigate } from 'react-router'
 
-import { APP_PATH } from '../../constants.js';
-import { ROUTE_PARTS } from '../../shared/constants/index.js';
-import { tHtml } from '../../shared/helpers/translate-html.js';
-import { tText } from '../../shared/helpers/translate-text.js';
-import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page.js';
+import { APP_PATH } from '../../constants.js'
+import { ROUTE_PARTS } from '../../shared/constants/index.js'
+import { tHtml } from '../../shared/helpers/translate-html.js'
+import { tText } from '../../shared/helpers/translate-text.js'
+import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page.js'
 
 interface PupilOrTeacherDropdownProps {
-	closeDropdown?: () => void;
+  closeDropdown?: () => void
 }
 
 export const PupilOrTeacherDropdown: FC<PupilOrTeacherDropdownProps> = ({
-	closeDropdown = noop,
+  closeDropdown = noop,
 }) => {
-	const navigateFunc = useNavigate();
+  const navigateFunc = useNavigate()
 
-	return (
-		<Container className="c-register-pupil-or-teacher-dropdown" mode="horizontal">
-			<Container mode="vertical">
-				<h4 className="c-h4">
-					{tHtml('authentication/components/pupil-or-teacher-dropdown___ben-je-lesgever')}
-				</h4>
-				<p>
-					{tHtml(
-						'authentication/components/pupil-or-teacher-dropdown___krijg-toegang-tot-audiovisueel-lesmateriaal-maak-eigen-collecties'
-					)}
-				</p>
-				<Spacer margin={['bottom-large', 'top-small']}>
-					<Button
-						block
-						type="primary"
-						label={tText(
-							'authentication/components/pupil-or-teacher-dropdown___maak-je-gratis-account-aan'
-						)}
-						onClick={() => {
-							closeDropdown();
-							redirectToClientPage(APP_PATH.STAMBOEK.route, navigateFunc);
-						}}
-					/>
-				</Spacer>
-				<Spacer margin="top-large">
-					<h4 className="c-h4">
-						{tHtml(
-							'authentication/components/pupil-or-teacher-dropdown___ben-je-leerling-secundair'
-						)}
-					</h4>
-					<p>
-						{tHtml(
-							'authentication/components/pupil-or-teacher-dropdown___krijg-toegang-tot-opdrachten-klaargezet-door-jouw-leerkrachten'
-						)}
-					</p>
-					<Spacer margin="top-small">
-						<Button
-							block
-							type="primary"
-							label={tText(
-								'authentication/components/pupil-or-teacher-dropdown___toegang-voor-leerlingen'
-							)}
-							onClick={() => {
-								closeDropdown();
-								redirectToClientPage(`/${ROUTE_PARTS.pupils}`, navigateFunc);
-							}}
-						/>
-					</Spacer>
-				</Spacer>
-			</Container>
-		</Container>
-	);
-};
+  return (
+    <Container
+      className="c-register-pupil-or-teacher-dropdown"
+      mode="horizontal"
+    >
+      <Container mode="vertical">
+        <h4 className="c-h4">
+          {tHtml(
+            'authentication/components/pupil-or-teacher-dropdown___ben-je-lesgever',
+          )}
+        </h4>
+        <p>
+          {tHtml(
+            'authentication/components/pupil-or-teacher-dropdown___krijg-toegang-tot-audiovisueel-lesmateriaal-maak-eigen-collecties',
+          )}
+        </p>
+        <Spacer margin={['bottom-large', 'top-small']}>
+          <Button
+            block
+            type="primary"
+            label={tText(
+              'authentication/components/pupil-or-teacher-dropdown___maak-je-gratis-account-aan',
+            )}
+            onClick={() => {
+              closeDropdown()
+              redirectToClientPage(APP_PATH.STAMBOEK.route, navigateFunc)
+            }}
+          />
+        </Spacer>
+        <Spacer margin="top-large">
+          <h4 className="c-h4">
+            {tHtml(
+              'authentication/components/pupil-or-teacher-dropdown___ben-je-leerling-secundair',
+            )}
+          </h4>
+          <p>
+            {tHtml(
+              'authentication/components/pupil-or-teacher-dropdown___krijg-toegang-tot-opdrachten-klaargezet-door-jouw-leerkrachten',
+            )}
+          </p>
+          <Spacer margin="top-small">
+            <Button
+              block
+              type="primary"
+              label={tText(
+                'authentication/components/pupil-or-teacher-dropdown___toegang-voor-leerlingen',
+              )}
+              onClick={() => {
+                closeDropdown()
+                redirectToClientPage(`/${ROUTE_PARTS.pupils}`, navigateFunc)
+              }}
+            />
+          </Spacer>
+        </Spacer>
+      </Container>
+    </Container>
+  )
+}

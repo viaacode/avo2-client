@@ -1,73 +1,88 @@
-import {Button, ButtonToolbar, Modal, ModalBody, ModalFooterRight} from '@viaa/avo2-components';
-import {type Avo} from '@viaa/avo2-types';
+import {
+  Button,
+  ButtonToolbar,
+  Modal,
+  ModalBody,
+  ModalFooterRight,
+} from '@viaa/avo2-components'
+import { type Avo } from '@viaa/avo2-types'
 
-import React, {type FC, type ReactNode, useState} from 'react';
+import React, { type FC, type ReactNode, useState } from 'react'
 
-import {DraggableList} from './DraggableList.js';
+import { DraggableList } from './DraggableList.js'
 
-import './DraggableListModal.scss';
-import {tHtml} from '../../helpers/translate-html.js';
-import {tText} from '../../helpers/translate-text.js';
+import './DraggableListModal.scss'
+import { tHtml } from '../../helpers/translate-html.js'
+import { tText } from '../../helpers/translate-text.js'
 
 export interface DraggableListModalProps {
-	items?: any[];
-	renderItem: (item: any) => ReactNode;
-	isOpen: boolean;
-	onClose: (elements?: any[]) => void;
-	size?: 'small' | 'medium' | 'large' | 'extra-large' | 'fullscreen' | 'fullwidth' | 'auto';
+  items?: any[]
+  renderItem: (item: any) => ReactNode
+  isOpen: boolean
+  onClose: (elements?: any[]) => void
+  size?:
+    | 'small'
+    | 'medium'
+    | 'large'
+    | 'extra-large'
+    | 'fullscreen'
+    | 'fullwidth'
+    | 'auto'
 }
 
 export const DraggableListModal: FC<DraggableListModalProps> = ({
-	items = [],
-	renderItem,
-	isOpen,
-	onClose,
-	size = 'medium',
+  items = [],
+  renderItem,
+  isOpen,
+  onClose,
+  size = 'medium',
 }) => {
-	const [reorderedElements, setReorderedElements] = useState<any[] | null>(null);
+  const [reorderedElements, setReorderedElements] = useState<any[] | null>(null)
 
-	const getFragmentKey = (fragment: Avo.Collection.Fragment) => {
-		return `fragment_${fragment.id}-${fragment?.created_at}-${fragment?.position}`;
-	};
+  const getFragmentKey = (fragment: Avo.Collection.Fragment) => {
+    return `fragment_${fragment.id}-${fragment?.created_at}-${fragment?.position}`
+  }
 
-	return (
-		<Modal
-			title={tHtml('shared/components/draggable-list/draggable-list-modal___herschik-items')}
-			isOpen={isOpen}
-			size={size}
-			scrollable
-			onClose={onClose}
-			className="c-draggable-list-modal"
-		>
-			<ModalBody>
-				<DraggableList
-					items={reorderedElements || items}
-					renderItem={renderItem}
-					onListChange={setReorderedElements}
-					generateKey={getFragmentKey}
-				/>
-			</ModalBody>
-			<ModalFooterRight>
-				<ButtonToolbar>
-					<Button
-						label={tText(
-							'shared/components/draggable-list/draggable-list-modal___annuleer'
-						)}
-						type="secondary"
-						onClick={() => onClose()}
-					/>
-					<Button
-						label={tText(
-							'shared/components/draggable-list/draggable-list-modal___opslaan'
-						)}
-						type="primary"
-						onClick={() => {
-							onClose(reorderedElements || items);
-							setReorderedElements(null);
-						}}
-					/>
-				</ButtonToolbar>
-			</ModalFooterRight>
-		</Modal>
-	);
-};
+  return (
+    <Modal
+      title={tHtml(
+        'shared/components/draggable-list/draggable-list-modal___herschik-items',
+      )}
+      isOpen={isOpen}
+      size={size}
+      scrollable
+      onClose={onClose}
+      className="c-draggable-list-modal"
+    >
+      <ModalBody>
+        <DraggableList
+          items={reorderedElements || items}
+          renderItem={renderItem}
+          onListChange={setReorderedElements}
+          generateKey={getFragmentKey}
+        />
+      </ModalBody>
+      <ModalFooterRight>
+        <ButtonToolbar>
+          <Button
+            label={tText(
+              'shared/components/draggable-list/draggable-list-modal___annuleer',
+            )}
+            type="secondary"
+            onClick={() => onClose()}
+          />
+          <Button
+            label={tText(
+              'shared/components/draggable-list/draggable-list-modal___opslaan',
+            )}
+            type="primary"
+            onClick={() => {
+              onClose(reorderedElements || items)
+              setReorderedElements(null)
+            }}
+          />
+        </ButtonToolbar>
+      </ModalFooterRight>
+    </Modal>
+  )
+}

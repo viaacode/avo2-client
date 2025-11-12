@@ -1,7 +1,9 @@
-import { tText } from '../helpers/translate-text.js';
+import { tText } from '../helpers/translate-text.js'
 
 export function getPageNotFoundError(loggedIn: boolean): string {
-	return loggedIn
-		? tText('error/views/error-view___de-pagina-werd-niet-gevonden-ingelogd')
-		: tText('error/views/error-view___de-pagina-werd-niet-gevonden-niet-ingelogd');
+  return loggedIn
+    ? tText('error/views/error-view___de-pagina-werd-niet-gevonden-ingelogd')
+    : tText(
+        'error/views/error-view___de-pagina-werd-niet-gevonden-niet-ingelogd',
+      )
 }

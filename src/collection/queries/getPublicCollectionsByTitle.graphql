@@ -1,43 +1,47 @@
-query getPublicCollectionsByTitle($title: String!, $typeId: Int!, $limit: Int!) {
-	app_collections_overview(
-		order_by: { title: asc }
-		where: {
-			type_id: { _eq: $typeId }
-			title: { _ilike: $title }
-			is_public: { _eq: true }
-			is_deleted: { _eq: false }
-		}
-		limit: $limit
-	) {
-		id
-		title
-		share_type
-		updated_at
-		is_public
-		thumbnail_path
-		created_at
-		view_count {
-			count
-		}
-		contributors {
-			enum_right_type {
-				value
-			}
-			profile {
-				organisation {
-					name
-					logo_url
-					or_id
-				}
-				user {
-					first_name
-					full_name
-					last_name
-				}
-				loms {
-					lom_id
-				}
-			}
-		}
-	}
+query getPublicCollectionsByTitle(
+  $title: String!
+  $typeId: Int!
+  $limit: Int!
+) {
+  app_collections_overview(
+    order_by: { title: asc }
+    where: {
+      type_id: { _eq: $typeId }
+      title: { _ilike: $title }
+      is_public: { _eq: true }
+      is_deleted: { _eq: false }
+    }
+    limit: $limit
+  ) {
+    id
+    title
+    share_type
+    updated_at
+    is_public
+    thumbnail_path
+    created_at
+    view_count {
+      count
+    }
+    contributors {
+      enum_right_type {
+        value
+      }
+      profile {
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+        user {
+          first_name
+          full_name
+          last_name
+        }
+        loms {
+          lom_id
+        }
+      }
+    }
+  }
 }

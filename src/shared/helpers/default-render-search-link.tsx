@@ -1,50 +1,54 @@
-import React, { type ReactNode } from 'react';
-import { type NavigateFunction } from 'react-router';
-import { Link } from 'react-router-dom';
+import React, { type ReactNode } from 'react'
+import { type NavigateFunction } from 'react-router'
+import { Link } from 'react-router-dom'
 
-import { type SearchFilter } from '../../search/search.const.js';
-import { type FilterState } from '../../search/search.types.js';
+import { type SearchFilter } from '../../search/search.const.js'
+import { type FilterState } from '../../search/search.types.js'
 
-import { generateSearchLinkString } from './link.js';
+import { generateSearchLinkString } from './link.js'
 
 export const defaultGoToSearchLink =
-	(navigate: NavigateFunction) =>
-	(newFilters: FilterState): void => {
-		// Get the first filter prop and value (there should only be one)
-		const filterProp = Object.keys(newFilters.filters || {})[0] as SearchFilter | undefined;
-		const filterValue = (newFilters.filters || {})[filterProp as SearchFilter] as
-			| string
-			| undefined;
-		navigate(
-			generateSearchLinkString(
-				filterProp,
-				filterValue,
-				newFilters.orderProperty as any,
-				newFilters.orderDirection
-			)
-		);
-	};
+  (navigate: NavigateFunction) =>
+  (newFilters: FilterState): void => {
+    // Get the first filter prop and value (there should only be one)
+    const filterProp = Object.keys(newFilters.filters || {})[0] as
+      | SearchFilter
+      | undefined
+    const filterValue = (newFilters.filters || {})[
+      filterProp as SearchFilter
+    ] as string | undefined
+    navigate(
+      generateSearchLinkString(
+        filterProp,
+        filterValue,
+        newFilters.orderProperty as any,
+        newFilters.orderDirection,
+      ),
+    )
+  }
 
 export const defaultRenderSearchLink = (
-	linkText: string | ReactNode,
-	newFilters: FilterState,
-	className?: string
+  linkText: string | ReactNode,
+  newFilters: FilterState,
+  className?: string,
 ): ReactNode => {
-	const filterProp = Object.keys(newFilters.filters || {})[0] as SearchFilter | undefined;
-	const filterValue = (newFilters.filters || {})[filterProp as SearchFilter] as
-		| string
-		| undefined;
-	return (
-		<Link
-			className={className}
-			to={generateSearchLinkString(
-				filterProp,
-				filterValue,
-				newFilters.orderProperty as any,
-				newFilters.orderDirection
-			)}
-		>
-			{linkText}
-		</Link>
-	);
-};
+  const filterProp = Object.keys(newFilters.filters || {})[0] as
+    | SearchFilter
+    | undefined
+  const filterValue = (newFilters.filters || {})[filterProp as SearchFilter] as
+    | string
+    | undefined
+  return (
+    <Link
+      className={className}
+      to={generateSearchLinkString(
+        filterProp,
+        filterValue,
+        newFilters.orderProperty as any,
+        newFilters.orderDirection,
+      )}
+    >
+      {linkText}
+    </Link>
+  )
+}

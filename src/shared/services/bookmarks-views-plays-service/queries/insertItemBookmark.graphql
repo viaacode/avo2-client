@@ -1,5 +1,5 @@
 mutation insertItemBookmark($bookmarkItem: app_item_bookmarks_insert_input!) {
-	insert_app_item_bookmarks(objects: [$bookmarkItem]) {
-		affected_rows
-	}
+  insert_app_item_bookmarks(objects: [$bookmarkItem]) {
+    affected_rows
+  }
 }

@@ -1,34 +1,38 @@
-import { type Avo } from '@viaa/avo2-types';
-import { useEffect, useState } from 'react';
+import { type Avo } from '@viaa/avo2-types'
+import { useEffect, useState } from 'react'
 
-import { CustomError } from '../helpers/custom-error.js';
-import { tHtml } from '../helpers/translate-html.js';
-import { LomService } from '../services/lom.service.js';
-import { ToastService } from '../services/toast-service.js';
+import { CustomError } from '../helpers/custom-error.js'
+import { tHtml } from '../helpers/translate-html.js'
+import { LomService } from '../services/lom.service.js'
+import { ToastService } from '../services/toast-service.js'
 
-type UseLomThemesTuple = [Avo.Lom.LomField[], boolean];
+type UseLomThemesTuple = [Avo.Lom.LomField[], boolean]
 
 export const useLomThemes = (): UseLomThemesTuple => {
-	const [themes, setThemes] = useState<Avo.Lom.LomField[]>([]);
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [themes, setThemes] = useState<Avo.Lom.LomField[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
-	useEffect(() => {
-		setIsLoading(true);
+  useEffect(() => {
+    setIsLoading(true)
 
-		LomService.fetchThemes()
-			.then((educationLevels: Avo.Lom.LomField[]) => {
-				setThemes(educationLevels);
-			})
-			.catch((err) => {
-				console.error(new CustomError('Failed to get lom themes from the database', err));
-				ToastService.danger(
-					tHtml('shared/hooks/use-lom-themes___het-ophalen-van-de-themas-is-mislukt')
-				);
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
-	}, []);
+    LomService.fetchThemes()
+      .then((educationLevels: Avo.Lom.LomField[]) => {
+        setThemes(educationLevels)
+      })
+      .catch((err) => {
+        console.error(
+          new CustomError('Failed to get lom themes from the database', err),
+        )
+        ToastService.danger(
+          tHtml(
+            'shared/hooks/use-lom-themes___het-ophalen-van-de-themas-is-mislukt',
+          ),
+        )
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }, [])
 
-	return [themes, isLoading];
-};
+  return [themes, isLoading]
+}

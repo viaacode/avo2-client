@@ -1,8 +1,12 @@
 query getPublicItems($limit: Int!) {
-	app_item_meta(order_by: { title: asc }, limit: $limit, where: { is_published: { _eq: true } }) {
-		external_id
-		title
-		is_published
-		is_deleted
-	}
+  app_item_meta(
+    order_by: { title: asc }
+    limit: $limit
+    where: { is_published: { _eq: true } }
+  ) {
+    external_id
+    title
+    is_published
+    is_deleted
+  }
 }

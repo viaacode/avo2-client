@@ -1,17 +1,17 @@
 mutation insertNotification(
-	$key: String!
-	$profileId: uuid!
-	$throughEmail: Boolean!
-	$throughPlatform: Boolean!
+  $key: String!
+  $profileId: uuid!
+  $throughEmail: Boolean!
+  $throughPlatform: Boolean!
 ) {
-	insert_users_notifications(
-		objects: {
-			key: $key
-			profile_id: $profileId
-			through_email: $throughEmail
-			through_platform: $throughPlatform
-		}
-	) {
-		affected_rows
-	}
+  insert_users_notifications(
+    objects: {
+      key: $key
+      profile_id: $profileId
+      through_email: $throughEmail
+      through_platform: $throughPlatform
+    }
+  ) {
+    affected_rows
+  }
 }

@@ -1,5 +1,11 @@
-mutation updateCollectionFragmentById($id: Int!, $fragment: app_collection_fragments_set_input!) {
-	update_app_collection_fragments(where: { id: { _eq: $id } }, _set: $fragment) {
-		affected_rows
-	}
+mutation updateCollectionFragmentById(
+  $id: Int!
+  $fragment: app_collection_fragments_set_input!
+) {
+  update_app_collection_fragments(
+    where: { id: { _eq: $id } }
+    _set: $fragment
+  ) {
+    affected_rows
+  }
 }

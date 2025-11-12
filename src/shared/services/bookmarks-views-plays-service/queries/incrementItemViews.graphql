@@ -1,5 +1,8 @@
 mutation incrementItemViews($itemUuid: uuid!) {
-	update_app_item_views(where: { item_id: { _eq: $itemUuid } }, _inc: { count: 1 }) {
-		affected_rows
-	}
+  update_app_item_views(
+    where: { item_id: { _eq: $itemUuid } }
+    _inc: { count: 1 }
+  ) {
+    affected_rows
+  }
 }

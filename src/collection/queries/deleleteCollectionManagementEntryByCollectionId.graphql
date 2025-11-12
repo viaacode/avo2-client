@@ -1,5 +1,7 @@
 mutation deleteManagementEntryByCollectionId($collection_id: uuid!) {
-	delete_app_collection_management(where: { collection_id: { _eq: $collection_id } }) {
-		affected_rows
-	}
+  delete_app_collection_management(
+    where: { collection_id: { _eq: $collection_id } }
+  ) {
+    affected_rows
+  }
 }
