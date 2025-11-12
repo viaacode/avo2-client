@@ -1,12 +1,12 @@
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import { Avo } from '@viaa/avo2-types';
-import { QUERY_KEYS } from '../../../shared/constants/query-keys.js';
-import { ITEMS_PER_PAGE } from '../url-redirects.const.js';
-import { UrlRedirectsService } from '../url-redirects.service.js';
+import { QUERY_KEYS } from '../../../shared/constants/query-keys';
+import { ITEMS_PER_PAGE } from '../url-redirects.const';
+import { UrlRedirectsService } from '../url-redirects.service';
 import {
   type UrlRedirect,
   type UrlRedirectOverviewFilterState,
-} from '../url-redirects.types.js';
+} from '../url-redirects.types';
 
 export const useGetUrlRedirects = (
   params: UrlRedirectOverviewFilterState | undefined,

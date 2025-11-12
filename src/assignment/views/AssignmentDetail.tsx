@@ -36,86 +36,86 @@ import {
   useQueryParams,
 } from 'use-query-params';
 
-import { commonUserAtom } from '../../authentication/authentication.store.js';
-import { PermissionService } from '../../authentication/helpers/permission-service.js';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page.js';
-import { renderRelatedItems } from '../../collection/collection.helpers.js';
-import { type Relation } from '../../collection/collection.types.js';
-import { AddToBundleModal } from '../../collection/components/modals/AddToBundleModal.js';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { renderRelatedItems } from '../../collection/collection.helpers';
+import { type Relation } from '../../collection/collection.types';
+import { AddToBundleModal } from '../../collection/components/modals/AddToBundleModal';
 import {
   BundleSortProp,
   useGetCollectionsOrBundlesContainingFragment,
-} from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment.js';
-import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from '../../collection/views/CollectionDetail.const.js';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants.js';
-import { ErrorNoAccess } from '../../error/components/ErrorNoAccess.js';
+} from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
+import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from '../../collection/views/CollectionDetail.const';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
 import {
   ErrorView,
   type ErrorViewQueryParams,
-} from '../../error/views/ErrorView.js';
+} from '../../error/views/ErrorView';
 import {
   ALL_SEARCH_FILTERS,
   type SearchFilter,
-} from '../../search/search.const.js';
-import { BlockList } from '../../shared/components/BlockList/BlockList.js';
-import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData.js';
-import { EditButton } from '../../shared/components/EditButton/EditButton.js';
-import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList.js';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
-import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors.js';
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour.js';
-import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper.js';
-import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown.js';
-import { ShareModal } from '../../shared/components/ShareModal/ShareModal.js';
-import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
-import { type ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils.js';
-import { StickyBar } from '../../shared/components/StickyBar/StickyBar.js';
+} from '../../search/search.const';
+import { BlockList } from '../../shared/components/BlockList/BlockList';
+import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
+import { EditButton } from '../../shared/components/EditButton/EditButton';
+import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
+import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown';
+import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
+import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { type ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils';
+import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import {
   EDIT_STATUS_REFETCH_TIME,
   getMoreOptionsLabel,
-} from '../../shared/constants/index.js';
-import { buildLink } from '../../shared/helpers/build-link.js';
-import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors.js';
-import { CustomError } from '../../shared/helpers/custom-error.js';
-import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render-bookmark-button.js';
-import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link.js';
-import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link.js';
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown.js';
-import { navigate } from '../../shared/helpers/link.js';
+} from '../../shared/constants/index';
+import { buildLink } from '../../shared/helpers/build-link';
+import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render-bookmark-button';
+import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
+import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
+import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
+import { navigate } from '../../shared/helpers/link';
 import {
   type EducationLevelId,
   getGroupedLomsKeyValue,
-} from '../../shared/helpers/lom.js';
-import { isMobileWidth } from '../../shared/helpers/media-query.js';
-import { tHtml } from '../../shared/helpers/translate-html.js';
-import { tText } from '../../shared/helpers/translate-text.js';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
-import { trackEvents } from '../../shared/services/event-logging-service.js';
+} from '../../shared/helpers/lom';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import {
   getRelatedItems,
   ObjectTypes,
   ObjectTypesAll,
-} from '../../shared/services/related-items-service.js';
-import { ToastService } from '../../shared/services/toast-service.js';
-import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const.js';
-import { AssignmentService } from '../assignment.service.js';
-import { AssignmentAction } from '../assignment.types.js';
+} from '../../shared/services/related-items-service';
+import { ToastService } from '../../shared/services/toast-service';
+import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
+import { AssignmentService } from '../assignment.service';
+import { AssignmentAction } from '../assignment.types';
 import {
   onAddNewContributor,
   onDeleteContributor,
   onEditContributor,
-} from '../helpers/assignment-share-with-collegue-handlers.js';
+} from '../helpers/assignment-share-with-collegue-handlers';
 import {
   deleteAssignment,
   deleteSelfFromAssignment,
-} from '../helpers/delete-assignment.js';
-import { duplicateAssignment } from '../helpers/duplicate-assignment.js';
-import { toAssignmentDetail } from '../helpers/links.js';
-import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses.js';
-import { DeleteAssignmentModal } from '../modals/DeleteAssignmentModal.js';
-import { PublishAssignmentModal } from '../modals/PublishAssignmentModal.js';
+} from '../helpers/delete-assignment';
+import { duplicateAssignment } from '../helpers/duplicate-assignment';
+import { toAssignmentDetail } from '../helpers/links';
+import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses';
+import { DeleteAssignmentModal } from '../modals/DeleteAssignmentModal';
+import { PublishAssignmentModal } from '../modals/PublishAssignmentModal';
 
 type AssignmentDetailPermissions = Partial<{
   canCreateAssignments: boolean;

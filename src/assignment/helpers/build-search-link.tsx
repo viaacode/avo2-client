@@ -1,12 +1,12 @@
 import { Button } from '@viaa/avo2-components';
 import React, { type ReactNode } from 'react';
 import { Link, type LinkProps } from 'react-router-dom';
-import { APP_PATH } from '../../constants.js';
-import { type FilterState } from '../../search/search.types.js';
-import { buildLink } from '../../shared/helpers/build-link.js';
+import { APP_PATH } from '../../constants';
+import { type FilterState } from '../../search/search.types';
+import { buildLink } from '../../shared/helpers/build-link';
 import { UrlUpdateType } from '../../shared/types/use-query-params.ts';
-import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const.js';
-import { type PupilSearchFilterState } from '../assignment.types.js';
+import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
+import { type PupilSearchFilterState } from '../assignment.types';
 
 /**
  * Creates a link that navigates to the /search route

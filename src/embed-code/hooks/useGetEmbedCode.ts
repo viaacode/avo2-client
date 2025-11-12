@@ -1,8 +1,8 @@
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 
-import { QUERY_KEYS } from '../../shared/constants/query-keys.js';
-import { type EmbedCode } from '../embed-code.types.js';
-import { EmbedCodeService } from '../embed-code-service.js';
+import { QUERY_KEYS } from '../../shared/constants/query-keys';
+import { type EmbedCode } from '../embed-code.types';
+import { EmbedCodeService } from '../embed-code-service';
 
 export const useGetEmbedCode = (
   embedCodeId: string | null,

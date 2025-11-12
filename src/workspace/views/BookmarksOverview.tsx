@@ -17,34 +17,34 @@ import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js';
-import { commonUserAtom } from '../../authentication/authentication.store.js';
-import { PermissionService } from '../../authentication/helpers/permission-service.js';
-import { APP_PATH } from '../../constants.js';
-import { ErrorView } from '../../error/views/ErrorView.js';
-import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal.js';
-import { FragmentShareModal } from '../../shared/components/FragmentShareModal/FragmentShareModal.js';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { APP_PATH } from '../../constants';
+import { ErrorView } from '../../error/views/ErrorView';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
+import { FragmentShareModal } from '../../shared/components/FragmentShareModal/FragmentShareModal';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
-import { buildLink } from '../../shared/helpers/build-link.js';
-import { CustomError } from '../../shared/helpers/custom-error.js';
-import { formatDate, fromNow } from '../../shared/helpers/formatters/date.js';
-import { isMobileWidth } from '../../shared/helpers/media-query.js';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js';
-import { tHtml } from '../../shared/helpers/translate-html.js';
-import { tText } from '../../shared/helpers/translate-text.js';
-import { truncateTableValue } from '../../shared/helpers/truncate.js';
-import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../shared/helpers/build-link';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { formatDate, fromNow } from '../../shared/helpers/formatters/date';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { truncateTableValue } from '../../shared/helpers/truncate';
+import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import {
   type BookmarkInfo,
   type EventContentType,
-} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
-import { ToastService } from '../../shared/services/toast-service.js';
-import { embedFlowAtom } from '../../shared/store/ui.store.js';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type.js';
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { ToastService } from '../../shared/services/toast-service';
+import { embedFlowAtom } from '../../shared/store/ui.store';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 const ITEMS_PER_PAGE = 5;
 

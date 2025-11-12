@@ -30,45 +30,45 @@ import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
-import { ROUTE_PARTS } from '../../../shared/constants/index.js';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { ROUTE_PARTS } from '../../../shared/constants/index';
 import {
   type GetInteractiveTourByIdQuery,
   type GetInteractiveTourByIdQueryVariables,
-} from '../../../shared/generated/graphql-db-operations.js';
-import { GetInteractiveTourByIdDocument } from '../../../shared/generated/graphql-db-react-query.js';
-import { buildLink } from '../../../shared/helpers/build-link.js';
-import { CustomError } from '../../../shared/helpers/custom-error.js';
-import { navigate } from '../../../shared/helpers/link.js';
-import { dataService } from '../../../shared/services/data-service.js';
-import { ToastService } from '../../../shared/services/toast-service.js';
-import { ADMIN_PATH } from '../../admin.const.js';
-import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker.js';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
+} from '../../../shared/generated/graphql-db-operations';
+import { GetInteractiveTourByIdDocument } from '../../../shared/generated/graphql-db-react-query';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { navigate } from '../../../shared/helpers/link';
+import { dataService } from '../../../shared/services/data-service';
+import { ToastService } from '../../../shared/services/toast-service';
+import { ADMIN_PATH } from '../../admin.const';
+import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
   AdminLayoutBody,
   AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
-import { type PickerItem } from '../../shared/types/content-picker.js';
-import { InteractiveTourAdd } from '../components/InteractiveTourStepAdd.js';
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { type PickerItem } from '../../shared/types/content-picker';
+import { InteractiveTourAdd } from '../components/InteractiveTourStepAdd';
 import {
   INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
   type InteractiveTourAction,
   interactiveTourEditReducer,
-} from '../helpers/reducers/index.js';
+} from '../helpers/reducers/index';
 import {
   getInitialInteractiveTour,
   INTERACTIVE_TOUR_PATH,
   MAX_STEP_TEXT_LENGTH,
   MAX_STEP_TITLE_LENGTH,
-} from '../interactive-tour.const.js';
-import { InteractiveTourService } from '../interactive-tour.service.js';
+} from '../interactive-tour.const';
+import { InteractiveTourService } from '../interactive-tour.service';
 import {
   type EditableInteractiveTour,
   type EditableStep,
@@ -77,13 +77,13 @@ import {
   type InteractiveTourPageType,
   type InteractiveTourState,
   type InteractiveTourStep,
-} from '../interactive-tour.types.js';
+} from '../interactive-tour.types';
 
-import { InteractiveTourEditStep } from './InteractiveTourEditStep.js';
+import { InteractiveTourEditStep } from './InteractiveTourEditStep';
 
 import './InteractiveTourEdit.scss';
-import { tHtml } from '../../../shared/helpers/translate-html.js';
-import { tText } from '../../../shared/helpers/translate-text.js';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 
 const BlockHeading = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({

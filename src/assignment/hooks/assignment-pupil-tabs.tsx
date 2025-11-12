@@ -7,10 +7,10 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import React, { useCallback, useMemo, useState } from 'react';
 
-import { tHtml } from '../../shared/helpers/translate-html.js';
-import { tText } from '../../shared/helpers/translate-text.js';
-import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline.js';
-import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const.js';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
+import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
 
 export function useAssignmentPupilTabs(
   assignment: Avo.Assignment.Assignment | null,

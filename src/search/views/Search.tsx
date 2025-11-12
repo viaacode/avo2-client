@@ -29,29 +29,29 @@ import {
   useQueryParams,
 } from 'use-query-params';
 
-import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link.js';
-import { commonUserAtom } from '../../authentication/authentication.store.js';
-import { PermissionGuard } from '../../authentication/components/PermissionGuard.js';
+import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionGuard } from '../../authentication/components/PermissionGuard';
 import {
   PermissionGuardFail,
   PermissionGuardPass,
-} from '../../authentication/components/PermissionGuard.slots.js';
-import { PermissionService } from '../../authentication/helpers/permission-service.js';
-import { GENERATE_SITE_TITLE } from '../../constants.js';
-import { ErrorView } from '../../error/views/ErrorView.js';
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour.js';
-import { getMoreOptionsLabel } from '../../shared/constants/index.js';
-import { copyToClipboard } from '../../shared/helpers/clipboard.js';
-import { generateContentLinkString } from '../../shared/helpers/link.js';
-import { trackEvents } from '../../shared/services/event-logging-service.js';
-import { ToastService } from '../../shared/services/toast-service.js';
-import { SearchFiltersAndResults } from '../components/SearchFiltersAndResults.js';
-import { type FilterState } from '../search.types.js';
+} from '../../authentication/components/PermissionGuard.slots';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorView } from '../../error/views/ErrorView';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { getMoreOptionsLabel } from '../../shared/constants/index';
+import { copyToClipboard } from '../../shared/helpers/clipboard';
+import { generateContentLinkString } from '../../shared/helpers/link';
+import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
+import { SearchFiltersAndResults } from '../components/SearchFiltersAndResults';
+import { type FilterState } from '../search.types';
 
 import './Search.scss';
 import { SortDirectionParam } from '../../admin/shared/helpers/query-string-converters.ts';
-import { tHtml } from '../../shared/helpers/translate-html.js';
-import { tText } from '../../shared/helpers/translate-text.js';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 export const Search: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);

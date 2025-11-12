@@ -1,8 +1,8 @@
 import React, { type FC } from 'react';
 
-import { tHtml } from '../../helpers/translate-html.js';
-import { tText } from '../../helpers/translate-text.js';
-import { StickyBar } from '../StickyBar/StickyBar.js';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
+import { StickyBar } from '../StickyBar/StickyBar';
 
 interface StickySaveBarProps {
   isVisible: boolean;

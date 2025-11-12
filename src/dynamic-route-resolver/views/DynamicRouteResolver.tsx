@@ -14,40 +14,40 @@ import { Helmet } from 'react-helmet';
 import { Navigate, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
-import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state.js';
-import { ItemsService } from '../../admin/items/items.service.js';
-import { UrlRedirectsService } from '../../admin/url-redirects/url-redirects.service.js';
-import { getLoginStateAtom } from '../../authentication/authentication.store.actions.js';
-import { loginAtom } from '../../authentication/authentication.store.js';
-import { SpecialPermissionGroups } from '../../authentication/authentication.types.js';
-import { PermissionService } from '../../authentication/helpers/permission-service.js';
-import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page.js';
-import { CollectionService } from '../../collection/collection.service.js';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants.js';
-import { ErrorView } from '../../error/views/ErrorView.js';
-import { SearchFilter } from '../../search/search.const.js';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour.js';
-import { JsonLd } from '../../shared/components/JsonLd/JsonLd.js';
+import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state';
+import { ItemsService } from '../../admin/items/items.service';
+import { UrlRedirectsService } from '../../admin/url-redirects/url-redirects.service';
+import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
+import { loginAtom } from '../../authentication/authentication.store';
+import { SpecialPermissionGroups } from '../../authentication/authentication.types';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page';
+import { CollectionService } from '../../collection/collection.service';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorView } from '../../error/views/ErrorView';
+import { SearchFilter } from '../../search/search.const';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
-import { buildLink } from '../../shared/helpers/build-link.js';
-import { CustomError } from '../../shared/helpers/custom-error.js';
-import { getEnv } from '../../shared/helpers/env.js';
-import { getFullName } from '../../shared/helpers/formatters/avatar.js';
-import { stripHtml } from '../../shared/helpers/formatters/strip-html.js';
-import { isPupil } from '../../shared/helpers/is-pupil.js';
-import { generateSearchLinkString } from '../../shared/helpers/link.js';
-import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error.js';
-import { tHtml } from '../../shared/helpers/translate-html.js';
-import { getPageNotFoundError } from '../../shared/translations/page-not-found.js';
-import { Locale } from '../../shared/translations/translations.types.js';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../shared/helpers/build-link';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { getEnv } from '../../shared/helpers/env';
+import { getFullName } from '../../shared/helpers/formatters/avatar';
+import { stripHtml } from '../../shared/helpers/formatters/strip-html';
+import { isPupil } from '../../shared/helpers/is-pupil';
+import { generateSearchLinkString } from '../../shared/helpers/link';
+import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { getPageNotFoundError } from '../../shared/translations/page-not-found';
+import { Locale } from '../../shared/translations/translations.types';
 import {
   DynamicRouteType,
   GET_ERROR_MESSAGES,
-} from '../dynamic-route-resolver.const.js';
+} from '../dynamic-route-resolver.const';
 
 interface RouteInfo {
   type: DynamicRouteType;

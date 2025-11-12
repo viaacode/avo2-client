@@ -3,13 +3,13 @@ import { Avo } from '@viaa/avo2-types';
 import {
   type GetUserGroupsWithFiltersQuery,
   type GetUserGroupsWithFiltersQueryVariables,
-} from '../../shared/generated/graphql-db-operations.js';
-import { GetUserGroupsWithFiltersDocument } from '../../shared/generated/graphql-db-react-query.js';
-import { CustomError } from '../../shared/helpers/custom-error.js';
-import { dataService } from '../../shared/services/data-service.js';
+} from '../../shared/generated/graphql-db-operations';
+import { GetUserGroupsWithFiltersDocument } from '../../shared/generated/graphql-db-react-query';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { dataService } from '../../shared/services/data-service';
 
-import { ITEMS_PER_PAGE } from './user-group.const.js';
-import { type UserGroup } from './user-group.types.js';
+import { ITEMS_PER_PAGE } from './user-group.const';
+import { type UserGroup } from './user-group.types';
 
 export class UserGroupService {
   public static async fetchUserGroups(

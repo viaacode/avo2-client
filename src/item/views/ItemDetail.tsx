@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Button,
   ButtonToolbar,
@@ -23,11 +23,11 @@ import {
   Spacer,
   Table,
   Thumbnail,
-} from '@viaa/avo2-components'
-import { Avo, PermissionName } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { useAtomValue } from 'jotai'
-import { isNil, noop } from 'es-toolkit'
+} from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
+import { isNil, noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactNode,
@@ -35,117 +35,117 @@ import React, {
   useCallback,
   useEffect,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate, useParams } from 'react-router'
-import { Link } from 'react-router-dom'
+} from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate, useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 import {
   JsonParam,
   StringParam,
   useQueryParam,
   useQueryParams,
-} from 'use-query-params'
+} from 'use-query-params';
 
-import { ITEMS_PATH } from '../../admin/items/items.const.js'
-import { ItemsService } from '../../admin/items/items.service.js'
-import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const.js'
-import { AssignmentService } from '../../assignment/assignment.service.js'
-import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal.js'
-import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
+import { ITEMS_PATH } from '../../admin/items/items.const';
+import { ItemsService } from '../../admin/items/items.service';
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
+import { AssignmentService } from '../../assignment/assignment.service';
+import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
+import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import {
   CONTENT_TYPE_TRANSLATIONS_NL_TO_EN,
   ContentTypeNumber,
-} from '../../collection/collection.types.js'
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants.js'
-import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const.js'
-import { type FilterState } from '../../search/search.types.js'
-import { FragmentShareModal } from '../../shared/components/FragmentShareModal/FragmentShareModal.js'
+} from '../../collection/collection.types';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
+import { type FilterState } from '../../search/search.types';
+import { FragmentShareModal } from '../../shared/components/FragmentShareModal/FragmentShareModal';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { LANGUAGES, ROUTE_PARTS } from '../../shared/constants/index.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { LANGUAGES, ROUTE_PARTS } from '../../shared/constants/index';
+import { buildLink } from '../../shared/helpers/build-link';
+import { CustomError } from '../../shared/helpers/custom-error';
 import {
   defaultRenderBookmarkButton,
   type renderBookmarkButtonProps,
-} from '../../shared/helpers/default-render-bookmark-button.js'
+} from '../../shared/helpers/default-render-bookmark-button';
 import {
   defaultRenderBookmarkCount,
   type renderBookmarkCountProps,
-} from '../../shared/helpers/default-render-bookmark-count.js'
+} from '../../shared/helpers/default-render-bookmark-count';
 import {
   defaultGoToDetailLink,
   defaultRenderDetailLink,
-} from '../../shared/helpers/default-render-detail-link.js'
-import { defaultRenderInteractiveTour } from '../../shared/helpers/default-render-interactive-tour.js'
+} from '../../shared/helpers/default-render-detail-link';
+import { defaultRenderInteractiveTour } from '../../shared/helpers/default-render-interactive-tour';
 import {
   defaultGoToSearchLink,
   defaultRenderSearchLink,
-} from '../../shared/helpers/default-render-search-link.js'
-import { reorderDate } from '../../shared/helpers/formatters/date.js'
-import { renderSearchLinks } from '../../shared/helpers/link.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { stringsToTagList } from '../../shared/helpers/strings-to-taglist.js'
-import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph.js'
-import { useCutModal } from '../../shared/hooks/use-cut-modal.js'
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js'
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js'
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js'
-import { trackEvents } from '../../shared/services/event-logging-service.js'
+} from '../../shared/helpers/default-render-search-link';
+import { reorderDate } from '../../shared/helpers/formatters/date';
+import { renderSearchLinks } from '../../shared/helpers/link';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
+import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
+import { useCutModal } from '../../shared/hooks/use-cut-modal';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import {
   getRelatedItems,
   ObjectTypes,
   ObjectTypesAll,
-} from '../../shared/services/related-items-service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { embedFlowAtom } from '../../shared/store/ui.store.js'
-import { type UnpublishableItem } from '../../shared/types/index.js'
-import { ItemVideoDescription } from '../components/ItemVideoDescription.js'
-import { AddToCollectionModal } from '../components/modals/AddToCollectionModal.js'
-import { CutFragmentForAssignmentModal } from '../components/modals/CutFragmentForAssignmentModal.js'
-import { ReportItemModal } from '../components/modals/ReportItemModal.js'
-import { RELATED_ITEMS_AMOUNT } from '../item.const.js'
-import { type ItemTrimInfo } from '../item.types.js'
+} from '../../shared/services/related-items-service';
+import { ToastService } from '../../shared/services/toast-service';
+import { embedFlowAtom } from '../../shared/store/ui.store';
+import { type UnpublishableItem } from '../../shared/types/index';
+import { ItemVideoDescription } from '../components/ItemVideoDescription';
+import { AddToCollectionModal } from '../components/modals/AddToCollectionModal';
+import { CutFragmentForAssignmentModal } from '../components/modals/CutFragmentForAssignmentModal';
+import { ReportItemModal } from '../components/modals/ReportItemModal';
+import { RELATED_ITEMS_AMOUNT } from '../item.const';
+import { type ItemTrimInfo } from '../item.types';
 
-import './ItemDetail.scss'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
+import './ItemDetail.scss';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface ItemDetailProps {
-  id?: string // Item id when component needs to be used inside another component and the id cannot come from the url (itemId)
+  id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (itemId)
   renderDetailLink?: (
     linkText: string | ReactNode,
     id: string,
     type: Avo.Core.ContentType,
     className?: string,
-  ) => ReactNode
+  ) => ReactNode;
   renderSearchLink?: (
     linkText: string | ReactNode,
     newFilters: FilterState,
     className?: string,
-  ) => ReactNode
-  goToDetailLink?: (id: string, type: Avo.Core.ContentType) => void
-  goToSearchLink?: (newFilters: FilterState) => void
-  enabledMetaData?: SearchFilter[]
+  ) => ReactNode;
+  goToDetailLink?: (id: string, type: Avo.Core.ContentType) => void;
+  goToSearchLink?: (newFilters: FilterState) => void;
+  enabledMetaData?: SearchFilter[];
   /**
    * Render related objects: only items (video/audio) or all types: video/audio/collections/bundels
    * Pupils can only see items
    */
-  relatedObjectTypes?: ObjectTypesAll
-  renderActionButtons?: (item: Avo.Item.Item) => ReactNode
-  renderBookmarkButton?: (props: renderBookmarkButtonProps) => ReactNode
-  renderBookmarkCount?: (props: renderBookmarkCountProps) => ReactNode
-  renderInteractiveTour?: () => ReactNode
+  relatedObjectTypes?: ObjectTypesAll;
+  renderActionButtons?: (item: Avo.Item.Item) => ReactNode;
+  renderBookmarkButton?: (props: renderBookmarkButtonProps) => ReactNode;
+  renderBookmarkCount?: (props: renderBookmarkCountProps) => ReactNode;
+  renderInteractiveTour?: () => ReactNode;
 }
 
 const ITEM_ACTIONS = {
   createAssignment: 'createAssignment',
   importToAssignment: 'importToAssignment',
-}
+};
 
 export const ItemDetail: FC<ItemDetailProps> = ({
   id,
@@ -160,46 +160,46 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   renderBookmarkCount = defaultRenderBookmarkCount,
   renderInteractiveTour = defaultRenderInteractiveTour,
 }) => {
-  const navigateFunc = useNavigate()
-  const { id: idFromUrl } = useParams<{ id: string }>()
-  const itemId = id || idFromUrl
-  const commonUser = useAtomValue(commonUserAtom)
-  const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom)
+  const navigateFunc = useNavigate();
+  const { id: idFromUrl } = useParams<{ id: string }>();
+  const itemId = id || idFromUrl;
+  const commonUser = useAtomValue(commonUserAtom);
+  const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom);
 
-  goToDetailLink = goToDetailLink || defaultGoToDetailLink(navigateFunc)
-  goToSearchLink = goToSearchLink || defaultGoToSearchLink(navigateFunc)
+  goToDetailLink = goToDetailLink || defaultGoToDetailLink(navigateFunc);
+  goToSearchLink = goToSearchLink || defaultGoToSearchLink(navigateFunc);
 
-  const [cuePoint] = useQueryParam('t', StringParam)
-  const [cutButton, cutModal] = useCutModal()
+  const [cuePoint] = useQueryParam('t', StringParam);
+  const [cutButton, cutModal] = useCutModal();
 
-  const [item, setItem] = useState<Avo.Item.Item | null>(null)
+  const [item, setItem] = useState<Avo.Item.Item | null>(null);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const [isAddToCollectionModalOpen, setIsAddToCollectionModalOpen] =
-    useState(false)
+    useState(false);
   const [isAddToFragmentModalOpen, setIsAddToFragmentModalOpen] =
-    useState(false)
-  const [isReportItemModalOpen, setIsReportItemModalOpen] = useState(false)
+    useState(false);
+  const [isReportItemModalOpen, setIsReportItemModalOpen] = useState(false);
   const [isShareFragmentModalOpen, setIsShareFragmentModalOpen] =
-    useState(false)
+    useState(false);
   const [relatedItems, setRelatedItems] = useState<
     Avo.Search.ResultItem[] | null
-  >(null)
+  >(null);
   const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] =
-    useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS)
+    useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS);
   const [isCreateAssignmentDropdownOpen, setIsCreateAssignmentDropdownOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [
     isConfirmImportToAssignmentWithResponsesModalOpen,
     setIsConfirmImportToAssignmentWithResponsesModalOpen,
-  ] = useState<boolean>(false)
-  const [assignmentId, setAssignmentId] = useState<string>()
+  ] = useState<boolean>(false);
+  const [assignmentId, setAssignmentId] = useState<string>();
   const [filterState] = useQueryParams({
     filters: JsonParam,
-  })
+  });
 
   const retrieveRelatedItems = useCallback(
     (currentItemId: string, limit: number) => {
@@ -216,21 +216,21 @@ export const ItemDetail: FC<ItemDetailProps> = ({
             currentItemId,
             limit,
             index: 'items',
-          })
+          });
           ToastService.danger(
             tHtml(
               'item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt',
             ),
-          )
-        })
+          );
+        });
     },
     [filterState, relatedObjectTypes],
-  )
+  );
 
   const checkPermissionsAndGetItem = useCallback(async () => {
     try {
       if (!itemId) {
-        return
+        return;
       }
       if (
         !(
@@ -250,7 +250,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           SpecialUserGroupId.PupilElementary,
         ]
           .map(String)
-          .includes(String(commonUser?.userGroup?.id))
+          .includes(String(commonUser?.userGroup?.id));
 
         if (isPupil) {
           setLoadingInfo({
@@ -259,7 +259,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
               'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken-leerling',
             ),
             icon: IconName.lock,
-          })
+          });
         } else {
           setLoadingInfo({
             state: 'error',
@@ -267,24 +267,26 @@ export const ItemDetail: FC<ItemDetailProps> = ({
               'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken',
             ),
             icon: IconName.lock,
-          })
+          });
         }
-        return
+        return;
       }
 
       const itemObj: UnpublishableItem =
-        await ItemsService.fetchItemByExternalId(itemId)
+        await ItemsService.fetchItemByExternalId(itemId);
       if (!itemObj) {
         setLoadingInfo({
           state: 'error',
           message: tHtml('item/views/item___dit-item-werd-niet-gevonden'),
           icon: IconName.search,
-        })
-        return
+        });
+        return;
       }
 
       if (itemObj.depublish_reason) {
-        const depublishReason = stripRichTextParagraph(itemObj.depublish_reason)
+        const depublishReason = stripRichTextParagraph(
+          itemObj.depublish_reason,
+        );
         setLoadingInfo({
           state: 'error',
           message: tHtml(
@@ -292,15 +294,15 @@ export const ItemDetail: FC<ItemDetailProps> = ({
             { depublishReason },
           ),
           icon: IconName.cameraOff,
-        })
-        return
+        });
+        return;
       }
 
       if (itemObj.replacement_for) {
         // Item was replaced by another item
         // We should reload the page, to update the url
-        goToDetailLink?.(itemObj.external_id, Avo.Core.ContentType.VIDEO)
-        return
+        goToDetailLink?.(itemObj.external_id, Avo.Core.ContentType.VIDEO);
+        return;
       }
 
       BookmarksViewsPlaysService.action(
@@ -308,7 +310,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
         'item',
         itemObj.uid,
         commonUser,
-      ).then(noop)
+      ).then(noop);
       trackEvents(
         {
           object: itemId,
@@ -316,30 +318,30 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           action: 'view',
         },
         commonUser,
-      )
+      );
 
-      retrieveRelatedItems(itemId, RELATED_ITEMS_AMOUNT)
+      retrieveRelatedItems(itemId, RELATED_ITEMS_AMOUNT);
 
       try {
         const counts = await BookmarksViewsPlaysService.getItemCounts(
           (itemObj as any).uid,
           commonUser,
-        )
-        setBookmarkViewPlayCounts(counts)
+        );
+        setBookmarkViewPlayCounts(counts);
       } catch (err) {
         console.error(
           new CustomError('Failed to get getItemCounts', err, {
             uuid: (itemObj as any).uid,
           }),
-        )
+        );
         ToastService.danger(
           tHtml(
             'item/views/item-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt',
           ),
-        )
+        );
       }
 
-      setItem(itemObj)
+      setItem(itemObj);
     } catch (err) {
       console.error(
         new CustomError(
@@ -350,33 +352,33 @@ export const ItemDetail: FC<ItemDetailProps> = ({
             itemId,
           },
         ),
-      )
+      );
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'item/views/item-detail___het-ophalen-van-het-item-is-mislukt',
         ),
-      })
+      });
     }
     // Avoid calling this function too many times
     // TODO switch fetching to react-query so these called are cached
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [itemId, setItem, commonUser])
+  }, [itemId, setItem, commonUser]);
 
   useEffect(() => {
     if (item) {
       setLoadingInfo({
         state: 'loaded',
-      })
+      });
     }
-  }, [item, setLoadingInfo])
+  }, [item, setLoadingInfo]);
 
   /**
    * Load item from database
    */
   useEffect(() => {
-    checkPermissionsAndGetItem().then(noop)
-  }, [checkPermissionsAndGetItem])
+    checkPermissionsAndGetItem().then(noop);
+  }, [checkPermissionsAndGetItem]);
 
   const toggleBookmark = async () => {
     try {
@@ -385,12 +387,12 @@ export const ItemDetail: FC<ItemDetailProps> = ({
         commonUser,
         'item',
         bookmarkViewPlayCounts.isBookmarked,
-      )
+      );
 
       setBookmarkViewPlayCounts({
         ...bookmarkViewPlayCounts,
         isBookmarked: !bookmarkViewPlayCounts.isBookmarked,
-      })
+      });
       ToastService.success(
         bookmarkViewPlayCounts.isBookmarked
           ? tHtml(
@@ -399,7 +401,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           : tHtml(
               'collection/views/collection-detail___de-bladwijzer-is-aangemaakt',
             ),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError('Failed to toggle bookmark', err, {
@@ -408,7 +410,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           type: 'item',
           isBookmarked: bookmarkViewPlayCounts.isBookmarked,
         }),
-      )
+      );
       ToastService.danger(
         bookmarkViewPlayCounts.isBookmarked
           ? tHtml(
@@ -417,15 +419,15 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           : tHtml(
               'item/views/item-detail___het-aanmaken-van-de-bladwijzer-is-mislukt',
             ),
-      )
+      );
     }
-  }
+  };
 
   const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
     const englishContentType: Avo.ContentType.English =
       CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[
         relatedItem.administrative_type || 'video'
-      ]
+      ];
 
     return (
       <MediaCard
@@ -446,8 +448,8 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           </MetaData>
         </MediaCardMetaData>
       </MediaCard>
-    )
-  }
+    );
+  };
 
   const renderRelatedItems = () => {
     if (relatedItems && relatedItems.length) {
@@ -461,11 +463,11 @@ export const ItemDetail: FC<ItemDetailProps> = ({
               'a-link__no-styles',
             )}
           </li>
-        )
-      })
+        );
+      });
     }
-    return null
-  }
+    return null;
+  };
 
   const createNewAssignment = async (
     source:
@@ -473,88 +475,88 @@ export const ItemDetail: FC<ItemDetailProps> = ({
       | null = item,
   ) => {
     if (!source || !commonUser) {
-      return
+      return;
     }
 
     const assignmentId = await AssignmentService.createAssignmentFromFragment(
       commonUser,
       source,
-    )
+    );
 
     navigateFunc(
       buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }),
-    )
-  }
+    );
+  };
 
   const onImportToAssignment = async (
     importToAssignmentId: string,
   ): Promise<void> => {
     if (!commonUser) {
-      console.error('User is not logged in')
-      return
+      console.error('User is not logged in');
+      return;
     }
-    setAssignmentId(importToAssignmentId)
+    setAssignmentId(importToAssignmentId);
 
     // check if assignment has responses. If so: show additional confirmation modal
     const responses =
-      await AssignmentService.getAssignmentResponses(importToAssignmentId)
+      await AssignmentService.getAssignmentResponses(importToAssignmentId);
     if (responses.length > 0) {
-      setIsConfirmImportToAssignmentWithResponsesModalOpen(true)
+      setIsConfirmImportToAssignmentWithResponsesModalOpen(true);
     } else {
-      setIsAddToFragmentModalOpen(true)
+      setIsAddToFragmentModalOpen(true);
     }
-  }
+  };
 
   const onConfirmImportAssignment = () => {
     if (!assignmentId) {
-      return
+      return;
     }
-    setIsConfirmImportToAssignmentWithResponsesModalOpen(false)
-    setIsAddToFragmentModalOpen(true)
-  }
+    setIsConfirmImportToAssignmentWithResponsesModalOpen(false);
+    setIsAddToFragmentModalOpen(true);
+  };
 
   const doImportToAssignment = async (
     itemTrimInfo?: ItemTrimInfo,
   ): Promise<void> => {
-    setIsAddToFragmentModalOpen(false)
+    setIsAddToFragmentModalOpen(false);
     if (item && assignmentId) {
       await AssignmentService.importFragmentToAssignment(
         item,
         assignmentId,
         itemTrimInfo,
-      )
+      );
       ToastService.success(
         tHtml(
           'item/views/item-detail___het-fragment-is-toegevoegd-aan-de-opdracht',
         ),
-      )
+      );
     } else {
       ToastService.danger(
         tHtml(
           'item/views/item-detail___het-fragment-kon-niet-worden-toegevoegd-aan-de-opdracht',
         ),
-      )
+      );
     }
-  }
+  };
 
   const executeAction = async (item: ReactText) => {
-    setIsCreateAssignmentDropdownOpen(false)
+    setIsCreateAssignmentDropdownOpen(false);
     switch (item) {
       case ITEM_ACTIONS.createAssignment:
-        await createNewAssignment()
-        break
+        await createNewAssignment();
+        break;
 
       case ITEM_ACTIONS.importToAssignment:
-        setIsImportToAssignmentModalOpen(true)
-        break
+        setIsImportToAssignmentModalOpen(true);
+        break;
 
       default:
         console.warn(
           `An unhandled action "${item}" was executed without a binding.`,
-        )
-        return null
+        );
+        return null;
     }
-  }
+  };
 
   const renderEducationLevels = (item: Avo.Item.Item) => {
     if (
@@ -562,7 +564,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
       !item.lom_context ||
       !enabledMetaData.includes(SearchFilter.educationLevel)
     ) {
-      return null
+      return null;
     }
     return (
       <Table
@@ -586,8 +588,8 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           </tr>
         </tbody>
       </Table>
-    )
-  }
+    );
+  };
 
   const renderEducationDegrees = (item: Avo.Item.Item) => {
     if (
@@ -595,7 +597,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
       !item.lom_typical_age_range ||
       !enabledMetaData.includes(SearchFilter.educationDegree)
     ) {
-      return null
+      return null;
     }
     return (
       <Table
@@ -621,8 +623,8 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           </tr>
         </tbody>
       </Table>
-    )
-  }
+    );
+  };
 
   const renderSubjects = (item: Avo.Item.Item) => {
     if (
@@ -630,7 +632,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
       !item.lom_classification ||
       !enabledMetaData.includes(SearchFilter.subject)
     ) {
-      return null
+      return null;
     }
     return (
       <Table
@@ -654,8 +656,8 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           </tr>
         </tbody>
       </Table>
-    )
-  }
+    );
+  };
 
   const renderThemas = (item: Avo.Item.Item) => {
     if (
@@ -663,7 +665,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
       !item.lom_thema ||
       !enabledMetaData.includes(SearchFilter.thema)
     ) {
-      return null
+      return null;
     }
     return (
       <Table
@@ -687,15 +689,15 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           </tr>
         </tbody>
       </Table>
-    )
-  }
+    );
+  };
 
   const renderKeywords = (item: Avo.Item.Item) => {
     if (
       !item.lom_keywords?.length ||
       !enabledMetaData.includes(SearchFilter.keyword)
     ) {
-      return null
+      return null;
     }
     return (
       <Table
@@ -731,8 +733,8 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           {/*</tr>*/}
         </tbody>
       </Table>
-    )
-  }
+    );
+  };
 
   const renderGeneralMetaData = (item: Avo.Item.Item) => {
     return (
@@ -800,8 +802,8 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           )}
         </Grid>
       </Table>
-    )
-  }
+    );
+  };
 
   const renderShareButtons = () => {
     if (isSmartSchoolEmbedFlow) {
@@ -813,10 +815,10 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           ariaLabel={tText('item/views/item-detail___gebruiken-in-smartschool')}
           title={tText('item/views/item-detail___gebruiken-in-smartschool')}
           onClick={() => {
-            setIsShareFragmentModalOpen(true)
+            setIsShareFragmentModalOpen(true);
           }}
         />
-      )
+      );
     }
 
     return (
@@ -827,11 +829,11 @@ export const ItemDetail: FC<ItemDetailProps> = ({
         ariaLabel={tText('item/views/item-detail___fragment-delen')}
         title={tText('item/views/item-detail___fragment-delen')}
         onClick={() => {
-          setIsShareFragmentModalOpen(true)
+          setIsShareFragmentModalOpen(true);
         }}
       />
-    )
-  }
+    );
+  };
 
   const defaultRenderActionButtons = () => {
     return (
@@ -852,7 +854,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
                 'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie',
               )}
               onClick={() => {
-                setIsAddToCollectionModalOpen(true)
+                setIsAddToCollectionModalOpen(true);
               }}
             />
           )}
@@ -927,20 +929,20 @@ export const ItemDetail: FC<ItemDetailProps> = ({
             ariaLabel={tText('item/views/item___rapporteer-item')}
             title={tText('item/views/item___rapporteer-item')}
             onClick={() => {
-              setIsReportItemModalOpen(true)
+              setIsReportItemModalOpen(true);
             }}
           />
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   const renderItem = () => {
     if (!item) {
-      return null
+      return null;
     }
     const englishContentType: Avo.ContentType.English =
-      CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[item?.type?.label || 'video']
+      CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[item?.type?.label || 'video'];
 
     return (
       <>
@@ -1087,7 +1089,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
               externalId={itemId as string}
               isOpen={isAddToCollectionModalOpen}
               onClose={() => {
-                setIsAddToCollectionModalOpen(false)
+                setIsAddToCollectionModalOpen(false);
               }}
             />
           )}
@@ -1101,7 +1103,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
               itemMetaData={item}
               isOpen={isAddToFragmentModalOpen}
               onClose={() => {
-                setIsAddToFragmentModalOpen(false)
+                setIsAddToFragmentModalOpen(false);
               }}
               afterCutCallback={doImportToAssignment}
             />
@@ -1111,7 +1113,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
             externalId={itemId}
             isOpen={isReportItemModalOpen}
             onClose={() => {
-              setIsReportItemModalOpen(false)
+              setIsReportItemModalOpen(false);
             }}
           />
         )}
@@ -1119,7 +1121,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           isOpen={isShareFragmentModalOpen}
           item={item}
           onClose={() => {
-            setIsShareFragmentModalOpen(false)
+            setIsShareFragmentModalOpen(false);
           }}
         />
         {PermissionService.hasPerm(
@@ -1179,8 +1181,8 @@ export const ItemDetail: FC<ItemDetailProps> = ({
             onConfirm: (update) => createNewAssignment({ ...item, ...update }),
           })}
       </>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -1202,5 +1204,5 @@ export const ItemDetail: FC<ItemDetailProps> = ({
         notFoundError={tText('item/views/item___dit-item-werd-niet-gevonden')}
       />
     </>
-  )
-}
+  );
+};

@@ -6,21 +6,21 @@ import { array, object, type Schema, string } from 'yup';
 import {
   SearchFilter,
   SearchOrderAndDirectionProperty,
-} from '../search/search.const.js';
-import { ROUTE_PARTS } from '../shared/constants/index.js';
-import { EducationLevelId } from '../shared/helpers/lom.js';
-import { ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list.js';
-import { tHtml } from '../shared/helpers/translate-html.js';
-import { tText } from '../shared/helpers/translate-text.js';
-import { TableColumnDataType } from '../shared/types/table-column-data-type.js';
+} from '../search/search.const';
+import { ROUTE_PARTS } from '../shared/constants/index';
+import { EducationLevelId } from '../shared/helpers/lom';
+import { ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../shared/helpers/translate-html';
+import { tText } from '../shared/helpers/translate-text';
+import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
   type AssignmentColumn,
   type AssignmentResponseColumn,
   type AssignmentResponseFormState,
   type AssignmentTableColumns,
-} from './assignment.types.js';
-import { type AssignmentFields } from './hooks/assignment-form.js';
+} from './assignment.types';
+import { type AssignmentFields } from './hooks/assignment-form';
 
 export const ITEMS_PER_PAGE = 20;
 

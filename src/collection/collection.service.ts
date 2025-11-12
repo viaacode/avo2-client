@@ -4,12 +4,12 @@ import { endOfDay, startOfDay } from 'date-fns';
 import { cloneDeep, compact, isEqual, isNil, uniq, without } from 'es-toolkit';
 import { isEmpty } from 'es-toolkit/compat';
 import queryString, { stringifyUrl } from 'query-string';
-import { setBlockPositionToIndex } from '../assignment/assignment.helper.js';
-import { PermissionService } from '../authentication/helpers/permission-service.js';
+import { setBlockPositionToIndex } from '../assignment/assignment.helper';
+import { PermissionService } from '../authentication/helpers/permission-service';
 import {
   type ContributorInfo,
   type ContributorInfoRight,
-} from '../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
+} from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
   type DeleteCollectionFragmentByIdMutation,
   type DeleteCollectionFragmentByIdMutationVariables,
@@ -73,7 +73,7 @@ import {
   type UpdateCollectionManagementEntryMutationVariables,
   type UpdateMarcomNoteMutation,
   type UpdateMarcomNoteMutationVariables,
-} from '../shared/generated/graphql-db-operations.js';
+} from '../shared/generated/graphql-db-operations';
 import {
   DeleteCollectionFragmentByIdDocument,
   DeleteCollectionLabelsDocument,
@@ -106,23 +106,23 @@ import {
   UpdateCollectionFragmentByIdDocument,
   UpdateCollectionManagementEntryDocument,
   UpdateMarcomNoteDocument,
-} from '../shared/generated/graphql-db-react-query.js';
+} from '../shared/generated/graphql-db-react-query';
 import {
   type App_Collection_Marcom_Log_Insert_Input,
   Lookup_Enum_Collection_Management_Qc_Label_Enum,
   Lookup_Enum_Relation_Types_Enum,
-} from '../shared/generated/graphql-db-types.js';
-import { convertRteToString } from '../shared/helpers/convert-rte-to-string.js';
-import { CustomError } from '../shared/helpers/custom-error.js';
-import { getEnv } from '../shared/helpers/env.js';
-import { tHtml } from '../shared/helpers/translate-html.js';
-import { isUuid } from '../shared/helpers/uuid.js';
-import { dataService } from '../shared/services/data-service.js';
-import { QualityLabelsService } from '../shared/services/quality-labels.service.js';
-import { RelationService } from '../shared/services/relation-service/relation.service.js';
-import { ToastService } from '../shared/services/toast-service.js';
-import { VideoStillService } from '../shared/services/video-stills-service.js';
-import { type Positioned } from '../shared/types/index.js';
+} from '../shared/generated/graphql-db-types';
+import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
+import { CustomError } from '../shared/helpers/custom-error';
+import { getEnv } from '../shared/helpers/env';
+import { tHtml } from '../shared/helpers/translate-html';
+import { isUuid } from '../shared/helpers/uuid';
+import { dataService } from '../shared/services/data-service';
+import { QualityLabelsService } from '../shared/services/quality-labels.service';
+import { RelationService } from '../shared/services/relation-service/relation.service';
+import { ToastService } from '../shared/services/toast-service';
+import { VideoStillService } from '../shared/services/video-stills-service';
+import { type Positioned } from '../shared/types/index';
 import {
   cleanCollectionBeforeSave,
   getFragmentIdsFromCollection,
@@ -130,7 +130,7 @@ import {
   getValidationErrorForSave,
   getValidationErrorsForPublish,
   keepCoreCollectionProperties,
-} from './collection.helpers.js';
+} from './collection.helpers';
 import {
   type Collection,
   type CollectionMarcomEntry,
@@ -138,10 +138,10 @@ import {
   ContentTypeNumber,
   type ParentBundle,
   type QualityLabel,
-} from './collection.types.js';
-import { type MarcomNoteInfo } from './components/CollectionOrBundleEdit.types.js';
-import { canManageEditorial } from './helpers/can-manage-editorial.js';
-import { type BundleSortProp } from './hooks/useGetCollectionsOrBundlesContainingFragment.js';
+} from './collection.types';
+import { type MarcomNoteInfo } from './components/CollectionOrBundleEdit.types';
+import { canManageEditorial } from './helpers/can-manage-editorial';
+import { type BundleSortProp } from './hooks/useGetCollectionsOrBundlesContainingFragment';
 
 export interface OrganisationContentItem {
   id: string;

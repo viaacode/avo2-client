@@ -11,28 +11,28 @@ import { compact } from 'es-toolkit';
 import React, { type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
-import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const.js';
-import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info.js';
+import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
+import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import {
   GET_MARCOM_CHANNEL_NAME_OPTIONS,
   GET_MARCOM_CHANNEL_TYPE_OPTIONS,
-} from '../../../collection/collection.const.js';
+} from '../../../collection/collection.const';
 import {
   CollectionCreateUpdateTab,
   type QualityLabel,
-} from '../../../collection/collection.types.js';
-import { booleanToOkNok } from '../../../collection/helpers/ok-nok-parser.js';
-import { APP_PATH } from '../../../constants.js';
-import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag.js';
-import { buildLink } from '../../../shared/helpers/build-link.js';
-import { formatDate } from '../../../shared/helpers/formatters/date.js';
-import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited.js';
-import { groupLomLinks } from '../../../shared/helpers/lom.js';
-import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist.js';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
-import { tText } from '../../../shared/helpers/translate-text.js';
-import { truncateTableValue } from '../../../shared/helpers/truncate.js';
-import { getCollectionManagementStatuses } from '../collections-or-bundles.const.js';
+} from '../../../collection/collection.types';
+import { booleanToOkNok } from '../../../collection/helpers/ok-nok-parser';
+import { APP_PATH } from '../../../constants';
+import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { formatDate } from '../../../shared/helpers/formatters/date';
+import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
+import { groupLomLinks } from '../../../shared/helpers/lom';
+import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tText } from '../../../shared/helpers/translate-text';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
+import { getCollectionManagementStatuses } from '../collections-or-bundles.const';
 import {
   type CollectionOrBundleActualisationOverviewTableCols,
   type CollectionOrBundleMarcomOverviewTableCols,
@@ -40,7 +40,7 @@ import {
   type CollectionsOrBundlesOverviewTableCols,
   type CollectionTableColumns,
   type ManagementStatus,
-} from '../collections-or-bundles.types.js';
+} from '../collections-or-bundles.types';
 
 const getDisplayTextForManagementStatus = (
   status: ManagementStatus | null | undefined,

@@ -7,12 +7,12 @@ import { Avo } from '@viaa/avo2-types';
 import { orderBy } from 'es-toolkit';
 import React, { type FC, useState } from 'react';
 
-import { type BooleanDictionary } from '../../helpers/navigation.js';
-import { tText } from '../../helpers/translate-text.js';
-import { useAllGetNavItems } from '../../hooks/useAllGetNavItems.js';
-import { type AppContentNavElement } from '../../services/navigation-items-service.js';
-import { NavigationBarId } from '../Navigation/Navigation.const.js';
-import { NavigationItem } from '../Navigation/NavigationItem.js';
+import { type BooleanDictionary } from '../../helpers/navigation';
+import { tText } from '../../helpers/translate-text';
+import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
+import { type AppContentNavElement } from '../../services/navigation-items-service';
+import { NavigationBarId } from '../Navigation/Navigation.const';
+import { NavigationItem } from '../Navigation/NavigationItem';
 
 import './Footer.scss';
 

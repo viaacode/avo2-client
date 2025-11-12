@@ -28,101 +28,101 @@ import React, {
 import { Helmet } from 'react-helmet';
 import { matchPath, Navigate, useNavigate, useParams } from 'react-router';
 
-import { ItemsService } from '../../admin/items/items.service.js';
+import { ItemsService } from '../../admin/items/items.service';
 import {
   reorderBlockPositions,
   setBlockPositionToIndex,
-} from '../../assignment/assignment.helper.js';
-import { AssignmentService } from '../../assignment/assignment.service.js';
-import { commonUserAtom } from '../../authentication/authentication.store.js';
-import { PermissionService } from '../../authentication/helpers/permission-service.js';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page.js';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants.js';
-import { ErrorNoAccess } from '../../error/components/ErrorNoAccess.js';
-import { ErrorView } from '../../error/views/ErrorView.js';
-import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt.js';
-import { DraggableBlock } from '../../shared/components/DraggableBlock/DraggableBlock.js';
-import { DraggableListModal } from '../../shared/components/DraggableList/DraggableListModal.js';
-import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors.js';
-import { InActivityWarningModal } from '../../shared/components/InActivityWarningModal/InActivityWarningModal.js';
-import { InputModal } from '../../shared/components/InputModal/InputModal.js';
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour.js';
+} from '../../assignment/assignment.helper';
+import { AssignmentService } from '../../assignment/assignment.service';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
+import { ErrorView } from '../../error/views/ErrorView';
+import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import { DraggableBlock } from '../../shared/components/DraggableBlock/DraggableBlock';
+import { DraggableListModal } from '../../shared/components/DraggableList/DraggableListModal';
+import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
+import { InActivityWarningModal } from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
+import { InputModal } from '../../shared/components/InputModal/InputModal';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
-import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper.js';
-import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown.js';
-import { ShareModal } from '../../shared/components/ShareModal/ShareModal.js';
-import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
-import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar.js';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
+import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown';
+import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
+import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import {
   getMoreOptionsLabel,
   ROUTE_PARTS,
-} from '../../shared/constants/index.js';
-import { buildLink } from '../../shared/helpers/build-link.js';
+} from '../../shared/constants/index';
+import { buildLink } from '../../shared/helpers/build-link';
 import {
   getContributorType,
   transformContributorsToSimpleContributors,
-} from '../../shared/helpers/contributors.js';
-import { convertRteToString } from '../../shared/helpers/convert-rte-to-string.js';
-import { CustomError } from '../../shared/helpers/custom-error.js';
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown.js';
-import { navigate } from '../../shared/helpers/link.js';
-import { isMobileWidth } from '../../shared/helpers/media-query.js';
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop.js';
-import { tHtml } from '../../shared/helpers/translate-html.js';
-import { tText } from '../../shared/helpers/translate-text.js';
-import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload.js';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
-import { trackEvents } from '../../shared/services/event-logging-service.js';
-import { ToastService } from '../../shared/services/toast-service.js';
-import { COLLECTIONS_ID } from '../../workspace/workspace.const.js';
-import { getFragmentsFromCollection } from '../collection.helpers.js';
-import { CollectionService } from '../collection.service.js';
+} from '../../shared/helpers/contributors';
+import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
+import { navigate } from '../../shared/helpers/link';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
+import { COLLECTIONS_ID } from '../../workspace/workspace.const';
+import { getFragmentsFromCollection } from '../collection.helpers';
+import { CollectionService } from '../collection.service';
 import {
   COLLECTION_OR_BUNDLE_TO_CONTENT_TYPE_ENGLISH,
   CollectionCreateUpdateTab,
   CollectionMenuAction,
   CollectionOrBundle,
   ContentTypeNumber,
-} from '../collection.types.js';
+} from '../collection.types';
 import {
   onAddContributor,
   onDeleteContributor,
   onEditContributor,
-} from '../helpers/collection-share-with-collegue-handlers.js';
+} from '../helpers/collection-share-with-collegue-handlers';
 import {
   deleteCollection,
   deleteSelfFromCollection,
-} from '../helpers/delete-collection.js';
+} from '../helpers/delete-collection';
 import {
   BundleSortProp,
   useGetCollectionsOrBundlesContainingFragment,
-} from '../hooks/useGetCollectionsOrBundlesContainingFragment.js';
+} from '../hooks/useGetCollectionsOrBundlesContainingFragment';
 import {
   GET_REORDER_TYPE_TO_BUTTON_LABEL,
   REORDER_TYPE_TO_FRAGMENT_TYPE,
-} from './CollectionOrBundleEdit.consts.js';
+} from './CollectionOrBundleEdit.consts';
 import {
   type CollectionAction,
   type CollectionOrBundleEditProps,
   type CollectionState,
   ReorderType,
-} from './CollectionOrBundleEdit.types.js';
-import { CollectionOrBundleEditActualisation } from './CollectionOrBundleEditActualisation.js';
-import { CollectionOrBundleEditAdmin } from './CollectionOrBundleEditAdmin.js';
-import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts.js';
-import { CollectionOrBundleEditContent } from './CollectionOrBundleEditContent.js';
-import { CollectionOrBundleEditMarcom } from './CollectionOrBundleEditMarcom.js';
-import { CollectionOrBundleEditMetaData } from './CollectionOrBundleEditMetaData.js';
-import { CollectionOrBundleEditQualityCheck } from './CollectionOrBundleEditQualityCheck.js';
-import { CollectionOrBundleTitle } from './CollectionOrBundleTitle.js';
-import { DeleteCollectionModal } from './modals/DeleteCollectionModal.js';
-import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal.js';
-import { PublishCollectionModal } from './modals/PublishCollectionModal.js';
+} from './CollectionOrBundleEdit.types';
+import { CollectionOrBundleEditActualisation } from './CollectionOrBundleEditActualisation';
+import { CollectionOrBundleEditAdmin } from './CollectionOrBundleEditAdmin';
+import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
+import { CollectionOrBundleEditContent } from './CollectionOrBundleEditContent';
+import { CollectionOrBundleEditMarcom } from './CollectionOrBundleEditMarcom';
+import { CollectionOrBundleEditMetaData } from './CollectionOrBundleEditMetaData';
+import { CollectionOrBundleEditQualityCheck } from './CollectionOrBundleEditQualityCheck';
+import { CollectionOrBundleTitle } from './CollectionOrBundleTitle';
+import { DeleteCollectionModal } from './modals/DeleteCollectionModal';
+import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
+import { PublishCollectionModal } from './modals/PublishCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
 

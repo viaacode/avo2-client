@@ -32,41 +32,41 @@ import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
-import { ItemsService } from '../../admin/items/items.service.js';
-import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js';
-import { commonUserAtom } from '../../authentication/authentication.store.js';
-import { PermissionService } from '../../authentication/helpers/permission-service.js';
-import { APP_PATH } from '../../constants.js';
-import { ErrorView } from '../../error/views/ErrorView.js';
-import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal.js';
+import { ItemsService } from '../../admin/items/items.service';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { APP_PATH } from '../../constants';
+import { ErrorView } from '../../error/views/ErrorView';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
-import { buildLink } from '../../shared/helpers/build-link.js';
-import { formatDate } from '../../shared/helpers/formatters/date.js';
-import { isMobileWidth } from '../../shared/helpers/media-query.js';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js';
-import { truncateTableValue } from '../../shared/helpers/truncate.js';
-import { useTableSort } from '../../shared/hooks/useTableSort.js';
-import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service.js';
-import { ToastService } from '../../shared/services/toast-service.js';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type.js';
-import { ITEMS_PER_PAGE } from '../../workspace/workspace.const.js';
-import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const.js';
-import { AssignmentService } from '../assignment.service.js';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../shared/helpers/build-link';
+import { formatDate } from '../../shared/helpers/formatters/date';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import { truncateTableValue } from '../../shared/helpers/truncate';
+import { useTableSort } from '../../shared/hooks/useTableSort';
+import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
+import { ToastService } from '../../shared/services/toast-service';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
+import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
+import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const';
+import { AssignmentService } from '../assignment.service';
 import {
   type AssignmentResponseTableColumns,
   type AssignmentTableColumns,
   type PupilCollectionFragment,
-} from '../assignment.types.js';
-import { canViewAnAssignment } from '../helpers/can-view-an-assignment.js';
-import { isItemWithMeta } from '../helpers/is-item-with-meta.js';
+} from '../assignment.types';
+import { canViewAnAssignment } from '../helpers/can-view-an-assignment';
+import { isItemWithMeta } from '../helpers/is-item-with-meta';
 
 import './AssignmentOverview.scss';
 import './AssignmentResponses.scss';
-import { tHtml } from '../../shared/helpers/translate-html.js';
-import { tText } from '../../shared/helpers/translate-text.js';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface AssignmentResponsesProps {
   onUpdate: () => void | Promise<void>;

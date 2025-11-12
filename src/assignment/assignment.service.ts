@@ -3,16 +3,16 @@ import { Avo } from '@viaa/avo2-types';
 import { cloneDeep, isNil } from 'es-toolkit';
 import { stringifyUrl } from 'query-string';
 
-import { type AssignmentsOverviewTableState } from '../admin/assignments/assignments.types.js';
-import { ItemsService } from '../admin/items/items.service.js';
-import { CollectionService } from '../collection/collection.service.js';
-import { type AssignmentMarcomEntry } from '../collection/collection.types.js';
-import { canManageEditorial } from '../collection/helpers/can-manage-editorial.js';
-import { type ItemTrimInfo } from '../item/item.types.js';
+import { type AssignmentsOverviewTableState } from '../admin/assignments/assignments.types';
+import { ItemsService } from '../admin/items/items.service';
+import { CollectionService } from '../collection/collection.service';
+import { type AssignmentMarcomEntry } from '../collection/collection.types';
+import { canManageEditorial } from '../collection/helpers/can-manage-editorial';
+import { type ItemTrimInfo } from '../item/item.types';
 import {
   type ContributorInfo,
   type ContributorInfoRight,
-} from '../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
+} from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
   type GetAssignmentWithResponseQuery,
   type GetAssignmentWithResponseQueryVariables,
@@ -22,38 +22,38 @@ import {
   type InsertAssignmentBlocksMutationVariables,
   type InsertAssignmentResponseMutation,
   type InsertAssignmentResponseMutationVariables,
-} from '../shared/generated/graphql-db-operations.js';
+} from '../shared/generated/graphql-db-operations';
 import {
   GetAssignmentWithResponseDocument,
   GetContributorsByAssignmentUuidDocument,
   InsertAssignmentBlocksDocument,
   InsertAssignmentResponseDocument,
-} from '../shared/generated/graphql-db-react-query.js';
+} from '../shared/generated/graphql-db-react-query';
 import {
   type App_Assignments_V2_Insert_Input,
   type App_Assignments_V2_Set_Input,
   Lookup_Enum_Relation_Types_Enum,
-} from '../shared/generated/graphql-db-types.js';
-import { CustomError } from '../shared/helpers/custom-error.js';
-import { getEnv } from '../shared/helpers/env.js';
-import { isUserSecondaryElementary } from '../shared/helpers/is-user.js';
-import { tHtml } from '../shared/helpers/translate-html.js';
-import { tText } from '../shared/helpers/translate-text.js';
-import { dataService } from '../shared/services/data-service.js';
-import { trackEvents } from '../shared/services/event-logging-service.js';
-import { RelationService } from '../shared/services/relation-service/relation.service.js';
-import { ToastService } from '../shared/services/toast-service.js';
-import { VideoStillService } from '../shared/services/video-stills-service.js';
-import { type TableColumnDataType } from '../shared/types/table-column-data-type.js';
+} from '../shared/generated/graphql-db-types';
+import { CustomError } from '../shared/helpers/custom-error';
+import { getEnv } from '../shared/helpers/env';
+import { isUserSecondaryElementary } from '../shared/helpers/is-user';
+import { tHtml } from '../shared/helpers/translate-html';
+import { tText } from '../shared/helpers/translate-text';
+import { dataService } from '../shared/services/data-service';
+import { trackEvents } from '../shared/services/event-logging-service';
+import { RelationService } from '../shared/services/relation-service/relation.service';
+import { ToastService } from '../shared/services/toast-service';
+import { VideoStillService } from '../shared/services/video-stills-service';
+import { type TableColumnDataType } from '../shared/types/table-column-data-type';
 
-import { ITEMS_PER_PAGE } from './assignment.const.js';
+import { ITEMS_PER_PAGE } from './assignment.const';
 import {
   type AssignmentTableColumns,
   type FetchAssignmentsParams,
   type PupilCollectionFragment,
-} from './assignment.types.js';
-import { cleanupTitleAndDescriptions } from './helpers/cleanup-title-and-descriptions.js';
-import { isItemWithMeta } from './helpers/is-item-with-meta.js';
+} from './assignment.types';
+import { cleanupTitleAndDescriptions } from './helpers/cleanup-title-and-descriptions';
+import { isItemWithMeta } from './helpers/is-item-with-meta';
 
 export class AssignmentService {
   static async fetchAssignments(params: FetchAssignmentsParams): Promise<{

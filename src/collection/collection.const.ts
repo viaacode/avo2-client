@@ -1,8 +1,8 @@
 import { type SelectOption, type TableColumn } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list.js';
-import { tText } from '../shared/helpers/translate-text.js';
-import { TableColumnDataType } from '../shared/types/table-column-data-type.js';
+import { ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list';
+import { tText } from '../shared/helpers/translate-text';
+import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;
 export const MAX_LONG_DESCRIPTION_LENGTH = 1200;

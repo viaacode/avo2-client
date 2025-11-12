@@ -27,41 +27,41 @@ import {
   useQueryParams,
 } from 'use-query-params';
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js';
-import { type FilterState } from '../../../search/search.types.js';
-import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt.js';
-import { InteractiveTour } from '../../../shared/components/InteractiveTour/InteractiveTour.js';
-import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar.js';
-import { formatTimestamp } from '../../../shared/helpers/formatters/date.js';
-import { useAssignmentPastDeadline } from '../../../shared/hooks/useAssignmentPastDeadline.js';
-import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload.js';
-import { ToastService } from '../../../shared/services/toast-service.js';
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { type FilterState } from '../../../search/search.types';
+import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import { InteractiveTour } from '../../../shared/components/InteractiveTour/InteractiveTour';
+import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
+import { formatTimestamp } from '../../../shared/helpers/formatters/date';
+import { useAssignmentPastDeadline } from '../../../shared/hooks/useAssignmentPastDeadline';
+import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
+import { ToastService } from '../../../shared/services/toast-service';
 import {
   ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
   PUPIL_COLLECTION_FORM_SCHEMA,
-} from '../../assignment.const.js';
-import { reorderBlockPositions } from '../../assignment.helper.js';
-import { AssignmentService } from '../../assignment.service.js';
+} from '../../assignment.const';
+import { reorderBlockPositions } from '../../assignment.helper';
+import { AssignmentService } from '../../assignment.service';
 import {
   type PupilCollectionFragment,
   type PupilSearchFilterState,
-} from '../../assignment.types.js';
-import { AssignmentHeading } from '../../components/AssignmentHeading.js';
-import { AssignmentMetadata } from '../../components/AssignmentMetadata.js';
-import { buildAssignmentSearchLink } from '../../helpers/build-search-link.js';
-import { cleanupTitleAndDescriptions } from '../../helpers/cleanup-title-and-descriptions.js';
-import { backToOverview } from '../../helpers/links.js';
-import { useAssignmentPupilTabs } from '../../hooks/assignment-pupil-tabs.js';
+} from '../../assignment.types';
+import { AssignmentHeading } from '../../components/AssignmentHeading';
+import { AssignmentMetadata } from '../../components/AssignmentMetadata';
+import { buildAssignmentSearchLink } from '../../helpers/build-search-link';
+import { cleanupTitleAndDescriptions } from '../../helpers/cleanup-title-and-descriptions';
+import { backToOverview } from '../../helpers/links';
+import { useAssignmentPupilTabs } from '../../hooks/assignment-pupil-tabs';
 
-import { AssignmentResponseAssignmentTab } from './tabs/AssignmentResponseAssignmentTab.js';
-import { AssignmentResponsePupilCollectionTab } from './tabs/AssignmentResponsePupilCollectionTab.js';
-import { AssignmentResponseSearchTab } from './tabs/AssignmentResponseSearchTab.js';
+import { AssignmentResponseAssignmentTab } from './tabs/AssignmentResponseAssignmentTab';
+import { AssignmentResponsePupilCollectionTab } from './tabs/AssignmentResponsePupilCollectionTab';
+import { AssignmentResponseSearchTab } from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js';
-import { tHtml } from '../../../shared/helpers/translate-html.js';
-import { tText } from '../../../shared/helpers/translate-text.js';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { validateForm } from '../../../shared/helpers/validate-form.ts';
 import { UrlUpdateType } from '../../../shared/types/use-query-params.ts';
 

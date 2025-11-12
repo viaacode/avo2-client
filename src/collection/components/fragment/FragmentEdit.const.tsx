@@ -1,8 +1,8 @@
 import { Avo } from '@viaa/avo2-types';
 import { type ReactNode } from 'react';
 
-import { tHtml } from '../../../shared/helpers/translate-html.js';
-import { tText } from '../../../shared/helpers/translate-text.js';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 
 export const COLLECTION_FRAGMENT_TYPE_TO_EVENT_OBJECT_TYPE: Partial<
   Record<Avo.Core.BlockItemType, Avo.EventLogging.ObjectType>

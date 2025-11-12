@@ -17,52 +17,52 @@ import React, {
 } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { AssignmentService } from '../../../assignment/assignment.service.js';
-import { type AssignmentTableColumns } from '../../../assignment/assignment.types.js';
-import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetAssignmentsEditStatuses.js';
-import { commonUserAtom } from '../../../authentication/authentication.store.js';
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js';
-import { ErrorView } from '../../../error/views/ErrorView.js';
+import { AssignmentService } from '../../../assignment/assignment.service';
+import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
+import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetAssignmentsEditStatuses';
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { ErrorView } from '../../../error/views/ErrorView';
 
-import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal.js';
+import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
-import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants/index.js';
-import { buildLink } from '../../../shared/helpers/build-link.js';
-import { CustomError } from '../../../shared/helpers/custom-error.js';
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
-import { tHtml } from '../../../shared/helpers/translate-html.js';
-import { tText } from '../../../shared/helpers/translate-text.js';
-import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js';
-import { useLomSubjects } from '../../../shared/hooks/useLomSubjects.js';
-import { useQualityLabels } from '../../../shared/hooks/useQualityLabels.js';
-import { ToastService } from '../../../shared/services/toast-service.js';
-import { TableColumnDataType } from '../../../shared/types/table-column-data-type.js';
-import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal.js';
-import { SubjectsBeingEditedWarningModal } from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal.js';
-import { NULL_FILTER } from '../../shared/helpers/filters.js';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
-import { type PickerItem } from '../../shared/types/content-picker.js';
-import { useUserGroups } from '../../user-groups/hooks/useUserGroups.js';
-import { AssignmentsAdminService } from '../assignments.admin.service.js';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants/index';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
+import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
+import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
+import { ToastService } from '../../../shared/services/toast-service';
+import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
+import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
+import { SubjectsBeingEditedWarningModal } from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
+import { NULL_FILTER } from '../../shared/helpers/filters';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { type PickerItem } from '../../shared/types/content-picker';
+import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
+import { AssignmentsAdminService } from '../assignments.admin.service';
 import {
   GET_ASSIGNMENT_BULK_ACTIONS,
   GET_ASSIGNMENT_OVERVIEW_TABLE_COLS,
   ITEMS_PER_PAGE,
-} from '../assignments.const.js';
+} from '../assignments.const';
 import {
   AssignmentsBulkAction,
   type AssignmentsOverviewTableState,
-} from '../assignments.types.js';
+} from '../assignments.types';
 import {
   renderAssignmentOverviewCellReact,
   renderAssignmentsMarcomCellText,
-} from '../helpers/render-assignment-columns.js';
+} from '../helpers/render-assignment-columns';
 
 import './AssignmentsOverviewAdmin.scss';
 

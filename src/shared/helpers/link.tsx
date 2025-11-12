@@ -5,18 +5,18 @@ import queryString from 'query-string';
 import React, { Fragment, type ReactNode } from 'react';
 import { type NavigateFunction } from 'react-router';
 
-import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants.js';
-import { SearchFilter } from '../../search/search.const.js';
-import { type FilterState } from '../../search/search.types.js';
-import { ToastService } from '../services/toast-service.js';
+import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
+import { SearchFilter } from '../../search/search.const';
+import { type FilterState } from '../../search/search.types';
+import { ToastService } from '../services/toast-service';
 
 import {
   buildLink,
   getMissingParams,
   navigationConsoleError,
   type RouteParams,
-} from './build-link.js';
-import { tHtml } from './translate-html.js';
+} from './build-link';
+import { tHtml } from './translate-html';
 
 export const navigate = (
   navigate: NavigateFunction,

@@ -7,44 +7,44 @@ import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js';
-import { APP_PATH, GENERATE_SITE_TITLE, RouteId } from '../../../constants.js';
-import { ErrorView } from '../../../error/views/ErrorView.js';
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal.js';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { APP_PATH, GENERATE_SITE_TITLE, RouteId } from '../../../constants';
+import { ErrorView } from '../../../error/views/ErrorView';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
-import { buildLink } from '../../../shared/helpers/build-link.js';
-import { CustomError } from '../../../shared/helpers/custom-error.js';
-import { formatDate } from '../../../shared/helpers/formatters/date.js';
-import { navigate } from '../../../shared/helpers/link.js';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
-import { tHtml } from '../../../shared/helpers/translate-html.js';
-import { tText } from '../../../shared/helpers/translate-text.js';
-import { ToastService } from '../../../shared/services/toast-service.js';
-import { ADMIN_PATH } from '../../admin.const.js';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { formatDate } from '../../../shared/helpers/formatters/date';
+import { navigate } from '../../../shared/helpers/link';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { ToastService } from '../../../shared/services/toast-service';
+import { ADMIN_PATH } from '../../admin.const';
 import {
   getDateRangeFilters,
   getQueryFilter,
-} from '../../shared/helpers/filters.js';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
+} from '../../shared/helpers/filters';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
   AdminLayoutBody,
   AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import {
   GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS,
   INTERACTIVE_TOUR_PATH,
   ITEMS_PER_PAGE,
-} from '../interactive-tour.const.js';
-import { InteractiveTourService } from '../interactive-tour.service.js';
+} from '../interactive-tour.const';
+import { InteractiveTourService } from '../interactive-tour.service';
 import {
   InteractiveTour,
   type InteractiveTourOverviewTableCols,
   type InteractiveTourTableState,
-} from '../interactive-tour.types.js';
+} from '../interactive-tour.types';
 
 export const InteractiveTourOverview: FC = () => {
   const navigateFunc = useNavigate();

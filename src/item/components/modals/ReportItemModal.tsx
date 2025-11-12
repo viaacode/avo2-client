@@ -12,26 +12,26 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { useAtomValue } from 'jotai'
-import type { Requests } from 'node-zendesk'
-import React, { type FC, useState } from 'react'
+} from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
+import type { Requests } from 'node-zendesk';
+import React, { type FC, useState } from 'react';
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { getFullNameCommonUser } from '../../../shared/helpers/formatters/avatar.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { trackEvents } from '../../../shared/services/event-logging-service.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { ZendeskService } from '../../../shared/services/zendesk-service.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { getFullNameCommonUser } from '../../../shared/helpers/formatters/avatar';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { trackEvents } from '../../../shared/services/event-logging-service';
+import { ToastService } from '../../../shared/services/toast-service';
+import { ZendeskService } from '../../../shared/services/zendesk-service';
 
 interface ReportItemModalProps {
-  externalId: string
-  isOpen: boolean
-  onClose: () => void
+  externalId: string;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-type Reason = 'broken' | 'inappropriate' | 'copyright'
+type Reason = 'broken' | 'inappropriate' | 'copyright';
 
 const GET_RADIO_BUTTON_LABELS = () => ({
   broken: tText('item/components/modals/report-item-modal___defect'),
@@ -39,31 +39,31 @@ const GET_RADIO_BUTTON_LABELS = () => ({
   copyright: tText(
     'item/components/modals/report-item-modal___schending-auteursrechten',
   ),
-})
+});
 
 export const ReportItemModal: FC<ReportItemModalProps> = ({
   externalId,
   isOpen,
   onClose,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
-  const [reason, setReason] = useState<Reason | null>(null)
-  const [extraDetails, setExtraDetails] = useState<string>('')
-  const [isProcessing, setIsProcessing] = useState<boolean>(false)
+  const [reason, setReason] = useState<Reason | null>(null);
+  const [extraDetails, setExtraDetails] = useState<string>('');
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   const reportItem = async () => {
-    let ticket: Requests.CreateModel | undefined
+    let ticket: Requests.CreateModel | undefined;
     try {
       if (!reason) {
-        return
+        return;
       }
-      setIsProcessing(true)
+      setIsProcessing(true);
       const body = {
         extraDetails,
         reason: GET_RADIO_BUTTON_LABELS()[reason],
         pageUrl: window.location.href,
-      }
+      };
       ticket = {
         comment: {
           url: window.location.href,
@@ -91,8 +91,8 @@ export const ReportItemModal: FC<ReportItemModalProps> = ({
           email: commonUser?.email,
           name: getFullNameCommonUser(commonUser, true, false) || '',
         },
-      }
-      await ZendeskService.createTicket(ticket as Requests.CreateModel)
+      };
+      await ZendeskService.createTicket(ticket as Requests.CreateModel);
 
       trackEvents(
         {
@@ -101,14 +101,14 @@ export const ReportItemModal: FC<ReportItemModalProps> = ({
           action: 'report',
         },
         commonUser,
-      )
+      );
 
-      onClose()
+      onClose();
       ToastService.success(
         tHtml(
           'item/components/modals/report-item-modal___het-item-is-gerapporteerd',
         ),
-      )
+      );
     } catch (err) {
       console.error(
         'Failed to create zendesk ticket for reporting an item',
@@ -118,15 +118,15 @@ export const ReportItemModal: FC<ReportItemModalProps> = ({
           externalId,
           commonUser,
         },
-      )
+      );
       ToastService.danger(
         tHtml(
           'authentication/views/registration-flow/r-4-manual-registration___het-versturen-van-je-aanvraag-is-mislukt',
         ),
-      )
+      );
     }
-    setIsProcessing(false)
-  }
+    setIsProcessing(false);
+  };
 
   const renderReportItemModal = () => {
     return (
@@ -221,8 +221,8 @@ export const ReportItemModal: FC<ReportItemModalProps> = ({
           </Toolbar>
         </ModalFooterRight>
       </Modal>
-    )
-  }
+    );
+  };
 
-  return renderReportItemModal()
-}
+  return renderReportItemModal();
+};

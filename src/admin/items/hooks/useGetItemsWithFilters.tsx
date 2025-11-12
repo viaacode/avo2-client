@@ -2,14 +2,14 @@ import { getFilters } from '@meemoo/admin-core-ui/admin';
 import { UseQueryResult, useQuery } from '@tanstack/react-query';
 import { Avo } from '@viaa/avo2-types';
 
-import { QUERY_KEYS } from '../../../shared/constants/query-keys.js';
-import { tHtml } from '../../../shared/helpers/translate-html.js';
-import { ITEMS_PER_PAGE } from '../../collectionsOrBundles/collections-or-bundles.const.js';
-import { ItemsService } from '../items.service.js';
+import { QUERY_KEYS } from '../../../shared/constants/query-keys';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { ITEMS_PER_PAGE } from '../../collectionsOrBundles/collections-or-bundles.const';
+import { ItemsService } from '../items.service';
 import type {
   ItemsOverviewTableCols,
   ItemsTableState,
-} from '../items.types.js';
+} from '../items.types';
 
 export const useGetItemsWithFilters = (
   tableState: Partial<ItemsTableState>,

@@ -28,25 +28,25 @@ import React, {
   useState,
 } from 'react';
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js';
-import { CollectionService } from '../../../collection/collection.service.js';
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { CollectionService } from '../../../collection/collection.service';
 import {
   CollectionOrBundle,
   ContentTypeNumber,
-} from '../../../collection/collection.types.js';
-import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial.js';
-import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls.js';
-import { DEFAULT_AUDIO_STILL } from '../../../shared/constants/index.js';
-import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end.js';
-import { isMobileWidth } from '../../../shared/helpers/media-query.js';
-import { toSeconds } from '../../../shared/helpers/parsers/duration.js';
-import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time.js';
-import { tHtml } from '../../../shared/helpers/translate-html.js';
-import { tText } from '../../../shared/helpers/translate-text.js';
-import { trackEvents } from '../../../shared/services/event-logging-service.js';
-import { ToastService } from '../../../shared/services/toast-service.js';
-import { VideoStillService } from '../../../shared/services/video-stills-service.js';
-import { ItemVideoDescription } from '../ItemVideoDescription.js';
+} from '../../../collection/collection.types';
+import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
+import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
+import { DEFAULT_AUDIO_STILL } from '../../../shared/constants/index';
+import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
+import { isMobileWidth } from '../../../shared/helpers/media-query';
+import { toSeconds } from '../../../shared/helpers/parsers/duration';
+import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { trackEvents } from '../../../shared/services/event-logging-service';
+import { ToastService } from '../../../shared/services/toast-service';
+import { VideoStillService } from '../../../shared/services/video-stills-service';
+import { ItemVideoDescription } from '../ItemVideoDescription';
 
 import './AddToCollectionModal.scss';
 

@@ -17,30 +17,30 @@ import React, {
   useState,
 } from 'react';
 
-import { commonUserAtom } from '../../../../authentication/authentication.store.js';
-import { PermissionService } from '../../../../authentication/helpers/permission-service.js';
-import { ErrorView } from '../../../../error/views/ErrorView.js';
-import { CutFragmentForAssignmentModal } from '../../../../item/components/modals/CutFragmentForAssignmentModal.js';
-import { type ItemTrimInfo } from '../../../../item/item.types.js';
-import { ItemDetail } from '../../../../item/views/ItemDetail.js';
-import { PupilCollectionService } from '../../../../pupil-collection/pupil-collection.service.js';
-import { SearchFiltersAndResults } from '../../../../search/components/SearchFiltersAndResults.js';
-import { searchAtom } from '../../../../search/search.store.js';
-import { type FilterState } from '../../../../search/search.types.js';
-import { EducationLevelId } from '../../../../shared/helpers/lom.js';
-import { tHtml } from '../../../../shared/helpers/translate-html.js';
-import { tText } from '../../../../shared/helpers/translate-text.js';
-import { trackEvents } from '../../../../shared/services/event-logging-service.js';
-import { ObjectTypesAll } from '../../../../shared/services/related-items-service.js';
-import { ToastService } from '../../../../shared/services/toast-service.js';
+import { commonUserAtom } from '../../../../authentication/authentication.store';
+import { PermissionService } from '../../../../authentication/helpers/permission-service';
+import { ErrorView } from '../../../../error/views/ErrorView';
+import { CutFragmentForAssignmentModal } from '../../../../item/components/modals/CutFragmentForAssignmentModal';
+import { type ItemTrimInfo } from '../../../../item/item.types';
+import { ItemDetail } from '../../../../item/views/ItemDetail';
+import { PupilCollectionService } from '../../../../pupil-collection/pupil-collection.service';
+import { SearchFiltersAndResults } from '../../../../search/components/SearchFiltersAndResults';
+import { searchAtom } from '../../../../search/search.store';
+import { type FilterState } from '../../../../search/search.types';
+import { EducationLevelId } from '../../../../shared/helpers/lom';
+import { tHtml } from '../../../../shared/helpers/translate-html';
+import { tText } from '../../../../shared/helpers/translate-text';
+import { trackEvents } from '../../../../shared/services/event-logging-service';
+import { ObjectTypesAll } from '../../../../shared/services/related-items-service';
+import { ToastService } from '../../../../shared/services/toast-service';
 import { UrlUpdateType } from '../../../../shared/types/use-query-params.ts';
 import {
   ENABLED_FILTERS_PUPIL_SEARCH,
   ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH,
   ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH,
-} from '../../../assignment.const.js';
-import { AssignmentService } from '../../../assignment.service.js';
-import { type PupilSearchFilterState } from '../../../assignment.types.js';
+} from '../../../assignment.const';
+import { AssignmentService } from '../../../assignment.service';
+import { type PupilSearchFilterState } from '../../../assignment.types';
 
 interface AssignmentResponseSearchTabProps {
   assignment: Avo.Assignment.Assignment | null;

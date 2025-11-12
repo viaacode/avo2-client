@@ -1,6 +1,6 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from '@playwright/test';
 
-import { goToAdminPage } from '../../helpers/go-to-admin.js'
+import { goToAdminPage } from '../../helpers/go-to-admin';
 
 /**
  * New: https://docs.google.com/spreadsheets/d/1sy6q3Q6Hl3LhvXY4JeCblhh4-REj8gyzAzyYwQVZZxc/edit#gid=95954947
@@ -13,115 +13,115 @@ import { goToAdminPage } from '../../helpers/go-to-admin.js'
 test('T13: Beheer - Contentpagina toevoegen met mediaspeler', async ({
   page,
 }) => {
-  await goToAdminPage(page)
+  await goToAdminPage(page);
 
   // Click on contentpages tab
-  await page.getByRole('link', { name: "Contentpagina's" }).click()
+  await page.getByRole('link', { name: "Contentpagina's" }).click();
   await expect(
     page.getByRole('heading', { name: 'Contentoverzicht', exact: true }),
-  ).toBeVisible()
+  ).toBeVisible();
 
-  await page.waitForTimeout(1000)
+  await page.waitForTimeout(1000);
 
   // Click on add page
-  await page.getByRole('button', { name: 'Pagina toevoegen' }).click()
+  await page.getByRole('button', { name: 'Pagina toevoegen' }).click();
 
   // Check we are on the create content page
   await expect(
     page.getByRole('heading', { name: 'Content toevoegen', exact: true }),
-  ).toBeVisible()
+  ).toBeVisible();
 
   // Add contentblock
   await page
     .locator('div.c-select__control', { hasText: 'Voeg een contentblock toe' })
-    .click()
-  await page.waitForTimeout(1000)
+    .click();
+  await page.waitForTimeout(1000);
   // Choose mediaplayer
-  await page.getByText('Mediaspeler', { exact: true }).click()
-  await page.waitForTimeout(1000)
+  await page.getByText('Mediaspeler', { exact: true }).click();
+  await page.waitForTimeout(1000);
 
   // Select video
   await page
     .locator('div.c-select__control', { hasText: 'Selecteer een content-item' })
-    .click()
-  await page.waitForTimeout(1000)
-  await page.getByText('#weetikveel: Alexander de Grote').click()
-  await page.waitForTimeout(1000)
+    .click();
+  await page.waitForTimeout(1000);
+  await page.getByText('#weetikveel: Alexander de Grote').click();
+  await page.waitForTimeout(1000);
 
   // Open publication details tab
-  await page.getByText('Publicatiedetails').click()
+  await page.getByText('Publicatiedetails').click();
 
   // Create new page title
-  const date = new Date()
-  const pageTitle = 'Automatische test ' + date
-  const hyperlinkTitle = '/automatische-test'
+  const date = new Date();
+  const pageTitle = 'Automatische test ' + date;
+  const hyperlinkTitle = '/automatische-test';
 
   // Fill in title
-  await page.getByRole('textbox').nth(1).fill(pageTitle)
+  await page.getByRole('textbox').nth(1).fill(pageTitle);
 
-  await page.waitForTimeout(1000)
+  await page.waitForTimeout(1000);
 
   // Check hyperlink is shown
   await page
     .locator(
       'div.c-content-edit-form.o-form-group-layout > div > div:nth-child(7) > div > div > input',
     )
-    .scrollIntoViewIfNeeded()
+    .scrollIntoViewIfNeeded();
 
   const inputValue = await page
     .locator(
       'div.c-content-edit-form.o-form-group-layout > div > div:nth-child(7) > div > div > input',
     )
-    .getAttribute('value')
-  expect(inputValue).toContain(hyperlinkTitle)
+    .getAttribute('value');
+  expect(inputValue).toContain(hyperlinkTitle);
 
-  await page.waitForTimeout(1000)
+  await page.waitForTimeout(1000);
 
   // Save page
-  await page.getByRole('button', { name: 'Opslaan', exact: true }).click()
-  await page.waitForTimeout(1000)
+  await page.getByRole('button', { name: 'Opslaan', exact: true }).click();
+  await page.waitForTimeout(1000);
 
   // Check toast
   await expect(
     page.locator(
       'div > div.Toastify__toast-body > div > div > div.c-alert__message',
     ),
-  ).toContainText('Het content-item is succesvol opgeslagen.')
+  ).toContainText('Het content-item is succesvol opgeslagen.');
 
   // Check page title
   await expect(page.locator('h2.c-admin__page-title')).toContainText(
     'Content: Automatische test',
-  )
+  );
 
   // Check edit button is shown
   await expect(
     page.getByRole('button', { name: 'Bewerken', exact: true }),
-  ).toBeVisible()
+  ).toBeVisible();
 
   // Check video is shown
-  await expect(page.locator('div.c-video-player').first()).toBeVisible()
+  await expect(page.locator('div.c-video-player').first()).toBeVisible();
 
-  await page.waitForTimeout(3000)
+  await page.waitForTimeout(3000);
 
   // Go back
-  await page.locator('div.c-admin__back > button').click()
-  await page.waitForTimeout(1000)
+  await page.locator('div.c-admin__back > button').click();
+  await page.waitForTimeout(1000);
 
   // Go back to overview
-  await page.locator('div.c-admin__back > button').click()
+  await page.locator('div.c-admin__back > button').click();
   await expect(
     page.getByRole('heading', { name: 'Contentoverzicht', exact: true }),
-  ).toBeVisible()
+  ).toBeVisible();
 
   // Check new page is in overview list
   // Slicing because title is cut off at 60 characters,
   // and last 3 characters are swapped with periods
-  const pageTitleInOverview = pageTitle.slice(0, 57) + '...'
+  const pageTitleInOverview = pageTitle.slice(0, 57) + '...';
   await expect(
     page.getByRole('link', { name: pageTitleInOverview }),
-  ).toBeVisible()
+  ).toBeVisible();
 
-  await page.waitForTimeout(1000)
+  await page.waitForTimeout(1000);
 
   // CLEANUP
   // Remove page (on the detail page the more options dropdown is not completely shown, and so does not work)
@@ -142,28 +142,28 @@ test('T13: Beheer - Contentpagina toevoegen met mediaspeler', async ({
     .locator(
       'table > tbody > tr:nth-child(1) > td:nth-child(9) > div > button[aria-label="Verwijder content"]',
     )
-    .click()
+    .click();
 
   // Check modal opens
   await expect(
     page.getByRole('heading', {
       name: 'Ben je zeker dat je deze actie wil uitvoeren?',
     }),
-  ).toBeVisible()
+  ).toBeVisible();
 
   // Confirm to remove page
-  await page.getByRole('button', { name: 'Verwijder', exact: true }).click()
-  await page.waitForTimeout(1000)
+  await page.getByRole('button', { name: 'Verwijder', exact: true }).click();
+  await page.waitForTimeout(1000);
 
   // Check page is removed
   await expect(
     page.locator(
       'div > div.Toastify__toast-body > div > div > div.c-alert__message',
     ),
-  ).toContainText('Het content-item is succesvol verwijderd.')
+  ).toContainText('Het content-item is succesvol verwijderd.');
   await expect(
     page.getByRole('link', { name: pageTitleInOverview }),
-  ).not.toBeVisible()
+  ).not.toBeVisible();
 
-  await page.waitForTimeout(3000)
-})
+  await page.waitForTimeout(3000);
+});

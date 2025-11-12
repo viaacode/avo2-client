@@ -13,26 +13,26 @@ import React, { type FC, useCallback, useEffect, useState } from 'react';
 import ReactSelect from 'react-select';
 import AsyncSelect from 'react-select/async';
 
-import { FileUpload } from '../../../../shared/components/FileUpload/FileUpload.js';
-import { CustomError } from '../../../../shared/helpers/custom-error.js';
-import { tHtml } from '../../../../shared/helpers/translate-html.js';
-import { tText } from '../../../../shared/helpers/translate-text.js';
-import { ToastService } from '../../../../shared/services/toast-service.js';
+import { FileUpload } from '../../../../shared/components/FileUpload/FileUpload';
+import { CustomError } from '../../../../shared/helpers/custom-error';
+import { tHtml } from '../../../../shared/helpers/translate-html';
+import { tText } from '../../../../shared/helpers/translate-text';
+import { ToastService } from '../../../../shared/services/toast-service';
 import {
   type PickerItem,
   type PickerTypeOption,
-} from '../../types/content-picker.js';
+} from '../../types/content-picker';
 
 import {
   DEFAULT_ALLOWED_TYPES,
   GET_CONTENT_TYPES,
   REACT_SELECT_DEFAULT_OPTIONS,
-} from './ContentPicker.const.js';
+} from './ContentPicker.const';
 import {
   filterTypes,
   setInitialInput,
   setInitialItem,
-} from './ContentPicker.helpers.js';
+} from './ContentPicker.helpers';
 import './ContentPicker.scss';
 
 interface ContentPickerProps {

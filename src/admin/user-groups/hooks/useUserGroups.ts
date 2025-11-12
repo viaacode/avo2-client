@@ -1,9 +1,9 @@
 import { sortBy } from 'es-toolkit';
 import { useEffect, useState } from 'react';
 
-import { GET_SPECIAL_USER_GROUPS } from '../user-group.const.js';
-import { UserGroupService } from '../user-group.service.js';
-import { type UserGroup } from '../user-group.types.js';
+import { GET_SPECIAL_USER_GROUPS } from '../user-group.const';
+import { UserGroupService } from '../user-group.service';
+import { type UserGroup } from '../user-group.types';
 
 type UseUserGroupsTuple = [Partial<UserGroup>[], boolean];
 

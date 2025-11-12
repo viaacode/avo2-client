@@ -1,12 +1,12 @@
 import { type TableColumn } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 
-import { type FilterState } from '../search/search.types.js';
-import { type Lookup_Enum_Colors_Enum } from '../shared/generated/graphql-db-types.js';
-import { type ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list.js';
-import type { TableColumnDataType } from '../shared/types/table-column-data-type.js';
+import { type FilterState } from '../search/search.types';
+import { type Lookup_Enum_Colors_Enum } from '../shared/generated/graphql-db-types';
+import { type ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list';
+import type { TableColumnDataType } from '../shared/types/table-column-data-type';
 
-import { type AssignmentBlockItemDescriptionType } from './components/AssignmentBlockDescriptionButtons.js';
+import { type AssignmentBlockItemDescriptionType } from './components/AssignmentBlockDescriptionButtons';
 
 export type PupilCollectionFragment = Avo.Core.BlockItemBase & {
   fragment_id?: string | null;

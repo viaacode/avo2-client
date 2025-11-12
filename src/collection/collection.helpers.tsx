@@ -13,21 +13,21 @@ import { Avo, LomSchemeType } from '@viaa/avo2-types';
 import { compact, isNil, omit } from 'es-toolkit';
 import React, { type ReactNode } from 'react';
 
-import { reorderBlockPositions } from '../assignment/assignment.helper.js';
-import { stripHtml } from '../shared/helpers/formatters/strip-html.js';
-import { tHtml } from '../shared/helpers/translate-html.js';
-import { tText } from '../shared/helpers/translate-text.js';
-import { type Positioned } from '../shared/types/index.js';
+import { reorderBlockPositions } from '../assignment/assignment.helper';
+import { stripHtml } from '../shared/helpers/formatters/strip-html';
+import { tHtml } from '../shared/helpers/translate-html';
+import { tText } from '../shared/helpers/translate-text';
+import { type Positioned } from '../shared/types/index';
 
 import {
   MAX_LONG_DESCRIPTION_LENGTH,
   MAX_SEARCH_DESCRIPTION_LENGTH,
-} from './collection.const.js';
-import { CollectionService } from './collection.service.js';
+} from './collection.const';
+import { CollectionService } from './collection.service';
 import {
   CONTENT_TYPE_TRANSLATIONS_NL_TO_EN,
   ContentTypeNumber,
-} from './collection.types.js';
+} from './collection.types';
 
 export const getValidationFeedbackForDescription = (
   description: string | null,

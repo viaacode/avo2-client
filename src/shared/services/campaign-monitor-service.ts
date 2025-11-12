@@ -1,17 +1,14 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
-import { type Avo } from '@viaa/avo2-types'
-import { compact } from 'es-toolkit'
-import { stringifyUrl } from 'query-string'
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
+import { type Avo } from '@viaa/avo2-types';
+import { compact } from 'es-toolkit';
+import { stringifyUrl } from 'query-string';
 
-import { CustomError } from '../helpers/custom-error.js'
-import { getEnv } from '../helpers/env.js'
+import { CustomError } from '../helpers/custom-error';
+import { getEnv } from '../helpers/env';
 
-import {
-  type MinimalClientEvent,
-  trackEvents,
-} from './event-logging-service.js'
+import { type MinimalClientEvent, trackEvents } from './event-logging-service';
 
-export type EmailTemplateType = 'item' | 'collection' | 'bundle'
+export type EmailTemplateType = 'item' | 'collection' | 'bundle';
 
 enum NewsletterPreferenceKey {
   newsletter = 'newsletter',
@@ -20,7 +17,7 @@ enum NewsletterPreferenceKey {
 }
 
 // TODO replace withAvo.Newsletter.Preferences when typings v2.49.5 is released together with proxy v1.26.0 (rondje 3)
-export type NewsletterPreferences = Record<NewsletterPreferenceKey, boolean>
+export type NewsletterPreferences = Record<NewsletterPreferenceKey, boolean>;
 
 export class CampaignMonitorService {
   public static async fetchNewsletterPreferences(
@@ -34,9 +31,9 @@ export class CampaignMonitorService {
             preferenceCenterKey,
           },
         }),
-      )
+      );
     } catch (err) {
-      throw new CustomError('Failed to fetch newsletter preferences', err)
+      throw new CustomError('Failed to fetch newsletter preferences', err);
     }
   }
 
@@ -56,11 +53,11 @@ export class CampaignMonitorService {
           method: 'POST',
           body: JSON.stringify({ preferences, preferenceCenterKey }),
         },
-      )
+      );
     } catch (err) {
       throw new CustomError('Failed to update newsletter preferences', err, {
         preferences,
-      })
+      });
     }
   }
 
@@ -78,7 +75,7 @@ export class CampaignMonitorService {
     preferenceCenterKey: string | undefined | null,
   ) {
     if (!commonUser) {
-      return
+      return;
     }
     const events: MinimalClientEvent[] = compact(
       Object.values(NewsletterPreferenceKey).map(
@@ -95,7 +92,7 @@ export class CampaignMonitorService {
                   type: 'campaign-monitor-list',
                   ...(preferenceCenterKey ? { preferenceCenterKey } : {}),
                 },
-              }
+              };
             } else if (newNewsletterPreferences[key] === false) {
               // unsubscribed
               return {
@@ -107,14 +104,14 @@ export class CampaignMonitorService {
                   type: 'campaign-monitor-list',
                   ...(preferenceCenterKey ? { preferenceCenterKey } : {}),
                 },
-              }
+              };
             }
           }
-          return null
+          return null;
         },
       ),
-    )
-    await trackEvents(events, commonUser)
+    );
+    await trackEvents(events, commonUser);
   }
 
   public static async shareThroughEmail(
@@ -123,10 +120,10 @@ export class CampaignMonitorService {
     link: string,
     type: EmailTemplateType,
   ): Promise<void> {
-    let url: string | undefined
-    let body: any
+    let url: string | undefined;
+    let body: any;
     try {
-      url = `${getEnv('PROXY_URL')}/campaign-monitor/send`
+      url = `${getEnv('PROXY_URL')}/campaign-monitor/send`;
       body = {
         to: email,
         template: type,
@@ -134,12 +131,12 @@ export class CampaignMonitorService {
           mainLink: link,
           mainTitle: title,
         },
-      }
+      };
 
       await fetchWithLogoutJson(url, {
         method: 'POST',
         body: JSON.stringify(body),
-      })
+      });
     } catch (err) {
       throw new CustomError('Failed to get player ticket', err, {
         email,
@@ -148,7 +145,7 @@ export class CampaignMonitorService {
         type,
         url,
         body,
-      })
+      });
     }
   }
 }

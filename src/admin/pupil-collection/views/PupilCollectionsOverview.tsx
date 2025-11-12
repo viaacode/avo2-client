@@ -17,43 +17,43 @@ import React, {
 } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { AssignmentService } from '../../../assignment/assignment.service.js';
-import { commonUserAtom } from '../../../authentication/authentication.store.js';
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
-import { GENERATE_SITE_TITLE } from '../../../constants.js';
-import { ErrorView } from '../../../error/views/ErrorView.js';
-import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service.js';
-import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types.js';
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal.js';
+import { AssignmentService } from '../../../assignment/assignment.service';
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { GENERATE_SITE_TITLE } from '../../../constants';
+import { ErrorView } from '../../../error/views/ErrorView';
+import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
+import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
-import { CustomError } from '../../../shared/helpers/custom-error.js';
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
-import { tHtml } from '../../../shared/helpers/translate-html.js';
-import { tText } from '../../../shared/helpers/translate-text.js';
-import { ToastService } from '../../../shared/services/toast-service.js';
-import { TableColumnDataType } from '../../../shared/types/table-column-data-type.js';
-import { AssignmentsBulkAction } from '../../assignments/assignments.types.js';
-import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal.js';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { ToastService } from '../../../shared/services/toast-service';
+import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
+import { AssignmentsBulkAction } from '../../assignments/assignments.types';
+import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
 import {
   getDateRangeFilters,
   getMultiOptionFilters,
-} from '../../shared/helpers/filters.js';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
-import { type PickerItem } from '../../shared/types/content-picker.js';
+} from '../../shared/helpers/filters';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { type PickerItem } from '../../shared/types/content-picker';
 import {
   renderPupilCollectionTableCellReact,
   renderPupilCollectionTableCellText,
-} from '../helpers/render-pupil-collections-overview-table-cell.js';
+} from '../helpers/render-pupil-collections-overview-table-cell';
 import {
   GET_PUPIL_COLLECTION_BULK_ACTIONS,
   GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS,
   ITEMS_PER_PAGE,
-} from '../pupil-collection.const.js';
-import { type PupilCollectionsOverviewTableState } from '../pupil-collection.types.js';
+} from '../pupil-collection.const';
+import { type PupilCollectionsOverviewTableState } from '../pupil-collection.types';
 
 export const PupilCollectionsOverview: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);

@@ -1,6 +1,6 @@
-import { type Avo } from '@viaa/avo2-types'
-import { compact } from 'es-toolkit'
-import queryString, { stringifyUrl } from 'query-string'
+import { type Avo } from '@viaa/avo2-types';
+import { compact } from 'es-toolkit';
+import queryString, { stringifyUrl } from 'query-string';
 
 import type {
   DeleteItemFromCollectionBookmarksAndAssignmentsMutation,
@@ -31,7 +31,7 @@ import type {
   UpdateItemNotesMutationVariables,
   UpdateItemPublishedStateMutation,
   UpdateItemPublishedStateMutationVariables,
-} from '../../shared/generated/graphql-db-operations.js'
+} from '../../shared/generated/graphql-db-operations';
 import {
   DeleteItemFromCollectionBookmarksAndAssignmentsDocument,
   GetDistinctSeriesDocument,
@@ -47,22 +47,22 @@ import {
   UpdateItemDepublishReasonDocument,
   UpdateItemNotesDocument,
   UpdateItemPublishedStateDocument,
-} from '../../shared/generated/graphql-db-react-query.js'
-import { Lookup_Enum_Relation_Types_Enum } from '../../shared/generated/graphql-db-types.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still.js'
-import { getEnv } from '../../shared/helpers/env.js'
-import { dataService } from '../../shared/services/data-service.js'
-import { RelationService } from '../../shared/services/relation-service/relation.service.js'
-import { type UnpublishableItem } from '../../shared/types/index.js'
+} from '../../shared/generated/graphql-db-react-query';
+import { Lookup_Enum_Relation_Types_Enum } from '../../shared/generated/graphql-db-types';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
+import { getEnv } from '../../shared/helpers/env';
+import { dataService } from '../../shared/services/data-service';
+import { RelationService } from '../../shared/services/relation-service/relation.service';
+import { type UnpublishableItem } from '../../shared/types/index';
 
-import { ITEMS_PER_PAGE } from './items.const.js'
+import { ITEMS_PER_PAGE } from './items.const';
 import {
   type ItemsOverviewTableCols,
   type ItemUsedByResponse,
   type UnpublishedItem,
   type UnpublishedItemsOverviewTableCols,
-} from './items.types.js'
+} from './items.types';
 
 export class ItemsService {
   public static async fetchItemsWithFilters(
@@ -75,10 +75,10 @@ export class ItemsService {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/admin'
-      )
+      );
       return await fetchWithLogoutJson<{
-        items: Avo.Item.Item[]
-        total: number
+        items: Avo.Item.Item[];
+        total: number;
       }>(
         stringifyUrl({
           url: `${getEnv('PROXY_URL')}/items/admin/overview`,
@@ -90,7 +90,7 @@ export class ItemsService {
             filters: JSON.stringify(filters),
           },
         }),
-      )
+      );
     } catch (err) {
       throw new CustomError(
         'Failed to get items overview from the database',
@@ -102,7 +102,7 @@ export class ItemsService {
           sortOrder,
           filters,
         },
-      )
+      );
     }
   }
 
@@ -112,14 +112,14 @@ export class ItemsService {
     sortOrder: Avo.Search.OrderDirection,
     where: GetUnpublishedItemsWithFiltersQueryVariables['where'],
   ): Promise<[UnpublishedItem[], number]> {
-    let variables: GetUnpublishedItemsWithFiltersQueryVariables | null = null
+    let variables: GetUnpublishedItemsWithFiltersQueryVariables | null = null;
     try {
       variables = {
         where,
         offset: ITEMS_PER_PAGE * page,
         limit: ITEMS_PER_PAGE,
         orderBy: [{ [sortColumn]: sortOrder }],
-      }
+      };
 
       const response = await dataService.query<
         GetUnpublishedItemsWithFiltersQuery,
@@ -127,18 +127,18 @@ export class ItemsService {
       >({
         variables,
         query: GetUnpublishedItemsWithFiltersDocument,
-      })
+      });
 
-      const items = response.shared_items
-      const itemCount = response.shared_items_aggregate.aggregate?.count ?? 0
+      const items = response.shared_items;
+      const itemCount = response.shared_items_aggregate.aggregate?.count ?? 0;
 
       if (!items) {
         throw new CustomError('Response does not contain any items', null, {
           response,
-        })
+        });
       }
 
-      return [items as UnpublishedItem[], itemCount]
+      return [items as UnpublishedItem[], itemCount];
     } catch (err) {
       throw new CustomError(
         'Failed to get shared items from the database',
@@ -147,7 +147,7 @@ export class ItemsService {
           variables,
           query: 'GET_UNPUBLISHED_ITEMS_WITH_FILTERS',
         },
-      )
+      );
     }
   }
 
@@ -155,22 +155,22 @@ export class ItemsService {
     uuid: string,
     withRelations: boolean,
   ): Promise<Avo.Item.Item> {
-    let url: string | null = null
+    let url: string | null = null;
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
-      )
+      );
       url = stringifyUrl({
         url: `${getEnv('PROXY_URL')}/items/${uuid}`,
         query: {
           withRelations,
         },
-      })
-      return await fetchWithLogoutJson<Avo.Item.Item>(url)
+      });
+      return await fetchWithLogoutJson<Avo.Item.Item>(url);
     } catch (err) {
       throw new CustomError('Failed to get the item from the database', err, {
         uuid,
-      })
+      });
     }
   }
 
@@ -178,19 +178,19 @@ export class ItemsService {
     itemUuid: string,
     isPublished: boolean,
   ): Promise<void> {
-    let variables: UpdateItemPublishedStateMutationVariables | null = null
+    let variables: UpdateItemPublishedStateMutationVariables | null = null;
     try {
       variables = {
         itemUuid,
         isPublished,
-      }
+      };
       await dataService.query<
         UpdateItemPublishedStateMutation,
         UpdateItemPublishedStateMutationVariables
       >({
         query: UpdateItemPublishedStateDocument,
         variables,
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to update is_published field for item in the database',
@@ -199,7 +199,7 @@ export class ItemsService {
           variables,
           query: 'UPDATE_ITEM_PUBLISH_STATE',
         },
-      )
+      );
     }
   }
 
@@ -207,19 +207,19 @@ export class ItemsService {
     itemUuid: string,
     reason: null | string,
   ): Promise<void> {
-    let variables: UpdateItemDepublishReasonMutationVariables | null = null
+    let variables: UpdateItemDepublishReasonMutationVariables | null = null;
     try {
       variables = {
         itemUuid,
         reason,
-      }
+      };
       await dataService.query<
         UpdateItemDepublishReasonMutation,
         UpdateItemDepublishReasonMutationVariables
       >({
         variables,
         query: UpdateItemDepublishReasonDocument,
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to update depublish_reason field for item in the database',
@@ -228,7 +228,7 @@ export class ItemsService {
           variables,
           query: 'UPDATE_ITEM_DEPUBLISH_REASON',
         },
-      )
+      );
     }
   }
 
@@ -236,19 +236,19 @@ export class ItemsService {
     itemUuid: string,
     note: string | null,
   ): Promise<void> {
-    let variables: UpdateItemNotesMutationVariables | null = null
+    let variables: UpdateItemNotesMutationVariables | null = null;
     try {
       variables = {
         itemUuid,
         note,
-      }
+      };
       await dataService.query<
         UpdateItemNotesMutation,
         UpdateItemNotesMutationVariables
       >({
         variables,
         query: UpdateItemNotesDocument,
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to update note field for item in the database',
@@ -257,14 +257,14 @@ export class ItemsService {
           variables,
           query: 'UPDATE_ITEM_NOTES',
         },
-      )
+      );
     }
   }
 
   public static async fetchPublicItems(
     limit: number,
   ): Promise<GetPublicItemsQuery['app_item_meta'] | null> {
-    const variables: GetPublicItemsQueryVariables = { limit }
+    const variables: GetPublicItemsQueryVariables = { limit };
 
     const response = await dataService.query<
       GetPublicItemsQuery,
@@ -272,9 +272,9 @@ export class ItemsService {
     >({
       query: GetPublicItemsDocument,
       variables,
-    })
+    });
 
-    return response.app_item_meta
+    return response.app_item_meta;
   }
 
   private static async fetchDepublishReasonByExternalId(
@@ -282,28 +282,28 @@ export class ItemsService {
   ): Promise<string | null> {
     const variables: GetItemDepublishReasonByExternalIdQueryVariables = {
       externalId,
-    }
+    };
     const response = await dataService.query<
       GetItemDepublishReasonByExternalIdQuery,
       GetItemDepublishReasonByExternalIdQueryVariables
     >({
       query: GetItemDepublishReasonByExternalIdDocument,
       variables,
-    })
-    return response.app_item_meta[0]?.depublish_reason || null
+    });
+    return response.app_item_meta[0]?.depublish_reason || null;
   }
 
   public static async fetchItemByExternalId(
     externalId: string,
   ): Promise<UnpublishableItem> {
-    return (await this.fetchItemsByExternalIds([externalId]))[0] || null
+    return (await this.fetchItemsByExternalIds([externalId]))[0] || null;
   }
 
   public static async fetchItemsByExternalIds(
     externalIds: string[],
   ): Promise<Array<UnpublishableItem>> {
     if (externalIds.length < 1) {
-      return []
+      return [];
     }
 
     try {
@@ -315,30 +315,30 @@ export class ItemsService {
         variables: {
           externalIds,
         },
-      })
+      });
 
-      const items = response.app_item_meta ?? []
+      const items = response.app_item_meta ?? [];
 
       return Promise.all(
         externalIds.map((externalId) => {
           // Return item if an item is found that is published and not deleted
-          const item = items.find((item) => item.external_id === externalId)
+          const item = items.find((item) => item.external_id === externalId);
 
           if (item) {
             return (
               addDefaultAudioStillToItem(item as unknown as Avo.Item.Item) ||
               null
-            )
+            );
           }
 
-          return this.fetchItemReplacementByExternalId(externalId)
+          return this.fetchItemReplacementByExternalId(externalId);
         }),
-      )
+      );
     } catch (err) {
       throw new CustomError('Failed to get items by external id', err, {
         externalIds,
         query: 'GET_ITEMS_BY_EXTERNAL_ID',
-      })
+      });
     }
   }
 
@@ -347,38 +347,38 @@ export class ItemsService {
   ): Promise<UnpublishableItem> {
     // Return the replacement item if a REPLACED_BY relation is found for the current item
     // TODO replace with single query to fetch depublish_reason and relations after task is done: https://meemoo.atlassian.net/browse/DEV-1166
-    const itemUid = await ItemsService.fetchItemUuidByExternalId(externalId)
+    const itemUid = await ItemsService.fetchItemUuidByExternalId(externalId);
 
     if (itemUid) {
       const relations = await RelationService.fetchRelationsBySubject(
         'item',
         [itemUid],
         Lookup_Enum_Relation_Types_Enum.IsReplacedBy,
-      )
+      );
 
-      const replacedByItemUid = relations?.[0]?.object || null
+      const replacedByItemUid = relations?.[0]?.object || null;
 
       if (replacedByItemUid) {
         const replacementItem = await ItemsService.fetchItemByUuid(
           replacedByItemUid,
           false,
-        )
-        return { ...replacementItem, replacement_for: externalId }
+        );
+        return { ...replacementItem, replacement_for: externalId };
       }
     }
 
     // Return the depublish reason if the item has a depublish reason
     const depublishReason =
-      await this.fetchDepublishReasonByExternalId(externalId)
+      await this.fetchDepublishReasonByExternalId(externalId);
 
     if (depublishReason) {
       return {
         depublish_reason: depublishReason,
-      } as Avo.Item.Item
+      } as Avo.Item.Item;
     }
 
     // otherwise return null
-    return null
+    return null;
   }
 
   public static async fetchItemExternalIdByMediamosaId(
@@ -387,7 +387,7 @@ export class ItemsService {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
-      )
+      );
 
       const response = await fetchWithLogoutJson<{ externalId: string } | null>(
         `${getEnv(
@@ -397,9 +397,9 @@ export class ItemsService {
             id: mediamosaId,
           },
         )}`,
-      )
+      );
 
-      return response?.externalId || null
+      return response?.externalId || null;
     } catch (err) {
       throw new CustomError(
         'Failed to get external_id by mediamosa id (avo1 id)',
@@ -407,7 +407,7 @@ export class ItemsService {
         {
           mediamosaId,
         },
-      )
+      );
     }
   }
 
@@ -415,7 +415,7 @@ export class ItemsService {
     externalId: string,
   ): Promise<string | null> {
     try {
-      const { fetchWithLogout } = await import('@meemoo/admin-core-ui/admin')
+      const { fetchWithLogout } = await import('@meemoo/admin-core-ui/admin');
       const response = await fetchWithLogout(
         stringifyUrl({
           url: `${getEnv('PROXY_URL')}/admin/items/ids`,
@@ -423,15 +423,15 @@ export class ItemsService {
             externalId,
           },
         }),
-      )
+      );
       if (response.ok) {
-        return (await response.text()) || null
+        return (await response.text()) || null;
       }
-      return null
+      return null;
     } catch (err) {
       throw new CustomError('Failed to fetch item uuid by external id', err, {
         externalId,
-      })
+      });
     }
   }
 
@@ -447,7 +447,7 @@ export class ItemsService {
         limit,
         title: `%${titleOrExternalId}%`,
         externalId: titleOrExternalId,
-      }
+      };
 
       const response = await dataService.query<
         GetPublicItemsByTitleOrExternalIdQuery,
@@ -455,15 +455,15 @@ export class ItemsService {
       >({
         query: GetPublicItemsByTitleOrExternalIdDocument,
         variables,
-      })
+      });
 
-      let items = response.itemsByExternalId || []
+      let items = response.itemsByExternalId || [];
 
       if (items.length === 0) {
-        items = response.itemsByTitle || []
+        items = response.itemsByTitle || [];
       }
 
-      return items
+      return items;
     } catch (err) {
       throw new CustomError(
         'Failed to fetch items by title or external id',
@@ -473,7 +473,7 @@ export class ItemsService {
           limit,
           query: 'GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID',
         },
-      )
+      );
     }
   }
 
@@ -484,9 +484,9 @@ export class ItemsService {
         GetDistinctSeriesQueryVariables
       >({
         query: GetDistinctSeriesDocument,
-      })
+      });
 
-      return compact((response.app_item_meta || []).map((item) => item.series))
+      return compact((response.app_item_meta || []).map((item) => item.series));
     } catch (err) {
       throw new CustomError(
         'Failed to fetch distinct series from the database',
@@ -494,7 +494,7 @@ export class ItemsService {
         {
           query: 'GET_DISTINCT_SERIES',
         },
-      )
+      );
     }
   }
 
@@ -512,7 +512,7 @@ export class ItemsService {
           itemUid,
           itemExternalId,
         },
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to delete item from collections and bookmarks in the database',
@@ -520,7 +520,7 @@ export class ItemsService {
         {
           query: 'DELETE_ITEM_FROM_COLLECTIONS_BOOKMARKS',
         },
-      )
+      );
     }
   }
 
@@ -534,7 +534,7 @@ export class ItemsService {
       const variables: GetUserWithEitherBookmarkQueryVariables = {
         oldItemUid,
         newItemUid,
-      }
+      };
 
       const response = await dataService.query<
         GetUserWithEitherBookmarkQuery,
@@ -542,14 +542,14 @@ export class ItemsService {
       >({
         query: GetUserWithEitherBookmarkDocument,
         variables,
-      })
+      });
 
       const usersWithBothBookmarks = response.users_profiles
         .filter(
           (result) =>
             (result.item_bookmarks_aggregate.aggregate?.count || 0) >= 2,
         )
-        .map((profile) => profile.id)
+        .map((profile) => profile.id);
 
       const variablesReplace: ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables =
         {
@@ -558,14 +558,14 @@ export class ItemsService {
           newItemUid,
           newItemExternalId,
           usersWithBothBookmarks,
-        }
+        };
       await dataService.query<
         ReplaceItemInCollectionsBookmarksAndAssignmentsMutation,
         ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables
       >({
         query: ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
         variables: variablesReplace,
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to replace item in collections, bookmarks and assignments in the database',
@@ -573,7 +573,7 @@ export class ItemsService {
         {
           query: 'REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS',
         },
-      )
+      );
     }
   }
 
@@ -591,7 +591,7 @@ export class ItemsService {
           pids,
           status,
         },
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to update status for shared items in the database',
@@ -599,7 +599,7 @@ export class ItemsService {
         {
           query: 'SET_SHARED_ITEMS_STATUS',
         },
-      )
+      );
     }
   }
 
@@ -610,43 +610,43 @@ export class ItemsService {
    * - running
    */
   public static async triggerMamSync(): Promise<'SCHEDULED' | string> {
-    let url: string | undefined = undefined
+    let url: string | undefined = undefined;
     try {
-      const { fetchWithLogout } = await import('@meemoo/admin-core-ui/admin')
-      url = `${getEnv('PROXY_URL')}/mam-syncrator/trigger-delta-sync`
+      const { fetchWithLogout } = await import('@meemoo/admin-core-ui/admin');
+      url = `${getEnv('PROXY_URL')}/mam-syncrator/trigger-delta-sync`;
       const response = await fetchWithLogout(url, {
         method: 'POST',
-      })
+      });
 
-      const body = await response.text()
+      const body = await response.text();
       if (response.status < 200 || response.status >= 400) {
         throw new CustomError('Response code indicates failure', null, {
           response,
           body,
-        })
+        });
       }
-      return body
+      return body;
     } catch (err) {
       throw new CustomError('Failed to trigger MAM sync', err, {
         url,
-      })
+      });
     }
   }
 
   static async getUnpublishedItemPids(where: any = {}): Promise<string[]> {
-    let variables: GetUnpublishedItemPidsQueryVariables | null = null
+    let variables: GetUnpublishedItemPidsQueryVariables | null = null;
     try {
       variables = {
         where: where || undefined,
-      }
+      };
       const response = await dataService.query<
         GetUnpublishedItemPidsQuery,
         GetUnpublishedItemPidsQueryVariables
       >({
         query: GetUnpublishedItemPidsDocument,
         variables,
-      })
-      return compact(response.shared_items.map((item) => item?.pid))
+      });
+      return compact(response.shared_items.map((item) => item?.pid));
     } catch (err) {
       throw new CustomError(
         'Failed to get unpublished item pids from the database',
@@ -655,7 +655,7 @@ export class ItemsService {
           variables,
           query: 'GET_UNPUBLISHED_ITEM_PIDS',
         },
-      )
+      );
     }
   }
 
@@ -664,19 +664,19 @@ export class ItemsService {
     sortProp: string | undefined,
     sortDirection: string | undefined,
   ): Promise<ItemUsedByResponse> {
-    let url: string | null = null
+    let url: string | null = null;
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
-      )
+      );
       url = stringifyUrl({
         url: `${getEnv('PROXY_URL')}/items/${itemUuid}/used-by`,
         query: {
           sortProp,
           sortDirection,
         },
-      })
-      return await fetchWithLogoutJson<ItemUsedByResponse>(url)
+      });
+      return await fetchWithLogoutJson<ItemUsedByResponse>(url);
     } catch (err) {
       throw new CustomError(
         'Failed to get item used by from the database',
@@ -684,7 +684,7 @@ export class ItemsService {
         {
           itemUuid,
         },
-      )
+      );
     }
   }
 }

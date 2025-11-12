@@ -21,31 +21,31 @@ import React, {
   useState,
 } from 'react';
 import PupilSvg from '../../../../assets/images/leerling.svg?react';
-import { BlockList } from '../../../../shared/components/BlockList/BlockList.js';
-import { EmptyStateMessage } from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage.js';
-import { getMoreOptionsLabel } from '../../../../shared/constants/index.js';
-import { isMobileWidth } from '../../../../shared/helpers/media-query.js';
-import { tHtml } from '../../../../shared/helpers/translate-html.js';
-import { tText } from '../../../../shared/helpers/translate-text.js';
-import { useBlocksList } from '../../../../shared/hooks/use-blocks-list.js';
-import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal.js';
-import { ToastService } from '../../../../shared/services/toast-service.js';
+import { BlockList } from '../../../../shared/components/BlockList/BlockList';
+import { EmptyStateMessage } from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
+import { getMoreOptionsLabel } from '../../../../shared/constants/index';
+import { isMobileWidth } from '../../../../shared/helpers/media-query';
+import { tHtml } from '../../../../shared/helpers/translate-html';
+import { tText } from '../../../../shared/helpers/translate-text';
+import { useBlocksList } from '../../../../shared/hooks/use-blocks-list';
+import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal';
+import { ToastService } from '../../../../shared/services/toast-service';
 import { UrlUpdateType } from '../../../../shared/types/use-query-params.ts';
 import {
   ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
   NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
-} from '../../../assignment.const.js';
-import { setBlockPositionToIndex } from '../../../assignment.helper.js';
+} from '../../../assignment.const';
+import { setBlockPositionToIndex } from '../../../assignment.helper';
 import {
   type PupilCollectionFragment,
   type PupilSearchFilterState,
-} from '../../../assignment.types.js';
-import { AssignmentBlockItemDescriptionType } from '../../../components/AssignmentBlockDescriptionButtons.js';
-import { buildAssignmentSearchLink } from '../../../helpers/build-search-link.js';
-import { insertMultipleAtPosition } from '../../../helpers/insert-at-position.js';
-import { useAssignmentBlockChangeHandler } from '../../../hooks/assignment-block-change-handler.js';
-import { useBlockListModals } from '../../../hooks/assignment-content-modals.js';
-import { useEditBlocks } from '../../../hooks/use-edit-blocks.js';
+} from '../../../assignment.types';
+import { AssignmentBlockItemDescriptionType } from '../../../components/AssignmentBlockDescriptionButtons';
+import { buildAssignmentSearchLink } from '../../../helpers/build-search-link';
+import { insertMultipleAtPosition } from '../../../helpers/insert-at-position';
+import { useAssignmentBlockChangeHandler } from '../../../hooks/assignment-block-change-handler';
+import { useBlockListModals } from '../../../hooks/assignment-content-modals';
+import { useEditBlocks } from '../../../hooks/use-edit-blocks';
 
 enum MobileActionId {
   reorderBlocks = 'reorderBlocks',

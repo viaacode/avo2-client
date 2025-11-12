@@ -1,29 +1,29 @@
 import {
   type FilterableColumn,
   TableFilterType,
-} from '@meemoo/admin-core-ui/admin'
-import { IconName, type TabProps } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
+} from '@meemoo/admin-core-ui/admin';
+import { IconName, type TabProps } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
 
 import {
   type CheckboxDropdownModalProps,
   type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js'
-import { ROUTE_PARTS } from '../../shared/constants/index.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { TableColumnDataType } from '../../shared/types/table-column-data-type.js'
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { ROUTE_PARTS } from '../../shared/constants/index';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import { tText } from '../../shared/helpers/translate-text';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import {
   type ItemsOverviewTableCols,
   type UnpublishedItemsOverviewTableCols,
-} from './items.types.js'
+} from './items.types';
 
 export const ITEMS_PATH = {
   ITEMS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.items}`,
   PUBLISH_ITEMS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.publishItems}`,
   ITEM_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.items}/:id`,
-}
+};
 
 export enum ITEMS_TABS {
   GENERAL = 'GENERAL',
@@ -58,14 +58,14 @@ export const GET_TABS: () => TabProps[] = () => [
     icon: IconName.code,
     id: ITEMS_TABS.EMBEDS,
   },
-]
+];
 
-export const ITEMS_PER_PAGE = 10
+export const ITEMS_PER_PAGE = 10;
 
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
   [columnId in ItemsOverviewTableCols]: (
     order: Avo.Search.OrderDirection,
-  ) => any
+  ) => any;
 }> = {
   organisation: (order: Avo.Search.OrderDirection) => ({
     organisation: { name: order },
@@ -88,7 +88,7 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
       quick_lane_links: order,
     },
   }),
-}
+};
 
 export const GET_ITEM_OVERVIEW_TABLE_COLS: (
   seriesOptions: CheckboxOption[],
@@ -241,7 +241,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
     tooltip: tText('admin/items/items___acties'),
     visibleByDefault: true,
   },
-]
+];
 
 export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn<UnpublishedItemsOverviewTableCols>[] =
   () => [
@@ -293,7 +293,7 @@ export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn<Unpubl
       tooltip: tText('admin/items/items___acties'),
       visibleByDefault: true,
     },
-  ]
+  ];
 
 export const GET_ITEM_USED_BY_COLLECTIONS_AND_ASSIGNMENTS_COLUMNS = () => [
   {
@@ -324,7 +324,7 @@ export const GET_ITEM_USED_BY_COLLECTIONS_AND_ASSIGNMENTS_COLUMNS = () => [
     id: ACTIONS_TABLE_COLUMN_ID,
     sortable: false,
   },
-]
+];
 
 export const GET_ITEM_USED_BY_QUICK_LANES = () => [
   {
@@ -351,7 +351,7 @@ export const GET_ITEM_USED_BY_QUICK_LANES = () => [
     sortable: true,
     dataType: TableColumnDataType.dateTime,
   },
-]
+];
 
 export const GET_ITEM_USED_BY_EMBED_CODES = () => [
   {
@@ -378,4 +378,4 @@ export const GET_ITEM_USED_BY_EMBED_CODES = () => [
     sortable: true,
     dataType: TableColumnDataType.string,
   },
-]
+];

@@ -15,8 +15,8 @@ import React, { type FC, type ReactNode, useMemo } from 'react';
 import {
   BLOCK_TYPE_TO_ICON_NAME,
   BlockType,
-} from '../../shared/components/BlockList/BlockIconWrapper/BlockIconWrapper.consts.js';
-import { tHtml } from '../../shared/helpers/translate-html.js';
+} from '../../shared/components/BlockList/BlockIconWrapper/BlockIconWrapper.consts';
+import { tHtml } from '../../shared/helpers/translate-html';
 
 import './AddBlockModal.scss';
 

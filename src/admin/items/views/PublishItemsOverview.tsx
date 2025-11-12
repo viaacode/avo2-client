@@ -6,41 +6,41 @@ import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js';
-import { ErrorView } from '../../../error/views/ErrorView.js';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { ErrorView } from '../../../error/views/ErrorView';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
-import { buildLink } from '../../../shared/helpers/build-link.js';
-import { CustomError } from '../../../shared/helpers/custom-error.js';
-import { formatTimestamp } from '../../../shared/helpers/formatters/date.js';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
-import { tHtml } from '../../../shared/helpers/translate-html.js';
-import { tText } from '../../../shared/helpers/translate-text.js';
-import { ToastService } from '../../../shared/services/toast-service.js';
-import { ADMIN_PATH } from '../../admin.const.js';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { formatTimestamp } from '../../../shared/helpers/formatters/date';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { ToastService } from '../../../shared/services/toast-service';
+import { ADMIN_PATH } from '../../admin.const';
 import {
   getDateRangeFilters,
   getQueryFilter,
-} from '../../shared/helpers/filters.js';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
+} from '../../shared/helpers/filters';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
   AdminLayoutBody,
   AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import {
   GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS,
   ITEMS_PER_PAGE,
-} from '../items.const.js';
-import { ItemsService } from '../items.service.js';
+} from '../items.const';
+import { ItemsService } from '../items.service';
 import {
   type UnpublishedItem,
   type UnpublishedItemsOverviewTableCols,
   type UnpublishedItemsTableState,
-} from '../items.types.js';
+} from '../items.types';
 
 export const PublishItemsOverview: FC = () => {
   const navigateFunc = useNavigate();

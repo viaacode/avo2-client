@@ -3,13 +3,13 @@ import { type ReactNode } from 'react';
 import {
   type CollectionLabelLookup,
   type QualityLabel,
-} from '../collection/collection.types.js';
-import { type BookmarkStatusLookup } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
+} from '../collection/collection.types';
+import { type BookmarkStatusLookup } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { UrlUpdateType } from '../shared/types/use-query-params.ts';
 import {
   type SearchOrderAndDirectionProperty,
   type SearchOrderProperty,
-} from './search.const.js';
+} from './search.const';
 
 export type SearchFilterFieldValues =
   | string

@@ -11,27 +11,27 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import React, { type FC, useEffect, useState } from 'react'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import React, { type FC, useEffect, useState } from 'react';
 
-import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls.js'
-import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end.js'
-import { isMobileWidth } from '../../../shared/helpers/media-query.js'
-import { toSeconds } from '../../../shared/helpers/parsers/duration.js'
-import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { type ItemTrimInfo } from '../../item.types.js'
-import { ItemVideoDescription } from '../ItemVideoDescription.js'
+import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
+import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
+import { isMobileWidth } from '../../../shared/helpers/media-query';
+import { toSeconds } from '../../../shared/helpers/parsers/duration';
+import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { type ItemTrimInfo } from '../../item.types';
+import { ItemVideoDescription } from '../ItemVideoDescription';
 
-import './CutFragmentModal.scss'
+import './CutFragmentModal.scss';
 
 interface CutFragmentForAssignmentModalProps {
-  itemMetaData: Avo.Item.Item
-  isOpen: boolean
-  onClose: () => void
-  afterCutCallback: (trimInfo: ItemTrimInfo) => void
+  itemMetaData: Avo.Item.Item;
+  isOpen: boolean;
+  onClose: () => void;
+  afterCutCallback: (trimInfo: ItemTrimInfo) => void;
 }
 
 /**
@@ -47,33 +47,33 @@ interface CutFragmentForAssignmentModalProps {
 export const CutFragmentForAssignmentModal: FC<
   CutFragmentForAssignmentModalProps
 > = ({ itemMetaData, isOpen, onClose, afterCutCallback }) => {
-  const [fragmentStartTime, setFragmentStartTime] = useState<number>(0)
+  const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
   const [fragmentEndTime, setFragmentEndTime] = useState<number>(
     toSeconds(itemMetaData.duration) || 0,
-  )
+  );
 
   useEffect(() => {
     if (isOpen) {
       // Reset the state
-      setFragmentStartTime(0)
-      setFragmentEndTime(toSeconds(itemMetaData.duration) || 0)
+      setFragmentStartTime(0);
+      setFragmentEndTime(toSeconds(itemMetaData.duration) || 0);
     }
-  }, [isOpen, itemMetaData.duration])
+  }, [isOpen, itemMetaData.duration]);
 
   const onApply = () => {
     const hasCut =
       fragmentEndTime !== toSeconds(itemMetaData.duration) ||
-      fragmentStartTime !== 0
-    return afterCutCallback({ hasCut, fragmentStartTime, fragmentEndTime })
-  }
+      fragmentStartTime !== 0;
+    return afterCutCallback({ hasCut, fragmentStartTime, fragmentEndTime });
+  };
 
   const renderCutFragmentModal = () => {
-    const fragmentDuration = toSeconds(itemMetaData.duration) || 0
+    const fragmentDuration = toSeconds(itemMetaData.duration) || 0;
     const [start, end] = getValidStartAndEnd(
       fragmentStartTime,
       fragmentEndTime,
       fragmentDuration,
-    )
+    );
 
     return (
       <Modal
@@ -114,12 +114,12 @@ export const CutFragmentForAssignmentModal: FC<
                       maxTime={fragmentDuration}
                       onChange={(newStartTime: number, newEndTime: number) => {
                         if (newStartTime !== fragmentStartTime) {
-                          setModalVideoSeekTime(newStartTime)
+                          setModalVideoSeekTime(newStartTime);
                         } else if (newEndTime !== fragmentEndTime) {
-                          setModalVideoSeekTime(newEndTime)
+                          setModalVideoSeekTime(newEndTime);
                         }
-                        setFragmentStartTime(newStartTime)
-                        setFragmentEndTime(newEndTime)
+                        setFragmentStartTime(newStartTime);
+                        setFragmentEndTime(newEndTime);
                       }}
                     />
                   </Column>
@@ -163,8 +163,8 @@ export const CutFragmentForAssignmentModal: FC<
           </div>
         </ModalBody>
       </Modal>
-    )
-  }
+    );
+  };
 
-  return renderCutFragmentModal()
-}
+  return renderCutFragmentModal();
+};

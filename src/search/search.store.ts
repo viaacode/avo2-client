@@ -1,12 +1,12 @@
 import { Avo } from '@viaa/avo2-types';
 import { atom } from 'jotai';
 
-import { type LoginState } from '../authentication/authentication.types.js';
-import { DEFAULT_AUDIO_STILL } from '../shared/constants/index.js';
-import { CustomError } from '../shared/helpers/custom-error.js';
+import { type LoginState } from '../authentication/authentication.types';
+import { DEFAULT_AUDIO_STILL } from '../shared/constants/index';
+import { CustomError } from '../shared/helpers/custom-error';
 
-import { fetchSearchResults } from './search.service.js';
-import { type SearchState } from './search.types.js';
+import { fetchSearchResults } from './search.service';
+import { type SearchState } from './search.types';
 
 export const searchAtom = atom<SearchState>({
   data: null,

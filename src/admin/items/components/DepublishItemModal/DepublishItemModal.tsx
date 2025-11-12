@@ -1,4 +1,4 @@
-import { type RichEditorState } from '@meemoo/react-components'
+import { type RichEditorState } from '@meemoo/react-components';
 import {
   Button,
   ButtonToolbar,
@@ -11,33 +11,33 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { noop } from 'es-toolkit'
-import React, { type FC, useState } from 'react'
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { noop } from 'es-toolkit';
+import React, { type FC, useState } from 'react';
 
-import { RichTextEditorWrapper } from '../../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper.js'
-import { Lookup_Enum_Relation_Types_Enum } from '../../../../shared/generated/graphql-db-types.js'
-import { CustomError } from '../../../../shared/helpers/custom-error.js'
-import { stripHtml } from '../../../../shared/helpers/formatters/strip-html.js'
-import { tHtml } from '../../../../shared/helpers/translate-html.js'
-import { tText } from '../../../../shared/helpers/translate-text.js'
-import { RelationService } from '../../../../shared/services/relation-service/relation.service.js'
-import { ToastService } from '../../../../shared/services/toast-service.js'
-import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker.js'
-import { ItemsService } from '../../items.service.js'
+import { RichTextEditorWrapper } from '../../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
+import { Lookup_Enum_Relation_Types_Enum } from '../../../../shared/generated/graphql-db-types';
+import { CustomError } from '../../../../shared/helpers/custom-error';
+import { stripHtml } from '../../../../shared/helpers/formatters/strip-html';
+import { tHtml } from '../../../../shared/helpers/translate-html';
+import { tText } from '../../../../shared/helpers/translate-text';
+import { RelationService } from '../../../../shared/services/relation-service/relation.service';
+import { ToastService } from '../../../../shared/services/toast-service';
+import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
+import { ItemsService } from '../../items.service';
 
-import './DepublishItemModal.scss'
+import './DepublishItemModal.scss';
 
 type DepublishType =
   | 'depublish'
   | 'depublish_with_reason'
-  | 'depublish_with_replacement'
+  | 'depublish_with_replacement';
 
 interface DepublishItemModalProps {
-  item: Avo.Item.Item
-  isOpen: boolean
-  onClose?: () => void
+  item: Avo.Item.Item;
+  isOpen: boolean;
+  onClose?: () => void;
 }
 
 export const DepublishItemModal: FC<DepublishItemModalProps> = ({
@@ -45,22 +45,23 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
   onClose = noop,
   isOpen,
 }) => {
-  const [depublishType, setDepublishType] = useState<DepublishType>('depublish')
-  const [reason, setReason] = useState<RichEditorState | null>(null)
+  const [depublishType, setDepublishType] =
+    useState<DepublishType>('depublish');
+  const [reason, setReason] = useState<RichEditorState | null>(null);
   const [replacementExternalId, setReplacementExternalId] = useState<
     string | null
-  >(null)
+  >(null);
 
   const handleClose = () => {
-    setDepublishType('depublish')
-    setReason(null)
-    setReplacementExternalId(null)
-    onClose()
-  }
+    setDepublishType('depublish');
+    setReason(null);
+    setReplacementExternalId(null);
+    onClose();
+  };
 
   const depublishItem = async () => {
     try {
-      const reasonHtml = reason ? reason.toHTML() : ''
+      const reasonHtml = reason ? reason.toHTML() : '';
       if (
         depublishType === 'depublish_with_reason' &&
         (!reasonHtml || !stripHtml(reasonHtml).trim())
@@ -69,8 +70,8 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
           tHtml(
             'admin/items/components/depublish-item-modal/depublish-item-modal___reden-mag-niet-leeg-zijn',
           ),
-        )
-        return
+        );
+        return;
       }
       if (
         depublishType === 'depublish_with_replacement' &&
@@ -80,12 +81,12 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
           tHtml(
             'admin/items/components/depublish-item-modal/depublish-item-modal___je-moet-een-vervang-item-selecteren',
           ),
-        )
-        return
+        );
+        return;
       }
 
       // Depublish item
-      await ItemsService.setItemPublishedState(item.uid, false)
+      await ItemsService.setItemPublishedState(item.uid, false);
 
       if (
         depublishType === 'depublish_with_reason' ||
@@ -95,32 +96,32 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
         await ItemsService.deleteItemFromCollectionsAndBookmarks(
           item.uid,
           item.external_id,
-        )
+        );
 
         // When we unpublish an item, it cannot be the replacement for any other items
         await RelationService.deleteRelationsByObject(
           'item',
           Lookup_Enum_Relation_Types_Enum.IsReplacedBy,
           item.uid,
-        )
+        );
       }
       if (depublishType === 'depublish_with_reason') {
-        await ItemsService.setItemDepublishReason(item.uid, reasonHtml)
+        await ItemsService.setItemDepublishReason(item.uid, reasonHtml);
       } else if (
         depublishType === 'depublish_with_replacement' &&
         replacementExternalId
       ) {
         const replacementItem: Avo.Item.Item | null =
-          await ItemsService.fetchItemByExternalId(replacementExternalId)
+          await ItemsService.fetchItemByExternalId(replacementExternalId);
 
         if (!replacementItem) {
           ToastService.danger(
             tHtml(
               'admin/items/components/depublish-item-modal/depublish-item-modal___het-bepalen-van-de-id-van-het-vervang-item-is-mislukt',
             ),
-          )
+          );
 
-          return
+          return;
         }
 
         // Replace items in collection fragments and bookmarks
@@ -129,7 +130,7 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
           item.external_id,
           replacementItem.uid,
           replacementItem.external_id,
-        )
+        );
 
         // Add the replacement as instructed by the user
         await RelationService.insertRelation(
@@ -137,7 +138,7 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
           item.uid,
           Lookup_Enum_Relation_Types_Enum.IsReplacedBy,
           replacementItem.uid,
-        )
+        );
 
         // Reroute replacement chain to new replacement item
         // eg: A => B => C
@@ -151,7 +152,7 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
             'item',
             Lookup_Enum_Relation_Types_Enum.IsReplacedBy,
             [item.uid],
-          )) as Avo.Collection.RelationEntry<Avo.Item.Item>[]
+          )) as Avo.Collection.RelationEntry<Avo.Item.Item>[];
         await Promise.all(
           itemsReplacedByCurrentItem.map(
             async (relation: Avo.Collection.RelationEntry<Avo.Item.Item>) => {
@@ -160,24 +161,24 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
                 'item',
                 relation.subject,
                 Lookup_Enum_Relation_Types_Enum.IsReplacedBy,
-              )
+              );
               // Insert new relationship that points to the same replacement item as the current item (A => C)
               await RelationService.insertRelation(
                 'item',
                 relation.subject,
                 Lookup_Enum_Relation_Types_Enum.IsReplacedBy,
                 replacementItem.uid,
-              )
+              );
             },
           ),
-        )
+        );
       }
       ToastService.success(
         tHtml(
           'admin/items/components/depublish-item-modal/depublish-item-modal___het-item-is-gedepubliceerd',
         ),
-      )
-      handleClose()
+      );
+      handleClose();
     } catch (err) {
       console.error(
         new CustomError('Failed to depublish item', err, {
@@ -186,14 +187,14 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
           reason,
           replacementExternalId,
         }),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/items/components/depublish-item-modal/depublish-item-modal___het-depubliceren-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   return (
     <Modal
@@ -303,5 +304,5 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
         </Toolbar>
       </ModalFooterRight>
     </Modal>
-  )
-}
+  );
+};

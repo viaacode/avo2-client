@@ -1,37 +1,37 @@
 import { Avo } from '@viaa/avo2-types';
 import React, { useState } from 'react';
 
-import { ItemsService } from '../../admin/items/items.service.js';
-import { CollectionService } from '../../collection/collection.service.js';
-import { CollectionOrBundle } from '../../collection/collection.types.js';
-import { CutFragmentForAssignmentModal } from '../../item/components/modals/CutFragmentForAssignmentModal.js';
-import { type ItemTrimInfo } from '../../item/item.types.js';
-import { tHtml } from '../../shared/helpers/translate-html.js';
+import { ItemsService } from '../../admin/items/items.service';
+import { CollectionService } from '../../collection/collection.service';
+import { CollectionOrBundle } from '../../collection/collection.types';
+import { CutFragmentForAssignmentModal } from '../../item/components/modals/CutFragmentForAssignmentModal';
+import { type ItemTrimInfo } from '../../item/item.types';
+import { tHtml } from '../../shared/helpers/translate-html';
 import {
   type SingleEntityModal,
   useSingleEntityModal,
-} from '../../shared/hooks/useSingleEntityModal.js';
-import { ToastService } from '../../shared/services/toast-service.js';
-import { VideoStillService } from '../../shared/services/video-stills-service.js';
-import { type Positioned } from '../../shared/types/index.js';
-import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const.js';
-import { insertMultipleAtPosition } from '../helpers/insert-at-position.js';
+} from '../../shared/hooks/useSingleEntityModal';
+import { ToastService } from '../../shared/services/toast-service';
+import { VideoStillService } from '../../shared/services/video-stills-service';
+import { type Positioned } from '../../shared/types/index';
+import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
+import { insertMultipleAtPosition } from '../helpers/insert-at-position';
 import {
   AddBlockModal,
   type AddBlockModalProps,
-} from '../modals/AddBlockModal.js';
+} from '../modals/AddBlockModal';
 import {
   AddBookmarkFragmentModal,
   type AddBookmarkFragmentModalProps,
-} from '../modals/AddBookmarkFragmentModal.js';
+} from '../modals/AddBookmarkFragmentModal';
 import {
   AddCollectionModal,
   type AddCollectionModalProps,
-} from '../modals/AddCollectionModal.js';
+} from '../modals/AddCollectionModal';
 import {
   ConfirmSliceModal,
   type ConfirmSliceModalProps,
-} from '../modals/ConfirmSliceModal.js';
+} from '../modals/ConfirmSliceModal';
 
 export function useBlockListModals(
   blocks: Avo.Core.BlockItemBase[],

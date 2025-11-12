@@ -1,21 +1,21 @@
-import { type Avo } from '@viaa/avo2-types'
-import { endOfDay, isBefore } from 'date-fns'
-import { compact } from 'es-toolkit'
+import { type Avo } from '@viaa/avo2-types';
+import { endOfDay, isBefore } from 'date-fns';
+import { compact } from 'es-toolkit';
 
 import {
   type GetProfileIdsQuery,
   type GetProfileIdsQueryVariables,
   type UpdateUserTempAccessByIdMutation,
   type UpdateUserTempAccessByIdMutationVariables,
-} from '../../shared/generated/graphql-db-operations.js'
+} from '../../shared/generated/graphql-db-operations';
 import {
   GetProfileIdsDocument,
   UpdateUserTempAccessByIdDocument,
-} from '../../shared/generated/graphql-db-react-query.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { getEnv } from '../../shared/helpers/env.js'
-import { toIsoDate } from '../../shared/helpers/formatters/date.js'
-import { dataService } from '../../shared/services/data-service.js'
+} from '../../shared/generated/graphql-db-react-query';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { getEnv } from '../../shared/helpers/env';
+import { toIsoDate } from '../../shared/helpers/formatters/date';
+import { dataService } from '../../shared/services/data-service';
 
 export class UserService {
   /**
@@ -37,7 +37,7 @@ export class UserService {
           from: tempAccess.from,
           until: tempAccess.until,
         },
-      })
+      });
 
       /**
        * Trigger email if from day is <= updated at day
@@ -45,25 +45,25 @@ export class UserService {
        */
       const hasAccessNow =
         !!tempAccess.from &&
-        isBefore(new Date(tempAccess.from), endOfDay(new Date()))
+        isBefore(new Date(tempAccess.from), endOfDay(new Date()));
 
       if (hasAccessNow && tempAccess.until) {
-        const isBlocked = !hasAccessNow
+        const isBlocked = !hasAccessNow;
 
         await UserService.updateTempAccessBlockStatusByProfileIds(
           [profileId],
           isBlocked,
           toIsoDate(new Date(tempAccess.until)),
           true,
-        )
+        );
       }
     } catch (err) {
       throw new CustomError(`Failed to update temp access for user`, err, {
         profileId,
         tempAccess,
-      })
+      });
     }
-  }
+  };
 
   static async updateTempAccessBlockStatusByProfileIds(
     profileIds: string[],
@@ -71,25 +71,25 @@ export class UserService {
     tempAccessUntil: string,
     sendEmail: boolean,
   ): Promise<void> {
-    let url: string | undefined
+    let url: string | undefined;
 
     try {
-      url = `${getEnv('PROXY_URL')}/user/bulk-temp-access`
+      url = `${getEnv('PROXY_URL')}/user/bulk-temp-access`;
 
       const body: Avo.User.BulkTempAccessBody = {
         profileIds,
         isBlocked,
         tempAccessUntil,
         sendEmail,
-      }
+      };
 
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
-      )
+      );
       await fetchWithLogoutJson(url, {
         method: 'POST',
         body: JSON.stringify(body),
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to update temp access is_blocked field for users in the database',
@@ -99,28 +99,28 @@ export class UserService {
           profileIds,
           isBlocked,
         },
-      )
+      );
     }
   }
 
   static async getProfileIds(
     where: GetProfileIdsQueryVariables['where'] = {},
   ): Promise<string[]> {
-    let variables: GetProfileIdsQueryVariables | null = null
+    let variables: GetProfileIdsQueryVariables | null = null;
     try {
       variables = {
         where: where || undefined,
-      }
+      };
       const response = await dataService.query<
         GetProfileIdsQuery,
         GetProfileIdsQueryVariables
       >({
         variables,
         query: GetProfileIdsDocument,
-      })
+      });
       return compact(
         (response?.users_summary_view || []).map((user) => user?.profile_id),
-      )
+      );
     } catch (err) {
       throw new CustomError(
         'Failed to get profile ids from the database',
@@ -129,7 +129,7 @@ export class UserService {
           variables,
           query: 'GET_PROFILE_IDS',
         },
-      )
+      );
     }
   }
 }

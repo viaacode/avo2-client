@@ -12,26 +12,26 @@ import React, {
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js';
-import { PermissionService } from '../../../authentication/helpers/permission-service.js';
-import { GENERATE_SITE_TITLE } from '../../../constants.js';
-import { ErrorView } from '../../../error/views/ErrorView.js';
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js';
-import { trackEvents } from '../../../shared/services/event-logging-service.js';
-import { ToastService } from '../../../shared/services/toast-service.js';
-import { getAssignmentErrorObj } from '../../assignment.helper.js';
-import { AssignmentService } from '../../assignment.service.js';
-import { AssignmentRetrieveError } from '../../assignment.types.js';
-import { AssignmentMetadata } from '../../components/AssignmentMetadata.js';
-import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview.js';
-import { canViewAnAssignment } from '../../helpers/can-view-an-assignment.js';
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionService } from '../../../authentication/helpers/permission-service';
+import { GENERATE_SITE_TITLE } from '../../../constants';
+import { ErrorView } from '../../../error/views/ErrorView';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { trackEvents } from '../../../shared/services/event-logging-service';
+import { ToastService } from '../../../shared/services/toast-service';
+import { getAssignmentErrorObj } from '../../assignment.helper';
+import { AssignmentService } from '../../assignment.service';
+import { AssignmentRetrieveError } from '../../assignment.types';
+import { AssignmentMetadata } from '../../components/AssignmentMetadata';
+import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
+import { canViewAnAssignment } from '../../helpers/can-view-an-assignment';
 
-import { AssignmentResponseEdit } from './AssignmentResponseEdit.js';
+import { AssignmentResponseEdit } from './AssignmentResponseEdit';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { tHtml } from '../../../shared/helpers/translate-html.js';
-import { tText } from '../../../shared/helpers/translate-text.js';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 
 export const AssignmentResponseEditPage: FC = () => {
   const { id: assignmentId } = useParams<{ id: string }>();

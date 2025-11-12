@@ -1,6 +1,6 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/admin'
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client'
-import { type RichEditorState } from '@meemoo/react-components'
+import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
+import { SanitizePreset, sanitizeHtml } from '@meemoo/admin-core-ui/client';
+import { type RichEditorState } from '@meemoo/react-components';
 import {
   Button,
   ButtonToolbar,
@@ -16,85 +16,85 @@ import {
   Tabs,
   Toolbar,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { Avo, PermissionName } from '@viaa/avo2-types'
-import { compact, noop } from 'es-toolkit'
-import React, { type FC, type ReactNode, useCallback, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate, useParams } from 'react-router'
-import { Link } from 'react-router-dom'
-import { StringParam, useQueryParams } from 'use-query-params'
+} from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { compact, noop } from 'es-toolkit';
+import React, { type FC, type ReactNode, useCallback, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate, useParams } from 'react-router';
+import { Link } from 'react-router-dom';
+import { StringParam, useQueryParams } from 'use-query-params';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js'
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js'
-import { EmbedCodeFilterTableCell } from '../../../embed-code/components/EmbedCodeFilterTableCell.js'
-import { type EmbedCode } from '../../../embed-code/embed-code.types.js'
-import { toEmbedCodeDetail } from '../../../embed-code/helpers/links.js'
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal.js'
-import { QuickLaneFilterTableCell } from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell.js'
-import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts.js'
-import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper.js'
-import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types.js'
-import { buildLink } from '../../../shared/helpers/build-link.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { EmbedCodeFilterTableCell } from '../../../embed-code/components/EmbedCodeFilterTableCell';
+import { type EmbedCode } from '../../../embed-code/embed-code.types';
+import { toEmbedCodeDetail } from '../../../embed-code/helpers/links';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
+import { QuickLaneFilterTableCell } from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
+import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
+import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
+import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { CustomError } from '../../../shared/helpers/custom-error';
 import {
   formatDate,
   formatTimestamp,
-} from '../../../shared/helpers/formatters/date.js'
-import { getSubtitles } from '../../../shared/helpers/get-subtitles.js'
-import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { truncateTableValue } from '../../../shared/helpers/truncate.js'
-import { useTabs } from '../../../shared/hooks/useTabs.js'
-import { RelationService } from '../../../shared/services/relation-service/relation.service.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { ADMIN_PATH } from '../../admin.const.js'
+} from '../../../shared/helpers/formatters/date';
+import { getSubtitles } from '../../../shared/helpers/get-subtitles';
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
+import { useTabs } from '../../../shared/hooks/useTabs';
+import { RelationService } from '../../../shared/services/relation-service/relation.service';
+import { ToastService } from '../../../shared/services/toast-service';
+import { ADMIN_PATH } from '../../admin.const';
 import {
   renderDateDetailRows,
   renderDetailRow,
   renderSimpleDetailRows,
-} from '../../shared/helpers/render-detail-fields.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
+} from '../../shared/helpers/render-detail-fields';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
   AdminLayoutBody,
   AdminLayoutHeader,
   AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
-import { DepublishItemModal } from '../components/DepublishItemModal/DepublishItemModal.js'
-import { mapItemUsedByToQuickLane } from '../helpers/map-item-used-by-to-quick-lane.js'
-import { useGetItemUsedBy } from '../hooks/useGetItemUsedBy.js'
-import { useGetItemWithRelations } from '../hooks/useGetItemWithRelations.js'
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { DepublishItemModal } from '../components/DepublishItemModal/DepublishItemModal';
+import { mapItemUsedByToQuickLane } from '../helpers/map-item-used-by-to-quick-lane';
+import { useGetItemUsedBy } from '../hooks/useGetItemUsedBy';
+import { useGetItemWithRelations } from '../hooks/useGetItemWithRelations';
 import {
   GET_ITEM_USED_BY_COLLECTIONS_AND_ASSIGNMENTS_COLUMNS,
   GET_ITEM_USED_BY_EMBED_CODES,
   GET_ITEM_USED_BY_QUICK_LANES,
   GET_TABS,
   ITEMS_TABS,
-} from '../items.const.js'
-import { ItemsService } from '../items.service.js'
+} from '../items.const';
+import { ItemsService } from '../items.service';
 import {
   type ItemUsedByColumnId,
   type ItemUsedByEntry,
-} from '../items.types.js'
+} from '../items.types';
 
 export const ItemDetail: FC = () => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
-  const { id: itemUuid } = useParams<{ id: string }>()
+  const { id: itemUuid } = useParams<{ id: string }>();
 
   // Hooks
   const [queryParams, setQueryParams] = useQueryParams({
     sortProp: StringParam,
     sortDirection: StringParam,
-  })
+  });
   const {
     data: item,
     isLoading: itemIsLoading,
     refetch: refetchItem,
-  } = useGetItemWithRelations(itemUuid as string, { enabled: !!itemUuid })
+  } = useGetItemWithRelations(itemUuid as string, { enabled: !!itemUuid });
   const { data: itemUsedBy, isError: itemUsedByIsError } = useGetItemUsedBy(
     {
       itemUuid: itemUuid as string,
@@ -102,41 +102,41 @@ export const ItemDetail: FC = () => {
       sortDirection: queryParams.sortDirection || undefined,
     },
     { enabled: !!itemUuid },
-  )
+  );
 
   const [isConfirmPublishModalOpen, setIsConfirmPublishModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [isDepublishItemModalOpen, setDepublishItemModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
-  const [noteEditorState, setNoteEditorState] = useState<RichEditorState>()
+  const [noteEditorState, setNoteEditorState] = useState<RichEditorState>();
 
   const [activeTab, setActiveTab, tabs] = useTabs(
     GET_TABS(),
     ITEMS_TABS.GENERAL,
-  )
+  );
 
   const getTabCount = (tab: string | number) => {
     switch (tab) {
       case ITEMS_TABS.COLLECTIONS:
-        return itemUsedBy?.collections.length
+        return itemUsedBy?.collections.length;
       case ITEMS_TABS.ASSIGNMENTS:
-        return itemUsedBy?.assignments.length
+        return itemUsedBy?.assignments.length;
       case ITEMS_TABS.QUICK_LANE:
-        return itemUsedBy?.quickLanes.length
+        return itemUsedBy?.quickLanes.length;
       case ITEMS_TABS.EMBEDS:
-        return itemUsedBy?.embedCodes.length
+        return itemUsedBy?.embedCodes.length;
       case ITEMS_TABS.GENERAL:
       default:
-        return 0
+        return 0;
     }
-  }
+  };
 
   const getNavTabs = useCallback(() => {
     return compact(
       tabs.map((tab) => {
-        const isTabActive = activeTab === tab.id
-        const tabCount = getTabCount(tab.id)
+        const isTabActive = activeTab === tab.id;
+        const tabCount = getTabCount(tab.id);
         return {
           ...tab,
           active: isTabActive,
@@ -150,81 +150,83 @@ export const ItemDetail: FC = () => {
           ) : (
             tab.label
           ),
-        }
+        };
       }),
-    )
-  }, [activeTab, getTabCount])
+    );
+  }, [activeTab, getTabCount]);
 
   const toggleItemPublishedState = async () => {
     try {
-      setIsConfirmPublishModalOpen(false)
+      setIsConfirmPublishModalOpen(false);
       if (!item) {
         throw new CustomError('The item has not been loaded yet', null, {
           item,
-        })
+        });
       }
       if (!item.is_published) {
-        await ItemsService.setItemPublishedState(item.uid, !item.is_published)
+        await ItemsService.setItemPublishedState(item.uid, !item.is_published);
         await RelationService.deleteRelationsBySubject(
           'item',
           item.uid,
           Lookup_Enum_Relation_Types_Enum.IsReplacedBy,
-        )
-        await ItemsService.setItemDepublishReason(item.uid, null)
+        );
+        await ItemsService.setItemDepublishReason(item.uid, null);
 
-        await refetchItem()
+        await refetchItem();
         ToastService.success(
           tHtml('admin/items/views/item-detail___het-item-is-gepubliceerd'),
-        )
+        );
       } else {
-        setDepublishItemModalOpen(true)
+        setDepublishItemModalOpen(true);
       }
     } catch (err) {
       console.error(
         new CustomError('Failed to toggle is_published state for item', err, {
           item,
         }),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/items/views/item-detail___het-de-publiceren-van-het-item-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const navigateToItemDetail = () => {
     if (!item) {
       ToastService.danger(
         tHtml('admin/items/views/item-detail___dit-item-heeft-geen-geldig-pid'),
-      )
-      return
+      );
+      return;
     }
-    const link = buildLink(APP_PATH.ITEM_DETAIL.route, { id: item.external_id })
-    redirectToClientPage(link, navigateFunc)
-  }
+    const link = buildLink(APP_PATH.ITEM_DETAIL.route, {
+      id: item.external_id,
+    });
+    redirectToClientPage(link, navigateFunc);
+  };
 
   const navigateToCollectionDetail = (id: string) => {
-    const link = buildLink(APP_PATH.COLLECTION_DETAIL.route, { id })
-    redirectToClientPage(link, navigateFunc)
-  }
+    const link = buildLink(APP_PATH.COLLECTION_DETAIL.route, { id });
+    redirectToClientPage(link, navigateFunc);
+  };
 
   const navigateToAssignmentDetail = (id: string) => {
-    const link = buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id })
-    redirectToClientPage(link, navigateFunc)
-  }
+    const link = buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id });
+    redirectToClientPage(link, navigateFunc);
+  };
 
   const handleColumnClick = (columnId: string) => {
     setQueryParams({
       sortProp: columnId,
       sortDirection: toggleSortOrder(queryParams.sortDirection),
-    })
-  }
+    });
+  };
 
   const saveNotes = async () => {
     try {
       if (!item) {
-        return
+        return;
       }
       await ItemsService.setItemNotes(
         item.uid,
@@ -233,19 +235,21 @@ export const ItemDetail: FC = () => {
             '',
           SanitizePreset.link,
         ) || null,
-      )
+      );
       ToastService.success(
         tHtml('admin/items/views/item-detail___opmerkingen-opgeslagen'),
-      )
+      );
     } catch (err) {
-      console.error(new CustomError('Failed to save item notes', err, { item }))
+      console.error(
+        new CustomError('Failed to save item notes', err, { item }),
+      );
       ToastService.danger(
         tHtml(
           'admin/items/views/item-detail___het-opslaan-van-de-opmerkingen-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const renderCell = (
     rowData: ItemUsedByEntry,
@@ -260,15 +264,17 @@ export const ItemDetail: FC = () => {
                 id="created_at"
                 data={mapItemUsedByToQuickLane(rowData)}
               />
-            )
+            );
           }
           case 'EMBED_CODE': {
-            const date = rowData.createdAt
-            return <span title={formatTimestamp(date)}>{formatDate(date)}</span>
+            const date = rowData.createdAt;
+            return (
+              <span title={formatTimestamp(date)}>{formatDate(date)}</span>
+            );
           }
 
           default:
-            return rowData[columnId]
+            return rowData[columnId];
         }
       }
 
@@ -280,10 +286,10 @@ export const ItemDetail: FC = () => {
                 id={columnId}
                 data={mapItemUsedByToQuickLane(rowData)}
               />
-            )
+            );
           }
           case 'EMBED_CODE': {
-            const href = toEmbedCodeDetail(rowData.id)
+            const href = toEmbedCodeDetail(rowData.id);
             return (
               <a
                 href={href}
@@ -293,20 +299,20 @@ export const ItemDetail: FC = () => {
               >
                 {rowData.title}
               </a>
-            )
+            );
           }
 
           default:
-            return rowData[columnId]
+            return rowData[columnId];
         }
       }
 
       case 'owner': {
-        return truncateTableValue(rowData.owner || '-')
+        return truncateTableValue(rowData.owner || '-');
       }
 
       case 'organisation':
-        return rowData.organisation || '-'
+        return rowData.organisation || '-';
 
       case 'isPublic':
         return (
@@ -323,7 +329,7 @@ export const ItemDetail: FC = () => {
           >
             <Icon name={rowData.isPublic ? IconName.unlock3 : IconName.lock} />
           </div>
-        )
+        );
 
       case 'externalWebsite': {
         return (
@@ -337,12 +343,12 @@ export const ItemDetail: FC = () => {
             }
             onNameClick={noop}
           />
-        )
+        );
       }
 
       case ACTIONS_TABLE_COLUMN_ID: {
         if (rowData.type === 'QUICK_LANE') {
-          return null // quick lanes do not have a detail page
+          return null; // quick lanes do not have a detail page
         }
         const label =
           rowData.type === 'COLLECTION'
@@ -351,7 +357,7 @@ export const ItemDetail: FC = () => {
               )
             : tText(
                 'admin/items/views/item-detail___ga-naar-de-opdracht-detail-pagina',
-              )
+              );
         return (
           <Button
             type="borderless"
@@ -359,29 +365,29 @@ export const ItemDetail: FC = () => {
             title={label}
             ariaLabel={label}
             onClick={(evt) => {
-              evt.stopPropagation()
+              evt.stopPropagation();
               if (rowData.type === 'COLLECTION') {
-                navigateToCollectionDetail(rowData.id as string)
+                navigateToCollectionDetail(rowData.id as string);
               } else {
-                navigateToAssignmentDetail(rowData.id as string)
+                navigateToAssignmentDetail(rowData.id as string);
               }
             }}
           />
-        )
+        );
       }
 
       default:
-        return rowData[columnId]
+        return rowData[columnId];
     }
-  }
+  };
 
   const renderGeneralInfoTable = () => {
-    const itemMeta = item?.relations?.[0]?.object_meta
-    const replacementTitle = itemMeta?.title
-    const replacementExternalId = itemMeta?.external_id
-    const replacementUuid = itemMeta?.uid
+    const itemMeta = item?.relations?.[0]?.object_meta;
+    const replacementTitle = itemMeta?.title;
+    const replacementExternalId = itemMeta?.external_id;
+    const replacementUuid = itemMeta?.uid;
 
-    const subtitles = getSubtitles(item)
+    const subtitles = getSubtitles(item);
 
     return (
       <Table horizontal variant="invisible" className="c-table_detail-page">
@@ -480,14 +486,14 @@ export const ItemDetail: FC = () => {
           )}
         </tbody>
       </Table>
-    )
-  }
+    );
+  };
 
   const renderContainingCollectionTable = () => {
     if (itemUsedByIsError) {
       return tText(
         'admin/items/views/item-detail___het-ophalen-van-de-collecties-opdrachten-en-sneldeel-links-die-dit-item-gebruiken-is-mislukt',
-      )
+      );
     }
 
     return (
@@ -512,8 +518,8 @@ export const ItemDetail: FC = () => {
           )
         )}
       </>
-    )
-  }
+    );
+  };
 
   const renderContainingAssignmentTable = () => (
     <>
@@ -537,7 +543,7 @@ export const ItemDetail: FC = () => {
         )
       )}
     </>
-  )
+  );
 
   const renderAssociatedQuickLaneTable = () => (
     <>
@@ -562,7 +568,7 @@ export const ItemDetail: FC = () => {
         )
       )}
     </>
-  )
+  );
 
   const renderAssociatedEmbedCodesTable = () => (
     <>
@@ -587,24 +593,24 @@ export const ItemDetail: FC = () => {
         )
       )}
     </>
-  )
+  );
 
   const renderTabContent = () => {
     switch (activeTab) {
       case ITEMS_TABS.GENERAL:
-        return renderGeneralInfoTable()
+        return renderGeneralInfoTable();
       case ITEMS_TABS.COLLECTIONS:
-        return renderContainingCollectionTable()
+        return renderContainingCollectionTable();
       case ITEMS_TABS.ASSIGNMENTS:
-        return renderContainingAssignmentTable()
+        return renderContainingAssignmentTable();
       case ITEMS_TABS.QUICK_LANE:
-        return renderAssociatedQuickLaneTable()
+        return renderAssociatedQuickLaneTable();
       case ITEMS_TABS.EMBEDS:
-        return renderAssociatedEmbedCodesTable()
+        return renderAssociatedEmbedCodesTable();
       default:
-        return <></>
+        return <></>;
     }
-  }
+  };
 
   const renderItemDetail = () => {
     if (!item) {
@@ -612,8 +618,8 @@ export const ItemDetail: FC = () => {
         new CustomError(
           'Failed to load item because render function is called before item was fetched',
         ),
-      )
-      return
+      );
+      return;
     }
 
     return (
@@ -647,13 +653,13 @@ export const ItemDetail: FC = () => {
           item={item}
           isOpen={isDepublishItemModalOpen}
           onClose={async () => {
-            setDepublishItemModalOpen(false)
-            await refetchItem()
+            setDepublishItemModalOpen(false);
+            await refetchItem();
           }}
         />
       </>
-    )
-  }
+    );
+  };
 
   const renderItemDetailPage = () => {
     if (itemIsLoading) {
@@ -663,10 +669,10 @@ export const ItemDetail: FC = () => {
             <Spinner size="large" />
           </Flex>
         </Container>
-      )
+      );
     }
     if (!item) {
-      return null
+      return null;
     }
     return (
       <AdminLayout
@@ -708,9 +714,9 @@ export const ItemDetail: FC = () => {
                 }
                 onClick={() => {
                   if (item.is_published) {
-                    setIsConfirmPublishModalOpen(true)
+                    setIsConfirmPublishModalOpen(true);
                   } else {
-                    toggleItemPublishedState()
+                    toggleItemPublishedState();
                   }
                 }}
               />
@@ -732,8 +738,8 @@ export const ItemDetail: FC = () => {
         </AdminLayoutHeader>
         <AdminLayoutBody>{renderItemDetail()}</AdminLayoutBody>
       </AdminLayout>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -752,7 +758,7 @@ export const ItemDetail: FC = () => {
         {renderItemDetailPage()}
       </PermissionGuard>
     </>
-  )
-}
+  );
+};
 
-export default ItemDetail
+export default ItemDetail;

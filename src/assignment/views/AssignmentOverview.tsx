@@ -50,59 +50,59 @@ import {
   withDefault,
 } from 'use-query-params';
 
-import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js';
-import { commonUserAtom } from '../../authentication/authentication.store.js';
-import { PermissionService } from '../../authentication/helpers/permission-service.js';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page.js';
-import { APP_PATH } from '../../constants.js';
-import { ErrorView } from '../../error/views/ErrorView.js';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { APP_PATH } from '../../constants';
+import { ErrorView } from '../../error/views/ErrorView';
 import {
   CheckboxDropdownModal,
   type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
-import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
   ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
   getMoreOptionsLabel,
-} from '../../shared/constants/index.js';
-import { buildLink } from '../../shared/helpers/build-link.js';
-import { getContributorType } from '../../shared/helpers/contributors.js';
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown.js';
-import { renderAvatar } from '../../shared/helpers/formatters/avatar.js';
-import { formatDate } from '../../shared/helpers/formatters/date.js';
-import { navigate } from '../../shared/helpers/link.js';
-import { isMobileWidth } from '../../shared/helpers/media-query.js';
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop.js';
-import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview.js';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js';
-import { tHtml } from '../../shared/helpers/translate-html.js';
-import { tText } from '../../shared/helpers/translate-text.js';
-import { truncateTableValue } from '../../shared/helpers/truncate.js';
-import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service.js';
-import { ToastService } from '../../shared/services/toast-service.js';
-import { KeyCode } from '../../shared/types/index.js';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type.js';
-import { ITEMS_PER_PAGE } from '../../workspace/workspace.const.js';
+} from '../../shared/constants/index';
+import { buildLink } from '../../shared/helpers/build-link';
+import { getContributorType } from '../../shared/helpers/contributors';
+import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
+import { renderAvatar } from '../../shared/helpers/formatters/avatar';
+import { formatDate } from '../../shared/helpers/formatters/date';
+import { navigate } from '../../shared/helpers/link';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
+import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { truncateTableValue } from '../../shared/helpers/truncate';
+import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service';
+import { ToastService } from '../../shared/services/toast-service';
+import { KeyCode } from '../../shared/types/index';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
+import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import {
   ASSIGNMENT_CREATE_UPDATE_TABS,
   ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
   GET_ASSIGNMENT_OVERVIEW_COLUMNS,
-} from '../assignment.const.js';
-import { AssignmentService } from '../assignment.service.js';
+} from '../assignment.const';
+import { AssignmentService } from '../assignment.service';
 import {
   AssignmentAction,
   type AssignmentTableColumns,
   AssignmentView,
-} from '../assignment.types.js';
-import { AssignmentDeadline } from '../components/AssignmentDeadline.js';
+} from '../assignment.types';
+import { AssignmentDeadline } from '../components/AssignmentDeadline';
 import {
   deleteAssignment,
   deleteSelfFromAssignment,
-} from '../helpers/delete-assignment.js';
-import { duplicateAssignment } from '../helpers/duplicate-assignment.js';
-import { useGetAssignments } from '../hooks/useGetAssignments.js';
-import { DeleteAssignmentModal } from '../modals/DeleteAssignmentModal.js';
+} from '../helpers/delete-assignment';
+import { duplicateAssignment } from '../helpers/duplicate-assignment';
+import { useGetAssignments } from '../hooks/useGetAssignments';
+import { DeleteAssignmentModal } from '../modals/DeleteAssignmentModal';
 
 interface AssignmentOverviewProps {
   onUpdate: () => void | Promise<void>;

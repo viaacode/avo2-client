@@ -10,36 +10,36 @@ import React, {
 } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js';
-import { ErrorView } from '../../../error/views/ErrorView.js';
-import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
-import { buildLink } from '../../../shared/helpers/build-link.js';
-import { CustomError } from '../../../shared/helpers/custom-error.js';
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
-import { tHtml } from '../../../shared/helpers/translate-html.js';
-import { tText } from '../../../shared/helpers/translate-text.js';
-import { useCompanies } from '../../../shared/hooks/useCompanies.js';
-import { ToastService } from '../../../shared/services/toast-service.js';
-import { ADMIN_PATH } from '../../admin.const.js';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { ErrorView } from '../../../error/views/ErrorView';
+import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { useCompanies } from '../../../shared/hooks/useCompanies';
+import { ToastService } from '../../../shared/services/toast-service';
+import { ADMIN_PATH } from '../../admin.const';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import {
   renderItemsOverviewTableCell,
   renderItemsOverviewTableCellText,
-} from '../helpers/render-item-overview-table-cell.js';
-import { useGetItemsWithFilters } from '../hooks/useGetItemsWithFilters.js';
+} from '../helpers/render-item-overview-table-cell';
+import { useGetItemsWithFilters } from '../hooks/useGetItemsWithFilters';
 import {
   GET_ITEM_OVERVIEW_TABLE_COLS,
   ITEMS_PER_PAGE,
-} from '../items.const.js';
-import { ItemsService } from '../items.service.js';
+} from '../items.const';
+import { ItemsService } from '../items.service';
 import {
   type ItemsOverviewTableCols,
   type ItemsTableState,
-} from '../items.types.js';
+} from '../items.types';
 
-import { ItemBulkAction } from './ItemsOverview.types.js';
+import { ItemBulkAction } from './ItemsOverview.types';
 
 export const ItemsOverview: FC = () => {
   const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});

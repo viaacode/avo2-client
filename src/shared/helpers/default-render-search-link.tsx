@@ -2,10 +2,10 @@ import React, { type ReactNode } from 'react';
 import { type NavigateFunction } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { type SearchFilter } from '../../search/search.const.js';
-import { type FilterState } from '../../search/search.types.js';
+import { type SearchFilter } from '../../search/search.const';
+import { type FilterState } from '../../search/search.types';
 
-import { generateSearchLinkString } from './link.js';
+import { generateSearchLinkString } from './link';
 
 export const defaultGoToSearchLink =
   (navigate: NavigateFunction) =>

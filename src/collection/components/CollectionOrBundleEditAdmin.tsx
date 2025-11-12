@@ -18,27 +18,27 @@ import { noop, orderBy } from 'es-toolkit';
 import { get } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker.js';
-import { type PickerItem } from '../../admin/shared/types/content-picker.js';
-import { commonUserAtom } from '../../authentication/authentication.store.js';
-import { PermissionService } from '../../authentication/helpers/permission-service.js';
-import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable.js';
+import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
+import { type PickerItem } from '../../admin/shared/types/content-picker';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable';
 import {
   AssociatedQuickLaneTable,
   AssociatedQuickLaneTableOrderBy,
-} from '../../quick-lane/components/AssociatedQuickLaneTable.js';
-import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane.js';
-import { CustomError } from '../../shared/helpers/custom-error.js';
-import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar.js';
-import { formatTimestamp } from '../../shared/helpers/formatters/date.js';
-import { tHtml } from '../../shared/helpers/translate-html.js';
-import { tText } from '../../shared/helpers/translate-text.js';
-import { QualityLabelsService } from '../../shared/services/quality-labels.service.js';
-import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service.js';
-import { ToastService } from '../../shared/services/toast-service.js';
-import { type QuickLaneUrlObject } from '../../shared/types/index.js';
-import { type QualityLabel } from '../collection.types.js';
-import { type CollectionAction } from './CollectionOrBundleEdit.types.js';
+} from '../../quick-lane/components/AssociatedQuickLaneTable';
+import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar';
+import { formatTimestamp } from '../../shared/helpers/formatters/date';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { QualityLabelsService } from '../../shared/services/quality-labels.service';
+import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service';
+import { ToastService } from '../../shared/services/toast-service';
+import { type QuickLaneUrlObject } from '../../shared/types/index';
+import { type QualityLabel } from '../collection.types';
+import { type CollectionAction } from './CollectionOrBundleEdit.types';
 
 interface CollectionOrBundleEditAdminProps {
   collection: Avo.Collection.Collection;

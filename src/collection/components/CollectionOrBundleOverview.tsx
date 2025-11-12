@@ -36,46 +36,46 @@ import {
   useQueryParams,
 } from 'use-query-params';
 
-import { type CollectionsOrBundlesOverviewTableCols } from '../../admin/collectionsOrBundles/collections-or-bundles.types.js';
-import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js';
-import { AssignmentService } from '../../assignment/assignment.service.js';
-import { CreateAssignmentModal } from '../../assignment/modals/CreateAssignmentModal.js';
-import { commonUserAtom } from '../../authentication/authentication.store.js';
-import { PermissionService } from '../../authentication/helpers/permission-service.js';
-import { APP_PATH } from '../../constants.js';
-import { ErrorView } from '../../error/views/ErrorView.js';
+import { type CollectionsOrBundlesOverviewTableCols } from '../../admin/collectionsOrBundles/collections-or-bundles.types';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
+import { AssignmentService } from '../../assignment/assignment.service';
+import { CreateAssignmentModal } from '../../assignment/modals/CreateAssignmentModal';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { APP_PATH } from '../../constants';
+import { ErrorView } from '../../error/views/ErrorView';
 import {
   CheckboxDropdownModal,
   type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
-import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper.js';
-import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types.js';
-import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal.js';
-import { getMoreOptionsLabel } from '../../shared/constants/index.js';
-import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generated/graphql-db-react-query.js';
-import { buildLink } from '../../shared/helpers/build-link.js';
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown.js';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
+import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
+import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal';
+import { getMoreOptionsLabel } from '../../shared/constants/index';
+import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generated/graphql-db-react-query';
+import { buildLink } from '../../shared/helpers/build-link';
+import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import {
   formatDate,
   formatTimestamp,
-} from '../../shared/helpers/formatters/date.js';
-import { getOrderObject } from '../../shared/helpers/generate-order-gql-query.js';
-import { navigate } from '../../shared/helpers/link.js';
-import { isMobileWidth } from '../../shared/helpers/media-query.js';
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop.js';
-import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview.js';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js';
-import { tHtml } from '../../shared/helpers/translate-html.js';
-import { tText } from '../../shared/helpers/translate-text.js';
-import { truncateTableValue } from '../../shared/helpers/truncate.js';
-import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service.js';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type.js';
-import { ITEMS_PER_PAGE } from '../../workspace/workspace.const.js';
-import { CollectionService } from '../collection.service.js';
+} from '../../shared/helpers/formatters/date';
+import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
+import { navigate } from '../../shared/helpers/link';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
+import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { truncateTableValue } from '../../shared/helpers/truncate';
+import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
+import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
+import { CollectionService } from '../collection.service';
 import {
   COLLECTION_OR_BUNDLE_TO_CONTENT_TYPE_ENGLISH,
   type Collection,
@@ -84,15 +84,15 @@ import {
   CollectionOrBundle,
   CollectionShareType,
   ContentTypeNumber,
-} from '../collection.types.js';
+} from '../collection.types';
 import {
   deleteCollection,
   deleteSelfFromCollection,
-} from '../helpers/delete-collection.js';
+} from '../helpers/delete-collection';
 
-import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './CollectionOrBundleOverview.consts.js';
-import { DeleteCollectionModal } from './modals/DeleteCollectionModal.js';
-import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal.js';
+import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './CollectionOrBundleOverview.consts';
+import { DeleteCollectionModal } from './modals/DeleteCollectionModal';
+import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
 import './CollectionOrBundleOverview.scss';
 

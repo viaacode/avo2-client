@@ -1,13 +1,13 @@
-import { type Avo } from '@viaa/avo2-types'
-import { compact } from 'es-toolkit'
+import { type Avo } from '@viaa/avo2-types';
+import { compact } from 'es-toolkit';
 
-import { ROUTE_PARTS } from './shared/constants/index.js'
-import { tText } from './shared/helpers/translate-text.js'
+import { ROUTE_PARTS } from './shared/constants/index';
+import { tText } from './shared/helpers/translate-text';
 
 export interface RouteInfo {
-  route: string
-  showInContentPicker: boolean
-  showForInteractiveTour: boolean
+  route: string;
+  showInContentPicker: boolean;
+  showForInteractiveTour: boolean;
 }
 
 export type RouteId =
@@ -62,7 +62,7 @@ export type RouteId =
   | 'ERROR'
   | 'QUICK_LANE'
   | 'EMBED'
-  | 'ALL_ROUTES'
+  | 'ALL_ROUTES';
 
 // Routes should be ordered from least specific, to most specific
 // So we can use this order to search for interactive tours in the correct order
@@ -334,11 +334,11 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
     showInContentPicker: false,
     showForInteractiveTour: false,
   },
-}
+};
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export const CONTENT_TYPE_TO_ROUTE: {
-  [contentType in Avo.Core.ContentType]: string
+  [contentType in Avo.Core.ContentType]: string;
 } = {
   /* eslint-enable @typescript-eslint/no-unused-vars */
   video: APP_PATH.ITEM_DETAIL.route,
@@ -347,7 +347,7 @@ export const CONTENT_TYPE_TO_ROUTE: {
   opdracht: APP_PATH.ASSIGNMENT_DETAIL.route,
   bundel: APP_PATH.BUNDLE_DETAIL.route,
   map: APP_PATH.BUNDLE_DETAIL.route, // TODO remove once this task is complete: https://meemoo.atlassian.net/browse/DEV-729
-} as any // TODO remove cast once this task is complete: https://meemoo.atlassian.net/browse/DEV-729
+} as any; // TODO remove cast once this task is complete: https://meemoo.atlassian.net/browse/DEV-729
 
 export const GENERATE_SITE_TITLE = (
   ...pageTitleParts: (string | null | undefined)[]
@@ -355,4 +355,4 @@ export const GENERATE_SITE_TITLE = (
   compact([
     ...pageTitleParts,
     tText('constants___het-archief-voor-onderwijs'),
-  ]).join(' | ')
+  ]).join(' | ');

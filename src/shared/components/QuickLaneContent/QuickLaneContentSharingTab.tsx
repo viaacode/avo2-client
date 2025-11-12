@@ -18,32 +18,32 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { type AssignmentLayout } from '../../../assignment/assignment.types.js';
-import { commonUserAtom } from '../../../authentication/authentication.store.js';
-import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription.js';
-import { QuickLaneService } from '../../../quick-lane/quick-lane.service.js';
-import { getValidStartAndEnd } from '../../helpers/cut-start-and-end.js';
-import { copyQuickLaneToClipboard } from '../../helpers/generate-quick-lane-href.js';
-import { isMobileWidth } from '../../helpers/media-query.js';
-import { toSeconds } from '../../helpers/parsers/duration.js';
-import { tHtml } from '../../helpers/translate-html.js';
-import { tText } from '../../helpers/translate-text.js';
-import { useDebounce } from '../../hooks/useDebounce.js';
-import { ToastService } from '../../services/toast-service.js';
-import { type QuickLaneUrlObject } from '../../types/index.js';
-import { ContentLink } from '../ContentLink/ContentLink.js';
-import { LayoutOptions } from '../LayoutOptions/LayoutOptions.js';
-import { QuickLaneLink } from '../QuickLaneLink/QuickLaneLink.js';
-import { TimeCropControls } from '../TimeCropControls/TimeCropControls.js';
+import { type AssignmentLayout } from '../../../assignment/assignment.types';
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription';
+import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
+import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
+import { copyQuickLaneToClipboard } from '../../helpers/generate-quick-lane-href';
+import { isMobileWidth } from '../../helpers/media-query';
+import { toSeconds } from '../../helpers/parsers/duration';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
+import { useDebounce } from '../../hooks/useDebounce';
+import { ToastService } from '../../services/toast-service';
+import { type QuickLaneUrlObject } from '../../types/index';
+import { ContentLink } from '../ContentLink/ContentLink';
+import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
+import { QuickLaneLink } from '../QuickLaneLink/QuickLaneLink';
+import { TimeCropControls } from '../TimeCropControls/TimeCropControls';
 import {
   defaultQuickLaneState,
   getContentUuid,
   isShareable,
-} from './QuickLaneContent.helpers.js';
+} from './QuickLaneContent.helpers';
 import {
   type QuickLaneContentProps,
   QuickLaneTypeEnum,
-} from './QuickLaneContent.types.js';
+} from './QuickLaneContent.types';
 
 export const QuickLaneContentSharingTab: FC<QuickLaneContentProps> = ({
   isOpen,

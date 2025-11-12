@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Column,
   convertToHtml,
@@ -8,9 +8,9 @@ import {
   Toolbar,
   ToolbarLeft,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { debounce } from 'es-toolkit'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { debounce } from 'es-toolkit';
 import React, {
   createRef,
   type FC,
@@ -19,44 +19,44 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
-import { Link } from 'react-router-dom'
+} from 'react';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import { Link } from 'react-router-dom';
 
-import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link.js'
-import { ItemMetadata } from '../../shared/components/BlockItemMetadata/ItemMetadata.js'
-import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.js'
-import { type CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.types.js'
-import { TextWithTimestamps } from '../../shared/components/TextWithTimestamp/TextWithTimestamps.js'
-import { TEAL_BRIGHT } from '../../shared/constants/index.js'
-import { stripHtml } from '../../shared/helpers/formatters/strip-html.js'
-import { getFlowPlayerPoster } from '../../shared/helpers/get-poster.js'
+import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
+import { ItemMetadata } from '../../shared/components/BlockItemMetadata/ItemMetadata';
+import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { type CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.types';
+import { TextWithTimestamps } from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
+import { TEAL_BRIGHT } from '../../shared/constants/index';
+import { stripHtml } from '../../shared/helpers/formatters/strip-html';
+import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 
-import './ItemVideoDescription.scss'
-import { tText } from '../../shared/helpers/translate-text.js'
+import './ItemVideoDescription.scss';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface ItemVideoDescriptionProps {
-  itemMetaData: Avo.Item.Item
-  showMetadata: boolean
-  enableMetadataLink?: boolean
-  showDescription?: boolean
-  collapseDescription?: boolean
-  showTitle?: boolean
-  title?: string | null
-  description?: string | null
-  src?: string
-  poster?: string
-  cuePointsVideo?: CuePoints
-  cuePointsLabel?: CuePoints
-  canPlay?: boolean // If video is behind modal or inside a closed modal this value will be false
-  renderButtons?: (itemMetaData: Avo.Item.Item) => ReactNode
-  verticalLayout?: boolean
-  titleLink?: string
-  onPlay?: () => void
-  trackPlayEvent: boolean
+  itemMetaData: Avo.Item.Item;
+  showMetadata: boolean;
+  enableMetadataLink?: boolean;
+  showDescription?: boolean;
+  collapseDescription?: boolean;
+  showTitle?: boolean;
+  title?: string | null;
+  description?: string | null;
+  src?: string;
+  poster?: string;
+  cuePointsVideo?: CuePoints;
+  cuePointsLabel?: CuePoints;
+  canPlay?: boolean; // If video is behind modal or inside a closed modal this value will be false
+  renderButtons?: (itemMetaData: Avo.Item.Item) => ReactNode;
+  verticalLayout?: boolean;
+  titleLink?: string;
+  onPlay?: () => void;
+  trackPlayEvent: boolean;
 }
 
-const DEFAULT_VIDEO_HEIGHT = 421
+const DEFAULT_VIDEO_HEIGHT = 421;
 
 export const ItemVideoDescription: FC<ItemVideoDescriptionProps> = ({
   itemMetaData,
@@ -78,44 +78,44 @@ export const ItemVideoDescription: FC<ItemVideoDescriptionProps> = ({
   onPlay,
   trackPlayEvent,
 }) => {
-  const videoRef: RefObject<HTMLVideoElement> = createRef()
-  const descriptionScrollableRef: RefObject<PerfectScrollbar> = createRef()
-  const descriptionRef = useRef<HTMLDivElement | null>(null)
+  const videoRef: RefObject<HTMLVideoElement> = createRef();
+  const descriptionScrollableRef: RefObject<PerfectScrollbar> = createRef();
+  const descriptionRef = useRef<HTMLDivElement | null>(null);
 
-  const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT) // correct height for desktop screens
+  const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
 
   useEffect(() => {
     // Register window listener when the component mounts
     const onResizeHandler = debounce(
       () => {
         if (videoRef.current) {
-          const vidHeight = videoRef.current.getBoundingClientRect().height
-          setVideoHeight(vidHeight)
+          const vidHeight = videoRef.current.getBoundingClientRect().height;
+          setVideoHeight(vidHeight);
         } else {
-          setVideoHeight(DEFAULT_VIDEO_HEIGHT)
+          setVideoHeight(DEFAULT_VIDEO_HEIGHT);
         }
       },
       300,
       { edges: ['trailing'] },
-    )
+    );
 
-    window.addEventListener('resize', onResizeHandler)
-    onResizeHandler()
+    window.addEventListener('resize', onResizeHandler);
+    onResizeHandler();
 
     return () => {
-      window.removeEventListener('resize', onResizeHandler)
-    }
-  }, [videoRef])
+      window.removeEventListener('resize', onResizeHandler);
+    };
+  }, [videoRef]);
 
   const updateScroll = () => {
-    descriptionScrollableRef.current?.updateScroll()
-    descriptionScrollableRef.current?.forceUpdate()
-  }
+    descriptionScrollableRef.current?.updateScroll();
+    descriptionScrollableRef.current?.forceUpdate();
+  };
 
   function handleDescriptionExpandCollapse(isOpen: boolean) {
     if (!isOpen) {
       // Scroll to the top of the description when it is collapsed
-      descriptionRef.current?.children[0]?.scrollTo({ top: 0 })
+      descriptionRef.current?.children[0]?.scrollTo({ top: 0 });
     }
   }
 
@@ -134,8 +134,8 @@ export const ItemVideoDescription: FC<ItemVideoDescriptionProps> = ({
         title={title || undefined}
         trackPlayEvent={trackPlayEvent}
       />
-    )
-  }
+    );
+  };
 
   const renderTitle = () => {
     const titleElement = (
@@ -146,17 +146,17 @@ export const ItemVideoDescription: FC<ItemVideoDescriptionProps> = ({
       >
         {title}
       </BlockHeading>
-    )
+    );
 
     if (titleLink) {
       return (
         <Link to={titleLink} className="a-link__no-styles">
           {titleElement}
         </Link>
-      )
+      );
     }
-    return titleElement
-  }
+    return titleElement;
+  };
 
   const renderDescription = () => {
     return (
@@ -176,22 +176,22 @@ export const ItemVideoDescription: FC<ItemVideoDescriptionProps> = ({
 
         <TextWithTimestamps content={description || ''} />
       </>
-    )
-  }
+    );
+  };
 
   const renderDescriptionWrapper = () => {
     if (collapseDescription) {
       if (verticalLayout) {
         if (stripHtml(convertToHtml(description)).length < 444) {
           // The description is short enough so we don't need to collapse it, and we can make the height auto
-          return renderDescription()
+          return renderDescription();
         }
         // The height is too large, we need to wrap the description in a collapsable container
         return (
           <ExpandableContainer collapsedHeight={300 - 36 - 18}>
             {renderDescription()}
           </ExpandableContainer>
-        )
+        );
       }
       // The description is rendered next to the video
       // We need to make the height of the description collapsable container the same as the video height
@@ -214,11 +214,11 @@ export const ItemVideoDescription: FC<ItemVideoDescriptionProps> = ({
             {renderDescription()}
           </ExpandableContainer>
         </PerfectScrollbar>
-      )
+      );
     }
 
-    return renderDescription()
-  }
+    return renderDescription();
+  };
 
   return (
     <Grid className="c-item-video-description">
@@ -250,5 +250,5 @@ export const ItemVideoDescription: FC<ItemVideoDescriptionProps> = ({
         )}
       </>
     </Grid>
-  )
-}
+  );
+};
