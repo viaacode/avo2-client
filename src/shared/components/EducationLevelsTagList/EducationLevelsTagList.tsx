@@ -1,9 +1,9 @@
 import { TagList, type TagOption } from '@viaa/avo2-components';
 import { clsx } from 'clsx';
-import { compact, sortBy } from 'lodash-es';
+import { compact, sortBy } from 'es-toolkit';
 import React, { type FC, useMemo } from 'react';
 
-import { tText } from '../../helpers/translate-text';
+import { tText } from '../../helpers/translate-text.js';
 import './EducationLevelsTagList.scss';
 
 enum EducationLevel {

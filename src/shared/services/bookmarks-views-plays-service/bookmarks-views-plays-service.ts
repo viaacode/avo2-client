@@ -1,8 +1,8 @@
-import { type Avo } from '@viaa/avo2-types';
-import { compact, fromPairs, get, groupBy, noop } from 'lodash-es';
+import {type Avo} from '@viaa/avo2-types';
+import {compact, groupBy, noop} from 'es-toolkit';
 
-import { WorkspaceService } from '../../../workspace/workspace.service';
-import { DEFAULT_AUDIO_STILL } from '../../constants';
+import {WorkspaceService} from '../../../workspace/workspace.service.js';
+import {DEFAULT_AUDIO_STILL} from '../../constants/index.js';
 import {
 	type DeleteAssignmentBookmarksForUserMutationVariables,
 	type DeleteCollectionBookmarksForUserMutation,
@@ -39,7 +39,7 @@ import {
 	type InsertCollectionBookmarkMutationVariables,
 	type InsertItemBookmarkMutation,
 	type InsertItemBookmarkMutationVariables,
-} from '../../generated/graphql-db-operations';
+} from '../../generated/graphql-db-operations.js';
 import {
 	GetAssignmentBookmarkViewCountsDocument,
 	GetBookmarkStatusesDocument,
@@ -49,13 +49,13 @@ import {
 	GetMultipleAssignmentViewCountsDocument,
 	GetMultipleCollectionViewCountsDocument,
 	GetMultipleItemViewCountsDocument,
-} from '../../generated/graphql-db-react-query';
-import { CustomError } from '../../helpers/custom-error';
-import { normalizeTimestamp } from '../../helpers/formatters/date';
-import { dataService } from '../data-service';
-import { trackEvents } from '../event-logging-service';
+} from '../../generated/graphql-db-react-query.js';
+import {CustomError} from '../../helpers/custom-error.js';
+import {normalizeTimestamp} from '../../helpers/formatters/date.js';
+import {dataService} from '../data-service.js';
+import {trackEvents} from '../event-logging-service.js';
 
-import { GET_EVENT_QUERIES } from './bookmarks-views-plays-service.const';
+import {GET_EVENT_QUERIES} from './bookmarks-views-plays-service.const.js';
 import {
 	type AppItemBookmark,
 	type BookmarkInfo,
@@ -66,7 +66,7 @@ import {
 	type EventContentType,
 	type EventContentTypeSimplified,
 	type QueryType,
-} from './bookmarks-views-plays-service.types';
+} from './bookmarks-views-plays-service.types.js';
 
 export class BookmarksViewsPlaysService {
 	public static async action(
@@ -270,7 +270,7 @@ export class BookmarksViewsPlaysService {
 				contentCreatedAt: itemBookmark.bookmarkedItem.issued
 					? normalizeTimestamp(itemBookmark.bookmarkedItem.issued).getTime()
 					: null,
-				contentViews: get(itemBookmark, 'bookmarkedItem.view_counts[0].count') || 0,
+				contentViews: itemBookmark?.bookmarkedItem?.view_counts?.[0]?.count || 0,
 				contentOrganisation:
 					itemBookmark.bookmarkedItem?.item?.item_meta?.organisation?.name,
 			};
@@ -332,11 +332,9 @@ export class BookmarksViewsPlaysService {
 		if (!query || !variables) {
 			throw new CustomError('Failed to find query/variables in query lookup table');
 		}
-		const getResponseCount = get(eventQueries, [
-			action,
-			contentTypeSimplified,
-			'getResponseCount',
-		]);
+		const getResponseCount = eventQueries?.[
+			action]?.[
+			contentTypeSimplified]?.getResponseCount;
 		return { query, variables, getResponseCount };
 	}
 
@@ -442,7 +440,7 @@ export class BookmarksViewsPlaysService {
 		try {
 			const groupedObjectInfos: {
 				[type: string]: BookmarkRequestInfo[];
-			} = groupBy(objectInfos, 'type');
+			} = groupBy(objectInfos, info => info.type);
 			const itemObjectInfos: BookmarkRequestInfo[] = groupedObjectInfos['item'] || [];
 			const collectionObjectInfos: BookmarkRequestInfo[] =
 				groupedObjectInfos['collection'] || [];
@@ -483,18 +481,18 @@ export class BookmarksViewsPlaysService {
 			// Map the ids that were found to the original id
 			// if the id was found we set the isBookmarked status to true
 			// if the id was not found we set the isBookmarked status to false
-			const itemBookmarkStatuses: { [uuid: string]: boolean } = fromPairs(
+			const itemBookmarkStatuses: { [uuid: string]: boolean } = Object.fromEntries(
 				itemObjectInfos.map((objectInfo) => {
 					return [objectInfo.uuid, itemBookmarkIds.includes(objectInfo.uuid)];
 				})
 			);
-			const collectionBookmarkStatuses: { [uuid: string]: boolean } = fromPairs(
+			const collectionBookmarkStatuses: { [uuid: string]: boolean } = Object.fromEntries(
 				collectionObjectInfos.map((objectInfo) => {
 					return [objectInfo.uuid, collectionBookmarkIds.includes(objectInfo.uuid)];
 				})
 			);
 
-			const assignmentBookmarkStatuses: { [uuid: string]: boolean } = fromPairs(
+			const assignmentBookmarkStatuses: { [uuid: string]: boolean } = Object.fromEntries(
 				assignmentObjectInfos.map((objectInfo) => {
 					return [objectInfo.uuid, assignmentBookmarkIds.includes(objectInfo.uuid)];
 				})

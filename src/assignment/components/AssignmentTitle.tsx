@@ -3,8 +3,8 @@ import { FormControl } from '@meemoo/react-components';
 import { ContentInput, Flex, Icon, IconName } from '@viaa/avo2-components';
 import React, { type FC, useState } from 'react';
 
-import { tText } from '../../shared/helpers/translate-text';
-import { MAX_TITLE_LENGTH } from '../assignment.const';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { MAX_TITLE_LENGTH } from '../assignment.const.js';
 
 type AssignmentTitleProps = {
 	value: string;

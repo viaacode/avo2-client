@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
 import {
 	Button,
 	ButtonToolbar,
@@ -24,88 +24,67 @@ import {
 	Table,
 	Thumbnail,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import { useAtomValue } from 'jotai';
-import { get, isNil, noop } from 'lodash-es';
-import React, {
-	type FC,
-	type ReactNode,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
-import { Helmet } from 'react-helmet';
-import { useNavigate, useParams } from 'react-router';
-import { Link } from 'react-router-dom';
-import { JsonParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
+import {Avo, PermissionName} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import {useAtomValue} from 'jotai';
+import {isNil, noop} from 'es-toolkit';
+import React, {type FC, type ReactNode, type ReactText, useCallback, useEffect, useState,} from 'react';
+import {Helmet} from 'react-helmet';
+import {useNavigate, useParams} from 'react-router';
+import {Link} from 'react-router-dom';
+import {JsonParam, StringParam, useQueryParam, useQueryParams} from 'use-query-params';
 
-import { ITEMS_PATH } from '../../admin/items/items.const';
-import { ItemsService } from '../../admin/items/items.service';
-import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
-import { AssignmentService } from '../../assignment/assignment.service';
-import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
-import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal';
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { CONTENT_TYPE_TRANSLATIONS, ContentTypeNumber } from '../../collection/collection.types';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
-import { type FilterState } from '../../search/search.types';
-import { FragmentShareModal } from '../../shared/components/FragmentShareModal/FragmentShareModal';
+import {ITEMS_PATH} from '../../admin/items/items.const.js';
+import {ItemsService} from '../../admin/items/items.service.js';
+import {SpecialUserGroupId} from '../../admin/user-groups/user-group.const.js';
+import {AssignmentService} from '../../assignment/assignment.service.js';
+import {ConfirmImportToAssignmentWithResponsesModal} from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal.js';
+import {ImportToAssignmentModal} from '../../assignment/modals/ImportToAssignmentModal.js';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {CONTENT_TYPE_TRANSLATIONS_NL_TO_EN, ContentTypeNumber} from '../../collection/collection.types.js';
+import {APP_PATH, GENERATE_SITE_TITLE} from '../../constants.js';
+import {ALL_SEARCH_FILTERS, SearchFilter} from '../../search/search.const.js';
+import {type FilterState} from '../../search/search.types.js';
+import {FragmentShareModal} from '../../shared/components/FragmentShareModal/FragmentShareModal.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { LANGUAGES, ROUTE_PARTS } from '../../shared/constants';
-import { buildLink } from '../../shared/helpers/build-link';
-import { CustomError } from '../../shared/helpers/custom-error';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {LANGUAGES, ROUTE_PARTS} from '../../shared/constants/index.js';
+import {buildLink} from '../../shared/helpers/build-link.js';
+import {CustomError} from '../../shared/helpers/custom-error.js';
+import {defaultRenderBookmarkButton, type renderBookmarkButtonProps,} from '../../shared/helpers/default-render-bookmark-button.js';
+import {defaultRenderBookmarkCount, type renderBookmarkCountProps,} from '../../shared/helpers/default-render-bookmark-count.js';
+import {defaultGoToDetailLink, defaultRenderDetailLink,} from '../../shared/helpers/default-render-detail-link.js';
+import {defaultRenderInteractiveTour} from '../../shared/helpers/default-render-interactive-tour.js';
+import {defaultGoToSearchLink, defaultRenderSearchLink,} from '../../shared/helpers/default-render-search-link.js';
+import {reorderDate} from '../../shared/helpers/formatters/date.js';
+import {renderSearchLinks} from '../../shared/helpers/link.js';
+import {isMobileWidth} from '../../shared/helpers/media-query.js';
+import {stringsToTagList} from '../../shared/helpers/strings-to-taglist.js';
+import {stripRichTextParagraph} from '../../shared/helpers/strip-rich-text-paragraph.js';
+import {useCutModal} from '../../shared/hooks/use-cut-modal.js';
+import {BookmarksViewsPlaysService} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
 import {
-	defaultRenderBookmarkButton,
-	type renderBookmarkButtonProps,
-} from '../../shared/helpers/default-render-bookmark-button';
-import {
-	defaultRenderBookmarkCount,
-	type renderBookmarkCountProps,
-} from '../../shared/helpers/default-render-bookmark-count';
-import {
-	defaultGoToDetailLink,
-	defaultRenderDetailLink,
-} from '../../shared/helpers/default-render-detail-link';
-import { defaultRenderInteractiveTour } from '../../shared/helpers/default-render-interactive-tour';
-import {
-	defaultGoToSearchLink,
-	defaultRenderSearchLink,
-} from '../../shared/helpers/default-render-search-link';
-import { reorderDate } from '../../shared/helpers/formatters/date';
-import { renderSearchLinks } from '../../shared/helpers/link';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
-import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
-import { useCutModal } from '../../shared/hooks/use-cut-modal';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
-import { trackEvents } from '../../shared/services/event-logging-service';
-import {
-	getRelatedItems,
-	ObjectTypes,
-	ObjectTypesAll,
-} from '../../shared/services/related-items-service';
-import { ToastService } from '../../shared/services/toast-service';
-import { embedFlowAtom } from '../../shared/store/ui.store';
-import { type UnpublishableItem } from '../../shared/types';
-import { ItemVideoDescription } from '../components/ItemVideoDescription';
-import { AddToCollectionModal } from '../components/modals/AddToCollectionModal';
-import { CutFragmentForAssignmentModal } from '../components/modals/CutFragmentForAssignmentModal';
-import { ReportItemModal } from '../components/modals/ReportItemModal';
-import { RELATED_ITEMS_AMOUNT } from '../item.const';
-import { type ItemTrimInfo } from '../item.types';
+	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js';
+import {type BookmarkViewPlayCounts} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
+import {trackEvents} from '../../shared/services/event-logging-service.js';
+import {getRelatedItems, ObjectTypes, ObjectTypesAll,} from '../../shared/services/related-items-service.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {embedFlowAtom} from '../../shared/store/ui.store.js';
+import {type UnpublishableItem} from '../../shared/types/index.js';
+import {ItemVideoDescription} from '../components/ItemVideoDescription.js';
+import {AddToCollectionModal} from '../components/modals/AddToCollectionModal.js';
+import {CutFragmentForAssignmentModal} from '../components/modals/CutFragmentForAssignmentModal.js';
+import {ReportItemModal} from '../components/modals/ReportItemModal.js';
+import {RELATED_ITEMS_AMOUNT} from '../item.const.js';
+import {type ItemTrimInfo} from '../item.types.js';
 
 import './ItemDetail.scss';
-import { tText } from '../../shared/helpers/translate-text';
-import { tHtml } from '../../shared/helpers/translate-html';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
 
 interface ItemDetailProps {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (itemId)
@@ -279,7 +258,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 			if (itemObj.replacement_for) {
 				// Item was replaced by another item
 				// We should reload the page, to update the url
-				goToDetailLink?.(itemObj.external_id, 'video');
+				goToDetailLink?.(itemObj.external_id, Avo.Core.ContentType.VIDEO)
 				return;
 			}
 
@@ -384,7 +363,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 
 	const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
 		const englishContentType: Avo.ContentType.English =
-			CONTENT_TYPE_TRANSLATIONS[relatedItem.administrative_type || 'video'];
+			CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[relatedItem.administrative_type || 'video'];
 
 		return (
 			<MediaCard
@@ -691,7 +670,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 					)}
 				</Grid>
 				<Grid tag="tbody">
-					{!!get(item, 'organisation.name') && (
+					{!!item?.organisation?.name && (
 						<Column size="2-5" tag="tr">
 							<th scope="row">{tText('item/views/item___aanbieder')}</th>
 							<td>
@@ -861,7 +840,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 			return null;
 		}
 		const englishContentType: Avo.ContentType.English =
-			CONTENT_TYPE_TRANSLATIONS[item?.type?.label || 'video'];
+			CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[item?.type?.label || 'video'];
 
 		return (
 			<>
@@ -873,17 +852,17 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 						'c-item-detail__header-mobile': isMobileWidth(),
 					})}
 				>
-					<HeaderContentType category={englishContentType} label={item.type.label}>
+					<HeaderContentType category={englishContentType} label={item?.type?.label}>
 						<Spacer margin="bottom">
 							<div className="c-content-type c-content-type--video">
 								<Icon
 									name={
-										(get(item, 'type.id') === ContentTypeNumber.audio
+										(item?.type?.id === ContentTypeNumber.audio
 											? 'headphone'
-											: get(item, 'type.label')) as IconName
+											: item?.type?.label) as IconName
 									}
 								/>
-								<p>{get(item, 'type.label')}</p>
+								<p>{item?.type?.label}</p>
 							</div>
 						</Spacer>
 					</HeaderContentType>
@@ -903,7 +882,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 					</HeaderMiddleRowRight>
 					<HeaderBottomRowLeft>
 						<MetaData category={englishContentType}>
-							{!!get(item, 'organisation.name') && (
+							{!!item?.organisation?.name && (
 								<MetaDataItem>
 									<p className="c-body-2 u-text-muted">
 										{renderSearchLink(item.organisation.name, {
@@ -1090,7 +1069,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 							tText('item/views/item-detail___item-detail-pagina-titel-fallback')
 					)}
 				</title>
-				<meta name="description" content={get(item, 'description', '')} />
+				<meta name="description" content={item?.description || ''} />
 			</Helmet>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}

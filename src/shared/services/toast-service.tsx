@@ -1,10 +1,10 @@
-import { ToastType } from '@meemoo/admin-core-ui/client';
-import { Alert, type AlertProps, Spacer } from '@viaa/avo2-components';
-import { isNil } from 'lodash-es';
-import React, { type FC, type ReactNode } from 'react';
-import { toast, type ToastId, type ToastOptions } from 'react-toastify';
+import {ToastType} from '@meemoo/admin-core-ui/client';
+import {Alert, type AlertProps, Spacer} from '@viaa/avo2-components';
+import {isNil} from 'es-toolkit';
+import React, {type FC, type ReactNode} from 'react';
+import {toast, type ToastId, type ToastOptions} from 'react-toastify';
 
-import { ROUTE_PARTS } from '../constants';
+import {ROUTE_PARTS} from '../constants/index.js';
 
 export enum AvoToastType {
 	DANGER = 'danger',

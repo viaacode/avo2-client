@@ -5,15 +5,15 @@ import {
 	type InsertNotificationMutationVariables,
 	type UpdateNotificationMutation,
 	type UpdateNotificationMutationVariables,
-} from '../generated/graphql-db-operations';
+} from '../generated/graphql-db-operations.js';
 import {
 	GetNotificationDocument,
 	InsertNotificationDocument,
 	UpdateNotificationDocument,
-} from '../generated/graphql-db-react-query';
-import { CustomError } from '../helpers/custom-error';
+} from '../generated/graphql-db-react-query.js';
+import { CustomError } from '../helpers/custom-error.js';
 
-import { dataService } from './data-service';
+import { dataService } from './data-service.js';
 
 export interface NotificationInfo {
 	through_email: boolean;

@@ -1,9 +1,9 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 
-import { QUERY_KEYS } from '../../../shared/constants/query-keys';
-import { INITIAL_URL_REDIRECT } from '../url-redirects.const';
-import { UrlRedirectsService } from '../url-redirects.service';
-import { type UrlRedirect } from '../url-redirects.types';
+import { QUERY_KEYS } from '../../../shared/constants/query-keys.js';
+import { INITIAL_URL_REDIRECT } from '../url-redirects.const.js';
+import { UrlRedirectsService } from '../url-redirects.service.js';
+import { type UrlRedirect } from '../url-redirects.types.js';
 
 export const useGetUrlRedirectById = (
 	urlRedirectId: number,

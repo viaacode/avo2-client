@@ -1,16 +1,16 @@
-import { IconName } from '@viaa/avo2-components';
-import { type TFunction } from 'i18next';
-import { isNil, kebabCase, sortBy } from 'lodash-es';
+import {IconName} from '@viaa/avo2-components';
+import {type TFunction} from 'i18next';
+import {isNil, kebabCase, sortBy} from 'es-toolkit';
 import React from 'react';
 
-import { LoginOptionsDropdown } from '../../authentication/components/LoginOptionsDropdown';
-import { PupilOrTeacherDropdown } from '../../authentication/components/PupilOrTeacherDropdown';
-import { APP_PATH } from '../../constants';
-import { type AppContentNavElement } from '../services/navigation-items-service';
-import { type NavigationItemInfo } from '../types';
+import {LoginOptionsDropdown} from '../../authentication/components/LoginOptionsDropdown.js';
+import {PupilOrTeacherDropdown} from '../../authentication/components/PupilOrTeacherDropdown.js';
+import {APP_PATH} from '../../constants.js';
+import {type AppContentNavElement} from '../services/navigation-items-service.js';
+import {type NavigationItemInfo} from '../types/index.js';
 
-import { buildLink } from './build-link';
-import { isMobileWidth } from './media-query';
+import {buildLink} from './build-link.js';
+import {isMobileWidth} from './media-query.js';
 
 const NAVIGATION_COMPONENTS: { [componentLabel: string]: any } = {
 	'<PupilOrTeacherDropdown>': PupilOrTeacherDropdown,
@@ -46,7 +46,7 @@ export function mapNavElementsToNavigationItems(
 	navItems: AppContentNavElement[],
 	tText: TFunction
 ): NavigationItemInfo[] {
-	return sortBy(navItems, 'position').map((navItem: AppContentNavElement): NavigationItemInfo => {
+	return sortBy(navItems, ['position']).map((navItem: AppContentNavElement): NavigationItemInfo => {
 		const navLocation: string = getLocation(navItem, tText);
 
 		if (NAVIGATION_COMPONENTS[navLocation]) {

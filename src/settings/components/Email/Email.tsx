@@ -1,35 +1,22 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import {
-	Button,
-	Checkbox,
-	CheckboxGroup,
-	Container,
-	Form,
-	FormGroup,
-	Spacer,
-	Spinner,
-} from '@viaa/avo2-components';
-import { useAtomValue } from 'jotai';
-import { keys } from 'lodash-es';
-import React, { type FC, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { StringParam, useQueryParams } from 'use-query-params';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
+import {Button, Checkbox, CheckboxGroup, Container, Form, FormGroup, Spacer, Spinner,} from '@viaa/avo2-components';
+import {useAtomValue} from 'jotai';
+import React, {type FC, useEffect, useState} from 'react';
+import {Helmet} from 'react-helmet';
+import {StringParam, useQueryParams} from 'use-query-params';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views/ErrorView';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import {
-	CampaignMonitorService,
-	type NewsletterPreferences,
-} from '../../../shared/services/campaign-monitor-service';
-import { ToastService } from '../../../shared/services/toast-service';
-import { type NewsletterList } from '../../../shared/types';
-import { GET_NEWSLETTER_LABELS } from '../../settings.const';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {GENERATE_SITE_TITLE} from '../../../constants.js';
+import {ErrorView} from '../../../error/views/ErrorView.js';
+import {CustomError} from '../../../shared/helpers/custom-error.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {CampaignMonitorService, type NewsletterPreferences,} from '../../../shared/services/campaign-monitor-service.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {type NewsletterList} from '../../../shared/types/index.js';
+import {GET_NEWSLETTER_LABELS} from '../../settings.const.js';
 
-import { useGetEmailPreferences } from './hooks/getEmailPreferences';
+import {useGetEmailPreferences} from './hooks/getEmailPreferences.js';
 
 const INITIAL_NEWSLETTER_PREFERENCES_STATE = (): NewsletterPreferences => ({
 	newsletter: false,
@@ -169,7 +156,7 @@ export const Email: FC = () => {
 					<Form>
 						<FormGroup labelFor="newsletter" required>
 							<CheckboxGroup>
-								{(keys(newsletterLabels) as any).map(
+								{(Object.keys(newsletterLabels) as any).map(
 									(newsletterKey: NewsletterList) => (
 										<Checkbox
 											key={`newsletter_${newsletterKey}`}

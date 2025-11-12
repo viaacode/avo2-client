@@ -1,7 +1,7 @@
-import { type Avo } from '@viaa/avo2-types/types';
+import {type Avo} from '@viaa/avo2-types';
 
-import { type QuickLaneFilterTableCellProps } from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
-import { type ItemUsedByEntry } from '../items.types';
+import {type QuickLaneFilterTableCellProps} from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell.js';
+import {type ItemUsedByEntry} from '../items.types.js';
 
 export function mapItemUsedByToQuickLane(
 	input: ItemUsedByEntry

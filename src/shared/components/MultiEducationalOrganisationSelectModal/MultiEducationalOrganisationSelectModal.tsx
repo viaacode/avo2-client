@@ -13,10 +13,10 @@ import { type Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import React, { type FC, type MouseEvent, useEffect, useState } from 'react';
 
-import { NULL_FILTER } from '../../../admin/shared/helpers/filters';
-import { tHtml } from '../../helpers/translate-html';
-import { tText } from '../../helpers/translate-text';
-import { EducationalOrganisationsSelect } from '../EducationalOrganisationsSelect/EducationalOrganisationsSelect';
+import { NULL_FILTER } from '../../../admin/shared/helpers/filters.js';
+import { tHtml } from '../../helpers/translate-html.js';
+import { tText } from '../../helpers/translate-text.js';
+import { EducationalOrganisationsSelect } from '../EducationalOrganisationsSelect/EducationalOrganisationsSelect.js';
 
 import './MultiEducationalOrganisationSelectModal.scss';
 

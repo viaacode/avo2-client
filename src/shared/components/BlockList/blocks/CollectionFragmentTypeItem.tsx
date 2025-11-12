@@ -1,22 +1,17 @@
-import { type DefaultProps, IconName } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import React, { type FC, type ReactNode, useMemo } from 'react';
-
-import { CollectionBlockType } from '../../../../collection/collection.const';
+import {type DefaultProps, IconName} from '@viaa/avo2-components';
+import {Avo} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import React, {type FC, type ReactNode, useMemo} from 'react';
 import {
 	CollectionFragmentFlowPlayer,
 	type CollectionFragmentFlowPlayerProps,
-} from '../../../../collection/components/CollectionFragmentFlowPlayer';
-import {
-	CollectionFragmentTitle,
-	type CollectionFragmentTitleProps,
-} from '../../../../collection/components/CollectionFragmentTitle';
-import { tHtml } from '../../../helpers/translate-html';
-import { tText } from '../../../helpers/translate-text';
-import { ItemMetadata } from '../../BlockItemMetadata/ItemMetadata';
-import { CollapsibleColumn } from '../../CollapsibleColumn/CollapsibleColumn';
-import { TextWithTimestamps } from '../../TextWithTimestamp/TextWithTimestamps';
+} from '../../../../collection/components/CollectionFragmentFlowPlayer.js';
+import {CollectionFragmentTitle, type CollectionFragmentTitleProps,} from '../../../../collection/components/CollectionFragmentTitle.js';
+import {tHtml} from '../../../helpers/translate-html.js';
+import {tText} from '../../../helpers/translate-text.js';
+import {ItemMetadata} from '../../BlockItemMetadata/ItemMetadata.js';
+import {CollapsibleColumn} from '../../CollapsibleColumn/CollapsibleColumn.js';
+import {TextWithTimestamps} from '../../TextWithTimestamp/TextWithTimestamps.js';
 
 import './CollectionFragmentTypeItem.scss';
 
@@ -53,7 +48,7 @@ export const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = (
 
 				<TextWithTimestamps
 					content={
-						(block?.use_custom_fields || block?.type === CollectionBlockType.TEXT
+						(block?.use_custom_fields || block?.type === Avo.Core.BlockItemType.TEXT
 							? block.custom_description
 							: block?.item_meta?.description) || ''
 					}

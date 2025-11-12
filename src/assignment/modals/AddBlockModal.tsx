@@ -1,23 +1,12 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import {
-	Button,
-	Icon,
-	IconName,
-	Modal,
-	ModalBody,
-	type ModalProps,
-	Spacer,
-} from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import React, { type FC, type ReactNode, useMemo } from 'react';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
+import {Button, Icon, IconName, Modal, ModalBody, type ModalProps, Spacer,} from '@viaa/avo2-components';
+import {Avo} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import React, {type FC, type ReactNode, useMemo} from 'react';
 
-import {
-	BLOCK_TYPE_TO_ICON_NAME,
-	BlockType,
-} from '../../shared/components/BlockList/BlockIconWrapper/BlockIconWrapper.consts';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { AssignmentBlockType } from '../assignment.types';
+import {BLOCK_TYPE_TO_ICON_NAME, BlockType,} from '../../shared/components/BlockList/BlockIconWrapper/BlockIconWrapper.consts.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {AssignmentBlockType} from '../assignment.types.js';
 
 import './AddBlockModal.scss';
 
@@ -43,7 +32,7 @@ export interface AddBlockModalProps extends Pick<ModalProps, 'isOpen' | 'onClose
 export const AddBlockModal: FC<AddBlockModalProps> = ({ blocks, isOpen, onClose, onConfirm }) => {
 	const disableSearchBlock = !!blocks.find(
 		(block) =>
-			block.type === AssignmentBlockType.ZOEK || block.type === AssignmentBlockType.BOUW
+			block.type === Avo.Core.BlockItemType.ZOEK || block.type === Avo.Core.BlockItemType.BOUW
 	);
 	const items: AddBlockModalOption[] = useMemo(
 		() => [

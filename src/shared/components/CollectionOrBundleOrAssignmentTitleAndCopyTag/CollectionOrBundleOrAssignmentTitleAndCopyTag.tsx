@@ -1,7 +1,6 @@
-import { TagList } from '@viaa/avo2-components';
-import { truncate } from 'lodash-es';
-import React, { type FC } from 'react';
-import { Link } from 'react-router-dom';
+import {TagList} from '@viaa/avo2-components';
+import React, {type FC} from 'react';
+import {Link} from 'react-router-dom';
 
 interface CollectionOrBundleOrAssignmentTitleAndCopyTagProps {
 	title: string | undefined | null;
@@ -12,7 +11,7 @@ interface CollectionOrBundleOrAssignmentTitleAndCopyTagProps {
 export const CollectionOrBundleOrAssignmentTitleAndCopyTag: FC<
 	CollectionOrBundleOrAssignmentTitleAndCopyTagProps
 > = ({ title, editLink, editLinkOriginal }) => {
-	const titleTruncated = truncate(title || '-', { length: 50 });
+	const titleTruncated = (title || '-').slice(0, 50);
 	return (
 		<>
 			<Link to={editLink}>

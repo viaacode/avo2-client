@@ -1,19 +1,19 @@
-import { Button, IconName } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { compact, debounce } from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
-import Joyride, { type CallBackProps } from 'react-joyride';
+import {Button, IconName} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {compact, debounce} from 'es-toolkit';
+import React, {type FC, useCallback, useEffect, useState} from 'react';
+import Joyride, {type CallBackProps} from 'react-joyride';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { TEAL_BRIGHT } from '../../constants';
-import { CustomError } from '../../helpers/custom-error';
-import { tText } from '../../helpers/translate-text';
-import { InteractiveTourService, type TourInfo } from '../../services/interactive-tour.service';
-import { showNudgingModalAtom } from '../../store/ui.store';
-import { Html } from '../Html/Html';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {TEAL_BRIGHT} from '../../constants/index.js';
+import {CustomError} from '../../helpers/custom-error.js';
+import {tText} from '../../helpers/translate-text.js';
+import {InteractiveTourService, type TourInfo} from '../../services/interactive-tour.service.js';
+import {showNudgingModalAtom} from '../../store/ui.store.js';
+import {Html} from '../Html/Html.js';
 
-import { useGetInteractiveTourForPage } from './hooks/useGetInteractiveTourForPage';
+import {useGetInteractiveTourForPage} from './hooks/useGetInteractiveTourForPage.js';
 
 import './InteractiveTour.scss';
 
@@ -143,7 +143,7 @@ export const InteractiveTour: FC<InteractiveTourProps> = ({ showButton }) => {
 			}
 		},
 		100,
-		{ trailing: true }
+		{ edges: ['trailing'] }
 	);
 
 	const handleJoyrideCallback = async (data: CallBackProps) => {

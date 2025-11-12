@@ -1,21 +1,19 @@
-import { Accordion, AccordionBody, Spacer } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import { cloneDeep, forEach, get, omit, uniqBy } from 'lodash-es';
-import React, { type FC, type ReactNode, useMemo } from 'react';
+import {Accordion, AccordionBody, Spacer} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import {cloneDeep, omit, uniqBy} from 'es-toolkit';
+import React, {type FC, type ReactNode, useMemo} from 'react';
 
-import {
-	CheckboxDropdownModal,
-	type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
-import { LANGUAGES } from '../../shared/constants';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { tText } from '../../shared/helpers/translate-text';
-import { SearchFilter } from '../search.const';
-import { type SearchFilterControlsProps, type SearchFilterMultiOptions } from '../search.types';
+import {CheckboxDropdownModal, type CheckboxOption,} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
+import {DateRangeDropdown} from '../../shared/components/DateRangeDropdown/DateRangeDropdown.js';
+import {LANGUAGES} from '../../shared/constants/index.js';
+import {isMobileWidth} from '../../shared/helpers/media-query.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {SearchFilter} from '../search.const.js';
+import {type SearchFilterControlsProps, type SearchFilterMultiOptions} from '../search.types.js';
 
 import './SearchFilterControls.scss';
+import {forEach} from "es-toolkit/compat";
 
 const languageCodeToLabel = (code: string): string => {
 	return LANGUAGES.nl[code] || code;
@@ -31,22 +29,22 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
 }) => {
 	const getCombinedMultiOptions = useMemo(() => {
 		const combinedMultiOptions: SearchFilterMultiOptions = cloneDeep(multiOptions);
-		const arrayFilters = omit(filterState, [
+		const arrayFilters: Record<string, string[]> = omit(filterState, [
 			SearchFilter.query,
 			SearchFilter.broadcastDate,
 			SearchFilter.elementary,
 		]) as {
 			[filterName: string]: string[];
 		};
-		forEach(arrayFilters, (values: string[], filterName: string) => {
+		forEach(arrayFilters, ((values: string[] | Avo.Core.ContentType[], filterName: string) => {
 			combinedMultiOptions[filterName] = uniqBy(
 				[
 					...(combinedMultiOptions[filterName] || []),
 					...(values || []).map((val) => ({ option_name: val, option_count: 0 })),
 				],
-				'option_name'
+				(filterEntry) => filterEntry.option_name
 			);
-		});
+		}));
 		return combinedMultiOptions;
 	}, [multiOptions]);
 
@@ -79,7 +77,7 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
 					label: checkboxLabel,
 					optionCount: option_count,
 					id: option_name,
-					checked: (get(filterState, propertyName, []) as string[]).includes(option_name),
+					checked: ((filterState?.[propertyName] ||  []) as string[]).includes(option_name),
 				};
 			}
 		);
@@ -105,7 +103,7 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
 		label: string,
 		propertyName: Avo.Search.FilterProp
 	): ReactNode => {
-		const range: Avo.Search.DateRange = get(filterState, SearchFilter.broadcastDate) || {
+		const range: Avo.Search.DateRange = filterState?.[SearchFilter.broadcastDate] || {
 			gte: '',
 			lte: '',
 		};
@@ -120,8 +118,8 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
 					label={label}
 					id={propertyName}
 					range={correctRange as { gte: string; lte: string }}
-					onChange={async (dateRange: Avo.Search.DateRange) => {
-						await handleFilterFieldChange(dateRange, propertyName);
+					onChange={(dateRange: Avo.Search.DateRange) => {
+						handleFilterFieldChange(dateRange, propertyName);
 					}}
 				/>
 			</li>

@@ -1,41 +1,34 @@
-import { FilterTable, getFilters } from '@meemoo/admin-core-ui/admin';
-import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { get, isNil, truncate } from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { useNavigate } from 'react-router';
+import {FilterTable, getFilters} from '@meemoo/admin-core-ui/admin';
+import {Button, ButtonToolbar, IconName} from '@viaa/avo2-components';
+import {PermissionName} from '@viaa/avo2-types';
+import {isNil} from 'es-toolkit';
+import React, {type FC, useCallback, useEffect, useState} from 'react';
+import {Helmet} from 'react-helmet';
+import {useNavigate} from 'react-router';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views/ErrorView';
-import { OrderDirection } from '../../../search/search.const';
+import {PermissionGuard} from '../../../authentication/components/PermissionGuard.js';
+import {redirectToClientPage} from '../../../authentication/helpers/redirects/redirect-to-client-page.js';
+import {APP_PATH, GENERATE_SITE_TITLE} from '../../../constants.js';
+import {ErrorView} from '../../../error/views/ErrorView.js';
+import {OrderDirection} from '../../../search/search.const.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { buildLink } from '../../../shared/helpers/build-link';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { formatTimestamp } from '../../../shared/helpers/formatters/date';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { ToastService } from '../../../shared/services/toast-service';
-import { ADMIN_PATH } from '../../admin.const';
-import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import {
-	AdminLayoutBody,
-	AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
-import { ItemsService } from '../items.service';
-import {
-	type UnpublishedItem,
-	type UnpublishedItemsOverviewTableCols,
-	type UnpublishedItemsTableState,
-} from '../items.types';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {buildLink} from '../../../shared/helpers/build-link.js';
+import {CustomError} from '../../../shared/helpers/custom-error.js';
+import {formatTimestamp} from '../../../shared/helpers/formatters/date.js';
+import {ACTIONS_TABLE_COLUMN_ID} from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {ADMIN_PATH} from '../../admin.const.js';
+import {getDateRangeFilters, getQueryFilter} from '../../shared/helpers/filters.js';
+import {AdminLayout} from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import {AdminLayoutBody, AdminLayoutTopBarRight,} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import {GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE} from '../items.const.js';
+import {ItemsService} from '../items.service.js';
+import {type UnpublishedItem, type UnpublishedItemsOverviewTableCols, type UnpublishedItemsTableState,} from '../items.types.js';
 
 export const PublishItemsOverview: FC = () => {
 	const navigateFunc = useNavigate();
@@ -87,7 +80,7 @@ export const PublishItemsOverview: FC = () => {
 				await ItemsService.fetchUnpublishedItemsWithFilters(
 					tableState.page || 0,
 					(tableState.sort_column || 'updated_at') as UnpublishedItemsOverviewTableCols,
-					tableState.sort_order || OrderDirection.desc,
+					tableState.sort_order || Avo.Search.OrderDirection.DESC,
 					generateWhereObject(getFilters(tableState))
 				);
 			setItems(itemsTemp);
@@ -238,7 +231,7 @@ export const PublishItemsOverview: FC = () => {
 
 			case 'title':
 			case 'pid':
-				return get(rowData, columnId, '-');
+				return rowData?.[columnId] || '-';
 
 			case 'status':
 				if (rowData.item_meta) {
@@ -247,8 +240,8 @@ export const PublishItemsOverview: FC = () => {
 				return tText('admin/items/views/publish-items-overview___nieuw');
 
 			case ACTIONS_TABLE_COLUMN_ID: {
-				const itemExternalId: string | undefined = get(rowData, 'item_meta.external_id');
-				const itemUid: string | undefined = get(rowData, 'item_meta.uid');
+				const itemExternalId: string | undefined = rowData?.item_meta?.external_id;
+				const itemUid: string | undefined = rowData?.item_meta?.uid;
 
 				if (itemExternalId) {
 					return (
@@ -283,7 +276,7 @@ export const PublishItemsOverview: FC = () => {
 			}
 
 			default:
-				return truncate((rowData as any)[columnId] || '-', { length: 60 });
+				return ((rowData as any)[columnId] || '-').slice(0, 60);
 		}
 	};
 

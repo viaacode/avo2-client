@@ -4,16 +4,16 @@ import React, { type FC, lazy, Suspense, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
-import { ADMIN_PATH } from '../../admin.const';
-import { UserService } from '../user.service';
+import { commonUserAtom } from '../../../authentication/authentication.store.js';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
+import { GENERATE_SITE_TITLE } from '../../../constants.js';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback.js';
+import { ADMIN_PATH } from '../../admin.const.js';
+import { UserService } from '../user.service.js';
 
 import './UserDetailPage.scss';
-import { tText } from '../../../shared/helpers/translate-text';
+import { tText } from '../../../shared/helpers/translate-text.js';
 
 const UserDetail = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({

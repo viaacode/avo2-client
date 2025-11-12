@@ -4,10 +4,10 @@
 
 import I18n from 'i18next';
 import XHR from 'i18next-xhr-backend';
-import { lowerCase, upperFirst } from 'lodash-es';
-import { initReactI18next } from 'react-i18next';
+import {lowerCase, upperFirst} from 'es-toolkit';
+import {initReactI18next} from 'react-i18next';
 
-import { getEnv } from '../helpers/env';
+import {getEnv} from '../helpers/env.js';
 
 let resolveTranslations: (value?: unknown) => void | undefined;
 export const waitForTranslations = new Promise((resolve) => {
@@ -40,7 +40,7 @@ I18n.use(XHR)
 		},
 		parseMissingKeyHandler: (key) => {
 			if (key.includes('___')) {
-				return `${upperFirst(lowerCase(key.split('___').pop()))} ***`;
+				return `${upperFirst(lowerCase(key.split('___').pop() || ''))} ***`;
 			}
 			return `${key} ***`;
 		},

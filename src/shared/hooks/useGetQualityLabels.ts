@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { QUERY_KEYS } from '../constants/query-keys';
-import { QualityLabelsService } from '../services/quality-labels.service';
+import { QUERY_KEYS } from '../constants/query-keys.js';
+import { QualityLabelsService } from '../services/quality-labels.service.js';
 
 export const useGetQualityLabels = (
 	options: {

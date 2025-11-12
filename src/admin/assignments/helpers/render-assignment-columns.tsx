@@ -1,28 +1,28 @@
 import { Button, ButtonToolbar, IconName, TagList, type TagOption } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { compact } from 'lodash-es';
+import { compact } from 'es-toolkit';
 import React, { type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
-import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
-import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
-import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
+import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const.js';
+import { type AssignmentTableColumns } from '../../../assignment/assignment.types.js';
+import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info.js';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
-} from '../../../collection/collection.const';
-import { CollectionCreateUpdateTab, type QualityLabel } from '../../../collection/collection.types';
-import { APP_PATH } from '../../../constants';
-import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
-import { buildLink } from '../../../shared/helpers/build-link';
-import { formatDate } from '../../../shared/helpers/formatters/date';
-import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
-import { groupLomLinks } from '../../../shared/helpers/lom';
-import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { tText } from '../../../shared/helpers/translate-text';
-import { truncateTableValue } from '../../../shared/helpers/truncate';
-import { ADMIN_PATH } from '../../admin.const';
+} from '../../../collection/collection.const.js';
+import { CollectionCreateUpdateTab, type QualityLabel } from '../../../collection/collection.types.js';
+import { APP_PATH } from '../../../constants.js';
+import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag.js';
+import { buildLink } from '../../../shared/helpers/build-link.js';
+import { formatDate } from '../../../shared/helpers/formatters/date.js';
+import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited.js';
+import { groupLomLinks } from '../../../shared/helpers/lom.js';
+import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist.js';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { truncateTableValue } from '../../../shared/helpers/truncate.js';
+import { ADMIN_PATH } from '../../admin.const.js';
 
 export function renderAssignmentOverviewCellReact(
 	assignment: Partial<Avo.Assignment.Assignment>,

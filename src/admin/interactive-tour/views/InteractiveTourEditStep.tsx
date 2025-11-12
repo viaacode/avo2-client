@@ -17,16 +17,16 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
-import { get, isEqual } from 'lodash-es';
-import React, { type FC } from 'react';
+import {isEqual} from 'es-toolkit';
+import React, {type FC} from 'react';
 
-import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
-import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
-import { stripHtml } from '../../../shared/helpers/formatters/strip-html';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { type InteractiveTourAction } from '../helpers/reducers';
-import { type EditableStep, InteractiveTourEditActionType } from '../interactive-tour.types';
+import {RICH_TEXT_EDITOR_OPTIONS_FULL} from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts.js';
+import {RichTextEditorWrapper} from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper.js';
+import {stripHtml} from '../../../shared/helpers/formatters/strip-html.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {type InteractiveTourAction} from '../helpers/reducers/index.js';
+import {type EditableStep, InteractiveTourEditActionType} from '../interactive-tour.types.js';
 
 import './InteractiveTourEdit.scss';
 
@@ -34,7 +34,7 @@ interface InteractiveTourEditStepProps {
 	step: EditableStep;
 	index: number;
 	numberOfSteps: number;
-	stepErrors: { title?: string; content?: string };
+	stepErrors: { title?: string; content?: string } | undefined;
 	changeInteractiveTourState: (action: InteractiveTourAction) => void;
 }
 
@@ -120,7 +120,7 @@ export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
 				<Form>
 					<FormGroup
 						label={tText('admin/interactive-tour/views/interactive-tour-edit___titel')}
-						error={get(stepErrors, 'title')}
+						error={stepErrors?.title}
 					>
 						<TextInput
 							value={(step.title || '').toString()}
@@ -137,7 +137,7 @@ export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
 					</FormGroup>
 					<FormGroup
 						label={tText('admin/interactive-tour/views/interactive-tour-edit___tekst')}
-						error={get(stepErrors, 'content')}
+						error={stepErrors?.content}
 					>
 						<RichTextEditorWrapper
 							initialHtml={(step.content || '').toString()}

@@ -1,6 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 
-import type { PickerItem, PickerItemControls, PickerTypeOption } from '../../types/content-picker';
+import type { PickerItem, PickerItemControls, PickerTypeOption } from '../../types/content-picker.js';
 
 export declare type SingleValue<Option> = Option | null;
 export declare type MultiValue<Option> = readonly Option[];

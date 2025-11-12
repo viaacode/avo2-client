@@ -10,11 +10,11 @@ import { type Avo } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import React, { type FC, type ReactNode } from 'react';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { getFullName } from '../../helpers/formatters/avatar';
-import { tHtml } from '../../helpers/translate-html';
-import { tText } from '../../helpers/translate-text';
-import { ContributorInfoRight } from '../ShareWithColleagues/ShareWithColleagues.types';
+import { commonUserAtom } from '../../../authentication/authentication.store.js';
+import { getFullName } from '../../helpers/formatters/avatar.js';
+import { tHtml } from '../../helpers/translate-html.js';
+import { tText } from '../../helpers/translate-text.js';
+import { ContributorInfoRight } from '../ShareWithColleagues/ShareWithColleagues.types.js';
 
 import './HeaderOwnerAndContributors.scss';
 

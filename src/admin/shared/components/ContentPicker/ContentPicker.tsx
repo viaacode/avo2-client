@@ -8,24 +8,24 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { isNull } from 'lodash-es';
+import { isNull } from 'es-toolkit';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import ReactSelect, { type ActionMeta, type PropsValue } from 'react-select';
 import AsyncSelect from 'react-select/async';
 
-import { FileUpload } from '../../../../shared/components/FileUpload/FileUpload';
-import { CustomError } from '../../../../shared/helpers/custom-error';
-import { tHtml } from '../../../../shared/helpers/translate-html';
-import { tText } from '../../../../shared/helpers/translate-text';
-import { ToastService } from '../../../../shared/services/toast-service';
-import { type PickerItem, type PickerTypeOption } from '../../types/content-picker';
+import { FileUpload } from '../../../../shared/components/FileUpload/FileUpload.js';
+import { CustomError } from '../../../../shared/helpers/custom-error.js';
+import { tHtml } from '../../../../shared/helpers/translate-html.js';
+import { tText } from '../../../../shared/helpers/translate-text.js';
+import { ToastService } from '../../../../shared/services/toast-service.js';
+import { type PickerItem, type PickerTypeOption } from '../../types/content-picker.js';
 
 import {
 	DEFAULT_ALLOWED_TYPES,
 	GET_CONTENT_TYPES,
 	REACT_SELECT_DEFAULT_OPTIONS,
-} from './ContentPicker.const';
-import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.helpers';
+} from './ContentPicker.const.js';
+import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.helpers.js';
 import './ContentPicker.scss';
 
 interface ContentPickerProps {

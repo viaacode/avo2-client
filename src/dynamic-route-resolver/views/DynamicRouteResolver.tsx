@@ -5,47 +5,46 @@ import {
 	convertDbContentPageToContentPageInfo,
 	type DbContentPage,
 } from '@meemoo/admin-core-ui/client';
-import { IconName } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { useAtom, useSetAtom } from 'jotai';
-import { keys } from 'lodash-es';
-import { stringifyUrl } from 'query-string';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { Navigate, useNavigate } from 'react-router';
-import { useLocation } from 'react-router-dom';
+import {IconName} from '@viaa/avo2-components';
+import {type Avo, PermissionName} from '@viaa/avo2-types';
+import {useAtom, useSetAtom} from 'jotai';
+import {stringifyUrl} from 'query-string';
+import React, {type FC, useCallback, useEffect, useState} from 'react';
+import {Helmet} from 'react-helmet';
+import {Navigate, useNavigate} from 'react-router';
+import {useLocation} from 'react-router-dom';
 
-import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state';
-import { ItemsService } from '../../admin/items/items.service';
-import { UrlRedirectsService } from '../../admin/url-redirects/url-redirects.service';
-import { loginAtom } from '../../authentication/authentication.store';
-import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
-import { SpecialPermissionGroups } from '../../authentication/authentication.types';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page';
-import { CollectionService } from '../../collection/collection.service';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorView } from '../../error/views/ErrorView';
-import { OrderDirection, SearchFilter } from '../../search/search.const';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
-import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
+import {getPublishedDate} from '../../admin/content-page/helpers/get-published-state.js';
+import {ItemsService} from '../../admin/items/items.service.js';
+import {UrlRedirectsService} from '../../admin/url-redirects/url-redirects.service.js';
+import {loginAtom} from '../../authentication/authentication.store.js';
+import {getLoginStateAtom} from '../../authentication/authentication.store.actions.js';
+import {SpecialPermissionGroups} from '../../authentication/authentication.types.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {redirectToErrorPage} from '../../authentication/helpers/redirects/redirect-to-error-page.js';
+import {CollectionService} from '../../collection/collection.service.js';
+import {APP_PATH, GENERATE_SITE_TITLE} from '../../constants.js';
+import {ErrorView} from '../../error/views/ErrorView.js';
+import {OrderDirection, SearchFilter} from '../../search/search.const.js';
+import {FullPageSpinner} from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import {InteractiveTour} from '../../shared/components/InteractiveTour/InteractiveTour.js';
+import {JsonLd} from '../../shared/components/JsonLd/JsonLd.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { buildLink } from '../../shared/helpers/build-link';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { getEnv } from '../../shared/helpers/env';
-import { getFullName } from '../../shared/helpers/formatters/avatar';
-import { stripHtml } from '../../shared/helpers/formatters/strip-html';
-import { isPupil } from '../../shared/helpers/is-pupil';
-import { generateSearchLinkString } from '../../shared/helpers/link';
-import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { getPageNotFoundError } from '../../shared/translations/page-not-found';
-import { Locale } from '../../shared/translations/translations.types';
-import { DynamicRouteType, GET_ERROR_MESSAGES } from '../dynamic-route-resolver.const';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {buildLink} from '../../shared/helpers/build-link.js';
+import {CustomError} from '../../shared/helpers/custom-error.js';
+import {getEnv} from '../../shared/helpers/env.js';
+import {getFullName} from '../../shared/helpers/formatters/avatar.js';
+import {stripHtml} from '../../shared/helpers/formatters/strip-html.js';
+import {isPupil} from '../../shared/helpers/is-pupil.js';
+import {generateSearchLinkString} from '../../shared/helpers/link.js';
+import {renderWrongUserRoleError} from '../../shared/helpers/render-wrong-user-role-error.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {getPageNotFoundError} from '../../shared/translations/page-not-found.js';
+import {Locale} from '../../shared/translations/translations.types.js';
+import {DynamicRouteType, GET_ERROR_MESSAGES} from '../dynamic-route-resolver.const.js';
 
 interface RouteInfo {
 	type: DynamicRouteType;
@@ -83,7 +82,7 @@ const DynamicRouteResolver: FC = () => {
 			// Check if path is avo1 path that needs to be redirected
 			const redirects = await UrlRedirectsService.fetchUrlRedirectMap();
 			const pathWithHash = pathname + location.hash;
-			const key: string | undefined = keys(redirects).find((key) =>
+			const key: string | undefined = Object.keys(redirects).find((key) =>
 				new RegExp(`^${key}$`, 'gi').test(pathWithHash)
 			);
 			if (key && redirects[key]) {
@@ -148,7 +147,7 @@ const DynamicRouteResolver: FC = () => {
 						SearchFilter.serie,
 						'KLAAR',
 						SearchFilter.broadcastDate,
-						OrderDirection.desc
+						Avo.Search.OrderDirection.DESC
 					),
 					{ replace: true }
 				);

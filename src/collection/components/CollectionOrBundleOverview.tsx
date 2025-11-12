@@ -1,6 +1,6 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
-import { PaginationBar } from '@meemoo/react-components';
-import { QueryClient } from '@tanstack/react-query';
+import {toggleSortOrder} from '@meemoo/admin-core-ui/admin';
+import {PaginationBar} from '@meemoo/react-components';
+import {QueryClient} from '@tanstack/react-query';
 import {
 	Button,
 	ButtonToolbar,
@@ -16,72 +16,63 @@ import {
 	ToolbarItem,
 	ToolbarLeft,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { cloneDeep, compact, fromPairs, isNil, noop } from 'lodash-es';
-import React, {
-	type FC,
-	type ReactNode,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
-import { useNavigate } from 'react-router';
-import { Link } from 'react-router-dom';
-import { ArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
+import {Avo, PermissionName} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {cloneDeep, compact, isNil, noop} from 'es-toolkit';
+import React, {type FC, type ReactNode, type ReactText, useCallback, useEffect, useState,} from 'react';
+import {useNavigate} from 'react-router';
+import {Link} from 'react-router-dom';
+import {ArrayParam, NumberParam, StringParam, useQueryParams} from 'use-query-params';
 
-import { type CollectionsOrBundlesOverviewTableCols } from '../../admin/collectionsOrBundles/collections-or-bundles.types';
-import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
-import { AssignmentService } from '../../assignment/assignment.service';
-import { CreateAssignmentModal } from '../../assignment/modals/CreateAssignmentModal';
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views/ErrorView';
-import { OrderDirection } from '../../search/search.const';
-import {
-	CheckboxDropdownModal,
-	type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import {type CollectionsOrBundlesOverviewTableCols} from '../../admin/collectionsOrBundles/collections-or-bundles.types.js';
+import {GET_DEFAULT_PAGINATION_BAR_PROPS} from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js';
+import {AssignmentService} from '../../assignment/assignment.service.js';
+import {CreateAssignmentModal} from '../../assignment/modals/CreateAssignmentModal.js';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {APP_PATH} from '../../constants.js';
+import {ErrorView} from '../../error/views/ErrorView.js';
+import {OrderDirection} from '../../search/search.const.js';
+import {CheckboxDropdownModal, type CheckboxOption,} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
-import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
-import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal';
-import { getMoreOptionsLabel } from '../../shared/constants';
-import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generated/graphql-db-react-query';
-import { buildLink } from '../../shared/helpers/build-link';
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { formatDate, formatTimestamp } from '../../shared/helpers/formatters/date';
-import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
-import { navigate } from '../../shared/helpers/link';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { truncateTableValue } from '../../shared/helpers/truncate';
-import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-import { CollectionService } from '../collection.service';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {MoreOptionsDropdownWrapper} from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper.js';
+import {QuickLaneTypeEnum} from '../../shared/components/QuickLaneContent/QuickLaneContent.types.js';
+import {QuickLaneModal} from '../../shared/components/QuickLaneModal/QuickLaneModal.js';
+import {getMoreOptionsLabel} from '../../shared/constants/index.js';
+import {useDeleteCollectionOrBundleByUuidMutation} from '../../shared/generated/graphql-db-react-query.js';
+import {buildLink} from '../../shared/helpers/build-link.js';
+import {createDropdownMenuItem} from '../../shared/helpers/dropdown.js';
+import {formatDate, formatTimestamp} from '../../shared/helpers/formatters/date.js';
+import {getOrderObject} from '../../shared/helpers/generate-order-gql-query.js';
+import {navigate} from '../../shared/helpers/link.js';
+import {isMobileWidth} from '../../shared/helpers/media-query.js';
+import {renderMobileDesktop} from '../../shared/helpers/renderMobileDesktop.js';
+import {createShareIconTableOverview} from '../../shared/helpers/share-icon-table-overview.js';
+import {ACTIONS_TABLE_COLUMN_ID} from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {truncateTableValue} from '../../shared/helpers/truncate.js';
+import {COLLECTION_QUERY_KEYS} from '../../shared/services/data-service.js';
+import {TableColumnDataType} from '../../shared/types/table-column-data-type.js';
+import {ITEMS_PER_PAGE} from '../../workspace/workspace.const.js';
+import {CollectionService} from '../collection.service.js';
 import {
 	type Collection,
+	COLLECTION_OR_BUNDLE_TO_CONTENT_TYPE_ENGLISH,
 	CollectionCreateUpdateTab,
 	CollectionMenuAction,
 	CollectionOrBundle,
 	CollectionShareType,
 	ContentTypeNumber,
-} from '../collection.types';
-import { deleteCollection, deleteSelfFromCollection } from '../helpers/delete-collection';
+} from '../collection.types.js';
+import {deleteCollection, deleteSelfFromCollection} from '../helpers/delete-collection.js';
 
-import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './CollectionOrBundleOverview.consts';
-import { DeleteCollectionModal } from './modals/DeleteCollectionModal';
-import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
+import {COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT} from './CollectionOrBundleOverview.consts.js';
+import {DeleteCollectionModal} from './modals/DeleteCollectionModal.js';
+import {DeleteMyselfFromCollectionContributorsConfirmModal} from './modals/DeleteContributorFromCollectionModal.js';
 
 import './CollectionOrBundleOverview.scss';
 
@@ -119,7 +110,7 @@ export const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps> = (
 	const [selectedCollection, setSelectedCollection] = useState<Collection | undefined>(undefined);
 	const [sortColumn, setSortColumn] =
 		useState<CollectionsOrBundlesOverviewTableCols>('updated_at');
-	const [sortOrder, setSortOrder] = useState<OrderDirection>(OrderDirection.desc);
+	const [sortOrder, setSortOrder] = useState<OrderDirection>(Avo.Search.OrderDirection.DESC);
 	const [page, setPage] = useState<number>(0);
 	const [activeModalInfo, setActiveModalInfo] = useState<{
 		collectionUuid: string;
@@ -138,10 +129,10 @@ export const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps> = (
 	});
 
 	const isContributor =
-		selectedCollection?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
+		selectedCollection?.share_type === Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ;
 	const isOwner =
-		selectedCollection?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE ||
-		selectedCollection?.share_type === ShareWithColleagueTypeEnum.NIET_GEDEELD;
+		selectedCollection?.share_type === Avo.Share.ShareWithColleagueType.GEDEELD_MET_ANDERE ||
+		selectedCollection?.share_type === Avo.Share.ShareWithColleagueType.NIET_GEDEELD;
 	const hasDeleteRightsForAllCollections =
 		commonUser?.permissions?.includes(PermissionName.DELETE_ANY_COLLECTIONS) || false;
 	const shouldDeleteSelfFromCollection =
@@ -318,7 +309,7 @@ export const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps> = (
 				);
 			}
 			setPermissions(
-				fromPairs(
+				Object.fromEntries(
 					perms.map((permsForCollection: Record<string, boolean>, index: number) => [
 						collections[index].id,
 						permsForCollection,
@@ -476,7 +467,7 @@ export const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps> = (
 		} else {
 			// Initial column sort order
 			setSortColumn(columnId);
-			setSortOrder(OrderDirection.asc);
+			setSortOrder(Avo.Search.OrderDirection.ASC);
 		}
 	};
 
@@ -518,7 +509,7 @@ export const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps> = (
 		<Link {...getLinkProps(id, title || '')}>
 			<Thumbnail
 				alt="thumbnail"
-				category={type}
+				category={COLLECTION_OR_BUNDLE_TO_CONTENT_TYPE_ENGLISH[type]}
 				className="m-collection-overview-thumbnail"
 				src={thumbnail_path || undefined}
 			/>
@@ -533,7 +524,7 @@ export const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps> = (
 				</Link>
 			</h3>
 			<div className="c-content-header__meta u-text-muted">
-				<MetaData category={type}>
+				<MetaData category={COLLECTION_OR_BUNDLE_TO_CONTENT_TYPE_ENGLISH[type]}>
 					<MetaDataItem>
 						<span title={`Aangemaakt: ${formatDate(collection.created_at)}`}>
 							{formatDate(collection.created_at)}
@@ -745,7 +736,7 @@ export const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps> = (
 
 			case 'share_type':
 				return createShareIconTableOverview(
-					collection.share_type as ShareWithColleagueTypeEnum | undefined,
+					collection.share_type as Avo.Share.ShareWithColleagueType | undefined,
 					collection.contributors as unknown as
 						| Avo.Collection.Contributor[]
 						| null

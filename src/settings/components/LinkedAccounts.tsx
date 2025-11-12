@@ -1,40 +1,21 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import {
-	Button,
-	Column,
-	Container,
-	Form,
-	FormGroup,
-	Grid,
-	Icon,
-	IconName,
-	Spacer,
-} from '@viaa/avo2-components';
-import { Idp } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import React, {
-	type Dispatch,
-	type FC,
-	type ReactNode,
-	type SetStateAction,
-	useState,
-} from 'react';
-import { Helmet } from 'react-helmet';
-import { useLocation } from 'react-router-dom';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
+import {Button, Column, Container, Form, FormGroup, Grid, Icon, IconName, Spacer,} from '@viaa/avo2-components';
+import {Avo} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import React, {type Dispatch, type FC, type ReactNode, type SetStateAction, useState,} from 'react';
+import {Helmet} from 'react-helmet';
+import {useLocation} from 'react-router-dom';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import {
-	redirectToServerLinkAccount,
-	redirectToServerUnlinkAccount,
-} from '../../authentication/helpers/redirects';
-import { GENERATE_SITE_TITLE } from '../../constants';
-import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
-import { isPupil } from '../../shared/helpers/is-pupil';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {redirectToServerLinkAccount, redirectToServerUnlinkAccount,} from '../../authentication/helpers/redirects.js';
+import {GENERATE_SITE_TITLE} from '../../constants.js';
+import {ConfirmModal} from '../../shared/components/ConfirmModal/ConfirmModal.js';
+import {isPupil} from '../../shared/helpers/is-pupil.js';
 
 import './LinkedAccounts.scss';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
+import {FullPageSpinner} from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
 
 interface IdpProps {
 	label: ReactNode;
@@ -94,9 +75,9 @@ export const LinkedAccounts: FC = () => {
 		},
 	};
 
-	const renderIdpLinkControls = (idpType: Idp) => {
+	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
 		let linked = !!(commonUser?.idps as any)?.[idpType];
-		if (!linked && idpType === Idp.VLAAMSEOVERHEID__SUB_ID) {
+		if (!linked && idpType === Avo.Auth.IdpType.VLAAMSEOVERHEID__SUB_ID) {
 			linked = !!commonUser?.idps?.VLAAMSEOVERHEID__ACCOUNT_ID;
 		}
 		const baseIdp = idpType.split('__')[0];
@@ -227,9 +208,9 @@ export const LinkedAccounts: FC = () => {
 									)}
 								>
 									{/* Previously disabled for pupils due to https://meemoo.atlassian.net/browse/AVO-2062 */}
-									<div>{renderIdpLinkControls(Idp.VLAAMSEOVERHEID__SUB_ID)}</div>
-									<div>{renderIdpLinkControls(Idp.SMARTSCHOOL)}</div>
-									<div>{renderIdpLinkControls(Idp.KLASCEMENT)}</div>
+									<div>{renderIdpLinkControls(Avo.Auth.IdpType.VLAAMSEOVERHEID__SUB_ID)}</div>
+									<div>{renderIdpLinkControls(Avo.Auth.IdpType.SMARTSCHOOL)}</div>
+									<div>{renderIdpLinkControls(Avo.Auth.IdpType.KLASCEMENT)}</div>
 								</FormGroup>
 							</Form>
 						</Column>

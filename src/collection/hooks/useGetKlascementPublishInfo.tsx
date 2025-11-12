@@ -1,11 +1,11 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 
-import { QUERY_KEYS } from '../../shared/constants/query-keys';
-import { tHtml } from '../../shared/helpers/translate-html';
+import { QUERY_KEYS } from '../../shared/constants/query-keys.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
 import {
 	type KlascementCollectionPublishInfo,
 	KlascementService,
-} from '../../shared/services/klascement-service';
+} from '../../shared/services/klascement-service.js';
 
 export const useGetKlascementPublishInfo = (
 	collectionId: string,

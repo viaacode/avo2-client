@@ -1,7 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
 
-import { ContentTypeNumber } from '../../collection/collection.types';
-import { DEFAULT_AUDIO_STILL } from '../constants';
+import { ContentTypeNumber } from '../../collection/collection.types.js';
+import { DEFAULT_AUDIO_STILL } from '../constants/index.js';
 
 /**
  * Returns the thumbnail for video items and the default audio still for audio items

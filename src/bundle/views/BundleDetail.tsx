@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
 import {
 	Button,
 	ButtonToolbar,
@@ -21,73 +21,67 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
-import { clsx } from 'clsx';
-import { useAtomValue } from 'jotai';
-import { compact, get, noop } from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { useNavigate, useParams } from 'react-router';
-import { Link } from 'react-router-dom';
+import {Avo, PermissionName} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import {useAtomValue} from 'jotai';
+import {compact, noop} from 'es-toolkit';
+import React, {type FC, useCallback, useEffect, useState} from 'react';
+import {Helmet} from 'react-helmet';
+import {useNavigate, useParams} from 'react-router';
+import {Link} from 'react-router-dom';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
-import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin';
-import { renderRelatedItems } from '../../collection/collection.helpers';
-import { CollectionService } from '../../collection/collection.service';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {redirectToClientPage} from '../../authentication/helpers/redirects/redirect-to-client-page.js';
+import {RegisterOrLogin} from '../../authentication/views/RegisterOrLogin.js';
+import {renderRelatedItems} from '../../collection/collection.helpers.js';
+import {CollectionService} from '../../collection/collection.service.js';
 import {
 	BLOCK_TYPE_TO_CONTENT_TYPE,
 	CollectionCreateUpdateTab,
 	CollectionOrBundle,
 	ContentTypeNumber,
-} from '../../collection/collection.types';
-import { PublishCollectionModal } from '../../collection/components/modals/PublishCollectionModal';
-import { useGetCollectionOrBundleByIdOrInviteToken } from '../../collection/hooks/useGetCollectionOrBundleByIdOrInviteToken';
-import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorView } from '../../error/views/ErrorView';
-import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
-import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
-import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
-import { EditButton } from '../../shared/components/EditButton/EditButton';
-import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { Html } from '../../shared/components/Html/Html';
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
-import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
-import { ShareThroughEmailModal } from '../../shared/components/ShareThroughEmailModal/ShareThroughEmailModal';
-import { getMoreOptionsLabel } from '../../shared/constants';
-import { buildLink } from '../../shared/helpers/build-link';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render-bookmark-button';
+} from '../../collection/collection.types.js';
+import {PublishCollectionModal} from '../../collection/components/modals/PublishCollectionModal.js';
+import {useGetCollectionOrBundleByIdOrInviteToken} from '../../collection/hooks/useGetCollectionOrBundleByIdOrInviteToken.js';
+import {COLLECTION_COPY, COLLECTION_COPY_REGEX} from '../../collection/views/CollectionDetail.js';
+import {APP_PATH, GENERATE_SITE_TITLE} from '../../constants.js';
+import {ErrorView} from '../../error/views/ErrorView.js';
+import {ALL_SEARCH_FILTERS, type SearchFilter} from '../../search/search.const.js';
+import {CommonMetadata} from '../../shared/components/CommonMetaData/CommonMetaData.js';
+import {ConfirmModal} from '../../shared/components/ConfirmModal/ConfirmModal.js';
+import {EditButton} from '../../shared/components/EditButton/EditButton.js';
+import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList.js';
+import {FullPageSpinner} from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import {Html} from '../../shared/components/Html/Html.js';
+import {InteractiveTour} from '../../shared/components/InteractiveTour/InteractiveTour.js';
+import {JsonLd} from '../../shared/components/JsonLd/JsonLd.js';
+import {ShareThroughEmailModal} from '../../shared/components/ShareThroughEmailModal/ShareThroughEmailModal.js';
+import {getMoreOptionsLabel} from '../../shared/constants/index.js';
+import {buildLink} from '../../shared/helpers/build-link.js';
+import {CustomError} from '../../shared/helpers/custom-error.js';
+import {defaultRenderBookmarkButton} from '../../shared/helpers/default-render-bookmark-button.js';
+import {defaultGoToDetailLink, defaultRenderDetailLink,} from '../../shared/helpers/default-render-detail-link.js';
+import {defaultRenderSearchLink} from '../../shared/helpers/default-render-search-link.js';
+import {createDropdownMenuItem} from '../../shared/helpers/dropdown.js';
+import {getFullName, renderAvatar} from '../../shared/helpers/formatters/avatar.js';
+import {formatDate} from '../../shared/helpers/formatters/date.js';
+import {getGroupedLomsKeyValue} from '../../shared/helpers/lom.js';
+import {isMobileWidth} from '../../shared/helpers/media-query.js';
+import {renderMobileDesktop} from '../../shared/helpers/renderMobileDesktop.js';
+import {BookmarksViewsPlaysService} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
 import {
-	defaultGoToDetailLink,
-	defaultRenderDetailLink,
-} from '../../shared/helpers/default-render-detail-link';
-import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { getFullName, renderAvatar } from '../../shared/helpers/formatters/avatar';
-import { formatDate } from '../../shared/helpers/formatters/date';
-import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
-import { trackEvents } from '../../shared/services/event-logging-service';
-import {
-	getRelatedItems,
-	ObjectTypes,
-	ObjectTypesAll,
-} from '../../shared/services/related-items-service';
-import { ToastService } from '../../shared/services/toast-service';
-import { BundleAction } from '../bundle.types';
+	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js';
+import {type BookmarkViewPlayCounts} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
+import {trackEvents} from '../../shared/services/event-logging-service.js';
+import {getRelatedItems, ObjectTypes, ObjectTypesAll,} from '../../shared/services/related-items-service.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {BundleAction} from '../bundle.types.js';
 
 import './BundleDetail.scss';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
 
 type BundleDetailProps = {
 	id?: string;
@@ -370,7 +364,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 				commonUser
 			);
 
-			defaultGoToDetailLink(navigateFunc)(duplicateBundle.id, 'bundel');
+			defaultGoToDetailLink(navigateFunc)(duplicateBundle.id, Avo.Core.ContentType.BUNDEL);
 			setBundleId(duplicateBundle.id);
 			ToastService.success(
 				tHtml(
@@ -468,7 +462,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 	};
 
 	// Render functions
-	const renderChildFragments = (bundleFragments: CollectionFragment[]) => {
+	const renderChildFragments = (bundleFragments: Avo.Collection.Fragment[]) => {
 		if (!bundleObj) {
 			return null;
 		}
@@ -479,10 +473,10 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 			if (!collectionOrAssignment) {
 				return null;
 			}
-			const category =
+			const category: Avo.ContentType.English =
 				collectionOrAssignment.type_id === ContentTypeNumber.collection
-					? 'collection'
-					: 'assignment';
+					? Avo.ContentType.English.COLLECTION
+					: Avo.ContentType.English.ASSIGNMENT;
 			const detailRoute =
 				collectionOrAssignment.type_id === ContentTypeNumber.collection
 					? APP_PATH.COLLECTION_DETAIL.route
@@ -724,10 +718,10 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 		}
 
 		const collectionFragments = (bundleObj?.collection_fragments || []).filter(
-			(f) => f.type === 'COLLECTION'
+			(f: Avo.Collection.Fragment) => f.type === Avo.Core.BlockItemType.COLLECTION
 		);
 		const assignmentFragments = (bundleObj?.collection_fragments || []).filter(
-			(f) => f.type === 'ASSIGNMENT'
+			(f) => f.type === Avo.Core.BlockItemType.ASSIGNMENT
 		);
 		const groupedLomsLabels = getGroupedLomsKeyValue(bundleObj?.loms || [], 'label');
 
@@ -736,14 +730,12 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
-							get(
-								bundleObj,
-								'title',
+
+								bundleObj?.title,
 								tText('bundle/views/bundle-detail___bundel-detail-titel-fallback')
-							)
 						)}
 					</title>
-					<meta name="description" content={get(bundleObj, 'description') || ''} />
+					<meta name="description" content={bundleObj?.description || ''} />
 				</Helmet>
 				<JsonLd
 					url={window.location.href}
@@ -770,14 +762,14 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 										mobile: (
 											<Thumbnail
 												className="u-spacer"
-												category="bundle"
+												category={Avo.ContentType.English.BUNDLE}
 												src={thumbnail_path || undefined}
 											/>
 										),
 										desktop: (
 											<Thumbnail
 												className="u-spacer-right-l"
-												category="bundle"
+												category={Avo.ContentType.English.BUNDLE}
 												src={thumbnail_path || undefined}
 											/>
 										),
@@ -792,10 +784,10 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 									>
 										<ToolbarLeft>
 											<ToolbarItem>
-												<MetaData spaced={true} category="bundle">
+												<MetaData spaced={true} category={Avo.ContentType.English.BUNDLE}>
 													<MetaDataItem>
 														<HeaderContentType
-															category="bundle"
+															category={Avo.ContentType.English.BUNDLE}
 															label={
 																is_public
 																	? tText(

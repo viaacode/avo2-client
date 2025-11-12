@@ -1,4 +1,4 @@
-import { RichTextEditorWithInternalState } from '@meemoo/react-components';
+import {RichTextEditorWithInternalState} from '@meemoo/react-components';
 import {
 	Button,
 	Column,
@@ -15,54 +15,46 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { isEqual, isNil, isString } from 'lodash-es';
-import React, {
-	type FC,
-	type ReactNode,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
-import { Link } from 'react-router-dom';
+import {Avo} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {isEqual, isNil, isString} from 'es-toolkit';
+import React, {type FC, type ReactNode, type ReactText, useCallback, useEffect, useState,} from 'react';
+import {Link} from 'react-router-dom';
 
-import { buildGlobalSearchLink } from '../../../assignment/helpers/build-search-link';
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { APP_PATH } from '../../../constants';
-import { ItemMetadata } from '../../../shared/components/BlockItemMetadata/ItemMetadata';
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
-import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
-import { MoreOptionsDropdownWrapper } from '../../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
+import {buildGlobalSearchLink} from '../../../assignment/helpers/build-search-link.js';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {APP_PATH} from '../../../constants.js';
+import {ItemMetadata} from '../../../shared/components/BlockItemMetadata/ItemMetadata.js';
+import {ConfirmModal} from '../../../shared/components/ConfirmModal/ConfirmModal.js';
+import {FlowPlayerWrapper} from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.js';
+import {MoreOptionsDropdownWrapper} from '../../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper.js';
 import {
 	RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
 	RICH_TEXT_EDITOR_OPTIONS_DEFAULT,
-} from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
-import { getMoreOptionsLabel } from '../../../shared/constants';
-import { buildLink } from '../../../shared/helpers/build-link';
-import { createDropdownMenuItem } from '../../../shared/helpers/dropdown';
-import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
-import { trackEvents } from '../../../shared/services/event-logging-service';
-import { ToastService } from '../../../shared/services/toast-service';
-import { CollectionBlockType } from '../../collection.const';
-import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from '../../views/CollectionDetail.const';
-import { type CollectionAction } from '../CollectionOrBundleEdit.types';
-import { FRAGMENT_EDIT_DELAY } from '../CollectionOrBundleEditContent.consts';
-import { CutFragmentModal } from '../modals/CutFragmentModal';
+} from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts.js';
+import {getMoreOptionsLabel} from '../../../shared/constants/index.js';
+import {buildLink} from '../../../shared/helpers/build-link.js';
+import {createDropdownMenuItem} from '../../../shared/helpers/dropdown.js';
+import {getFlowPlayerPoster} from '../../../shared/helpers/get-poster.js';
+import {trackEvents} from '../../../shared/services/event-logging-service.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {QUERY_PARAM_SHOW_PUBLISH_MODAL} from '../../views/CollectionDetail.const.js';
+import {type CollectionAction} from '../CollectionOrBundleEdit.types.js';
+import {FRAGMENT_EDIT_DELAY} from '../CollectionOrBundleEditContent.consts.js';
+import {CutFragmentModal} from '../modals/CutFragmentModal.js';
 
-import { FragmentAdd } from './FragmentAdd';
+import {FragmentAdd} from './FragmentAdd.js';
 import {
 	COLLECTION_FRAGMENT_TYPE_TO_EVENT_OBJECT_TYPE,
 	GET_FRAGMENT_DELETE_LABELS,
 	GET_FRAGMENT_DELETE_SUCCESS_MESSAGES,
 	GET_FRAGMENT_EDIT_SWITCH_LABELS,
 	GET_FRAGMENT_PUBLISH_STATUS_LABELS,
-} from './FragmentEdit.const';
-import { FragmentEditAction } from './FragmentEdit.types';
+} from './FragmentEdit.const.js';
+import {FragmentEditAction} from './FragmentEdit.types.js';
 
 import './FragmentEdit.scss';
-import { tText } from '../../../shared/helpers/translate-text';
+import {tText} from '../../../shared/helpers/translate-text.js';
 
 interface FragmentEditProps {
 	index: number;
@@ -283,7 +275,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
 
 			case FragmentEditAction.DETAIL: {
 				const routeInfo =
-					fragment.type === CollectionBlockType.COLLECTION
+					fragment.type === Avo.Core.BlockItemType.COLLECTION
 						? APP_PATH.COLLECTION_DETAIL
 						: APP_PATH.ASSIGNMENT_DETAIL;
 				window.open(buildLink(routeInfo.route, { id: fragment.external_id }), '_blank');
@@ -349,7 +341,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
 
 	const renderForm = () => {
 		const disableVideoFields: boolean =
-			!useCustomFields && fragment.type !== CollectionBlockType.TEXT;
+			!useCustomFields && fragment.type !== Avo.Core.BlockItemType.TEXT;
 
 		return (
 			<Form className="c-fragment-edit__form">
@@ -446,7 +438,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
 			);
 		}
 		if (fragment.type === 'COLLECTION' || fragment.type === 'ASSIGNMENT') {
-			return <Thumbnail category="collection" src={itemMetaData.thumbnail_path} />;
+			return <Thumbnail category={Avo.ContentType.English.COLLECTION} src={itemMetaData.thumbnail_path} />;
 		}
 	};
 
@@ -527,7 +519,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
 				<div className="c-panel__header">{renderToolbar()}</div>
 				{renderWarning()}
 				<div className="c-panel__body">
-					{fragment.type !== CollectionBlockType.TEXT && itemMetaData ? (
+					{fragment.type !== Avo.Core.BlockItemType.TEXT && itemMetaData ? (
 						<Grid>
 							<Column size="3-6">{renderThumbnailOrVideo()}</Column>
 							<Column size="3-6">{renderForm()}</Column>

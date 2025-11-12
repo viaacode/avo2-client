@@ -1,7 +1,8 @@
-import { LinkTarget } from '@viaa/avo2-components';
+import {LinkTarget} from '@viaa/avo2-components';
 
-import { CustomError } from '../../../../../shared/helpers/custom-error';
-import { type PickerItem } from '../../../types/content-picker';
+import {CustomError} from '../../../../../shared/helpers/custom-error.js';
+import {type PickerItem} from '../../../types/content-picker.js';
+import {Avo} from "@viaa/avo2-types";
 
 export const retrieveAnchors = async (name: string | null, limit = 5): Promise<PickerItem[]> => {
 	try {
@@ -25,7 +26,7 @@ export const retrieveAnchors = async (name: string | null, limit = 5): Promise<P
 const parseAnchors = (anchorIds: string[]): PickerItem[] => {
 	return anchorIds.map(
 		(anchorId): PickerItem => ({
-			type: 'ANCHOR_LINK',
+			type: Avo.Core.ContentPickerType.ANCHOR_LINK,
 			value: anchorId,
 			label: anchorId,
 			target: LinkTarget.Self,

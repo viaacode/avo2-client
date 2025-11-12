@@ -1,21 +1,21 @@
 import { type Avo } from '@viaa/avo2-types';
 import { endOfDay, isBefore } from 'date-fns';
-import { compact } from 'lodash-es';
+import { compact } from 'es-toolkit';
 
 import {
 	type GetProfileIdsQuery,
 	type GetProfileIdsQueryVariables,
 	type UpdateUserTempAccessByIdMutation,
 	type UpdateUserTempAccessByIdMutationVariables,
-} from '../../shared/generated/graphql-db-operations';
+} from '../../shared/generated/graphql-db-operations.js';
 import {
 	GetProfileIdsDocument,
 	UpdateUserTempAccessByIdDocument,
-} from '../../shared/generated/graphql-db-react-query';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { getEnv } from '../../shared/helpers/env';
-import { toIsoDate } from '../../shared/helpers/formatters/date';
-import { dataService } from '../../shared/services/data-service';
+} from '../../shared/generated/graphql-db-react-query.js';
+import { CustomError } from '../../shared/helpers/custom-error.js';
+import { getEnv } from '../../shared/helpers/env.js';
+import { toIsoDate } from '../../shared/helpers/formatters/date.js';
+import { dataService } from '../../shared/services/data-service.js';
 
 export class UserService {
 	/**

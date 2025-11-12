@@ -1,19 +1,16 @@
-import { IconName, type RadioOption } from '@viaa/avo2-components';
-import { type Avo, LomSchemeType } from '@viaa/avo2-types';
-import { compact, orderBy } from 'lodash-es';
-import { type ReactNode } from 'react';
+import {IconName, type RadioOption} from '@viaa/avo2-components';
+import {Avo, LomSchemeType} from '@viaa/avo2-types';
+import {compact, orderBy} from 'es-toolkit';
+import {type ReactNode} from 'react';
+import {stripHtml} from '../shared/helpers/formatters/strip-html.js';
+import {EducationLevelId} from '../shared/helpers/lom.js';
+import {tHtml} from '../shared/helpers/translate-html.js';
+import {tText} from '../shared/helpers/translate-text.js';
+import {type Positioned} from '../shared/types/index.js';
 
-import { CollectionFragmentType } from '../collection/collection.types';
-import { OrderDirection } from '../search/search.const';
-import { stripHtml } from '../shared/helpers/formatters/strip-html';
-import { EducationLevelId } from '../shared/helpers/lom';
-import { tHtml } from '../shared/helpers/translate-html';
-import { tText } from '../shared/helpers/translate-text';
-import { type Positioned } from '../shared/types';
-
-import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from './assignment.const';
-import { AssignmentService } from './assignment.service';
-import { AssignmentLayout, AssignmentRetrieveError } from './assignment.types';
+import {MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH} from './assignment.const.js';
+import {AssignmentService} from './assignment.service.js';
+import {AssignmentLayout, AssignmentRetrieveError} from './assignment.types.js';
 
 export class AssignmentHelper {
 	public static getContentLayoutOptions(): RadioOption[] {
@@ -44,10 +41,10 @@ export class AssignmentHelper {
  * @param items items to reset positions for
  */
 export function reorderBlockPositions(items: Positioned[]): Positioned[] {
-	const orderedBlocks = orderBy(
+	const orderedBlocks: Positioned[] = orderBy(
 		items || [],
 		['position', 'created_at'],
-		[OrderDirection.asc, OrderDirection.asc]
+		[Avo.Search.OrderDirection.ASC, Avo.Search.OrderDirection.ASC]
 	);
 	orderedBlocks.forEach((block, blockIndex) => {
 		block.position = blockIndex;
@@ -223,7 +220,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 
 const areCollectionBlocksValid = (blocks: Avo.Assignment.Block[] | undefined): boolean => {
 	return (blocks || [])
-		.filter((block) => block.type === CollectionFragmentType.COLLECTION)
+		.filter((block) => block.type === Avo.Core.BlockItemType.COLLECTION)
 		.every((block) => !block.use_custom_fields || !block.custom_title);
 };
 

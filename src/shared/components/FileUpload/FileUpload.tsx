@@ -9,17 +9,17 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { compact, isString } from 'lodash-es';
+import { compact, isString } from 'es-toolkit';
 import queryString from 'query-string';
 import React, { type FC, useState } from 'react';
 
-import { CustomError } from '../../helpers/custom-error';
-import { getUrlInfo, isPhoto, isVideo, PHOTO_TYPES } from '../../helpers/files';
-import { tHtml } from '../../helpers/translate-html';
-import { tText } from '../../helpers/translate-text';
-import { FileUploadService } from '../../services/file-upload-service';
-import { ToastService } from '../../services/toast-service';
-import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
+import { CustomError } from '../../helpers/custom-error.js';
+import { getUrlInfo, isPhoto, isVideo, PHOTO_TYPES } from '../../helpers/files.js';
+import { tHtml } from '../../helpers/translate-html.js';
+import { tText } from '../../helpers/translate-text.js';
+import { FileUploadService } from '../../services/file-upload-service.js';
+import { ToastService } from '../../services/toast-service.js';
+import { ConfirmModal } from '../ConfirmModal/ConfirmModal.js';
 
 import './FileUpload.scss';
 

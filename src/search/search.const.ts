@@ -1,8 +1,8 @@
-import { type Avo } from '@viaa/avo2-types';
+import {Avo} from '@viaa/avo2-types';
 
-import { tText } from '../shared/helpers/translate-text';
+import {tText} from '../shared/helpers/translate-text.js';
 
-import { type SortOrder } from './search.types';
+import {type SortOrder} from './search.types.js';
 
 export const ITEMS_PER_PAGE = 10;
 
@@ -37,11 +37,6 @@ export const ALL_SEARCH_FILTERS: SearchFilter[] = [
 	SearchFilter.collectionLabel,
 ];
 
-export enum OrderDirection {
-	asc = 'asc',
-	desc = 'desc',
-}
-
 export const DEFAULT_FILTER_STATE: Avo.Search.Filters = {
 	[SearchFilter.query]: '',
 	[SearchFilter.type]: [],
@@ -63,7 +58,7 @@ export const DEFAULT_FILTER_STATE: Avo.Search.Filters = {
 
 export const DEFAULT_SORT_ORDER: SortOrder = {
 	orderProperty: 'relevance',
-	orderDirection: OrderDirection.desc,
+	orderDirection: Avo.Search.OrderDirection.DESC,
 };
 
 export enum SearchOrderProperty {

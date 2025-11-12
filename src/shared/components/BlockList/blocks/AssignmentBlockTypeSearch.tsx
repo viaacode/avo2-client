@@ -22,15 +22,15 @@ import React, { type FC } from 'react';
 
 // eslint-disable-next-line import/no-unresolved
 import NewPartSvg from '../../../../assets/images/nieuw-onderdeel.svg?react';
-import { CollectionFragmentRichText } from '../../../../collection/components/CollectionFragmentRichText';
-import { type EducationLevelId } from '../../../helpers/lom';
-import { tHtml } from '../../../helpers/translate-html';
-import { tText } from '../../../helpers/translate-text';
+import { CollectionFragmentRichText } from '../../../../collection/components/CollectionFragmentRichText.js';
+import { type EducationLevelId } from '../../../helpers/lom.js';
+import { tHtml } from '../../../helpers/translate-html.js';
+import { tText } from '../../../helpers/translate-text.js';
 
 import {
 	GET_EDUCATION_LEVEL_DICT,
 	GET_EDUCATION_LEVEL_TOOLTIP_DICT,
-} from './AssignmentBlockTypeSearch.const';
+} from './AssignmentBlockTypeSearch.const.js';
 
 export interface AssignmentBlockTypeSearchProps extends DefaultProps {
 	block: Avo.Core.BlockItemBase;

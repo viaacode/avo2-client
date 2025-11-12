@@ -1,13 +1,13 @@
 import { Button, Container, Spacer } from '@viaa/avo2-components';
-import { noop } from 'lodash-es';
+import { noop } from 'es-toolkit';
 import React, { type FC } from 'react';
 import { useNavigate } from 'react-router';
 
-import { APP_PATH } from '../../constants';
-import { ROUTE_PARTS } from '../../shared/constants';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';
+import { APP_PATH } from '../../constants.js';
+import { ROUTE_PARTS } from '../../shared/constants/index.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page.js';
 
 interface PupilOrTeacherDropdownProps {
 	closeDropdown?: () => void;

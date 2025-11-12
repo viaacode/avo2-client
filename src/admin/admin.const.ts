@@ -1,26 +1,25 @@
-import { PermissionName } from '@viaa/avo2-types';
-import { every, isArray, some } from 'lodash-es';
+import {PermissionName} from '@viaa/avo2-types';
 
-import { buildLink } from '../shared/helpers/build-link';
-import { CustomError } from '../shared/helpers/custom-error';
-import { tText } from '../shared/helpers/translate-text';
-import { ToastService } from '../shared/services/toast-service';
-import { Locale } from '../shared/translations/translations.types';
-import { type NavigationItemInfo } from '../shared/types';
+import {buildLink} from '../shared/helpers/build-link.js';
+import {CustomError} from '../shared/helpers/custom-error.js';
+import {tText} from '../shared/helpers/translate-text.js';
+import {ToastService} from '../shared/services/toast-service.js';
+import {Locale} from '../shared/translations/translations.types.js';
+import {type NavigationItemInfo} from '../shared/types/index.js';
 
-import { ASSIGNMENTS_PATH } from './assignments/assignments.const';
-import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.const';
-import { CONTENT_PAGE_PATH } from './content-page/content-page.consts';
-import { CONTENT_PAGE_LABEL_PATH } from './content-page-labels/content-page-label.const';
-import { DASHBOARD_PATH } from './dashboard/dashboard.const';
-import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.const';
-import { ITEMS_PATH } from './items/items.const';
-import { NAVIGATIONS_PATH } from './navigations/navigations.const';
-import { PUPIL_COLLECTIONS_PATH } from './pupil-collection/pupil-collection.const';
-import { TRANSLATIONS_PATH } from './translations/translations.const';
-import { URL_REDIRECT_PATH } from './url-redirects/url-redirects.const';
-import { USER_GROUP_PATH } from './user-groups/user-group.const';
-import { USER_PATH } from './users/user.const';
+import {ASSIGNMENTS_PATH} from './assignments/assignments.const.js';
+import {COLLECTIONS_OR_BUNDLES_PATH} from './collectionsOrBundles/collections-or-bundles.const.js';
+import {CONTENT_PAGE_PATH} from './content-page/content-page.consts.js';
+import {CONTENT_PAGE_LABEL_PATH} from './content-page-labels/content-page-label.const.js';
+import {DASHBOARD_PATH} from './dashboard/dashboard.const.js';
+import {INTERACTIVE_TOUR_PATH} from './interactive-tour/interactive-tour.const.js';
+import {ITEMS_PATH} from './items/items.const.js';
+import {NAVIGATIONS_PATH} from './navigations/navigations.const.js';
+import {PUPIL_COLLECTIONS_PATH} from './pupil-collection/pupil-collection.const.js';
+import {TRANSLATIONS_PATH} from './translations/translations.const.js';
+import {URL_REDIRECT_PATH} from './url-redirects/url-redirects.const.js';
+import {USER_GROUP_PATH} from './user-groups/user-group.const.js';
+import {USER_PATH} from './users/user.const.js';
 
 export const ADMIN_PATH = Object.freeze({
 	...DASHBOARD_PATH,
@@ -96,17 +95,17 @@ function hasPermissions(
 	userPermissions: string[],
 	navInfos: NavigationItemInfo | NavigationItemInfo[]
 ): NavigationItemInfo[] {
-	const navInfoObj: NavigationItemInfo[] = isArray(navInfos) ? navInfos : [navInfos];
+	const navInfoObj: NavigationItemInfo[] = Array.isArray(navInfos) ? navInfos : [navInfos];
 	if (booleanOperator === 'OR') {
 		// OR
 		// If at least one of the permissions is met, render the routes
-		if (some(permissions, (permission) => userPermissions.includes(permission))) {
+		if (permissions.some((permission) => userPermissions.includes(permission))) {
 			return navInfoObj;
 		}
 	} else {
 		// AND
 		// All permissions have to be met
-		if (every(permissions, (permission) => userPermissions.includes(permission))) {
+		if (permissions.every((permission) => userPermissions.includes(permission))) {
 			return navInfoObj;
 		}
 	}

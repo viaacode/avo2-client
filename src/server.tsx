@@ -1,14 +1,7 @@
 import express from 'express';
 import React from 'react';
-import { renderToPipeableStream } from 'react-dom/server';
-import {
-	createStaticHandler,
-	createStaticRouter,
-	type StaticHandlerContext,
-	StaticRouterProvider,
-} from 'react-router';
-
-import { getAppRoutes } from './App.routes'; // your shared route config
+import {renderToPipeableStream} from 'react-dom/server';
+import {createStaticHandler, createStaticRouter, type StaticHandlerContext, StaticRouterProvider,} from 'react-router';
 
 const app = express();
 

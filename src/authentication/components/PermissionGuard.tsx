@@ -1,19 +1,19 @@
 import { useSlot } from '@viaa/avo2-components';
 import { type Avo, type PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
-import { isNil } from 'lodash-es';
+import { isNil } from 'es-toolkit';
 import { stringifyUrl } from 'query-string';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { APP_PATH } from '../../constants';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
-import { loginAtom } from '../authentication.store';
-import { PermissionService } from '../helpers/permission-service';
-import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';
+import { APP_PATH } from '../../constants.js';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error.js';
+import { loginAtom } from '../authentication.store.js';
+import { PermissionService } from '../helpers/permission-service.js';
+import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page.js';
 
-import { PermissionGuardFail, PermissionGuardPass } from './PermissionGuard.slots';
+import { PermissionGuardFail, PermissionGuardPass } from './PermissionGuard.slots.js';
 
 interface PermissionGuardProps {
 	children: ReactNode;

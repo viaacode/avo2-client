@@ -1,4 +1,4 @@
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client';
+import {sanitizeHtml, SanitizePreset} from '@meemoo/admin-core-ui/client';
 import {
 	Box,
 	Button,
@@ -14,61 +14,42 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { cloneDeep, compact, get, isEmpty, map, orderBy } from 'lodash-es';
-import React, {
-	type FC,
-	lazy,
-	type Reducer,
-	useCallback,
-	useEffect,
-	useReducer,
-	useState,
-} from 'react';
-import { Helmet } from 'react-helmet';
-import { useNavigate, useParams } from 'react-router';
-import { useLocation } from 'react-router-dom';
+import {Avo, PermissionName} from '@viaa/avo2-types';
+import {cloneDeep, compact, orderBy} from 'es-toolkit';
+import {isEmpty, map} from 'es-toolkit/compat';
+import React, {type FC, lazy, type Reducer, useCallback, useEffect, useReducer, useState,} from 'react';
+import {Helmet} from 'react-helmet';
+import {useNavigate, useParams} from 'react-router';
+import {useLocation} from 'react-router-dom';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { OrderDirection } from '../../../search/search.const';
+import {PermissionGuard} from '../../../authentication/components/PermissionGuard.js';
+import {redirectToClientPage} from '../../../authentication/helpers/redirects/redirect-to-client-page.js';
+import {APP_PATH, GENERATE_SITE_TITLE} from '../../../constants.js';
+import {OrderDirection} from '../../../search/search.const.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { ROUTE_PARTS } from '../../../shared/constants';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {ROUTE_PARTS} from '../../../shared/constants/index.js';
 import {
 	type GetInteractiveTourByIdQuery,
 	type GetInteractiveTourByIdQueryVariables,
-} from '../../../shared/generated/graphql-db-operations';
-import { GetInteractiveTourByIdDocument } from '../../../shared/generated/graphql-db-react-query';
-import { buildLink } from '../../../shared/helpers/build-link';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { navigate } from '../../../shared/helpers/link';
-import { dataService } from '../../../shared/services/data-service';
-import { ToastService } from '../../../shared/services/toast-service';
-import { ADMIN_PATH } from '../../admin.const';
-import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import {
-	AdminLayoutBody,
-	AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { type PickerItem } from '../../shared/types/content-picker';
-import { InteractiveTourAdd } from '../components/InteractiveTourStepAdd';
-import {
-	INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
-	type InteractiveTourAction,
-	interactiveTourEditReducer,
-} from '../helpers/reducers';
-import {
-	getInitialInteractiveTour,
-	INTERACTIVE_TOUR_PATH,
-	MAX_STEP_TEXT_LENGTH,
-	MAX_STEP_TITLE_LENGTH,
-} from '../interactive-tour.const';
-import { InteractiveTourService } from '../interactive-tour.service';
+} from '../../../shared/generated/graphql-db-operations.js';
+import {GetInteractiveTourByIdDocument} from '../../../shared/generated/graphql-db-react-query.js';
+import {buildLink} from '../../../shared/helpers/build-link.js';
+import {CustomError} from '../../../shared/helpers/custom-error.js';
+import {navigate} from '../../../shared/helpers/link.js';
+import {dataService} from '../../../shared/services/data-service.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {ADMIN_PATH} from '../../admin.const.js';
+import {ContentPicker} from '../../shared/components/ContentPicker/ContentPicker.js';
+import {AdminLayout} from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import {AdminLayoutBody, AdminLayoutTopBarRight,} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import {type PickerItem} from '../../shared/types/content-picker.js';
+import {InteractiveTourAdd} from '../components/InteractiveTourStepAdd.js';
+import {INTERACTIVE_TOUR_EDIT_INITIAL_STATE, type InteractiveTourAction, interactiveTourEditReducer,} from '../helpers/reducers/index.js';
+import {getInitialInteractiveTour, INTERACTIVE_TOUR_PATH, MAX_STEP_TEXT_LENGTH, MAX_STEP_TITLE_LENGTH,} from '../interactive-tour.const.js';
+import {InteractiveTourService} from '../interactive-tour.service.js';
 import {
 	type EditableInteractiveTour,
 	type EditableStep,
@@ -77,13 +58,13 @@ import {
 	type InteractiveTourPageType,
 	type InteractiveTourState,
 	type InteractiveTourStep,
-} from '../interactive-tour.types';
+} from '../interactive-tour.types.js';
 
-import { InteractiveTourEditStep } from './InteractiveTourEditStep';
+import {InteractiveTourEditStep} from './InteractiveTourEditStep.js';
 
 import './InteractiveTourEdit.scss';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
 
 const BlockHeading = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -126,7 +107,7 @@ export const InteractiveTourEdit: FC = () => {
 				})
 			),
 			['label'],
-			[OrderDirection.asc]
+			[Avo.Search.OrderDirection.ASC]
 		);
 	}, []);
 
@@ -232,7 +213,7 @@ export const InteractiveTourEdit: FC = () => {
 				'admin/interactive-tour/views/interactive-tour-edit___een-pagina-is-verplicht'
 			);
 		}
-		get(interactiveTourState.currentInteractiveTour, 'steps', []).forEach(
+		(interactiveTourState?.currentInteractiveTour?.steps || []).forEach(
 			(step: InteractiveTourStep, index: number) => {
 				if (step.title.length > MAX_STEP_TITLE_LENGTH) {
 					errors.steps = errors.steps || [];
@@ -366,7 +347,7 @@ export const InteractiveTourEdit: FC = () => {
 			return {
 				value: interactiveTourState.currentInteractiveTour.page_id,
 				label: interactiveTourState.currentInteractiveTour.page_id,
-				type: 'CONTENT_PAGE',
+				type: Avo.Core.ContentPickerType.CONTENT_PAGE,
 			};
 		}
 		return undefined;
@@ -384,9 +365,9 @@ export const InteractiveTourEdit: FC = () => {
 					index={index}
 					changeInteractiveTourState={changeInteractiveTourState}
 					numberOfSteps={
-						get(interactiveTourState, 'currentInteractiveTour.steps.length') || 1
+						interactiveTourState?.currentInteractiveTour?.steps?.length || 1
 					}
-					stepErrors={get(formErrors, ['steps', index])}
+					stepErrors={formErrors?.steps?.[index]}
 				/>
 				<InteractiveTourAdd
 					index={index + 1}
@@ -477,7 +458,7 @@ export const InteractiveTourEdit: FC = () => {
 													<ContentPicker
 														initialValue={getContentPickerInitialValue()}
 														onSelect={handleContentPageSelect}
-														allowedTypes={['CONTENT_PAGE']}
+														allowedTypes={[Avo.Core.ContentPickerType.CONTENT_PAGE]}
 														hideTypeDropdown
 													/>
 												)}
@@ -539,7 +520,7 @@ export const InteractiveTourEdit: FC = () => {
 				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
-							get(interactiveTourState.currentInteractiveTour, 'name'),
+							interactiveTourState?.currentInteractiveTour?.name,
 							isCreatePage
 								? tText(
 										'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-aanmaak-pagina-titel'

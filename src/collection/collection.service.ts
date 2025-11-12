@@ -1,27 +1,13 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
-import { endOfDay, startOfDay } from 'date-fns';
-import {
-	cloneDeep,
-	compact,
-	fromPairs,
-	isEmpty,
-	isEqual,
-	isNil,
-	isNumber,
-	uniq,
-	without,
-} from 'lodash-es';
-import queryString, { stringifyUrl } from 'query-string';
+import {fetchWithLogoutJson} from '@meemoo/admin-core-ui/client';
+import {type Avo, PermissionName} from '@viaa/avo2-types';
+import {endOfDay, startOfDay} from 'date-fns';
+import {cloneDeep, compact, isEqual, isNil, uniq, without,} from 'es-toolkit';
+import queryString, {stringifyUrl} from 'query-string';
 
-import { setBlockPositionToIndex } from '../assignment/assignment.helper';
-import { PermissionService } from '../authentication/helpers/permission-service';
-import { type OrderDirection } from '../search/search.const';
-import {
-	type ContributorInfo,
-	type ContributorInfoRight,
-} from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import {setBlockPositionToIndex} from '../assignment/assignment.helper.js';
+import {PermissionService} from '../authentication/helpers/permission-service.js';
+import {type OrderDirection} from '../search/search.const.js';
+import {type ContributorInfo, type ContributorInfoRight,} from '../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
 import {
 	type DeleteCollectionFragmentByIdMutation,
 	type DeleteCollectionFragmentByIdMutationVariables,
@@ -85,7 +71,7 @@ import {
 	type UpdateCollectionManagementEntryMutationVariables,
 	type UpdateMarcomNoteMutation,
 	type UpdateMarcomNoteMutationVariables,
-} from '../shared/generated/graphql-db-operations';
+} from '../shared/generated/graphql-db-operations.js';
 import {
 	DeleteCollectionFragmentByIdDocument,
 	DeleteCollectionLabelsDocument,
@@ -118,23 +104,23 @@ import {
 	UpdateCollectionFragmentByIdDocument,
 	UpdateCollectionManagementEntryDocument,
 	UpdateMarcomNoteDocument,
-} from '../shared/generated/graphql-db-react-query';
+} from '../shared/generated/graphql-db-react-query.js';
 import {
 	type App_Collection_Marcom_Log_Insert_Input,
 	Lookup_Enum_Collection_Management_Qc_Label_Enum,
 	Lookup_Enum_Relation_Types_Enum,
-} from '../shared/generated/graphql-db-types';
-import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
-import { CustomError } from '../shared/helpers/custom-error';
-import { getEnv } from '../shared/helpers/env';
-import { tHtml } from '../shared/helpers/translate-html';
-import { isUuid } from '../shared/helpers/uuid';
-import { dataService } from '../shared/services/data-service';
-import { QualityLabelsService } from '../shared/services/quality-labels.service';
-import { RelationService } from '../shared/services/relation-service/relation.service';
-import { ToastService } from '../shared/services/toast-service';
-import { VideoStillService } from '../shared/services/video-stills-service';
-import { type Positioned } from '../shared/types';
+} from '../shared/generated/graphql-db-types.js';
+import {convertRteToString} from '../shared/helpers/convert-rte-to-string.js';
+import {CustomError} from '../shared/helpers/custom-error.js';
+import {getEnv} from '../shared/helpers/env.js';
+import {tHtml} from '../shared/helpers/translate-html.js';
+import {isUuid} from '../shared/helpers/uuid.js';
+import {dataService} from '../shared/services/data-service.js';
+import {QualityLabelsService} from '../shared/services/quality-labels.service.js';
+import {RelationService} from '../shared/services/relation-service/relation.service.js';
+import {ToastService} from '../shared/services/toast-service.js';
+import {VideoStillService} from '../shared/services/video-stills-service.js';
+import {type Positioned} from '../shared/types/index.js';
 
 import {
 	cleanCollectionBeforeSave,
@@ -143,7 +129,7 @@ import {
 	getValidationErrorForSave,
 	getValidationErrorsForPublish,
 	keepCoreCollectionProperties,
-} from './collection.helpers';
+} from './collection.helpers.js';
 import {
 	type Collection,
 	type CollectionMarcomEntry,
@@ -151,10 +137,11 @@ import {
 	ContentTypeNumber,
 	type ParentBundle,
 	type QualityLabel,
-} from './collection.types';
-import { type MarcomNoteInfo } from './components/CollectionOrBundleEdit.types';
-import { canManageEditorial } from './helpers/can-manage-editorial';
-import { type BundleSortProp } from './hooks/useGetCollectionsOrBundlesContainingFragment';
+} from './collection.types.js';
+import {type MarcomNoteInfo} from './components/CollectionOrBundleEdit.types.js';
+import {canManageEditorial} from './helpers/can-manage-editorial.js';
+import {type BundleSortProp} from './hooks/useGetCollectionsOrBundlesContainingFragment.js';
+import {isEmpty} from "es-toolkit/compat";
 
 export interface OrganisationContentItem {
 	id: string;
@@ -305,10 +292,10 @@ export class CollectionService {
 			const newFragments = (
 				setBlockPositionToIndex(
 					getFragmentsFromCollection(newCollection)
-				) as CollectionFragment[]
+				) as Avo.Collection.Fragment[]
 			).filter(
 				(fragment) =>
-					(isNumber(fragment.id) && fragment.id < 0) ||
+					(typeof fragment.id === 'number' && fragment.id < 0) ||
 					Object.is(fragment.id, -0) ||
 					isNil(fragment.id)
 			);
@@ -1121,7 +1108,7 @@ export class CollectionService {
 				}
 			);
 
-			return fragments as CollectionFragment[];
+			return fragments as Avo.Collection.Fragment[];
 		} catch (err) {
 			throw new CustomError('Failed to insert fragments into collection', err, {
 				collectionId,
@@ -1264,7 +1251,7 @@ export class CollectionService {
 					(await QualityLabelsService.fetchQualityLabels()) || [];
 
 				// Map result array to dictionary
-				CollectionService.collectionLabels = fromPairs(
+				CollectionService.collectionLabels = Object.fromEntries(
 					labels.map((collectionLabel) => [
 						collectionLabel.value,
 						collectionLabel.description,

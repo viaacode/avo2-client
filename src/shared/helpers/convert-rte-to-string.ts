@@ -1,8 +1,8 @@
 import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client';
 import { type Avo } from '@viaa/avo2-types';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit';
 
-import { getFragmentsFromCollection } from '../../collection/collection.helpers';
+import { getFragmentsFromCollection } from '../../collection/collection.helpers.js';
 
 export function convertRteToString(
 	collection: Partial<Avo.Collection.Collection> | null

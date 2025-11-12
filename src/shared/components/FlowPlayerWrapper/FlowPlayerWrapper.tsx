@@ -1,45 +1,34 @@
 import './FlowPlayerWrapper.scss';
-import {
-	FlowPlayer,
-	type FlowplayerSourceItem,
-	type FlowplayerSourceList,
-} from '@meemoo/react-components';
-import { Icon, IconName, MediaCard, MediaCardThumbnail, Thumbnail } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { get, isNil, isString, throttle } from 'lodash-es';
-import { stringifyUrl } from 'query-string';
-import React, {
-	type FC,
-	type MouseEvent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
-import { useNavigate } from 'react-router';
-import { useQueryParam } from 'use-query-params';
+import {FlowPlayer, type FlowplayerSourceItem, type FlowplayerSourceList,} from '@meemoo/react-components';
+import {Icon, IconName, MediaCard, MediaCardThumbnail, Thumbnail} from '@viaa/avo2-components';
+import {Avo} from '@viaa/avo2-types';
+import {useAtomValue, useSetAtom} from 'jotai';
+import {isNil, isString, throttle} from 'es-toolkit';
+import {stringifyUrl} from 'query-string';
+import React, {type FC, type MouseEvent, type ReactNode, useCallback, useEffect, useState,} from 'react';
+import {useNavigate} from 'react-router';
+import {useQueryParam} from 'use-query-params';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
-import { APP_PATH } from '../../../constants';
-import { CustomError } from '../../helpers/custom-error';
-import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
-import { getEnv } from '../../helpers/env';
-import { reorderDate } from '../../helpers/formatters/date';
-import { formatDurationHoursMinutesSeconds } from '../../helpers/formatters/duration';
-import { getSubtitles } from '../../helpers/get-subtitles';
-import { isMobileWidth } from '../../helpers/media-query';
-import { toSeconds } from '../../helpers/parsers/duration';
-import { tHtml } from '../../helpers/translate-html';
-import { tText } from '../../helpers/translate-text';
-import { BookmarksViewsPlaysService } from '../../services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { trackEvents } from '../../services/event-logging-service';
-import { fetchPlayerTicket } from '../../services/player-ticket-service';
-import { ToastService } from '../../services/toast-service';
-import { lastVideoPlayedAtAtom } from '../../store/ui.store';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {redirectToClientPage} from '../../../authentication/helpers/redirects/redirect-to-client-page.js';
+import {APP_PATH} from '../../../constants.js';
+import {CustomError} from '../../helpers/custom-error.js';
+import {getValidStartAndEnd} from '../../helpers/cut-start-and-end.js';
+import {getEnv} from '../../helpers/env.js';
+import {reorderDate} from '../../helpers/formatters/date.js';
+import {formatDurationHoursMinutesSeconds} from '../../helpers/formatters/duration.js';
+import {getSubtitles} from '../../helpers/get-subtitles.js';
+import {isMobileWidth} from '../../helpers/media-query.js';
+import {toSeconds} from '../../helpers/parsers/duration.js';
+import {tHtml} from '../../helpers/translate-html.js';
+import {tText} from '../../helpers/translate-text.js';
+import {BookmarksViewsPlaysService} from '../../services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
+import {trackEvents} from '../../services/event-logging-service.js';
+import {fetchPlayerTicket} from '../../services/player-ticket-service.js';
+import {ToastService} from '../../services/toast-service.js';
+import {lastVideoPlayedAtAtom} from '../../store/ui.store.js';
 
-import { type FlowPlayerWrapperProps } from './FlowPlayerWrapper.types';
+import {type FlowPlayerWrapperProps} from './FlowPlayerWrapper.types.js';
 
 /**
  * Handle flowplayer play events for the whole app, so we track play count
@@ -54,7 +43,7 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({ placeholder = tr
 	const setLastVideoPlayedAt = useSetAtom(lastVideoPlayedAtAtom);
 
 	const item: Avo.Item.Item | undefined = props.item;
-	const poster: string | undefined = props.poster || get(item, 'thumbnail_path');
+	const poster: string | undefined = props.poster || item?.thumbnail_path;
 
 	const [triggeredForUrl, setTriggeredForUrl] = useState<Record<string, boolean>>({});
 
@@ -164,7 +153,7 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({ placeholder = tr
 			setLastVideoPlayedAt(new Date());
 		},
 		30000,
-		{ leading: true, trailing: true }
+		{ edges: ["leading", "trailing"] }
 	);
 
 	const handlePosterClicked = async (evt: MouseEvent<HTMLDivElement>) => {
@@ -211,7 +200,7 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({ placeholder = tr
 			<MediaCard
 				title={item.title}
 				orientation="vertical"
-				category="search" // Clearest color on white background
+				category={Avo.ContentType.English.SEARCH} // Clearest color on white background
 			>
 				<MediaCardThumbnail>
 					<Thumbnail

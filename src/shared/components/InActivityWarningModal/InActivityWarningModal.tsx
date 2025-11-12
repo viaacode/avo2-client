@@ -9,11 +9,11 @@ import {
 	EDIT_STATUS_REFETCH_TIME,
 	IDLE_TIME_UNTIL_WARNING,
 	MAX_EDIT_IDLE_TIME,
-} from '../../constants';
-import { formatDurationMinutesSeconds } from '../../helpers/formatters/duration';
-import { tHtml } from '../../helpers/translate-html';
-import { useBeforeUnload } from '../../hooks/useBeforeUnload';
-import { lastVideoPlayedAtAtom } from '../../store/ui.store';
+} from '../../constants/index.js';
+import { formatDurationMinutesSeconds } from '../../helpers/formatters/duration.js';
+import { tHtml } from '../../helpers/translate-html.js';
+import { useBeforeUnload } from '../../hooks/useBeforeUnload.js';
+import { lastVideoPlayedAtAtom } from '../../store/ui.store.js';
 
 type InActivityWarningModalProps = {
 	onActivity: () => void;

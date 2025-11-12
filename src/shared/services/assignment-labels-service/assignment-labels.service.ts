@@ -1,7 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
-import { omit } from 'lodash-es';
+import { omit } from 'es-toolkit';
 
-import { type AssignmentLabelColor } from '../../../assignment/assignment.types';
+import { type AssignmentLabelColor } from '../../../assignment/assignment.types.js';
 import {
 	type DeleteAssignmentLabelsMutation,
 	type DeleteAssignmentLabelsMutationVariables,
@@ -15,7 +15,7 @@ import {
 	type InsertAssignmentLabelsMutationVariables,
 	type UpdateAssignmentLabelsMutation,
 	type UpdateAssignmentLabelsMutationVariables,
-} from '../../generated/graphql-db-operations';
+} from '../../generated/graphql-db-operations.js';
 import {
 	DeleteAssignmentLabelsDocument,
 	GetAllAssignmentLabelColorsDocument,
@@ -23,13 +23,13 @@ import {
 	GetAssignmentLabelsDocument,
 	InsertAssignmentLabelsDocument,
 	UpdateAssignmentLabelsDocument,
-} from '../../generated/graphql-db-react-query';
+} from '../../generated/graphql-db-react-query.js';
 import {
 	type App_Assignment_Labels_V2_Insert_Input,
 	type Lookup_Enum_Colors_Enum,
-} from '../../generated/graphql-db-types';
-import { CustomError } from '../../helpers/custom-error';
-import { dataService } from '../data-service';
+} from '../../generated/graphql-db-types.js';
+import { CustomError } from '../../helpers/custom-error.js';
+import { dataService } from '../data-service.js';
 
 export class AssignmentLabelsService {
 	public static async getLabelsForProfile(

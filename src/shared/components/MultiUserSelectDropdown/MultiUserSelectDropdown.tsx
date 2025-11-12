@@ -1,28 +1,17 @@
-import {
-	Button,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
-	Form,
-	FormGroup,
-	Icon,
-	IconName,
-	Spacer,
-	TagList,
-} from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import { uniqBy } from 'lodash-es';
-import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
+import {Button, Dropdown, DropdownButton, DropdownContent, Form, FormGroup, Icon, IconName, Spacer, TagList,} from '@viaa/avo2-components';
+import {Avo} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import {uniqBy} from 'es-toolkit';
+import React, {type FC, type ReactText, useCallback, useEffect, useState} from 'react';
 
-import { ContentPicker } from '../../../admin/shared/components/ContentPicker/ContentPicker';
-import { type PickerItem } from '../../../admin/shared/types/content-picker';
-import { CustomError } from '../../helpers/custom-error';
+import {ContentPicker} from '../../../admin/shared/components/ContentPicker/ContentPicker.js';
+import {type PickerItem} from '../../../admin/shared/types/content-picker.js';
+import {CustomError} from '../../helpers/custom-error.js';
 
 import './MultiUserSelectDropdown.scss';
-import { tHtml } from '../../helpers/translate-html';
-import { tText } from '../../helpers/translate-text';
-import { ToastService } from '../../services/toast-service';
+import {tHtml} from '../../helpers/translate-html.js';
+import {tText} from '../../helpers/translate-text.js';
+import {ToastService} from '../../services/toast-service.js';
 
 interface MultiUserSelectDropdownProps {
 	label: string;
@@ -61,7 +50,7 @@ export const MultiUserSelectDropdown: FC<MultiUserSelectDropdownProps> = ({
 					(user): PickerItem => ({
 						label: `${user?.fullName} (${user?.email})`,
 						value: user.profileId || '',
-						type: 'PROFILE',
+						type: Avo.Core.ContentPickerType.PROFILE,
 					})
 				)
 			);
@@ -182,14 +171,14 @@ export const MultiUserSelectDropdown: FC<MultiUserSelectDropdownProps> = ({
 												setSelectedProfiles((selectedProfiles) =>
 													uniqBy(
 														[...selectedProfiles, selectedProfile],
-														'value'
+														(pickerItem) => pickerItem.value
 													)
 												);
 												setSelectedProfile(selectedProfile);
 											}
 										}}
 										hideTargetSwitch
-										allowedTypes={['PROFILE']}
+										allowedTypes={[Avo.Core.ContentPickerType.PROFILE]}
 										hideTypeDropdown
 										placeholder={
 											placeholder ||

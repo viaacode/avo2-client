@@ -1,12 +1,12 @@
-import { type DefaultProps, Form, FormGroup } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import React, { type FC } from 'react';
+import {type DefaultProps, Form, FormGroup} from '@viaa/avo2-components';
+import {Avo} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import React, {type FC} from 'react';
 
-import { formatTimestamp } from '../../shared/helpers/formatters/date';
+import {formatTimestamp} from '../../shared/helpers/formatters/date.js';
 
 import './AssignmentDetailsForm.scss';
-import { tText } from '../../shared/helpers/translate-text';
+import {tText} from '../../shared/helpers/translate-text.js';
 
 interface AssignmentDetailsFormReadonlyProps {
 	assignment: Avo.Assignment.Assignment;
@@ -23,7 +23,7 @@ export const AssignmentDetailsFormReadonly: FC<
 						{(assignment.labels || [])
 							.filter(
 								(item: { assignment_label: Avo.Assignment.Label }) =>
-									item.assignment_label.type === 'CLASS'
+									item.assignment_label.type === Avo.Assignment.LabelType.CLASS
 							)
 							.map(
 								(item: { assignment_label: Avo.Assignment.Label }) =>
@@ -38,7 +38,7 @@ export const AssignmentDetailsFormReadonly: FC<
 						{(assignment.labels || [])
 							.filter(
 								(item: { assignment_label: Avo.Assignment.Label }) =>
-									item.assignment_label.type === 'LABEL'
+									item.assignment_label.type === Avo.Assignment.LabelType.LABEL
 							)
 							.map(
 								(item: { assignment_label: Avo.Assignment.Label }) =>

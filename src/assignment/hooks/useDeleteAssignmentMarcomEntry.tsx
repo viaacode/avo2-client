@@ -1,6 +1,7 @@
-import { useMutation, type UseMutationResult } from '@tanstack/react-query';
+import {useMutation} from '@tanstack/react-query';
 
-import { AssignmentService } from '../assignment.service';
+import {AssignmentService} from '../assignment.service.js';
+import {UseMutationResult} from "../../shared/types/react-query.ts";
 
 export const useDeleteAssignmentMarcomEntry = (): UseMutationResult<
 	void,

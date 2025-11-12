@@ -3,11 +3,11 @@ import React, { type ReactNode } from 'react';
 import { Link, type LinkProps } from 'react-router-dom';
 import { type UrlUpdateType } from 'use-query-params';
 
-import { APP_PATH } from '../../constants';
-import { type FilterState } from '../../search/search.types';
-import { buildLink } from '../../shared/helpers/build-link';
-import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
-import { type PupilSearchFilterState } from '../assignment.types';
+import { APP_PATH } from '../../constants.js';
+import { type FilterState } from '../../search/search.types.js';
+import { buildLink } from '../../shared/helpers/build-link.js';
+import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const.js';
+import { type PupilSearchFilterState } from '../assignment.types.js';
 
 /**
  * Creates a link that navigates to the /search route

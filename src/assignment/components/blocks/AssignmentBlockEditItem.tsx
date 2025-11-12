@@ -2,21 +2,21 @@ import { convertToHtml } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode } from 'react';
 
-import { type FilterState } from '../../../search/search.types';
-import { ItemMetadata } from '../../../shared/components/BlockItemMetadata/ItemMetadata';
-import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm/CustomiseItemForm';
-import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
-import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
-import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
-import { isRichTextEmpty } from '../../../shared/helpers/is-rich-text-empty';
-import { tText } from '../../../shared/helpers/translate-text';
-import { useCutModal } from '../../../shared/hooks/use-cut-modal';
-import { VideoStillService } from '../../../shared/services/video-stills-service';
-import { type EditableAssignmentBlock, type EditBlockProps } from '../../assignment.types';
+import { type FilterState } from '../../../search/search.types.js';
+import { ItemMetadata } from '../../../shared/components/BlockItemMetadata/ItemMetadata.js';
+import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm/CustomiseItemForm.js';
+import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.js';
+import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts.js';
+import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster.js';
+import { isRichTextEmpty } from '../../../shared/helpers/is-rich-text-empty.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { useCutModal } from '../../../shared/hooks/use-cut-modal.js';
+import { VideoStillService } from '../../../shared/services/video-stills-service.js';
+import { type EditableAssignmentBlock, type EditBlockProps } from '../../assignment.types.js';
 import {
 	AssignmentBlockDescriptionButtons,
 	AssignmentBlockItemDescriptionType,
-} from '../AssignmentBlockDescriptionButtons';
+} from '../AssignmentBlockDescriptionButtons.js';
 
 function getBlockEditMode(block: Avo.Core.BlockItemBase | EditableAssignmentBlock) {
 	if ((block as EditableAssignmentBlock).editMode) {

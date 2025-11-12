@@ -1,31 +1,18 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import {
-	Column,
-	Grid,
-	MediaCard,
-	MediaCardMetaData,
-	MediaCardThumbnail,
-	MetaData,
-	MetaDataItem,
-	Thumbnail,
-} from '@viaa/avo2-components';
-import { type Avo, LomSchemeType } from '@viaa/avo2-types';
-import { compact, isNil, omit } from 'lodash-es';
-import React, { type ReactNode } from 'react';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
+import {Column, Grid, MediaCard, MediaCardMetaData, MediaCardThumbnail, MetaData, MetaDataItem, Thumbnail,} from '@viaa/avo2-components';
+import {Avo, LomSchemeType} from '@viaa/avo2-types';
+import {compact, isNil, omit} from 'es-toolkit';
+import React, {type ReactNode} from 'react';
 
-import { reorderBlockPositions } from '../assignment/assignment.helper';
-import { stripHtml } from '../shared/helpers/formatters/strip-html';
-import { tHtml } from '../shared/helpers/translate-html';
-import { tText } from '../shared/helpers/translate-text';
-import { type Positioned } from '../shared/types';
+import {reorderBlockPositions} from '../assignment/assignment.helper.js';
+import {stripHtml} from '../shared/helpers/formatters/strip-html.js';
+import {tHtml} from '../shared/helpers/translate-html.js';
+import {tText} from '../shared/helpers/translate-text.js';
+import {type Positioned} from '../shared/types/index.js';
 
-import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from './collection.const';
-import { CollectionService } from './collection.service';
-import {
-	CollectionFragmentType,
-	CONTENT_TYPE_TRANSLATIONS,
-	ContentTypeNumber,
-} from './collection.types';
+import {MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH} from './collection.const.js';
+import {CollectionService} from './collection.service.js';
+import {CollectionFragmentType, CONTENT_TYPE_TRANSLATIONS_NL_TO_EN, ContentTypeNumber,} from './collection.types.js';
 
 export const getValidationFeedbackForDescription = (
 	description: string | null,
@@ -258,7 +245,7 @@ const validateFragments = (
 			// Check if video fragment has custom_title and custom_description if necessary.
 			fragments.forEach((fragment) => {
 				if (
-					fragment.type === CollectionFragmentType.COLLECTION &&
+					fragment.type === Avo.Core.BlockItemType.COLLECTION &&
 					fragment.use_custom_fields &&
 					!fragment.custom_title
 				) {
@@ -271,7 +258,7 @@ const validateFragments = (
 			// Check if text fragment has custom_title or custom_description.
 			fragments.forEach((fragment) => {
 				if (
-					fragment.type === CollectionFragmentType.TEXT &&
+					fragment.type === Avo.Core.BlockItemType.TEXT &&
 					!stripHtml(fragment.custom_title || '').trim() &&
 					!stripHtml(fragment.custom_description || '').trim()
 				) {
@@ -469,7 +456,7 @@ export const getFragmentIdsFromCollection = (
 
 const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
 	const englishContentType =
-		CONTENT_TYPE_TRANSLATIONS[relatedItem.administrative_type || 'video'];
+		CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[relatedItem.administrative_type || 'video'];
 
 	return (
 		<MediaCard

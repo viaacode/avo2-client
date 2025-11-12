@@ -1,55 +1,48 @@
-import { FilterTable } from '@meemoo/admin-core-ui/admin';
-import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { get, isNil } from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { useNavigate } from 'react-router';
-import { Link } from 'react-router-dom';
+import {FilterTable} from '@meemoo/admin-core-ui/admin';
+import {Button, ButtonToolbar, IconName, Spacer} from '@viaa/avo2-components';
+import {PermissionName} from '@viaa/avo2-types';
+import {isNil} from 'es-toolkit';
+import React, {type FC, useCallback, useEffect, useState} from 'react';
+import {Helmet} from 'react-helmet';
+import {useNavigate} from 'react-router';
+import {Link} from 'react-router-dom';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views/ErrorView';
-import { OrderDirection } from '../../../search/search.const';
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
+import {PermissionGuard} from '../../../authentication/components/PermissionGuard.js';
+import {redirectToClientPage} from '../../../authentication/helpers/redirects/redirect-to-client-page.js';
+import {APP_PATH, GENERATE_SITE_TITLE, RouteId} from '../../../constants.js';
+import {ErrorView} from '../../../error/views/ErrorView.js';
+import {OrderDirection} from '../../../search/search.const.js';
+import {ConfirmModal} from '../../../shared/components/ConfirmModal/ConfirmModal.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { buildLink } from '../../../shared/helpers/build-link';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { formatDate } from '../../../shared/helpers/formatters/date';
-import { navigate } from '../../../shared/helpers/link';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { ToastService } from '../../../shared/services/toast-service';
-import { ADMIN_PATH } from '../../admin.const';
-import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {buildLink} from '../../../shared/helpers/build-link.js';
+import {CustomError} from '../../../shared/helpers/custom-error.js';
+import {formatDate} from '../../../shared/helpers/formatters/date.js';
+import {navigate} from '../../../shared/helpers/link.js';
+import {ACTIONS_TABLE_COLUMN_ID} from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {ADMIN_PATH} from '../../admin.const.js';
+import {getDateRangeFilters, getQueryFilter} from '../../shared/helpers/filters.js';
+import {AdminLayout} from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import {AdminLayoutBody, AdminLayoutTopBarRight,} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import {GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS, INTERACTIVE_TOUR_PATH, ITEMS_PER_PAGE,} from '../interactive-tour.const.js';
+import {InteractiveTourService} from '../interactive-tour.service.js';
 import {
-	AdminLayoutBody,
-	AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import {
-	GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS,
-	INTERACTIVE_TOUR_PATH,
-	ITEMS_PER_PAGE,
-} from '../interactive-tour.const';
-import { InteractiveTourService } from '../interactive-tour.service';
-import {
-	type InteractiveTour,
+	type App_Interactive_Tour,
 	type InteractiveTourOverviewTableCols,
 	type InteractiveTourTableState,
-} from '../interactive-tour.types';
+} from '../interactive-tour.types.js';
 
 export const InteractiveTourOverview: FC = () => {
 	const navigateFunc = useNavigate();
 
 	const [interactiveTourIdToDelete, setInteractiveTourIdToDelete] = useState<number | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
-	const [interactiveTours, setInteractiveTours] = useState<InteractiveTour[] | null>(null);
+	const [interactiveTours, setInteractiveTours] = useState<App_Interactive_Tour[] | null>(null);
 	const [interactiveTourCount, setInteractiveTourCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<InteractiveTourTableState>>({});
@@ -75,7 +68,7 @@ export const InteractiveTourOverview: FC = () => {
 					tableState.page || 0,
 					// We need to substitute page with page_id, because the filter table state already contains a prop "page" for pagination
 					(tableState.sort_column || 'created_at').replace('page_id', 'page') as any,
-					tableState.sort_order || OrderDirection.desc,
+					tableState.sort_order || Avo.Search.OrderDirection.DESC,
 					generateWhereObject(tableState)
 				);
 			setInteractiveTours(interactiveToursTemp);
@@ -154,7 +147,7 @@ export const InteractiveTourOverview: FC = () => {
 	};
 
 	const renderTableCell = (
-		rowData: InteractiveTour,
+		rowData: App_Interactive_Tour,
 		columnId: InteractiveTourOverviewTableCols
 	) => {
 		switch (columnId) {
@@ -171,7 +164,7 @@ export const InteractiveTourOverview: FC = () => {
 						<span>{rowData.page_id}</span>
 						<br />
 						<span className="u-text-muted">
-							{get(APP_PATH, [rowData.page_id, 'route'], '-')}
+							{APP_PATH?.[rowData.page_id as RouteId]?.route || '-'}
 						</span>
 					</div>
 				);
@@ -277,7 +270,7 @@ export const InteractiveTourOverview: FC = () => {
 					columns={GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS()}
 					data={interactiveTours || []}
 					dataCount={interactiveTourCount}
-					renderCell={(rowData: InteractiveTour, columnId: string) =>
+					renderCell={(rowData: App_Interactive_Tour, columnId: string) =>
 						renderTableCell(rowData, columnId as InteractiveTourOverviewTableCols)
 					}
 					searchTextPlaceholder={tText(

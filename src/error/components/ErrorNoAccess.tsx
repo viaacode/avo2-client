@@ -2,11 +2,11 @@ import { Blankslate, Button, Container, IconName } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 
-import { APP_PATH } from '../../constants';
-import { OrderedList } from '../../shared/components/OrderedList/OrderedList';
+import { APP_PATH } from '../../constants.js';
+import { OrderedList } from '../../shared/components/OrderedList/OrderedList.js';
 
 import './ErrorNoAccess.scss';
-import { tText } from '../../shared/helpers/translate-text';
+import { tText } from '../../shared/helpers/translate-text.js';
 
 interface ErrorNoAccessProps {
 	title: string | ReactNode;

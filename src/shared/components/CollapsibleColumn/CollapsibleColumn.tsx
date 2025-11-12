@@ -1,10 +1,10 @@
 import { Button, type ButtonProps, type DefaultProps, IconName } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode, useState } from 'react';
 
-import { useResizeObserver } from '../../hooks/useResizeObserver';
+import { useResizeObserver } from '../../hooks/useResizeObserver.js';
 
 import './CollapsibleColumn.scss';
-import { tText } from '../../helpers/translate-text';
+import { tText } from '../../helpers/translate-text.js';
 
 type CollapsibleColumnProps = DefaultProps & {
 	children?: ReactNode;

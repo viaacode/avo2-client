@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { tText } from '../helpers/translate-text';
+import { tText } from '../helpers/translate-text.js';
 
 export const useWarningBeforeUnload = ({
 	when,

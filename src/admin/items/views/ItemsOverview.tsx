@@ -1,34 +1,31 @@
-import { ExportAllToCsvModal, FilterTable } from '@meemoo/admin-core-ui/admin';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
+import {ExportAllToCsvModal, FilterTable} from '@meemoo/admin-core-ui/admin';
+import {type Avo, PermissionName} from '@viaa/avo2-types';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views/ErrorView';
-import { OrderDirection } from '../../../search/search.const';
-import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import { buildLink } from '../../../shared/helpers/build-link';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { useCompanies } from '../../../shared/hooks/useCompanies';
-import { ToastService } from '../../../shared/services/toast-service';
-import { ADMIN_PATH } from '../../admin.const';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import {
-	renderItemsOverviewTableCell,
-	renderItemsOverviewTableCellText,
-} from '../helpers/render-item-overview-table-cell';
-import { useGetItemsWithFilters } from '../hooks/useGetItemsWithFilters';
-import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
-import { ItemsService } from '../items.service';
-import { type ItemsOverviewTableCols, type ItemsTableState } from '../items.types';
+import React, {type FC, useCallback, useEffect, useMemo, useState} from 'react';
+import {Helmet} from 'react-helmet';
 
-import { ItemBulkAction } from './ItemsOverview.types';
+import {PermissionGuard} from '../../../authentication/components/PermissionGuard.js';
+import {APP_PATH, GENERATE_SITE_TITLE} from '../../../constants.js';
+import {ErrorView} from '../../../error/views/ErrorView.js';
+import {OrderDirection} from '../../../search/search.const.js';
+import {type CheckboxOption} from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
+import {buildLink} from '../../../shared/helpers/build-link.js';
+import {CustomError} from '../../../shared/helpers/custom-error.js';
+import {tableColumnListToCsvColumnList} from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {useCompanies} from '../../../shared/hooks/useCompanies.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {ADMIN_PATH} from '../../admin.const.js';
+import {AdminLayout} from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import {AdminLayoutBody} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import {renderItemsOverviewTableCell, renderItemsOverviewTableCellText,} from '../helpers/render-item-overview-table-cell.js';
+import {useGetItemsWithFilters} from '../hooks/useGetItemsWithFilters.js';
+import {GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE} from '../items.const.js';
+import {ItemsService} from '../items.service.js';
+import {type ItemsOverviewTableCols, type ItemsTableState} from '../items.types.js';
+
+import {ItemBulkAction} from './ItemsOverview.types.js';
 
 export const ItemsOverview: FC = () => {
 	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
@@ -52,7 +49,7 @@ export const ItemsOverview: FC = () => {
 				(option: Partial<Avo.Organization.Organization>): CheckboxOption => ({
 					id: option.or_id as string,
 					label: option.name as string,
-					checked: get(tableState, 'organisation', [] as string[]).includes(
+					checked: ((tableState?.organisation || []) as string[]).includes(
 						String(option.or_id)
 					),
 				})
@@ -172,7 +169,7 @@ export const ItemsOverview: FC = () => {
 							0,
 							0,
 							(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
-							tableState.sort_order || OrderDirection.desc,
+							tableState.sort_order || Avo.Search.OrderDirection.DESC,
 							{}
 						);
 						return response.total;
@@ -182,7 +179,7 @@ export const ItemsOverview: FC = () => {
 							offset,
 							limit,
 							(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
-							tableState.sort_order || OrderDirection.desc,
+							tableState.sort_order || Avo.Search.OrderDirection.DESC,
 							{}
 						);
 						return response.items;

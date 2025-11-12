@@ -1,15 +1,15 @@
 import { Button, Container, IconName, Toolbar, ToolbarItem } from '@viaa/avo2-components';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit';
 import React, { type FC } from 'react';
 
-import { tText } from '../../../shared/helpers/translate-text';
-import { generateRandomId } from '../../../shared/helpers/uuid';
-import { type InteractiveTourAction } from '../helpers/reducers';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { generateRandomId } from '../../../shared/helpers/uuid.js';
+import { type InteractiveTourAction } from '../helpers/reducers/index.js';
 import {
 	type EditableInteractiveTour,
 	type EditableStep,
 	InteractiveTourEditActionType,
-} from '../interactive-tour.types';
+} from '../interactive-tour.types.js';
 
 interface InteractiveTourAddProps {
 	index: number;

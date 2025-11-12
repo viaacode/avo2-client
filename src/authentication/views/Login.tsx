@@ -4,15 +4,15 @@ import React, { type FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
-import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views/ErrorView';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { isPupil } from '../../shared/helpers/is-pupil';
-import { tText } from '../../shared/helpers/translate-text';
-import { loginAtom } from '../authentication.store';
-import { getLoginStateAtom } from '../authentication.store.actions';
-import { LoginMessage } from '../authentication.types';
-import { redirectToServerLoginPage } from '../helpers/redirects';
+import { APP_PATH } from '../../constants.js';
+import { ErrorView } from '../../error/views/ErrorView.js';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import { isPupil } from '../../shared/helpers/is-pupil.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { loginAtom } from '../authentication.store.js';
+import { getLoginStateAtom } from '../authentication.store.actions.js';
+import { LoginMessage } from '../authentication.types.js';
+import { redirectToServerLoginPage } from '../helpers/redirects.js';
 
 const LOGIN_ATTEMPT_KEY = 'AVO_LOGIN_ATTEMPT';
 

@@ -1,36 +1,26 @@
-import { type RichEditorState } from '@meemoo/react-components';
-import {
-	Button,
-	Column,
-	Container,
-	Form,
-	FormGroup,
-	Grid,
-	Image,
-	Spacer,
-	TextArea,
-} from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { type StringMap } from 'i18next';
-import { compact, map } from 'lodash-es';
-import React, { type FC, useState } from 'react';
+import {type RichEditorState} from '@meemoo/react-components';
+import {Button, Column, Container, Form, FormGroup, Grid, Image, Spacer, TextArea,} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import {type StringMap} from 'i18next';
+import {compact} from 'es-toolkit';
+import React, {type FC, useState} from 'react';
 
-import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
-import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
+import {FileUpload} from '../../shared/components/FileUpload/FileUpload.js';
+import {LomFieldsInput} from '../../shared/components/LomFieldsInput/LomFieldsInput.js';
 import {
 	RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION,
 	RICH_TEXT_EDITOR_OPTIONS_DEFAULT_NO_TITLES,
-} from '../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
-import { RichTextEditorWrapper } from '../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
-import { ShortDescriptionField } from '../../shared/components/ShortDescriptionField/ShortDescriptionField';
-import { ThumbnailStillsModal } from '../../shared/components/ThumbnailStillsModal/ThumbnailStillsModal';
-import { stripHtml } from '../../shared/helpers/formatters/strip-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
-import { getValidationFeedbackForDescription } from '../collection.helpers';
-import { type CollectionOrBundle } from '../collection.types';
+} from '../../shared/components/RichTextEditorWrapper/RichTextEditor.consts.js';
+import {RichTextEditorWrapper} from '../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper.js';
+import {ShortDescriptionField} from '../../shared/components/ShortDescriptionField/ShortDescriptionField.js';
+import {ThumbnailStillsModal} from '../../shared/components/ThumbnailStillsModal/ThumbnailStillsModal.js';
+import {stripHtml} from '../../shared/helpers/formatters/strip-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {MAX_LONG_DESCRIPTION_LENGTH} from '../collection.const.js';
+import {getValidationFeedbackForDescription} from '../collection.helpers.js';
+import {type CollectionOrBundle} from '../collection.types.js';
 
-import { type CollectionAction } from './CollectionOrBundleEdit.types';
+import {type CollectionAction} from './CollectionOrBundleEdit.types.js';
 
 interface CollectionOrBundleEditMetaDataProps {
 	type: CollectionOrBundle;
@@ -85,7 +75,7 @@ export const CollectionOrBundleEditMetaData: FC<CollectionOrBundleEditMetaDataPr
 								<Column size="3-7">
 									{collection.loms && (
 										<LomFieldsInput
-											loms={compact(map(collection.loms, 'lom'))}
+											loms={compact(collection.loms?.map(lom => lom.lom))}
 											onChange={updateCollectionLoms}
 											showThemes
 										/>

@@ -1,10 +1,10 @@
 import { type Avo } from '@viaa/avo2-types';
 
-import { ItemsService } from '../admin/items/items.service';
-import { AssignmentLayout } from '../assignment/assignment.types';
-import { CollectionService } from '../collection/collection.service';
-import { CollectionOrBundle } from '../collection/collection.types';
-import { type QuickLaneType } from '../shared/components/QuickLaneContent/QuickLaneContent.types';
+import { ItemsService } from '../admin/items/items.service.js';
+import { AssignmentLayout } from '../assignment/assignment.types.js';
+import { CollectionService } from '../collection/collection.service.js';
+import { CollectionOrBundle } from '../collection/collection.types.js';
+import { type QuickLaneType } from '../shared/components/QuickLaneContent/QuickLaneContent.types.js';
 import {
 	type GetQuickLaneByContentAndOwnerQuery,
 	type GetQuickLaneByContentAndOwnerQueryVariables,
@@ -16,18 +16,18 @@ import {
 	type RemoveQuickLanesMutationVariables,
 	type UpdateQuickLaneByIdMutation,
 	type UpdateQuickLaneByIdMutationVariables,
-} from '../shared/generated/graphql-db-operations';
+} from '../shared/generated/graphql-db-operations.js';
 import {
 	GetQuickLaneByContentAndOwnerDocument,
 	GetQuickLaneByIdDocument,
 	InsertQuickLanesDocument,
 	RemoveQuickLanesDocument,
 	UpdateQuickLaneByIdDocument,
-} from '../shared/generated/graphql-db-react-query';
-import { CustomError } from '../shared/helpers/custom-error';
-import { quickLaneUrlRecordToObject } from '../shared/helpers/quick-lane-url-record-to-object';
-import { dataService } from '../shared/services/data-service';
-import { type QuickLaneUrlObject, type QuickLaneUrlRecord } from '../shared/types';
+} from '../shared/generated/graphql-db-react-query.js';
+import { CustomError } from '../shared/helpers/custom-error.js';
+import { quickLaneUrlRecordToObject } from '../shared/helpers/quick-lane-url-record-to-object.js';
+import { dataService } from '../shared/services/data-service.js';
+import { type QuickLaneUrlObject, type QuickLaneUrlRecord } from '../shared/types/index.js';
 
 // Mappers
 

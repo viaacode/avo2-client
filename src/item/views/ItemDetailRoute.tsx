@@ -1,7 +1,7 @@
 import React, { type FC } from 'react';
 import { useParams } from 'react-router';
 
-import { ItemDetail } from './ItemDetail';
+import { ItemDetail } from './ItemDetail.js';
 
 import './ItemDetail.scss';
 

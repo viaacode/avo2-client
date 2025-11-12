@@ -1,52 +1,38 @@
-import {
-	Button,
-	ButtonToolbar,
-	Container,
-	HeaderButtons,
-	Spacer,
-	Table,
-} from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { useNavigate, useParams } from 'react-router';
+import {Button, ButtonToolbar, Container, HeaderButtons, Spacer, Table,} from '@viaa/avo2-components';
+import {PermissionName} from '@viaa/avo2-types';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
+import React, {type FC, useCallback, useEffect, useState} from 'react';
+import {Helmet} from 'react-helmet';
+import {useNavigate, useParams} from 'react-router';
+
+import {PermissionGuard} from '../../../authentication/components/PermissionGuard.js';
+import {redirectToClientPage} from '../../../authentication/helpers/redirects/redirect-to-client-page.js';
+import {APP_PATH, GENERATE_SITE_TITLE, RouteId} from '../../../constants.js';
+import {ConfirmModal} from '../../../shared/components/ConfirmModal/ConfirmModal.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { buildLink } from '../../../shared/helpers/build-link';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { navigate } from '../../../shared/helpers/link';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { ToastService } from '../../../shared/services/toast-service';
-import { ADMIN_PATH } from '../../admin.const';
-import {
-	renderDateDetailRows,
-	renderDetailRow,
-	renderSimpleDetailRows,
-} from '../../shared/helpers/render-detail-fields';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import {
-	AdminLayoutBody,
-	AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
-import { InteractiveTourService } from '../interactive-tour.service';
-import { type InteractiveTour } from '../interactive-tour.types';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {buildLink} from '../../../shared/helpers/build-link.js';
+import {CustomError} from '../../../shared/helpers/custom-error.js';
+import {navigate} from '../../../shared/helpers/link.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {ADMIN_PATH} from '../../admin.const.js';
+import {renderDateDetailRows, renderDetailRow, renderSimpleDetailRows,} from '../../shared/helpers/render-detail-fields.js';
+import {AdminLayout} from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import {AdminLayoutBody, AdminLayoutTopBarRight,} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import {INTERACTIVE_TOUR_PATH} from '../interactive-tour.const.js';
+import {InteractiveTourService} from '../interactive-tour.service.js';
+import {type App_Interactive_Tour} from '../interactive-tour.types.js';
 
 export const InteractiveTourDetail: FC = () => {
 	const navigateFunc = useNavigate();
 	const { id: interactiveTourId } = useParams<{ id: string }>();
 
 	// Hooks
-	const [interactiveTour, setInteractiveTour] = useState<InteractiveTour | null>(null);
+	const [interactiveTour, setInteractiveTour] = useState<App_Interactive_Tour | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 
@@ -155,7 +141,7 @@ export const InteractiveTourDetail: FC = () => {
 									],
 								])}
 								{renderDetailRow(
-									get(APP_PATH, [interactiveTour.page_id, 'route'], '-'),
+									APP_PATH?.[interactiveTour.page_id as RouteId]?.route || '-',
 									tText(
 										'admin/interactive-tour/views/interactive-tour-detail___pagina'
 									)
@@ -246,7 +232,7 @@ export const InteractiveTourDetail: FC = () => {
 				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
-							get(interactiveTour, 'name'),
+							interactiveTour?.name,
 							tText(
 								'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-titel'
 							)

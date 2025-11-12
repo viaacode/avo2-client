@@ -2,7 +2,7 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 import { type Avo } from '@viaa/avo2-types';
 import queryString from 'query-string';
 
-import { getEnv } from '../shared/helpers/env';
+import { getEnv } from '../shared/helpers/env.js';
 
 const stamboekValidationCache: {
 	[stamboekNumber: string]: boolean;

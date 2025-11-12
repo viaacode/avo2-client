@@ -1,26 +1,26 @@
-import { Flex, IconName } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import React, { type FC, useEffect, useState } from 'react';
-import { HorizontalPageSplit } from 'react-page-split';
-import { Outlet } from 'react-router';
-import { QueryParamProvider } from 'use-query-params';
+import {Flex, IconName} from '@viaa/avo2-components';
+import {PermissionName} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import React, {type FC, useEffect, useState} from 'react';
+import {HorizontalPageSplit} from 'react-page-split';
+import {Outlet} from 'react-router';
+import {QueryParamProvider} from 'use-query-params';
 
-import { commonUserAtom } from '../authentication/authentication.store';
-import { PermissionGuard } from '../authentication/components/PermissionGuard';
-import { PermissionService } from '../authentication/helpers/permission-service';
+import {commonUserAtom} from '../authentication/authentication.store.js';
+import {PermissionGuard} from '../authentication/components/PermissionGuard.js';
+import {PermissionService} from '../authentication/helpers/permission-service.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { CustomError } from '../shared/helpers/custom-error';
-import { ReactRouter7Adapter } from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
-import { tHtml } from '../shared/helpers/translate-html';
-import { ToastService } from '../shared/services/toast-service';
-import { type NavigationItemInfo } from '../shared/types';
+} from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {CustomError} from '../shared/helpers/custom-error.js';
+import {ReactRouter7Adapter} from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params.js';
+import {tHtml} from '../shared/helpers/translate-html.js';
+import {ToastService} from '../shared/services/toast-service.js';
+import {type NavigationItemInfo} from '../shared/types/index.js';
 
-import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
-import { Sidebar } from './shared/components/Sidebar/Sidebar';
+import {ADMIN_PATH, GET_NAV_ITEMS} from './admin.const.js';
+import {Sidebar} from './shared/components/Sidebar/Sidebar.js';
 
 export const Admin: FC = () => {
 	const commonUser = useAtomValue(commonUserAtom);

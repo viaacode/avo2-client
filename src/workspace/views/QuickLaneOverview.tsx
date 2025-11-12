@@ -6,34 +6,34 @@ import {
 } from '@meemoo/admin-core-ui/admin';
 import { IconName, type MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
-import { isEqual } from 'lodash-es';
+import { isEqual } from 'es-toolkit';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { useQueryParams } from 'use-query-params';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { QuickLaneService } from '../../quick-lane/quick-lane.service';
-import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
-import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { QuickLaneFilterTableCell } from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
-import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal';
-import { QUICK_LANE_DEFAULTS, type QuickLaneColumn } from '../../shared/constants/quick-lane';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { copyQuickLaneToClipboard } from '../../shared/helpers/generate-quick-lane-href';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane';
-import { useDebounce } from '../../shared/hooks/useDebounce';
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { QuickLaneService } from '../../quick-lane/quick-lane.service.js';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal.js';
+import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { QuickLaneFilterTableCell } from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell.js';
+import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal.js';
+import { QUICK_LANE_DEFAULTS, type QuickLaneColumn } from '../../shared/constants/quick-lane.js';
+import { CustomError } from '../../shared/helpers/custom-error.js';
+import { copyQuickLaneToClipboard } from '../../shared/helpers/generate-quick-lane-href.js';
+import { isMobileWidth } from '../../shared/helpers/media-query.js';
+import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane.js';
+import { useDebounce } from '../../shared/hooks/useDebounce.js';
 import {
 	type QuickLaneFilters,
 	QuickLaneFilterService,
-} from '../../shared/services/quick-lane-filter-service';
-import { ToastService } from '../../shared/services/toast-service';
-import { type QuickLaneOverviewFilterState, type QuickLaneUrlObject } from '../../shared/types';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { ITEMS_PER_PAGE } from '../workspace.const';
+} from '../../shared/services/quick-lane-filter-service.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { type QuickLaneOverviewFilterState, type QuickLaneUrlObject } from '../../shared/types/index.js';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type.js';
+import { ITEMS_PER_PAGE } from '../workspace.const.js';
 
 import './QuickLaneOverview.scss';
-import { tText } from '../../shared/helpers/translate-text';
-import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
 
 // Typings
 

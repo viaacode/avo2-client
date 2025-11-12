@@ -1,9 +1,8 @@
-import { type Avo, LomSchemeType } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
+import {type Avo, LomSchemeType} from '@viaa/avo2-types';
 
-import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { getProfile } from '../../shared/helpers/formatters/avatar';
+import {SpecialUserGroupId} from '../../admin/user-groups/user-group.const.js';
+import {CustomError} from '../../shared/helpers/custom-error.js';
+import {getProfile} from '../../shared/helpers/formatters/avatar.js';
 
 export const getUserGroupLabel = (
 	userOrProfile: Avo.User.Profile | { profile: Avo.User.Profile } | null | undefined
@@ -18,7 +17,7 @@ export const getUserGroupLabel = (
 	}
 
 	const profile = getProfile(userOrProfile);
-	return get(userOrProfile, 'group_name') || get(profile, 'profile_user_group.group.label') || '';
+	return ((userOrProfile as any)?.group_name || (profile as any)?.profile_user_group?.group?.label || '') as string;
 };
 
 export function getProfileAvatar(commonUser: Avo.User.CommonUser | undefined): string {

@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { type Avo } from '@viaa/avo2-types';
 
-import { QUERY_KEYS } from '../../shared/constants/query-keys';
-import { CollectionService } from '../collection.service';
+import { QUERY_KEYS } from '../../shared/constants/query-keys.js';
+import { CollectionService } from '../collection.service.js';
 
 export const useGetCollectionsEditStatuses = (
 	collectionsIds: string[],

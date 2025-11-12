@@ -2,7 +2,7 @@ import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
 import { type Avo } from '@viaa/avo2-types';
 import { type Dispatch, type SetStateAction, useState } from 'react';
 
-import { OrderDirection } from '../../search/search.const';
+import { OrderDirection } from '../../search/search.const.js';
 
 type UseTableSortTuple<T> = [
 	T,
@@ -14,7 +14,7 @@ type UseTableSortTuple<T> = [
 
 export const useTableSort = <T>(
 	initialSortColumn: T,
-	initialSortOrder: Avo.Search.OrderDirection = OrderDirection.desc
+	initialSortOrder: Avo.Search.OrderDirection = Avo.Search.OrderDirection.DESC
 ): UseTableSortTuple<T> => {
 	const [sortColumn, setSortColumn] = useState<T>(initialSortColumn);
 	const [sortOrder, setSortOrder] = useState<Avo.Search.OrderDirection>(initialSortOrder);

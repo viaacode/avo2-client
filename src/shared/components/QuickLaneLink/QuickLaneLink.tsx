@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
 import React, { type FC } from 'react';
 
-import { generateQuickLaneHref } from '../../helpers/generate-quick-lane-href';
+import { generateQuickLaneHref } from '../../helpers/generate-quick-lane-href.js';
 
 import './QuickLaneLink.scss';
 

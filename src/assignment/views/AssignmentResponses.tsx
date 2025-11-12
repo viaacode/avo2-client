@@ -1,6 +1,6 @@
-import { cleanupFilterTableState } from '@meemoo/admin-core-ui/admin';
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { PaginationBar } from '@meemoo/react-components';
+import {cleanupFilterTableState} from '@meemoo/admin-core-ui/admin';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
+import {PaginationBar} from '@meemoo/react-components';
 import {
 	Button,
 	Flex,
@@ -16,59 +16,59 @@ import {
 	ToolbarRight,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import { useAtomValue } from 'jotai';
-import { cloneDeep, compact, get, isNil, noop, uniq } from 'lodash-es';
-import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router';
-import { Link } from 'react-router-dom';
-import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
+import {type Avo, PermissionName} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import {useAtomValue} from 'jotai';
+import {cloneDeep, compact, isNil, noop, uniq} from 'es-toolkit';
+import React, {type FC, type ReactNode, useCallback, useEffect, useMemo, useState} from 'react';
+import {useParams} from 'react-router';
+import {Link} from 'react-router-dom';
+import {NumberParam, StringParam, useQueryParams} from 'use-query-params';
 
-import { ItemsService } from '../../admin/items/items.service';
-import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views/ErrorView';
-import { OrderDirection } from '../../search/search.const';
-import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
+import {ItemsService} from '../../admin/items/items.service.js';
+import {GET_DEFAULT_PAGINATION_BAR_PROPS} from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {APP_PATH} from '../../constants.js';
+import {ErrorView} from '../../error/views/ErrorView.js';
+import {OrderDirection} from '../../search/search.const.js';
+import {ConfirmModal} from '../../shared/components/ConfirmModal/ConfirmModal.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { buildLink } from '../../shared/helpers/build-link';
-import { formatDate } from '../../shared/helpers/formatters/date';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { truncateTableValue } from '../../shared/helpers/truncate';
-import { useTableSort } from '../../shared/hooks/useTableSort';
-import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
-import { ToastService } from '../../shared/services/toast-service';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const';
-import { AssignmentService } from '../assignment.service';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {buildLink} from '../../shared/helpers/build-link.js';
+import {formatDate} from '../../shared/helpers/formatters/date.js';
+import {isMobileWidth} from '../../shared/helpers/media-query.js';
+import {ACTIONS_TABLE_COLUMN_ID} from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {truncateTableValue} from '../../shared/helpers/truncate.js';
+import {useTableSort} from '../../shared/hooks/useTableSort.js';
+import {NO_RIGHTS_ERROR_MESSAGE} from '../../shared/services/data-service.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {TableColumnDataType} from '../../shared/types/table-column-data-type.js';
+import {ITEMS_PER_PAGE} from '../../workspace/workspace.const.js';
+import {GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS} from '../assignment.const.js';
+import {AssignmentService} from '../assignment.service.js';
 import {
 	type AssignmentResponseTableColumns,
 	type AssignmentTableColumns,
 	type AssignmentType,
 	type PupilCollectionFragment,
-} from '../assignment.types';
-import { canViewAnAssignment } from '../helpers/can-view-an-assignment';
-import { isItemWithMeta } from '../helpers/is-item-with-meta';
+} from '../assignment.types.js';
+import {canViewAnAssignment} from '../helpers/can-view-an-assignment.js';
+import {isItemWithMeta} from '../helpers/is-item-with-meta.js';
 
 import './AssignmentOverview.scss';
 import './AssignmentResponses.scss';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
 
 interface AssignmentResponsesProps {
 	onUpdate: () => void | Promise<void>;
 }
 
 const DEFAULT_SORT_COLUMN = 'updated_at';
-const DEFAULT_SORT_ORDER = OrderDirection.desc;
+const DEFAULT_SORT_ORDER = Avo.Search.OrderDirection.DESC;
 
 export const AssignmentResponses: FC<AssignmentResponsesProps> = ({ onUpdate = noop }) => {
 	const { id: assignmentId } = useParams<{ id: string }>();
@@ -410,7 +410,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({ onUpdate = n
 					<Flex>
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
-								{truncateTableValue(get(assignmentResponse, 'owner.full_name', ''))}
+								{truncateTableValue(assignmentResponse?.owner?.full_name || '')}
 							</h3>
 						</div>
 					</Flex>
@@ -579,7 +579,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({ onUpdate = n
 					isOpen={isDeleteAssignmentResponseModalOpen}
 					onClose={handleDeleteModalClose}
 					confirmCallback={() => {
-						deleteAssignmentResponse(get(markedAssignmentResponse, 'id', null));
+						deleteAssignmentResponse(markedAssignmentResponse?.id || null);
 						handleDeleteModalClose();
 					}}
 				/>

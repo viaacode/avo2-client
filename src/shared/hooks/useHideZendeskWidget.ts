@@ -2,8 +2,8 @@ import { type Avo } from '@viaa/avo2-types';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
-import { ROUTE_PARTS } from '../constants';
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const.js';
+import { ROUTE_PARTS } from '../constants/index.js';
 
 export function useHideZendeskWidget(commonUser?: Avo.User.CommonUser, hideRegardless?: boolean) {
 	const location = useLocation();

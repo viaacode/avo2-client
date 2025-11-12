@@ -1,15 +1,15 @@
-import { type FlowplayerSourceItem, type FlowplayerSourceList } from '@meemoo/react-components';
-import { Flex, Modal, ModalBody, Spinner } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import {type FlowplayerSourceItem, type FlowplayerSourceList} from '@meemoo/react-components';
+import {Flex, Modal, ModalBody, Spinner} from '@viaa/avo2-components';
+import {Avo} from '@viaa/avo2-types';
+import React, {type FC, useCallback, useEffect, useState} from 'react';
 
-import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
-import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
-import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
-import { isMobileWidth } from '../../../shared/helpers/media-query';
-import { toSeconds } from '../../../shared/helpers/parsers/duration';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { fetchPlayerTickets } from '../../../shared/services/player-ticket-service';
+import {FlowPlayerWrapper} from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.js';
+import {getValidStartAndEnd} from '../../../shared/helpers/cut-start-and-end.js';
+import {getFlowPlayerPoster} from '../../../shared/helpers/get-poster.js';
+import {isMobileWidth} from '../../../shared/helpers/media-query.js';
+import {toSeconds} from '../../../shared/helpers/parsers/duration.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {fetchPlayerTickets} from '../../../shared/services/player-ticket-service.js';
 
 import './AutoplayCollectionModal.scss';
 
@@ -50,7 +50,7 @@ export const AutoplayCollectionModal: FC<AutoplayCollectionModalProps> = ({
 					src: playableUrls[fragIndex],
 					title,
 					poster: getFlowPlayerPoster(frag.thumbnail_path, itemMeta) || '',
-					category: 'video',
+					category: Avo.ContentType.English.VIDEO,
 					provider: itemMeta?.organisation?.name || '',
 					cuepoints: start && end ? [{ startTime: start, endTime: end }] : undefined,
 				};

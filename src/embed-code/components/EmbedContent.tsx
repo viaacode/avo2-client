@@ -23,32 +23,32 @@ import {
 import type { Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { useAtomValue } from 'jotai';
-import { debounce } from 'lodash-es';
+import { debounce } from 'es-toolkit';
 import React, { type FC, type LegacyRef, type ReactNode, useEffect, useState } from 'react';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { ItemVideoDescription } from '../../item/components/ItemVideoDescription';
-import { TextWithTimestamps } from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
-import { TimeCropControls } from '../../shared/components/TimeCropControls/TimeCropControls';
-import { copyToClipboard } from '../../shared/helpers/clipboard';
-import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
-import { textToHtmlWithTimestamps } from '../../shared/helpers/formatters/text-to-html-with-timestamps';
-import { toSeconds } from '../../shared/helpers/parsers/duration';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { useResizeObserver } from '../../shared/hooks/useResizeObserver';
-import { trackEvents } from '../../shared/services/event-logging-service';
-import { ToastService } from '../../shared/services/toast-service';
-import { embedFlowAtom } from '../../shared/store/ui.store';
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { ItemVideoDescription } from '../../item/components/ItemVideoDescription.js';
+import { TextWithTimestamps } from '../../shared/components/TextWithTimestamp/TextWithTimestamps.js';
+import { TimeCropControls } from '../../shared/components/TimeCropControls/TimeCropControls.js';
+import { copyToClipboard } from '../../shared/helpers/clipboard.js';
+import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end.js';
+import { textToHtmlWithTimestamps } from '../../shared/helpers/formatters/text-to-html-with-timestamps.js';
+import { toSeconds } from '../../shared/helpers/parsers/duration.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { useResizeObserver } from '../../shared/hooks/useResizeObserver.js';
+import { trackEvents } from '../../shared/services/event-logging-service.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { embedFlowAtom } from '../../shared/store/ui.store.js';
 import {
 	type EmbedCode,
 	EmbedCodeDescriptionType,
 	EmbedCodeExternalWebsite,
-} from '../embed-code.types';
-import { toEmbedCodeIFrame } from '../helpers/links';
-import { createResource } from '../helpers/resourceForTrackEvents';
-import { getValidationErrors } from '../helpers/validationRules';
-import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
+} from '../embed-code.types.js';
+import { toEmbedCodeIFrame } from '../helpers/links.js';
+import { createResource } from '../helpers/resourceForTrackEvents.js';
+import { getValidationErrors } from '../helpers/validationRules.js';
+import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode.js';
 
 import './EmbedContent.scss';
 

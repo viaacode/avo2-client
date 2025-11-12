@@ -2,10 +2,10 @@ import { Flex } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC } from 'react';
 
-import { formatTimestamp } from '../../shared/helpers/formatters/date';
+import { formatTimestamp } from '../../shared/helpers/formatters/date.js';
 
 import './AssignmentMetadata.scss';
-import { tHtml } from '../../shared/helpers/translate-html';
+import { tHtml } from '../../shared/helpers/translate-html.js';
 
 type AssignmentMetadataProps = {
 	assignment: Avo.Assignment.Assignment;

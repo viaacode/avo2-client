@@ -1,63 +1,63 @@
-import { ExportAllToCsvModal, FilterTable, getFilters } from '@meemoo/admin-core-ui/admin';
-import { type TagInfo } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { compact, noop, partition } from 'lodash-es';
-import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { useLocation } from 'react-router-dom';
+import {ExportAllToCsvModal, FilterTable, getFilters} from '@meemoo/admin-core-ui/admin';
+import {type TagInfo} from '@viaa/avo2-components';
+import {Avo, PermissionName} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {compact, noop, partition} from 'es-toolkit';
+import React, {type FC, type ReactNode, useCallback, useEffect, useMemo, useState} from 'react';
+import {Helmet} from 'react-helmet';
+import {useLocation} from 'react-router-dom';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { CollectionService } from '../../../collection/collection.service';
-import { useGetCollectionsEditStatuses } from '../../../collection/hooks/useGetCollectionsEditStatuses';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views/ErrorView';
-import { OrderDirection } from '../../../search/search.const';
-import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {PermissionGuard} from '../../../authentication/components/PermissionGuard.js';
+import {CollectionService} from '../../../collection/collection.service.js';
+import {useGetCollectionsEditStatuses} from '../../../collection/hooks/useGetCollectionsEditStatuses.js';
+import {APP_PATH, GENERATE_SITE_TITLE} from '../../../constants.js';
+import {ErrorView} from '../../../error/views/ErrorView.js';
+import {OrderDirection} from '../../../search/search.const.js';
+import {type CheckboxOption} from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { getFullNameCommonUser } from '../../../shared/helpers/formatters/avatar';
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
-import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
-import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
-import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import { ToastService } from '../../../shared/services/toast-service';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {EDIT_STATUS_REFETCH_TIME} from '../../../shared/constants/index.js';
+import {CustomError} from '../../../shared/helpers/custom-error.js';
+import {getFullNameCommonUser} from '../../../shared/helpers/formatters/avatar.js';
+import {tableColumnListToCsvColumnList} from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {useCompaniesWithUsers} from '../../../shared/hooks/useCompanies.js';
+import {useLomEducationLevelsAndDegrees} from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js';
+import {useLomSubjects} from '../../../shared/hooks/useLomSubjects.js';
+import {useQualityLabels} from '../../../shared/hooks/useQualityLabels.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
 import {
 	type AddOrRemove,
 	AddOrRemoveLinkedElementsModal,
-} from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
-import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
-import { SubjectsBeingEditedWarningModal } from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
-import { NULL_FILTER } from '../../shared/helpers/filters';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import type { PickerItem } from '../../shared/types/content-picker';
-import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
+} from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal.js';
+import {ChangeAuthorModal} from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal.js';
+import {SubjectsBeingEditedWarningModal} from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal.js';
+import {NULL_FILTER} from '../../shared/helpers/filters.js';
+import {AdminLayout} from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import {AdminLayoutBody} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import type {PickerItem} from '../../shared/types/content-picker.js';
+import {useUserGroups} from '../../user-groups/hooks/useUserGroups.js';
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,
 	GET_COLLECTION_BULK_ACTIONS,
 	GET_COLLECTIONS_COLUMNS,
 	ITEMS_PER_PAGE,
-} from '../collections-or-bundles.const';
-import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
+} from '../collections-or-bundles.const.js';
+import {CollectionsOrBundlesService} from '../collections-or-bundles.service.js';
 import {
 	CollectionBulkAction,
 	type CollectionsOrBundlesOverviewTableCols,
 	type CollectionsOrBundlesTableState,
 	type CollectionSortProps,
-} from '../collections-or-bundles.types';
+} from '../collections-or-bundles.types.js';
 import {
 	renderCollectionsOrBundlesOverviewCellReact,
 	renderCollectionsOrBundlesOverviewCellText,
-} from '../helpers/render-collection-columns';
+} from '../helpers/render-collection-columns.js';
 
 export const CollectionsOrBundlesOverview: FC = () => {
 	const location = useLocation();
@@ -190,7 +190,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
 					(tableState.sort_column || 'created_at') as CollectionSortProps,
-					tableState.sort_order || OrderDirection.desc,
+					tableState.sort_order || Avo.Search.OrderDirection.DESC,
 					getFilters(tableState),
 					isCollection,
 					true
@@ -606,7 +606,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
 							? {
 									label: getFullNameCommonUser(commonUser, true, false) || '',
 									value: commonUser?.profileId,
-									type: 'PROFILE',
+									type: Avo.Core.ContentPickerType.PROFILE,
 							  }
 							: undefined
 					}
@@ -658,7 +658,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
 							0,
 							0,
 							(tableState.sort_column || 'created_at') as CollectionSortProps,
-							tableState.sort_order || OrderDirection.desc,
+							tableState.sort_order || Avo.Search.OrderDirection.DESC,
 							getFilters(tableState),
 							isCollection,
 							false
@@ -670,7 +670,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
 							offset,
 							limit,
 							(tableState.sort_column || 'created_at') as CollectionSortProps,
-							tableState.sort_order || OrderDirection.desc,
+							tableState.sort_order || Avo.Search.OrderDirection.DESC,
 							getFilters(tableState),
 							isCollection,
 							false

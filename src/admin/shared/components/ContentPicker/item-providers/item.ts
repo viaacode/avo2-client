@@ -1,7 +1,8 @@
-import { type ItemMeta } from '../../../../../shared/types/item';
-import { ItemsService } from '../../../../items/items.service';
-import { type PickerItem } from '../../../types/content-picker';
-import { parsePickerItem } from '../helpers/parse-picker';
+import {type ItemMeta} from '../../../../../shared/types/item.js';
+import {ItemsService} from '../../../../items/items.service.js';
+import {type PickerItem} from '../../../types/content-picker.js';
+import {parsePickerItem} from '../helpers/parse-picker.js';
+import {Avo} from "@viaa/avo2-types";
 
 // Fetch content items from GQL
 export const retrieveItems = async (
@@ -19,7 +20,7 @@ export const retrieveItems = async (
 const parseItems = (raw: ItemMeta[]): PickerItem[] => {
 	return raw.map((item: ItemMeta): PickerItem => {
 		return {
-			...parsePickerItem('ITEM', item.external_id.toString()),
+			...parsePickerItem(Avo.Core.ContentPickerType.ITEM, item.external_id.toString()),
 			label: item.title,
 		};
 	});

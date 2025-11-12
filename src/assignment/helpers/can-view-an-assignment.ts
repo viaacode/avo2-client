@@ -1,6 +1,6 @@
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 
-import { PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service.js';
 
 export const canViewAnAssignment = (commonUser?: Avo.User.CommonUser | null): boolean => {
 	if (!commonUser) {

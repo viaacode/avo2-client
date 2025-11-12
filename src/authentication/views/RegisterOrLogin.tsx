@@ -2,12 +2,12 @@ import { Column, Container, Grid, Modal, ModalBody } from '@viaa/avo2-components
 import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { GENERATE_SITE_TITLE } from '../../constants';
-import { LoginOptions } from '../components/LoginOptions';
+import { GENERATE_SITE_TITLE } from '../../constants.js';
+import { LoginOptions } from '../components/LoginOptions.js';
 
 import './RegisterOrLogin.scss';
-import { tText } from '../../shared/helpers/translate-text';
-import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
 
 export const RegisterOrLogin: FC = () => {
 	return (

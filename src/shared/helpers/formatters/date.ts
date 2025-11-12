@@ -1,5 +1,5 @@
-import { format, formatDistance } from 'date-fns';
-import { isNumber, isString } from 'lodash-es';
+import {format, formatDistance} from 'date-fns';
+import {isString} from 'es-toolkit';
 
 type DateLike = string | Date | number;
 
@@ -13,7 +13,7 @@ export function reorderDate(dateString: string | null, separator = '/'): string 
 export function normalizeTimestamp(timestamp: DateLike): Date {
 	if (timestamp instanceof Date) {
 		return timestamp;
-	} else if (isNumber(timestamp)) {
+	} else if (typeof timestamp === 'number') {
 		return new Date(timestamp);
 	}
 

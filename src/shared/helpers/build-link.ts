@@ -1,4 +1,4 @@
-import { get, isString } from 'lodash-es';
+import {isString} from 'es-toolkit';
 import queryString from 'query-string';
 
 export type RouteParams = { [key: string]: string | number | undefined };
@@ -19,7 +19,7 @@ export const buildLink = (
 
 	// Replace url with given params
 	Object.keys(params).forEach((param: string) => {
-		builtLink = builtLink.replace(`:${param}`, String(get(params, [param], '')));
+		builtLink = builtLink.replace(`:${param}`, String(params?.[param] || ''));
 	});
 
 	const missingParams = getMissingParams(builtLink);

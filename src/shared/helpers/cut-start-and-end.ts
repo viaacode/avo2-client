@@ -1,6 +1,6 @@
-import { clamp } from 'lodash-es';
+import { clamp } from 'es-toolkit';
 
-import { toSeconds } from './parsers/duration';
+import { toSeconds } from './parsers/duration.js';
 
 export function getValidStartAndEnd(
 	start: number | null | undefined,

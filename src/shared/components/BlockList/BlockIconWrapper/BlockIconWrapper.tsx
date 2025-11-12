@@ -2,11 +2,11 @@ import { Container, Icon } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC } from 'react';
 
-import { type ContentTypeNumber } from '../../../../collection/collection.types';
+import { type ContentTypeNumber } from '../../../../collection/collection.types.js';
 
 import './BlockIconWrapper.scss';
-import { BLOCK_TYPE_TO_ICON_NAME } from './BlockIconWrapper.consts';
-import { getBlockType } from './BlockIconWrapper.helpers';
+import { BLOCK_TYPE_TO_ICON_NAME } from './BlockIconWrapper.consts.js';
+import { getBlockType } from './BlockIconWrapper.helpers.js';
 
 interface BlockIconWrapperProps {
 	backgroundColor?: string;

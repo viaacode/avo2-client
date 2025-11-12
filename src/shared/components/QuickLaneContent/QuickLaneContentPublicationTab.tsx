@@ -1,19 +1,19 @@
-import { Button, Spacer } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { compact, map } from 'lodash-es';
-import React, { type FC, useEffect, useState } from 'react';
+import {Button, Spacer} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {compact} from 'es-toolkit';
+import React, {type FC, useEffect, useState} from 'react';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { CollectionService } from '../../../collection/collection.service';
-import { tText } from '../../helpers/translate-text';
-import { EducationLevelsField } from '../EducationLevelsField/EducationLevelsField';
-import { LomFieldsInput } from '../LomFieldsInput/LomFieldsInput';
-import { ShortDescriptionField } from '../ShortDescriptionField/ShortDescriptionField';
-import { SubjectsField } from '../SubjectsField/SubjectsField';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {CollectionService} from '../../../collection/collection.service.js';
+import {tText} from '../../helpers/translate-text.js';
+import {EducationLevelsField} from '../EducationLevelsField/EducationLevelsField.js';
+import {LomFieldsInput} from '../LomFieldsInput/LomFieldsInput.js';
+import {ShortDescriptionField} from '../ShortDescriptionField/ShortDescriptionField.js';
+import {SubjectsField} from '../SubjectsField/SubjectsField.js';
 
-import { isShareable } from './QuickLaneContent.helpers';
-import { type QuickLaneContentProps, QuickLaneTypeEnum } from './QuickLaneContent.types';
+import {isShareable} from './QuickLaneContent.helpers.js';
+import {type QuickLaneContentProps, QuickLaneTypeEnum} from './QuickLaneContent.types.js';
 
 interface QuickLaneContentPublicationTabProps {
 	onComplete?: () => void;
@@ -70,7 +70,7 @@ export const QuickLaneContentPublicationTab: FC<
 		<>
 			{(model as Avo.Collection.Collection)?.loms ? (
 				<LomFieldsInput
-					loms={compact(map((model as Avo.Collection.Collection).loms, 'lom'))}
+					loms={compact(((model as Avo.Collection.Collection).loms?.map(lom => lom.lom)) || [])}
 					onChange={handleLomsChange}
 				/>
 			) : (

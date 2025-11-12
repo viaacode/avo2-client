@@ -1,46 +1,36 @@
-import { ExportAllToCsvModal, FilterTable, getFilters } from '@meemoo/admin-core-ui/admin';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import React, { type FC, type ReactNode, useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
+import {ExportAllToCsvModal, FilterTable, getFilters} from '@meemoo/admin-core-ui/admin';
+import {type Avo, PermissionName} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import React, {type FC, type ReactNode, useEffect, useMemo, useState} from 'react';
+import {Helmet} from 'react-helmet';
 
-import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import {
-	GET_MARCOM_CHANNEL_NAME_OPTIONS,
-	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
-} from '../../../collection/collection.const';
-import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views/ErrorView';
-import { OrderDirection } from '../../../search/search.const';
-import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
-import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
-import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
-import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import { ToastService } from '../../../shared/services/toast-service';
-import { NULL_FILTER } from '../../shared/helpers/filters';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
-import { AssignmentsAdminService } from '../assignments.admin.service';
-import { GET_ASSIGNMENT_MARCOM_COLUMNS, ITEMS_PER_PAGE } from '../assignments.const';
-import {
-	type AssignmentMarcomTableState,
-	AssignmentsBulkAction,
-	type AssignmentSortProps,
-} from '../assignments.types';
-import {
-	renderAssignmentMarcomCellReact,
-	renderAssignmentsMarcomCellText,
-} from '../helpers/render-assignment-columns';
-import { useGetAssignmentsWithMarcomForAdminOverview } from '../hooks/useGetAssignmentsWithMarcomForAdminOverview';
+import {type AssignmentTableColumns} from '../../../assignment/assignment.types.js';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {PermissionGuard} from '../../../authentication/components/PermissionGuard.js';
+import {GET_MARCOM_CHANNEL_NAME_OPTIONS, GET_MARCOM_CHANNEL_TYPE_OPTIONS,} from '../../../collection/collection.const.js';
+import {GENERATE_SITE_TITLE} from '../../../constants.js';
+import {ErrorView} from '../../../error/views/ErrorView.js';
+
+import {type CheckboxOption} from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
+import {FullPageSpinner} from '../../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import {CustomError} from '../../../shared/helpers/custom-error.js';
+import {tableColumnListToCsvColumnList} from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {useCompaniesWithUsers} from '../../../shared/hooks/useCompanies.js';
+import {useLomEducationLevelsAndDegrees} from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js';
+import {useLomSubjects} from '../../../shared/hooks/useLomSubjects.js';
+import {useQualityLabels} from '../../../shared/hooks/useQualityLabels.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {NULL_FILTER} from '../../shared/helpers/filters.js';
+import {AdminLayout} from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import {AdminLayoutBody} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import {useUserGroups} from '../../user-groups/hooks/useUserGroups.js';
+import {AssignmentsAdminService} from '../assignments.admin.service.js';
+import {GET_ASSIGNMENT_MARCOM_COLUMNS, ITEMS_PER_PAGE} from '../assignments.const.js';
+import {type AssignmentMarcomTableState, AssignmentsBulkAction, type AssignmentSortProps,} from '../assignments.types.js';
+import {renderAssignmentMarcomCellReact, renderAssignmentsMarcomCellText,} from '../helpers/render-assignment-columns.js';
+import {useGetAssignmentsWithMarcomForAdminOverview} from '../hooks/useGetAssignmentsWithMarcomForAdminOverview.js';
 
 export const AssignmentMarcomOverview: FC = () => {
 	const commonUser = useAtomValue(commonUserAtom);
@@ -309,7 +299,7 @@ export const AssignmentMarcomOverview: FC = () => {
 							0,
 							0,
 							(tableState.sort_column || 'created_at') as AssignmentSortProps,
-							tableState.sort_order || OrderDirection.desc,
+							tableState.sort_order || Avo.Search.OrderDirection.DESC,
 							getFilters(tableState),
 							false
 						);
@@ -320,7 +310,7 @@ export const AssignmentMarcomOverview: FC = () => {
 							offset,
 							limit,
 							(tableState.sort_column || 'created_at') as AssignmentSortProps,
-							tableState.sort_order || OrderDirection.desc,
+							tableState.sort_order || Avo.Search.OrderDirection.DESC,
 							getFilters(tableState),
 							false
 						);

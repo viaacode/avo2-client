@@ -1,17 +1,18 @@
-import { Alert, Select, Spacer } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import { pullAllBy, remove, uniq } from 'lodash-es';
-import React, { type FC, useEffect, useState } from 'react';
+import {Alert, Select, Spacer} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import {remove, uniq} from 'es-toolkit';
+import React, {type FC, useEffect, useState} from 'react';
 
-import { CustomError } from '../../helpers/custom-error';
-import { stringsToTagList } from '../../helpers/strings-to-taglist';
-import { tHtml } from '../../helpers/translate-html';
-import { tText } from '../../helpers/translate-text';
-import { EducationOrganisationService } from '../../services/education-organizations-service';
-import { ToastService } from '../../services/toast-service';
+import {CustomError} from '../../helpers/custom-error.js';
+import {stringsToTagList} from '../../helpers/strings-to-taglist.js';
+import {tHtml} from '../../helpers/translate-html.js';
+import {tText} from '../../helpers/translate-text.js';
+import {EducationOrganisationService} from '../../services/education-organizations-service.js';
+import {ToastService} from '../../services/toast-service.js';
 
 import './EducationalOrganisationsSelect.scss';
+import {pullAllBy} from "es-toolkit/compat";
 
 interface EducationalOrganisationsSelectProps {
 	organisations: Avo.EducationOrganization.Organization[];

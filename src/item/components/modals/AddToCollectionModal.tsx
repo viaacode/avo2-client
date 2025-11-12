@@ -17,28 +17,28 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { once } from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import {Avo} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {once} from 'es-toolkit';
+import React, {type FC, useCallback, useEffect, useMemo, useState} from 'react';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { CollectionService } from '../../../collection/collection.service';
-import { CollectionOrBundle, ContentTypeNumber } from '../../../collection/collection.types';
-import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
-import { OrderDirection } from '../../../search/search.const';
-import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
-import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
-import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
-import { isMobileWidth } from '../../../shared/helpers/media-query';
-import { toSeconds } from '../../../shared/helpers/parsers/duration';
-import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { trackEvents } from '../../../shared/services/event-logging-service';
-import { ToastService } from '../../../shared/services/toast-service';
-import { VideoStillService } from '../../../shared/services/video-stills-service';
-import { ItemVideoDescription } from '../ItemVideoDescription';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {CollectionService} from '../../../collection/collection.service.js';
+import {CollectionOrBundle, ContentTypeNumber} from '../../../collection/collection.types.js';
+import {canManageEditorial} from '../../../collection/helpers/can-manage-editorial.js';
+import {OrderDirection} from '../../../search/search.const.js';
+import {TimeCropControls} from '../../../shared/components/TimeCropControls/TimeCropControls.js';
+import {DEFAULT_AUDIO_STILL} from '../../../shared/constants/index.js';
+import {getValidStartAndEnd} from '../../../shared/helpers/cut-start-and-end.js';
+import {isMobileWidth} from '../../../shared/helpers/media-query.js';
+import {toSeconds} from '../../../shared/helpers/parsers/duration.js';
+import {setModalVideoSeekTime} from '../../../shared/helpers/set-modal-video-seek-time.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {trackEvents} from '../../../shared/services/event-logging-service.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {VideoStillService} from '../../../shared/services/video-stills-service.js';
+import {ItemVideoDescription} from '../ItemVideoDescription.js';
 
 import './AddToCollectionModal.scss';
 
@@ -76,7 +76,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
 				commonUser,
 				0,
 				500,
-				{ created_at: OrderDirection.desc },
+				{ created_at: Avo.Search.OrderDirection.DESC },
 				ContentTypeNumber.collection,
 				undefined,
 				undefined,
@@ -177,7 +177,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
 			custom_description: null,
 			collection_uuid: collection.id,
 			item_meta: itemMetaData,
-			type: 'ITEM',
+			type: Avo.Core.BlockItemType.ITEM,
 			thumbnail_path: fragmentStartTime
 				? await VideoStillService.getVideoStill(
 						externalId,

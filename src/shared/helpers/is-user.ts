@@ -1,8 +1,8 @@
-import { type Avo } from '@viaa/avo2-types/types';
+import {type Avo} from '@viaa/avo2-types';
 
-import { EducationLevelId } from './lom';
+import {EducationLevelId} from './lom.js';
 
-type UserLomsAndUserGroup = Pick<Avo.User.CommonUser, 'loms' | 'userGroup'>;
+type UserLomsAndUserGroup = Partial<Pick<Avo.User.CommonUser, 'loms' | 'userGroup'>>;
 
 /**
  * @param user The user to evaluate
@@ -18,11 +18,21 @@ export function isUserSecondaryElementary(user: UserLomsAndUserGroup | null | un
 	]);
 }
 
+/**
+ * Checks if the lom values of a user are matching the provided educational level
+ * @param user
+ * @param levels
+ */
 export function isUserLevel(
 	user: Partial<Pick<UserLomsAndUserGroup, 'loms'>>,
 	levels: EducationLevelId[]
 ) {
 	return levels.every(
-		(level) => user.loms?.find(({ lom, lom_id }) => (lom_id || lom?.id) === level)
+		(level) => {
+			const userLoms = (user.loms || []) as Avo.Lom.Lom[];
+			return userLoms.find(({ lom, lom_id }) => {
+				return (lom_id || lom?.id) === level
+			})
+		}
 	);
 }

@@ -11,10 +11,10 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { noop } from 'lodash-es';
+import { noop } from 'es-toolkit';
 import React, { type FC, type ReactNode, useState } from 'react';
 
-import { tHtml } from '../../shared/helpers/translate-html';
+import { tHtml } from '../../shared/helpers/translate-html.js';
 
 interface CreateAssignmentModalProps {
 	isOpen: boolean;

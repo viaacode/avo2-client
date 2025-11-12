@@ -15,7 +15,7 @@ import {
 import React, { type FC, type ReactNode } from 'react';
 
 import './TopBar.scss';
-import { tText } from '../../../../shared/helpers/translate-text';
+import { tText } from '../../../../shared/helpers/translate-text.js';
 
 interface TopbarProps {
 	onClickBackButton?: () => void;

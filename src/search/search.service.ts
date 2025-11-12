@@ -1,12 +1,12 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
-import { type Avo } from '@viaa/avo2-types';
-import { get, set } from 'lodash-es';
+import {fetchWithLogoutJson} from '@meemoo/admin-core-ui/client';
+import {Avo} from '@viaa/avo2-types';
+import {set} from 'es-toolkit/compat';
 
-import { getEnv } from '../shared/helpers/env';
+import {getEnv} from '../shared/helpers/env.js';
 
 export const fetchSearchResults = (
 	orderProperty: Avo.Search.OrderProperty = 'relevance',
-	orderDirection: Avo.Search.OrderDirection = 'desc',
+	orderDirection = Avo.Search.OrderDirection.DESC,
 	from = 0,
 	size: number,
 	filters?: Partial<Avo.Search.Filters>,
@@ -17,8 +17,8 @@ export const fetchSearchResults = (
 	const controller = new AbortController();
 
 	if (filters) {
-		const gte = get(filters, 'broadcastDate.gte');
-		const lte = get(filters, 'broadcastDate.lte');
+		const gte = filters?.broadcastDate?.gte;
+		const lte = filters?.broadcastDate?.lte;
 		if (gte) {
 			set(filters, 'broadcastDate.gte', gte.split(' ')[0]);
 		}

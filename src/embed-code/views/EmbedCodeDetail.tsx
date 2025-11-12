@@ -1,6 +1,6 @@
 import './EmbedCodeDetail.scss';
 
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
 import {
 	Alert,
 	Button,
@@ -16,29 +16,30 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import { useAtomValue } from 'jotai';
-import { noop } from 'lodash-es';
-import React, { type FC, type ReactNode, useCallback, useEffect, useMemo } from 'react';
-import { Helmet } from 'react-helmet';
-import { generatePath, useNavigate, useParams } from 'react-router';
+import {type Avo, PermissionName} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import {useAtomValue} from 'jotai';
+import {noop} from 'es-toolkit';
+import React, {type FC, type ReactNode, useCallback, useEffect, useMemo} from 'react';
+import {Helmet} from 'react-helmet';
+import {generatePath, useNavigate, useParams} from 'react-router';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorView } from '../../error/views/ErrorView';
-import { ItemVideoDescription } from '../../item/components/ItemVideoDescription';
-import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
-import { renderAvatar } from '../../shared/helpers/formatters/avatar';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { toSeconds } from '../../shared/helpers/parsers/duration';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { trackEvents } from '../../shared/services/event-logging-service';
-import { createResource } from '../helpers/resourceForTrackEvents';
-import { useGetEmbedCode } from '../hooks/useGetEmbedCode';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {APP_PATH, GENERATE_SITE_TITLE} from '../../constants.js';
+import {ErrorView} from '../../error/views/ErrorView.js';
+import {ItemVideoDescription} from '../../item/components/ItemVideoDescription.js';
+import {getValidStartAndEnd} from '../../shared/helpers/cut-start-and-end.js';
+import {renderAvatar} from '../../shared/helpers/formatters/avatar.js';
+import {isMobileWidth} from '../../shared/helpers/media-query.js';
+import {toSeconds} from '../../shared/helpers/parsers/duration.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {BookmarksViewsPlaysService} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
+import {trackEvents} from '../../shared/services/event-logging-service.js';
+import {createResource} from '../helpers/resourceForTrackEvents.js';
+import {useGetEmbedCode} from '../hooks/useGetEmbedCode.js';
+import {EmbedCodeContentType} from "../embed-code.types.ts";
 
 export const EmbedCodeDetail: FC = () => {
 	const navigateFunc = useNavigate();
@@ -57,7 +58,7 @@ export const EmbedCodeDetail: FC = () => {
 			return false;
 		}
 
-		if (embedCode.contentType === 'ITEM') {
+		if (embedCode.contentType === EmbedCodeContentType.item) {
 			return PermissionService.hasPerm(commonUser, PermissionName.VIEW_ANY_PUBLISHED_ITEMS);
 		} else {
 			return false;
@@ -69,7 +70,7 @@ export const EmbedCodeDetail: FC = () => {
 			return null;
 		}
 
-		if (embedCode.contentType === 'ITEM') {
+		if (embedCode.contentType === EmbedCodeContentType.item) {
 			trackEvents(
 				{
 					object: embedCode.id,
@@ -132,7 +133,7 @@ export const EmbedCodeDetail: FC = () => {
 		);
 
 		switch (contentLabel) {
-			case 'ITEM':
+			case EmbedCodeContentType.item:
 				return (
 					<ItemVideoDescription
 						itemMetaData={content}
@@ -170,7 +171,7 @@ export const EmbedCodeDetail: FC = () => {
 
 		let path: string | undefined;
 
-		if (embedCode?.contentType === 'ITEM') {
+		if (embedCode?.contentType === EmbedCodeContentType.item) {
 			path = generatePath(APP_PATH.ITEM_DETAIL.route, {
 				id: (embedCode.content as Avo.Item.Item).external_id.toString(),
 			});

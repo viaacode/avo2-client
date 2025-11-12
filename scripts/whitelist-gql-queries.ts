@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import glob from 'glob';
-import { snakeCase } from 'lodash';
+import {snakeCase} from 'es-toolkit';
 
 const extractNameRegex = /(query|mutation) ([^\s(]+)(.*)/gm;
 

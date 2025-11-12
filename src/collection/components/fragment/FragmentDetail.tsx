@@ -1,15 +1,15 @@
-import { BlockIntro } from '@meemoo/admin-core-ui/client';
-import { type Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
-import React, { type FC } from 'react';
+import {BlockIntro} from '@meemoo/admin-core-ui/client';
+import {type Avo} from '@viaa/avo2-types';
 
-import { APP_PATH } from '../../../constants';
-import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription';
-import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
-import { buildLink } from '../../../shared/helpers/build-link';
-import { isMobileWidth } from '../../../shared/helpers/media-query';
-import { ContentTypeNumber } from '../../collection.types';
-import { getFragmentProperty } from '../../helpers/fragment';
+import React, {type FC} from 'react';
+
+import {APP_PATH} from '../../../constants.js';
+import {ItemVideoDescription} from '../../../item/components/ItemVideoDescription.js';
+import {DEFAULT_AUDIO_STILL} from '../../../shared/constants/index.js';
+import {buildLink} from '../../../shared/helpers/build-link.js';
+import {isMobileWidth} from '../../../shared/helpers/media-query.js';
+import {ContentTypeNumber} from '../../collection.types.js';
+import {getFragmentProperty} from '../../helpers/fragment.js';
 
 import './FragmentDetail.scss';
 
@@ -34,7 +34,7 @@ export const FragmentDetail: FC<FragmentDetailProps> = ({
 	showMetadata,
 	linkToItems,
 }) => {
-	if (get(collectionFragment, 'item_meta.type.label') === 'audio') {
+	if ((collectionFragment?.item_meta as Avo.Item.Item)?.type?.label === 'audio') {
 		collectionFragment.thumbnail_path = DEFAULT_AUDIO_STILL;
 	}
 

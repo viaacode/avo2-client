@@ -2,7 +2,7 @@ import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import { ContentInput, Flex, Icon, IconName } from '@viaa/avo2-components';
 import React, { type FC, useMemo, useState } from 'react';
 
-import { tText } from '../../shared/helpers/translate-text';
+import { tText } from '../../shared/helpers/translate-text.js';
 
 type CollectionOrBundleTitleProps = {
 	initialTitle: string | undefined;

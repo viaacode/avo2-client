@@ -1,7 +1,7 @@
-import { type Avo, LomSchemeType, type LomType } from '@viaa/avo2-types';
-import { compact, groupBy, map } from 'lodash-es';
+import {type Avo, LomSchemeType, type LomType} from '@viaa/avo2-types';
+import {compact, groupBy} from 'es-toolkit';
 
-import { type LomFieldsByScheme } from '../types/lom';
+import {type LomFieldsByScheme} from '../types/lom.js';
 
 export enum EducationLevelId {
 	kleuteronderwijs = 'https://w3id.org/onderwijs-vlaanderen/id/structuur/kleuteronderwijs',
@@ -22,7 +22,7 @@ export enum EducationLevelType {
 const EDUCATION_LEVEL_IDS = Object.values(EducationLevelId);
 
 export const groupLoms = (loms: Avo.Lom.LomField[] | undefined | null): LomFieldsByScheme => {
-	const groupedLoms = groupBy(loms || [], (lom) => lom?.scheme);
+	const groupedLoms = groupBy(loms || [], (lom) => lom?.scheme || '');
 
 	return {
 		educationLevel: (groupedLoms[LomSchemeType.structure] || []).filter((lom) =>
@@ -39,7 +39,7 @@ export const groupLoms = (loms: Avo.Lom.LomField[] | undefined | null): LomField
 export const groupLomLinks = (lomLinks: Avo.Lom.Lom[] | undefined | null): LomFieldsByScheme => {
 	const groupedLoms = groupBy(
 		compact((lomLinks || []).map((lomLink) => lomLink.lom)),
-		(lom) => lom?.scheme
+		(lom) => lom?.scheme || ''
 	);
 
 	return {
@@ -56,12 +56,12 @@ export const groupLomLinks = (lomLinks: Avo.Lom.Lom[] | undefined | null): LomFi
 
 export const getGroupedLomsKeyValue = (
 	loms: Avo.Lom.Lom[],
-	lomKey: string
+	lomKey: keyof Avo.Lom.LomField
 ): Record<LomType, string[]> => {
 	return Object.fromEntries(
-		Object.entries(groupLoms(compact(map(loms, 'lom')))).map(([key, value]) => [
+		Object.entries(groupLoms(compact(loms.map(lom => lom.lom)))).map(([key, value]) => [
 			key,
-			map(value, lomKey),
+			value.map(val => val[lomKey]),
 		])
 	) as Record<LomType, string[]>;
 };

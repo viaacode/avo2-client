@@ -1,8 +1,8 @@
 import { IconName } from '@viaa/avo2-components';
 import React from 'react';
 
-import { GET_ERROR_MESSAGES } from '../../dynamic-route-resolver/dynamic-route-resolver.const';
-import { ErrorView } from '../../error/views/ErrorView';
+import { GET_ERROR_MESSAGES } from '../../dynamic-route-resolver/dynamic-route-resolver.const.js';
+import { ErrorView } from '../../error/views/ErrorView.js';
 
 export function renderWrongUserRoleError() {
 	return (

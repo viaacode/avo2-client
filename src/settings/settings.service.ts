@@ -1,8 +1,8 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 import { type Avo } from '@viaa/avo2-types';
 
-import { CustomError } from '../shared/helpers/custom-error';
-import { getEnv } from '../shared/helpers/env';
+import { CustomError } from '../shared/helpers/custom-error.js';
+import { getEnv } from '../shared/helpers/env.js';
 
 export class SettingsService {
 	public static async updateProfileInfo(

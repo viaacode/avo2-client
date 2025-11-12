@@ -15,31 +15,27 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import {Avo} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import React, {type FC, useCallback, useEffect, useState} from 'react';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { trackEvents } from '../../../shared/services/event-logging-service';
-import { ToastService } from '../../../shared/services/toast-service';
-import { VideoStillService } from '../../../shared/services/video-stills-service';
-import { CollectionService } from '../../collection.service';
-import {
-	CollectionFragmentType,
-	CollectionOrBundle,
-	ContentTypeNumber,
-} from '../../collection.types';
-import { canManageEditorial } from '../../helpers/can-manage-editorial';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {CustomError} from '../../../shared/helpers/custom-error.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {trackEvents} from '../../../shared/services/event-logging-service.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {VideoStillService} from '../../../shared/services/video-stills-service.js';
+import {CollectionService} from '../../collection.service.js';
+import {CollectionOrBundle, ContentTypeNumber,} from '../../collection.types.js';
+import {canManageEditorial} from '../../helpers/can-manage-editorial.js';
 
 import './AddToBundleModal.scss';
 
 interface AddToBundleModalProps {
 	fragmentId: string;
 	fragmentInfo: Avo.Collection.Collection | Avo.Assignment.Assignment;
-	fragmentType: CollectionFragmentType;
+	fragmentType: Avo.Core.BlockItemType;
 	isOpen: boolean;
 	onClose: () => void;
 }
@@ -150,7 +146,7 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
 			await CollectionService.insertFragments(bundle.id, [fragment]);
 
 			ToastService.success(
-				fragmentType === CollectionFragmentType.COLLECTION
+				fragmentType === Avo.Core.BlockItemType.COLLECTION
 					? tHtml(
 							'collection/components/modals/add-to-bundle-modal___de-collectie-is-toegevoegd-aan-de-bundel'
 					  )
@@ -170,7 +166,7 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
-				fragmentType === CollectionFragmentType.COLLECTION
+				fragmentType === Avo.Core.BlockItemType.COLLECTION
 					? tHtml(
 							'collection/components/modals/add-to-bundle-modal___de-collectie-kon-niet-worden-toegevoegd-aan-de-bundel'
 					  )

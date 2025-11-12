@@ -5,13 +5,13 @@ import { type Avo } from '@viaa/avo2-types';
 import {
 	type CheckboxDropdownModalProps,
 	type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import { ROUTE_PARTS } from '../../shared/constants';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { tText } from '../../shared/helpers/translate-text';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type';
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
+import { ROUTE_PARTS } from '../../shared/constants/index.js';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type.js';
 
-import { type ItemsOverviewTableCols, type UnpublishedItemsOverviewTableCols } from './items.types';
+import { type ItemsOverviewTableCols, type UnpublishedItemsOverviewTableCols } from './items.types.js';
 
 export const ITEMS_PATH = {
 	ITEMS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.items}`,

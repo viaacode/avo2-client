@@ -1,57 +1,48 @@
-import {
-	ExportAllToCsvModal,
-	type FilterableColumn,
-	FilterTable,
-	getFilters,
-} from '@meemoo/admin-core-ui/admin';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { noop } from 'lodash-es';
-import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { useLocation } from 'react-router-dom';
+import {ExportAllToCsvModal, type FilterableColumn, FilterTable, getFilters,} from '@meemoo/admin-core-ui/admin';
+import {type Avo, PermissionName} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {noop} from 'es-toolkit';
+import React, {type FC, type ReactNode, useCallback, useEffect, useMemo, useState} from 'react';
+import {Helmet} from 'react-helmet';
+import {useLocation} from 'react-router-dom';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views/ErrorView';
-import { OrderDirection } from '../../../search/search.const';
-import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {PermissionGuard} from '../../../authentication/components/PermissionGuard.js';
+import {GENERATE_SITE_TITLE} from '../../../constants.js';
+import {ErrorView} from '../../../error/views/ErrorView.js';
+
+import {type CheckboxOption} from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
-import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
-import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
-import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import { ToastService } from '../../../shared/services/toast-service';
-import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
-import { NULL_FILTER } from '../../shared/helpers/filters';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
-import {
-	COLLECTIONS_OR_BUNDLES_PATH,
-	GET_COLLECTION_QUALITY_CHECK_COLUMNS,
-	ITEMS_PER_PAGE,
-} from '../collections-or-bundles.const';
-import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {CustomError} from '../../../shared/helpers/custom-error.js';
+import {tableColumnListToCsvColumnList} from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {useCompaniesWithUsers} from '../../../shared/hooks/useCompanies.js';
+import {useLomEducationLevelsAndDegrees} from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js';
+import {useLomSubjects} from '../../../shared/hooks/useLomSubjects.js';
+import {useQualityLabels} from '../../../shared/hooks/useQualityLabels.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {TableColumnDataType} from '../../../shared/types/table-column-data-type.js';
+import {NULL_FILTER} from '../../shared/helpers/filters.js';
+import {AdminLayout} from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import {AdminLayoutBody} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import {useUserGroups} from '../../user-groups/hooks/useUserGroups.js';
+import {COLLECTIONS_OR_BUNDLES_PATH, GET_COLLECTION_QUALITY_CHECK_COLUMNS, ITEMS_PER_PAGE,} from '../collections-or-bundles.const.js';
+import {CollectionsOrBundlesService} from '../collections-or-bundles.service.js';
 import {
 	CollectionBulkAction,
 	type CollectionOrBundleQualityCheckOverviewTableCols,
 	type CollectionOrBundleQualityCheckTableState,
 	type CollectionSortProps,
 	EditorialType,
-} from '../collections-or-bundles.types';
+} from '../collections-or-bundles.types.js';
 import {
 	renderCollectionOrBundleQualityCheckCellReact,
 	renderCollectionOrBundleQualityCheckCellText,
-} from '../helpers/render-collection-columns';
+} from '../helpers/render-collection-columns.js';
 
 export const CollectionOrBundleQualityCheckOverview: FC = () => {
 	const location = useLocation();
@@ -176,7 +167,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
 					(tableState.sort_column || 'updated_at') as CollectionSortProps,
-					tableState.sort_order || OrderDirection.desc,
+					tableState.sort_order || Avo.Search.OrderDirection.DESC,
 					getFilters(tableState),
 					EditorialType.QUALITY_CHECK,
 					isCollection,
@@ -364,7 +355,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
 							0,
 							0,
 							(tableState.sort_column || 'created_at') as CollectionSortProps,
-							tableState.sort_order || OrderDirection.desc,
+							tableState.sort_order || Avo.Search.OrderDirection.DESC,
 							getFilters(tableState),
 							EditorialType.QUALITY_CHECK,
 							isCollection,
@@ -377,7 +368,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
 							offset,
 							limit,
 							(tableState.sort_column || 'created_at') as CollectionSortProps,
-							tableState.sort_order || OrderDirection.desc,
+							tableState.sort_order || Avo.Search.OrderDirection.DESC,
 							getFilters(tableState),
 							EditorialType.QUALITY_CHECK,
 							isCollection,

@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
 import {
 	Button,
 	Container,
@@ -20,32 +20,33 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { compact, get, isEmpty } from 'lodash-es';
-import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { useNavigate, useParams } from 'react-router';
-import { useLocation } from 'react-router-dom';
+import {PermissionName} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {compact} from 'es-toolkit';
+import {isEmpty} from 'es-toolkit/compat';
+import React, {type FC, type ReactText, useCallback, useEffect, useState} from 'react';
+import {Helmet} from 'react-helmet';
+import {useNavigate, useParams} from 'react-router';
+import {useLocation} from 'react-router-dom';
 
-import { AssignmentOverview } from '../../assignment/views/AssignmentOverview';
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
-import { CollectionOrBundle } from '../../collection/collection.types';
-import { CollectionOrBundleOverview } from '../../collection/components/CollectionOrBundleOverview';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { EmbedCodeOverview } from '../../embed-code/components/EmbedCodeOverview';
-import { ControlledDropdown } from '../../shared/components/ControlledDropdown/ControlledDropdown';
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import {AssignmentOverview} from '../../assignment/views/AssignmentOverview.js';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {redirectToClientPage} from '../../authentication/helpers/redirects/redirect-to-client-page.js';
+import {CollectionOrBundle} from '../../collection/collection.types.js';
+import {CollectionOrBundleOverview} from '../../collection/components/CollectionOrBundleOverview.js';
+import {APP_PATH, GENERATE_SITE_TITLE} from '../../constants.js';
+import {EmbedCodeOverview} from '../../embed-code/components/EmbedCodeOverview.js';
+import {ControlledDropdown} from '../../shared/components/ControlledDropdown/ControlledDropdown.js';
+import {InteractiveTour} from '../../shared/components/InteractiveTour/InteractiveTour.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { buildLink } from '../../shared/helpers/build-link';
-import { navigate } from '../../shared/helpers/link';
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import { useGetWorkspaceCounts } from '../hooks/useGetWorkspaceCounts';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {buildLink} from '../../shared/helpers/build-link.js';
+import {navigate} from '../../shared/helpers/link.js';
+import {renderMobileDesktop} from '../../shared/helpers/renderMobileDesktop.js';
+import {useGetWorkspaceCounts} from '../hooks/useGetWorkspaceCounts.js';
 import {
 	ASSIGNMENTS_ID,
 	BOOKMARKS_ID,
@@ -56,16 +57,16 @@ import {
 	ORGANISATION_CONTENT_ID,
 	QUICK_LANE_ID,
 	WORKSPACE_TAB_ID_TO_COUNT_ID,
-} from '../workspace.const';
-import { type NavTab, type TabFilter, type TabView, type TabViewMap } from '../workspace.types';
+} from '../workspace.const.js';
+import {type NavTab, type TabFilter, type TabView, type TabViewMap} from '../workspace.types.js';
 
-import { BookmarksOverview } from './BookmarksOverview';
-import { OrganisationContentOverview } from './OrganisationContentOverview';
-import { QuickLaneOverview } from './QuickLaneOverview';
+import {BookmarksOverview} from './BookmarksOverview.js';
+import {OrganisationContentOverview} from './OrganisationContentOverview.js';
+import {QuickLaneOverview} from './QuickLaneOverview.js';
 
 import './Workspace.scss';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
 
 interface WorkspacePermissions {
 	canViewOwnCollections?: boolean;
@@ -385,7 +386,7 @@ export const Workspace: FC = () => {
 	};
 
 	const renderToolbar = (tabs: NavTab[], activeTab: TabView) => {
-		const filter = get(activeTab, 'filter', null);
+		const filter = activeTab?.filter || null;
 
 		return filter ? (
 			<Toolbar autoHeight>

@@ -1,13 +1,13 @@
 import { type Avo } from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 
-import { ITEMS_PER_PAGE } from '../admin/pupil-collection/pupil-collection.const';
-import { type ItemTrimInfo } from '../item/item.types';
-import { CustomError } from '../shared/helpers/custom-error';
-import { getEnv } from '../shared/helpers/env';
-import { type TableColumnDataType } from '../shared/types/table-column-data-type';
+import { ITEMS_PER_PAGE } from '../admin/pupil-collection/pupil-collection.const.js';
+import { type ItemTrimInfo } from '../item/item.types.js';
+import { CustomError } from '../shared/helpers/custom-error.js';
+import { getEnv } from '../shared/helpers/env.js';
+import { type TableColumnDataType } from '../shared/types/table-column-data-type.js';
 
-import { type PupilCollectionOverviewTableColumns } from './pupil-collection.types';
+import { type PupilCollectionOverviewTableColumns } from './pupil-collection.types.js';
 
 export class PupilCollectionService {
 	static async fetchPupilCollectionsForAdmin(

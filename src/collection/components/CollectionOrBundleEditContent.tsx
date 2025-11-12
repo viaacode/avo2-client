@@ -1,22 +1,22 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { Alert, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { get, isNil } from 'lodash-es';
-import React, { type FC, type ReactNode, useEffect, useState } from 'react';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
+import {Alert, Container, Icon, IconName, Spacer} from '@viaa/avo2-components';
+import {type Avo, PermissionName} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {isNil} from 'es-toolkit';
+import React, {type FC, type ReactNode, useEffect, useState} from 'react';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { ToastService } from '../../shared/services/toast-service';
-import { type CollectionOrBundle } from '../collection.types';
-import FragmentEdit from '../components/fragment/FragmentEdit';
-import { showReplacementWarning } from '../helpers/fragment';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {type CollectionOrBundle} from '../collection.types.js';
+import FragmentEdit from '../components/fragment/FragmentEdit.js';
+import {showReplacementWarning} from '../helpers/fragment.js';
 
-import { type CollectionAction } from './CollectionOrBundleEdit.types';
-import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
-import { FragmentAdd } from './fragment/FragmentAdd';
+import {type CollectionAction} from './CollectionOrBundleEdit.types.js';
+import {COLLECTION_SAVE_DELAY} from './CollectionOrBundleEditContent.consts.js';
+import {FragmentAdd} from './fragment/FragmentAdd.js';
 
 import './CollectionOrBundleEditContent.scss';
 
@@ -65,10 +65,7 @@ export const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProp
 	}, [commonUser]);
 
 	const getFragmentKey = (fragment: Avo.Collection.Fragment) => {
-		return `fragment_${fragment.id}-${get(fragment, 'created_at')}-${get(
-			fragment,
-			'position'
-		)}`;
+		return `fragment_${fragment.id}-${fragment?.created_at}-${fragment?.position}`;
 	};
 
 	const handleChangedCollectionState = (action: CollectionAction, startIndex: number) => {

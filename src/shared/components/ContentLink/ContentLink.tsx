@@ -1,11 +1,11 @@
-import { Flex, FlexItem, Spacer, Thumbnail } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import React, { type FC } from 'react';
-import { Link } from 'react-router-dom';
+import {Flex, FlexItem, Spacer, Thumbnail} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import React, {type FC} from 'react';
+import {Link} from 'react-router-dom';
 
-import { CONTENT_LABEL_TO_ROUTE_PARTS } from '../../../assignment/assignment.const';
-import { CONTENT_TYPE_TRANSLATIONS } from '../../../collection/collection.types';
-import { tHtml } from '../../helpers/translate-html';
+import {CONTENT_LABEL_TO_ROUTE_PARTS} from '../../../assignment/assignment.const.js';
+import {CONTENT_TYPE_TRANSLATIONS_NL_TO_EN} from '../../../collection/collection.types.js';
+import {tHtml} from '../../helpers/translate-html.js';
 
 type ParentType = {
 	content_label: string | null;
@@ -27,7 +27,7 @@ export const ContentLink: FC<ContentLinkProps> = ({ parent, content }) => {
 				<Spacer margin="right">
 					<Thumbnail
 						className="m-content-thumbnail"
-						category={CONTENT_TYPE_TRANSLATIONS[dutchLabel]}
+						category={CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[dutchLabel]}
 						src={content?.thumbnail_path || undefined}
 					/>
 				</Spacer>

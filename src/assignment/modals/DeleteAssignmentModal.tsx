@@ -1,9 +1,9 @@
-import { noop } from 'lodash-es';
+import { noop } from 'es-toolkit';
 import React, { type FC, type ReactNode } from 'react';
 
-import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
 
 interface DeleteAssignmentModalProps {
 	isOpen: boolean;

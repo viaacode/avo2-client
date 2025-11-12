@@ -1,8 +1,8 @@
-import { compact, isNil } from 'lodash-es';
+import { compact, isNil } from 'es-toolkit';
 
-import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
-import { tText } from '../../shared/helpers/translate-text';
-import { type EmbedCode } from '../embed-code.types';
+import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { type EmbedCode } from '../embed-code.types.js';
 
 // Validation
 type ValidationRule<T> = {

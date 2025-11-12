@@ -17,13 +17,13 @@ import { useAtomValue } from 'jotai';
 import type { Requests } from 'node-zendesk';
 import React, { type FC, useState } from 'react';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { getFullNameCommonUser } from '../../../shared/helpers/formatters/avatar';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { trackEvents } from '../../../shared/services/event-logging-service';
-import { ToastService } from '../../../shared/services/toast-service';
-import { ZendeskService } from '../../../shared/services/zendesk-service';
+import { commonUserAtom } from '../../../authentication/authentication.store.js';
+import { getFullNameCommonUser } from '../../../shared/helpers/formatters/avatar.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { trackEvents } from '../../../shared/services/event-logging-service.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { ZendeskService } from '../../../shared/services/zendesk-service.js';
 
 interface ReportItemModalProps {
 	externalId: string;

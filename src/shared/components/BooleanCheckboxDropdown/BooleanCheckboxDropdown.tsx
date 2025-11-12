@@ -1,11 +1,11 @@
 import React, { type FC } from 'react';
 
-import { NULL_FILTER } from '../../../admin/shared/helpers/filters';
-import { tText } from '../../helpers/translate-text';
+import { NULL_FILTER } from '../../../admin/shared/helpers/filters.js';
+import { tText } from '../../helpers/translate-text.js';
 import {
 	CheckboxDropdownModal,
 	type CheckboxOption,
-} from '../CheckboxDropdownModal/CheckboxDropdownModal';
+} from '../CheckboxDropdownModal/CheckboxDropdownModal.js';
 
 export interface BooleanCheckboxDropdownProps {
 	label: string;

@@ -1,17 +1,17 @@
 import { Button, IconName, Spacer } from '@viaa/avo2-components';
-import { noop } from 'lodash-es';
+import { noop } from 'es-toolkit';
 import React, { type FC } from 'react';
 
 import {
 	redirectToServerLeerIDLogin,
 	redirectToServerLoginPage,
 	redirectToServerSmartschoolLogin,
-} from '../helpers/redirects';
+} from '../helpers/redirects.js';
 
 import './LoginOptionsForPupil.scss';
 import { useLocation } from 'react-router-dom';
 
-import { tText } from '../../shared/helpers/translate-text';
+import { tText } from '../../shared/helpers/translate-text.js';
 
 interface LoginOptionsForPupilProps {
 	onOptionClicked?: () => void;

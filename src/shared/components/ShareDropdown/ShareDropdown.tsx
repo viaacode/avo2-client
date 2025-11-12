@@ -9,16 +9,16 @@ import {
 import { type Avo, type PermissionName } from '@viaa/avo2-types';
 import React, { type FC, useState } from 'react';
 
-import { tText } from '../../helpers/translate-text';
-import { useTabs } from '../../hooks/useTabs';
-import { ShareWithColleagues } from '../ShareWithColleagues/ShareWithColleagues';
+import { tText } from '../../helpers/translate-text.js';
+import { useTabs } from '../../hooks/useTabs.js';
+import { ShareWithColleagues } from '../ShareWithColleagues/ShareWithColleagues.js';
 import {
 	type ContributorInfo,
 	type ContributorInfoRight,
-} from '../ShareWithColleagues/ShareWithColleagues.types';
-import { ShareWithPupil, type ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
+} from '../ShareWithColleagues/ShareWithColleagues.types.js';
+import { ShareWithPupil, type ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils.js';
 
-import { ShareDropdownTabs } from './ShareDropdown.types';
+import { ShareDropdownTabs } from './ShareDropdown.types.js';
 
 import './ShareDropdown.scss';
 

@@ -16,14 +16,14 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { compact, uniq } from 'lodash-es';
+import { compact, uniq } from 'es-toolkit';
 import React, { type FC, useEffect, useState } from 'react';
 
-import { STILL_DIMENSIONS } from '../../constants';
-import { tHtml } from '../../helpers/translate-html';
-import { tText } from '../../helpers/translate-text';
-import { ToastService } from '../../services/toast-service';
-import { VideoStillService } from '../../services/video-stills-service';
+import { STILL_DIMENSIONS } from '../../constants/index.js';
+import { tHtml } from '../../helpers/translate-html.js';
+import { tText } from '../../helpers/translate-text.js';
+import { ToastService } from '../../services/toast-service.js';
+import { VideoStillService } from '../../services/video-stills-service.js';
 
 interface ThumbnailStillsModalProps {
 	isOpen: boolean;

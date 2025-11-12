@@ -1,11 +1,11 @@
 import { FormGroup, type TagInfo, TagsInput } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { compact } from 'lodash-es';
+import { compact } from 'es-toolkit';
 import React, { type FC } from 'react';
 
-import { lomToTagInfo } from '../../helpers/string-to-select-options';
-import { tText } from '../../helpers/translate-text';
-import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
+import { lomToTagInfo } from '../../helpers/string-to-select-options.js';
+import { tText } from '../../helpers/translate-text.js';
+import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees.js';
 
 interface EducationLevelsFieldProps {
 	onChange?: (values: TagInfo[]) => void;

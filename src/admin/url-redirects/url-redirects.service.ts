@@ -1,11 +1,11 @@
 import { stringifyUrl } from 'query-string';
 
-import { CustomError } from '../../shared/helpers/custom-error';
-import { getEnv } from '../../shared/helpers/env';
+import { CustomError } from '../../shared/helpers/custom-error.js';
+import { getEnv } from '../../shared/helpers/env.js';
 
-import { replaceProxyUrlTemplateWithUrl } from './helpers/replace-proxy-url-template-with-url';
-import { ITEMS_PER_PAGE } from './url-redirects.const';
-import { type UrlRedirect, type UrlRedirectFilters } from './url-redirects.types';
+import { replaceProxyUrlTemplateWithUrl } from './helpers/replace-proxy-url-template-with-url.js';
+import { ITEMS_PER_PAGE } from './url-redirects.const.js';
+import { type UrlRedirect, type UrlRedirectFilters } from './url-redirects.types.js';
 
 export class UrlRedirectsService {
 	public static async fetchUrlRedirectMap(): Promise<{ [avo1Path: string]: string }> {

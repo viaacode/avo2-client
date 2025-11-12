@@ -1,29 +1,29 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { Alert, Button, Checkbox, Container, Form, FormGroup, Spacer } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { compact } from 'lodash-es';
-import React, { type FC, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { useNavigate } from 'react-router';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
+import {Alert, Button, Checkbox, Container, Form, FormGroup, Spacer} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import {useAtomValue, useSetAtom} from 'jotai';
+import {compact} from 'es-toolkit';
+import React, {type FC, useState} from 'react';
+import {Helmet} from 'react-helmet';
+import {useNavigate} from 'react-router';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { isTeacher } from '../../shared/helpers/is-teacher';
-import { EducationLevelId, groupLoms } from '../../shared/helpers/lom';
-import { ToastService } from '../../shared/services/toast-service';
-import { useGetEmailPreferences } from '../hooks/useGetEmailPreferences';
-import { useUpdateEmailPreferences } from '../hooks/useUpdateEmailPreferences';
-import { SettingsService } from '../settings.service';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {getLoginStateAtom} from '../../authentication/authentication.store.actions.js';
+import {redirectToClientPage} from '../../authentication/helpers/redirects/redirect-to-client-page.js';
+import {APP_PATH, GENERATE_SITE_TITLE} from '../../constants.js';
+import {EducationalOrganisationsSelect} from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect.js';
+import {FullPageSpinner} from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import {LomFieldsInput} from '../../shared/components/LomFieldsInput/LomFieldsInput.js';
+import {CustomError} from '../../shared/helpers/custom-error.js';
+import {isTeacher} from '../../shared/helpers/is-teacher.js';
+import {EducationLevelId, groupLoms} from '../../shared/helpers/lom.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {useGetEmailPreferences} from '../hooks/useGetEmailPreferences.js';
+import {useUpdateEmailPreferences} from '../hooks/useUpdateEmailPreferences.js';
+import {SettingsService} from '../settings.service.js';
 import './Profile.scss';
-import { tText } from '../../shared/helpers/translate-text';
-import { tHtml } from '../../shared/helpers/translate-html';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
 
 interface CompleteProfileStepProps {
 	redirectTo?: string;
@@ -104,7 +104,7 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
 				},
 				preferencesCenterKey: undefined,
 			};
-			updateEmailPreferences(prefs, undefined).catch((err) => {
+			updateEmailPreferences(prefs, undefined).catch((err: any) => {
 				console.error(new CustomError('Failed to subscribe to newsletter', err, prefs));
 				ToastService.danger(
 					tHtml(
@@ -119,7 +119,7 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
 					preferencesCenterKey: undefined,
 				},
 				undefined
-			).catch((err) => {
+			).catch((err: any) => {
 				console.error(
 					new CustomError('Failed to subscribe to newsletter', err, {
 						newEmailPreferences: null,

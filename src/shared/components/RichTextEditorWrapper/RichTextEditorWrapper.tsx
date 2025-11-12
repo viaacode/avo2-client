@@ -5,16 +5,16 @@ import {
 	type RichTextEditorUploadInfo,
 } from '@meemoo/react-components';
 import { type Avo } from '@viaa/avo2-types';
-import { isEqual } from 'lodash-es';
+import { isEqual } from 'es-toolkit';
 import React, { type FC } from 'react';
 
-import { CustomError } from '../../helpers/custom-error';
-import { tHtml } from '../../helpers/translate-html';
-import { tText } from '../../helpers/translate-text';
-import { FileUploadService } from '../../services/file-upload-service';
-import { ToastService } from '../../services/toast-service';
+import { CustomError } from '../../helpers/custom-error.js';
+import { tHtml } from '../../helpers/translate-html.js';
+import { tText } from '../../helpers/translate-text.js';
+import { FileUploadService } from '../../services/file-upload-service.js';
+import { ToastService } from '../../services/toast-service.js';
 
-import { RICH_TEXT_EDITOR_OPTIONS_DEFAULT } from './RichTextEditor.consts';
+import { RICH_TEXT_EDITOR_OPTIONS_DEFAULT } from './RichTextEditor.consts.js';
 
 import './RichTextEditorWrapper.scss';
 

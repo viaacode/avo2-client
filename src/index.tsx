@@ -1,13 +1,12 @@
-import { QueryClientProvider } from '@tanstack/react-query';
-import { setDefaultOptions } from 'date-fns';
-import { nlBE } from 'date-fns/locale';
-import React, { type FC } from 'react';
-import { createRoot } from 'react-dom/client';
-import { type LoaderFunction, RouterProvider } from 'react-router';
-import { createBrowserRouter } from 'react-router-dom';
+import {QueryClientProvider} from '@tanstack/react-query';
+import {setDefaultOptions} from 'date-fns';
+import {nlBE} from 'date-fns/locale';
+import React, {type FC} from 'react';
+import {createRoot} from 'react-dom/client';
+import {type LoaderFunction, RouterProvider} from 'react-router';
+import {createBrowserRouter} from 'react-router-dom';
 
-import { getAppRoutes } from './App.routes';
-import { ToastService } from './shared/services/toast-service';
+import {getAppRoutes} from './routes.js';
 
 // Set moment language to Dutch
 setDefaultOptions({

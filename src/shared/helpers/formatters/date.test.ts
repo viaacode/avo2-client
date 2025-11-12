@@ -1,6 +1,6 @@
 import { subHours } from 'date-fns';
 
-import { fromNow, normalizeTimestamp, reorderDate } from './date';
+import { fromNow, normalizeTimestamp, reorderDate } from './date.js';
 
 describe('Formatters - date', () => {
 	it('should format date as string`', () => {

@@ -1,13 +1,13 @@
 import { type DefaultProps } from '@viaa/avo2-components';
-import { noop } from 'lodash-es';
+import { noop } from 'es-toolkit';
 import React, { type FC, type ReactNode } from 'react';
 
 import {
 	ConfirmModal,
 	type ConfirmModalProps,
-} from '../../shared/components/ConfirmModal/ConfirmModal';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
+} from '../../shared/components/ConfirmModal/ConfirmModal.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
 
 type AssignmentConfirmSaveProps = DefaultProps & {
 	hasBlocks?: boolean;

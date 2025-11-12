@@ -1,6 +1,4 @@
-import { isArray } from 'lodash-es';
-
-import { type DateRange } from '../../../shared/components/DateRangeDropdown/DateRangeDropdown';
+import {type DateRange} from '../../../shared/components/DateRangeDropdown/DateRangeDropdown.js';
 
 export const DateRangeParam = {
 	encode: (value: DateRange | undefined) => {
@@ -39,7 +37,7 @@ export const CheckboxListParam = {
 			if (!value) {
 				return [];
 			}
-			if (isArray(value)) {
+			if (Array.isArray(value)) {
 				return value as string[];
 			}
 			return value.split('~');

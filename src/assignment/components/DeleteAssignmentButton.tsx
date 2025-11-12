@@ -3,15 +3,15 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import React, { type FC, useState } from 'react';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { PermissionService } from '../../authentication/helpers/permission-service.js';
 import {
 	ConfirmModal,
 	type ConfirmModalProps,
-} from '../../shared/components/ConfirmModal/ConfirmModal';
-import { tText } from '../../shared/helpers/translate-text';
-import { ToastService } from '../../shared/services/toast-service';
-import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
+} from '../../shared/components/ConfirmModal/ConfirmModal.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment.js';
 
 export type DeleteAssignmentButtonProps = DefaultProps & {
 	assignment?: Avo.Assignment.Assignment;

@@ -1,4 +1,4 @@
-import { type RichEditorState } from '@meemoo/react-components';
+import {type RichEditorState} from '@meemoo/react-components';
 import {
 	Button,
 	ButtonToolbar,
@@ -12,20 +12,20 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { get, noop } from 'lodash-es';
-import React, { type FC, useState } from 'react';
+import {Avo} from '@viaa/avo2-types';
+import {noop} from 'es-toolkit';
+import React, {type FC, useState} from 'react';
 
-import { RichTextEditorWrapper } from '../../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
-import { Lookup_Enum_Relation_Types_Enum } from '../../../../shared/generated/graphql-db-types';
-import { CustomError } from '../../../../shared/helpers/custom-error';
-import { stripHtml } from '../../../../shared/helpers/formatters/strip-html';
-import { tHtml } from '../../../../shared/helpers/translate-html';
-import { tText } from '../../../../shared/helpers/translate-text';
-import { RelationService } from '../../../../shared/services/relation-service/relation.service';
-import { ToastService } from '../../../../shared/services/toast-service';
-import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
-import { ItemsService } from '../../items.service';
+import {RichTextEditorWrapper} from '../../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper.js';
+import {Lookup_Enum_Relation_Types_Enum} from '../../../../shared/generated/graphql-db-types.js';
+import {CustomError} from '../../../../shared/helpers/custom-error.js';
+import {stripHtml} from '../../../../shared/helpers/formatters/strip-html.js';
+import {tHtml} from '../../../../shared/helpers/translate-html.js';
+import {tText} from '../../../../shared/helpers/translate-text.js';
+import {RelationService} from '../../../../shared/services/relation-service/relation.service.js';
+import {ToastService} from '../../../../shared/services/toast-service.js';
+import {ContentPicker} from '../../../shared/components/ContentPicker/ContentPicker.js';
+import {ItemsService} from '../../items.service.js';
 
 import './DepublishItemModal.scss';
 
@@ -248,17 +248,17 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
 								initialValue={
 									replacementExternalId
 										? {
-												type: 'ITEM',
+												type: Avo.Core.ContentPickerType.ITEM,
 												value: replacementExternalId,
 										  }
 										: undefined
 								}
 								onSelect={(pickerItem) =>
-									setReplacementExternalId(get(pickerItem, 'value', null))
+									setReplacementExternalId(pickerItem?.value || null)
 								}
 								hideTypeDropdown
 								hideTargetSwitch
-								allowedTypes={['ITEM']}
+								allowedTypes={[Avo.Core.ContentPickerType.ITEM]}
 							/>
 						</FormGroup>
 					)}

@@ -1,25 +1,26 @@
 // eslint-disable-next-line import/no-unresolved
 import AvoLogoSrc from '@assets/images/avo-logo-button.svg';
-import { Alert, Column, Flex, Grid, Icon, IconName, Spinner } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { noop } from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useMemo } from 'react';
+import {Alert, Column, Flex, Grid, Icon, IconName, Spinner} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {noop} from 'es-toolkit';
+import React, {type FC, useCallback, useEffect, useMemo} from 'react';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
-import { createResource } from '../../embed-code/helpers/resourceForTrackEvents';
-import { useGetEmbedCode } from '../../embed-code/hooks/useGetEmbedCode';
-import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
-import { type CustomError } from '../../shared/helpers/custom-error';
-import { reorderDate } from '../../shared/helpers/formatters/date';
-import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { trackEvents } from '../../shared/services/event-logging-service';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {toEmbedCodeDetail} from '../../embed-code/helpers/links.js';
+import {createResource} from '../../embed-code/helpers/resourceForTrackEvents.js';
+import {useGetEmbedCode} from '../../embed-code/hooks/useGetEmbedCode.js';
+import {FlowPlayerWrapper} from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.js';
+import {type CustomError} from '../../shared/helpers/custom-error.js';
+import {reorderDate} from '../../shared/helpers/formatters/date.js';
+import {getFlowPlayerPoster} from '../../shared/helpers/get-poster.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {trackEvents} from '../../shared/services/event-logging-service.js';
 
-import { EmbedErrorView } from './EmbedErrorView';
+import {EmbedErrorView} from './EmbedErrorView.js';
 
 import './Embed.scss';
+import {EmbedCodeContentType} from "../../embed-code/embed-code.types.ts";
 
 export interface EmbedProps {
 	embedId: string | null;
@@ -78,7 +79,7 @@ export const Embed: FC<EmbedProps> = ({ embedId, showMetadata, parentPage, onRel
 	}, [content, embedCode, isErrorEmbedCode]);
 
 	const triggerViewEvents = useCallback(async () => {
-		if (embedCode && embedCode.contentType === 'ITEM') {
+		if (embedCode && embedCode.contentType === EmbedCodeContentType.item) {
 			trackEvents(
 				{
 					object: embedCode.id,

@@ -10,11 +10,11 @@ import {
 } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
-import { type LabeledFormField } from '../../types';
+import { type LabeledFormField } from '../../types/index.js';
 import {
 	RichTextEditorWrapper,
 	type RichTextEditorWrapperProps,
-} from '../RichTextEditorWrapper/RichTextEditorWrapper';
+} from '../RichTextEditorWrapper/RichTextEditorWrapper.js';
 
 import './CustomiseItemForm.scss';
 

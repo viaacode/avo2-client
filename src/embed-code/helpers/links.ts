@@ -1,6 +1,6 @@
 import { generatePath } from 'react-router';
 
-import { APP_PATH } from '../../constants';
+import { APP_PATH } from '../../constants.js';
 
 export function toEmbedCodeIFrame(embedCodeId: string): string {
 	return `${window.location.origin}/embed/${embedCodeId}`;

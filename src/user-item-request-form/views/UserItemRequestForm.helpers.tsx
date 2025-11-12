@@ -1,8 +1,8 @@
 import queryString from 'query-string';
 import { type ReactNode } from 'react';
 
-import { isPhoto } from '../../shared/helpers/files';
-import { tText } from '../../shared/helpers/translate-text';
+import { isPhoto } from '../../shared/helpers/files.js';
+import { tText } from '../../shared/helpers/translate-text.js';
 
 export function renderAttachment(
 	attachmentUrl: string | null,

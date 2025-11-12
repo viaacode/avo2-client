@@ -1,36 +1,36 @@
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { isEqual, noop, uniq } from 'lodash-es';
+import { isEqual, noop, uniq } from 'es-toolkit';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 import { QueryParamProvider } from 'use-query-params';
 
-import pkg from '../package.json';
+import pkg from '../package.json' with { type: 'json' };
 
-import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config';
-import { SpecialUserGroupId } from './admin/user-groups/user-group.const';
-import { commonUserAtom } from './authentication/authentication.store';
-import { getLoginStateAtom } from './authentication/authentication.store.actions';
-import { PermissionService } from './authentication/helpers/permission-service';
-import { ConfirmModal } from './shared/components/ConfirmModal/ConfirmModal';
+import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config.js';
+import { SpecialUserGroupId } from './admin/user-groups/user-group.const.js';
+import { commonUserAtom } from './authentication/authentication.store.js';
+import { getLoginStateAtom } from './authentication/authentication.store.actions.js';
+import { PermissionService } from './authentication/helpers/permission-service.js';
+import { ConfirmModal } from './shared/components/ConfirmModal/ConfirmModal.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from './shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { ROUTE_PARTS } from './shared/constants';
-import { CustomError } from './shared/helpers/custom-error';
-import { getEnv } from './shared/helpers/env';
-import { ReactRouter7Adapter } from './shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
-import { tHtml } from './shared/helpers/translate-html';
-import { tText } from './shared/helpers/translate-text';
-import { useHideZendeskWidget } from './shared/hooks/useHideZendeskWidget';
-import { usePageLoaded } from './shared/hooks/usePageLoaded';
-import { ToastService } from './shared/services/toast-service';
-import { embedFlowAtom, historyLocationsAtom } from './shared/store/ui.store';
-import { waitForTranslations } from './shared/translations/i18n';
+} from './shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { ROUTE_PARTS } from './shared/constants/index.js';
+import { CustomError } from './shared/helpers/custom-error.js';
+import { getEnv } from './shared/helpers/env.js';
+import { ReactRouter7Adapter } from './shared/helpers/routing/react-router-v7-adapter-for-use-query-params.js';
+import { tHtml } from './shared/helpers/translate-html.js';
+import { tText } from './shared/helpers/translate-text.js';
+import { useHideZendeskWidget } from './shared/hooks/useHideZendeskWidget.js';
+import { usePageLoaded } from './shared/hooks/usePageLoaded.js';
+import { ToastService } from './shared/services/toast-service.js';
+import { embedFlowAtom, historyLocationsAtom } from './shared/store/ui.store.js';
+import { waitForTranslations } from './shared/translations/i18n.js';
 
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import './App.scss';

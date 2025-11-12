@@ -1,15 +1,16 @@
-import { IconName, MetaData, MetaDataItem, Thumbnail } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import React, { type FC, type ReactNode } from 'react';
+import {IconName, MetaData, MetaDataItem, Thumbnail} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import React, {type FC, type ReactNode} from 'react';
 
-import { formatDate, formatTimestamp } from '../../shared/helpers/formatters/date';
-import { tText } from '../../shared/helpers/translate-text';
-import { truncateTableValue } from '../../shared/helpers/truncate';
-import { bookWidgetsLogo, smartSchoolLogo } from '../embed-code.const';
-import { type EmbedCode, EmbedCodeExternalWebsite } from '../embed-code.types';
+import {formatDate, formatTimestamp} from '../../shared/helpers/formatters/date.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {truncateTableValue} from '../../shared/helpers/truncate.js';
+import {bookWidgetsLogo, smartSchoolLogo} from '../embed-code.const.js';
+import {EMBED_CONTENT_TYPE_TO_ENGLISH_CONTENT_TYPE, type EmbedCode, EmbedCodeContentType, EmbedCodeExternalWebsite} from '../embed-code.types.js';
 
 import './EmbedCodeFilterTableCell.scss';
-import { formatDurationHoursMinutesSeconds } from '../../shared/helpers/formatters/duration';
+import {formatDurationHoursMinutesSeconds} from '../../shared/helpers/formatters/duration.js';
+import {CONTENT_TYPE_TRANSLATIONS_NL_TO_EN} from "../../collection/collection.types.ts";
 
 export interface EmbedCodeFilterTableCellProps {
 	id: string;
@@ -31,7 +32,7 @@ export const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 	const renderThumbnail = ({ content, thumbnailPath }: Partial<EmbedCode>) => (
 		<Thumbnail
 			alt="thumbnail"
-			category={(content as Avo.Item.Item)?.type?.label}
+			category={CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[(content as Avo.Item.Item)?.type?.label]}
 			className="m-embed-code-cell-thumbnail"
 			src={thumbnailPath}
 			showCategoryIcon
@@ -44,7 +45,7 @@ export const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
 				{truncateTableValue(title)}
 			</h3>
 			<div className="c-content-header__meta u-text-muted">
-				<MetaData category={contentType}>
+				<MetaData category={EMBED_CONTENT_TYPE_TO_ENGLISH_CONTENT_TYPE[contentType as EmbedCodeContentType]}>
 					<MetaDataItem>
 						{content?.created_at && (
 							<span

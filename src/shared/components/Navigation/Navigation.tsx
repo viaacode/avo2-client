@@ -16,31 +16,31 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { useAtom, useSetAtom } from 'jotai';
-import { last } from 'lodash-es';
+import { last } from 'es-toolkit';
 import React, { type FC, type ReactText, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { loginAtom } from '../../../authentication/authentication.store';
-import { getLoginStateAtom } from '../../../authentication/authentication.store.actions';
+import { loginAtom } from '../../../authentication/authentication.store.js';
+import { getLoginStateAtom } from '../../../authentication/authentication.store.actions.js';
 import {
 	getProfileAvatar,
 	getProfileInitials,
-} from '../../../authentication/helpers/get-profile-info';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
-import { redirectToExternalPage } from '../../../authentication/helpers/redirects/redirect-to-external-page';
-import { APP_PATH } from '../../../constants';
-import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
-import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
-import { useHideZendeskWidget } from '../../hooks/useHideZendeskWidget';
-import { ToastService } from '../../services/toast-service';
-import { type NavigationItemInfo } from '../../types';
+} from '../../../authentication/helpers/get-profile-info.js';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js';
+import { redirectToExternalPage } from '../../../authentication/helpers/redirects/redirect-to-external-page.js';
+import { APP_PATH } from '../../../constants.js';
+import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation.js';
+import { useAllGetNavItems } from '../../hooks/useAllGetNavItems.js';
+import { useHideZendeskWidget } from '../../hooks/useHideZendeskWidget.js';
+import { ToastService } from '../../services/toast-service.js';
+import { type NavigationItemInfo } from '../../types/index.js';
 
-import { NavigationBarId } from './Navigation.const';
-import { NavigationItem } from './NavigationItem';
+import { NavigationBarId } from './Navigation.const.js';
+import { NavigationItem } from './NavigationItem.js';
 
 import './Navigation.scss';
-import { tText } from '../../helpers/translate-text';
-import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text.js';
+import { tHtml } from '../../helpers/translate-html.js';
 
 type NavigationParams = {
 	isPreviewRoute: boolean;

@@ -1,9 +1,9 @@
 import React, { type FC } from 'react';
 import { useBlocker } from 'react-router-dom';
 
-import { ROUTE_PARTS } from '../../constants';
-import { tText } from '../../helpers/translate-text';
-import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
+import { ROUTE_PARTS } from '../../constants/index.js';
+import { tText } from '../../helpers/translate-text.js';
+import { ConfirmModal } from '../ConfirmModal/ConfirmModal.js';
 
 export const BeforeUnloadPrompt: FC<{ when: boolean; message?: string }> = ({ when, message }) => {
 	const blocker = useBlocker(({ currentLocation, nextLocation }) => {

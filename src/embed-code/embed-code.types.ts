@@ -1,8 +1,14 @@
-import type { Avo } from '@viaa/avo2-types';
+import {Avo} from '@viaa/avo2-types';
 
-import type { TableColumnDataType } from '../shared/types/table-column-data-type';
+import type {TableColumnDataType} from '../shared/types/table-column-data-type.js';
 
-export type EmbedCodeContentType = 'ITEM' | 'COLLECTION' | 'ASSIGNMENT';
+export enum EmbedCodeContentType {item = 'ITEM', collection = 'COLLECTION', assignment = 'ASSIGNMENT'}
+
+export const EMBED_CONTENT_TYPE_TO_ENGLISH_CONTENT_TYPE: Record<EmbedCodeContentType, Avo.ContentType.English> = {
+	ITEM: Avo.ContentType.English.ITEM,
+	COLLECTION: Avo.ContentType.English.COLLECTION,
+	ASSIGNMENT: Avo.ContentType.English.ASSIGNMENT,
+}
 
 export interface EmbedCode {
 	id: string;

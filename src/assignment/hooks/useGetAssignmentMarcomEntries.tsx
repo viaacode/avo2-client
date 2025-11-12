@@ -1,9 +1,9 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 
-import { type AssignmentMarcomEntry } from '../../collection/collection.types';
-import { QUERY_KEYS } from '../../shared/constants/query-keys';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { AssignmentService } from '../assignment.service';
+import { type AssignmentMarcomEntry } from '../../collection/collection.types.js';
+import { QUERY_KEYS } from '../../shared/constants/query-keys.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { AssignmentService } from '../assignment.service.js';
 
 export const useGetAssignmentMarcomEntries = (
 	assignmentId: string,

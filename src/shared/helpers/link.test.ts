@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
-import { ROUTE_PARTS } from '../constants';
+import { ROUTE_PARTS } from '../constants/index.js';
 
-import { buildLink } from './build-link';
+import { buildLink } from './build-link.js';
 
 // import { navigate } from './link';
 

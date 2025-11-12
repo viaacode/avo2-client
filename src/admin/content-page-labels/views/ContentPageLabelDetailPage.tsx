@@ -2,10 +2,10 @@ import { PermissionName } from '@viaa/avo2-types';
 import React, { type FC, lazy, Suspense } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
-import { ADMIN_PATH } from '../../admin.const';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback.js';
+import { ADMIN_PATH } from '../../admin.const.js';
 
 const ContentPageLabelDetail = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({

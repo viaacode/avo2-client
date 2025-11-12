@@ -1,11 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
-import { compact, reverse, sortBy, toPairs } from 'lodash-es';
-import { matchPath } from 'react-router';
-import { type PathMatch } from 'react-router-dom';
+import {useQuery} from '@tanstack/react-query';
+import {compact, sortBy} from 'es-toolkit';
+import {matchPath} from 'react-router';
+import {type PathMatch} from 'react-router-dom';
 
-import { APP_PATH, type RouteId, type RouteInfo } from '../../../../constants';
-import { QUERY_KEYS } from '../../../constants/query-keys';
-import { InteractiveTourService, type TourInfo } from '../../../services/interactive-tour.service';
+import {APP_PATH, type RouteId, type RouteInfo} from '../../../../constants.js';
+import {QUERY_KEYS} from '../../../constants/query-keys.js';
+import {InteractiveTourService, type TourInfo} from '../../../services/interactive-tour.service.js';
+import {reverse} from "es-toolkit/compat";
 
 async function getInteractiveTourForPage(
 	currentPath: string,
@@ -21,7 +22,7 @@ async function getInteractiveTourForPage(
 	// Resolve current page location to route id, so we know which interactive tour to show
 	// We reverse the order of the routes, since more specific routes are always declared later in the list
 	const interactiveRoutePairs = reverse(
-		toPairs(APP_PATH).filter((pair) => pair[1].showForInteractiveTour)
+		Object.entries(APP_PATH).filter((pair) => pair[1].showForInteractiveTour)
 	);
 
 	const matchingRoutePairs: [string, RouteInfo, PathMatch][] = compact(
@@ -36,7 +37,7 @@ async function getInteractiveTourForPage(
 		})
 	);
 
-	const matchingRoutePairsSorted = sortBy(matchingRoutePairs, (pair) => {
+	const matchingRoutePairsSorted = sortBy(matchingRoutePairs, [(pair) => {
 		if (pair[2].pathname === pair[2].pathnameBase) {
 			// Exact match always should be considered first
 			// eg: /opdrachten/maak is better than /opdrachten/:id
@@ -46,7 +47,7 @@ async function getInteractiveTourForPage(
 			// eg: /opdrachten/:id/bewerk/:tabId is better than /opdrachten/:id
 			return -pair[2].pathname.length;
 		}
-	});
+	}]);
 
 	// Prefer exact route matches over matches with a parameter
 	const matchingRoutePair = matchingRoutePairsSorted[0];

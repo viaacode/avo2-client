@@ -2,16 +2,17 @@
 import meemooLogo from '@assets/images/meemoo-logo.png';
 // eslint-disable-next-line import/no-unresolved
 import vlaamseOverheidLogoSrc from '@assets/images/vlaanderen-logo.svg';
-import { Container, Spacer } from '@viaa/avo2-components';
-import { orderBy } from 'lodash-es';
-import React, { type FC, useState } from 'react';
+import {Container, Spacer} from '@viaa/avo2-components';
+import {orderBy} from 'es-toolkit';
+import React, {type FC, useState} from 'react';
+import {Avo} from '@viaa/avo2-types';
 
-import { type BooleanDictionary } from '../../helpers/navigation';
-import { tText } from '../../helpers/translate-text';
-import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
-import { type AppContentNavElement } from '../../services/navigation-items-service';
-import { NavigationBarId } from '../Navigation/Navigation.const';
-import { NavigationItem } from '../Navigation/NavigationItem';
+import {type BooleanDictionary} from '../../helpers/navigation.js';
+import {tText} from '../../helpers/translate-text.js';
+import {useAllGetNavItems} from '../../hooks/useAllGetNavItems.js';
+import {type AppContentNavElement} from '../../services/navigation-items-service.js';
+import {NavigationBarId} from '../Navigation/Navigation.const.js';
+import {NavigationItem} from '../Navigation/NavigationItem.js';
 
 import './Footer.scss';
 
@@ -44,7 +45,7 @@ export const Footer: FC = () => {
 					onNavigate={() => window?.scrollTo(0, 0)}
 				/>
 			);
-		});
+		}, [Avo.Search.OrderDirection.ASC]);
 	};
 
 	const columnTitle1 = tText('shared/components/footer/footer___kolom-1');

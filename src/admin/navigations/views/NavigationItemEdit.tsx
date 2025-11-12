@@ -2,13 +2,13 @@ import React, { type FC, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { buildLink } from '../../../shared/helpers/build-link';
-import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
-import { tText } from '../../../shared/helpers/translate-text';
-import { ADMIN_PATH } from '../../admin.const';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
+import { GENERATE_SITE_TITLE } from '../../../constants.js';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import { buildLink } from '../../../shared/helpers/build-link.js';
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { ADMIN_PATH } from '../../admin.const.js';
 
 import './NavigationItemEdit.scss';
 

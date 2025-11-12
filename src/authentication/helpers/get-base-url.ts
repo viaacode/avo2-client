@@ -1,4 +1,4 @@
-import { trimEnd } from 'lodash-es';
+import { trimEnd } from 'es-toolkit';
 import { type Location } from 'react-router';
 
 export function getBaseUrl(location: Location): string {

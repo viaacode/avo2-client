@@ -1,14 +1,14 @@
 import './ListSorter.scss';
 
-import { type ColorOption } from '@meemoo/admin-core-ui/admin';
-import { Button, Icon, IconName } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { sortBy } from 'lodash-es';
-import React, { type FC, Fragment, type ReactNode, useMemo } from 'react';
+import {type ColorOption} from '@meemoo/admin-core-ui/admin';
+import {Button, Icon, IconName} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import {sortBy} from 'es-toolkit';
+import React, {type FC, Fragment, type ReactNode, useMemo} from 'react';
 
-import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../../../assignment/assignment.const';
-import { ColorSelect } from '../ColorSelect/ColorSelect';
-import { GET_ASSIGNMENT_COLORS } from '../ColorSelect/ColorSelect.const';
+import {NEW_ASSIGNMENT_BLOCK_ID_PREFIX} from '../../../assignment/assignment.const.js';
+import {ColorSelect} from '../ColorSelect/ColorSelect.js';
+import {GET_ASSIGNMENT_COLORS} from '../ColorSelect/ColorSelect.const.js';
 
 // Types
 
@@ -159,7 +159,7 @@ const ListSorter: ListSorterType = ({
 					<hr />
 				</div>
 			)}
-			{sortBy(items, (block) => block.position).map((item, i) => {
+			{sortBy(items, ['position']).map((item, i) => {
 				const j = items.length === i + 1 ? undefined : i;
 				return renderItem(item, j);
 			})}

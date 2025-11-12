@@ -1,29 +1,23 @@
-import { type Avo } from '@viaa/avo2-types';
-import React, { useState } from 'react';
+import {Avo} from '@viaa/avo2-types';
+import React, {useState} from 'react';
 
-import { ItemsService } from '../../admin/items/items.service';
-import { CollectionService } from '../../collection/collection.service';
-import { CollectionOrBundle } from '../../collection/collection.types';
-import { CutFragmentForAssignmentModal } from '../../item/components/modals/CutFragmentForAssignmentModal';
-import { type ItemTrimInfo } from '../../item/item.types';
-import { tHtml } from '../../shared/helpers/translate-html';
-import {
-	type SingleEntityModal,
-	useSingleEntityModal,
-} from '../../shared/hooks/useSingleEntityModal';
-import { ToastService } from '../../shared/services/toast-service';
-import { VideoStillService } from '../../shared/services/video-stills-service';
-import { type Positioned } from '../../shared/types';
-import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
-import { AssignmentBlockType } from '../assignment.types';
-import { insertMultipleAtPosition } from '../helpers/insert-at-position';
-import { AddBlockModal, type AddBlockModalProps } from '../modals/AddBlockModal';
-import {
-	AddBookmarkFragmentModal,
-	type AddBookmarkFragmentModalProps,
-} from '../modals/AddBookmarkFragmentModal';
-import { AddCollectionModal, type AddCollectionModalProps } from '../modals/AddCollectionModal';
-import { ConfirmSliceModal, type ConfirmSliceModalProps } from '../modals/ConfirmSliceModal';
+import {ItemsService} from '../../admin/items/items.service.js';
+import {CollectionService} from '../../collection/collection.service.js';
+import {CollectionOrBundle} from '../../collection/collection.types.js';
+import {CutFragmentForAssignmentModal} from '../../item/components/modals/CutFragmentForAssignmentModal.js';
+import {type ItemTrimInfo} from '../../item/item.types.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {type SingleEntityModal, useSingleEntityModal,} from '../../shared/hooks/useSingleEntityModal.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {VideoStillService} from '../../shared/services/video-stills-service.js';
+import {type Positioned} from '../../shared/types/index.js';
+import {NEW_ASSIGNMENT_BLOCK_ID_PREFIX} from '../assignment.const.js';
+import {AssignmentBlockType} from '../assignment.types.js';
+import {insertMultipleAtPosition} from '../helpers/insert-at-position.js';
+import {AddBlockModal, type AddBlockModalProps} from '../modals/AddBlockModal.js';
+import {AddBookmarkFragmentModal, type AddBookmarkFragmentModalProps,} from '../modals/AddBookmarkFragmentModal.js';
+import {AddCollectionModal, type AddCollectionModalProps} from '../modals/AddCollectionModal.js';
+import {ConfirmSliceModal, type ConfirmSliceModalProps} from '../modals/ConfirmSliceModal.js';
 
 export function useBlockListModals(
 	blocks: Avo.Core.BlockItemBase[],
@@ -150,7 +144,7 @@ export function useBlockListModals(
 									Positioned = {
 									id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 									item_meta: item,
-									type: AssignmentBlockType.ITEM,
+									type: Avo.Core.BlockItemType.ITEM,
 									fragment_id: item.external_id,
 									position: blockPosition || 0,
 									start_oc: itemTrimInfo.hasCut
@@ -234,13 +228,13 @@ export function useBlockListModals(
 											thumbnail_path: collectionItem.thumbnail_path,
 										};
 
-										if (collectionItem.type === AssignmentBlockType.TEXT) {
+										if (collectionItem.type === Avo.Core.BlockItemType.TEXT) {
 											// text: original text null, custom text set
 											block.custom_title = collectionItem.custom_title;
 											block.custom_description =
 												collectionItem.custom_description;
 											block.use_custom_fields = true;
-											block.type = AssignmentBlockType.TEXT;
+											block.type = Avo.Core.BlockItemType.TEXT;
 										} else {
 											// ITEM
 											// custom_title and custom_description remain null
@@ -250,7 +244,7 @@ export function useBlockListModals(
 											block.original_description =
 												collectionItem.custom_description;
 											block.use_custom_fields = !withDescription;
-											block.type = AssignmentBlockType.ITEM;
+											block.type = Avo.Core.BlockItemType.ITEM;
 										}
 
 										return block;

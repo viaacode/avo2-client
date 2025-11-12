@@ -1,5 +1,5 @@
 import { type Avo } from '@viaa/avo2-types';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit';
 import { useCallback } from 'react';
 
 export function useAssignmentBlockChangeHandler(

@@ -1,58 +1,46 @@
-import {
-	ExportAllToCsvModal,
-	type FilterableColumn,
-	FilterTable,
-	getFilters,
-} from '@meemoo/admin-core-ui/admin';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { noop, partition } from 'lodash-es';
-import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
+import {ExportAllToCsvModal, type FilterableColumn, FilterTable, getFilters,} from '@meemoo/admin-core-ui/admin';
+import {type Avo, PermissionName} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {noop, partition} from 'es-toolkit';
+import React, {type FC, type ReactNode, useCallback, useEffect, useMemo, useState} from 'react';
+import {Helmet} from 'react-helmet';
 
-import { AssignmentService } from '../../../assignment/assignment.service';
-import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
-import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetAssignmentsEditStatuses';
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views/ErrorView';
-import { OrderDirection } from '../../../search/search.const';
-import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
+import {AssignmentService} from '../../../assignment/assignment.service.js';
+import {type AssignmentTableColumns} from '../../../assignment/assignment.types.js';
+import {useGetAssignmentsEditStatuses} from '../../../assignment/hooks/useGetAssignmentsEditStatuses.js';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {PermissionGuard} from '../../../authentication/components/PermissionGuard.js';
+import {APP_PATH, GENERATE_SITE_TITLE} from '../../../constants.js';
+import {ErrorView} from '../../../error/views/ErrorView.js';
+
+import {type CheckboxOption} from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
+import {ConfirmModal} from '../../../shared/components/ConfirmModal/ConfirmModal.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
-import { buildLink } from '../../../shared/helpers/build-link';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
-import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
-import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import { ToastService } from '../../../shared/services/toast-service';
-import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
-import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
-import { SubjectsBeingEditedWarningModal } from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
-import { NULL_FILTER } from '../../shared/helpers/filters';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { type PickerItem } from '../../shared/types/content-picker';
-import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
-import { AssignmentsAdminService } from '../assignments.admin.service';
-import {
-	GET_ASSIGNMENT_BULK_ACTIONS,
-	GET_ASSIGNMENT_OVERVIEW_TABLE_COLS,
-	ITEMS_PER_PAGE,
-} from '../assignments.const';
-import { AssignmentsBulkAction, type AssignmentsOverviewTableState } from '../assignments.types';
-import {
-	renderAssignmentOverviewCellReact,
-	renderAssignmentsMarcomCellText,
-} from '../helpers/render-assignment-columns';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {EDIT_STATUS_REFETCH_TIME} from '../../../shared/constants/index.js';
+import {buildLink} from '../../../shared/helpers/build-link.js';
+import {CustomError} from '../../../shared/helpers/custom-error.js';
+import {tableColumnListToCsvColumnList} from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {useLomEducationLevelsAndDegrees} from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js';
+import {useLomSubjects} from '../../../shared/hooks/useLomSubjects.js';
+import {useQualityLabels} from '../../../shared/hooks/useQualityLabels.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {TableColumnDataType} from '../../../shared/types/table-column-data-type.js';
+import {ChangeAuthorModal} from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal.js';
+import {SubjectsBeingEditedWarningModal} from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal.js';
+import {NULL_FILTER} from '../../shared/helpers/filters.js';
+import {AdminLayout} from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import {AdminLayoutBody} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import {type PickerItem} from '../../shared/types/content-picker.js';
+import {useUserGroups} from '../../user-groups/hooks/useUserGroups.js';
+import {AssignmentsAdminService} from '../assignments.admin.service.js';
+import {GET_ASSIGNMENT_BULK_ACTIONS, GET_ASSIGNMENT_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE,} from '../assignments.const.js';
+import {AssignmentsBulkAction, type AssignmentsOverviewTableState} from '../assignments.types.js';
+import {renderAssignmentOverviewCellReact, renderAssignmentsMarcomCellText,} from '../helpers/render-assignment-columns.js';
 
 import './AssignmentsOverviewAdmin.scss';
 
@@ -64,7 +52,7 @@ export const AssignmentOverviewAdmin: FC = () => {
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<AssignmentsOverviewTableState>>({
 		sort_column: 'created_at',
-		sort_order: OrderDirection.desc,
+		sort_order: Avo.Search.OrderDirection.DESC,
 	});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] = useState(false);
@@ -156,7 +144,7 @@ export const AssignmentOverviewAdmin: FC = () => {
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
 					(tableState.sort_column || 'created_at') as AssignmentTableColumns,
-					tableState.sort_order || OrderDirection.desc,
+					tableState.sort_order || Avo.Search.OrderDirection.DESC,
 					getColumnDataType(),
 					getFilters(tableState)
 				);
@@ -423,7 +411,7 @@ export const AssignmentOverviewAdmin: FC = () => {
 					onSelectBulkAction={handleBulkAction as any}
 					rowKey="id"
 					defaultOrderProp={'created_at'}
-					defaultOrderDirection={OrderDirection.desc}
+					defaultOrderDirection={Avo.Search.OrderDirection.DESC}
 				/>
 				<SubjectsBeingEditedWarningModal
 					isOpen={assignmentsBeingEdited?.length > 0}
@@ -523,7 +511,7 @@ export const AssignmentOverviewAdmin: FC = () => {
 							0,
 							0,
 							(tableState.sort_column || 'created_at') as AssignmentTableColumns,
-							tableState.sort_order || OrderDirection.desc,
+							tableState.sort_order || Avo.Search.OrderDirection.DESC,
 							getColumnDataType(),
 							{}
 						);
@@ -534,7 +522,7 @@ export const AssignmentOverviewAdmin: FC = () => {
 							offset,
 							limit,
 							(tableState.sort_column || 'created_at') as AssignmentTableColumns,
-							tableState.sort_order || OrderDirection.desc,
+							tableState.sort_order || Avo.Search.OrderDirection.DESC,
 							getColumnDataType(),
 							{}
 						);

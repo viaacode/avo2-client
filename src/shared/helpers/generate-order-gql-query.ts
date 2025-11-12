@@ -1,6 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 
-import { type TableColumnDataType } from '../types/table-column-data-type';
+import { type TableColumnDataType } from '../types/table-column-data-type.js';
 
 const DEFAULT_NULL_ORDER: Record<Avo.Search.OrderDirection, Avo.Search.OrderDirectionGraphql> = {
 	asc: 'asc_nulls_last',

@@ -26,29 +26,29 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
-import { noop } from 'lodash-es';
+import { noop } from 'es-toolkit';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { CollectionService } from '../../collection/collection.service';
-import { type Collection, ContentTypeNumber } from '../../collection/collection.types';
-import { OrderDirection } from '../../search/search.const';
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { CollectionService } from '../../collection/collection.service.js';
+import { type Collection, ContentTypeNumber } from '../../collection/collection.types.js';
+import { OrderDirection } from '../../search/search.const.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { formatDate, formatTimestamp } from '../../shared/helpers/formatters/date';
-import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
-import { tText } from '../../shared/helpers/translate-text';
-import { truncateTableValue } from '../../shared/helpers/truncate';
-import { useTableSort } from '../../shared/hooks/useTableSort';
-import { ToastService } from '../../shared/services/toast-service';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { type AssignmentTableColumns } from '../assignment.types';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { CustomError } from '../../shared/helpers/custom-error.js';
+import { formatDate, formatTimestamp } from '../../shared/helpers/formatters/date.js';
+import { getOrderObject } from '../../shared/helpers/generate-order-gql-query.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { truncateTableValue } from '../../shared/helpers/truncate.js';
+import { useTableSort } from '../../shared/hooks/useTableSort.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type.js';
+import { type AssignmentTableColumns } from '../assignment.types.js';
 
 import './AddItemsModals.scss';
-import { tHtml } from '../../shared/helpers/translate-html';
+import { tHtml } from '../../shared/helpers/translate-html.js';
 
 // Column definitions
 const GET_ADD_COLLECTION_COLUMNS = (): TableColumn[] => [
@@ -204,7 +204,7 @@ export const AddCollectionModal: FC<AddCollectionModalProps> = ({
 		setSelectedCollectionId(null);
 		setActiveView(AddCollectionTab.myCollections);
 		setSortColumn('updated_at');
-		setSortOrder(OrderDirection.desc);
+		setSortOrder(Avo.Search.OrderDirection.DESC);
 		setFilterString('');
 
 		onClose();

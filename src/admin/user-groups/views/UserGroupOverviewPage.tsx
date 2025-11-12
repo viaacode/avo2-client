@@ -4,17 +4,17 @@ import { PermissionName } from '@viaa/avo2-types';
 import React, { type FC, lazy, Suspense, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
+import { GENERATE_SITE_TITLE } from '../../../constants.js';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
 import {
 	AdminLayoutBody,
 	AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { type UserGroupOverviewRef } from '../../shared/services/user-groups/user-groups.types';
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import { type UserGroupOverviewRef } from '../../shared/services/user-groups/user-groups.types.js';
 
 import './UserGroupOverviewPage.scss';
 

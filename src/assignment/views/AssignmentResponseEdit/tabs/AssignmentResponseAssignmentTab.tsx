@@ -2,11 +2,11 @@ import { IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode } from 'react';
 
-import { ErrorView } from '../../../../error/views/ErrorView';
-import { type FilterState } from '../../../../search/search.types';
-import { BlockList } from '../../../../shared/components/BlockList/BlockList';
-import { tHtml } from '../../../../shared/helpers/translate-html';
-import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment.const';
+import { ErrorView } from '../../../../error/views/ErrorView.js';
+import { type FilterState } from '../../../../search/search.types.js';
+import { BlockList } from '../../../../shared/components/BlockList/BlockList.js';
+import { tHtml } from '../../../../shared/helpers/translate-html.js';
+import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment.const.js';
 
 interface AssignmentResponseAssignmentTabProps {
 	blocks: Avo.Assignment.Assignment['blocks'] | null;

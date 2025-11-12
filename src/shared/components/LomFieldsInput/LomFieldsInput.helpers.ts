@@ -1,6 +1,6 @@
 import { type SelectOption, type TagInfo } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { capitalize, compact, isNil } from 'lodash-es';
+import { capitalize, compact, isNil } from 'es-toolkit';
 
 export const mapLomFieldsToOptions = (lomFields: Avo.Lom.LomField[]): SelectOption<any>[] => {
 	return (lomFields || []).map(

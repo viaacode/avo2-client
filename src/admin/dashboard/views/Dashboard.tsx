@@ -1,11 +1,11 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 
-import { GENERATE_SITE_TITLE } from '../../../constants';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { GENERATE_SITE_TITLE } from '../../../constants.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
 
 export const Dashboard = () => {
 	return (

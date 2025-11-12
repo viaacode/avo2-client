@@ -15,17 +15,17 @@ import { type Avo } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { APP_PATH } from '../../../constants';
-import { buildLink } from '../../../shared/helpers/build-link';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { trackEvents } from '../../../shared/services/event-logging-service';
-import { ToastService } from '../../../shared/services/toast-service';
-import { getValidationErrorsForPublish } from '../../collection.helpers';
-import { CollectionService } from '../../collection.service';
-import { type ParentBundle } from '../../collection.types';
+import { commonUserAtom } from '../../../authentication/authentication.store.js';
+import { APP_PATH } from '../../../constants.js';
+import { buildLink } from '../../../shared/helpers/build-link.js';
+import { CustomError } from '../../../shared/helpers/custom-error.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { trackEvents } from '../../../shared/services/event-logging-service.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { getValidationErrorsForPublish } from '../../collection.helpers.js';
+import { CollectionService } from '../../collection.service.js';
+import { type ParentBundle } from '../../collection.types.js';
 
 interface PublishCollectionModalProps {
 	isOpen: boolean;

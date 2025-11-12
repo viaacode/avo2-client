@@ -11,113 +11,93 @@ import {
 	type TabProps,
 	Tabs,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
-import { useAtomValue } from 'jotai';
-import { cloneDeep, isEmpty, isNil, noop, set } from 'lodash-es';
-import React, {
-	type FC,
-	type ReactNode,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useMemo,
-	useReducer,
-	useState,
-} from 'react';
-import { Helmet } from 'react-helmet';
-import { matchPath, Navigate, useNavigate, useParams } from 'react-router';
+import {Avo, PermissionName} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {cloneDeep, isNil, noop} from 'es-toolkit';
+import {isEmpty, set} from 'es-toolkit/compat';
+import React, {type FC, type ReactNode, type ReactText, useCallback, useEffect, useMemo, useReducer, useState,} from 'react';
+import {Helmet} from 'react-helmet';
+import {matchPath, Navigate, useNavigate, useParams} from 'react-router';
 
-import { ItemsService } from '../../admin/items/items.service';
-import { reorderBlockPositions, setBlockPositionToIndex } from '../../assignment/assignment.helper';
-import { AssignmentService } from '../../assignment/assignment.service';
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
-import { ErrorView } from '../../error/views/ErrorView';
-import { OrderDirection } from '../../search/search.const';
-import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
-import { DraggableBlock } from '../../shared/components/DraggableBlock/DraggableBlock';
-import { DraggableListModal } from '../../shared/components/DraggableList/DraggableListModal';
-import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
-import { InActivityWarningModal } from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
-import { InputModal } from '../../shared/components/InputModal/InputModal';
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import {ItemsService} from '../../admin/items/items.service.js';
+import {reorderBlockPositions, setBlockPositionToIndex} from '../../assignment/assignment.helper.js';
+import {AssignmentService} from '../../assignment/assignment.service.js';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {redirectToClientPage} from '../../authentication/helpers/redirects/redirect-to-client-page.js';
+import {APP_PATH, GENERATE_SITE_TITLE} from '../../constants.js';
+import {ErrorNoAccess} from '../../error/components/ErrorNoAccess.js';
+import {ErrorView} from '../../error/views/ErrorView.js';
+import {OrderDirection} from '../../search/search.const.js';
+import {BeforeUnloadPrompt} from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt.js';
+import {DraggableBlock} from '../../shared/components/DraggableBlock/DraggableBlock.js';
+import {DraggableListModal} from '../../shared/components/DraggableList/DraggableListModal.js';
+import {HeaderOwnerAndContributors} from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors.js';
+import {InActivityWarningModal} from '../../shared/components/InActivityWarningModal/InActivityWarningModal.js';
+import {InputModal} from '../../shared/components/InputModal/InputModal.js';
+import {InteractiveTour} from '../../shared/components/InteractiveTour/InteractiveTour.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
-import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown';
-import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
-import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
-import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
-import { buildLink } from '../../shared/helpers/build-link';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {MoreOptionsDropdownWrapper} from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper.js';
+import {ShareDropdown} from '../../shared/components/ShareDropdown/ShareDropdown.js';
+import {ShareModal} from '../../shared/components/ShareModal/ShareModal.js';
+import {ContributorInfoRight} from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
+import {StickySaveBar} from '../../shared/components/StickySaveBar/StickySaveBar.js';
+import {getMoreOptionsLabel, ROUTE_PARTS} from '../../shared/constants/index.js';
+import {buildLink} from '../../shared/helpers/build-link.js';
+import {getContributorType, transformContributorsToSimpleContributors,} from '../../shared/helpers/contributors.js';
+import {convertRteToString} from '../../shared/helpers/convert-rte-to-string.js';
+import {CustomError} from '../../shared/helpers/custom-error.js';
+import {createDropdownMenuItem} from '../../shared/helpers/dropdown.js';
+import {navigate} from '../../shared/helpers/link.js';
+import {isMobileWidth} from '../../shared/helpers/media-query.js';
+import {renderMobileDesktop} from '../../shared/helpers/renderMobileDesktop.js';
+import {useWarningBeforeUnload} from '../../shared/hooks/useWarningBeforeUnload.js';
+import {BookmarksViewsPlaysService} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
 import {
-	getContributorType,
-	transformContributorsToSimpleContributors,
-} from '../../shared/helpers/contributors';
-import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { navigate } from '../../shared/helpers/link';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
-import { trackEvents } from '../../shared/services/event-logging-service';
-import { ToastService } from '../../shared/services/toast-service';
-import { COLLECTIONS_ID } from '../../workspace/workspace.const';
-import { getFragmentsFromCollection } from '../collection.helpers';
-import { CollectionService } from '../collection.service';
+	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js';
+import {type BookmarkViewPlayCounts} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
+import {trackEvents} from '../../shared/services/event-logging-service.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {COLLECTIONS_ID} from '../../workspace/workspace.const.js';
+import {getFragmentsFromCollection} from '../collection.helpers.js';
+import {CollectionService} from '../collection.service.js';
 import {
+	COLLECTION_OR_BUNDLE_TO_CONTENT_TYPE_ENGLISH,
 	CollectionCreateUpdateTab,
-	CollectionFragmentType,
 	CollectionMenuAction,
 	CollectionOrBundle,
 	ContentTypeNumber,
-} from '../collection.types';
-import {
-	onAddContributor,
-	onDeleteContributor,
-	onEditContributor,
-} from '../helpers/collection-share-with-collegue-handlers';
-import { deleteCollection, deleteSelfFromCollection } from '../helpers/delete-collection';
-import {
-	BundleSortProp,
-	useGetCollectionsOrBundlesContainingFragment,
-} from '../hooks/useGetCollectionsOrBundlesContainingFragment';
+} from '../collection.types.js';
+import {onAddContributor, onDeleteContributor, onEditContributor,} from '../helpers/collection-share-with-collegue-handlers.js';
+import {deleteCollection, deleteSelfFromCollection} from '../helpers/delete-collection.js';
+import {BundleSortProp, useGetCollectionsOrBundlesContainingFragment,} from '../hooks/useGetCollectionsOrBundlesContainingFragment.js';
 
-import {
-	GET_REORDER_TYPE_TO_BUTTON_LABEL,
-	REORDER_TYPE_TO_FRAGMENT_TYPE,
-} from './CollectionOrBundleEdit.consts';
+import {GET_REORDER_TYPE_TO_BUTTON_LABEL, REORDER_TYPE_TO_FRAGMENT_TYPE,} from './CollectionOrBundleEdit.consts.js';
 import {
 	type CollectionAction,
 	type CollectionOrBundleEditProps,
 	type CollectionState,
 	ReorderType,
-} from './CollectionOrBundleEdit.types';
-import { CollectionOrBundleEditActualisation } from './CollectionOrBundleEditActualisation';
-import { CollectionOrBundleEditAdmin } from './CollectionOrBundleEditAdmin';
-import { CollectionOrBundleEditContent } from './CollectionOrBundleEditContent';
-import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
-import { CollectionOrBundleEditMarcom } from './CollectionOrBundleEditMarcom';
-import { CollectionOrBundleEditMetaData } from './CollectionOrBundleEditMetaData';
-import { CollectionOrBundleEditQualityCheck } from './CollectionOrBundleEditQualityCheck';
-import { CollectionOrBundleTitle } from './CollectionOrBundleTitle';
-import { DeleteCollectionModal } from './modals/DeleteCollectionModal';
-import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
-import { PublishCollectionModal } from './modals/PublishCollectionModal';
+} from './CollectionOrBundleEdit.types.js';
+import {CollectionOrBundleEditActualisation} from './CollectionOrBundleEditActualisation.js';
+import {CollectionOrBundleEditAdmin} from './CollectionOrBundleEditAdmin.js';
+import {CollectionOrBundleEditContent} from './CollectionOrBundleEditContent.js';
+import {COLLECTION_SAVE_DELAY} from './CollectionOrBundleEditContent.consts.js';
+import {CollectionOrBundleEditMarcom} from './CollectionOrBundleEditMarcom.js';
+import {CollectionOrBundleEditMetaData} from './CollectionOrBundleEditMetaData.js';
+import {CollectionOrBundleEditQualityCheck} from './CollectionOrBundleEditQualityCheck.js';
+import {CollectionOrBundleTitle} from './CollectionOrBundleTitle.js';
+import {DeleteCollectionModal} from './modals/DeleteCollectionModal.js';
+import {DeleteMyselfFromCollectionContributorsConfirmModal} from './modals/DeleteContributorFromCollectionModal.js';
+import {PublishCollectionModal} from './modals/PublishCollectionModal.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
 
 import './CollectionOrBundleEdit.scss';
-import { tText } from '../../shared/helpers/translate-text';
-import { tHtml } from '../../shared/helpers/translate-html';
 
 export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }) => {
 	const navigateFunc = useNavigate();
@@ -313,15 +293,15 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 				// Ensure collection fragments come first and then the assignment fragments inside the bundle fragments list
 				const orderedBlocks = reorderBlockPositions(
 					newCollection?.collection_fragments || []
-				) as unknown as CollectionFragment[];
+				) as unknown as Avo.Collection.Fragment[];
 				newCollection.collection_fragments = setBlockPositionToIndex([
 					...orderedBlocks.filter(
-						(fragment) => fragment.type === CollectionFragmentType.COLLECTION
+						(fragment) => fragment.type === Avo.Core.BlockItemType.COLLECTION
 					),
 					...orderedBlocks.filter(
-						(fragment) => fragment.type === CollectionFragmentType.ASSIGNMENT
+						(fragment) => fragment.type === Avo.Core.BlockItemType.ASSIGNMENT
 					),
-				]) as unknown as CollectionFragment[];
+				]) as unknown as Avo.Collection.Fragment[];
 			}
 
 			return {
@@ -338,15 +318,15 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 				// Ensure collection fragments come first and then the assignment fragments inside the bundle fragments list
 				const orderedBlocks = reorderBlockPositions(
 					newCollection?.collection_fragments || []
-				) as unknown as CollectionFragment[];
+				) as unknown as Avo.Collection.Fragment[];
 				newCollection.collection_fragments = setBlockPositionToIndex([
 					...orderedBlocks.filter(
-						(fragment) => fragment.type === CollectionFragmentType.COLLECTION
+						(fragment) => fragment.type === Avo.Core.BlockItemType.COLLECTION
 					),
 					...orderedBlocks.filter(
-						(fragment) => fragment.type === CollectionFragmentType.ASSIGNMENT
+						(fragment) => fragment.type === Avo.Core.BlockItemType.ASSIGNMENT
 					),
-				]) as unknown as CollectionFragment[];
+				]) as unknown as Avo.Collection.Fragment[];
 			}
 
 			return {
@@ -471,7 +451,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 	const { data: bundlesContainingCollection } = useGetCollectionsOrBundlesContainingFragment(
 		collectionId as string,
 		BundleSortProp.title,
-		OrderDirection.asc,
+		Avo.Search.OrderDirection.ASC,
 		{ enabled: !!collectionId && !!collectionState.currentCollection }
 	);
 
@@ -1088,7 +1068,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 					custom_description: null,
 					collection_uuid: collectionId,
 					item_meta: item,
-					type: 'ITEM',
+					type: Avo.Core.BlockItemType.ITEM,
 				};
 				changeCollectionState({
 					type: 'INSERT_FRAGMENT',
@@ -1132,7 +1112,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 					custom_description: null,
 					collection_uuid: bundleId,
 					item_meta: collection,
-					type: CollectionFragmentType.COLLECTION,
+					type: Avo.Core.BlockItemType.COLLECTION,
 					created_at: new Date().toISOString(),
 				};
 				changeCollectionState({
@@ -1196,7 +1176,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 					type_id: ContentTypeNumber.assignment,
 				},
 				collection_uuid: bundleId,
-				type: 'ASSIGNMENT',
+				type: Avo.Core.BlockItemType.ASSIGNMENT,
 			};
 			changeCollectionState({
 				type: 'INSERT_FRAGMENT',
@@ -1400,11 +1380,11 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 			} else {
 				const collectionFragments =
 					collectionState.currentCollection?.collection_fragments?.filter(
-						(fragment) => fragment.type === CollectionFragmentType.COLLECTION
+						(fragment) => fragment.type === Avo.Core.BlockItemType.COLLECTION
 					) || [];
 				const assignmentFragments =
 					collectionState.currentCollection?.collection_fragments?.filter(
-						(fragment) => fragment.type === CollectionFragmentType.ASSIGNMENT
+						(fragment) => fragment.type === Avo.Core.BlockItemType.ASSIGNMENT
 					) || [];
 
 				if (collectionFragments.length > 0) {
@@ -1630,7 +1610,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 							onFocus={() => setUnsavedChanges(true)}
 						/>
 					}
-					category={type}
+					category={COLLECTION_OR_BUNDLE_TO_CONTENT_TYPE_ENGLISH[type]}
 					showMetaData={true}
 					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
 					views={String(bookmarkViewPlayCounts.viewCount || 0)}
@@ -1834,10 +1814,10 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 										break;
 
 									case 'BUNDLE_COLLECTION_FRAGMENTS': {
-										const fragmentCollections = blocks as CollectionFragment[];
+										const fragmentCollections = blocks as Avo.Collection.Fragment[];
 										const fragmentAssignments = getFragmentsFromCollection(
 											collectionState.currentCollection,
-											'ASSIGNMENT'
+											Avo.Core.BlockItemType.ASSIGNMENT
 										);
 										const newFragments = setBlockPositionToIndex([
 											...fragmentCollections,
@@ -1855,9 +1835,9 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({ type }
 									case 'BUNDLE_ASSIGNMENT_FRAGMENTS': {
 										const fragmentCollections = getFragmentsFromCollection(
 											collectionState.currentCollection,
-											'COLLECTION'
+											Avo.Core.BlockItemType.COLLECTION
 										);
-										const fragmentAssignments = blocks as CollectionFragment[];
+										const fragmentAssignments = blocks as Avo.Collection.Fragment[];
 										const newFragments = setBlockPositionToIndex([
 											...fragmentCollections,
 											...fragmentAssignments,

@@ -10,7 +10,7 @@ import {
 	type GetItemPlayCountQuery,
 	type GetItemViewCountQuery,
 	type InsertAssignmentBookmarkMutationVariables,
-} from '../../generated/graphql-db-operations';
+} from '../../generated/graphql-db-operations.js';
 import {
 	DeleteAssignmentBookmarksForUserDocument,
 	DeleteCollectionBookmarksForUserDocument,
@@ -28,14 +28,14 @@ import {
 	InsertAssignmentBookmarkDocument,
 	InsertCollectionBookmarkDocument,
 	InsertItemBookmarkDocument,
-} from '../../generated/graphql-db-react-query';
+} from '../../generated/graphql-db-react-query.js';
 
 import {
 	type BookmarkViewPlayCounts,
 	type EventAction,
 	type EventContentType,
 	type EventContentTypeSimplified,
-} from './bookmarks-views-plays-service.types';
+} from './bookmarks-views-plays-service.types.js';
 
 export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
 	bookmarkCount: 0,

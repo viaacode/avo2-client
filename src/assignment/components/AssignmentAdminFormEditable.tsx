@@ -1,30 +1,19 @@
-import {
-	Checkbox,
-	Column,
-	Container,
-	Form,
-	FormGroup,
-	Grid,
-	Spacer,
-	type TagInfo,
-	TagsInput,
-	TextInput,
-} from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { isNil } from 'lodash-es';
-import React, { type FC } from 'react';
+import {Checkbox, Column, Container, Form, FormGroup, Grid, Spacer, type TagInfo, TagsInput, TextInput,} from '@viaa/avo2-components';
+import {Avo, PermissionName} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {isNil} from 'es-toolkit';
+import React, {type FC} from 'react';
 
-import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
-import { type PickerItem } from '../../admin/shared/types/content-picker';
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable';
-import { type QualityLabel } from '../../collection/collection.types';
-import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar';
-import { formatTimestamp } from '../../shared/helpers/formatters/date';
-import { tText } from '../../shared/helpers/translate-text';
-import { useGetQualityLabels } from '../../shared/hooks/useGetQualityLabels';
+import {ContentPicker} from '../../admin/shared/components/ContentPicker/ContentPicker.js';
+import {type PickerItem} from '../../admin/shared/types/content-picker.js';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {ContainedInBundlesTable} from '../../bundle/components/ContainedInBundlesTable.js';
+import {type QualityLabel} from '../../collection/collection.types.js';
+import {getFullNameCommonUser} from '../../shared/helpers/formatters/avatar.js';
+import {formatTimestamp} from '../../shared/helpers/formatters/date.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {useGetQualityLabels} from '../../shared/hooks/useGetQualityLabels.js';
 
 interface AssignmentAdminFormEditableProps {
 	assignment: Avo.Assignment.Assignment;
@@ -40,7 +29,7 @@ export const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps> =
 	const owner: PickerItem | undefined = assignment.profile
 		? {
 				label: `${assignment.profile.user.first_name} ${assignment.profile.user.last_name} (${assignment.profile.user.mail})`,
-				type: 'PROFILE',
+				type: Avo.Core.ContentPickerType.PROFILE,
 				value: assignment.profile.id,
 		  }
 		: undefined;
@@ -165,7 +154,7 @@ export const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps> =
 											initialValue={owner}
 											hideTargetSwitch
 											hideTypeDropdown
-											allowedTypes={['PROFILE']}
+											allowedTypes={[Avo.Core.ContentPickerType.PROFILE]}
 											onSelect={handleOwnerChange}
 										/>
 									</FormGroup>

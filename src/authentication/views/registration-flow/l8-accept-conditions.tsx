@@ -7,29 +7,29 @@ import {
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { compact } from 'lodash-es';
+import { compact } from 'es-toolkit';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
-import { SpecialUserGroupId } from '../../../admin/user-groups/user-group.const';
-import { GENERATE_SITE_TITLE } from '../../../constants';
+import { SpecialUserGroupId } from '../../../admin/user-groups/user-group.const.js';
+import { GENERATE_SITE_TITLE } from '../../../constants.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { renderWrongUserRoleError } from '../../../shared/helpers/render-wrong-user-role-error';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { NotificationService } from '../../../shared/services/notification-service';
-import { ToastService } from '../../../shared/services/toast-service';
-import { Locale } from '../../../shared/translations/translations.types';
-import { acceptConditionsAtom, commonUserAtom, loginAtom } from '../../authentication.store';
-import { redirectToClientPage } from '../../helpers/redirects/redirect-to-client-page';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { CustomError } from '../../../shared/helpers/custom-error.js';
+import { renderWrongUserRoleError } from '../../../shared/helpers/render-wrong-user-role-error.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { NotificationService } from '../../../shared/services/notification-service.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { Locale } from '../../../shared/translations/translations.types.js';
+import { acceptConditionsAtom, commonUserAtom, loginAtom } from '../../authentication.store.js';
+import { redirectToClientPage } from '../../helpers/redirects/redirect-to-client-page.js';
 
-import { AcceptElementaryPupilConditions } from './accept-elementary-pupil-conditions';
+import { AcceptElementaryPupilConditions } from './accept-elementary-pupil-conditions.js';
 
 const ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS = 'ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS';
 

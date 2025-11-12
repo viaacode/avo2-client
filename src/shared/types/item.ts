@@ -1,7 +1,7 @@
 import {
 	type GetPublicItemsByTitleOrExternalIdQuery,
 	type GetPublicItemsQuery,
-} from '../generated/graphql-db-operations';
+} from '../generated/graphql-db-operations.js';
 
 export type ItemMeta =
 	| GetPublicItemsQuery['app_item_meta'][0]

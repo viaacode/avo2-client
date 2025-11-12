@@ -1,7 +1,7 @@
 import './AssignmentOverview.scss';
 
-import { cleanupFilterTableState, toggleSortOrder } from '@meemoo/admin-core-ui/admin';
-import { PaginationBar } from '@meemoo/react-components';
+import {cleanupFilterTableState, toggleSortOrder} from '@meemoo/admin-core-ui/admin';
+import {PaginationBar} from '@meemoo/react-components';
 import {
 	Button,
 	ButtonGroup,
@@ -23,89 +23,63 @@ import {
 	ToolbarRight,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import { useAtomValue } from 'jotai';
-import { cloneDeep, compact, isArray, isNil, noop } from 'lodash-es';
-import React, {
-	type FC,
-	type KeyboardEvent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
-import { useNavigate } from 'react-router';
-import { Link } from 'react-router-dom';
-import {
-	ArrayParam,
-	DelimitedArrayParam,
-	NumberParam,
-	StringParam,
-	useQueryParams,
-	withDefault,
-} from 'use-query-params';
+import {Avo, PermissionName} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import {useAtomValue} from 'jotai';
+import {cloneDeep, compact, isNil, noop} from 'es-toolkit';
+import React, {type FC, type KeyboardEvent, type ReactNode, useCallback, useEffect, useMemo, useState,} from 'react';
+import {useNavigate} from 'react-router';
+import {Link} from 'react-router-dom';
+import {ArrayParam, DelimitedArrayParam, NumberParam, StringParam, useQueryParams, withDefault,} from 'use-query-params';
 
-import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
-import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views/ErrorView';
-import { OrderDirection } from '../../search/search.const';
-import {
-	CheckboxDropdownModal,
-	type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
-import {
-	ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
-	getMoreOptionsLabel,
-} from '../../shared/constants';
-import { buildLink } from '../../shared/helpers/build-link';
-import { getContributorType } from '../../shared/helpers/contributors';
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { renderAvatar } from '../../shared/helpers/formatters/avatar';
-import { formatDate } from '../../shared/helpers/formatters/date';
-import { navigate } from '../../shared/helpers/link';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { truncateTableValue } from '../../shared/helpers/truncate';
-import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service';
-import { ToastService } from '../../shared/services/toast-service';
-import { KeyCode } from '../../shared/types';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
+import {GET_DEFAULT_PAGINATION_BAR_PROPS} from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {redirectToClientPage} from '../../authentication/helpers/redirects/redirect-to-client-page.js';
+import {APP_PATH} from '../../constants.js';
+import {ErrorView} from '../../error/views/ErrorView.js';
+import {OrderDirection} from '../../search/search.const.js';
+import {CheckboxDropdownModal, type CheckboxOption,} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
+import {FullPageSpinner} from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import {ContributorInfoRight} from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
+import {ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS, getMoreOptionsLabel,} from '../../shared/constants/index.js';
+import {buildLink} from '../../shared/helpers/build-link.js';
+import {getContributorType} from '../../shared/helpers/contributors.js';
+import {createDropdownMenuItem} from '../../shared/helpers/dropdown.js';
+import {renderAvatar} from '../../shared/helpers/formatters/avatar.js';
+import {formatDate} from '../../shared/helpers/formatters/date.js';
+import {navigate} from '../../shared/helpers/link.js';
+import {isMobileWidth} from '../../shared/helpers/media-query.js';
+import {renderMobileDesktop} from '../../shared/helpers/renderMobileDesktop.js';
+import {createShareIconTableOverview} from '../../shared/helpers/share-icon-table-overview.js';
+import {ACTIONS_TABLE_COLUMN_ID} from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {truncateTableValue} from '../../shared/helpers/truncate.js';
+import {AssignmentLabelsService} from '../../shared/services/assignment-labels-service/assignment-labels.service.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {KeyCode} from '../../shared/types/index.js';
+import {TableColumnDataType} from '../../shared/types/table-column-data-type.js';
+import {ITEMS_PER_PAGE} from '../../workspace/workspace.const.js';
 import {
 	ASSIGNMENT_CREATE_UPDATE_TABS,
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	GET_ASSIGNMENT_OVERVIEW_COLUMNS,
-} from '../assignment.const';
-import { AssignmentService } from '../assignment.service';
-import {
-	AssignmentAction,
-	type AssignmentTableColumns,
-	AssignmentType,
-	AssignmentView,
-} from '../assignment.types';
-import { AssignmentDeadline } from '../components/AssignmentDeadline';
-import { deleteAssignment, deleteSelfFromAssignment } from '../helpers/delete-assignment';
-import { duplicateAssignment } from '../helpers/duplicate-assignment';
-import { useGetAssignments } from '../hooks/useGetAssignments';
-import { DeleteAssignmentModal } from '../modals/DeleteAssignmentModal';
+} from '../assignment.const.js';
+import {AssignmentService} from '../assignment.service.js';
+import {AssignmentAction, type AssignmentTableColumns, AssignmentType, AssignmentView,} from '../assignment.types.js';
+import {AssignmentDeadline} from '../components/AssignmentDeadline.js';
+import {deleteAssignment, deleteSelfFromAssignment} from '../helpers/delete-assignment.js';
+import {duplicateAssignment} from '../helpers/duplicate-assignment.js';
+import {useGetAssignments} from '../hooks/useGetAssignments.js';
+import {DeleteAssignmentModal} from '../modals/DeleteAssignmentModal.js';
 
 interface AssignmentOverviewProps {
 	onUpdate: () => void | Promise<void>;
 }
 
 const DEFAULT_SORT_COLUMN = 'updated_at';
-const DEFAULT_SORT_ORDER = OrderDirection.desc;
+const DEFAULT_SORT_ORDER = Avo.Search.OrderDirection.DESC;
 
 const defaultFiltersAndSort = {
 	selectedAssignmentLabelIds: [],
@@ -144,10 +118,10 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({ onUpdate = noo
 	);
 
 	const isOwner =
-		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE ||
-		markedAssignment?.share_type === ShareWithColleagueTypeEnum.NIET_GEDEELD;
+		markedAssignment?.share_type === Avo.Share.ShareWithColleagueType.GEDEELD_MET_ANDERE ||
+		markedAssignment?.share_type === Avo.Share.ShareWithColleagueType.NIET_GEDEELD;
 	const isContributor =
-		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
+		markedAssignment?.share_type === Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ;
 	const isContributorWithContributeRights = !!markedAssignment?.contributors?.find(
 		(c) =>
 			c.profile_id === commonUser?.profileId && c.rights === ContributorInfoRight.CONTRIBUTOR
@@ -214,8 +188,8 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({ onUpdate = noo
 		let newValue = value;
 
 		// Show both shareTypes for 'mijn opdrachten' option
-		if (isArray(value) && value.includes(ShareWithColleagueTypeEnum.NIET_GEDEELD)) {
-			newValue = [...value, ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE];
+		if (Array.isArray(value) && value.includes(Avo.Share.ShareWithColleagueType.NIET_GEDEELD)) {
+			newValue = [...value, Avo.Share.ShareWithColleagueType.GEDEELD_MET_ANDERE];
 		}
 
 		newQuery = {
@@ -510,7 +484,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({ onUpdate = noo
 			  );
 
 		const labels = (assignment.labels || []).filter(
-			({ assignment_label: item }) => item.type === 'LABEL'
+			({ assignment_label: item }) => item.type === Avo.Assignment.LabelType.LABEL
 		);
 
 		switch (colKey) {
@@ -540,7 +514,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({ onUpdate = noo
 			case 'class_room':
 				return renderLabels(
 					(assignment.labels || []).filter(
-						({ assignment_label: item }) => item.type === 'CLASS'
+						({ assignment_label: item }) => item.type === Avo.Assignment.LabelType.CLASS
 					),
 					tText('assignment/views/assignment-overview___klas')
 				);
@@ -574,7 +548,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({ onUpdate = noo
 
 			case 'share_type':
 				return createShareIconTableOverview(
-					assignment.share_type as ShareWithColleagueTypeEnum,
+					assignment.share_type as Avo.Share.ShareWithColleagueType,
 					assignment.contributors,
 					'assignment',
 					'c-assignment-overview__shared'
@@ -639,16 +613,16 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({ onUpdate = noo
 		return compact([
 			{
 				label: tText('assignment/views/assignment-overview___gedeeld-met-mij'),
-				id: ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ,
+				id: Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ,
 				checked: [...(query.selectedShareTypeLabelIds || [])].includes(
-					ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
+					Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ
 				),
 			},
 			{
 				label: tText('assignment/views/assignment-overview___mijn-opdrachten'),
-				id: ShareWithColleagueTypeEnum.NIET_GEDEELD,
+				id: Avo.Share.ShareWithColleagueType.NIET_GEDEELD,
 				checked: [...(query.selectedShareTypeLabelIds || [])].includes(
-					ShareWithColleagueTypeEnum.NIET_GEDEELD
+					Avo.Share.ShareWithColleagueType.NIET_GEDEELD
 				),
 			},
 		]);
@@ -737,7 +711,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({ onUpdate = noo
 									<CheckboxDropdownModal
 										label={tText('assignment/views/assignment-overview___klas')}
 										id="Klas"
-										options={getLabelOptions('CLASS')}
+										options={getLabelOptions(Avo.Assignment.LabelType.CLASS)}
 										onChange={(selectedClasses) =>
 											handleQueryChanged(
 												selectedClasses,
@@ -750,7 +724,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({ onUpdate = noo
 											'assignment/views/assignment-overview___label'
 										)}
 										id="Label"
-										options={getLabelOptions('LABEL')}
+										options={getLabelOptions(Avo.Assignment.LabelType.LABEL)}
 										onChange={(selectedLabels) =>
 											handleQueryChanged(
 												selectedLabels,

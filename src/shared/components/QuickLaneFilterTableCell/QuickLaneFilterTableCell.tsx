@@ -1,10 +1,10 @@
 import React, { type FC, type ReactNode } from 'react';
 
-import { formatDate, formatTimestamp } from '../../helpers/formatters/date';
-import { tHtml } from '../../helpers/translate-html';
-import { type QuickLaneUrlObject } from '../../types';
-import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';
-import { QuickLaneLink } from '../QuickLaneLink/QuickLaneLink';
+import { formatDate, formatTimestamp } from '../../helpers/formatters/date.js';
+import { tHtml } from '../../helpers/translate-html.js';
+import { type QuickLaneUrlObject } from '../../types/index.js';
+import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types.js';
+import { QuickLaneLink } from '../QuickLaneLink/QuickLaneLink.js';
 
 export interface QuickLaneFilterTableCellProps {
 	id: string;

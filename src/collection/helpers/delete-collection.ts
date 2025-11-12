@@ -1,10 +1,10 @@
-import { type Avo } from '@viaa/avo2-types';
-import { isNil } from 'lodash-es';
+import {type Avo} from '@viaa/avo2-types';
+import {isNil} from 'es-toolkit';
 
-import { tHtml } from '../../shared/helpers/translate-html';
-import { trackEvents } from '../../shared/services/event-logging-service';
-import { ToastService } from '../../shared/services/toast-service';
-import { CollectionService } from '../collection.service';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {trackEvents} from '../../shared/services/event-logging-service.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {CollectionService} from '../collection.service.js';
 
 export async function deleteCollection(
 	collectionId: string | null | undefined,
@@ -36,7 +36,7 @@ export async function deleteCollection(
 
 		trackEvents(
 			{
-				object: collectionId,
+				object: collectionId as string,
 				object_type: 'collection',
 				action: 'delete',
 			},
@@ -92,7 +92,7 @@ export async function deleteSelfFromCollection(
 			return;
 		}
 
-		await CollectionService.deleteContributor(collectionId, undefined, commonUser?.profileId);
+		await CollectionService.deleteContributor(collectionId as string, undefined, commonUser?.profileId);
 
 		afterDeleteCallback?.();
 

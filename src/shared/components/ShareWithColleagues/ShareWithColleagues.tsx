@@ -1,5 +1,5 @@
 import './ShareWithColleagues.scss';
-import { useLocalStorage } from '@uidotdev/usehooks';
+import {useLocalStorage} from '@uidotdev/usehooks';
 import {
 	Avatar,
 	Button,
@@ -18,29 +18,30 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
-import { type Avo, type PermissionName } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import { useAtomValue } from 'jotai';
-import { isEmpty, isNil, truncate } from 'lodash-es';
-import React, { type FC, useMemo, useState } from 'react';
+import {type Avo, type PermissionName} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import {useAtomValue} from 'jotai';
+import {isNil} from 'es-toolkit';
+import {isEmpty} from 'es-toolkit/compat';
+import React, {type FC, useMemo, useState} from 'react';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { tHtml } from '../../helpers/translate-html';
-import { tText } from '../../helpers/translate-text';
-import { validateEmailAddress } from '../../helpers/validation/email';
-import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
-import { ConfirmModalRememberKey } from '../ConfirmModal/ConfirmModal.consts';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {tHtml} from '../../helpers/translate-html.js';
+import {tText} from '../../helpers/translate-text.js';
+import {validateEmailAddress} from '../../helpers/validation/email.js';
+import {ConfirmModal} from '../ConfirmModal/ConfirmModal.js';
+import {ConfirmModalRememberKey} from '../ConfirmModal/ConfirmModal.consts.js';
 
-import { EditShareUserRightsModal } from './Modals/EditShareUserRightsModal';
-import { GET_EDUCATION_LEVEL_DIFFERENCE_DICT } from './ShareWithColleagues.const';
+import {EditShareUserRightsModal} from './Modals/EditShareUserRightsModal.js';
+import {GET_EDUCATION_LEVEL_DIFFERENCE_DICT} from './ShareWithColleagues.const.js';
 import {
 	compareUsersEmail,
 	findRightByValue,
 	getContributorRightLabel,
 	hasEducationLevel,
 	sortContributors,
-} from './ShareWithColleagues.helpers';
-import { type ContributorInfo, ContributorInfoRight } from './ShareWithColleagues.types';
+} from './ShareWithColleagues.helpers.js';
+import {type ContributorInfo, ContributorInfoRight} from './ShareWithColleagues.types.js';
 
 type ShareWithColleaguesProps = {
 	contributors: ContributorInfo[];
@@ -259,7 +260,7 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
 
 									<p className="c-colleague-info-row__info__email">
 										{!contributorIsPending
-											? truncate(contributor.email, { length: 32 })
+											? contributor.email?.slice(0, 32)
 											: `${contributor.inviteEmail} (${tText(
 													'shared/components/share-with-colleagues/share-with-colleagues___pending'
 											  )})`}

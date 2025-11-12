@@ -1,5 +1,5 @@
-import { type Avo } from '@viaa/avo2-types';
-import { sortBy } from 'lodash-es';
+import {type Avo} from '@viaa/avo2-types';
+import {sortBy} from 'es-toolkit';
 
 import {
 	type GetAllOrganisationsQuery,
@@ -10,16 +10,16 @@ import {
 	type GetOrganisationsWithUsersQueryVariables,
 	type GetUsersByCompanyIdQuery,
 	type GetUsersByCompanyIdQueryVariables,
-} from '../generated/graphql-db-operations';
+} from '../generated/graphql-db-operations.js';
 import {
 	GetAllOrganisationsDocument,
 	GetDistinctOrganisationsDocument,
 	GetOrganisationsWithUsersDocument,
 	GetUsersByCompanyIdDocument,
-} from '../generated/graphql-db-react-query';
-import { CustomError } from '../helpers/custom-error';
+} from '../generated/graphql-db-react-query.js';
+import {CustomError} from '../helpers/custom-error.js';
 
-import { dataService } from './data-service';
+import {dataService} from './data-service.js';
 
 export class OrganisationService {
 	public static async fetchOrganisations(
@@ -50,7 +50,7 @@ export class OrganisationService {
 				});
 			}
 
-			return sortBy(organisations, 'name');
+			return sortBy(organisations, ['name']);
 		} catch (err) {
 			throw new CustomError('Failed to get organisations from the database', err, {
 				query: 'GET_ALL_ORGANISATIONS',
@@ -77,7 +77,7 @@ export class OrganisationService {
 				});
 			}
 
-			return sortBy(organisations, 'name') as Partial<Avo.Organization.Organization>[];
+			return sortBy(organisations, ['name']) as Partial<Avo.Organization.Organization>[];
 		} catch (err) {
 			throw new CustomError('Failed to get organisations from the database', err, {
 				query: 'GET_ORGANISATIONS_WITH_USERS',

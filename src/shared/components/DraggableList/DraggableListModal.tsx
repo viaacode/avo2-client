@@ -1,13 +1,13 @@
-import { Button, ButtonToolbar, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
-import React, { type FC, type ReactNode, useState } from 'react';
+import {Button, ButtonToolbar, Modal, ModalBody, ModalFooterRight} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
 
-import { DraggableList } from './DraggableList';
+import React, {type FC, type ReactNode, useState} from 'react';
+
+import {DraggableList} from './DraggableList.js';
 
 import './DraggableListModal.scss';
-import { tHtml } from '../../helpers/translate-html';
-import { tText } from '../../helpers/translate-text';
+import {tHtml} from '../../helpers/translate-html.js';
+import {tText} from '../../helpers/translate-text.js';
 
 export interface DraggableListModalProps {
 	items?: any[];
@@ -27,10 +27,7 @@ export const DraggableListModal: FC<DraggableListModalProps> = ({
 	const [reorderedElements, setReorderedElements] = useState<any[] | null>(null);
 
 	const getFragmentKey = (fragment: Avo.Collection.Fragment) => {
-		return `fragment_${fragment.id}-${get(fragment, 'created_at')}-${get(
-			fragment,
-			'position'
-		)}`;
+		return `fragment_${fragment.id}-${fragment?.created_at}-${fragment?.position}`;
 	};
 
 	return (

@@ -1,7 +1,7 @@
 import { IconName } from '@viaa/avo2-components';
 
-import { tText } from '../../../shared/helpers/translate-text';
-import { type ReactSelectOption } from '../../../shared/types';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { type ReactSelectOption } from '../../../shared/types/index.js';
 
 export const GET_ADMIN_ICON_OPTIONS: () => ReactSelectOption<IconName>[] = () => [
 	{ label: tText('admin/shared/constants/index___afbeelding'), value: IconName.image },

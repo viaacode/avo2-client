@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { OrderDirection } from '../../search/search.const';
-import { QUERY_KEYS } from '../../shared/constants/query-keys';
-import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { CollectionService } from '../collection.service';
-import { type ParentBundle } from '../collection.types';
+import { OrderDirection } from '../../search/search.const.js';
+import { QUERY_KEYS } from '../../shared/constants/query-keys.js';
+import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { CollectionService } from '../collection.service.js';
+import { type ParentBundle } from '../collection.types.js';
 
 export type BundleColumnId =
 	| 'title'
@@ -22,7 +22,7 @@ export enum BundleSortProp {
 export const useGetCollectionsOrBundlesContainingFragment = (
 	fragmentId: string,
 	orderProp: BundleSortProp = BundleSortProp.title,
-	orderDirection: OrderDirection = OrderDirection.asc,
+	orderDirection: OrderDirection = Avo.Search.OrderDirection.ASC,
 	options: Partial<{
 		enabled: boolean;
 		refetchInterval: number | false;

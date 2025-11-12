@@ -1,5 +1,5 @@
 import { type Avo } from '@viaa/avo2-types';
-import { flatten } from 'lodash-es';
+import { flatten } from 'es-toolkit';
 import { stringifyUrl } from 'query-string';
 
 import {
@@ -15,7 +15,7 @@ import {
 	type BulkUpdateDateAndLastAuthorCollectionsMutationVariables,
 	type BulkUpdatePublishStateForCollectionsMutation,
 	type BulkUpdatePublishStateForCollectionsMutationVariables,
-} from '../../shared/generated/graphql-db-operations';
+} from '../../shared/generated/graphql-db-operations.js';
 import {
 	BulkAddLabelsToCollectionsDocument,
 	BulkDeleteCollectionsDocument,
@@ -23,12 +23,12 @@ import {
 	BulkUpdateAuthorForCollectionsDocument,
 	BulkUpdateDateAndLastAuthorCollectionsDocument,
 	BulkUpdatePublishStateForCollectionsDocument,
-} from '../../shared/generated/graphql-db-react-query';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { getEnv } from '../../shared/helpers/env';
-import { dataService } from '../../shared/services/data-service';
+} from '../../shared/generated/graphql-db-react-query.js';
+import { CustomError } from '../../shared/helpers/custom-error.js';
+import { getEnv } from '../../shared/helpers/env.js';
+import { dataService } from '../../shared/services/data-service.js';
 
-import { type CollectionSortProps, type EditorialType } from './collections-or-bundles.types';
+import { type CollectionSortProps, type EditorialType } from './collections-or-bundles.types.js';
 
 export class CollectionsOrBundlesService {
 	static async getCollections(

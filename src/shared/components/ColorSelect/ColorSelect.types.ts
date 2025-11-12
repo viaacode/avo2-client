@@ -1,4 +1,4 @@
-import { type Props } from 'react-select';
+import {type Props} from 'react-select';
 
 export interface ColorOption {
 	label: string;
@@ -7,5 +7,6 @@ export interface ColorOption {
 }
 
 export interface ColorSelectProps extends Props {
+	id?: string;
 	options: ColorOption[];
 }

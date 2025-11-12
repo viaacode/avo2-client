@@ -11,7 +11,7 @@ import React, { type FC, useEffect, useState } from 'react';
 import {
 	RichTextEditorWrapper,
 	type RichTextEditorWrapperProps,
-} from '../RichTextEditorWrapper/RichTextEditorWrapper';
+} from '../RichTextEditorWrapper/RichTextEditorWrapper.js';
 
 interface TitleDescriptionFormField {
 	label?: string;

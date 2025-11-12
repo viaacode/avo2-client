@@ -1,16 +1,16 @@
-import { type Avo } from '@viaa/avo2-types';
-import { groupBy } from 'lodash-es';
+import {type Avo} from '@viaa/avo2-types';
+import {groupBy} from 'es-toolkit';
 
-import { isUserLevel } from '../../helpers/is-user';
-import { EducationLevelId } from '../../helpers/lom';
-import { tText } from '../../helpers/translate-text';
+import {isUserLevel} from '../../helpers/is-user.js';
+import {EducationLevelId} from '../../helpers/lom.js';
+import {tText} from '../../helpers/translate-text.js';
 
-import { type ContributorInfo, ContributorInfoRight } from './ShareWithColleagues.types';
+import {type ContributorInfo, ContributorInfoRight} from './ShareWithColleagues.types.js';
 
 export const sortContributors = (users: ContributorInfo[]): ContributorInfo[] => {
 	const groupedUsers: Partial<Record<ContributorInfoRight, ContributorInfo[]>> = groupBy(
 		users,
-		'rights'
+		(user) => user.rights
 	);
 
 	return [

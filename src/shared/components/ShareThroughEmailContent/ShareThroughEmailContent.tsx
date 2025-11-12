@@ -3,16 +3,16 @@ import { Box, Button, Flex, FlexItem, Spacer, TextInput } from '@viaa/avo2-compo
 import { useAtomValue } from 'jotai';
 import React, { type FC, useState } from 'react';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { copyToClipboard } from '../../helpers/clipboard';
-import { tHtml } from '../../helpers/translate-html';
-import { tText } from '../../helpers/translate-text';
+import { commonUserAtom } from '../../../authentication/authentication.store.js';
+import { copyToClipboard } from '../../helpers/clipboard.js';
+import { tHtml } from '../../helpers/translate-html.js';
+import { tText } from '../../helpers/translate-text.js';
 import {
 	CampaignMonitorService,
 	type EmailTemplateType,
-} from '../../services/campaign-monitor-service';
-import { trackEvents } from '../../services/event-logging-service';
-import { ToastService } from '../../services/toast-service';
+} from '../../services/campaign-monitor-service.js';
+import { trackEvents } from '../../services/event-logging-service.js';
+import { ToastService } from '../../services/toast-service.js';
 import './ShareThroughEmailContent.scss';
 
 interface AddToCollectionModalProps {

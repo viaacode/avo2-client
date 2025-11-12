@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { stripHtml } from './strip-html';
+import { stripHtml } from './strip-html.js';
 
 describe('Formatters - duration', () => {
 	it('Should strip html tags and resolve html entities`', () => {

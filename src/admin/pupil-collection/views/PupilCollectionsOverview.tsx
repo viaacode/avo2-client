@@ -1,50 +1,41 @@
-import {
-	ExportAllToCsvModal,
-	type FilterableColumn,
-	FilterTable,
-	getFilters,
-} from '@meemoo/admin-core-ui/admin';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { get, isNil } from 'lodash-es';
-import React, { type FC, type ReactText, useCallback, useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
+import {ExportAllToCsvModal, type FilterableColumn, FilterTable, getFilters,} from '@meemoo/admin-core-ui/admin';
+import {type Avo, PermissionName} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {isNil} from 'es-toolkit';
+import React, {type FC, type ReactText, useCallback, useEffect, useMemo, useState} from 'react';
+import {Helmet} from 'react-helmet';
 
-import { AssignmentService } from '../../../assignment/assignment.service';
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ErrorView } from '../../../error/views/ErrorView';
-import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
-import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types';
-import { OrderDirection } from '../../../search/search.const';
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
+import {AssignmentService} from '../../../assignment/assignment.service.js';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {PermissionGuard} from '../../../authentication/components/PermissionGuard.js';
+import {GENERATE_SITE_TITLE} from '../../../constants.js';
+import {ErrorView} from '../../../error/views/ErrorView.js';
+import {PupilCollectionService} from '../../../pupil-collection/pupil-collection.service.js';
+import {type PupilCollectionOverviewTableColumns} from '../../../pupil-collection/pupil-collection.types.js';
+import {OrderDirection} from '../../../search/search.const.js';
+import {ConfirmModal} from '../../../shared/components/ConfirmModal/ConfirmModal.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { ToastService } from '../../../shared/services/toast-service';
-import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
-import { AssignmentsBulkAction } from '../../assignments/assignments.types';
-import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
-import { getDateRangeFilters, getMultiOptionFilters } from '../../shared/helpers/filters';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { type PickerItem } from '../../shared/types/content-picker';
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {CustomError} from '../../../shared/helpers/custom-error.js';
+import {tableColumnListToCsvColumnList} from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {TableColumnDataType} from '../../../shared/types/table-column-data-type.js';
+import {AssignmentsBulkAction} from '../../assignments/assignments.types.js';
+import {ChangeAuthorModal} from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal.js';
+import {getDateRangeFilters, getMultiOptionFilters} from '../../shared/helpers/filters.js';
+import {AdminLayout} from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import {AdminLayoutBody} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import {type PickerItem} from '../../shared/types/content-picker.js';
 import {
 	renderPupilCollectionTableCellReact,
 	renderPupilCollectionTableCellText,
-} from '../helpers/render-pupil-collections-overview-table-cell';
-import {
-	GET_PUPIL_COLLECTION_BULK_ACTIONS,
-	GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS,
-	ITEMS_PER_PAGE,
-} from '../pupil-collection.const';
-import { type PupilCollectionsOverviewTableState } from '../pupil-collection.types';
+} from '../helpers/render-pupil-collections-overview-table-cell.js';
+import {GET_PUPIL_COLLECTION_BULK_ACTIONS, GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE,} from '../pupil-collection.const.js';
+import {type PupilCollectionsOverviewTableState} from '../pupil-collection.types.js';
 
 export const PupilCollectionsOverview: FC = () => {
 	const commonUser = useAtomValue(commonUserAtom);
@@ -56,7 +47,7 @@ export const PupilCollectionsOverview: FC = () => {
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<PupilCollectionsOverviewTableState>>({
 		sort_column: 'created_at',
-		sort_order: OrderDirection.desc,
+		sort_order: Avo.Search.OrderDirection.DESC,
 	});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] = useState(false);
@@ -133,7 +124,7 @@ export const PupilCollectionsOverview: FC = () => {
 
 	const getColumnDataType = useCallback(() => {
 		const column = tableColumns.find((tableColumn: FilterableColumn) => {
-			return get(tableColumn, 'id', '') === get(tableState, 'sort_column', 'empty');
+			return (tableColumn?.id || '') === (tableState?.sort_column || 'empty');
 		});
 		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
 	}, [tableColumns, tableState]);
@@ -147,7 +138,7 @@ export const PupilCollectionsOverview: FC = () => {
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
 					(tableState.sort_column || 'created_at') as PupilCollectionOverviewTableColumns,
-					tableState.sort_order || OrderDirection.desc,
+					tableState.sort_order || Avo.Search.OrderDirection.DESC,
 					getColumnDataType(),
 					generateWhereObject(getFilters(tableState))
 				);
@@ -359,7 +350,7 @@ export const PupilCollectionsOverview: FC = () => {
 					onSelectBulkAction={handleBulkAction as any}
 					rowKey="id"
 					defaultOrderProp={'created_at'}
-					defaultOrderDirection={OrderDirection.desc}
+					defaultOrderDirection={Avo.Search.OrderDirection.DESC}
 				/>
 				<ConfirmModal
 					body={tHtml(
@@ -396,7 +387,7 @@ export const PupilCollectionsOverview: FC = () => {
 							0,
 							(tableState.sort_column ||
 								'created_at') as PupilCollectionOverviewTableColumns,
-							tableState.sort_order || OrderDirection.desc,
+							tableState.sort_order || Avo.Search.OrderDirection.DESC,
 							getColumnDataType(),
 							{}
 						);
@@ -408,7 +399,7 @@ export const PupilCollectionsOverview: FC = () => {
 							limit,
 							(tableState.sort_column ||
 								'created_at') as PupilCollectionOverviewTableColumns,
-							tableState.sort_order || OrderDirection.desc,
+							tableState.sort_order || Avo.Search.OrderDirection.DESC,
 							getColumnDataType(),
 							generateWhereObject(getFilters(tableState))
 						);

@@ -4,8 +4,8 @@ import {
 } from '@meemoo/admin-core-ui/client';
 import { useQuery } from '@tanstack/react-query';
 
-import { QUERY_KEYS } from '../../../shared/constants/query-keys';
-import { Locale } from '../../../shared/translations/translations.types';
+import { QUERY_KEYS } from '../../../shared/constants/query-keys.js';
+import { Locale } from '../../../shared/translations/translations.types.js';
 
 export const useGetContentPageByPath = (
 	path: string | undefined,

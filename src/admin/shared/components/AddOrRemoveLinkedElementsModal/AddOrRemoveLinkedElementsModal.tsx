@@ -13,10 +13,10 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { noop } from 'lodash-es';
+import { noop } from 'es-toolkit';
 import React, { type FC, type ReactNode, useState } from 'react';
 
-import { tText } from '../../../../shared/helpers/translate-text';
+import { tText } from '../../../../shared/helpers/translate-text.js';
 
 export type AddOrRemove = 'add' | 'remove';
 

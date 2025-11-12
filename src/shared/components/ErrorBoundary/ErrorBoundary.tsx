@@ -2,8 +2,8 @@ import { IconName } from '@viaa/avo2-components';
 import React from 'react';
 import { useRouteError } from 'react-router';
 
-import { ErrorView } from '../../../error/views/ErrorView';
-import { tText } from '../../helpers/translate-text';
+import { ErrorView } from '../../../error/views/ErrorView.js';
+import { tText } from '../../helpers/translate-text.js';
 
 import './ErrorBoundary.scss';
 
@@ -16,7 +16,7 @@ export function ErrorBoundary() {
 			message={
 				<>
 					{tText(
-						'Een onverwachte error is opgetreden. Als dit blijft voorkomen, neem contact op met de helpdesk.'
+						'shared/components/error-boundary/error-boundary___een-onverwachte-error-is-opgetreden-als-dit-blijft-voorkomen-neem-contact-op-met-de-helpdesk'
 					)}
 					<br />
 					<span className="c-error-boundary__error-message">

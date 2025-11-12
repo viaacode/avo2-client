@@ -1,7 +1,7 @@
-import { type Avo, type ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import { type Dispatch, type SetStateAction, useState } from 'react';
+import {type Avo} from '@viaa/avo2-types';
+import {type Dispatch, type SetStateAction, useState} from 'react';
 
-import { ASSIGNMENT_FORM_DEFAULT } from '../assignment.const';
+import {ASSIGNMENT_FORM_DEFAULT} from '../assignment.const.js';
 
 // Avoid circular references in type while using the react-hook-form library
 export interface AssignmentFields {
@@ -26,7 +26,7 @@ export interface AssignmentFields {
 	last_user_edit_at?: string | null;
 	blocks?: Avo.Assignment.Block[];
 	labels?: { assignment_label: Avo.Assignment.Label }[];
-	share_type?: ShareWithColleagueTypeEnum; // Only available when fetching assignments from the assignments_v2_overview table
+	share_type?: Avo.Share.ShareWithColleagueType; // Only available when fetching assignments from the assignments_v2_overview table
 	education_level_id?: string;
 	color?: string;
 }

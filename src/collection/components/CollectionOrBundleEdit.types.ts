@@ -1,7 +1,7 @@
 import type { Avo } from '@viaa/avo2-types';
 
-import type { ValueOf } from '../../shared/types';
-import { type CollectionOrBundle } from '../collection.types';
+import type { ValueOf } from '../../shared/types/index.js';
+import { type CollectionOrBundle } from '../collection.types.js';
 
 export enum ReorderType {
 	COLLECTION_FRAGMENTS = 'COLLECTION_FRAGMENTS',

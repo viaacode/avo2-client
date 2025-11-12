@@ -1,6 +1,7 @@
-import { tText } from '../../../shared/helpers/translate-text';
+import {tText} from '../../../shared/helpers/translate-text.js';
 
-import { type ManageAssignmentLabelsProps } from './ManageAssignmentLabels';
+import {type ManageAssignmentLabelsProps} from './ManageAssignmentLabels.js';
+import {Avo} from "@viaa/avo2-types";
 
 export interface ManageAssignmentLabelsTranslations {
 	modal: {
@@ -19,7 +20,7 @@ export interface ManageAssignmentLabelsTranslations {
 export const getManageAssignmentLabelsTranslations = (
 	type: ManageAssignmentLabelsProps['type']
 ): ManageAssignmentLabelsTranslations => {
-	return type === 'LABEL'
+	return type === Avo.Assignment.LabelType.LABEL
 		? {
 				modal: {
 					title: tText(

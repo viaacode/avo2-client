@@ -1,15 +1,14 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { type DefaultProps, Flex, FlexItem, Icon } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import { truncate } from 'lodash-es';
-import React, { type FC } from 'react';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
+import {type DefaultProps, Flex, FlexItem, Icon} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import React, {type FC} from 'react';
 
-import { stripHtml } from '../../helpers/formatters/strip-html';
-import { GET_BLOCK_ICON } from '../BlockList/BlockIconWrapper/BlockIconWrapper.consts';
+import {stripHtml} from '../../helpers/formatters/strip-html.js';
+import {GET_BLOCK_ICON} from '../BlockList/BlockIconWrapper/BlockIconWrapper.consts.js';
 
 import './DraggableBlock.scss';
-import { tHtml } from '../../helpers/translate-html';
+import {tHtml} from '../../helpers/translate-html.js';
 
 interface DraggableBlockProps extends DefaultProps {
 	block?: Avo.Core.BlockItemBase;
@@ -43,7 +42,7 @@ export const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) =>
 			<FlexItem>
 				<BlockHeading type="h4">
 					{label ? (
-						truncate(stripHtml(label), { length: 45 })
+						stripHtml(label).slice(0, 45)
 					) : (
 						<span className="c-draggable-block__placeholder">
 							{tHtml(

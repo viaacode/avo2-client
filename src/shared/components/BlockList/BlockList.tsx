@@ -1,24 +1,12 @@
-import { type Avo } from '@viaa/avo2-types';
-import { noop } from 'lodash-es';
-import React, { type FC } from 'react';
+import {Avo} from '@viaa/avo2-types';
+import {noop} from 'es-toolkit';
+import React, {type FC} from 'react';
+import {getBlockColor} from '../../helpers/get-block-color.js';
 
-import { AssignmentBlockType } from '../../../assignment/assignment.types';
-import { CollectionBlockType } from '../../../collection/collection.const';
-import { getBlockColor } from '../../helpers/get-block-color';
-
-import { BlockIconWrapper } from './BlockIconWrapper/BlockIconWrapper';
-import {
-	AssignmentBlockTypeSearch,
-	type AssignmentBlockTypeSearchProps,
-} from './blocks/AssignmentBlockTypeSearch';
-import {
-	CollectionFragmentTypeItem,
-	type CollectionFragmentTypeItemProps,
-} from './blocks/CollectionFragmentTypeItem';
-import {
-	CollectionFragmentTypeText,
-	type CollectionFragmentTypeTextProps,
-} from './blocks/CollectionFragmentTypeText';
+import {BlockIconWrapper} from './BlockIconWrapper/BlockIconWrapper.js';
+import {AssignmentBlockTypeSearch, type AssignmentBlockTypeSearchProps,} from './blocks/AssignmentBlockTypeSearch.js';
+import {CollectionFragmentTypeItem, type CollectionFragmentTypeItemProps,} from './blocks/CollectionFragmentTypeItem.js';
+import {CollectionFragmentTypeText, type CollectionFragmentTypeTextProps,} from './blocks/CollectionFragmentTypeText.js';
 
 import './BlockList.scss';
 
@@ -36,7 +24,7 @@ export const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 		const backgroundColor = getBlockColor(block as Avo.Assignment.Block);
 
 		switch (block.type) {
-			case CollectionBlockType.TEXT:
+			case Avo.Core.BlockItemType.TEXT:
 				return (
 					<BlockIconWrapper
 						type={block.type}
@@ -51,7 +39,7 @@ export const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 					</BlockIconWrapper>
 				);
 
-			case CollectionBlockType.ITEM:
+			case Avo.Core.BlockItemType.ITEM:
 				return (
 					<BlockIconWrapper
 						type={block.type}
@@ -76,8 +64,8 @@ export const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 					</BlockIconWrapper>
 				);
 
-			case AssignmentBlockType.ZOEK:
-			case AssignmentBlockType.BOUW:
+			case Avo.Core.BlockItemType.ZOEK:
+			case Avo.Core.BlockItemType.BOUW:
 				return (
 					<BlockIconWrapper
 						type={block.type}
@@ -86,7 +74,7 @@ export const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 					>
 						<AssignmentBlockTypeSearch
 							block={block}
-							showCollectionButton={block.type === AssignmentBlockType.BOUW}
+							showCollectionButton={block.type === Avo.Core.BlockItemType.BOUW}
 							pastDeadline={config?.ZOEK?.pastDeadline || false}
 							onSearchButtonClicked={config?.ZOEK?.onSearchButtonClicked || noop}
 							onCollectionButtonClicked={

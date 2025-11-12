@@ -1,7 +1,7 @@
 import type { Avo } from '@viaa/avo2-types';
 
-import type { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
-import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import type { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown.js';
+import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js';
 
 export enum UrlRedirectPathPattern {
 	PLAIN_TEXT = 'PLAIN_TEXT',

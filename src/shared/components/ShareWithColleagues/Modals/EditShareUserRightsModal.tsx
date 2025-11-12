@@ -17,10 +17,10 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, useEffect, useMemo, useState } from 'react';
 
-import { tHtml } from '../../../helpers/translate-html';
-import { tText } from '../../../helpers/translate-text';
-import { findRightByValue } from '../ShareWithColleagues.helpers';
-import { ContributorInfoRight } from '../ShareWithColleagues.types';
+import { tHtml } from '../../../helpers/translate-html.js';
+import { tText } from '../../../helpers/translate-text.js';
+import { findRightByValue } from '../ShareWithColleagues.helpers.js';
+import { ContributorInfoRight } from '../ShareWithColleagues.types.js';
 
 type EditShareUserRightsModalProps = {
 	isOpen: boolean;

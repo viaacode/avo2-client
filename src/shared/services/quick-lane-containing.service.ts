@@ -1,13 +1,13 @@
 import {
 	type GetQuickLanesByContentIdQuery,
 	type GetQuickLanesByContentIdQueryVariables,
-} from '../generated/graphql-db-operations';
-import { GetQuickLanesByContentIdDocument } from '../generated/graphql-db-react-query';
-import { CustomError } from '../helpers/custom-error';
-import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object';
-import { type QuickLaneUrlObject } from '../types';
+} from '../generated/graphql-db-operations.js';
+import { GetQuickLanesByContentIdDocument } from '../generated/graphql-db-react-query.js';
+import { CustomError } from '../helpers/custom-error.js';
+import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object.js';
+import { type QuickLaneUrlObject } from '../types/index.js';
 
-import { dataService } from './data-service';
+import { dataService } from './data-service.js';
 
 export class QuickLaneContainingService {
 	static async fetchQuickLanesByContentId(contentId: string): Promise<QuickLaneUrlObject[]> {

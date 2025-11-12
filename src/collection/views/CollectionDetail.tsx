@@ -1,4 +1,4 @@
-import { OrderDirection } from '@meemoo/react-components';
+import {OrderDirection} from '@meemoo/react-components';
 import {
 	Button,
 	ButtonToolbar,
@@ -16,101 +16,89 @@ import {
 	MoreOptionsDropdown,
 	Spacer,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import { useAtomValue } from 'jotai';
-import { compact, isEmpty, isNil, noop } from 'lodash-es';
-import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { useNavigate, useParams } from 'react-router';
-import { Link } from 'react-router-dom';
-import { BooleanParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
+import {Avo, PermissionName} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import {useAtomValue} from 'jotai';
+import {compact, isNil, noop} from 'es-toolkit';
+import {isEmpty} from 'es-toolkit/compat';
+import React, {type FC, type ReactText, useCallback, useEffect, useState} from 'react';
+import {Helmet} from 'react-helmet';
+import {useNavigate, useParams} from 'react-router';
+import {Link} from 'react-router-dom';
+import {BooleanParam, StringParam, useQueryParam, useQueryParams} from 'use-query-params';
 
-import { AssignmentService } from '../../assignment/assignment.service';
-import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
-import { CreateAssignmentModal } from '../../assignment/modals/CreateAssignmentModal';
-import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal';
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
-import { ErrorView } from '../../error/views/ErrorView';
-import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
-import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
-import { EditButton } from '../../shared/components/EditButton/EditButton';
-import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
-import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
-import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
-import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
-import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal';
-import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown';
-import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
-import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
-import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
-import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
-import { buildLink } from '../../shared/helpers/build-link';
-import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render-bookmark-button';
+import {AssignmentService} from '../../assignment/assignment.service.js';
+import {ConfirmImportToAssignmentWithResponsesModal} from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal.js';
+import {CreateAssignmentModal} from '../../assignment/modals/CreateAssignmentModal.js';
+import {ImportToAssignmentModal} from '../../assignment/modals/ImportToAssignmentModal.js';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {RegisterOrLogin} from '../../authentication/views/RegisterOrLogin.js';
+import {APP_PATH, GENERATE_SITE_TITLE} from '../../constants.js';
+import {ErrorNoAccess} from '../../error/components/ErrorNoAccess.js';
+import {ErrorView} from '../../error/views/ErrorView.js';
+import {ALL_SEARCH_FILTERS, type SearchFilter} from '../../search/search.const.js';
+import {CommonMetadata} from '../../shared/components/CommonMetaData/CommonMetaData.js';
+import {EditButton} from '../../shared/components/EditButton/EditButton.js';
+import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList.js';
+import {FullPageSpinner} from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import {HeaderOwnerAndContributors} from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors.js';
+import {InteractiveTour} from '../../shared/components/InteractiveTour/InteractiveTour.js';
+import {JsonLd} from '../../shared/components/JsonLd/JsonLd.js';
+import {type LoadingInfo} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {MoreOptionsDropdownWrapper} from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper.js';
+import {QuickLaneTypeEnum} from '../../shared/components/QuickLaneContent/QuickLaneContent.types.js';
+import {QuickLaneModal} from '../../shared/components/QuickLaneModal/QuickLaneModal.js';
+import {ShareDropdown} from '../../shared/components/ShareDropdown/ShareDropdown.js';
+import {ShareModal} from '../../shared/components/ShareModal/ShareModal.js';
+import {ContributorInfoRight} from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
+import {StickyBar} from '../../shared/components/StickyBar/StickyBar.js';
+import {EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, ROUTE_PARTS} from '../../shared/constants/index.js';
+import {buildLink} from '../../shared/helpers/build-link.js';
+import {transformContributorsToSimpleContributors} from '../../shared/helpers/contributors.js';
+import {CustomError} from '../../shared/helpers/custom-error.js';
+import {defaultRenderBookmarkButton} from '../../shared/helpers/default-render-bookmark-button.js';
+import {defaultGoToDetailLink, defaultRenderDetailLink,} from '../../shared/helpers/default-render-detail-link.js';
+import {defaultRenderSearchLink} from '../../shared/helpers/default-render-search-link.js';
+import {createDropdownMenuItem} from '../../shared/helpers/dropdown.js';
+import {getFullName} from '../../shared/helpers/formatters/avatar.js';
+import {generateContentLinkString, navigate} from '../../shared/helpers/link.js';
+import {getGroupedLomsKeyValue} from '../../shared/helpers/lom.js';
+import {isMobileWidth} from '../../shared/helpers/media-query.js';
+import {isUuid} from '../../shared/helpers/uuid.js';
+import {BookmarksViewsPlaysService} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
 import {
-	defaultGoToDetailLink,
-	defaultRenderDetailLink,
-} from '../../shared/helpers/default-render-detail-link';
-import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { getFullName } from '../../shared/helpers/formatters/avatar';
-import { generateContentLinkString, navigate } from '../../shared/helpers/link';
-import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { isUuid } from '../../shared/helpers/uuid';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
-import { trackEvents } from '../../shared/services/event-logging-service';
-import {
-	getRelatedItems,
-	ObjectTypes,
-	ObjectTypesAll,
-} from '../../shared/services/related-items-service';
-import { ToastService } from '../../shared/services/toast-service';
-import { renderRelatedItems } from '../collection.helpers';
-import { CollectionService } from '../collection.service';
+	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js';
+import {type BookmarkViewPlayCounts} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
+import {trackEvents} from '../../shared/services/event-logging-service.js';
+import {getRelatedItems, ObjectTypes, ObjectTypesAll,} from '../../shared/services/related-items-service.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {renderRelatedItems} from '../collection.helpers.js';
+import {CollectionService} from '../collection.service.js';
 import {
 	CollectionCreateUpdateTab,
 	CollectionFragmentType,
 	CollectionMenuAction,
 	CollectionOrBundle,
-	ContentTypeString,
 	type Relation,
-} from '../collection.types';
-import { FragmentList } from '../components/fragment/FragmentList';
-import { AddToBundleModal } from '../components/modals/AddToBundleModal';
-import { AutoplayCollectionModal } from '../components/modals/AutoplayCollectionModal';
-import { DeleteCollectionModal } from '../components/modals/DeleteCollectionModal';
-import { DeleteMyselfFromCollectionContributorsConfirmModal } from '../components/modals/DeleteContributorFromCollectionModal';
-import { PublishCollectionModal } from '../components/modals/PublishCollectionModal';
-import {
-	onAddContributor,
-	onDeleteContributor,
-	onEditContributor,
-} from '../helpers/collection-share-with-collegue-handlers';
-import { deleteCollection, deleteSelfFromCollection } from '../helpers/delete-collection';
-import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
-import {
-	BundleSortProp,
-	useGetCollectionsOrBundlesContainingFragment,
-} from '../hooks/useGetCollectionsOrBundlesContainingFragment';
+} from '../collection.types.js';
+import {FragmentList} from '../components/fragment/FragmentList.js';
+import {AddToBundleModal} from '../components/modals/AddToBundleModal.js';
+import {AutoplayCollectionModal} from '../components/modals/AutoplayCollectionModal.js';
+import {DeleteCollectionModal} from '../components/modals/DeleteCollectionModal.js';
+import {DeleteMyselfFromCollectionContributorsConfirmModal} from '../components/modals/DeleteContributorFromCollectionModal.js';
+import {PublishCollectionModal} from '../components/modals/PublishCollectionModal.js';
+import {onAddContributor, onDeleteContributor, onEditContributor,} from '../helpers/collection-share-with-collegue-handlers.js';
+import {deleteCollection, deleteSelfFromCollection} from '../helpers/delete-collection.js';
+import {useGetCollectionsEditStatuses} from '../hooks/useGetCollectionsEditStatuses.js';
+import {BundleSortProp, useGetCollectionsOrBundlesContainingFragment,} from '../hooks/useGetCollectionsOrBundlesContainingFragment.js';
 
-import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from './CollectionDetail.const';
+import {QUERY_PARAM_SHOW_PUBLISH_MODAL} from './CollectionDetail.const.js';
 
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
 import './CollectionDetail.scss';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -226,7 +214,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 		useGetCollectionsOrBundlesContainingFragment(
 			collectionId as string,
 			BundleSortProp.title,
-			OrderDirection.asc,
+			Avo.Search.OrderDirection.ASC,
 			{ enabled: !!collectionId && !!collectionInfo?.collection && !showLoginPopup }
 		);
 
@@ -398,7 +386,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
 				// Redirect to new url that uses the collection uuid instead of the collection avo1 id
 				// and continue loading the collection
-				defaultGoToDetailLink(navigateFunc)(uuid, 'collectie');
+				defaultGoToDetailLink(navigateFunc)(uuid, Avo.Core.ContentType.COLLECTIE);
 				return;
 			}
 
@@ -547,7 +535,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 	// Listeners
 	const onEditCollection = () => {
 		navigateFunc(
-			`${generateContentLinkString(ContentTypeString.collection, `${collectionId}`)}/${
+			`${generateContentLinkString(Avo.Core.ContentType.COLLECTIE, `${collectionId}`)}/${
 				ROUTE_PARTS.edit
 			}/${CollectionCreateUpdateTab.CONTENT}`
 		);
@@ -591,7 +579,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 						commonUser
 					);
 
-					defaultGoToDetailLink(navigateFunc)(duplicateCollection.id, 'collectie');
+					defaultGoToDetailLink(navigateFunc)(duplicateCollection.id, Avo.Core.ContentType.COLLECTIE);
 					setCollectionId(duplicateCollection.id);
 					ToastService.success(
 						tHtml(

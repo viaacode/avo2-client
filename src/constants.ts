@@ -1,8 +1,8 @@
 import { type Avo } from '@viaa/avo2-types';
-import { compact } from 'lodash-es';
+import { compact } from 'es-toolkit';
 
-import { ROUTE_PARTS } from './shared/constants';
-import { tText } from './shared/helpers/translate-text';
+import { ROUTE_PARTS } from './shared/constants/index.js';
+import { tText } from './shared/helpers/translate-text.js';
 
 export interface RouteInfo {
 	route: string;

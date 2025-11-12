@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { type CustomError } from '../../shared/helpers/custom-error';
+import { type CustomError } from '../../shared/helpers/custom-error.js';
 import {
 	CampaignMonitorService,
 	type NewsletterPreferences,
-} from '../../shared/services/campaign-monitor-service';
+} from '../../shared/services/campaign-monitor-service.js';
 
 export const useUpdateEmailPreferences = () => {
 	return useMutation<

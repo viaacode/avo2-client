@@ -1,9 +1,9 @@
 import { IconName } from '@viaa/avo2-components';
 import React, { type FC, type ReactElement } from 'react';
 
-import { ErrorView, type ErrorViewQueryParams } from '../../../error/views/ErrorView';
-import { tHtml } from '../../helpers/translate-html';
-import { FullPageSpinner } from '../FullPageSpinner/FullPageSpinner';
+import { ErrorView, type ErrorViewQueryParams } from '../../../error/views/ErrorView.js';
+import { tHtml } from '../../helpers/translate-html.js';
+import { FullPageSpinner } from '../FullPageSpinner/FullPageSpinner.js';
 
 export type LoadingState = 'loading' | 'loaded' | 'error' | 'forbidden';
 

@@ -1,9 +1,9 @@
-import { RadioButtonGroup, type RadioOption } from '@viaa/avo2-components';
-import { isNil, noop } from 'lodash-es';
-import React, { type FC } from 'react';
+import {RadioButtonGroup, type RadioOption} from '@viaa/avo2-components';
+import {isNil, noop} from 'es-toolkit';
+import React, {type FC} from 'react';
 
-import { AssignmentHelper } from '../../../assignment/assignment.helper';
-import { AssignmentLayout } from '../../../assignment/assignment.types';
+import {AssignmentHelper} from '../../../assignment/assignment.helper.js';
+import {AssignmentLayout} from '../../../assignment/assignment.types.js';
 
 interface LayoutOptionsProps {
 	item: { content_layout?: AssignmentLayout };
@@ -32,7 +32,7 @@ export const LayoutOptions: FC<LayoutOptionsProps> = ({
 			options={items.map(mapOptions)}
 			value={(isNil(item.content_layout)
 				? AssignmentLayout.PlayerAndText
-				: item.content_layout
+				: item.content_layout as AssignmentLayout
 			).toString()}
 			onChange={onChange}
 		/>

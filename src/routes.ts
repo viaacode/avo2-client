@@ -1,29 +1,29 @@
-import { type MiddlewareFunction, redirect, type RouteObject } from 'react-router';
+import {type MiddlewareFunction, redirect, type RouteObject} from 'react-router';
 
-import { AppWithAdminCoreConfig } from './App';
-import { ASSIGNMENTS_PATH } from './admin/assignments/assignments.const';
-import { COLLECTIONS_OR_BUNDLES_PATH } from './admin/collectionsOrBundles/collections-or-bundles.const';
-import { CONTENT_PAGE_PATH } from './admin/content-page/content-page.consts';
-import { CONTENT_PAGE_LABEL_PATH } from './admin/content-page-labels/content-page-label.const';
-import { INTERACTIVE_TOUR_PATH } from './admin/interactive-tour/interactive-tour.const';
-import { ITEMS_PATH } from './admin/items/items.const';
-import { NAVIGATIONS_PATH } from './admin/navigations/navigations.const';
-import { PUPIL_COLLECTIONS_PATH } from './admin/pupil-collection/pupil-collection.const';
-import { TRANSLATIONS_PATH } from './admin/translations/translations.const';
-import { URL_REDIRECT_PATH } from './admin/url-redirects/url-redirects.const';
-import { USER_GROUP_PATH } from './admin/user-groups/user-group.const';
-import { USER_PATH } from './admin/users/user.const';
-import { APP_PATH } from './constants';
-import { ErrorBoundary } from './shared/components/ErrorBoundary/ErrorBoundary';
-import { FullPageSpinner } from './shared/components/FullPageSpinner/FullPageSpinner';
-import { ROUTE_PARTS } from './shared/constants';
-import { reactRouterConvert } from './shared/helpers/routing/convert-route-component-to-react-router-v7-module';
+import {AppWithAdminCoreConfig} from './App.js';
+import {ASSIGNMENTS_PATH} from './admin/assignments/assignments.const.js';
+import {COLLECTIONS_OR_BUNDLES_PATH} from './admin/collectionsOrBundles/collections-or-bundles.const.js';
+import {CONTENT_PAGE_PATH} from './admin/content-page/content-page.consts.js';
+import {CONTENT_PAGE_LABEL_PATH} from './admin/content-page-labels/content-page-label.const.js';
+import {INTERACTIVE_TOUR_PATH} from './admin/interactive-tour/interactive-tour.const.js';
+import {ITEMS_PATH} from './admin/items/items.const.js';
+import {NAVIGATIONS_PATH} from './admin/navigations/navigations.const.js';
+import {PUPIL_COLLECTIONS_PATH} from './admin/pupil-collection/pupil-collection.const.js';
+import {TRANSLATIONS_PATH} from './admin/translations/translations.const.js';
+import {URL_REDIRECT_PATH} from './admin/url-redirects/url-redirects.const.js';
+import {USER_GROUP_PATH} from './admin/user-groups/user-group.const.js';
+import {USER_PATH} from './admin/users/user.const.js';
+import {APP_PATH} from './constants.js';
+import {ErrorBoundary} from './shared/components/ErrorBoundary/ErrorBoundary.js';
+import {FullPageSpinner} from './shared/components/FullPageSpinner/FullPageSpinner.js';
+import {ROUTE_PARTS} from './shared/constants/index.js';
+import {reactRouterConvert} from './shared/helpers/routing/convert-route-component-to-react-router-v7-module.js';
 
 async function logRoutesMiddleware({ request }: Parameters<MiddlewareFunction>[0]) {
 	console.log(`${request.method} ${request.url}`);
 }
 
-export const getAppRoutes = (): RouteObject[] => [
+export default [
 	{
 		id: 'root',
 		path: '/',
@@ -45,7 +45,7 @@ export const getAppRoutes = (): RouteObject[] => [
 			{
 				id: 'admin',
 				path: `/${ROUTE_PARTS.admin}`,
-				lazy: () => import('./admin/Admin').then(reactRouterConvert),
+				lazy: () => import('./admin/Admin.js').then(reactRouterConvert),
 				children: getAdminRoutes(),
 			},
 			////////////////////////////////////////////////////////////////////////////////////////
@@ -55,11 +55,11 @@ export const getAppRoutes = (): RouteObject[] => [
 				id: 'login',
 				// Login route doesn't need navigation or footer
 				path: APP_PATH.LOGIN.route,
-				lazy: () => import('./authentication/views/Login').then(reactRouterConvert),
+				lazy: () => import('./authentication/views/Login.js').then(reactRouterConvert),
 			},
 			{
 				id: 'app-client-layout',
-				lazy: () => import('./AppClientLayout').then(reactRouterConvert),
+				lazy: () => import('./AppClientLayout.js').then(reactRouterConvert),
 				children: [
 					////////////////////////////////////////////////////////////////////////////////////////
 					// UNAUTHENTICATED
@@ -78,7 +78,7 @@ export const getAppRoutes = (): RouteObject[] => [
 					// This route needs to be the last one, since it handles all remaining routes
 					{
 						lazy: () =>
-							import('./dynamic-route-resolver/views/DynamicRouteResolver').then(
+							import('./dynamic-route-resolver/views/DynamicRouteResolver.js').then(
 								reactRouterConvert
 							),
 						path: APP_PATH.ALL_ROUTES.route,
@@ -97,14 +97,14 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
 		{
 			id: 'LoggedOutHome',
 			index: true,
-			lazy: () => import('./home/views/LoggedOutHome').then(reactRouterConvert),
+			lazy: () => import('./home/views/LoggedOutHome.js').then(reactRouterConvert),
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			id: 'Logout',
 			path: APP_PATH.LOGOUT.route,
-			lazy: () => import('./authentication/views/Logout').then(reactRouterConvert),
+			lazy: () => import('./authentication/views/Logout.js').then(reactRouterConvert),
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
@@ -112,7 +112,7 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
 			id: 'RegisterStamboek',
 			path: APP_PATH.STAMBOEK.route,
 			lazy: () =>
-				import('./authentication/views/registration-flow/r3-stamboek').then(
+				import('./authentication/views/registration-flow/r3-stamboek.js').then(
 					reactRouterConvert
 				),
 			ErrorBoundary: ErrorBoundary,
@@ -122,7 +122,7 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
 			id: 'ManualRegistration',
 			path: APP_PATH.MANUAL_ACCESS_REQUEST.route,
 			lazy: () =>
-				import('./authentication/views/registration-flow/r4-manual-registration').then(
+				import('./authentication/views/registration-flow/r4-manual-registration.js').then(
 					reactRouterConvert
 				),
 			ErrorBoundary: ErrorBoundary,
@@ -132,7 +132,7 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
 			id: 'StudentTeacher',
 			path: APP_PATH.STUDENT_TEACHER.route,
 			lazy: () =>
-				import('./authentication/views/registration-flow/r10-student-teacher').then(
+				import('./authentication/views/registration-flow/r10-student-teacher.js').then(
 					reactRouterConvert
 				),
 			ErrorBoundary: ErrorBoundary,
@@ -141,14 +141,14 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
 		{
 			id: 'RegisterOrLogin',
 			path: APP_PATH.REGISTER_OR_LOGIN.route,
-			lazy: () => import('./authentication/views/RegisterOrLogin').then(reactRouterConvert),
+			lazy: () => import('./authentication/views/RegisterOrLogin.js').then(reactRouterConvert),
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			id: 'LinkYourAccount',
 			path: APP_PATH.LINK_YOUR_ACCOUNT.route,
-			lazy: () => import('./authentication/views/LinkYourAccount').then(reactRouterConvert),
+			lazy: () => import('./authentication/views/LinkYourAccount.js').then(reactRouterConvert),
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
@@ -156,7 +156,7 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
 			id: 'AcceptConditions',
 			path: APP_PATH.ACCEPT_CONDITIONS.route,
 			lazy: () =>
-				import('./authentication/views/registration-flow/l8-accept-conditions').then(
+				import('./authentication/views/registration-flow/l8-accept-conditions.js').then(
 					reactRouterConvert
 				),
 			ErrorBoundary: ErrorBoundary,
@@ -166,28 +166,28 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
 			id: 'CompleteProfileStep',
 			path: APP_PATH.COMPLETE_PROFILE.route,
 			lazy: () =>
-				import('./settings/components/CompleteProfileStep').then(reactRouterConvert),
+				import('./settings/components/CompleteProfileStep.js').then(reactRouterConvert),
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			id: 'ErrorView',
 			path: APP_PATH.ERROR.route,
-			lazy: () => import('./error/views/ErrorView').then(reactRouterConvert),
+			lazy: () => import('./error/views/ErrorView.js').then(reactRouterConvert),
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			id: 'CookiePolicy',
 			path: APP_PATH.COOKIE_POLICY.route,
-			lazy: () => import('./cookie-policy/views/CookiePolicy').then(reactRouterConvert),
+			lazy: () => import('./cookie-policy/views/CookiePolicy.js').then(reactRouterConvert),
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			id: 'Email',
 			path: APP_PATH.EMAIL_PREFERENCES_LOGGED_OUT.route,
-			lazy: () => import('./settings/components/Email/Email').then(reactRouterConvert),
+			lazy: () => import('./settings/components/Email/Email.js').then(reactRouterConvert),
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
@@ -201,70 +201,70 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 	return [
 		{
 			path: APP_PATH.LOGGED_IN_HOME.route,
-			lazy: () => import('./home/views/LoggedInHome').then(reactRouterConvert),
+			lazy: () => import('./home/views/LoggedInHome.js').then(reactRouterConvert),
 			id: 'LoggedInHome',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			path: APP_PATH.SEARCH.route,
-			lazy: () => import('./search/views/Search').then(reactRouterConvert),
+			lazy: () => import('./search/views/Search.js').then(reactRouterConvert),
 			id: 'Search',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			path: APP_PATH.ITEM_DETAIL.route,
-			lazy: () => import('./item/views/ItemDetailRoute').then(reactRouterConvert),
+			lazy: () => import('./item/views/ItemDetailRoute.js').then(reactRouterConvert),
 			id: 'ItemDetailRoute',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			path: APP_PATH.COLLECTION_DETAIL.route,
-			lazy: () => import('./collection/views/CollectionDetail').then(reactRouterConvert),
+			lazy: () => import('./collection/views/CollectionDetail.js').then(reactRouterConvert),
 			id: 'CollectionDetail',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			path: APP_PATH.COLLECTION_EDIT_TAB.route,
-			lazy: () => import('./collection/views/CollectionEdit').then(reactRouterConvert),
+			lazy: () => import('./collection/views/CollectionEdit.js').then(reactRouterConvert),
 			id: 'CollectionEdit tab',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			path: APP_PATH.COLLECTION_EDIT.route,
-			lazy: () => import('./collection/views/CollectionEdit').then(reactRouterConvert),
+			lazy: () => import('./collection/views/CollectionEdit.js').then(reactRouterConvert),
 			id: 'CollectionEdit',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			path: APP_PATH.BUNDLE_DETAIL.route,
-			lazy: () => import('./bundle/views/BundleDetail').then(reactRouterConvert),
+			lazy: () => import('./bundle/views/BundleDetail.js').then(reactRouterConvert),
 			id: 'BundleDetail',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			path: APP_PATH.BUNDLE_EDIT_TAB.route,
-			lazy: () => import('./bundle/views/BundleEdit').then(reactRouterConvert),
+			lazy: () => import('./bundle/views/BundleEdit.js').then(reactRouterConvert),
 			id: 'BundleEdit tab',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			path: APP_PATH.BUNDLE_EDIT.route,
-			lazy: () => import('./bundle/views/BundleEdit').then(reactRouterConvert),
+			lazy: () => import('./bundle/views/BundleEdit.js').then(reactRouterConvert),
 			id: 'BundleEdit',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			path: APP_PATH.ASSIGNMENT_CREATE.route,
-			lazy: () => import('./assignment/views/AssignmentEdit').then(reactRouterConvert),
+			lazy: () => import('./assignment/views/AssignmentEdit.js').then(reactRouterConvert),
 			id: 'AssignmentEdit create',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -272,21 +272,21 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 		{
 			path: APP_PATH.ASSIGNMENT_DETAIL.route,
 			lazy: () =>
-				import('./assignment/views/AssignmentDetailSwitcher').then(reactRouterConvert),
+				import('./assignment/views/AssignmentDetailSwitcher.js').then(reactRouterConvert),
 			id: 'AssignmentDetailSwitcher',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			path: APP_PATH.ASSIGNMENT_EDIT_TAB.route,
-			lazy: () => import('./assignment/views/AssignmentEdit').then(reactRouterConvert),
+			lazy: () => import('./assignment/views/AssignmentEdit.js').then(reactRouterConvert),
 			id: 'AssignmentEdit edit tab',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			path: APP_PATH.ASSIGNMENT_EDIT.route,
-			lazy: () => import('./assignment/views/AssignmentEdit').then(reactRouterConvert),
+			lazy: () => import('./assignment/views/AssignmentEdit.js').then(reactRouterConvert),
 			id: 'AssignmentEdit edit',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -294,7 +294,7 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 		{
 			path: APP_PATH.ASSIGNMENT_RESPONSE_CREATE.route,
 			lazy: () =>
-				import('./assignment/views/AssignmentDetailSwitcher').then(reactRouterConvert),
+				import('./assignment/views/AssignmentDetailSwitcher.js').then(reactRouterConvert),
 			id: 'AssignmentDetailSwitcher create',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -302,7 +302,7 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 		{
 			path: APP_PATH.ASSIGNMENT_RESPONSE_EDIT.route,
 			lazy: () =>
-				import('./assignment/views/AssignmentDetailSwitcher').then(reactRouterConvert),
+				import('./assignment/views/AssignmentDetailSwitcher.js').then(reactRouterConvert),
 			id: 'AssignmentDetailSwitcher edit',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -311,7 +311,7 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 		{
 			path: APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route,
 			lazy: () =>
-				import('./assignment/views/AssignmentPupilCollectionDetail').then(
+				import('./assignment/views/AssignmentPupilCollectionDetail.js').then(
 					reactRouterConvert
 				),
 			id: 'AssignmentPupilCollectionDetail',
@@ -323,7 +323,7 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 			path: APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route,
 			lazy: () =>
 				import(
-					'./assignment/views/AssignmentResponseEdit/AssignmentResponseAdminEdit'
+					'./assignment/views/AssignmentResponseEdit/AssignmentResponseAdminEdit.js'
 				).then(reactRouterConvert),
 			id: 'AssignmentResponseAdminEdit',
 			ErrorBoundary: ErrorBoundary,
@@ -331,14 +331,14 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 		},
 		{
 			path: APP_PATH.WORKSPACE_TAB.route,
-			lazy: () => import('./workspace/views/Workspace').then(reactRouterConvert),
+			lazy: () => import('./workspace/views/Workspace.js').then(reactRouterConvert),
 			id: 'Workspace tab',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			path: APP_PATH.WORKSPACE.route,
-			lazy: () => import('./workspace/views/Workspace').then(reactRouterConvert),
+			lazy: () => import('./workspace/views/Workspace.js').then(reactRouterConvert),
 			id: 'Workspace',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -356,21 +356,21 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 		},
 		{
 			path: APP_PATH.SETTINGS_TAB.route,
-			lazy: () => import('./settings/views/Settings').then(reactRouterConvert),
+			lazy: () => import('./settings/views/Settings.js').then(reactRouterConvert),
 			id: 'Settings tab',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			path: APP_PATH.SETTINGS.route,
-			lazy: () => import('./settings/views/Settings').then(reactRouterConvert),
+			lazy: () => import('./settings/views/Settings.js').then(reactRouterConvert),
 			id: 'Settings',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			path: APP_PATH.COMPLETE_PROFILE.route,
-			lazy: () => import('./settings/components/Profile').then(reactRouterConvert),
+			lazy: () => import('./settings/components/Profile.js').then(reactRouterConvert),
 			id: 'Profile',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -378,7 +378,7 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 		{
 			path: APP_PATH.USER_ITEM_REQUEST_FORM.route,
 			lazy: () =>
-				import('./user-item-request-form/views/UserItemRequestForm').then(
+				import('./user-item-request-form/views/UserItemRequestForm.js').then(
 					reactRouterConvert
 				),
 			id: 'UserItemRequestForm',
@@ -388,7 +388,7 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 		{
 			path: APP_PATH.USER_ITEM_REQUEST_FORM_CONFIRM.route,
 			lazy: () =>
-				import('./user-item-request-form/views/UserItemRequestFormConfirm').then(
+				import('./user-item-request-form/views/UserItemRequestFormConfirm.js').then(
 					reactRouterConvert
 				),
 			id: 'UserItemRequestFormConfirm',
@@ -398,7 +398,7 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 		{
 			path: APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM.route,
 			lazy: () =>
-				import('./user-item-request-form/views/EducationalAuthorItemRequestForm').then(
+				import('./user-item-request-form/views/EducationalAuthorItemRequestForm.js').then(
 					reactRouterConvert
 				),
 			id: 'EducationalAuthorItemRequestForm',
@@ -409,7 +409,7 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 			path: APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM_CONFIRM.route,
 			lazy: () =>
 				import(
-					'./user-item-request-form/views/EducationalAuthorItemRequestFormConfirm'
+					'./user-item-request-form/views/EducationalAuthorItemRequestFormConfirm.js'
 				).then(reactRouterConvert),
 			id: 'EducationalAuthorItemRequestFormConfirm',
 			ErrorBoundary: ErrorBoundary,
@@ -417,14 +417,14 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
 		},
 		{
 			path: APP_PATH.QUICK_LANE.route,
-			lazy: () => import('./quick-lane/views/QuickLaneDetail').then(reactRouterConvert),
+			lazy: () => import('./quick-lane/views/QuickLaneDetail.js').then(reactRouterConvert),
 			id: 'QuickLaneDetail',
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			path: APP_PATH.EMBED.route,
-			lazy: () => import('./embed-code/views/EmbedCodeDetail').then(reactRouterConvert),
+			lazy: () => import('./embed-code/views/EmbedCodeDetail.js').then(reactRouterConvert),
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
@@ -435,7 +435,7 @@ function getAdminRoutes(): RouteObject[] {
 	return [
 		{
 			id: 'Dashboard',
-			lazy: () => import('./admin/dashboard/views/Dashboard').then(reactRouterConvert),
+			lazy: () => import('./admin/dashboard/views/Dashboard.js').then(reactRouterConvert),
 			index: true,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -443,7 +443,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'AssignmentOverviewAdmin',
 			lazy: () =>
-				import('./admin/assignments/views/AssignmentsOverviewAdmin').then(
+				import('./admin/assignments/views/AssignmentsOverviewAdmin.js').then(
 					reactRouterConvert
 				),
 			path: ASSIGNMENTS_PATH.ASSIGNMENTS_OVERVIEW,
@@ -453,7 +453,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'AssignmentMarcomOverview',
 			lazy: () =>
-				import('./admin/assignments/views/AssignmentsMarcomOverview').then(
+				import('./admin/assignments/views/AssignmentsMarcomOverview.js').then(
 					reactRouterConvert
 				),
 			path: ASSIGNMENTS_PATH.ASSIGNMENTS_MARCOM_OVERVIEW,
@@ -463,7 +463,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'CollectionsOverview',
 			lazy: () =>
-				import('./admin/collectionsOrBundles/views/CollectionsOrBundlesOverview').then(
+				import('./admin/collectionsOrBundles/views/CollectionsOrBundlesOverview.js').then(
 					reactRouterConvert
 				),
 			path: COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW,
@@ -474,7 +474,7 @@ function getAdminRoutes(): RouteObject[] {
 			id: 'CollectionActualisationOverview',
 			lazy: () =>
 				import(
-					'./admin/collectionsOrBundles/views/CollectionOrBundleActualisationOverview'
+					'./admin/collectionsOrBundles/views/CollectionOrBundleActualisationOverview.js'
 				).then(reactRouterConvert),
 			path: COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_ACTUALISATION_OVERVIEW,
 			ErrorBoundary: ErrorBoundary,
@@ -484,7 +484,7 @@ function getAdminRoutes(): RouteObject[] {
 			id: 'CollectionQualityCheckOverview',
 			lazy: () =>
 				import(
-					'./admin/collectionsOrBundles/views/CollectionOrBundleQualityCheckOverview'
+					'./admin/collectionsOrBundles/views/CollectionOrBundleQualityCheckOverview.js'
 				).then(reactRouterConvert),
 			path: COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_QUALITYCHECK_OVERVIEW,
 			ErrorBoundary: ErrorBoundary,
@@ -493,7 +493,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'CollectionMarcomOverview',
 			lazy: () =>
-				import('./admin/collectionsOrBundles/views/CollectionOrBundleMarcomOverview').then(
+				import('./admin/collectionsOrBundles/views/CollectionOrBundleMarcomOverview.js').then(
 					reactRouterConvert
 				),
 			path: COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_MARCOM_OVERVIEW,
@@ -503,7 +503,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'BundlesOverview',
 			lazy: () =>
-				import('./admin/collectionsOrBundles/views/CollectionsOrBundlesOverview').then(
+				import('./admin/collectionsOrBundles/views/CollectionsOrBundlesOverview.js').then(
 					reactRouterConvert
 				),
 			path: COLLECTIONS_OR_BUNDLES_PATH.BUNDLES_OVERVIEW,
@@ -514,7 +514,7 @@ function getAdminRoutes(): RouteObject[] {
 			id: 'BundleActualisationOverview',
 			lazy: () =>
 				import(
-					'./admin/collectionsOrBundles/views/CollectionOrBundleActualisationOverview'
+					'./admin/collectionsOrBundles/views/CollectionOrBundleActualisationOverview.js'
 				).then(reactRouterConvert),
 			path: COLLECTIONS_OR_BUNDLES_PATH.BUNDLE_ACTUALISATION_OVERVIEW,
 			ErrorBoundary: ErrorBoundary,
@@ -524,7 +524,7 @@ function getAdminRoutes(): RouteObject[] {
 			id: 'BundleQualityCheckOverview',
 			lazy: () =>
 				import(
-					'./admin/collectionsOrBundles/views/CollectionOrBundleQualityCheckOverview'
+					'./admin/collectionsOrBundles/views/CollectionOrBundleQualityCheckOverview.js'
 				).then(reactRouterConvert),
 			path: COLLECTIONS_OR_BUNDLES_PATH.BUNDLE_QUALITYCHECK_OVERVIEW,
 			ErrorBoundary: ErrorBoundary,
@@ -533,7 +533,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'BundleMarcomOverview',
 			lazy: () =>
-				import('./admin/collectionsOrBundles/views/CollectionOrBundleMarcomOverview').then(
+				import('./admin/collectionsOrBundles/views/CollectionOrBundleMarcomOverview.js').then(
 					reactRouterConvert
 				),
 			path: COLLECTIONS_OR_BUNDLES_PATH.BUNDLE_MARCOM_OVERVIEW,
@@ -543,7 +543,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'ContentPageOverviewPage',
 			lazy: () =>
-				import('./admin/content-page/views/ContentPageOverviewPage').then(
+				import('./admin/content-page/views/ContentPageOverviewPage.js').then(
 					reactRouterConvert
 				),
 			path: CONTENT_PAGE_PATH.CONTENT_PAGE_OVERVIEW,
@@ -553,7 +553,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'ContentPageEditPage create',
 			lazy: () =>
-				import('./admin/content-page/views/ContentPageEditPage').then(reactRouterConvert),
+				import('./admin/content-page/views/ContentPageEditPage.js').then(reactRouterConvert),
 			path: CONTENT_PAGE_PATH.CONTENT_PAGE_CREATE,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -561,7 +561,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'ContentPageEditPage edit',
 			lazy: () =>
-				import('./admin/content-page/views/ContentPageEditPage').then(reactRouterConvert),
+				import('./admin/content-page/views/ContentPageEditPage.js').then(reactRouterConvert),
 			path: CONTENT_PAGE_PATH.CONTENT_PAGE_EDIT,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -569,7 +569,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'ContentPageDetailPage',
 			lazy: () =>
-				import('./admin/content-page/views/ContentPageDetailPage').then(reactRouterConvert),
+				import('./admin/content-page/views/ContentPageDetailPage.js').then(reactRouterConvert),
 			path: CONTENT_PAGE_PATH.CONTENT_PAGE_DETAIL,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -577,7 +577,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'ContentPageLabelOverviewPage',
 			lazy: () =>
-				import('./admin/content-page-labels/views/ContentPageLabelOverviewPage').then(
+				import('./admin/content-page-labels/views/ContentPageLabelOverviewPage.js').then(
 					reactRouterConvert
 				),
 			path: CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_OVERVIEW,
@@ -587,7 +587,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'ContentPageLabelEditPage create',
 			lazy: () =>
-				import('./admin/content-page-labels/views/ContentPageLabelEditPage').then(
+				import('./admin/content-page-labels/views/ContentPageLabelEditPage.js').then(
 					reactRouterConvert
 				),
 			path: CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_CREATE,
@@ -597,7 +597,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'ContentPageLabelEditPage edit',
 			lazy: () =>
-				import('./admin/content-page-labels/views/ContentPageLabelEditPage').then(
+				import('./admin/content-page-labels/views/ContentPageLabelEditPage.js').then(
 					reactRouterConvert
 				),
 			path: CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_EDIT,
@@ -607,7 +607,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'ContentPageLabelDetailPage',
 			lazy: () =>
-				import('./admin/content-page-labels/views/ContentPageLabelDetailPage').then(
+				import('./admin/content-page-labels/views/ContentPageLabelDetailPage.js').then(
 					reactRouterConvert
 				),
 			path: CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_DETAIL,
@@ -617,7 +617,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'InteractiveTourOverview',
 			lazy: () =>
-				import('./admin/interactive-tour/views/InteractiveTourOverview').then(
+				import('./admin/interactive-tour/views/InteractiveTourOverview.js').then(
 					reactRouterConvert
 				),
 			path: INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_OVERVIEW,
@@ -627,7 +627,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'InteractiveTourEdit create',
 			lazy: () =>
-				import('./admin/interactive-tour/views/InteractiveTourEdit').then(
+				import('./admin/interactive-tour/views/InteractiveTourEdit.js').then(
 					reactRouterConvert
 				),
 			path: INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE,
@@ -637,7 +637,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'InteractiveTourEdit edit',
 			lazy: () =>
-				import('./admin/interactive-tour/views/InteractiveTourEdit').then(
+				import('./admin/interactive-tour/views/InteractiveTourEdit.js').then(
 					reactRouterConvert
 				),
 			path: INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT,
@@ -647,7 +647,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'InteractiveTourDetail',
 			lazy: () =>
-				import('./admin/interactive-tour/views/InteractiveTourDetail').then(
+				import('./admin/interactive-tour/views/InteractiveTourDetail.js').then(
 					reactRouterConvert
 				),
 			path: INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL,
@@ -656,21 +656,21 @@ function getAdminRoutes(): RouteObject[] {
 		},
 		{
 			id: 'ItemsOverview',
-			lazy: () => import('./admin/items/views/ItemsOverview').then(reactRouterConvert),
+			lazy: () => import('./admin/items/views/ItemsOverview.js').then(reactRouterConvert),
 			path: ITEMS_PATH.ITEMS_OVERVIEW,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			id: 'ItemDetail',
-			lazy: () => import('./admin/items/views/ItemDetail').then(reactRouterConvert),
+			lazy: () => import('./admin/items/views/ItemDetail.js').then(reactRouterConvert),
 			path: ITEMS_PATH.ITEM_DETAIL,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			id: 'PublishItemsOverview',
-			lazy: () => import('./admin/items/views/PublishItemsOverview').then(reactRouterConvert),
+			lazy: () => import('./admin/items/views/PublishItemsOverview.js').then(reactRouterConvert),
 			path: ITEMS_PATH.PUBLISH_ITEMS_OVERVIEW,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -678,7 +678,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'NavigationBarOverview',
 			lazy: () =>
-				import('./admin/navigations/views/NavigationBarOverview').then(reactRouterConvert),
+				import('./admin/navigations/views/NavigationBarOverview.js').then(reactRouterConvert),
 			path: NAVIGATIONS_PATH.NAVIGATIONS_OVERVIEW,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -686,7 +686,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'NavigationBarDetail',
 			lazy: () =>
-				import('./admin/navigations/views/NavigationBarDetail').then(reactRouterConvert),
+				import('./admin/navigations/views/NavigationBarDetail.js').then(reactRouterConvert),
 			path: NAVIGATIONS_PATH.NAVIGATIONS_DETAIL,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -694,7 +694,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'NavigationItemEdit create',
 			lazy: () =>
-				import('./admin/navigations/views/NavigationItemEdit').then(reactRouterConvert),
+				import('./admin/navigations/views/NavigationItemEdit.js').then(reactRouterConvert),
 			path: NAVIGATIONS_PATH.NAVIGATIONS_ITEM_CREATE,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -702,7 +702,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'NavigationItemEdit edit',
 			lazy: () =>
-				import('./admin/navigations/views/NavigationItemEdit').then(reactRouterConvert),
+				import('./admin/navigations/views/NavigationItemEdit.js').then(reactRouterConvert),
 			path: NAVIGATIONS_PATH.NAVIGATIONS_ITEM_EDIT,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -710,7 +710,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'UrlRedirectOverview',
 			lazy: () =>
-				import('./admin/url-redirects/views/UrlRedirectOverview').then(reactRouterConvert),
+				import('./admin/url-redirects/views/UrlRedirectOverview.js').then(reactRouterConvert),
 			path: URL_REDIRECT_PATH.URL_REDIRECT_OVERVIEW,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -718,7 +718,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'UrlRedirectEdit create',
 			lazy: () =>
-				import('./admin/url-redirects/views/UrlRedirectEdit').then(reactRouterConvert),
+				import('./admin/url-redirects/views/UrlRedirectEdit.js').then(reactRouterConvert),
 			path: URL_REDIRECT_PATH.URL_REDIRECT_CREATE,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -726,7 +726,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'UrlRedirectEdit edit',
 			lazy: () =>
-				import('./admin/url-redirects/views/UrlRedirectEdit').then(reactRouterConvert),
+				import('./admin/url-redirects/views/UrlRedirectEdit.js').then(reactRouterConvert),
 			path: URL_REDIRECT_PATH.URL_REDIRECT_EDIT,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -734,7 +734,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'PupilCollectionsOverview',
 			lazy: () =>
-				import('./admin/pupil-collection/views/PupilCollectionsOverview').then(
+				import('./admin/pupil-collection/views/PupilCollectionsOverview.js').then(
 					reactRouterConvert
 				),
 			path: PUPIL_COLLECTIONS_PATH.ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW,
@@ -744,7 +744,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'TranslationsOverviewPage',
 			lazy: () =>
-				import('./admin/translations/views/TranslationsOverviewPage').then(
+				import('./admin/translations/views/TranslationsOverviewPage.js').then(
 					reactRouterConvert
 				),
 			path: TRANSLATIONS_PATH.TRANSLATIONS,
@@ -754,28 +754,28 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'UserGroupOverviewPage',
 			lazy: () =>
-				import('./admin/user-groups/views/UserGroupOverviewPage').then(reactRouterConvert),
+				import('./admin/user-groups/views/UserGroupOverviewPage.js').then(reactRouterConvert),
 			path: USER_GROUP_PATH.USER_GROUP_OVERVIEW,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			id: 'UserOverviewPage',
-			lazy: () => import('./admin/users/views/UserOverviewPage').then(reactRouterConvert),
+			lazy: () => import('./admin/users/views/UserOverviewPage.js').then(reactRouterConvert),
 			path: USER_PATH.USER_OVERVIEW,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			id: 'UserDetailPage',
-			lazy: () => import('./admin/users/views/UserDetailPage').then(reactRouterConvert),
+			lazy: () => import('./admin/users/views/UserDetailPage.js').then(reactRouterConvert),
 			path: USER_PATH.USER_DETAIL,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
 		},
 		{
 			id: 'UserEditPage',
-			lazy: () => import('./admin/users/views/UserEditPage').then(reactRouterConvert),
+			lazy: () => import('./admin/users/views/UserEditPage.js').then(reactRouterConvert),
 			path: USER_PATH.USER_EDIT,
 			ErrorBoundary: ErrorBoundary,
 			hasErrorBoundary: true,
@@ -783,7 +783,7 @@ function getAdminRoutes(): RouteObject[] {
 		{
 			id: 'MaintenanceAlertsOverviewPage',
 			lazy: () =>
-				import('./admin/maintenance-alerts-overview/MaintenanceAlertsOverviewPage').then(
+				import('./admin/maintenance-alerts-overview/MaintenanceAlertsOverviewPage.js').then(
 					reactRouterConvert
 				),
 			path: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.alerts}`,

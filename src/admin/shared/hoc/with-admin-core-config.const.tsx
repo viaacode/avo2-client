@@ -8,26 +8,26 @@ import {
 import { ContentBlockType, ContentPageWidth } from '@meemoo/admin-core-ui/client';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo, DatabaseType } from '@viaa/avo2-types';
-import { compact, noop } from 'lodash-es';
+import { compact, noop } from 'es-toolkit';
 import React, { type FC } from 'react';
 import { type NavigateFunction } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { APP_PATH, type RouteId } from '../../../constants';
-import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
-import { DEFAULT_AUDIO_STILL, ROUTE_PARTS } from '../../../shared/constants';
-import { getEnv } from '../../../shared/helpers/env';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
-import { ToastService, ToastTypeToAvoToastType } from '../../../shared/services/toast-service';
-import { store } from '../../../shared/store/ui.store';
-import { Locale } from '../../../shared/translations/translations.types';
-import { ADMIN_PATH } from '../../admin.const';
-import { BlockSearch } from '../../content-page/components/blocks/BlockSearch/BlockSearch';
-import { MediaGridWrapper } from '../../content-page/components/blocks/MediaGridWrapper/MediaGridWrapper';
-import { GET_ADMIN_ICON_OPTIONS } from '../constants';
+import { commonUserAtom } from '../../../authentication/authentication.store.js';
+import { APP_PATH, type RouteId } from '../../../constants.js';
+import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.js';
+import { DEFAULT_AUDIO_STILL, ROUTE_PARTS } from '../../../shared/constants/index.js';
+import { getEnv } from '../../../shared/helpers/env.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { EducationOrganisationService } from '../../../shared/services/education-organizations-service.js';
+import { ToastService, ToastTypeToAvoToastType } from '../../../shared/services/toast-service.js';
+import { store } from '../../../shared/store/ui.store.js';
+import { Locale } from '../../../shared/translations/translations.types.js';
+import { ADMIN_PATH } from '../../admin.const.js';
+import { BlockSearch } from '../../content-page/components/blocks/BlockSearch/BlockSearch.js';
+import { MediaGridWrapper } from '../../content-page/components/blocks/MediaGridWrapper/MediaGridWrapper.js';
+import { GET_ADMIN_ICON_OPTIONS } from '../constants/index.js';
 
 const alertIcons: IconName[] = [
 	IconName.notification,

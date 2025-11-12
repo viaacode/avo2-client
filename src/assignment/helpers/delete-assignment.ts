@@ -1,12 +1,12 @@
 import { type Avo } from '@viaa/avo2-types';
-import { isNil } from 'lodash-es';
+import { isNil } from 'es-toolkit';
 import { type ReactNode } from 'react';
 
-import { tHtml } from '../../shared/helpers/translate-html';
-import { trackEvents } from '../../shared/services/event-logging-service';
-import { ToastService } from '../../shared/services/toast-service';
-import { AssignmentService } from '../assignment.service';
-import { AssignmentType } from '../assignment.types';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { trackEvents } from '../../shared/services/event-logging-service.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { AssignmentService } from '../assignment.service.js';
+import { AssignmentType } from '../assignment.types.js';
 
 export async function deleteAssignment(
 	assignment: Avo.Assignment.Assignment,

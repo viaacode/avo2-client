@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
 import {
 	Alert,
 	Button,
@@ -18,43 +18,35 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { compact, get, isNil, uniq } from 'lodash-es';
-import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import {type Avo, PermissionName} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {compact, isNil, uniq} from 'es-toolkit';
+import React, {type FC, type ReactNode, useCallback, useEffect, useMemo, useState} from 'react';
+import {Link} from 'react-router-dom';
 
-import { AssignmentService } from '../../assignment/assignment.service';
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { APP_PATH } from '../../constants';
-import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { type App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types';
-import { buildLink } from '../../shared/helpers/build-link';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { getEnv } from '../../shared/helpers/env';
-import { extractKlascementError } from '../../shared/helpers/extract-klascement-error';
-import { formatDate } from '../../shared/helpers/formatters/date';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { truncateTableValue } from '../../shared/helpers/truncate';
-import { ToastService } from '../../shared/services/toast-service';
-import {
-	GET_MARCOM_CHANNEL_NAME_OPTIONS,
-	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
-	GET_MARCOM_ENTRY_TABLE_COLUMNS,
-} from '../collection.const';
-import { CollectionService } from '../collection.service';
-import {
-	CollectionCreateUpdateTab,
-	type CollectionMarcomEntry,
-	ContentTypeNumber,
-} from '../collection.types';
-import { useGetKlascementPublishInfo } from '../hooks/useGetKlascementPublishInfo';
-import { usePublishCollectionToKlascement } from '../hooks/usePublishCollectionToKlascement';
+import {AssignmentService} from '../../assignment/assignment.service.js';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {APP_PATH} from '../../constants.js';
+import {FileUpload} from '../../shared/components/FileUpload/FileUpload.js';
+import {FullPageSpinner} from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import {type App_Collection_Marcom_Log_Insert_Input} from '../../shared/generated/graphql-db-types.js';
+import {buildLink} from '../../shared/helpers/build-link.js';
+import {CustomError} from '../../shared/helpers/custom-error.js';
+import {getEnv} from '../../shared/helpers/env.js';
+import {extractKlascementError} from '../../shared/helpers/extract-klascement-error.js';
+import {formatDate} from '../../shared/helpers/formatters/date.js';
+import {ACTIONS_TABLE_COLUMN_ID} from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {truncateTableValue} from '../../shared/helpers/truncate.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {GET_MARCOM_CHANNEL_NAME_OPTIONS, GET_MARCOM_CHANNEL_TYPE_OPTIONS, GET_MARCOM_ENTRY_TABLE_COLUMNS,} from '../collection.const.js';
+import {CollectionService} from '../collection.service.js';
+import {CollectionCreateUpdateTab, type CollectionMarcomEntry, ContentTypeNumber,} from '../collection.types.js';
+import {useGetKlascementPublishInfo} from '../hooks/useGetKlascementPublishInfo.js';
+import {usePublishCollectionToKlascement} from '../hooks/usePublishCollectionToKlascement.js';
 
-import { type CollectionAction, type MarcomNoteInfo } from './CollectionOrBundleEdit.types';
+import {type CollectionAction, type MarcomNoteInfo} from './CollectionOrBundleEdit.types.js';
 
 interface CollectionOrBundleEditMarcomProps {
 	collection: Avo.Collection.Collection & { marcom_note?: MarcomNoteInfo };
@@ -227,11 +219,11 @@ export const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps>
 				return value ? (
 					<Link
 						to={buildLink(APP_PATH.BUNDLE_EDIT_TAB.route, {
-							id: get(value, 'id'),
+							id: value?.id,
 							tabId: CollectionCreateUpdateTab.MARCOM,
 						})}
 					>
-						<span>{get(value, 'title')}</span>
+						<span>{value?.title}</span>
 					</Link>
 				) : (
 					''

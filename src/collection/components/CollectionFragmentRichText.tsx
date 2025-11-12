@@ -1,9 +1,9 @@
-import { convertToHtml } from '@viaa/avo2-components';
-import React, { type FC } from 'react';
+import {convertToHtml} from '@viaa/avo2-components';
+import React, {type FC} from 'react';
 
-import { Html, type HtmlProps } from '../../shared/components/Html/Html';
-import { CollectionBlockType } from '../collection.const';
-import { type BlockItemComponent } from '../collection.types';
+import {Html, type HtmlProps} from '../../shared/components/Html/Html.js';
+import {type BlockItemComponent} from '../collection.types.js';
+import {Avo} from "@viaa/avo2-types";
 
 type CollectionFragmentRichTextProps = BlockItemComponent &
 	Omit<HtmlProps, 'content'> &
@@ -21,7 +21,7 @@ export const CollectionFragmentRichText: FC<CollectionFragmentRichTextProps> = (
 				className="c-collection-fragment-rich-text__parser c-content"
 				sanitizePreset={'full' as any}
 				content={convertToHtml(
-					block?.use_custom_fields || block?.type === CollectionBlockType.TEXT
+					block?.use_custom_fields || block?.type === Avo.Core.BlockItemType.TEXT
 						? block.custom_description
 						: block?.item_meta?.description
 				)}

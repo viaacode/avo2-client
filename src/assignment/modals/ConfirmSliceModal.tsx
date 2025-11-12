@@ -1,21 +1,10 @@
-import {
-	Button,
-	ButtonToolbar,
-	Modal,
-	ModalBody,
-	type ModalProps,
-	Spacer,
-	Toolbar,
-	ToolbarItem,
-	ToolbarRight,
-} from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import React, { type FC } from 'react';
+import {Button, ButtonToolbar, Modal, ModalBody, type ModalProps, Spacer, Toolbar, ToolbarItem, ToolbarRight,} from '@viaa/avo2-components';
+import {Avo} from '@viaa/avo2-types';
+import React, {type FC} from 'react';
 
-import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.consts';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { AssignmentBlockType } from '../assignment.types';
+import {BLOCK_ITEM_LABELS} from '../../shared/components/BlockList/BlockList.consts.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
 
 export interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
 	responses?: Avo.Assignment.Response[];
@@ -63,11 +52,11 @@ export const ConfirmSliceModal: FC<ConfirmSliceModalProps> = ({
 
 	const renderModalBody = () => {
 		switch (block?.type) {
-			case AssignmentBlockType.ITEM:
+			case Avo.Core.BlockItemType.ITEM:
 				return tHtml(
 					'assignment/modals/confirm-slice___ben-je-zeker-dat-je-dit-fragment-wil-verwijderen'
 				);
-			case AssignmentBlockType.TEXT:
+			case Avo.Core.BlockItemType.TEXT:
 				return isPupilCollection
 					? tHtml(
 							'assignment/modals/confirm-slice-modal___ben-je-zeker-dat-je-dit-tekstblok-wil-verwijderen'
@@ -75,8 +64,8 @@ export const ConfirmSliceModal: FC<ConfirmSliceModalProps> = ({
 					: tHtml(
 							'assignment/modals/confirm-slice___ben-je-zeker-dat-je-dit-instructie-of-tekstblok-wil-verwijderen'
 					  );
-			case AssignmentBlockType.ZOEK:
-			case AssignmentBlockType.BOUW:
+			case Avo.Core.BlockItemType.ZOEK:
+			case Avo.Core.BlockItemType.BOUW:
 				return responses.length > 0 ? (
 					<>
 						<b>{tHtml('assignment/modals/confirm-slice___opgelet')}: </b>

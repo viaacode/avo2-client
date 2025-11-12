@@ -1,21 +1,17 @@
-import { type Avo } from '@viaa/avo2-types';
-import { isArray, isEmpty, isNil } from 'lodash-es';
+import {type Avo} from '@viaa/avo2-types';
+import {isNil} from 'es-toolkit';
+import {isEmpty} from 'es-toolkit/compat';
 import queryString from 'query-string';
-import React, { Fragment, type ReactNode } from 'react';
-import { type NavigateFunction } from 'react-router';
+import React, {Fragment, type ReactNode} from 'react';
+import {type NavigateFunction} from 'react-router';
 
-import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
-import { SearchFilter } from '../../search/search.const';
-import { type FilterState } from '../../search/search.types';
-import { ToastService } from '../services/toast-service';
+import {APP_PATH, CONTENT_TYPE_TO_ROUTE} from '../../constants.js';
+import {SearchFilter} from '../../search/search.const.js';
+import {type FilterState} from '../../search/search.types.js';
+import {ToastService} from '../services/toast-service.js';
 
-import {
-	buildLink,
-	getMissingParams,
-	navigationConsoleError,
-	type RouteParams,
-} from './build-link';
-import { tHtml } from './translate-html';
+import {buildLink, getMissingParams, navigationConsoleError, type RouteParams,} from './build-link.js';
+import {tHtml} from './translate-html.js';
 
 export const navigate = (
 	navigate: NavigateFunction,
@@ -64,7 +60,7 @@ export const renderSearchLinks = (
 	filterValue: string | string[] | undefined,
 	className = ''
 ): ReactNode => {
-	if (isArray(filterValue)) {
+	if (Array.isArray(filterValue)) {
 		return filterValue.map((value: string, index: number) => (
 			<Fragment key={`${key}:${filterProp}":${value}`}>
 				{renderSearchLink(

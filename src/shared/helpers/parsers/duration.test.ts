@@ -1,4 +1,4 @@
-import { parseDuration } from './duration';
+import { parseDuration } from './duration.js';
 
 describe('Parsers - duration', () => {
 	it('Should parse a duration as a number`', () => {

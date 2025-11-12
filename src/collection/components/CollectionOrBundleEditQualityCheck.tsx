@@ -1,26 +1,16 @@
-import {
-	Column,
-	Container,
-	DatePicker,
-	Form,
-	FormGroup,
-	Grid,
-	Select,
-	Spacer,
-	TextArea,
-} from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
-import React, { type FC } from 'react';
+import {Column, Container, DatePicker, Form, FormGroup, Grid, Select, Spacer, TextArea,} from '@viaa/avo2-components';
+import {Avo} from '@viaa/avo2-types';
 
-import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
-import { type PickerItem } from '../../admin/shared/types/content-picker';
-import { getFullName } from '../../shared/helpers/formatters/avatar';
-import { toDateObject } from '../../shared/helpers/formatters/date';
-import { tText } from '../../shared/helpers/translate-text';
-import { booleanToOkNok, okNokToBoolean } from '../helpers/ok-nok-parser';
+import React, {type FC} from 'react';
 
-import { type CollectionAction } from './CollectionOrBundleEdit.types';
+import {ContentPicker} from '../../admin/shared/components/ContentPicker/ContentPicker.js';
+import {type PickerItem} from '../../admin/shared/types/content-picker.js';
+import {getFullName} from '../../shared/helpers/formatters/avatar.js';
+import {toDateObject} from '../../shared/helpers/formatters/date.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {booleanToOkNok, okNokToBoolean} from '../helpers/ok-nok-parser.js';
+
+import {type CollectionAction} from './CollectionOrBundleEdit.types.js';
 
 interface CollectionOrBundleEditQualityCheckProps {
 	collection: Avo.Collection.Collection;
@@ -83,10 +73,8 @@ export const CollectionOrBundleEditQualityCheck: FC<CollectionOrBundleEditQualit
 											}
 											clearable
 											value={booleanToOkNok(
-												get(
-													collection,
-													'management_language_check[0].qc_status'
-												) ?? null
+
+													collection?.management_language_check?.[0]?.qc_status ?? null
 											)}
 										/>
 									</FormGroup>
@@ -122,10 +110,8 @@ export const CollectionOrBundleEditQualityCheck: FC<CollectionOrBundleEditQualit
 											}
 											clearable
 											value={booleanToOkNok(
-												get(
-													collection,
-													'management_quality_check[0].qc_status'
-												) ?? null
+
+													collection?.management_quality_check?.[0]?.qc_status ?? null
 											)}
 										/>
 									</FormGroup>
@@ -171,7 +157,7 @@ export const CollectionOrBundleEditQualityCheck: FC<CollectionOrBundleEditQualit
 																collection
 																	?.management_language_check?.[0]
 																	?.assignee_profile_id ?? '',
-															type: 'PROFILE',
+															type: Avo.Core.ContentPickerType.PROFILE,
 													  }
 													: null
 											}
@@ -180,7 +166,7 @@ export const CollectionOrBundleEditQualityCheck: FC<CollectionOrBundleEditQualit
 											placeholder={tText(
 												'collection/components/collection-or-bundle-edit-quality-check___selecteer-een-verantwoordelijke'
 											)}
-											allowedTypes={['PROFILE']}
+											allowedTypes={[Avo.Core.ContentPickerType.PROFILE]}
 											onSelect={(value: PickerItem | null) => {
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',
@@ -199,10 +185,8 @@ export const CollectionOrBundleEditQualityCheck: FC<CollectionOrBundleEditQualit
 										<TextArea
 											height="auto"
 											value={
-												get(
-													collection,
-													'management_language_check[0].comment'
-												) || ''
+
+													collection?.management_language_check?.[0]?.comment || ''
 											}
 											onChange={(newNotes: string) =>
 												changeCollectionState({

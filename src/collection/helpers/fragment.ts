@@ -1,5 +1,5 @@
-import { type Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
+import {type Avo} from '@viaa/avo2-types';
+
 
 export const getFragmentProperty = (
 	itemMetaData: Avo.Item.Item | Avo.Collection.Collection | undefined,
@@ -8,8 +8,8 @@ export const getFragmentProperty = (
 	prop: 'title' | 'description'
 ) => {
 	return useCustomFields || !itemMetaData
-		? get(fragment, `custom_${prop}`, '')
-		: get(itemMetaData, prop, '');
+		? fragment?.[`custom_${prop}`] || ''
+		: itemMetaData?.[prop] || '';
 };
 
 /**

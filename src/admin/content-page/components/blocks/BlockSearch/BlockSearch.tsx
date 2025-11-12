@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
 import {
 	Button,
 	Container,
@@ -12,27 +12,24 @@ import {
 	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { useAtom } from 'jotai';
-import { isNil } from 'lodash-es';
-import React, { type FC, type KeyboardEvent, useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import {Avo} from '@viaa/avo2-types';
+import {useAtom} from 'jotai';
+import {isNil} from 'es-toolkit';
+import React, {type FC, type KeyboardEvent, useCallback, useEffect, useState} from 'react';
+import {useNavigate} from 'react-router';
 
-import { CONTENT_TYPE_TRANSLATIONS } from '../../../../../collection/collection.types';
-import { OrderDirection, SearchFilter } from '../../../../../search/search.const';
-import { fetchSearchResults } from '../../../../../search/search.service';
-import { searchAtom } from '../../../../../search/search.store';
-import { type SearchState } from '../../../../../search/search.types';
-import {
-	generateContentLinkString,
-	generateSearchLinkString,
-} from '../../../../../shared/helpers/link';
-import { useDebounce } from '../../../../../shared/hooks/useDebounce';
-import { ToastService } from '../../../../../shared/services/toast-service';
-import { KeyCode } from '../../../../../shared/types';
+import {CONTENT_TYPE_TRANSLATIONS_NL_TO_EN} from '../../../../../collection/collection.types.js';
+import {SearchFilter} from '../../../../../search/search.const.js';
+import {fetchSearchResults} from '../../../../../search/search.service.js';
+import {searchAtom} from '../../../../../search/search.store.js';
+import {type SearchState} from '../../../../../search/search.types.js';
+import {generateContentLinkString, generateSearchLinkString,} from '../../../../../shared/helpers/link.js';
+import {useDebounce} from '../../../../../shared/hooks/useDebounce.js';
+import {ToastService} from '../../../../../shared/services/toast-service.js';
+import {KeyCode} from '../../../../../shared/types/index.js';
 import './BlockSearch.scss';
-import { tHtml } from '../../../../../shared/helpers/translate-html';
-import { tText } from '../../../../../shared/helpers/translate-text';
+import {tHtml} from '../../../../../shared/helpers/translate-html.js';
+import {tText} from '../../../../../shared/helpers/translate-text.js';
 
 const ITEMS_IN_AUTOCOMPLETE = 5;
 
@@ -49,7 +46,7 @@ export const BlockSearch: FC = () => {
 		const filters = { query: debouncedSearchTerms || '' };
 		const searchResults = await fetchSearchResults(
 			'relevance',
-			OrderDirection.desc,
+			Avo.Search.OrderDirection.DESC,
 			0,
 			ITEMS_IN_AUTOCOMPLETE,
 			filters,
@@ -78,7 +75,7 @@ export const BlockSearch: FC = () => {
 			label: searchResult.dc_title,
 			id: searchResult.external_id,
 			key: searchResult.external_id,
-			type: CONTENT_TYPE_TRANSLATIONS[searchResult.administrative_type],
+			type: CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[searchResult.administrative_type],
 		})
 	);
 
@@ -96,7 +93,7 @@ export const BlockSearch: FC = () => {
 			// Collection ids are numbers and item ids are strings
 			const searchResultItem: Avo.Search.ResultItem | undefined = (
 				searchState?.data?.results || []
-			).find((searchResult) => searchResult.id === searchResultId.toString());
+			).find((searchResult) => searchResult.id === (searchResultId as string).toString());
 
 			if (searchResultItem) {
 				navigateFunc(

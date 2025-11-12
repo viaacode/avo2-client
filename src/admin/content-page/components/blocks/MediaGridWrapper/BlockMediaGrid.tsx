@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
 import {
 	Button,
 	type ButtonAction,
@@ -24,9 +24,9 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import {Avo} from '@viaa/avo2-types';
 import clsx from 'clsx';
-import React, { type FC, type ReactNode, useEffect, useMemo, useState } from 'react';
+import React, {type FC, type ReactNode, useEffect, useMemo, useState} from 'react';
 
 import './BlockMediaGrid.scss';
 
@@ -184,7 +184,7 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 					{!!elements.at(-1)?.buttonLabel && !fullWidth && (
 						<div>
 							<h4 className="c-media-card__title">titel</h4>
-							<MetaData category="item">
+							<MetaData category={Avo.ContentType.English.ITEM}>
 								<MetaDataItem key={'block-media-list-meta-cta'} label="meta" />
 							</MetaData>
 						</div>

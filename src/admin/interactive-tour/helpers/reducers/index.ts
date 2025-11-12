@@ -1,1 +1,1 @@
-export * from './interactive-tour-edit';
+export * from './interactive-tour-edit.js';

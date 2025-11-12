@@ -1,14 +1,15 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
-import { type Avo } from '@viaa/avo2-types';
-import { compact, findLast, forIn, fromPairs, last, startsWith, uniqBy } from 'lodash-es';
+import {fetchWithLogoutJson} from '@meemoo/admin-core-ui/client';
+import {type Avo} from '@viaa/avo2-types';
+import {compact, last, uniqBy} from 'es-toolkit';
 import queryString from 'query-string';
 
-import { type APP_PATH } from '../../constants';
-import { CustomError } from '../helpers/custom-error';
-import { getEnv } from '../helpers/env';
+import {type APP_PATH} from '../../constants.js';
+import {CustomError} from '../helpers/custom-error.js';
+import {getEnv} from '../helpers/env.js';
 
-import { type GetInteractiveTourResponse } from './interactive-tour.types';
-import { NotificationService } from './notification-service';
+import {type GetInteractiveTourResponse} from './interactive-tour.types.js';
+import {NotificationService} from './notification-service.js';
+import {findLast} from "es-toolkit/compat";
 
 const INTERACTIVE_TOUR_LATER_COOLDOWN_PERIOD = 2 * 7 * 24 * 60 * 60 * 1000; // 2 weeks
 
@@ -63,7 +64,7 @@ export class InteractiveTourService {
 			// Convert seen statuses from database notification table to a dictionary lookup with:
 			// key: id of the tour (string)
 			// value: seen status (boolean)
-			const tourSeenStatuses = fromPairs(
+			const tourSeenStatuses = Object.fromEntries(
 				compact(
 					seenStatuses.map((seenStatus) => {
 						try {
@@ -90,7 +91,7 @@ export class InteractiveTourService {
 			//        if no date is stored in localstorage => show: true
 			//        if date is stored and is less than 2 weeks => show: false
 			//        if date is stored and older than 2 weeks => show: true
-			const tourPostponeStatuses = fromPairs(
+			const tourPostponeStatuses = Object.fromEntries(
 				tours.map((tour: Partial<TourInfo>) => {
 					const tourId = String(tour.id as number);
 					const showBasedOnDate =
@@ -181,8 +182,8 @@ export class InteractiveTourService {
 		const seenStatuses: { key: string; through_platform: boolean }[] =
 			response.users_notifications || [];
 		const seenTourKeyPrefix = `INTERACTIVE-TOUR___${routeId}___`;
-		forIn(localStorage || {}, (_value: string, key: string) => {
-			if (startsWith(key, seenTourKeyPrefix)) {
+		Object.keys(localStorage || {}).forEach((key: string) => {
+			if (key?.startsWith(seenTourKeyPrefix)) {
 				seenStatuses.push({ key, through_platform: false });
 			}
 		});

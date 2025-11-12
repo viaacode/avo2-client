@@ -1,18 +1,15 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
-import { type Avo } from '@viaa/avo2-types';
-import { cloneDeep, isNil } from 'lodash-es';
-import { stringifyUrl } from 'query-string';
+import {fetchWithLogoutJson} from '@meemoo/admin-core-ui/client';
+import {Avo} from '@viaa/avo2-types';
+import {cloneDeep, isNil} from 'es-toolkit';
+import {stringifyUrl} from 'query-string';
 
-import { type AssignmentsOverviewTableState } from '../admin/assignments/assignments.types';
-import { ItemsService } from '../admin/items/items.service';
-import { CollectionService } from '../collection/collection.service';
-import { type AssignmentMarcomEntry } from '../collection/collection.types';
-import { canManageEditorial } from '../collection/helpers/can-manage-editorial';
-import { type ItemTrimInfo } from '../item/item.types';
-import {
-	type ContributorInfo,
-	type ContributorInfoRight,
-} from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import {type AssignmentsOverviewTableState} from '../admin/assignments/assignments.types.js';
+import {ItemsService} from '../admin/items/items.service.js';
+import {CollectionService} from '../collection/collection.service.js';
+import {type AssignmentMarcomEntry} from '../collection/collection.types.js';
+import {canManageEditorial} from '../collection/helpers/can-manage-editorial.js';
+import {type ItemTrimInfo} from '../item/item.types.js';
+import {type ContributorInfo, type ContributorInfoRight,} from '../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
 import {
 	type GetAssignmentWithResponseQuery,
 	type GetAssignmentWithResponseQueryVariables,
@@ -22,40 +19,39 @@ import {
 	type InsertAssignmentBlocksMutationVariables,
 	type InsertAssignmentResponseMutation,
 	type InsertAssignmentResponseMutationVariables,
-} from '../shared/generated/graphql-db-operations';
+} from '../shared/generated/graphql-db-operations.js';
 import {
 	GetAssignmentWithResponseDocument,
 	GetContributorsByAssignmentUuidDocument,
 	InsertAssignmentBlocksDocument,
 	InsertAssignmentResponseDocument,
-} from '../shared/generated/graphql-db-react-query';
+} from '../shared/generated/graphql-db-react-query.js';
 import {
 	type App_Assignments_V2_Insert_Input,
 	type App_Assignments_V2_Set_Input,
 	Lookup_Enum_Relation_Types_Enum,
-} from '../shared/generated/graphql-db-types';
-import { CustomError } from '../shared/helpers/custom-error';
-import { getEnv } from '../shared/helpers/env';
-import { isUserSecondaryElementary } from '../shared/helpers/is-user';
-import { tHtml } from '../shared/helpers/translate-html';
-import { tText } from '../shared/helpers/translate-text';
-import { dataService } from '../shared/services/data-service';
-import { trackEvents } from '../shared/services/event-logging-service';
-import { RelationService } from '../shared/services/relation-service/relation.service';
-import { ToastService } from '../shared/services/toast-service';
-import { VideoStillService } from '../shared/services/video-stills-service';
-import { type TableColumnDataType } from '../shared/types/table-column-data-type';
+} from '../shared/generated/graphql-db-types.js';
+import {CustomError} from '../shared/helpers/custom-error.js';
+import {getEnv} from '../shared/helpers/env.js';
+import {isUserSecondaryElementary} from '../shared/helpers/is-user.js';
+import {tHtml} from '../shared/helpers/translate-html.js';
+import {tText} from '../shared/helpers/translate-text.js';
+import {dataService} from '../shared/services/data-service.js';
+import {trackEvents} from '../shared/services/event-logging-service.js';
+import {RelationService} from '../shared/services/relation-service/relation.service.js';
+import {ToastService} from '../shared/services/toast-service.js';
+import {VideoStillService} from '../shared/services/video-stills-service.js';
+import {type TableColumnDataType} from '../shared/types/table-column-data-type.js';
 
-import { ITEMS_PER_PAGE } from './assignment.const';
+import {ITEMS_PER_PAGE} from './assignment.const.js';
 import {
-	AssignmentBlockType,
 	type AssignmentTableColumns,
 	AssignmentType,
 	type FetchAssignmentsParams,
 	type PupilCollectionFragment,
-} from './assignment.types';
-import { cleanupTitleAndDescriptions } from './helpers/cleanup-title-and-descriptions';
-import { isItemWithMeta } from './helpers/is-item-with-meta';
+} from './assignment.types.js';
+import {cleanupTitleAndDescriptions} from './helpers/cleanup-title-and-descriptions.js';
+import {isItemWithMeta} from './helpers/is-item-with-meta.js';
 
 export class AssignmentService {
 	static async fetchAssignments(params: FetchAssignmentsParams): Promise<{
@@ -678,7 +674,7 @@ export class AssignmentService {
 	static async createOrFetchAssignmentResponseObject(
 		assignment: Avo.Assignment.Assignment,
 		commonUser: Avo.User.CommonUser | undefined
-	): Promise<Omit<Avo.Assignment.Response, 'assignment'> | null> {
+	): Promise<Partial<Omit<Avo.Assignment.Response, 'assignment'>> | null> {
 		try {
 			if (!commonUser || !commonUser.profileId) {
 				return null;
@@ -731,11 +727,12 @@ export class AssignmentService {
 				);
 			}
 
+			const pupilCollectionBlocks = (insertedAssignmentResponse?.pupil_collection_blocks || []) as unknown as Avo.Core.BlockItemBase[];
 			return {
 				...insertedAssignmentResponse,
 				owner: assignmentResponse.owner || undefined,
 				pupil_collection_blocks: await this.enrichBlocksWithMeta(
-					insertedAssignmentResponse.pupil_collection_blocks as Avo.Core.BlockItemBase[]
+					pupilCollectionBlocks
 				),
 			};
 		} catch (err) {
@@ -786,12 +783,12 @@ export class AssignmentService {
 					position: startPosition + index,
 					thumbnail_path: fragment.thumbnail_path,
 				};
-				if (fragment.type === AssignmentBlockType.TEXT) {
+				if (fragment.type === Avo.Core.BlockItemType.TEXT) {
 					// text: original text null, custom text set
 					block.custom_title = fragment.custom_title;
 					block.custom_description = fragment.custom_description;
 					block.use_custom_fields = true;
-					block.type = AssignmentBlockType.TEXT;
+					block.type = Avo.Core.BlockItemType.TEXT;
 				} else {
 					// ITEM
 					// custom_title and custom_description remain null
@@ -800,7 +797,7 @@ export class AssignmentService {
 					block.original_title = fragment.custom_title;
 					block.original_description = fragment.custom_description;
 					block.use_custom_fields = !withDescription;
-					block.type = AssignmentBlockType.ITEM;
+					block.type = Avo.Core.BlockItemType.ITEM;
 				}
 
 				return block;
@@ -860,7 +857,7 @@ export class AssignmentService {
 
 		await AssignmentService.importCollectionToAssignment(
 			collection,
-			assignmentId,
+			assignmentId as string,
 			withDescription
 		);
 
@@ -868,7 +865,7 @@ export class AssignmentService {
 		// Track import collection into assignment event
 		trackEvents(
 			{
-				object: assignmentId,
+				object: assignmentId as string,
 				object_type: 'assignment',
 				action: 'add',
 				resource: {
@@ -880,7 +877,7 @@ export class AssignmentService {
 			commonUser
 		);
 
-		return assignmentId;
+		return assignmentId as string;
 	}
 
 	static async createAssignmentFromFragment(
@@ -897,7 +894,7 @@ export class AssignmentService {
 				blocks: [
 					{
 						fragment_id: item.external_id,
-						type: AssignmentBlockType.ITEM,
+						type: Avo.Core.BlockItemType.ITEM,
 						position: 0,
 						start_oc: item.start_oc || null,
 						end_oc: item.end_oc || null,
@@ -909,7 +906,7 @@ export class AssignmentService {
 							  )
 							: null,
 					},
-				] as Avo.Assignment.Assignment['blocks'],
+				] as unknown as Avo.Assignment.Assignment['blocks'],
 			},
 			commonUser
 		);
@@ -955,7 +952,7 @@ export class AssignmentService {
 		const block = {
 			assignment_id: assignmentId,
 			fragment_id: item.external_id,
-			type: AssignmentBlockType.ITEM,
+			type: Avo.Core.BlockItemType.ITEM,
 			start_oc: trimInfo.hasCut ? trimInfo.fragmentStartTime : null,
 			end_oc: trimInfo.hasCut ? trimInfo.fragmentEndTime : null,
 			position: startPosition,

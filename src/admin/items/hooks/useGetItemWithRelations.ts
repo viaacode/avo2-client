@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { QUERY_KEYS } from '../../../shared/constants/query-keys';
-import { ItemsService } from '../items.service';
+import { QUERY_KEYS } from '../../../shared/constants/query-keys.js';
+import { ItemsService } from '../items.service.js';
 
 export const useGetItemWithRelations = (
 	itemUuid: string,

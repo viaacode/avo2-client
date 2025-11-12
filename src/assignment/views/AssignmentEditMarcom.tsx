@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
 import {
 	Alert,
 	Button,
@@ -18,39 +18,36 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { compact, get, isNil } from 'lodash-es';
-import React, { type FC, type ReactNode, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import {type Avo, PermissionName} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {compact, isNil} from 'es-toolkit';
+import React, {type FC, type ReactNode, useMemo, useState} from 'react';
+import {Link} from 'react-router-dom';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
 	GET_MARCOM_ENTRY_TABLE_COLUMNS,
-} from '../../collection/collection.const';
-import {
-	type AssignmentMarcomEntry,
-	CollectionCreateUpdateTab,
-} from '../../collection/collection.types';
-import { type MarcomNoteInfo } from '../../collection/components/CollectionOrBundleEdit.types';
-import { APP_PATH } from '../../constants';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { buildLink } from '../../shared/helpers/build-link';
-import { getEnv } from '../../shared/helpers/env';
-import { extractKlascementError } from '../../shared/helpers/extract-klascement-error';
-import { formatDate } from '../../shared/helpers/formatters/date';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { truncateTableValue } from '../../shared/helpers/truncate';
-import { ToastService } from '../../shared/services/toast-service';
-import { useDeleteAssignmentMarcomEntry } from '../hooks/useDeleteAssignmentMarcomEntry';
-import { useGetAssignmentMarcomEntries } from '../hooks/useGetAssignmentMarcomEntries';
-import { useGetKlascementAssignmentPublishInfo } from '../hooks/useGetKlascementAssignmentPublishInfo';
-import { useInsertAssignmentMarcomEntry } from '../hooks/useInsertAssignmentMarcomEntry';
-import { usePublishAssignmentToKlascement } from '../hooks/usePublishAssignmentToKlascement';
+} from '../../collection/collection.const.js';
+import {type AssignmentMarcomEntry, CollectionCreateUpdateTab,} from '../../collection/collection.types.js';
+import {type MarcomNoteInfo} from '../../collection/components/CollectionOrBundleEdit.types.js';
+import {APP_PATH} from '../../constants.js';
+import {FullPageSpinner} from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import {buildLink} from '../../shared/helpers/build-link.js';
+import {getEnv} from '../../shared/helpers/env.js';
+import {extractKlascementError} from '../../shared/helpers/extract-klascement-error.js';
+import {formatDate} from '../../shared/helpers/formatters/date.js';
+import {ACTIONS_TABLE_COLUMN_ID} from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {truncateTableValue} from '../../shared/helpers/truncate.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {useDeleteAssignmentMarcomEntry} from '../hooks/useDeleteAssignmentMarcomEntry.js';
+import {useGetAssignmentMarcomEntries} from '../hooks/useGetAssignmentMarcomEntries.js';
+import {useGetKlascementAssignmentPublishInfo} from '../hooks/useGetKlascementAssignmentPublishInfo.js';
+import {useInsertAssignmentMarcomEntry} from '../hooks/useInsertAssignmentMarcomEntry.js';
+import {usePublishAssignmentToKlascement} from '../hooks/usePublishAssignmentToKlascement.js';
 
 interface AssignmentEditMarcomProps {
 	assignment: Avo.Assignment.Assignment & { marcom_note?: MarcomNoteInfo };
@@ -149,11 +146,11 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
 				return value ? (
 					<Link
 						to={buildLink(APP_PATH.BUNDLE_EDIT_TAB.route, {
-							id: get(value, 'id'),
+							id: value?.id,
 							tabId: CollectionCreateUpdateTab.MARCOM,
 						})}
 					>
-						<span>{get(value, 'title')}</span>
+						<span>{value?.title}</span>
 					</Link>
 				) : (
 					''

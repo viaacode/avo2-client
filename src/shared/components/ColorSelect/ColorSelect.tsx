@@ -4,9 +4,9 @@ import React, { type FC, type ReactNode } from 'react';
 import Select from 'react-select';
 
 import './ColorSelect.scss';
-import { type ReactSelectOption } from '../../types';
+import { type ReactSelectOption } from '../../types/index.js';
 
-import { type ColorOption, type ColorSelectProps } from './ColorSelect.types';
+import { type ColorOption, type ColorSelectProps } from './ColorSelect.types.js';
 
 export const ColorSelect: FC<ColorSelectProps> = ({
 	className,

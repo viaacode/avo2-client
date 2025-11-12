@@ -2,10 +2,10 @@ import { type Avo } from '@viaa/avo2-types';
 import { type ReactNode } from 'react';
 import { type UrlUpdateType } from 'use-query-params';
 
-import { type CollectionLabelLookup, type QualityLabel } from '../collection/collection.types';
-import { type BookmarkStatusLookup } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { type CollectionLabelLookup, type QualityLabel } from '../collection/collection.types.js';
+import { type BookmarkStatusLookup } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
 
-import { type SearchOrderAndDirectionProperty, type SearchOrderProperty } from './search.const';
+import { type SearchOrderAndDirectionProperty, type SearchOrderProperty } from './search.const.js';
 
 export type SearchFilterFieldValues = string | string[] | Avo.Search.DateRange | null;
 export type SearchFilterMultiOptions = { [key: string]: Avo.Search.OptionProp[] };

@@ -12,12 +12,12 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { noop } from 'lodash-es';
+import { noop } from 'es-toolkit';
 import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
-import { tHtml } from '../../helpers/translate-html';
+import { tHtml } from '../../helpers/translate-html.js';
 
-import { type ConfirmModalRememberKey } from './ConfirmModal.consts';
+import { type ConfirmModalRememberKey } from './ConfirmModal.consts.js';
 
 export interface ConfirmModalProps {
 	title?: string | ReactNode;

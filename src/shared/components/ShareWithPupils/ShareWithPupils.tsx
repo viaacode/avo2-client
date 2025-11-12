@@ -3,13 +3,13 @@ import { type Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import React, { type FC } from 'react';
 
-import { APP_PATH } from '../../../constants';
-import { buildLink } from '../../helpers/build-link';
-import { copyToClipboard } from '../../helpers/clipboard';
-import { tHtml } from '../../helpers/translate-html';
-import { tText } from '../../helpers/translate-text';
-import { useAssignmentPastDeadline } from '../../hooks/useAssignmentPastDeadline';
-import { ToastService } from '../../services/toast-service';
+import { APP_PATH } from '../../../constants.js';
+import { buildLink } from '../../helpers/build-link.js';
+import { copyToClipboard } from '../../helpers/clipboard.js';
+import { tHtml } from '../../helpers/translate-html.js';
+import { tText } from '../../helpers/translate-text.js';
+import { useAssignmentPastDeadline } from '../../hooks/useAssignmentPastDeadline.js';
+import { ToastService } from '../../services/toast-service.js';
 
 import './ShareWithPupils.scss';
 

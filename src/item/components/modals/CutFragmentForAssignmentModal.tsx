@@ -15,15 +15,15 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, useEffect, useState } from 'react';
 
-import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
-import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
-import { isMobileWidth } from '../../../shared/helpers/media-query';
-import { toSeconds } from '../../../shared/helpers/parsers/duration';
-import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { type ItemTrimInfo } from '../../item.types';
-import { ItemVideoDescription } from '../ItemVideoDescription';
+import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls.js';
+import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end.js';
+import { isMobileWidth } from '../../../shared/helpers/media-query.js';
+import { toSeconds } from '../../../shared/helpers/parsers/duration.js';
+import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { type ItemTrimInfo } from '../../item.types.js';
+import { ItemVideoDescription } from '../ItemVideoDescription.js';
 
 import './CutFragmentModal.scss';
 

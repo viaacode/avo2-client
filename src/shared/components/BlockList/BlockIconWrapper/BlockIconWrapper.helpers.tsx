@@ -1,15 +1,15 @@
-import type { Avo } from '@viaa/avo2-types';
+import {Avo} from '@viaa/avo2-types';
 
-import { ContentTypeNumber } from '../../../../collection/collection.types';
+import {ContentTypeNumber} from '../../../../collection/collection.types.js';
 
-import { BlockType } from './BlockIconWrapper.consts';
+import {BlockType} from './BlockIconWrapper.consts.js';
 
 export function getBlockType(type: Avo.Core.BlockItemType, typeId?: ContentTypeNumber): BlockType {
-	if (type === 'ITEM') {
+	if (type === Avo.Core.BlockItemType.ITEM) {
 		if (typeId === ContentTypeNumber.audio) {
 			return BlockType.AUDIO;
 		}
 		return BlockType.VIDEO;
 	}
-	return type as BlockType;
+	return type as unknown as BlockType;
 }

@@ -1,14 +1,14 @@
-import { Alert, Spacer } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { sortBy } from 'lodash-es';
-import React, { type FC } from 'react';
+import {Alert, Spacer} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {sortBy} from 'es-toolkit';
+import React, {type FC} from 'react';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { showReplacementWarning } from '../../helpers/fragment';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {showReplacementWarning} from '../../helpers/fragment.js';
 
-import { FragmentDetail } from './FragmentDetail';
+import {FragmentDetail} from './FragmentDetail.js';
 
 interface FragmentListProps {
 	collectionFragments: Avo.Collection.Fragment[];
@@ -36,7 +36,7 @@ export const FragmentList: FC<FragmentListProps> = ({
 	const commonUser = useAtomValue(commonUserAtom);
 
 	const renderCollectionFragments = () =>
-		sortBy(collectionFragments, 'position').map(
+		sortBy(collectionFragments, ['position']).map(
 			(collectionFragment: Avo.Collection.Fragment) => {
 				return (
 					<li

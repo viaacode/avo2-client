@@ -1,16 +1,16 @@
 import { Button, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
-import { noop } from 'lodash-es';
+import { noop } from 'es-toolkit';
 import React, { type Dispatch, type FC, type SetStateAction, useMemo, useState } from 'react';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { AlertBar } from '../../shared/components/AlertBar/AlertBar';
-import { EducationLevelId } from '../../shared/helpers/lom';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { AssignmentResponseEdit } from '../views/AssignmentResponseEdit/AssignmentResponseEdit';
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { AlertBar } from '../../shared/components/AlertBar/AlertBar.js';
+import { EducationLevelId } from '../../shared/helpers/lom.js';
+import { isMobileWidth } from '../../shared/helpers/media-query.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { AssignmentResponseEdit } from '../views/AssignmentResponseEdit/AssignmentResponseEdit.js';
 
 type AssignmentPupilPreviewProps = {
 	assignment: Partial<Avo.Assignment.Assignment>;

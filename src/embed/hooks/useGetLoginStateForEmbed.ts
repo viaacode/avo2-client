@@ -2,13 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 import { type Avo } from '@viaa/avo2-types';
 import { useAtom } from 'jotai';
 
-import { loginAtom } from '../../authentication/authentication.store';
-import { LoginMessage } from '../../authentication/authentication.types';
-import { EmbedCodeService } from '../../embed-code/embed-code-service';
-import { QUERY_KEYS } from '../../shared/constants/query-keys';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { getEnv } from '../../shared/helpers/env';
-import { LTI_JWT_TOKEN_HEADER } from '../embed.types';
+import { loginAtom } from '../../authentication/authentication.store.js';
+import { LoginMessage } from '../../authentication/authentication.types.js';
+import { EmbedCodeService } from '../../embed-code/embed-code-service.js';
+import { QUERY_KEYS } from '../../shared/constants/query-keys.js';
+import { CustomError } from '../../shared/helpers/custom-error.js';
+import { getEnv } from '../../shared/helpers/env.js';
+import { LTI_JWT_TOKEN_HEADER } from '../embed.types.js';
 
 export const useGetLoginStateForEmbed = () => {
 	const [loginStateValue, setLoginStateValue] = useAtom(loginAtom);

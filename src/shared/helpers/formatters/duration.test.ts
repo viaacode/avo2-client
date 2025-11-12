@@ -1,4 +1,4 @@
-import { formatDurationMinutesSeconds } from './duration';
+import { formatDurationMinutesSeconds } from './duration.js';
 
 describe('Formatters - duration', () => {
 	it('Should format as a duration`', () => {

@@ -1,7 +1,7 @@
 import { Container, useSlot } from '@viaa/avo2-components';
 import React, { type FC, type ReactNode } from 'react';
 
-import { TopBar } from '../../components/TopBar/TopBar';
+import { TopBar } from '../../components/TopBar/TopBar.js';
 
 import './AdminLayout.scss';
 import {
@@ -9,7 +9,7 @@ import {
 	AdminLayoutHeader,
 	AdminLayoutTopBarCenter,
 	AdminLayoutTopBarRight,
-} from './AdminLayout.slots';
+} from './AdminLayout.slots.js';
 
 interface AdminLayoutProps {
 	children?: ReactNode;

@@ -1,11 +1,11 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
-import { type Avo } from '@viaa/avo2-types';
-import { stringifyUrl } from 'query-string';
+import {fetchWithLogoutJson} from '@meemoo/admin-core-ui/client';
+import {Avo} from '@viaa/avo2-types';
+import {stringifyUrl} from 'query-string';
 
-import { CustomError } from '../../../../../shared/helpers/custom-error';
-import { getEnv } from '../../../../../shared/helpers/env';
-import { type PickerItem } from '../../../types/content-picker';
-import { parsePickerItem } from '../helpers/parse-picker';
+import {CustomError} from '../../../../../shared/helpers/custom-error.js';
+import {getEnv} from '../../../../../shared/helpers/env.js';
+import {type PickerItem} from '../../../types/content-picker.js';
+import {parsePickerItem} from '../helpers/parse-picker.js';
 
 // Fetch profiles from GQL
 export const retrieveProfiles = async (name: string | null, limit = 5): Promise<PickerItem[]> => {
@@ -20,7 +20,7 @@ export const retrieveProfiles = async (name: string | null, limit = 5): Promise<
 const parseProfiles = (users: Partial<Avo.User.CommonUser>[]): PickerItem[] => {
 	return users.map(
 		(user): PickerItem => ({
-			...parsePickerItem('PROFILE', user.profileId as string),
+			...parsePickerItem(Avo.Core.ContentPickerType.PROFILE, user.profileId as string),
 			label: `${user.fullName} (${user.email})`,
 		})
 	);

@@ -1,65 +1,49 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { Alert, Box, Container, Flex, Icon, IconName, Spacer, Tabs } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import { useAtomValue } from 'jotai';
-import React, {
-	type Dispatch,
-	type FC,
-	type SetStateAction,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
-import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
-import {
-	JsonParam,
-	NumberParam,
-	StringParam,
-	type UrlUpdateType,
-	useQueryParams,
-} from 'use-query-params';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
+import {Alert, Box, Container, Flex, Icon, IconName, Spacer, Tabs} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import {useAtomValue} from 'jotai';
+import React, {type Dispatch, type FC, type SetStateAction, useEffect, useMemo, useState,} from 'react';
+import {useForm} from 'react-hook-form';
+import {Link} from 'react-router-dom';
+import {JsonParam, NumberParam, StringParam, type UrlUpdateType, useQueryParams,} from 'use-query-params';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { CollectionBlockType } from '../../../collection/collection.const';
-import { type FilterState } from '../../../search/search.types';
-import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
-import { InteractiveTour } from '../../../shared/components/InteractiveTour/InteractiveTour';
-import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
-import { formatTimestamp } from '../../../shared/helpers/formatters/date';
-import { useAssignmentPastDeadline } from '../../../shared/hooks/useAssignmentPastDeadline';
-import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
-import { ToastService } from '../../../shared/services/toast-service';
-import {
-	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
-	PUPIL_COLLECTION_FORM_SCHEMA,
-} from '../../assignment.const';
-import { reorderBlockPositions } from '../../assignment.helper';
-import { AssignmentService } from '../../assignment.service';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {CollectionBlockType} from '../../../collection/collection.const.js';
+import {type FilterState} from '../../../search/search.types.js';
+import {BeforeUnloadPrompt} from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt.js';
+import {InteractiveTour} from '../../../shared/components/InteractiveTour/InteractiveTour.js';
+import {StickySaveBar} from '../../../shared/components/StickySaveBar/StickySaveBar.js';
+import {formatTimestamp} from '../../../shared/helpers/formatters/date.js';
+import {useAssignmentPastDeadline} from '../../../shared/hooks/useAssignmentPastDeadline.js';
+import {useWarningBeforeUnload} from '../../../shared/hooks/useWarningBeforeUnload.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS, PUPIL_COLLECTION_FORM_SCHEMA,} from '../../assignment.const.js';
+import {reorderBlockPositions} from '../../assignment.helper.js';
+import {AssignmentService} from '../../assignment.service.js';
 import {
 	type AssignmentResponseFormState,
 	AssignmentType,
 	type PupilCollectionFragment,
 	type PupilSearchFilterState,
-} from '../../assignment.types';
-import { AssignmentHeading } from '../../components/AssignmentHeading';
-import { AssignmentMetadata } from '../../components/AssignmentMetadata';
-import { buildAssignmentSearchLink } from '../../helpers/build-search-link';
-import { cleanupTitleAndDescriptions } from '../../helpers/cleanup-title-and-descriptions';
-import { backToOverview } from '../../helpers/links';
-import { useAssignmentPupilTabs } from '../../hooks/assignment-pupil-tabs';
+} from '../../assignment.types.js';
+import {AssignmentHeading} from '../../components/AssignmentHeading.js';
+import {AssignmentMetadata} from '../../components/AssignmentMetadata.js';
+import {buildAssignmentSearchLink} from '../../helpers/build-search-link.js';
+import {cleanupTitleAndDescriptions} from '../../helpers/cleanup-title-and-descriptions.js';
+import {backToOverview} from '../../helpers/links.js';
+import {useAssignmentPupilTabs} from '../../hooks/assignment-pupil-tabs.js';
 
-import { AssignmentResponseAssignmentTab } from './tabs/AssignmentResponseAssignmentTab';
-import { AssignmentResponsePupilCollectionTab } from './tabs/AssignmentResponsePupilCollectionTab';
-import { AssignmentResponseSearchTab } from './tabs/AssignmentResponseSearchTab';
+import {AssignmentResponseAssignmentTab} from './tabs/AssignmentResponseAssignmentTab.js';
+import {AssignmentResponsePupilCollectionTab} from './tabs/AssignmentResponsePupilCollectionTab.js';
+import {AssignmentResponseSearchTab} from './tabs/AssignmentResponseSearchTab.js';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { tText } from '../../../shared/helpers/translate-text';
-import { tHtml } from '../../../shared/helpers/translate-html';
+import {FullPageSpinner} from '../../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment;

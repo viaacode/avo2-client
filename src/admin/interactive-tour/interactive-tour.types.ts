@@ -1,8 +1,7 @@
-import { type FilterableTableState } from '@meemoo/admin-core-ui/admin';
-import { type RichEditorState } from '@meemoo/react-components';
-
-import { type GetInteractiveTourByIdQuery } from '../../shared/generated/graphql-db-operations';
-import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import {type FilterableTableState} from '@meemoo/admin-core-ui/admin';
+import {type RichEditorState} from '@meemoo/react-components';
+import {type ACTIONS_TABLE_COLUMN_ID} from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {App_Interactive_Tour} from "../../shared/generated/graphql-db-types.ts";
 
 export type InteractiveTourOverviewTableCols =
 	| 'name'
@@ -34,11 +33,9 @@ export enum InteractiveTourEditActionType {
 	UPDATE_INTERACTIVE_TOUR_PROP = '@@admin-interactive-tour-edit/UPDATE_INTERACTIVE_TOUR_PROP',
 }
 
-export type InteractiveTour = GetInteractiveTourByIdQuery['app_interactive_tour'][0];
+export type EditableInteractiveTour = Omit<App_Interactive_Tour, 'id'> & { id?: number };
 
-export type EditableInteractiveTour = Omit<InteractiveTour, 'id'> & { id?: number };
-
-export type InteractiveTourStep = Exclude<InteractiveTour['steps'][0], null | undefined>;
+export type InteractiveTourStep = Exclude<App_Interactive_Tour['steps'][0], null | undefined>;
 
 export type EditableStep = InteractiveTourStep & {
 	contentState: RichEditorState | undefined;

@@ -1,16 +1,16 @@
-import { type Avo } from '@viaa/avo2-types';
-import { get, isString, omit, trimStart } from 'lodash-es';
-import queryString, { stringifyUrl } from 'query-string';
-import { type Location } from 'react-router';
+import {type Avo} from '@viaa/avo2-types';
+import {isString, omit, trimStart} from 'es-toolkit';
+import queryString, {stringifyUrl} from 'query-string';
+import {type Location} from 'react-router';
 
-import { APP_PATH } from '../../constants';
-import { EmbedCodeService } from '../../embed-code/embed-code-service';
-import { ROUTE_PARTS } from '../../shared/constants';
-import { getEnv } from '../../shared/helpers/env';
-import { SERVER_LOGOUT_PAGE } from '../authentication.const';
-import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
+import {APP_PATH} from '../../constants.js';
+import {EmbedCodeService} from '../../embed-code/embed-code-service.js';
+import {ROUTE_PARTS} from '../../shared/constants/index.js';
+import {getEnv} from '../../shared/helpers/env.js';
+import {SERVER_LOGOUT_PAGE} from '../authentication.const.js';
+import {STAMBOEK_LOCAL_STORAGE_KEY} from '../views/registration-flow/r3-stamboek.js';
 
-import { getBaseUrl } from './get-base-url';
+import {getBaseUrl} from './get-base-url.js';
 
 /**
  *

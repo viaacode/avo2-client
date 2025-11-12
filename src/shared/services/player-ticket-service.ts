@@ -1,9 +1,9 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 
-import { LTI_JWT_TOKEN_HEADER } from '../../embed/embed.types';
-import { EmbedCodeService } from '../../embed-code/embed-code-service';
-import { CustomError } from '../helpers/custom-error';
-import { getEnv } from '../helpers/env';
+import { LTI_JWT_TOKEN_HEADER } from '../../embed/embed.types.js';
+import { EmbedCodeService } from '../../embed-code/embed-code-service.js';
+import { CustomError } from '../helpers/custom-error.js';
+import { getEnv } from '../helpers/env.js';
 
 export const fetchPlayerTicket = async (externalId: string): Promise<string> => {
 	return (await fetchPlayerTickets([externalId]))[0];

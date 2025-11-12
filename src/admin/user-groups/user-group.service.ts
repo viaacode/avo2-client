@@ -1,16 +1,16 @@
 import { type Avo } from '@viaa/avo2-types';
 
-import { OrderDirection } from '../../search/search.const';
+import { OrderDirection } from '../../search/search.const.js';
 import {
 	type GetUserGroupsWithFiltersQuery,
 	type GetUserGroupsWithFiltersQueryVariables,
-} from '../../shared/generated/graphql-db-operations';
-import { GetUserGroupsWithFiltersDocument } from '../../shared/generated/graphql-db-react-query';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { dataService } from '../../shared/services/data-service';
+} from '../../shared/generated/graphql-db-operations.js';
+import { GetUserGroupsWithFiltersDocument } from '../../shared/generated/graphql-db-react-query.js';
+import { CustomError } from '../../shared/helpers/custom-error.js';
+import { dataService } from '../../shared/services/data-service.js';
 
-import { ITEMS_PER_PAGE } from './user-group.const';
-import { type UserGroup } from './user-group.types';
+import { ITEMS_PER_PAGE } from './user-group.const.js';
+import { type UserGroup } from './user-group.types.js';
 
 export class UserGroupService {
 	public static async fetchUserGroups(
@@ -62,7 +62,7 @@ export class UserGroupService {
 	}
 
 	public static async fetchAllUserGroups(): Promise<UserGroup[]> {
-		const response = await UserGroupService.fetchUserGroups(0, 'label', OrderDirection.asc, {});
+		const response = await UserGroupService.fetchUserGroups(0, 'label', Avo.Search.OrderDirection.ASC, {});
 		return response[0];
 	}
 }

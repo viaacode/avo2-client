@@ -8,24 +8,24 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { noop, once } from 'lodash-es';
+import { noop, once } from 'es-toolkit';
 import React, { type FC, useState } from 'react';
 
-import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription';
-import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
-import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
-import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
-import { isMobileWidth } from '../../../shared/helpers/media-query';
-import { toSeconds } from '../../../shared/helpers/parsers/duration';
-import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
-import { ToastService } from '../../../shared/services/toast-service';
-import { VideoStillService } from '../../../shared/services/video-stills-service';
-import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
-import { ContentTypeNumber } from '../../collection.types';
-import { type CollectionAction } from '../CollectionOrBundleEdit.types';
+import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription.js';
+import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls.js';
+import { DEFAULT_AUDIO_STILL } from '../../../shared/constants/index.js';
+import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end.js';
+import { isMobileWidth } from '../../../shared/helpers/media-query.js';
+import { toSeconds } from '../../../shared/helpers/parsers/duration.js';
+import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { VideoStillService } from '../../../shared/services/video-stills-service.js';
+import { getValidationErrorsForStartAndEnd } from '../../collection.helpers.js';
+import { ContentTypeNumber } from '../../collection.types.js';
+import { type CollectionAction } from '../CollectionOrBundleEdit.types.js';
 
 import './CutFragmentModal.scss';
-import { tText } from '../../../shared/helpers/translate-text';
+import { tText } from '../../../shared/helpers/translate-text.js';
 
 export interface CutFragmentModalProps {
 	isOpen: boolean;

@@ -1,14 +1,15 @@
-import { convertToHtml } from '@viaa/avo2-components';
-import React, { type FC } from 'react';
+import {convertToHtml} from '@viaa/avo2-components';
+import React, {type FC} from 'react';
 
-import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
-import { TitleDescriptionForm } from '../../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
-import { AssignmentBlockType, type EditBlockProps } from '../../assignment.types';
-import { AssignmentBlockToggle } from '../AssignmentBlockToggle';
+import {RICH_TEXT_EDITOR_OPTIONS_AUTHOR} from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts.js';
+import {TitleDescriptionForm} from '../../../shared/components/TitleDescriptionForm/TitleDescriptionForm.js';
+import {type EditBlockProps} from '../../assignment.types.js';
+import {AssignmentBlockToggle} from '../AssignmentBlockToggle.js';
 
 import './AssignmentBlockEditSearch.scss';
-import { tText } from '../../../shared/helpers/translate-text';
-import { tHtml } from '../../../shared/helpers/translate-html';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {Avo} from "@viaa/avo2-types";
 
 export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({ block, setBlock }) => {
 	return (
@@ -40,14 +41,14 @@ export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({ block, setBlock 
 				description={tHtml(
 					'assignment/hooks/assignment-blocks___met-leerlingencollecties-kunnen-de-leerlingen-hun-zoekresultaten-verzamelen-in-een-collectie-die-jij-als-leerkracht-nadien-kan-inkijken-en-verbeteren'
 				)}
-				checked={block.type === AssignmentBlockType.BOUW}
+				checked={block.type === Avo.Core.BlockItemType.BOUW}
 				onChange={() => {
 					setBlock({
 						...block,
 						type:
-							block.type === AssignmentBlockType.ZOEK
-								? AssignmentBlockType.BOUW
-								: AssignmentBlockType.ZOEK,
+							block.type === Avo.Core.BlockItemType.ZOEK
+								? Avo.Core.BlockItemType.BOUW
+								: Avo.Core.BlockItemType.ZOEK,
 					});
 				}}
 			/>

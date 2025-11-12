@@ -1,5 +1,5 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import {toggleSortOrder} from '@meemoo/admin-core-ui/admin';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
 import {
 	Checkbox,
 	Column,
@@ -13,34 +13,31 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { get, noop, orderBy } from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import {Avo, PermissionName} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {get, noop, orderBy} from 'es-toolkit';
+import React, {type FC, useCallback, useEffect, useState} from 'react';
 
-import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
-import { type PickerItem } from '../../admin/shared/types/content-picker';
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable';
-import {
-	AssociatedQuickLaneTable,
-	AssociatedQuickLaneTableOrderBy,
-} from '../../quick-lane/components/AssociatedQuickLaneTable';
-import { OrderDirection } from '../../search/search.const';
-import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar';
-import { formatTimestamp } from '../../shared/helpers/formatters/date';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { QualityLabelsService } from '../../shared/services/quality-labels.service';
-import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service';
-import { ToastService } from '../../shared/services/toast-service';
-import { type QuickLaneUrlObject } from '../../shared/types';
-import { type QualityLabel } from '../collection.types';
+import {ContentPicker} from '../../admin/shared/components/ContentPicker/ContentPicker.js';
+import {type PickerItem} from '../../admin/shared/types/content-picker.js';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {ContainedInBundlesTable} from '../../bundle/components/ContainedInBundlesTable.js';
+import {AssociatedQuickLaneTable, AssociatedQuickLaneTableOrderBy,} from '../../quick-lane/components/AssociatedQuickLaneTable.js';
+import {OrderDirection} from '../../search/search.const.js';
+import {QUICK_LANE_DEFAULTS} from '../../shared/constants/quick-lane.js';
+import {CustomError} from '../../shared/helpers/custom-error.js';
+import {getFullNameCommonUser} from '../../shared/helpers/formatters/avatar.js';
+import {formatTimestamp} from '../../shared/helpers/formatters/date.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {QualityLabelsService} from '../../shared/services/quality-labels.service.js';
+import {QuickLaneContainingService} from '../../shared/services/quick-lane-containing.service.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {type QuickLaneUrlObject} from '../../shared/types/index.js';
+import {type QualityLabel} from '../collection.types.js';
 
-import { type CollectionAction } from './CollectionOrBundleEdit.types';
+import {type CollectionAction} from './CollectionOrBundleEdit.types.js';
 
 interface CollectionOrBundleEditAdminProps {
 	collection: Avo.Collection.Collection;
@@ -63,7 +60,7 @@ export const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps> =
 		QUICK_LANE_DEFAULTS.sort_column
 	);
 	const [quickLaneSortOrder, setQuickLaneSortOrder] = useState<OrderDirection>(
-		OrderDirection.asc
+		Avo.Search.OrderDirection.ASC
 	);
 
 	// Computed
@@ -186,7 +183,7 @@ export const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps> =
 	const owner: PickerItem | undefined = collection.profile
 		? {
 				label: `${collection.profile.user.first_name} ${collection.profile.user.last_name} (${collection.profile.user.mail})`,
-				type: 'PROFILE',
+				type: Avo.Core.ContentPickerType.PROFILE,
 				value: collection.profile.id,
 		  }
 		: undefined;
@@ -290,7 +287,7 @@ export const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps> =
 												initialValue={owner}
 												hideTargetSwitch
 												hideTypeDropdown
-												allowedTypes={['PROFILE']}
+												allowedTypes={[Avo.Core.ContentPickerType.PROFILE]}
 												onSelect={(value: PickerItem | null) => {
 													if (!value) {
 														return;
@@ -315,15 +312,13 @@ export const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps> =
 												label={tText(
 													'collection/components/collection-or-bundle-edit-admin___redactie'
 												)}
-												checked={get(collection, 'is_managed', false)}
+												checked={collection?.is_managed || false}
 												onChange={() => {
 													changeCollectionState({
 														type: 'UPDATE_COLLECTION_PROP',
 														collectionProp: 'is_managed',
-														collectionPropValue: !get(
-															collection,
-															'is_managed',
-															false
+														collectionPropValue: !(
+															collection?.is_managed || false
 														),
 													});
 												}}
@@ -334,7 +329,7 @@ export const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps> =
 											{`${tText(
 												'collection/components/collection-or-bundle-edit-admin___redactie'
 											)}: ${
-												get(collection, 'is_managed', false)
+												collection?.is_managed || false
 													? tText(
 															'collection/components/collection-or-bundle-edit-admin___ja'
 													  )

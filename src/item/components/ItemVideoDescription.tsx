@@ -1,39 +1,22 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import {
-	Column,
-	convertToHtml,
-	ExpandableContainer,
-	Grid,
-	Spacer,
-	Toolbar,
-	ToolbarLeft,
-	ToolbarRight,
-} from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { debounce } from 'lodash-es';
-import React, {
-	createRef,
-	type FC,
-	type ReactNode,
-	type RefObject,
-	useEffect,
-	useRef,
-	useState,
-} from 'react';
+import {BlockHeading} from '@meemoo/admin-core-ui/client';
+import {Column, convertToHtml, ExpandableContainer, Grid, Spacer, Toolbar, ToolbarLeft, ToolbarRight,} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import {debounce} from 'es-toolkit';
+import React, {createRef, type FC, type ReactNode, type RefObject, useEffect, useRef, useState,} from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
-import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
-import { ItemMetadata } from '../../shared/components/BlockItemMetadata/ItemMetadata';
-import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
-import { type CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.types';
-import { TextWithTimestamps } from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
-import { TEAL_BRIGHT } from '../../shared/constants';
-import { stripHtml } from '../../shared/helpers/formatters/strip-html';
-import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
+import {buildGlobalSearchLink} from '../../assignment/helpers/build-search-link.js';
+import {ItemMetadata} from '../../shared/components/BlockItemMetadata/ItemMetadata.js';
+import {FlowPlayerWrapper} from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.js';
+import {type CuePoints} from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.types.js';
+import {TextWithTimestamps} from '../../shared/components/TextWithTimestamp/TextWithTimestamps.js';
+import {TEAL_BRIGHT} from '../../shared/constants/index.js';
+import {stripHtml} from '../../shared/helpers/formatters/strip-html.js';
+import {getFlowPlayerPoster} from '../../shared/helpers/get-poster.js';
 
 import './ItemVideoDescription.scss';
-import { tText } from '../../shared/helpers/translate-text';
+import {tText} from '../../shared/helpers/translate-text.js';
 
 interface ItemVideoDescriptionProps {
 	itemMetaData: Avo.Item.Item;
@@ -96,7 +79,7 @@ export const ItemVideoDescription: FC<ItemVideoDescriptionProps> = ({
 				}
 			},
 			300,
-			{ leading: false, trailing: true }
+			{ edges: ["trailing"] }
 		);
 
 		window.addEventListener('resize', onResizeHandler);

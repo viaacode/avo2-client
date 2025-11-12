@@ -1,50 +1,43 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
-import { OrderDirection, PaginationBar } from '@meemoo/react-components';
-import {
-	Button,
-	IconName,
-	MetaData,
-	MetaDataItem,
-	Spacer,
-	Table,
-	type TableColumn,
-	Thumbnail,
-} from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { orderBy } from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
-import { Link } from 'react-router-dom';
+import {toggleSortOrder} from '@meemoo/admin-core-ui/admin';
+import {OrderDirection, PaginationBar} from '@meemoo/react-components';
+import {Button, IconName, MetaData, MetaDataItem, Spacer, Table, type TableColumn, Thumbnail,} from '@viaa/avo2-components';
+import {type Avo, PermissionName} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {orderBy} from 'es-toolkit';
+import React, {type FC, useCallback, useEffect, useState} from 'react';
+import {useNavigate} from 'react-router';
+import {Link} from 'react-router-dom';
 
-import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views/ErrorView';
-import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
-import { FragmentShareModal } from '../../shared/components/FragmentShareModal/FragmentShareModal';
+import {GET_DEFAULT_PAGINATION_BAR_PROPS} from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {APP_PATH} from '../../constants.js';
+import {ErrorView} from '../../error/views/ErrorView.js';
+import {ConfirmModal} from '../../shared/components/ConfirmModal/ConfirmModal.js';
+import {FragmentShareModal} from '../../shared/components/FragmentShareModal/FragmentShareModal.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { buildLink } from '../../shared/helpers/build-link';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { formatDate, fromNow } from '../../shared/helpers/formatters/date';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { truncateTableValue } from '../../shared/helpers/truncate';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {buildLink} from '../../shared/helpers/build-link.js';
+import {CustomError} from '../../shared/helpers/custom-error.js';
+import {formatDate, fromNow} from '../../shared/helpers/formatters/date.js';
+import {isMobileWidth} from '../../shared/helpers/media-query.js';
+import {ACTIONS_TABLE_COLUMN_ID} from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {truncateTableValue} from '../../shared/helpers/truncate.js';
+import {BookmarksViewsPlaysService} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
+import {
+	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js';
 import {
 	type BookmarkInfo,
 	type EventContentType,
-} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
-import { ToastService } from '../../shared/services/toast-service';
-import { embedFlowAtom } from '../../shared/store/ui.store';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type';
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {embedFlowAtom} from '../../shared/store/ui.store.js';
+import {TableColumnDataType} from '../../shared/types/table-column-data-type.js';
 
 const ITEMS_PER_PAGE = 5;
 
@@ -65,7 +58,7 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({ numberOfItems, o
 	const [mediaItemForEmbedCodeModal, setMediaItemForEmbedCodeModal] =
 		useState<Avo.Item.Item | null>(null);
 	const [sortColumn, setSortColumn] = useState<keyof BookmarkInfo>('createdAt');
-	const [sortOrder, setSortOrder] = useState<OrderDirection>(OrderDirection.desc);
+	const [sortOrder, setSortOrder] = useState<OrderDirection>(Avo.Search.OrderDirection.DESC);
 	const [page, setPage] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [paginatedBookmarks, setPaginatedBookmarks] = useState<BookmarkInfo[]>([]);
@@ -123,7 +116,7 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({ numberOfItems, o
 
 	const updatePaginatedBookmarks = useCallback(() => {
 		setPaginatedBookmarks(
-			orderBy(bookmarks, [sortColumn], [sortOrder]).slice(
+			orderBy(bookmarks || [], [sortColumn], [sortOrder]).slice(
 				ITEMS_PER_PAGE * page,
 				ITEMS_PER_PAGE * (page + 1)
 			)
@@ -173,7 +166,7 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({ numberOfItems, o
 		} else {
 			// Initial column sort order
 			setSortColumn(columnId);
-			setSortOrder(OrderDirection.asc);
+			setSortOrder(Avo.Search.OrderDirection.ASC);
 		}
 		setPage(0);
 	};
@@ -186,7 +179,7 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({ numberOfItems, o
 			external_id: bookmarkInfo.contentLinkId,
 			thumbnail_path: bookmarkInfo.contentThumbnailPath,
 			type: bookmarkInfo.contentType,
-		} as Avo.Item.Item);
+		} as unknown as Avo.Item.Item);
 	};
 
 	// Render functions

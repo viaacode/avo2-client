@@ -18,26 +18,26 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
-import { noop } from 'lodash-es';
+import { noop } from 'es-toolkit';
 import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
+import { commonUserAtom } from '../../authentication/authentication.store.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { formatDate } from '../../shared/helpers/formatters/date';
-import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { truncateTableValue } from '../../shared/helpers/truncate';
-import { useTableSort } from '../../shared/hooks/useTableSort';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { type BookmarkInfo } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
-import { ToastService } from '../../shared/services/toast-service';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { CustomError } from '../../shared/helpers/custom-error.js';
+import { formatDate } from '../../shared/helpers/formatters/date.js';
+import { getOrderObject } from '../../shared/helpers/generate-order-gql-query.js';
+import { isMobileWidth } from '../../shared/helpers/media-query.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { truncateTableValue } from '../../shared/helpers/truncate.js';
+import { useTableSort } from '../../shared/hooks/useTableSort.js';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
+import { type BookmarkInfo } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type.js';
 
 import './AddItemsModals.scss';
 

@@ -6,22 +6,22 @@ import { useLocation } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryParamProvider } from 'use-query-params';
 
-import { LoginMessage } from '../authentication/authentication.types';
-import { EmbedCodeService } from '../embed-code/embed-code-service';
-import { toEmbedCodeDetail } from '../embed-code/helpers/links';
-import { ErrorView } from '../error/views/ErrorView';
-import { CustomError } from '../shared/helpers/custom-error';
-import { isUuid } from '../shared/helpers/isUuid';
-import { tText } from '../shared/helpers/translate-text';
-import { waitForTranslations } from '../shared/translations/i18n';
+import { LoginMessage } from '../authentication/authentication.types.js';
+import { EmbedCodeService } from '../embed-code/embed-code-service.js';
+import { toEmbedCodeDetail } from '../embed-code/helpers/links.js';
+import { ErrorView } from '../error/views/ErrorView.js';
+import { CustomError } from '../shared/helpers/custom-error.js';
+import { isUuid } from '../shared/helpers/isUuid.js';
+import { tText } from '../shared/helpers/translate-text.js';
+import { waitForTranslations } from '../shared/translations/i18n.js';
 
-import { Embed } from './components/Embed';
-import { EmbedErrorView } from './components/EmbedErrorView';
-import { RegisterOrLogin } from './components/RegisterOrLogin';
-import { useGetLoginStateForEmbed } from './hooks/useGetLoginStateForEmbed';
+import { Embed } from './components/Embed.js';
+import { EmbedErrorView } from './components/EmbedErrorView.js';
+import { RegisterOrLogin } from './components/RegisterOrLogin.js';
+import { useGetLoginStateForEmbed } from './hooks/useGetLoginStateForEmbed.js';
 
 import '../styles/main.scss';
-import { ReactRouter7Adapter } from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
+import { ReactRouter7Adapter } from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params.js';
 
 const EmbedApp: FC = () => {
 	const location = useLocation();

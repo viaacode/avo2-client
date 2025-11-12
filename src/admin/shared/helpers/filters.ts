@@ -1,6 +1,7 @@
-import { compact, isArray, isNil, set, without } from 'lodash-es';
+import {compact, isNil, without} from 'es-toolkit';
+import {set} from 'es-toolkit/compat';
 
-import { type EducationLevelType } from '../../../shared/helpers/lom';
+import {type EducationLevelType} from '../../../shared/helpers/lom.js';
 
 export const NULL_FILTER = 'null';
 
@@ -64,7 +65,7 @@ export function getMultiOptionFilters(
 	nestedProps?: string[]
 ): any[] {
 	return setNestedValues(filters, props, nestedProps || props, (prop: string, value: any) => {
-		if (isArray(value) && value.includes(NULL_FILTER)) {
+		if (Array.isArray(value) && value.includes(NULL_FILTER)) {
 			return {
 				_or: [
 					{ [prop]: { _is_null: true } }, // Empty value
@@ -101,7 +102,7 @@ export function getMultiOptionsFilters(
 
 			if (
 				isNil(filterValues) ||
-				!isArray(filterValues) ||
+				!Array.isArray(filterValues) ||
 				!filterValues.length ||
 				!referenceTable
 			) {
@@ -206,7 +207,7 @@ function setNestedValues(
 	return compact(
 		props.map((prop: string, index: number): any => {
 			const value = (filters as any)[prop];
-			if (!isNil(value) && (!isArray(value) || value.length)) {
+			if (!isNil(value) && (!Array.isArray(value) || value.length)) {
 				const nestedProp = nestedProps ? nestedProps[index] : prop;
 
 				const lastProp = nestedProp.split('.').pop() as string;

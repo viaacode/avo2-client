@@ -2,9 +2,9 @@ import { type IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { type ReactElement } from 'react';
 
-import { type NewsletterPreferences } from '../services/campaign-monitor-service';
+import { type NewsletterPreferences } from '../services/campaign-monitor-service.js';
 
-export * from './quick-lane';
+export * from './quick-lane.js';
 
 export enum KeyCode {
 	Enter = 13,

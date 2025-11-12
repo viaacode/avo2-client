@@ -1,4 +1,4 @@
-import { isString } from 'lodash-es';
+import { isString } from 'es-toolkit';
 
 export function isDeadlineBeforeAvailableAt(
 	availableAt: Date | string | null | undefined,

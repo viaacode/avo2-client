@@ -1,33 +1,23 @@
-import {
-	Alert,
-	Column,
-	Container,
-	DatePicker,
-	type DefaultProps,
-	Form,
-	FormGroup,
-	Grid,
-	Spacer,
-	TextInput,
-} from '@viaa/avo2-components';
-import { clsx } from 'clsx';
-import { isAfter, isPast } from 'date-fns';
-import { useAtomValue } from 'jotai';
-import React, { type FC, useCallback } from 'react';
+import {Alert, Column, Container, DatePicker, type DefaultProps, Form, FormGroup, Grid, Spacer, TextInput,} from '@viaa/avo2-components';
+import {clsx} from 'clsx';
+import {isAfter, isPast} from 'date-fns';
+import {useAtomValue} from 'jotai';
+import React, {type FC, useCallback} from 'react';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { ToastService } from '../../shared/services/toast-service';
-import { endOfAcademicYear } from '../helpers/academic-year';
-import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
-import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels';
-import { type AssignmentFields } from '../hooks/assignment-form';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {FullPageSpinner} from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {endOfAcademicYear} from '../helpers/academic-year.js';
+import {isDeadlineBeforeAvailableAt} from '../helpers/is-deadline-before-available-at.js';
+import {mergeWithOtherLabels} from '../helpers/merge-with-other-labels.js';
+import {type AssignmentFields} from '../hooks/assignment-form.js';
 
-import { AssignmentLabels } from './AssignmentLabels';
+import {AssignmentLabels} from './AssignmentLabels.js';
 
 import './AssignmentDetailsForm.scss';
+import {Avo} from "@viaa/avo2-types";
 
 const AssignmentDetailsFormIds = {
 	classrooms: 'c-assignment-details-form__classrooms', // labels with type 'CLASS'
@@ -74,10 +64,10 @@ export const AssignmentDetailsFormEditable: FC<
 										labelFor={getId(AssignmentDetailsFormIds.classrooms)}
 									>
 										<AssignmentLabels
-											type="CLASS"
+											type={Avo.Assignment.LabelType.CLASS}
 											id={getId(AssignmentDetailsFormIds.classrooms)}
 											labels={(assignment.labels || []).filter(
-												(item) => item.assignment_label.type === 'CLASS'
+												(item) => item.assignment_label.type === Avo.Assignment.LabelType.CLASS
 											)}
 											dictionary={{
 												placeholder: tText(
@@ -102,7 +92,7 @@ export const AssignmentDetailsFormEditable: FC<
 												const newLabels = mergeWithOtherLabels(
 													assignment.labels || [],
 													target,
-													'CLASS'
+													Avo.Assignment.LabelType.CLASS
 												);
 
 												setAssignment({
@@ -120,7 +110,7 @@ export const AssignmentDetailsFormEditable: FC<
 										labelFor={getId(AssignmentDetailsFormIds.labels)}
 									>
 										<AssignmentLabels
-											type="LABEL"
+											type={Avo.Assignment.LabelType.LABEL}
 											id={getId(AssignmentDetailsFormIds.labels)}
 											labels={(assignment.labels || []).filter(
 												(item) => item.assignment_label.type === 'LABEL'
@@ -139,7 +129,7 @@ export const AssignmentDetailsFormEditable: FC<
 													labels: mergeWithOtherLabels(
 														assignment.labels || [],
 														changed,
-														'LABEL'
+														Avo.Assignment.LabelType.LABEL
 													),
 												});
 											}}

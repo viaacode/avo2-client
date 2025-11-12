@@ -1,10 +1,10 @@
 import { type Avo } from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 
-import { CustomError } from '../../shared/helpers/custom-error';
-import { getEnv } from '../../shared/helpers/env';
+import { CustomError } from '../../shared/helpers/custom-error.js';
+import { getEnv } from '../../shared/helpers/env.js';
 
-import { type AssignmentSortProps } from './assignments.types';
+import { type AssignmentSortProps } from './assignments.types.js';
 
 export class AssignmentsAdminService {
 	static async getAssignments(

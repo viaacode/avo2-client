@@ -2,7 +2,7 @@ import { type PaginationBarProps } from '@meemoo/react-components';
 import { Icon, IconName } from '@viaa/avo2-components';
 import React from 'react';
 
-import { tText } from '../../../../shared/helpers/translate-text';
+import { tText } from '../../../../shared/helpers/translate-text.js';
 
 export function GET_DEFAULT_PAGINATION_BAR_PROPS(): Pick<
 	PaginationBarProps,

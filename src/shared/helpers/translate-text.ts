@@ -4,9 +4,9 @@
 
 import { decode } from 'he';
 import { type TOptions } from 'i18next';
-import { isNil } from 'lodash-es';
+import { isNil } from 'es-toolkit';
 
-import i18n from '../translations/i18n';
+import i18n from '../translations/i18n.js';
 
 /**
  * Wrapper around tText() that simply returns the translated text as a string

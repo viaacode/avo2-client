@@ -9,31 +9,31 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { compact } from 'lodash-es';
+import { compact } from 'es-toolkit';
 import React, { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
-import { GENERATE_SITE_TITLE } from '../../../constants';
-import { SettingsService } from '../../../settings/settings.service';
-import { FileUpload } from '../../../shared/components/FileUpload/FileUpload';
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { LomFieldsInput } from '../../../shared/components/LomFieldsInput/LomFieldsInput';
-import { buildLink } from '../../../shared/helpers/build-link';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { PHOTO_TYPES } from '../../../shared/helpers/files';
-import { navigate } from '../../../shared/helpers/link';
-import { tText } from '../../../shared/helpers/translate-text';
-import { ToastService } from '../../../shared/services/toast-service';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js';
+import { GENERATE_SITE_TITLE } from '../../../constants.js';
+import { SettingsService } from '../../../settings/settings.service.js';
+import { FileUpload } from '../../../shared/components/FileUpload/FileUpload.js';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import { LomFieldsInput } from '../../../shared/components/LomFieldsInput/LomFieldsInput.js';
+import { buildLink } from '../../../shared/helpers/build-link.js';
+import { CustomError } from '../../../shared/helpers/custom-error.js';
+import { PHOTO_TYPES } from '../../../shared/helpers/files.js';
+import { navigate } from '../../../shared/helpers/link.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
 import {
 	AdminLayoutBody,
 	AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { useGetProfileById } from '../hooks/use-get-profile-by-id';
-import { USER_PATH } from '../user.const';
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import { useGetProfileById } from '../hooks/use-get-profile-by-id.js';
+import { USER_PATH } from '../user.const.js';
 
 export const UserEditPage: FC = () => {
 	const navigateFunc = useNavigate();

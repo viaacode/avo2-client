@@ -3,7 +3,7 @@ import React, { type ReactNode } from 'react';
 import { type NavigateFunction } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { generateContentLinkString } from './link';
+import { generateContentLinkString } from './link.js';
 
 export const defaultGoToDetailLink =
 	(navigate: NavigateFunction) =>

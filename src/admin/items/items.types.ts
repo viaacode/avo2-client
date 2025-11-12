@@ -1,8 +1,8 @@
 import { type FilterableTableState } from '@meemoo/admin-core-ui/admin';
 import { type Avo } from '@viaa/avo2-types';
 
-import { type EmbedCodeExternalWebsite } from '../../embed-code/embed-code.types';
-import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import { type EmbedCodeExternalWebsite } from '../../embed-code/embed-code.types.js';
+import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js';
 
 export type PublishedStatus = 'published' | 'unpublished';
 

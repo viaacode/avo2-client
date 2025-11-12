@@ -1,6 +1,6 @@
 import captureStackTrace from 'capture-stack-trace';
 
-import { generateRandomId } from './uuid';
+import { generateRandomId } from './uuid.js';
 
 export class CustomError {
 	public message: string;

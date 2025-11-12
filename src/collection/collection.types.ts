@@ -1,9 +1,6 @@
-import { type Avo } from '@viaa/avo2-types';
+import {Avo} from '@viaa/avo2-types';
 
-import {
-	type GetPublicCollectionsByIdQuery,
-	type GetPublicCollectionsByTitleQuery,
-} from '../shared/generated/graphql-db-operations';
+import {type GetPublicCollectionsByIdQuery, type GetPublicCollectionsByTitleQuery,} from '../shared/generated/graphql-db-operations.js';
 
 export type Collection = (
 	| GetPublicCollectionsByIdQuery
@@ -18,20 +15,14 @@ export enum ContentTypeNumber {
 	assignment = 5,
 }
 
-export enum ContentTypeString {
-	item = 'item',
-	audio = 'audio',
-	video = 'video',
-	collection = 'collectie',
-	bundle = 'bundel',
-	assignment = 'opdracht',
-	searchquery = 'zoekopdracht',
-	contentPage = 'contentPagina',
-}
-
 export enum CollectionOrBundle {
 	COLLECTION = 'collection',
 	BUNDLE = 'bundle',
+}
+
+export const COLLECTION_OR_BUNDLE_TO_CONTENT_TYPE_ENGLISH: Record<CollectionOrBundle, Avo.ContentType.English> = {
+	[CollectionOrBundle.COLLECTION]: Avo.ContentType.English.COLLECTION,
+	[CollectionOrBundle.BUNDLE]: Avo.ContentType.English.BUNDLE,
 }
 
 /**
@@ -45,26 +36,25 @@ export enum CollectionFragmentType {
 	ASSIGNMENT = 'ASSIGNMENT',
 }
 
-export const CONTENT_TYPE_TRANSLATIONS: Record<Avo.ContentType.Dutch, Avo.ContentType.English> = {
-	item: 'item',
-	audio: 'audio',
-	video: 'video',
-	collectie: 'collection',
-	map: 'bundle',
-	bundel: 'bundle',
-	zoek: 'search',
-	zoekopdracht: 'searchquery',
-	opdracht: 'assignment',
-	contentPagina: 'contentPage',
+export const CONTENT_TYPE_TRANSLATIONS_NL_TO_EN: Record<Avo.ContentType.Dutch, Avo.ContentType.English> = {
+	[Avo.ContentType.Dutch.ITEM]: Avo.ContentType.English.ITEM,
+	[Avo.ContentType.Dutch.AUDIO]: Avo.ContentType.English.AUDIO,
+	[Avo.ContentType.Dutch.VIDEO]: Avo.ContentType.English.VIDEO,
+	[Avo.ContentType.Dutch.COLLECTIE]: Avo.ContentType.English.COLLECTION,
+	[Avo.ContentType.Dutch.BUNDEL]: Avo.ContentType.English.BUNDLE,
+	[Avo.ContentType.Dutch.ZOEK]: Avo.ContentType.English.SEARCH,
+	[Avo.ContentType.Dutch.ZOEKOPDRACHT]: Avo.ContentType.English.SEARCHQUERY,
+	[Avo.ContentType.Dutch.OPDRACHT]: Avo.ContentType.English.ASSIGNMENT,
+	[Avo.ContentType.Dutch.CONTENTPAGINA]: Avo.ContentType.English.CONTENTPAGE,
 };
 
 export const BLOCK_TYPE_TO_CONTENT_TYPE: Record<Avo.Core.BlockItemType, Avo.ContentType.English> = {
-	TEXT: 'text',
-	ITEM: 'item',
-	COLLECTION: 'collection',
-	ASSIGNMENT: 'assignment',
-	ZOEK: 'search',
-	BOUW: 'search',
+	[Avo.Core.BlockItemType.TEXT]: Avo.ContentType.English.TEXT,
+	[Avo.Core.BlockItemType.ITEM]: Avo.ContentType.English.ITEM,
+	[Avo.Core.BlockItemType.COLLECTION]: Avo.ContentType.English.COLLECTION,
+	[Avo.Core.BlockItemType.ASSIGNMENT]: Avo.ContentType.English.ASSIGNMENT,
+	[Avo.Core.BlockItemType.ZOEK]: Avo.ContentType.English.SEARCH,
+	[Avo.Core.BlockItemType.BOUW]: Avo.ContentType.English.SEARCH,
 };
 
 export type CollectionLabelLookup = { [id: string]: string };

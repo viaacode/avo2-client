@@ -1,15 +1,15 @@
 import { type FilterableColumn, TableFilterType } from '@meemoo/admin-core-ui/admin';
 
-import { ROUTE_PARTS } from '../../shared/constants';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
-import { tText } from '../../shared/helpers/translate-text';
-import { generateRandomId } from '../../shared/helpers/uuid';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type';
+import { ROUTE_PARTS } from '../../shared/constants/index.js';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { generateRandomId } from '../../shared/helpers/uuid.js';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type.js';
 
 import {
 	type EditableInteractiveTour,
 	type InteractiveTourOverviewTableCols,
-} from './interactive-tour.types';
+} from './interactive-tour.types.js';
 
 export const INTERACTIVE_TOUR_PATH = {
 	INTERACTIVE_TOUR_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.interactiveTours}`,

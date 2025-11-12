@@ -1,19 +1,18 @@
-import { type Avo } from '@viaa/avo2-types';
-import { filter, map, sortBy } from 'lodash-es';
+import {type Avo} from '@viaa/avo2-types';
+import {sortBy} from 'es-toolkit';
 
-import { groupLoms } from './lom';
+import {groupLoms} from './lom.js';
 
 export const getBottomLoms = (loms: Avo.Lom.LomField[]) => {
 	// Group loms to split the incoming loms in levels and degrees
 	const groupedLoms = groupLoms(loms);
-	const parentIdsOfDegrees = map(groupedLoms.educationDegree, 'broader');
+	const parentIdsOfDegrees = groupedLoms.educationDegree.map(lom => lom.broader);
 	// Filter out the education levels which have a child education degree
-	const childlessLevels = filter(
-		groupedLoms.educationLevel,
+	const childlessLevels = groupedLoms.educationLevel.filter(
 		(level) => !parentIdsOfDegrees.includes(level.id)
 	);
 
-	return sortBy([...groupedLoms.educationDegree, ...childlessLevels], (lom) =>
-		lom.label.toLocaleLowerCase()
+	return sortBy([...groupedLoms.educationDegree, ...childlessLevels], [(lom) =>
+		lom.label.toLocaleLowerCase()]
 	);
 };

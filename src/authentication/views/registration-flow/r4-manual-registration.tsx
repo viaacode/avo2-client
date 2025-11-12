@@ -23,15 +23,15 @@ import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ROUTE_PARTS } from '../../../shared/constants';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { validateEmailAddress } from '../../../shared/helpers/validation/email';
-import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
-import { trackEvents } from '../../../shared/services/event-logging-service';
-import { ToastService } from '../../../shared/services/toast-service';
-import { ZendeskService } from '../../../shared/services/zendesk-service';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js';
+import { ROUTE_PARTS } from '../../../shared/constants/index.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { validateEmailAddress } from '../../../shared/helpers/validation/email.js';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js';
+import { trackEvents } from '../../../shared/services/event-logging-service.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { ZendeskService } from '../../../shared/services/zendesk-service.js';
 
 import './r4-manual-registration.scss';
 

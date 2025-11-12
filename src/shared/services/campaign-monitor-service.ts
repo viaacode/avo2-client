@@ -1,12 +1,12 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 import { type Avo } from '@viaa/avo2-types';
-import { compact } from 'lodash-es';
+import { compact } from 'es-toolkit';
 import { stringifyUrl } from 'query-string';
 
-import { CustomError } from '../helpers/custom-error';
-import { getEnv } from '../helpers/env';
+import { CustomError } from '../helpers/custom-error.js';
+import { getEnv } from '../helpers/env.js';
 
-import { type MinimalClientEvent, trackEvents } from './event-logging-service';
+import { type MinimalClientEvent, trackEvents } from './event-logging-service.js';
 
 export type EmailTemplateType = 'item' | 'collection' | 'bundle';
 

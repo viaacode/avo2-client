@@ -1,25 +1,23 @@
-import { Button, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { flatten, fromPairs, get, groupBy, isNil, map } from 'lodash-es';
-import React, { type FC, lazy, type ReactNode, Suspense, useCallback, useState } from 'react';
-import { Helmet } from 'react-helmet';
+import {Button, Modal, ModalBody, ModalFooterRight} from '@viaa/avo2-components';
+import {PermissionName} from '@viaa/avo2-types';
+import {flatten, groupBy, isNil} from 'es-toolkit';
+import React, {type FC, lazy, type ReactNode, Suspense, useCallback, useState} from 'react';
+import {Helmet} from 'react-helmet';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { ToastService } from '../../../shared/services/toast-service';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import {
-	AdminLayoutBody,
-	AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { fetchTranslations, updateTranslations } from '../translations.service';
-import { type Translation, type TranslationsState } from '../translations.types';
+import {PermissionGuard} from '../../../authentication/components/PermissionGuard.js';
+import {GENERATE_SITE_TITLE} from '../../../constants.js';
+import {FullPageSpinner} from '../../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import {CustomError} from '../../../shared/helpers/custom-error.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {AdminLayout} from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import {AdminLayoutBody, AdminLayoutTopBarRight,} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import {fetchTranslations, updateTranslations} from '../translations.service.js';
+import {type Translation, type TranslationsState} from '../translations.types.js';
 
 import './TranslationsOverviewPage.scss';
-import { tText } from '../../../shared/helpers/translate-text';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {map} from "es-toolkit/compat";
 
 const TranslationsOverview = lazy(() =>
 	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -113,7 +111,7 @@ const TranslationsOverviewPage: FC = () => {
 
 		return map(translationsPerContext, (translations: Translation, context: string) => ({
 			name: `translations-${context}`,
-			value: fromPairs(
+			value: Object.fromEntries(
 				translations.map((translation) => [
 					splitOnFirstSlash(translation[0])[1],
 					translation[1],
@@ -132,12 +130,12 @@ const TranslationsOverviewPage: FC = () => {
 		return flatten(
 			translations.map((context: TranslationsState) => {
 				// convert object-based translations to array-based translations
-				const translationsArray: Translation[] = Object.entries(get(context, 'value'));
+				const translationsArray: Translation[] = Object.entries(context?.value);
 
 				// add context to translations id
 				return translationsArray.map(
 					(item: Translation): Translation => [
-						`${get(context, 'name').replace('translations-', '')}/${item[0]}`,
+						`${context?.name?.replace('translations-', '')}/${item[0]}`,
 						item[1],
 					]
 				);

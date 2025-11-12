@@ -1,14 +1,14 @@
-import { type Avo } from '@viaa/avo2-types';
+import {Avo} from '@viaa/avo2-types';
 
-import { tText } from '../../../../shared/helpers/translate-text';
-import { type PickerTypeOption } from '../../types/content-picker';
+import {tText} from '../../../../shared/helpers/translate-text.js';
+import {type PickerTypeOption} from '../../types/content-picker.js';
 
-import { retrieveAnchors } from './item-providers/anchors';
-import { retrieveBundles, retrieveCollections } from './item-providers/collection';
-import { retrieveContentPages, retrieveProjectContentPages } from './item-providers/content-page';
-import { retrieveInternalLinks } from './item-providers/internal-link';
-import { retrieveItems } from './item-providers/item';
-import { retrieveProfiles } from './item-providers/profile';
+import {retrieveAnchors} from './item-providers/anchors.js';
+import {retrieveBundles, retrieveCollections} from './item-providers/collection.js';
+import {retrieveContentPages, retrieveProjectContentPages} from './item-providers/content-page.js';
+import {retrieveInternalLinks} from './item-providers/internal-link.js';
+import {retrieveItems} from './item-providers/item.js';
+import {retrieveProfiles} from './item-providers/profile.js';
 
 const GET_CONTENT_TYPE_LABELS: () => { [type: string]: string } = () => ({
 	CONTENT_PAGE: tText('admin/content/content___content'),
@@ -28,49 +28,49 @@ export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => {
 	const labels = GET_CONTENT_TYPE_LABELS();
 	return [
 		{
-			value: 'CONTENT_PAGE',
+			value: Avo.Core.ContentPickerType.CONTENT_PAGE,
 			label: labels['CONTENT_PAGE'],
 			disabled: false,
 			fetch: retrieveContentPages,
 			picker: 'SELECT',
 		},
 		{
-			value: 'INTERNAL_LINK',
+			value: Avo.Core.ContentPickerType.INTERNAL_LINK,
 			label: labels['INTERNAL_LINK'],
 			disabled: false,
 			fetch: retrieveInternalLinks,
 			picker: 'SELECT',
 		},
 		{
-			value: 'COLLECTION',
+			value: Avo.Core.ContentPickerType.COLLECTION,
 			label: labels['COLLECTION'],
 			disabled: false,
 			fetch: retrieveCollections,
 			picker: 'SELECT',
 		},
 		{
-			value: 'ITEM',
+			value: Avo.Core.ContentPickerType.ITEM,
 			label: labels['ITEM'],
 			disabled: false,
 			fetch: retrieveItems,
 			picker: 'SELECT',
 		},
 		{
-			value: 'BUNDLE',
+			value: Avo.Core.ContentPickerType.BUNDLE,
 			label: labels['BUNDLE'],
 			disabled: false,
 			fetch: retrieveBundles,
 			picker: 'SELECT',
 		},
 		{
-			value: 'EXTERNAL_LINK',
+			value: Avo.Core.ContentPickerType.EXTERNAL_LINK,
 			label: labels['EXTERNAL_LINK'],
 			disabled: false,
 			picker: 'TEXT_INPUT',
 			placeholder: 'https://',
 		},
 		{
-			value: 'SEARCH_QUERY',
+			value: Avo.Core.ContentPickerType.SEARCH_QUERY,
 			label: labels['SEARCH_QUERY'],
 			disabled: false,
 			picker: 'TEXT_INPUT',
@@ -79,28 +79,28 @@ export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => {
 			),
 		},
 		{
-			value: 'PROJECTS',
+			value: Avo.Core.ContentPickerType.PROJECTS,
 			label: labels['PROJECTS'],
 			disabled: false,
 			fetch: retrieveProjectContentPages,
 			picker: 'SELECT',
 		},
 		{
-			value: 'PROFILE',
+			value: Avo.Core.ContentPickerType.PROFILE,
 			label: labels['PROFILE'],
 			disabled: false,
 			fetch: (name, limit) => retrieveProfiles(name, limit),
 			picker: 'SELECT',
 		},
 		{
-			value: 'ANCHOR_LINK',
+			value: Avo.Core.ContentPickerType.ANCHOR_LINK,
 			label: labels['ANCHOR_LINK'],
 			disabled: false,
 			fetch: retrieveAnchors,
 			picker: 'SELECT',
 		},
 		{
-			value: 'FILE',
+			value: Avo.Core.ContentPickerType.FILE,
 			label: labels['FILE'],
 			disabled: false,
 			picker: 'FILE_UPLOAD',
@@ -109,14 +109,14 @@ export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => {
 };
 
 export const DEFAULT_ALLOWED_TYPES: Avo.Core.ContentPickerType[] = [
-	'CONTENT_PAGE',
-	'ITEM',
-	'COLLECTION',
-	'BUNDLE',
-	'INTERNAL_LINK',
-	'EXTERNAL_LINK',
-	'ANCHOR_LINK',
-	'FILE',
+	Avo.Core.ContentPickerType.CONTENT_PAGE,
+	Avo.Core.ContentPickerType.ITEM,
+	Avo.Core.ContentPickerType.COLLECTION,
+	Avo.Core.ContentPickerType.BUNDLE,
+	Avo.Core.ContentPickerType.INTERNAL_LINK,
+	Avo.Core.ContentPickerType.EXTERNAL_LINK,
+	Avo.Core.ContentPickerType.ANCHOR_LINK,
+	Avo.Core.ContentPickerType.FILE,
 ];
 
 export const REACT_SELECT_DEFAULT_OPTIONS = {

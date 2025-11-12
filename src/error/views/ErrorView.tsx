@@ -1,32 +1,24 @@
-import {
-	Blankslate,
-	Button,
-	ButtonToolbar,
-	Container,
-	IconName,
-	Toolbar,
-	ToolbarCenter,
-} from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { compact, isArray, isNil, isString, omit, uniq } from 'lodash-es';
+import {Blankslate, Button, ButtonToolbar, Container, IconName, Toolbar, ToolbarCenter,} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {compact, isNil, isString, omit, uniq} from 'es-toolkit';
 import queryString from 'query-string';
-import React, { type FC, type ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, {type FC, type ReactNode} from 'react';
+import {useLocation} from 'react-router-dom';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { redirectToServerLogoutPage } from '../../authentication/helpers/redirects';
-import { redirectToHelp } from '../../authentication/helpers/redirects/redirect-help';
-import { redirectToLoggedInHome } from '../../authentication/helpers/redirects/redirect-logged-in-home';
-import { redirectToPupils } from '../../authentication/helpers/redirects/redirect-pupils';
-import { redirectToLoggedOutHome } from '../../authentication/helpers/redirects/redirect-to-logged-out-home';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { getPageNotFoundError } from '../../shared/translations/page-not-found';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {redirectToServerLogoutPage} from '../../authentication/helpers/redirects.js';
+import {redirectToHelp} from '../../authentication/helpers/redirects/redirect-help.js';
+import {redirectToLoggedInHome} from '../../authentication/helpers/redirects/redirect-logged-in-home.js';
+import {redirectToPupils} from '../../authentication/helpers/redirects/redirect-pupils.js';
+import {redirectToLoggedOutHome} from '../../authentication/helpers/redirects/redirect-to-logged-out-home.js';
+import {CustomError} from '../../shared/helpers/custom-error.js';
+import {isMobileWidth} from '../../shared/helpers/media-query.js';
+import {getPageNotFoundError} from '../../shared/translations/page-not-found.js';
 
 import './ErrorView.scss';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { tText } from '../../shared/helpers/translate-text';
+import {FullPageSpinner} from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import {tText} from '../../shared/helpers/translate-text.js';
 
 type ErrorActionButton = Avo.Auth.ErrorActionButton | 'help' | 'pupils';
 
@@ -58,7 +50,7 @@ export const ErrorView: FC<ErrorViewProps> = ({
 		// redirect to log-out route and afterward redirect back to the error page
 		redirectToServerLogoutPage(
 			location,
-			`/error?${queryString.stringify(omit(queryParams, 'logout'))}`
+			`/error?${queryString.stringify(omit(queryParams, ['logout']))}`
 		);
 		return <FullPageSpinner />;
 	}
@@ -71,7 +63,7 @@ export const ErrorView: FC<ErrorViewProps> = ({
 		(queryParams.icon as IconName | undefined) || icon || IconName.search;
 	const buttons = uniq([
 		...actionButtons,
-		...(isArray(queryParams.actionButtons) ? queryParams.actionButtons : []),
+		...(Array.isArray(queryParams.actionButtons) ? queryParams.actionButtons : []),
 		...(isString(queryParams.actionButtons)
 			? queryParams.actionButtons
 					.split(',')

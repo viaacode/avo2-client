@@ -22,14 +22,14 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { clsx } from 'clsx';
-import { clone, compact, fromPairs, take } from 'lodash-es';
-import React, { type FC, type MouseEvent, useState } from 'react';
+import {clsx} from 'clsx';
+import {clone, compact, take} from 'es-toolkit';
+import React, {type FC, type MouseEvent, useState} from 'react';
 
-import { isMobileWidth } from '../../helpers/media-query';
+import {isMobileWidth} from '../../helpers/media-query.js';
 
 import './CheckboxDropdownModal.scss';
-import { tText } from '../../helpers/translate-text';
+import {tText} from '../../helpers/translate-text.js';
 
 interface CheckedState {
 	[checkboxId: string]: boolean;
@@ -74,7 +74,7 @@ export const CheckboxDropdownModal: FC<CheckboxDropdownModalProps> = ({
 	onSearch,
 }) => {
 	// Computed
-	const optionsFromPairs = fromPairs(
+	const optionsFromPairs = Object.fromEntries(
 		options.map(({ checked, ...option }: CheckboxOption) => [option.id, checked])
 	);
 

@@ -1,9 +1,9 @@
 import { type Avo } from '@viaa/avo2-types';
 
-import { type AssignmentLayout } from '../../assignment/assignment.types';
-import { type DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
-import { type QuickLaneType } from '../components/QuickLaneContent/QuickLaneContent.types';
-import { type GetQuickLanesByContentIdQuery } from '../generated/graphql-db-operations';
+import { type AssignmentLayout } from '../../assignment/assignment.types.js';
+import { type DateRange } from '../components/DateRangeDropdown/DateRangeDropdown.js';
+import { type QuickLaneType } from '../components/QuickLaneContent/QuickLaneContent.types.js';
+import { type GetQuickLanesByContentIdQuery } from '../generated/graphql-db-operations.js';
 
 interface QuickLaneUrl {
 	id: string;

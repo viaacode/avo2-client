@@ -3,13 +3,13 @@ import { Button, Container, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, type ReactNode } from 'react';
 
-import { AlertBar } from '../../shared/components/AlertBar/AlertBar';
-import { BlockList } from '../../shared/components/BlockList/BlockList';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
+import { AlertBar } from '../../shared/components/AlertBar/AlertBar.js';
+import { BlockList } from '../../shared/components/BlockList/BlockList.js';
+import { isMobileWidth } from '../../shared/helpers/media-query.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
 
-import { AssignmentHeading } from './AssignmentHeading';
+import { AssignmentHeading } from './AssignmentHeading.js';
 
 type PupilCollectionForTeacherPreviewProps = {
 	onClose: () => void;

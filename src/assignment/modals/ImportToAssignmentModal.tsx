@@ -16,40 +16,36 @@ import {
 	TextInput,
 	Toggle,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { noop } from 'lodash-es';
-import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import {Avo} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {noop} from 'es-toolkit';
+import React, {type FC, type ReactNode, useCallback, useEffect, useMemo, useState} from 'react';
+import {Link} from 'react-router-dom';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { APP_PATH } from '../../constants';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {APP_PATH} from '../../constants.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { buildLink } from '../../shared/helpers/build-link';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { renderAvatar } from '../../shared/helpers/formatters/avatar';
-import { formatDate } from '../../shared/helpers/formatters/date';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { truncateTableValue } from '../../shared/helpers/truncate';
-import { useTableSort } from '../../shared/hooks/useTableSort';
-import { ToastService } from '../../shared/services/toast-service';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import {
-	ASSIGNMENT_CREATE_UPDATE_TABS,
-	GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL,
-	ITEMS_PER_PAGE,
-} from '../assignment.const';
-import { AssignmentHelper } from '../assignment.helper';
-import { AssignmentService } from '../assignment.service';
-import { type AssignmentTableColumns } from '../assignment.types';
-import { AssignmentDeadline } from '../components/AssignmentDeadline';
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {buildLink} from '../../shared/helpers/build-link.js';
+import {CustomError} from '../../shared/helpers/custom-error.js';
+import {renderAvatar} from '../../shared/helpers/formatters/avatar.js';
+import {formatDate} from '../../shared/helpers/formatters/date.js';
+import {isMobileWidth} from '../../shared/helpers/media-query.js';
+import {truncateTableValue} from '../../shared/helpers/truncate.js';
+import {useTableSort} from '../../shared/hooks/useTableSort.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {TableColumnDataType} from '../../shared/types/table-column-data-type.js';
+import {ASSIGNMENT_CREATE_UPDATE_TABS, GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL, ITEMS_PER_PAGE,} from '../assignment.const.js';
+import {AssignmentHelper} from '../assignment.helper.js';
+import {AssignmentService} from '../assignment.service.js';
+import {type AssignmentTableColumns} from '../assignment.types.js';
+import {AssignmentDeadline} from '../components/AssignmentDeadline.js';
 
 import './AddItemsModals.scss';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
 
 interface ImportToAssignmentModalProps {
 	isOpen: boolean;
@@ -174,12 +170,12 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
 				);
 			}
 			case 'labels':
-				return AssignmentHelper.getLabels(assignment, 'LABEL')
+				return AssignmentHelper.getLabels(assignment, Avo.Assignment.LabelType.LABEL)
 					.map((labelLink: any) => labelLink.assignment_label.label)
 					.join(', ');
 
 			case 'class_room':
-				return AssignmentHelper.getLabels(assignment, 'CLASS')
+				return AssignmentHelper.getLabels(assignment, Avo.Assignment.LabelType.CLASS)
 					.map((label: any) => label.assignment_label.label)
 					.join(', ');
 

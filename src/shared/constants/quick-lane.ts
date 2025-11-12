@@ -1,4 +1,4 @@
-import { OrderDirection } from '../../search/search.const';
+import { OrderDirection } from '../../search/search.const.js';
 
 export type QuickLaneColumn =
 	| 'title'
@@ -11,5 +11,5 @@ export type QuickLaneColumn =
 
 export const QUICK_LANE_DEFAULTS = {
 	sort_column: 'created_at',
-	sort_order: OrderDirection.desc,
+	sort_order: Avo.Search.OrderDirection.DESC,
 };

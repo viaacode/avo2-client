@@ -1,4 +1,4 @@
-import { ROUTE_PARTS } from '../../shared/constants';
+import { ROUTE_PARTS } from '../../shared/constants/index.js';
 
 export const CONTENT_PAGE_LABEL_PATH = {
 	CONTENT_PAGE_LABEL_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.contentPageLabels}`,

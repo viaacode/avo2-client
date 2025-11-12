@@ -1,13 +1,13 @@
-import { Avatar, Flex, IconName, TagList, type TagOption, Thumbnail } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { compact, isNil, trimStart } from 'lodash-es';
-import React, { type FC } from 'react';
+import {Avatar, Flex, IconName, TagList, type TagOption, Thumbnail} from '@viaa/avo2-components';
+import {type Avo} from '@viaa/avo2-types';
+import {compact, isNil, trimStart} from 'es-toolkit';
+import React, {type FC} from 'react';
 
-import { CONTENT_TYPE_TRANSLATIONS } from '../../collection/collection.types';
-import { SearchResult } from '../../shared/components/SearchResult/SearchResult';
-import { formatDate } from '../../shared/helpers/formatters/date';
-import { tText } from '../../shared/helpers/translate-text';
-import { type SearchResultItemProps } from '../search.types';
+import {CONTENT_TYPE_TRANSLATIONS_NL_TO_EN} from '../../collection/collection.types.js';
+import {SearchResult} from '../../shared/components/SearchResult/SearchResult.js';
+import {formatDate} from '../../shared/helpers/formatters/date.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {type SearchResultItemProps} from '../search.types.js';
 
 import './SearchResultItem.scss';
 
@@ -84,7 +84,7 @@ export const SearchResultItem: FC<SearchResultItemProps> = ({
 	const renderThumbnail = (result: Avo.Search.ResultItem) => {
 		return (
 			<Thumbnail
-				category={CONTENT_TYPE_TRANSLATIONS[result.administrative_type]}
+				category={CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[result.administrative_type]}
 				src={result.thumbnail_path}
 				label={result.administrative_type}
 				meta={getMetaData()}
@@ -150,7 +150,7 @@ export const SearchResultItem: FC<SearchResultItemProps> = ({
 	return (
 		<div id={`search-result-${id}`} key={`search-result-${id}`}>
 			<SearchResult
-				type={CONTENT_TYPE_TRANSLATIONS[result.administrative_type]}
+				type={CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[result.administrative_type]}
 				date={formatDate(date)}
 				dateTooltip={dateTooltip}
 				typeTags={getTags(result).typeTags}

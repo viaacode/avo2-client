@@ -1,5 +1,5 @@
 import { type TableColumn } from '@viaa/avo2-components';
-import { compact } from 'lodash-es';
+import { compact } from 'es-toolkit';
 
 export const ACTIONS_TABLE_COLUMN_ID = 'actions';
 

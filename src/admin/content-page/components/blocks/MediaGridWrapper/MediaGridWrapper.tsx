@@ -1,49 +1,37 @@
-import {
-	type MediaGridBlockComponentState,
-	type MediaGridBlockState,
-} from '@meemoo/admin-core-ui/admin';
-import type { DbContentPage } from '@meemoo/admin-core-ui/client';
-import {
-	Button,
-	type ButtonAction,
-	IconName,
-	Modal,
-	ModalBody,
-	type RenderLinkFunction,
-} from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { compact, isEmpty, isNil } from 'lodash-es';
-import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
+import {type MediaGridBlockComponentState, type MediaGridBlockState,} from '@meemoo/admin-core-ui/admin';
+import type {DbContentPage} from '@meemoo/admin-core-ui/client';
+import {Button, type ButtonAction, IconName, Modal, ModalBody, type RenderLinkFunction,} from '@viaa/avo2-components';
+import {Avo} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {compact, isNil} from 'es-toolkit';
+import {isEmpty} from 'es-toolkit/compat';
+import React, {type FC, MouseEvent, type ReactNode, useCallback, useEffect, useState} from 'react';
 
 import placeholderImage from '../../../../../assets/images/assignment-placeholder.png';
-import { commonUserAtom } from '../../../../../authentication/authentication.store';
-import {
-	CONTENT_TYPE_TRANSLATIONS,
-	ContentTypeString,
-} from '../../../../../collection/collection.types';
-import { APP_PATH } from '../../../../../constants';
-import { ItemVideoDescription } from '../../../../../item/components/ItemVideoDescription';
+import {commonUserAtom} from '../../../../../authentication/authentication.store.js';
+import {CONTENT_TYPE_TRANSLATIONS_NL_TO_EN,} from '../../../../../collection/collection.types.js';
+import {APP_PATH} from '../../../../../constants.js';
+import {ItemVideoDescription} from '../../../../../item/components/ItemVideoDescription.js';
 import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
-} from '../../../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { DEFAULT_AUDIO_STILL } from '../../../../../shared/constants';
-import { buildLink } from '../../../../../shared/helpers/build-link';
-import { CustomError } from '../../../../../shared/helpers/custom-error';
-import { defaultRenderBookmarkButton } from '../../../../../shared/helpers/default-render-bookmark-button';
-import { formatDate } from '../../../../../shared/helpers/formatters/date';
-import { isMobileWidth } from '../../../../../shared/helpers/media-query';
-import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
-import { tHtml } from '../../../../../shared/helpers/translate-html';
-import { tText } from '../../../../../shared/helpers/translate-text';
-import { BookmarksViewsPlaysService } from '../../../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { ToastService } from '../../../../../shared/services/toast-service';
-import { ADMIN_PATH } from '../../../../admin.const';
-import { ContentPageService } from '../../../services/content-page.service';
+} from '../../../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import {DEFAULT_AUDIO_STILL} from '../../../../../shared/constants/index.js';
+import {buildLink} from '../../../../../shared/helpers/build-link.js';
+import {CustomError} from '../../../../../shared/helpers/custom-error.js';
+import {defaultRenderBookmarkButton} from '../../../../../shared/helpers/default-render-bookmark-button.js';
+import {formatDate} from '../../../../../shared/helpers/formatters/date.js';
+import {isMobileWidth} from '../../../../../shared/helpers/media-query.js';
+import {parseIntOrDefault} from '../../../../../shared/helpers/parsers/number.js';
+import {tHtml} from '../../../../../shared/helpers/translate-html.js';
+import {tText} from '../../../../../shared/helpers/translate-text.js';
+import {BookmarksViewsPlaysService} from '../../../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
+import {ToastService} from '../../../../../shared/services/toast-service.js';
+import {ADMIN_PATH} from '../../../../admin.const.js';
+import {ContentPageService} from '../../../services/content-page.service.js';
 
-import { BlockMediaGrid, type MediaListItem } from './BlockMediaGrid';
-import { type ResolvedItemOrCollectionOrAssignmentOrContentPage } from './MediaGridWrapper.types';
+import {BlockMediaGrid, type MediaListItem} from './BlockMediaGrid.js';
+import {type ResolvedItemOrCollectionOrAssignmentOrContentPage} from './MediaGridWrapper.types.js';
 
 interface MediaGridWrapperProps extends MediaGridBlockState {
 	searchQuery?: ButtonAction;
@@ -229,7 +217,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 				activeItem.uid,
 				commonUser,
 				'item',
-				activeItemBookmarkStatus
+				activeItemBookmarkStatus as boolean
 			);
 
 			setActiveItemBookmarkStatus(!activeItemBookmarkStatus);
@@ -280,25 +268,25 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 
 	const getLabelFromItem = (
 		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignmentOrContentPage | null
-	): string => {
+	): Avo.ContentType.Dutch => {
 		if ((itemOrCollectionOrAssignment as any)?.type?.label) {
 			return (itemOrCollectionOrAssignment as any)?.type?.label;
 		}
 
 		if ((itemOrCollectionOrAssignment as any)?.content_type) {
-			return 'contentPagina';
+			return Avo.ContentType.Dutch.CONTENTPAGINA;
 		}
 
-		return 'item';
+		return Avo.ContentType.Dutch.ITEM;
 	};
 
-	const ITEM_LABEL_TO_TYPE: Partial<Record<ContentTypeString, Avo.Core.ContentPickerType>> = {
-		video: 'ITEM',
-		audio: 'ITEM',
-		collectie: 'COLLECTION',
-		bundel: 'BUNDLE',
-		opdracht: 'ASSIGNMENT',
-		contentPagina: 'CONTENT_PAGE',
+	const ITEM_LABEL_TO_TYPE: Partial<Record<Avo.ContentType.Dutch, Avo.Core.ContentPickerType>> = {
+		video: Avo.Core.ContentPickerType.ITEM,
+		audio: Avo.Core.ContentPickerType.ITEM,
+		collectie: Avo.Core.ContentPickerType.COLLECTION,
+		bundel: Avo.Core.ContentPickerType.BUNDLE,
+		opdracht: Avo.Core.ContentPickerType.ASSIGNMENT,
+		contentPagina: Avo.Core.ContentPickerType.CONTENT_PAGE,
 	};
 
 	const getThumbnailMetadata = (itemOrCollectionOrAssignment: any): string | null => {
@@ -322,12 +310,14 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 				bundel: null,
 				opdracht: null,
 				contentPagina: null,
+				zoek: null,
+				zoekopdracht: null,
 			}[itemLabel] || null
 		);
 	};
 
 	const handleCopyrightClicked = (
-		evt: React.MouseEvent<HTMLElement, MouseEvent>,
+		evt: MouseEvent<HTMLElement>,
 		orgInfo: Avo.Organization.Organization
 	) => {
 		evt.stopPropagation();
@@ -358,13 +348,13 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 			)?.created_at || (itemOrCollectionOrAssignmentOrPage as DbContentPage)?.createdAt;
 
 		return {
-			category: CONTENT_TYPE_TRANSLATIONS[itemLabel],
+			category: CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[itemLabel],
 			subCategory: (itemOrCollectionOrAssignmentOrPage as any).content_type,
 			metadata:
-				itemLabel === ContentTypeString.contentPage
+				itemLabel === Avo.ContentType.Dutch.CONTENTPAGINA
 					? []
 					: [
-							...(itemLabel !== ContentTypeString.assignment
+							...(itemLabel !== Avo.ContentType.Dutch.OPDRACHT
 								? [{ icon: IconName.eye, label: String(viewCount || 0) }]
 								: []),
 							{ label: formatDate(createdAt) },
@@ -376,7 +366,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 			itemAction:
 				element.mediaItem ||
 				({
-					type: ITEM_LABEL_TO_TYPE[itemLabel as ContentTypeString],
+					type: ITEM_LABEL_TO_TYPE[itemLabel as Avo.ContentType.Dutch],
 					value:
 						(
 							itemOrCollectionOrAssignmentOrPage as
@@ -408,7 +398,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 						type="inline-link"
 						onClick={(evt) =>
 							handleCopyrightClicked(
-								evt,
+								evt as MouseEvent<HTMLElement>,
 								itemOrCollectionOrAssignmentOrPage.copyright_organisation as Avo.Organization.Organization
 							)
 						}
@@ -461,7 +451,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 			return null;
 		}
 		return defaultRenderBookmarkButton({
-			active: activeItemBookmarkStatus,
+			active: activeItemBookmarkStatus as boolean,
 			ariaLabel: tText(
 				'search/components/media-grid-wrapper/media-grid-wrapper___toggle-bladwijzer'
 			),

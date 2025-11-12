@@ -1,6 +1,6 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client';
-import { type RichEditorState } from '@meemoo/react-components';
+import {toggleSortOrder} from '@meemoo/admin-core-ui/admin';
+import {sanitizeHtml, SanitizePreset} from '@meemoo/admin-core-ui/client';
+import {type RichEditorState} from '@meemoo/react-components';
 import {
 	Button,
 	ButtonToolbar,
@@ -17,63 +17,54 @@ import {
 	Toolbar,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
-import { compact, noop } from 'lodash-es';
-import React, { type FC, type ReactNode, useCallback, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { useNavigate, useParams } from 'react-router';
-import { Link } from 'react-router-dom';
-import { StringParam, useQueryParams } from 'use-query-params';
+import {Avo, PermissionName} from '@viaa/avo2-types';
+import {compact, noop} from 'es-toolkit';
+import React, {type FC, type ReactNode, useCallback, useState} from 'react';
+import {Helmet} from 'react-helmet';
+import {useNavigate, useParams} from 'react-router';
+import {Link} from 'react-router-dom';
+import {StringParam, useQueryParams} from 'use-query-params';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { EmbedCodeFilterTableCell } from '../../../embed-code/components/EmbedCodeFilterTableCell';
-import { type EmbedCode } from '../../../embed-code/embed-code.types';
-import { toEmbedCodeDetail } from '../../../embed-code/helpers/links';
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
-import { QuickLaneFilterTableCell } from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
-import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
-import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
-import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
-import { buildLink } from '../../../shared/helpers/build-link';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { formatDate, formatTimestamp } from '../../../shared/helpers/formatters/date';
-import { getSubtitles } from '../../../shared/helpers/get-subtitles';
-import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { truncateTableValue } from '../../../shared/helpers/truncate';
-import { useTabs } from '../../../shared/hooks/useTabs';
-import { RelationService } from '../../../shared/services/relation-service/relation.service';
-import { ToastService } from '../../../shared/services/toast-service';
-import { ADMIN_PATH } from '../../admin.const';
-import {
-	renderDateDetailRows,
-	renderDetailRow,
-	renderSimpleDetailRows,
-} from '../../shared/helpers/render-detail-fields';
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import {
-	AdminLayoutBody,
-	AdminLayoutHeader,
-	AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { DepublishItemModal } from '../components/DepublishItemModal/DepublishItemModal';
-import { mapItemUsedByToQuickLane } from '../helpers/map-item-used-by-to-quick-lane';
-import { useGetItemUsedBy } from '../hooks/useGetItemUsedBy';
-import { useGetItemWithRelations } from '../hooks/useGetItemWithRelations';
+import {PermissionGuard} from '../../../authentication/components/PermissionGuard.js';
+import {redirectToClientPage} from '../../../authentication/helpers/redirects/redirect-to-client-page.js';
+import {APP_PATH, GENERATE_SITE_TITLE} from '../../../constants.js';
+import {EmbedCodeFilterTableCell} from '../../../embed-code/components/EmbedCodeFilterTableCell.js';
+import {type EmbedCode} from '../../../embed-code/embed-code.types.js';
+import {toEmbedCodeDetail} from '../../../embed-code/helpers/links.js';
+import {ConfirmModal} from '../../../shared/components/ConfirmModal/ConfirmModal.js';
+import {QuickLaneFilterTableCell} from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell.js';
+import {RICH_TEXT_EDITOR_OPTIONS_FULL} from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts.js';
+import {RichTextEditorWrapper} from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper.js';
+import {Lookup_Enum_Relation_Types_Enum} from '../../../shared/generated/graphql-db-types.js';
+import {buildLink} from '../../../shared/helpers/build-link.js';
+import {CustomError} from '../../../shared/helpers/custom-error.js';
+import {formatDate, formatTimestamp} from '../../../shared/helpers/formatters/date.js';
+import {getSubtitles} from '../../../shared/helpers/get-subtitles.js';
+import {goBrowserBackWithFallback} from '../../../shared/helpers/go-browser-back-with-fallback.js';
+import {ACTIONS_TABLE_COLUMN_ID} from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
+import {truncateTableValue} from '../../../shared/helpers/truncate.js';
+import {useTabs} from '../../../shared/hooks/useTabs.js';
+import {RelationService} from '../../../shared/services/relation-service/relation.service.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {ADMIN_PATH} from '../../admin.const.js';
+import {renderDateDetailRows, renderDetailRow, renderSimpleDetailRows,} from '../../shared/helpers/render-detail-fields.js';
+import {AdminLayout} from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import {AdminLayoutBody, AdminLayoutHeader, AdminLayoutTopBarRight,} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import {DepublishItemModal} from '../components/DepublishItemModal/DepublishItemModal.js';
+import {mapItemUsedByToQuickLane} from '../helpers/map-item-used-by-to-quick-lane.js';
+import {useGetItemUsedBy} from '../hooks/useGetItemUsedBy.js';
+import {useGetItemWithRelations} from '../hooks/useGetItemWithRelations.js';
 import {
 	GET_ITEM_USED_BY_COLLECTIONS_AND_ASSIGNMENTS_COLUMNS,
 	GET_ITEM_USED_BY_EMBED_CODES,
 	GET_ITEM_USED_BY_QUICK_LANES,
 	GET_TABS,
 	ITEMS_TABS,
-} from '../items.const';
-import { ItemsService } from '../items.service';
-import { type ItemUsedByColumnId, type ItemUsedByEntry } from '../items.types';
+} from '../items.const.js';
+import {ItemsService} from '../items.service.js';
+import {type ItemUsedByColumnId, type ItemUsedByEntry} from '../items.types.js';
 
 export const ItemDetail: FC = () => {
 	const navigateFunc = useNavigate();
@@ -464,7 +455,7 @@ export const ItemDetail: FC = () => {
 						onRowClick={(coll) => navigateToCollectionDetail(coll.id)}
 						renderCell={renderCell as any}
 						sortColumn={queryParams.sortProp || undefined}
-						sortOrder={queryParams.sortDirection as SearchOrderDirection | undefined}
+						sortOrder={queryParams.sortDirection as Avo.Search.OrderDirection | undefined}
 						variant="styled"
 						rowKey="id"
 					/>
@@ -487,7 +478,7 @@ export const ItemDetail: FC = () => {
 					onRowClick={(coll) => navigateToAssignmentDetail(coll.id)}
 					renderCell={renderCell as any}
 					sortColumn={queryParams.sortProp || undefined}
-					sortOrder={queryParams.sortDirection as SearchOrderDirection | undefined}
+					sortOrder={queryParams.sortDirection as Avo.Search.OrderDirection | undefined}
 					variant="styled"
 					rowKey="id"
 				/>
@@ -509,7 +500,7 @@ export const ItemDetail: FC = () => {
 						onColumnClick={handleColumnClick}
 						renderCell={renderCell as any}
 						sortColumn={queryParams.sortProp || undefined}
-						sortOrder={queryParams.sortDirection as SearchOrderDirection | undefined}
+						sortOrder={queryParams.sortDirection as Avo.Search.OrderDirection | undefined}
 						variant="styled"
 						rowKey="id"
 					/>
@@ -530,7 +521,7 @@ export const ItemDetail: FC = () => {
 						onColumnClick={handleColumnClick}
 						renderCell={renderCell as any}
 						sortColumn={queryParams.sortProp || undefined}
-						sortOrder={queryParams.sortDirection as SearchOrderDirection | undefined}
+						sortOrder={queryParams.sortDirection as Avo.Search.OrderDirection | undefined}
 						variant="styled"
 						rowKey="id"
 					/>

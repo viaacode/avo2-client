@@ -1,4 +1,4 @@
-import { type ColorOption } from '@meemoo/admin-core-ui/admin';
+import {type ColorOption} from '@meemoo/admin-core-ui/admin';
 import {
 	Button,
 	ButtonToolbar,
@@ -14,28 +14,28 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import { useAtomValue } from 'jotai';
-import { compact, intersection, sortBy, without } from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import {Avo} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import {useAtomValue} from 'jotai';
+import {compact, intersection, sortBy, without} from 'es-toolkit';
+import React, {type FC, useCallback, useEffect, useState} from 'react';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
-import { ColorSelect } from '../../../shared/components/ColorSelect/ColorSelect';
-import { type Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-db-types';
-import { CustomError } from '../../../shared/helpers/custom-error';
-import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-import { generateRandomId } from '../../../shared/helpers/uuid';
-import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service/assignment-labels.service';
-import { ToastService } from '../../../shared/services/toast-service';
-import { MAX_LABEL_LENGTH } from '../../assignment.const';
-import { type AssignmentLabelColor } from '../../assignment.types';
+import {commonUserAtom} from '../../../authentication/authentication.store.js';
+import {ColorSelect} from '../../../shared/components/ColorSelect/ColorSelect.js';
+import {type Lookup_Enum_Colors_Enum} from '../../../shared/generated/graphql-db-types.js';
+import {CustomError} from '../../../shared/helpers/custom-error.js';
+import {ACTIONS_TABLE_COLUMN_ID} from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import {generateRandomId} from '../../../shared/helpers/uuid.js';
+import {AssignmentLabelsService} from '../../../shared/services/assignment-labels-service/assignment-labels.service.js';
+import {ToastService} from '../../../shared/services/toast-service.js';
+import {MAX_LABEL_LENGTH} from '../../assignment.const.js';
+import {type AssignmentLabelColor} from '../../assignment.types.js';
 
-import { getManageAssignmentLabelsTranslations } from './ManageAssignmentLabels.translations';
+import {getManageAssignmentLabelsTranslations} from './ManageAssignmentLabels.translations.js';
 
 import './ManageAssignmentLabels.scss';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
+import {tHtml} from '../../../shared/helpers/translate-html.js';
+import {tText} from '../../../shared/helpers/translate-text.js';
 
 export interface ManageAssignmentLabelsProps {
 	isOpen: boolean;
@@ -64,7 +64,7 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
 			if (profileId) {
 				const labels = sortBy(
 					await AssignmentLabelsService.getLabelsForProfile(profileId, type),
-					'label'
+					['label']
 				);
 				setAssignmentLabels(labels);
 				setInitialAssignmentLabels(labels);
@@ -112,7 +112,7 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
 				owner_profile_id: profileId as string,
 				color_override: null,
 				enum_color: assignmentLabelColors[0],
-				type: type || 'LABEL',
+				type: type || Avo.Assignment.LabelType.LABEL,
 			},
 		]);
 	};
@@ -198,7 +198,7 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
 			]);
 			onClose();
 			ToastService.success(
-				type === 'LABEL'
+				type === Avo.Assignment.LabelType.LABEL
 					? tHtml(
 							'assignment/components/modals/manage-assignment-labels___de-nieuwe-labels-zijn-opgeslagen'
 					  )

@@ -1,4 +1,4 @@
-import { NOT_NOW_LOCAL_STORAGE_KEY } from '../../shared/constants';
+import { NOT_NOW_LOCAL_STORAGE_KEY } from '../../shared/constants/index.js';
 
 const LOGIN_OPTIONS_PREFERRED_TAB_LOCAL_STORAGE_KEY = 'AVO.login_options_preferred_tab';
 

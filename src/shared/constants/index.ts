@@ -3,10 +3,10 @@
  */
 
 import defaultAudioStillPathSrc from '../../assets/images/audio-still.svg';
-import { tText } from '../helpers/translate-text';
+import { tText } from '../helpers/translate-text.js';
 
-export { LANGUAGES } from './languages';
-export { ROUTE_PARTS } from './routes';
+export { LANGUAGES } from './languages.js';
+export { ROUTE_PARTS } from './routes.js';
 
 export const DEFAULT_AUDIO_STILL = defaultAudioStillPathSrc;
 

@@ -12,14 +12,14 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { clsx } from 'clsx';
-import { isNil, noop, truncate } from 'lodash-es';
-import React, { type FC, type ReactNode, type ReactText } from 'react';
+import {type Avo} from '@viaa/avo2-types';
+import {clsx} from 'clsx';
+import {isNil, noop} from 'es-toolkit';
+import React, {type FC, type ReactNode, type ReactText} from 'react';
 
-import { defaultRenderBookmarkButton } from '../../helpers/default-render-bookmark-button';
-import { tText } from '../../helpers/translate-text';
-import EducationLevelsTagList from '../EducationLevelsTagList/EducationLevelsTagList';
+import {defaultRenderBookmarkButton} from '../../helpers/default-render-bookmark-button.js';
+import {tText} from '../../helpers/translate-text.js';
+import EducationLevelsTagList from '../EducationLevelsTagList/EducationLevelsTagList.js';
 
 import './SearchResult.scss';
 
@@ -99,7 +99,7 @@ export const SearchResult: FC<SearchResultProps> = ({
 					)}
 				</Flex>
 				<p className="c-search-result__description">
-					{truncate(description, { length: maxDescriptionLength })}
+					{description.slice(maxDescriptionLength)}
 				</p>
 				<Spacer margin="bottom-small">
 					<Flex justify="between" wrap align="baseline">

@@ -1,4 +1,4 @@
-import { tText } from '../helpers/translate-text';
+import { tText } from '../helpers/translate-text.js';
 
 export function getPageNotFoundError(loggedIn: boolean): string {
 	return loggedIn

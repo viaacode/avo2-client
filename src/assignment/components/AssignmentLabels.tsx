@@ -1,27 +1,19 @@
-import { type ColorOption } from '@meemoo/admin-core-ui/admin';
-import {
-	Button,
-	Flex,
-	FlexItem,
-	IconName,
-	Spacer,
-	TagList,
-	type TagOption,
-} from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
-import { cloneDeep, get } from 'lodash-es';
-import React, { type FC, type MouseEvent, useCallback, useEffect, useState } from 'react';
+import {type ColorOption} from '@meemoo/admin-core-ui/admin';
+import {Button, Flex, FlexItem, IconName, Spacer, TagList, type TagOption,} from '@viaa/avo2-components';
+import {Avo} from '@viaa/avo2-types';
+import {useAtomValue} from 'jotai';
+import {cloneDeep} from 'es-toolkit';
+import React, {type FC, type MouseEvent, useCallback, useEffect, useState} from 'react';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { ColorSelect } from '../../shared/components/ColorSelect/ColorSelect';
-import { type Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service';
-import { ToastService } from '../../shared/services/toast-service';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {ColorSelect} from '../../shared/components/ColorSelect/ColorSelect.js';
+import {type Lookup_Enum_Colors_Enum} from '../../shared/generated/graphql-db-types.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {AssignmentLabelsService} from '../../shared/services/assignment-labels-service/assignment-labels.service.js';
+import {ToastService} from '../../shared/services/toast-service.js';
 
-import { ManageAssignmentLabels } from './modals/ManageAssignmentLabels';
+import {ManageAssignmentLabels} from './modals/ManageAssignmentLabels.js';
 
 import './AssignmentLabels.scss';
 
@@ -40,7 +32,7 @@ export const AssignmentLabels: FC<AssignmentLabelsProps> = ({
 	id,
 	labels,
 	onChange,
-	type = 'LABEL',
+	type = Avo.Assignment.LabelType.LABEL,
 	...props
 }) => {
 	const commonUser = useAtomValue(commonUserAtom);
@@ -72,7 +64,7 @@ export const AssignmentLabels: FC<AssignmentLabelsProps> = ({
 			id: labelObj.id,
 			// labelObj.enum_color.label contains hex code (graphql enum quirk)
 			// The value of the enum has to be uppercase text, so the value contains the color name
-			color: labelObj.color_override || get(labelObj, 'enum_color.label'),
+			color: labelObj.color_override || labelObj?.enum_color?.label,
 		}));
 	};
 
@@ -89,7 +81,7 @@ export const AssignmentLabels: FC<AssignmentLabelsProps> = ({
 				value: String(labelObj.id) as Lookup_Enum_Colors_Enum,
 				// labelObj.enum_color.label contains hex code (graphql enum quirk)
 				// The value of the enum has to be uppercase text, so the value contains the color name
-				color: labelObj.color_override || get(labelObj, 'enum_color.label'),
+				color: labelObj.color_override || labelObj?.enum_color?.label,
 			}));
 	};
 
@@ -135,7 +127,7 @@ export const AssignmentLabels: FC<AssignmentLabelsProps> = ({
 	);
 
 	const tooltip =
-		type === 'LABEL'
+		type === Avo.Assignment.LabelType.LABEL
 			? tText('assignment/components/assignment-labels___beheer-je-labels')
 			: tText('assignment/components/assignment-labels___beheer-je-klassen');
 	return (

@@ -1,6 +1,6 @@
-import { type Avo } from '@viaa/avo2-types';
-import { compact, get } from 'lodash-es';
-import queryString, { stringifyUrl } from 'query-string';
+import {type Avo} from '@viaa/avo2-types';
+import {compact} from 'es-toolkit';
+import queryString, {stringifyUrl} from 'query-string';
 
 import type {
 	DeleteItemFromCollectionBookmarksAndAssignmentsMutation,
@@ -31,7 +31,7 @@ import type {
 	UpdateItemNotesMutationVariables,
 	UpdateItemPublishedStateMutation,
 	UpdateItemPublishedStateMutationVariables,
-} from '../../shared/generated/graphql-db-operations';
+} from '../../shared/generated/graphql-db-operations.js';
 import {
 	DeleteItemFromCollectionBookmarksAndAssignmentsDocument,
 	GetDistinctSeriesDocument,
@@ -47,22 +47,22 @@ import {
 	UpdateItemDepublishReasonDocument,
 	UpdateItemNotesDocument,
 	UpdateItemPublishedStateDocument,
-} from '../../shared/generated/graphql-db-react-query';
-import { Lookup_Enum_Relation_Types_Enum } from '../../shared/generated/graphql-db-types';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
-import { getEnv } from '../../shared/helpers/env';
-import { dataService } from '../../shared/services/data-service';
-import { RelationService } from '../../shared/services/relation-service/relation.service';
-import { type UnpublishableItem } from '../../shared/types';
+} from '../../shared/generated/graphql-db-react-query.js';
+import {Lookup_Enum_Relation_Types_Enum} from '../../shared/generated/graphql-db-types.js';
+import {CustomError} from '../../shared/helpers/custom-error.js';
+import {addDefaultAudioStillToItem} from '../../shared/helpers/default-still.js';
+import {getEnv} from '../../shared/helpers/env.js';
+import {dataService} from '../../shared/services/data-service.js';
+import {RelationService} from '../../shared/services/relation-service/relation.service.js';
+import {type UnpublishableItem} from '../../shared/types/index.js';
 
-import { ITEMS_PER_PAGE } from './items.const';
+import {ITEMS_PER_PAGE} from './items.const.js';
 import {
 	type ItemsOverviewTableCols,
 	type ItemUsedByResponse,
 	type UnpublishedItem,
 	type UnpublishedItemsOverviewTableCols,
-} from './items.types';
+} from './items.types.js';
 
 export class ItemsService {
 	public static async fetchItemsWithFilters(
@@ -581,7 +581,7 @@ export class ItemsService {
 				query: GetUnpublishedItemPidsDocument,
 				variables,
 			});
-			return compact(response.shared_items.map((item) => get(item, 'pid')));
+			return compact(response.shared_items.map((item) => item?.pid));
 		} catch (err) {
 			throw new CustomError('Failed to get unpublished item pids from the database', err, {
 				variables,

@@ -14,48 +14,36 @@ import {
 	ToolbarRight,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
-import { useAtomValue, useSetAtom } from 'jotai';
-import {
-	cloneDeep,
-	every,
-	intersection,
-	isArray,
-	isEmpty,
-	isEqual,
-	isNil,
-	isPlainObject,
-	omit,
-	pickBy,
-	set,
-} from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
-import { type UrlUpdateType } from 'use-query-params';
+import {type Avo, PermissionName} from '@viaa/avo2-types';
+import {useAtomValue, useSetAtom} from 'jotai';
+import {cloneDeep, intersection, isEqual, isNil, isPlainObject, omit, pickBy} from 'es-toolkit';
+import {every, isEmpty, set} from 'es-toolkit/compat';
+import React, {type FC, useCallback, useEffect, useState} from 'react';
+import {useNavigate} from 'react-router';
+import {type UrlUpdateType} from 'use-query-params';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views/ErrorView';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { navigate } from '../../shared/helpers/link';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { useQualityLabels } from '../../shared/hooks/useQualityLabels';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {APP_PATH} from '../../constants.js';
+import {ErrorView} from '../../error/views/ErrorView.js';
+import {FullPageSpinner} from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import {CustomError} from '../../shared/helpers/custom-error.js';
+import {navigate} from '../../shared/helpers/link.js';
+import {isMobileWidth} from '../../shared/helpers/media-query.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {useQualityLabels} from '../../shared/hooks/useQualityLabels.js';
+import {BookmarksViewsPlaysService} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
 import {
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED,
-} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js';
 import {
 	type BookmarkRequestInfo,
 	type BookmarkStatusLookup,
-} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
-import { ToastService } from '../../shared/services/toast-service';
-import { isEducationalUser } from '../../user-item-request-form/helpers/is-educational-user';
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
+import {ToastService} from '../../shared/services/toast-service.js';
+import {isEducationalUser} from '../../user-item-request-form/helpers/is-educational-user.js';
 import {
 	DEFAULT_FILTER_STATE,
 	DEFAULT_SORT_ORDER,
@@ -64,18 +52,18 @@ import {
 	OrderDirection,
 	SearchFilter,
 	type SearchOrderProperty,
-} from '../search.const';
-import { getSearchResultsAtom, searchAtom } from '../search.store';
+} from '../search.const.js';
+import {getSearchResultsAtom, searchAtom} from '../search.store.js';
 import {
 	type FilterState,
 	type SearchFilterFieldValues,
 	type SearchFilterMultiOptions,
 	type SearchFiltersAndResultsProps,
 	type SearchState,
-} from '../search.types';
+} from '../search.types.js';
 
-import { SearchFilterControls } from './SearchFilterControls';
-import { SearchResults } from './SearchResults';
+import {SearchFilterControls} from './SearchFilterControls.js';
+import {SearchResults} from './SearchResults.js';
 
 export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	enabledFilters,
@@ -117,7 +105,7 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	};
 
 	const defaultOrder = `${filterState.orderProperty || 'relevance'}_${
-		filterState.orderDirection || OrderDirection.desc
+		filterState.orderDirection || Avo.Search.OrderDirection.DESC
 	}`;
 	const hasFilters = !isEqual(filterState.filters, DEFAULT_FILTER_STATE);
 	const resultStart = (filterState.page || 0) * ITEMS_PER_PAGE + 1;
@@ -243,9 +231,9 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	}, [getBookmarkStatuses, commonUser]);
 
 	const handleOrderChanged = async (value = 'relevance_desc') => {
-		const valueParts: [SearchOrderProperty, SearchOrderDirection] = value.split('_') as [
+		const valueParts: [SearchOrderProperty, Avo.Search.OrderDirection] = value.split('_') as [
 			SearchOrderProperty,
-			SearchOrderDirection,
+			Avo.Search.OrderDirection,
 		];
 		setFilterState(
 			{
@@ -261,13 +249,13 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	const cleanupFilterState = (filterState: FilterState): FilterState => {
 		return {
 			...filterState,
-			filters: pickBy(filterState.filters, (value: string) => {
+			filters: pickBy(filterState.filters || {}, (value: string) => {
 				const isEmptyString: boolean = value === '';
 				const isUndefinedOrNull: boolean = isNil(value);
 				const isEmptyObjectOrArray: boolean =
-					(isPlainObject(value) || isArray(value)) && isEmpty(value);
+					(isPlainObject(value) || Array.isArray(value)) && isEmpty(value);
 				const isArrayWithEmptyValues: boolean =
-					isArray(value) && every(value, (arrayValue) => arrayValue === '');
+					Array.isArray(value) && every(value, (arrayValue) => arrayValue === '');
 				const isEmptyRangeObject: boolean =
 					isPlainObject(value) && !(value as any).gte && !(value as any).lte;
 

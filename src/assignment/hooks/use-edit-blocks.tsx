@@ -1,12 +1,12 @@
-import { type Avo } from '@viaa/avo2-types';
-import React, { type ReactNode } from 'react';
+import {Avo} from '@viaa/avo2-types';
+import React, {type ReactNode} from 'react';
 
-import { type FilterState } from '../../search/search.types';
-import { AssignmentBlockType, type EditableAssignmentBlock } from '../assignment.types';
-import { type AssignmentBlockItemDescriptionType } from '../components/AssignmentBlockDescriptionButtons';
-import { AssignmentBlockEditItem } from '../components/blocks/AssignmentBlockEditItem';
-import { AssignmentBlockEditSearch } from '../components/blocks/AssignmentBlockEditSearch';
-import { AssignmentBlockEditText } from '../components/blocks/AssignmentBlockEditText';
+import {type FilterState} from '../../search/search.types.js';
+import {type EditableAssignmentBlock} from '../assignment.types.js';
+import {type AssignmentBlockItemDescriptionType} from '../components/AssignmentBlockDescriptionButtons.js';
+import {AssignmentBlockEditItem} from '../components/blocks/AssignmentBlockEditItem.js';
+import {AssignmentBlockEditSearch} from '../components/blocks/AssignmentBlockEditSearch.js';
+import {AssignmentBlockEditText} from '../components/blocks/AssignmentBlockEditText.js';
 
 export function useEditBlocks(
 	setBlock: (updatedBlock: Avo.Core.BlockItemBase) => void,
@@ -16,7 +16,7 @@ export function useEditBlocks(
 ): (block: Avo.Core.BlockItemBase) => ReactNode | null {
 	return function useEditBlocks(block: Avo.Core.BlockItemBase) {
 		switch (block.type) {
-			case AssignmentBlockType.TEXT:
+			case Avo.Core.BlockItemType.TEXT:
 				return (
 					<AssignmentBlockEditText
 						setBlock={setBlock}
@@ -25,7 +25,7 @@ export function useEditBlocks(
 					/>
 				);
 
-			case AssignmentBlockType.ITEM:
+			case Avo.Core.BlockItemType.ITEM:
 				return (
 					<AssignmentBlockEditItem
 						setBlock={setBlock}
@@ -35,8 +35,8 @@ export function useEditBlocks(
 					/>
 				);
 
-			case AssignmentBlockType.ZOEK:
-			case AssignmentBlockType.BOUW:
+			case Avo.Core.BlockItemType.ZOEK:
+			case Avo.Core.BlockItemType.BOUW:
 				return (
 					<AssignmentBlockEditSearch
 						setBlock={setBlock}

@@ -4,9 +4,9 @@ import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
-import { GENERATE_SITE_TITLE } from '../../../constants';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
+import { GENERATE_SITE_TITLE } from '../../../constants.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
 
 export const StudentTeacher: FC = () => {
 	const navigateFunc = useNavigate();

@@ -1,6 +1,6 @@
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
-import { OrderDirection } from '@meemoo/react-components';
+import {OrderDirection} from '@meemoo/react-components';
 import {
 	Alert,
 	Button,
@@ -16,106 +16,97 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { isAfter, isPast } from 'date-fns';
-import { useAtomValue } from 'jotai';
-import { noop } from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { matchPath, Navigate, useNavigate, useParams } from 'react-router';
-import { Link, useLocation } from 'react-router-dom';
+import {type Avo, PermissionName} from '@viaa/avo2-types';
+import {isAfter, isPast} from 'date-fns';
+import {useAtomValue} from 'jotai';
+import {noop} from 'es-toolkit';
+import React, {type FC, useCallback, useEffect, useMemo, useState} from 'react';
+import {Helmet} from 'react-helmet';
+import {matchPath, Navigate, useNavigate, useParams} from 'react-router';
+import {Link, useLocation} from 'react-router-dom';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
-import type { MarcomNoteInfo } from '../../collection/components/CollectionOrBundleEdit.types';
+import {commonUserAtom} from '../../authentication/authentication.store.js';
+import {PermissionService} from '../../authentication/helpers/permission-service.js';
+import {redirectToClientPage} from '../../authentication/helpers/redirects/redirect-to-client-page.js';
+import type {MarcomNoteInfo} from '../../collection/components/CollectionOrBundleEdit.types.js';
 import {
 	BundleSortProp,
 	useGetCollectionsOrBundlesContainingFragment,
-} from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
-import { ErrorView, type ErrorViewQueryParams } from '../../error/views/ErrorView';
-import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
-import { BlockList } from '../../shared/components/BlockList/BlockList';
-import { EmptyStateMessage } from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
-import { InActivityWarningModal } from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
+} from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment.js';
+import {APP_PATH, GENERATE_SITE_TITLE} from '../../constants.js';
+import {ErrorNoAccess} from '../../error/components/ErrorNoAccess.js';
+import {ErrorView, type ErrorViewQueryParams} from '../../error/views/ErrorView.js';
+import {BeforeUnloadPrompt} from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt.js';
+import {BlockList} from '../../shared/components/BlockList/BlockList.js';
+import {EmptyStateMessage} from '../../shared/components/EmptyStateMessage/EmptyStateMessage.js';
+import {FullPageSpinner} from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import {HeaderOwnerAndContributors} from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors.js';
+import {InActivityWarningModal} from '../../shared/components/InActivityWarningModal/InActivityWarningModal.js';
+import {ListSorterColor, ListSorterPosition, ListSorterSlice,} from '../../shared/components/ListSorter/ListSorter.js';
+import {SelectEducationLevelModal} from '../../shared/components/SelectEducationLevelModal/SelectEducationLevelModal.js';
+import {ShareModal} from '../../shared/components/ShareModal/ShareModal.js';
+import {ContributorInfoRight} from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
+import {StickySaveBar} from '../../shared/components/StickySaveBar/StickySaveBar.js';
+import {buildLink} from '../../shared/helpers/build-link.js';
+import {getContributorType, transformContributorsToSimpleContributors,} from '../../shared/helpers/contributors.js';
+import {CustomError} from '../../shared/helpers/custom-error.js';
+import {navigate} from '../../shared/helpers/link.js';
+import {type EducationLevelId} from '../../shared/helpers/lom.js';
+import {isMobileWidth} from '../../shared/helpers/media-query.js';
+import {renderMobileDesktop} from '../../shared/helpers/renderMobileDesktop.js';
+import {tHtml} from '../../shared/helpers/translate-html.js';
+import {tText} from '../../shared/helpers/translate-text.js';
+import {useBlocksList} from '../../shared/hooks/use-blocks-list.js';
+import {useDraggableListModal} from '../../shared/hooks/use-draggable-list-modal.js';
+import {useAssignmentPastDeadline} from '../../shared/hooks/useAssignmentPastDeadline.js';
+import {useWarningBeforeUnload} from '../../shared/hooks/useWarningBeforeUnload.js';
+import {BookmarksViewsPlaysService} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
 import {
-	ListSorterColor,
-	ListSorterPosition,
-	ListSorterSlice,
-} from '../../shared/components/ListSorter/ListSorter';
-import { SelectEducationLevelModal } from '../../shared/components/SelectEducationLevelModal/SelectEducationLevelModal';
-import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
-import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
-import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { buildLink } from '../../shared/helpers/build-link';
-import {
-	getContributorType,
-	transformContributorsToSimpleContributors,
-} from '../../shared/helpers/contributors';
-import { CustomError } from '../../shared/helpers/custom-error';
-import { navigate } from '../../shared/helpers/link';
-import { type EducationLevelId } from '../../shared/helpers/lom';
-import { isMobileWidth } from '../../shared/helpers/media-query';
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
-import { useBlocksList } from '../../shared/hooks/use-blocks-list';
-import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
-import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
-import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
-import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
-import { trackEvents } from '../../shared/services/event-logging-service';
-import { ToastService } from '../../shared/services/toast-service';
+	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js';
+import {type BookmarkViewPlayCounts} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
+import {NO_RIGHTS_ERROR_MESSAGE} from '../../shared/services/data-service.js';
+import {trackEvents} from '../../shared/services/event-logging-service.js';
+import {ToastService} from '../../shared/services/toast-service.js';
 import {
 	ASSIGNMENT_CREATE_UPDATE_TABS,
 	ASSIGNMENT_FORM_DEFAULT,
 	GET_EDUCATION_LEVEL_DICT,
 	GET_EDUCATION_LEVEL_TOOLTIP_DICT,
-} from '../assignment.const';
+} from '../assignment.const.js';
 import {
 	getValidationErrorsForPublishAssignment,
 	isUserAssignmentContributor,
 	isUserAssignmentOwner,
 	setBlockPositionToIndex,
-} from '../assignment.helper';
-import { AssignmentService } from '../assignment.service';
-import { AssignmentActions } from '../components/AssignmentActions';
-import { AssignmentAdminFormEditable } from '../components/AssignmentAdminFormEditable';
-import { AssignmentConfirmSave } from '../components/AssignmentConfirmSave';
-import { AssignmentDetailsFormEditable } from '../components/AssignmentDetailsFormEditable';
-import { AssignmentDetailsFormReadonly } from '../components/AssignmentDetailsFormReadonly';
-import { AssignmentHeading } from '../components/AssignmentHeading';
-import { AssignmentMetaDataFormEditable } from '../components/AssignmentMetaDataFormEditable';
-import { AssignmentPupilPreview } from '../components/AssignmentPupilPreview';
-import { AssignmentTeacherTabs } from '../components/AssignmentTeacherTabs';
-import { AssignmentTitle } from '../components/AssignmentTitle';
-import { endOfAcademicYear } from '../helpers/academic-year';
-import {
-	onAddNewContributor,
-	onDeleteContributor,
-	onEditContributor,
-} from '../helpers/assignment-share-with-collegue-handlers';
-import { buildGlobalSearchLink } from '../helpers/build-search-link';
-import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
-import { duplicateAssignment } from '../helpers/duplicate-assignment';
-import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
-import { backToOverview } from '../helpers/links';
-import { useAssignmentBlockChangeHandler } from '../hooks/assignment-block-change-handler';
-import { useBlockListModals } from '../hooks/assignment-content-modals';
-import { type AssignmentFields } from '../hooks/assignment-form';
-import { useEditBlocks } from '../hooks/use-edit-blocks';
-import { useEducationLevelModal } from '../hooks/use-education-level-modal';
-import { PublishAssignmentModal } from '../modals/PublishAssignmentModal';
+} from '../assignment.helper.js';
+import {AssignmentService} from '../assignment.service.js';
+import {AssignmentActions} from '../components/AssignmentActions.js';
+import {AssignmentAdminFormEditable} from '../components/AssignmentAdminFormEditable.js';
+import {AssignmentConfirmSave} from '../components/AssignmentConfirmSave.js';
+import {AssignmentDetailsFormEditable} from '../components/AssignmentDetailsFormEditable.js';
+import {AssignmentDetailsFormReadonly} from '../components/AssignmentDetailsFormReadonly.js';
+import {AssignmentHeading} from '../components/AssignmentHeading.js';
+import {AssignmentMetaDataFormEditable} from '../components/AssignmentMetaDataFormEditable.js';
+import {AssignmentPupilPreview} from '../components/AssignmentPupilPreview.js';
+import {AssignmentTeacherTabs} from '../components/AssignmentTeacherTabs.js';
+import {AssignmentTitle} from '../components/AssignmentTitle.js';
+import {endOfAcademicYear} from '../helpers/academic-year.js';
+import {onAddNewContributor, onDeleteContributor, onEditContributor,} from '../helpers/assignment-share-with-collegue-handlers.js';
+import {buildGlobalSearchLink} from '../helpers/build-search-link.js';
+import {cleanupTitleAndDescriptions} from '../helpers/cleanup-title-and-descriptions.js';
+import {duplicateAssignment} from '../helpers/duplicate-assignment.js';
+import {isDeadlineBeforeAvailableAt} from '../helpers/is-deadline-before-available-at.js';
+import {backToOverview} from '../helpers/links.js';
+import {useAssignmentBlockChangeHandler} from '../hooks/assignment-block-change-handler.js';
+import {useBlockListModals} from '../hooks/assignment-content-modals.js';
+import {type AssignmentFields} from '../hooks/assignment-form.js';
+import {useEditBlocks} from '../hooks/use-edit-blocks.js';
+import {useEducationLevelModal} from '../hooks/use-education-level-modal.js';
+import {PublishAssignmentModal} from '../modals/PublishAssignmentModal.js';
 
-import { AssignmentEditMarcom } from './AssignmentEditMarcom';
-import { AssignmentResponses } from './AssignmentResponses';
+import {AssignmentEditMarcom} from './AssignmentEditMarcom.js';
+import {AssignmentResponses} from './AssignmentResponses.js';
 
 interface AssignmentEditProps {
 	onUpdate?: () => void | Promise<void>;
@@ -173,7 +164,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 	const { data: bundlesContainingAssignment } = useGetCollectionsOrBundlesContainingFragment(
 		assignmentId as string,
 		BundleSortProp.title,
-		OrderDirection.asc,
+		Avo.Search.OrderDirection.ASC,
 		{ enabled: !!assignmentId && !!assignment }
 	);
 
@@ -862,10 +853,10 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({ onUpdate = noop }) => 
 			GET_EDUCATION_LEVEL_TOOLTIP_DICT()[assignment?.education_level_id as EducationLevelId];
 
 		return (
-			<MetaData spaced={true} category="assignment">
+			<MetaData spaced={true} category={Avo.ContentType.English.ASSIGNMENT}>
 				<MetaDataItem>
 					<HeaderContentType
-						category="assignment"
+						category={Avo.ContentType.English.ASSIGNMENT}
 						label={tText('admin/shared/constants/index___opdracht')}
 					/>
 				</MetaDataItem>
