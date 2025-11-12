@@ -1,22 +1,22 @@
-import { type Avo } from '@viaa/avo2-types'
-import { isNil } from 'es-toolkit'
-import { isEmpty } from 'es-toolkit/compat'
-import queryString from 'query-string'
-import React, { Fragment, type ReactNode } from 'react'
-import { type NavigateFunction } from 'react-router'
+import { type Avo } from '@viaa/avo2-types';
+import { isNil } from 'es-toolkit';
+import { isEmpty } from 'es-toolkit/compat';
+import queryString from 'query-string';
+import React, { Fragment, type ReactNode } from 'react';
+import { type NavigateFunction } from 'react-router';
 
-import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants.js'
-import { SearchFilter } from '../../search/search.const.js'
-import { type FilterState } from '../../search/search.types.js'
-import { ToastService } from '../services/toast-service.js'
+import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants.js';
+import { SearchFilter } from '../../search/search.const.js';
+import { type FilterState } from '../../search/search.types.js';
+import { ToastService } from '../services/toast-service.js';
 
 import {
   buildLink,
   getMissingParams,
   navigationConsoleError,
   type RouteParams,
-} from './build-link.js'
-import { tHtml } from './translate-html.js'
+} from './build-link.js';
+import { tHtml } from './translate-html.js';
 
 export const navigate = (
   navigate: NavigateFunction,
@@ -25,38 +25,38 @@ export const navigate = (
   search?: string | { [paramName: string]: string },
   action: 'push' | 'replace' = 'push',
 ): void => {
-  const missingParams = getMissingParams(route)
+  const missingParams = getMissingParams(route);
 
   // Abort navigation when params were expected but none were given
   if (missingParams.length > 0 && (isNil(params) || isEmpty(params))) {
-    navigationConsoleError(route, missingParams)
+    navigationConsoleError(route, missingParams);
     ToastService.danger(
       tHtml(
         'shared/helpers/link___de-navigatie-is-afgebroken-wegens-foutieve-parameters',
       ),
-    )
+    );
 
-    return
+    return;
   }
 
   // Abort navigation if link build fails
-  const builtLink = buildLink(route, params, search)
+  const builtLink = buildLink(route, params, search);
 
   if (isEmpty(builtLink)) {
     ToastService.danger(
       tHtml(
         'shared/helpers/link___de-navigatie-is-afgebroken-wegens-foutieve-parameters',
       ),
-    )
+    );
 
-    return
+    return;
   }
   if (action === 'push') {
-    navigate(builtLink)
+    navigate(builtLink);
   } else if (action === 'replace') {
-    navigate(builtLink, { replace: true })
+    navigate(builtLink, { replace: true });
   }
-}
+};
 
 export const renderSearchLinks = (
   renderSearchLink: (
@@ -81,7 +81,7 @@ export const renderSearchLinks = (
         )}
         {index === filterValue.length - 1 ? '' : ', '}
       </Fragment>
-    ))
+    ));
   }
 
   return renderSearchLink(
@@ -90,38 +90,38 @@ export const renderSearchLinks = (
       filters: { [filterProp]: [filterValue] },
     },
     className,
-  )
-}
+  );
+};
 
 export function generateSearchLinkString(
-  filterProp?: Avo.Search.FilterProp,
-  filterValue?: string,
-  orderProperty?: Avo.Search.OrderProperty,
-  orderDirection?: Avo.Search.OrderDirection,
+  filterProp?: Avo.Search.FilterProp | null | undefined,
+  filterValue?: string | null | undefined,
+  orderProperty?: Avo.Search.OrderProperty | null | undefined,
+  orderDirection?: Avo.Search.OrderDirection | null | undefined,
 ): string {
-  const queryParamObject: any = {}
+  const queryParamObject: any = {};
   if (String(filterProp) === SearchFilter.query) {
-    queryParamObject.filters = JSON.stringify({ query: filterValue })
+    queryParamObject.filters = JSON.stringify({ query: filterValue });
   } else if (!!filterProp && !!filterValue) {
-    queryParamObject.filters = `{"${filterProp}":["${filterValue}"]}`
+    queryParamObject.filters = `{"${filterProp}":["${filterValue}"]}`;
   }
   if (orderProperty) {
-    queryParamObject.orderProperty = orderProperty
+    queryParamObject.orderProperty = orderProperty;
   }
   if (orderDirection) {
-    queryParamObject.orderDirection = orderDirection
+    queryParamObject.orderDirection = orderDirection;
   }
 
   return buildLink(
     APP_PATH.SEARCH.route,
     {},
     queryString.stringify(queryParamObject),
-  )
+  );
 }
 
 export function generateContentLinkString(
   contentType: Avo.Core.ContentType,
   id: string,
 ): string {
-  return buildLink(`${CONTENT_TYPE_TO_ROUTE[contentType]}`, { id })
+  return buildLink(`${CONTENT_TYPE_TO_ROUTE[contentType]}`, { id });
 }

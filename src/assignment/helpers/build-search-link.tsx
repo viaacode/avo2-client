@@ -24,15 +24,11 @@ export const buildGlobalSearchLink = (
   return (
     <Link
       {...props}
-      to={buildLink(
-        APP_PATH.SEARCH.route,
-        {},
-        {
-          ...rest,
-          filters: JSON.stringify(state.filters),
-          ...(page ? { page: String(page) } : {}),
-        },
-      )}
+      to={buildLink(APP_PATH.SEARCH.route, {}, {
+        ...rest,
+        filters: JSON.stringify(state.filters),
+        ...(page ? { page: String(page) } : {}),
+      } as { [paramName: string]: string })}
     >
       {children || state.filters?.serie?.[0]}
     </Link>

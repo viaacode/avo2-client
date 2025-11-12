@@ -1,11 +1,11 @@
-import React, { type ReactNode } from 'react'
-import { type NavigateFunction } from 'react-router'
-import { Link } from 'react-router-dom'
+import React, { type ReactNode } from 'react';
+import { type NavigateFunction } from 'react-router';
+import { Link } from 'react-router-dom';
 
-import { type SearchFilter } from '../../search/search.const.js'
-import { type FilterState } from '../../search/search.types.js'
+import { type SearchFilter } from '../../search/search.const.js';
+import { type FilterState } from '../../search/search.types.js';
 
-import { generateSearchLinkString } from './link.js'
+import { generateSearchLinkString } from './link.js';
 
 export const defaultGoToSearchLink =
   (navigate: NavigateFunction) =>
@@ -13,10 +13,10 @@ export const defaultGoToSearchLink =
     // Get the first filter prop and value (there should only be one)
     const filterProp = Object.keys(newFilters.filters || {})[0] as
       | SearchFilter
-      | undefined
+      | undefined;
     const filterValue = (newFilters.filters || {})[
       filterProp as SearchFilter
-    ] as string | undefined
+    ] as string | undefined;
     navigate(
       generateSearchLinkString(
         filterProp,
@@ -24,8 +24,8 @@ export const defaultGoToSearchLink =
         newFilters.orderProperty as any,
         newFilters.orderDirection,
       ),
-    )
-  }
+    );
+  };
 
 export const defaultRenderSearchLink = (
   linkText: string | ReactNode,
@@ -34,10 +34,10 @@ export const defaultRenderSearchLink = (
 ): ReactNode => {
   const filterProp = Object.keys(newFilters.filters || {})[0] as
     | SearchFilter
-    | undefined
+    | undefined;
   const filterValue = (newFilters.filters || {})[filterProp as SearchFilter] as
     | string
-    | undefined
+    | undefined;
   return (
     <Link
       className={className}
@@ -50,5 +50,5 @@ export const defaultRenderSearchLink = (
     >
       {linkText}
     </Link>
-  )
-}
+  );
+};

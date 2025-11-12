@@ -273,7 +273,9 @@ export const ContentPicker: FC<ContentPickerProps> = ({
             'admin/shared/components/content-picker/content-picker___selecteer-een-type',
           )}
           options={typeOptions}
-          onChange={onSelectType}
+          onChange={(newValue: unknown) =>
+            onSelectType(newValue as PickerTypeOption)
+          }
           value={selectedType}
           isSearchable={false}
           isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
@@ -321,7 +323,9 @@ export const ContentPicker: FC<ContentPickerProps> = ({
         )
       }
       loadOptions={fetchPickerOptions}
-      onChange={onSelectItem}
+      onChange={(newSelectedOption: unknown) =>
+        onSelectItem(newSelectedOption as PickerItem)
+      }
       onFocus={() => fetchPickerOptions(null)}
       value={selectedItem}
       defaultOptions={itemOptions as any} // TODO: type
