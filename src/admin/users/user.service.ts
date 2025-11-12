@@ -21,10 +21,9 @@ export class UserService {
   /**
    * Update/Set temp access for a user.
    */
-  static updateTempAccessByUserId = async (
-    userId: string,
-    tempAccess: Avo.User.TempAccess,
+  static updateTempAccessByProfileId = async (
     profileId: string,
+    tempAccess: Avo.User.TempAccess,
   ): Promise<void> => {
     try {
       // Update a users temp access
@@ -34,7 +33,7 @@ export class UserService {
       >({
         query: UpdateUserTempAccessByIdDocument,
         variables: {
-          user_id: userId,
+          profile_id: profileId,
           from: tempAccess.from,
           until: tempAccess.until,
         },
@@ -60,7 +59,7 @@ export class UserService {
       }
     } catch (err) {
       throw new CustomError(`Failed to update temp access for user`, err, {
-        userId,
+        profileId,
         tempAccess,
       })
     }

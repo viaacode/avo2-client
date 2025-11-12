@@ -50,7 +50,7 @@ const UserDetailPage: FC = () => {
           {!!id && (
             <UserDetail
               id={id}
-              onSetTempAccess={UserService.updateTempAccessByUserId}
+              onSetTempAccess={UserService.updateTempAccessByProfileId}
               onLoaded={setUser}
               onGoBack={() =>
                 goBrowserBackWithFallback(

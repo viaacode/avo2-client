@@ -2,17 +2,18 @@
 /**
  * This script runs over all files that match *.graphql and extracts the gql queries and outputs them to the client-whitelist.json file in /scripts
  */
-import * as fs from 'fs'
-import * as path from 'path'
-
-import glob from 'glob'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
+import { dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { snakeCase } from 'es-toolkit'
+import glob from 'glob'
 
 const extractNameRegex = /(query|mutation) ([^\s(]+)(.*)/gm
 
 function extractQueriesFromCode(globPattern: string, outputFileName: string) {
   const options = {
-    cwd: path.join(__dirname, '../src'),
+    cwd: path.join(dirname(fileURLToPath(import.meta.url)), '../src'),
   }
 
   glob(globPattern, options, async (err: any, files: string[]) => {
