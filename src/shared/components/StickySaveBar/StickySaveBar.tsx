@@ -1,14 +1,14 @@
-import React, { type FC } from 'react'
+import React, { type FC } from 'react';
 
-import { tHtml } from '../../helpers/translate-html.js'
-import { tText } from '../../helpers/translate-text.js'
-import { StickyBar } from '../StickyBar/StickyBar.js'
+import { tHtml } from '../../helpers/translate-html.js';
+import { tText } from '../../helpers/translate-text.js';
+import { StickyBar } from '../StickyBar/StickyBar.js';
 
 interface StickySaveBarProps {
-  isVisible: boolean
-  isSaving: boolean
-  onSave: () => void
-  onCancel: () => void
+  isVisible: boolean;
+  isSaving: boolean;
+  onSave: (() => void) | (() => Promise<void>);
+  onCancel: () => void;
 }
 
 export const StickySaveBar: FC<StickySaveBarProps> = ({
@@ -18,7 +18,7 @@ export const StickySaveBar: FC<StickySaveBarProps> = ({
   onCancel,
 }) => {
   if (!isVisible) {
-    return null
+    return null;
   }
   return (
     <StickyBar
@@ -36,5 +36,5 @@ export const StickySaveBar: FC<StickySaveBarProps> = ({
         onClick: onCancel,
       }}
     />
-  )
-}
+  );
+};

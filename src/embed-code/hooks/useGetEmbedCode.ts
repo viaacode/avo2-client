@@ -1,29 +1,26 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query'
+import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 
-import { QUERY_KEYS } from '../../shared/constants/query-keys.js'
-import { EmbedCodeService } from '../embed-code-service.js'
-import { type EmbedCode } from '../embed-code.types.js'
+import { QUERY_KEYS } from '../../shared/constants/query-keys.js';
+import { type EmbedCode } from '../embed-code.types.js';
+import { EmbedCodeService } from '../embed-code-service.js';
 
 export const useGetEmbedCode = (
   embedCodeId: string | null,
   enabled = true,
-): UseQueryResult<EmbedCode> => {
-  return useQuery(
-    [QUERY_KEYS.GET_EMBED_CODES, embedCodeId, EmbedCodeService.getJwtToken()],
-    async () => {
+): UseQueryResult<EmbedCode | null, Error> => {
+  return useQuery({
+    queryKey: [
+      QUERY_KEYS.GET_EMBED_CODES,
+      embedCodeId,
+      EmbedCodeService.getJwtToken(),
+    ],
+    queryFn: async () => {
       if (!embedCodeId) {
-        return null
+        return null;
       }
-      return EmbedCodeService.getEmbedCode(embedCodeId)
+      return EmbedCodeService.getEmbedCode(embedCodeId);
     },
-    {
-      enabled,
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
-      keepPreviousData: true,
-      retry: false, // otherwise in case of failure this keeps retrying at least 3 times
-      cacheTime: 60 * 60 * 1000, // 1 hour
-      staleTime: 60 * 60 * 1000, // 1 hour
-    },
-  )
-}
+    enabled,
+    staleTime: 60 * 60 * 1000, // 1 hour
+  });
+};

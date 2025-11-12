@@ -1,4 +1,3 @@
-import { OrderDirection } from '@meemoo/react-components'
 import {
   Button,
   ButtonToolbar,
@@ -15,239 +14,236 @@ import {
   MenuContent,
   MoreOptionsDropdown,
   Spacer,
-} from '@viaa/avo2-components'
-import { Avo, PermissionName } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { useAtomValue } from 'jotai'
-import { compact, isNil, noop } from 'es-toolkit'
-import { isEmpty } from 'es-toolkit/compat'
+} from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
+import { compact, isNil, noop } from 'es-toolkit';
+import { isEmpty } from 'es-toolkit/compat';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactText,
   useCallback,
   useEffect,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate, useParams } from 'react-router'
-import { Link } from 'react-router-dom'
+} from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate, useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 import {
   BooleanParam,
   StringParam,
   useQueryParam,
   useQueryParams,
-} from 'use-query-params'
+} from 'use-query-params';
 
-import { AssignmentService } from '../../assignment/assignment.service.js'
-import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal.js'
-import { CreateAssignmentModal } from '../../assignment/modals/CreateAssignmentModal.js'
-import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin.js'
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants.js'
-import { ErrorNoAccess } from '../../error/components/ErrorNoAccess.js'
-import { ErrorView } from '../../error/views/ErrorView.js'
+import { AssignmentService } from '../../assignment/assignment.service.js';
+import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal.js';
+import { CreateAssignmentModal } from '../../assignment/modals/CreateAssignmentModal.js';
+import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal.js';
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { PermissionService } from '../../authentication/helpers/permission-service.js';
+import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin.js';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants.js';
+import { ErrorNoAccess } from '../../error/components/ErrorNoAccess.js';
+import { ErrorView } from '../../error/views/ErrorView.js';
 import {
   ALL_SEARCH_FILTERS,
   type SearchFilter,
-} from '../../search/search.const.js'
-import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData.js'
-import { EditButton } from '../../shared/components/EditButton/EditButton.js'
-import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList.js'
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors.js'
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour.js'
-import { JsonLd } from '../../shared/components/JsonLd/JsonLd.js'
-import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper.js'
-import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types.js'
-import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal.js'
-import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown.js'
-import { ShareModal } from '../../shared/components/ShareModal/ShareModal.js'
-import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js'
-import { StickyBar } from '../../shared/components/StickyBar/StickyBar.js'
+} from '../../search/search.const.js';
+import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData.js';
+import { EditButton } from '../../shared/components/EditButton/EditButton.js';
+import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList.js';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors.js';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour.js';
+import { JsonLd } from '../../shared/components/JsonLd/JsonLd.js';
+import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper.js';
+import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types.js';
+import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal.js';
+import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown.js';
+import { ShareModal } from '../../shared/components/ShareModal/ShareModal.js';
+import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
+import { StickyBar } from '../../shared/components/StickyBar/StickyBar.js';
 import {
   EDIT_STATUS_REFETCH_TIME,
   getMoreOptionsLabel,
   ROUTE_PARTS,
-} from '../../shared/constants/index.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
-import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render-bookmark-button.js'
+} from '../../shared/constants/index.js';
+import { buildLink } from '../../shared/helpers/build-link.js';
+import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors.js';
+import { CustomError } from '../../shared/helpers/custom-error.js';
+import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render-bookmark-button.js';
 import {
   defaultGoToDetailLink,
   defaultRenderDetailLink,
-} from '../../shared/helpers/default-render-detail-link.js'
-import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link.js'
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown.js'
-import { getFullName } from '../../shared/helpers/formatters/avatar.js'
+} from '../../shared/helpers/default-render-detail-link.js';
+import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link.js';
+import { createDropdownMenuItem } from '../../shared/helpers/dropdown.js';
+import { getFullName } from '../../shared/helpers/formatters/avatar.js';
 import {
   generateContentLinkString,
   navigate,
-} from '../../shared/helpers/link.js'
-import { getGroupedLomsKeyValue } from '../../shared/helpers/lom.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { isUuid } from '../../shared/helpers/uuid.js'
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js'
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js'
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js'
-import { trackEvents } from '../../shared/services/event-logging-service.js'
+} from '../../shared/helpers/link.js';
+import { getGroupedLomsKeyValue } from '../../shared/helpers/lom.js';
+import { isMobileWidth } from '../../shared/helpers/media-query.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { isUuid } from '../../shared/helpers/uuid.js';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
+import { trackEvents } from '../../shared/services/event-logging-service.js';
 import {
   getRelatedItems,
   ObjectTypes,
   ObjectTypesAll,
-} from '../../shared/services/related-items-service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { renderRelatedItems } from '../collection.helpers.js'
-import { CollectionService } from '../collection.service.js'
+} from '../../shared/services/related-items-service.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { renderRelatedItems } from '../collection.helpers.js';
+import { CollectionService } from '../collection.service.js';
 import {
   CollectionCreateUpdateTab,
-  CollectionFragmentType,
   CollectionMenuAction,
   CollectionOrBundle,
   type Relation,
-} from '../collection.types.js'
-import { FragmentList } from '../components/fragment/FragmentList.js'
-import { AddToBundleModal } from '../components/modals/AddToBundleModal.js'
-import { AutoplayCollectionModal } from '../components/modals/AutoplayCollectionModal.js'
-import { DeleteCollectionModal } from '../components/modals/DeleteCollectionModal.js'
-import { DeleteMyselfFromCollectionContributorsConfirmModal } from '../components/modals/DeleteContributorFromCollectionModal.js'
-import { PublishCollectionModal } from '../components/modals/PublishCollectionModal.js'
+} from '../collection.types.js';
+import { FragmentList } from '../components/fragment/FragmentList.js';
+import { AddToBundleModal } from '../components/modals/AddToBundleModal.js';
+import { AutoplayCollectionModal } from '../components/modals/AutoplayCollectionModal.js';
+import { DeleteCollectionModal } from '../components/modals/DeleteCollectionModal.js';
+import { DeleteMyselfFromCollectionContributorsConfirmModal } from '../components/modals/DeleteContributorFromCollectionModal.js';
+import { PublishCollectionModal } from '../components/modals/PublishCollectionModal.js';
 import {
   onAddContributor,
   onDeleteContributor,
   onEditContributor,
-} from '../helpers/collection-share-with-collegue-handlers.js'
+} from '../helpers/collection-share-with-collegue-handlers.js';
 import {
   deleteCollection,
   deleteSelfFromCollection,
-} from '../helpers/delete-collection.js'
-import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses.js'
+} from '../helpers/delete-collection.js';
+import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses.js';
 import {
   BundleSortProp,
   useGetCollectionsOrBundlesContainingFragment,
-} from '../hooks/useGetCollectionsOrBundlesContainingFragment.js'
+} from '../hooks/useGetCollectionsOrBundlesContainingFragment.js';
+import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from './CollectionDetail.const.js';
+import './CollectionDetail.scss';
 
-import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from './CollectionDetail.const.js'
-
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import './CollectionDetail.scss'
-
-export const COLLECTION_COPY = 'Kopie %index%: '
-export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi
+export const COLLECTION_COPY = 'Kopie %index%: ';
+export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
 
 type CollectionDetailPermissions = Partial<{
-  canEditCollections: boolean
-  canPublishCollections: boolean
-  canDeleteCollections: boolean
-  canCreateCollections: boolean
-  canViewAnyPublishedItems: boolean
-  canViewAnyPublishedCollections: boolean
-  canViewAnyUnpublishedCollections: boolean
-  canViewQuickLanes: boolean
-  canCreateQuickLane: boolean
-  canAutoplayCollection: boolean
-  canCreateAssignments: boolean
-  canCreateBundles: boolean
-}>
+  canEditCollections: boolean;
+  canPublishCollections: boolean;
+  canDeleteCollections: boolean;
+  canCreateCollections: boolean;
+  canViewAnyPublishedItems: boolean;
+  canViewAnyPublishedCollections: boolean;
+  canViewAnyUnpublishedCollections: boolean;
+  canViewQuickLanes: boolean;
+  canCreateQuickLane: boolean;
+  canAutoplayCollection: boolean;
+  canCreateAssignments: boolean;
+  canCreateBundles: boolean;
+}>;
 
 type CollectionInfo = {
-  collection: Avo.Collection.Collection | null
-  permissions: CollectionDetailPermissions
-  showLoginPopup: boolean
-  showNoAccessPopup: boolean
-}
+  collection: Avo.Collection.Collection | null;
+  permissions: CollectionDetailPermissions;
+  showLoginPopup: boolean;
+  showNoAccessPopup: boolean;
+};
 
 type CollectionDetailProps = {
-  id?: string // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
-  enabledMetaData?: SearchFilter[]
-}
+  id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
+  enabledMetaData?: SearchFilter[];
+};
 
 export const CollectionDetail: FC<CollectionDetailProps> = ({
   id,
   enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
-  const { id: collectionIdFromUrl } = useParams<{ id: string }>()
+  const { id: collectionIdFromUrl } = useParams<{ id: string }>();
 
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
   // State
-  const [collectionId, setCollectionId] = useState(id || collectionIdFromUrl)
+  const [collectionId, setCollectionId] = useState(id || collectionIdFromUrl);
 
   const [collectionInfo, setCollectionInfo] = useState<CollectionInfo | null>(
     null,
-  )
-  const permissions = collectionInfo?.permissions
-  const showLoginPopup = collectionInfo?.showLoginPopup
-  const showNoAccessPopup = collectionInfo?.showNoAccessPopup
-  const collection = collectionInfo?.collection
+  );
+  const permissions = collectionInfo?.permissions;
+  const showLoginPopup = collectionInfo?.showLoginPopup;
+  const showNoAccessPopup = collectionInfo?.showNoAccessPopup;
+  const collection = collectionInfo?.collection;
   const isContributor = !!(collection?.contributors || []).find(
     (contributor) =>
       !!contributor.profile_id &&
       contributor.profile_id === commonUser?.profileId,
-  )
+  );
   const isEditContributor = !!(collection?.contributors || []).find(
     (contributor) =>
       !!contributor.profile_id &&
       contributor.profile_id === commonUser?.profileId &&
       contributor.rights === 'CONTRIBUTOR',
-  )
-  const isPublic = !!collection && collection.is_public
+  );
+  const isPublic = !!collection && collection.is_public;
   const isOwner =
     !!collection?.owner_profile_id &&
-    collection?.owner_profile_id === commonUser?.profileId
+    collection?.owner_profile_id === commonUser?.profileId;
   const isCollectionAdmin = PermissionService.hasPerm(
     commonUser,
     PermissionName.EDIT_ANY_COLLECTIONS,
-  )
+  );
   const shouldDeleteSelfFromCollection =
-    isContributor && !permissions?.canDeleteCollections
+    isContributor && !permissions?.canDeleteCollections;
 
-  const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false)
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
+  const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isDeleteContributorModalOpen, setIsDeleteContributorModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useQueryParam(
     QUERY_PARAM_SHOW_PUBLISH_MODAL,
     BooleanParam,
-  )
+  );
   const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] =
-    useState<boolean>(false)
-  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false)
+    useState<boolean>(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
   const [isAutoplayCollectionModalOpen, setIsAutoplayCollectionModalOpen] =
-    useState<boolean>(false)
-  const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false)
+    useState<boolean>(false);
+  const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
   const [isCreateAssignmentDropdownOpen, setIsCreateAssignmentDropdownOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [isCreateAssignmentModalOpen, setIsCreateAssignmentModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [
     isConfirmImportToAssignmentWithResponsesModalOpen,
     setIsConfirmImportToAssignmentWithResponsesModalOpen,
-  ] = useState<boolean>(false)
+  ] = useState<boolean>(false);
 
-  const [isFirstRender, setIsFirstRender] = useState<boolean>(false)
+  const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
   const [relatedCollections, setRelatedCollections] = useState<
     Avo.Search.ResultItem[] | null
-  >(null)
+  >(null);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] =
-    useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS)
+    useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS);
 
-  const [assignmentId, setAssignmentId] = useState<string>()
+  const [assignmentId, setAssignmentId] = useState<string>();
   const [importWithDescription, setImportWithDescription] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
-  const [query, setQuery] = useQueryParams({ inviteToken: StringParam })
-  const { inviteToken } = query
+  const [query, setQuery] = useQueryParams({ inviteToken: StringParam });
+  const { inviteToken } = query;
 
   const { data: editStatuses } = useGetCollectionsEditStatuses(
     [collectionId as string],
@@ -256,7 +252,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
       refetchInterval: EDIT_STATUS_REFETCH_TIME,
       refetchIntervalInBackground: true,
     },
-  )
+  );
 
   const {
     data: bundlesContainingCollection,
@@ -269,18 +265,18 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
       enabled:
         !!collectionId && !!collectionInfo?.collection && !showLoginPopup,
     },
-  )
+  );
 
   const isBeingEdited =
-    collectionId &&
-    editStatuses &&
+    !!collectionId &&
+    !!editStatuses &&
     !!editStatuses[collectionId] &&
-    editStatuses[collectionId]?.editingUserId !== commonUser?.profileId
+    editStatuses[collectionId]?.editingUserId !== commonUser?.profileId;
 
   const getRelatedCollections = useCallback(async () => {
     try {
       if (!collectionId) {
-        return
+        return;
       }
       if (isUuid(collectionId)) {
         setRelatedCollections(
@@ -290,29 +286,29 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
             ObjectTypesAll.all,
             4,
           ),
-        )
+        );
       }
     } catch (err) {
       console.error('Failed to get related items', err, {
         collectionId,
         index: 'collections',
         limit: 4,
-      })
+      });
 
       ToastService.danger(
         tHtml(
           'collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt',
         ),
-      )
+      );
     }
-  }, [collectionId])
+  }, [collectionId]);
 
   const fetchContributors = useCallback(async () => {
     if (!collectionId || !collectionInfo || showLoginPopup) {
-      return
+      return;
     }
     const response =
-      await CollectionService.fetchContributorsByCollectionId(collectionId)
+      await CollectionService.fetchContributorsByCollectionId(collectionId);
 
     setCollectionInfo({
       ...collectionInfo,
@@ -320,8 +316,8 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         ...collectionInfo.collection,
         contributors: response as Avo.Collection.Contributor[],
       },
-    } as CollectionInfo)
-  }, [collectionId, collectionInfo, showLoginPopup])
+    } as CollectionInfo);
+  }, [collectionId, collectionInfo, showLoginPopup]);
 
   const triggerEvents = useCallback(async () => {
     // Do not trigger events when a search engine loads this page
@@ -331,7 +327,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         'collection',
         collectionId,
         commonUser,
-      ).then(noop)
+      ).then(noop);
       trackEvents(
         {
           object: collectionId,
@@ -342,45 +338,45 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           },
         },
         commonUser,
-      )
+      );
       try {
         setBookmarkViewPlayCounts(
           await BookmarksViewsPlaysService.getCollectionCounts(
             collectionId,
             commonUser || null,
           ),
-        )
+        );
       } catch (err) {
         console.error(
           new CustomError('Failed to get getCollectionCounts', err, {
             uuid: collectionId,
           }),
-        )
+        );
         ToastService.danger(
           tHtml(
             'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt',
           ),
-        )
+        );
       }
     }
-  }, [collectionId, commonUser, showLoginPopup])
+  }, [collectionId, commonUser, showLoginPopup]);
 
   useEffect(() => {
-    setCollectionId(id || collectionIdFromUrl)
-  }, [id, collectionIdFromUrl])
+    setCollectionId(id || collectionIdFromUrl);
+  }, [id, collectionIdFromUrl]);
 
   useEffect(() => {
     if (!isFirstRender && collection) {
-      setIsFirstRender(true)
+      setIsFirstRender(true);
     }
-  }, [collection, isFirstRender, setIsFirstRender])
+  }, [collection, isFirstRender, setIsFirstRender]);
 
   const getPermissions = async (
     collectionId: string,
     commonUser: Avo.User.CommonUser | undefined,
   ): Promise<CollectionDetailPermissions> => {
     if (!commonUser) {
-      return {}
+      return {};
     }
 
     return await PermissionService.checkPermissions(
@@ -414,22 +410,22 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         canCreateBundles: [{ name: PermissionName.CREATE_BUNDLES }],
       },
       commonUser,
-    )
-  }
+    );
+  };
 
   const checkPermissionsAndGetCollection = useCallback(async () => {
     try {
       if (!collectionId) {
-        return
+        return;
       }
       setLoadingInfo({
         state: 'loading',
-      })
-      let uuid: string | null
+      });
+      let uuid: string | null;
       if (isUuid(collectionId)) {
-        uuid = collectionId
+        uuid = collectionId;
       } else {
-        uuid = await CollectionService.fetchUuidByAvo1Id(collectionId)
+        uuid = await CollectionService.fetchUuidByAvo1Id(collectionId);
 
         if (!uuid) {
           setLoadingInfo({
@@ -438,9 +434,9 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
               'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden',
             ),
             icon: IconName.alertTriangle,
-          })
+          });
 
-          return
+          return;
         }
 
         // Redirect to new url that uses the collection uuid instead of the collection avo1 id
@@ -448,25 +444,25 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         defaultGoToDetailLink(navigateFunc)(
           uuid,
           Avo.Core.ContentType.COLLECTIE,
-        )
-        return
+        );
+        return;
       }
 
-      const permissionObj = await getPermissions(collectionId, commonUser)
+      const permissionObj = await getPermissions(collectionId, commonUser);
 
-      const showNoAccessPopup = false
+      const showNoAccessPopup = false;
 
       if (!commonUser) {
         // Not logged in
         // If thr collection is public, we should still load the metadata
-        let collectionObj: Avo.Collection.Collection | null = null
+        let collectionObj: Avo.Collection.Collection | null = null;
         try {
           collectionObj =
             await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
               uuid,
               CollectionOrBundle.COLLECTION,
               undefined,
-            )
+            );
         } catch (err) {
           // Ignore errors when fetching collections when user is not logged in
         }
@@ -475,11 +471,11 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           showLoginPopup: true,
           permissions: permissionObj,
           collection: collectionObj,
-        })
+        });
         setLoadingInfo({
           state: 'loaded',
-        })
-        return
+        });
+        return;
       }
 
       if (
@@ -494,11 +490,11 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           showLoginPopup: false,
           permissions: permissionObj,
           collection: null,
-        })
+        });
         setLoadingInfo({
           state: 'loaded',
-        })
-        return
+        });
+        return;
       }
 
       const collectionObj = uuid
@@ -507,7 +503,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
             CollectionOrBundle.COLLECTION,
             inviteToken || undefined,
           )
-        : null
+        : null;
 
       if (!collectionObj) {
         setLoadingInfo({
@@ -516,8 +512,8 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
             'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden',
           ),
           icon: IconName.search,
-        })
-        return
+        });
+        return;
       }
 
       setCollectionInfo({
@@ -525,7 +521,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         showLoginPopup: false,
         permissions: permissionObj,
         collection: collectionObj || null,
-      })
+      });
     } catch (err) {
       if (
         (err as CustomError)?.innerException?.statusCode === 404 &&
@@ -537,11 +533,11 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           showLoginPopup: true,
           permissions: {},
           collection: null,
-        })
+        });
         setLoadingInfo({
           state: 'loaded',
-        })
-        return
+        });
+        return;
       }
 
       if ((err as CustomError)?.innerException?.statusCode === 403) {
@@ -551,11 +547,11 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           showLoginPopup: false,
           permissions: {},
           collection: null,
-        })
+        });
         setLoadingInfo({
           state: 'forbidden',
-        })
-        return
+        });
+        return;
       }
 
       console.error(
@@ -566,14 +562,14 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
             collectionId,
           },
         ),
-      )
+      );
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'collection/views/collection-detail___er-ging-iets-mis-tijdens-het-ophalen-van-de-collectie',
         ),
         icon: IconName.alertTriangle,
-      })
+      });
     }
     // Ensure callback only runs once even if user object is set twice // TODO investigate why user object is set twice
   }, [
@@ -582,26 +578,26 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
     commonUser,
     navigateFunc,
     defaultGoToDetailLink,
-  ])
+  ]);
 
   useEffect(() => {
-    checkPermissionsAndGetCollection()
-  }, [checkPermissionsAndGetCollection])
+    checkPermissionsAndGetCollection();
+  }, [checkPermissionsAndGetCollection]);
 
   useEffect(() => {
     if (collectionInfo?.collection && !showLoginPopup) {
-      getRelatedCollections()
-      triggerEvents()
+      getRelatedCollections();
+      triggerEvents();
     }
-  }, [collectionInfo, getRelatedCollections])
+  }, [collectionInfo, getRelatedCollections]);
 
   useEffect(() => {
     if (!isEmpty(permissions) && collection && !isNil(showLoginPopup)) {
       setLoadingInfo({
         state: 'loaded',
-      })
+      });
     }
-  }, [permissions, collection, setLoadingInfo, showLoginPopup])
+  }, [permissions, collection, setLoadingInfo, showLoginPopup]);
 
   // Listeners
   const onEditCollection = () => {
@@ -609,12 +605,12 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
       `${generateContentLinkString(Avo.Core.ContentType.COLLECTIE, `${collectionId}`)}/${
         ROUTE_PARTS.edit
       }/${CollectionCreateUpdateTab.CONTENT}`,
-    )
-  }
+    );
+  };
 
   const executeAction = async (item: ReactText) => {
-    setIsOptionsMenuOpen(false)
-    setIsCreateAssignmentDropdownOpen(false)
+    setIsOptionsMenuOpen(false);
+    setIsCreateAssignmentDropdownOpen(false);
     switch (item) {
       case CollectionMenuAction.duplicate:
         try {
@@ -623,16 +619,16 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
               tHtml(
                 'collection/views/collection-detail___de-collectie-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database',
               ),
-            )
-            return
+            );
+            return;
           }
           if (!commonUser) {
             ToastService.danger(
               tHtml(
                 'collection/views/collection-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw',
               ),
-            )
-            return
+            );
+            return;
           }
           const duplicateCollection =
             await CollectionService.duplicateCollection(
@@ -640,7 +636,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
               commonUser,
               COLLECTION_COPY,
               COLLECTION_COPY_REGEX,
-            )
+            );
 
           trackEvents(
             {
@@ -649,75 +645,75 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
               action: 'copy',
             },
             commonUser,
-          )
+          );
 
           defaultGoToDetailLink(navigateFunc)(
             duplicateCollection.id,
             Avo.Core.ContentType.COLLECTIE,
-          )
-          setCollectionId(duplicateCollection.id)
+          );
+          setCollectionId(duplicateCollection.id);
           ToastService.success(
             tHtml(
               'collection/views/collection-detail___de-collectie-is-gekopieerd-u-kijkt-nu-naar-de-kopie',
             ),
-          )
+          );
         } catch (err) {
           console.error('Failed to copy collection', err, {
             originalCollection: collection,
-          })
+          });
           ToastService.danger(
             tHtml(
               'collection/views/collection-detail___het-kopieren-van-de-collectie-is-mislukt',
             ),
-          )
+          );
         }
-        break
+        break;
 
       case CollectionMenuAction.addToBundle:
-        setIsAddToBundleModalOpen(true)
-        break
+        setIsAddToBundleModalOpen(true);
+        break;
 
       case CollectionMenuAction.deleteCollection:
-        setIsDeleteModalOpen(true)
-        break
+        setIsDeleteModalOpen(true);
+        break;
 
       case CollectionMenuAction.deleteContributor:
-        setIsDeleteContributorModalOpen(true)
-        break
+        setIsDeleteContributorModalOpen(true);
+        break;
 
       case CollectionMenuAction.share:
-        setIsShareModalOpen(true)
-        break
+        setIsShareModalOpen(true);
+        break;
 
       case CollectionMenuAction.openPublishCollectionModal:
-        setIsPublishModalOpen(!isPublishModalOpen || undefined, 'replaceIn')
-        break
+        setIsPublishModalOpen(!isPublishModalOpen || undefined, 'replaceIn');
+        break;
 
       case CollectionMenuAction.toggleBookmark:
-        await toggleBookmark()
-        break
+        await toggleBookmark();
+        break;
 
       case CollectionMenuAction.createAssignment:
-        setIsCreateAssignmentModalOpen(true)
-        break
+        setIsCreateAssignmentModalOpen(true);
+        break;
 
       case CollectionMenuAction.importToAssignment:
-        setIsImportToAssignmentModalOpen(true)
-        break
+        setIsImportToAssignmentModalOpen(true);
+        break;
 
       case CollectionMenuAction.editCollection:
-        onEditCollection()
-        break
+        onEditCollection();
+        break;
       case CollectionMenuAction.openAutoplayCollectionModal:
         if (!collectionId) {
-          return
+          return;
         }
         BookmarksViewsPlaysService.action(
           'play',
           'collection',
           collectionId,
           commonUser,
-        ).then(noop)
+        ).then(noop);
         trackEvents(
           {
             object: collectionId,
@@ -728,21 +724,21 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
             },
           },
           commonUser,
-        )
-        setIsAutoplayCollectionModalOpen(!isAutoplayCollectionModalOpen)
-        break
+        );
+        setIsAutoplayCollectionModalOpen(!isAutoplayCollectionModalOpen);
+        break;
 
       case CollectionMenuAction.openQuickLane:
-        setIsQuickLaneModalOpen(true)
-        break
+        setIsQuickLaneModalOpen(true);
+        break;
 
       default:
         console.warn(
           `An unhandled action "${item}" was executed without a binding.`,
-        )
-        return null
+        );
+        return null;
     }
-  }
+  };
 
   const toggleBookmark = async () => {
     try {
@@ -751,22 +747,22 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           tHtml(
             'collection/views/collection-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw',
           ),
-        )
-        return
+        );
+        return;
       }
       if (!collectionId) {
-        return
+        return;
       }
       await BookmarksViewsPlaysService.toggleBookmark(
         collectionId,
         commonUser,
         'collection',
         bookmarkViewPlayCounts.isBookmarked,
-      )
+      );
       setBookmarkViewPlayCounts({
         ...bookmarkViewPlayCounts,
         isBookmarked: !bookmarkViewPlayCounts.isBookmarked,
-      })
+      });
       ToastService.success(
         bookmarkViewPlayCounts.isBookmarked
           ? tHtml(
@@ -775,7 +771,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           : tHtml(
               'collection/views/collection-detail___de-bladwijzer-is-aangemaakt',
             ),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError('Failed to toggle bookmark', err, {
@@ -784,7 +780,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           type: 'collection',
           isBookmarked: bookmarkViewPlayCounts.isBookmarked,
         }),
-      )
+      );
       ToastService.danger(
         bookmarkViewPlayCounts.isBookmarked
           ? tHtml(
@@ -793,13 +789,13 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           : tHtml(
               'collection/views/collection-detail___het-aanmaken-van-de-bladwijzer-is-mislukt',
             ),
-      )
+      );
     }
-  }
+  };
 
   const handleDeleteCollection = async (): Promise<void> => {
     if (!collectionId) {
-      return
+      return;
     }
     await deleteCollection(
       collectionId,
@@ -808,14 +804,14 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
       async () =>
         await CollectionService.deleteCollectionOrBundle(collectionId),
       () => navigateFunc(APP_PATH.WORKSPACE.route),
-    )
-  }
+    );
+  };
 
   const handleDeleteSelfFromCollection = async (): Promise<void> => {
     await deleteSelfFromCollection(collectionId, commonUser, () =>
       navigateFunc(APP_PATH.WORKSPACE.route),
-    )
-  }
+    );
+  };
 
   const onCreateAssignment = async (
     withDescription: boolean,
@@ -826,13 +822,13 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           commonUser,
           collection,
           withDescription,
-        )
+        );
 
       navigateFunc(
         buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }),
-      )
+      );
     }
-  }
+  };
 
   const onImportToAssignment = async (
     importToAssignmentId: string,
@@ -841,41 +837,41 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
     if (!commonUser?.profileId) {
       console.error(
         'Failed to import collection to assignment: no user profile id',
-      )
-      return
+      );
+      return;
     }
-    setAssignmentId(importToAssignmentId)
+    setAssignmentId(importToAssignmentId);
 
-    setImportWithDescription(withDescription)
+    setImportWithDescription(withDescription);
 
     // check if assignment has responses. If so: show additional confirmation modal
     const responses =
-      await AssignmentService.getAssignmentResponses(importToAssignmentId)
+      await AssignmentService.getAssignmentResponses(importToAssignmentId);
     if (responses.length > 0) {
-      setIsConfirmImportToAssignmentWithResponsesModalOpen(true)
+      setIsConfirmImportToAssignmentWithResponsesModalOpen(true);
     } else {
-      await doImportToAssignment(importToAssignmentId, withDescription)
+      await doImportToAssignment(importToAssignmentId, withDescription);
     }
-  }
+  };
 
   const onConfirmImportAssignment = () => {
     if (!assignmentId) {
-      return
+      return;
     }
-    return doImportToAssignment(assignmentId, importWithDescription)
-  }
+    return doImportToAssignment(assignmentId, importWithDescription);
+  };
 
   const doImportToAssignment = async (
     importToAssignmentId: string,
     withDescription: boolean,
   ): Promise<void> => {
-    setIsConfirmImportToAssignmentWithResponsesModalOpen(false)
+    setIsConfirmImportToAssignmentWithResponsesModalOpen(false);
     if (collection && importToAssignmentId) {
       await AssignmentService.importCollectionToAssignment(
         collection,
         importToAssignmentId,
         withDescription,
-      )
+      );
 
       // Track import collection into assignment event
       trackEvents(
@@ -889,38 +885,40 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           },
         },
         commonUser,
-      )
+      );
 
       ToastService.success(
         tHtml(
           'collection/views/collection-detail___de-collectie-is-geimporteerd-naar-de-opdracht',
         ),
-      )
+      );
     } else {
       ToastService.danger(
         tHtml(
           'collection/views/collection-detail___de-collectie-kon-niet-worden-geimporteerd-naar-de-opdracht',
         ),
-      )
+      );
     }
-  }
+  };
 
   const onAcceptShareCollection = async () => {
     if (!collection?.id || !inviteToken) {
-      throw new CustomError('There was no collection id or inviteToken present')
+      throw new CustomError(
+        'There was no collection id or inviteToken present',
+      );
     }
 
     try {
       const res = await CollectionService.acceptSharedCollection(
         collection.id as string,
         inviteToken,
-      )
+      );
 
       setQuery({
         ...query,
         inviteToken: undefined,
-      })
-      await checkPermissionsAndGetCollection()
+      });
+      await checkPermissionsAndGetCollection();
 
       ToastService.success(
         res.rights === 'CONTRIBUTOR'
@@ -930,48 +928,50 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           : tText(
               'collection/views/collection-detail___je-kan-nu-deze-collectie-bekijken',
             ),
-      )
+      );
     } catch (err) {
       ToastService.danger(
         tText(
           'collection/views/collection-detail___er-liep-iets-fout-bij-het-accepteren-van-de-uitnodiging',
         ),
-      )
+      );
     }
-  }
+  };
 
   const onDeclineShareCollection = async () => {
     if (!collection?.id || !inviteToken) {
-      throw new CustomError('There was no collection id or inviteToken present')
+      throw new CustomError(
+        'There was no collection id or inviteToken present',
+      );
     }
 
     try {
       await CollectionService.declineSharedCollection(
         collection.id as string,
         inviteToken,
-      )
+      );
 
-      navigate(navigateFunc, APP_PATH.WORKSPACE_COLLECTIONS.route)
+      navigate(navigateFunc, APP_PATH.WORKSPACE_COLLECTIONS.route);
 
       ToastService.success(
         tText(
           'collection/views/collection-detail___de-uitnodiging-werd-afgewezen',
         ),
-      )
+      );
     } catch (err) {
       ToastService.danger(
         tText(
           'collection/views/collection-detail___er-liep-iets-fout-bij-het-afwijzen-van-de-uitnodiging',
         ),
-      )
+      );
     }
-  }
+  };
 
   // Render functions
 
   const renderCollectionDropdownOptions = () => {
     if (!collectionId) {
-      return null
+      return null;
     }
     const COLLECTION_DROPDOWN_ITEMS = [
       ...createDropdownMenuItem(
@@ -1015,7 +1015,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         IconName.trash,
         shouldDeleteSelfFromCollection,
       ),
-    ]
+    ];
 
     return (
       <MoreOptionsDropdownWrapper
@@ -1026,8 +1026,8 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         menuItems={COLLECTION_DROPDOWN_ITEMS}
         onOptionClicked={executeAction}
       />
-    )
-  }
+    );
+  };
 
   const renderHeaderButtons = () => {
     return (
@@ -1186,12 +1186,12 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           </Spacer>
         )}
       </ButtonToolbar>
-    )
-  }
+    );
+  };
 
   const renderHeaderButtonsMobile = () => {
     if (!collectionId) {
-      return
+      return;
     }
     const COLLECTION_DROPDOWN_ITEMS_MOBILE = [
       ...createDropdownMenuItem(
@@ -1299,7 +1299,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         undefined,
         !permissions?.canDeleteCollections && isContributor,
       ),
-    ]
+    ];
     return (
       <ButtonToolbar>
         <MoreOptionsDropdown
@@ -1311,13 +1311,13 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           onOptionClicked={executeAction}
         />
       </ButtonToolbar>
-    )
-  }
+    );
+  };
 
   const renderCollectionBody = () => {
-    const { collection_fragments } = collection as Avo.Collection.Collection
-    const hasCopies = (collection?.relations || []).length > 0
-    const hasParentBundles = !!bundlesContainingCollection?.length
+    const { collection_fragments } = collection as Avo.Collection.Collection;
+    const hasCopies = (collection?.relations || []).length > 0;
+    const hasParentBundles = !!bundlesContainingCollection?.length;
 
     return (
       <>
@@ -1411,11 +1411,11 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           </Container>
         </Container>
       </>
-    )
-  }
+    );
+  };
 
   const renderModals = () => {
-    const { collection_fragments } = collection as Avo.Collection.Collection
+    const { collection_fragments } = collection as Avo.Collection.Collection;
 
     return (
       <>
@@ -1425,7 +1425,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
             parentBundles={bundlesContainingCollection}
             isOpen={!!isPublishModalOpen}
             onClose={(newCollection: Avo.Collection.Collection | undefined) => {
-              setIsPublishModalOpen(undefined, 'replaceIn')
+              setIsPublishModalOpen(undefined, 'replaceIn');
 
               if (newCollection) {
                 setCollectionInfo((oldCollectionInfo) => ({
@@ -1434,7 +1434,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
                     oldCollectionInfo?.showNoAccessPopup || false,
                   permissions: oldCollectionInfo?.permissions || {},
                   collection: newCollection || null,
-                }))
+                }));
               }
             }}
           />
@@ -1443,11 +1443,11 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           <AddToBundleModal
             fragmentId={collectionId as string}
             fragmentInfo={collection as Avo.Collection.Collection}
-            fragmentType={CollectionFragmentType.COLLECTION}
+            fragmentType={Avo.Core.BlockItemType.COLLECTION}
             isOpen={isAddToBundleModalOpen}
             onClose={async () => {
-              setIsAddToBundleModalOpen(false)
-              await refetchBundlesContainingCollection()
+              setIsAddToBundleModalOpen(false);
+              await refetchBundlesContainingCollection();
             }}
           />
         )}
@@ -1481,7 +1481,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
             content={collection}
             content_label={QuickLaneTypeEnum.COLLECTION}
             onClose={() => {
-              setIsQuickLaneModalOpen(false)
+              setIsQuickLaneModalOpen(false);
             }}
             onUpdate={(newCollection) => {
               if (
@@ -1494,7 +1494,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
                   permissions: oldCollectionInfo?.permissions || {},
                   collection:
                     (newCollection as Avo.Collection.Collection) || null,
-                }))
+                }));
               }
             }}
           />
@@ -1607,20 +1607,20 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           />
         )}
       </>
-    )
-  }
+    );
+  };
 
   const renderHeaderEducationLevel = () => {
     const groupedLomsLabels = getGroupedLomsKeyValue(
       collection?.loms || [],
       'label',
-    )
-    return <EducationLevelsTagList loms={groupedLomsLabels.educationLevel} />
-  }
+    );
+    return <EducationLevelsTagList loms={groupedLomsLabels.educationLevel} />;
+  };
 
   const renderCollection = () => {
     if (loadingInfo.state === 'loading') {
-      return <FullPageSpinner />
+      return <FullPageSpinner />;
     }
 
     if (showNoAccessPopup) {
@@ -1632,7 +1632,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           )}
           actionButtons={['home']}
         />
-      )
+      );
     }
 
     if (loadingInfo.state === 'forbidden') {
@@ -1645,7 +1645,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
             'collection/views/collection-detail___je-hebt-geen-toegang-beschrijving',
           )}
         />
-      )
+      );
     }
 
     if (loadingInfo.state === 'error') {
@@ -1657,7 +1657,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           )}
           actionButtons={['home']}
         />
-      )
+      );
     }
 
     return (
@@ -1670,7 +1670,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         {collection && (
           <Header
             title={collection.title}
-            category="collection"
+            category={Avo.ContentType.English.COLLECTION}
             showMetaData={true}
             bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
             views={String(bookmarkViewPlayCounts.viewCount || 0)}
@@ -1701,8 +1701,8 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         {!showLoginPopup && renderModals()}
         {showLoginPopup && <RegisterOrLogin />}
       </div>
-    )
-  }
+    );
+  };
 
   const renderPageContent = () => {
     return (
@@ -1758,10 +1758,10 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           }}
         />
       </div>
-    )
-  }
+    );
+  };
 
-  return renderPageContent()
-}
+  return renderPageContent();
+};
 
-export default CollectionDetail
+export default CollectionDetail;

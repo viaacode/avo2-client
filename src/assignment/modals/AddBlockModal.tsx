@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Button,
   Icon,
@@ -7,38 +7,37 @@ import {
   ModalBody,
   type ModalProps,
   Spacer,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import React, { type FC, type ReactNode, useMemo } from 'react'
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
+import React, { type FC, type ReactNode, useMemo } from 'react';
 
 import {
   BLOCK_TYPE_TO_ICON_NAME,
   BlockType,
-} from '../../shared/components/BlockList/BlockIconWrapper/BlockIconWrapper.consts.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { AssignmentBlockType } from '../assignment.types.js'
+} from '../../shared/components/BlockList/BlockIconWrapper/BlockIconWrapper.consts.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
 
-import './AddBlockModal.scss'
+import './AddBlockModal.scss';
 
 type AddBlockModalType =
-  | AssignmentBlockType.ITEM
-  | 'COLLECTIE'
-  | AssignmentBlockType.ZOEK
-  | AssignmentBlockType.TEXT
+  | Avo.Core.BlockItemType.ITEM
+  | Avo.Core.BlockItemType.COLLECTION
+  | Avo.Core.BlockItemType.ZOEK
+  | Avo.Core.BlockItemType.TEXT;
 
 interface AddBlockModalOption {
-  type: AddBlockModalType
-  icon: IconName
-  title: ReactNode
-  description: ReactNode
-  disabled?: boolean
+  type: AddBlockModalType;
+  icon: IconName;
+  title: ReactNode;
+  description: ReactNode;
+  disabled?: boolean;
 }
 
 export interface AddBlockModalProps
   extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-  blocks: Avo.Core.BlockItemBase[]
-  onConfirm?: (type: AddBlockModalType) => void
+  blocks: Avo.Core.BlockItemBase[];
+  onConfirm?: (type: AddBlockModalType) => void;
 }
 
 export const AddBlockModal: FC<AddBlockModalProps> = ({
@@ -51,11 +50,11 @@ export const AddBlockModal: FC<AddBlockModalProps> = ({
     (block) =>
       block.type === Avo.Core.BlockItemType.ZOEK ||
       block.type === Avo.Core.BlockItemType.BOUW,
-  )
+  );
   const items: AddBlockModalOption[] = useMemo(
     () => [
       {
-        type: AssignmentBlockType.ITEM,
+        type: Avo.Core.BlockItemType.ITEM,
         icon: BLOCK_TYPE_TO_ICON_NAME[BlockType.VIDEO],
         title: tHtml('assignment/modals/add-block___kijken-luisteren-fragment'),
         description: tHtml(
@@ -63,7 +62,7 @@ export const AddBlockModal: FC<AddBlockModalProps> = ({
         ),
       },
       {
-        type: 'COLLECTIE',
+        type: Avo.Core.BlockItemType.COLLECTION,
         icon: IconName.collection,
         title: tHtml(
           'assignment/modals/add-block___kijken-luisteren-collectie',
@@ -73,7 +72,7 @@ export const AddBlockModal: FC<AddBlockModalProps> = ({
         ),
       },
       {
-        type: AssignmentBlockType.ZOEK as AddBlockModalType,
+        type: Avo.Core.BlockItemType.ZOEK as AddBlockModalType,
         icon: BLOCK_TYPE_TO_ICON_NAME[BlockType.ZOEK],
         title: tHtml('assignment/modals/add-block___zoeken-bouwen'),
         description: disableSearchBlock
@@ -86,7 +85,7 @@ export const AddBlockModal: FC<AddBlockModalProps> = ({
         disabled: disableSearchBlock,
       },
       {
-        type: AssignmentBlockType.TEXT,
+        type: Avo.Core.BlockItemType.TEXT,
         icon: BLOCK_TYPE_TO_ICON_NAME[BlockType.TEXT],
         title: tHtml('assignment/modals/add-block___instructies-tekst'),
         description: tHtml(
@@ -95,7 +94,7 @@ export const AddBlockModal: FC<AddBlockModalProps> = ({
       },
     ],
     [disableSearchBlock],
-  )
+  );
 
   return (
     <Modal
@@ -137,7 +136,7 @@ export const AddBlockModal: FC<AddBlockModalProps> = ({
                         icon={IconName.plus}
                         type="primary"
                         onClick={() => {
-                          onConfirm && onConfirm(item.type)
+                          onConfirm && onConfirm(item.type);
                         }}
                       />
                     )}
@@ -149,5 +148,5 @@ export const AddBlockModal: FC<AddBlockModalProps> = ({
         </Spacer>
       </ModalBody>
     </Modal>
-  )
-}
+  );
+};

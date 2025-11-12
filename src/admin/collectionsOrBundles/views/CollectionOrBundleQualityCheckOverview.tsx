@@ -3,10 +3,10 @@ import {
   type FilterableColumn,
   FilterTable,
   getFilters,
-} from '@meemoo/admin-core-ui/admin'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { noop } from 'es-toolkit'
+} from '@meemoo/admin-core-ui/admin';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactNode,
@@ -14,79 +14,79 @@ import React, {
   useEffect,
   useMemo,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
-import { useLocation } from 'react-router-dom'
+} from 'react';
+import { Helmet } from 'react-helmet';
+import { useLocation } from 'react-router-dom';
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { GENERATE_SITE_TITLE } from '../../../constants.js'
-import { ErrorView } from '../../../error/views/ErrorView.js'
+import { commonUserAtom } from '../../../authentication/authentication.store.js';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
+import { GENERATE_SITE_TITLE } from '../../../constants.js';
+import { ErrorView } from '../../../error/views/ErrorView.js';
 
-import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js'
+import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies.js'
-import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js'
-import { useLomSubjects } from '../../../shared/hooks/useLomSubjects.js'
-import { useQualityLabels } from '../../../shared/hooks/useQualityLabels.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { TableColumnDataType } from '../../../shared/types/table-column-data-type.js'
-import { NULL_FILTER } from '../../shared/helpers/filters.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
-import { useUserGroups } from '../../user-groups/hooks/useUserGroups.js'
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { CustomError } from '../../../shared/helpers/custom-error.js';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies.js';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js';
+import { useLomSubjects } from '../../../shared/hooks/useLomSubjects.js';
+import { useQualityLabels } from '../../../shared/hooks/useQualityLabels.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { TableColumnDataType } from '../../../shared/types/table-column-data-type.js';
+import { NULL_FILTER } from '../../shared/helpers/filters.js';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import { useUserGroups } from '../../user-groups/hooks/useUserGroups.js';
 import {
   COLLECTIONS_OR_BUNDLES_PATH,
   GET_COLLECTION_QUALITY_CHECK_COLUMNS,
   ITEMS_PER_PAGE,
-} from '../collections-or-bundles.const.js'
-import { CollectionsOrBundlesService } from '../collections-or-bundles.service.js'
+} from '../collections-or-bundles.const.js';
+import { CollectionsOrBundlesService } from '../collections-or-bundles.service.js';
 import {
   CollectionBulkAction,
   type CollectionOrBundleQualityCheckOverviewTableCols,
   type CollectionOrBundleQualityCheckTableState,
   type CollectionSortProps,
   EditorialType,
-} from '../collections-or-bundles.types.js'
+} from '../collections-or-bundles.types.js';
 import {
   renderCollectionOrBundleQualityCheckCellReact,
   renderCollectionOrBundleQualityCheckCellText,
-} from '../helpers/render-collection-columns.js'
+} from '../helpers/render-collection-columns.js';
 
 export const CollectionOrBundleQualityCheckOverview: FC = () => {
-  const location = useLocation()
-  const commonUser = useAtomValue(commonUserAtom)
+  const location = useLocation();
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [collections, setCollections] = useState<
     Avo.Collection.Collection[] | null
-  >(null)
-  const [collectionCount, setCollectionCount] = useState<number>(0)
+  >(null);
+  const [collectionCount, setCollectionCount] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const [tableState, setTableState] = useState<
     Partial<CollectionOrBundleQualityCheckTableState>
-  >({})
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  >({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] =
-    useState(false)
+    useState(false);
 
   const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>(
     [],
-  )
+  );
 
-  const [userGroups] = useUserGroups(false)
-  const [subjects] = useLomSubjects()
-  const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees()
-  const { data: allQualityLabels } = useQualityLabels()
-  const [organisations] = useCompaniesWithUsers()
+  const [userGroups] = useUserGroups(false);
+  const [subjects] = useLomSubjects();
+  const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
+  const { data: allQualityLabels } = useQualityLabels();
+  const [organisations] = useCompaniesWithUsers();
 
   // computed
   const userGroupOptions = useMemo(() => {
@@ -109,8 +109,8 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
           NULL_FILTER,
         ),
       },
-    ]
-  }, [tableState, userGroups])
+    ];
+  }, [tableState, userGroups]);
 
   const collectionLabelOptions = useMemo(
     () => [
@@ -134,7 +134,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
       ),
     ],
     [allQualityLabels, tableState],
-  )
+  );
 
   const organisationOptions = useMemo(
     () => [
@@ -158,7 +158,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
       ),
     ],
     [organisations, tableState],
-  )
+  );
 
   const tableColumns = useMemo(
     () =>
@@ -176,24 +176,24 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
       userGroupOptions,
       organisationOptions,
     ],
-  )
+  );
 
   const isCollection =
     location.pathname ===
-    COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_QUALITYCHECK_OVERVIEW
+    COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_QUALITYCHECK_OVERVIEW;
 
   // methods
   const getColumnDataType = useCallback(() => {
     const column = tableColumns.find(
       (tableColumn: FilterableColumn) =>
         tableColumn.id === tableState.sort_column,
-    )
+    );
     return (column?.dataType ||
-      TableColumnDataType.string) as TableColumnDataType
-  }, [tableColumns, tableState.sort_column])
+      TableColumnDataType.string) as TableColumnDataType;
+  }, [tableColumns, tableState.sort_column]);
 
   const fetchCollectionsOrBundles = useCallback(async () => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       const { collections: collectionsTemp, total: collectionsCountTemp } =
@@ -206,10 +206,10 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
           EditorialType.QUALITY_CHECK,
           isCollection,
           true,
-        )
+        );
 
-      setCollections(collectionsTemp)
-      setCollectionCount(collectionsCountTemp)
+      setCollections(collectionsTemp);
+      setCollectionCount(collectionsCountTemp);
     } catch (err) {
       console.error(
         new CustomError(
@@ -219,7 +219,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
             tableState,
           },
         ),
-      )
+      );
 
       setLoadingInfo({
         state: 'error',
@@ -230,42 +230,42 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
           : tText(
               'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___het-ophalen-van-de-bundel-actualisaties-is-mislukt',
             ),
-      })
+      });
     }
 
-    setIsLoading(false)
-  }, [tableState, getColumnDataType, isCollection])
+    setIsLoading(false);
+  }, [tableState, getColumnDataType, isCollection]);
 
   useEffect(() => {
     if (commonUser && educationLevelsAndDegrees?.length) {
-      fetchCollectionsOrBundles().then(noop)
+      fetchCollectionsOrBundles().then(noop);
     }
-  }, [fetchCollectionsOrBundles, commonUser, educationLevelsAndDegrees])
+  }, [fetchCollectionsOrBundles, commonUser, educationLevelsAndDegrees]);
 
   useEffect(() => {
     if (collections) {
       setLoadingInfo({
         state: 'loaded',
-      })
+      });
     }
 
     // Update selected rows to always be a subset of the collections array
     // In other words, you cannot have something selected that isn't part of the current filtered/paginated results
-    const collectionIds: string[] = (collections || []).map((coll) => coll.id)
+    const collectionIds: string[] = (collections || []).map((coll) => coll.id);
     setSelectedCollectionIds((currentSelectedCollectionIds) => {
       return (currentSelectedCollectionIds || []).filter(
         (collId) => collId && collectionIds.includes(collId),
-      )
-    })
-  }, [setLoadingInfo, collections, setSelectedCollectionIds])
+      );
+    });
+  }, [setLoadingInfo, collections, setSelectedCollectionIds]);
 
   const setAllCollectionsAsSelected = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       const collectionIds = await CollectionsOrBundlesService.getCollectionIds(
         getFilters(tableState),
         isCollection,
-      )
+      );
       ToastService.info(
         tHtml(
           'admin/collections-or-bundles/views/collections-or-bundles-overview___je-hebt-num-of-selected-collections-collecties-geselecteerd',
@@ -273,8 +273,8 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
             numOfSelectedCollections: collectionIds.length,
           },
         ),
-      )
-      setSelectedCollectionIds(collectionIds)
+      );
+      setSelectedCollectionIds(collectionIds);
     } catch (err) {
       console.error(
         new CustomError(
@@ -282,15 +282,15 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
           err,
           { tableState },
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___het-ophalen-van-de-collectie-ids-is-mislukt',
         ),
-      )
+      );
     }
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const renderNoResults = () => {
     return (
@@ -305,12 +305,12 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
           )}
         </p>
       </ErrorView>
-    )
-  }
+    );
+  };
 
   const renderCollectionOrBundleQualityCheckOverview = () => {
     if (!collections) {
-      return null
+      return null;
     }
     return (
       <>
@@ -325,7 +325,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
               {
                 isCollection,
                 allQualityLabels: allQualityLabels || [],
-                editStatuses: [],
+                editStatuses: {},
                 commonUser,
               },
             )
@@ -363,7 +363,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
           ]}
           onSelectBulkAction={async (action: string) => {
             if (action === CollectionBulkAction.EXPORT_ALL) {
-              setIsExportAllToCsvModalOpen(true)
+              setIsExportAllToCsvModalOpen(true);
             }
           }}
         />
@@ -397,8 +397,8 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
                 EditorialType.QUALITY_CHECK,
                 isCollection,
                 false,
-              )
-            return response.total
+              );
+            return response.total;
           }}
           fetchMoreItems={async (offset: number, limit: number) => {
             const response =
@@ -411,8 +411,8 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
                 EditorialType.QUALITY_CHECK,
                 isCollection,
                 false,
-              )
-            return response.collections
+              );
+            return response.collections;
           }}
           renderValue={(value: any, columnId: string) =>
             renderCollectionOrBundleQualityCheckCellText(
@@ -421,7 +421,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
               {
                 isCollection,
                 allQualityLabels: allQualityLabels || [],
-                editStatuses: [],
+                editStatuses: {},
                 commonUser,
               },
             )
@@ -438,8 +438,8 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
           }
         />
       </>
-    )
-  }
+    );
+  };
 
   return (
     <PermissionGuard
@@ -497,7 +497,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
         </AdminLayoutBody>
       </AdminLayout>
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default CollectionOrBundleQualityCheckOverview
+export default CollectionOrBundleQualityCheckOverview;

@@ -1,10 +1,10 @@
-import { TagList, type TagOption } from '@viaa/avo2-components'
-import { clsx } from 'clsx'
-import { compact, sortBy } from 'es-toolkit'
-import React, { type FC, useMemo } from 'react'
+import { TagList, type TagOption } from '@viaa/avo2-components';
+import { clsx } from 'clsx';
+import { compact, sortBy } from 'es-toolkit';
+import React, { type FC, useMemo } from 'react';
 
-import { tText } from '../../helpers/translate-text.js'
-import './EducationLevelsTagList.scss'
+import { tText } from '../../helpers/translate-text.js';
+import './EducationLevelsTagList.scss';
 
 enum EducationLevel {
   kleuteronderwijs = 'kleuteronderwijs',
@@ -23,7 +23,7 @@ const preferredOrder: Record<EducationLevel, number> = {
   [EducationLevel.volwassenenonderwijs]: 5,
   [EducationLevel.hogeronderwijs]: 6,
   [EducationLevel.andere]: 7,
-}
+};
 
 const GET_EDUCATION_LEVEL_LABELS: () => Record<EducationLevel, string> =
   () => ({
@@ -48,11 +48,11 @@ const GET_EDUCATION_LEVEL_LABELS: () => Record<EducationLevel, string> =
     [EducationLevel.andere]: tText(
       'shared/components/education-levels-tag-list/education-levels-tag-list___ander',
     ),
-  })
+  });
 
 interface EducationLevelsTagListProps {
-  loms: string[]
-  className?: string
+  loms: string[];
+  className?: string;
 }
 
 const EducationLevelsTagList: FC<EducationLevelsTagListProps> = ({
@@ -60,27 +60,27 @@ const EducationLevelsTagList: FC<EducationLevelsTagListProps> = ({
   className,
 }) => {
   const mappedLoms = useMemo(() => {
-    const labels = GET_EDUCATION_LEVEL_LABELS()
+    const labels = GET_EDUCATION_LEVEL_LABELS();
 
-    return sortBy(
-      compact(
-        loms?.map((lomEntry) => {
-          const key = lomEntry.toLowerCase().replaceAll(' ', '')
-          const label = labels[key as EducationLevel]
+    const tagOptions = compact(
+      loms?.map((lomEntry): TagOption => {
+        const key = lomEntry.toLowerCase().replaceAll(' ', '');
+        const label = labels[key as EducationLevel];
 
-          return {
-            label: label,
-            id: key,
-            className: clsx(
-              'c-education-levels-tag',
-              `c-education-levels-tag__${key}`,
-            ),
-          } as TagOption
-        }),
-      ),
+        return {
+          label: label,
+          id: key,
+          className: clsx(
+            'c-education-levels-tag',
+            `c-education-levels-tag__${key}`,
+          ),
+        } as TagOption;
+      }),
+    );
+    return sortBy(tagOptions, [
       (option) => preferredOrder[option.id as EducationLevel],
-    )
-  }, [loms])
+    ]);
+  }, [loms]);
 
   return (
     <TagList
@@ -89,7 +89,7 @@ const EducationLevelsTagList: FC<EducationLevelsTagListProps> = ({
       closable={false}
       swatches={false}
     />
-  )
-}
+  );
+};
 
-export default EducationLevelsTagList
+export default EducationLevelsTagList;

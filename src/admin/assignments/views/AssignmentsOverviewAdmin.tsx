@@ -3,10 +3,10 @@ import {
   type FilterableColumn,
   FilterTable,
   getFilters,
-} from '@meemoo/admin-core-ui/admin'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { noop, partition } from 'es-toolkit'
+} from '@meemoo/admin-core-ui/admin';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { compact, noop, partition } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactNode,
@@ -14,94 +14,94 @@ import React, {
   useEffect,
   useMemo,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
+} from 'react';
+import { Helmet } from 'react-helmet';
 
-import { AssignmentService } from '../../../assignment/assignment.service.js'
-import { type AssignmentTableColumns } from '../../../assignment/assignment.types.js'
-import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetAssignmentsEditStatuses.js'
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js'
-import { ErrorView } from '../../../error/views/ErrorView.js'
+import { AssignmentService } from '../../../assignment/assignment.service.js';
+import { type AssignmentTableColumns } from '../../../assignment/assignment.types.js';
+import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetAssignmentsEditStatuses.js';
+import { commonUserAtom } from '../../../authentication/authentication.store.js';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js';
+import { ErrorView } from '../../../error/views/ErrorView.js';
 
-import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js'
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal.js'
+import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal.js';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants/index.js'
-import { buildLink } from '../../../shared/helpers/build-link.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js'
-import { useLomSubjects } from '../../../shared/hooks/useLomSubjects.js'
-import { useQualityLabels } from '../../../shared/hooks/useQualityLabels.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { TableColumnDataType } from '../../../shared/types/table-column-data-type.js'
-import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal.js'
-import { SubjectsBeingEditedWarningModal } from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal.js'
-import { NULL_FILTER } from '../../shared/helpers/filters.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
-import { type PickerItem } from '../../shared/types/content-picker.js'
-import { useUserGroups } from '../../user-groups/hooks/useUserGroups.js'
-import { AssignmentsAdminService } from '../assignments.admin.service.js'
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants/index.js';
+import { buildLink } from '../../../shared/helpers/build-link.js';
+import { CustomError } from '../../../shared/helpers/custom-error.js';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js';
+import { useLomSubjects } from '../../../shared/hooks/useLomSubjects.js';
+import { useQualityLabels } from '../../../shared/hooks/useQualityLabels.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { TableColumnDataType } from '../../../shared/types/table-column-data-type.js';
+import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal.js';
+import { SubjectsBeingEditedWarningModal } from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal.js';
+import { NULL_FILTER } from '../../shared/helpers/filters.js';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import { type PickerItem } from '../../shared/types/content-picker.js';
+import { useUserGroups } from '../../user-groups/hooks/useUserGroups.js';
+import { AssignmentsAdminService } from '../assignments.admin.service.js';
 import {
   GET_ASSIGNMENT_BULK_ACTIONS,
   GET_ASSIGNMENT_OVERVIEW_TABLE_COLS,
   ITEMS_PER_PAGE,
-} from '../assignments.const.js'
+} from '../assignments.const.js';
 import {
   AssignmentsBulkAction,
   type AssignmentsOverviewTableState,
-} from '../assignments.types.js'
+} from '../assignments.types.js';
 import {
   renderAssignmentOverviewCellReact,
   renderAssignmentsMarcomCellText,
-} from '../helpers/render-assignment-columns.js'
+} from '../helpers/render-assignment-columns.js';
 
-import './AssignmentsOverviewAdmin.scss'
+import './AssignmentsOverviewAdmin.scss';
 
 export const AssignmentOverviewAdmin: FC = () => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [assignments, setAssignments] = useState<
     Avo.Assignment.Assignment[] | null
-  >(null)
-  const [assignmentCount, setAssignmentCount] = useState<number>(0)
+  >(null);
+  const [assignmentCount, setAssignmentCount] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const [tableState, setTableState] = useState<
     Partial<AssignmentsOverviewTableState>
   >({
     sort_column: 'created_at',
     sort_order: Avo.Search.OrderDirection.DESC,
-  })
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] =
-    useState(false)
+    useState(false);
   const [selectedAssignmentIds, setSelectedAssignmentIds] = useState<string[]>(
     [],
-  )
+  );
   const [assignmentsDeleteModalOpen, setAssignmentsDeleteModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [isChangeAuthorModalOpen, setIsChangeAuthorModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [assignmentsBeingEdited, setAssignmentsBeingEdited] = useState<
     Avo.Share.EditStatus[]
-  >([])
+  >([]);
   const [selectedBulkAction, setSelectedBulkAction] =
-    useState<AssignmentsBulkAction | null>(null)
+    useState<AssignmentsBulkAction | null>(null);
 
-  const { data: allQualityLabels } = useQualityLabels()
-  const [userGroups] = useUserGroups(false)
-  const [subjects] = useLomSubjects()
-  const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees()
+  const { data: allQualityLabels } = useQualityLabels();
+  const [userGroups] = useUserGroups(false);
+  const [subjects] = useLomSubjects();
+  const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 
   const { data: editStatuses } = useGetAssignmentsEditStatuses(
     assignments?.map((assignment) => assignment.id) || [],
@@ -110,7 +110,7 @@ export const AssignmentOverviewAdmin: FC = () => {
       refetchInterval: EDIT_STATUS_REFETCH_TIME,
       refetchIntervalInBackground: true,
     },
-  )
+  );
 
   const userGroupOptions = useMemo(
     () => [
@@ -134,7 +134,7 @@ export const AssignmentOverviewAdmin: FC = () => {
       },
     ],
     [tableState, userGroups],
-  )
+  );
 
   const assignmentLabelOptions = useMemo(
     () => [
@@ -156,7 +156,7 @@ export const AssignmentOverviewAdmin: FC = () => {
       ),
     ],
     [allQualityLabels, tableState],
-  )
+  );
 
   const tableColumns = useMemo(
     () =>
@@ -172,19 +172,19 @@ export const AssignmentOverviewAdmin: FC = () => {
       subjects,
       educationLevelsAndDegrees,
     ],
-  )
+  );
 
   const getColumnDataType = useCallback(() => {
     const column = tableColumns.find((tableColumn: FilterableColumn) => {
-      return tableColumn.id === (tableState.sort_column || 'empty')
-    })
+      return tableColumn.id === (tableState.sort_column || 'empty');
+    });
     return (column?.dataType ||
-      TableColumnDataType.string) as TableColumnDataType
-  }, [tableColumns, tableState.sort_column])
+      TableColumnDataType.string) as TableColumnDataType;
+  }, [tableColumns, tableState.sort_column]);
 
   const fetchAssignments = useCallback(async () => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const [assignmentsTemp, assignmentCountTemp] =
         await AssignmentService.fetchAssignmentsForAdmin(
           (tableState.page || 0) * ITEMS_PER_PAGE,
@@ -193,46 +193,46 @@ export const AssignmentOverviewAdmin: FC = () => {
           tableState.sort_order || Avo.Search.OrderDirection.DESC,
           getColumnDataType(),
           getFilters(tableState),
-        )
+        );
 
-      setAssignments(assignmentsTemp)
-      setAssignmentCount(assignmentCountTemp)
+      setAssignments(assignmentsTemp);
+      setAssignmentCount(assignmentCountTemp);
     } catch (err) {
       console.error(
         new CustomError('Failed to get assignments from the database', err, {
           tableState,
         }),
-      )
+      );
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'admin/assignments/views/assignments-overview-admin___het-ophalen-van-de-opdrachten-is-mislukt',
         ),
-      })
+      });
     }
-    setIsLoading(false)
-  }, [tableState, getColumnDataType])
+    setIsLoading(false);
+  }, [tableState, getColumnDataType]);
 
   useEffect(() => {
     if (commonUser && educationLevelsAndDegrees?.length) {
-      fetchAssignments().then(noop)
+      fetchAssignments().then(noop);
     }
-  }, [commonUser, educationLevelsAndDegrees?.length, fetchAssignments])
+  }, [commonUser, educationLevelsAndDegrees?.length, fetchAssignments]);
 
   useEffect(() => {
     if (assignments) {
       setLoadingInfo({
         state: 'loaded',
-      })
+      });
     }
-  }, [fetchAssignments, assignments])
+  }, [fetchAssignments, assignments]);
 
   const setAllAssignmentsAsSelected = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       const assignmentIds = await AssignmentsAdminService.getAssignmentIds(
         getFilters(tableState),
-      )
+      );
       ToastService.info(
         tHtml(
           'admin/assignments/views/assignments-overview-admin___je-hebt-num-of-selected-assignments-geselecteerd',
@@ -240,8 +240,8 @@ export const AssignmentOverviewAdmin: FC = () => {
             numOfSelectedAssignments: assignmentIds.length,
           },
         ),
-      )
-      setSelectedAssignmentIds(assignmentIds)
+      );
+      setSelectedAssignmentIds(assignmentIds);
     } catch (err) {
       console.error(
         new CustomError(
@@ -249,16 +249,16 @@ export const AssignmentOverviewAdmin: FC = () => {
           err,
           { tableState },
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/assignments/views/assignments-overview-admin___het-ophalen-van-alle-geselecteerde-opdrachten-ids-is-mislukt',
         ),
-      )
+      );
     }
 
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const handleBulkAction = async (
     action: AssignmentsBulkAction,
@@ -266,55 +266,55 @@ export const AssignmentOverviewAdmin: FC = () => {
     if (action === AssignmentsBulkAction.EXPORT_ALL) {
       // No rows need to be selected since we export everything
       // We also don't need to check any edit statuses since we're not editing/deleting anything
-      setIsExportAllToCsvModalOpen(true)
-      return
+      setIsExportAllToCsvModalOpen(true);
+      return;
     }
 
     if (selectedAssignmentIds.length === 0) {
-      return // No rows selected, and actions below need selected rows to perform their operations
+      return; // No rows selected, and actions below need selected rows to perform their operations
     }
 
     const selectedAssignmentEditStatuses =
-      await AssignmentService.getAssignmentsEditStatuses(selectedAssignmentIds)
+      await AssignmentService.getAssignmentsEditStatuses(selectedAssignmentIds);
     const partitionedAssignmentIds = partition(
       Object.entries(selectedAssignmentEditStatuses),
       (entry) => !!entry[1],
-    )
+    );
     const selectedAssignmentsThatAreBeingEdited: Avo.Share.EditStatus[] =
-      partitionedAssignmentIds[0].map((entry) => entry[1])
+      compact(partitionedAssignmentIds[0].map((entry) => entry[1]));
     const selectedAssignmentIdsThatAreNotBeingEdited =
-      partitionedAssignmentIds[1].map((entry) => entry[0])
+      partitionedAssignmentIds[1].map((entry) => entry[0]);
 
     if (selectedAssignmentsThatAreBeingEdited.length > 0) {
       // open warning modal first
-      setSelectedAssignmentIds(selectedAssignmentIdsThatAreNotBeingEdited)
-      setSelectedBulkAction(action)
-      setAssignmentsBeingEdited(selectedAssignmentsThatAreBeingEdited)
+      setSelectedAssignmentIds(selectedAssignmentIdsThatAreNotBeingEdited);
+      setSelectedBulkAction(action);
+      setAssignmentsBeingEdited(selectedAssignmentsThatAreBeingEdited);
     } else {
       // execute action straight away
-      setAssignmentsBeingEdited([])
-      setSelectedBulkAction(null)
+      setAssignmentsBeingEdited([]);
+      setSelectedBulkAction(null);
 
       switch (action) {
         case AssignmentsBulkAction.DELETE:
-          setAssignmentsDeleteModalOpen(true)
-          return
+          setAssignmentsDeleteModalOpen(true);
+          return;
 
         case AssignmentsBulkAction.CHANGE_AUTHOR:
-          setIsChangeAuthorModalOpen(true)
-          return
+          setIsChangeAuthorModalOpen(true);
+          return;
       }
     }
-  }
+  };
 
   const deleteSelectedAssignments = async () => {
-    setIsLoading(true)
-    setAssignmentsBeingEdited([])
-    setSelectedBulkAction(null)
-    setAssignmentsDeleteModalOpen(false)
+    setIsLoading(true);
+    setAssignmentsBeingEdited([]);
+    setSelectedBulkAction(null);
+    setAssignmentsDeleteModalOpen(false);
     try {
-      await AssignmentService.deleteAssignments(selectedAssignmentIds)
-      await fetchAssignments()
+      await AssignmentService.deleteAssignments(selectedAssignmentIds);
+      await fetchAssignments();
       ToastService.success(
         tHtml(
           'admin/assignments/views/assignments-overview-admin___je-hebt-num-of-selected-assignments-verwijderd',
@@ -322,33 +322,33 @@ export const AssignmentOverviewAdmin: FC = () => {
             numOfSelectedAssignments: selectedAssignmentIds.length,
           },
         ),
-      )
-      setSelectedAssignmentIds([])
+      );
+      setSelectedAssignmentIds([]);
     } catch (err) {
       console.error(
         new CustomError('Failed to delete the selected assignments', err, {
           tableState,
         }),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/assignments/views/assignments-overview-admin___het-verwijderen-van-de-geselecteerde-opdrachten-is-mislukt',
         ),
-      )
+      );
     }
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const changeAuthorForSelectedAssignments = async (profileId: string) => {
-    setIsLoading(true)
-    setAssignmentsBeingEdited([])
-    setSelectedBulkAction(null)
+    setIsLoading(true);
+    setAssignmentsBeingEdited([]);
+    setSelectedBulkAction(null);
     try {
       await AssignmentService.changeAssignmentsAuthor(
         profileId,
         selectedAssignmentIds,
-      )
-      await fetchAssignments()
+      );
+      await fetchAssignments();
       ToastService.success(
         tHtml(
           'admin/assignments/views/assignments-overview-admin___je-hebt-de-auteur-van-num-of-selected-assignments-aangepast',
@@ -356,8 +356,8 @@ export const AssignmentOverviewAdmin: FC = () => {
             numOfSelectedAssignments: selectedAssignmentIds.length,
           },
         ),
-      )
-      setSelectedAssignmentIds([])
+      );
+      setSelectedAssignmentIds([]);
     } catch (err) {
       console.error(
         new CustomError(
@@ -367,15 +367,15 @@ export const AssignmentOverviewAdmin: FC = () => {
             tableState,
           },
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/assignments/views/assignments-overview-admin___het-updaten-van-de-auteur-van-de-geselecteerde-opdrachten-is-mislukt',
         ),
-      )
+      );
     }
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const renderNoResults = () => {
     return (
@@ -390,8 +390,8 @@ export const AssignmentOverviewAdmin: FC = () => {
           )}
         </p>
       </ErrorView>
-    )
-  }
+    );
+  };
 
   const renderAssignmentBeingEditedMessage = () => {
     return (
@@ -424,12 +424,12 @@ export const AssignmentOverviewAdmin: FC = () => {
           )}
         </p>
       </>
-    )
-  }
+    );
+  };
 
   const renderAssignmentOverview = () => {
     if (!assignments) {
-      return null
+      return null;
     }
     return (
       <>
@@ -446,7 +446,7 @@ export const AssignmentOverviewAdmin: FC = () => {
               columnId as AssignmentTableColumns,
               {
                 allQualityLabels: allQualityLabels || [],
-                editStatuses,
+                editStatuses: editStatuses || {},
                 commonUser: commonUser,
               },
             )
@@ -459,7 +459,7 @@ export const AssignmentOverviewAdmin: FC = () => {
           )}
           itemsPerPage={ITEMS_PER_PAGE}
           onTableStateChanged={(newTableState) => {
-            setTableState(newTableState)
+            setTableState(newTableState);
           }}
           renderNoResults={renderNoResults}
           isLoading={isLoading}
@@ -481,22 +481,22 @@ export const AssignmentOverviewAdmin: FC = () => {
         <SubjectsBeingEditedWarningModal
           isOpen={assignmentsBeingEdited?.length > 0}
           onClose={() => {
-            setAssignmentsDeleteModalOpen(false)
-            setAssignmentsBeingEdited([])
-            setSelectedBulkAction(null)
+            setAssignmentsDeleteModalOpen(false);
+            setAssignmentsBeingEdited([]);
+            setSelectedBulkAction(null);
           }}
           confirmCallback={async () => {
-            setAssignmentsBeingEdited([])
+            setAssignmentsBeingEdited([]);
             if (selectedAssignmentIds.length > 0) {
               await handleBulkAction(
                 selectedBulkAction as AssignmentsBulkAction,
-              )
+              );
             } else {
               ToastService.info(
                 tHtml(
                   'admin/assignments/views/assignments-overview-admin___alle-geselecteerde-opdrachten-worden-bewerkt-dus-de-actie-kan-niet-worden-uitgevoerd',
                 ),
-              )
+              );
             }
           }}
           title={tHtml(
@@ -515,22 +515,22 @@ export const AssignmentOverviewAdmin: FC = () => {
           body={renderAssignmentBeingEditedMessage()}
           isOpen={assignmentsBeingEdited?.length > 0}
           onClose={() => {
-            setAssignmentsDeleteModalOpen(false)
-            setAssignmentsBeingEdited([])
-            setSelectedBulkAction(null)
+            setAssignmentsDeleteModalOpen(false);
+            setAssignmentsBeingEdited([]);
+            setSelectedBulkAction(null);
           }}
           confirmCallback={async () => {
-            setAssignmentsBeingEdited([])
+            setAssignmentsBeingEdited([]);
             if (selectedAssignmentIds.length > 0) {
               await handleBulkAction(
                 selectedBulkAction as AssignmentsBulkAction,
-              )
+              );
             } else {
               ToastService.info(
                 tHtml(
                   'admin/assignments/views/assignments-overview-admin___alle-geselecteerde-opdrachten-worden-bewerkt-dus-de-actie-kan-niet-worden-uitgevoerd',
                 ),
-              )
+              );
             }
           }}
           confirmButtonType="primary"
@@ -545,18 +545,18 @@ export const AssignmentOverviewAdmin: FC = () => {
           )}
           isOpen={assignmentsDeleteModalOpen}
           onClose={() => {
-            setAssignmentsDeleteModalOpen(false)
-            setAssignmentsBeingEdited([])
-            setSelectedBulkAction(null)
+            setAssignmentsDeleteModalOpen(false);
+            setAssignmentsBeingEdited([]);
+            setSelectedBulkAction(null);
           }}
           confirmCallback={deleteSelectedAssignments}
         />
         <ChangeAuthorModal
           isOpen={isChangeAuthorModalOpen}
           onClose={() => {
-            setIsChangeAuthorModalOpen(false)
-            setAssignmentsBeingEdited([])
-            setSelectedBulkAction(null)
+            setIsChangeAuthorModalOpen(false);
+            setAssignmentsBeingEdited([]);
+            setSelectedBulkAction(null);
           }}
           callback={(newAuthor: PickerItem) =>
             changeAuthorForSelectedAssignments(newAuthor.value)
@@ -584,8 +584,8 @@ export const AssignmentOverviewAdmin: FC = () => {
               tableState.sort_order || Avo.Search.OrderDirection.DESC,
               getColumnDataType(),
               {},
-            )
-            return response[1]
+            );
+            return response[1];
           }}
           fetchMoreItems={async (offset: number, limit: number) => {
             const response = await AssignmentService.fetchAssignmentsForAdmin(
@@ -596,8 +596,8 @@ export const AssignmentOverviewAdmin: FC = () => {
               tableState.sort_order || Avo.Search.OrderDirection.DESC,
               getColumnDataType(),
               {},
-            )
-            return response[0]
+            );
+            return response[0];
           }}
           renderValue={(value: any, columnId: string) =>
             renderAssignmentsMarcomCellText(
@@ -605,7 +605,7 @@ export const AssignmentOverviewAdmin: FC = () => {
               columnId as AssignmentTableColumns,
               {
                 allQualityLabels: allQualityLabels || [],
-                editStatuses,
+                editStatuses: editStatuses || {},
                 commonUser,
               },
             )
@@ -616,8 +616,8 @@ export const AssignmentOverviewAdmin: FC = () => {
           )}
         />
       </>
-    )
-  }
+    );
+  };
 
   return (
     <PermissionGuard permissions={[PermissionName.VIEW_ANY_ASSIGNMENTS]}>
@@ -651,7 +651,7 @@ export const AssignmentOverviewAdmin: FC = () => {
         </AdminLayoutBody>
       </AdminLayout>
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default AssignmentOverviewAdmin
+export default AssignmentOverviewAdmin;

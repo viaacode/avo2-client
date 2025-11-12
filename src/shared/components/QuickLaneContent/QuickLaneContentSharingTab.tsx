@@ -8,102 +8,100 @@ import {
   FormGroup,
   Spacer,
   TextInput,
-} from '@viaa/avo2-components'
-import { type ItemSchema } from '@viaa/avo2-types/types/item'
-import { useAtomValue } from 'jotai'
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   useCallback,
   useEffect,
   useMemo,
   useState,
-} from 'react'
-
-import { type AssignmentLayout } from '../../../assignment/assignment.types.js'
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription.js'
-import { QuickLaneService } from '../../../quick-lane/quick-lane.service.js'
-import { getValidStartAndEnd } from '../../helpers/cut-start-and-end.js'
-import { copyQuickLaneToClipboard } from '../../helpers/generate-quick-lane-href.js'
-import { isMobileWidth } from '../../helpers/media-query.js'
-import { toSeconds } from '../../helpers/parsers/duration.js'
-import { tHtml } from '../../helpers/translate-html.js'
-import { tText } from '../../helpers/translate-text.js'
-import { useDebounce } from '../../hooks/useDebounce.js'
-import { ToastService } from '../../services/toast-service.js'
-import { type QuickLaneUrlObject } from '../../types/index.js'
-import { ContentLink } from '../ContentLink/ContentLink.js'
-import { LayoutOptions } from '../LayoutOptions/LayoutOptions.js'
-import { QuickLaneLink } from '../QuickLaneLink/QuickLaneLink.js'
-import { TimeCropControls } from '../TimeCropControls/TimeCropControls.js'
-
+} from 'react';
+import { type AssignmentLayout } from '../../../assignment/assignment.types.js';
+import { commonUserAtom } from '../../../authentication/authentication.store.js';
+import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription.js';
+import { QuickLaneService } from '../../../quick-lane/quick-lane.service.js';
+import { getValidStartAndEnd } from '../../helpers/cut-start-and-end.js';
+import { copyQuickLaneToClipboard } from '../../helpers/generate-quick-lane-href.js';
+import { isMobileWidth } from '../../helpers/media-query.js';
+import { toSeconds } from '../../helpers/parsers/duration.js';
+import { tHtml } from '../../helpers/translate-html.js';
+import { tText } from '../../helpers/translate-text.js';
+import { useDebounce } from '../../hooks/useDebounce.js';
+import { ToastService } from '../../services/toast-service.js';
+import { type QuickLaneUrlObject } from '../../types/index.js';
+import { ContentLink } from '../ContentLink/ContentLink.js';
+import { LayoutOptions } from '../LayoutOptions/LayoutOptions.js';
+import { QuickLaneLink } from '../QuickLaneLink/QuickLaneLink.js';
+import { TimeCropControls } from '../TimeCropControls/TimeCropControls.js';
 import {
   defaultQuickLaneState,
   getContentUuid,
   isShareable,
-} from './QuickLaneContent.helpers.js'
+} from './QuickLaneContent.helpers.js';
 import {
   type QuickLaneContentProps,
   QuickLaneTypeEnum,
-} from './QuickLaneContent.types.js'
+} from './QuickLaneContent.types.js';
 
 export const QuickLaneContentSharingTab: FC<QuickLaneContentProps> = ({
   isOpen,
   content,
   content_label,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const fragmentDuration = useMemo(
-    () => toSeconds((content as ItemSchema).duration) || 0,
+    () => toSeconds((content as Avo.Item.Item).duration) || 0,
     [content],
-  )
+  );
 
   const [quickLane, setQuickLane] = useState<QuickLaneUrlObject>(
     defaultQuickLaneState,
-  )
-  const [exists, setExists] = useState<boolean>(false)
-  const [synced, setSynced] = useState<boolean>(false)
+  );
+  const [exists, setExists] = useState<boolean>(false);
+  const [synced, setSynced] = useState<boolean>(false);
 
   const initialFragmentStart = useMemo(() => {
-    return quickLane.start_oc || 0
-  }, [quickLane])
+    return quickLane.start_oc || 0;
+  }, [quickLane]);
 
   const initialFragmentEnd = useMemo(() => {
-    return quickLane.end_oc || fragmentDuration
-  }, [quickLane, fragmentDuration])
+    return quickLane.end_oc || fragmentDuration;
+  }, [quickLane, fragmentDuration]);
 
   const [fragmentStartTime, setFragmentStartTime] =
-    useState<number>(initialFragmentStart)
+    useState<number>(initialFragmentStart);
   const [fragmentEndTime, setFragmentEndTime] =
-    useState<number>(initialFragmentEnd)
+    useState<number>(initialFragmentEnd);
 
-  const debounced = useDebounce(quickLane, 500)
+  const debounced = useDebounce(quickLane, 500);
 
   const resetState = useCallback(() => {
-    setQuickLane(defaultQuickLaneState)
+    setQuickLane(defaultQuickLaneState);
 
-    setExists(false)
-    setSynced(false)
+    setExists(false);
+    setSynced(false);
 
-    setFragmentStartTime(initialFragmentStart)
-    setFragmentEndTime(initialFragmentEnd)
-  }, [initialFragmentEnd, initialFragmentStart])
+    setFragmentStartTime(initialFragmentStart);
+    setFragmentEndTime(initialFragmentEnd);
+  }, [initialFragmentEnd, initialFragmentStart]);
 
   // If the Content is open and we haven't checked if anything exists, fetch or create the record
   useEffect(() => {
     if (exists) {
-      return
+      return;
     }
 
-    ;(async () => {
+    (async () => {
       if (isOpen && content && content_label) {
         if (commonUser?.profileId) {
           let items = await QuickLaneService.fetchQuickLanesByContentAndOwnerId(
             getContentUuid(content, content_label),
             content_label,
             commonUser.profileId,
-          )
+          );
 
           if (items.length === 0 && isShareable(content)) {
             items = await QuickLaneService.insertQuickLanes([
@@ -116,45 +114,45 @@ export const QuickLaneContentSharingTab: FC<QuickLaneContentProps> = ({
                 owner_profile_id: commonUser.profileId,
                 end_oc: fragmentDuration,
               },
-            ])
+            ]);
 
             ToastService.success(
               tHtml(
                 'shared/components/quick-lane-modal/quick-lane-modal___je-gedeelde-link-is-succesvol-aangemaakt',
               ),
-            )
+            );
           }
 
           if (items.length === 1) {
             const item = {
               ...quickLane,
               ...items[0],
-            }
+            };
 
-            setQuickLane(item)
-            setFragmentStartTime(item.start_oc || 0)
-            setFragmentEndTime(item.end_oc || fragmentDuration)
+            setQuickLane(item);
+            setFragmentStartTime(item.start_oc || 0);
+            setFragmentEndTime(item.end_oc || fragmentDuration);
 
-            setExists(true)
-            setSynced(true)
+            setExists(true);
+            setSynced(true);
           }
         }
       }
-    })()
-  }, [content, exists, isOpen])
+    })();
+  }, [content, exists, isOpen]);
 
   // When debounced changes occur, synchronise the changes with the database
   useEffect(() => {
-    const object = debounced as QuickLaneUrlObject
+    const object = debounced as QuickLaneUrlObject;
 
     if (!exists || object.id.length <= 0) {
-      return
+      return;
     }
 
-    ;(async () => {
+    (async () => {
       // Ignore the first change after sync
       if (synced) {
-        setSynced(false)
+        setSynced(false);
       } else if (content && content_label) {
         if (commonUser?.profileId) {
           const updated = await QuickLaneService.updateQuickLaneById(
@@ -165,51 +163,51 @@ export const QuickLaneContentSharingTab: FC<QuickLaneContentProps> = ({
               content_id: getContentUuid(content, content_label),
               owner_profile_id: commonUser.profileId,
             },
-          )
+          );
 
           if (updated.length === 1) {
-            setSynced(true)
+            setSynced(true);
             setQuickLane({
               ...object,
               ...updated[0],
-            })
+            });
 
             ToastService.success(
               tHtml(
                 'shared/components/quick-lane-modal/quick-lane-modal___je-gedeelde-link-is-succesvol-aangepast',
               ),
-            )
+            );
           }
         }
       }
-    })()
-  }, [debounced])
+    })();
+  }, [debounced]);
 
   // Ensure end_oc is never exactly 0
   useEffect(() => {
     if (quickLane.end_oc === 0 && fragmentDuration !== 0) {
-      setQuickLane({ ...quickLane, end_oc: fragmentDuration })
-      setFragmentEndTime(fragmentDuration)
-      setSynced(false)
+      setQuickLane({ ...quickLane, end_oc: fragmentDuration });
+      setFragmentEndTime(fragmentDuration);
+      setSynced(false);
     }
-  }, [quickLane, fragmentDuration])
+  }, [quickLane, fragmentDuration]);
 
   // Ensure a clean slate when opening other Contents
   useEffect(() => {
-    if (isOpen) return
-    resetState()
-  }, [isOpen, resetState])
+    if (isOpen) return;
+    resetState();
+  }, [isOpen, resetState]);
 
   const avatar = {
     name: commonUser?.organisation?.name,
     image: commonUser?.organisation?.logo_url,
-  }
+  };
 
   const [start, end] = getValidStartAndEnd(
     fragmentStartTime,
     fragmentEndTime,
     fragmentDuration,
-  )
+  );
 
   return commonUser && content && content_label ? (
     <Form type="standard">
@@ -264,7 +262,7 @@ export const QuickLaneContentSharingTab: FC<QuickLaneContentProps> = ({
             <>
               <div className="u-spacer-bottom">
                 <ItemVideoDescription
-                  itemMetaData={content as ItemSchema}
+                  itemMetaData={content as Avo.Item.Item}
                   showMetadata={false}
                   enableMetadataLink={false}
                   showTitle={false}
@@ -286,27 +284,27 @@ export const QuickLaneContentSharingTab: FC<QuickLaneContentProps> = ({
                     newStartTime,
                     newEndTime,
                     fragmentDuration,
-                  )
+                  );
 
                   const [start_oc, end_oc] = [
                     validStart || 0,
                     validEnd || fragmentDuration,
-                  ]
+                  ];
 
-                  setFragmentStartTime(start_oc)
-                  setFragmentEndTime(end_oc)
+                  setFragmentStartTime(start_oc);
+                  setFragmentEndTime(end_oc);
 
                   setQuickLane({
                     ...quickLane,
                     start_oc,
                     end_oc,
-                  })
+                  });
 
                   if (
                     start_oc !== fragmentStartTime ||
                     end_oc !== fragmentEndTime
                   ) {
-                    setSynced(false)
+                    setSynced(false);
                   }
                 }}
               />
@@ -328,7 +326,7 @@ export const QuickLaneContentSharingTab: FC<QuickLaneContentProps> = ({
               setQuickLane({
                 ...quickLane,
                 view_mode: value as unknown as AssignmentLayout, // TS2353
-              })
+              });
             }}
           />
         </FormGroup>
@@ -355,5 +353,5 @@ export const QuickLaneContentSharingTab: FC<QuickLaneContentProps> = ({
         </Box>
       </Spacer>
     </Form>
-  ) : null
-}
+  ) : null;
+};

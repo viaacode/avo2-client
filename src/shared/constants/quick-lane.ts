@@ -1,4 +1,4 @@
-import { OrderDirection } from '../../search/search.const.js'
+import { Avo } from '@viaa/avo2-types'
 
 export type QuickLaneColumn =
   | 'title'

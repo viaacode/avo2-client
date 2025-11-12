@@ -5,53 +5,53 @@ import {
   HeaderButtons,
   Spacer,
   Table,
-} from '@viaa/avo2-components'
-import { PermissionName } from '@viaa/avo2-types'
+} from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 
-import React, { type FC, useCallback, useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate, useParams } from 'react-router'
+import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate, useParams } from 'react-router';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js'
-import { APP_PATH, GENERATE_SITE_TITLE, RouteId } from '../../../constants.js'
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal.js'
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js';
+import { APP_PATH, GENERATE_SITE_TITLE, RouteId } from '../../../constants.js';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal.js';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { buildLink } from '../../../shared/helpers/build-link.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { navigate } from '../../../shared/helpers/link.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { ADMIN_PATH } from '../../admin.const.js'
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { buildLink } from '../../../shared/helpers/build-link.js';
+import { CustomError } from '../../../shared/helpers/custom-error.js';
+import { navigate } from '../../../shared/helpers/link.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { ADMIN_PATH } from '../../admin.const.js';
 import {
   renderDateDetailRows,
   renderDetailRow,
   renderSimpleDetailRows,
-} from '../../shared/helpers/render-detail-fields.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
+} from '../../shared/helpers/render-detail-fields.js';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
 import {
   AdminLayoutBody,
   AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
-import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.const.js'
-import { InteractiveTourService } from '../interactive-tour.service.js'
-import { type App_Interactive_Tour } from '../interactive-tour.types.js'
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.const.js';
+import { InteractiveTourService } from '../interactive-tour.service.js';
+import { InteractiveTour } from '../interactive-tour.types.ts';
 
 export const InteractiveTourDetail: FC = () => {
-  const navigateFunc = useNavigate()
-  const { id: interactiveTourId } = useParams<{ id: string }>()
+  const navigateFunc = useNavigate();
+  const { id: interactiveTourId } = useParams<{ id: string }>();
 
   // Hooks
   const [interactiveTour, setInteractiveTour] =
-    useState<App_Interactive_Tour | null>(null)
+    useState<InteractiveTour | null>(null);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false)
+  });
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 
   const fetchInteractiveTourById = useCallback(async () => {
     try {
@@ -61,12 +61,12 @@ export const InteractiveTourDetail: FC = () => {
           message: tHtml(
             'admin/interactive-tour/views/interactive-tour-detail___het-ophalen-van-de-interactive-tour-is-mislukt',
           ),
-        })
-        return
+        });
+        return;
       }
       setInteractiveTour(
         await InteractiveTourService.fetchInteractiveTour(interactiveTourId),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError('Failed to get interactive tour by id', err, {
@@ -75,31 +75,31 @@ export const InteractiveTourDetail: FC = () => {
             id: interactiveTourId,
           },
         }),
-      )
+      );
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'admin/interactive-tour/views/interactive-tour-detail___het-ophalen-van-de-interactive-tour-is-mislukt',
         ),
-      })
+      });
     }
-  }, [interactiveTourId])
+  }, [interactiveTourId]);
 
   useEffect(() => {
-    fetchInteractiveTourById()
-  }, [fetchInteractiveTourById])
+    fetchInteractiveTourById();
+  }, [fetchInteractiveTourById]);
 
   useEffect(() => {
     if (interactiveTour) {
       setLoadingInfo({
         state: 'loaded',
-      })
+      });
     }
-  }, [interactiveTour, setLoadingInfo])
+  }, [interactiveTour, setLoadingInfo]);
 
   const handleDelete = async () => {
     try {
-      setIsConfirmModalOpen(false)
+      setIsConfirmModalOpen(false);
       if (!interactiveTour || !interactiveTour.id) {
         console.error(
           new CustomError(
@@ -107,34 +107,34 @@ export const InteractiveTourDetail: FC = () => {
             null,
             { interactiveTour },
           ),
-        )
+        );
         ToastService.danger(
           tHtml(
             'admin/interactive-tour/views/interactive-tour-detail___het-verwijderen-van-de-interactive-tour-is-mislukt',
           ),
-        )
-        return
+        );
+        return;
       }
-      await InteractiveTourService.deleteInteractiveTour(interactiveTour.id)
+      await InteractiveTourService.deleteInteractiveTour(interactiveTour.id);
       ToastService.success(
         tHtml(
           'admin/interactive-tour/views/interactive-tour-detail___de-interactive-tour-is-verwijdert',
         ),
-      )
-      redirectToClientPage(ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW, navigateFunc)
+      );
+      redirectToClientPage(ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW, navigateFunc);
     } catch (err) {
       console.error(
         new CustomError('Failed to delete interactive tour', err, {
           interactiveTour,
         }),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/interactive-tour/views/interactive-tour-detail___het-verwijderen-van-de-interactive-tour-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const renderInteractiveTourDetail = () => {
     if (!interactiveTour) {
@@ -142,8 +142,8 @@ export const InteractiveTourDetail: FC = () => {
         new CustomError(
           'Failed to render interactive tour detail because render function is called before interactive tour was fetched',
         ),
-      )
-      return
+      );
+      return;
     }
     return (
       <Container mode="vertical" size="small">
@@ -188,8 +188,8 @@ export const InteractiveTourDetail: FC = () => {
           </Spacer>
         </Container>
       </Container>
-    )
-  }
+    );
+  };
 
   const renderInteractiveTourDetailPage = () => (
     <AdminLayout
@@ -221,7 +221,7 @@ export const InteractiveTourDetail: FC = () => {
                     id: interactiveTourId,
                   }),
                   navigateFunc,
-                )
+                );
               }}
             />
             <Button
@@ -249,7 +249,7 @@ export const InteractiveTourDetail: FC = () => {
         />
       </AdminLayoutBody>
     </AdminLayout>
-  )
+  );
 
   return (
     <>
@@ -277,7 +277,7 @@ export const InteractiveTourDetail: FC = () => {
         />
       </PermissionGuard>
     </>
-  )
-}
+  );
+};
 
-export default InteractiveTourDetail
+export default InteractiveTourDetail;

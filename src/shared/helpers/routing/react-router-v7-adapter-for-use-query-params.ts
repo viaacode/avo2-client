@@ -1,14 +1,11 @@
-import { useLocation, useNavigate } from 'react-router'
-import type {
-  PartialLocation,
-  QueryParamAdapterComponent,
-} from 'use-query-params'
+import { useLocation, useNavigate } from 'react-router';
+import { PartialLocation, QueryParamAdapterComponent } from 'use-query-params';
 
 export const ReactRouter7Adapter: QueryParamAdapterComponent = ({
   children,
 }) => {
-  const navigateFunc = useNavigate()
-  const location = useLocation()
+  const navigateFunc = useNavigate();
+  const location = useLocation();
 
   return children({
     location,
@@ -16,5 +13,5 @@ export const ReactRouter7Adapter: QueryParamAdapterComponent = ({
       navigateFunc({ search }, { state }),
     replace: ({ search, state }: PartialLocation) =>
       navigateFunc({ search }, { replace: true, state }),
-  })
-}
+  });
+};

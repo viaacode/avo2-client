@@ -1,5 +1,5 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/admin'
-import { OrderDirection, PaginationBar } from '@meemoo/react-components'
+import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
+import { PaginationBar } from '@meemoo/react-components';
 import {
   Button,
   IconName,
@@ -9,77 +9,77 @@ import {
   Table,
   type TableColumn,
   Thumbnail,
-} from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { orderBy } from 'es-toolkit'
-import React, { type FC, useCallback, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
-import { Link } from 'react-router-dom'
+} from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { orderBy } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
-import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { APP_PATH } from '../../constants.js'
-import { ErrorView } from '../../error/views/ErrorView.js'
-import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal.js'
-import { FragmentShareModal } from '../../shared/components/FragmentShareModal/FragmentShareModal.js'
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js';
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { PermissionService } from '../../authentication/helpers/permission-service.js';
+import { APP_PATH } from '../../constants.js';
+import { ErrorView } from '../../error/views/ErrorView.js';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal.js';
+import { FragmentShareModal } from '../../shared/components/FragmentShareModal/FragmentShareModal.js';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { formatDate, fromNow } from '../../shared/helpers/formatters/date.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { truncateTableValue } from '../../shared/helpers/truncate.js'
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js'
-import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js'
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { buildLink } from '../../shared/helpers/build-link.js';
+import { CustomError } from '../../shared/helpers/custom-error.js';
+import { formatDate, fromNow } from '../../shared/helpers/formatters/date.js';
+import { isMobileWidth } from '../../shared/helpers/media-query.js';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { truncateTableValue } from '../../shared/helpers/truncate.js';
+import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
 import {
   type BookmarkInfo,
   type EventContentType,
-} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { embedFlowAtom } from '../../shared/store/ui.store.js'
-import { TableColumnDataType } from '../../shared/types/table-column-data-type.js'
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { embedFlowAtom } from '../../shared/store/ui.store.js';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type.js';
 
-const ITEMS_PER_PAGE = 5
+const ITEMS_PER_PAGE = 5;
 
 interface BookmarksOverviewProps {
-  numberOfItems: number
-  onUpdate: () => void | Promise<void>
+  numberOfItems: number;
+  onUpdate: () => void | Promise<void>;
 }
 
 export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
   numberOfItems,
   onUpdate,
 }) => {
-  const navigateFunc = useNavigate()
-  const commonUser = useAtomValue(commonUserAtom)
-  const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom)
+  const navigateFunc = useNavigate();
+  const commonUser = useAtomValue(commonUserAtom);
+  const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom);
 
   // State
-  const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null)
+  const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null);
   const [bookmarkToDelete, setBookmarkToDelete] = useState<BookmarkInfo | null>(
     null,
-  )
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
+  );
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [mediaItemForEmbedCodeModal, setMediaItemForEmbedCodeModal] =
-    useState<Avo.Item.Item | null>(null)
-  const [sortColumn, setSortColumn] = useState<keyof BookmarkInfo>('createdAt')
-  const [sortOrder, setSortOrder] = useState<OrderDirection>(
+    useState<Avo.Item.Item | null>(null);
+  const [sortColumn, setSortColumn] = useState<keyof BookmarkInfo>('createdAt');
+  const [sortOrder, setSortOrder] = useState<Avo.Search.OrderDirection>(
     Avo.Search.OrderDirection.DESC,
-  )
-  const [page, setPage] = useState<number>(0)
+  );
+  const [page, setPage] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const [paginatedBookmarks, setPaginatedBookmarks] = useState<BookmarkInfo[]>(
     [],
-  )
+  );
 
   const BOOKMARK_COLUMNS: TableColumn[] = [
     { id: 'contentThumbnailPath', label: '', col: '2' },
@@ -108,32 +108,32 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
       tooltip: tText('workspace/views/bookmarks-overview___acties'),
       col: '1',
     },
-  ] as TableColumn[]
+  ] as TableColumn[];
 
   const fetchBookmarks = useCallback(async () => {
     try {
       const bookmarkInfos =
-        await BookmarksViewsPlaysService.getAllBookmarksForUser()
-      setBookmarks(bookmarkInfos)
-      setLoadingInfo({ state: 'loaded' })
+        await BookmarksViewsPlaysService.getAllBookmarksForUser();
+      setBookmarks(bookmarkInfos);
+      setLoadingInfo({ state: 'loaded' });
     } catch (err) {
       console.error(
         new CustomError('Failed to get all bookmarks for user', err, {
           commonUser,
         }),
-      )
+      );
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'workspace/views/bookmarks___het-ophalen-van-je-bladwijzers-is-mislukt',
         ),
-      })
+      });
     }
-  }, [commonUser, setBookmarks, setLoadingInfo])
+  }, [commonUser, setBookmarks, setLoadingInfo]);
 
   useEffect(() => {
-    fetchBookmarks()
-  }, [fetchBookmarks])
+    fetchBookmarks();
+  }, [fetchBookmarks]);
 
   const updatePaginatedBookmarks = useCallback(() => {
     setPaginatedBookmarks(
@@ -141,63 +141,63 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
         ITEMS_PER_PAGE * page,
         ITEMS_PER_PAGE * (page + 1),
       ),
-    )
-  }, [setPaginatedBookmarks, sortColumn, sortOrder, page, bookmarks])
+    );
+  }, [setPaginatedBookmarks, sortColumn, sortOrder, page, bookmarks]);
 
-  useEffect(updatePaginatedBookmarks, [updatePaginatedBookmarks])
+  useEffect(updatePaginatedBookmarks, [updatePaginatedBookmarks]);
 
   const onDeleteBookmark = async () => {
     try {
-      setIsDeleteModalOpen(false)
+      setIsDeleteModalOpen(false);
       if (!bookmarkToDelete) {
         ToastService.danger(
           tHtml(
             'workspace/views/bookmarks___het-verwijderen-van-de-bladwijzer-is-mislukt',
           ),
-        )
-        return
+        );
+        return;
       }
       await BookmarksViewsPlaysService.toggleBookmark(
         bookmarkToDelete.contentId,
         commonUser as Avo.User.CommonUser,
         CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[bookmarkToDelete.contentType],
         true,
-      )
+      );
 
-      await fetchBookmarks()
-      onUpdate()
+      await fetchBookmarks();
+      onUpdate();
       ToastService.success(
         tHtml('workspace/views/bookmarks___de-bladwijzer-is-verwijderd'),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError('Failed t delete bookmark', err, {
           bookmarkToDelete,
           commonUser,
         }),
-      )
+      );
       ToastService.danger(
         tHtml(
           'workspace/views/bookmarks___het-verwijderen-van-de-bladwijzer-is-mislukt',
         ),
-      )
+      );
     }
 
-    setBookmarkToDelete(null)
-  }
+    setBookmarkToDelete(null);
+  };
 
   // TODO: Make shared function because also used in assignments
   const onClickColumn = (columnId: keyof BookmarkInfo) => {
     if (sortColumn === columnId) {
       // Change column sort order
-      setSortOrder(toggleSortOrder(sortOrder))
+      setSortOrder(toggleSortOrder(sortOrder));
     } else {
       // Initial column sort order
-      setSortColumn(columnId)
-      setSortOrder(Avo.Search.OrderDirection.ASC)
+      setSortColumn(columnId);
+      setSortOrder(Avo.Search.OrderDirection.ASC);
     }
-    setPage(0)
-  }
+    setPage(0);
+  };
 
   const handleEmbedCodeClicked = (bookmarkInfo: BookmarkInfo) => {
     setMediaItemForEmbedCodeModal({
@@ -207,8 +207,8 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
       external_id: bookmarkInfo.contentLinkId,
       thumbnail_path: bookmarkInfo.contentThumbnailPath,
       type: bookmarkInfo.contentType,
-    } as unknown as Avo.Item.Item)
-  }
+    } as unknown as Avo.Item.Item);
+  };
 
   // Render functions
   const getDetailLink = (
@@ -226,7 +226,7 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
       {
         id: contentLinkId,
       },
-    )
+    );
 
   const renderThumbnail = ({
     contentLinkId,
@@ -249,7 +249,7 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
         showCategoryIcon
       />
     </Link>
-  )
+  );
 
   const renderTitle = ({
     contentLinkId,
@@ -285,11 +285,11 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
         </MetaData>
       </div>
     </div>
-  )
+  );
 
   const renderActions = (bookmarkInfo: BookmarkInfo) => {
     const isItem =
-      CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[bookmarkInfo.contentType] === 'item'
+      CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[bookmarkInfo.contentType] === 'item';
 
     if (isSmartSchoolEmbedFlow) {
       if (isItem) {
@@ -308,9 +308,9 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
             )}
             onClick={() => handleEmbedCodeClicked(bookmarkInfo)}
           />
-        )
+        );
       }
-      return <></>
+      return <></>;
     }
 
     return (
@@ -323,8 +323,8 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
           icon={IconName.delete}
           type="danger-hover"
           onClick={() => {
-            setBookmarkToDelete(bookmarkInfo)
-            setIsDeleteModalOpen(true)
+            setBookmarkToDelete(bookmarkInfo);
+            setIsDeleteModalOpen(true);
           }}
         />
 
@@ -347,32 +347,32 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
             />
           )}
       </>
-    )
-  }
+    );
+  };
 
   const renderCell = (bookmarkInfo: BookmarkInfo, colKey: string) => {
     switch (colKey as keyof BookmarkInfo | typeof ACTIONS_TABLE_COLUMN_ID) {
       case 'contentThumbnailPath':
-        return renderThumbnail(bookmarkInfo)
+        return renderThumbnail(bookmarkInfo);
 
       case 'contentTitle':
-        return renderTitle(bookmarkInfo)
+        return renderTitle(bookmarkInfo);
 
       case 'createdAt': {
-        const cellData = bookmarkInfo.createdAt
+        const cellData = bookmarkInfo.createdAt;
         return (
           <span title={new Date(cellData).toISOString()}>
             {fromNow(new Date(cellData))}
           </span>
-        )
+        );
       }
       case ACTIONS_TABLE_COLUMN_ID:
-        return renderActions(bookmarkInfo)
+        return renderActions(bookmarkInfo);
 
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   const renderTable = () => (
     <>
@@ -399,7 +399,7 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
         />
       </Spacer>
     </>
-  )
+  );
 
   const renderEmptyFallback = () => (
     <ErrorView
@@ -425,7 +425,7 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
         />
       </Spacer>
     </ErrorView>
-  )
+  );
 
   const renderBookmarks = () => (
     <>
@@ -446,7 +446,7 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
         confirmCallback={onDeleteBookmark}
       />
     </>
-  )
+  );
 
   return (
     <LoadingErrorLoadedComponent
@@ -454,5 +454,5 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
       dataObject={bookmarks}
       render={renderBookmarks}
     />
-  )
-}
+  );
+};

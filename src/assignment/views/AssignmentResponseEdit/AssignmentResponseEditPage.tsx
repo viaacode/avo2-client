@@ -1,67 +1,67 @@
-import { IconName } from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { isString, noop } from 'es-toolkit'
+import { IconName } from '@viaa/avo2-components';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { isString, noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactNode,
   useCallback,
   useEffect,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
-import { useParams } from 'react-router'
+} from 'react';
+import { Helmet } from 'react-helmet';
+import { useParams } from 'react-router';
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { PermissionService } from '../../../authentication/helpers/permission-service.js'
-import { GENERATE_SITE_TITLE } from '../../../constants.js'
-import { ErrorView } from '../../../error/views/ErrorView.js'
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { trackEvents } from '../../../shared/services/event-logging-service.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { getAssignmentErrorObj } from '../../assignment.helper.js'
-import { AssignmentService } from '../../assignment.service.js'
-import { AssignmentRetrieveError } from '../../assignment.types.js'
-import { AssignmentMetadata } from '../../components/AssignmentMetadata.js'
-import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview.js'
-import { canViewAnAssignment } from '../../helpers/can-view-an-assignment.js'
+import { commonUserAtom } from '../../../authentication/authentication.store.js';
+import { PermissionService } from '../../../authentication/helpers/permission-service.js';
+import { GENERATE_SITE_TITLE } from '../../../constants.js';
+import { ErrorView } from '../../../error/views/ErrorView.js';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import { trackEvents } from '../../../shared/services/event-logging-service.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { getAssignmentErrorObj } from '../../assignment.helper.js';
+import { AssignmentService } from '../../assignment.service.js';
+import { AssignmentRetrieveError } from '../../assignment.types.js';
+import { AssignmentMetadata } from '../../components/AssignmentMetadata.js';
+import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview.js';
+import { canViewAnAssignment } from '../../helpers/can-view-an-assignment.js';
 
-import { AssignmentResponseEdit } from './AssignmentResponseEdit.js'
+import { AssignmentResponseEdit } from './AssignmentResponseEdit.js';
 
-import '../AssignmentPage.scss'
-import './AssignmentResponseEdit.scss'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
+import '../AssignmentPage.scss';
+import './AssignmentResponseEdit.scss';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
 
 export const AssignmentResponseEditPage: FC = () => {
-  const { id: assignmentId } = useParams<{ id: string }>()
+  const { id: assignmentId } = useParams<{ id: string }>();
 
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
   // Data
   const [assignment, setAssignment] =
-    useState<Avo.Assignment.Assignment | null>(null)
-  const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false)
+    useState<Avo.Assignment.Assignment | null>(null);
+  const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
   const [assignmentError, setAssignmentError] = useState<{
-    message: string | ReactNode
-    icon: IconName
-  } | null>(null)
+    message: string | ReactNode;
+    icon: IconName;
+  } | null>(null);
   const [assignmentResponse, setAssignmentResponse] = useState<Omit<
     Avo.Assignment.Response,
     'assignment'
-  > | null>(null)
+  > | null>(null);
 
   // UI
 
   const [isTeacherPreviewEnabled, setIsTeacherPreviewEnabled] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
   // HTTP
   const fetchAssignment = useCallback(async () => {
     try {
       if (!assignmentId) {
-        return
+        return;
       }
-      setAssignmentLoading(true)
+      setAssignmentLoading(true);
 
       // Check if the user is a teacher, they do not have permission to create a response for assignments and should see a clear error message
       if (
@@ -76,9 +76,9 @@ export const AssignmentResponseEditPage: FC = () => {
             'assignment/views/assignment-response-edit/assignment-response-edit-page___je-kan-geen-antwoorden-indienen-op-deze-opdracht-aangezien-je-geen-leerling-bent-gebruikt-de-bekijk-als-leerling-knop-om-te-zien-we-je-leerlingen-zien',
           ),
           icon: IconName.userStudent,
-        })
-        setAssignmentLoading(false)
-        return
+        });
+        setAssignmentLoading(false);
+        return;
       }
 
       if (!canViewAnAssignment(commonUser)) {
@@ -87,35 +87,35 @@ export const AssignmentResponseEditPage: FC = () => {
             'assignment/views/assignment-response-edit/assignment-response-edit-page___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken',
           ),
           icon: IconName.lock,
-        })
-        setAssignmentLoading(false)
-        return
+        });
+        setAssignmentLoading(false);
+        return;
       }
 
       // Get assignment
-      setAssignmentError(null)
+      setAssignmentError(null);
       if (!commonUser?.profileId) {
         ToastService.danger(
           tHtml(
             'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt-de-ingelogde-gebruiker-heeft-geen-profiel-id',
           ),
-        )
-        return
+        );
+        return;
       }
 
       const assignmentOrError: Avo.Assignment.Assignment =
         await AssignmentService.fetchAssignmentAndContent(
           commonUser.profileId,
           assignmentId,
-        )
+        );
 
       if (isString(assignmentOrError)) {
         // error
         setAssignmentError(
           getAssignmentErrorObj(assignmentOrError as AssignmentRetrieveError),
-        )
-        setAssignmentLoading(false)
-        return
+        );
+        setAssignmentLoading(false);
+        return;
       }
 
       // Assignment is loaded but if there is no deadline set, show 'Not yet available' error to the student
@@ -123,13 +123,13 @@ export const AssignmentResponseEditPage: FC = () => {
         // error
         setAssignmentError(
           getAssignmentErrorObj(AssignmentRetrieveError.NOT_YET_AVAILABLE),
-        )
-        setAssignmentLoading(false)
-        return
+        );
+        setAssignmentLoading(false);
+        return;
       }
 
       // Track assignment view
-      AssignmentService.increaseViewCount(assignmentOrError.id).then(noop) // Not waiting for view events increment
+      AssignmentService.increaseViewCount(assignmentOrError.id).then(noop); // Not waiting for view events increment
       trackEvents(
         {
           object: assignmentOrError.id,
@@ -140,33 +140,38 @@ export const AssignmentResponseEditPage: FC = () => {
           },
         },
         commonUser,
-      )
+      );
 
       // Create an assignment response if needed
       const newOrExistingAssignmentResponse =
         await AssignmentService.createOrFetchAssignmentResponseObject(
           assignmentOrError,
           commonUser,
-        )
-      setAssignmentResponse(newOrExistingAssignmentResponse)
+        );
+      setAssignmentResponse(
+        newOrExistingAssignmentResponse as Omit<
+          Avo.Assignment.Response,
+          'assignment'
+        >,
+      );
 
-      setAssignment(assignmentOrError)
+      setAssignment(assignmentOrError);
     } catch (err) {
       setAssignmentError({
         message: tHtml(
           'assignment/views/assignment-response-edit/assignment-response-edit-page___het-ophalen-van-de-opdracht-is-mislukt',
         ),
         icon: IconName.userStudent,
-      })
+      });
     }
-    setAssignmentLoading(false)
-  }, [assignment?.education_level_id, assignmentId, commonUser])
+    setAssignmentLoading(false);
+  }, [assignment?.education_level_id, assignmentId, commonUser]);
 
   // Effects
 
   useEffect(() => {
-    fetchAssignment().then(noop)
-  }, [fetchAssignment])
+    fetchAssignment().then(noop);
+  }, [fetchAssignment]);
 
   // Events
 
@@ -174,7 +179,7 @@ export const AssignmentResponseEditPage: FC = () => {
 
   const renderPageContent = () => {
     if (assignmentLoading) {
-      return <FullPageSpinner />
+      return <FullPageSpinner />;
     }
     if (assignmentError) {
       return (
@@ -187,7 +192,7 @@ export const AssignmentResponseEditPage: FC = () => {
           }
           icon={assignmentError.icon || 'alert-triangle'}
         />
-      )
+      );
     }
     if (!assignment) {
       return (
@@ -197,7 +202,7 @@ export const AssignmentResponseEditPage: FC = () => {
           )}
           icon={IconName.search}
         />
-      )
+      );
     }
 
     if (isTeacherPreviewEnabled) {
@@ -217,7 +222,7 @@ export const AssignmentResponseEditPage: FC = () => {
             />
           </div>
         )
-      )
+      );
     }
 
     if (!assignmentResponse) {
@@ -228,7 +233,7 @@ export const AssignmentResponseEditPage: FC = () => {
           )}
           icon={IconName.alertTriangle}
         />
-      )
+      );
     }
 
     return (
@@ -238,12 +243,12 @@ export const AssignmentResponseEditPage: FC = () => {
         setAssignmentResponse={setAssignmentResponse}
         showBackButton
         onShowPreviewClicked={() => {
-          setIsTeacherPreviewEnabled(true)
+          setIsTeacherPreviewEnabled(true);
         }}
         onAssignmentChanged={fetchAssignment}
       />
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -266,5 +271,5 @@ export const AssignmentResponseEditPage: FC = () => {
 
       {renderPageContent()}
     </>
-  )
-}
+  );
+};

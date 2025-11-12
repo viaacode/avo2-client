@@ -13,15 +13,15 @@ export const useGetProfileById = (
     (typeof QUERY_KEYS.GET_PROFILE_BY_ID)[]
   >,
 ): UseQueryResult<Avo.User.CommonUser | null> => {
-  return useQuery(
-    [QUERY_KEYS.GET_PROFILE_BY_ID],
-    async () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_PROFILE_BY_ID],
+    queryFn: async () => {
       if (!id) {
         return null
       }
       const { UserService } = await import('@meemoo/admin-core-ui/admin')
       return UserService.getUserById(String(id))
     },
-    options,
-  )
+    ...options,
+  })
 }

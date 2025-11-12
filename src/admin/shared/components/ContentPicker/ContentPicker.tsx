@@ -6,43 +6,43 @@ import {
   IconName,
   LinkTarget,
   TextInput,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { isNull } from 'es-toolkit'
-import React, { type FC, useCallback, useEffect, useState } from 'react'
-import ReactSelect, { type ActionMeta, type PropsValue } from 'react-select'
-import AsyncSelect from 'react-select/async'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { isNull } from 'es-toolkit';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
+import ReactSelect from 'react-select';
+import AsyncSelect from 'react-select/async';
 
-import { FileUpload } from '../../../../shared/components/FileUpload/FileUpload.js'
-import { CustomError } from '../../../../shared/helpers/custom-error.js'
-import { tHtml } from '../../../../shared/helpers/translate-html.js'
-import { tText } from '../../../../shared/helpers/translate-text.js'
-import { ToastService } from '../../../../shared/services/toast-service.js'
+import { FileUpload } from '../../../../shared/components/FileUpload/FileUpload.js';
+import { CustomError } from '../../../../shared/helpers/custom-error.js';
+import { tHtml } from '../../../../shared/helpers/translate-html.js';
+import { tText } from '../../../../shared/helpers/translate-text.js';
+import { ToastService } from '../../../../shared/services/toast-service.js';
 import {
   type PickerItem,
   type PickerTypeOption,
-} from '../../types/content-picker.js'
+} from '../../types/content-picker.js';
 
 import {
   DEFAULT_ALLOWED_TYPES,
   GET_CONTENT_TYPES,
   REACT_SELECT_DEFAULT_OPTIONS,
-} from './ContentPicker.const.js'
+} from './ContentPicker.const.js';
 import {
   filterTypes,
   setInitialInput,
   setInitialItem,
-} from './ContentPicker.helpers.js'
-import './ContentPicker.scss'
+} from './ContentPicker.helpers.js';
+import './ContentPicker.scss';
 
 interface ContentPickerProps {
-  allowedTypes?: Avo.Core.ContentPickerType[]
-  initialValue: PickerItem | undefined | null
-  onSelect: (value: PickerItem | null) => void
-  placeholder?: string
-  hideTypeDropdown?: boolean
-  hideTargetSwitch?: boolean
-  errors?: string | string[]
+  allowedTypes?: Avo.Core.ContentPickerType[];
+  initialValue: PickerItem | undefined | null;
+  onSelect: (value: PickerItem | null) => void;
+  placeholder?: string;
+  hideTypeDropdown?: boolean;
+  hideTargetSwitch?: boolean;
+  errors?: string | string[];
 }
 
 export const ContentPicker: FC<ContentPickerProps> = ({
@@ -58,41 +58,41 @@ export const ContentPicker: FC<ContentPickerProps> = ({
   const typeOptions = filterTypes(
     GET_CONTENT_TYPES(),
     allowedTypes as Avo.Core.ContentPickerType[],
-  )
+  );
 
   // apply initial type from `initialValue`, default to first available type
   const currentTypeObject = typeOptions.find(
     (type) => type.value === initialValue?.type,
-  )
+  );
   const [selectedType, setSelectedType] = useState<
     PickerTypeOption<Avo.Core.ContentPickerType>
-  >(currentTypeObject || typeOptions[0])
+  >(currentTypeObject || typeOptions[0]);
 
   // available options for the item picker.
-  const [itemOptions, setItemOptions] = useState<PickerItem[]>([])
+  const [itemOptions, setItemOptions] = useState<PickerItem[]>([]);
 
   // selected option, keep track of whether initial item from `initialValue` has been applied
-  const [selectedItem, setSelectedItem] = useState<PropsValue<PickerItem>>()
+  const [selectedItem, setSelectedItem] = useState<PickerItem | null>(null);
   const [hasAppliedInitialItem, setHasAppliedInitialItem] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
   // apply initial input if INPUT-based type, default to ''
   const [input, setInput] = useState<string>(
     setInitialInput(currentTypeObject, initialValue || undefined),
-  )
+  );
 
   const [isTargetSelf, setIsTargetSelf] = useState<boolean>(
     (initialValue?.target || LinkTarget.Self) === LinkTarget.Self,
-  )
+  );
 
   // inflate item picker
   const fetchPickerOptions = useCallback(
     async (keyword: string | null): Promise<PickerItem[]> => {
       try {
         if (!selectedType || !selectedType.fetch) {
-          return [] // Search query and external link don't have a fetch function
+          return []; // Search query and external link don't have a fetch function
         }
-        let items: PickerItem[] = await selectedType.fetch(keyword, 20)
+        let items: PickerItem[] = await selectedType.fetch(keyword, 20);
 
         if (!hasAppliedInitialItem && initialValue) {
           items = [
@@ -104,77 +104,75 @@ export const ContentPicker: FC<ContentPickerProps> = ({
             ...items.filter(
               (item: PickerItem) => item.label !== initialValue?.label,
             ),
-          ]
+          ];
         }
 
-        setItemOptions(items)
+        setItemOptions(items);
         if (
           keyword &&
           keyword.length &&
           (items[0]?.value || null) === keyword
         ) {
-          setSelectedItem(items[0] as any)
+          setSelectedItem(items[0] as any);
         }
-        return items
+        return items;
       } catch (err) {
         console.error(
           new CustomError('[Content Picker] - Failed to inflate.', err, {
             keyword,
             selectedType,
           }),
-        )
+        );
         ToastService.danger(
           tHtml(
             'admin/shared/components/content-picker/content-picker___het-ophalen-van-de-opties-is-mislukt',
           ),
-        )
-        return []
+        );
+        return [];
       }
     },
     [selectedType, hasAppliedInitialItem, initialValue],
-  )
+  );
 
   // when selecting a type, reset `selectedItem` and retrieve new item options
   useEffect(() => {
-    fetchPickerOptions(null)
-  }, [fetchPickerOptions])
+    fetchPickerOptions(null);
+  }, [fetchPickerOptions]);
 
   // during the first update of `itemOptions`, set the initial value of the item picker
   useEffect(() => {
     if (itemOptions.length && !hasAppliedInitialItem) {
-      setSelectedItem(setInitialItem(itemOptions, initialValue || undefined))
-      setHasAppliedInitialItem(true)
+      setInitialItem(itemOptions, initialValue || undefined);
+      setSelectedItem(initialValue || null);
+      setHasAppliedInitialItem(true);
     }
-  }, [itemOptions, hasAppliedInitialItem, initialValue])
+  }, [itemOptions, hasAppliedInitialItem, initialValue]);
 
   // events
-  const onSelectType = async (selected: PropsValue<PickerTypeOption>) => {
+  const onSelectType = async (selected: PickerTypeOption) => {
     if (selectedType !== selected) {
       const selectedOption =
-        selected as PickerTypeOption<Avo.Core.ContentPickerType>
-      setSelectedType(selectedOption)
-      setSelectedItem(null)
-      propertyChanged('selectedItem', null)
+        selected as PickerTypeOption<Avo.Core.ContentPickerType>;
+      setSelectedType(selectedOption);
+      setSelectedItem(null);
+      propertyChanged('selectedItem', null);
     }
-  }
+  };
 
-  const onSelectItem = (
-    selectedItem: PropsValue<PickerItem>,
-    event?: ActionMeta<any>,
-  ) => {
+  const onSelectItem = (selectedItem: PickerItem, event?: any) => {
     // reset `selectedItem` when clearing item picker
     if (event?.action === 'clear') {
-      propertyChanged('selectedItem', null)
-      setSelectedItem(null)
-      return null
+      propertyChanged('selectedItem', null);
+      setSelectedItem(null);
+      return null;
     }
 
-    const value = (selectedItem as PickerItem)?.value || null
+    const value = (selectedItem as PickerItem)?.value || null;
 
     // if value of selected item is `null`, throw error
     if (!value) {
-      propertyChanged('value', null)
-      setSelectedItem(null)
+      propertyChanged('value', null);
+      setSelectedItem(null);
       console.error(
         new CustomError(
           '[Content Picker] - Selected item has no value.',
@@ -183,85 +181,85 @@ export const ContentPicker: FC<ContentPickerProps> = ({
             selectedItem,
           },
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/shared/components/content-picker/content-picker___voor-deze-content-pagina-is-geen-pad-geconfigureerd',
         ),
-      )
-      return null
+      );
+      return null;
     }
 
-    propertyChanged('selectedItem', selectedItem)
+    propertyChanged('selectedItem', selectedItem);
 
     // update `selectedItem`
-    setSelectedItem(selectedItem)
-  }
+    setSelectedItem(selectedItem);
+  };
 
   const onChangeInput = (value: string) => {
-    setInput(value)
-    propertyChanged('value', value)
-  }
+    setInput(value);
+    propertyChanged('value', value);
+  };
 
   const propertyChanged = (
     prop: 'type' | 'selectedItem' | 'value' | 'target' | 'label',
     propValue:
       | Avo.Core.ContentPickerType
-      | PropsValue<PickerItem>
+      | PickerItem
       | string
       | number
       | null
       | LinkTarget,
   ) => {
-    let newType: Avo.Core.ContentPickerType
+    let newType: Avo.Core.ContentPickerType;
     if (prop === 'type') {
-      newType = propValue as Avo.Core.ContentPickerType
+      newType = propValue as Avo.Core.ContentPickerType;
     } else {
-      newType = selectedType.value
+      newType = selectedType.value;
     }
 
-    let newValue: string | null
-    let newLabel: string | undefined
+    let newValue: string | null;
+    let newLabel: string | undefined;
     if (prop === 'value') {
-      newValue = propValue as string | null
+      newValue = propValue as string | null;
     } else if (prop === 'selectedItem') {
-      newValue = (propValue as PickerItem)?.value || null
-      newLabel = (propValue as PickerItem)?.label
+      newValue = (propValue as PickerItem)?.value || null;
+      newLabel = (propValue as PickerItem)?.label;
     } else if (selectedType.picker === 'TEXT_INPUT') {
-      newValue = input
+      newValue = input;
     } else if (selectedType.picker === 'SELECT' && selectedItem) {
-      newLabel = (selectedItem as PickerItem).label
-      newValue = (selectedItem as PickerItem).value
+      newLabel = (selectedItem as PickerItem).label;
+      newValue = (selectedItem as PickerItem).value;
     } else {
-      newValue = null
+      newValue = null;
     }
 
-    let newTarget: LinkTarget
+    let newTarget: LinkTarget;
     if (prop === 'target') {
-      newTarget = propValue as LinkTarget
+      newTarget = propValue as LinkTarget;
     } else if (newType === 'FILE') {
-      newTarget = LinkTarget.Blank
-      newLabel = (newValue && newValue.split('/').pop()) || undefined
+      newTarget = LinkTarget.Blank;
+      newLabel = (newValue && newValue.split('/').pop()) || undefined;
     } else {
-      newTarget = isTargetSelf ? LinkTarget.Self : LinkTarget.Blank
+      newTarget = isTargetSelf ? LinkTarget.Self : LinkTarget.Blank;
     }
 
     if (isNull(newValue)) {
-      onSelect(null)
+      onSelect(null);
     } else {
       onSelect({
         type: newType,
         value: newValue,
         target: newTarget,
         label: newLabel,
-      })
+      });
     }
-  }
+  };
 
   // render controls
   const renderTypePicker = () => {
     if (hideTypeDropdown) {
-      return null
+      return null;
     }
     return (
       <FlexItem shrink>
@@ -286,25 +284,25 @@ export const ContentPicker: FC<ContentPickerProps> = ({
           }
         />
       </FlexItem>
-    )
-  }
+    );
+  };
 
   const renderItemControl = () => {
     if (!selectedType) {
-      return null
+      return null;
     }
 
     switch (selectedType.picker) {
       case 'SELECT':
-        return <FlexItem>{renderItemPicker()}</FlexItem>
+        return <FlexItem>{renderItemPicker()}</FlexItem>;
       case 'TEXT_INPUT':
-        return <FlexItem>{renderTextInputPicker()}</FlexItem>
+        return <FlexItem>{renderTextInputPicker()}</FlexItem>;
       case 'FILE_UPLOAD':
-        return <FlexItem>{renderFileUploadPicker()}</FlexItem>
+        return <FlexItem>{renderFileUploadPicker()}</FlexItem>;
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   const renderItemPicker = () => (
     <AsyncSelect
@@ -337,7 +335,7 @@ export const ContentPicker: FC<ContentPickerProps> = ({
         tText('admin/shared/components/content-picker/content-picker___laden')
       }
     />
-  )
+  );
 
   const renderTextInputPicker = () => (
     <TextInput
@@ -345,7 +343,7 @@ export const ContentPicker: FC<ContentPickerProps> = ({
       onChange={onChangeInput}
       placeholder={selectedType.placeholder}
     />
-  )
+  );
 
   const renderFileUploadPicker = () => {
     return (
@@ -356,16 +354,16 @@ export const ContentPicker: FC<ContentPickerProps> = ({
         allowMulti={false}
         showDeleteButton
         onChange={(urls: string[]) => {
-          onChangeInput(urls[0])
+          onChangeInput(urls[0]);
         }}
         allowedTypes={[]}
       />
-    )
-  }
+    );
+  };
 
   const renderLinkTargetControl = () => {
     if (hideTargetSwitch) {
-      return null
+      return null;
     }
 
     return (
@@ -384,19 +382,19 @@ export const ContentPicker: FC<ContentPickerProps> = ({
                 )
           }
           onClick={() => {
-            setIsTargetSelf(!isTargetSelf)
+            setIsTargetSelf(!isTargetSelf);
             propertyChanged(
               'target',
               isTargetSelf ? LinkTarget.Blank : LinkTarget.Self,
-            )
+            );
           }}
           disabled={
             !(selectedType.picker === 'TEXT_INPUT' ? input : selectedItem)
           }
         />
       </FlexItem>
-    )
-  }
+    );
+  };
 
   // render content picker
   return (
@@ -407,5 +405,5 @@ export const ContentPicker: FC<ContentPickerProps> = ({
         {renderLinkTargetControl()}
       </Flex>
     </FormGroup>
-  )
-}
+  );
+};

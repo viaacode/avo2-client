@@ -9,17 +9,15 @@ export const useGetEmailPreferences = (
     enabled?: boolean
   } = {},
 ) => {
-  return useQuery(
-    [QUERY_KEYS.GET_EMAIL_PREFERENCES, preferenceCenterKey],
-    () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_EMAIL_PREFERENCES, preferenceCenterKey],
+    queryFn: () => {
       return CampaignMonitorService.fetchNewsletterPreferences(
         preferenceCenterKey,
       )
     },
-    {
-      enabled: true,
-      cacheTime: 0,
-      ...options,
-    },
-  )
+    enabled: true,
+    staleTime: 0,
+    ...options,
+  })
 }

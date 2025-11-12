@@ -1,18 +1,18 @@
-import { type Avo } from '@viaa/avo2-types'
-import { atom } from 'jotai'
+import { Avo } from '@viaa/avo2-types';
+import { atom } from 'jotai';
 
-import { type LoginState } from '../authentication/authentication.types.js'
-import { DEFAULT_AUDIO_STILL } from '../shared/constants/index.js'
-import { CustomError } from '../shared/helpers/custom-error.js'
+import { type LoginState } from '../authentication/authentication.types.js';
+import { DEFAULT_AUDIO_STILL } from '../shared/constants/index.js';
+import { CustomError } from '../shared/helpers/custom-error.js';
 
-import { fetchSearchResults } from './search.service.js'
-import { type SearchState } from './search.types.js'
+import { fetchSearchResults } from './search.service.js';
+import { type SearchState } from './search.types.js';
 
 export const searchAtom = atom<SearchState>({
   data: null,
   loading: false,
   error: null,
-})
+});
 
 export const getSearchResultsAtom = atom<
   LoginState | null,
@@ -31,7 +31,7 @@ export const getSearchResultsAtom = atom<
     get,
     set,
     orderProperty = 'relevance',
-    orderDirection = 'desc',
+    orderDirection = Avo.Search.OrderDirection.DESC,
     from = 0,
     size: number,
     filters,
@@ -40,7 +40,7 @@ export const getSearchResultsAtom = atom<
     set(searchAtom, {
       ...get(searchAtom),
       loading: true,
-    })
+    });
 
     try {
       const data = await fetchSearchResults(
@@ -50,7 +50,7 @@ export const getSearchResultsAtom = atom<
         size,
         filters,
         filterOptionSearch,
-      )
+      );
 
       if ((data as any)?.statusCode) {
         console.error(
@@ -66,12 +66,12 @@ export const getSearchResultsAtom = atom<
               filterOptionSearch,
             },
           ),
-        )
+        );
 
         set(searchAtom, {
           ...get(searchAtom),
           error: true,
-        })
+        });
       }
 
       const processedData = {
@@ -79,24 +79,24 @@ export const getSearchResultsAtom = atom<
         results:
           data.results?.map((result: Avo.Search.ResultItem) => {
             if (result.administrative_type === 'audio') {
-              result.thumbnail_path = DEFAULT_AUDIO_STILL
+              result.thumbnail_path = DEFAULT_AUDIO_STILL;
             }
 
-            return result
+            return result;
           }) || [],
-      }
+      };
 
       set(searchAtom, {
         ...get(searchAtom),
         data: processedData,
         loading: false,
         error: false,
-      })
+      });
     } catch (err) {
       set(searchAtom, {
         ...get(searchAtom),
         error: err,
-      })
+      });
     }
   },
-)
+);

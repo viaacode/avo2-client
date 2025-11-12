@@ -17,11 +17,11 @@ export const useGetItemUsedBy = (
     enabled: boolean
   } = { enabled: true },
 ) => {
-  return useQuery(
-    [QUERY_KEYS.GET_ITEM_USED_BY, itemUuid, sortProp, sortDirection],
-    () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_ITEM_USED_BY, itemUuid, sortProp, sortDirection],
+    queryFn: () => {
       return ItemsService.getItemUsedBy(itemUuid, sortProp, sortDirection)
     },
-    { ...options, keepPreviousData: true },
-  )
+    ...options,
+  })
 }

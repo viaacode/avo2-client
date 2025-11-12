@@ -31,17 +31,6 @@ export const COLLECTION_OR_BUNDLE_TO_CONTENT_TYPE_ENGLISH: Record<
   [CollectionOrBundle.BUNDLE]: Avo.ContentType.English.BUNDLE,
 }
 
-/**
- * A collection in the database can represent a collection or a bundle
- * A collection fragment in the database can be of type: TEXT, ITEM, COLLECTION, ASSIGNMENT
- */
-export enum CollectionFragmentType {
-  TEXT = 'TEXT',
-  ITEM = 'ITEM',
-  COLLECTION = 'COLLECTION',
-  ASSIGNMENT = 'ASSIGNMENT',
-}
-
 export const CONTENT_TYPE_TRANSLATIONS_NL_TO_EN: Record<
   Avo.ContentType.Dutch,
   Avo.ContentType.English

@@ -1,88 +1,87 @@
-import { FilterTable } from '@meemoo/admin-core-ui/admin'
-import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components'
-import { PermissionName } from '@viaa/avo2-types'
-import { isNil } from 'es-toolkit'
-import React, { type FC, useCallback, useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate } from 'react-router'
-import { Link } from 'react-router-dom'
+import { FilterTable } from '@meemoo/admin-core-ui/admin';
+import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { isNil } from 'es-toolkit';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js'
-import { APP_PATH, GENERATE_SITE_TITLE, RouteId } from '../../../constants.js'
-import { ErrorView } from '../../../error/views/ErrorView.js'
-import { OrderDirection } from '../../../search/search.const.js'
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal.js'
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js';
+import { APP_PATH, GENERATE_SITE_TITLE, RouteId } from '../../../constants.js';
+import { ErrorView } from '../../../error/views/ErrorView.js';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal.js';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { buildLink } from '../../../shared/helpers/build-link.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { formatDate } from '../../../shared/helpers/formatters/date.js'
-import { navigate } from '../../../shared/helpers/link.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { ADMIN_PATH } from '../../admin.const.js'
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { buildLink } from '../../../shared/helpers/build-link.js';
+import { CustomError } from '../../../shared/helpers/custom-error.js';
+import { formatDate } from '../../../shared/helpers/formatters/date.js';
+import { navigate } from '../../../shared/helpers/link.js';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { ADMIN_PATH } from '../../admin.const.js';
 import {
   getDateRangeFilters,
   getQueryFilter,
-} from '../../shared/helpers/filters.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
+} from '../../shared/helpers/filters.js';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
 import {
   AdminLayoutBody,
   AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
 import {
   GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS,
   INTERACTIVE_TOUR_PATH,
   ITEMS_PER_PAGE,
-} from '../interactive-tour.const.js'
-import { InteractiveTourService } from '../interactive-tour.service.js'
+} from '../interactive-tour.const.js';
+import { InteractiveTourService } from '../interactive-tour.service.js';
 import {
-  type App_Interactive_Tour,
+  InteractiveTour,
   type InteractiveTourOverviewTableCols,
   type InteractiveTourTableState,
-} from '../interactive-tour.types.js'
+} from '../interactive-tour.types.js';
 
 export const InteractiveTourOverview: FC = () => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
   const [interactiveTourIdToDelete, setInteractiveTourIdToDelete] = useState<
     number | null
-  >(null)
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false)
+  >(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
   const [interactiveTours, setInteractiveTours] = useState<
-    App_Interactive_Tour[] | null
-  >(null)
-  const [interactiveTourCount, setInteractiveTourCount] = useState<number>(0)
+    InteractiveTour[] | null
+  >(null);
+  const [interactiveTourCount, setInteractiveTourCount] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const [tableState, setTableState] = useState<
     Partial<InteractiveTourTableState>
-  >({})
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  >({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchInteractiveTours = useCallback(async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     const generateWhereObject = (
       filters: Partial<InteractiveTourTableState>,
     ) => {
-      const andFilters: any[] = []
+      const andFilters: any[] = [];
       andFilters.push(
         ...getQueryFilter(filters.query, (queryWildcard: string) => [
           { name: { _ilike: queryWildcard } },
           { page: { _ilike: queryWildcard } },
         ]),
-      )
+      );
       andFilters.push(
         ...getDateRangeFilters(filters, ['created_at', 'updated_at']),
-      )
-      return { _and: andFilters }
-    }
+      );
+      return { _and: andFilters };
+    };
 
     try {
       const [interactiveToursTemp, interactiveTourCountTemp] =
@@ -95,70 +94,70 @@ export const InteractiveTourOverview: FC = () => {
           ) as any,
           tableState.sort_order || Avo.Search.OrderDirection.DESC,
           generateWhereObject(tableState),
-        )
-      setInteractiveTours(interactiveToursTemp)
-      setInteractiveTourCount(interactiveTourCountTemp)
+        );
+      setInteractiveTours(interactiveToursTemp);
+      setInteractiveTourCount(interactiveTourCountTemp);
     } catch (err) {
       console.error(
         new CustomError('Failed to fetch interactive tours from graphql', err, {
           tableState,
         }),
-      )
+      );
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'admin/interactive-tour/views/interactive-tour-overview___het-ophalen-van-de-interactive-tours-is-mislukt',
         ),
-      })
+      });
     }
-    setIsLoading(false)
-  }, [tableState])
+    setIsLoading(false);
+  }, [tableState]);
 
   useEffect(() => {
-    fetchInteractiveTours()
-  }, [fetchInteractiveTours])
+    fetchInteractiveTours();
+  }, [fetchInteractiveTours]);
 
   useEffect(() => {
     if (interactiveTours && !isNil(interactiveTourCount)) {
-      setLoadingInfo({ state: 'loaded' })
+      setLoadingInfo({ state: 'loaded' });
     }
-  }, [interactiveTours, interactiveTourCount])
+  }, [interactiveTours, interactiveTourCount]);
 
   const handleDelete = async () => {
     try {
-      setIsConfirmModalOpen(false)
+      setIsConfirmModalOpen(false);
       if (!interactiveTourIdToDelete) {
         ToastService.danger(
           tHtml(
             'admin/interactive-tour/views/interactive-tour-overview___het-verwijderen-van-de-interactieve-tour-is-mislukt-probeer-de-pagina-te-herladen',
           ),
-        )
-        return
+        );
+        return;
       }
 
       await InteractiveTourService.deleteInteractiveTour(
         interactiveTourIdToDelete,
-      )
-      await fetchInteractiveTours()
+      );
+      await fetchInteractiveTours();
       ToastService.success(
         tHtml(
           'admin/interactive-tour/views/interactive-tour-overview___de-interactieve-tour-is-verwijdert',
         ),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError('Failed to delete user group', err, {
           interactiveTourIdToDelete,
           query: 'DELETE_INTERACTIVE_TOUR',
         }),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/interactive-tour/views/interactive-tour-overview___het-verwijderen-van-de-interactieve-tour-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const openModal = (interactiveTourId: number | undefined): void => {
     if (isNil(interactiveTourId)) {
@@ -166,15 +165,15 @@ export const InteractiveTourOverview: FC = () => {
         tHtml(
           'admin/interactive-tour/views/interactive-tour-overview___de-interactieve-tour-kon-niet-worden-verwijdert-probeer-de-pagina-te-herladen',
         ),
-      )
-      return
+      );
+      return;
     }
-    setInteractiveTourIdToDelete(interactiveTourId)
-    setIsConfirmModalOpen(true)
-  }
+    setInteractiveTourIdToDelete(interactiveTourId);
+    setIsConfirmModalOpen(true);
+  };
 
   const renderTableCell = (
-    rowData: App_Interactive_Tour,
+    rowData: InteractiveTour,
     columnId: InteractiveTourOverviewTableCols,
   ) => {
     switch (columnId) {
@@ -187,7 +186,7 @@ export const InteractiveTourOverview: FC = () => {
           >
             {isNil(rowData.name) ? '-' : rowData.name}
           </Link>
-        )
+        );
 
       case 'page_id':
         return (
@@ -198,11 +197,11 @@ export const InteractiveTourOverview: FC = () => {
               {APP_PATH?.[rowData.page_id as RouteId]?.route || '-'}
             </span>
           </div>
-        )
+        );
 
       case 'created_at':
       case 'updated_at':
-        return formatDate(rowData[columnId]) || '-'
+        return formatDate(rowData[columnId]) || '-';
 
       case ACTIONS_TABLE_COLUMN_ID:
         return (
@@ -259,12 +258,12 @@ export const InteractiveTourOverview: FC = () => {
               type="danger-hover"
             />
           </ButtonToolbar>
-        )
+        );
 
       default:
-        return isNil(rowData[columnId]) ? '-' : rowData[columnId]
+        return isNil(rowData[columnId]) ? '-' : rowData[columnId];
     }
-  }
+  };
 
   const renderNoResults = () => {
     return (
@@ -290,12 +289,12 @@ export const InteractiveTourOverview: FC = () => {
           />
         </Spacer>
       </ErrorView>
-    )
-  }
+    );
+  };
 
   const renderInteractiveTourPageBody = () => {
     if (!interactiveTours) {
-      return null
+      return null;
     }
     return (
       <>
@@ -303,7 +302,7 @@ export const InteractiveTourOverview: FC = () => {
           columns={GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS()}
           data={interactiveTours || []}
           dataCount={interactiveTourCount}
-          renderCell={(rowData: App_Interactive_Tour, columnId: string) =>
+          renderCell={(rowData: InteractiveTour, columnId: string) =>
             renderTableCell(
               rowData,
               columnId as InteractiveTourOverviewTableCols,
@@ -327,8 +326,8 @@ export const InteractiveTourOverview: FC = () => {
           onClose={() => setIsConfirmModalOpen(false)}
         />
       </>
-    )
-  }
+    );
+  };
 
   return (
     <PermissionGuard permissions={[PermissionName.EDIT_INTERACTIVE_TOURS]}>
@@ -347,7 +346,7 @@ export const InteractiveTourOverview: FC = () => {
               redirectToClientPage(
                 INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE,
                 navigateFunc,
-              )
+              );
             }}
           />
         </AdminLayoutTopBarRight>
@@ -375,7 +374,7 @@ export const InteractiveTourOverview: FC = () => {
         </AdminLayoutBody>
       </AdminLayout>
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default InteractiveTourOverview
+export default InteractiveTourOverview;

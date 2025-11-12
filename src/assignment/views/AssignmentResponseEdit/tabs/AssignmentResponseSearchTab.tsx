@@ -4,53 +4,50 @@ import {
   Icon,
   IconName,
   Spacer,
-} from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { useAtomValue } from 'jotai'
-import { intersection } from 'es-toolkit'
+} from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
+import { intersection } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactNode,
   useCallback,
   useEffect,
   useState,
-} from 'react'
-import { type UrlUpdateType } from 'use-query-params'
+} from 'react';
 
-import { commonUserAtom } from '../../../../authentication/authentication.store.js'
-import { PermissionService } from '../../../../authentication/helpers/permission-service.js'
-import { ErrorView } from '../../../../error/views/ErrorView.js'
-import { CutFragmentForAssignmentModal } from '../../../../item/components/modals/CutFragmentForAssignmentModal.js'
-import { type ItemTrimInfo } from '../../../../item/item.types.js'
-import { ItemDetail } from '../../../../item/views/ItemDetail.js'
-import { PupilCollectionService } from '../../../../pupil-collection/pupil-collection.service.js'
-import { SearchFiltersAndResults } from '../../../../search/components/SearchFiltersAndResults.js'
-import { searchAtom } from '../../../../search/search.store.js'
-import { type FilterState } from '../../../../search/search.types.js'
-import { EducationLevelId } from '../../../../shared/helpers/lom.js'
-import { tHtml } from '../../../../shared/helpers/translate-html.js'
-import { tText } from '../../../../shared/helpers/translate-text.js'
-import { trackEvents } from '../../../../shared/services/event-logging-service.js'
-import { ObjectTypesAll } from '../../../../shared/services/related-items-service.js'
-import { ToastService } from '../../../../shared/services/toast-service.js'
+import { commonUserAtom } from '../../../../authentication/authentication.store.js';
+import { PermissionService } from '../../../../authentication/helpers/permission-service.js';
+import { ErrorView } from '../../../../error/views/ErrorView.js';
+import { CutFragmentForAssignmentModal } from '../../../../item/components/modals/CutFragmentForAssignmentModal.js';
+import { type ItemTrimInfo } from '../../../../item/item.types.js';
+import { ItemDetail } from '../../../../item/views/ItemDetail.js';
+import { PupilCollectionService } from '../../../../pupil-collection/pupil-collection.service.js';
+import { SearchFiltersAndResults } from '../../../../search/components/SearchFiltersAndResults.js';
+import { searchAtom } from '../../../../search/search.store.js';
+import { type FilterState } from '../../../../search/search.types.js';
+import { EducationLevelId } from '../../../../shared/helpers/lom.js';
+import { tHtml } from '../../../../shared/helpers/translate-html.js';
+import { tText } from '../../../../shared/helpers/translate-text.js';
+import { trackEvents } from '../../../../shared/services/event-logging-service.js';
+import { ObjectTypesAll } from '../../../../shared/services/related-items-service.js';
+import { ToastService } from '../../../../shared/services/toast-service.js';
+import { UrlUpdateType } from '../../../../shared/types/use-query-params.ts';
 import {
   ENABLED_FILTERS_PUPIL_SEARCH,
   ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH,
   ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH,
-} from '../../../assignment.const.js'
-import { AssignmentService } from '../../../assignment.service.js'
-import {
-  AssignmentType,
-  type PupilSearchFilterState,
-} from '../../../assignment.types.js'
+} from '../../../assignment.const.js';
+import { AssignmentService } from '../../../assignment.service.js';
+import { type PupilSearchFilterState } from '../../../assignment.types.js';
 
 interface AssignmentResponseSearchTabProps {
-  assignment: Avo.Assignment.Assignment | null
-  assignmentResponse: Avo.Assignment.Response | null
-  filterState: any
-  setFilterState: any
-  appendBlockToPupilCollection: (block: Avo.Core.BlockItemBase) => void // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
+  assignment: Avo.Assignment.Assignment | null;
+  assignmentResponse: Avo.Assignment.Response | null;
+  filterState: any;
+  setFilterState: any;
+  appendBlockToPupilCollection: (block: Avo.Core.BlockItemBase) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
 }
 
 export const AssignmentResponseSearchTab: FC<
@@ -63,13 +60,13 @@ export const AssignmentResponseSearchTab: FC<
   appendBlockToPupilCollection,
 }) => {
   // Data
-  const searchResults = useAtomValue(searchAtom)
-  const commonUser = useAtomValue(commonUserAtom)
+  const searchResults = useAtomValue(searchAtom);
+  const commonUser = useAtomValue(commonUserAtom);
 
   // UI
   const [isAddToAssignmentModalOpen, setIsAddToAssignmentModalOpen] =
-    useState<boolean>(false)
-  const [selectedItem, setSelectedItem] = useState<Avo.Item.Item | null>(null)
+    useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<Avo.Item.Item | null>(null);
 
   // HTTP
 
@@ -80,10 +77,10 @@ export const AssignmentResponseSearchTab: FC<
     setTimeout(() => {
       const item = document.querySelector(
         `#search-result-${filterState.focus}`,
-      ) as HTMLElement | null
-      item?.scrollIntoView({ block: 'center' })
-    }, 100)
-  }, [filterState.focus, searchResults])
+      ) as HTMLElement | null;
+      item?.scrollIntoView({ block: 'center' });
+    }, 100);
+  }, [filterState.focus, searchResults]);
 
   useEffect(() => {
     // Is the assignment intended for elementary
@@ -95,10 +92,10 @@ export const AssignmentResponseSearchTab: FC<
             ...filterState.filters,
             elementary: true,
           },
-        })
+        });
       }
     }
-  }, [assignment, filterState, setFilterState])
+  }, [assignment, filterState, setFilterState]);
 
   // Events
   const goToDetailLink = (id: string): void => {
@@ -106,13 +103,13 @@ export const AssignmentResponseSearchTab: FC<
       ...(filterState as PupilSearchFilterState),
       selectedSearchResultId: id,
       focus: undefined,
-    })
-    scrollTo({ top: 0 })
-  }
+    });
+    scrollTo({ top: 0 });
+  };
 
   const goToSearchLink = (newFilters: FilterState): void => {
-    setFilterState({ ...filterState, ...newFilters })
-  }
+    setFilterState({ ...filterState, ...newFilters });
+  };
 
   const handleAddToPupilCollection = async (
     item: Avo.Item.Item,
@@ -122,47 +119,47 @@ export const AssignmentResponseSearchTab: FC<
         tHtml(
           'assignment/views/assignment-response-edit___het-laden-van-de-opdracht-is-mislukt',
         ),
-      )
-      return
+      );
+      return;
     }
     if (AssignmentService.isOwnerOfAssignment(assignment, commonUser)) {
       ToastService.info(
         tHtml(
           'assignment/views/assignment-response-edit___je-kan-geen-antwoord-indienen-op-je-eigen-opdracht',
         ),
-      )
-      return
+      );
+      return;
     }
-    setSelectedItem(item)
-    setIsAddToAssignmentModalOpen(true)
-  }
+    setSelectedItem(item);
+    setIsAddToAssignmentModalOpen(true);
+  };
 
   const handleAddToPupilCollectionConfirmed = async (
     itemTrimInfo?: ItemTrimInfo,
   ): Promise<void> => {
-    setIsAddToAssignmentModalOpen(false)
+    setIsAddToAssignmentModalOpen(false);
     if (selectedItem && assignmentResponse?.id) {
       const block =
         await PupilCollectionService.importFragmentToPupilCollection(
           selectedItem,
           assignmentResponse.id,
           itemTrimInfo,
-        )
-      appendBlockToPupilCollection(block)
+        );
+      appendBlockToPupilCollection(block);
 
       ToastService.success(
         tHtml(
           'assignment/views/assignment-response-edit___het-fragment-is-toegevoegd-aan-je-collectie',
         ),
-      )
+      );
     } else {
       ToastService.danger(
         tHtml(
           'assignment/views/assignment-response-edit___het-toevoegen-van-het-fragment-aan-je-collectie-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const handleNewFilterState = (
     newFilterState: FilterState,
@@ -173,7 +170,7 @@ export const AssignmentResponseSearchTab: FC<
         ...newFilterState,
       },
       urlPushType,
-    )
+    );
 
     // Trigger search event
     if (assignment?.id) {
@@ -188,19 +185,19 @@ export const AssignmentResponseSearchTab: FC<
           },
         },
         commonUser,
-      )
+      );
     }
-  }
+  };
 
   const handleReturnToSearchResults = () => {
-    setIsAddToAssignmentModalOpen(false)
-    setSelectedItem(null)
+    setIsAddToAssignmentModalOpen(false);
+    setSelectedItem(null);
     setFilterState({
       ...filterState,
       focus: filterState.selectedSearchResultId,
       selectedSearchResultId: undefined,
-    })
-  }
+    });
+  };
 
   // Render
 
@@ -213,8 +210,8 @@ export const AssignmentResponseSearchTab: FC<
       >
         {linkText}
       </Button>
-    )
-  }
+    );
+  };
 
   const renderSearchLink = (
     linkText: string | ReactNode,
@@ -222,7 +219,7 @@ export const AssignmentResponseSearchTab: FC<
     className?: string,
   ) => {
     // Only render links for the filters that are enabled:
-    const filters = Object.keys(newFilters.filters || {})
+    const filters = Object.keys(newFilters.filters || {});
     if (intersection(ENABLED_FILTERS_PUPIL_SEARCH, filters).length > 0) {
       return (
         <Button
@@ -238,18 +235,20 @@ export const AssignmentResponseSearchTab: FC<
         >
           {linkText}
         </Button>
-      )
+      );
     } else {
       // Just render the text for the filters that are not enabled
-      return linkText
+      return linkText;
     }
-  }
+  };
 
   const renderItemDetailActionButton = (item: Avo.Item.Item) => {
     if (
-      !assignment?.lom_learning_resource_type?.includes(AssignmentType.BOUW)
+      !assignment?.lom_learning_resource_type?.includes(
+        Avo.Core.BlockItemType.BOUW,
+      )
     ) {
-      return null
+      return null;
     }
     return (
       <Button
@@ -266,8 +265,8 @@ export const AssignmentResponseSearchTab: FC<
         )}
         onClick={() => handleAddToPupilCollection(item)}
       />
-    )
-  }
+    );
+  };
 
   const renderSearchResultDetailPage = () => {
     // Render fragment detail page
@@ -285,8 +284,8 @@ export const AssignmentResponseSearchTab: FC<
         renderBookmarkCount={() => null}
         renderInteractiveTour={() => null}
       />
-    )
-  }
+    );
+  };
 
   const renderSearchContent = useCallback(() => {
     if (filterState.selectedSearchResultId) {
@@ -308,7 +307,7 @@ export const AssignmentResponseSearchTab: FC<
           </Container>
           {renderSearchResultDetailPage()}
         </>
-      )
+      );
     }
     // This form receives its parent's state because we don't care about rerender performance here
     if (
@@ -325,7 +324,7 @@ export const AssignmentResponseSearchTab: FC<
           actionButtons={['home', 'helpdesk']}
           icon={IconName.lock}
         />
-      )
+      );
     }
     return (
       <Spacer margin={['top-large', 'bottom-large']}>
@@ -340,14 +339,14 @@ export const AssignmentResponseSearchTab: FC<
           renderSearchLink={renderSearchLink}
         />
       </Spacer>
-    )
+    );
   }, [
     filterState,
     handleNewFilterState,
     renderDetailLink,
     renderSearchLink,
     commonUser,
-  ])
+  ]);
 
   return (
     <>
@@ -362,5 +361,5 @@ export const AssignmentResponseSearchTab: FC<
         />
       )}
     </>
-  )
-}
+  );
+};

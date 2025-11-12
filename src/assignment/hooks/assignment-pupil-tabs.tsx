@@ -3,15 +3,14 @@ import {
   Pill,
   PillVariants,
   type TabProps,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import React, { useCallback, useMemo, useState } from 'react'
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import React, { useCallback, useMemo, useState } from 'react';
 
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline.js'
-import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const.js'
-import { AssignmentType } from '../assignment.types.js'
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline.js';
+import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const.js';
 
 export function useAssignmentPupilTabs(
   assignment: Avo.Assignment.Assignment | null,
@@ -25,8 +24,8 @@ export function useAssignmentPupilTabs(
   (id: string | number) => void,
   () => void, // Start pill animation
 ] {
-  const [animatePill, setAnimatePill] = useState(false)
-  const pastDeadline = useAssignmentPastDeadline(assignment)
+  const [animatePill, setAnimatePill] = useState(false);
+  const pastDeadline = useAssignmentPastDeadline(assignment);
 
   const tabs: TabProps[] = useMemo(
     () =>
@@ -37,10 +36,10 @@ export function useAssignmentPupilTabs(
           icon: IconName.clipboard as IconName,
         },
         ...(assignment?.lom_learning_resource_type?.includes(
-          AssignmentType.ZOEK,
+          Avo.Core.BlockItemType.ZOEK,
         ) ||
         (assignment?.lom_learning_resource_type?.includes(
-          AssignmentType.BOUW,
+          Avo.Core.BlockItemType.BOUW,
         ) &&
           !pastDeadline)
           ? [
@@ -52,7 +51,7 @@ export function useAssignmentPupilTabs(
             ]
           : []),
         ...(assignment?.lom_learning_resource_type?.includes(
-          AssignmentType.BOUW,
+          Avo.Core.BlockItemType.BOUW,
         )
           ? [
               {
@@ -91,23 +90,23 @@ export function useAssignmentPupilTabs(
         active: item.id === activeTab,
       })),
     [assignment, activeTab, numOfPupilCollectionFragments, animatePill],
-  )
+  );
 
   const onTabClick = useCallback(
     (id: string | number) => {
-      setTab(id as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS)
-      scrollTo({ top: 0 })
+      setTab(id as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS);
+      scrollTo({ top: 0 });
     },
     [setTab],
-  )
+  );
 
   const startPillAnimation = () => {
-    setAnimatePill(true)
+    setAnimatePill(true);
 
     setTimeout(() => {
-      setAnimatePill(false)
-    }, 5000)
-  }
+      setAnimatePill(false);
+    }, 5000);
+  };
 
   return [
     tabs,
@@ -115,5 +114,5 @@ export function useAssignmentPupilTabs(
     setTab,
     onTabClick,
     startPillAnimation,
-  ]
+  ];
 }

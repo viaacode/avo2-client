@@ -1,7 +1,7 @@
 import {
   type RichTextEditorControl,
   RichTextEditorWithInternalState,
-} from '@meemoo/react-components'
+} from '@meemoo/react-components';
 import {
   Alert,
   Button,
@@ -19,52 +19,52 @@ import {
   ToolbarItem,
   ToolbarLeft,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import type { Avo } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { useAtomValue } from 'jotai'
-import { debounce } from 'es-toolkit'
+} from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
+import { debounce } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type LegacyRef,
   type ReactNode,
   useEffect,
   useState,
-} from 'react'
+} from 'react';
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { ItemVideoDescription } from '../../item/components/ItemVideoDescription.js'
-import { TextWithTimestamps } from '../../shared/components/TextWithTimestamp/TextWithTimestamps.js'
-import { TimeCropControls } from '../../shared/components/TimeCropControls/TimeCropControls.js'
-import { copyToClipboard } from '../../shared/helpers/clipboard.js'
-import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end.js'
-import { textToHtmlWithTimestamps } from '../../shared/helpers/formatters/text-to-html-with-timestamps.js'
-import { toSeconds } from '../../shared/helpers/parsers/duration.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { useResizeObserver } from '../../shared/hooks/useResizeObserver.js'
-import { trackEvents } from '../../shared/services/event-logging-service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { embedFlowAtom } from '../../shared/store/ui.store.js'
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { ItemVideoDescription } from '../../item/components/ItemVideoDescription.js';
+import { TextWithTimestamps } from '../../shared/components/TextWithTimestamp/TextWithTimestamps.js';
+import { TimeCropControls } from '../../shared/components/TimeCropControls/TimeCropControls.js';
+import { copyToClipboard } from '../../shared/helpers/clipboard.js';
+import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end.js';
+import { textToHtmlWithTimestamps } from '../../shared/helpers/formatters/text-to-html-with-timestamps.js';
+import { toSeconds } from '../../shared/helpers/parsers/duration.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { useResizeObserver } from '../../shared/hooks/useResizeObserver.js';
+import { trackEvents } from '../../shared/services/event-logging-service.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { embedFlowAtom } from '../../shared/store/ui.store.js';
 import {
   type EmbedCode,
   EmbedCodeDescriptionType,
   EmbedCodeExternalWebsite,
-} from '../embed-code.types.js'
-import { toEmbedCodeIFrame } from '../helpers/links.js'
-import { createResource } from '../helpers/resourceForTrackEvents.js'
-import { getValidationErrors } from '../helpers/validationRules.js'
-import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode.js'
+} from '../embed-code.types.js';
+import { toEmbedCodeIFrame } from '../helpers/links.js';
+import { createResource } from '../helpers/resourceForTrackEvents.js';
+import { getValidationErrors } from '../helpers/validationRules.js';
+import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode.js';
 
-import './EmbedContent.scss'
+import './EmbedContent.scss';
 
 type EmbedProps = {
-  item: EmbedCode | null
-  contentDescription: ReactNode | string
-  onSave?: (item: EmbedCode) => void
-  onClose?: () => void
-  onResize?: () => void
-}
+  item: EmbedCode | null;
+  contentDescription: ReactNode | string;
+  onSave?: (item: EmbedCode) => void;
+  onClose?: () => void;
+  onResize?: () => void;
+};
 
 export const EmbedContent: FC<EmbedProps> = ({
   item,
@@ -74,67 +74,72 @@ export const EmbedContent: FC<EmbedProps> = ({
   onResize,
 }) => {
   const fragmentDuration =
-    toSeconds((item?.content as Avo.Item.Item)?.duration) || 0
-  const commonUser = useAtomValue(commonUserAtom)
-  const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom)
+    toSeconds((item?.content as Avo.Item.Item)?.duration) || 0;
+  const commonUser = useAtomValue(commonUserAtom);
+  const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom);
 
-  const [title, setTitle] = useState<string | undefined>()
+  const [title, setTitle] = useState<string | undefined>();
 
-  const [fragmentStartTime, setFragmentStartTime] = useState<number>(0)
-  const [fragmentEndTime, setFragmentEndTime] = useState<number>(0)
+  const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
+  const [fragmentEndTime, setFragmentEndTime] = useState<number>(0);
 
   const [start, end] = getValidStartAndEnd(
     fragmentStartTime,
     fragmentEndTime,
     fragmentDuration,
-  )
+  );
 
   const [descriptionType, setDescriptionType] =
-    useState<EmbedCodeDescriptionType>(EmbedCodeDescriptionType.ORIGINAL)
+    useState<EmbedCodeDescriptionType>(EmbedCodeDescriptionType.ORIGINAL);
   const [isDescriptionExpanded, setIsDescriptionExpanded] =
-    useState<boolean>(false)
-  const [customDescription, setCustomDescription] = useState<string>('')
-  const [savedEmbedCode, setSavedEmbedCode] = useState<EmbedCode | null>(null)
+    useState<boolean>(false);
+  const [customDescription, setCustomDescription] = useState<string>('');
+  const [savedEmbedCode, setSavedEmbedCode] = useState<EmbedCode | null>(null);
 
-  const { mutateAsync: createEmbedCode, isLoading: isPublishing } =
-    useCreateEmbedCode()
+  const { mutateAsync: createEmbedCode, isPending: isPublishing } =
+    useCreateEmbedCode();
 
-  const debouncedEmbedContentResize = debounce(() => onResize && onResize(), 50)
-  const embedContentRef = useResizeObserver(() => debouncedEmbedContentResize())
+  const debouncedEmbedContentResize = debounce(
+    () => onResize && onResize(),
+    50,
+  );
+  const embedContentRef = useResizeObserver(() =>
+    debouncedEmbedContentResize(),
+  );
 
   const cancelButtonLabel = savedEmbedCode
     ? tText('embed-code/components/embed-content___sluit')
-    : tText('embed-code/components/embed-content___annuleer')
+    : tText('embed-code/components/embed-content___annuleer');
 
   useEffect(() => {
     if (item) {
-      setTitle(item.title || '')
-      setFragmentStartTime(item.start || 0)
-      setFragmentEndTime(item.end || 0)
+      setTitle(item.title || '');
+      setFragmentStartTime(item.start || 0);
+      setFragmentEndTime(item.end || 0);
 
-      setDescriptionType(item.descriptionType)
+      setDescriptionType(item.descriptionType);
       setCustomDescription(
         convertToHtml(item.description || item.content.description || ''),
-      )
+      );
 
-      setSavedEmbedCode(null)
+      setSavedEmbedCode(null);
     }
-  }, [item])
+  }, [item]);
 
   useEffect(() => {
-    debouncedEmbedContentResize()
-  }, [debouncedEmbedContentResize, isDescriptionExpanded, descriptionType])
+    debouncedEmbedContentResize();
+  }, [debouncedEmbedContentResize, isDescriptionExpanded, descriptionType]);
 
   const mapValuesToEmbedCode = (): EmbedCode => {
     if (!item?.content) {
-      return {} as EmbedCode
+      return {} as EmbedCode;
     }
-    let newDescription = ''
+    let newDescription = '';
 
     if (descriptionType === EmbedCodeDescriptionType.ORIGINAL) {
-      newDescription = textToHtmlWithTimestamps(item.content.description || '')
+      newDescription = textToHtmlWithTimestamps(item.content.description || '');
     } else if (descriptionType === EmbedCodeDescriptionType.CUSTOM) {
-      newDescription = customDescription || ''
+      newDescription = customDescription || '';
     }
 
     return {
@@ -145,35 +150,35 @@ export const EmbedContent: FC<EmbedProps> = ({
       end: fragmentEndTime,
       descriptionType,
       description: newDescription,
-    }
-  }
+    };
+  };
 
   const handleValidation = () => {
-    const value = mapValuesToEmbedCode()
+    const value = mapValuesToEmbedCode();
 
     // validate embed before update
-    const validationErrors = getValidationErrors(value)
+    const validationErrors = getValidationErrors(value);
 
     // display validation errors
     if (validationErrors.length) {
-      ToastService.danger(validationErrors)
-      return null
+      ToastService.danger(validationErrors);
+      return null;
     }
-    return value
-  }
+    return value;
+  };
 
   const handleSave = () => {
-    const embedToSave = handleValidation()
-    embedToSave && onSave && onSave(embedToSave)
-  }
+    const embedToSave = handleValidation();
+    embedToSave && onSave && onSave(embedToSave);
+  };
 
   const handleCreate = async () => {
     try {
-      const embedToSave = handleValidation()
+      const embedToSave = handleValidation();
       if (!embedToSave) {
-        return
+        return;
       }
-      const createdEmbedCode = await createEmbedCode(embedToSave)
+      const createdEmbedCode = await createEmbedCode(embedToSave);
 
       trackEvents(
         {
@@ -189,7 +194,7 @@ export const EmbedContent: FC<EmbedProps> = ({
           },
         },
         commonUser,
-      )
+      );
 
       if (isSmartSchoolEmbedFlow) {
         window.opener.postMessage(
@@ -200,33 +205,33 @@ export const EmbedContent: FC<EmbedProps> = ({
             },
           ],
           '*',
-        )
-        window.close()
-        return
+        );
+        window.close();
+        return;
       }
 
-      setSavedEmbedCode(createdEmbedCode)
+      setSavedEmbedCode(createdEmbedCode);
       ToastService.success(
         tText(
           'embed-code/components/embed-content___je-code-werd-succesvol-aangemaakt-en-opgeslagen-in-je-werkruimte',
         ),
-      )
+      );
     } catch (err) {
       ToastService.danger(
         tText('embed-code/components/embed-content___code-aanmaken-mislukt'),
-      )
+      );
     }
-  }
+  };
 
   const handleCopyButtonClicked = () => {
     if (!savedEmbedCode) {
-      console.error('No embed code to copy')
+      console.error('No embed code to copy');
       ToastService.danger(
         tHtml(
           'embed-code/components/embed-content___het-kopieren-van-de-embed-code-naar-je-klembord-is-mislukt',
         ),
-      )
-      return
+      );
+      return;
     }
 
     trackEvents(
@@ -240,15 +245,15 @@ export const EmbedContent: FC<EmbedProps> = ({
         },
       },
       commonUser,
-    )
+    );
 
-    copyToClipboard(toEmbedCodeIFrame(savedEmbedCode.id))
+    copyToClipboard(toEmbedCodeIFrame(savedEmbedCode.id));
     ToastService.success(
       tHtml(
         'embed-code/components/embed-content___de-code-is-naar-je-klembord-gekopieerd',
       ),
-    )
-  }
+    );
+  };
 
   const renderReplacementWarning = () => {
     return (
@@ -259,8 +264,8 @@ export const EmbedContent: FC<EmbedProps> = ({
           )}
         </Alert>
       )
-    )
-  }
+    );
+  };
 
   const renderDescription = () => {
     if (
@@ -282,7 +287,7 @@ export const EmbedContent: FC<EmbedProps> = ({
             <TextWithTimestamps content={item.content.description || ''} />
           </ExpandableContainer>
         </div>
-      )
+      );
     }
 
     if (descriptionType === EmbedCodeDescriptionType.CUSTOM) {
@@ -306,7 +311,7 @@ export const EmbedContent: FC<EmbedProps> = ({
         'link',
         'separator',
         'fullscreen',
-      ]
+      ];
       return (
         <RichTextEditorWithInternalState
           controls={controls}
@@ -315,11 +320,11 @@ export const EmbedContent: FC<EmbedProps> = ({
           disabled={!!savedEmbedCode}
           onChange={setCustomDescription}
         />
-      )
+      );
     }
 
-    return <></>
-  }
+    return <></>;
+  };
 
   const renderDescriptionWrapper = () => {
     if (item?.externalWebsite === EmbedCodeExternalWebsite.BOOKWIDGETS) {
@@ -331,7 +336,7 @@ export const EmbedContent: FC<EmbedProps> = ({
             )}
           </span>
         </Alert>
-      )
+      );
     }
 
     return (
@@ -373,8 +378,8 @@ export const EmbedContent: FC<EmbedProps> = ({
         </ButtonGroup>
         <Spacer margin="top">{renderDescription()}</Spacer>
       </>
-    )
-  }
+    );
+  };
 
   const renderRightSideFooter = () => {
     if (onSave) {
@@ -394,7 +399,7 @@ export const EmbedContent: FC<EmbedProps> = ({
             </ButtonToolbar>
           </ToolbarItem>
         </ToolbarRight>
-      )
+      );
     }
 
     if (savedEmbedCode) {
@@ -419,7 +424,7 @@ export const EmbedContent: FC<EmbedProps> = ({
             </ButtonToolbar>
           </ToolbarItem>
         </ToolbarRight>
-      )
+      );
     }
 
     if (isSmartSchoolEmbedFlow) {
@@ -445,7 +450,7 @@ export const EmbedContent: FC<EmbedProps> = ({
             </ButtonToolbar>
           </ToolbarItem>
         </ToolbarRight>
-      )
+      );
     }
 
     return (
@@ -469,11 +474,11 @@ export const EmbedContent: FC<EmbedProps> = ({
           </ButtonToolbar>
         </ToolbarItem>
       </ToolbarRight>
-    )
-  }
+    );
+  };
 
   if (!item) {
-    return <></>
+    return <></>;
   }
 
   return (
@@ -527,15 +532,15 @@ export const EmbedContent: FC<EmbedProps> = ({
                   newStartTime,
                   newEndTime,
                   fragmentDuration,
-                )
+                );
 
                 const [start_oc, end_oc] = [
                   validStart || 0,
                   validEnd || fragmentDuration,
-                ]
+                ];
 
-                setFragmentStartTime(start_oc)
-                setFragmentEndTime(end_oc)
+                setFragmentStartTime(start_oc);
+                setFragmentEndTime(end_oc);
               }}
             />
           </FormGroup>
@@ -559,5 +564,5 @@ export const EmbedContent: FC<EmbedProps> = ({
         {renderRightSideFooter()}
       </Toolbar>
     </div>
-  )
-}
+  );
+};

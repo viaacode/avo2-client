@@ -1,10 +1,10 @@
-import './AssignmentOverview.scss'
+import './AssignmentOverview.scss';
 
 import {
   cleanupFilterTableState,
   toggleSortOrder,
-} from '@meemoo/admin-core-ui/admin'
-import { PaginationBar } from '@meemoo/react-components'
+} from '@meemoo/admin-core-ui/admin';
+import { PaginationBar } from '@meemoo/react-components';
 import {
   Button,
   ButtonGroup,
@@ -25,11 +25,11 @@ import {
   ToolbarLeft,
   ToolbarRight,
   useKeyPress,
-} from '@viaa/avo2-components'
-import { Avo, PermissionName } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { useAtomValue } from 'jotai'
-import { cloneDeep, compact, isNil, noop } from 'es-toolkit'
+} from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
+import { cloneDeep, compact, isNil, noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type KeyboardEvent,
@@ -38,9 +38,9 @@ import React, {
   useEffect,
   useMemo,
   useState,
-} from 'react'
-import { useNavigate } from 'react-router'
-import { Link } from 'react-router-dom'
+} from 'react';
+import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 import {
   ArrayParam,
   DelimitedArrayParam,
@@ -48,70 +48,68 @@ import {
   StringParam,
   useQueryParams,
   withDefault,
-} from 'use-query-params'
+} from 'use-query-params';
 
-import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page.js'
-import { APP_PATH } from '../../constants.js'
-import { ErrorView } from '../../error/views/ErrorView.js'
-import { OrderDirection } from '../../search/search.const.js'
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js';
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { PermissionService } from '../../authentication/helpers/permission-service.js';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page.js';
+import { APP_PATH } from '../../constants.js';
+import { ErrorView } from '../../error/views/ErrorView.js';
 import {
   CheckboxDropdownModal,
   type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js'
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js'
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
 import {
   ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
   getMoreOptionsLabel,
-} from '../../shared/constants/index.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
-import { getContributorType } from '../../shared/helpers/contributors.js'
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown.js'
-import { renderAvatar } from '../../shared/helpers/formatters/avatar.js'
-import { formatDate } from '../../shared/helpers/formatters/date.js'
-import { navigate } from '../../shared/helpers/link.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop.js'
-import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { truncateTableValue } from '../../shared/helpers/truncate.js'
-import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { KeyCode } from '../../shared/types/index.js'
-import { TableColumnDataType } from '../../shared/types/table-column-data-type.js'
-import { ITEMS_PER_PAGE } from '../../workspace/workspace.const.js'
+} from '../../shared/constants/index.js';
+import { buildLink } from '../../shared/helpers/build-link.js';
+import { getContributorType } from '../../shared/helpers/contributors.js';
+import { createDropdownMenuItem } from '../../shared/helpers/dropdown.js';
+import { renderAvatar } from '../../shared/helpers/formatters/avatar.js';
+import { formatDate } from '../../shared/helpers/formatters/date.js';
+import { navigate } from '../../shared/helpers/link.js';
+import { isMobileWidth } from '../../shared/helpers/media-query.js';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop.js';
+import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview.js';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { truncateTableValue } from '../../shared/helpers/truncate.js';
+import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { KeyCode } from '../../shared/types/index.js';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type.js';
+import { ITEMS_PER_PAGE } from '../../workspace/workspace.const.js';
 import {
   ASSIGNMENT_CREATE_UPDATE_TABS,
   ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
   GET_ASSIGNMENT_OVERVIEW_COLUMNS,
-} from '../assignment.const.js'
-import { AssignmentService } from '../assignment.service.js'
+} from '../assignment.const.js';
+import { AssignmentService } from '../assignment.service.js';
 import {
   AssignmentAction,
   type AssignmentTableColumns,
-  AssignmentType,
   AssignmentView,
-} from '../assignment.types.js'
-import { AssignmentDeadline } from '../components/AssignmentDeadline.js'
+} from '../assignment.types.js';
+import { AssignmentDeadline } from '../components/AssignmentDeadline.js';
 import {
   deleteAssignment,
   deleteSelfFromAssignment,
-} from '../helpers/delete-assignment.js'
-import { duplicateAssignment } from '../helpers/duplicate-assignment.js'
-import { useGetAssignments } from '../hooks/useGetAssignments.js'
-import { DeleteAssignmentModal } from '../modals/DeleteAssignmentModal.js'
+} from '../helpers/delete-assignment.js';
+import { duplicateAssignment } from '../helpers/duplicate-assignment.js';
+import { useGetAssignments } from '../hooks/useGetAssignments.js';
+import { DeleteAssignmentModal } from '../modals/DeleteAssignmentModal.js';
 
 interface AssignmentOverviewProps {
-  onUpdate: () => void | Promise<void>
+  onUpdate: () => void | Promise<void>;
 }
 
-const DEFAULT_SORT_COLUMN = 'updated_at'
-const DEFAULT_SORT_ORDER = Avo.Search.OrderDirection.DESC
+const DEFAULT_SORT_COLUMN = 'updated_at';
+const DEFAULT_SORT_ORDER = Avo.Search.OrderDirection.DESC;
 
 const defaultFiltersAndSort = {
   selectedAssignmentLabelIds: [],
@@ -121,26 +119,26 @@ const defaultFiltersAndSort = {
   page: 0,
   sort_column: DEFAULT_SORT_COLUMN,
   sort_order: DEFAULT_SORT_ORDER,
-}
+};
 
 export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
   onUpdate = noop,
 }) => {
-  const navigateFunc = useNavigate()
-  const commonUser = useAtomValue(commonUserAtom)
+  const navigateFunc = useNavigate();
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [allAssignmentLabels, setAllAssignmentLabels] = useState<
     Avo.Assignment.Label[]
-  >([])
+  >([]);
   const [filterString, setFilterString] = useState<string | undefined>(
     undefined,
-  )
+  );
   const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] =
-    useState<string | null>(null)
+    useState<string | null>(null);
   const [isDeleteAssignmentModalOpen, setDeleteAssignmentModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [markedAssignment, setMarkedAssignment] =
-    useState<Avo.Assignment.Assignment | null>(null)
+    useState<Avo.Assignment.Assignment | null>(null);
   const canEditAssignments = useMemo(
     () =>
       PermissionService.hasPerm(
@@ -152,7 +150,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
         PermissionName.EDIT_OWN_ASSIGNMENTS,
       ),
     [commonUser],
-  )
+  );
   const showPublicState = useMemo(
     () =>
       PermissionService.hasPerm(
@@ -164,35 +162,35 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
         PermissionName.PUBLISH_OWN_ASSIGNMENTS,
       ),
     [commonUser],
-  )
+  );
 
   const isOwner =
     markedAssignment?.share_type ===
       Avo.Share.ShareWithColleagueType.GEDEELD_MET_ANDERE ||
     markedAssignment?.share_type ===
-      Avo.Share.ShareWithColleagueType.NIET_GEDEELD
+      Avo.Share.ShareWithColleagueType.NIET_GEDEELD;
   const isContributor =
     markedAssignment?.share_type ===
-    Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ
+    Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ;
   const isContributorWithContributeRights =
     !!markedAssignment?.contributors?.find(
       (c) =>
         c.profile_id === commonUser?.profileId &&
         c.rights === ContributorInfoRight.CONTRIBUTOR,
-    )
+    );
   const hasEditRightsForAllAssignments =
     commonUser?.permissions?.includes(PermissionName.EDIT_ANY_ASSIGNMENTS) ||
-    false
+    false;
   const hasDeleteRightsForAllAssignments =
     commonUser?.permissions?.includes(PermissionName.DELETE_ANY_ASSIGNMENTS) ||
-    false
+    false;
   const shouldDeleteSelfFromAssignment =
-    isContributor && !hasDeleteRightsForAllAssignments
+    isContributor && !hasDeleteRightsForAllAssignments;
 
   const tableColumns = useMemo(
     () => GET_ASSIGNMENT_OVERVIEW_COLUMNS(canEditAssignments, showPublicState),
     [canEditAssignments, showPublicState],
-  )
+  );
 
   const [query, setQuery] = useQueryParams({
     selectedAssignmentLabelIds: DelimitedArrayParam,
@@ -203,15 +201,15 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
     page: NumberParam,
     sortColumn: StringParam,
     sortOrder: StringParam,
-  })
+  });
 
   const getColumnDataType = useCallback((): TableColumnDataType => {
     const column = tableColumns.find(
       (tableColumn: any) => (tableColumn.id || '') === query.sortColumn,
-    )
+    );
     return (column?.dataType ||
-      TableColumnDataType.string) as TableColumnDataType
-  }, [query.sortColumn, tableColumns])
+      TableColumnDataType.string) as TableColumnDataType;
+  }, [query.sortColumn, tableColumns]);
 
   const {
     data: assignmentResponse,
@@ -235,124 +233,127 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
     {
       enabled: !!commonUser,
     },
-  )
+  );
   const assignments = useMemo(
     () => assignmentResponse?.assignments || [],
     [assignmentResponse],
-  )
-  const assignmentCount = assignmentResponse?.count || 0
+  );
+  const assignmentCount = assignmentResponse?.count || 0;
 
   useEffect(() => {
     localStorage.setItem(
       ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
       JSON.stringify(query),
-    )
-  }, [query])
+    );
+  }, [query]);
 
   const handleQueryChanged = (
     value: string | string[] | number | undefined,
     id: string,
   ) => {
-    let newQuery: any = cloneDeep(query)
-    let newValue = value
+    let newQuery: any = cloneDeep(query);
+    let newValue = value;
 
     // Show both shareTypes for 'mijn opdrachten' option
     if (
       Array.isArray(value) &&
       value.includes(Avo.Share.ShareWithColleagueType.NIET_GEDEELD)
     ) {
-      newValue = [...value, Avo.Share.ShareWithColleagueType.GEDEELD_MET_ANDERE]
+      newValue = [
+        ...value,
+        Avo.Share.ShareWithColleagueType.GEDEELD_MET_ANDERE,
+      ];
     }
 
     newQuery = {
       ...newQuery,
       [id]: newValue,
       ...(id !== 'page' ? { page: 0 } : {}), // Reset the page to 0, when any filter or sort order change is made
-    }
+    };
 
-    setQuery(newQuery, 'pushIn')
-  }
+    setQuery(newQuery, 'pushIn');
+  };
 
   const copySearchTermsToQueryState = () => {
-    handleQueryChanged(filterString, 'filter')
-  }
+    handleQueryChanged(filterString, 'filter');
+  };
 
-  useKeyPress('Enter', copySearchTermsToQueryState)
+  useKeyPress('Enter', copySearchTermsToQueryState);
 
   const handleSortOrderChange = (columnId: string) => {
-    let newQuery: any = cloneDeep(query)
+    let newQuery: any = cloneDeep(query);
 
     newQuery = cleanupFilterTableState({
       ...newQuery,
       sortColumn: columnId,
       sortOrder: toggleSortOrder(query.sortOrder),
-    })
+    });
 
-    setQuery(newQuery, 'pushIn')
-  }
+    setQuery(newQuery, 'pushIn');
+  };
 
   const resetFiltersAndSort = () => {
-    setFilterString('')
+    setFilterString('');
     setQuery({
       ...query,
       sortColumn: DEFAULT_SORT_COLUMN,
       sortOrder: DEFAULT_SORT_ORDER,
-    })
+    });
 
-    setQuery(defaultFiltersAndSort)
-  }
+    setQuery(defaultFiltersAndSort);
+  };
 
   const updateAndReset = async () => {
-    onUpdate()
-    await refetchAssignments()
-    resetFiltersAndSort()
-  }
+    onUpdate();
+    await refetchAssignments();
+    resetFiltersAndSort();
+  };
 
   const fetchAssignmentLabels = useCallback(async () => {
     if (commonUser?.profileId) {
       // Fetch all labels for the current user
       const labels = await AssignmentLabelsService.getLabelsForProfile(
         commonUser.profileId,
-      )
-      setAllAssignmentLabels(labels)
+      );
+      setAllAssignmentLabels(labels);
     }
-  }, [commonUser, setAllAssignmentLabels])
+  }, [commonUser, setAllAssignmentLabels]);
 
   useEffect(() => {
     if (!isNil(canEditAssignments)) {
-      refetchAssignments()
-      fetchAssignmentLabels()
+      refetchAssignments();
+      fetchAssignmentLabels();
     }
-  }, [canEditAssignments, refetchAssignments, fetchAssignmentLabels])
+  }, [canEditAssignments, refetchAssignments, fetchAssignmentLabels]);
 
   const handleSearchFieldKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
     if (evt.keyCode === KeyCode.Enter) {
-      copySearchTermsToQueryState()
+      copySearchTermsToQueryState();
     }
-  }
+  };
 
   const handleExtraOptionsItemClicked = async (
     actionId: AssignmentAction,
     assignmentRow: Avo.Assignment.Assignment,
   ) => {
-    setDropdownOpenForAssignmentId(null)
+    setDropdownOpenForAssignmentId(null);
     if (!assignmentRow.id) {
       ToastService.danger(
         tHtml(
           'assignment/views/assignment-overview___het-opdracht-id-van-de-geselecteerde-rij-is-niet-ingesteld',
         ),
-      )
-      return
+      );
+      return;
     }
 
-    setMarkedAssignment(assignmentRow)
+    setMarkedAssignment(assignmentRow);
     switch (actionId) {
       case AssignmentAction.edit:
         navigate(navigateFunc, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
           id: assignmentRow.id,
           tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
-        })
-        break
+        });
+        break;
       case AssignmentAction.duplicate:
         try {
           if (!commonUser?.profileId) {
@@ -360,64 +361,64 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
               tHtml(
                 'assignment/views/assignment-overview___je-moet-ingelogd-zijn-om-een-opdracht-te-kunnen-dupliceren',
               ),
-            )
-            return
+            );
+            return;
           }
           const latest: Avo.Assignment.Assignment =
             await AssignmentService.fetchAssignmentById(
               assignmentRow.id as unknown as string,
-            )
+            );
 
-          await duplicateAssignment(latest, commonUser)
-          await updateAndReset()
+          await duplicateAssignment(latest, commonUser);
+          await updateAndReset();
         } catch (err) {
           console.error('Failed to duplicate assignment', err, {
             assignmentId: assignmentRow.id,
-          })
+          });
           ToastService.danger(
             tHtml(
               'assignment/views/assignment-overview___het-ophalen-van-de-details-van-de-opdracht-is-mislukt',
             ),
-          )
+          );
         }
 
-        break
+        break;
 
       case AssignmentAction.delete:
-        setDeleteAssignmentModalOpen(true)
-        break
+        setDeleteAssignmentModalOpen(true);
+        break;
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   const handleDeleteModalClose = () => {
-    setDeleteAssignmentModalOpen(false)
-    setMarkedAssignment(null)
-  }
+    setDeleteAssignmentModalOpen(false);
+    setMarkedAssignment(null);
+  };
 
   const handleDeleteAssignmentConfirm = async () => {
-    if (!markedAssignment) return
-    await deleteAssignment(markedAssignment, commonUser, updateAndReset)
-    handleDeleteModalClose()
-  }
+    if (!markedAssignment) return;
+    await deleteAssignment(markedAssignment, commonUser, updateAndReset);
+    handleDeleteModalClose();
+  };
 
   const handleDeleteSelfFromAssignmentConfirm = async () => {
     await deleteSelfFromAssignment(
       markedAssignment?.id,
       commonUser,
       updateAndReset,
-    )
-    handleDeleteModalClose()
-  }
+    );
+    handleDeleteModalClose();
+  };
 
   const renderActions = (assignmentRow: Avo.Assignment.Assignment) => {
     const handleOptionClicked = async (actionId: AssignmentAction) => {
       await handleExtraOptionsItemClicked(
         actionId as AssignmentAction,
         assignmentRow,
-      )
-    }
+      );
+    };
 
     return (
       <ButtonToolbar className="c-assignment-overview__actions">
@@ -425,16 +426,16 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
           <MoreOptionsDropdown
             isOpen={dropdownOpenForAssignmentId === assignmentRow.id}
             onOpen={() => {
-              setMarkedAssignment(assignmentRow)
-              setDropdownOpenForAssignmentId(null)
+              setMarkedAssignment(assignmentRow);
+              setDropdownOpenForAssignmentId(null);
               // Let close menu render first and then open the other menu, otherwise both close
               setTimeout(
                 () => setDropdownOpenForAssignmentId(assignmentRow.id),
                 10,
-              )
+              );
             }}
             onClose={() => {
-              setDropdownOpenForAssignmentId(null)
+              setDropdownOpenForAssignmentId(null);
             }}
             label={getMoreOptionsLabel()}
             menuItems={[
@@ -478,15 +479,15 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
           />
         )}
       </ButtonToolbar>
-    )
-  }
+    );
+  };
 
   const renderLabels = (
     labels: { assignment_label: Avo.Assignment.Label }[],
     label: string,
   ) => {
     if (labels.length === 0) {
-      return '-'
+      return '-';
     }
     return renderMobileDesktop({
       mobile: renderDataCell(
@@ -505,8 +506,8 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
           closable={false}
         />
       ),
-    })
-  }
+    });
+  };
 
   const renderDataCell = (
     value: ReactNode,
@@ -527,19 +528,19 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
         </div>
       ),
       desktop: <span className={className}>{value || '-'}</span>,
-    })
+    });
 
   const renderResponsesCell = (
     cellData: any,
     assignment: Avo.Assignment.Assignment,
   ) => {
-    const responsesCount = (cellData || []).length
+    const responsesCount = (cellData || []).length;
 
     const userRole = getContributorType(
       commonUser?.profileId,
       assignment,
       assignment.contributors || [],
-    )
+    );
 
     if (responsesCount === 0 || userRole === 'VIEWER') {
       return renderDataCell(
@@ -551,7 +552,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
           -
         </span>,
         tText('assignment/views/assignment-overview___responses'),
-      )
+      );
     }
 
     return renderDataCell(
@@ -570,14 +571,14 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
         </span>
       </Link>,
       tText('assignment/views/assignment-overview___responses'),
-    )
-  }
+    );
+  };
 
   const renderCell = (
     assignment: Avo.Assignment.Assignment,
     colKey: AssignmentTableColumns,
   ) => {
-    const cellData: any = (assignment as any)[colKey]
+    const cellData: any = (assignment as any)[colKey];
     const detailLink = canEditAssignments
       ? buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignment.id })
       : buildLink(
@@ -586,12 +587,12 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
             id: assignment.id,
           },
           { tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT },
-        )
+        );
 
     const labels = (assignment.labels || []).filter(
       ({ assignment_label: item }) =>
         item.type === Avo.Assignment.LabelType.LABEL,
-    )
+    );
 
     switch (colKey) {
       case 'title': {
@@ -608,19 +609,19 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
               </h3>
             </div>
           </Flex>
-        )
+        );
 
         return renderMobileDesktop({
           mobile: <Spacer margin="bottom-small">{renderTitle()}</Spacer>,
           desktop: renderTitle(),
-        })
+        });
       }
 
       case 'labels':
         return renderLabels(
           labels,
           tText('assignment/views/assignment-overview___labels'),
-        )
+        );
 
       case 'class_room':
         return renderLabels(
@@ -629,34 +630,34 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
               item.type === Avo.Assignment.LabelType.CLASS,
           ),
           tText('assignment/views/assignment-overview___klas'),
-        )
+        );
 
       case 'author': {
-        const profile = assignment?.profile || null
+        const profile = assignment?.profile || null;
         const avatarOptions = {
           dark: true,
           abbreviatedName: true,
           small: false,
-        }
+        };
 
         return renderMobileDesktop({
           mobile: null,
           desktop: renderAvatar(profile, avatarOptions),
-        })
+        });
       }
 
       case 'deadline_at':
         return renderDataCell(
           <AssignmentDeadline deadline={assignment.deadline_at} />,
           tText('assignment/views/assignment-overview___deadline'),
-        )
+        );
 
       case 'updated_at':
         return (
           <span className="c-assignment-overview__updated-at">
             {formatDate(cellData)}
           </span>
-        )
+        );
 
       case 'share_type':
         return createShareIconTableOverview(
@@ -664,7 +665,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
           assignment.contributors,
           'assignment',
           'c-assignment-overview__shared',
-        )
+        );
 
       case 'is_public':
         return renderMobileDesktop({
@@ -686,22 +687,22 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
               />
             </div>
           ),
-        })
+        });
 
       case 'responses':
-        return renderResponsesCell(cellData, assignment)
+        return renderResponsesCell(cellData, assignment);
 
       case ACTIONS_TABLE_COLUMN_ID:
         return (
           <div className="c-assignment-overview__actions">
             {renderActions(assignment)}
           </div>
-        )
+        );
 
       default:
-        return JSON.stringify(cellData)
+        return JSON.stringify(cellData);
     }
-  }
+  };
 
   const getLabelOptions = (
     labelType: Avo.Assignment.LabelType,
@@ -711,7 +712,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
         .filter((labelObj: Avo.Assignment.Label) => labelObj.type === labelType)
         .map((labelObj: Avo.Assignment.Label): CheckboxOption | null => {
           if (!labelObj.label) {
-            return null
+            return null;
           }
           return {
             label: labelObj.label,
@@ -720,10 +721,10 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
               ...(query.selectedAssignmentLabelIds || []),
               ...(query.selectedClassLabelIds || []),
             ].includes(labelObj.id),
-          }
+          };
         }),
-    )
-  }
+    );
+  };
 
   const getShareTypeLabels = (): CheckboxOption[] => {
     return compact([
@@ -741,8 +742,8 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
           Avo.Share.ShareWithColleagueType.NIET_GEDEELD,
         ),
       },
-    ])
-  }
+    ]);
+  };
 
   const renderHeader = () => {
     return (
@@ -870,61 +871,61 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
           </ToolbarItem>
         </ToolbarRight>
       </Toolbar>
-    )
-  }
+    );
+  };
 
   const onClickCreate = () =>
     redirectToClientPage(
       buildLink(APP_PATH.ASSIGNMENT_CREATE.route),
       navigateFunc,
-    )
+    );
 
   const getEmptyFallbackTitle = () => {
     const hasFilters: boolean =
       !!query.filter?.length ||
       !!query.selectedAssignmentLabelIds?.length ||
-      !!query.selectedClassLabelIds?.length
+      !!query.selectedClassLabelIds?.length;
     if (canEditAssignments) {
       // Teacher
       if (query.view === AssignmentView.ACTIVE) {
         if (hasFilters) {
           return tHtml(
             'assignment/views/assignment-overview___er-zijn-geen-actieve-opdrachten-die-voldoen-aan-je-zoekterm',
-          )
+          );
         }
         return tHtml(
           'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-aangemaakt',
-        )
+        );
       }
       if (hasFilters) {
         return tHtml(
           'assignment/views/assignment-overview___er-zijn-geen-verlopen-opdrachten-die-voldoen-aan-je-zoekterm',
-        )
+        );
       }
       return tHtml(
         'assignment/views/assignment-overview___je-hebt-nog-geen-verlopen-opdrachten',
-      )
+      );
     }
     // Pupil
     if (query.view === AssignmentView.ACTIVE) {
       if (hasFilters) {
         return tHtml(
           'assignment/views/assignment-overview___er-zijn-geen-actieve-opdrachten-die-voldoen-aan-je-zoekterm',
-        )
+        );
       }
       return tHtml(
         'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-ontvangen-van-je-leerkracht',
-      )
+      );
     }
     if (hasFilters) {
       return tHtml(
         'assignment/views/assignment-overview___er-zijn-geen-verlopen-opdrachten-die-voldoen-aan-je-zoekterm',
-      )
+      );
     }
     return tHtml(
       'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-verlopen',
-    )
-  }
+    );
+  };
 
   const getEmptyFallbackDescription = () => {
     if (canEditAssignments) {
@@ -932,37 +933,37 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
       if (query.view === AssignmentView.ACTIVE) {
         return tHtml(
           'assignment/views/assignment-overview___beschrijving-hoe-een-opdracht-aan-te-maken',
-        )
+        );
       }
       return tText(
         'assignment/views/assignment-overview___beschrijving-verlopen-opdrachten-in-werkruimte',
-      )
+      );
     }
     // Pupil
     if (query.view === AssignmentView.ACTIVE) {
       return tText(
         'assignment/views/assignment-overview___beschrijving-opdrachten-in-werkruimte-voor-leerling',
-      )
+      );
     }
     return tText(
       'assignment/views/assignment-overview___beschrijving-verlopen-opdrachten-in-werkruimte-voor-leerling',
-    )
-  }
+    );
+  };
 
   const getEmptyFallbackIcon = (): IconName => {
     if (canEditAssignments) {
       // Teacher
       if (query.view === AssignmentView.ACTIVE) {
-        return IconName.clipboard
+        return IconName.clipboard;
       }
-      return IconName.archive
+      return IconName.archive;
     }
     // Pupil
     if (query.view === AssignmentView.ACTIVE) {
-      return IconName.clipboard
+      return IconName.clipboard;
     }
-    return IconName.clock
-  }
+    return IconName.clock;
+  };
 
   const renderEmptyFallback = () => (
     <>
@@ -986,7 +987,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
         )}
       </ErrorView>
     </>
-  )
+  );
 
   const renderTable = () => {
     return (
@@ -1014,18 +1015,18 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
         variant="styled"
         onColumnClick={handleSortOrderChange}
         sortColumn={query.sortColumn as AssignmentTableColumns}
-        sortOrder={query.sortOrder as OrderDirection}
+        sortOrder={query.sortOrder as Avo.Search.OrderDirection}
         useCards={isMobileWidth()}
       />
-    )
-  }
+    );
+  };
 
   const renderAssignmentsView = () => {
     if (isLoadingAssignments) {
-      return <FullPageSpinner />
+      return <FullPageSpinner />;
     }
     if (!assignments.length) {
-      return renderEmptyFallback()
+      return renderEmptyFallback();
     }
     return (
       <>
@@ -1054,14 +1055,14 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
           hasPupilResponses={!!markedAssignment?.responses?.length}
           hasPupilResponseCollections={
             markedAssignment?.lom_learning_resource_type?.includes(
-              AssignmentType.BOUW,
+              Avo.Core.BlockItemType.BOUW,
             ) || false
           }
           shouldDeleteSelfFromAssignment={shouldDeleteSelfFromAssignment}
         />
       </>
-    )
-  }
+    );
+  };
 
-  return <div className="m-assignment-overview">{renderAssignmentsView()}</div>
-}
+  return <div className="m-assignment-overview">{renderAssignmentsView()}</div>;
+};

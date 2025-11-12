@@ -1,6 +1,6 @@
-import './AssignmentEdit.scss'
-import './AssignmentPage.scss'
-import { OrderDirection } from '@meemoo/react-components'
+import './AssignmentEdit.scss';
+import './AssignmentPage.scss';
+
 import {
   Alert,
   Button,
@@ -15,192 +15,195 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { isAfter, isPast } from 'date-fns'
-import { useAtomValue } from 'jotai'
-import { noop } from 'es-toolkit'
+} from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { isAfter, isPast } from 'date-fns';
+import { noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   useCallback,
   useEffect,
   useMemo,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
-import { matchPath, Navigate, useNavigate, useParams } from 'react-router'
-import { Link, useLocation } from 'react-router-dom'
+} from 'react';
+import { Helmet } from 'react-helmet';
+import { matchPath, Navigate, useNavigate, useParams } from 'react-router';
+import { Link, useLocation } from 'react-router-dom';
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page.js'
-import type { MarcomNoteInfo } from '../../collection/components/CollectionOrBundleEdit.types.js'
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { PermissionService } from '../../authentication/helpers/permission-service.js';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page.js';
+import type { MarcomNoteInfo } from '../../collection/components/CollectionOrBundleEdit.types.js';
 import {
   BundleSortProp,
   useGetCollectionsOrBundlesContainingFragment,
-} from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment.js'
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants.js'
-import { ErrorNoAccess } from '../../error/components/ErrorNoAccess.js'
+} from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment.js';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants.js';
+import { ErrorNoAccess } from '../../error/components/ErrorNoAccess.js';
 import {
   ErrorView,
   type ErrorViewQueryParams,
-} from '../../error/views/ErrorView.js'
-import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt.js'
-import { BlockList } from '../../shared/components/BlockList/BlockList.js'
-import { EmptyStateMessage } from '../../shared/components/EmptyStateMessage/EmptyStateMessage.js'
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors.js'
-import { InActivityWarningModal } from '../../shared/components/InActivityWarningModal/InActivityWarningModal.js'
+} from '../../error/views/ErrorView.js';
+import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt.js';
+import { BlockList } from '../../shared/components/BlockList/BlockList.js';
+import { EmptyStateMessage } from '../../shared/components/EmptyStateMessage/EmptyStateMessage.js';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors.js';
+import { InActivityWarningModal } from '../../shared/components/InActivityWarningModal/InActivityWarningModal.js';
 import {
   ListSorterColor,
   ListSorterPosition,
   ListSorterSlice,
-} from '../../shared/components/ListSorter/ListSorter.js'
-import { SelectEducationLevelModal } from '../../shared/components/SelectEducationLevelModal/SelectEducationLevelModal.js'
-import { ShareModal } from '../../shared/components/ShareModal/ShareModal.js'
-import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js'
-import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
+} from '../../shared/components/ListSorter/ListSorter.js';
+import { SelectEducationLevelModal } from '../../shared/components/SelectEducationLevelModal/SelectEducationLevelModal.js';
+import { ShareModal } from '../../shared/components/ShareModal/ShareModal.js';
+import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
+import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar.js';
+import { buildLink } from '../../shared/helpers/build-link.js';
 import {
   getContributorType,
   transformContributorsToSimpleContributors,
-} from '../../shared/helpers/contributors.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { navigate } from '../../shared/helpers/link.js'
-import { type EducationLevelId } from '../../shared/helpers/lom.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { useBlocksList } from '../../shared/hooks/use-blocks-list.js'
-import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal.js'
-import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline.js'
-import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload.js'
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js'
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js'
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js'
-import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service.js'
-import { trackEvents } from '../../shared/services/event-logging-service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
+} from '../../shared/helpers/contributors.js';
+import { CustomError } from '../../shared/helpers/custom-error.js';
+import { navigate } from '../../shared/helpers/link.js';
+import { type EducationLevelId } from '../../shared/helpers/lom.js';
+import { isMobileWidth } from '../../shared/helpers/media-query.js';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { useBlocksList } from '../../shared/hooks/use-blocks-list.js';
+import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal.js';
+import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline.js';
+import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload.js';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
+import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service.js';
+import { trackEvents } from '../../shared/services/event-logging-service.js';
+import { ToastService } from '../../shared/services/toast-service.js';
 import {
   ASSIGNMENT_CREATE_UPDATE_TABS,
   ASSIGNMENT_FORM_DEFAULT,
   GET_EDUCATION_LEVEL_DICT,
   GET_EDUCATION_LEVEL_TOOLTIP_DICT,
-} from '../assignment.const.js'
+} from '../assignment.const.js';
 import {
   getValidationErrorsForPublishAssignment,
   isUserAssignmentContributor,
   isUserAssignmentOwner,
   setBlockPositionToIndex,
-} from '../assignment.helper.js'
-import { AssignmentService } from '../assignment.service.js'
-import { AssignmentActions } from '../components/AssignmentActions.js'
-import { AssignmentAdminFormEditable } from '../components/AssignmentAdminFormEditable.js'
-import { AssignmentConfirmSave } from '../components/AssignmentConfirmSave.js'
-import { AssignmentDetailsFormEditable } from '../components/AssignmentDetailsFormEditable.js'
-import { AssignmentDetailsFormReadonly } from '../components/AssignmentDetailsFormReadonly.js'
-import { AssignmentHeading } from '../components/AssignmentHeading.js'
-import { AssignmentMetaDataFormEditable } from '../components/AssignmentMetaDataFormEditable.js'
-import { AssignmentPupilPreview } from '../components/AssignmentPupilPreview.js'
-import { AssignmentTeacherTabs } from '../components/AssignmentTeacherTabs.js'
-import { AssignmentTitle } from '../components/AssignmentTitle.js'
-import { endOfAcademicYear } from '../helpers/academic-year.js'
+} from '../assignment.helper.js';
+import { AssignmentService } from '../assignment.service.js';
+import { AssignmentActions } from '../components/AssignmentActions.js';
+import { AssignmentAdminFormEditable } from '../components/AssignmentAdminFormEditable.js';
+import { AssignmentConfirmSave } from '../components/AssignmentConfirmSave.js';
+import { AssignmentDetailsFormEditable } from '../components/AssignmentDetailsFormEditable.js';
+import { AssignmentDetailsFormReadonly } from '../components/AssignmentDetailsFormReadonly.js';
+import { AssignmentHeading } from '../components/AssignmentHeading.js';
+import { AssignmentMetaDataFormEditable } from '../components/AssignmentMetaDataFormEditable.js';
+import { AssignmentPupilPreview } from '../components/AssignmentPupilPreview.js';
+import { AssignmentTeacherTabs } from '../components/AssignmentTeacherTabs.js';
+import { AssignmentTitle } from '../components/AssignmentTitle.js';
+import { endOfAcademicYear } from '../helpers/academic-year.js';
 import {
   onAddNewContributor,
   onDeleteContributor,
   onEditContributor,
-} from '../helpers/assignment-share-with-collegue-handlers.js'
-import { buildGlobalSearchLink } from '../helpers/build-search-link.js'
-import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions.js'
-import { duplicateAssignment } from '../helpers/duplicate-assignment.js'
-import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at.js'
-import { backToOverview } from '../helpers/links.js'
-import { useAssignmentBlockChangeHandler } from '../hooks/assignment-block-change-handler.js'
-import { useBlockListModals } from '../hooks/assignment-content-modals.js'
-import { type AssignmentFields } from '../hooks/assignment-form.js'
-import { useEditBlocks } from '../hooks/use-edit-blocks.js'
-import { useEducationLevelModal } from '../hooks/use-education-level-modal.js'
-import { PublishAssignmentModal } from '../modals/PublishAssignmentModal.js'
+} from '../helpers/assignment-share-with-collegue-handlers.js';
+import { buildGlobalSearchLink } from '../helpers/build-search-link.js';
+import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions.js';
+import { duplicateAssignment } from '../helpers/duplicate-assignment.js';
+import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at.js';
+import { backToOverview } from '../helpers/links.js';
+import { useAssignmentBlockChangeHandler } from '../hooks/assignment-block-change-handler.js';
+import { useBlockListModals } from '../hooks/assignment-content-modals.js';
+import { type AssignmentFields } from '../hooks/assignment-form.js';
+import { useEditBlocks } from '../hooks/use-edit-blocks.js';
+import { useEducationLevelModal } from '../hooks/use-education-level-modal.js';
+import { PublishAssignmentModal } from '../modals/PublishAssignmentModal.js';
 
-import { AssignmentEditMarcom } from './AssignmentEditMarcom.js'
-import { AssignmentResponses } from './AssignmentResponses.js'
+import { AssignmentEditMarcom } from './AssignmentEditMarcom.js';
+import { AssignmentResponses } from './AssignmentResponses.js';
 
 interface AssignmentEditProps {
-  onUpdate?: () => void | Promise<void>
+  onUpdate?: () => void | Promise<void>;
 }
 
 export const AssignmentEdit: FC<AssignmentEditProps> = ({
   onUpdate = noop,
 }) => {
-  const location = useLocation()
-  const navigateFunc = useNavigate()
+  const location = useLocation();
+  const navigateFunc = useNavigate();
 
-  const { id: assignmentId, tabId } = useParams<{ id: string; tabId: string }>()
+  const { id: assignmentId, tabId } = useParams<{
+    id: string;
+    tabId: string;
+  }>();
 
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   // Data
   const [tab, setTab] = useState<ASSIGNMENT_CREATE_UPDATE_TABS>(
     ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
-  )
+  );
   const [originalAssignment, setOriginalAssignment] =
-    useState<Avo.Assignment.Assignment | null>(null)
-  const [isAssignmentLoading, setIsAssignmentLoading] = useState(true)
-  const [isSaving, setIsSaving] = useState(false)
+    useState<Avo.Assignment.Assignment | null>(null);
+  const [isAssignmentLoading, setIsAssignmentLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [assignmentError, setAssignmentError] =
-    useState<Partial<ErrorViewQueryParams> | null>(null)
+    useState<Partial<ErrorViewQueryParams> | null>(null);
   const [assignmentFormValues, setAssignmentFormValues] =
-    useState<Partial<AssignmentFields> | null>(null)
+    useState<Partial<AssignmentFields> | null>(null);
   const [formErrors, setFormErrors] = useState<
     Partial<Record<keyof AssignmentFields, string>>
-  >({})
+  >({});
 
   const [contributors, setContributors] =
-    useState<Avo.Assignment.Contributor[]>()
+    useState<Avo.Assignment.Contributor[]>();
   const [bookmarkViewCounts, setBookmarkViewCounts] =
-    useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS)
+    useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS);
 
   const assignment =
     assignmentFormValues as unknown as Avo.Assignment.Assignment & {
-      marcom_note?: MarcomNoteInfo
-    }
+      marcom_note?: MarcomNoteInfo;
+    };
 
   const [assignmentHasResponses, setAssignmentHasResponses] =
-    useState<boolean>()
-  const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false)
-  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false)
+    useState<boolean>();
+  const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
   const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =
-    useEducationLevelModal(commonUser, assignment, isAssignmentLoading)
-  const [isForcedExit, setIsForcedExit] = useState<boolean>(false)
+    useEducationLevelModal(commonUser, assignment, isAssignmentLoading);
+  const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
   const [permissions, setPermissions] = useState<
     Partial<{
-      canEdit: boolean
-      canPublish: boolean
-      canFetchBookmarkAndViewCounts: boolean
+      canEdit: boolean;
+      canPublish: boolean;
+      canFetchBookmarkAndViewCounts: boolean;
     }>
-  >({})
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false)
+  >({});
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
   const { data: bundlesContainingAssignment } =
     useGetCollectionsOrBundlesContainingFragment(
       assignmentId as string,
       BundleSortProp.title,
       Avo.Search.OrderDirection.ASC,
       { enabled: !!assignmentId && !!assignment },
-    )
+    );
 
   // Computed
-  const isCreatingAssignment = !assignmentId
-  const isPublic = assignment?.is_public || false
+  const isCreatingAssignment = !assignmentId;
+  const isPublic = assignment?.is_public || false;
 
   const fetchContributors = useCallback(async () => {
     if (!assignmentId) {
-      return
+      return;
     }
     const response =
-      await AssignmentService.fetchContributorsByAssignmentId(assignmentId)
-    setContributors((response || []) as Avo.Assignment.Contributor[])
-  }, [assignmentId])
+      await AssignmentService.fetchContributorsByAssignmentId(assignmentId);
+    setContributors((response || []) as Avo.Assignment.Contributor[]);
+  }, [assignmentId]);
 
   const updateBlocksInAssignmentState = (
     newBlocks: Avo.Core.BlockItemBase[],
@@ -208,30 +211,30 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
     setAssignmentFormValues({
       ...assignmentFormValues,
       blocks: newBlocks as Avo.Assignment.Block[],
-    })
-    setHasUnsavedChanges(true)
-  }
+    });
+    setHasUnsavedChanges(true);
+  };
 
   const setBlock = useAssignmentBlockChangeHandler(
     assignment?.blocks || [],
     updateBlocksInAssignmentState,
-  )
+  );
 
   const resetForm = useCallback(() => {
     if (!originalAssignment) {
-      return
+      return;
     }
-    setFormErrors({})
-    setAssignmentFormValues(originalAssignment as any)
-    setHasUnsavedChanges(false)
-  }, [originalAssignment])
+    setFormErrors({});
+    setAssignmentFormValues(originalAssignment as any);
+    setHasUnsavedChanges(false);
+  }, [originalAssignment]);
 
   const releaseAssignmentEditStatus = useCallback(async () => {
     try {
       if (!assignmentId) {
-        return
+        return;
       }
-      await AssignmentService.releaseAssignmentEditStatus(assignmentId)
+      await AssignmentService.releaseAssignmentEditStatus(assignmentId);
     } catch (err) {
       if (
         (err as CustomError)?.innerException?.additionalInfo?.statusCode !== 409
@@ -240,22 +243,22 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           tHtml(
             'assignment/views/assignment-edit___er-liep-iets-fout-met-het-updaten-van-de-opdracht-bewerk-status',
           ),
-        )
+        );
       }
     }
-  }, [assignmentId])
+  }, [assignmentId]);
 
   const updateAssignmentEditor = useCallback(async () => {
     try {
       if (!assignmentId) {
-        return
+        return;
       }
-      await AssignmentService.updateAssignmentEditor(assignmentId)
+      await AssignmentService.updateAssignmentEditor(assignmentId);
     } catch (err) {
       redirectToClientPage(
         buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }),
         navigateFunc,
-      )
+      );
 
       if (
         (err as CustomError)?.innerException?.additionalInfo?.statusCode === 409
@@ -264,56 +267,56 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           tHtml(
             'assignment/views/assignment-edit___iemand-is-deze-opdracht-reeds-aan-het-bewerken',
           ),
-        )
+        );
       } else if (
         (err as CustomError).innerException?.additionalInfo?.statusCode === 401
       ) {
-        return // User has no rights to edit the assignment
+        return; // User has no rights to edit the assignment
       } else {
-        await releaseAssignmentEditStatus()
+        await releaseAssignmentEditStatus();
         ToastService.danger(
           tHtml(
             'assignment/views/assignment-edit___verbinding-met-bewerk-server-verloren',
           ),
-        )
+        );
       }
     }
-  }, [assignmentId, releaseAssignmentEditStatus, navigateFunc])
+  }, [assignmentId, releaseAssignmentEditStatus, navigateFunc]);
 
   const updateAssignmentEditorWithLoading = useCallback(async () => {
-    setIsAssignmentLoading(true)
-    await updateAssignmentEditor()
-  }, [updateAssignmentEditor])
+    setIsAssignmentLoading(true);
+    await updateAssignmentEditor();
+  }, [updateAssignmentEditor]);
 
   useEffect(() => {
     if (tabId) {
-      setTab(tabId as ASSIGNMENT_CREATE_UPDATE_TABS)
+      setTab(tabId as ASSIGNMENT_CREATE_UPDATE_TABS);
     }
-  }, [tabId])
+  }, [tabId]);
 
   useEffect(() => {
     if (!isCreatingAssignment) {
-      updateAssignmentEditorWithLoading()
+      updateAssignmentEditorWithLoading();
     }
-  }, [isCreatingAssignment, updateAssignmentEditorWithLoading])
+  }, [isCreatingAssignment, updateAssignmentEditorWithLoading]);
 
   useEffect(() => {
     if (!isCreatingAssignment) {
-      fetchContributors()
+      fetchContributors();
     }
-  }, [fetchContributors, isCreatingAssignment])
+  }, [fetchContributors, isCreatingAssignment]);
 
   // UI
   useWarningBeforeUnload({
     when: hasUnsavedChanges && !isForcedExit,
-  })
+  });
 
   const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [isConfirmSaveActionModalOpen, setIsConfirmSaveActionModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
-  const pastDeadline = useAssignmentPastDeadline(originalAssignment)
+  const pastDeadline = useAssignmentPastDeadline(originalAssignment);
 
   // HTTP
 
@@ -321,11 +324,11 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
   const fetchAssignment = useCallback(async () => {
     try {
       if (!assignmentId) {
-        return
+        return;
       }
-      setIsAssignmentLoading(true)
-      setAssignmentError(null)
-      let tempAssignment: Avo.Assignment.Assignment | null = null
+      setIsAssignmentLoading(true);
+      setAssignmentError(null);
+      let tempAssignment: Avo.Assignment.Assignment | null = null;
 
       if (
         !commonUser?.permissions?.includes(
@@ -340,12 +343,12 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           ),
           icon: IconName.lock,
           actionButtons: ['home'],
-        })
+        });
       }
 
       try {
         tempAssignment =
-          await AssignmentService.fetchAssignmentById(assignmentId)
+          await AssignmentService.fetchAssignmentById(assignmentId);
       } catch (err) {
         if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
           setAssignmentError({
@@ -354,9 +357,9 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
             ),
             icon: IconName.lock,
             actionButtons: ['home'],
-          })
-          setIsAssignmentLoading(false)
-          return
+          });
+          setIsAssignmentLoading(false);
+          return;
         }
         setAssignmentError({
           message: tHtml(
@@ -364,9 +367,9 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           ),
           icon: IconName.alertTriangle,
           actionButtons: ['home'],
-        })
-        setIsAssignmentLoading(false)
-        return
+        });
+        setIsAssignmentLoading(false);
+        return;
       }
 
       if (!tempAssignment) {
@@ -376,9 +379,9 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           ),
           icon: IconName.alertTriangle,
           actionButtons: ['home'],
-        })
-        setIsAssignmentLoading(false)
-        return
+        });
+        setIsAssignmentLoading(false);
+        return;
       }
 
       const checkedPermissions = await PermissionService.checkPermissions(
@@ -405,7 +408,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           ],
         },
         commonUser,
-      )
+      );
 
       const allPermissions = {
         canPublish: checkedPermissions.canPublish,
@@ -415,9 +418,9 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           checkedPermissions.canEditAllAssignments,
         canFetchBookmarkAndViewCounts:
           checkedPermissions.canFetchBookmarkAndViewCounts,
-      }
+      };
 
-      setPermissions(allPermissions)
+      setPermissions(allPermissions);
 
       if (!allPermissions.canEdit) {
         setAssignmentError({
@@ -426,9 +429,9 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           ),
           icon: IconName.lock,
           actionButtons: ['home'],
-        })
-        setIsAssignmentLoading(false)
-        return
+        });
+        setIsAssignmentLoading(false);
+        return;
       }
 
       if (checkedPermissions?.canFetchBookmarkAndViewCounts && !!assignment) {
@@ -438,35 +441,35 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
               assignmentId,
               commonUser,
             ),
-          )
+          );
         } catch (err) {
           console.error(
             new CustomError('Failed to get getAssignmentCounts', err, {
               uuid: assignmentId,
             }),
-          )
+          );
           ToastService.danger(
             tHtml(
               'assignment/views/assignment-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt',
             ),
-          )
+          );
         }
       }
 
-      setOriginalAssignment(tempAssignment)
-      setAssignmentFormValues(tempAssignment as any)
-      setAssignmentHasResponses((tempAssignment.responses?.length || 0) > 0)
-      setHasUnsavedChanges(false)
+      setOriginalAssignment(tempAssignment);
+      setAssignmentFormValues(tempAssignment as any);
+      setAssignmentHasResponses((tempAssignment.responses?.length || 0) > 0);
+      setHasUnsavedChanges(false);
     } catch (err) {
       setAssignmentError({
         message: tHtml(
           'assignment/views/assignment-edit___het-ophalen-aanmaken-van-de-opdracht-is-mislukt',
         ),
         icon: IconName.alertTriangle,
-      })
+      });
     }
-    setIsAssignmentLoading(false)
-  }, [assignmentId, commonUser, setAssignmentFormValues])
+    setIsAssignmentLoading(false);
+  }, [assignmentId, commonUser, setAssignmentFormValues]);
 
   // Events
 
@@ -475,18 +478,18 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
       !commonUser?.profileId ||
       (!originalAssignment && !isCreatingAssignment)
     ) {
-      return
+      return;
     }
-    setIsSaving(true)
+    setIsSaving(true);
 
     if (assignment?.deadline_at && isPast(new Date(assignment?.deadline_at))) {
       ToastService.danger(
         tHtml(
           'assignment/views/assignment-edit___de-deadline-mag-niet-in-het-verleden-liggen',
         ),
-      )
-      setIsSaving(false)
-      return
+      );
+      setIsSaving(false);
+      return;
     }
 
     if (
@@ -499,9 +502,9 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         tHtml(
           'assignment/views/assignment-edit___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht',
         ),
-      )
-      setIsSaving(false)
-      return
+      );
+      setIsSaving(false);
+      return;
     }
 
     if (
@@ -512,15 +515,15 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         tHtml(
           'assignment/views/assignment-edit___de-deadline-moet-voor-31-augustus-liggen',
         ),
-      )
-      setIsSaving(false)
-      return
+      );
+      setIsSaving(false);
+      return;
     }
 
     if (assignmentHasResponses) {
-      setIsConfirmSaveActionModalOpen(true)
-      setIsSaving(false)
-      return
+      setIsConfirmSaveActionModalOpen(true);
+      setIsSaving(false);
+      return;
     }
 
     if ((assignment?.description?.length || 0) > 300) {
@@ -528,21 +531,21 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         tHtml(
           'assignment/views/assignment-edit___de-korte-beschrijving-in-de-publicatie-details-mag-niet-langer-zijn-dan-300-tekens',
         ),
-      )
-      setIsSaving(false)
-      return
+      );
+      setIsSaving(false);
+      return;
     }
 
-    await saveAssignment()
-    setIsSaving(false)
-  }
+    await saveAssignment();
+    setIsSaving(false);
+  };
 
   const saveAssignment = async () => {
     try {
       if (!assignmentId) {
-        return
+        return;
       }
-      setIsSaving(true)
+      setIsSaving(true);
       if (isCreatingAssignment) {
         // Create assignment
         if (!commonUser?.profileId) {
@@ -550,14 +553,14 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
             tText(
               'assignment/views/assignment-create___je-moet-ingelogd-zijn-om-een-opdracht-te-kunnen-aanmaken',
             ),
-          )
-          setIsSaving(false)
-          return
+          );
+          setIsSaving(false);
+          return;
         }
 
-        const marcomNote = ((assignment as any).marcom_note || '') as string
-        delete (assignment as any).marcom_note
-        AssignmentService.insertOrUpdateMarcomNote(assignmentId, marcomNote) // Do not wait for note to be updated
+        const marcomNote = ((assignment as any).marcom_note || '') as string;
+        delete (assignment as any).marcom_note;
+        AssignmentService.insertOrUpdateMarcomNote(assignmentId, marcomNote); // Do not wait for note to be updated
 
         const created = await AssignmentService.insertAssignment(
           {
@@ -568,7 +571,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
             owner_profile_id: commonUser?.profileId,
           } as Partial<Avo.Assignment.Assignment>,
           commonUser,
-        )
+        );
 
         if (created) {
           trackEvents(
@@ -583,39 +586,39 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
                 : {},
             },
             commonUser,
-          )
+          );
 
           ToastService.success(
             tHtml(
               'assignment/views/assignment-create___de-opdracht-is-succesvol-aangemaakt-je-vindt-deze-in-je-werkruimte',
             ),
-          )
+          );
 
-          resetForm()
-          setIsSaving(false)
-          setHasUnsavedChanges(false)
+          resetForm();
+          setIsSaving(false);
+          setHasUnsavedChanges(false);
 
           // Delay navigation, until isDirty state becomes false, otherwise the "unsaved changes" modal will popup
           setTimeout(() => {
             navigate(navigateFunc, APP_PATH.ASSIGNMENT_DETAIL.route, {
               id: created.id,
-            })
-          }, 100)
+            });
+          }, 100);
         }
       } else {
         // Update assignment
         if (!commonUser?.profileId || !originalAssignment || !assignment) {
-          setIsSaving(false)
-          return
+          setIsSaving(false);
+          return;
         }
 
         if (assignment.is_public) {
           const validationErrors =
-            await getValidationErrorsForPublishAssignment(assignment)
+            await getValidationErrorsForPublishAssignment(assignment);
           if (validationErrors && validationErrors.length) {
-            ToastService.danger(validationErrors)
-            setIsSaving(false)
-            return
+            ToastService.danger(validationErrors);
+            setIsSaving(false);
+            return;
           }
         }
 
@@ -626,7 +629,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           await AssignmentService.transferAssignmentOwnerShip(
             originalAssignment.id,
             assignment.owner_profile_id as string,
-          )
+          );
         }
 
         const updated = await AssignmentService.updateAssignment(
@@ -636,12 +639,12 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
             id: originalAssignment.id,
           },
           commonUser?.profileId,
-        )
+        );
 
         if (updated && assignment?.id) {
           const isAdmin = commonUser.permissions?.includes(
             PermissionName.EDIT_ANY_ASSIGNMENTS,
-          )
+          );
           const contributorType = isAdmin
             ? 'ADMIN'
             : getContributorType(
@@ -649,7 +652,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
                 assignment as Avo.Assignment.Assignment,
                 (originalAssignment.contributors ||
                   []) as Avo.Assignment.Contributor[],
-              ).toLowerCase()
+              ).toLowerCase();
           trackEvents(
             {
               object: String(assignment.id),
@@ -662,47 +665,47 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
               },
             },
             commonUser,
-          )
+          );
 
           // Re-fetch
-          await fetchAssignment()
-          await fetchContributors()
+          await fetchAssignment();
+          await fetchContributors();
 
           ToastService.success(
             tHtml(
               'assignment/views/assignment-edit___de-opdracht-is-succesvol-aangepast',
             ),
-          )
+          );
 
-          setHasUnsavedChanges(false)
+          setHasUnsavedChanges(false);
         }
 
-        setIsSaving(false)
+        setIsSaving(false);
       }
     } catch (err) {
-      console.error(err)
+      console.error(err);
       ToastService.danger(
         tHtml(
           'assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const reset = useCallback(() => {
-    originalAssignment && setAssignmentFormValues(originalAssignment as any)
-    resetForm()
-  }, [resetForm, setAssignmentFormValues, originalAssignment])
+    originalAssignment && setAssignmentFormValues(originalAssignment as any);
+    resetForm();
+  }, [resetForm, setAssignmentFormValues, originalAssignment]);
 
   const selectEducationLevel = useCallback(
     (lom: Avo.Lom.LomField) => {
-      if (!assignment) return
-      setSelectEducationLevelModalOpen(false)
-      setHasUnsavedChanges(true)
-      assignment.education_level_id = lom.id
+      if (!assignment) return;
+      setSelectEducationLevelModalOpen(false);
+      setHasUnsavedChanges(true);
+      assignment.education_level_id = lom.id;
     },
     [assignment, setSelectEducationLevelModalOpen],
-  )
+  );
 
   const handleAssignmentFieldUpdate = useCallback(
     (
@@ -712,17 +715,17 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
     ) => {
       setAssignmentFormValues(
         newAssignment as unknown as Partial<AssignmentFields>,
-      )
-      setHasUnsavedChanges(true)
+      );
+      setHasUnsavedChanges(true);
     },
     [setAssignmentFormValues],
-  )
+  );
 
   const onForcedExitPage = async () => {
-    setIsForcedExit(true)
+    setIsForcedExit(true);
     try {
       if (!commonUser?.profileId || !originalAssignment) {
-        return
+        return;
       }
 
       await AssignmentService.updateAssignment(
@@ -732,7 +735,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           id: originalAssignment.id,
         },
         commonUser?.profileId,
-      )
+      );
 
       ToastService.success(
         tHtml(
@@ -741,7 +744,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         {
           autoClose: false,
         },
-      )
+      );
     } catch (err) {
       ToastService.danger(
         tHtml(
@@ -750,23 +753,23 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         {
           autoClose: false,
         },
-      )
+      );
     }
 
-    releaseAssignmentEditStatus()
+    releaseAssignmentEditStatus();
 
     redirectToClientPage(
       buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
         id: assignmentId,
       }),
       navigateFunc,
-    )
-  }
+    );
+  };
 
   const cancelSaveBar = () => {
-    reset()
-    setHasUnsavedChanges(false)
-  }
+    reset();
+    setHasUnsavedChanges(false);
+  };
 
   // Render
 
@@ -775,7 +778,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
     buildGlobalSearchLink,
     undefined,
     () => setHasUnsavedChanges(true),
-  )
+  );
 
   const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
     assignment?.blocks || [],
@@ -800,11 +803,11 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
               },
             },
             commonUser,
-          )
+          );
         },
       },
     },
-  )
+  );
 
   const [draggableListButton, draggableListModal] = useDraggableListModal({
     modal: {
@@ -813,16 +816,16 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         if (reorderedBlocks) {
           const blocks = setBlockPositionToIndex(
             reorderedBlocks,
-          ) as Avo.Assignment.Block[]
+          ) as Avo.Assignment.Block[];
 
           handleAssignmentFieldUpdate({
             ...assignmentFormValues,
             blocks,
-          })
+          });
         }
       },
     },
-  })
+  });
 
   const [renderedListSorter] = useBlocksList(
     assignment?.blocks || [],
@@ -831,17 +834,17 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
       listSorter: {
         content: (item) => {
           if (item) {
-            return renderBlockContent(item)
+            return renderBlockContent(item);
           }
-          return null
+          return null;
         },
         divider: (position: number) => (
           <Button
             icon={IconName.plus}
             type="secondary"
             onClick={() => {
-              addBlockModal.setEntity(position)
-              addBlockModal.setOpen(true)
+              addBlockModal.setEntity(position);
+              addBlockModal.setOpen(true);
             }}
           />
         ),
@@ -857,26 +860,26 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
       },
       listSorterItem: {
         onSlice: (item) => {
-          confirmSliceModal.setEntity(item)
-          confirmSliceModal.setOpen(true)
+          confirmSliceModal.setEntity(item);
+          confirmSliceModal.setOpen(true);
         },
         onBackgroundChange: (item, color) => {
-          if (!assignment) return
+          if (!assignment) return;
 
           handleAssignmentFieldUpdate({
             ...assignment,
             blocks: (assignment.blocks || []).map((block) => {
               if (block.id === item.id) {
-                return { ...block, color }
+                return { ...block, color };
               }
 
-              return block
+              return block;
             }),
-          })
+          });
         },
       },
     },
-  )
+  );
 
   const renderBackButton = useMemo(
     () => (
@@ -886,33 +889,33 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
       </Link>
     ),
     [],
-  )
+  );
 
   const renderContributors = useMemo(() => {
     if (!assignment) {
-      return null
+      return null;
     }
     if (isCreatingAssignment) {
-      return null
+      return null;
     }
     return (
       <Flex align="start">
         <HeaderOwnerAndContributors subject={assignment} />
       </Flex>
-    )
-  }, [assignment, isCreatingAssignment])
+    );
+  }, [assignment, isCreatingAssignment]);
 
   const renderMeta = useMemo(() => {
-    const bookmarks = String(bookmarkViewCounts.bookmarkCount || 0)
-    const views = String(bookmarkViewCounts.viewCount || 0)
+    const bookmarks = String(bookmarkViewCounts.bookmarkCount || 0);
+    const views = String(bookmarkViewCounts.viewCount || 0);
     const label =
       GET_EDUCATION_LEVEL_DICT()[
         assignment?.education_level_id as EducationLevelId
-      ]
+      ];
     const tooltip =
       GET_EDUCATION_LEVEL_TOOLTIP_DICT()[
         assignment?.education_level_id as EducationLevelId
-      ]
+      ];
 
     return (
       <MetaData spaced={true} category={Avo.ContentType.English.ASSIGNMENT}>
@@ -938,8 +941,8 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           <TooltipContent>{tooltip}</TooltipContent>
         </Tooltip>
       </MetaData>
-    )
-  }, [bookmarkViewCounts, assignment])
+    );
+  }, [bookmarkViewCounts, assignment]);
 
   const renderAssignmentBlocks = () => {
     if (!assignment?.blocks?.length) {
@@ -955,7 +958,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
             )}
           />
         </>
-      )
+      );
     }
 
     return (
@@ -970,26 +973,26 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         )}
         {renderedListSorter}
       </>
-    )
-  }
+    );
+  };
 
   const renderedTabContent = useMemo(() => {
     switch (tab) {
       case ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT:
         if (pastDeadline) {
-          return <BlockList blocks={assignment?.blocks || []} />
+          return <BlockList blocks={assignment?.blocks || []} />;
         }
         return (
           <div className="c-assignment-contents-tab">
             {renderAssignmentBlocks()}
           </div>
-        )
+        );
 
       case ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS:
         if (pastDeadline) {
           if (!assignment) {
             if (!assignment) {
-              return <FullPageSpinner />
+              return <FullPageSpinner />;
             }
           }
           return (
@@ -998,7 +1001,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
                 assignment={assignment as Avo.Assignment.Assignment}
               />
             </div>
-          )
+          );
         }
         return (
           <div className="c-assignment-details-tab">
@@ -1007,7 +1010,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
               setAssignment={handleAssignmentFieldUpdate}
             />
           </div>
-        )
+        );
 
       case ASSIGNMENT_CREATE_UPDATE_TABS.PUBLISH:
         return (
@@ -1018,10 +1021,10 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
               onFocus={() => setHasUnsavedChanges(true)}
             />
           </div>
-        )
+        );
 
       case ASSIGNMENT_CREATE_UPDATE_TABS.CLICKS:
-        return <AssignmentResponses onUpdate={onUpdate} />
+        return <AssignmentResponses onUpdate={onUpdate} />;
 
       case ASSIGNMENT_CREATE_UPDATE_TABS.ADMIN:
         return (
@@ -1029,7 +1032,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
             assignment={assignment}
             setAssignment={handleAssignmentFieldUpdate}
           />
-        )
+        );
 
       case ASSIGNMENT_CREATE_UPDATE_TABS.MARCOM:
         return (
@@ -1037,10 +1040,10 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
             assignment={assignment}
             setAssignment={handleAssignmentFieldUpdate}
           />
-        )
+        );
 
       default:
-        return tab
+        return tab;
     }
   }, [
     tab,
@@ -1051,31 +1054,31 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
     onUpdate,
     handleAssignmentFieldUpdate,
     assignmentFormValues,
-  ])
+  ]);
 
   // Effects
 
   // Fetch initial data
   useEffect(() => {
     if (isCreatingAssignment) {
-      setAssignmentFormValues(ASSIGNMENT_FORM_DEFAULT())
-      setIsAssignmentLoading(false)
+      setAssignmentFormValues(ASSIGNMENT_FORM_DEFAULT());
+      setIsAssignmentLoading(false);
     } else {
-      fetchAssignment()
+      fetchAssignment();
     }
-  }, [fetchAssignment, isCreatingAssignment])
+  }, [fetchAssignment, isCreatingAssignment]);
 
   // Reset the form when the original changes
   useEffect(() => {
-    originalAssignment && reset()
-  }, [originalAssignment, reset])
+    originalAssignment && reset();
+  }, [originalAssignment, reset]);
 
   useEffect(() => {
-    resetForm()
-  }, [originalAssignment, resetForm])
+    resetForm();
+  }, [originalAssignment, resetForm]);
 
   const handleTabChange = (tabId: ASSIGNMENT_CREATE_UPDATE_TABS) => {
-    setTab(tabId)
+    setTab(tabId);
 
     if (assignmentId) {
       navigate(
@@ -1084,22 +1087,22 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         { id: assignmentId, tabId: tabId },
         undefined,
         'replace',
-      )
+      );
     }
-  }
+  };
 
   const handleDuplicateAssignment = async () => {
     const duplicatedAssignment = await duplicateAssignment(
       originalAssignment,
       commonUser,
-    )
+    );
     if (duplicatedAssignment) {
       navigate(navigateFunc, APP_PATH.ASSIGNMENT_DETAIL.route, {
         id: duplicatedAssignment.id,
         tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
-      })
+      });
     }
-  }
+  };
 
   // Render
 
@@ -1116,7 +1119,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
       [ContributorInfoRight.VIEWER]:
         PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
     },
-  }
+  };
 
   const renderHeadingActions = (renderLabel: boolean) => {
     return (
@@ -1171,8 +1174,8 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           assignment: originalAssignment || undefined,
           modal: {
             confirmCallback: () => {
-              reset()
-              redirectToClientPage(backToOverview(), navigateFunc)
+              reset();
+              redirectToClientPage(backToOverview(), navigateFunc);
             },
           },
         }}
@@ -1180,8 +1183,8 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         route={location.pathname}
         assignment={assignment}
       />
-    )
-  }
+    );
+  };
 
   const renderEditAssignmentPage = () => (
     <>
@@ -1200,7 +1203,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
                       handleAssignmentFieldUpdate({
                         ...assignmentFormValues,
                         title: newTitle,
-                      })
+                      });
                     }}
                   />
                 </div>
@@ -1245,8 +1248,8 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
                 isOpen: isConfirmSaveActionModalOpen,
                 onClose: () => setIsConfirmSaveActionModalOpen(false),
                 confirmCallback: async () => {
-                  setIsConfirmSaveActionModalOpen(false)
-                  await saveAssignment()
+                  setIsConfirmSaveActionModalOpen(false);
+                  await saveAssignment();
                 },
               }}
             />
@@ -1282,14 +1285,14 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         />
       )}
     </>
-  )
+  );
 
   const renderPageContent = () => {
     if (isAssignmentLoading && !originalAssignment) {
-      return <FullPageSpinner />
+      return <FullPageSpinner />;
     }
     if (assignmentError) {
-      return <ErrorView {...assignmentError} />
+      return <ErrorView {...assignmentError} />;
     }
 
     if (
@@ -1307,7 +1310,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
             'assignment/views/assignment-edit___je-hebt-geen-toegang-beschrijving',
           )}
         />
-      )
+      );
     }
 
     if (isViewAsPupilEnabled && assignment) {
@@ -1317,10 +1320,10 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           onClose={() => setIsViewAsPupilEnabled(false)}
           isPreview
         />
-      )
+      );
     }
-    return renderEditAssignmentPage()
-  }
+    return renderEditAssignmentPage();
+  };
 
   if (matchPath(location.pathname, APP_PATH.ASSIGNMENT_EDIT.route)) {
     return (
@@ -1330,7 +1333,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
         })}
       />
-    )
+    );
   }
 
   return (
@@ -1371,9 +1374,9 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
       {!!assignment && !!commonUser && (
         <PublishAssignmentModal
           onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
-            setIsPublishModalOpen(false)
+            setIsPublishModalOpen(false);
             if (newAssignment) {
-              setAssignmentFormValues(newAssignment as any)
+              setAssignmentFormValues(newAssignment as any);
             }
           }}
           isOpen={isPublishModalOpen}
@@ -1438,7 +1441,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           desktop: null,
         })}
     </>
-  )
-}
+  );
+};
 
-export default AssignmentEdit
+export default AssignmentEdit;

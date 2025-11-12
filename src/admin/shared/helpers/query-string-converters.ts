@@ -1,52 +1,44 @@
-import { type DateRange } from '../../../shared/components/DateRangeDropdown/DateRangeDropdown.js'
+import { Avo } from '@viaa/avo2-types';
+import type { QueryParamConfig } from 'use-query-params';
+import { decodeString, encodeString } from 'use-query-params';
 
-export const DateRangeParam = {
-  encode: (value: DateRange | undefined) => {
-    if (!value) {
-      return
-    }
-    return JSON.stringify(value)
-  },
-  decode: (
-    value: string | (string | null)[] | null | undefined,
-  ): DateRange | undefined => {
-    try {
-      if (Array.isArray(value)) {
-        if (value.length) {
-          return JSON.parse(value[0] as string)
-        }
-        return
-      }
-      if (!value) {
-        return
-      }
-      return JSON.parse(value)
-    } catch (err) {
-      return
-    }
-  },
+const QUERY_PARAM_SORT_DIRECTIONS = [
+  Avo.Search.OrderDirection.ASC,
+  Avo.Search.OrderDirection.DESC,
+] as const;
+
+export function isSortDirection(
+  value: string,
+): value is Avo.Search.OrderDirection {
+  return QUERY_PARAM_SORT_DIRECTIONS.includes(
+    value as Avo.Search.OrderDirection,
+  );
 }
 
-export const CheckboxListParam = {
-  encode: (value: string[] | undefined) => {
-    if (!value) {
-      return
+// Define a query parameter config for `use-query-params` to enforce "asc" & "desc" values
+export const SortDirectionParam: QueryParamConfig<
+  Avo.Search.OrderDirection,
+  string | undefined
+> = {
+  encode: (input: string): Avo.Search.OrderDirection | null | undefined => {
+    if (isSortDirection(input)) {
+      return encodeString(input) as Avo.Search.OrderDirection;
     }
-    return value.join('~')
+
+    return undefined;
   },
+
   decode: (
-    value: string | (string | null)[] | null | undefined,
-  ): string[] | undefined => {
-    try {
-      if (!value) {
-        return []
+    input: string | (string | null)[] | null | undefined,
+  ): Avo.Search.OrderDirection | undefined => {
+    if (typeof input === 'string' && isSortDirection(input)) {
+      const decoded = decodeString(input);
+
+      if (decoded) {
+        return decoded as Avo.Search.OrderDirection;
       }
-      if (Array.isArray(value)) {
-        return value as string[]
-      }
-      return value.split('~')
-    } catch (err) {
-      return
     }
+
+    return undefined;
   },
-}
+};

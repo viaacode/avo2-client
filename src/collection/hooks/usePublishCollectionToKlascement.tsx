@@ -6,7 +6,8 @@ import {
 } from '../../shared/services/klascement-service.js'
 
 export const usePublishCollectionToKlascement = () => {
-  return useMutation((publishData: KlascementPublishCollectionData) =>
-    KlascementService.publishCollection(publishData),
-  )
+  return useMutation({
+    mutationFn: (publishData: KlascementPublishCollectionData) =>
+      KlascementService.publishCollection(publishData),
+  })
 }

@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Alert,
   Button,
@@ -17,10 +17,10 @@ import {
   Table,
   TextArea,
   TextInput,
-} from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { compact, isNil, uniq } from 'es-toolkit'
+} from '@viaa/avo2-components';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { compact, isNil, uniq } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactNode,
@@ -28,88 +28,88 @@ import React, {
   useEffect,
   useMemo,
   useState,
-} from 'react'
-import { Link } from 'react-router-dom'
+} from 'react';
+import { Link } from 'react-router-dom';
 
-import { AssignmentService } from '../../assignment/assignment.service.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { APP_PATH } from '../../constants.js'
-import { FileUpload } from '../../shared/components/FileUpload/FileUpload.js'
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { type App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { getEnv } from '../../shared/helpers/env.js'
-import { extractKlascementError } from '../../shared/helpers/extract-klascement-error.js'
-import { formatDate } from '../../shared/helpers/formatters/date.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { truncateTableValue } from '../../shared/helpers/truncate.js'
-import { ToastService } from '../../shared/services/toast-service.js'
+import { AssignmentService } from '../../assignment/assignment.service.js';
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { APP_PATH } from '../../constants.js';
+import { FileUpload } from '../../shared/components/FileUpload/FileUpload.js';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import { type App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types.js';
+import { buildLink } from '../../shared/helpers/build-link.js';
+import { CustomError } from '../../shared/helpers/custom-error.js';
+import { getEnv } from '../../shared/helpers/env.js';
+import { extractKlascementError } from '../../shared/helpers/extract-klascement-error.js';
+import { formatDate } from '../../shared/helpers/formatters/date.js';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { truncateTableValue } from '../../shared/helpers/truncate.js';
+import { ToastService } from '../../shared/services/toast-service.js';
 import {
   GET_MARCOM_CHANNEL_NAME_OPTIONS,
   GET_MARCOM_CHANNEL_TYPE_OPTIONS,
   GET_MARCOM_ENTRY_TABLE_COLUMNS,
-} from '../collection.const.js'
-import { CollectionService } from '../collection.service.js'
+} from '../collection.const.js';
+import { CollectionService } from '../collection.service.js';
 import {
   CollectionCreateUpdateTab,
   type CollectionMarcomEntry,
   ContentTypeNumber,
-} from '../collection.types.js'
-import { useGetKlascementPublishInfo } from '../hooks/useGetKlascementPublishInfo.js'
-import { usePublishCollectionToKlascement } from '../hooks/usePublishCollectionToKlascement.js'
+} from '../collection.types.js';
+import { useGetKlascementPublishInfo } from '../hooks/useGetKlascementPublishInfo.js';
+import { usePublishCollectionToKlascement } from '../hooks/usePublishCollectionToKlascement.js';
 
 import {
   type CollectionAction,
   type MarcomNoteInfo,
-} from './CollectionOrBundleEdit.types.js'
+} from './CollectionOrBundleEdit.types.js';
 
 interface CollectionOrBundleEditMarcomProps {
-  collection: Avo.Collection.Collection & { marcom_note?: MarcomNoteInfo }
-  changeCollectionState: (action: CollectionAction) => void
-  onFocus?: () => void
+  collection: Avo.Collection.Collection & { marcom_note?: MarcomNoteInfo };
+  changeCollectionState: (action: CollectionAction) => void;
+  onFocus?: () => void;
 }
 
 export const CollectionOrBundleEditMarcom: FC<
   CollectionOrBundleEditMarcomProps
 > = ({ collection, changeCollectionState, onFocus }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
-  const isCollection = collection.type_id === ContentTypeNumber.collection
+  const isCollection = collection.type_id === ContentTypeNumber.collection;
 
-  const [marcomDate, setMarcomDate] = useState<Date | null>(new Date())
-  const [marcomChannelType, setMarcomChannelType] = useState<string | null>()
-  const [marcomChannelName, setMarcomChannelName] = useState<string | null>()
-  const [marcomLink, setMarcomLink] = useState<string>('')
+  const [marcomDate, setMarcomDate] = useState<Date | null>(new Date());
+  const [marcomChannelType, setMarcomChannelType] = useState<string | null>();
+  const [marcomChannelName, setMarcomChannelName] = useState<string | null>();
+  const [marcomLink, setMarcomLink] = useState<string>('');
   const [marcomEntries, setMarcomEntries] = useState<
     CollectionMarcomEntry[] | null
-  >(null)
+  >(null);
 
-  const [klascementImageUrl, setKlascementImageUrl] = useState<string | null>()
+  const [klascementImageUrl, setKlascementImageUrl] = useState<string | null>();
   const [klascementAltText, setKlascementAltText] = useState<
     string | undefined
-  >()
+  >();
   const [klascementSourceText, setKlascementSourceText] = useState<
     string | undefined
-  >()
-  const [klascementId, setKlascementId] = useState<number | undefined>()
+  >();
+  const [klascementId, setKlascementId] = useState<number | undefined>();
 
   const [klascementImageUrlError, setKlascementImageUrlError] = useState<
     string | null
-  >(null)
+  >(null);
   const [klascementAltTextError, setKlascementAltTextError] = useState<
     string | null
-  >(null)
+  >(null);
   const [klascementSourceTextError, setKlascementSourceTextError] = useState<
     string | null
-  >(null)
+  >(null);
 
   const {
     mutateAsync: publishCollectionToKlascement,
-    isLoading: isPublishing,
-  } = usePublishCollectionToKlascement()
+    isPending: isPublishing,
+  } = usePublishCollectionToKlascement();
 
   const { data: publishInfo, refetch: refetchPublishInfo } =
     useGetKlascementPublishInfo(collection.id, {
@@ -117,16 +117,16 @@ export const CollectionOrBundleEditMarcom: FC<
         commonUser?.permissions?.includes(
           PermissionName.PUBLISH_COLLECTION_TO_KLASCEMENT,
         ) || false,
-    })
+    });
 
   const isPublishedToKlascement = useMemo(
     () => !isNil(klascementId),
     [klascementId],
-  )
+  );
 
   const fetchMarcomEntries = useCallback(async () => {
     try {
-      setMarcomEntries(await CollectionService.getMarcomEntries(collection.id))
+      setMarcomEntries(await CollectionService.getMarcomEntries(collection.id));
     } catch (err) {
       console.error(
         new CustomError(
@@ -136,14 +136,14 @@ export const CollectionOrBundleEditMarcom: FC<
             collectionId: collection.id,
           },
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'collection/components/collection-or-bundle-edit-marcom___het-ophalen-van-de-marcom-entries-is-mislukt',
         ),
-      )
+      );
     }
-  }, [collection.id])
+  }, [collection.id]);
 
   const handlePublish = async () => {
     if (!klascementImageUrl) {
@@ -151,30 +151,30 @@ export const CollectionOrBundleEditMarcom: FC<
         tText(
           'collection/components/collection-or-bundle-edit-marcom___gelieve-een-afbeelding-te-uploaden',
         ),
-      )
-      return
+      );
+      return;
     } else {
-      setKlascementImageUrlError(null)
+      setKlascementImageUrlError(null);
     }
     if (!klascementAltText) {
       setKlascementAltTextError(
         tText(
           'collection/components/collection-or-bundle-edit-marcom___gelieve-een-alternatieve-tekst-in-te-vullen-voor-de-afbeelding',
         ),
-      )
-      return
+      );
+      return;
     } else {
-      setKlascementAltTextError(null)
+      setKlascementAltTextError(null);
     }
     if (!klascementSourceText) {
       setKlascementSourceTextError(
         tText(
           'collection/components/collection-or-bundle-edit-marcom___gelieve-de-bron-van-de-afbeelding-in-te-vullen',
         ),
-      )
-      return
+      );
+      return;
     } else {
-      setKlascementSourceTextError(null)
+      setKlascementSourceTextError(null);
     }
     try {
       const klascementIdTemp = await publishCollectionToKlascement({
@@ -182,64 +182,64 @@ export const CollectionOrBundleEditMarcom: FC<
         imageUrl: klascementImageUrl,
         altText: klascementAltText,
         sourceText: klascementSourceText,
-      })
+      });
       if (!klascementIdTemp) {
-        console.error('Received no klascementId from klascement')
-        throw new Error('No klascementId returned')
+        console.error('Received no klascementId from klascement');
+        throw new Error('No klascementId returned');
       }
       window.open(
         `${getEnv('KLASCEMENT_URL')}/video/${klascementIdTemp}/aanpassen/uitgebreid`,
         '_blank',
-      )
-      setKlascementId(klascementIdTemp)
-      await refetchPublishInfo()
-      await fetchMarcomEntries()
+      );
+      setKlascementId(klascementIdTemp);
+      await refetchPublishInfo();
+      await fetchMarcomEntries();
       ToastService.success(
         tText(
           'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement-gelukt',
         ),
-      )
+      );
     } catch (err) {
       const avoError = tText(
         'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement-mislukt',
-      )
+      );
       ToastService.danger(
         compact([avoError, extractKlascementError(err)]).join(': '),
-      )
+      );
     }
-  }
+  };
 
   useEffect(() => {
-    fetchMarcomEntries()
-  }, [fetchMarcomEntries])
+    fetchMarcomEntries();
+  }, [fetchMarcomEntries]);
 
   useEffect(() => {
-    setKlascementAltText(publishInfo?.alt_text)
-    setKlascementSourceText(publishInfo?.source_text)
-    setKlascementImageUrl(publishInfo?.image_url)
-    setKlascementId(publishInfo?.klascement_id ?? undefined)
-  }, [publishInfo])
+    setKlascementAltText(publishInfo?.alt_text);
+    setKlascementSourceText(publishInfo?.source_text);
+    setKlascementImageUrl(publishInfo?.image_url);
+    setKlascementId(publishInfo?.klascement_id ?? undefined);
+  }, [publishInfo]);
 
   const renderMarcomTableCell = (
     rowData: Partial<CollectionMarcomEntry>,
     columnId: keyof CollectionMarcomEntry | typeof ACTIONS_TABLE_COLUMN_ID,
   ): ReactNode => {
-    const value = (rowData as any)?.[columnId]
+    const value = (rowData as any)?.[columnId];
     switch (columnId) {
       case 'publish_date':
-        return formatDate(value) || '-'
+        return formatDate(value) || '-';
 
       case 'external_link': {
         const valueLink: string = (value || '').includes('//')
           ? value || ''
-          : `//${value}`
+          : `//${value}`;
         return value ? (
           <a href={valueLink} target="_blank" rel="noopener noreferrer">
             {truncateTableValue(value)}
           </a>
         ) : (
           '-'
-        )
+        );
       }
 
       case 'channel_type':
@@ -247,14 +247,14 @@ export const CollectionOrBundleEditMarcom: FC<
           GET_MARCOM_CHANNEL_TYPE_OPTIONS().find(
             (option) => option.value === value,
           )?.label || '-',
-        )
+        );
 
       case 'channel_name':
         return truncateTableValue(
           GET_MARCOM_CHANNEL_NAME_OPTIONS().find(
             (option) => option.value === value,
           )?.label || '-',
-        )
+        );
 
       case 'parent_collection':
         return value ? (
@@ -268,7 +268,7 @@ export const CollectionOrBundleEditMarcom: FC<
           </Link>
         ) : (
           ''
-        )
+        );
 
       case ACTIONS_TABLE_COLUMN_ID:
         return (
@@ -277,7 +277,7 @@ export const CollectionOrBundleEditMarcom: FC<
               icon={IconName.delete}
               onClick={() => {
                 if (rowData.id) {
-                  deleteMarcomEntry(rowData)
+                  deleteMarcomEntry(rowData);
                 }
               }}
               size="small"
@@ -290,15 +290,15 @@ export const CollectionOrBundleEditMarcom: FC<
               type="danger-hover"
             />
           </ButtonToolbar>
-        )
+        );
 
       default:
-        return truncateTableValue(value) || '-'
+        return truncateTableValue(value) || '-';
     }
-  }
+  };
 
   const addMarcomEntry = async () => {
-    let marcomEntry: App_Collection_Marcom_Log_Insert_Input | null = null
+    let marcomEntry: App_Collection_Marcom_Log_Insert_Input | null = null;
     try {
       marcomEntry = {
         channel_type: marcomChannelType || null,
@@ -306,16 +306,16 @@ export const CollectionOrBundleEditMarcom: FC<
         collection_id: collection.id,
         external_link: marcomLink.trim() || null,
         publish_date: marcomDate?.toISOString(),
-      }
-      await CollectionService.insertMarcomEntry([marcomEntry])
+      };
+      await CollectionService.insertMarcomEntry([marcomEntry]);
       if (!isCollection) {
         // It's a bundle: add this entry to all included collections
         const collections = collection.collection_fragments.filter(
           (fragment) => fragment.type === 'COLLECTION',
-        )
+        );
         const collectionIds = uniq(
           collections.map((fragment) => fragment.external_id),
-        )
+        );
         await CollectionService.insertMarcomEntriesForBundleCollections(
           collection.id,
           collectionIds,
@@ -326,14 +326,14 @@ export const CollectionOrBundleEditMarcom: FC<
             external_link: marcomEntry.external_link,
             publish_date: marcomEntry.publish_date,
           },
-        )
+        );
         // It's a bundle: add this entry to all included assignments
         const assignments = collection.collection_fragments.filter(
           (fragment) => fragment.type === 'ASSIGNMENT',
-        )
+        );
         const assignmentIds = uniq(
           assignments.map((fragment) => fragment.external_id),
-        )
+        );
         await AssignmentService.insertMarcomEntriesForBundleAssignments(
           collection.id,
           assignmentIds,
@@ -344,18 +344,18 @@ export const CollectionOrBundleEditMarcom: FC<
             external_link: marcomEntry.external_link,
             publish_date: marcomEntry.publish_date,
           },
-        )
+        );
       }
-      await fetchMarcomEntries()
+      await fetchMarcomEntries();
       ToastService.success(
         tHtml(
           'collection/components/collection-or-bundle-edit-marcom___het-toevoegen-van-de-marcom-entry-is-gelukt',
         ),
-      )
+      );
 
-      setMarcomChannelType(null)
-      setMarcomChannelName(null)
-      setMarcomLink('')
+      setMarcomChannelType(null);
+      setMarcomChannelName(null);
+      setMarcomLink('');
     } catch (err) {
       console.error(
         new CustomError(
@@ -365,14 +365,14 @@ export const CollectionOrBundleEditMarcom: FC<
             collectionId: collection.id,
           },
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'collection/components/collection-or-bundle-edit-marcom___het-toevoegen-van-de-marcom-entry-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const deleteMarcomEntry = async (
     marcomEntry: Partial<CollectionMarcomEntry>,
@@ -381,12 +381,12 @@ export const CollectionOrBundleEditMarcom: FC<
       if (marcomEntry.id) {
         if (!isCollection) {
           // bundle => delete all marcom entries with the same values from child collections (parent_collection_id) in de bundle: https://meemoo.atlassian.net/browse/AVO-1892
-          await CollectionService.deleteMarcomEntryByParentId(marcomEntry)
+          await CollectionService.deleteMarcomEntryByParentId(marcomEntry);
         }
         // Delete the communication entry for the current collection/bundle
-        await CollectionService.deleteMarcomEntryById(marcomEntry.id)
+        await CollectionService.deleteMarcomEntryById(marcomEntry.id);
       }
-      await fetchMarcomEntries()
+      await fetchMarcomEntries();
       ToastService.success(
         isCollection
           ? tHtml(
@@ -395,7 +395,7 @@ export const CollectionOrBundleEditMarcom: FC<
           : tHtml(
               'collection/components/collection-or-bundle-edit-marcom___de-communicatie-entry-is-verwijderd-voor-de-bundel-en-alle-collecties-in-deze-bundel',
             ),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError(
@@ -405,14 +405,14 @@ export const CollectionOrBundleEditMarcom: FC<
             marcomEntry,
           },
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'collection/components/collection-or-bundle-edit-marcom___het-verwijderen-van-de-marcom-entry-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const getEmptyMarcomTableMessage = () => {
     if (isCollection) {
@@ -420,15 +420,15 @@ export const CollectionOrBundleEditMarcom: FC<
       // Without filters
       return tText(
         'collection/components/collection-or-bundle-edit-marcom___er-zijn-nog-geen-marcom-entries-voor-deze-collectie',
-      )
+      );
     } else {
       // Bundle
       // Without filters
       return tText(
         'collection/components/collection-or-bundle-edit-marcom___er-zijn-nog-geen-marcom-entries-voor-deze-collectie',
-      )
+      );
     }
-  }
+  };
 
   const renderExistingMarcomEntries = () => {
     return (
@@ -452,8 +452,8 @@ export const CollectionOrBundleEditMarcom: FC<
           <FullPageSpinner />
         )}
       </>
-    )
-  }
+    );
+  };
 
   const renderCreateNewMarcomEntryForm = () => {
     return (
@@ -529,8 +529,8 @@ export const CollectionOrBundleEditMarcom: FC<
           </FlexItem>
         </Flex>
       </>
-    )
-  }
+    );
+  };
 
   const renderMarcomRemarksField = () => {
     return (
@@ -549,13 +549,13 @@ export const CollectionOrBundleEditMarcom: FC<
                 id: collection?.marcom_note?.id || undefined,
                 note: newNote,
               },
-            })
+            });
           }}
           onFocus={onFocus}
         />
       </FormGroup>
-    )
-  }
+    );
+  };
 
   const renderPublishToKlascementHeader = () => {
     return (
@@ -564,8 +564,8 @@ export const CollectionOrBundleEditMarcom: FC<
           'collection/components/collection-or-bundle-edit-marcom___publiceren-naar-klascement',
         )}
       </BlockHeading>
-    )
-  }
+    );
+  };
 
   const renderPublishToKlascementForm = () => {
     if (!collection.is_public) {
@@ -578,24 +578,24 @@ export const CollectionOrBundleEditMarcom: FC<
             )}
           </Alert>
         </>
-      )
+      );
     }
 
     const disablePublishButton =
-      !collection.is_public || isPublishedToKlascement || isPublishing
-    let publishButtonTooltip = undefined
+      !collection.is_public || isPublishedToKlascement || isPublishing;
+    let publishButtonTooltip = undefined;
     if (!collection.is_public) {
       publishButtonTooltip = tText(
         'collection/components/collection-or-bundle-edit-marcom___de-collectie-moet-eerst-gepubliceerd-worden-op-avo',
-      )
+      );
     } else if (isPublishedToKlascement) {
       publishButtonTooltip = tText(
         'collection/components/collection-or-bundle-edit-marcom___de-collectie-is-reeds-gepubliceerd-naar-klascement-bewerk-het-leermiddel-daar',
-      )
+      );
     } else if (isPublishing) {
       publishButtonTooltip = tText(
         'collection/components/collection-or-bundle-edit-marcom___bezig-met-publiceren-naar-klascement',
-      )
+      );
     }
 
     return (
@@ -673,8 +673,8 @@ export const CollectionOrBundleEditMarcom: FC<
           </Column>
         </Grid>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -695,5 +695,5 @@ export const CollectionOrBundleEditMarcom: FC<
         </Container>
       </Container>
     </>
-  )
-}
+  );
+};

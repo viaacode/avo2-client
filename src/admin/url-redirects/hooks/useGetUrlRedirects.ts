@@ -1,29 +1,27 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query'
-
-import { OrderDirection } from '../../../search/search.const.js'
-import { QUERY_KEYS } from '../../../shared/constants/query-keys.js'
-import { ITEMS_PER_PAGE } from '../url-redirects.const.js'
-import { UrlRedirectsService } from '../url-redirects.service.js'
+import { type UseQueryResult, useQuery } from '@tanstack/react-query';
+import { Avo } from '@viaa/avo2-types';
+import { QUERY_KEYS } from '../../../shared/constants/query-keys.js';
+import { ITEMS_PER_PAGE } from '../url-redirects.const.js';
+import { UrlRedirectsService } from '../url-redirects.service.js';
 import {
   type UrlRedirect,
   type UrlRedirectOverviewFilterState,
-} from '../url-redirects.types.js'
-import { Avo } from '@viaa/avo2-types'
+} from '../url-redirects.types.js';
 
 export const useGetUrlRedirects = (
   params: UrlRedirectOverviewFilterState | undefined,
   options: {
-    enabled?: boolean
-    refetchInterval?: number | false
-    refetchIntervalInBackground?: boolean
+    enabled?: boolean;
+    refetchInterval?: number | false;
+    refetchIntervalInBackground?: boolean;
   } = {},
 ): UseQueryResult<{
-  urlRedirects: UrlRedirect[]
-  count: number
+  urlRedirects: UrlRedirect[];
+  count: number;
 }> => {
-  return useQuery(
-    [QUERY_KEYS.GET_URL_REDIRECTS, params],
-    async () =>
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_URL_REDIRECTS, params],
+    queryFn: async () =>
       UrlRedirectsService.fetchUrlRedirectsOverview({
         query: params?.query,
         created_at: params?.createdAt,
@@ -36,12 +34,6 @@ export const useGetUrlRedirects = (
         limit: ITEMS_PER_PAGE,
         offset: (params?.page || 0) * ITEMS_PER_PAGE,
       }),
-    {
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
-      keepPreviousData: true,
-      retry: false,
-      ...options,
-    },
-  )
-}
+    ...options,
+  });
+};

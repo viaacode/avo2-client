@@ -2,10 +2,10 @@ import {
   ExportAllToCsvModal,
   FilterTable,
   getFilters,
-} from '@meemoo/admin-core-ui/admin'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { noop } from 'es-toolkit'
+} from '@meemoo/admin-core-ui/admin';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactNode,
@@ -13,82 +13,81 @@ import React, {
   useEffect,
   useMemo,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
-import { useLocation } from 'react-router-dom'
+} from 'react';
+import { Helmet } from 'react-helmet';
+import { useLocation } from 'react-router-dom';
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
+import { commonUserAtom } from '../../../authentication/authentication.store.js';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
 import {
   GET_MARCOM_CHANNEL_NAME_OPTIONS,
   GET_MARCOM_CHANNEL_TYPE_OPTIONS,
-} from '../../../collection/collection.const.js'
-import { GENERATE_SITE_TITLE } from '../../../constants.js'
-import { ErrorView } from '../../../error/views/ErrorView.js'
-import { OrderDirection } from '../../../search/search.const.js'
-import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js'
+} from '../../../collection/collection.const.js';
+import { GENERATE_SITE_TITLE } from '../../../constants.js';
+import { ErrorView } from '../../../error/views/ErrorView.js';
+import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies.js'
-import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js'
-import { useLomSubjects } from '../../../shared/hooks/useLomSubjects.js'
-import { useQualityLabels } from '../../../shared/hooks/useQualityLabels.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { NULL_FILTER } from '../../shared/helpers/filters.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
-import { useUserGroups } from '../../user-groups/hooks/useUserGroups.js'
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { CustomError } from '../../../shared/helpers/custom-error.js';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies.js';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js';
+import { useLomSubjects } from '../../../shared/hooks/useLomSubjects.js';
+import { useQualityLabels } from '../../../shared/hooks/useQualityLabels.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { NULL_FILTER } from '../../shared/helpers/filters.js';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import { useUserGroups } from '../../user-groups/hooks/useUserGroups.js';
 import {
   COLLECTIONS_OR_BUNDLES_PATH,
   GET_COLLECTION_MARCOM_COLUMNS,
   ITEMS_PER_PAGE,
-} from '../collections-or-bundles.const.js'
-import { CollectionsOrBundlesService } from '../collections-or-bundles.service.js'
+} from '../collections-or-bundles.const.js';
+import { CollectionsOrBundlesService } from '../collections-or-bundles.service.js';
 import {
   CollectionBulkAction,
   type CollectionOrBundleMarcomOverviewTableCols,
   type CollectionOrBundleMarcomTableState,
   type CollectionSortProps,
   EditorialType,
-} from '../collections-or-bundles.types.js'
+} from '../collections-or-bundles.types.js';
 import {
   renderCollectionsOrBundlesMarcomCellReact,
   renderCollectionsOrBundlesMarcomCellText,
-} from '../helpers/render-collection-columns.js'
+} from '../helpers/render-collection-columns.js';
 
 export const CollectionOrBundleMarcomOverview: FC = () => {
-  const location = useLocation()
-  const commonUser = useAtomValue(commonUserAtom)
+  const location = useLocation();
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [collections, setCollections] = useState<
     Avo.Collection.Collection[] | null
-  >(null)
-  const [collectionCount, setCollectionCount] = useState<number>(0)
+  >(null);
+  const [collectionCount, setCollectionCount] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const [tableState, setTableState] = useState<
     Partial<CollectionOrBundleMarcomTableState>
-  >({})
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  >({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] =
-    useState(false)
+    useState(false);
 
   const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>(
     [],
-  )
+  );
 
-  const [userGroups] = useUserGroups(false)
-  const [subjects] = useLomSubjects()
-  const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees()
-  const { data: allQualityLabels } = useQualityLabels()
-  const [organisations] = useCompaniesWithUsers()
+  const [userGroups] = useUserGroups(false);
+  const [subjects] = useLomSubjects();
+  const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
+  const { data: allQualityLabels } = useQualityLabels();
+  const [organisations] = useCompaniesWithUsers();
 
   // computed
 
@@ -112,8 +111,8 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
           NULL_FILTER,
         ),
       },
-    ]
-  }, [tableState, userGroups])
+    ];
+  }, [tableState, userGroups]);
 
   const collectionLabelOptions = useMemo(
     () => [
@@ -137,7 +136,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
       ),
     ],
     [allQualityLabels, tableState],
-  )
+  );
 
   const organisationOptions = useMemo(
     () => [
@@ -161,7 +160,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
       ),
     ],
     [organisations, tableState],
-  )
+  );
 
   const channelNameOptions = useMemo(() => {
     const options = GET_MARCOM_CHANNEL_NAME_OPTIONS().map((option) => ({
@@ -170,7 +169,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
       checked: (
         tableState?.marcom_last_communication_channel_name || []
       ).includes(option.value),
-    }))
+    }));
     return [
       {
         id: NULL_FILTER,
@@ -182,8 +181,8 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
         ).includes(NULL_FILTER),
       },
       ...options,
-    ]
-  }, [tableState?.marcom_last_communication_channel_name])
+    ];
+  }, [tableState?.marcom_last_communication_channel_name]);
 
   const channelTypeOptions = useMemo(
     () => [
@@ -196,7 +195,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
       })),
     ],
     [tableState],
-  )
+  );
 
   const tableColumns = useMemo(
     () =>
@@ -218,14 +217,15 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
       organisationOptions,
       channelTypeOptions,
     ],
-  )
+  );
   const isCollection =
-    location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_MARCOM_OVERVIEW
+    location.pathname ===
+    COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_MARCOM_OVERVIEW;
 
   // methods
 
   const fetchCollectionsOrBundles = useCallback(async () => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       const { collections: collectionsTemp, total: collectionsCountTemp } =
@@ -238,9 +238,9 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
           EditorialType.MARCOM,
           isCollection,
           true,
-        )
-      setCollections(collectionsTemp)
-      setCollectionCount(collectionsCountTemp)
+        );
+      setCollections(collectionsTemp);
+      setCollectionCount(collectionsCountTemp);
     } catch (err) {
       console.error(
         new CustomError(
@@ -250,7 +250,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
             tableState,
           },
         ),
-      )
+      );
       setLoadingInfo({
         state: 'error',
         message: isCollection
@@ -260,41 +260,41 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
           : tText(
               'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___het-ophalen-van-de-bundel-actualisaties-is-mislukt',
             ),
-      })
+      });
     }
-    setIsLoading(false)
-  }, [tableState, isCollection])
+    setIsLoading(false);
+  }, [tableState, isCollection]);
 
   useEffect(() => {
     if (commonUser && educationLevelsAndDegrees?.length) {
-      fetchCollectionsOrBundles().then(noop)
+      fetchCollectionsOrBundles().then(noop);
     }
-  }, [fetchCollectionsOrBundles, commonUser, educationLevelsAndDegrees])
+  }, [fetchCollectionsOrBundles, commonUser, educationLevelsAndDegrees]);
 
   useEffect(() => {
     if (collections) {
       setLoadingInfo({
         state: 'loaded',
-      })
+      });
     }
 
     // Update selected rows to always be a subset of the collections array
     // In other words, you cannot have something selected that isn't part of the current filtered/paginated results
-    const collectionIds: string[] = (collections || []).map((coll) => coll.id)
+    const collectionIds: string[] = (collections || []).map((coll) => coll.id);
     setSelectedCollectionIds((currentSelectedCollectionIds) => {
       return (currentSelectedCollectionIds || []).filter(
         (collId) => collId && collectionIds.includes(collId),
-      )
-    })
-  }, [setLoadingInfo, collections, setSelectedCollectionIds])
+      );
+    });
+  }, [setLoadingInfo, collections, setSelectedCollectionIds]);
 
   const setAllCollectionsAsSelected = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       const collectionIds = await CollectionsOrBundlesService.getCollectionIds(
         getFilters(tableState),
         isCollection,
-      )
+      );
       ToastService.info(
         tHtml(
           'admin/collections-or-bundles/views/collections-or-bundles-overview___je-hebt-num-of-selected-collections-collecties-geselecteerd',
@@ -302,8 +302,8 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
             numOfSelectedCollections: collectionIds.length,
           },
         ),
-      )
-      setSelectedCollectionIds(collectionIds)
+      );
+      setSelectedCollectionIds(collectionIds);
     } catch (err) {
       console.error(
         new CustomError(
@@ -311,15 +311,15 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
           err,
           { tableState },
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___het-ophalen-van-de-collectie-ids-is-mislukt',
         ),
-      )
+      );
     }
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const renderNoResults = () => {
     return (
@@ -334,12 +334,12 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
           )}
         </p>
       </ErrorView>
-    )
-  }
+    );
+  };
 
   const renderCollectionOrBundleMarcomOverview = () => {
     if (!collections) {
-      return null
+      return null;
     }
     return (
       <>
@@ -392,7 +392,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
           ]}
           onSelectBulkAction={async (action: string) => {
             if (action === CollectionBulkAction.EXPORT_ALL) {
-              setIsExportAllToCsvModalOpen(true)
+              setIsExportAllToCsvModalOpen(true);
             }
           }}
         />
@@ -426,8 +426,8 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
                 EditorialType.MARCOM,
                 isCollection,
                 false,
-              )
-            return response.total
+              );
+            return response.total;
           }}
           fetchMoreItems={async (offset: number, limit: number) => {
             const response =
@@ -440,8 +440,8 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
                 EditorialType.MARCOM,
                 isCollection,
                 false,
-              )
-            return response.collections
+              );
+            return response.collections;
           }}
           renderValue={(value: any, columnId: string) =>
             renderCollectionsOrBundlesMarcomCellText(
@@ -467,8 +467,8 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
           }
         />
       </>
-    )
-  }
+    );
+  };
 
   return (
     <PermissionGuard
@@ -526,7 +526,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
         </AdminLayoutBody>
       </AdminLayout>
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default CollectionOrBundleMarcomOverview
+export default CollectionOrBundleMarcomOverview;

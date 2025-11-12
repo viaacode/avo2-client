@@ -1,5 +1,5 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/admin'
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Checkbox,
   Column,
@@ -12,112 +12,109 @@ import {
   TagsInput,
   TextArea,
   TextInput,
-} from '@viaa/avo2-components'
-import { Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { get, noop, orderBy } from 'es-toolkit'
-import React, { type FC, useCallback, useEffect, useState } from 'react'
-
-import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker.js'
-import { type PickerItem } from '../../admin/shared/types/content-picker.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable.js'
+} from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { noop, orderBy } from 'es-toolkit';
+import { get } from 'es-toolkit/compat';
+import { useAtomValue } from 'jotai';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker.js';
+import { type PickerItem } from '../../admin/shared/types/content-picker.js';
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { PermissionService } from '../../authentication/helpers/permission-service.js';
+import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable.js';
 import {
   AssociatedQuickLaneTable,
   AssociatedQuickLaneTableOrderBy,
-} from '../../quick-lane/components/AssociatedQuickLaneTable.js'
-import { OrderDirection } from '../../search/search.const.js'
-import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar.js'
-import { formatTimestamp } from '../../shared/helpers/formatters/date.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { QualityLabelsService } from '../../shared/services/quality-labels.service.js'
-import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { type QuickLaneUrlObject } from '../../shared/types/index.js'
-import { type QualityLabel } from '../collection.types.js'
-
-import { type CollectionAction } from './CollectionOrBundleEdit.types.js'
+} from '../../quick-lane/components/AssociatedQuickLaneTable.js';
+import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane.js';
+import { CustomError } from '../../shared/helpers/custom-error.js';
+import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar.js';
+import { formatTimestamp } from '../../shared/helpers/formatters/date.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { QualityLabelsService } from '../../shared/services/quality-labels.service.js';
+import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { type QuickLaneUrlObject } from '../../shared/types/index.js';
+import { type QualityLabel } from '../collection.types.js';
+import { type CollectionAction } from './CollectionOrBundleEdit.types.js';
 
 interface CollectionOrBundleEditAdminProps {
-  collection: Avo.Collection.Collection
-  changeCollectionState: (action: CollectionAction) => void
-  onFocus?: () => void
+  collection: Avo.Collection.Collection;
+  changeCollectionState: (action: CollectionAction) => void;
+  onFocus?: () => void;
 }
 
 export const CollectionOrBundleEditAdmin: FC<
   CollectionOrBundleEditAdminProps
 > = ({ collection, changeCollectionState, onFocus }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   // State
-  const [qualityLabels, setQualityLabels] = useState<TagInfo[] | null>(null)
+  const [qualityLabels, setQualityLabels] = useState<TagInfo[] | null>(null);
 
   const [associatedQuickLanes, setAssociatedQuickLanes] = useState<
     QuickLaneUrlObject[]
-  >([])
+  >([]);
   const [quickLaneSortColumn, setQuickLaneSortColumn] = useState<string>(
     QUICK_LANE_DEFAULTS.sort_column,
-  )
-  const [quickLaneSortOrder, setQuickLaneSortOrder] = useState<OrderDirection>(
-    Avo.Search.OrderDirection.ASC,
-  )
+  );
+  const [quickLaneSortOrder, setQuickLaneSortOrder] =
+    useState<Avo.Search.OrderDirection>(Avo.Search.OrderDirection.ASC);
 
   // Computed
-  const isCollection: boolean = collection.type_id === 3
+  const isCollection: boolean = collection.type_id === 3;
 
   const fetchQualityLabels = useCallback(async () => {
     try {
-      const dbLabels = await QualityLabelsService.fetchQualityLabels()
+      const dbLabels = await QualityLabelsService.fetchQualityLabels();
       setQualityLabels(
         dbLabels.map((dbLabel: QualityLabel) => ({
           label: dbLabel.description,
           value: dbLabel.value,
         })),
-      )
+      );
     } catch (err) {
-      console.error(new CustomError('Failed to fetch quality labels', err))
+      console.error(new CustomError('Failed to fetch quality labels', err));
       ToastService.danger(
         tHtml(
           'collection/components/collection-or-bundle-edit-admin___het-ophalen-van-de-kwaliteitslabels-is-mislukt',
         ),
-      )
+      );
     }
-  }, [])
+  }, []);
 
   const fetchAssociatedQuickLanes = useCallback(async () => {
     try {
       if (!collection) {
-        return
+        return;
       }
 
       const quickLanes =
         await QuickLaneContainingService.fetchQuickLanesByContentId(
           collection.id,
-        )
+        );
 
-      setAssociatedQuickLanes(quickLanes)
+      setAssociatedQuickLanes(quickLanes);
     } catch (err) {
       console.error(
         new CustomError('Failed to get quick lane urls containing item', err, {
           collection,
         }),
-      )
+      );
       ToastService.danger(
         tHtml(
           'collection/components/collection-or-bundle-edit-admin___het-ophalen-van-de-gedeelde-links-die-naar-deze-collectie-leiden-is-mislukt',
         ),
-      )
+      );
     }
-  }, [collection])
+  }, [collection]);
 
   useEffect(() => {
-    fetchQualityLabels().then(noop)
-    fetchAssociatedQuickLanes().then(noop)
-  }, [fetchQualityLabels, fetchAssociatedQuickLanes])
+    fetchQualityLabels().then(noop);
+    fetchAssociatedQuickLanes().then(noop);
+  }, [fetchQualityLabels, fetchAssociatedQuickLanes]);
 
   const updateCollectionMultiProperty = (
     selectedTagOptions: TagInfo[],
@@ -129,26 +126,26 @@ export const CollectionOrBundleEditAdmin: FC<
       collectionPropValue: (selectedTagOptions || []).map((tag) => ({
         label: tag.value as string,
       })) as any,
-    })
-  }
+    });
+  };
 
   const getCollectionLabels = (): TagInfo[] => {
     if (!qualityLabels) {
-      return []
+      return [];
     }
     const labelIds = (
       (collection.collection_labels || []) as Avo.Collection.Label[]
-    ).map((item: any) => item.label)
+    ).map((item: any) => item.label);
     return qualityLabels.filter((qualityLabel) =>
       labelIds.includes(qualityLabel.value),
-    )
-  }
+    );
+  };
 
   const handleQuickLaneColumnClick = (id: string) => {
-    const sortOrder = toggleSortOrder(quickLaneSortOrder)
+    const sortOrder = toggleSortOrder(quickLaneSortOrder);
 
-    setQuickLaneSortColumn(id)
-    setQuickLaneSortOrder(sortOrder)
+    setQuickLaneSortColumn(id);
+    setQuickLaneSortOrder(sortOrder);
 
     setAssociatedQuickLanes(
       orderBy(
@@ -156,8 +153,8 @@ export const CollectionOrBundleEditAdmin: FC<
         [(col) => get(col, AssociatedQuickLaneTableOrderBy[id] || id)],
         [sortOrder],
       ),
-    )
-  }
+    );
+  };
 
   const renderAssociatedQuickLaneTable = () => (
     <>
@@ -184,7 +181,7 @@ export const CollectionOrBundleEditAdmin: FC<
         )
       )}
     </>
-  )
+  );
 
   const owner: PickerItem | undefined = collection.profile
     ? {
@@ -192,7 +189,7 @@ export const CollectionOrBundleEditAdmin: FC<
         type: Avo.Core.ContentPickerType.PROFILE,
         value: collection.profile.id,
       }
-    : undefined
+    : undefined;
 
   return (
     <>
@@ -296,13 +293,13 @@ export const CollectionOrBundleEditAdmin: FC<
                         allowedTypes={[Avo.Core.ContentPickerType.PROFILE]}
                         onSelect={(value: PickerItem | null) => {
                           if (!value) {
-                            return
+                            return;
                           }
                           changeCollectionState({
                             type: 'UPDATE_COLLECTION_PROP',
                             collectionProp: 'owner_profile_id',
                             collectionPropValue: value.value,
-                          })
+                          });
                         }}
                       />
                     </FormGroup>
@@ -326,7 +323,7 @@ export const CollectionOrBundleEditAdmin: FC<
                             collectionPropValue: !(
                               collection?.is_managed || false
                             ),
-                          })
+                          });
                         }}
                       />
                     </FormGroup>
@@ -374,5 +371,5 @@ export const CollectionOrBundleEditAdmin: FC<
         </Container>
       </Container>
     </>
-  )
-}
+  );
+};

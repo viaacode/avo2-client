@@ -1,35 +1,35 @@
 // eslint-disable-next-line import/no-unresolved
-import meemooLogo from '@assets/images/meemoo-logo.png'
+import meemooLogo from '@assets/images/meemoo-logo.png';
 // eslint-disable-next-line import/no-unresolved
-import vlaamseOverheidLogoSrc from '@assets/images/vlaanderen-logo.svg'
-import { Container, Spacer } from '@viaa/avo2-components'
-import { orderBy } from 'es-toolkit'
-import React, { type FC, useState } from 'react'
-import { Avo } from '@viaa/avo2-types'
+import vlaamseOverheidLogoSrc from '@assets/images/vlaanderen-logo.svg';
+import { Container, Spacer } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { orderBy } from 'es-toolkit';
+import React, { type FC, useState } from 'react';
 
-import { type BooleanDictionary } from '../../helpers/navigation.js'
-import { tText } from '../../helpers/translate-text.js'
-import { useAllGetNavItems } from '../../hooks/useAllGetNavItems.js'
-import { type AppContentNavElement } from '../../services/navigation-items-service.js'
-import { NavigationBarId } from '../Navigation/Navigation.const.js'
-import { NavigationItem } from '../Navigation/NavigationItem.js'
+import { type BooleanDictionary } from '../../helpers/navigation.js';
+import { tText } from '../../helpers/translate-text.js';
+import { useAllGetNavItems } from '../../hooks/useAllGetNavItems.js';
+import { type AppContentNavElement } from '../../services/navigation-items-service.js';
+import { NavigationBarId } from '../Navigation/Navigation.const.js';
+import { NavigationItem } from '../Navigation/NavigationItem.js';
 
-import './Footer.scss'
+import './Footer.scss';
 
 export const Footer: FC = () => {
-  const [areDropdownsOpen, setDropdownsOpen] = useState<BooleanDictionary>({})
+  const [areDropdownsOpen, setDropdownsOpen] = useState<BooleanDictionary>({});
 
-  const { data: allNavItems } = useAllGetNavItems()
+  const { data: allNavItems } = useAllGetNavItems();
 
   const footerNavItemsColumn1 =
-    allNavItems?.[NavigationBarId.FOOTER_COLUMN_1] || []
+    allNavItems?.[NavigationBarId.FOOTER_COLUMN_1] || [];
   const footerNavItemsColumn2 =
-    allNavItems?.[NavigationBarId.FOOTER_COLUMN_2] || []
+    allNavItems?.[NavigationBarId.FOOTER_COLUMN_2] || [];
   const footerNavItemsColumn3 =
-    allNavItems?.[NavigationBarId.FOOTER_COLUMN_3] || []
+    allNavItems?.[NavigationBarId.FOOTER_COLUMN_3] || [];
 
   const mapNavItems = (navItems: AppContentNavElement[]) => {
-    return orderBy(navItems, (navItem) => navItem.position).map(
+    return orderBy(navItems, ['position'], [Avo.Search.OrderDirection.ASC]).map(
       (item) => {
         return (
           <NavigationItem
@@ -48,16 +48,16 @@ export const Footer: FC = () => {
             setDropdownsOpen={setDropdownsOpen}
             onNavigate={() => window?.scrollTo(0, 0)}
           />
-        )
+        );
       },
       [Avo.Search.OrderDirection.ASC],
-    )
-  }
+    );
+  };
 
-  const columnTitle1 = tText('shared/components/footer/footer___kolom-1')
-  const columnTitle2 = tText('shared/components/footer/footer___kolom-2')
-  const columnTitle3 = tText('shared/components/footer/footer___kolom-3')
-  const showColumnTitles = !!columnTitle1 || !!columnTitle2 || !!columnTitle3
+  const columnTitle1 = tText('shared/components/footer/footer___kolom-1');
+  const columnTitle2 = tText('shared/components/footer/footer___kolom-2');
+  const columnTitle3 = tText('shared/components/footer/footer___kolom-3');
+  const showColumnTitles = !!columnTitle1 || !!columnTitle2 || !!columnTitle3;
   return (
     <footer className="c-global-footer">
       <Container mode="horizontal" className="c-global-footer__inner">
@@ -127,5 +127,5 @@ export const Footer: FC = () => {
         </ul>
       </Container>
     </footer>
-  )
-}
+  );
+};

@@ -1,7 +1,7 @@
 import { expect, type Page } from '@playwright/test'
 
-import { loginOnderwijsAvo } from './login-onderwijs-avo'
-import { logoutOnderwijsAvo } from './logout-onderwijs-avo'
+import { loginOnderwijsAvo } from './login-onderwijs-avo.js'
+import { logoutOnderwijsAvo } from './logout-onderwijs-avo.js'
 
 async function removeCollectionsByE2ETest(page: Page): Promise<void> {
   // Recurring function

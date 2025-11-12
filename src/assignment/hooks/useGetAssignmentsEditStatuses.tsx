@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query'
-
+import { UseQueryResult, useQuery } from '@tanstack/react-query'
+import { Avo } from '@viaa/avo2-types'
 import { QUERY_KEYS } from '../../shared/constants/query-keys.js'
 import { AssignmentService } from '../assignment.service.js'
 
@@ -14,12 +14,12 @@ export const useGetAssignmentsEditStatuses = (
     refetchInterval: false,
     refetchIntervalInBackground: false,
   },
-) => {
-  return useQuery(
-    [QUERY_KEYS.GET_ASSIGNMENTS_EDIT_STATUSES, assignmentsIds],
-    () => {
+): UseQueryResult<Avo.Share.EditStatusResponse | null, Error> => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_ASSIGNMENTS_EDIT_STATUSES, assignmentsIds],
+    queryFn: () => {
       return AssignmentService.getAssignmentsEditStatuses(assignmentsIds)
     },
-    options,
-  )
+    ...options,
+  })
 }

@@ -1,6 +1,6 @@
-import { cleanupFilterTableState } from '@meemoo/admin-core-ui/admin'
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
-import { PaginationBar } from '@meemoo/react-components'
+import { cleanupFilterTableState } from '@meemoo/admin-core-ui/admin';
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import { PaginationBar } from '@meemoo/react-components';
 import {
   Button,
   Flex,
@@ -15,11 +15,11 @@ import {
   ToolbarLeft,
   ToolbarRight,
   useKeyPress,
-} from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { useAtomValue } from 'jotai'
-import { cloneDeep, compact, isNil, noop, uniq } from 'es-toolkit'
+} from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
+import { cloneDeep, compact, isNil, noop, uniq } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactNode,
@@ -27,83 +27,81 @@ import React, {
   useEffect,
   useMemo,
   useState,
-} from 'react'
-import { useParams } from 'react-router'
-import { Link } from 'react-router-dom'
-import { NumberParam, StringParam, useQueryParams } from 'use-query-params'
+} from 'react';
+import { useParams } from 'react-router';
+import { Link } from 'react-router-dom';
+import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
-import { ItemsService } from '../../admin/items/items.service.js'
-import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { APP_PATH } from '../../constants.js'
-import { ErrorView } from '../../error/views/ErrorView.js'
-import { OrderDirection } from '../../search/search.const.js'
-import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal.js'
+import { ItemsService } from '../../admin/items/items.service.js';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js';
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { PermissionService } from '../../authentication/helpers/permission-service.js';
+import { APP_PATH } from '../../constants.js';
+import { ErrorView } from '../../error/views/ErrorView.js';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal.js';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
-import { formatDate } from '../../shared/helpers/formatters/date.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { truncateTableValue } from '../../shared/helpers/truncate.js'
-import { useTableSort } from '../../shared/hooks/useTableSort.js'
-import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { TableColumnDataType } from '../../shared/types/table-column-data-type.js'
-import { ITEMS_PER_PAGE } from '../../workspace/workspace.const.js'
-import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const.js'
-import { AssignmentService } from '../assignment.service.js'
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { buildLink } from '../../shared/helpers/build-link.js';
+import { formatDate } from '../../shared/helpers/formatters/date.js';
+import { isMobileWidth } from '../../shared/helpers/media-query.js';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { truncateTableValue } from '../../shared/helpers/truncate.js';
+import { useTableSort } from '../../shared/hooks/useTableSort.js';
+import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type.js';
+import { ITEMS_PER_PAGE } from '../../workspace/workspace.const.js';
+import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const.js';
+import { AssignmentService } from '../assignment.service.js';
 import {
   type AssignmentResponseTableColumns,
   type AssignmentTableColumns,
-  type AssignmentType,
   type PupilCollectionFragment,
-} from '../assignment.types.js'
-import { canViewAnAssignment } from '../helpers/can-view-an-assignment.js'
-import { isItemWithMeta } from '../helpers/is-item-with-meta.js'
+} from '../assignment.types.js';
+import { canViewAnAssignment } from '../helpers/can-view-an-assignment.js';
+import { isItemWithMeta } from '../helpers/is-item-with-meta.js';
 
-import './AssignmentOverview.scss'
-import './AssignmentResponses.scss'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+import './AssignmentOverview.scss';
+import './AssignmentResponses.scss';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
 
 interface AssignmentResponsesProps {
-  onUpdate: () => void | Promise<void>
+  onUpdate: () => void | Promise<void>;
 }
 
-const DEFAULT_SORT_COLUMN = 'updated_at'
-const DEFAULT_SORT_ORDER = Avo.Search.OrderDirection.DESC
+const DEFAULT_SORT_COLUMN = 'updated_at';
+const DEFAULT_SORT_ORDER = Avo.Search.OrderDirection.DESC;
 
 export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
   onUpdate = noop,
 }) => {
-  const { id: assignmentId } = useParams<{ id: string }>()
+  const { id: assignmentId } = useParams<{ id: string }>();
 
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
   // Data
   const [assignment, setAssignment] =
-    useState<Avo.Assignment.Assignment | null>(null)
+    useState<Avo.Assignment.Assignment | null>(null);
   const [assignmentResponses, setAssignmentResponses] = useState<
     Avo.Assignment.Response[] | null
-  >(null)
+  >(null);
   const [assignmentResponsesCount, setAssignmentResponsesCount] =
-    useState<number>(0)
+    useState<number>(0);
   const [assignmentResponsesFragments, setAssignmentResponsesFragments] =
-    useState<string[]>([])
+    useState<string[]>([]);
 
   const assignmentResponsesFragmentsHash = useMemo(
     () => assignmentResponsesFragments.join(),
     [assignmentResponsesFragments],
-  )
+  );
 
   // UI
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
-  const [filterString, setFilterString] = useState<string>('')
+  });
+  const [filterString, setFilterString] = useState<string>('');
   const [
     sortColumn,
     sortOrder,
@@ -113,79 +111,80 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
   ] = useTableSort<AssignmentTableColumns>(
     DEFAULT_SORT_COLUMN,
     DEFAULT_SORT_ORDER,
-  )
+  );
 
   // Modal
   const [
     isDeleteAssignmentResponseModalOpen,
     setDeleteAssignmentResponseModalOpen,
-  ] = useState<boolean>(false)
+  ] = useState<boolean>(false);
   const [markedAssignmentResponse, setMarkedAssignmentResponse] =
-    useState<Avo.Assignment.Response | null>(null)
+    useState<Avo.Assignment.Response | null>(null);
 
   // Permissions
   const [canViewAssignmentResponses, setCanViewAssignmentResponses] = useState<
     boolean | null
-  >(null)
+  >(null);
 
   const tableColumns = useMemo(
     () =>
       GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS(
-        (assignment?.lom_learning_resource_type || []) as AssignmentType[],
+        (assignment?.lom_learning_resource_type ||
+          []) as Avo.Core.BlockItemType[],
       ),
     [assignment],
-  )
+  );
 
   const [query, setQuery] = useQueryParams({
     filter: StringParam,
     page: NumberParam,
     sort_column: StringParam,
     sort_order: StringParam,
-  })
+  });
 
   useEffect(() => {
     if (query.filter) {
-      setFilterString(query.filter)
+      setFilterString(query.filter);
     }
     if (query.sort_column) {
-      setSortColumn(query.sort_column as AssignmentTableColumns)
+      setSortColumn(query.sort_column as AssignmentTableColumns);
     }
     if (query.sort_order) {
-      setSortOrder(query.sort_order as Avo.Search.OrderDirection)
+      setSortOrder(query.sort_order as Avo.Search.OrderDirection);
     }
-  }, [])
+  }, []);
 
   const handleQueryChanged = (value: any, id: string) => {
-    let newQuery: any = cloneDeep(query)
+    let newQuery: any = cloneDeep(query);
 
     newQuery = {
       ...newQuery,
       [id]: value,
       ...(id !== 'page' ? { page: 0 } : {}), // Reset the page to 0, when any filter or sort order change is made
-    }
+    };
 
-    setQuery(newQuery, 'pushIn')
-  }
+    setQuery(newQuery, 'pushIn');
+  };
 
   const copySearchTermsToQueryState = () => {
-    handleQueryChanged(filterString, 'filter')
-  }
-  useKeyPress('Enter', copySearchTermsToQueryState)
+    handleQueryChanged(filterString, 'filter');
+  };
+  useKeyPress('Enter', copySearchTermsToQueryState);
 
   const handleSortOrderChange = (columnId: string) => {
     const { sortColumn: newSortColumn, sortOrder: newSortOrder } =
-      handleColumnClick(columnId as AssignmentTableColumns)
+      handleColumnClick(columnId as AssignmentTableColumns);
 
-    let newQuery: any = cloneDeep(query)
+    let newQuery: any = cloneDeep(query);
 
     newQuery = cleanupFilterTableState({
       ...newQuery,
       sort_column: newSortColumn,
       sort_order: newSortOrder,
-    })
+    });
 
-    setQuery(newQuery, 'pushIn')
-  }
+    setQuery(newQuery, 'pushIn');
+  };
 
   const checkPermissions = useCallback(async () => {
     try {
@@ -198,7 +197,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
             ],
             commonUser,
           ),
-        )
+        );
       }
     } catch (err) {
       console.error('Failed to check permissions', err, {
@@ -207,19 +206,19 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
           PermissionName.VIEW_OWN_ASSIGNMENT_RESPONSES,
           PermissionName.VIEW_ANY_ASSIGNMENT_RESPONSES,
         ],
-      })
+      });
       ToastService.danger(
         tHtml(
           'shared/components/loading-error-loaded-component/loading-error-loaded-component___er-ging-iets-mis-tijdens-het-controleren-van-de-rechten-van-je-account',
         ),
-      )
+      );
     }
-  }, [setCanViewAssignmentResponses, commonUser])
+  }, [setCanViewAssignmentResponses, commonUser]);
 
   const fetchAssignment = useCallback(async () => {
     try {
       if (!assignmentId) {
-        return
+        return;
       }
       if (!canViewAnAssignment(commonUser)) {
         setLoadingInfo({
@@ -228,13 +227,13 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
           ),
           icon: IconName.lock,
           state: 'error',
-        })
+        });
       }
 
       const assignment =
-        await AssignmentService.fetchAssignmentById(assignmentId)
+        await AssignmentService.fetchAssignmentById(assignmentId);
 
-      setAssignment(assignment)
+      setAssignment(assignment);
     } catch (err) {
       if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
         setLoadingInfo({
@@ -243,32 +242,32 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
           ),
           icon: IconName.lock,
           state: 'error',
-        })
-        return
+        });
+        return;
       }
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'assignment/views/assignment-responses___het-ophalen-van-de-opdracht-is-mislukt',
         ),
-      })
+      });
     }
-  }, [assignmentId, commonUser])
+  }, [assignmentId, commonUser]);
 
   const fetchAssignmentResponses = useCallback(async () => {
     try {
       if (!assignmentId) {
-        return
+        return;
       }
       if (isNil(canViewAssignmentResponses)) {
-        return
+        return;
       }
 
       const column = tableColumns.find(
         (tableColumn: any) => tableColumn.id || '' === (sortColumn as any),
-      )
+      );
       const columnDataType = (column?.dataType ||
-        TableColumnDataType.string) as TableColumnDataType
+        TableColumnDataType.string) as TableColumnDataType;
 
       const response = await AssignmentService.fetchAssignmentResponses(
         assignmentId,
@@ -277,7 +276,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
         columnDataType,
         query.page || 0,
         query.filter || '',
-      )
+      );
 
       // Determine each response's fragments to evaluate their published-status
       const fragmentIds: string[] = compact(
@@ -287,18 +286,18 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
             []
           ).flatMap((block) => block.fragment_id),
         ),
-      )
+      );
 
-      setAssignmentResponses(response.assignmentResponses)
-      setAssignmentResponsesCount(response.count)
-      setAssignmentResponsesFragments(uniq(fragmentIds))
+      setAssignmentResponses(response.assignmentResponses);
+      setAssignmentResponsesCount(response.count);
+      setAssignmentResponsesFragments(uniq(fragmentIds));
     } catch (err) {
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'assignment/views/assignment-responses___het-ophalen-van-responses-is-mislukt',
         ),
-      })
+      });
     }
   }, [
     canViewAssignmentResponses,
@@ -309,11 +308,11 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
     sortOrder,
     query.page,
     query.filter,
-  ])
+  ]);
 
   const fetchAssignmentResponsesFragments = async (items: string[]) => {
     // Note: duplicate ids don't matter, they're only fetched once
-    const fragments = await ItemsService.fetchItemsByExternalIds(items)
+    const fragments = await ItemsService.fetchItemsByExternalIds(items);
 
     setAssignmentResponses(
       await Promise.all(
@@ -325,27 +324,27 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
                 response.pupil_collection_blocks,
                 fragments,
               )) as Avo.Core.BlockItemBase[],
-          }
+          };
         }),
       ),
-    )
-  }
+    );
+  };
 
   useEffect(() => {
-    checkPermissions()
-  }, [checkPermissions])
+    checkPermissions();
+  }, [checkPermissions]);
 
   useEffect(() => {
-    fetchAssignment()
-  }, [fetchAssignment])
+    fetchAssignment();
+  }, [fetchAssignment]);
 
   useEffect(() => {
-    fetchAssignmentResponsesFragments(assignmentResponsesFragments)
-  }, [assignmentResponsesFragmentsHash])
+    fetchAssignmentResponsesFragments(assignmentResponsesFragments);
+  }, [assignmentResponsesFragmentsHash]);
 
   useEffect(() => {
     if (canViewAssignmentResponses) {
-      fetchAssignmentResponses()
+      fetchAssignmentResponses();
     } else if (!isNil(canViewAssignmentResponses)) {
       // canViewAssignmentResponses: false
       setLoadingInfo({
@@ -354,9 +353,9 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
         ),
         icon: IconName.lock,
         state: 'error',
-      })
+      });
     }
-  }, [canViewAssignmentResponses, fetchAssignmentResponses])
+  }, [canViewAssignmentResponses, fetchAssignmentResponses]);
 
   useEffect(() => {
     if (
@@ -366,9 +365,9 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
     ) {
       setLoadingInfo({
         state: 'loaded',
-      })
+      });
     }
-  }, [assignmentResponses, assignmentResponsesCount, assignment])
+  }, [assignmentResponses, assignmentResponsesCount, assignment]);
 
   const deleteAssignmentResponse = async (
     assignmentResponseId: string | null,
@@ -379,28 +378,28 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
           tHtml(
             'assignment/views/assignment-responses___de-response-kon-niet-verwijderd-worden-geen-geldig-id',
           ),
-        )
-        return
+        );
+        return;
       }
 
-      await AssignmentService.deleteAssignmentResponse(assignmentResponseId)
-      await fetchAssignmentResponses()
+      await AssignmentService.deleteAssignmentResponse(assignmentResponseId);
+      await fetchAssignmentResponses();
 
-      onUpdate()
+      onUpdate();
       ToastService.success(
         tHtml(
           'assignment/views/assignment-responses___de-response-is-verwijderd',
         ),
-      )
+      );
     } catch (err) {
-      console.error(err)
+      console.error(err);
       ToastService.danger(
         tHtml(
           'assignment/views/assignment-responses___het-verwijderen-van-de-response-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const renderDeleteAction = (assignmentResponse: Avo.Assignment.Response) => (
     <Button
@@ -409,16 +408,16 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
       icon={IconName.delete}
       type="danger-hover"
       onClick={() => {
-        setMarkedAssignmentResponse(assignmentResponse)
-        setDeleteAssignmentResponseModalOpen(true)
+        setMarkedAssignmentResponse(assignmentResponse);
+        setDeleteAssignmentResponseModalOpen(true);
       }}
     />
-  )
+  );
 
   const handleDeleteModalClose = () => {
-    setDeleteAssignmentResponseModalOpen(false)
-    setMarkedAssignmentResponse(null)
-  }
+    setDeleteAssignmentResponseModalOpen(false);
+    setMarkedAssignmentResponse(null);
+  };
 
   const renderDataCell = (
     value: ReactNode,
@@ -440,13 +439,13 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
       <span className={className}>{value}</span>
     ) : (
       value
-    )
+    );
 
   const renderCell = (
     assignmentResponse: Avo.Assignment.Response,
     colKey: AssignmentResponseTableColumns,
   ) => {
-    const cellData: any = (assignmentResponse as any)[colKey]
+    const cellData: any = (assignmentResponse as any)[colKey];
 
     switch (colKey) {
       case 'pupil': {
@@ -458,13 +457,13 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
               </h3>
             </div>
           </Flex>
-        )
+        );
 
         return isMobileWidth() ? (
           <Spacer margin="bottom-small">{renderAuthor()}</Spacer>
         ) : (
           renderAuthor()
-        )
+        );
       }
       case 'pupil_collection_block_count':
         return renderDataCell(
@@ -473,21 +472,21 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
           )?.filter(isItemWithMeta).length || '',
           tText('assignment/views/assignment-responses___fragmenten'),
           'c-assignment-responses__block-count',
-        )
+        );
 
       case 'updated_at':
         return renderDataCell(
           formatDate(cellData),
           undefined,
           'c-assignment-responses__updated-at',
-        )
+        );
 
       case 'collection_title': {
         const collectionName =
           cellData ||
           tText(
             'assignment/views/assignment-responses___leerlingencollectie-zonder-naam',
-          )
+          );
         return renderDataCell(
           <Link
             to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route, {
@@ -499,7 +498,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
           </Link>,
           tText('assignment/views/assignment-responses___leerlingencollectie'),
           'c-assignment-responses__collection-title',
-        )
+        );
       }
 
       case ACTIONS_TABLE_COLUMN_ID:
@@ -507,12 +506,12 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
           <div className="c-assignment-responses__actions">
             {renderDeleteAction(assignmentResponse)}
           </div>
-        )
+        );
 
       default:
-        return cellData
+        return cellData;
     }
-  }
+  };
 
   const renderHeader = () => {
     return (
@@ -549,8 +548,8 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
           </ToolbarItem>
         </ToolbarRight>
       </Toolbar>
-    )
-  }
+    );
+  };
 
   const renderEmptyFallback = () => (
     <>
@@ -568,14 +567,14 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
         </p>
       </ErrorView>
     </>
-  )
+  );
 
   const renderAssignmentResponsesView = () => {
     if (!assignmentResponses) {
-      return null
+      return null;
     }
     if (!assignmentResponses.length) {
-      return renderEmptyFallback()
+      return renderEmptyFallback();
     }
     return (
       <>
@@ -625,17 +624,17 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
           isOpen={isDeleteAssignmentResponseModalOpen}
           onClose={handleDeleteModalClose}
           confirmCallback={() => {
-            deleteAssignmentResponse(markedAssignmentResponse?.id || null)
-            handleDeleteModalClose()
+            deleteAssignmentResponse(markedAssignmentResponse?.id || null);
+            handleDeleteModalClose();
           }}
         />
       </>
-    )
-  }
+    );
+  };
 
   const renderAssignmentResponsePage = () => {
-    return <>{renderAssignmentResponsesView()}</>
-  }
+    return <>{renderAssignmentResponsesView()}</>;
+  };
 
   return canViewAssignmentResponses !== null ? (
     <LoadingErrorLoadedComponent
@@ -643,5 +642,5 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
       dataObject={assignmentResponses}
       render={renderAssignmentResponsePage}
     />
-  ) : null
-}
+  ) : null;
+};

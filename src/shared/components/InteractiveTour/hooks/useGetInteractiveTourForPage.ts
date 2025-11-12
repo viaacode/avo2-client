@@ -1,8 +1,8 @@
-import { useQuery } from '@tanstack/react-query'
+import { UseQueryResult, useQuery } from '@tanstack/react-query'
 import { compact, sortBy } from 'es-toolkit'
+import { reverse } from 'es-toolkit/compat'
 import { matchPath } from 'react-router'
 import { type PathMatch } from 'react-router-dom'
-
 import {
   APP_PATH,
   type RouteId,
@@ -13,7 +13,6 @@ import {
   InteractiveTourService,
   type TourInfo,
 } from '../../../services/interactive-tour.service.js'
-import { reverse } from 'es-toolkit/compat'
 
 async function getInteractiveTourForPage(
   currentPath: string,
@@ -120,22 +119,21 @@ export const useGetInteractiveTourForPage = (
     refetchInterval?: number | false
     refetchIntervalInBackground?: boolean
   },
-) => {
-  return useQuery(
-    [
+): UseQueryResult<{ tour: TourInfo | null; routeId: RouteId | null }> => {
+  return useQuery({
+    queryKey: [
       QUERY_KEYS.GET_INTERACTIVE_TOUR_FOR_PAGE,
       currentPath,
       tourDisplayDates,
       profileId,
     ],
-    () => {
+
+    queryFn: () => {
       return getInteractiveTourForPage(currentPath, tourDisplayDates, profileId)
     },
-    {
-      enabled: true,
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
-      ...options,
-    },
-  )
+    enabled: true,
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    ...options,
+  })
 }

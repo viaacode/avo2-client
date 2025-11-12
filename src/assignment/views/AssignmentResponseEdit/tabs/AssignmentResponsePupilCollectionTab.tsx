@@ -1,4 +1,4 @@
-import './AssignmentResponsePupilCollectionTab.scss'
+import './AssignmentResponsePupilCollectionTab.scss';
 
 import {
   Button,
@@ -12,45 +12,40 @@ import {
   Toolbar,
   ToolbarLeft,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import React, {
   type Dispatch,
   type FC,
   type SetStateAction,
   useState,
-} from 'react'
-import { Controller, type UseFormReturn } from 'react-hook-form'
-import { type UrlUpdateType } from 'use-query-params'
-
-// eslint-disable-next-line import/no-unresolved
-import PupilSvg from '../../../../assets/images/leerling.svg?react'
-import { CollectionBlockType } from '../../../../collection/collection.const.js'
-import { BlockList } from '../../../../shared/components/BlockList/BlockList.js'
-import { EmptyStateMessage } from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage.js'
-import { getMoreOptionsLabel } from '../../../../shared/constants/index.js'
-import { isMobileWidth } from '../../../../shared/helpers/media-query.js'
-import { tHtml } from '../../../../shared/helpers/translate-html.js'
-import { tText } from '../../../../shared/helpers/translate-text.js'
-import { useBlocksList } from '../../../../shared/hooks/use-blocks-list.js'
-import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal.js'
-import { ToastService } from '../../../../shared/services/toast-service.js'
+} from 'react';
+import PupilSvg from '../../../../assets/images/leerling.svg?react';
+import { BlockList } from '../../../../shared/components/BlockList/BlockList.js';
+import { EmptyStateMessage } from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage.js';
+import { getMoreOptionsLabel } from '../../../../shared/constants/index.js';
+import { isMobileWidth } from '../../../../shared/helpers/media-query.js';
+import { tHtml } from '../../../../shared/helpers/translate-html.js';
+import { tText } from '../../../../shared/helpers/translate-text.js';
+import { useBlocksList } from '../../../../shared/hooks/use-blocks-list.js';
+import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal.js';
+import { ToastService } from '../../../../shared/services/toast-service.js';
+import { UrlUpdateType } from '../../../../shared/types/use-query-params.ts';
 import {
   ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
   NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
-} from '../../../assignment.const.js'
-import { setBlockPositionToIndex } from '../../../assignment.helper.js'
+} from '../../../assignment.const.js';
+import { setBlockPositionToIndex } from '../../../assignment.helper.js';
 import {
-  type AssignmentResponseFormState,
   type PupilCollectionFragment,
   type PupilSearchFilterState,
-} from '../../../assignment.types.js'
-import { AssignmentBlockItemDescriptionType } from '../../../components/AssignmentBlockDescriptionButtons.js'
-import { buildAssignmentSearchLink } from '../../../helpers/build-search-link.js'
-import { insertMultipleAtPosition } from '../../../helpers/insert-at-position.js'
-import { useAssignmentBlockChangeHandler } from '../../../hooks/assignment-block-change-handler.js'
-import { useBlockListModals } from '../../../hooks/assignment-content-modals.js'
-import { useEditBlocks } from '../../../hooks/use-edit-blocks.js'
+} from '../../../assignment.types.js';
+import { AssignmentBlockItemDescriptionType } from '../../../components/AssignmentBlockDescriptionButtons.js';
+import { buildAssignmentSearchLink } from '../../../helpers/build-search-link.js';
+import { insertMultipleAtPosition } from '../../../helpers/insert-at-position.js';
+import { useAssignmentBlockChangeHandler } from '../../../hooks/assignment-block-change-handler.js';
+import { useBlockListModals } from '../../../hooks/assignment-content-modals.js';
+import { useEditBlocks } from '../../../hooks/use-edit-blocks.js';
 
 enum MobileActionId {
   reorderBlocks = 'reorderBlocks',
@@ -58,34 +53,43 @@ enum MobileActionId {
 }
 
 interface AssignmentResponsePupilCollectionTabProps {
-  pastDeadline: boolean
-  assignmentResponse: Avo.Assignment.Response
-  setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response>>
-  onShowPreviewClicked: () => void
-  setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void
+  pastDeadline: boolean;
+  assignmentResponse: Avo.Assignment.Response;
+  setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response>>;
+  collectionTitle: string;
+  setCollectionTitle: (newTitle: string) => void;
+  pupilCollectionBlocks: PupilCollectionFragment[];
+  setPupilCollectionBlocks: (
+    newPupilCollectionBlocks: PupilCollectionFragment[],
+  ) => void;
+  formErrors: Record<string, string>;
+  onShowPreviewClicked: () => void;
+  setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
   setFilterState: (
     state: PupilSearchFilterState,
     urlPushType?: UrlUpdateType,
-  ) => void
+  ) => void;
 }
 
 export const AssignmentResponsePupilCollectionTab: FC<
-  AssignmentResponsePupilCollectionTabProps &
-    Pick<UseFormReturn<AssignmentResponseFormState>, 'setValue' | 'control'>
+  AssignmentResponsePupilCollectionTabProps
 > = ({
   pastDeadline,
   assignmentResponse,
   setAssignmentResponse,
-  setValue,
-  control,
+  collectionTitle,
+  setCollectionTitle,
+  pupilCollectionBlocks,
+  setPupilCollectionBlocks,
+  formErrors,
   onShowPreviewClicked,
   setTab,
   setFilterState,
 }) => {
   const [isMobileOptionsMenuOpen, setIsMobileOptionsMenuOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [isDraggableListModalOpen, setIsDraggableListModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
   const updateBlocksInAssignmentResponseState = (
     newBlocks: Avo.Core.BlockItemBase[],
@@ -96,16 +100,9 @@ export const AssignmentResponsePupilCollectionTab: FC<
           ...prev,
           pupil_collection_blocks: newBlocks as PupilCollectionFragment[],
         }) as any,
-    ) // TODO remove cast once pupil_collection_blocks is in typings repo
-    setValue(
-      'pupil_collection_blocks',
-      newBlocks as PupilCollectionFragment[],
-      {
-        shouldDirty: true,
-        shouldTouch: true,
-      },
-    )
-  }
+    ); // TODO remove cast once pupil_collection_blocks is in typings repo
+    setPupilCollectionBlocks(newBlocks as PupilCollectionFragment[]);
+  };
 
   // UI
 
@@ -114,18 +111,18 @@ export const AssignmentResponsePupilCollectionTab: FC<
       items: assignmentResponse.pupil_collection_blocks,
       isOpen: isDraggableListModalOpen,
       onClose: (reorderedBlocks?: PupilCollectionFragment[]) => {
-        setIsDraggableListModalOpen(false)
+        setIsDraggableListModalOpen(false);
         if (reorderedBlocks) {
           const blocks = setBlockPositionToIndex(
             reorderedBlocks,
-          ) as Avo.Assignment.Block[]
+          ) as Avo.Assignment.Block[];
 
-          updateBlocksInAssignmentResponseState(blocks)
+          updateBlocksInAssignmentResponseState(blocks);
         }
       },
     },
     setIsOpen: setIsDraggableListModalOpen,
-  })
+  });
 
   // Effects
 
@@ -139,11 +136,11 @@ export const AssignmentResponsePupilCollectionTab: FC<
         responses: [],
       },
     },
-  )
+  );
   const setBlock = useAssignmentBlockChangeHandler(
     assignmentResponse?.pupil_collection_blocks || [],
     updateBlocksInAssignmentResponseState,
-  )
+  );
   const renderBlockContent = useEditBlocks(
     setBlock,
     buildAssignmentSearchLink(setFilterState),
@@ -151,7 +148,7 @@ export const AssignmentResponsePupilCollectionTab: FC<
       AssignmentBlockItemDescriptionType.original,
       AssignmentBlockItemDescriptionType.custom,
     ],
-  )
+  );
   const [renderedListSorter] = useBlocksList(
     // TODO rename to useEditBlockList and switch to component instead of hook
     assignmentResponse.pupil_collection_blocks || [],
@@ -170,45 +167,53 @@ export const AssignmentResponsePupilCollectionTab: FC<
                 {
                   id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
                   assignment_response_id: assignmentResponse.id,
-                  type: CollectionBlockType.TEXT,
+                  type: Avo.Core.BlockItemType.TEXT,
                   position,
+                  use_custom_fields: false,
+                  custom_title: '',
+                  custom_description: '',
+                  start_oc: null,
+                  end_oc: null,
+                  thumbnail_path: null,
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString(),
                 } as PupilCollectionFragment,
-              )
+              );
 
               updateBlocksInAssignmentResponseState(
                 newBlocks as Avo.Core.BlockItemBase[],
-              )
+              );
             }}
           />
         ),
       },
       listSorterItem: {
         onSlice: (item) => {
-          confirmSliceModal.setEntity(item)
-          confirmSliceModal.setOpen(true)
+          confirmSliceModal.setEntity(item);
+          confirmSliceModal.setOpen(true);
         },
       },
     },
-  )
+  );
 
   const executeMobileButtonAction = (action: MobileActionId) => {
     switch (action) {
       case MobileActionId.reorderBlocks:
-        setIsDraggableListModalOpen(true)
-        break
+        setIsDraggableListModalOpen(true);
+        break;
 
       case MobileActionId.viewAsTeacher:
-        onShowPreviewClicked()
-        break
+        onShowPreviewClicked();
+        break;
 
       default:
         ToastService.danger(
           tHtml(
             'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___knop-actie-niet-gekend',
           ),
-        )
+        );
     }
-  }
+  };
 
   // Render
 
@@ -238,7 +243,7 @@ export const AssignmentResponsePupilCollectionTab: FC<
             executeMobileButtonAction(action as MobileActionId)
           }
         />
-      )
+      );
     }
     return (
       <ButtonToolbar>
@@ -252,8 +257,8 @@ export const AssignmentResponsePupilCollectionTab: FC<
           onClick={onShowPreviewClicked}
         />
       </ButtonToolbar>
-    )
-  }
+    );
+  };
 
   const renderPupilCollectionBlocks = () => {
     return (
@@ -261,48 +266,39 @@ export const AssignmentResponsePupilCollectionTab: FC<
         <Container mode="vertical">
           <Toolbar alignTop className="c-toolbar--no-height u-spacer-bottom-l">
             <ToolbarLeft>
-              <Controller
-                name="collection_title"
-                control={control}
-                render={({ field, fieldState: { error, isTouched } }) => (
-                  <FormGroup
-                    label={tText(
-                      'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___naam-resultatenset',
-                    )}
-                    className="c-form-group--full-width"
-                  >
-                    <Flex
-                      className="u-spacer-top-s u-spacer-bottom-s"
-                      orientation="vertical"
-                    >
-                      <TextInput
-                        type="text"
-                        value={field.value || ''}
-                        onChange={(newTitle: string) => {
-                          setAssignmentResponse((prev) => {
-                            return {
-                              ...prev,
-                              collection_title: newTitle,
-                            }
-                          })
-                          setValue('collection_title', newTitle, {
-                            shouldDirty: true,
-                            shouldTouch: true,
-                          })
-                        }}
-                      />
-                    </Flex>
-
-                    {error && isTouched && (
-                      <span className="c-floating-error">
-                        {tText(
-                          'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___een-titel-is-verplicht',
-                        )}
-                      </span>
-                    )}
-                  </FormGroup>
+              <FormGroup
+                label={tText(
+                  'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___naam-resultatenset',
                 )}
-              />
+                className="c-form-group--full-width"
+              >
+                <Flex
+                  className="u-spacer-top-s u-spacer-bottom-s"
+                  orientation="vertical"
+                >
+                  <TextInput
+                    type="text"
+                    value={collectionTitle || ''}
+                    onChange={(newTitle: string) => {
+                      setAssignmentResponse((prev) => {
+                        return {
+                          ...prev,
+                          collection_title: newTitle,
+                        };
+                      });
+                      setCollectionTitle(newTitle);
+                    }}
+                  />
+                </Flex>
+
+                {formErrors.collection_title && (
+                  <span className="c-floating-error">
+                    {tText(
+                      'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___een-titel-is-verplicht',
+                    )}
+                  </span>
+                )}
+              </FormGroup>
             </ToolbarLeft>
             <ToolbarRight>{renderActionButtons()}</ToolbarRight>
           </Toolbar>
@@ -344,21 +340,18 @@ export const AssignmentResponsePupilCollectionTab: FC<
           )}
         </Container>
       </>
-    )
-  }
+    );
+  };
 
   const renderReadOnlyPupilCollectionBlocks = () => {
     return (
       <Container mode="vertical">
         <BlockList
-          blocks={
-            (assignmentResponse?.pupil_collection_blocks ||
-              []) as Avo.Core.BlockItemBase[]
-          }
+          blocks={(pupilCollectionBlocks || []) as Avo.Core.BlockItemBase[]}
         />
       </Container>
-    )
-  }
+    );
+  };
 
   return (
     <Container mode="horizontal">
@@ -368,5 +361,5 @@ export const AssignmentResponsePupilCollectionTab: FC<
       {renderedModals}
       {draggableListModal}
     </Container>
-  )
-}
+  );
+};

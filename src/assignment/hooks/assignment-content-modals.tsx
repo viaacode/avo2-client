@@ -1,74 +1,74 @@
-import { Avo } from '@viaa/avo2-types'
-import React, { useState } from 'react'
+import { Avo } from '@viaa/avo2-types';
+import React, { useState } from 'react';
 
-import { ItemsService } from '../../admin/items/items.service.js'
-import { CollectionService } from '../../collection/collection.service.js'
-import { CollectionOrBundle } from '../../collection/collection.types.js'
-import { CutFragmentForAssignmentModal } from '../../item/components/modals/CutFragmentForAssignmentModal.js'
-import { type ItemTrimInfo } from '../../item/item.types.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
+import { ItemsService } from '../../admin/items/items.service.js';
+import { CollectionService } from '../../collection/collection.service.js';
+import { CollectionOrBundle } from '../../collection/collection.types.js';
+import { CutFragmentForAssignmentModal } from '../../item/components/modals/CutFragmentForAssignmentModal.js';
+import { type ItemTrimInfo } from '../../item/item.types.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
 import {
   type SingleEntityModal,
   useSingleEntityModal,
-} from '../../shared/hooks/useSingleEntityModal.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { VideoStillService } from '../../shared/services/video-stills-service.js'
-import { type Positioned } from '../../shared/types/index.js'
-import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const.js'
-import { AssignmentBlockType } from '../assignment.types.js'
-import { insertMultipleAtPosition } from '../helpers/insert-at-position.js'
+} from '../../shared/hooks/useSingleEntityModal.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { VideoStillService } from '../../shared/services/video-stills-service.js';
+import { type Positioned } from '../../shared/types/index.js';
+import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const.js';
+import { insertMultipleAtPosition } from '../helpers/insert-at-position.js';
 import {
   AddBlockModal,
   type AddBlockModalProps,
-} from '../modals/AddBlockModal.js'
+} from '../modals/AddBlockModal.js';
 import {
   AddBookmarkFragmentModal,
   type AddBookmarkFragmentModalProps,
-} from '../modals/AddBookmarkFragmentModal.js'
+} from '../modals/AddBookmarkFragmentModal.js';
 import {
   AddCollectionModal,
   type AddCollectionModalProps,
-} from '../modals/AddCollectionModal.js'
+} from '../modals/AddCollectionModal.js';
 import {
   ConfirmSliceModal,
   type ConfirmSliceModalProps,
-} from '../modals/ConfirmSliceModal.js'
+} from '../modals/ConfirmSliceModal.js';
 
 export function useBlockListModals(
   blocks: Avo.Core.BlockItemBase[],
   setBlocks: (newBlocks: Avo.Core.BlockItemBase[]) => void,
   isPupilCollection: boolean,
   config?: {
-    confirmSliceConfig?: Partial<ConfirmSliceModalProps>
-    addBlockConfig?: Partial<AddBlockModalProps>
-    addBookmarkFragmentConfig?: Partial<AddBookmarkFragmentModalProps>
-    addCollectionConfig?: Partial<AddCollectionModalProps>
+    confirmSliceConfig?: Partial<ConfirmSliceModalProps>;
+    addBlockConfig?: Partial<AddBlockModalProps>;
+    addBookmarkFragmentConfig?: Partial<AddBookmarkFragmentModalProps>;
+    addCollectionConfig?: Partial<AddCollectionModalProps>;
   },
 ): [
   JSX.Element,
   SingleEntityModal<Pick<Avo.Assignment.Block, 'id'>>,
   SingleEntityModal<number>,
 ] {
-  const slice = useSingleEntityModal<Pick<Avo.Assignment.Block, 'id'>>()
+  const slice = useSingleEntityModal<Pick<Avo.Assignment.Block, 'id'>>();
   const {
     isOpen: isConfirmSliceModalOpen,
     setOpen: setConfirmSliceModalOpen,
     entity: getConfirmSliceModalBlock,
-  } = slice
+  } = slice;
 
-  const block = useSingleEntityModal<number>()
+  const block = useSingleEntityModal<number>();
   const {
     isOpen: isAddBlockModalOpen,
     setOpen: setAddBlockModalOpen,
     entity: blockPosition,
-  } = block
+  } = block;
 
   const [isAddFragmentModalOpen, setIsAddFragmentModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [isAddCollectionModalOpen, setIsAddCollectionModalOpen] =
-    useState<boolean>(false)
-  const [isTrimItemModalOpen, setIsTrimItemModalOpen] = useState<boolean>(false)
-  const [item, setItem] = useState<Avo.Item.Item | null>(null)
+    useState<boolean>(false);
+  const [isTrimItemModalOpen, setIsTrimItemModalOpen] =
+    useState<boolean>(false);
+  const [item, setItem] = useState<Avo.Item.Item | null>(null);
 
   const ui = (
     <>
@@ -81,11 +81,11 @@ export function useBlockListModals(
         onConfirm={() => {
           const newBlocks = blocks.filter(
             (item) => item.id !== getConfirmSliceModalBlock?.id,
-          )
+          );
 
-          setBlocks(newBlocks)
+          setBlocks(newBlocks);
 
-          setConfirmSliceModalOpen(false)
+          setConfirmSliceModalOpen(false);
         }}
       />
 
@@ -98,42 +98,42 @@ export function useBlockListModals(
             onClose={() => setAddBlockModalOpen(false)}
             onConfirm={(type) => {
               if (blockPosition === undefined) {
-                return
+                return;
               }
 
               switch (type) {
-                case 'COLLECTIE': {
-                  setIsAddCollectionModalOpen(true)
-                  break
+                case Avo.Core.BlockItemType.COLLECTION: {
+                  setIsAddCollectionModalOpen(true);
+                  break;
                 }
 
-                case AssignmentBlockType.ITEM: {
-                  setIsAddFragmentModalOpen(true)
-                  break
+                case Avo.Core.BlockItemType.ITEM: {
+                  setIsAddFragmentModalOpen(true);
+                  break;
                 }
 
-                case AssignmentBlockType.TEXT:
-                case AssignmentBlockType.ZOEK: {
+                case Avo.Core.BlockItemType.TEXT:
+                case Avo.Core.BlockItemType.ZOEK: {
                   const assignmentBlock = {
                     id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
                     type,
                     position: blockPosition,
                     created_at: new Date().toISOString(),
-                  }
+                  };
                   const newBlocks = insertMultipleAtPosition(
                     blocks,
                     assignmentBlock,
-                  )
+                  );
 
-                  setBlocks(newBlocks as Avo.Core.BlockItemBase[])
-                  break
+                  setBlocks(newBlocks as Avo.Core.BlockItemBase[]);
+                  break;
                 }
 
                 default:
-                  break
+                  break;
               }
 
-              setAddBlockModalOpen(false)
+              setAddBlockModalOpen(false);
             }}
           />
 
@@ -143,13 +143,13 @@ export function useBlockListModals(
             onClose={() => setIsAddFragmentModalOpen(false)}
             addFragmentCallback={async (id) => {
               if (blockPosition === undefined) {
-                return
+                return;
               }
 
               // fetch item details
-              const item_meta = await ItemsService.fetchItemByExternalId(id)
-              setItem(item_meta)
-              setIsTrimItemModalOpen(true)
+              const item_meta = await ItemsService.fetchItemByExternalId(id);
+              setItem(item_meta);
+              setIsTrimItemModalOpen(true);
             }}
           />
 
@@ -158,7 +158,7 @@ export function useBlockListModals(
               itemMetaData={item}
               isOpen={isTrimItemModalOpen}
               onClose={() => {
-                setIsTrimItemModalOpen(false)
+                setIsTrimItemModalOpen(false);
               }}
               afterCutCallback={async (itemTrimInfo: ItemTrimInfo) => {
                 const assignmentBlock: Partial<Avo.Core.BlockItemBase> &
@@ -183,19 +183,19 @@ export function useBlockListModals(
                         )
                       : null,
                   created_at: new Date().toISOString(),
-                }
+                };
                 const newBlocks = insertMultipleAtPosition(
                   blocks,
                   assignmentBlock,
-                )
+                );
 
-                setBlocks(newBlocks as Avo.Core.BlockItemBase[])
+                setBlocks(newBlocks as Avo.Core.BlockItemBase[]);
 
                 // Finish by triggering any configured callback
                 const callback =
-                  config?.addBookmarkFragmentConfig?.addFragmentCallback
-                callback && callback(item.external_id)
-                setIsTrimItemModalOpen(false)
+                  config?.addBookmarkFragmentConfig?.addFragmentCallback;
+                callback && callback(item.external_id);
+                setIsTrimItemModalOpen(false);
               }}
             />
           )}
@@ -209,7 +209,7 @@ export function useBlockListModals(
               withDescription: boolean,
             ) => {
               if (blockPosition === undefined) {
-                return
+                return;
               }
 
               // fetch collection details
@@ -218,15 +218,15 @@ export function useBlockListModals(
                   collectionId,
                   CollectionOrBundle.COLLECTION,
                   undefined,
-                )
+                );
 
               if (!collection) {
                 ToastService.danger(
                   tHtml(
                     'assignment/views/assignment-edit___de-collectie-kon-niet-worden-opgehaald',
                   ),
-                )
-                return
+                );
+                return;
               }
 
               if (collection.collection_fragments) {
@@ -250,49 +250,49 @@ export function useBlockListModals(
                       start_oc: collectionItem.start_oc,
                       end_oc: collectionItem.end_oc,
                       thumbnail_path: collectionItem.thumbnail_path,
-                    }
+                    };
 
                     if (collectionItem.type === Avo.Core.BlockItemType.TEXT) {
                       // text: original text null, custom text set
-                      block.custom_title = collectionItem.custom_title
+                      block.custom_title = collectionItem.custom_title;
                       block.custom_description =
-                        collectionItem.custom_description
-                      block.use_custom_fields = true
-                      block.type = Avo.Core.BlockItemType.TEXT
+                        collectionItem.custom_description;
+                      block.use_custom_fields = true;
+                      block.type = Avo.Core.BlockItemType.TEXT;
                     } else {
                       // ITEM
                       // custom_title and custom_description remain null
                       // regardless of withDescription: ALWAYS copy the fragment custom title and description to the original fields
                       // Since importing from collection, the collection is the source of truth and the original == collection fields
-                      block.original_title = collectionItem.custom_title
+                      block.original_title = collectionItem.custom_title;
                       block.original_description =
-                        collectionItem.custom_description
-                      block.use_custom_fields = !withDescription
-                      block.type = Avo.Core.BlockItemType.ITEM
+                        collectionItem.custom_description;
+                      block.use_custom_fields = !withDescription;
+                      block.type = Avo.Core.BlockItemType.ITEM;
                     }
 
-                    return block
+                    return block;
                   },
-                )
+                );
 
                 const newBlocks = insertMultipleAtPosition(
                   blocks,
                   ...(mapped as Positioned[]),
-                )
+                );
 
-                setBlocks(newBlocks as Avo.Core.BlockItemBase[])
+                setBlocks(newBlocks as Avo.Core.BlockItemBase[]);
 
                 // Finish by triggering any configured callback
                 const callback =
-                  config?.addCollectionConfig?.addCollectionCallback
-                callback && callback(collectionId, withDescription)
+                  config?.addCollectionConfig?.addCollectionCallback;
+                callback && callback(collectionId, withDescription);
               }
             }}
           />
         </>
       )}
     </>
-  )
+  );
 
-  return [ui, slice, block]
+  return [ui, slice, block];
 }

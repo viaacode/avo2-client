@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Column,
   Grid,
@@ -8,27 +8,26 @@ import {
   MetaData,
   MetaDataItem,
   Thumbnail,
-} from '@viaa/avo2-components'
-import { Avo, LomSchemeType } from '@viaa/avo2-types'
-import { compact, isNil, omit } from 'es-toolkit'
-import React, { type ReactNode } from 'react'
+} from '@viaa/avo2-components';
+import { Avo, LomSchemeType } from '@viaa/avo2-types';
+import { compact, isNil, omit } from 'es-toolkit';
+import React, { type ReactNode } from 'react';
 
-import { reorderBlockPositions } from '../assignment/assignment.helper.js'
-import { stripHtml } from '../shared/helpers/formatters/strip-html.js'
-import { tHtml } from '../shared/helpers/translate-html.js'
-import { tText } from '../shared/helpers/translate-text.js'
-import { type Positioned } from '../shared/types/index.js'
+import { reorderBlockPositions } from '../assignment/assignment.helper.js';
+import { stripHtml } from '../shared/helpers/formatters/strip-html.js';
+import { tHtml } from '../shared/helpers/translate-html.js';
+import { tText } from '../shared/helpers/translate-text.js';
+import { type Positioned } from '../shared/types/index.js';
 
 import {
   MAX_LONG_DESCRIPTION_LENGTH,
   MAX_SEARCH_DESCRIPTION_LENGTH,
-} from './collection.const.js'
-import { CollectionService } from './collection.service.js'
+} from './collection.const.js';
+import { CollectionService } from './collection.service.js';
 import {
-  CollectionFragmentType,
   CONTENT_TYPE_TRANSLATIONS_NL_TO_EN,
   ContentTypeNumber,
-} from './collection.types.js'
+} from './collection.types.js';
 
 export const getValidationFeedbackForDescription = (
   description: string | null,
@@ -36,22 +35,22 @@ export const getValidationFeedbackForDescription = (
   getTooLongErrorMessage: (count: string) => string,
   isError?: boolean | null,
 ): string => {
-  const count = `${(description || '').length}/${maxLength}`
+  const count = `${(description || '').length}/${maxLength}`;
 
-  const exceedsSize: boolean = (description || '').length > maxLength
+  const exceedsSize: boolean = (description || '').length > maxLength;
 
   if (isError) {
-    return exceedsSize ? getTooLongErrorMessage(count) : ''
+    return exceedsSize ? getTooLongErrorMessage(count) : '';
   }
 
-  return exceedsSize ? '' : `${(description || '').length}/${maxLength}`
-}
+  return exceedsSize ? '' : `${(description || '').length}/${maxLength}`;
+};
 
 // Validation
 type ValidationRule<T> = {
-  error: string | ((object: T) => string)
-  isValid: (object: T) => boolean
-}
+  error: string | ((object: T) => string);
+  isValid: (object: T) => boolean;
+};
 
 const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
   Partial<Avo.Collection.Collection>
@@ -79,7 +78,7 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
       stripHtml((collection as any).description_long).length <=
         MAX_LONG_DESCRIPTION_LENGTH,
   },
-]
+];
 
 const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
   Partial<Avo.Collection.Collection>
@@ -167,8 +166,8 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
       validateFragments(
         collection.collection_fragments,
         collection.type_id === ContentTypeNumber.collection
-          ? CollectionFragmentType.ITEM
-          : CollectionFragmentType.COLLECTION,
+          ? Avo.Core.BlockItemType.ITEM
+          : Avo.Core.BlockItemType.COLLECTION,
       ),
   },
   {
@@ -181,9 +180,9 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
         !collection.collection_fragments ||
         validateFragments(
           collection.collection_fragments,
-          CollectionFragmentType.TEXT,
+          Avo.Core.BlockItemType.TEXT,
         )
-      )
+      );
     },
   },
   {
@@ -192,18 +191,18 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
     ),
     isValid: (bundle: Partial<Avo.Collection.Collection>) => {
       if (bundle.type_id === ContentTypeNumber.collection) {
-        return true // Only applies to bundles
+        return true; // Only applies to bundles
       }
       if (!bundle.collection_fragments || !bundle.collection_fragments.length) {
-        return true // No fragments, no problem
+        return true; // No fragments, no problem
       }
       // Check that all collections/assignments in the bundle still exist (have not been deleted)
       return bundle.collection_fragments.every((fragment) => {
         return fragment?.item_meta as
           | Avo.Collection.Collection
           | Avo.Assignment.Assignment
-          | undefined
-      })
+          | undefined;
+      });
     },
   },
   {
@@ -212,23 +211,23 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
     ),
     isValid: (bundle: Partial<Avo.Collection.Collection>) => {
       if (bundle.type_id === ContentTypeNumber.collection) {
-        return true // Only applies to bundles
+        return true; // Only applies to bundles
       }
       if (!bundle.collection_fragments || !bundle.collection_fragments.length) {
-        return true // No fragments, no problem
+        return true; // No fragments, no problem
       }
       // Check that all collections/assignments in the bundle are public
       return bundle.collection_fragments.every((fragment) => {
         const collectionOrAssignment = fragment?.item_meta as
           | Avo.Collection.Collection
           | Avo.Assignment.Assignment
-          | undefined
-        return collectionOrAssignment?.is_public ?? true // Only complain if not public, do not complain if deleted (that's a separate check)
-      })
+          | undefined;
+        return collectionOrAssignment?.is_public ?? true; // Only complain if not public, do not complain if deleted (that's a separate check)
+      });
     },
   },
   // TODO: Add check if owner or write-rights.
-]
+];
 
 const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRule<
   Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>
@@ -238,7 +237,7 @@ const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRul
       'collection/collection___de-starttijd-heeft-geen-geldig-formaat-uu-mm-ss',
     ),
     isValid: (collectionFragment) => {
-      return !isNil(collectionFragment.start_oc)
+      return !isNil(collectionFragment.start_oc);
     },
   },
   {
@@ -246,7 +245,7 @@ const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRul
       'collection/collection___de-eindtijd-heeft-geen-geldig-formaat-uu-mm-ss',
     ),
     isValid: (collectionFragment) => {
-      return !isNil(collectionFragment.end_oc)
+      return !isNil(collectionFragment.end_oc);
     },
   },
   {
@@ -258,23 +257,23 @@ const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRul
         !collectionFragment.start_oc ||
         !collectionFragment.end_oc ||
         collectionFragment.start_oc < collectionFragment.end_oc
-      )
+      );
     },
   },
-]
+];
 
 const validateFragments = (
   fragments: Avo.Collection.Fragment[],
-  type: CollectionFragmentType,
+  type: Avo.Core.BlockItemType,
 ): boolean => {
   if (!fragments || !fragments.length) {
-    return false
+    return false;
   }
 
-  let isValid = true
+  let isValid = true;
 
   switch (type) {
-    case CollectionFragmentType.ITEM:
+    case Avo.Core.BlockItemType.ITEM:
       // Check if video fragment has custom_title and custom_description if necessary.
       fragments.forEach((fragment) => {
         if (
@@ -282,12 +281,12 @@ const validateFragments = (
           fragment.use_custom_fields &&
           (!fragment.custom_title || !fragment.custom_description)
         ) {
-          isValid = false
+          isValid = false;
         }
-      })
-      break
+      });
+      break;
 
-    case CollectionFragmentType.COLLECTION:
+    case Avo.Core.BlockItemType.COLLECTION:
       // Check if video fragment has custom_title and custom_description if necessary.
       fragments.forEach((fragment) => {
         if (
@@ -295,12 +294,12 @@ const validateFragments = (
           fragment.use_custom_fields &&
           !fragment.custom_title
         ) {
-          isValid = false
+          isValid = false;
         }
-      })
-      break
+      });
+      break;
 
-    case CollectionFragmentType.TEXT:
+    case Avo.Core.BlockItemType.TEXT:
       // Check if text fragment has custom_title or custom_description.
       fragments.forEach((fragment) => {
         if (
@@ -308,16 +307,16 @@ const validateFragments = (
           !stripHtml(fragment.custom_title || '').trim() &&
           !stripHtml(fragment.custom_description || '').trim()
         ) {
-          isValid = false
+          isValid = false;
         }
-      })
-      break
+      });
+      break;
     default:
-      break
+      break;
   }
 
-  return isValid
-}
+  return isValid;
+};
 
 export const getValidationErrorsForStartAndEnd = (
   collectionFragment: Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>,
@@ -328,8 +327,8 @@ export const getValidationErrorsForStartAndEnd = (
         ? null
         : getError(rule, collectionFragment),
     ),
-  )
-}
+  );
+};
 
 const getDuplicateTitleOrDescriptionErrors = async (
   collection: Partial<Avo.Collection.Collection>,
@@ -340,9 +339,9 @@ const getDuplicateTitleOrDescriptionErrors = async (
     collection.description || '',
     collection.id as string,
     collection.type_id as ContentTypeNumber,
-  )
+  );
 
-  const errors = []
+  const errors = [];
 
   if (duplicates.byTitle) {
     errors.push(
@@ -353,7 +352,7 @@ const getDuplicateTitleOrDescriptionErrors = async (
         : tText(
             'collection/components/modals/share-collection-modal___een-publieke-bundel-met-deze-titel-bestaat-reeds',
           ),
-    )
+    );
   }
 
   if (duplicates.byDescription) {
@@ -365,10 +364,10 @@ const getDuplicateTitleOrDescriptionErrors = async (
         : tText(
             'collection/components/modals/share-collection-modal___een-publieke-bundel-met-deze-beschrijving-bestaat-reeds',
           ),
-    )
+    );
   }
-  return errors
-}
+  return errors;
+};
 
 export const getValidationErrorsForPublish = async (
   collection: Partial<Avo.Collection.Collection>,
@@ -377,11 +376,12 @@ export const getValidationErrorsForPublish = async (
     ...GET_VALIDATION_RULES_FOR_SAVE(),
     ...GET_VALIDATION_RULES_FOR_PUBLISH(),
   ].map((rule) => {
-    return rule.isValid(collection) ? null : getError(rule, collection)
-  })
-  const duplicateErrors = await getDuplicateTitleOrDescriptionErrors(collection)
-  return compact([...validationErrors, ...duplicateErrors])
-}
+    return rule.isValid(collection) ? null : getError(rule, collection);
+  });
+  const duplicateErrors =
+    await getDuplicateTitleOrDescriptionErrors(collection);
+  return compact([...validationErrors, ...duplicateErrors]);
+};
 
 export const getValidationErrorForSave = async (
   collection: Partial<Avo.Collection.Collection>,
@@ -389,19 +389,19 @@ export const getValidationErrorForSave = async (
   // List of validator functions, so we can use the functions separately as well
   const validationErrors = GET_VALIDATION_RULES_FOR_SAVE().map((rule) =>
     rule.isValid(collection) ? null : getError(rule, collection),
-  )
+  );
 
   const duplicateErrors = collection.is_public
     ? await getDuplicateTitleOrDescriptionErrors(collection)
-    : []
-  return compact([...validationErrors, ...duplicateErrors])
-}
+    : [];
+  return compact([...validationErrors, ...duplicateErrors]);
+};
 
 function getError<T>(rule: ValidationRule<T>, object: T) {
   if (typeof rule.error === 'string') {
-    return rule.error
+    return rule.error;
   }
-  return rule.error(object)
+  return rule.error(object);
 }
 
 /**
@@ -416,12 +416,12 @@ export const getFragmentsFromCollection = (
 ): Avo.Collection.Fragment[] => {
   const blocks = reorderBlockPositions(
     (collection?.collection_fragments || []) as Positioned[],
-  ) as Avo.Collection.Fragment[]
+  ) as Avo.Collection.Fragment[];
   if (type) {
-    return blocks.filter((block) => block.type === type)
+    return blocks.filter((block) => block.type === type);
   }
-  return blocks
-}
+  return blocks;
+};
 
 const COLLECTION_MANAGEMENT_PROPS: string[] = [
   'management',
@@ -431,7 +431,7 @@ const COLLECTION_MANAGEMENT_PROPS: string[] = [
   'management_final_check',
   'marcom_note',
   'QC',
-]
+];
 
 /**
  * Clean the collection of properties from other tables, properties that can't be saved
@@ -457,11 +457,9 @@ export const cleanCollectionBeforeSave = (
     'loms',
     'contributors',
     ...COLLECTION_MANAGEMENT_PROPS,
-  ]
-  const cleanCollection = omit(collection, propertiesToDelete)
-
-  return cleanCollection
-}
+  ];
+  return omit(collection, propertiesToDelete);
+};
 
 /**
  * Clean the collection of properties before comparing if the collection core values have been changes
@@ -472,7 +470,7 @@ export const keepCoreCollectionProperties = (
   collection: Partial<Avo.Collection.Collection> | null,
 ): Partial<Avo.Collection.Collection> | null => {
   if (!collection) {
-    return collection
+    return collection;
   }
   const propertiesToDelete = [
     '__typename',
@@ -487,10 +485,10 @@ export const keepCoreCollectionProperties = (
     'updated_by',
     'updated_by_profile_id',
     ...COLLECTION_MANAGEMENT_PROPS,
-  ]
+  ];
 
-  return omit(collection, propertiesToDelete)
-}
+  return omit(collection, propertiesToDelete);
+};
 
 export const getFragmentIdsFromCollection = (
   collection: Partial<Avo.Collection.Collection> | null,
@@ -499,14 +497,14 @@ export const getFragmentIdsFromCollection = (
     getFragmentsFromCollection(collection).map(
       (fragment: Avo.Collection.Fragment) => fragment.id,
     ),
-  )
-}
+  );
+};
 
 const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
   const englishContentType =
     CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[
       relatedItem.administrative_type || 'video'
-    ]
+    ];
 
   return (
     <MediaCard
@@ -527,8 +525,8 @@ const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
         </MetaData>
       </MediaCardMetaData>
     </MediaCard>
-  )
-}
+  );
+};
 
 const renderRelatedContent = (
   relatedItems: Avo.Search.ResultItem[],
@@ -549,9 +547,9 @@ const renderRelatedContent = (
           'a-link__no-styles',
         )}
       </Column>
-    )
-  })
-}
+    );
+  });
+};
 
 export const renderRelatedItems = (
   relatedItems: Avo.Search.ResultItem[] | null,
@@ -563,7 +561,7 @@ export const renderRelatedItems = (
   ) => ReactNode,
 ): ReactNode | null => {
   if (!relatedItems?.length) {
-    return null
+    return null;
   }
   return (
     <>
@@ -575,5 +573,5 @@ export const renderRelatedItems = (
         {renderRelatedContent(relatedItems, renderDetailLink)}
       </Grid>
     </>
-  )
-}
+  );
+};

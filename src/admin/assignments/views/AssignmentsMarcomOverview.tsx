@@ -2,84 +2,84 @@ import {
   ExportAllToCsvModal,
   FilterTable,
   getFilters,
-} from '@meemoo/admin-core-ui/admin'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
+} from '@meemoo/admin-core-ui/admin';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactNode,
   useEffect,
   useMemo,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
+} from 'react';
+import { Helmet } from 'react-helmet';
 
-import { type AssignmentTableColumns } from '../../../assignment/assignment.types.js'
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
+import { type AssignmentTableColumns } from '../../../assignment/assignment.types.js';
+import { commonUserAtom } from '../../../authentication/authentication.store.js';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
 import {
   GET_MARCOM_CHANNEL_NAME_OPTIONS,
   GET_MARCOM_CHANNEL_TYPE_OPTIONS,
-} from '../../../collection/collection.const.js'
-import { GENERATE_SITE_TITLE } from '../../../constants.js'
-import { ErrorView } from '../../../error/views/ErrorView.js'
+} from '../../../collection/collection.const.js';
+import { GENERATE_SITE_TITLE } from '../../../constants.js';
+import { ErrorView } from '../../../error/views/ErrorView.js';
 
-import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js'
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies.js'
-import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js'
-import { useLomSubjects } from '../../../shared/hooks/useLomSubjects.js'
-import { useQualityLabels } from '../../../shared/hooks/useQualityLabels.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { NULL_FILTER } from '../../shared/helpers/filters.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
-import { useUserGroups } from '../../user-groups/hooks/useUserGroups.js'
-import { AssignmentsAdminService } from '../assignments.admin.service.js'
+import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import { CustomError } from '../../../shared/helpers/custom-error.js';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies.js';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js';
+import { useLomSubjects } from '../../../shared/hooks/useLomSubjects.js';
+import { useQualityLabels } from '../../../shared/hooks/useQualityLabels.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { NULL_FILTER } from '../../shared/helpers/filters.js';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import { useUserGroups } from '../../user-groups/hooks/useUserGroups.js';
+import { AssignmentsAdminService } from '../assignments.admin.service.js';
 import {
   GET_ASSIGNMENT_MARCOM_COLUMNS,
   ITEMS_PER_PAGE,
-} from '../assignments.const.js'
+} from '../assignments.const.js';
 import {
   type AssignmentMarcomTableState,
-  AssignmentsBulkAction,
   type AssignmentSortProps,
-} from '../assignments.types.js'
+  AssignmentsBulkAction,
+} from '../assignments.types.js';
 import {
   renderAssignmentMarcomCellReact,
   renderAssignmentsMarcomCellText,
-} from '../helpers/render-assignment-columns.js'
-import { useGetAssignmentsWithMarcomForAdminOverview } from '../hooks/useGetAssignmentsWithMarcomForAdminOverview.js'
+} from '../helpers/render-assignment-columns.js';
+import { useGetAssignmentsWithMarcomForAdminOverview } from '../hooks/useGetAssignmentsWithMarcomForAdminOverview.js';
 
 export const AssignmentMarcomOverview: FC = () => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [tableState, setTableState] = useState<
     Partial<AssignmentMarcomTableState>
-  >({})
+  >({});
   const { data: assignmentsWithMarcom, isLoading: isLoadingAssignments } =
-    useGetAssignmentsWithMarcomForAdminOverview(tableState)
-  const assignments = assignmentsWithMarcom?.assignments
-  const assignmentCount = assignmentsWithMarcom?.total
+    useGetAssignmentsWithMarcomForAdminOverview(tableState);
+  const assignments = assignmentsWithMarcom?.assignments;
+  const assignmentCount = assignmentsWithMarcom?.total;
   const [isLoadingAssignmentIds, setIsLoadingAssignmentIds] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
   const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] =
-    useState(false)
+    useState(false);
 
   const [selectedAssignmentIds, setSelectedAssignmentIds] = useState<string[]>(
     [],
-  )
+  );
 
-  const [userGroups] = useUserGroups(false)
-  const [subjects] = useLomSubjects()
-  const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees()
-  const { data: allQualityLabels } = useQualityLabels()
-  const [organisations] = useCompaniesWithUsers()
+  const [userGroups] = useUserGroups(false);
+  const [subjects] = useLomSubjects();
+  const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
+  const { data: allQualityLabels } = useQualityLabels();
+  const [organisations] = useCompaniesWithUsers();
 
   // computed
 
@@ -103,8 +103,8 @@ export const AssignmentMarcomOverview: FC = () => {
           NULL_FILTER,
         ),
       },
-    ]
-  }, [tableState, userGroups])
+    ];
+  }, [tableState, userGroups]);
 
   const assignmentLabelOptions = useMemo(
     () => [
@@ -128,7 +128,7 @@ export const AssignmentMarcomOverview: FC = () => {
       ),
     ],
     [allQualityLabels, tableState],
-  )
+  );
 
   const organisationOptions = useMemo(
     () => [
@@ -152,7 +152,7 @@ export const AssignmentMarcomOverview: FC = () => {
       ),
     ],
     [organisations, tableState],
-  )
+  );
 
   const channelNameOptions = useMemo(() => {
     const options = GET_MARCOM_CHANNEL_NAME_OPTIONS().map((option) => ({
@@ -161,7 +161,7 @@ export const AssignmentMarcomOverview: FC = () => {
       checked: (
         tableState?.marcom_last_communication_channel_name || []
       ).includes(option.value),
-    }))
+    }));
     return [
       {
         id: NULL_FILTER,
@@ -173,8 +173,8 @@ export const AssignmentMarcomOverview: FC = () => {
         ).includes(NULL_FILTER),
       },
       ...options,
-    ]
-  }, [tableState?.marcom_last_communication_channel_name])
+    ];
+  }, [tableState?.marcom_last_communication_channel_name]);
 
   const channelTypeOptions = useMemo(
     () => [
@@ -187,7 +187,7 @@ export const AssignmentMarcomOverview: FC = () => {
       })),
     ],
     [tableState],
-  )
+  );
 
   const tableColumns = useMemo(
     () =>
@@ -209,28 +209,28 @@ export const AssignmentMarcomOverview: FC = () => {
       organisationOptions,
       channelTypeOptions,
     ],
-  )
+  );
 
   // methods
 
   useEffect(() => {
     // Update selected rows to always be a subset of the assignments array
     // In other words, you cannot have something selected that isn't part of the current filtered/paginated results
-    const assignmentIds: string[] = (assignments || []).map((coll) => coll.id)
+    const assignmentIds: string[] = (assignments || []).map((coll) => coll.id);
     setSelectedAssignmentIds((currentSelectedAssignmentIds) => {
       return (currentSelectedAssignmentIds || []).filter(
         (collId) => collId && assignmentIds.includes(collId),
-      )
-    })
-  }, [assignments, setSelectedAssignmentIds])
+      );
+    });
+  }, [assignments, setSelectedAssignmentIds]);
 
   const setAllAssignmentsAsSelected = async () => {
-    setIsLoadingAssignmentIds(true)
+    setIsLoadingAssignmentIds(true);
     try {
       const assignmentIds =
         await AssignmentsAdminService.getAssignmentMarcomIds(
           getFilters(tableState),
-        )
+        );
       ToastService.info(
         tHtml(
           'admin/assignments/views/assignments-marcom-overview___je-hebt-num-of-selected-assignments-geselecteerd',
@@ -238,8 +238,8 @@ export const AssignmentMarcomOverview: FC = () => {
             numOfSelectedAssignments: assignmentIds.length,
           },
         ),
-      )
-      setSelectedAssignmentIds(assignmentIds)
+      );
+      setSelectedAssignmentIds(assignmentIds);
     } catch (err) {
       console.error(
         new CustomError(
@@ -247,15 +247,15 @@ export const AssignmentMarcomOverview: FC = () => {
           err,
           { tableState },
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/assignments/views/assignments-marcom-overview___het-ophalen-van-de-opdracht-ids-is-mislukt',
         ),
-      )
+      );
     }
-    setIsLoadingAssignmentIds(false)
-  }
+    setIsLoadingAssignmentIds(false);
+  };
 
   const renderNoResults = () => {
     return (
@@ -270,12 +270,12 @@ export const AssignmentMarcomOverview: FC = () => {
           )}
         </p>
       </ErrorView>
-    )
-  }
+    );
+  };
 
   const renderAssignmentMarcomOverview = () => {
     if (isLoadingAssignments || isLoadingAssignmentIds) {
-      return <FullPageSpinner />
+      return <FullPageSpinner />;
     }
     return (
       <>
@@ -289,7 +289,7 @@ export const AssignmentMarcomOverview: FC = () => {
               columnId as AssignmentTableColumns,
               {
                 allQualityLabels: allQualityLabels || [],
-                editStatuses: [],
+                editStatuses: {},
                 commonUser,
               },
             )
@@ -321,7 +321,7 @@ export const AssignmentMarcomOverview: FC = () => {
           ]}
           onSelectBulkAction={async (action: string) => {
             if (action === AssignmentsBulkAction.EXPORT_ALL) {
-              setIsExportAllToCsvModalOpen(true)
+              setIsExportAllToCsvModalOpen(true);
             }
           }}
         />
@@ -347,8 +347,8 @@ export const AssignmentMarcomOverview: FC = () => {
                 tableState.sort_order || Avo.Search.OrderDirection.DESC,
                 getFilters(tableState),
                 false,
-              )
-            return response.total
+              );
+            return response.total;
           }}
           fetchMoreItems={async (offset: number, limit: number) => {
             const response =
@@ -359,8 +359,8 @@ export const AssignmentMarcomOverview: FC = () => {
                 tableState.sort_order || Avo.Search.OrderDirection.DESC,
                 getFilters(tableState),
                 false,
-              )
-            return response.assignments
+              );
+            return response.assignments;
           }}
           renderValue={(value: any, columnId: string) =>
             renderAssignmentsMarcomCellText(
@@ -368,7 +368,7 @@ export const AssignmentMarcomOverview: FC = () => {
               columnId as AssignmentTableColumns,
               {
                 allQualityLabels: allQualityLabels || [],
-                editStatuses: [],
+                editStatuses: {},
                 commonUser,
               },
             )
@@ -379,8 +379,8 @@ export const AssignmentMarcomOverview: FC = () => {
           )}
         />
       </>
-    )
-  }
+    );
+  };
 
   return (
     <PermissionGuard permissions={[PermissionName.VIEW_ANY_ASSIGNMENTS]}>
@@ -410,7 +410,7 @@ export const AssignmentMarcomOverview: FC = () => {
         </AdminLayoutBody>
       </AdminLayout>
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default AssignmentMarcomOverview
+export default AssignmentMarcomOverview;

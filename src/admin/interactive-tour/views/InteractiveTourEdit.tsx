@@ -1,4 +1,4 @@
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client'
+import { SanitizePreset, sanitizeHtml } from '@meemoo/admin-core-ui/client';
 import {
   Box,
   Button,
@@ -13,10 +13,10 @@ import {
   type SelectOption,
   Spacer,
   TextInput,
-} from '@viaa/avo2-components'
-import { Avo, PermissionName } from '@viaa/avo2-types'
-import { cloneDeep, compact, orderBy } from 'es-toolkit'
-import { isEmpty, map } from 'es-toolkit/compat'
+} from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { cloneDeep, compact, orderBy } from 'es-toolkit';
+import { isEmpty, map } from 'es-toolkit/compat';
 import React, {
   type FC,
   lazy,
@@ -25,51 +25,50 @@ import React, {
   useEffect,
   useReducer,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate, useParams } from 'react-router'
-import { useLocation } from 'react-router-dom'
+} from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate, useParams } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js'
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js'
-import { OrderDirection } from '../../../search/search.const.js'
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { ROUTE_PARTS } from '../../../shared/constants/index.js'
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { ROUTE_PARTS } from '../../../shared/constants/index.js';
 import {
   type GetInteractiveTourByIdQuery,
   type GetInteractiveTourByIdQueryVariables,
-} from '../../../shared/generated/graphql-db-operations.js'
-import { GetInteractiveTourByIdDocument } from '../../../shared/generated/graphql-db-react-query.js'
-import { buildLink } from '../../../shared/helpers/build-link.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { navigate } from '../../../shared/helpers/link.js'
-import { dataService } from '../../../shared/services/data-service.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { ADMIN_PATH } from '../../admin.const.js'
-import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
+} from '../../../shared/generated/graphql-db-operations.js';
+import { GetInteractiveTourByIdDocument } from '../../../shared/generated/graphql-db-react-query.js';
+import { buildLink } from '../../../shared/helpers/build-link.js';
+import { CustomError } from '../../../shared/helpers/custom-error.js';
+import { navigate } from '../../../shared/helpers/link.js';
+import { dataService } from '../../../shared/services/data-service.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { ADMIN_PATH } from '../../admin.const.js';
+import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker.js';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
 import {
   AdminLayoutBody,
   AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
-import { type PickerItem } from '../../shared/types/content-picker.js'
-import { InteractiveTourAdd } from '../components/InteractiveTourStepAdd.js'
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import { type PickerItem } from '../../shared/types/content-picker.js';
+import { InteractiveTourAdd } from '../components/InteractiveTourStepAdd.js';
 import {
   INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
   type InteractiveTourAction,
   interactiveTourEditReducer,
-} from '../helpers/reducers/index.js'
+} from '../helpers/reducers/index.js';
 import {
   getInitialInteractiveTour,
   INTERACTIVE_TOUR_PATH,
   MAX_STEP_TEXT_LENGTH,
   MAX_STEP_TITLE_LENGTH,
-} from '../interactive-tour.const.js'
-import { InteractiveTourService } from '../interactive-tour.service.js'
+} from '../interactive-tour.const.js';
+import { InteractiveTourService } from '../interactive-tour.service.js';
 import {
   type EditableInteractiveTour,
   type EditableStep,
@@ -78,43 +77,43 @@ import {
   type InteractiveTourPageType,
   type InteractiveTourState,
   type InteractiveTourStep,
-} from '../interactive-tour.types.js'
+} from '../interactive-tour.types.js';
 
-import { InteractiveTourEditStep } from './InteractiveTourEditStep.js'
+import { InteractiveTourEditStep } from './InteractiveTourEditStep.js';
 
-import './InteractiveTourEdit.scss'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
+import './InteractiveTourEdit.scss';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
 
 const BlockHeading = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
     default: adminCoreModule.BlockHeading,
   })),
-)
+);
 
 export const InteractiveTourEdit: FC = () => {
-  const location = useLocation()
-  const navigateFunc = useNavigate()
+  const location = useLocation();
+  const navigateFunc = useNavigate();
 
-  const { id: interactiveTourId } = useParams<{ id: string }>()
+  const { id: interactiveTourId } = useParams<{ id: string }>();
 
   // Hooks
   const [formErrors, setFormErrors] =
-    useState<InteractiveTourEditFormErrorState>({})
-  const [isSaving, setIsSaving] = useState<boolean>(false)
+    useState<InteractiveTourEditFormErrorState>({});
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const [selectedPageType, setSelectedPageType] =
-    useState<InteractiveTourPageType>('static')
+    useState<InteractiveTourPageType>('static');
 
   const isCreatePage: boolean = location.pathname.includes(
     `/${ROUTE_PARTS.create}`,
-  )
+  );
 
   const [interactiveTourState, changeInteractiveTourState] = useReducer<
     Reducer<InteractiveTourState, InteractiveTourAction>
-  >(interactiveTourEditReducer, INTERACTIVE_TOUR_EDIT_INITIAL_STATE())
+  >(interactiveTourEditReducer, INTERACTIVE_TOUR_EDIT_INITIAL_STATE());
 
   /**
    * Returns a list op select options for all pages that can have an interactive tour sorted by label
@@ -127,25 +126,25 @@ export const InteractiveTourEdit: FC = () => {
             return {
               label: routeInfo.route,
               value: routeId,
-            }
+            };
           }
-          return null
+          return null;
         }),
       ),
       ['label'],
       [Avo.Search.OrderDirection.ASC],
-    )
-  }, [])
+    );
+  }, []);
 
   const getPageType = useCallback(
     (pageId: string): InteractiveTourPageType => {
       const staticPageIds = getPageOptions().map(
         (pageOption) => pageOption.value,
-      )
-      return staticPageIds.includes(pageId) ? 'static' : 'content'
+      );
+      return staticPageIds.includes(pageId) ? 'static' : 'content';
     },
     [getPageOptions],
-  )
+  );
 
   const initOrFetchInteractiveTour = useCallback(async () => {
     if (isCreatePage) {
@@ -153,11 +152,11 @@ export const InteractiveTourEdit: FC = () => {
         type: InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR,
         newInteractiveTour: getInitialInteractiveTour(),
         updateInitialInteractiveTour: true,
-      })
+      });
     } else {
       try {
         if (!interactiveTourId) {
-          return
+          return;
         }
         const response = await dataService.query<
           GetInteractiveTourByIdQuery,
@@ -165,9 +164,9 @@ export const InteractiveTourEdit: FC = () => {
         >({
           query: GetInteractiveTourByIdDocument,
           variables: { id: parseInt(interactiveTourId) },
-        })
+        });
 
-        const interactiveTourObj = response.app_interactive_tour[0]
+        const interactiveTourObj = response.app_interactive_tour[0];
 
         if (!interactiveTourObj) {
           setLoadingInfo({
@@ -176,29 +175,29 @@ export const InteractiveTourEdit: FC = () => {
             message: tHtml(
               'admin/interactive-tour/views/interactive-tour-edit___deze-interactieve-tour-werd-niet-gevonden',
             ),
-          })
-          return
+          });
+          return;
         }
 
         changeInteractiveTourState({
           type: InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR,
           newInteractiveTour: interactiveTourObj,
           updateInitialInteractiveTour: true,
-        })
-        setSelectedPageType(getPageType(interactiveTourObj.page_id))
+        });
+        setSelectedPageType(getPageType(interactiveTourObj.page_id));
       } catch (err) {
         console.error(
           new CustomError('Failed to get interactive tour by id', err, {
             query: 'GET_INTERACTIVE_TOUR_BY_ID',
             variables: { id: interactiveTourId },
           }),
-        )
+        );
         setLoadingInfo({
           state: 'error',
           message: tHtml(
             'admin/interactive-tour/views/interactive-tour-edit___het-ophalen-van-de-interactive-tour-is-mislukt',
           ),
-        })
+        });
       }
     }
   }, [
@@ -207,101 +206,101 @@ export const InteractiveTourEdit: FC = () => {
     isCreatePage,
     getPageType,
     interactiveTourId,
-  ])
+  ]);
 
   useEffect(() => {
-    initOrFetchInteractiveTour()
-  }, [initOrFetchInteractiveTour])
+    initOrFetchInteractiveTour();
+  }, [initOrFetchInteractiveTour]);
 
   useEffect(() => {
     if (interactiveTourState.currentInteractiveTour) {
-      setLoadingInfo({ state: 'loaded' })
+      setLoadingInfo({ state: 'loaded' });
     }
-  }, [interactiveTourState.currentInteractiveTour, setLoadingInfo])
+  }, [interactiveTourState.currentInteractiveTour, setLoadingInfo]);
 
   const navigateBack = () => {
     if (isCreatePage) {
-      navigateFunc(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_OVERVIEW)
+      navigateFunc(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_OVERVIEW);
     } else {
       navigate(navigateFunc, INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL, {
         id: interactiveTourId,
-      })
+      });
     }
-  }
+  };
 
   const getFormErrors = (): InteractiveTourEditFormErrorState | null => {
-    const errors: InteractiveTourEditFormErrorState = {}
+    const errors: InteractiveTourEditFormErrorState = {};
     if (
       !interactiveTourState.currentInteractiveTour ||
       !interactiveTourState.currentInteractiveTour.name
     ) {
       errors.name = tText(
         'admin/interactive-tour/views/interactive-tour-edit___een-naam-is-verplicht',
-      )
+      );
     }
     if (
       !interactiveTourState.currentInteractiveTour ||
-      !interactiveTourState.currentInteractiveTour.page_id
+      !interactiveTourState.currentInteractiveTour.page
     ) {
       errors.page_id = tText(
         'admin/interactive-tour/views/interactive-tour-edit___een-pagina-is-verplicht',
-      )
+      );
     }
-    ;(interactiveTourState?.currentInteractiveTour?.steps || []).forEach(
+    (interactiveTourState?.currentInteractiveTour?.steps || []).forEach(
       (step: InteractiveTourStep, index: number) => {
         if (step.title.length > MAX_STEP_TITLE_LENGTH) {
-          errors.steps = errors.steps || []
+          errors.steps = errors.steps || [];
           errors.steps[index] = {
             ...(errors.steps[index] || {}),
             title: tText(
               'admin/interactive-tour/views/interactive-tour-edit___de-titel-is-te-lang',
             ),
-          }
+          };
         }
         if (step.title.length > MAX_STEP_TEXT_LENGTH) {
-          errors.steps = errors.steps || []
+          errors.steps = errors.steps || [];
           errors.steps[index] = {
             ...(errors.steps[index] || {}),
             content: tText(
               'admin/interactive-tour/views/interactive-tour-edit___de-tekst-is-te-lang',
             ),
-          }
+          };
         }
       },
-    )
-    return isEmpty(errors) ? null : errors
-  }
+    );
+    return isEmpty(errors) ? null : errors;
+  };
 
   const convertTourContentToHtml = async (
     tour: EditableInteractiveTour,
   ): Promise<EditableInteractiveTour> => {
-    const clonedTour = cloneDeep(tour)
+    const clonedTour = cloneDeep(tour);
     clonedTour.steps.forEach((step: EditableStep) => {
       if (step.contentState) {
         step.content = sanitizeHtml(
           step.contentState.toHTML(),
           SanitizePreset.link,
-        )
-        delete step.contentState
+        );
+        delete step.contentState;
       }
-    })
-    return clonedTour
-  }
+    });
+    return clonedTour;
+  };
 
   const handleSave = async () => {
     try {
       if (!interactiveTourId) {
-        return
+        return;
       }
-      const errors = getFormErrors()
-      setFormErrors(errors || {})
+      const errors = getFormErrors();
+      setFormErrors(errors || {});
       if (errors) {
         ToastService.danger(
           tHtml(
             'admin/interactive-tour/views/interactive-tour-edit___de-invoer-is-ongeldig',
           ),
-        )
-        return
+        );
+        return;
       }
 
       if (
@@ -312,26 +311,26 @@ export const InteractiveTourEdit: FC = () => {
           tHtml(
             'admin/interactive-tour/views/interactive-tour-edit___het-opslaan-van-de-interactive-tour-is-mislukt-omdat-de-interactive-tour-nog-niet-is-geladen',
           ),
-        )
-        return
+        );
+        return;
       }
 
-      setIsSaving(true)
+      setIsSaving(true);
 
       // Convert rich text editor state back to html before we save to database
       const tour: EditableInteractiveTour = await convertTourContentToHtml(
         interactiveTourState.currentInteractiveTour,
-      )
+      );
 
-      let tempInteractiveTourId: number | string
+      let tempInteractiveTourId: number | string;
       if (isCreatePage) {
         // insert the interactive tour
         tempInteractiveTourId =
-          await InteractiveTourService.insertInteractiveTour(tour)
+          await InteractiveTourService.insertInteractiveTour(tour);
       } else {
         // Update existing interactive tour
-        await InteractiveTourService.updateInteractiveTour(tour)
-        tempInteractiveTourId = interactiveTourId
+        await InteractiveTourService.updateInteractiveTour(tour);
+        tempInteractiveTourId = interactiveTourId;
       }
 
       redirectToClientPage(
@@ -339,64 +338,65 @@ export const InteractiveTourEdit: FC = () => {
           id: tempInteractiveTourId,
         }),
         navigateFunc,
-      )
+      );
       ToastService.success(
         tHtml(
           'admin/interactive-tour/views/interactive-tour-edit___de-interactive-tour-is-opgeslagen',
         ),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError('Failed to save interactive tour', err, {
           currentInteractiveTour: interactiveTourState.currentInteractiveTour,
           initialInteractiveTour: interactiveTourState.initialInteractiveTour,
         }),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/interactive-tour/views/interactive-tour-edit___het-opslaan-van-de-interactive-tour-is-mislukt',
         ),
-      )
+      );
     }
-    setIsSaving(false)
-  }
+    setIsSaving(false);
+  };
 
   const handleContentPageSelect = (item: PickerItem | null) => {
     if (!item) {
-      return
+      return;
     }
     changeInteractiveTourState({
       type: InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR_PROP,
       interactiveTourProp: 'page_id',
       interactiveTourPropValue: item.value,
-    })
-  }
+    });
+  };
 
   const handleStaticPageSelect = (newPageId: string) => {
     changeInteractiveTourState({
       type: InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR_PROP,
       interactiveTourProp: 'page_id',
       interactiveTourPropValue: newPageId,
-    })
-  }
+    });
+  };
 
   const getContentPickerInitialValue = (): PickerItem | undefined => {
     if (
       selectedPageType === 'content' &&
-      interactiveTourState.currentInteractiveTour
+      interactiveTourState.currentInteractiveTour &&
+      interactiveTourState.currentInteractiveTour.page_id
     ) {
       return {
         value: interactiveTourState.currentInteractiveTour.page_id,
         label: interactiveTourState.currentInteractiveTour.page_id,
         type: Avo.Core.ContentPickerType.CONTENT_PAGE,
-      }
+      };
     }
-    return undefined
-  }
+    return undefined;
+  };
 
   const renderStep = (step: EditableStep, index: number) => {
     if (!interactiveTourState.currentInteractiveTour) {
-      return null
+      return null;
     }
 
     return (
@@ -416,12 +416,12 @@ export const InteractiveTourEdit: FC = () => {
           changeInteractiveTourState={changeInteractiveTourState}
         />
       </div>
-    )
-  }
+    );
+  };
 
   const renderEditPage = () => {
     if (!interactiveTourState.currentInteractiveTour) {
-      return
+      return;
     }
 
     return (
@@ -524,8 +524,8 @@ export const InteractiveTourEdit: FC = () => {
           renderStep,
         )}
       </>
-    )
-  }
+    );
+  };
 
   // Render
   const renderPage = () => (
@@ -558,7 +558,7 @@ export const InteractiveTourEdit: FC = () => {
       </AdminLayoutTopBarRight>
       <AdminLayoutBody>{renderEditPage()}</AdminLayoutBody>
     </AdminLayout>
-  )
+  );
 
   return (
     <>
@@ -596,7 +596,7 @@ export const InteractiveTourEdit: FC = () => {
         />
       </PermissionGuard>
     </>
-  )
-}
+  );
+};
 
-export default InteractiveTourEdit
+export default InteractiveTourEdit;

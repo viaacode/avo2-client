@@ -12,9 +12,9 @@ import { LTI_JWT_TOKEN_HEADER } from '../embed.types.js'
 
 export const useGetLoginStateForEmbed = () => {
   const [loginStateValue, setLoginStateValue] = useAtom(loginAtom)
-  return useQuery<Avo.Auth.LoginResponse>(
-    [QUERY_KEYS.GET_LOGIN_STATE_EMBED],
-    async () => {
+  return useQuery<Avo.Auth.LoginResponse>({
+    queryKey: [QUERY_KEYS.GET_LOGIN_STATE_EMBED],
+    queryFn: async () => {
       try {
         const loginState = loginStateValue?.data
 
@@ -45,14 +45,10 @@ export const useGetLoginStateForEmbed = () => {
         throw new CustomError('Failed to fetch login state for embed', err)
       }
     },
-    {
-      refetchOnWindowFocus: true,
-      refetchOnReconnect: true,
-      refetchOnMount: true,
-      keepPreviousData: true,
-      enabled: !!EmbedCodeService.getJwtToken(),
-      cacheTime: 0,
-      staleTime: 0,
-    },
-  )
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+    enabled: !!EmbedCodeService.getJwtToken(),
+    staleTime: 0,
+  })
 }

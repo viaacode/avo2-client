@@ -9,61 +9,62 @@ import {
   ToolbarLeft,
   ToolbarRight,
   ToolbarTitle,
-} from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { isEmpty } from 'es-toolkit/compat'
+} from '@viaa/avo2-components';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { isEmpty } from 'es-toolkit/compat';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactNode,
   type ReactText,
   useEffect,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
-import { Link } from 'react-router-dom'
+} from 'react';
+import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 import {
   JsonParam,
   NumberParam,
   StringParam,
   useQueryParams,
-} from 'use-query-params'
+} from 'use-query-params';
 
-import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionGuard } from '../../authentication/components/PermissionGuard.js'
+import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link.js';
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { PermissionGuard } from '../../authentication/components/PermissionGuard.js';
 import {
   PermissionGuardFail,
   PermissionGuardPass,
-} from '../../authentication/components/PermissionGuard.slots.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { GENERATE_SITE_TITLE } from '../../constants.js'
-import { ErrorView } from '../../error/views/ErrorView.js'
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour.js'
-import { getMoreOptionsLabel } from '../../shared/constants/index.js'
-import { copyToClipboard } from '../../shared/helpers/clipboard.js'
-import { generateContentLinkString } from '../../shared/helpers/link.js'
-import { trackEvents } from '../../shared/services/event-logging-service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { SearchFiltersAndResults } from '../components/SearchFiltersAndResults.js'
-import { type FilterState } from '../search.types.js'
+} from '../../authentication/components/PermissionGuard.slots.js';
+import { PermissionService } from '../../authentication/helpers/permission-service.js';
+import { GENERATE_SITE_TITLE } from '../../constants.js';
+import { ErrorView } from '../../error/views/ErrorView.js';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour.js';
+import { getMoreOptionsLabel } from '../../shared/constants/index.js';
+import { copyToClipboard } from '../../shared/helpers/clipboard.js';
+import { generateContentLinkString } from '../../shared/helpers/link.js';
+import { trackEvents } from '../../shared/services/event-logging-service.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { SearchFiltersAndResults } from '../components/SearchFiltersAndResults.js';
+import { type FilterState } from '../search.types.js';
 
-import './Search.scss'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+import './Search.scss';
+import { SortDirectionParam } from '../../admin/shared/helpers/query-string-converters.ts';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
 
 export const Search: FC = () => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
-  const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false)
+  const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
   const queryParamConfig = {
     filters: JsonParam,
     orderProperty: StringParam,
-    orderDirection: StringParam,
+    orderDirection: SortDirectionParam,
     tab: StringParam,
     page: NumberParam,
-  }
-  const [filterState, setFilterState] = useQueryParams(queryParamConfig)
+  };
+  const [filterState, setFilterState] = useQueryParams(queryParamConfig);
 
   useEffect(() => {
     if (!isEmpty(filterState.filters)) {
@@ -75,50 +76,50 @@ export const Search: FC = () => {
           resource: filterState.filters,
         },
         commonUser,
-      )
+      );
     }
-  }, [filterState, commonUser])
+  }, [filterState, commonUser]);
 
   const handleOptionClicked = (optionId: string | number | ReactText) => {
-    setIsOptionsMenuOpen(false)
+    setIsOptionsMenuOpen(false);
 
     switch (optionId) {
       case 'copy_link':
-        onCopySearchLinkClicked()
-        return
+        onCopySearchLinkClicked();
+        return;
     }
-  }
+  };
 
   const copySearchLink = () => {
-    copyToClipboard(window.location.href)
-  }
+    copyToClipboard(window.location.href);
+  };
 
   const onCopySearchLinkClicked = () => {
-    copySearchLink()
-    setIsOptionsMenuOpen(false)
+    copySearchLink();
+    setIsOptionsMenuOpen(false);
     ToastService.success(
       tHtml('search/views/search___de-link-is-succesvol-gekopieerd'),
-    )
-  }
+    );
+  };
 
   const renderDetailLink = (
     linkText: string | ReactNode,
     id: string,
     type: Avo.Core.ContentType,
   ) => {
-    return <Link to={generateContentLinkString(type, id)}>{linkText}</Link>
-  }
+    return <Link to={generateContentLinkString(type, id)}>{linkText}</Link>;
+  };
 
   const renderSearchLink = (
     linkText: string | ReactNode,
     newFilterState: FilterState,
     className?: string,
   ) => {
-    const filters = newFilterState.filters
+    const filters = newFilterState.filters;
     return (
       filters && buildGlobalSearchLink(newFilterState, { className }, linkText)
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -172,8 +173,10 @@ export const Search: FC = () => {
           {PermissionService.hasPerm(commonUser, PermissionName.SEARCH) ? (
             <SearchFiltersAndResults
               bookmarks
-              filterState={filterState}
-              setFilterState={setFilterState}
+              filterState={filterState as FilterState}
+              setFilterState={(newFilterState) =>
+                setFilterState(newFilterState as any)
+              }
               renderDetailLink={renderDetailLink}
               renderSearchLink={renderSearchLink}
             />
@@ -198,7 +201,7 @@ export const Search: FC = () => {
         </PermissionGuardFail>
       </PermissionGuard>
     </>
-  )
-}
+  );
+};
 
-export default Search
+export default Search;

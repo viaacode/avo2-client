@@ -1,16 +1,15 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { endOfDay, startOfDay } from 'date-fns'
-import { cloneDeep, compact, isEqual, isNil, uniq, without } from 'es-toolkit'
-import queryString, { stringifyUrl } from 'query-string'
-
-import { setBlockPositionToIndex } from '../assignment/assignment.helper.js'
-import { PermissionService } from '../authentication/helpers/permission-service.js'
-import { type OrderDirection } from '../search/search.const.js'
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { endOfDay, startOfDay } from 'date-fns';
+import { cloneDeep, compact, isEqual, isNil, uniq, without } from 'es-toolkit';
+import { isEmpty } from 'es-toolkit/compat';
+import queryString, { stringifyUrl } from 'query-string';
+import { setBlockPositionToIndex } from '../assignment/assignment.helper.js';
+import { PermissionService } from '../authentication/helpers/permission-service.js';
 import {
   type ContributorInfo,
   type ContributorInfoRight,
-} from '../shared/components/ShareWithColleagues/ShareWithColleagues.types.js'
+} from '../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
 import {
   type DeleteCollectionFragmentByIdMutation,
   type DeleteCollectionFragmentByIdMutationVariables,
@@ -74,7 +73,7 @@ import {
   type UpdateCollectionManagementEntryMutationVariables,
   type UpdateMarcomNoteMutation,
   type UpdateMarcomNoteMutationVariables,
-} from '../shared/generated/graphql-db-operations.js'
+} from '../shared/generated/graphql-db-operations.js';
 import {
   DeleteCollectionFragmentByIdDocument,
   DeleteCollectionLabelsDocument,
@@ -107,24 +106,23 @@ import {
   UpdateCollectionFragmentByIdDocument,
   UpdateCollectionManagementEntryDocument,
   UpdateMarcomNoteDocument,
-} from '../shared/generated/graphql-db-react-query.js'
+} from '../shared/generated/graphql-db-react-query.js';
 import {
   type App_Collection_Marcom_Log_Insert_Input,
   Lookup_Enum_Collection_Management_Qc_Label_Enum,
   Lookup_Enum_Relation_Types_Enum,
-} from '../shared/generated/graphql-db-types.js'
-import { convertRteToString } from '../shared/helpers/convert-rte-to-string.js'
-import { CustomError } from '../shared/helpers/custom-error.js'
-import { getEnv } from '../shared/helpers/env.js'
-import { tHtml } from '../shared/helpers/translate-html.js'
-import { isUuid } from '../shared/helpers/uuid.js'
-import { dataService } from '../shared/services/data-service.js'
-import { QualityLabelsService } from '../shared/services/quality-labels.service.js'
-import { RelationService } from '../shared/services/relation-service/relation.service.js'
-import { ToastService } from '../shared/services/toast-service.js'
-import { VideoStillService } from '../shared/services/video-stills-service.js'
-import { type Positioned } from '../shared/types/index.js'
-
+} from '../shared/generated/graphql-db-types.js';
+import { convertRteToString } from '../shared/helpers/convert-rte-to-string.js';
+import { CustomError } from '../shared/helpers/custom-error.js';
+import { getEnv } from '../shared/helpers/env.js';
+import { tHtml } from '../shared/helpers/translate-html.js';
+import { isUuid } from '../shared/helpers/uuid.js';
+import { dataService } from '../shared/services/data-service.js';
+import { QualityLabelsService } from '../shared/services/quality-labels.service.js';
+import { RelationService } from '../shared/services/relation-service/relation.service.js';
+import { ToastService } from '../shared/services/toast-service.js';
+import { VideoStillService } from '../shared/services/video-stills-service.js';
+import { type Positioned } from '../shared/types/index.js';
 import {
   cleanCollectionBeforeSave,
   getFragmentIdsFromCollection,
@@ -132,7 +130,7 @@ import {
   getValidationErrorForSave,
   getValidationErrorsForPublish,
   keepCoreCollectionProperties,
-} from './collection.helpers.js'
+} from './collection.helpers.js';
 import {
   type Collection,
   type CollectionMarcomEntry,
@@ -140,32 +138,31 @@ import {
   ContentTypeNumber,
   type ParentBundle,
   type QualityLabel,
-} from './collection.types.js'
-import { type MarcomNoteInfo } from './components/CollectionOrBundleEdit.types.js'
-import { canManageEditorial } from './helpers/can-manage-editorial.js'
-import { type BundleSortProp } from './hooks/useGetCollectionsOrBundlesContainingFragment.js'
-import { isEmpty } from 'es-toolkit/compat'
+} from './collection.types.js';
+import { type MarcomNoteInfo } from './components/CollectionOrBundleEdit.types.js';
+import { canManageEditorial } from './helpers/can-manage-editorial.js';
+import { type BundleSortProp } from './hooks/useGetCollectionsOrBundlesContainingFragment.js';
 
 export interface OrganisationContentItem {
-  id: string
-  title: string
+  id: string;
+  title: string;
   type: {
-    label: string
-  }
+    label: string;
+  };
   owner: {
-    full_name: string
-  }
+    full_name: string;
+  };
   last_editor?: {
-    full_name: string
-  }
-  created_at: string
-  updated_at: string
+    full_name: string;
+  };
+  created_at: string;
+  updated_at: string;
 }
 
 export class CollectionService {
   private static collectionLabels: {
-    [id: string]: string
-  } | null
+    [id: string]: string;
+  } | null;
 
   /**
    * Insert collection and underlying collection fragments.
@@ -176,9 +173,9 @@ export class CollectionService {
     newCollection: Partial<Avo.Collection.Collection>,
   ): Promise<Avo.Collection.Collection> {
     try {
-      newCollection.created_at = new Date().toISOString()
-      newCollection.updated_at = newCollection.created_at
-      const cleanedCollection = cleanCollectionBeforeSave(newCollection)
+      newCollection.created_at = new Date().toISOString();
+      newCollection.updated_at = newCollection.created_at;
+      const cleanedCollection = cleanCollectionBeforeSave(newCollection);
 
       // insert collection
       const insertResponse = await dataService.query<
@@ -189,24 +186,24 @@ export class CollectionService {
         variables: {
           collection: cleanedCollection as any,
         },
-      })
+      });
 
       // retrieve inserted collection from response
       const insertedCollection =
-        insertResponse.insert_app_collections?.returning?.[0]
+        insertResponse.insert_app_collections?.returning?.[0];
 
       if (!insertedCollection || isNil(insertedCollection.id)) {
         throw new CustomError('Failed to fetch inserted collection', null, {
           insertResponse,
-        })
+        });
       }
 
-      newCollection.id = insertedCollection.id
+      newCollection.id = insertedCollection.id;
 
       // retrieve collection fragments from inserted collection
       const fragments = setBlockPositionToIndex(
         getFragmentsFromCollection(newCollection),
-      )
+      );
 
       // insert fragments
       if (fragments && fragments.length) {
@@ -214,21 +211,21 @@ export class CollectionService {
           await CollectionService.insertFragments(
             newCollection.id as string,
             fragments,
-          )
+          );
       }
 
-      return newCollection as Avo.Collection.Collection
+      return newCollection as Avo.Collection.Collection;
     } catch (err) {
       throw new CustomError('Failed to insert collection', err, {
         newCollection,
-      })
+      });
     }
   }
 
   private static getLabels(
     collection: Partial<Avo.Collection.Collection> | null,
   ): Avo.Collection.Label[] {
-    return (collection?.collection_labels || []) as Avo.Collection.Label[]
+    return (collection?.collection_labels || []) as Avo.Collection.Label[];
   }
 
   /**
@@ -252,8 +249,8 @@ export class CollectionService {
   ): Promise<Avo.Collection.Collection | null> {
     try {
       // Convert fragment description editor states to html strings
-      const updatedCollection = convertRteToString(updatedColl)
-      const initialCollection = convertRteToString(initialColl)
+      const updatedCollection = convertRteToString(updatedColl);
+      const initialCollection = convertRteToString(initialColl);
 
       // abort if updatedCollection is empty
       if (!updatedCollection) {
@@ -261,46 +258,46 @@ export class CollectionService {
           tHtml(
             'collection/collection___de-huidige-collectie-is-niet-gevonden',
           ),
-        )
-        return null
+        );
+        return null;
       }
 
       if (checkValidation) {
         // validate collection before update
-        let validationErrors: string[]
+        let validationErrors: string[];
 
         if (updatedCollection?.is_public) {
           validationErrors =
-            await getValidationErrorsForPublish(updatedCollection)
+            await getValidationErrorsForPublish(updatedCollection);
         } else {
-          validationErrors = await getValidationErrorForSave(updatedCollection)
+          validationErrors = await getValidationErrorForSave(updatedCollection);
         }
 
         // display validation errors
         if (validationErrors.length) {
-          ToastService.danger(validationErrors)
-          return null
+          ToastService.danger(validationErrors);
+          return null;
         }
       }
 
       const newCollection: Partial<Avo.Collection.Collection> =
-        cloneDeep(updatedCollection)
+        cloneDeep(updatedCollection);
 
       // remove custom_title and custom_description if user wants to use the item's original title and description
-      ;(newCollection.collection_fragments || []).forEach(
+      (newCollection.collection_fragments || []).forEach(
         (fragment: Avo.Collection.Fragment) => {
           if (!fragment.use_custom_fields) {
-            fragment.custom_title = null
-            fragment.custom_description = null
+            fragment.custom_title = null;
+            fragment.custom_description = null;
           }
         },
-      )
+      );
 
       // null should not default to prevent defaulting of null, we don't use lodash's default value parameter
       const initialFragmentIds: (number | string)[] =
-        getFragmentIdsFromCollection(initialCollection)
+        getFragmentIdsFromCollection(initialCollection);
       const currentFragmentIds: (number | string)[] =
-        getFragmentIdsFromCollection(newCollection)
+        getFragmentIdsFromCollection(newCollection);
 
       // Fragments to insert do not have an id yet
       const newFragments = (
@@ -312,25 +309,25 @@ export class CollectionService {
           (typeof fragment.id === 'number' && fragment.id < 0) ||
           Object.is(fragment.id, -0) ||
           isNil(fragment.id),
-      )
+      );
 
       // delete fragments that were removed from collection
       const deleteFragmentIds = without(
         initialFragmentIds,
         ...currentFragmentIds,
-      )
+      );
 
       // update fragments that are neither inserted nor deleted
       const updateFragmentIds = currentFragmentIds.filter(
         (fragmentId: number | string) =>
           initialFragmentIds.includes(fragmentId),
-      )
+      );
 
       // insert fragments. New fragments do not have a fragment id yet
       const insertPromise = CollectionService.insertFragments(
         newCollection.id as string,
         newFragments,
-      )
+      );
 
       // delete fragments
       const deletePromises = deleteFragmentIds.map((id: number | string) =>
@@ -341,7 +338,7 @@ export class CollectionService {
           query: DeleteCollectionFragmentByIdDocument,
           variables: { id } as DeleteCollectionFragmentByIdMutationVariables,
         }),
-      )
+      );
 
       // update fragments
       const updatePromises = compact(
@@ -349,9 +346,9 @@ export class CollectionService {
           let fragmentToUpdate: Avo.Collection.Fragment | undefined =
             getFragmentsFromCollection(newCollection).find(
               (fragment: Avo.Collection.Fragment) => {
-                return Number(id) === fragment.id
+                return Number(id) === fragment.id;
               },
-            )
+            );
 
           if (!fragmentToUpdate) {
             ToastService.info(
@@ -359,15 +356,15 @@ export class CollectionService {
                 'collection/collection___kan-het-te-updaten-fragment-niet-vinden-id-id',
                 { id },
               ),
-            )
-            return null
+            );
+            return null;
           }
 
-          fragmentToUpdate = cloneDeep(fragmentToUpdate)
+          fragmentToUpdate = cloneDeep(fragmentToUpdate);
 
-          delete (fragmentToUpdate as any).__typename
-          delete fragmentToUpdate.item_meta
-          fragmentToUpdate.updated_at = new Date().toISOString()
+          delete (fragmentToUpdate as any).__typename;
+          delete fragmentToUpdate.item_meta;
+          fragmentToUpdate.updated_at = new Date().toISOString();
 
           const variables: UpdateCollectionFragmentByIdMutationVariables = {
             id: id as number,
@@ -375,33 +372,33 @@ export class CollectionService {
               ...fragmentToUpdate,
               id: fragmentToUpdate.id as number,
             },
-          }
+          };
           return dataService.query<
             UpdateCollectionFragmentByIdMutation,
             UpdateCollectionFragmentByIdMutationVariables
           >({
             query: UpdateCollectionFragmentByIdDocument,
             variables,
-          })
+          });
         }),
-      )
+      );
 
       // perform crud requests in parallel
       await Promise.all([
         insertPromise as Promise<any>,
         ...(deletePromises as Promise<any>[]),
         ...(updatePromises as Promise<any>[]),
-      ])
+      ]);
 
       if (newCollection.type_id === ContentTypeNumber.collection) {
         // determine new thumbnail path since videos could have changed order / been deleted
         newCollection.thumbnail_path =
-          await this.getThumbnailPathForCollection(newCollection)
+          await this.getThumbnailPathForCollection(newCollection);
       }
 
       // update collection
       const cleanedCollection: Partial<Avo.Collection.Collection> =
-        cleanCollectionBeforeSave(newCollection)
+        cleanCollectionBeforeSave(newCollection);
 
       // set updated_at date if collection has changes (without taking into account the management fields)
       if (
@@ -410,15 +407,15 @@ export class CollectionService {
           keepCoreCollectionProperties(initialCollection),
         )
       ) {
-        cleanedCollection.updated_at = new Date().toISOString()
-        cleanedCollection.updated_by_profile_id = commonUser?.profileId
-        cleanedCollection.loms = []
+        cleanedCollection.updated_at = new Date().toISOString();
+        cleanedCollection.updated_by_profile_id = commonUser?.profileId;
+        cleanedCollection.loms = [];
       }
 
       const savedCollection = await this.updateCollectionProperties(
         newCollection.id as string,
         cleanedCollection,
-      )
+      );
 
       // Update collection labels
       if (
@@ -435,13 +432,16 @@ export class CollectionService {
         // https://meemoo.atlassian.net/browse/AVO-3823
         const initialLabels: string[] = this.getLabels(
           savedCollection || initialCollection,
-        ).map((labelObj: any) => labelObj.label)
+        ).map((labelObj: any) => labelObj.label);
         const updatedLabels: string[] = this.getLabels(newCollection).map(
           (labelObj: any) => labelObj.label,
-        )
+        );
 
-        const addedLabels: string[] = without(updatedLabels, ...initialLabels)
-        const deletedLabels: string[] = without(initialLabels, ...updatedLabels)
+        const addedLabels: string[] = without(updatedLabels, ...initialLabels);
+        const deletedLabels: string[] = without(
+          initialLabels,
+          ...updatedLabels,
+        );
         await Promise.all([
           CollectionService.addLabelsToCollection(
             newCollection.id as string,
@@ -451,7 +451,7 @@ export class CollectionService {
             newCollection.id as string,
             deletedLabels,
           ),
-        ])
+        ]);
       }
 
       // Update collection management
@@ -460,25 +460,25 @@ export class CollectionService {
           newCollection.id as string,
           initialCollection,
           updatedCollection,
-        )
+        );
       } else if (initialCollection?.is_managed) {
         // disabled isManaged
         // Remove the collection management entry
         await CollectionService.removeManagementEntry(
           updatedCollection.id as string,
-        )
+        );
       }
 
       // Update loms
       try {
-        await this.deleteCollectionLomLinks(newCollection.id as string)
+        await this.deleteCollectionLomLinks(newCollection.id as string);
 
         await this.insertCollectionLomLinks(
           newCollection.id as string,
           compact((updatedCollection?.loms || []).map((lom) => lom.lom?.id)),
-        )
+        );
       } catch (err) {
-        console.error('Failed to update collection/bundle loms', err)
+        console.error('Failed to update collection/bundle loms', err);
         ToastService.danger(
           isCollection
             ? tHtml(
@@ -487,10 +487,10 @@ export class CollectionService {
             : tHtml(
                 'collection/components/collection-or-bundle-edit___het-updaten-van-de-publicatie-details-van-de-bundel-is-mislukt',
               ),
-        )
+        );
       }
 
-      return newCollection as Avo.Collection.Collection
+      return newCollection as Avo.Collection.Collection;
     } catch (err) {
       throw new CustomError(
         'Failed to update collection or its fragments',
@@ -499,7 +499,7 @@ export class CollectionService {
           initialColl,
           updatedColl,
         },
-      )
+      );
     }
   }
 
@@ -513,20 +513,20 @@ export class CollectionService {
         variables: {
           collection_id: collectionId,
         },
-      })
+      });
     } catch (err) {
       throw new CustomError('Failed to remove management entry', err, {
         collectionId,
-      })
+      });
     }
-  }
+  };
 
   private static saveCollectionManagementData = async (
     collectionId: string,
     initialCollection: Partial<Avo.Collection.Collection> | null,
     updatedCollection: Partial<
       Avo.Collection.Collection & {
-        marcom_note?: MarcomNoteInfo
+        marcom_note?: MarcomNoteInfo;
       }
     >,
   ) => {
@@ -543,7 +543,7 @@ export class CollectionService {
           updated_at:
             updatedCollection?.management?.updated_at ||
             new Date().toISOString(),
-        })
+        });
       } else if (
         initialCollection?.management &&
         updatedCollection?.management
@@ -559,7 +559,7 @@ export class CollectionService {
           updated_at:
             updatedCollection?.management?.updated_at ||
             new Date().toISOString(),
-        })
+        });
       }
 
       if (
@@ -568,29 +568,30 @@ export class CollectionService {
       ) {
         // Insert QC entries
         const initialLanguageCheckStatus =
-          initialCollection?.management_language_check?.[0]?.qc_status
+          initialCollection?.management_language_check?.[0]?.qc_status;
         const updatedLanguageCheckStatus =
-          updatedCollection?.management_language_check?.[0]?.qc_status
+          updatedCollection?.management_language_check?.[0]?.qc_status;
         const initialQualityCheckStatus =
-          initialCollection?.management_quality_check?.[0]?.qc_status
+          initialCollection?.management_quality_check?.[0]?.qc_status;
         const updatedQualityCheckStatus =
-          updatedCollection?.management_quality_check?.[0]?.qc_status
+          updatedCollection?.management_quality_check?.[0]?.qc_status;
         const equalLanguageCheckStatus =
-          initialLanguageCheckStatus !== updatedLanguageCheckStatus
+          initialLanguageCheckStatus !== updatedLanguageCheckStatus;
         const equalQualityCheckStatus =
-          initialQualityCheckStatus !== updatedQualityCheckStatus
+          initialQualityCheckStatus !== updatedQualityCheckStatus;
         const equalLanguageCheckAssignee =
           initialCollection?.management_language_check?.[0]
             ?.assignee_profile_id !==
-          updatedCollection?.management_language_check?.[0]?.assignee_profile_id
+          updatedCollection?.management_language_check?.[0]
+            ?.assignee_profile_id;
         const equalLanguageCheckComment =
           initialCollection?.management_language_check?.[0]?.comment !==
-          updatedCollection?.management_language_check?.[0]?.comment
+          updatedCollection?.management_language_check?.[0]?.comment;
 
         const initialApprovedStatus =
-          initialLanguageCheckStatus && initialQualityCheckStatus
+          initialLanguageCheckStatus && initialQualityCheckStatus;
         const updatedApprovedStatus =
-          updatedLanguageCheckStatus && updatedQualityCheckStatus
+          updatedLanguageCheckStatus && updatedQualityCheckStatus;
 
         if (
           equalLanguageCheckStatus ||
@@ -608,7 +609,7 @@ export class CollectionService {
             comment:
               updatedCollection?.management_language_check?.[0]?.comment ||
               null,
-          })
+          });
         }
         // We use language check for assignee because the UI only requests this info once from the user
         // Unfortunately the database assumes this can be set per QC entry
@@ -627,7 +628,7 @@ export class CollectionService {
               updatedCollection?.management_language_check?.[0]
                 ?.assignee_profile_id || null,
             comment: null,
-          })
+          });
         }
 
         // Save approved_at entry when updated statuses are both OK and initial statuses are not both OK
@@ -642,20 +643,26 @@ export class CollectionService {
               updatedCollection?.management_language_check?.[0]
                 ?.assignee_profile_id || null,
             comment: null,
-          })
+          });
         }
       }
 
-      const marcomNoteId = updatedCollection?.marcom_note?.id
-      const marcomNoteText = updatedCollection?.marcom_note?.note
+      const marcomNoteId = updatedCollection?.marcom_note?.id;
+      const marcomNoteText = updatedCollection?.marcom_note?.note;
 
       if (!isNil(marcomNoteText)) {
         if (!isNil(marcomNoteId)) {
           // Already have note id => so we should update the note text
-          await CollectionService.updateMarcomNote(marcomNoteId, marcomNoteText)
+          await CollectionService.updateMarcomNote(
+            marcomNoteId,
+            marcomNoteText,
+          );
         } else {
           // We don't have a note id, but do have a note, so we should do an insert
-          await CollectionService.insertMarcomNote(collectionId, marcomNoteText)
+          await CollectionService.insertMarcomNote(
+            collectionId,
+            marcomNoteText,
+          );
         }
       }
     } catch (err) {
@@ -666,9 +673,9 @@ export class CollectionService {
           initialCollection,
           updatedCollection,
         },
-      )
+      );
     }
-  }
+  };
 
   private static insertManagementEntry = async (
     collectionId: string,
@@ -684,7 +691,7 @@ export class CollectionService {
           ...managementData,
           collection_id: collectionId,
         },
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to create collection management entry',
@@ -694,9 +701,9 @@ export class CollectionService {
           managementData,
           query: 'INSERT_COLLECTION_MANAGEMENT_ENTRY',
         },
-      )
+      );
     }
-  }
+  };
 
   private static updateManagementEntry = async (
     collectionId: string,
@@ -712,7 +719,7 @@ export class CollectionService {
           ...managementData,
           collection_id: collectionId,
         },
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to update collection management entry',
@@ -722,9 +729,9 @@ export class CollectionService {
           managementData,
           query: 'UPDATE_COLLECTION_MANAGEMENT_ENTRY',
         },
-      )
+      );
     }
-  }
+  };
 
   private static createManagementQCEntry = async (
     collectionId: string,
@@ -735,14 +742,14 @@ export class CollectionService {
         {
           ...managementQCData,
           collection_id: collectionId,
-        }
+        };
       await dataService.query<
         InsertCollectionManagementQualityCheckEntryMutation,
         InsertCollectionManagementQualityCheckEntryMutationVariables
       >({
         query: InsertCollectionManagementQualityCheckEntryDocument,
         variables,
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to create collection management quality check entry',
@@ -752,39 +759,39 @@ export class CollectionService {
           managementQCData,
           query: 'INSERT_COLLECTION_MANAGEMENT_QC_ENTRY',
         },
-      )
+      );
     }
-  }
+  };
 
   static updateCollectionProperties = async (
     id: string,
     collection: Partial<Avo.Collection.Collection>,
   ): Promise<Partial<Avo.Collection.Collection> | undefined> => {
     try {
-      const dbCollection = cleanCollectionBeforeSave(collection)
+      const dbCollection = cleanCollectionBeforeSave(collection);
 
       const variables: UpdateCollectionByIdMutationVariables = {
         id,
         collection: dbCollection,
-      }
+      };
       const updatedCollection = await dataService.query<
         UpdateCollectionByIdMutation,
         UpdateCollectionByIdMutationVariables
       >({
         query: UpdateCollectionByIdDocument,
         variables,
-      })
+      });
 
       return updatedCollection.update_app_collections
-        ?.returning?.[0] as Partial<Avo.Collection.Collection>
+        ?.returning?.[0] as Partial<Avo.Collection.Collection>;
     } catch (err) {
       throw new CustomError('Failed to update collection properties', err, {
         id,
         collection,
         query: 'UpdateCollectionById',
-      })
+      });
     }
-  }
+  };
 
   /**
    * Delete collection or bundle by its uuid and also deletes bookmarks,
@@ -807,13 +814,13 @@ export class CollectionService {
             collectionOrBundleUuidAsText: collectionOrBundleUuid,
           },
         }),
-      ])
+      ]);
     } catch (err) {
       throw new CustomError(`Failed to delete collection or bundle'}`, err, {
         collectionId: collectionOrBundleUuid,
-      })
+      });
     }
-  }
+  };
 
   /**
    * Add duplicate of collection
@@ -832,15 +839,15 @@ export class CollectionService {
     copyRegex: RegExp,
   ): Promise<Avo.Collection.Collection> {
     try {
-      const collectionToInsert = { ...collection }
+      const collectionToInsert = { ...collection };
 
       // update attributes specific to duplicate
-      collectionToInsert.owner_profile_id = commonUser?.profileId
-      collectionToInsert.is_public = false
-      collectionToInsert.loms = []
+      collectionToInsert.owner_profile_id = commonUser?.profileId;
+      collectionToInsert.is_public = false;
+      collectionToInsert.loms = [];
 
       // remove id from duplicate
-      delete (collectionToInsert as any).id
+      delete (collectionToInsert as any).id;
 
       try {
         collectionToInsert.title = await this.getCopyTitleForCollection(
@@ -848,7 +855,7 @@ export class CollectionService {
           copyRegex,
           collectionToInsert.title,
           commonUser,
-        )
+        );
       } catch (err) {
         const customError = new CustomError(
           'Failed to retrieve title for duplicate collection',
@@ -856,40 +863,40 @@ export class CollectionService {
           {
             collectionToInsert,
           },
-        )
+        );
 
-        console.error(customError)
+        console.error(customError);
 
         // fallback to simple copy title
         collectionToInsert.title = `${copyPrefix.replace(' %index%', '')}${
           collectionToInsert.title
-        }`
+        }`;
       }
 
       // Check is_managed status
       // Should be copied to new collection if user group is one of [redacteur, eindredacteur, beheerder]
       // Otherwise should be false
-      collectionToInsert.is_managed = canManageEditorial(commonUser)
+      collectionToInsert.is_managed = canManageEditorial(commonUser);
 
       // insert duplicated collection
       const duplicatedCollection =
-        await CollectionService.insertCollection(collectionToInsert)
+        await CollectionService.insertCollection(collectionToInsert);
 
       await RelationService.insertRelation(
         'collection',
         duplicatedCollection.id,
         Lookup_Enum_Relation_Types_Enum.IsCopyOf,
         collection.id,
-      )
+      );
 
-      return duplicatedCollection
+      return duplicatedCollection;
     } catch (err) {
       throw new CustomError('Failed to duplicate collection', err, {
         collection,
         commonUser,
         copyPrefix,
         copyRegex,
-      })
+      });
     }
   }
 
@@ -912,14 +919,14 @@ export class CollectionService {
       >({
         query: GetPublicCollectionsDocument,
         variables: { limit, typeId },
-      })
+      });
 
-      return response.app_collections_overview || []
+      return response.app_collections_overview || [];
     } catch (err) {
       throw new CustomError('Het ophalen van de collecties is mislukt.', err, {
         query: 'GET_PUBLIC_COLLECTIONS',
         variables: { limit },
-      })
+      });
     }
   }
 
@@ -936,21 +943,21 @@ export class CollectionService {
         limit,
         order,
         company_id: companyId,
-      }
+      };
       const response = await dataService.query<
         GetOrganisationContentQuery,
         GetOrganisationContentQueryVariables
       >({
         query: GetOrganisationContentDocument,
         variables,
-      })
+      });
 
-      return response.app_collections as OrganisationContentItem[]
+      return response.app_collections as OrganisationContentItem[];
     } catch (err) {
       throw new CustomError('Het ophalen van de collecties is mislukt.', err, {
         query: 'GET_PUBLIC_COLLECTIONS',
         variables: { limit },
-      })
+      });
     }
   }
 
@@ -960,7 +967,7 @@ export class CollectionService {
     limit: number,
   ): Promise<Collection[]> {
     try {
-      const isUuidFormat = isUuid(titleOrId)
+      const isUuidFormat = isUuid(titleOrId);
       const variables:
         | GetPublicCollectionsByIdQueryVariables
         | GetPublicCollectionsByTitleQueryVariables = {
@@ -970,12 +977,12 @@ export class CollectionService {
           : ContentTypeNumber.bundle,
       } as
         | GetPublicCollectionsByIdQueryVariables
-        | GetPublicCollectionsByTitleQueryVariables
+        | GetPublicCollectionsByTitleQueryVariables;
       if (isUuidFormat) {
-        ;(variables as GetPublicCollectionsByIdQueryVariables).id = titleOrId
+        (variables as GetPublicCollectionsByIdQueryVariables).id = titleOrId;
       } else {
-        ;(variables as GetPublicCollectionsByTitleQueryVariables).title =
-          `%${titleOrId}%`
+        (variables as GetPublicCollectionsByTitleQueryVariables).title =
+          `%${titleOrId}%`;
       }
 
       const response = await dataService.query<
@@ -987,14 +994,14 @@ export class CollectionService {
           ? GetPublicCollectionsByIdDocument
           : GetPublicCollectionsByTitleDocument,
         variables,
-      })
-      return response.app_collections_overview
+      });
+      return response.app_collections_overview;
     } catch (err) {
       throw new CustomError('Failed to fetch collections or bundles', err, {
         query:
           'GET_PUBLIC_COLLECTIONS_BY_ID or GET_PUBLIC_COLLECTIONS_BY_TITLE',
         variables: { titleOrId, isCollection, limit },
-      })
+      });
     }
   }
 
@@ -1014,7 +1021,7 @@ export class CollectionService {
       true,
       titleOrId,
       limit,
-    )
+    );
   }
 
   /**
@@ -1033,7 +1040,7 @@ export class CollectionService {
       false,
       titleOrId,
       limit,
-    )
+    );
   }
 
   /**
@@ -1054,7 +1061,7 @@ export class CollectionService {
         | GetCollectionTitlesByOwnerQueryVariables
         | GetBundleTitlesByOwnerQueryVariables = {
         owner_profile_id: commonUser?.profileId,
-      }
+      };
 
       const response = await dataService.query<
         GetCollectionTitlesByOwnerQuery | GetBundleTitlesByOwnerQuery,
@@ -1066,9 +1073,9 @@ export class CollectionService {
             ? GetCollectionTitlesByOwnerDocument
             : GetBundleTitlesByOwnerDocument,
         variables,
-      })
+      });
 
-      return response.app_collections
+      return response.app_collections;
     } catch (err) {
       throw new CustomError(
         'Failed to fetch existing bundle titles by owner',
@@ -1081,7 +1088,7 @@ export class CollectionService {
               ? 'GET_COLLECTION_TITLES_BY_OWNER'
               : 'GET_BUNDLE_TITLES_BY_OWNER',
         },
-      )
+      );
     }
   }
 
@@ -1107,13 +1114,13 @@ export class CollectionService {
             inviteToken,
           },
         )}`,
-      )
+      );
     } catch (err) {
       if (JSON.stringify(err).includes('COLLECTION_NOT_FOUND')) {
-        return null
+        return null;
       }
       if ((err as CustomError)?.additionalInfo?.statusCode === 403) {
-        throw new CustomError('Forbidden', { statusCode: 403 })
+        throw new CustomError('Forbidden', { statusCode: 403 });
       }
 
       throw new CustomError(
@@ -1123,14 +1130,14 @@ export class CollectionService {
           collectionId,
           type,
         },
-      )
+      );
     }
   }
 
   static async getCollectionsOrBundlesContainingFragment(
     fragmentId: string,
     orderProp: BundleSortProp,
-    orderDirection: OrderDirection,
+    orderDirection: Avo.Search.OrderDirection,
   ): Promise<ParentBundle[]> {
     try {
       return await fetchWithLogoutJson(
@@ -1141,7 +1148,7 @@ export class CollectionService {
             orderDirection,
           },
         }),
-      )
+      );
     } catch (err) {
       throw new CustomError(
         'Failed to get collections or bundles that contain fragment',
@@ -1149,7 +1156,7 @@ export class CollectionService {
         {
           fragmentId,
         },
-      )
+      );
     }
   }
 
@@ -1159,28 +1166,28 @@ export class CollectionService {
   ): Promise<Avo.Collection.Fragment[]> {
     try {
       const cleanedFragments = cloneDeep(fragments).map((fragment) => {
-        delete (fragment as any).__typename
-        delete fragment.item_meta
+        delete (fragment as any).__typename;
+        delete fragment.item_meta;
 
         return {
           ...fragment,
           collection_uuid: collectionId,
           id: undefined,
-        }
-      }) as Positioned[]
+        };
+      }) as Positioned[];
 
       const variables: InsertCollectionFragmentsMutationVariables = {
         fragments: cleanedFragments,
-      }
+      };
       const response = await dataService.query<
         InsertCollectionFragmentsMutation,
         InsertCollectionFragmentsMutationVariables
       >({
         query: InsertCollectionFragmentsDocument,
         variables,
-      })
+      });
 
-      const fragmentIds = response.insert_app_collection_fragments?.returning
+      const fragmentIds = response.insert_app_collection_fragments?.returning;
       if (!fragmentIds) {
         throw new CustomError(
           'Response does not contain any fragment ids',
@@ -1188,26 +1195,26 @@ export class CollectionService {
           {
             response,
           },
-        )
+        );
       }
-      ;(response.insert_app_collection_fragments?.returning ?? []).forEach(
+      (response.insert_app_collection_fragments?.returning ?? []).forEach(
         (
           f: {
-            id: number
+            id: number;
           },
           index: number,
         ) => {
-          fragments[index].id = f.id
+          fragments[index].id = f.id;
         },
-      )
+      );
 
-      return fragments as Avo.Collection.Fragment[]
+      return fragments as Avo.Collection.Fragment[];
     } catch (err) {
       throw new CustomError('Failed to insert fragments into collection', err, {
         collectionId,
         fragments,
         query: 'INSERT_COLLECTION_FRAGMENTS',
-      })
+      });
     }
   }
 
@@ -1220,10 +1227,10 @@ export class CollectionService {
       // This will need a new field in the database: thumbnail_type = 'auto' | 'chosen' | 'uploaded'
       // TODO:  || collection.thumbnail_type === 'auto'
       if (!collection.thumbnail_path) {
-        return await VideoStillService.getThumbnailForSubject(collection)
+        return await VideoStillService.getThumbnailForSubject(collection);
       }
 
-      return collection.thumbnail_path
+      return collection.thumbnail_path;
     } catch (err) {
       const customError = new CustomError(
         'Failed to get the thumbnail path for collection',
@@ -1231,8 +1238,8 @@ export class CollectionService {
         {
           collection,
         },
-      )
-      console.error(customError)
+      );
+      console.error(customError);
 
       ToastService.danger([
         tHtml(
@@ -1241,9 +1248,9 @@ export class CollectionService {
         tHtml(
           'collection/collection___de-collectie-zal-opgeslagen-worden-zonder-thumbnail',
         ),
-      ])
+      ]);
 
-      return null
+      return null;
     }
   }
 
@@ -1271,42 +1278,42 @@ export class CollectionService {
     const collections = await CollectionService.fetchCollectionsOrBundlesByUser(
       CollectionOrBundle.COLLECTION,
       commonUser,
-    )
-    const titles = collections.map((c) => c.title)
+    );
+    const titles = collections.map((c) => c.title);
 
-    let index = 0
-    let candidateTitle: string
-    const titleWithoutCopy = existingTitle.replace(copyRegex, '')
+    let index = 0;
+    let candidateTitle: string;
+    const titleWithoutCopy = existingTitle.replace(copyRegex, '');
 
     do {
-      index += 1
+      index += 1;
       candidateTitle =
-        copyPrefix.replace('%index%', String(index)) + titleWithoutCopy
-    } while (titles.includes(candidateTitle))
+        copyPrefix.replace('%index%', String(index)) + titleWithoutCopy;
+    } while (titles.includes(candidateTitle));
 
-    return candidateTitle
-  }
+    return candidateTitle;
+  };
 
   static async addLabelsToCollection(
     collectionId: string,
     labels: string[],
   ): Promise<void> {
     let variables: InsertCollectionLabelsMutationVariables | undefined =
-      undefined
+      undefined;
     try {
       variables = {
         objects: labels.map((label) => ({
           label,
           collection_uuid: collectionId,
         })),
-      }
+      };
       await dataService.query<
         InsertCollectionLabelsMutation,
         InsertCollectionLabelsMutationVariables
       >({
         query: InsertCollectionLabelsDocument,
         variables,
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to insert collection labels in the database',
@@ -1315,7 +1322,7 @@ export class CollectionService {
           variables,
           query: 'INSERT_COLLECTION_LABELS',
         },
-      )
+      );
     }
   }
 
@@ -1324,19 +1331,19 @@ export class CollectionService {
     labels: string[],
   ): Promise<void> {
     let variables: DeleteCollectionLabelsMutationVariables | undefined =
-      undefined
+      undefined;
     try {
       variables = {
         collectionId,
         labels,
-      }
+      };
       await dataService.query<
         DeleteCollectionLabelsMutation,
         DeleteCollectionLabelsMutationVariables
       >({
         query: DeleteCollectionLabelsDocument,
         variables,
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to delete collection labels from the database',
@@ -1345,20 +1352,20 @@ export class CollectionService {
           variables,
           query: 'DELETE_COLLECTION_LABELS',
         },
-      )
+      );
     }
   }
 
   // TODO investigate why this isn't used anymore
   static async getCollectionLabels(): Promise<{
-    [id: string]: string
+    [id: string]: string;
   }> {
     try {
       if (!CollectionService.collectionLabels) {
         // Fetch collection labels and cache them in memory
 
         const labels: QualityLabel[] =
-          (await QualityLabelsService.fetchQualityLabels()) || []
+          (await QualityLabelsService.fetchQualityLabels()) || [];
 
         // Map result array to dictionary
         CollectionService.collectionLabels = Object.fromEntries(
@@ -1366,14 +1373,14 @@ export class CollectionService {
             collectionLabel.value,
             collectionLabel.description,
           ]),
-        )
+        );
       }
 
-      return CollectionService.collectionLabels
+      return CollectionService.collectionLabels;
     } catch (err) {
       throw new CustomError('Failed to get collection labels', err, {
         query: 'GET_COLLECTION_LABELS',
-      })
+      });
     }
   }
 
@@ -1383,8 +1390,8 @@ export class CollectionService {
     collectionId: string,
     typeId: ContentTypeNumber,
   ): Promise<{
-    byTitle: boolean
-    byDescription: boolean
+    byTitle: boolean;
+    byDescription: boolean;
   }> {
     try {
       const response = await dataService.query<
@@ -1398,19 +1405,19 @@ export class CollectionService {
           collectionId,
           typeId,
         },
-      })
+      });
 
       const collectionWithSameTitleExists = !!(response.collectionByTitle || [])
-        .length
+        .length;
 
       const collectionWithSameDescriptionExists = !!(
         response.collectionByDescription || []
-      ).length
+      ).length;
 
       return {
         byTitle: collectionWithSameTitleExists,
         byDescription: collectionWithSameDescriptionExists,
-      }
+      };
     } catch (err) {
       throw new CustomError(
         'Failed to get duplicate collections by title or description',
@@ -1420,7 +1427,7 @@ export class CollectionService {
           description,
           query: 'GET_COLLECTION_BY_TITLE_OR_DESCRIPTION',
         },
-      )
+      );
     }
   }
 
@@ -1435,14 +1442,14 @@ export class CollectionService {
       >({
         query: GetCollectionsByItemUuidDocument,
         variables: { fragmentId },
-      })
+      });
 
-      return response.app_collections as Avo.Collection.Collection[]
+      return response.app_collections as Avo.Collection.Collection[];
     } catch (err) {
       throw new CustomError('Fetch collections by fragment id failed', err, {
         query: 'GET_COLLECTIONS_BY_ITEM_UUID',
         variables: { fragmentId },
-      })
+      });
     }
   }
 
@@ -1450,26 +1457,28 @@ export class CollectionService {
     commonUser: Avo.User.CommonUser | null | undefined,
     offset: number,
     limit: number | null,
-    order: Record<string, OrderDirection> | Record<string, OrderDirection>[],
+    order:
+      | Record<string, Avo.Search.OrderDirection>
+      | Record<string, Avo.Search.OrderDirection>[],
     contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
     filterString: string | undefined,
     shareTypeIds: string[] | undefined,
     where: any[] = [],
   ): Promise<Partial<Avo.Collection.Collection>[]> {
     let variables: GetCollectionsByOwnerOrContributorQueryVariables | null =
-      null
+      null;
     try {
-      const trimmedFilterString = filterString && filterString.trim()
-      const filterArray: any[] = [...where]
+      const trimmedFilterString = filterString && filterString.trim();
+      const filterArray: any[] = [...where];
       if (trimmedFilterString) {
         filterArray.push({
           title: { _ilike: `%${trimmedFilterString}%` },
-        })
+        });
       }
       if (shareTypeIds?.length) {
         filterArray.push({
           share_type: { _in: shareTypeIds },
-        })
+        });
       }
       variables = {
         offset,
@@ -1478,21 +1487,21 @@ export class CollectionService {
         type_id: contentTypeId,
         collaborator_profile_id: commonUser?.profileId,
         where: filterArray.length ? filterArray : {},
-      }
+      };
       const response = await dataService.query<
         GetCollectionsByOwnerOrContributorQuery,
         GetCollectionsByOwnerOrContributorQueryVariables
       >({
         query: GetCollectionsByOwnerOrContributorDocument,
         variables,
-      })
+      });
 
-      return response.app_collections_overview as unknown as Avo.Collection.Collection[]
+      return response.app_collections_overview as unknown as Avo.Collection.Collection[];
     } catch (err) {
       throw new CustomError('Fetch collections by fragment id failed', err, {
         variables,
         query: 'GET_COLLECTIONS_BY_OWNER',
-      })
+      });
     }
   }
 
@@ -1504,17 +1513,17 @@ export class CollectionService {
     filterString: string | undefined,
   ): Promise<Avo.Collection.Collection[]> {
     let variables: GetBookmarkedCollectionsByOwnerQueryVariables | undefined =
-      undefined
+      undefined;
     try {
-      const trimmedFilterString = filterString?.trim()
+      const trimmedFilterString = filterString?.trim();
       const filterArray: GetBookmarkedCollectionsByOwnerQueryVariables['where'] =
-        []
+        [];
       if (trimmedFilterString) {
         filterArray.push({
           bookmarkedCollection: {
             title: { _ilike: `%${trimmedFilterString}%` },
           },
-        })
+        });
       }
       variables = {
         offset,
@@ -1522,19 +1531,19 @@ export class CollectionService {
         order,
         owner_profile_id: commonUser?.profileId,
         where: filterArray.length ? filterArray : {},
-      }
+      };
       const response = await dataService.query<
         GetBookmarkedCollectionsByOwnerQuery,
         GetBookmarkedCollectionsByOwnerQueryVariables
       >({
         query: GetBookmarkedCollectionsByOwnerDocument,
         variables,
-      })
+      });
 
-      const bookmarks = response?.app_collection_bookmarks || []
+      const bookmarks = response?.app_collection_bookmarks || [];
       return compact(
         bookmarks.map((bookmark: any) => bookmark.bookmarkedCollection),
-      ) // bookmarkedCollection can sometimes be null apparently
+      ); // bookmarkedCollection can sometimes be null apparently
     } catch (err) {
       throw new CustomError(
         'Fetch bookmarked collections by owner failed',
@@ -1543,23 +1552,23 @@ export class CollectionService {
           variables,
           query: 'GET_BOOKMARKED_COLLECTIONS_BY_OWNER',
         },
-      )
+      );
     }
   }
 
   static async fetchUuidByAvo1Id(avo1Id: string): Promise<string | null> {
     try {
       const json = await fetchWithLogoutJson<{
-        uuid: string
+        uuid: string;
       } | null>(
         `${getEnv('PROXY_URL')}/collections/fetch-uuid-by-avo1-id?${queryString.stringify(
           {
             id: avo1Id,
           },
         )}`,
-      )
+      );
 
-      return json?.uuid || null
+      return json?.uuid || null;
     } catch (err) {
       throw new CustomError(
         'Failed to get collection or bundle uuid by avo1 id',
@@ -1567,7 +1576,7 @@ export class CollectionService {
         {
           avo1Id,
         },
-      )
+      );
     }
   }
 
@@ -1575,11 +1584,11 @@ export class CollectionService {
     collectionUuid: string,
   ): Promise<CollectionMarcomEntry[]> {
     let variables: GetCollectionMarcomEntriesQueryVariables | undefined =
-      undefined
+      undefined;
     try {
       variables = {
         collectionUuid,
-      }
+      };
       // TODO replace these graphql queries with endpoints in the backend
       const response = await dataService.query<
         GetCollectionMarcomEntriesQuery,
@@ -1587,9 +1596,9 @@ export class CollectionService {
       >({
         query: GetCollectionMarcomEntriesDocument,
         variables,
-      })
+      });
 
-      return response.app_collection_marcom_log || []
+      return response.app_collection_marcom_log || [];
     } catch (err) {
       throw new CustomError(
         'Fetch collections marcom entries from the database failed',
@@ -1598,25 +1607,25 @@ export class CollectionService {
           variables,
           query: 'GET_MARCOM_ENTRIES',
         },
-      )
+      );
     }
   }
 
   static async insertMarcomEntry(
     marcomEntries: App_Collection_Marcom_Log_Insert_Input[],
   ): Promise<void> {
-    let variables: InsertMarcomEntryMutationVariables | undefined = undefined
+    let variables: InsertMarcomEntryMutationVariables | undefined = undefined;
     try {
       variables = {
         objects: marcomEntries,
-      }
+      };
       await dataService.query<
         InsertMarcomEntryMutation,
         InsertMarcomEntryMutationVariables
       >({
         query: InsertMarcomEntryDocument,
         variables,
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to insert marcom entry into the database',
@@ -1625,7 +1634,7 @@ export class CollectionService {
           variables,
           query: 'INSERT_MARCOM_ENTRY',
         },
-      )
+      );
     }
   }
 
@@ -1638,23 +1647,23 @@ export class CollectionService {
       ...marcomEntry,
       collection_id: collectionId,
       parent_collection_id: parentCollectionId,
-    }))
+    }));
 
-    await this.insertMarcomEntry(allEntries)
+    await this.insertMarcomEntry(allEntries);
   }
 
   static async deleteMarcomEntryById(id: number): Promise<void> {
     try {
       const variables: DeleteMarcomEntryMutationVariables = {
         id,
-      }
+      };
       await dataService.query<
         DeleteMarcomEntryMutation,
         DeleteMarcomEntryMutationVariables
       >({
         query: DeleteMarcomEntryDocument,
         variables,
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to delete marcom entry from the database',
@@ -1663,7 +1672,7 @@ export class CollectionService {
           id,
           query: 'DELETE_MARCOM_ENTRY',
         },
-      )
+      );
     }
   }
 
@@ -1672,7 +1681,7 @@ export class CollectionService {
   ): Promise<void> {
     try {
       if (!marcomEntry.publish_date) {
-        return // Can't delete entries without a date
+        return; // Can't delete entries without a date
       }
       const variables: DeleteMarcomEntriesByParentCollectionIdMutationVariables =
         {
@@ -1681,14 +1690,14 @@ export class CollectionService {
           channelType: marcomEntry.channel_type,
           publishDateGte: startOfDay(new Date(marcomEntry.publish_date)),
           publishDateLte: endOfDay(new Date(marcomEntry.publish_date)),
-        }
+        };
       await dataService.query<
         DeleteMarcomEntriesByParentCollectionIdMutation,
         DeleteMarcomEntriesByParentCollectionIdMutationVariables
       >({
         query: DeleteMarcomEntriesByParentCollectionIdDocument,
         variables,
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to delete marcom entries by parent collection uuid from the database',
@@ -1697,7 +1706,7 @@ export class CollectionService {
           marcomEntry,
           query: 'DELETE_MARCOM_ENTRIES_BY_PARENT_COLLECTION_ID',
         },
-      )
+      );
     }
   }
 
@@ -1705,21 +1714,21 @@ export class CollectionService {
     collectionId: string,
     note: string,
   ): Promise<number | undefined> {
-    let variables: InsertMarcomNoteMutationVariables | null = null
+    let variables: InsertMarcomNoteMutationVariables | null = null;
     try {
       variables = {
         collectionId,
         note,
-      }
+      };
       const response = await dataService.query<
         InsertMarcomNoteMutation,
         InsertMarcomNoteMutationVariables
       >({
         variables,
         query: InsertMarcomNoteDocument,
-      })
+      });
 
-      return response?.insert_app_collection_marcom_notes?.returning?.[0]?.id
+      return response?.insert_app_collection_marcom_notes?.returning?.[0]?.id;
     } catch (err) {
       throw new CustomError(
         'Failed to insert marcom note into the database',
@@ -1728,24 +1737,24 @@ export class CollectionService {
           query: 'INSERT_MARCOM_NOTE',
           variables,
         },
-      )
+      );
     }
   }
 
   static async updateMarcomNote(id: string, note: string): Promise<void> {
-    let variables: any
+    let variables: any;
     try {
       variables = {
         id,
         note,
-      }
+      };
       await dataService.query<
         UpdateMarcomNoteMutation,
         UpdateMarcomNoteMutationVariables
       >({
         variables,
         query: UpdateMarcomNoteDocument,
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to update marcom note in the database',
@@ -1754,7 +1763,7 @@ export class CollectionService {
           variables,
           query: 'UPDATE_MARCOM_NOTE',
         },
-      )
+      );
     }
   }
 
@@ -1764,24 +1773,24 @@ export class CollectionService {
     try {
       const variables: GetContributorsByCollectionUuidQueryVariables = {
         id: assignmentId,
-      }
+      };
       const response = await dataService.query<
         GetContributorsByCollectionUuidQuery,
         GetContributorsByCollectionUuidQueryVariables
       >({
         query: GetContributorsByCollectionUuidDocument,
         variables,
-      })
+      });
 
-      const contributors = response.app_collections_contributors
+      const contributors = response.app_collections_contributors;
 
       if (!contributors) {
         throw new CustomError('Response does not contain contributors', null, {
           response,
-        })
+        });
       }
 
-      return contributors as Avo.Collection.Contributor[]
+      return contributors as Avo.Collection.Contributor[];
     } catch (err) {
       throw new CustomError(
         'Failed to get contributors by collection id from database',
@@ -1790,7 +1799,7 @@ export class CollectionService {
           assignmentId,
           query: 'GET_CONTRIBUTORS_BY_COLLECTION_UUID',
         },
-      )
+      );
     }
   }
 
@@ -1799,7 +1808,7 @@ export class CollectionService {
     user: Partial<ContributorInfo>,
   ): Promise<void> {
     if (isNil(user.email) || isEmpty(user.email)) {
-      throw new CustomError('User has no email address')
+      throw new CustomError('User has no email address');
     }
 
     try {
@@ -1812,12 +1821,12 @@ export class CollectionService {
           },
         }),
         { method: 'PATCH' },
-      )
+      );
     } catch (err) {
       throw new CustomError('Failed to add collection contributor', err, {
         collectionId,
         user,
-      })
+      });
     }
   }
 
@@ -1838,7 +1847,7 @@ export class CollectionService {
           },
         }),
         { method: 'PATCH' },
-      )
+      );
     } catch (err) {
       throw new CustomError(
         'Failed to edit collection contributor rights',
@@ -1848,7 +1857,7 @@ export class CollectionService {
           rights,
           contributorId,
         },
-      )
+      );
     }
   }
 
@@ -1866,13 +1875,13 @@ export class CollectionService {
           query: { contributorId, profileId },
         }),
         { method: 'DELETE' },
-      )
+      );
     } catch (err) {
       throw new CustomError('Failed to remove collection contributor', err, {
         collectionId,
         contributorId,
         profileId,
-      })
+      });
     }
   }
 
@@ -1889,12 +1898,12 @@ export class CollectionService {
           },
         }),
         { method: 'PATCH' },
-      )
+      );
     } catch (err) {
       throw new CustomError('Failed to accept to share collection', err, {
         assignmentId: collectionId,
         inviteToken,
-      })
+      });
     }
   }
 
@@ -1911,12 +1920,12 @@ export class CollectionService {
           },
         }),
         { method: 'DELETE' },
-      )
+      );
     } catch (err) {
       throw new CustomError('Failed to decline to share collection', err, {
         assignmentId: collectionId,
         inviteToken,
-      })
+      });
     }
   }
 
@@ -1930,11 +1939,11 @@ export class CollectionService {
           'PROXY_URL',
         )}/collections/${collectionId}/share/transfer-owner?newOwnerId=${newOwnerProfileId}`,
         { method: 'PATCH' },
-      )
+      );
     } catch (err) {
       throw new CustomError('Failed to transfer assignment ownership', err, {
         newOwnerProfileId,
-      })
+      });
     }
   }
 
@@ -1943,15 +1952,15 @@ export class CollectionService {
     lomIds: string[],
   ): Promise<void> {
     try {
-      const uniqueLoms = uniq(lomIds)
+      const uniqueLoms = uniq(lomIds);
       const lomObjects = uniqueLoms.map((lomId) => ({
         collection_id: collectionId,
         lom_id: lomId,
-      }))
+      }));
 
       const variables: InsertCollectionLomLinksMutationVariables = {
         lomObjects,
-      }
+      };
 
       await dataService.query<
         InsertCollectionLomLinksMutation,
@@ -1959,7 +1968,7 @@ export class CollectionService {
       >({
         query: InsertCollectionLomLinksDocument,
         variables,
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to insert lom links in collection database',
@@ -1969,7 +1978,7 @@ export class CollectionService {
           lomIds,
           query: 'INSERT_COLLECTION_LOM_LINKS',
         },
-      )
+      );
     }
   }
 
@@ -1977,7 +1986,7 @@ export class CollectionService {
     try {
       const variables: DeleteCollectionLomLinksMutationVariables = {
         collectionId,
-      }
+      };
 
       await dataService.query<
         DeleteCollectionLomLinksMutation,
@@ -1985,7 +1994,7 @@ export class CollectionService {
       >({
         query: DeleteCollectionLomLinksDocument,
         variables,
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to insert lom links in collection database',
@@ -1994,7 +2003,7 @@ export class CollectionService {
           collectionId,
           query: 'DELETE_COLLECTION_LOM_LINKS',
         },
-      )
+      );
     }
   }
 
@@ -2007,11 +2016,11 @@ export class CollectionService {
           )}/collections/${collectionId}/share/request-edit-status`,
         }),
         { method: 'PATCH' },
-      )
+      );
     } catch (err) {
       throw new CustomError('Failed to update collection current editor', err, {
         collectionId,
-      })
+      });
     }
   }
 
@@ -2022,8 +2031,8 @@ export class CollectionService {
       const url = stringifyUrl({
         url: `${getEnv('PROXY_URL')}/collections/share/edit-status`,
         query: { ids },
-      })
-      return await fetchWithLogoutJson(url)
+      });
+      return await fetchWithLogoutJson(url);
     } catch (err) {
       throw new CustomError(
         'Failed to get collection(s) edit status(es)',
@@ -2031,7 +2040,7 @@ export class CollectionService {
         {
           assignmentIds: ids,
         },
-      )
+      );
     }
   }
 
@@ -2046,11 +2055,11 @@ export class CollectionService {
           )}/collections/${collectionId}/share/release-edit-status`,
         }),
         { method: 'PATCH' },
-      )
+      );
     } catch (err) {
       throw new CustomError('Failed to release collection edit status', err, {
         assignmentId: collectionId,
-      })
+      });
     }
   }
 
@@ -2065,7 +2074,7 @@ export class CollectionService {
           )}/collections/${collectionId}/increment-added-to-assignment-count`,
         }),
         { method: 'POST' },
-      )
+      );
     } catch (err) {
       throw new CustomError(
         'Failed to increment collection added to assignment count',
@@ -2073,7 +2082,7 @@ export class CollectionService {
         {
           assignmentId: collectionId,
         },
-      )
+      );
     }
   }
 }

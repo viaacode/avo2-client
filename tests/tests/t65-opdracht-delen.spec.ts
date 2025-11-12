@@ -1,9 +1,9 @@
 import { expect, type Page, test } from '@playwright/test'
 
-import { cleanupTestdata } from '../helpers/cleanup'
-import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies'
-import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo'
-import { logoutOnderwijsAvo } from '../helpers/logout-onderwijs-avo' /**
+import { cleanupTestdata } from '../helpers/cleanup.js'
+import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies.js'
+import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo.js'
+import { logoutOnderwijsAvo } from '../helpers/logout-onderwijs-avo.js' /**
  * This test requires `PROXY_E2E=true`
  * https://github.com/viaacode/avo2-proxy/commit/ae4e79f3b1c4826f5c81ba570b15d904990d43b7
  * https://github.com/viaacode/avo2-proxy/commit/9b9b740fea4b66478d850da4de8a1d74da8d845e

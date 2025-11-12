@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-
-import { OrderDirection } from '../../search/search.const.js'
+import { Avo } from '@viaa/avo2-types'
 import { QUERY_KEYS } from '../../shared/constants/query-keys.js'
 import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js'
 import { CollectionService } from '../collection.service.js'
@@ -22,32 +21,30 @@ export enum BundleSortProp {
 export const useGetCollectionsOrBundlesContainingFragment = (
   fragmentId: string,
   orderProp: BundleSortProp = BundleSortProp.title,
-  orderDirection: OrderDirection = Avo.Search.OrderDirection.ASC,
+  orderDirection: Avo.Search.OrderDirection = Avo.Search.OrderDirection.ASC,
   options: Partial<{
     enabled: boolean
     refetchInterval: number | false
     refetchIntervalInBackground?: boolean
   }> = {},
 ) => {
-  return useQuery<ParentBundle[]>(
-    [
+  return useQuery<ParentBundle[]>({
+    queryKey: [
       QUERY_KEYS.GET_COLLECTIONS_OR_BUNDLES_CONTAINING_FRAGMENT,
       fragmentId,
       orderProp,
       orderDirection,
     ],
-    () => {
+    queryFn: () => {
       return CollectionService.getCollectionsOrBundlesContainingFragment(
         fragmentId,
         orderProp,
         orderDirection,
       )
     },
-    {
-      enabled: true,
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
-      ...options,
-    },
-  )
+    enabled: true,
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    ...options,
+  })
 }

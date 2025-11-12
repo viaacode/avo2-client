@@ -19,9 +19,9 @@ export const useGetAssignmentsWithMarcomForAdminOverview = (
     refetchIntervalInBackground?: boolean
   } = {},
 ) => {
-  return useQuery<{ assignments: Avo.Assignment.Assignment[]; total: number }>(
-    [QUERY_KEYS.GET_ASSIGNMENTS_WITH_MARCOM, tableState],
-    () => {
+  return useQuery<{ assignments: Avo.Assignment.Assignment[]; total: number }>({
+    queryKey: [QUERY_KEYS.GET_ASSIGNMENTS_WITH_MARCOM, tableState],
+    queryFn: () => {
       return AssignmentsAdminService.getAssignmentsWithMarcom(
         (tableState.page || 0) * ITEMS_PER_PAGE,
         ITEMS_PER_PAGE,
@@ -31,16 +31,14 @@ export const useGetAssignmentsWithMarcomForAdminOverview = (
         true,
       )
     },
-    {
-      enabled: true,
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
-      ...options,
-      meta: {
-        errorMessage: tHtml(
-          'admin/assignments/views/assignments-marcom-overview___het-ophalen-van-de-opdracht-actualisaties-is-mislukt',
-        ),
-      },
+    enabled: true,
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    ...options,
+    meta: {
+      errorMessage: tHtml(
+        'admin/assignments/views/assignments-marcom-overview___het-ophalen-van-de-opdracht-actualisaties-is-mislukt',
+      ),
     },
-  )
+  })
 }

@@ -1,5 +1,5 @@
-import './AssignmentDetail.scss'
-import { OrderDirection } from '@meemoo/react-components'
+import './AssignmentDetail.scss';
+
 import {
   Button,
   ButtonToolbar,
@@ -15,141 +15,138 @@ import {
   isUuid,
   MoreOptionsDropdown,
   Spacer,
-} from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { noop } from 'es-toolkit'
+} from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactText,
   useCallback,
   useEffect,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
-import { generatePath, useNavigate, useParams } from 'react-router'
-import { Link } from 'react-router-dom'
+} from 'react';
+import { Helmet } from 'react-helmet';
+import { generatePath, useNavigate, useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 import {
   BooleanParam,
   StringParam,
   useQueryParam,
   useQueryParams,
-} from 'use-query-params'
+} from 'use-query-params';
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page.js'
-import { renderRelatedItems } from '../../collection/collection.helpers.js'
-import {
-  CollectionFragmentType,
-  type Relation,
-} from '../../collection/collection.types.js'
-import { AddToBundleModal } from '../../collection/components/modals/AddToBundleModal.js'
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { PermissionService } from '../../authentication/helpers/permission-service.js';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page.js';
+import { renderRelatedItems } from '../../collection/collection.helpers.js';
+import { type Relation } from '../../collection/collection.types.js';
+import { AddToBundleModal } from '../../collection/components/modals/AddToBundleModal.js';
 import {
   BundleSortProp,
   useGetCollectionsOrBundlesContainingFragment,
-} from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment.js'
-import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from '../../collection/views/CollectionDetail.const.js'
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants.js'
-import { ErrorNoAccess } from '../../error/components/ErrorNoAccess.js'
+} from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment.js';
+import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from '../../collection/views/CollectionDetail.const.js';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants.js';
+import { ErrorNoAccess } from '../../error/components/ErrorNoAccess.js';
 import {
   ErrorView,
   type ErrorViewQueryParams,
-} from '../../error/views/ErrorView.js'
+} from '../../error/views/ErrorView.js';
 import {
   ALL_SEARCH_FILTERS,
   type SearchFilter,
-} from '../../search/search.const.js'
-import { BlockList } from '../../shared/components/BlockList/BlockList.js'
-import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData.js'
-import { EditButton } from '../../shared/components/EditButton/EditButton.js'
-import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList.js'
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors.js'
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour.js'
-import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper.js'
-import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown.js'
-import { ShareModal } from '../../shared/components/ShareModal/ShareModal.js'
-import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js'
-import { type ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils.js'
-import { StickyBar } from '../../shared/components/StickyBar/StickyBar.js'
+} from '../../search/search.const.js';
+import { BlockList } from '../../shared/components/BlockList/BlockList.js';
+import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData.js';
+import { EditButton } from '../../shared/components/EditButton/EditButton.js';
+import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList.js';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors.js';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour.js';
+import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper.js';
+import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown.js';
+import { ShareModal } from '../../shared/components/ShareModal/ShareModal.js';
+import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js';
+import { type ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils.js';
+import { StickyBar } from '../../shared/components/StickyBar/StickyBar.js';
 import {
   EDIT_STATUS_REFETCH_TIME,
   getMoreOptionsLabel,
-} from '../../shared/constants/index.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
-import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render-bookmark-button.js'
-import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link.js'
-import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link.js'
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown.js'
-import { navigate } from '../../shared/helpers/link.js'
+} from '../../shared/constants/index.js';
+import { buildLink } from '../../shared/helpers/build-link.js';
+import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors.js';
+import { CustomError } from '../../shared/helpers/custom-error.js';
+import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render-bookmark-button.js';
+import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link.js';
+import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link.js';
+import { createDropdownMenuItem } from '../../shared/helpers/dropdown.js';
+import { navigate } from '../../shared/helpers/link.js';
 import {
   type EducationLevelId,
   getGroupedLomsKeyValue,
-} from '../../shared/helpers/lom.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js'
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js'
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js'
-import { trackEvents } from '../../shared/services/event-logging-service.js'
+} from '../../shared/helpers/lom.js';
+import { isMobileWidth } from '../../shared/helpers/media-query.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js';
+import { trackEvents } from '../../shared/services/event-logging-service.js';
 import {
   getRelatedItems,
   ObjectTypes,
   ObjectTypesAll,
-} from '../../shared/services/related-items-service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const.js'
-import { AssignmentService } from '../assignment.service.js'
-import { AssignmentAction, AssignmentType } from '../assignment.types.js'
+} from '../../shared/services/related-items-service.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const.js';
+import { AssignmentService } from '../assignment.service.js';
+import { AssignmentAction } from '../assignment.types.js';
 import {
   onAddNewContributor,
   onDeleteContributor,
   onEditContributor,
-} from '../helpers/assignment-share-with-collegue-handlers.js'
+} from '../helpers/assignment-share-with-collegue-handlers.js';
 import {
   deleteAssignment,
   deleteSelfFromAssignment,
-} from '../helpers/delete-assignment.js'
-import { duplicateAssignment } from '../helpers/duplicate-assignment.js'
-import { toAssignmentDetail } from '../helpers/links.js'
-import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses.js'
-import { DeleteAssignmentModal } from '../modals/DeleteAssignmentModal.js'
-import { PublishAssignmentModal } from '../modals/PublishAssignmentModal.js'
+} from '../helpers/delete-assignment.js';
+import { duplicateAssignment } from '../helpers/duplicate-assignment.js';
+import { toAssignmentDetail } from '../helpers/links.js';
+import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses.js';
+import { DeleteAssignmentModal } from '../modals/DeleteAssignmentModal.js';
+import { PublishAssignmentModal } from '../modals/PublishAssignmentModal.js';
 
 type AssignmentDetailPermissions = Partial<{
-  canCreateAssignments: boolean
-  canEditAssignments: boolean
-  canPublishAssignments: boolean
-  canDeleteAnyAssignments: boolean
-  canEditBundles: boolean
-}>
+  canCreateAssignments: boolean;
+  canEditAssignments: boolean;
+  canPublishAssignments: boolean;
+  canDeleteAnyAssignments: boolean;
+  canEditBundles: boolean;
+}>;
 
 type AssignmentDetailProps = {
-  id?: string // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
-  enabledMetaData: SearchFilter[]
-}
+  id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
+  enabledMetaData: SearchFilter[];
+};
 
 export const AssignmentDetail: FC<AssignmentDetailProps> = ({
   enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
-  const navigateFunc = useNavigate()
-  const commonUser = useAtomValue(commonUserAtom)
-  const { id: assignmentId } = useParams<{ id: string }>()
+  const navigateFunc = useNavigate();
+  const commonUser = useAtomValue(commonUserAtom);
+  const { id: assignmentId } = useParams<{ id: string }>();
 
   // Data
   const [assignment, setAssignment] =
-    useState<Avo.Assignment.Assignment | null>(null)
+    useState<Avo.Assignment.Assignment | null>(null);
   const [permissions, setPermissions] =
-    useState<AssignmentDetailPermissions | null>(null)
+    useState<AssignmentDetailPermissions | null>(null);
   const [relatedAssignments, setRelatedAssignments] = useState<
     Avo.Search.ResultItem[] | null
-  >(null)
+  >(null);
   const [bookmarkViewCounts, setBookmarkViewCounts] =
-    useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS)
+    useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS);
   const { data: editStatuses } = useGetAssignmentsEditStatuses(
     [assignmentId as string],
     {
@@ -157,7 +154,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
       refetchInterval: EDIT_STATUS_REFETCH_TIME,
       refetchIntervalInBackground: true,
     },
-  )
+  );
 
   const {
     data: bundlesContainingAssignment,
@@ -167,56 +164,56 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
     BundleSortProp.title,
     Avo.Search.OrderDirection.ASC,
     { enabled: !!assignmentId && !!assignment },
-  )
+  );
 
   // Errors
-  const [isForbidden, setIsForbidden] = useState<boolean>(false)
-  const [assignmentLoading, setAssignmentLoading] = useState(false)
+  const [isForbidden, setIsForbidden] = useState<boolean>(false);
+  const [assignmentLoading, setAssignmentLoading] = useState(false);
   const [assignmentError, setAssignmentError] =
-    useState<Partial<ErrorViewQueryParams> | null>(null)
+    useState<Partial<ErrorViewQueryParams> | null>(null);
 
   // Modals
   const [isPublishModalOpen, setIsPublishModalOpen] = useQueryParam(
     QUERY_PARAM_SHOW_PUBLISH_MODAL,
     BooleanParam,
-  )
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
-  const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false)
-  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false)
+  );
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
   const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
-  const [query, setQuery] = useQueryParams({ inviteToken: StringParam })
-  const { inviteToken } = query
+  const [query, setQuery] = useQueryParams({ inviteToken: StringParam });
+  const { inviteToken } = query;
 
   // Computed
-  const isPublic = assignment?.is_public || false
+  const isPublic = assignment?.is_public || false;
   const isContributor = !!assignment?.contributors?.find(
     (contributor) =>
       contributor.profile_id &&
       contributor.profile_id === commonUser?.profileId,
-  )
+  );
   const isEditContributor = !!assignment?.contributors?.find(
     (contributor) =>
       contributor.profile_id &&
       contributor.profile_id === commonUser?.profileId &&
       contributor.rights ===
         (ContributorInfoRight.CONTRIBUTOR as Avo.Share.Rights),
-  )
+  );
   const isOwner =
     !!assignment?.owner_profile_id &&
-    assignment?.owner_profile_id === commonUser?.profileId
+    assignment?.owner_profile_id === commonUser?.profileId;
   const hasDeleteRightsForAllAssignments =
     commonUser?.permissions?.includes(PermissionName.DELETE_ANY_ASSIGNMENTS) ||
-    false
+    false;
   const shouldDeleteSelfFromAssignment =
-    isContributor && !hasDeleteRightsForAllAssignments
+    isContributor && !hasDeleteRightsForAllAssignments;
 
   const isBeingEdited =
-    editStatuses &&
-    assignmentId &&
+    !!editStatuses &&
+    !!assignmentId &&
     !!editStatuses[assignmentId] &&
-    editStatuses[assignmentId]?.editingUserId !== commonUser?.profileId
+    editStatuses[assignmentId]?.editingUserId !== commonUser?.profileId;
 
   const shareWithPupilsProps: ShareWithPupilsProps = {
     assignment: assignment || undefined, // Needs to be saved before you can share
@@ -230,7 +227,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         id: assignmentId,
         tabId: ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS,
       }),
-  }
+  };
 
   const getPermissions = useCallback(
     async (
@@ -238,7 +235,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
       assignment: Avo.Assignment.Assignment,
     ): Promise<AssignmentDetailPermissions> => {
       if (!commonUser || !assignment) {
-        return {}
+        return {};
       }
 
       // Fetch all permissions in parallel
@@ -264,10 +261,10 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           ],
         },
         commonUser,
-      )
+      );
     },
     [],
-  )
+  );
 
   const getRelatedAssignments = useCallback(async () => {
     try {
@@ -279,30 +276,30 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
             ObjectTypesAll.all,
             4,
           ),
-        )
+        );
       }
     } catch (err) {
       console.error('Failed to get related items', err, {
         id: assignmentId,
         index: 'assignments',
         limit: 4,
-      })
+      });
 
       ToastService.danger(
         tHtml(
           'assignment/views/assignment-detail___het-ophalen-van-de-gerelateerde-opdrachten-is-mislukt',
         ),
-      )
+      );
     }
-  }, [assignmentId])
+  }, [assignmentId]);
 
   const fetchAssignment = useCallback(async () => {
     try {
       if (!assignmentId) {
-        return
+        return;
       }
-      setAssignmentLoading(true)
-      setAssignmentError(null)
+      setAssignmentLoading(true);
+      setAssignmentError(null);
 
       if (
         !commonUser?.permissions?.includes(
@@ -319,19 +316,19 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           ),
           icon: IconName.lock,
           actionButtons: ['home'],
-        })
+        });
       }
 
-      let tempAssignment: Avo.Assignment.Assignment | null = null
+      let tempAssignment: Avo.Assignment.Assignment | null = null;
 
       try {
         tempAssignment = await AssignmentService.fetchAssignmentById(
           assignmentId,
           inviteToken || undefined,
-        )
+        );
       } catch (err: any) {
         if (err.innerException.additionalInfo?.statusCode === 403) {
-          setIsForbidden(true)
+          setIsForbidden(true);
         } else {
           setAssignmentError({
             message:
@@ -344,11 +341,11 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
                   ),
             icon: IconName.alertTriangle,
             actionButtons: ['home'],
-          })
+          });
         }
 
-        setAssignmentLoading(false)
-        return
+        setAssignmentLoading(false);
+        return;
       }
 
       if (!tempAssignment) {
@@ -358,18 +355,18 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           ),
           icon: IconName.alertTriangle,
           actionButtons: ['home'],
-        })
-        setAssignmentLoading(false)
-        return
+        });
+        setAssignmentLoading(false);
+        return;
       }
 
-      setAssignment(tempAssignment as any)
+      setAssignment(tempAssignment as any);
 
-      await getRelatedAssignments()
+      await getRelatedAssignments();
 
       try {
-        const permissionObj = await getPermissions(commonUser, tempAssignment)
-        setPermissions(permissionObj)
+        const permissionObj = await getPermissions(commonUser, tempAssignment);
+        setPermissions(permissionObj);
       } catch (err) {
         setAssignmentError({
           message: tHtml(
@@ -377,10 +374,10 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           ),
           icon: IconName.alertTriangle,
           actionButtons: ['home'],
-        })
-        setAssignmentLoading(false)
+        });
+        setAssignmentLoading(false);
 
-        return
+        return;
       }
     } catch (err) {
       setAssignmentError({
@@ -388,35 +385,35 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt',
         ),
         icon: IconName.alertTriangle,
-      })
+      });
     }
 
-    setAssignmentLoading(false)
+    setAssignmentLoading(false);
   }, [
     commonUser,
     getRelatedAssignments,
     assignmentId,
     inviteToken,
     getPermissions,
-  ])
+  ]);
 
   const fetchContributors = useCallback(async () => {
     if (!assignmentId || !assignment) {
-      return
+      return;
     }
     const response =
-      await AssignmentService.fetchContributorsByAssignmentId(assignmentId)
+      await AssignmentService.fetchContributorsByAssignmentId(assignmentId);
 
     setAssignment({
       ...assignment,
       contributors: (response || []) as Avo.Assignment.Contributor[],
-    })
-  }, [assignment, assignmentId])
+    });
+  }, [assignment, assignmentId]);
 
   const triggerEvents = useCallback(async () => {
     // Do not trigger events when a search engine loads this page
     if (!assignment || !commonUser) {
-      return
+      return;
     }
 
     BookmarksViewsPlaysService.action(
@@ -424,7 +421,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
       'assignment',
       assignment.id,
       commonUser,
-    ).then(noop)
+    ).then(noop);
     trackEvents(
       {
         object: assignment?.id,
@@ -436,7 +433,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         },
       },
       commonUser,
-    )
+    );
 
     if (
       PermissionService.hasAtLeastOnePerm(commonUser, [
@@ -452,32 +449,32 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
             assignment?.id,
             commonUser,
           ),
-        )
+        );
       } catch (err) {
         console.error(
           new CustomError('Failed to get getAssignmentCounts', err, {
             uuid: assignment?.id,
           }),
-        )
+        );
         ToastService.danger(
           tHtml(
             'assignment/views/assignment-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt',
           ),
-        )
+        );
       }
     }
-  }, [assignment, commonUser])
+  }, [assignment, commonUser]);
 
   // Fetch initial data
   useEffect(() => {
-    fetchAssignment().then(noop)
-  }, [fetchAssignment])
+    fetchAssignment().then(noop);
+  }, [fetchAssignment]);
 
   useEffect(() => {
     if (assignment && permissions) {
-      triggerEvents().then(noop)
+      triggerEvents().then(noop);
     }
-  }, [assignment, permissions, triggerEvents])
+  }, [assignment, permissions, triggerEvents]);
 
   const toggleBookmark = async () => {
     try {
@@ -486,8 +483,8 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           tHtml(
             'collection/views/collection-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw',
           ),
-        )
-        return
+        );
+        return;
       }
 
       if (!assignment) {
@@ -495,8 +492,8 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           tHtml(
             'assignment/views/assignment-detail___er-ging-iets-mis-met-het-ophalen-van-de-ophalen-van-de-opdracht',
           ),
-        )
-        return
+        );
+        return;
       }
 
       await BookmarksViewsPlaysService.toggleBookmark(
@@ -504,11 +501,11 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         commonUser,
         'assignment',
         bookmarkViewCounts.isBookmarked,
-      )
+      );
       setBookmarkViewCounts({
         ...bookmarkViewCounts,
         isBookmarked: !bookmarkViewCounts.isBookmarked,
-      })
+      });
       ToastService.success(
         bookmarkViewCounts.isBookmarked
           ? tHtml(
@@ -517,7 +514,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           : tHtml(
               'assignment/views/assignment-detail___de-bladwijzer-is-aangemaakt',
             ),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError('Failed to toggle bookmark', err, {
@@ -526,7 +523,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           type: 'collection',
           isBookmarked: bookmarkViewCounts.isBookmarked,
         }),
-      )
+      );
       ToastService.danger(
         bookmarkViewCounts.isBookmarked
           ? tHtml(
@@ -535,9 +532,9 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           : tHtml(
               'assignment/views/assignment-detail___het-aanmaken-van-de-bladwijzer-is-mislukt',
             ),
-      )
+      );
     }
-  }
+  };
 
   const onEditAssignment = () => {
     navigateFunc(
@@ -545,74 +542,74 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         id: assignmentId,
         tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
       }),
-    )
-  }
+    );
+  };
 
   const onDuplicateAssignment = async (): Promise<void> => {
     const duplicatedAssignment = await duplicateAssignment(
       assignment,
       commonUser,
-    )
+    );
     if (duplicatedAssignment) {
       redirectToClientPage(
         toAssignmentDetail(duplicatedAssignment),
         navigateFunc,
-      )
+      );
     }
-  }
+  };
 
   const onDeleteAssignment = async (): Promise<void> => {
-    if (!assignment) return
+    if (!assignment) return;
     await deleteAssignment(assignment, commonUser, () =>
       navigateFunc(APP_PATH.WORKSPACE_ASSIGNMENTS.route),
-    )
-  }
+    );
+  };
 
   const onDeleteSelfFromAssignment = async (): Promise<void> => {
     await deleteSelfFromAssignment(assignmentId, commonUser, () =>
       navigateFunc(APP_PATH.WORKSPACE_ASSIGNMENTS.route),
-    )
-  }
+    );
+  };
 
   const executeAction = async (item: ReactText) => {
-    setIsOptionsMenuOpen(false)
+    setIsOptionsMenuOpen(false);
     switch (item) {
       case AssignmentAction.addToBundle:
-        await setIsAddToBundleModalOpen(true)
-        break
+        await setIsAddToBundleModalOpen(true);
+        break;
       case AssignmentAction.duplicate:
-        await onDuplicateAssignment()
-        break
+        await onDuplicateAssignment();
+        break;
       case AssignmentAction.delete:
-        setIsDeleteModalOpen(true)
-        break
+        setIsDeleteModalOpen(true);
+        break;
       case AssignmentAction.openPublishCollectionModal:
       case AssignmentAction.publish:
-        setIsPublishModalOpen(true, 'replaceIn')
-        break
+        setIsPublishModalOpen(true, 'replaceIn');
+        break;
       case AssignmentAction.toggleBookmark:
-        await toggleBookmark()
-        break
+        await toggleBookmark();
+        break;
       case AssignmentAction.edit:
-        onEditAssignment()
-        break
+        onEditAssignment();
+        break;
       case AssignmentAction.share:
-        setIsShareModalOpen(true)
-        break
+        setIsShareModalOpen(true);
+        break;
 
       default:
         console.warn(
           `An unhandled action "${item}" was executed without a binding.`,
-        )
-        return null
+        );
+        return null;
     }
-  }
+  };
 
   // Render
 
   const renderAssignmentDropdownOptions = () => {
     if (!assignmentId) {
-      return null
+      return null;
     }
     const ASSIGNMENT_DROPDOWN_ITEMS = [
       ...createDropdownMenuItem(
@@ -648,7 +645,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           isContributor ||
           false,
       ),
-    ]
+    ];
 
     return (
       <MoreOptionsDropdownWrapper
@@ -659,8 +656,8 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         menuItems={ASSIGNMENT_DROPDOWN_ITEMS}
         onOptionClicked={executeAction}
       />
-    )
-  }
+    );
+  };
 
   const renderHeaderButtons = () => {
     return (
@@ -785,12 +782,12 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           )}
         </Spacer>
       </ButtonToolbar>
-    )
-  }
+    );
+  };
 
   const renderHeaderButtonsMobile = () => {
     if (!assignmentId) {
-      return null
+      return null;
     }
     const ASSIGNMENT_DROPDOWN_ITEMS_MOBILE = [
       ...createDropdownMenuItem(
@@ -854,7 +851,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           isContributor ||
           false,
       ),
-    ]
+    ];
 
     return (
       <ButtonToolbar>
@@ -867,23 +864,23 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           onOptionClicked={executeAction}
         />
       </ButtonToolbar>
-    )
-  }
+    );
+  };
 
   const renderHeaderEducationLevel = () => {
     const groupedLomsLabels = getGroupedLomsKeyValue(
       assignment?.loms || [],
       'label',
-    )
-    return <EducationLevelsTagList loms={groupedLomsLabels.educationLevel} />
-  }
+    );
+    return <EducationLevelsTagList loms={groupedLomsLabels.educationLevel} />;
+  };
 
   const renderHeader = () => {
     if (assignment) {
       return (
         <Header
           title={assignment.title || ''}
-          category="assignment"
+          category={Avo.ContentType.English.ASSIGNMENT}
           showMetaData={true}
           bookmarks={String(bookmarkViewCounts.bookmarkCount || 0)}
           views={String(bookmarkViewCounts.viewCount || 0)}
@@ -901,12 +898,12 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
             <InteractiveTour showButton />
           </HeaderBottomRowRight>
         </Header>
-      )
+      );
     }
-  }
+  };
 
   const renderAssignmentBlocks = () => {
-    const blocks = assignment?.blocks
+    const blocks = assignment?.blocks;
 
     if ((blocks?.length || 0) === 0) {
       return (
@@ -916,7 +913,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           )}
           icon={IconName.search}
         />
-      )
+      );
     }
 
     return (
@@ -938,12 +935,12 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           },
         }}
       />
-    )
-  }
+    );
+  };
 
   const renderBundlesContainingThisAssignment = (hasParentBundles: boolean) => {
     if (!hasParentBundles) {
-      return null
+      return null;
     }
     return (
       <p className="c-body-1">
@@ -967,12 +964,12 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           </>
         )) || null}
       </p>
-    )
-  }
+    );
+  };
 
   const renderIsCopyOf = (hasCopies: boolean) => {
     if (!hasCopies) {
-      return null
+      return null;
     }
     return (
       <p className="c-body-1">
@@ -990,12 +987,12 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           ),
         )}
       </p>
-    )
-  }
+    );
+  };
 
   const renderMetadata = () => {
-    const hasCopies = (assignment?.relations || []).length > 0
-    const hasParentBundles = !!bundlesContainingAssignment?.length
+    const hasCopies = (assignment?.relations || []).length > 0;
+    const hasParentBundles = !!bundlesContainingAssignment?.length;
 
     return (
       <Container mode="vertical" className="c-assignment-detail--metadata">
@@ -1032,26 +1029,26 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           </div>
         </Container>
       </Container>
-    )
-  }
+    );
+  };
 
   const onAcceptShareAssignment = async () => {
     if (!assignment || !inviteToken) {
-      return
+      return;
     }
 
     try {
       const res = await AssignmentService.acceptSharedAssignment(
         assignment?.id as string,
         inviteToken,
-      )
+      );
 
       setQuery({
         ...query,
         inviteToken: undefined,
-      })
+      });
 
-      await fetchAssignment()
+      await fetchAssignment();
 
       ToastService.success(
         res.rights === 'CONTRIBUTOR'
@@ -1061,49 +1058,49 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           : tText(
               'assignment/views/assignment-detail___je-kan-nu-deze-opdracht-bekijken',
             ),
-      )
+      );
     } catch (err) {
       ToastService.danger(
         tText(
           'assignment/views/assignment-detail___er-liep-iets-fout-bij-het-accepteren-van-de-uitnodiging',
         ),
-      )
+      );
     }
-  }
+  };
 
   const onDeclineShareAssignment = async () => {
     if (!assignment || !inviteToken) {
-      return
+      return;
     }
 
     try {
       await AssignmentService.declineSharedAssignment(
         assignment?.id as string,
         inviteToken,
-      )
+      );
 
-      navigate(navigateFunc, APP_PATH.WORKSPACE_ASSIGNMENTS.route)
+      navigate(navigateFunc, APP_PATH.WORKSPACE_ASSIGNMENTS.route);
 
       ToastService.success(
         tText(
           'assignment/views/assignment-detail___de-uitnodiging-werd-afgewezen',
         ),
-      )
+      );
     } catch (err) {
       ToastService.danger(
         tText(
           'assignment/views/assignment-detail___er-liep-iets-fout-bij-het-afwijzen-van-de-uitnodiging',
         ),
-      )
+      );
     }
-  }
+  };
 
   const renderPageContent = () => {
     if (assignmentLoading) {
-      return <FullPageSpinner />
+      return <FullPageSpinner />;
     }
     if (assignmentError) {
-      return <ErrorView {...assignmentError} />
+      return <ErrorView {...assignmentError} />;
     }
 
     return (
@@ -1112,15 +1109,15 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         {renderAssignmentBlocks()}
         {renderMetadata()}
       </>
-    )
-  }
+    );
+  };
 
   const pageTitle = GENERATE_SITE_TITLE(
     assignment?.title ||
       tText(
         'assignment/views/assignment-detail___opdracht-detail-pagina-titel',
       ),
-  )
+  );
   return (
     <>
       {!assignment && !assignmentLoading && !assignmentError && isForbidden ? (
@@ -1176,9 +1173,9 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
       {!!assignment && !!commonUser && (
         <PublishAssignmentModal
           onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
-            setIsPublishModalOpen(undefined, 'replaceIn')
+            setIsPublishModalOpen(undefined, 'replaceIn');
             if (newAssignment) {
-              setAssignment(newAssignment)
+              setAssignment(newAssignment);
             }
           }}
           isOpen={!!isPublishModalOpen}
@@ -1242,11 +1239,11 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         <AddToBundleModal
           fragmentId={assignment.id}
           fragmentInfo={assignment}
-          fragmentType={CollectionFragmentType.ASSIGNMENT}
+          fragmentType={Avo.Core.BlockItemType.ASSIGNMENT}
           isOpen={isAddToBundleModalOpen}
           onClose={async () => {
-            setIsAddToBundleModalOpen(false)
-            await refetchBundlesContainingAssignment()
+            setIsAddToBundleModalOpen(false);
+            await refetchBundlesContainingAssignment();
           }}
         />
       )}
@@ -1261,10 +1258,10 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         hasPupilResponses={!!assignment?.responses?.length}
         hasPupilResponseCollections={
           !!assignment?.blocks?.find(
-            (block) => block.type === AssignmentType.BOUW,
+            (block) => block.type === Avo.Core.BlockItemType.BOUW,
           )
         }
       />
     </>
-  )
-}
+  );
+};

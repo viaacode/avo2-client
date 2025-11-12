@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { UseQueryResult, useQuery } from '@tanstack/react-query'
 
 import { QUERY_KEYS } from '../../shared/constants/query-keys.js'
 import { WorkspaceService } from '../workspace.service.js'
@@ -14,12 +14,12 @@ export const useGetWorkspaceCounts = (
     refetchInterval: false,
     refetchIntervalInBackground: false,
   },
-) => {
-  return useQuery<WorkspaceCounts>(
-    [QUERY_KEYS.GET_WORKSPACE_COUNTS],
-    () => {
+): UseQueryResult<WorkspaceCounts> => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_WORKSPACE_COUNTS],
+    queryFn: () => {
       return WorkspaceService.getWorkspaceCounts()
     },
-    options,
-  )
+    ...options,
+  })
 }

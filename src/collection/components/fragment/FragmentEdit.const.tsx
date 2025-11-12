@@ -1,17 +1,16 @@
-import type { Avo } from '@viaa/avo2-types'
-import { type ReactNode } from 'react'
+import { Avo } from '@viaa/avo2-types';
+import { type ReactNode } from 'react';
 
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { CollectionFragmentType } from '../../collection.types.js'
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
 
 export const COLLECTION_FRAGMENT_TYPE_TO_EVENT_OBJECT_TYPE: Partial<
   Record<Avo.Core.BlockItemType, Avo.EventLogging.ObjectType>
 > = {
-  [CollectionFragmentType.ITEM]: 'item',
-  [CollectionFragmentType.COLLECTION]: 'collection',
-  [CollectionFragmentType.ASSIGNMENT]: 'assignment',
-}
+  [Avo.Core.BlockItemType.ITEM]: 'item',
+  [Avo.Core.BlockItemType.COLLECTION]: 'collection',
+  [Avo.Core.BlockItemType.ASSIGNMENT]: 'assignment',
+};
 
 export function GET_FRAGMENT_DELETE_SUCCESS_MESSAGES(): Record<
   Avo.Core.BlockItemType,
@@ -36,7 +35,7 @@ export function GET_FRAGMENT_DELETE_SUCCESS_MESSAGES(): Record<
     ASSIGNMENT: tHtml(
       'collection/components/fragment/fragment-edit___opdracht-is-succesvol-verwijderd-uit-de-bundel',
     ),
-  }
+  };
 }
 
 export function GET_FRAGMENT_DELETE_LABELS(): Record<
@@ -58,7 +57,7 @@ export function GET_FRAGMENT_DELETE_LABELS(): Record<
     ASSIGNMENT: tText(
       'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-de-opdracht-uit-deze-bundel-wil-verwijderen',
     ),
-  }
+  };
 }
 
 export function GET_FRAGMENT_EDIT_SWITCH_LABELS(): Record<
@@ -80,7 +79,7 @@ export function GET_FRAGMENT_EDIT_SWITCH_LABELS(): Record<
     ASSIGNMENT: tText(
       'collection/components/fragment/fragment-edit___eigen-titel-bij-deze-opdracht',
     ),
-  }
+  };
 }
 
 /**
@@ -124,5 +123,5 @@ export function GET_FRAGMENT_PUBLISH_STATUS_LABELS(): Record<
       true: '',
       false: '',
     },
-  }
+  };
 }

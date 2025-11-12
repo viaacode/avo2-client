@@ -1,18 +1,11 @@
-import { type SelectOption, type TableColumn } from '@viaa/avo2-components'
+import { type SelectOption, type TableColumn } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tText } from '../shared/helpers/translate-text.js';
+import { TableColumnDataType } from '../shared/types/table-column-data-type.js';
 
-import { ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tText } from '../shared/helpers/translate-text.js'
-import { TableColumnDataType } from '../shared/types/table-column-data-type.js'
-
-export const MAX_SEARCH_DESCRIPTION_LENGTH = 300
-export const MAX_LONG_DESCRIPTION_LENGTH = 1200
-
-export enum CollectionBlockType {
-  TEXT = 'TEXT',
-  ITEM = 'ITEM',
-  COLLECTION = 'COLLECTION',
-  ASSIGNMENT = 'ASSIGNMENT',
-}
+export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;
+export const MAX_LONG_DESCRIPTION_LENGTH = 1200;
 
 export const NEW_FRAGMENT = {
   text: {
@@ -25,9 +18,9 @@ export const NEW_FRAGMENT = {
     end_oc: null,
     start_oc: null,
     use_custom_fields: true,
-    type: CollectionBlockType.TEXT,
+    type: Avo.Core.BlockItemType.TEXT,
   },
-}
+};
 
 export const GET_MARCOM_CHANNEL_TYPE_OPTIONS: () => SelectOption<string>[] =
   () => [
@@ -42,7 +35,7 @@ export const GET_MARCOM_CHANNEL_TYPE_OPTIONS: () => SelectOption<string>[] =
     { label: tText('collection/collection___social'), value: 'SOCIAL' },
     { label: tText('collection/collection___webpagina'), value: 'WEBPAGINA' },
     { label: tText('collection/collection___overige'), value: 'OVERIGE' },
-  ]
+  ];
 
 export const GET_MARCOM_CHANNEL_NAME_OPTIONS: () => SelectOption<string>[] =
   () => [
@@ -62,7 +55,7 @@ export const GET_MARCOM_CHANNEL_NAME_OPTIONS: () => SelectOption<string>[] =
     },
     { label: tText('collection/collection___zill'), value: 'ZILL' },
     { label: tText('collection/collection___overige'), value: 'OVERIGE' },
-  ]
+  ];
 
 export const GET_MARCOM_ENTRY_TABLE_COLUMNS: (
   isCollection: boolean,
@@ -98,4 +91,4 @@ export const GET_MARCOM_ENTRY_TABLE_COLUMNS: (
     label: '',
     id: ACTIONS_TABLE_COLUMN_ID,
   },
-]
+];

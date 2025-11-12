@@ -1,19 +1,18 @@
-import { type Avo } from '@viaa/avo2-types'
-import { isNil } from 'es-toolkit'
-import { type ReactNode } from 'react'
+import { Avo } from '@viaa/avo2-types';
+import { isNil } from 'es-toolkit';
+import { type ReactNode } from 'react';
 
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { trackEvents } from '../../shared/services/event-logging-service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { AssignmentService } from '../assignment.service.js'
-import { AssignmentType } from '../assignment.types.js'
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { trackEvents } from '../../shared/services/event-logging-service.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { AssignmentService } from '../assignment.service.js';
 
 export async function deleteAssignment(
   assignment: Avo.Assignment.Assignment,
   commonUser: Avo.User.CommonUser | null | undefined,
   afterDeleteCallback?: () => void,
 ): Promise<void> {
-  const assignmentId = assignment.id
+  const assignmentId = assignment.id;
 
   try {
     if (isNil(assignmentId)) {
@@ -21,8 +20,8 @@ export async function deleteAssignment(
         tHtml(
           'assignment/views/assignment-overview___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id',
         ),
-      )
-      return
+      );
+      return;
     }
 
     if (!commonUser?.profileId) {
@@ -30,11 +29,11 @@ export async function deleteAssignment(
         tHtml(
           'assignment/helpers/delete-assignment___kan-opdracht-niet-verwijderen-omdat-de-gebruiker-geen-profiel-id-heeft-probeer-opnieuw-in-te-loggen',
         ),
-      )
-      return
+      );
+      return;
     }
 
-    await AssignmentService.deleteAssignment(assignmentId)
+    await AssignmentService.deleteAssignment(assignmentId);
 
     trackEvents(
       {
@@ -46,21 +45,21 @@ export async function deleteAssignment(
         },
       },
       commonUser,
-    )
+    );
 
-    afterDeleteCallback?.()
+    afterDeleteCallback?.();
 
     ToastService.success(
       tHtml('assignment/views/assignment-overview___de-opdracht-is-verwijdert'),
-    )
+    );
   } catch (err) {
-    console.error(err)
+    console.error(err);
 
     ToastService.danger(
       tHtml(
         'assignment/views/assignment-overview___het-verwijderen-van-de-opdracht-is-mislukt',
       ),
-    )
+    );
   }
 }
 
@@ -75,8 +74,8 @@ export async function deleteSelfFromAssignment(
         tHtml(
           'assignment/views/assignment-overview___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id',
         ),
-      )
-      return
+      );
+      return;
     }
 
     if (!commonUser?.profileId) {
@@ -84,31 +83,31 @@ export async function deleteSelfFromAssignment(
         tHtml(
           'assignment/helpers/delete-assignment___kan-opdracht-niet-verwijderen-omdat-de-gebruiker-geen-profiel-id-heeft-probeer-opnieuw-in-te-loggen',
         ),
-      )
-      return
+      );
+      return;
     }
 
     await AssignmentService.deleteContributor(
       assignmentId,
       undefined,
       commonUser.profileId,
-    )
+    );
 
-    afterDeleteCallback?.()
+    afterDeleteCallback?.();
 
     ToastService.success(
       tHtml(
         'assignment/helpers/delete-assignment___je-bent-geen-bijdrager-meer-aan-de-opdracht',
       ),
-    )
+    );
   } catch (err) {
-    console.error(err)
+    console.error(err);
 
     ToastService.danger(
       tHtml(
         'assignment/helpers/delete-assignment___het-loskoppelen-van-je-account-van-de-opdracht-is-mislukt',
       ),
-    )
+    );
   }
 }
 
@@ -119,11 +118,11 @@ export function deleteAssignmentWarning(
   const isSharedWithOthers = !!assignment?.contributors?.find(
     (contributor) =>
       contributor.profile_id && contributor.profile_id !== profileId,
-  )
+  );
   const isContributor = !!assignment?.contributors?.find(
     (contributor) =>
       contributor.profile_id && contributor.profile_id === profileId,
-  )
+  );
 
   if (isSharedWithOthers) {
     return tHtml(
@@ -131,28 +130,32 @@ export function deleteAssignmentWarning(
       {
         count: assignment?.contributors?.length || 0,
       },
-    )
+    );
   }
 
   if (isContributor) {
     return tHtml(
       'assignment/views/assignment-overview___delete-contributor-assignment',
-    )
+    );
   }
 
-  if (assignment?.lom_learning_resource_type?.includes(AssignmentType.BOUW)) {
+  if (
+    assignment?.lom_learning_resource_type?.includes(
+      Avo.Core.BlockItemType.BOUW,
+    )
+  ) {
     return tHtml(
       'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden',
-    )
+    );
   }
 
   if (assignment?.responses?.length) {
     return tHtml(
       'assignment/views/assignment-overview___leerlingen-bekeken-deze-opdracht-reeds',
-    )
+    );
   }
 
   return tHtml(
     'assignment/views/assignment-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden',
-  )
+  );
 }

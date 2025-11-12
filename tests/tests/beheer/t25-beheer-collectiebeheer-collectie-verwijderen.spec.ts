@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test'
 
-import { createCollection } from '../../helpers/create-collection'
-import { goToPageAndAcceptCookies } from '../../helpers/go-to-page-and-accept-cookies'
-import { loginOnderwijsAvo } from '../../helpers/login-onderwijs-avo'
+import { createCollection } from '../../helpers/create-collection.js'
+import { goToPageAndAcceptCookies } from '../../helpers/go-to-page-and-accept-cookies.js'
+import { loginOnderwijsAvo } from '../../helpers/login-onderwijs-avo.js'
 
 /**
  * New: https://docs.google.com/spreadsheets/d/1sy6q3Q6Hl3LhvXY4JeCblhh4-REj8gyzAzyYwQVZZxc/edit#gid=95954947

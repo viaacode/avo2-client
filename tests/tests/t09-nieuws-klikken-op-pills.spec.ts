@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies'
+import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies.js'
 
 /**
  * New: https://docs.google.com/spreadsheets/d/1IvhK0v0HSntCwTcXiFseHargwwWwpoCkDMjmMehaDMA/edit#gid=0

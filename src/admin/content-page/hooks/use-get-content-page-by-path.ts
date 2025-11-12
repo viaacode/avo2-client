@@ -11,9 +11,9 @@ export const useGetContentPageByPath = (
   path: string | undefined,
   options: { enabled?: boolean } = {},
 ) => {
-  return useQuery(
-    [QUERY_KEYS.GET_CONTENT_PAGE_BY_PATH],
-    async () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_CONTENT_PAGE_BY_PATH],
+    queryFn: async () => {
       if (!path) {
         return null
       }
@@ -27,9 +27,7 @@ export const useGetContentPageByPath = (
       }
       return convertDbContentPageToContentPageInfo(dbContentPage)
     },
-    {
-      enabled: true,
-      ...options,
-    },
-  )
+    enabled: true,
+    ...options,
+  })
 }

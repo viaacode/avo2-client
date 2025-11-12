@@ -1,4 +1,4 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query'
+import { type UseQueryResult, useQuery } from '@tanstack/react-query'
 
 import { QUERY_KEYS } from '../../shared/constants/query-keys.js'
 import type { QuickLaneUrlObject } from '../../shared/types/index.js'
@@ -11,21 +11,18 @@ export const useGetQuickLane = (
     refetchInterval?: number | false
     refetchIntervalInBackground?: boolean
   } = {},
-): UseQueryResult<QuickLaneUrlObject> => {
-  return useQuery(
-    [QUERY_KEYS.GET_ASSIGNMENTS, quickLaneId],
-    async () => {
+): UseQueryResult<QuickLaneUrlObject | null, Error> => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_ASSIGNMENTS, quickLaneId],
+    queryFn: async () => {
       if (!quickLaneId) {
         return null
       }
       return QuickLaneService.fetchQuickLaneById(quickLaneId)
     },
-    {
-      enabled: true,
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
-      keepPreviousData: true,
-      ...options,
-    },
-  )
+    enabled: true,
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    ...options,
+  })
 }

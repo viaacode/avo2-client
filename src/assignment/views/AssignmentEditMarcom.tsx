@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Alert,
   Button,
@@ -17,47 +17,47 @@ import {
   Table,
   TextArea,
   TextInput,
-} from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { compact, isNil } from 'es-toolkit'
-import React, { type FC, type ReactNode, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+} from '@viaa/avo2-components';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { compact, isNil } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import React, { type FC, type ReactNode, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
+import { commonUserAtom } from '../../authentication/authentication.store.js';
 import {
   GET_MARCOM_CHANNEL_NAME_OPTIONS,
   GET_MARCOM_CHANNEL_TYPE_OPTIONS,
   GET_MARCOM_ENTRY_TABLE_COLUMNS,
-} from '../../collection/collection.const.js'
+} from '../../collection/collection.const.js';
 import {
   type AssignmentMarcomEntry,
   CollectionCreateUpdateTab,
-} from '../../collection/collection.types.js'
-import { type MarcomNoteInfo } from '../../collection/components/CollectionOrBundleEdit.types.js'
-import { APP_PATH } from '../../constants.js'
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
-import { getEnv } from '../../shared/helpers/env.js'
-import { extractKlascementError } from '../../shared/helpers/extract-klascement-error.js'
-import { formatDate } from '../../shared/helpers/formatters/date.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { truncateTableValue } from '../../shared/helpers/truncate.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { useDeleteAssignmentMarcomEntry } from '../hooks/useDeleteAssignmentMarcomEntry.js'
-import { useGetAssignmentMarcomEntries } from '../hooks/useGetAssignmentMarcomEntries.js'
-import { useGetKlascementAssignmentPublishInfo } from '../hooks/useGetKlascementAssignmentPublishInfo.js'
-import { useInsertAssignmentMarcomEntry } from '../hooks/useInsertAssignmentMarcomEntry.js'
-import { usePublishAssignmentToKlascement } from '../hooks/usePublishAssignmentToKlascement.js'
+} from '../../collection/collection.types.js';
+import { type MarcomNoteInfo } from '../../collection/components/CollectionOrBundleEdit.types.js';
+import { APP_PATH } from '../../constants.js';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js';
+import { buildLink } from '../../shared/helpers/build-link.js';
+import { getEnv } from '../../shared/helpers/env.js';
+import { extractKlascementError } from '../../shared/helpers/extract-klascement-error.js';
+import { formatDate } from '../../shared/helpers/formatters/date.js';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { truncateTableValue } from '../../shared/helpers/truncate.js';
+import { ToastService } from '../../shared/services/toast-service.js';
+import { useDeleteAssignmentMarcomEntry } from '../hooks/useDeleteAssignmentMarcomEntry.js';
+import { useGetAssignmentMarcomEntries } from '../hooks/useGetAssignmentMarcomEntries.js';
+import { useGetKlascementAssignmentPublishInfo } from '../hooks/useGetKlascementAssignmentPublishInfo.js';
+import { useInsertAssignmentMarcomEntry } from '../hooks/useInsertAssignmentMarcomEntry.js';
+import { usePublishAssignmentToKlascement } from '../hooks/usePublishAssignmentToKlascement.js';
 
 interface AssignmentEditMarcomProps {
-  assignment: Avo.Assignment.Assignment & { marcom_note?: MarcomNoteInfo }
+  assignment: Avo.Assignment.Assignment & { marcom_note?: MarcomNoteInfo };
   setAssignment: (
     newAssignment: Avo.Assignment.Assignment & { marcom_note: MarcomNoteInfo },
-  ) => void
-  onFocus?: () => void
+  ) => void;
+  onFocus?: () => void;
 }
 
 export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
@@ -65,22 +65,22 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
   setAssignment,
   onFocus,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
-  const [marcomDate, setMarcomDate] = useState<Date | null>(new Date())
-  const [marcomChannelType, setMarcomChannelType] = useState<string | null>()
-  const [marcomChannelName, setMarcomChannelName] = useState<string | null>()
-  const [marcomLink, setMarcomLink] = useState<string>('')
+  const [marcomDate, setMarcomDate] = useState<Date | null>(new Date());
+  const [marcomChannelType, setMarcomChannelType] = useState<string | null>();
+  const [marcomChannelName, setMarcomChannelName] = useState<string | null>();
+  const [marcomLink, setMarcomLink] = useState<string>('');
 
   const { data: marcomEntries, refetch: refetchMarcomEntries } =
-    useGetAssignmentMarcomEntries(assignment.id)
-  const { mutateAsync: insertMarcomEntry } = useInsertAssignmentMarcomEntry()
-  const { mutateAsync: deleteMarcomEntry } = useDeleteAssignmentMarcomEntry()
+    useGetAssignmentMarcomEntries(assignment.id);
+  const { mutateAsync: insertMarcomEntry } = useInsertAssignmentMarcomEntry();
+  const { mutateAsync: deleteMarcomEntry } = useDeleteAssignmentMarcomEntry();
 
   const {
     mutateAsync: publishAssignmentToKlascement,
-    isLoading: isPublishing,
-  } = usePublishAssignmentToKlascement()
+    isPending: isPublishing,
+  } = usePublishAssignmentToKlascement();
 
   const { data: publishInfo, refetch: refetchPublishInfo } =
     useGetKlascementAssignmentPublishInfo(assignment.id, {
@@ -88,56 +88,56 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
         commonUser?.permissions?.includes(
           PermissionName.PUBLISH_ASSIGNMENT_TO_KLASCEMENT,
         ) || false,
-    })
+    });
   const isPublishedToKlascement = useMemo(
     () => !isNil(publishInfo?.klascement_id),
     [publishInfo],
-  )
+  );
 
   const handlePublish = async () => {
     try {
-      const klascementId = await publishAssignmentToKlascement(assignment.id)
+      const klascementId = await publishAssignmentToKlascement(assignment.id);
       window.open(
         `${getEnv('KLASCEMENT_URL')}/oefeningen/${klascementId}/aanpassen/uitgebreid`,
         '_blank',
-      )
-      await refetchPublishInfo()
-      await refetchMarcomEntries()
+      );
+      await refetchPublishInfo();
+      await refetchMarcomEntries();
       ToastService.success(
         tText(
           'assignment/views/assignment-edit-marcom___publiceren-naar-klascement-gelukt',
         ),
-      )
+      );
     } catch (err) {
       const avoError = tText(
         'assignment/views/assignment-edit-marcom___publiceren-naar-klascement-mislukt',
-      )
+      );
       ToastService.danger(
         compact([avoError, extractKlascementError(err)]).join(': '),
-      )
+      );
     }
-  }
+  };
 
   const renderMarcomTableCell = (
     rowData: Partial<AssignmentMarcomEntry>,
     columnId: keyof AssignmentMarcomEntry | typeof ACTIONS_TABLE_COLUMN_ID,
   ): ReactNode => {
-    const value = (rowData as any)?.[columnId]
+    const value = (rowData as any)?.[columnId];
     switch (columnId) {
       case 'publish_date':
-        return formatDate(value) || '-'
+        return formatDate(value) || '-';
 
       case 'external_link': {
         const valueLink: string = (value || '').includes('//')
           ? value || ''
-          : `//${value}`
+          : `//${value}`;
         return value ? (
           <a href={valueLink} target="_blank" rel="noopener noreferrer">
             {truncateTableValue(value)}
           </a>
         ) : (
           '-'
-        )
+        );
       }
 
       case 'channel_type':
@@ -145,14 +145,14 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
           GET_MARCOM_CHANNEL_TYPE_OPTIONS().find(
             (option) => option.value === value,
           )?.label || '-',
-        )
+        );
 
       case 'channel_name':
         return truncateTableValue(
           GET_MARCOM_CHANNEL_NAME_OPTIONS().find(
             (option) => option.value === value,
           )?.label || '-',
-        )
+        );
 
       case 'parent_collection':
         return value ? (
@@ -166,7 +166,7 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
           </Link>
         ) : (
           ''
-        )
+        );
 
       case ACTIONS_TABLE_COLUMN_ID:
         return (
@@ -177,13 +177,13 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
                 await deleteMarcomEntry({
                   assignmentId: assignment.id,
                   marcomEntryId: rowData.id,
-                })
-                await refetchMarcomEntries()
+                });
+                await refetchMarcomEntries();
                 ToastService.success(
                   tHtml(
                     'assignment/views/assignment-edit-marcom___het-verwijderen-van-de-marcom-entry-is-gelukt',
                   ),
-                )
+                );
               }}
               size="small"
               title={tText(
@@ -195,12 +195,12 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
               type="danger-hover"
             />
           </ButtonToolbar>
-        )
+        );
 
       default:
-        return truncateTableValue(value) || '-'
+        return truncateTableValue(value) || '-';
     }
-  }
+  };
 
   const addMarcomEntry = async () => {
     const marcomEntry: AssignmentMarcomEntry = {
@@ -209,27 +209,27 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
       assignment_id: assignment.id,
       external_link: marcomLink.trim() || null,
       publish_date: marcomDate?.toISOString(),
-    }
-    await insertMarcomEntry(marcomEntry)
-    await refetchMarcomEntries()
+    };
+    await insertMarcomEntry(marcomEntry);
+    await refetchMarcomEntries();
     ToastService.success(
       tHtml(
         'assignment/views/assignment-edit-marcom___het-toevoegen-van-de-marcom-entry-is-gelukt',
       ),
-    )
+    );
 
-    setMarcomChannelType(null)
-    setMarcomChannelName(null)
-    setMarcomLink('')
-  }
+    setMarcomChannelType(null);
+    setMarcomChannelName(null);
+    setMarcomLink('');
+  };
 
   const getEmptyMarcomTableMessage = () => {
     // Assignment
     // Without filters
     return tText(
       'assignment/views/assignment-edit-marcom___er-zijn-nog-geen-marcom-entries-voor-deze-opdracht',
-    )
-  }
+    );
+  };
 
   const renderExistingMarcomEntries = () => {
     return (
@@ -253,8 +253,8 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
           <FullPageSpinner />
         )}
       </>
-    )
-  }
+    );
+  };
 
   const renderCreateNewMarcomEntryForm = () => {
     return (
@@ -328,8 +328,8 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
           </FlexItem>
         </Flex>
       </>
-    )
-  }
+    );
+  };
 
   const renderMarcomRemarksField = () => {
     return (
@@ -348,13 +348,13 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
                 created_at: new Date().toISOString(),
                 updated_at: new Date().toISOString(),
               },
-            })
+            });
           }}
           onFocus={onFocus}
         />
       </FormGroup>
-    )
-  }
+    );
+  };
 
   const renderPublishToKlascementHeader = () => {
     return (
@@ -363,8 +363,8 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
           'assignment/views/assignment-edit-marcom___publiceren-naar-klascement',
         )}
       </BlockHeading>
-    )
-  }
+    );
+  };
 
   const renderPublishToKlascementForm = () => {
     if (!assignment.is_public) {
@@ -377,19 +377,19 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
             )}
           </Alert>
         </>
-      )
+      );
     }
 
-    const disablePublishButton = isPublishedToKlascement || isPublishing
-    let publishButtonTooltip = undefined
+    const disablePublishButton = isPublishedToKlascement || isPublishing;
+    let publishButtonTooltip = undefined;
     if (isPublishedToKlascement) {
       publishButtonTooltip = tText(
         'assignment/views/assignment-edit-marcom___de-opdracht-is-reeds-gepubliceerd-naar-klascement-bewerk-het-leermiddel-daar',
-      )
+      );
     } else if (isPublishing) {
       publishButtonTooltip = tText(
         'assignment/views/assignment-edit-marcom___bezig-met-publiceren-naar-klascement',
-      )
+      );
     }
 
     return (
@@ -411,8 +411,8 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
           </Column>
         </Grid>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -431,5 +431,5 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
         </Container>
       </Container>
     </>
-  )
-}
+  );
+};

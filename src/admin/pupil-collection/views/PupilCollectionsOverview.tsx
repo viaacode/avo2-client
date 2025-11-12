@@ -3,10 +3,10 @@ import {
   type FilterableColumn,
   FilterTable,
   getFilters,
-} from '@meemoo/admin-core-ui/admin'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { isNil } from 'es-toolkit'
+} from '@meemoo/admin-core-ui/admin';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { isNil } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactText,
@@ -14,87 +14,86 @@ import React, {
   useEffect,
   useMemo,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
+} from 'react';
+import { Helmet } from 'react-helmet';
 
-import { AssignmentService } from '../../../assignment/assignment.service.js'
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { GENERATE_SITE_TITLE } from '../../../constants.js'
-import { ErrorView } from '../../../error/views/ErrorView.js'
-import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service.js'
-import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types.js'
-import { OrderDirection } from '../../../search/search.const.js'
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal.js'
+import { AssignmentService } from '../../../assignment/assignment.service.js';
+import { commonUserAtom } from '../../../authentication/authentication.store.js';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
+import { GENERATE_SITE_TITLE } from '../../../constants.js';
+import { ErrorView } from '../../../error/views/ErrorView.js';
+import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service.js';
+import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types.js';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal.js';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { TableColumnDataType } from '../../../shared/types/table-column-data-type.js'
-import { AssignmentsBulkAction } from '../../assignments/assignments.types.js'
-import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal.js'
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { CustomError } from '../../../shared/helpers/custom-error.js';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { TableColumnDataType } from '../../../shared/types/table-column-data-type.js';
+import { AssignmentsBulkAction } from '../../assignments/assignments.types.js';
+import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal.js';
 import {
   getDateRangeFilters,
   getMultiOptionFilters,
-} from '../../shared/helpers/filters.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
-import { type PickerItem } from '../../shared/types/content-picker.js'
+} from '../../shared/helpers/filters.js';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import { type PickerItem } from '../../shared/types/content-picker.js';
 import {
   renderPupilCollectionTableCellReact,
   renderPupilCollectionTableCellText,
-} from '../helpers/render-pupil-collections-overview-table-cell.js'
+} from '../helpers/render-pupil-collections-overview-table-cell.js';
 import {
   GET_PUPIL_COLLECTION_BULK_ACTIONS,
   GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS,
   ITEMS_PER_PAGE,
-} from '../pupil-collection.const.js'
-import { type PupilCollectionsOverviewTableState } from '../pupil-collection.types.js'
+} from '../pupil-collection.const.js';
+import { type PupilCollectionsOverviewTableState } from '../pupil-collection.types.js';
 
 export const PupilCollectionsOverview: FC = () => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [pupilCollections, setPupilCollections] = useState<
     Avo.Assignment.Response[] | null
-  >(null)
-  const [pupilCollectionsCount, setPupilCollectionsCount] = useState<number>(0)
+  >(null);
+  const [pupilCollectionsCount, setPupilCollectionsCount] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const [tableState, setTableState] = useState<
     Partial<PupilCollectionsOverviewTableState>
   >({
     sort_column: 'created_at',
     sort_order: Avo.Search.OrderDirection.DESC,
-  })
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] =
-    useState(false)
+    useState(false);
   const [selectedPupilCollectionIds, setSelectedPupilCollectionIds] = useState<
     string[]
-  >([])
+  >([]);
   const [pupilCollectionsDeleteModalOpen, setPupilCollectionsDeleteModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [isChangeAuthorModalOpen, setIsChangeAuthorModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
   const tableColumns = useMemo(
     () => GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS(),
     [],
-  )
+  );
 
   const generateWhereObject = useCallback(
     (filters: Partial<PupilCollectionsOverviewTableState>) => {
-      const andFilters: any[] = []
+      const andFilters: any[] = [];
 
       // Text search
       if (filters.query) {
-        const query = `%${filters.query}%`
+        const query = `%${filters.query}%`;
 
         andFilters.push({
           _or: [
@@ -103,7 +102,7 @@ export const PupilCollectionsOverview: FC = () => {
             { assignment: { title: { _ilike: query } } },
             { assignment: { owner: { full_name: { _ilike: query } } } },
           ],
-        })
+        });
       }
 
       // Author multi option filter
@@ -113,7 +112,7 @@ export const PupilCollectionsOverview: FC = () => {
           ['pupil', 'teacher'],
           ['owner.profile_id', 'assignment.owner.profile_id'],
         ),
-      )
+      );
 
       // Date filters
       andFilters.push(
@@ -122,7 +121,7 @@ export const PupilCollectionsOverview: FC = () => {
           ['created_at', 'updated_at', 'deadline_at'],
           ['created_at', 'updated_at', 'assignment.deadline_at'],
         ),
-      )
+      );
 
       // Status filter: active/expired
       if (!isNil(filters.status?.[0]) && filters.status?.length === 1) {
@@ -134,7 +133,7 @@ export const PupilCollectionsOverview: FC = () => {
                 _gte: new Date().toISOString(),
               },
             },
-          })
+          });
         } else {
           // Assignment past deadline
           andFilters.push({
@@ -143,26 +142,26 @@ export const PupilCollectionsOverview: FC = () => {
                 _lt: new Date().toISOString(),
               },
             },
-          })
+          });
         }
       }
 
-      return { _and: andFilters }
+      return { _and: andFilters };
     },
     [],
-  )
+  );
 
   const getColumnDataType = useCallback(() => {
     const column = tableColumns.find((tableColumn: FilterableColumn) => {
-      return (tableColumn?.id || '') === (tableState?.sort_column || 'empty')
-    })
+      return (tableColumn?.id || '') === (tableState?.sort_column || 'empty');
+    });
     return (column?.dataType ||
-      TableColumnDataType.string) as TableColumnDataType
-  }, [tableColumns, tableState])
+      TableColumnDataType.string) as TableColumnDataType;
+  }, [tableColumns, tableState]);
 
   const fetchPupilCollections = useCallback(async () => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
 
       const { assignmentResponses, count } =
         await PupilCollectionService.fetchPupilCollectionsForAdmin(
@@ -173,10 +172,10 @@ export const PupilCollectionsOverview: FC = () => {
           tableState.sort_order || Avo.Search.OrderDirection.DESC,
           getColumnDataType(),
           generateWhereObject(getFilters(tableState)),
-        )
+        );
 
-      setPupilCollections(assignmentResponses)
-      setPupilCollectionsCount(count)
+      setPupilCollections(assignmentResponses);
+      setPupilCollectionsCount(count);
     } catch (err) {
       console.error(
         new CustomError(
@@ -186,36 +185,36 @@ export const PupilCollectionsOverview: FC = () => {
             tableState,
           },
         ),
-      )
+      );
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'admin/pupil-collection/views/pupil-collections-overview___het-ophalen-van-de-leerlingencollecties-is-mislukt',
         ),
-      })
+      });
     }
-    setIsLoading(false)
-  }, [tableState, getColumnDataType, generateWhereObject])
+    setIsLoading(false);
+  }, [tableState, getColumnDataType, generateWhereObject]);
 
   useEffect(() => {
-    fetchPupilCollections()
-  }, [fetchPupilCollections])
+    fetchPupilCollections();
+  }, [fetchPupilCollections]);
 
   useEffect(() => {
     if (pupilCollections) {
       setLoadingInfo({
         state: 'loaded',
-      })
+      });
     }
-  }, [fetchPupilCollections, pupilCollections])
+  }, [fetchPupilCollections, pupilCollections]);
 
   const setAllPupilCollectionsAsSelected = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       const pupilCollectionIds =
         await PupilCollectionService.getPupilCollectionIds(
           generateWhereObject(getFilters(tableState)),
-        )
+        );
       ToastService.info(
         tHtml(
           'admin/pupil-collection/views/pupil-collections-overview___je-hebt-num-of-selected-pupil-collections-geselecteerd',
@@ -223,8 +222,8 @@ export const PupilCollectionsOverview: FC = () => {
             numOfSelectedPupilCollections: pupilCollectionIds.length,
           },
         ),
-      )
-      setSelectedPupilCollectionIds(pupilCollectionIds)
+      );
+      setSelectedPupilCollectionIds(pupilCollectionIds);
     } catch (err) {
       console.error(
         new CustomError(
@@ -232,48 +231,48 @@ export const PupilCollectionsOverview: FC = () => {
           err,
           { tableState },
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/pupil-collection/views/pupil-collections-overview___het-ophalen-van-alle-geselecteerde-leerlingencollectie-ids-is-mislukt',
         ),
-      )
+      );
     }
 
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const handleBulkAction = async (
     action: AssignmentsBulkAction,
   ): Promise<void> => {
-    const areRowsSelected = selectedPupilCollectionIds.length > 0
+    const areRowsSelected = selectedPupilCollectionIds.length > 0;
 
     switch (action) {
       case AssignmentsBulkAction.DELETE:
-        if (!areRowsSelected) return
-        setPupilCollectionsDeleteModalOpen(true)
-        return
+        if (!areRowsSelected) return;
+        setPupilCollectionsDeleteModalOpen(true);
+        return;
 
       case AssignmentsBulkAction.CHANGE_AUTHOR:
-        if (!areRowsSelected) return
-        setIsChangeAuthorModalOpen(true)
-        return
+        if (!areRowsSelected) return;
+        setIsChangeAuthorModalOpen(true);
+        return;
 
       case AssignmentsBulkAction.EXPORT_ALL:
         // No rows need to be selected, since we are exporting everything
-        setIsExportAllToCsvModalOpen(true)
-        return
+        setIsExportAllToCsvModalOpen(true);
+        return;
     }
-  }
+  };
 
   const deleteSelectedAssignmentResponses = async () => {
-    setIsLoading(true)
-    setPupilCollectionsDeleteModalOpen(false)
+    setIsLoading(true);
+    setPupilCollectionsDeleteModalOpen(false);
     try {
       await AssignmentService.deleteAssignmentResponses(
         selectedPupilCollectionIds,
-      )
-      await fetchPupilCollections()
+      );
+      await fetchPupilCollections();
       ToastService.success(
         tHtml(
           'admin/pupil-collection/views/pupil-collections-overview___je-hebt-num-of-selected-pupil-collections-leerlingencollecties-verwijderd',
@@ -281,8 +280,8 @@ export const PupilCollectionsOverview: FC = () => {
             numOfSelectedPupilCollections: selectedPupilCollectionIds.length,
           },
         ),
-      )
-      setSelectedPupilCollectionIds([])
+      );
+      setSelectedPupilCollectionIds([]);
     } catch (err) {
       console.error(
         new CustomError(
@@ -292,24 +291,24 @@ export const PupilCollectionsOverview: FC = () => {
             tableState,
           },
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/pupil-collection/views/pupil-collections-overview___het-verwijderen-van-de-geselecteerde-leerlingencollecties-is-mislukt',
         ),
-      )
+      );
     }
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const changeAuthorForSelectedPupilCollections = async (profileId: string) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       await PupilCollectionService.changePupilCollectionsAuthor(
         profileId,
         selectedPupilCollectionIds,
-      )
-      await fetchPupilCollections()
+      );
+      await fetchPupilCollections();
       ToastService.success(
         tHtml(
           'admin/pupil-collection/views/pupil-collections-overview___je-hebt-de-auteur-van-num-of-selected-pupil-collections-leerlingencollecties-aangepast',
@@ -317,8 +316,8 @@ export const PupilCollectionsOverview: FC = () => {
             numOfSelectedPupilCollections: selectedPupilCollectionIds.length,
           },
         ),
-      )
-      setSelectedPupilCollectionIds([])
+      );
+      setSelectedPupilCollectionIds([]);
     } catch (err) {
       console.error(
         new CustomError(
@@ -328,15 +327,15 @@ export const PupilCollectionsOverview: FC = () => {
             tableState,
           },
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/pupil-collection/views/pupil-collections-overview___het-updaten-van-de-auteur-van-de-geselecteerde-leerlingencollecties-is-mislukt',
         ),
-      )
+      );
     }
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const renderNoResults = () => {
     return (
@@ -351,12 +350,12 @@ export const PupilCollectionsOverview: FC = () => {
           )}
         </p>
       </ErrorView>
-    )
-  }
+    );
+  };
 
   const renderAssignmentOverview = () => {
     if (!pupilCollections) {
-      return null
+      return null;
     }
     return (
       <>
@@ -378,14 +377,14 @@ export const PupilCollectionsOverview: FC = () => {
           )}
           itemsPerPage={ITEMS_PER_PAGE}
           onTableStateChanged={(newTableState) => {
-            setTableState(newTableState)
+            setTableState(newTableState);
           }}
           renderNoResults={renderNoResults}
           isLoading={isLoading}
           showCheckboxes
           selectedItemIds={selectedPupilCollectionIds}
           onSelectionChanged={(ids: ReactText[]) => {
-            setSelectedPupilCollectionIds(ids as string[])
+            setSelectedPupilCollectionIds(ids as string[]);
           }}
           onSelectAll={setAllPupilCollectionsAsSelected}
           bulkActions={GET_PUPIL_COLLECTION_BULK_ACTIONS(
@@ -438,8 +437,8 @@ export const PupilCollectionsOverview: FC = () => {
                 tableState.sort_order || Avo.Search.OrderDirection.DESC,
                 getColumnDataType(),
                 {},
-              )
-            return response.count
+              );
+            return response.count;
           }}
           fetchMoreItems={async (offset: number, limit: number) => {
             const response =
@@ -451,8 +450,8 @@ export const PupilCollectionsOverview: FC = () => {
                 tableState.sort_order || Avo.Search.OrderDirection.DESC,
                 getColumnDataType(),
                 generateWhereObject(getFilters(tableState)),
-              )
-            return response.assignmentResponses
+              );
+            return response.assignmentResponses;
           }}
           renderValue={(pupilCollection: any, columnId: string) =>
             renderPupilCollectionTableCellText(
@@ -466,8 +465,8 @@ export const PupilCollectionsOverview: FC = () => {
           )}
         />
       </>
-    )
-  }
+    );
+  };
 
   return (
     <PermissionGuard permissions={[PermissionName.VIEW_ANY_PUPIL_COLLECTIONS]}>
@@ -501,7 +500,7 @@ export const PupilCollectionsOverview: FC = () => {
         </AdminLayoutBody>
       </AdminLayout>
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default PupilCollectionsOverview
+export default PupilCollectionsOverview;

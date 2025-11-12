@@ -1,4 +1,4 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query'
+import { type UseQueryResult, useQuery } from '@tanstack/react-query'
 import type { Avo } from '@viaa/avo2-types'
 
 import { QUERY_KEYS } from '../../shared/constants/query-keys.js'
@@ -16,17 +16,14 @@ export const useGetAssignments = (
   assignments: Avo.Assignment.Assignment[]
   count: number
 }> => {
-  return useQuery(
-    [QUERY_KEYS.GET_ASSIGNMENTS, requestParams],
-    async () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_ASSIGNMENTS, requestParams],
+    queryFn: async () => {
       return AssignmentService.fetchAssignments(requestParams)
     },
-    {
-      enabled: true,
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
-      keepPreviousData: true,
-      ...options,
-    },
-  )
+    enabled: true,
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    ...options,
+  })
 }

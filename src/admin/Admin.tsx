@@ -1,61 +1,65 @@
-import { Flex, IconName } from '@viaa/avo2-components'
-import { PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import React, { type FC, useEffect, useState } from 'react'
-import { HorizontalPageSplit } from 'react-page-split'
-import { Outlet } from 'react-router'
-import { QueryParamProvider } from 'use-query-params'
-
-import { commonUserAtom } from '../authentication/authentication.store.js'
-import { PermissionGuard } from '../authentication/components/PermissionGuard.js'
-import { PermissionService } from '../authentication/helpers/permission-service.js'
+import { Flex, IconName } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
+import React, { type FC, ReactElement, useEffect, useState } from 'react';
+import * as ReactPageSplit from 'react-page-split';
+import { Outlet } from 'react-router';
+import { QueryParamProvider } from 'use-query-params';
+import { commonUserAtom } from '../authentication/authentication.store.js';
+import { PermissionGuard } from '../authentication/components/PermissionGuard.js';
+import { PermissionService } from '../authentication/helpers/permission-service.js';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { CustomError } from '../shared/helpers/custom-error.js'
-import { ReactRouter7Adapter } from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params.js'
-import { tHtml } from '../shared/helpers/translate-html.js'
-import { ToastService } from '../shared/services/toast-service.js'
-import { type NavigationItemInfo } from '../shared/types/index.js'
+} from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { CustomError } from '../shared/helpers/custom-error.js';
+import { ReactRouter7Adapter } from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params.js';
+import { tHtml } from '../shared/helpers/translate-html.js';
+import { ToastService } from '../shared/services/toast-service.js';
+import { type NavigationItemInfo } from '../shared/types/index.js';
+import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const.js';
+import { Sidebar } from './shared/components/Sidebar/Sidebar.js';
 
-import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const.js'
-import { Sidebar } from './shared/components/Sidebar/Sidebar.js'
+const HorizontalPageSplit = (ReactPageSplit as any).HorizontalPageSplit as FC<{
+  children: ReactElement[];
+  className: string;
+  widths: string[];
+}>;
 
 export const Admin: FC = () => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const [userPermissions, setUserPermissions] = useState<
     PermissionName[] | null
-  >(null)
+  >(null);
   const [navigationItems, setNavigationItems] = useState<
     NavigationItemInfo[] | null
-  >(null)
+  >(null);
 
   useEffect(() => {
     if (!commonUser) {
-      return
+      return;
     }
     if (
       PermissionService.hasPerm(commonUser, PermissionName.VIEW_ADMIN_DASHBOARD)
     ) {
-      const tempUserPermissions = commonUser?.permissions || []
-      setUserPermissions(tempUserPermissions)
+      const tempUserPermissions = commonUser?.permissions || [];
+      setUserPermissions(tempUserPermissions);
       GET_NAV_ITEMS(tempUserPermissions)
         .then((navItems) => {
-          setNavigationItems(navItems)
+          setNavigationItems(navItems);
         })
         .catch((err: any) => {
-          console.error(new CustomError('Failed to get nav items', err))
+          console.error(new CustomError('Failed to get nav items', err));
           ToastService.danger(
             tHtml(
               'admin/admin___het-ophalen-van-de-navigatie-items-is-mislukt',
             ),
-          )
-        })
+          );
+        });
     } else {
       setLoadingInfo({
         state: 'error',
@@ -64,19 +68,19 @@ export const Admin: FC = () => {
           'admin/admin___je-hebt-geen-rechten-om-het-beheer-dashboard-te-bekijken-view-admin-dashboard',
         ),
         actionButtons: ['home', 'helpdesk'],
-      })
+      });
     }
-  }, [commonUser, setLoadingInfo])
+  }, [commonUser, setLoadingInfo]);
 
   useEffect(() => {
     if (userPermissions && navigationItems) {
-      setLoadingInfo({ state: 'loaded' })
+      setLoadingInfo({ state: 'loaded' });
     }
-  }, [userPermissions, navigationItems, setLoadingInfo])
+  }, [userPermissions, navigationItems, setLoadingInfo]);
 
   const renderAdminPage = () => {
     if (!navigationItems || !userPermissions) {
-      return null
+      return null;
     }
     return (
       <HorizontalPageSplit
@@ -95,8 +99,8 @@ export const Admin: FC = () => {
           <Outlet />
         </Flex>
       </HorizontalPageSplit>
-    )
-  }
+    );
+  };
 
   return (
     <QueryParamProvider adapter={ReactRouter7Adapter}>
@@ -108,7 +112,7 @@ export const Admin: FC = () => {
         />
       </PermissionGuard>
     </QueryParamProvider>
-  )
-}
+  );
+};
 
-export default Admin
+export default Admin;

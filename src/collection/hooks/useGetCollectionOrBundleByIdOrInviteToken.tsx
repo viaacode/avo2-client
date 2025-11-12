@@ -15,25 +15,23 @@ export const useGetCollectionOrBundleByIdOrInviteToken = (
     refetchIntervalInBackground?: boolean
   } = {},
 ) => {
-  return useQuery<Avo.Collection.Collection | null>(
-    [
+  return useQuery<Avo.Collection.Collection | null>({
+    queryKey: [
       QUERY_KEYS.GET_COLLECTION_OR_BUNDLE_BY_ID_OR_INVITE_TOKEN,
       collectionId,
       type,
       inviteToken,
     ],
-    () => {
+    queryFn: () => {
       return CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
         collectionId,
         type,
         inviteToken,
       )
     },
-    {
-      enabled: true,
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
-      ...options,
-    },
-  )
+    enabled: true,
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    ...options,
+  })
 }

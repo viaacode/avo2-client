@@ -9,9 +9,9 @@ export const useGetItemWithRelations = (
     enabled: boolean
   } = { enabled: true },
 ) => {
-  return useQuery(
-    [QUERY_KEYS.GET_ITEM_USED_BY, itemUuid],
-    async () => await ItemsService.fetchItemByUuid(itemUuid, true),
-    options,
-  )
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_ITEM_USED_BY, itemUuid],
+    queryFn: async () => await ItemsService.fetchItemByUuid(itemUuid, true),
+    ...options,
+  })
 }

@@ -1,65 +1,64 @@
-import { FilterTable, getFilters } from '@meemoo/admin-core-ui/admin'
-import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components'
-import { PermissionName } from '@viaa/avo2-types'
-import { isNil } from 'es-toolkit'
-import React, { type FC, useCallback, useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate } from 'react-router'
+import { FilterTable, getFilters } from '@meemoo/admin-core-ui/admin';
+import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { isNil } from 'es-toolkit';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js'
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js'
-import { ErrorView } from '../../../error/views/ErrorView.js'
-import { OrderDirection } from '../../../search/search.const.js'
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js';
+import { ErrorView } from '../../../error/views/ErrorView.js';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { buildLink } from '../../../shared/helpers/build-link.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { formatTimestamp } from '../../../shared/helpers/formatters/date.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { ADMIN_PATH } from '../../admin.const.js'
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { buildLink } from '../../../shared/helpers/build-link.js';
+import { CustomError } from '../../../shared/helpers/custom-error.js';
+import { formatTimestamp } from '../../../shared/helpers/formatters/date.js';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { ADMIN_PATH } from '../../admin.const.js';
 import {
   getDateRangeFilters,
   getQueryFilter,
-} from '../../shared/helpers/filters.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
+} from '../../shared/helpers/filters.js';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
 import {
   AdminLayoutBody,
   AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
 import {
   GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS,
   ITEMS_PER_PAGE,
-} from '../items.const.js'
-import { ItemsService } from '../items.service.js'
+} from '../items.const.js';
+import { ItemsService } from '../items.service.js';
 import {
   type UnpublishedItem,
   type UnpublishedItemsOverviewTableCols,
   type UnpublishedItemsTableState,
-} from '../items.types.js'
+} from '../items.types.js';
 
 export const PublishItemsOverview: FC = () => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
-  const [items, setItems] = useState<UnpublishedItem[] | null>(null)
-  const [selectedItemIds, setSelectedItemIds] = useState<string[]>([])
-  const [itemCount, setItemCount] = useState<number>(0)
+  const [items, setItems] = useState<UnpublishedItem[] | null>(null);
+  const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
+  const [itemCount, setItemCount] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const [tableState, setTableState] = useState<
     Partial<UnpublishedItemsTableState>
-  >({})
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  >({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const generateWhereObject = useCallback(
     (filters: Partial<UnpublishedItemsTableState>) => {
-      const andFilters: any[] = []
+      const andFilters: any[] = [];
       andFilters.push(
         ...getQueryFilter(
           filters.query,
@@ -68,8 +67,8 @@ export const PublishItemsOverview: FC = () => {
             { title: { _ilike: queryWildcard } },
           ],
         ),
-      )
-      andFilters.push(...getDateRangeFilters(filters, ['updated_at']))
+      );
+      andFilters.push(...getDateRangeFilters(filters, ['updated_at']));
 
       // The status column in the shared_items table indicated the MAM update status.
       // This is not the status we want to display in the UI
@@ -80,24 +79,24 @@ export const PublishItemsOverview: FC = () => {
           andFilters.push({
             status: { _in: ['NEW', 'UPDATE'] },
             _not: { item_meta: {} },
-          })
+          });
         } else {
           andFilters.push({
             status: { _in: ['NEW', 'UPDATE'] },
             item_meta: {},
-          })
+          });
         }
       } else {
-        andFilters.push({ status: { _in: ['NEW', 'UPDATE'] } })
+        andFilters.push({ status: { _in: ['NEW', 'UPDATE'] } });
       }
-      return { _and: andFilters }
+      return { _and: andFilters };
     },
     [],
-  )
+  );
 
   // methods
   const fetchItems = useCallback(async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       const [itemsTemp, collectionsCountTemp] =
         await ItemsService.fetchUnpublishedItemsWithFilters(
@@ -106,36 +105,36 @@ export const PublishItemsOverview: FC = () => {
             'updated_at') as UnpublishedItemsOverviewTableCols,
           tableState.sort_order || Avo.Search.OrderDirection.DESC,
           generateWhereObject(getFilters(tableState)),
-        )
-      setItems(itemsTemp)
-      setItemCount(collectionsCountTemp)
+        );
+      setItems(itemsTemp);
+      setItemCount(collectionsCountTemp);
     } catch (err) {
       console.error(
         new CustomError('Failed to get items from the database', err, {
           tableState,
         }),
-      )
+      );
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'admin/items/views/items-overview___het-ophalen-van-de-items-is-mislukt',
         ),
-      })
+      });
     }
-    setIsLoading(false)
-  }, [tableState, generateWhereObject])
+    setIsLoading(false);
+  }, [tableState, generateWhereObject]);
 
   useEffect(() => {
-    fetchItems()
-  }, [fetchItems])
+    fetchItems();
+  }, [fetchItems]);
 
   useEffect(() => {
     if (items) {
       setLoadingInfo({
         state: 'loaded',
-      })
+      });
     }
-  }, [setLoadingInfo, items])
+  }, [setLoadingInfo, items]);
 
   const navigateToItemDetail = (externalId: string | undefined) => {
     if (!externalId) {
@@ -143,12 +142,12 @@ export const PublishItemsOverview: FC = () => {
         tHtml(
           'admin/items/views/items-overview___dit-item-heeft-geen-geldig-pid',
         ),
-      )
-      return
+      );
+      return;
     }
-    const link = buildLink(APP_PATH.ITEM_DETAIL.route, { id: externalId })
-    redirectToClientPage(link, navigateFunc)
-  }
+    const link = buildLink(APP_PATH.ITEM_DETAIL.route, { id: externalId });
+    redirectToClientPage(link, navigateFunc);
+  };
 
   const navigateToAdminItemDetail = (uuid: string | undefined) => {
     if (!uuid) {
@@ -156,12 +155,12 @@ export const PublishItemsOverview: FC = () => {
         tHtml(
           'admin/items/views/items-overview___dit-item-heeft-geen-geldig-uuid',
         ),
-      )
-      return
+      );
+      return;
     }
-    const link = buildLink(ADMIN_PATH.ITEM_DETAIL, { id: uuid })
-    redirectToClientPage(link, navigateFunc)
-  }
+    const link = buildLink(ADMIN_PATH.ITEM_DETAIL, { id: uuid });
+    redirectToClientPage(link, navigateFunc);
+  };
 
   const publishSelection = async () => {
     try {
@@ -170,62 +169,62 @@ export const PublishItemsOverview: FC = () => {
           tHtml(
             'admin/items/views/publish-items-overview___selecteer-eerst-enkele-items-die-je-wil-publiceren-dmv-de-checkboxes',
           ),
-        )
-        return
+        );
+        return;
       }
-      await ItemsService.setSharedItemsStatus(selectedItemIds || [], 'OK')
-      await fetchItems()
+      await ItemsService.setSharedItemsStatus(selectedItemIds || [], 'OK');
+      await fetchItems();
       ToastService.success(
         tHtml(
           'admin/items/views/publish-items-overview___de-geselecteerde-items-zijn-gepubliceerd-naar-av-o',
         ),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError('Failed to set status for shared.items', err, {
           selectedItemIds,
         }),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/items/views/publish-items-overview___het-publiceren-van-de-items-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const triggerMamSync = async () => {
     try {
-      const result: string = await ItemsService.triggerMamSync()
+      const result: string = await ItemsService.triggerMamSync();
       if (result === 'SCHEDULED') {
         ToastService.success(
           tHtml(
             'admin/items/views/publish-items-overview___een-mam-synchronisatie-is-gestart',
           ),
-        )
+        );
       } else {
         ToastService.info(
           tHtml(
             'admin/items/views/publish-items-overview___een-mam-synchronisatie-is-reeds-bezig',
           ),
-        )
+        );
       }
     } catch (err) {
-      console.error(new CustomError('Failed to trigger MAM sync', err))
+      console.error(new CustomError('Failed to trigger MAM sync', err));
       ToastService.danger(
         tHtml(
           'admin/items/views/publish-items-overview___het-triggeren-van-een-mam-synchronisatie-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const setAllItemsAsSelected = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       const itemPids: string[] = await ItemsService.getUnpublishedItemPids(
         generateWhereObject(getFilters(tableState)),
-      )
+      );
       ToastService.info(
         tHtml(
           'admin/items/views/publish-items-overview___je-hebt-num-of-selected-items-items-geselecteerd',
@@ -233,8 +232,8 @@ export const PublishItemsOverview: FC = () => {
             numOfSelectedItems: itemPids.length,
           },
         ),
-      )
-      setSelectedItemIds(itemPids)
+      );
+      setSelectedItemIds(itemPids);
     } catch (err) {
       console.error(
         new CustomError(
@@ -242,16 +241,16 @@ export const PublishItemsOverview: FC = () => {
           err,
           { tableState },
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/items/views/publish-items-overview___het-ophalen-van-alle-item-ids-is-mislukt',
         ),
-      )
+      );
     }
 
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const renderTableCell = (
     rowData: Partial<UnpublishedItem>,
@@ -261,22 +260,22 @@ export const PublishItemsOverview: FC = () => {
       case 'updated_at':
         return !isNil(rowData[columnId])
           ? formatTimestamp(rowData[columnId] as any)
-          : '-'
+          : '-';
 
       case 'title':
       case 'pid':
-        return rowData?.[columnId] || '-'
+        return rowData?.[columnId] || '-';
 
       case 'status':
         if (rowData.item_meta) {
-          return tText('admin/items/views/publish-items-overview___update')
+          return tText('admin/items/views/publish-items-overview___update');
         }
-        return tText('admin/items/views/publish-items-overview___nieuw')
+        return tText('admin/items/views/publish-items-overview___nieuw');
 
       case ACTIONS_TABLE_COLUMN_ID: {
         const itemExternalId: string | undefined =
-          rowData?.item_meta?.external_id
-        const itemUid: string | undefined = rowData?.item_meta?.uid
+          rowData?.item_meta?.external_id;
+        const itemUid: string | undefined = rowData?.item_meta?.uid;
 
         if (itemExternalId) {
           return (
@@ -304,16 +303,16 @@ export const PublishItemsOverview: FC = () => {
                 )}
               />
             </ButtonToolbar>
-          )
+          );
         }
 
-        return null
+        return null;
       }
 
       default:
-        return ((rowData as any)[columnId] || '-').slice(0, 60)
+        return ((rowData as any)[columnId] || '-').slice(0, 60);
     }
-  }
+  };
 
   const renderNoResults = () => {
     return (
@@ -328,12 +327,12 @@ export const PublishItemsOverview: FC = () => {
           )}
         </p>
       </ErrorView>
-    )
-  }
+    );
+  };
 
   const renderItemsOverview = () => {
     if (!items) {
-      return null
+      return null;
     }
     return (
       <>
@@ -360,14 +359,14 @@ export const PublishItemsOverview: FC = () => {
           showCheckboxes
           selectedItemIds={selectedItemIds}
           onSelectionChanged={(newSelectedIds) => {
-            setSelectedItemIds(newSelectedIds as string[])
+            setSelectedItemIds(newSelectedIds as string[]);
           }}
           onSelectAll={setAllItemsAsSelected}
           isLoading={isLoading}
         />
       </>
-    )
-  }
+    );
+  };
 
   return (
     <PermissionGuard permissions={[PermissionName.PUBLISH_ITEMS]}>
@@ -422,7 +421,7 @@ export const PublishItemsOverview: FC = () => {
         </AdminLayoutBody>
       </AdminLayout>
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default PublishItemsOverview
+export default PublishItemsOverview;

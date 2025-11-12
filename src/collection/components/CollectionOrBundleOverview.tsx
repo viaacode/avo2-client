@@ -1,6 +1,6 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/admin'
-import { PaginationBar } from '@meemoo/react-components'
-import { QueryClient } from '@tanstack/react-query'
+import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
+import { PaginationBar } from '@meemoo/react-components';
+import { QueryClient } from '@tanstack/react-query';
 import {
   Button,
   ButtonToolbar,
@@ -15,10 +15,10 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarLeft,
-} from '@viaa/avo2-components'
-import { Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { cloneDeep, compact, isNil, noop } from 'es-toolkit'
+} from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { cloneDeep, compact, isNil, noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactNode,
@@ -26,151 +26,150 @@ import React, {
   useCallback,
   useEffect,
   useState,
-} from 'react'
-import { useNavigate } from 'react-router'
-import { Link } from 'react-router-dom'
+} from 'react';
+import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 import {
   ArrayParam,
   NumberParam,
   StringParam,
   useQueryParams,
-} from 'use-query-params'
+} from 'use-query-params';
 
-import { type CollectionsOrBundlesOverviewTableCols } from '../../admin/collectionsOrBundles/collections-or-bundles.types.js'
-import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js'
-import { AssignmentService } from '../../assignment/assignment.service.js'
-import { CreateAssignmentModal } from '../../assignment/modals/CreateAssignmentModal.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { APP_PATH } from '../../constants.js'
-import { ErrorView } from '../../error/views/ErrorView.js'
-import { OrderDirection } from '../../search/search.const.js'
+import { type CollectionsOrBundlesOverviewTableCols } from '../../admin/collectionsOrBundles/collections-or-bundles.types.js';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js';
+import { AssignmentService } from '../../assignment/assignment.service.js';
+import { CreateAssignmentModal } from '../../assignment/modals/CreateAssignmentModal.js';
+import { commonUserAtom } from '../../authentication/authentication.store.js';
+import { PermissionService } from '../../authentication/helpers/permission-service.js';
+import { APP_PATH } from '../../constants.js';
+import { ErrorView } from '../../error/views/ErrorView.js';
 import {
   CheckboxDropdownModal,
   type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js'
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper.js'
-import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types.js'
-import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal.js'
-import { getMoreOptionsLabel } from '../../shared/constants/index.js'
-import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generated/graphql-db-react-query.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown.js'
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper.js';
+import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types.js';
+import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal.js';
+import { getMoreOptionsLabel } from '../../shared/constants/index.js';
+import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generated/graphql-db-react-query.js';
+import { buildLink } from '../../shared/helpers/build-link.js';
+import { createDropdownMenuItem } from '../../shared/helpers/dropdown.js';
 import {
   formatDate,
   formatTimestamp,
-} from '../../shared/helpers/formatters/date.js'
-import { getOrderObject } from '../../shared/helpers/generate-order-gql-query.js'
-import { navigate } from '../../shared/helpers/link.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop.js'
-import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { truncateTableValue } from '../../shared/helpers/truncate.js'
-import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service.js'
-import { TableColumnDataType } from '../../shared/types/table-column-data-type.js'
-import { ITEMS_PER_PAGE } from '../../workspace/workspace.const.js'
-import { CollectionService } from '../collection.service.js'
+} from '../../shared/helpers/formatters/date.js';
+import { getOrderObject } from '../../shared/helpers/generate-order-gql-query.js';
+import { navigate } from '../../shared/helpers/link.js';
+import { isMobileWidth } from '../../shared/helpers/media-query.js';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop.js';
+import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview.js';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tHtml } from '../../shared/helpers/translate-html.js';
+import { tText } from '../../shared/helpers/translate-text.js';
+import { truncateTableValue } from '../../shared/helpers/truncate.js';
+import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service.js';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type.js';
+import { ITEMS_PER_PAGE } from '../../workspace/workspace.const.js';
+import { CollectionService } from '../collection.service.js';
 import {
-  type Collection,
   COLLECTION_OR_BUNDLE_TO_CONTENT_TYPE_ENGLISH,
+  type Collection,
   CollectionCreateUpdateTab,
   CollectionMenuAction,
   CollectionOrBundle,
   CollectionShareType,
   ContentTypeNumber,
-} from '../collection.types.js'
+} from '../collection.types.js';
 import {
   deleteCollection,
   deleteSelfFromCollection,
-} from '../helpers/delete-collection.js'
+} from '../helpers/delete-collection.js';
 
-import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './CollectionOrBundleOverview.consts.js'
-import { DeleteCollectionModal } from './modals/DeleteCollectionModal.js'
-import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal.js'
+import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './CollectionOrBundleOverview.consts.js';
+import { DeleteCollectionModal } from './modals/DeleteCollectionModal.js';
+import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal.js';
 
-import './CollectionOrBundleOverview.scss'
+import './CollectionOrBundleOverview.scss';
 
 interface CollectionOrBundleOverviewProps {
-  numberOfItems: number
-  type: CollectionOrBundle
-  onUpdate: () => void | Promise<void>
+  numberOfItems: number;
+  type: CollectionOrBundle;
+  onUpdate: () => void | Promise<void>;
 }
 
 export const CollectionOrBundleOverview: FC<
   CollectionOrBundleOverviewProps
 > = ({ numberOfItems, type, onUpdate = noop }) => {
-  const navigateFunc = useNavigate()
-  const commonUser = useAtomValue(commonUserAtom)
+  const navigateFunc = useNavigate();
+  const commonUser = useAtomValue(commonUserAtom);
 
   // State
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
-  const [collections, setCollections] = useState<Collection[] | null>(null)
+  });
+  const [collections, setCollections] = useState<Collection[] | null>(null);
   const [permissions, setPermissions] = useState<{
     [collectionUuid: string]: {
-      canEdit?: boolean
-      canDelete?: boolean
-    }
-  }>({})
-  const [showPublicState, setShowPublicState] = useState(false)
+      canEdit?: boolean;
+      canDelete?: boolean;
+    };
+  }>({});
+  const [showPublicState, setShowPublicState] = useState(false);
 
   const [dropdownOpenForCollectionUuid, setDropdownOpenForCollectionUuid] =
-    useState<string | null>(null)
+    useState<string | null>(null);
   const [selectedCollectionDetail, setSelectedCollectionDetail] = useState<
     Avo.Collection.Collection | undefined
-  >(undefined)
+  >(undefined);
   const [selectedCollection, setSelectedCollection] = useState<
     Collection | undefined
-  >(undefined)
+  >(undefined);
   const [sortColumn, setSortColumn] =
-    useState<CollectionsOrBundlesOverviewTableCols>('updated_at')
-  const [sortOrder, setSortOrder] = useState<OrderDirection>(
+    useState<CollectionsOrBundlesOverviewTableCols>('updated_at');
+  const [sortOrder, setSortOrder] = useState<Avo.Search.OrderDirection>(
     Avo.Search.OrderDirection.DESC,
-  )
-  const [page, setPage] = useState<number>(0)
+  );
+  const [page, setPage] = useState<number>(0);
   const [activeModalInfo, setActiveModalInfo] = useState<{
-    collectionUuid: string
+    collectionUuid: string;
     activeModal:
       | 'DELETE-COLLECTION'
       | 'DELETE-CONTRIBUTOR'
       | 'QUICK_LANE'
-      | 'CREATE_ASSIGNMENT'
-  } | null>(null)
+      | 'CREATE_ASSIGNMENT';
+  } | null>(null);
 
   const [query, setQuery] = useQueryParams({
     selectedShareTypeLabelIds: ArrayParam,
     page: NumberParam,
     sortColumn: StringParam,
     sortOrder: StringParam,
-  })
+  });
 
   const isContributor =
     selectedCollection?.share_type ===
-    Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ
+    Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ;
   const isOwner =
     selectedCollection?.share_type ===
       Avo.Share.ShareWithColleagueType.GEDEELD_MET_ANDERE ||
     selectedCollection?.share_type ===
-      Avo.Share.ShareWithColleagueType.NIET_GEDEELD
+      Avo.Share.ShareWithColleagueType.NIET_GEDEELD;
   const hasDeleteRightsForAllCollections =
     commonUser?.permissions?.includes(PermissionName.DELETE_ANY_COLLECTIONS) ||
-    false
+    false;
   const shouldDeleteSelfFromCollection =
-    isContributor && !hasDeleteRightsForAllCollections && !isOwner
+    isContributor && !hasDeleteRightsForAllCollections && !isOwner;
 
   // Mutations
   const { mutateAsync: triggerCollectionOrBundleDelete } =
-    useDeleteCollectionOrBundleByUuidMutation()
+    useDeleteCollectionOrBundleByUuidMutation();
 
-  const isCollection = type === 'collection'
+  const isCollection = type === 'collection';
 
   const getColumnsMobile = (): TableColumn[] => {
     return [
@@ -189,8 +188,8 @@ export const CollectionOrBundleOverview: FC<
         ),
         col: '1',
       },
-    ]
-  }
+    ];
+  };
 
   const getColumnsDesktop = useCallback((): TableColumn[] => {
     return [
@@ -261,16 +260,16 @@ export const CollectionOrBundleOverview: FC<
         ),
         col: '1',
       },
-    ]
-  }, [isCollection, showPublicState])
+    ];
+  }, [isCollection, showPublicState]);
 
   const fetchCollections = useCallback(async () => {
     try {
       const column = getColumnsDesktop().find(
         (tableColumn: any) => tableColumn.id || '' === (sortColumn as any),
-      )
+      );
       const columnDataType = (column?.dataType ||
-        TableColumnDataType.string) as TableColumnDataType
+        TableColumnDataType.string) as TableColumnDataType;
       const collections =
         await CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
           commonUser,
@@ -287,10 +286,10 @@ export const CollectionOrBundleOverview: FC<
             : ContentTypeNumber.bundle,
           undefined,
           query.selectedShareTypeLabelIds as string[],
-        )
+        );
 
       // Check edit and delete permissions for every row, so we can show the correct dropdown list of operations
-      let perms: Record<string, boolean>[]
+      let perms: Record<string, boolean>[];
 
       if (isCollection) {
         perms = await Promise.all(
@@ -314,10 +313,10 @@ export const CollectionOrBundleOverview: FC<
                   ],
                 },
                 commonUser,
-              )
+              );
             },
           ),
-        )
+        );
       } else {
         // bundles
         perms = await Promise.all(
@@ -341,10 +340,10 @@ export const CollectionOrBundleOverview: FC<
                   ],
                 },
                 commonUser,
-              )
+              );
             },
           ),
-        )
+        );
       }
       setPermissions(
         Object.fromEntries(
@@ -355,10 +354,10 @@ export const CollectionOrBundleOverview: FC<
             ],
           ),
         ),
-      )
-      setCollections(collections as unknown as Collection[])
+      );
+      setCollections(collections as unknown as Collection[]);
     } catch (err) {
-      console.error('Failed to fetch collections', err, {})
+      console.error('Failed to fetch collections', err, {});
       setLoadingInfo({
         state: 'error',
         message: isCollection
@@ -369,7 +368,7 @@ export const CollectionOrBundleOverview: FC<
               'collection/components/collection-or-bundle-overview___het-ophalen-van-de-bundels-is-mislukt',
             ),
         actionButtons: ['home'],
-      })
+      });
     }
   }, [
     getColumnsDesktop,
@@ -379,11 +378,11 @@ export const CollectionOrBundleOverview: FC<
     sortOrder,
     isCollection,
     query.selectedShareTypeLabelIds,
-  ])
+  ]);
 
   useEffect(() => {
-    fetchCollections().then(noop)
-  }, [fetchCollections])
+    fetchCollections().then(noop);
+  }, [fetchCollections]);
 
   useEffect(() => {
     PermissionService.hasPermissions(
@@ -400,14 +399,14 @@ export const CollectionOrBundleOverview: FC<
         },
       ],
       commonUser,
-    ).then((showPublicState) => setShowPublicState(showPublicState))
-  }, [setShowPublicState, isCollection, commonUser])
+    ).then((showPublicState) => setShowPublicState(showPublicState));
+  }, [setShowPublicState, isCollection, commonUser]);
 
   useEffect(() => {
     if (collections) {
-      setLoadingInfo({ state: 'loaded' })
+      setLoadingInfo({ state: 'loaded' });
     }
-  }, [setLoadingInfo, collections])
+  }, [setLoadingInfo, collections]);
 
   useEffect(() => {
     if (activeModalInfo?.collectionUuid) {
@@ -417,43 +416,43 @@ export const CollectionOrBundleOverview: FC<
           ? CollectionOrBundle.COLLECTION
           : CollectionOrBundle.BUNDLE,
         undefined,
-      ).then((res) => setSelectedCollectionDetail(res || undefined))
+      ).then((res) => setSelectedCollectionDetail(res || undefined));
       setSelectedCollection(
         collections?.find(
           (collection) => collection.id === activeModalInfo?.collectionUuid,
         ),
-      )
+      );
     } else {
-      setSelectedCollection(undefined)
-      setSelectedCollectionDetail(undefined)
+      setSelectedCollection(undefined);
+      setSelectedCollectionDetail(undefined);
     }
-  }, [activeModalInfo?.collectionUuid, isCollection])
+  }, [activeModalInfo?.collectionUuid, isCollection]);
 
   useEffect(() => {
     if (query.sortColumn) {
-      setSortColumn(query.sortColumn as CollectionsOrBundlesOverviewTableCols)
+      setSortColumn(query.sortColumn as CollectionsOrBundlesOverviewTableCols);
     }
     if (query.sortOrder) {
-      setSortOrder(query.sortOrder as OrderDirection)
+      setSortOrder(query.sortOrder as Avo.Search.OrderDirection);
     }
-  }, [])
+  }, []);
 
   const handleQueryChanged = (value: any, id: string) => {
-    let newQuery: any = cloneDeep(query)
-    let newValue = value
+    let newQuery: any = cloneDeep(query);
+    let newValue = value;
     // Show both shareTypes for 'mijn collecties' option
     if (value.includes(CollectionShareType.NIET_GEDEELD)) {
-      newValue = [...value, CollectionShareType.GEDEELD_MET_ANDERE]
+      newValue = [...value, CollectionShareType.GEDEELD_MET_ANDERE];
     }
 
     newQuery = {
       ...newQuery,
       [id]: newValue,
       ...(id !== 'page' ? { page: 0 } : {}), // Reset the page to 0, when any filter or sort order change is made
-    }
+    };
 
-    setQuery(newQuery, 'pushIn')
-  }
+    setQuery(newQuery, 'pushIn');
+  };
 
   const handleDeleteCollection = async () => {
     await deleteCollection(
@@ -469,33 +468,35 @@ export const CollectionOrBundleOverview: FC<
           },
           {
             onSuccess: async () => {
-              const queryClient = new QueryClient()
-              await queryClient.invalidateQueries(COLLECTION_QUERY_KEYS)
+              const queryClient = new QueryClient();
+              await queryClient.invalidateQueries({
+                queryKey: COLLECTION_QUERY_KEYS,
+              });
             },
           },
-        )
+        );
       },
       () => {
-        onUpdate()
-        fetchCollections()
+        onUpdate();
+        fetchCollections();
       },
-    )
+    );
 
-    setActiveModalInfo(null)
-  }
+    setActiveModalInfo(null);
+  };
 
   const handleDeleteSelfFromCollection = async () => {
     await deleteSelfFromCollection(
       activeModalInfo?.collectionUuid,
       commonUser,
       () => {
-        onUpdate()
-        fetchCollections()
+        onUpdate();
+        fetchCollections();
       },
-    )
+    );
 
-    setActiveModalInfo(null)
-  }
+    setActiveModalInfo(null);
+  };
 
   const onClickCreate = () =>
     navigateFunc(
@@ -506,19 +507,19 @@ export const CollectionOrBundleOverview: FC<
           ? { filters: '{"type":["video","audio"]}' }
           : { filters: '{"type":["collectie"]}' },
       ),
-    )
+    );
 
   // TODO: Make shared function because also used in assignments
   const onClickColumn = (columnId: CollectionsOrBundlesOverviewTableCols) => {
     if (sortColumn === columnId) {
       // Change column sort order
-      setSortOrder(toggleSortOrder(sortOrder))
+      setSortOrder(toggleSortOrder(sortOrder));
     } else {
       // Initial column sort order
-      setSortColumn(columnId)
-      setSortOrder(Avo.Search.OrderDirection.ASC)
+      setSortColumn(columnId);
+      setSortOrder(Avo.Search.OrderDirection.ASC);
     }
-  }
+  };
 
   const onCreateAssignmentFromCollection = async (
     withDescription: boolean,
@@ -528,28 +529,28 @@ export const CollectionOrBundleOverview: FC<
         activeModalInfo?.collectionUuid as string,
         CollectionOrBundle.COLLECTION,
         undefined,
-      )
+      );
     if (collection && commonUser) {
       const assignmentId =
         await AssignmentService.createAssignmentFromCollection(
           commonUser,
           collection,
           withDescription,
-        )
+        );
 
       navigateFunc(
         buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }),
-      )
+      );
     }
-  }
+  };
 
   // Render functions
   const getLinkProps = (
     id: string,
     title: string,
   ): {
-    to: string
-    title: string
+    to: string;
+    title: string;
   } => ({
     title,
     to: buildLink(
@@ -560,7 +561,7 @@ export const CollectionOrBundleOverview: FC<
         id,
       },
     ),
-  })
+  });
 
   const renderThumbnail = ({ id, title, thumbnail_path }: Collection) => (
     <Link {...getLinkProps(id, title || '')}>
@@ -571,7 +572,7 @@ export const CollectionOrBundleOverview: FC<
         src={thumbnail_path || undefined}
       />
     </Link>
-  )
+  );
 
   const renderTitle = (collection: Collection) => (
     <div className="c-content-header">
@@ -594,7 +595,7 @@ export const CollectionOrBundleOverview: FC<
         </MetaData>
       </div>
     </div>
-  )
+  );
 
   const renderActions = (collectionUuid: string) => {
     const ROW_DROPDOWN_ITEMS = [
@@ -645,7 +646,7 @@ export const CollectionOrBundleOverview: FC<
         'trash',
         shouldDeleteSelfFromCollection,
       ),
-    ]
+    ];
 
     // Listeners
     const onClickDropdownItem = (item: ReactText) => {
@@ -657,44 +658,44 @@ export const CollectionOrBundleOverview: FC<
               ? APP_PATH.COLLECTION_EDIT_TAB.route
               : APP_PATH.BUNDLE_EDIT_TAB.route,
             { id: collectionUuid, tabId: CollectionCreateUpdateTab.CONTENT },
-          )
-          break
+          );
+          break;
 
         case CollectionMenuAction.createAssignment:
           setActiveModalInfo({
             collectionUuid,
             activeModal: 'CREATE_ASSIGNMENT',
-          })
-          break
+          });
+          break;
 
         case CollectionMenuAction.openQuickLane:
           setActiveModalInfo({
             collectionUuid,
             activeModal: 'QUICK_LANE',
-          })
-          break
+          });
+          break;
 
         case CollectionMenuAction.deleteCollection:
           setActiveModalInfo({
             collectionUuid,
             activeModal: 'DELETE-COLLECTION',
-          })
-          break
+          });
+          break;
 
         case CollectionMenuAction.deleteContributor:
           setActiveModalInfo({
             collectionUuid,
             activeModal: 'DELETE-CONTRIBUTOR',
-          })
-          break
+          });
+          break;
 
         default:
-          return null
+          return null;
       }
-    }
+    };
 
     if (!ROW_DROPDOWN_ITEMS.length) {
-      return null
+      return null;
     }
 
     return (
@@ -704,16 +705,16 @@ export const CollectionOrBundleOverview: FC<
           onOpen={() => {
             setSelectedCollection(
               collections?.find((c) => c.id === collectionUuid),
-            )
-            setDropdownOpenForCollectionUuid(null)
+            );
+            setDropdownOpenForCollectionUuid(null);
             // Allow rerender to close other menu, before opening new one. Otherwise, both close
             setTimeout(
               () => setDropdownOpenForCollectionUuid(collectionUuid),
               10,
-            )
+            );
           }}
           onClose={() => {
-            setDropdownOpenForCollectionUuid(null)
+            setDropdownOpenForCollectionUuid(null);
           }}
           label={getMoreOptionsLabel()}
           menuItems={ROW_DROPDOWN_ITEMS}
@@ -748,22 +749,24 @@ export const CollectionOrBundleOverview: FC<
           ),
         })}
       </ButtonToolbar>
-    )
-  }
+    );
+  };
 
   const renderCell = (collection: Collection, colKey: string) => {
-    const { id } = collection
+    const { id } = collection;
 
     switch (colKey) {
       case 'thumbnail':
-        return renderThumbnail(collection)
+        return renderThumbnail(collection);
 
       case 'title':
-        return renderTitle(collection)
+        return renderTitle(collection);
 
       case 'inFolder': {
-        const isInFolder = true // TODO: Check if collection is in bundle
-        return isInFolder && <Button icon={IconName.folder} type="borderless" />
+        const isInFolder = true; // TODO: Check if collection is in bundle
+        return (
+          isInFolder && <Button icon={IconName.folder} type="borderless" />
+        );
       }
 
       case 'is_public':
@@ -783,7 +786,7 @@ export const CollectionOrBundleOverview: FC<
               name={collection.is_public ? IconName.unlock3 : IconName.lock}
             />
           </div>
-        )
+        );
 
       // TODO re-enable once users can give share collection view/edit rights with other users
       // case 'access':
@@ -797,14 +800,14 @@ export const CollectionOrBundleOverview: FC<
       // 	return userProfiles && <AvatarList avatars={avatarProps} isOpen={false} />;
 
       case ACTIONS_TABLE_COLUMN_ID:
-        return renderActions(id)
+        return renderActions(id);
 
       case 'created_at':
       case 'updated_at': {
-        const cellData = collection[colKey as 'created_at' | 'updated_at']
+        const cellData = collection[colKey as 'created_at' | 'updated_at'];
         return (
           <span title={formatTimestamp(cellData)}>{formatDate(cellData)}</span>
-        )
+        );
       }
 
       case 'share_type':
@@ -816,12 +819,12 @@ export const CollectionOrBundleOverview: FC<
             | undefined,
           'collection',
           'm-collection-overview-shared',
-        )
+        );
 
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   const renderPagination = () => (
     <PaginationBar
@@ -831,7 +834,7 @@ export const CollectionOrBundleOverview: FC<
       totalItems={numberOfItems}
       onPageChange={setPage}
     />
-  )
+  );
 
   const getLabelOptions = (): CheckboxOption[] => {
     return compact([
@@ -849,8 +852,8 @@ export const CollectionOrBundleOverview: FC<
           CollectionShareType.NIET_GEDEELD,
         ),
       },
-    ])
-  }
+    ]);
+  };
 
   const renderHeader = () => {
     return (
@@ -873,8 +876,8 @@ export const CollectionOrBundleOverview: FC<
           </ToolbarItem>
         </ToolbarLeft>
       </Toolbar>
-    )
-  }
+    );
+  };
 
   const renderTable = (collections: Collection[]) => {
     return (
@@ -894,8 +897,8 @@ export const CollectionOrBundleOverview: FC<
         />
         <Spacer margin="top-large">{renderPagination()}</Spacer>
       </>
-    )
-  }
+    );
+  };
 
   const renderEmptyFallback = () => (
     <ErrorView
@@ -937,7 +940,7 @@ export const CollectionOrBundleOverview: FC<
         />
       </Spacer>
     </ErrorView>
-  )
+  );
 
   const renderDeleteModal = (): ReactNode | null => {
     if (isCollection) {
@@ -953,7 +956,7 @@ export const CollectionOrBundleOverview: FC<
             }
             isCollection={isCollection}
           />
-        )
+        );
       } else if (activeModalInfo?.activeModal === 'DELETE-CONTRIBUTOR') {
         return (
           <DeleteMyselfFromCollectionContributorsConfirmModal
@@ -961,7 +964,7 @@ export const CollectionOrBundleOverview: FC<
             onClose={() => setActiveModalInfo(null)}
             deleteCallback={handleDeleteSelfFromCollection}
           />
-        )
+        );
       }
     } else if (activeModalInfo?.activeModal === 'DELETE-COLLECTION') {
       // Bundle
@@ -973,10 +976,10 @@ export const CollectionOrBundleOverview: FC<
           contributorCount={0}
           isCollection={isCollection}
         />
-      )
+      );
     }
-    return null
-  }
+    return null;
+  };
 
   const renderQuickLaneModal = () => {
     return (
@@ -992,8 +995,8 @@ export const CollectionOrBundleOverview: FC<
           onUpdate={() => fetchCollections()}
         />
       )
-    )
-  }
+    );
+  };
 
   const renderCreateAssignmentModal = () => {
     return (
@@ -1013,8 +1016,8 @@ export const CollectionOrBundleOverview: FC<
           ),
         }}
       />
-    )
-  }
+    );
+  };
 
   const renderCollections = () => {
     return (
@@ -1027,8 +1030,8 @@ export const CollectionOrBundleOverview: FC<
         {renderQuickLaneModal()}
         {renderCreateAssignmentModal()}
       </>
-    )
-  }
+    );
+  };
 
   return (
     <LoadingErrorLoadedComponent
@@ -1036,5 +1039,5 @@ export const CollectionOrBundleOverview: FC<
       dataObject={collections}
       render={renderCollections}
     />
-  )
-}
+  );
+};

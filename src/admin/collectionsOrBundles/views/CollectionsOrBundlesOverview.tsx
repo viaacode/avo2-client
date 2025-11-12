@@ -2,11 +2,11 @@ import {
   ExportAllToCsvModal,
   FilterTable,
   getFilters,
-} from '@meemoo/admin-core-ui/admin'
-import { type TagInfo } from '@viaa/avo2-components'
-import { Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { compact, noop, partition } from 'es-toolkit'
+} from '@meemoo/admin-core-ui/admin';
+import { type TagInfo } from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { compact, noop, partition } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactNode,
@@ -14,79 +14,78 @@ import React, {
   useEffect,
   useMemo,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
-import { useLocation } from 'react-router-dom'
+} from 'react';
+import { Helmet } from 'react-helmet';
+import { useLocation } from 'react-router-dom';
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { CollectionService } from '../../../collection/collection.service.js'
-import { useGetCollectionsEditStatuses } from '../../../collection/hooks/useGetCollectionsEditStatuses.js'
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js'
-import { ErrorView } from '../../../error/views/ErrorView.js'
-import { OrderDirection } from '../../../search/search.const.js'
-import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js'
+import { commonUserAtom } from '../../../authentication/authentication.store.js';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
+import { CollectionService } from '../../../collection/collection.service.js';
+import { useGetCollectionsEditStatuses } from '../../../collection/hooks/useGetCollectionsEditStatuses.js';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js';
+import { ErrorView } from '../../../error/views/ErrorView.js';
+import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants/index.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { getFullNameCommonUser } from '../../../shared/helpers/formatters/avatar.js'
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies.js'
-import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js'
-import { useLomSubjects } from '../../../shared/hooks/useLomSubjects.js'
-import { useQualityLabels } from '../../../shared/hooks/useQualityLabels.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
+} from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js';
+import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants/index.js';
+import { CustomError } from '../../../shared/helpers/custom-error.js';
+import { getFullNameCommonUser } from '../../../shared/helpers/formatters/avatar.js';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies.js';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees.js';
+import { useLomSubjects } from '../../../shared/hooks/useLomSubjects.js';
+import { useQualityLabels } from '../../../shared/hooks/useQualityLabels.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
 import {
   type AddOrRemove,
   AddOrRemoveLinkedElementsModal,
-} from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal.js'
-import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal.js'
-import { SubjectsBeingEditedWarningModal } from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal.js'
-import { NULL_FILTER } from '../../shared/helpers/filters.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
-import type { PickerItem } from '../../shared/types/content-picker.js'
-import { useUserGroups } from '../../user-groups/hooks/useUserGroups.js'
+} from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal.js';
+import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal.js';
+import { SubjectsBeingEditedWarningModal } from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal.js';
+import { NULL_FILTER } from '../../shared/helpers/filters.js';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
+import type { PickerItem } from '../../shared/types/content-picker.js';
+import { useUserGroups } from '../../user-groups/hooks/useUserGroups.js';
 import {
   COLLECTIONS_OR_BUNDLES_PATH,
   GET_COLLECTION_BULK_ACTIONS,
   GET_COLLECTIONS_COLUMNS,
   ITEMS_PER_PAGE,
-} from '../collections-or-bundles.const.js'
-import { CollectionsOrBundlesService } from '../collections-or-bundles.service.js'
+} from '../collections-or-bundles.const.js';
+import { CollectionsOrBundlesService } from '../collections-or-bundles.service.js';
 import {
   CollectionBulkAction,
+  type CollectionSortProps,
   type CollectionsOrBundlesOverviewTableCols,
   type CollectionsOrBundlesTableState,
-  type CollectionSortProps,
-} from '../collections-or-bundles.types.js'
+} from '../collections-or-bundles.types.js';
 import {
   renderCollectionsOrBundlesOverviewCellReact,
   renderCollectionsOrBundlesOverviewCellText,
-} from '../helpers/render-collection-columns.js'
+} from '../helpers/render-collection-columns.js';
 
 export const CollectionsOrBundlesOverview: FC = () => {
-  const location = useLocation()
-  const commonUser = useAtomValue(commonUserAtom)
+  const location = useLocation();
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [collections, setCollections] = useState<
     Avo.Collection.Collection[] | null
-  >(null)
-  const [collectionCount, setCollectionCount] = useState<number>(0)
+  >(null);
+  const [collectionCount, setCollectionCount] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const [tableState, setTableState] = useState<
     Partial<CollectionsOrBundlesTableState>
-  >({})
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  >({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] =
-    useState(false)
+    useState(false);
   const { data: editStatuses } = useGetCollectionsEditStatuses(
     collections?.map((coll) => coll.id) || [],
     {
@@ -94,27 +93,28 @@ export const CollectionsOrBundlesOverview: FC = () => {
       refetchInterval: EDIT_STATUS_REFETCH_TIME,
       refetchIntervalInBackground: true,
     },
-  )
+  );
 
   const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>(
     [],
-  )
+  );
 
   const [changeAuthorModalOpen, setChangeAuthorModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
-  const [changeLabelsModalOpen, setAddLabelModalOpen] = useState<boolean>(false)
+  const [changeLabelsModalOpen, setAddLabelModalOpen] =
+    useState<boolean>(false);
 
-  const [userGroups] = useUserGroups(false)
-  const [subjects] = useLomSubjects()
-  const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees()
-  const { data: allQualityLabels } = useQualityLabels()
-  const [organisations] = useCompaniesWithUsers()
+  const [userGroups] = useUserGroups(false);
+  const [subjects] = useLomSubjects();
+  const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
+  const { data: allQualityLabels } = useQualityLabels();
+  const [organisations] = useCompaniesWithUsers();
   const [collectionsBeingEdited, setCollectionsBeingEdited] = useState<
     Avo.Share.EditStatus[]
-  >([])
+  >([]);
   const [selectedBulkAction, setSelectedBulkAction] =
-    useState<CollectionBulkAction | null>(null)
+    useState<CollectionBulkAction | null>(null);
 
   // computed
 
@@ -138,8 +138,8 @@ export const CollectionsOrBundlesOverview: FC = () => {
           NULL_FILTER,
         ),
       },
-    ]
-  }, [tableState, userGroups])
+    ];
+  }, [tableState, userGroups]);
 
   const collectionLabelOptions = useMemo(
     () => [
@@ -163,7 +163,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
       ),
     ],
     [allQualityLabels, tableState],
-  )
+  );
 
   const organisationOptions = useMemo(
     () => [
@@ -187,10 +187,10 @@ export const CollectionsOrBundlesOverview: FC = () => {
       ),
     ],
     [organisations, tableState],
-  )
+  );
 
   const isCollection =
-    location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW
+    location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW;
   const tableColumns = useMemo(
     () =>
       GET_COLLECTIONS_COLUMNS(
@@ -209,11 +209,11 @@ export const CollectionsOrBundlesOverview: FC = () => {
       userGroupOptions,
       organisationOptions,
     ],
-  )
+  );
 
   // methods
   const fetchCollectionsOrBundles = useCallback(async () => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       const { collections: collectionsTemp, total: collectionsCountTemp } =
@@ -225,16 +225,16 @@ export const CollectionsOrBundlesOverview: FC = () => {
           getFilters(tableState),
           isCollection,
           true,
-        )
+        );
 
-      setCollections(collectionsTemp)
-      setCollectionCount(collectionsCountTemp)
+      setCollections(collectionsTemp);
+      setCollectionCount(collectionsCountTemp);
     } catch (err) {
       console.error(
         new CustomError('Failed to get collections from the database', err, {
           tableState,
         }),
-      )
+      );
 
       setLoadingInfo({
         state: 'error',
@@ -245,44 +245,44 @@ export const CollectionsOrBundlesOverview: FC = () => {
           : tText(
               'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-bundels-is-mislukt',
             ),
-      })
+      });
     }
 
-    setIsLoading(false)
-  }, [tableState, isCollection])
+    setIsLoading(false);
+  }, [tableState, isCollection]);
 
   useEffect(() => {
     if (commonUser && educationLevelsAndDegrees?.length) {
-      fetchCollectionsOrBundles().then(noop)
+      fetchCollectionsOrBundles().then(noop);
     }
-  }, [fetchCollectionsOrBundles, commonUser, educationLevelsAndDegrees])
+  }, [fetchCollectionsOrBundles, commonUser, educationLevelsAndDegrees]);
 
   useEffect(() => {
     if (collections) {
       setLoadingInfo({
         state: 'loaded',
-      })
+      });
     }
 
     // Update selected rows to always be a subset of the collections array
     // In other words, you cannot have something selected that isn't part of the current filtered/paginated results
-    const collectionIds: string[] = (collections || []).map((coll) => coll.id)
+    const collectionIds: string[] = (collections || []).map((coll) => coll.id);
 
     setSelectedCollectionIds((currentSelectedCollectionIds) => {
       return (currentSelectedCollectionIds || []).filter(
         (collId) => collId && collectionIds.includes(collId),
-      )
-    })
-  }, [setLoadingInfo, collections, setSelectedCollectionIds])
+      );
+    });
+  }, [setLoadingInfo, collections, setSelectedCollectionIds]);
 
   const setAllCollectionsAsSelected = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       const collectionIds = await CollectionsOrBundlesService.getCollectionIds(
         getFilters(tableState),
         isCollection,
-      )
+      );
       ToastService.info(
         tHtml(
           'admin/collections-or-bundles/views/collections-or-bundles-overview___je-hebt-num-of-selected-collections-collecties-geselecteerd',
@@ -290,9 +290,9 @@ export const CollectionsOrBundlesOverview: FC = () => {
             numOfSelectedCollections: collectionIds.length,
           },
         ),
-      )
+      );
 
-      setSelectedCollectionIds(collectionIds)
+      setSelectedCollectionIds(collectionIds);
     } catch (err) {
       console.error(
         new CustomError(
@@ -300,17 +300,17 @@ export const CollectionsOrBundlesOverview: FC = () => {
           err,
           { tableState },
         ),
-      )
+      );
 
       ToastService.danger(
         tHtml(
           'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-collectie-ids-is-mislukt',
         ),
-      )
+      );
     }
 
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const handleBulkAction = async (
     action: CollectionBulkAction,
@@ -318,68 +318,68 @@ export const CollectionsOrBundlesOverview: FC = () => {
     if (action === CollectionBulkAction.EXPORT_ALL) {
       // No selection of rows needed since we export all rows
       // Also, we don't need to check any edit statuses since we're not editing/deleting anything
-      setIsExportAllToCsvModalOpen(true)
-      return
+      setIsExportAllToCsvModalOpen(true);
+      return;
     }
 
-    let selectedCollectionsThatAreBeingEdited: Avo.Share.EditStatus[] = []
-    let selectedCollectionIdsThatAreNotBeingEdited = selectedCollectionIds
+    let selectedCollectionsThatAreBeingEdited: Avo.Share.EditStatus[] = [];
+    let selectedCollectionIdsThatAreNotBeingEdited = selectedCollectionIds;
     if (isCollection) {
       const selectedCollectionEditStatuses =
         await CollectionService.getCollectionsEditStatuses(
           selectedCollectionIds,
-        )
+        );
       const partitionedCollectionIds = partition(
         Object.entries(selectedCollectionEditStatuses),
         (entry) => !!entry[1],
-      )
-      selectedCollectionsThatAreBeingEdited = partitionedCollectionIds[0].map(
-        (entry) => entry[1],
-      )
+      );
+      selectedCollectionsThatAreBeingEdited = compact(
+        partitionedCollectionIds[0].map((entry) => entry[1]),
+      );
       selectedCollectionIdsThatAreNotBeingEdited =
-        partitionedCollectionIds[1].map((entry) => entry[0])
+        partitionedCollectionIds[1].map((entry) => entry[0]);
     }
 
     if (selectedCollectionsThatAreBeingEdited.length > 0) {
       // open warning modal first
-      setSelectedCollectionIds(selectedCollectionIdsThatAreNotBeingEdited)
-      setSelectedBulkAction(action)
-      setCollectionsBeingEdited(selectedCollectionsThatAreBeingEdited)
+      setSelectedCollectionIds(selectedCollectionIdsThatAreNotBeingEdited);
+      setSelectedBulkAction(action);
+      setCollectionsBeingEdited(selectedCollectionsThatAreBeingEdited);
     } else {
       // execute action straight away
-      setCollectionsBeingEdited([])
-      setSelectedBulkAction(null)
+      setCollectionsBeingEdited([]);
+      setSelectedBulkAction(null);
 
-      const hasSelectedRows = selectedCollectionIds.length > 0
+      const hasSelectedRows = selectedCollectionIds.length > 0;
 
       switch (action) {
         case CollectionBulkAction.PUBLISH:
-          if (!hasSelectedRows) return
-          await bulkChangePublishStateForSelectedCollections(true)
-          return
+          if (!hasSelectedRows) return;
+          await bulkChangePublishStateForSelectedCollections(true);
+          return;
 
         case CollectionBulkAction.DEPUBLISH:
-          if (!hasSelectedRows) return
-          await bulkChangePublishStateForSelectedCollections(false)
-          return
+          if (!hasSelectedRows) return;
+          await bulkChangePublishStateForSelectedCollections(false);
+          return;
 
         case CollectionBulkAction.DELETE:
-          if (!hasSelectedRows) return
-          await bulkDeleteSelectedCollections()
-          return
+          if (!hasSelectedRows) return;
+          await bulkDeleteSelectedCollections();
+          return;
 
         case CollectionBulkAction.CHANGE_AUTHOR:
-          if (!hasSelectedRows) return
-          setChangeAuthorModalOpen(true)
-          return
+          if (!hasSelectedRows) return;
+          setChangeAuthorModalOpen(true);
+          return;
 
         case CollectionBulkAction.CHANGE_LABELS:
-          if (!hasSelectedRows) return
-          setAddLabelModalOpen(true)
-          return
+          if (!hasSelectedRows) return;
+          setAddLabelModalOpen(true);
+          return;
       }
     }
-  }
+  };
 
   const bulkChangePublishStateForSelectedCollections = async (
     isPublic: boolean,
@@ -390,14 +390,14 @@ export const CollectionsOrBundlesOverview: FC = () => {
         !selectedCollectionIds.length ||
         !commonUser?.profileId
       ) {
-        return
+        return;
       }
 
       await CollectionsOrBundlesService.bulkChangePublicStateForCollections(
         isPublic,
         compact(selectedCollectionIds),
         commonUser?.profileId,
-      )
+      );
 
       ToastService.success(
         isPublic
@@ -407,16 +407,16 @@ export const CollectionsOrBundlesOverview: FC = () => {
           : tHtml(
               'admin/collections-or-bundles/views/collections-or-bundles-overview___de-geselecteerde-collecties-zijn-gedepubliceerd',
             ),
-      )
+      );
 
-      await fetchCollectionsOrBundles()
+      await fetchCollectionsOrBundles();
     } catch (err) {
       console.error(
         new CustomError('Failed to toggle publish state for collections', err, {
           isPublic,
           selectedRows: selectedCollectionIds,
         }),
-      )
+      );
 
       ToastService.danger(
         isPublic
@@ -426,9 +426,9 @@ export const CollectionsOrBundlesOverview: FC = () => {
           : tHtml(
               'admin/collections-or-bundles/views/collections-or-bundles-overview___het-depubliceren-van-de-collecties-is-mislukt',
             ),
-      )
+      );
     }
-  }
+  };
 
   const bulkDeleteSelectedCollections = async () => {
     try {
@@ -437,35 +437,35 @@ export const CollectionsOrBundlesOverview: FC = () => {
         !selectedCollectionIds.length ||
         !commonUser?.profileId
       ) {
-        return
+        return;
       }
 
       await CollectionsOrBundlesService.bulkDeleteCollections(
         compact(selectedCollectionIds),
         commonUser?.profileId,
-      )
+      );
 
       ToastService.success(
         tHtml(
           'admin/collections-or-bundles/views/collections-or-bundles-overview___de-geselecteerde-collecties-zijn-verwijderd',
         ),
-      )
+      );
 
-      await fetchCollectionsOrBundles()
+      await fetchCollectionsOrBundles();
     } catch (err) {
       console.error(
         new CustomError('Failed to bulk delete collections', err, {
           selectedRows: selectedCollectionIds,
         }),
-      )
+      );
 
       ToastService.danger(
         tHtml(
           'admin/collections-or-bundles/views/collections-or-bundles-overview___het-verwijderen-van-de-collecties-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const bulkChangeAuthor = async (authorProfileId: string) => {
     try {
@@ -474,36 +474,36 @@ export const CollectionsOrBundlesOverview: FC = () => {
         !selectedCollectionIds.length ||
         !commonUser?.profileId
       ) {
-        return
+        return;
       }
 
       await CollectionsOrBundlesService.bulkUpdateAuthorForCollections(
         authorProfileId,
         compact(selectedCollectionIds),
         commonUser?.profileId,
-      )
+      );
 
       ToastService.success(
         tHtml(
           'admin/collections-or-bundles/views/collections-or-bundles-overview___de-auteurs-zijn-aangepast-voor-de-geselecteerde-collecties',
         ),
-      )
+      );
 
-      await fetchCollectionsOrBundles()
+      await fetchCollectionsOrBundles();
     } catch (err) {
       console.error(
         new CustomError('Failed to bulk update author for collections', err, {
           authorProfileId,
         }),
-      )
+      );
 
       ToastService.danger(
         tHtml(
           'admin/collections-or-bundles/views/collections-or-bundles-overview___het-aanpassen-van-de-auteurs-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const bulkChangeLabels = async (
     addOrRemove: AddOrRemove,
@@ -515,7 +515,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
         !selectedCollectionIds.length ||
         !commonUser?.profileId
       ) {
-        return
+        return;
       }
 
       if (addOrRemove === 'add') {
@@ -523,43 +523,43 @@ export const CollectionsOrBundlesOverview: FC = () => {
           labels,
           compact(selectedCollectionIds),
           commonUser?.profileId,
-        )
+        );
 
         ToastService.success(
           tHtml(
             'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-toegevoegd-aan-de-geselecteerde-collecties',
           ),
-        )
+        );
       } else {
         // remove
         await CollectionsOrBundlesService.bulkRemoveLabelsFromCollections(
           labels,
           compact(selectedCollectionIds),
           commonUser?.profileId,
-        )
+        );
         ToastService.success(
           tHtml(
             'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-verwijderd-van-de-geselecteerde-collecties',
           ),
-        )
+        );
       }
 
-      await fetchCollectionsOrBundles()
+      await fetchCollectionsOrBundles();
     } catch (err) {
       console.error(
         new CustomError('Failed to bulk update labels of collections', err, {
           addOrRemove,
           labels,
         }),
-      )
+      );
 
       ToastService.danger(
         tHtml(
           'admin/collections-or-bundles/views/collections-or-bundles-overview___het-aanpassen-van-de-labels-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const renderNoResults = () => {
     return (
@@ -574,12 +574,12 @@ export const CollectionsOrBundlesOverview: FC = () => {
           )}
         </p>
       </ErrorView>
-    )
-  }
+    );
+  };
 
   const renderCollectionsOrBundlesOverview = () => {
     if (!collections) {
-      return null
+      return null;
     }
 
     return (
@@ -595,7 +595,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
               {
                 isCollection,
                 allQualityLabels: allQualityLabels || [],
-                editStatuses,
+                editStatuses: editStatuses || {},
                 commonUser,
               },
             )
@@ -631,19 +631,21 @@ export const CollectionsOrBundlesOverview: FC = () => {
         <SubjectsBeingEditedWarningModal
           isOpen={collectionsBeingEdited?.length > 0}
           onClose={() => {
-            setCollectionsBeingEdited([])
-            setSelectedBulkAction(null)
+            setCollectionsBeingEdited([]);
+            setSelectedBulkAction(null);
           }}
           confirmCallback={async () => {
-            setCollectionsBeingEdited([])
+            setCollectionsBeingEdited([]);
             if (selectedCollectionIds.length > 0) {
-              await handleBulkAction(selectedBulkAction as CollectionBulkAction)
+              await handleBulkAction(
+                selectedBulkAction as CollectionBulkAction,
+              );
             } else {
               ToastService.info(
                 tHtml(
                   'admin/collections-or-bundles/views/collections-or-bundles-overview___alle-geselecteerde-collecties-worden-bewerkt-dus-de-actie-kan-niet-worden-uitgevoerd',
                 ),
-              )
+              );
             }
           }}
           title={tHtml(
@@ -725,8 +727,8 @@ export const CollectionsOrBundlesOverview: FC = () => {
               getFilters(tableState),
               isCollection,
               false,
-            )
-            return response.total
+            );
+            return response.total;
           }}
           fetchMoreItems={async (offset: number, limit: number) => {
             const response = await CollectionsOrBundlesService.getCollections(
@@ -737,8 +739,8 @@ export const CollectionsOrBundlesOverview: FC = () => {
               getFilters(tableState),
               isCollection,
               false,
-            )
-            return response.collections
+            );
+            return response.collections;
           }}
           renderValue={(value: any, columnId: string) =>
             renderCollectionsOrBundlesOverviewCellText(
@@ -747,7 +749,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
               {
                 isCollection,
                 allQualityLabels: allQualityLabels || [],
-                editStatuses,
+                editStatuses: editStatuses || {},
                 commonUser,
               },
             )
@@ -764,8 +766,8 @@ export const CollectionsOrBundlesOverview: FC = () => {
           }
         />
       </>
-    )
-  }
+    );
+  };
 
   return (
     <PermissionGuard
@@ -825,7 +827,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
         </AdminLayoutBody>
       </AdminLayout>
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default CollectionsOrBundlesOverview
+export default CollectionsOrBundlesOverview;

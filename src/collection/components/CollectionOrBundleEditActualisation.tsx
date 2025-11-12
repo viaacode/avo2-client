@@ -9,24 +9,24 @@ import {
   type SelectOption,
   Spacer,
   TextArea,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import React, { type FC } from 'react'
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import React, { type FC } from 'react';
 
-import { getCollectionManagementStatuses } from '../../admin/collectionsOrBundles/collections-or-bundles.const.js'
-import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker.js'
-import { NULL_FILTER } from '../../admin/shared/helpers/filters.js'
-import { type PickerItem } from '../../admin/shared/types/content-picker.js'
-import { getFullName } from '../../shared/helpers/formatters/avatar.js'
-import { toDateObject } from '../../shared/helpers/formatters/date.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+import { getCollectionManagementStatuses } from '../../admin/collectionsOrBundles/collections-or-bundles.const.js';
+import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker.js';
+import { NULL_FILTER } from '../../admin/shared/helpers/filters.js';
+import { type PickerItem } from '../../admin/shared/types/content-picker.js';
+import { getFullName } from '../../shared/helpers/formatters/avatar.js';
+import { toDateObject } from '../../shared/helpers/formatters/date.js';
+import { tText } from '../../shared/helpers/translate-text.js';
 
-import { type CollectionAction } from './CollectionOrBundleEdit.types.js'
+import { type CollectionAction } from './CollectionOrBundleEdit.types.js';
 
 interface CollectionOrBundleEditActualisationProps {
-  collection: Avo.Collection.Collection
-  changeCollectionState: (action: CollectionAction) => void
-  onFocus?: () => void
+  collection: Avo.Collection.Collection;
+  changeCollectionState: (action: CollectionAction) => void;
+  onFocus?: () => void;
 }
 
 export const CollectionOrBundleEditActualisation: FC<
@@ -39,7 +39,7 @@ export const CollectionOrBundleEditActualisation: FC<
         label: option.label,
         value: option.id,
       }),
-    )
+    );
 
   return (
     <>
@@ -61,7 +61,7 @@ export const CollectionOrBundleEditActualisation: FC<
                           type: 'UPDATE_COLLECTION_PROP',
                           collectionProp: 'management.current_status',
                           collectionPropValue: selectedOption,
-                        })
+                        });
                       }}
                       clearable
                       value={collection?.management?.current_status || null}
@@ -124,7 +124,7 @@ export const CollectionOrBundleEditActualisation: FC<
                               value:
                                 collection?.management?.manager_profile_id ??
                                 '',
-                              type: 'PROFILE',
+                              type: Avo.Core.ContentPickerType.PROFILE,
                             }
                           : null
                       }
@@ -133,13 +133,13 @@ export const CollectionOrBundleEditActualisation: FC<
                       )}
                       hideTargetSwitch
                       hideTypeDropdown
-                      allowedTypes={['PROFILE']}
+                      allowedTypes={[Avo.Core.ContentPickerType.PROFILE]}
                       onSelect={(value: PickerItem | null) => {
                         changeCollectionState({
                           type: 'UPDATE_COLLECTION_PROP',
                           collectionProp: 'management.manager_profile_id',
                           collectionPropValue: value ? value.value : null,
-                        })
+                        });
                       }}
                     />
                   </FormGroup>
@@ -171,5 +171,5 @@ export const CollectionOrBundleEditActualisation: FC<
         </Container>
       </Container>
     </>
-  )
-}
+  );
+};

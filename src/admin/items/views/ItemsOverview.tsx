@@ -1,5 +1,5 @@
-import { ExportAllToCsvModal, FilterTable } from '@meemoo/admin-core-ui/admin'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
+import { ExportAllToCsvModal, FilterTable } from '@meemoo/admin-core-ui/admin';
+import { Avo, PermissionName } from '@viaa/avo2-types';
 
 import React, {
   type FC,
@@ -7,56 +7,58 @@ import React, {
   useEffect,
   useMemo,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
+} from 'react';
+import { Helmet } from 'react-helmet';
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js'
-import { ErrorView } from '../../../error/views/ErrorView.js'
-import { OrderDirection } from '../../../search/search.const.js'
-import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js'
-import { buildLink } from '../../../shared/helpers/build-link.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { useCompanies } from '../../../shared/hooks/useCompanies.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { ADMIN_PATH } from '../../admin.const.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
-import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js';
+import { ErrorView } from '../../../error/views/ErrorView.js';
+import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js';
+import { buildLink } from '../../../shared/helpers/build-link.js';
+import { CustomError } from '../../../shared/helpers/custom-error.js';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list.js';
+import { tHtml } from '../../../shared/helpers/translate-html.js';
+import { tText } from '../../../shared/helpers/translate-text.js';
+import { useCompanies } from '../../../shared/hooks/useCompanies.js';
+import { ToastService } from '../../../shared/services/toast-service.js';
+import { ADMIN_PATH } from '../../admin.const.js';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js';
+import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots.js';
 import {
   renderItemsOverviewTableCell,
   renderItemsOverviewTableCellText,
-} from '../helpers/render-item-overview-table-cell.js'
-import { useGetItemsWithFilters } from '../hooks/useGetItemsWithFilters.js'
-import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const.js'
-import { ItemsService } from '../items.service.js'
+} from '../helpers/render-item-overview-table-cell.js';
+import { useGetItemsWithFilters } from '../hooks/useGetItemsWithFilters.js';
+import {
+  GET_ITEM_OVERVIEW_TABLE_COLS,
+  ITEMS_PER_PAGE,
+} from '../items.const.js';
+import { ItemsService } from '../items.service.js';
 import {
   type ItemsOverviewTableCols,
   type ItemsTableState,
-} from '../items.types.js'
+} from '../items.types.js';
 
-import { ItemBulkAction } from './ItemsOverview.types.js'
+import { ItemBulkAction } from './ItemsOverview.types.js';
 
 export const ItemsOverview: FC = () => {
-  const [tableState, setTableState] = useState<Partial<ItemsTableState>>({})
+  const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
   const {
     data: itemsWithFilters,
     isLoading,
     isRefetching,
     isError,
-  } = useGetItemsWithFilters(tableState)
+  } = useGetItemsWithFilters(tableState);
 
-  const items = itemsWithFilters?.items
-  const itemCount = itemsWithFilters?.total
+  const items = itemsWithFilters?.items;
+  const itemCount = itemsWithFilters?.total;
 
   const [seriesOptions, setSeriesOptions] = useState<CheckboxOption[] | null>(
     null,
-  )
-  const [companies] = useCompanies(true)
+  );
+  const [companies] = useCompanies(true);
   const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] =
-    useState(false)
+    useState(false);
 
   const companyOptions = useMemo(
     () =>
@@ -70,13 +72,13 @@ export const ItemsOverview: FC = () => {
         }),
       ),
     [companies, tableState],
-  )
+  );
 
   const tableColumns = useMemo(
     () =>
       GET_ITEM_OVERVIEW_TABLE_COLS(seriesOptions || [], companyOptions || []),
     [companyOptions, seriesOptions],
-  )
+  );
 
   // methods
   const fetchAllSeries = useCallback(async () => {
@@ -89,39 +91,39 @@ export const ItemsOverview: FC = () => {
             checked: false,
           }),
         ),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError(
           'Failed to load all item series from the database',
           err,
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/items/views/items-overview___het-ophalen-van-de-reeks-opties-is-mislukt',
         ),
-      )
+      );
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    fetchAllSeries()
-  }, [fetchAllSeries])
+    fetchAllSeries();
+  }, [fetchAllSeries]);
 
   const handleBulkActionClicked = (action: ItemBulkAction) => {
     if (action === ItemBulkAction.EXPORT_ALL) {
-      setIsExportAllToCsvModalOpen(true)
+      setIsExportAllToCsvModalOpen(true);
     }
-  }
+  };
 
   const getItemDetailLink = (externalId: string | undefined) => {
-    return buildLink(APP_PATH.ITEM_DETAIL.route, { id: externalId })
-  }
+    return buildLink(APP_PATH.ITEM_DETAIL.route, { id: externalId });
+  };
 
   const getItemAdminDetailLink = (uuid: string | undefined) => {
-    return buildLink(ADMIN_PATH.ITEM_DETAIL, { id: uuid })
-  }
+    return buildLink(ADMIN_PATH.ITEM_DETAIL, { id: uuid });
+  };
 
   const renderNoResults = () => {
     return (
@@ -136,8 +138,8 @@ export const ItemsOverview: FC = () => {
           )}
         </p>
       </ErrorView>
-    )
-  }
+    );
+  };
 
   const renderItemsOverview = () => {
     return (
@@ -205,8 +207,8 @@ export const ItemsOverview: FC = () => {
                 'created_at') as ItemsOverviewTableCols,
               tableState.sort_order || Avo.Search.OrderDirection.DESC,
               {},
-            )
-            return response.total
+            );
+            return response.total;
           }}
           fetchMoreItems={async (offset: number, limit: number) => {
             const response = await ItemsService.fetchItemsWithFilters(
@@ -216,8 +218,8 @@ export const ItemsOverview: FC = () => {
                 'created_at') as ItemsOverviewTableCols,
               tableState.sort_order || Avo.Search.OrderDirection.DESC,
               {},
-            )
-            return response.items
+            );
+            return response.items;
           }}
           renderValue={(value: any, columnId: string) =>
             renderItemsOverviewTableCellText(
@@ -231,8 +233,8 @@ export const ItemsOverview: FC = () => {
           )}
         />
       </>
-    )
-  }
+    );
+  };
 
   return (
     <PermissionGuard permissions={[PermissionName.VIEW_ITEMS_OVERVIEW]}>
@@ -260,7 +262,7 @@ export const ItemsOverview: FC = () => {
         </AdminLayoutBody>
       </AdminLayout>
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default ItemsOverview
+export default ItemsOverview;

@@ -11,16 +11,13 @@ export const useAllGetNavItems = (
     enabled: boolean
   }> = {},
 ) => {
-  return useQuery(
-    [QUERY_KEYS.GET_NAV_ITEMS],
-    (): Promise<NavItemMap> => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_NAV_ITEMS],
+    queryFn: (): Promise<NavItemMap> => {
       return getAllNavItems()
     },
-    {
-      enabled: true,
-      cacheTime: Infinity,
-      staleTime: Infinity,
-      ...options,
-    },
-  )
+    enabled: true,
+    staleTime: Infinity,
+    ...options,
+  })
 }
