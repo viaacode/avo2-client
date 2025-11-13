@@ -1,10 +1,10 @@
 import { type Avo } from '@viaa/avo2-types'
 import { isNil } from 'es-toolkit'
 
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { trackEvents } from '../../shared/services/event-logging-service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { CollectionService } from '../collection.service.js'
+import { tHtml } from '../../shared/helpers/translate-html';
+import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
+import { CollectionService } from '../collection.service';
 
 export async function deleteCollection(
   collectionId: string | null | undefined,

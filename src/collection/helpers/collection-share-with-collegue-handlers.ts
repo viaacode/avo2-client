@@ -1,10 +1,10 @@
 import {
   type ContributorInfo,
   ContributorInfoRight,
-} from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { CollectionService } from '../collection.service.js'
+} from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { tText } from '../../shared/helpers/translate-text';
+import { ToastService } from '../../shared/services/toast-service';
+import { CollectionService } from '../collection.service';
 
 export async function onDeleteContributor(
   info: ContributorInfo,

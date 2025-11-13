@@ -21,29 +21,29 @@ import { stringifyUrl } from 'query-string'
 import React, { type FC, type ReactNode, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 
-import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const.js'
-import { SERVER_LOGOUT_PAGE } from '../../authentication/authentication.const.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { getLoginStateAtom } from '../../authentication/authentication.store.actions.js'
-import { GENERATE_SITE_TITLE } from '../../constants.js'
-import { SearchFilter } from '../../search/search.const.js'
-import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData.js'
-import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect.js'
-import { FileUpload } from '../../shared/components/FileUpload/FileUpload.js'
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { getEnv } from '../../shared/helpers/env.js'
-import { formatDate } from '../../shared/helpers/formatters/date.js'
-import { groupLomLinks, groupLoms } from '../../shared/helpers/lom.js'
-import { stringsToTagList } from '../../shared/helpers/strings-to-taglist.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { OrganisationService } from '../../shared/services/organizations-service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { USERS_IN_SAME_COMPANY_COLUMNS } from '../settings.const.js'
-import { SettingsService } from '../settings.service.js'
-import { type UsersInSameCompanyColumn } from '../settings.types.js'
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
+import { SERVER_LOGOUT_PAGE } from '../../authentication/authentication.const';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
+import { GENERATE_SITE_TITLE } from '../../constants';
+import { SearchFilter } from '../../search/search.const';
+import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
+import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
+import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { getEnv } from '../../shared/helpers/env';
+import { formatDate } from '../../shared/helpers/formatters/date';
+import { groupLomLinks, groupLoms } from '../../shared/helpers/lom';
+import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { OrganisationService } from '../../shared/services/organizations-service';
+import { ToastService } from '../../shared/services/toast-service';
+import { USERS_IN_SAME_COMPANY_COLUMNS } from '../settings.const';
+import { SettingsService } from '../settings.service';
+import { type UsersInSameCompanyColumn } from '../settings.types';
 
 import './Profile.scss'
 

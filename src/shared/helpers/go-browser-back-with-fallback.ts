@@ -1,6 +1,6 @@
 import { type NavigateFunction } from 'react-router'
 
-import { navigate } from './link.js'
+import { navigate } from './link';
 
 /**
  * Go back in browser history, or navigate to a fallback path if the previous page is not from the same domain

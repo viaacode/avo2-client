@@ -6,17 +6,17 @@ import { Helmet } from 'react-helmet'
 import { useNavigate } from 'react-router'
 import { useLocation } from 'react-router-dom'
 
-import { useGetContentPageByPath } from '../../admin/content-page/hooks/use-get-content-page-by-path.js'
+import { useGetContentPageByPath } from '../../admin/content-page/hooks/use-get-content-page-by-path';
 import {
   commonUserAtom,
   loginAtom,
-} from '../../authentication/authentication.store.js'
-import { GENERATE_SITE_TITLE } from '../../constants.js'
-import { ErrorView } from '../../error/views/ErrorView.js'
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour.js'
-import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+} from '../../authentication/authentication.store';
+import { GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorView } from '../../error/views/ErrorView';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
+import { tText } from '../../shared/helpers/translate-text';
 
 export const LoggedOutHome: FC = () => {
   const location = useLocation()

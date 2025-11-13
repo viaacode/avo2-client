@@ -30,21 +30,21 @@ import React, {
 import { Helmet } from 'react-helmet'
 import { generatePath, useNavigate, useParams } from 'react-router'
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants.js'
-import { ErrorView } from '../../error/views/ErrorView.js'
-import { ItemVideoDescription } from '../../item/components/ItemVideoDescription.js'
-import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end.js'
-import { renderAvatar } from '../../shared/helpers/formatters/avatar.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { toSeconds } from '../../shared/helpers/parsers/duration.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js'
-import { trackEvents } from '../../shared/services/event-logging-service.js'
-import { createResource } from '../helpers/resourceForTrackEvents.js'
-import { useGetEmbedCode } from '../hooks/useGetEmbedCode.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorView } from '../../error/views/ErrorView';
+import { ItemVideoDescription } from '../../item/components/ItemVideoDescription';
+import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
+import { renderAvatar } from '../../shared/helpers/formatters/avatar';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { toSeconds } from '../../shared/helpers/parsers/duration';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { trackEvents } from '../../shared/services/event-logging-service';
+import { createResource } from '../helpers/resourceForTrackEvents';
+import { useGetEmbedCode } from '../hooks/useGetEmbedCode';
 import { EmbedCodeContentType } from '../embed-code.types.ts'
 
 export const EmbedCodeDetail: FC = () => {

@@ -10,16 +10,16 @@ import {
   type GetOrganisationsWithUsersQueryVariables,
   type GetUsersByCompanyIdQuery,
   type GetUsersByCompanyIdQueryVariables,
-} from '../generated/graphql-db-operations.js'
+} from '../generated/graphql-db-operations';
 import {
   GetAllOrganisationsDocument,
   GetDistinctOrganisationsDocument,
   GetOrganisationsWithUsersDocument,
   GetUsersByCompanyIdDocument,
-} from '../generated/graphql-db-react-query.js'
-import { CustomError } from '../helpers/custom-error.js'
+} from '../generated/graphql-db-react-query';
+import { CustomError } from '../helpers/custom-error';
 
-import { dataService } from './data-service.js'
+import { dataService } from './data-service';
 
 export class OrganisationService {
   public static async fetchOrganisations(

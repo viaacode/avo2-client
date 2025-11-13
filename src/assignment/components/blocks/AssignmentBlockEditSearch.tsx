@@ -1,14 +1,14 @@
 import { convertToHtml } from '@viaa/avo2-components'
 import React, { type FC } from 'react'
 
-import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts.js'
-import { TitleDescriptionForm } from '../../../shared/components/TitleDescriptionForm/TitleDescriptionForm.js'
-import { type EditBlockProps } from '../../assignment.types.js'
-import { AssignmentBlockToggle } from '../AssignmentBlockToggle.js'
+import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
+import { TitleDescriptionForm } from '../../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
+import { type EditBlockProps } from '../../assignment.types';
+import { AssignmentBlockToggle } from '../AssignmentBlockToggle';
 
 import './AssignmentBlockEditSearch.scss'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
+import { tText } from '../../../shared/helpers/translate-text';
+import { tHtml } from '../../../shared/helpers/translate-html';
 import { Avo } from '@viaa/avo2-types'
 
 export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({

@@ -10,13 +10,13 @@ import React, {
   useState,
 } from 'react'
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { AlertBar } from '../../shared/components/AlertBar/AlertBar.js'
-import { EducationLevelId } from '../../shared/helpers/lom.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { AssignmentResponseEdit } from '../views/AssignmentResponseEdit/AssignmentResponseEdit.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { AlertBar } from '../../shared/components/AlertBar/AlertBar';
+import { EducationLevelId } from '../../shared/helpers/lom';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { AssignmentResponseEdit } from '../views/AssignmentResponseEdit/AssignmentResponseEdit';
 
 type AssignmentPupilPreviewProps = {
   assignment: Partial<Avo.Assignment.Assignment>

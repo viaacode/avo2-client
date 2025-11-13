@@ -9,11 +9,11 @@ import { type Avo } from '@viaa/avo2-types'
 
 import React, { type FC, type ReactNode, useState } from 'react'
 
-import { DraggableList } from './DraggableList.js'
+import { DraggableList } from './DraggableList';
 
 import './DraggableListModal.scss'
-import { tHtml } from '../../helpers/translate-html.js'
-import { tText } from '../../helpers/translate-text.js'
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 
 export interface DraggableListModalProps {
   items?: any[]

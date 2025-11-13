@@ -4,9 +4,9 @@ import React, { type FC, type ReactElement } from 'react'
 import {
   ErrorView,
   type ErrorViewQueryParams,
-} from '../../../error/views/ErrorView.js'
-import { tHtml } from '../../helpers/translate-html.js'
-import { FullPageSpinner } from '../FullPageSpinner/FullPageSpinner.js'
+} from '../../../error/views/ErrorView';
+import { tHtml } from '../../helpers/translate-html';
+import { FullPageSpinner } from '../FullPageSpinner/FullPageSpinner';
 
 export type LoadingState = 'loading' | 'loaded' | 'error' | 'forbidden'
 

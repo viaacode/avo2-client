@@ -1,8 +1,8 @@
 import { type Avo } from '@viaa/avo2-types'
 import { compact, groupBy, noop } from 'es-toolkit'
 
-import { WorkspaceService } from '../../../workspace/workspace.service.js'
-import { DEFAULT_AUDIO_STILL } from '../../constants/index.js'
+import { WorkspaceService } from '../../../workspace/workspace.service';
+import { DEFAULT_AUDIO_STILL } from '../../constants/index';
 import {
   type DeleteAssignmentBookmarksForUserMutationVariables,
   type DeleteCollectionBookmarksForUserMutation,
@@ -39,7 +39,7 @@ import {
   type InsertCollectionBookmarkMutationVariables,
   type InsertItemBookmarkMutation,
   type InsertItemBookmarkMutationVariables,
-} from '../../generated/graphql-db-operations.js'
+} from '../../generated/graphql-db-operations';
 import {
   GetAssignmentBookmarkViewCountsDocument,
   GetBookmarkStatusesDocument,
@@ -49,13 +49,13 @@ import {
   GetMultipleAssignmentViewCountsDocument,
   GetMultipleCollectionViewCountsDocument,
   GetMultipleItemViewCountsDocument,
-} from '../../generated/graphql-db-react-query.js'
-import { CustomError } from '../../helpers/custom-error.js'
-import { normalizeTimestamp } from '../../helpers/formatters/date.js'
-import { dataService } from '../data-service.js'
-import { trackEvents } from '../event-logging-service.js'
+} from '../../generated/graphql-db-react-query';
+import { CustomError } from '../../helpers/custom-error';
+import { normalizeTimestamp } from '../../helpers/formatters/date';
+import { dataService } from '../data-service';
+import { trackEvents } from '../event-logging-service';
 
-import { GET_EVENT_QUERIES } from './bookmarks-views-plays-service.const.js'
+import { GET_EVENT_QUERIES } from './bookmarks-views-plays-service.const';
 import {
   type AppItemBookmark,
   type BookmarkInfo,
@@ -66,7 +66,7 @@ import {
   type EventContentType,
   type EventContentTypeSimplified,
   type QueryType,
-} from './bookmarks-views-plays-service.types.js'
+} from './bookmarks-views-plays-service.types';
 
 export class BookmarksViewsPlaysService {
   public static async action(

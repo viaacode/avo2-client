@@ -9,9 +9,9 @@ import { Avo } from '@viaa/avo2-types'
 import { compact } from 'es-toolkit'
 import React, { type ReactNode } from 'react'
 
-import { renderMobileDesktop } from './renderMobileDesktop.js'
-import { tHtml } from './translate-html.js'
-import { tText } from './translate-text.js'
+import { renderMobileDesktop } from './renderMobileDesktop';
+import { tHtml } from './translate-html';
+import { tText } from './translate-text';
 
 export function contributorsToString(
   contributors:

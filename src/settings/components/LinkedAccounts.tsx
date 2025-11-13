@@ -22,19 +22,19 @@ import React, {
 import { Helmet } from 'react-helmet'
 import { useLocation } from 'react-router-dom'
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
 import {
   redirectToServerLinkAccount,
   redirectToServerUnlinkAccount,
-} from '../../authentication/helpers/redirects.js'
-import { GENERATE_SITE_TITLE } from '../../constants.js'
-import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal.js'
-import { isPupil } from '../../shared/helpers/is-pupil.js'
+} from '../../authentication/helpers/redirects';
+import { GENERATE_SITE_TITLE } from '../../constants';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
+import { isPupil } from '../../shared/helpers/is-pupil';
 
 import './LinkedAccounts.scss'
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface IdpProps {
   label: ReactNode

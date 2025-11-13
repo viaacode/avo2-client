@@ -15,17 +15,17 @@ import { isAfter, isPast } from 'date-fns'
 import { useAtomValue } from 'jotai'
 import React, { type FC, useCallback } from 'react'
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { endOfAcademicYear } from '../helpers/academic-year.js'
-import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at.js'
-import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels.js'
-import { type AssignmentFields } from '../hooks/assignment-form.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { ToastService } from '../../shared/services/toast-service';
+import { endOfAcademicYear } from '../helpers/academic-year';
+import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
+import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels';
+import { type AssignmentFields } from '../hooks/assignment-form';
 
-import { AssignmentLabels } from './AssignmentLabels.js'
+import { AssignmentLabels } from './AssignmentLabels';
 
 import './AssignmentDetailsForm.scss'
 import { Avo } from '@viaa/avo2-types'

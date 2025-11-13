@@ -4,13 +4,13 @@ import React, { type FC, lazy, Suspense, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useNavigate, useParams } from 'react-router'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { GENERATE_SITE_TITLE } from '../../../constants.js'
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { ADMIN_PATH } from '../../admin.const.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { GENERATE_SITE_TITLE } from '../../../constants';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
+import { tText } from '../../../shared/helpers/translate-text';
+import { ADMIN_PATH } from '../../admin.const';
 import { PermissionName } from '@viaa/avo2-types'
 
 const ContentPageDetail = lazy(() =>

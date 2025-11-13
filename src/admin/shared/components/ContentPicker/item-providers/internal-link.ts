@@ -1,8 +1,8 @@
 import { compact, sortBy } from 'es-toolkit'
 
-import { APP_PATH, type RouteId } from '../../../../../constants.js'
-import { type PickerItem } from '../../../types/content-picker.js'
-import { parsePickerItem } from '../helpers/parse-picker.js'
+import { APP_PATH, type RouteId } from '../../../../../constants';
+import { type PickerItem } from '../../../types/content-picker';
+import { parsePickerItem } from '../helpers/parse-picker';
 import { Avo } from '@viaa/avo2-types'
 
 // Return InternalLinkItems items from APP_PATH

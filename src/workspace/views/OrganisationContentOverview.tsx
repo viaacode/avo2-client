@@ -10,28 +10,28 @@ import { useAtomValue } from 'jotai'
 import React, { type FC, useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
+import { commonUserAtom } from '../../authentication/authentication.store';
 import {
   CollectionService,
   type OrganisationContentItem,
-} from '../../collection/collection.service.js'
-import { APP_PATH } from '../../constants.js'
-import { ErrorView } from '../../error/views/ErrorView.js'
+} from '../../collection/collection.service';
+import { APP_PATH } from '../../constants';
+import { ErrorView } from '../../error/views/ErrorView';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../shared/helpers/build-link';
 import {
   formatDate,
   formatTimestamp,
-} from '../../shared/helpers/formatters/date.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { truncateTableValue } from '../../shared/helpers/truncate.js'
-import { TableColumnDataType } from '../../shared/types/table-column-data-type.js'
+} from '../../shared/helpers/formatters/date';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { truncateTableValue } from '../../shared/helpers/truncate';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { Avo } from '@viaa/avo2-types'
 
 // Constants

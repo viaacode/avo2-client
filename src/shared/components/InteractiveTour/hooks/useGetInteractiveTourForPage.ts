@@ -7,12 +7,12 @@ import {
   APP_PATH,
   type RouteId,
   type RouteInfo,
-} from '../../../../constants.js'
-import { QUERY_KEYS } from '../../../constants/query-keys.js'
+} from '../../../../constants';
+import { QUERY_KEYS } from '../../../constants/query-keys';
 import {
   InteractiveTourService,
   type TourInfo,
-} from '../../../services/interactive-tour.service.js'
+} from '../../../services/interactive-tour.service';
 
 async function getInteractiveTourForPage(
   currentPath: string,

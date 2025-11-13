@@ -1,8 +1,8 @@
-import { AssignmentLayout } from '../../assignment/assignment.types.js'
+import { AssignmentLayout } from '../../assignment/assignment.types';
 import {
   type QuickLaneUrlObject,
   type QuickLaneUrlRecord,
-} from '../types/index.js'
+} from '../types/index';
 
 export const quickLaneUrlRecordToObject = (record: QuickLaneUrlRecord) => {
   const mapped = { ...record } as unknown as QuickLaneUrlObject

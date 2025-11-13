@@ -1,7 +1,7 @@
 import { UseQueryResult, useQuery } from '@tanstack/react-query'
 import { Avo } from '@viaa/avo2-types'
-import { QUERY_KEYS } from '../../shared/constants/query-keys.js'
-import { AssignmentService } from '../assignment.service.js'
+import { QUERY_KEYS } from '../../shared/constants/query-keys';
+import { AssignmentService } from '../assignment.service';
 
 export const useGetAssignmentsEditStatuses = (
   assignmentsIds: string[],

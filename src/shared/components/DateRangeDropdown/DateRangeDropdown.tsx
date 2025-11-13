@@ -22,11 +22,11 @@ import React, {
   useState,
 } from 'react'
 
-import { reorderDate } from '../../helpers/formatters/date.js'
-import { tHtml } from '../../helpers/translate-html.js'
-import { tText } from '../../helpers/translate-text.js'
-import { ToastService } from '../../services/toast-service.js'
-import { renderDropdownButton } from '../CheckboxDropdownModal/CheckboxDropdownModal.js'
+import { reorderDate } from '../../helpers/formatters/date';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
+import { ToastService } from '../../services/toast-service';
+import { renderDropdownButton } from '../CheckboxDropdownModal/CheckboxDropdownModal';
 
 export interface DateRangeDropdownProps {
   label: string

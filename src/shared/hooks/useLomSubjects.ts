@@ -1,10 +1,10 @@
 import { type Avo } from '@viaa/avo2-types'
 import { useEffect, useState } from 'react'
 
-import { CustomError } from '../helpers/custom-error.js'
-import { tHtml } from '../helpers/translate-html.js'
-import { LomService } from '../services/lom.service.js'
-import { ToastService } from '../services/toast-service.js'
+import { CustomError } from '../helpers/custom-error';
+import { tHtml } from '../helpers/translate-html';
+import { LomService } from '../services/lom.service';
+import { ToastService } from '../services/toast-service';
 
 type UseLomSubjectsTuple = [Avo.Lom.LomField[], boolean]
 

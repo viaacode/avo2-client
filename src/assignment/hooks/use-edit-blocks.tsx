@@ -1,12 +1,12 @@
 import { Avo } from '@viaa/avo2-types'
 import React, { type ReactNode } from 'react'
 
-import { type FilterState } from '../../search/search.types.js'
-import { type EditableAssignmentBlock } from '../assignment.types.js'
-import { type AssignmentBlockItemDescriptionType } from '../components/AssignmentBlockDescriptionButtons.js'
-import { AssignmentBlockEditItem } from '../components/blocks/AssignmentBlockEditItem.js'
-import { AssignmentBlockEditSearch } from '../components/blocks/AssignmentBlockEditSearch.js'
-import { AssignmentBlockEditText } from '../components/blocks/AssignmentBlockEditText.js'
+import { type FilterState } from '../../search/search.types';
+import { type EditableAssignmentBlock } from '../assignment.types';
+import { type AssignmentBlockItemDescriptionType } from '../components/AssignmentBlockDescriptionButtons';
+import { AssignmentBlockEditItem } from '../components/blocks/AssignmentBlockEditItem';
+import { AssignmentBlockEditSearch } from '../components/blocks/AssignmentBlockEditSearch';
+import { AssignmentBlockEditText } from '../components/blocks/AssignmentBlockEditText';
 
 export function useEditBlocks(
   setBlock: (updatedBlock: Avo.Core.BlockItemBase) => void,

@@ -11,10 +11,10 @@ import {
 import { noop } from 'es-toolkit'
 import React, { type FC, useState } from 'react'
 
-import { tHtml } from '../../../../shared/helpers/translate-html.js'
-import { tText } from '../../../../shared/helpers/translate-text.js'
-import { type PickerItem } from '../../types/content-picker.js'
-import { ContentPicker } from '../ContentPicker/ContentPicker.js'
+import { tHtml } from '../../../../shared/helpers/translate-html';
+import { tText } from '../../../../shared/helpers/translate-text';
+import { type PickerItem } from '../../types/content-picker';
+import { ContentPicker } from '../ContentPicker/ContentPicker';
 import { Avo } from '@viaa/avo2-types'
 
 interface ChangeAuthorModalProps {

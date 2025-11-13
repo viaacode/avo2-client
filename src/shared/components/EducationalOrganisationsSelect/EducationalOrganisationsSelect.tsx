@@ -4,12 +4,12 @@ import { clsx } from 'clsx'
 import { remove, uniq } from 'es-toolkit'
 import React, { type FC, useEffect, useState } from 'react'
 
-import { CustomError } from '../../helpers/custom-error.js'
-import { stringsToTagList } from '../../helpers/strings-to-taglist.js'
-import { tHtml } from '../../helpers/translate-html.js'
-import { tText } from '../../helpers/translate-text.js'
-import { EducationOrganisationService } from '../../services/education-organizations-service.js'
-import { ToastService } from '../../services/toast-service.js'
+import { CustomError } from '../../helpers/custom-error';
+import { stringsToTagList } from '../../helpers/strings-to-taglist';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
+import { EducationOrganisationService } from '../../services/education-organizations-service';
+import { ToastService } from '../../services/toast-service';
 
 import './EducationalOrganisationsSelect.scss'
 import { pullAllBy } from 'es-toolkit/compat'

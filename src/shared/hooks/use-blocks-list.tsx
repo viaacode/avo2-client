@@ -1,15 +1,15 @@
 import { type Avo } from '@viaa/avo2-types'
 import React, { type ReactNode, useMemo } from 'react'
 
-import { switchAssignmentBlockPositions } from '../../assignment/helpers/switch-positions.js'
-import { GET_BLOCK_ICON } from '../components/BlockList/BlockIconWrapper/BlockIconWrapper.consts.js'
-import { BLOCK_ITEM_LABELS } from '../components/BlockList/BlockList.consts.js'
+import { switchAssignmentBlockPositions } from '../../assignment/helpers/switch-positions';
+import { GET_BLOCK_ICON } from '../components/BlockList/BlockIconWrapper/BlockIconWrapper.consts';
+import { BLOCK_ITEM_LABELS } from '../components/BlockList/BlockList.consts';
 import {
   BlockListSorter,
   type ListSorterItem,
   type ListSorterProps,
-} from '../components/ListSorter/ListSorter.js'
-import { getBlockColor } from '../helpers/get-block-color.js'
+} from '../components/ListSorter/ListSorter';
+import { getBlockColor } from '../helpers/get-block-color';
 
 export function useBlocksList(
   blocks: Avo.Core.BlockItemBase[],

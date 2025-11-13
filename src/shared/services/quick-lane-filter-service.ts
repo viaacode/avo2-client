@@ -1,20 +1,20 @@
 import { type Avo } from '@viaa/avo2-types'
 
-import { type DateRange } from '../components/DateRangeDropdown/DateRangeDropdown.js'
-import { type QuickLaneType } from '../components/QuickLaneContent/QuickLaneContent.types.js'
+import { type DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
+import { type QuickLaneType } from '../components/QuickLaneContent/QuickLaneContent.types';
 import {
   type GetQuickLanesWithFiltersQuery,
   type GetQuickLanesWithFiltersQueryVariables,
-} from '../generated/graphql-db-operations.js'
-import { GetQuickLanesWithFiltersDocument } from '../generated/graphql-db-react-query.js'
-import { type App_Quick_Lanes_Bool_Exp } from '../generated/graphql-db-types.js'
-import { CustomError } from '../helpers/custom-error.js'
-import { getOrderObject } from '../helpers/generate-order-gql-query.js'
-import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object.js'
-import { type QuickLaneUrlObject } from '../types/index.js'
-import { type TableColumnDataType } from '../types/table-column-data-type.js'
+} from '../generated/graphql-db-operations';
+import { GetQuickLanesWithFiltersDocument } from '../generated/graphql-db-react-query';
+import { type App_Quick_Lanes_Bool_Exp } from '../generated/graphql-db-types';
+import { CustomError } from '../helpers/custom-error';
+import { getOrderObject } from '../helpers/generate-order-gql-query';
+import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object';
+import { type QuickLaneUrlObject } from '../types/index';
+import { type TableColumnDataType } from '../types/table-column-data-type';
 
-import { dataService } from './data-service.js'
+import { dataService } from './data-service';
 
 export interface QuickLaneFilters {
   filterString?: string

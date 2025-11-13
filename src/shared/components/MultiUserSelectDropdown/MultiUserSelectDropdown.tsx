@@ -21,14 +21,14 @@ import React, {
   useState,
 } from 'react'
 
-import { ContentPicker } from '../../../admin/shared/components/ContentPicker/ContentPicker.js'
-import { type PickerItem } from '../../../admin/shared/types/content-picker.js'
-import { CustomError } from '../../helpers/custom-error.js'
+import { ContentPicker } from '../../../admin/shared/components/ContentPicker/ContentPicker';
+import { type PickerItem } from '../../../admin/shared/types/content-picker';
+import { CustomError } from '../../helpers/custom-error';
 
 import './MultiUserSelectDropdown.scss'
-import { tHtml } from '../../helpers/translate-html.js'
-import { tText } from '../../helpers/translate-text.js'
-import { ToastService } from '../../services/toast-service.js'
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
+import { ToastService } from '../../services/toast-service';
 
 interface MultiUserSelectDropdownProps {
   label: string

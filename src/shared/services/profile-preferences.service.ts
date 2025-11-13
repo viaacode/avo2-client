@@ -3,15 +3,15 @@ import {
   type GetProfilePreferenceQueryVariables,
   type SetProfilePreferenceMutation,
   type SetProfilePreferenceMutationVariables,
-} from '../generated/graphql-db-operations.js'
+} from '../generated/graphql-db-operations';
 import {
   GetProfilePreferenceDocument,
   SetProfilePreferenceDocument,
-} from '../generated/graphql-db-react-query.js'
-import { CustomError } from '../helpers/custom-error.js'
+} from '../generated/graphql-db-react-query';
+import { CustomError } from '../helpers/custom-error';
 
-import { dataService } from './data-service.js'
-import { type ProfilePreferenceKey } from './profile-preferences.types.js'
+import { dataService } from './data-service';
+import { type ProfilePreferenceKey } from './profile-preferences.types';
 
 export interface ProfilePreference {
   id: number

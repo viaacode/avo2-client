@@ -6,7 +6,7 @@ import { decode } from 'he'
 import { type TOptions } from 'i18next'
 import { isNil } from 'es-toolkit'
 
-import i18n from '../translations/i18n.js'
+import i18n from '../translations/i18n';
 
 /**
  * Wrapper around tText() that simply returns the translated text as a string

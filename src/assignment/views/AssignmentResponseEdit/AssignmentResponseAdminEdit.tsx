@@ -14,19 +14,19 @@ import React, {
 import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { PermissionService } from '../../../authentication/helpers/permission-service.js'
-import { GENERATE_SITE_TITLE } from '../../../constants.js'
-import { ErrorView } from '../../../error/views/ErrorView.js'
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { AssignmentService } from '../../assignment.service.js'
-import { AssignmentMetadata } from '../../components/AssignmentMetadata.js'
-import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionService } from '../../../authentication/helpers/permission-service';
+import { GENERATE_SITE_TITLE } from '../../../constants';
+import { ErrorView } from '../../../error/views/ErrorView';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { ToastService } from '../../../shared/services/toast-service';
+import { AssignmentService } from '../../assignment.service';
+import { AssignmentMetadata } from '../../components/AssignmentMetadata';
+import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
 
-import { AssignmentResponseEdit } from './AssignmentResponseEdit.js'
+import { AssignmentResponseEdit } from './AssignmentResponseEdit';
 
 import '../AssignmentPage.scss'
 import './AssignmentResponseEdit.scss'

@@ -3,14 +3,14 @@ import AvoLogoSrc from '@assets/images/avo-logo-centered.svg'
 import { Column, Grid, IconName, Spacer, Tabs } from '@viaa/avo2-components'
 import React, { type FC } from 'react'
 
-import { LoginOptionsForPupil } from '../../authentication/components/LoginOptionsForPupil.js'
+import { LoginOptionsForPupil } from '../../authentication/components/LoginOptionsForPupil';
 import './RegisterOrLogin.scss'
-import { LoginOptionsForTeacher } from '../../authentication/components/LoginOptionsForTeacher.js'
-import { LoginOptionsTabs } from '../../authentication/helpers/login-options-preferred-tab.js'
-import { getEnv } from '../../shared/helpers/env.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { useTabs } from '../../shared/hooks/useTabs.js'
+import { LoginOptionsForTeacher } from '../../authentication/components/LoginOptionsForTeacher';
+import { LoginOptionsTabs } from '../../authentication/helpers/login-options-preferred-tab';
+import { getEnv } from '../../shared/helpers/env';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { useTabs } from '../../shared/hooks/useTabs';
 
 export const RegisterOrLogin: FC = () => {
   const [tab, setActiveTab, tabs] = useTabs(

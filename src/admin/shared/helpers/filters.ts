@@ -1,7 +1,7 @@
 import { compact, isNil, without } from 'es-toolkit'
 import { set } from 'es-toolkit/compat'
 
-import { type EducationLevelType } from '../../../shared/helpers/lom.js'
+import { type EducationLevelType } from '../../../shared/helpers/lom';
 
 export const NULL_FILTER = 'null'
 

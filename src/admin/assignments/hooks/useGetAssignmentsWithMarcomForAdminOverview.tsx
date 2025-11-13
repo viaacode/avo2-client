@@ -2,14 +2,14 @@ import { getFilters } from '@meemoo/admin-core-ui/admin'
 import { useQuery } from '@tanstack/react-query'
 import { Avo } from '@viaa/avo2-types'
 
-import { QUERY_KEYS } from '../../../shared/constants/query-keys.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { ITEMS_PER_PAGE } from '../../collectionsOrBundles/collections-or-bundles.const.js'
-import { AssignmentsAdminService } from '../assignments.admin.service.js'
+import { QUERY_KEYS } from '../../../shared/constants/query-keys';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { ITEMS_PER_PAGE } from '../../collectionsOrBundles/collections-or-bundles.const';
+import { AssignmentsAdminService } from '../assignments.admin.service';
 import {
   type AssignmentMarcomTableState,
   type AssignmentSortProps,
-} from '../assignments.types.js'
+} from '../assignments.types';
 
 export const useGetAssignmentsWithMarcomForAdminOverview = (
   tableState: Partial<AssignmentMarcomTableState>,

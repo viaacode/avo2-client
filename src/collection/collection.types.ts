@@ -3,7 +3,7 @@ import { Avo } from '@viaa/avo2-types'
 import {
   type GetPublicCollectionsByIdQuery,
   type GetPublicCollectionsByTitleQuery,
-} from '../shared/generated/graphql-db-operations.js'
+} from '../shared/generated/graphql-db-operations';
 
 export type Collection = (
   | GetPublicCollectionsByIdQuery

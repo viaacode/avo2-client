@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
-import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies.js'
-import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo.js'
+import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies';
+import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
 
 test('T64: Onderwijsniveau kiezen voor secundair onderwijs', async ({
   page,

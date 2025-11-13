@@ -1,6 +1,6 @@
 import { Avo } from '@viaa/avo2-types'
 
-import type { TableColumnDataType } from '../shared/types/table-column-data-type.js'
+import type { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 export enum EmbedCodeContentType {
   item = 'ITEM',

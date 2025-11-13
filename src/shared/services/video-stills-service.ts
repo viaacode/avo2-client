@@ -2,11 +2,11 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
 import { Avo } from '@viaa/avo2-types'
 import { compact, isNil, uniq, without } from 'es-toolkit'
 
-import { ContentTypeNumber } from '../../collection/collection.types.js'
-import { DEFAULT_AUDIO_STILL } from '../constants/index.js'
-import { CustomError } from '../helpers/custom-error.js'
-import { getEnv } from '../helpers/env.js'
-import { toSeconds } from '../helpers/parsers/duration.js'
+import { ContentTypeNumber } from '../../collection/collection.types';
+import { DEFAULT_AUDIO_STILL } from '../constants/index';
+import { CustomError } from '../helpers/custom-error';
+import { getEnv } from '../helpers/env';
+import { toSeconds } from '../helpers/parsers/duration';
 
 export class VideoStillService {
   /**

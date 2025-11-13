@@ -1,6 +1,6 @@
 import { type Avo } from '@viaa/avo2-types'
 
-import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const.js'
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 
 export const canManageEditorial = (
   commonUser: Avo.User.CommonUser | undefined,

@@ -1,7 +1,7 @@
 import { type Avo, LomSchemeType, type LomType } from '@viaa/avo2-types'
 import { compact, groupBy } from 'es-toolkit'
 
-import { type LomFieldsByScheme } from '../types/lom.js'
+import { type LomFieldsByScheme } from '../types/lom';
 
 export enum EducationLevelId {
   kleuteronderwijs = 'https://w3id.org/onderwijs-vlaanderen/id/structuur/kleuteronderwijs',

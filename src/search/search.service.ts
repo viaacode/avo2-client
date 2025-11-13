@@ -2,7 +2,7 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
 import { Avo } from '@viaa/avo2-types'
 import { set } from 'es-toolkit/compat'
 
-import { getEnv } from '../shared/helpers/env.js'
+import { getEnv } from '../shared/helpers/env';
 
 export const fetchSearchResults = (
   orderProperty: Avo.Search.OrderProperty = 'relevance',

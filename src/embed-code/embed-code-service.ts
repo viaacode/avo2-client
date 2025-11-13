@@ -1,12 +1,12 @@
 import { type Avo } from '@viaa/avo2-types'
 import { stringifyUrl } from 'query-string'
 
-import { LTI_JWT_TOKEN_HEADER } from '../embed/embed.types.js'
-import { CustomError } from '../shared/helpers/custom-error.js'
-import { getEnv } from '../shared/helpers/env.js'
-import { ITEMS_PER_PAGE } from '../workspace/workspace.const.js'
+import { LTI_JWT_TOKEN_HEADER } from '../embed/embed.types';
+import { CustomError } from '../shared/helpers/custom-error';
+import { getEnv } from '../shared/helpers/env';
+import { ITEMS_PER_PAGE } from '../workspace/workspace.const';
 
-import { type EmbedCode } from './embed-code.types.js'
+import { type EmbedCode } from './embed-code.types';
 
 export interface EmbedCodeFilters {
   filterString?: string

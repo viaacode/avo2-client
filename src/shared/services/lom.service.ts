@@ -1,9 +1,9 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
 import { type Avo } from '@viaa/avo2-types'
 
-import { CustomError } from '../helpers/custom-error.js'
-import { getEnv } from '../helpers/env.js'
-import { EducationLevelId } from '../helpers/lom.js'
+import { CustomError } from '../helpers/custom-error';
+import { getEnv } from '../helpers/env';
+import { EducationLevelId } from '../helpers/lom';
 
 export class LomService {
   public static async fetchSubjects(): Promise<Avo.Lom.LomField[]> {

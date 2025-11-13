@@ -1,8 +1,8 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
 import { stringifyUrl } from 'query-string'
 
-import { CustomError } from '../helpers/custom-error.js'
-import { getEnv } from '../helpers/env.js'
+import { CustomError } from '../helpers/custom-error';
+import { getEnv } from '../helpers/env';
 
 export interface KlascementPublishCollectionData {
   collectionId: string

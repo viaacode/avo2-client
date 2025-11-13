@@ -1,7 +1,7 @@
 import { LinkTarget } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 
-import { type PickerItem } from '../../../types/content-picker.js'
+import { type PickerItem } from '../../../types/content-picker';
 
 export const parsePickerItem = (
   type: Avo.Core.ContentPickerType,

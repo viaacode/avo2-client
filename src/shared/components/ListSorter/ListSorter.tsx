@@ -6,9 +6,9 @@ import { type Avo } from '@viaa/avo2-types'
 import { sortBy } from 'es-toolkit'
 import React, { type FC, Fragment, type ReactNode, useMemo } from 'react'
 
-import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../../../assignment/assignment.const.js'
-import { ColorSelect } from '../ColorSelect/ColorSelect.js'
-import { GET_ASSIGNMENT_COLORS } from '../ColorSelect/ColorSelect.const.js'
+import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../../../assignment/assignment.const';
+import { ColorSelect } from '../ColorSelect/ColorSelect';
+import { GET_ASSIGNMENT_COLORS } from '../ColorSelect/ColorSelect.const';
 
 // Types
 

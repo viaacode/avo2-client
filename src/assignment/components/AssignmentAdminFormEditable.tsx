@@ -15,16 +15,16 @@ import { useAtomValue } from 'jotai'
 import { isNil } from 'es-toolkit'
 import React, { type FC } from 'react'
 
-import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker.js'
-import { type PickerItem } from '../../admin/shared/types/content-picker.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable.js'
-import { type QualityLabel } from '../../collection/collection.types.js'
-import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar.js'
-import { formatTimestamp } from '../../shared/helpers/formatters/date.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { useGetQualityLabels } from '../../shared/hooks/useGetQualityLabels.js'
+import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
+import { type PickerItem } from '../../admin/shared/types/content-picker';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable';
+import { type QualityLabel } from '../../collection/collection.types';
+import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar';
+import { formatTimestamp } from '../../shared/helpers/formatters/date';
+import { tText } from '../../shared/helpers/translate-text';
+import { useGetQualityLabels } from '../../shared/hooks/useGetQualityLabels';
 
 interface AssignmentAdminFormEditableProps {
   assignment: Avo.Assignment.Assignment

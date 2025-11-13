@@ -4,7 +4,7 @@ import type {
   PickerItem,
   PickerItemControls,
   PickerTypeOption,
-} from '../../types/content-picker.js'
+} from '../../types/content-picker';
 
 export declare type SingleValue<Option> = Option | null
 export declare type MultiValue<Option> = readonly Option[]

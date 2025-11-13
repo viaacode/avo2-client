@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { CustomError } from '../helpers/custom-error.js'
-import { tHtml } from '../helpers/translate-html.js'
-import { OrganisationService } from '../services/organizations-service.js'
-import { ToastService } from '../services/toast-service.js'
+import { CustomError } from '../helpers/custom-error';
+import { tHtml } from '../helpers/translate-html';
+import { OrganisationService } from '../services/organizations-service';
+import { ToastService } from '../services/toast-service';
 
 export type BasicOrganisation = {
   or_id: string

@@ -25,30 +25,30 @@ import React, {
 } from 'react'
 
 import placeholderImage from '../../../../../assets/images/assignment-placeholder.png'
-import { commonUserAtom } from '../../../../../authentication/authentication.store.js'
-import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../../../../collection/collection.types.js'
-import { APP_PATH } from '../../../../../constants.js'
-import { ItemVideoDescription } from '../../../../../item/components/ItemVideoDescription.js'
+import { commonUserAtom } from '../../../../../authentication/authentication.store';
+import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../../../../collection/collection.types';
+import { APP_PATH } from '../../../../../constants';
+import { ItemVideoDescription } from '../../../../../item/components/ItemVideoDescription';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { DEFAULT_AUDIO_STILL } from '../../../../../shared/constants/index.js'
-import { buildLink } from '../../../../../shared/helpers/build-link.js'
-import { CustomError } from '../../../../../shared/helpers/custom-error.js'
-import { defaultRenderBookmarkButton } from '../../../../../shared/helpers/default-render-bookmark-button.js'
-import { formatDate } from '../../../../../shared/helpers/formatters/date.js'
-import { isMobileWidth } from '../../../../../shared/helpers/media-query.js'
-import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number.js'
-import { tHtml } from '../../../../../shared/helpers/translate-html.js'
-import { tText } from '../../../../../shared/helpers/translate-text.js'
-import { BookmarksViewsPlaysService } from '../../../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.js'
-import { ToastService } from '../../../../../shared/services/toast-service.js'
-import { ADMIN_PATH } from '../../../../admin.const.js'
-import { ContentPageService } from '../../../services/content-page.service.js'
+} from '../../../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { DEFAULT_AUDIO_STILL } from '../../../../../shared/constants/index';
+import { buildLink } from '../../../../../shared/helpers/build-link';
+import { CustomError } from '../../../../../shared/helpers/custom-error';
+import { defaultRenderBookmarkButton } from '../../../../../shared/helpers/default-render-bookmark-button';
+import { formatDate } from '../../../../../shared/helpers/formatters/date';
+import { isMobileWidth } from '../../../../../shared/helpers/media-query';
+import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
+import { tHtml } from '../../../../../shared/helpers/translate-html';
+import { tText } from '../../../../../shared/helpers/translate-text';
+import { BookmarksViewsPlaysService } from '../../../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { ToastService } from '../../../../../shared/services/toast-service';
+import { ADMIN_PATH } from '../../../../admin.const';
+import { ContentPageService } from '../../../services/content-page.service';
 
-import { BlockMediaGrid, type MediaListItem } from './BlockMediaGrid.js'
-import { type ResolvedItemOrCollectionOrAssignmentOrContentPage } from './MediaGridWrapper.types.js'
+import { BlockMediaGrid, type MediaListItem } from './BlockMediaGrid';
+import { type ResolvedItemOrCollectionOrAssignmentOrContentPage } from './MediaGridWrapper.types';
 
 interface MediaGridWrapperProps extends MediaGridBlockState {
   searchQuery?: ButtonAction

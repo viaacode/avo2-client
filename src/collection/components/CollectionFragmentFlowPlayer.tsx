@@ -2,9 +2,9 @@ import { type FlowPlayerWrapperProps } from '@meemoo/admin-core-ui/admin'
 import { type Avo } from '@viaa/avo2-types'
 import React, { type FC } from 'react'
 
-import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.js'
-import { getFlowPlayerPoster } from '../../shared/helpers/get-poster.js'
-import { type BlockItemComponent } from '../collection.types.js'
+import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
+import { type BlockItemComponent } from '../collection.types';
 
 export type CollectionFragmentFlowPlayerProps = BlockItemComponent &
   FlowPlayerWrapperProps

@@ -1,8 +1,8 @@
 import { Avo } from '@viaa/avo2-types'
 
-import { tText } from '../shared/helpers/translate-text.js'
+import { tText } from '../shared/helpers/translate-text';
 
-import { type SortOrder } from './search.types.js'
+import { type SortOrder } from './search.types';
 
 export const ITEMS_PER_PAGE = 10
 

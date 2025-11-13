@@ -4,10 +4,10 @@ import bookwidgetsLogoInternal from '@assets/images/bookwidget_logo.png'
 import smartschoolLogoInternal from '@assets/images/smartschool_logo.png'
 import type { FilterableColumn } from '@meemoo/admin-core-ui/admin'
 
-import { isMobileWidth } from '../shared/helpers/media-query.js'
-import { tText } from '../shared/helpers/translate-text.js'
+import { isMobileWidth } from '../shared/helpers/media-query';
+import { tText } from '../shared/helpers/translate-text';
 
-import type { EmbedCodeOverviewTableColumns } from './embed-code.types.js'
+import type { EmbedCodeOverviewTableColumns } from './embed-code.types';
 
 export const bookWidgetsLogo = bookwidgetsLogoInternal
 export const smartSchoolLogo = smartschoolLogoInternal

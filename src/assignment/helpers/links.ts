@@ -1,10 +1,10 @@
 import { type Avo } from '@viaa/avo2-types'
 
-import { APP_PATH } from '../../constants.js'
-import { ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS } from '../../shared/constants/index.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
-import { ASSIGNMENTS_ID } from '../../workspace/workspace.const.js'
-import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const.js'
+import { APP_PATH } from '../../constants';
+import { ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS } from '../../shared/constants/index';
+import { buildLink } from '../../shared/helpers/build-link';
+import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
+import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 
 export function backToOverview(): string {
   return buildLink(

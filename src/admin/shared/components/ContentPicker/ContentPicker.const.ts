@@ -1,20 +1,20 @@
 import { Avo } from '@viaa/avo2-types'
 
-import { tText } from '../../../../shared/helpers/translate-text.js'
-import { type PickerTypeOption } from '../../types/content-picker.js'
+import { tText } from '../../../../shared/helpers/translate-text';
+import { type PickerTypeOption } from '../../types/content-picker';
 
-import { retrieveAnchors } from './item-providers/anchors.js'
+import { retrieveAnchors } from './item-providers/anchors';
 import {
   retrieveBundles,
   retrieveCollections,
-} from './item-providers/collection.js'
+} from './item-providers/collection';
 import {
   retrieveContentPages,
   retrieveProjectContentPages,
-} from './item-providers/content-page.js'
-import { retrieveInternalLinks } from './item-providers/internal-link.js'
-import { retrieveItems } from './item-providers/item.js'
-import { retrieveProfiles } from './item-providers/profile.js'
+} from './item-providers/content-page';
+import { retrieveInternalLinks } from './item-providers/internal-link';
+import { retrieveItems } from './item-providers/item';
+import { retrieveProfiles } from './item-providers/profile';
 
 const GET_CONTENT_TYPE_LABELS: () => { [type: string]: string } = () => ({
   CONTENT_PAGE: tText('admin/content/content___content'),

@@ -8,21 +8,21 @@ import { type Avo, LomType } from '@viaa/avo2-types'
 import { uniq } from 'es-toolkit'
 import React, { type FC, useMemo } from 'react'
 
-import { getBottomLoms } from '../../helpers/get-bottom-loms.js'
-import { groupLoms } from '../../helpers/lom.js'
-import { lomToTagInfo } from '../../helpers/string-to-select-options.js'
-import { tText } from '../../helpers/translate-text.js'
-import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees.js'
-import { useLomSubjects } from '../../hooks/useLomSubjects.js'
-import { useLomThemes } from '../../hooks/useLomThemes.js'
-import { type LomFieldsByScheme } from '../../types/lom.js'
-import { MultiThemeSelectDropdown } from '../MultiThemeSelectDropdown/MultiThemeSelectDropdown.js'
+import { getBottomLoms } from '../../helpers/get-bottom-loms';
+import { groupLoms } from '../../helpers/lom';
+import { lomToTagInfo } from '../../helpers/string-to-select-options';
+import { tText } from '../../helpers/translate-text';
+import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
+import { useLomSubjects } from '../../hooks/useLomSubjects';
+import { useLomThemes } from '../../hooks/useLomThemes';
+import { type LomFieldsByScheme } from '../../types/lom';
+import { MultiThemeSelectDropdown } from '../MultiThemeSelectDropdown/MultiThemeSelectDropdown';
 
 import {
   getParentEducationLevel,
   mapLomFieldsToOptions,
   mapOptionsToLomFields,
-} from './LomFieldsInput.helpers.js'
+} from './LomFieldsInput.helpers';
 
 type LomFieldsInputProps = {
   loms: Avo.Lom.LomField[]

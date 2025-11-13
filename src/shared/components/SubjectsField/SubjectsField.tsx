@@ -3,9 +3,9 @@ import { type Avo } from '@viaa/avo2-types'
 import { compact } from 'es-toolkit'
 import React, { type FC } from 'react'
 
-import { lomToTagInfo } from '../../helpers/string-to-select-options.js'
-import { tText } from '../../helpers/translate-text.js'
-import { useLomSubjects } from '../../hooks/useLomSubjects.js'
+import { lomToTagInfo } from '../../helpers/string-to-select-options';
+import { tText } from '../../helpers/translate-text';
+import { useLomSubjects } from '../../hooks/useLomSubjects';
 
 interface SubjectsFieldProps {
   onChange?: (values: TagInfo[]) => void

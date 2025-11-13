@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test'
 
-import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies.js'
-import { goToVideoDetailPage } from '../helpers/go-to-video-detail-page.js'
-import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo.js'
+import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies';
+import { goToVideoDetailPage } from '../helpers/go-to-video-detail-page';
+import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
 
 /**
  * New: https://docs.google.com/spreadsheets/d/1IvhK0v0HSntCwTcXiFseHargwwWwpoCkDMjmMehaDMA/edit#gid=0

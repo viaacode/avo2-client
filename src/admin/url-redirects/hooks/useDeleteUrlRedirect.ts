@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { UrlRedirectsService } from '../url-redirects.service.js'
+import { UrlRedirectsService } from '../url-redirects.service';
 
 export const useDeleteUrlRedirect = () => {
   return useMutation({

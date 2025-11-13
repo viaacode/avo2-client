@@ -3,12 +3,12 @@ import { Avo } from '@viaa/avo2-types'
 import React, { type FC } from 'react'
 import { Link } from 'react-router-dom'
 
-import { APP_PATH } from '../../constants.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
+import { APP_PATH } from '../../constants';
+import { buildLink } from '../../shared/helpers/build-link';
 import {
   type BlockItemComponent,
   ContentTypeNumber,
-} from '../collection.types.js'
+} from '../collection.types';
 
 import './CollectionFragmentTitle.scss'
 

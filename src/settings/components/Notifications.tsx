@@ -1,8 +1,8 @@
 import React, { type FC } from 'react'
 import { Helmet } from 'react-helmet'
 
-import { GENERATE_SITE_TITLE } from '../../constants.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+import { GENERATE_SITE_TITLE } from '../../constants';
+import { tText } from '../../shared/helpers/translate-text';
 
 export const Notifications: FC = () => {
   return (

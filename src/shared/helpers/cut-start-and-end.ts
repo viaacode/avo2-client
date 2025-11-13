@@ -1,6 +1,6 @@
 import { clamp } from 'es-toolkit'
 
-import { toSeconds } from './parsers/duration.js'
+import { toSeconds } from './parsers/duration';
 
 export function getValidStartAndEnd(
   start: number | null | undefined,

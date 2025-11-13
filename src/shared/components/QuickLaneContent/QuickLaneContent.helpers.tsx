@@ -1,9 +1,9 @@
 import { type Avo } from '@viaa/avo2-types'
 
-import { AssignmentLayout } from '../../../assignment/assignment.types.js'
-import { type QuickLaneUrlObject } from '../../types/index.js'
+import { AssignmentLayout } from '../../../assignment/assignment.types';
+import { type QuickLaneUrlObject } from '../../types/index';
 
-import { type QuickLaneType } from './QuickLaneContent.types.js'
+import { type QuickLaneType } from './QuickLaneContent.types';
 
 export const isShareable = (
   content:

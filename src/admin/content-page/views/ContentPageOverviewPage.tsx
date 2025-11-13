@@ -5,17 +5,17 @@ import React, { type FC, lazy, Suspense, useCallback } from 'react'
 import { Helmet } from 'react-helmet'
 import { useNavigate } from 'react-router'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { GENERATE_SITE_TITLE } from '../../../constants.js'
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { GENERATE_SITE_TITLE } from '../../../constants';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { tText } from '../../../shared/helpers/translate-text';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
   AdminLayoutBody,
   AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
-import { CONTENT_PAGE_PATH } from '../content-page.consts.js'
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { CONTENT_PAGE_PATH } from '../content-page.consts';
 
 import './ContentPage.scss'
 

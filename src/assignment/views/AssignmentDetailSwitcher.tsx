@@ -1,16 +1,16 @@
 import { useAtomValue } from 'jotai'
 import React, { type FC } from 'react'
 
-import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { ALL_SEARCH_FILTERS } from '../../search/search.const.js'
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { ALL_SEARCH_FILTERS } from '../../search/search.const';
 
-import { AssignmentDetail } from './AssignmentDetail.js'
-import { AssignmentResponseEditPage } from './AssignmentResponseEdit/AssignmentResponseEditPage.js'
+import { AssignmentDetail } from './AssignmentDetail';
+import { AssignmentResponseEditPage } from './AssignmentResponseEdit/AssignmentResponseEditPage';
 
 import './AssignmentEdit.scss'
 import './AssignmentPage.scss'
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js'
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 
 export const AssignmentDetailSwitcher: FC = () => {
   const commonUser = useAtomValue(commonUserAtom)

@@ -1,7 +1,7 @@
 import { type Avo } from '@viaa/avo2-types'
 import { sortBy } from 'es-toolkit'
 
-import { groupLoms } from './lom.js'
+import { groupLoms } from './lom';
 
 export const getBottomLoms = (loms: Avo.Lom.LomField[]) => {
   // Group loms to split the incoming loms in levels and degrees

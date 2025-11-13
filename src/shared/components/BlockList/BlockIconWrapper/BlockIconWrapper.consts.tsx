@@ -1,7 +1,7 @@
 import { IconName } from '@viaa/avo2-components'
 import type { Avo } from '@viaa/avo2-types'
 
-import { ContentTypeNumber } from '../../../../collection/collection.types.js'
+import { ContentTypeNumber } from '../../../../collection/collection.types';
 
 export enum BlockType {
   AUDIO = 'AUDIO',

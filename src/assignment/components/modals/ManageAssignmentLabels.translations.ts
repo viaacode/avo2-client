@@ -1,6 +1,6 @@
-import { tText } from '../../../shared/helpers/translate-text.js'
+import { tText } from '../../../shared/helpers/translate-text';
 
-import { type ManageAssignmentLabelsProps } from './ManageAssignmentLabels.js'
+import { type ManageAssignmentLabelsProps } from './ManageAssignmentLabels';
 import { Avo } from '@viaa/avo2-types'
 
 export interface ManageAssignmentLabelsTranslations {

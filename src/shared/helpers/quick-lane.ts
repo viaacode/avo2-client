@@ -1,13 +1,13 @@
 import { type Avo, PermissionName } from '@viaa/avo2-types'
 
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { type CheckboxOption } from '../components/CheckboxDropdownModal/CheckboxDropdownModal.js'
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { type CheckboxOption } from '../components/CheckboxDropdownModal/CheckboxDropdownModal';
 import {
   type QuickLaneType,
   QuickLaneTypeEnum,
-} from '../components/QuickLaneContent/QuickLaneContent.types.js'
+} from '../components/QuickLaneContent/QuickLaneContent.types';
 
-import { tText } from './translate-text.js'
+import { tText } from './translate-text';
 
 export const isOrganisational = (commonUser?: Avo.User.CommonUser): boolean => {
   return PermissionService.hasAtLeastOnePerm(commonUser, [

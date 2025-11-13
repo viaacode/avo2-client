@@ -6,7 +6,7 @@ import { map } from 'es-toolkit/compat'
 import React, { type FC } from 'react'
 import Select from 'react-select'
 
-import { MultiThemeSelectOptionGroupHeading } from './MultiThemeSelectOptionGroupHeading.js'
+import { MultiThemeSelectOptionGroupHeading } from './MultiThemeSelectOptionGroupHeading';
 
 import './MultiThemeSelectDropdown.scss'
 

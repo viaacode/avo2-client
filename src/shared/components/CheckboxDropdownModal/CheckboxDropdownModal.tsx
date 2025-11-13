@@ -26,10 +26,10 @@ import { clsx } from 'clsx'
 import { clone, compact, take } from 'es-toolkit'
 import React, { type FC, type MouseEvent, useState } from 'react'
 
-import { isMobileWidth } from '../../helpers/media-query.js'
+import { isMobileWidth } from '../../helpers/media-query';
 
 import './CheckboxDropdownModal.scss'
-import { tText } from '../../helpers/translate-text.js'
+import { tText } from '../../helpers/translate-text';
 
 interface CheckedState {
   [checkboxId: string]: boolean

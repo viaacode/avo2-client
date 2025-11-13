@@ -4,8 +4,8 @@ import React, { type ReactNode, useState } from 'react'
 import {
   CutFragmentModal,
   type CutFragmentModalProps,
-} from '../../collection/components/modals/CutFragmentModal.js'
-import { tText } from '../helpers/translate-text.js'
+} from '../../collection/components/modals/CutFragmentModal';
+import { tText } from '../helpers/translate-text';
 
 export function useCutModal(): [
   (props?: Partial<ButtonProps>) => ReactNode,

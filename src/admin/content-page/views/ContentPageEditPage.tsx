@@ -3,14 +3,14 @@ import { useAtomValue } from 'jotai'
 import React, { type FC, lazy, Suspense, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt.js'
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { buildLink } from '../../../shared/helpers/build-link.js'
-import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback.js'
-import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload.js'
-import { ADMIN_PATH } from '../../admin.const.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
+import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
+import { ADMIN_PATH } from '../../admin.const';
 
 const ContentPageEdit = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({

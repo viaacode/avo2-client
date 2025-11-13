@@ -1,6 +1,6 @@
 import { goToLoginBecauseOfUnauthorizedError } from '@meemoo/admin-core-ui/client'
 
-import { getEnv } from '../helpers/env.js'
+import { getEnv } from '../helpers/env';
 
 // Use by graphql codegen in codegen.yml to fetch info from the dataservice and wrap those requests in react-query hooks
 export const fetchData = <TData, TVariables>(

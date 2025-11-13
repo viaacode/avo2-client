@@ -19,19 +19,19 @@ import { Avo } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
 import React, { type FC, useCallback, useEffect, useState } from 'react'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { trackEvents } from '../../../shared/services/event-logging-service.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { VideoStillService } from '../../../shared/services/video-stills-service.js'
-import { CollectionService } from '../../collection.service.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { trackEvents } from '../../../shared/services/event-logging-service';
+import { ToastService } from '../../../shared/services/toast-service';
+import { VideoStillService } from '../../../shared/services/video-stills-service';
+import { CollectionService } from '../../collection.service';
 import {
   CollectionOrBundle,
   ContentTypeNumber,
-} from '../../collection.types.js'
-import { canManageEditorial } from '../../helpers/can-manage-editorial.js'
+} from '../../collection.types';
+import { canManageEditorial } from '../../helpers/can-manage-editorial';
 
 import './AddToBundleModal.scss'
 

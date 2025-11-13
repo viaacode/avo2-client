@@ -3,7 +3,7 @@ import { type Avo } from '@viaa/avo2-types'
 import {
   type ContributorInfo,
   ContributorInfoRight,
-} from '../components/ShareWithColleagues/ShareWithColleagues.types.js'
+} from '../components/ShareWithColleagues/ShareWithColleagues.types';
 
 export const transformContributorsToSimpleContributors = (
   owner: Avo.User.User | undefined,

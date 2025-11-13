@@ -14,19 +14,19 @@ import queryString from 'query-string'
 import React, { type FC, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { redirectToServerLogoutPage } from '../../authentication/helpers/redirects.js'
-import { redirectToHelp } from '../../authentication/helpers/redirects/redirect-help.js'
-import { redirectToLoggedInHome } from '../../authentication/helpers/redirects/redirect-logged-in-home.js'
-import { redirectToPupils } from '../../authentication/helpers/redirects/redirect-pupils.js'
-import { redirectToLoggedOutHome } from '../../authentication/helpers/redirects/redirect-to-logged-out-home.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { getPageNotFoundError } from '../../shared/translations/page-not-found.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { redirectToServerLogoutPage } from '../../authentication/helpers/redirects';
+import { redirectToHelp } from '../../authentication/helpers/redirects/redirect-help';
+import { redirectToLoggedInHome } from '../../authentication/helpers/redirects/redirect-logged-in-home';
+import { redirectToPupils } from '../../authentication/helpers/redirects/redirect-pupils';
+import { redirectToLoggedOutHome } from '../../authentication/helpers/redirects/redirect-to-logged-out-home';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 
 import './ErrorView.scss'
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { tText } from '../../shared/helpers/translate-text';
 
 type ErrorActionButton = Avo.Auth.ErrorActionButton | 'help' | 'pupils'
 

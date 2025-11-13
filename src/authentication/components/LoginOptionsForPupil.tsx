@@ -6,12 +6,12 @@ import {
   redirectToServerLeerIDLogin,
   redirectToServerLoginPage,
   redirectToServerSmartschoolLogin,
-} from '../helpers/redirects.js'
+} from '../helpers/redirects';
 
 import './LoginOptionsForPupil.scss'
 import { useLocation } from 'react-router-dom'
 
-import { tText } from '../../shared/helpers/translate-text.js'
+import { tText } from '../../shared/helpers/translate-text';
 
 interface LoginOptionsForPupilProps {
   onOptionClicked?: () => void

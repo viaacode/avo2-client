@@ -10,11 +10,11 @@ import { type Avo } from '@viaa/avo2-types'
 import { compact, isNil, trimStart } from 'es-toolkit'
 import React, { type FC } from 'react'
 
-import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../collection/collection.types.js'
-import { SearchResult } from '../../shared/components/SearchResult/SearchResult.js'
-import { formatDate } from '../../shared/helpers/formatters/date.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { type SearchResultItemProps } from '../search.types.js'
+import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../collection/collection.types';
+import { SearchResult } from '../../shared/components/SearchResult/SearchResult';
+import { formatDate } from '../../shared/helpers/formatters/date';
+import { tText } from '../../shared/helpers/translate-text';
+import { type SearchResultItemProps } from '../search.types';
 
 import './SearchResultItem.scss'
 

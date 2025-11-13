@@ -5,9 +5,9 @@ import React, { type FC, type ReactNode } from 'react'
 import {
   ConfirmModal,
   type ConfirmModalProps,
-} from '../../shared/components/ConfirmModal/ConfirmModal.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+} from '../../shared/components/ConfirmModal/ConfirmModal';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 type AssignmentConfirmSaveProps = DefaultProps & {
   hasBlocks?: boolean

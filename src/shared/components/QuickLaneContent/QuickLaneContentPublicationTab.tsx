@@ -4,19 +4,19 @@ import { useAtomValue } from 'jotai'
 import { compact } from 'es-toolkit'
 import React, { type FC, useEffect, useState } from 'react'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { CollectionService } from '../../../collection/collection.service.js'
-import { tText } from '../../helpers/translate-text.js'
-import { EducationLevelsField } from '../EducationLevelsField/EducationLevelsField.js'
-import { LomFieldsInput } from '../LomFieldsInput/LomFieldsInput.js'
-import { ShortDescriptionField } from '../ShortDescriptionField/ShortDescriptionField.js'
-import { SubjectsField } from '../SubjectsField/SubjectsField.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { CollectionService } from '../../../collection/collection.service';
+import { tText } from '../../helpers/translate-text';
+import { EducationLevelsField } from '../EducationLevelsField/EducationLevelsField';
+import { LomFieldsInput } from '../LomFieldsInput/LomFieldsInput';
+import { ShortDescriptionField } from '../ShortDescriptionField/ShortDescriptionField';
+import { SubjectsField } from '../SubjectsField/SubjectsField';
 
-import { isShareable } from './QuickLaneContent.helpers.js'
+import { isShareable } from './QuickLaneContent.helpers';
 import {
   type QuickLaneContentProps,
   QuickLaneTypeEnum,
-} from './QuickLaneContent.types.js'
+} from './QuickLaneContent.types';
 
 interface QuickLaneContentPublicationTabProps {
   onComplete?: () => void

@@ -1,4 +1,4 @@
-import { stripRichTextParagraph } from './strip-rich-text-paragraph.js'
+import { stripRichTextParagraph } from './strip-rich-text-paragraph';
 
 describe('stripRichTextParagraph', () => {
   it('Should not remove p style attribute', () => {

@@ -14,21 +14,21 @@ import React, { type FC, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { StringParam, useQueryParams } from 'use-query-params'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { GENERATE_SITE_TITLE } from '../../../constants.js'
-import { ErrorView } from '../../../error/views/ErrorView.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { GENERATE_SITE_TITLE } from '../../../constants';
+import { ErrorView } from '../../../error/views/ErrorView';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import {
   CampaignMonitorService,
   type NewsletterPreferences,
-} from '../../../shared/services/campaign-monitor-service.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { type NewsletterList } from '../../../shared/types/index.js'
-import { GET_NEWSLETTER_LABELS } from '../../settings.const.js'
+} from '../../../shared/services/campaign-monitor-service';
+import { ToastService } from '../../../shared/services/toast-service';
+import { type NewsletterList } from '../../../shared/types/index';
+import { GET_NEWSLETTER_LABELS } from '../../settings.const';
 
-import { useGetEmailPreferences } from './hooks/getEmailPreferences.js'
+import { useGetEmailPreferences } from './hooks/getEmailPreferences';
 
 const INITIAL_NEWSLETTER_PREFERENCES_STATE = (): NewsletterPreferences => ({
   newsletter: false,

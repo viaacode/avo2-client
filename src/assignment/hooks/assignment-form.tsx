@@ -1,7 +1,7 @@
 import { type Avo } from '@viaa/avo2-types'
 import { type Dispatch, type SetStateAction, useState } from 'react'
 
-import { ASSIGNMENT_FORM_DEFAULT } from '../assignment.const.js'
+import { ASSIGNMENT_FORM_DEFAULT } from '../assignment.const';
 
 // Avoid circular references in type while using the react-hook-form library
 export interface AssignmentFields {

@@ -15,38 +15,38 @@ import React, { type FC, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useNavigate, useParams } from 'react-router'
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js'
-import { GENERATE_SITE_TITLE } from '../../../constants.js'
-import { ErrorView } from '../../../error/views/ErrorView.js'
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { ROUTE_PARTS } from '../../../shared/constants/index.js'
-import { buildLink } from '../../../shared/helpers/build-link.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { navigate } from '../../../shared/helpers/link.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { ADMIN_PATH } from '../../admin.const.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { GENERATE_SITE_TITLE } from '../../../constants';
+import { ErrorView } from '../../../error/views/ErrorView';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { ROUTE_PARTS } from '../../../shared/constants/index';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { navigate } from '../../../shared/helpers/link';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { ToastService } from '../../../shared/services/toast-service';
+import { ADMIN_PATH } from '../../admin.const';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
   AdminLayoutBody,
   AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
-import { PROXY_PATH_SHORTCUT } from '../helpers/replace-proxy-url-template-with-url.js'
-import { useCreateUrlRedirect } from '../hooks/useCreateUrlRedirect.js'
-import { useGetUrlRedirectById } from '../hooks/useGetUrlRedirectById.js'
-import { useUpdateUrlRedirect } from '../hooks/useUpdateUrlRedirect.js'
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { PROXY_PATH_SHORTCUT } from '../helpers/replace-proxy-url-template-with-url';
+import { useCreateUrlRedirect } from '../hooks/useCreateUrlRedirect';
+import { useGetUrlRedirectById } from '../hooks/useGetUrlRedirectById';
+import { useUpdateUrlRedirect } from '../hooks/useUpdateUrlRedirect';
 import {
   INITIAL_URL_REDIRECT,
   URL_REDIRECT_PATH,
   URL_REDIRECT_PATTERN_OPTIONS,
-} from '../url-redirects.const.js'
+} from '../url-redirects.const';
 import {
   type UrlRedirect,
   type UrlRedirectEditFormErrorState,
   type UrlRedirectPathPattern,
-} from '../url-redirects.types.js'
+} from '../url-redirects.types';
 
 const UrlRedirectEdit: FC = () => {
   const { id } = useParams<{ id: string }>()

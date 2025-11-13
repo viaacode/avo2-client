@@ -17,9 +17,9 @@ import { clsx } from 'clsx'
 import { isNil, noop } from 'es-toolkit'
 import React, { type FC, type ReactNode, type ReactText } from 'react'
 
-import { defaultRenderBookmarkButton } from '../../helpers/default-render-bookmark-button.js'
-import { tText } from '../../helpers/translate-text.js'
-import EducationLevelsTagList from '../EducationLevelsTagList/EducationLevelsTagList.js'
+import { defaultRenderBookmarkButton } from '../../helpers/default-render-bookmark-button';
+import { tText } from '../../helpers/translate-text';
+import EducationLevelsTagList from '../EducationLevelsTagList/EducationLevelsTagList';
 
 import './SearchResult.scss'
 

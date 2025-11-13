@@ -1,8 +1,8 @@
-import { SpecialPermissionGroups } from '../../authentication/authentication.types.js'
-import { ROUTE_PARTS } from '../../shared/constants/index.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+import { SpecialPermissionGroups } from '../../authentication/authentication.types';
+import { ROUTE_PARTS } from '../../shared/constants/index';
+import { tText } from '../../shared/helpers/translate-text';
 
-import { type UserGroup } from './user-group.types.js'
+import { type UserGroup } from './user-group.types';
 
 export const USER_GROUP_PATH = {
   USER_GROUP_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.permissions}`,

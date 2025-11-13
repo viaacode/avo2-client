@@ -9,7 +9,7 @@ import { Outlet, Scripts, ScrollRestoration } from 'react-router'
 import 'react-datepicker/dist/react-datepicker.css' // TODO: lazy-load
 import './App.scss'
 import './styles/main.scss'
-import { ToastService } from './shared/services/toast-service.js'
+import { ToastService } from './shared/services/toast-service';
 
 export function Layout({ children }: { children: ReactNode }) {
   return (

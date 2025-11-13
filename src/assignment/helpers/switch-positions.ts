@@ -1,7 +1,7 @@
 import { sortBy } from 'es-toolkit'
 
-import { type Positioned } from '../../shared/types/index.js'
-import { reorderBlockPositions } from '../assignment.helper.js'
+import { type Positioned } from '../../shared/types/index';
+import { reorderBlockPositions } from '../assignment.helper';
 
 export function switchAssignmentBlockPositions(
   list: Positioned[],

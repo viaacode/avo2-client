@@ -1,8 +1,8 @@
 import { Avo } from '@viaa/avo2-types'
 
-import { ContentTypeNumber } from '../../../../collection/collection.types.js'
+import { ContentTypeNumber } from '../../../../collection/collection.types';
 
-import { BlockType } from './BlockIconWrapper.consts.js'
+import { BlockType } from './BlockIconWrapper.consts';
 
 export function getBlockType(
   type: Avo.Core.BlockItemType,

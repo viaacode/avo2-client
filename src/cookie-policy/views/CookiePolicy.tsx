@@ -9,7 +9,7 @@ export class CookiePolicy extends React.Component<any, any> {
       const script = document.createElement('script')
       script.setAttribute('id', 'CookieDeclaration')
       script.src =
-        'https://consent.cookiebot.com/8fb68e92-94b2-4334-bc47-7bcda08bc9c7/cd.js'
+        'https://consent.cookiebot.com/8fb68e92-94b2-4334-bc47-7bcda08bc9c7/cd';
       this.cookieBotWrapper.current.innerHTML = ''
       this.cookieBotWrapper.current.append(script)
     }

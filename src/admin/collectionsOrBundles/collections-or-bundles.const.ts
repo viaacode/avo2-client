@@ -9,23 +9,23 @@ import {
 } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 
-import { type BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown.js'
+import { type BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
 import {
   type CheckboxDropdownModalProps,
   type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js'
-import { type DateRangeDropdownProps } from '../../shared/components/DateRangeDropdown/DateRangeDropdown.js'
-import { ROUTE_PARTS } from '../../shared/constants/index.js'
-import { lomToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { TableColumnDataType } from '../../shared/types/table-column-data-type.js'
-import { NULL_FILTER } from '../shared/helpers/filters.js'
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { type DateRangeDropdownProps } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
+import { ROUTE_PARTS } from '../../shared/constants/index';
+import { lomToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import { tText } from '../../shared/helpers/translate-text';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
+import { NULL_FILTER } from '../shared/helpers/filters';
 
 import {
   CollectionBulkAction,
   type CollectionTableColumns,
-} from './collections-or-bundles.types.js'
+} from './collections-or-bundles.types';
 
 export const COLLECTIONS_OR_BUNDLES_PATH = {
   COLLECTIONS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.collections}`,

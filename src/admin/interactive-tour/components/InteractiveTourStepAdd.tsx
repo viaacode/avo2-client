@@ -8,14 +8,14 @@ import {
 import { cloneDeep } from 'es-toolkit'
 import React, { type FC } from 'react'
 
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { generateRandomId } from '../../../shared/helpers/uuid.js'
-import { type InteractiveTourAction } from '../helpers/reducers/index.js'
+import { tText } from '../../../shared/helpers/translate-text';
+import { generateRandomId } from '../../../shared/helpers/uuid';
+import { type InteractiveTourAction } from '../helpers/reducers/index';
 import {
   type EditableInteractiveTour,
   type EditableStep,
   InteractiveTourEditActionType,
-} from '../interactive-tour.types.js'
+} from '../interactive-tour.types';
 
 interface InteractiveTourAddProps {
   index: number

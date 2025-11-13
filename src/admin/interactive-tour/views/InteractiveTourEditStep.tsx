@@ -20,16 +20,16 @@ import {
 import { isEqual } from 'es-toolkit'
 import React, { type FC } from 'react'
 
-import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts.js'
-import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper.js'
-import { stripHtml } from '../../../shared/helpers/formatters/strip-html.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { type InteractiveTourAction } from '../helpers/reducers/index.js'
+import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
+import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
+import { stripHtml } from '../../../shared/helpers/formatters/strip-html';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { type InteractiveTourAction } from '../helpers/reducers/index';
 import {
   type EditableStep,
   InteractiveTourEditActionType,
-} from '../interactive-tour.types.js'
+} from '../interactive-tour.types';
 
 import './InteractiveTourEdit.scss'
 

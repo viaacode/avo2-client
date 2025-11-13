@@ -1,10 +1,10 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
 
-import { CustomError } from '../shared/helpers/custom-error.js'
-import { getEnv } from '../shared/helpers/env.js'
-import type { BookmarkInfo } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types.js'
+import { CustomError } from '../shared/helpers/custom-error';
+import { getEnv } from '../shared/helpers/env';
+import type { BookmarkInfo } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
-import { type WorkspaceCounts } from './workspace.types.js'
+import { type WorkspaceCounts } from './workspace.types';
 
 export class WorkspaceService {
   public static getWorkspaceCounts(): Promise<WorkspaceCounts> {

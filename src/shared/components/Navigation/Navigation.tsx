@@ -20,30 +20,30 @@ import { last } from 'es-toolkit'
 import React, { type FC, type ReactText, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
-import { loginAtom } from '../../../authentication/authentication.store.js'
-import { getLoginStateAtom } from '../../../authentication/authentication.store.actions.js'
+import { loginAtom } from '../../../authentication/authentication.store';
+import { getLoginStateAtom } from '../../../authentication/authentication.store.actions';
 import {
   getProfileAvatar,
   getProfileInitials,
-} from '../../../authentication/helpers/get-profile-info.js'
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js'
-import { redirectToExternalPage } from '../../../authentication/helpers/redirects/redirect-to-external-page.js'
-import { APP_PATH } from '../../../constants.js'
+} from '../../../authentication/helpers/get-profile-info';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToExternalPage } from '../../../authentication/helpers/redirects/redirect-to-external-page';
+import { APP_PATH } from '../../../constants';
 import {
   getLocation,
   mapNavElementsToNavigationItems,
-} from '../../helpers/navigation.js'
-import { useAllGetNavItems } from '../../hooks/useAllGetNavItems.js'
-import { useHideZendeskWidget } from '../../hooks/useHideZendeskWidget.js'
-import { ToastService } from '../../services/toast-service.js'
-import { type NavigationItemInfo } from '../../types/index.js'
+} from '../../helpers/navigation';
+import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
+import { useHideZendeskWidget } from '../../hooks/useHideZendeskWidget';
+import { ToastService } from '../../services/toast-service';
+import { type NavigationItemInfo } from '../../types/index';
 
-import { NavigationBarId } from './Navigation.const.js'
-import { NavigationItem } from './NavigationItem.js'
+import { NavigationBarId } from './Navigation.const';
+import { NavigationItem } from './NavigationItem';
 
 import './Navigation.scss'
-import { tText } from '../../helpers/translate-text.js'
-import { tHtml } from '../../helpers/translate-html.js'
+import { tText } from '../../helpers/translate-text';
+import { tHtml } from '../../helpers/translate-html';
 
 type NavigationParams = {
   isPreviewRoute: boolean

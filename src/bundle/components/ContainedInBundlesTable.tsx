@@ -4,18 +4,18 @@ import { Button, Icon, IconName, Spacer, Table } from '@viaa/avo2-components'
 import React, { type FC, type ReactNode, useState } from 'react'
 import { useNavigate } from 'react-router'
 
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page.js'
-import { type ParentBundle } from '../../collection/collection.types.js'
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { type ParentBundle } from '../../collection/collection.types';
 import {
   type BundleColumnId,
   BundleSortProp,
   useGetCollectionsOrBundlesContainingFragment,
-} from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment.js'
-import { APP_PATH } from '../../constants.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { TableColumnDataType } from '../../shared/types/table-column-data-type.js'
+} from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
+import { APP_PATH } from '../../constants';
+import { buildLink } from '../../shared/helpers/build-link';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import { tText } from '../../shared/helpers/translate-text';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { Avo } from '@viaa/avo2-types'
 
 type ContainedInBundlesTableProps = {

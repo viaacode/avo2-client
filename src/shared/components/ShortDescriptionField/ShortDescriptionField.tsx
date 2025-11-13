@@ -2,9 +2,9 @@ import { FormGroup, type FormGroupProps, TextArea } from '@viaa/avo2-components'
 import { type StringMap } from 'i18next'
 import React, { type FC } from 'react'
 
-import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../../collection/collection.const.js'
-import { getValidationFeedbackForDescription } from '../../../collection/collection.helpers.js'
-import { tText } from '../../helpers/translate-text.js'
+import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../../collection/collection.const';
+import { getValidationFeedbackForDescription } from '../../../collection/collection.helpers';
+import { tText } from '../../helpers/translate-text';
 
 interface ShortDescriptionFieldProps extends Pick<FormGroupProps, 'error'> {
   onChange: (value: string) => void

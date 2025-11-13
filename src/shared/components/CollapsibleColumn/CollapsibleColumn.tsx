@@ -6,10 +6,10 @@ import {
 } from '@viaa/avo2-components'
 import React, { type FC, type ReactNode, useState } from 'react'
 
-import { useResizeObserver } from '../../hooks/useResizeObserver.js'
+import { useResizeObserver } from '../../hooks/useResizeObserver';
 
 import './CollapsibleColumn.scss'
-import { tText } from '../../helpers/translate-text.js'
+import { tText } from '../../helpers/translate-text';
 
 type CollapsibleColumnProps = DefaultProps & {
   children?: ReactNode

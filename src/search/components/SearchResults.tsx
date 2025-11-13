@@ -12,20 +12,20 @@ import { useAtomValue } from 'jotai'
 import { isNil } from 'es-toolkit'
 import React, { type FC } from 'react'
 
-import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts.js'
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import placeholderImage from '../../assets/images/assignment-placeholder.png'
 // eslint-disable-next-line import/no-unresolved
 import TeacherSvg from '../../assets/images/leerkracht.svg?react'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const.js'
-import { ITEMS_PER_PAGE } from '../search.const.js'
-import { type SearchResultsProps } from '../search.types.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
+import { ITEMS_PER_PAGE } from '../search.const';
+import { type SearchResultsProps } from '../search.types';
 
-import { SearchResultItem } from './SearchResultItem.js'
+import { SearchResultItem } from './SearchResultItem';
 
 export const SearchResults: FC<SearchResultsProps> = ({
   loading,

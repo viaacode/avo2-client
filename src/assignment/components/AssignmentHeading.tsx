@@ -12,7 +12,7 @@ import {
 import { clsx } from 'clsx'
 import React, { type FC, type ReactNode, useEffect, useState } from 'react'
 
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour.js'
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 
 interface AssignmentHeadingProps {
   actions?: ReactNode

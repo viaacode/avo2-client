@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { QUERY_KEYS } from '../../../../shared/constants/query-keys.js'
-import { CampaignMonitorService } from '../../../../shared/services/campaign-monitor-service.js'
+import { QUERY_KEYS } from '../../../../shared/constants/query-keys';
+import { CampaignMonitorService } from '../../../../shared/services/campaign-monitor-service';
 
 export const useGetEmailPreferences = (
   preferenceCenterKey: string,

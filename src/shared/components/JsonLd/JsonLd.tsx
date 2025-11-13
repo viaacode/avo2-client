@@ -1,6 +1,6 @@
 import { type FC } from 'react'
 
-import { toIsoDate } from '../../helpers/formatters/date.js'
+import { toIsoDate } from '../../helpers/formatters/date';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare global {

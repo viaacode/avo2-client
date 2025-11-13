@@ -3,9 +3,9 @@ import {
   type DbContentPage,
 } from '@meemoo/admin-core-ui/admin'
 
-import { CustomError } from '../../../../../shared/helpers/custom-error.js'
-import { type PickerItem } from '../../../types/content-picker.js'
-import { parsePickerItem } from '../helpers/parse-picker.js'
+import { CustomError } from '../../../../../shared/helpers/custom-error';
+import { type PickerItem } from '../../../types/content-picker';
+import { parsePickerItem } from '../helpers/parse-picker';
 import { Avo } from '@viaa/avo2-types'
 
 // Fetch content items from GQL

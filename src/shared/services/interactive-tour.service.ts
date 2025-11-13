@@ -3,12 +3,12 @@ import { type Avo } from '@viaa/avo2-types'
 import { compact, last, uniqBy } from 'es-toolkit'
 import queryString from 'query-string'
 
-import { type APP_PATH } from '../../constants.js'
-import { CustomError } from '../helpers/custom-error.js'
-import { getEnv } from '../helpers/env.js'
+import { type APP_PATH } from '../../constants';
+import { CustomError } from '../helpers/custom-error';
+import { getEnv } from '../helpers/env';
 
-import { type GetInteractiveTourResponse } from './interactive-tour.types.js'
-import { NotificationService } from './notification-service.js'
+import { type GetInteractiveTourResponse } from './interactive-tour.types';
+import { NotificationService } from './notification-service';
 import { findLast } from 'es-toolkit/compat'
 
 const INTERACTIVE_TOUR_LATER_COOLDOWN_PERIOD = 2 * 7 * 24 * 60 * 60 * 1000 // 2 weeks

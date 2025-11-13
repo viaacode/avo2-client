@@ -16,7 +16,7 @@ import {
 import { noop } from 'es-toolkit'
 import React, { type FC, type ReactNode, useState } from 'react'
 
-import { tText } from '../../../../shared/helpers/translate-text.js'
+import { tText } from '../../../../shared/helpers/translate-text';
 
 export type AddOrRemove = 'add' | 'remove'
 

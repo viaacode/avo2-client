@@ -29,34 +29,34 @@ import React, {
 } from 'react'
 import { Link } from 'react-router-dom'
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { APP_PATH } from '../../constants.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { APP_PATH } from '../../constants';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { renderAvatar } from '../../shared/helpers/formatters/avatar.js'
-import { formatDate } from '../../shared/helpers/formatters/date.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { truncateTableValue } from '../../shared/helpers/truncate.js'
-import { useTableSort } from '../../shared/hooks/useTableSort.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { TableColumnDataType } from '../../shared/types/table-column-data-type.js'
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../shared/helpers/build-link';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { renderAvatar } from '../../shared/helpers/formatters/avatar';
+import { formatDate } from '../../shared/helpers/formatters/date';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { truncateTableValue } from '../../shared/helpers/truncate';
+import { useTableSort } from '../../shared/hooks/useTableSort';
+import { ToastService } from '../../shared/services/toast-service';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import {
   ASSIGNMENT_CREATE_UPDATE_TABS,
   GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL,
   ITEMS_PER_PAGE,
-} from '../assignment.const.js'
-import { AssignmentHelper } from '../assignment.helper.js'
-import { AssignmentService } from '../assignment.service.js'
-import { type AssignmentTableColumns } from '../assignment.types.js'
-import { AssignmentDeadline } from '../components/AssignmentDeadline.js'
+} from '../assignment.const';
+import { AssignmentHelper } from '../assignment.helper';
+import { AssignmentService } from '../assignment.service';
+import { type AssignmentTableColumns } from '../assignment.types';
+import { AssignmentDeadline } from '../components/AssignmentDeadline';
 
 import './AddItemsModals.scss'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface ImportToAssignmentModalProps {
   isOpen: boolean

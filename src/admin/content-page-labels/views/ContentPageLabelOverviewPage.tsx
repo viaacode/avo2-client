@@ -1,8 +1,8 @@
 import { PermissionName } from '@viaa/avo2-types'
 import React, { type FC, lazy, Suspense } from 'react'
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js'
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 
 const ContentPageLabelOverview = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({

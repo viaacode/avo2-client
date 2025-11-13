@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { QUERY_KEYS } from '../constants/query-keys.js'
+import { QUERY_KEYS } from '../constants/query-keys';
 import {
   getAllNavItems,
   type NavItemMap,
-} from '../services/navigation-items-service.js'
+} from '../services/navigation-items-service';
 
 export const useAllGetNavItems = (
   options: Partial<{

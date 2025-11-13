@@ -18,23 +18,23 @@ import React, {
 } from 'react'
 import { useNavigate, useParams } from 'react-router'
 
-import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page.js'
-import { APP_PATH } from '../../constants.js'
-import { ErrorView } from '../../error/views/ErrorView.js'
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { getPageNotFoundError } from '../../shared/translations/page-not-found.js'
-import { Account } from '../components/Account.js'
-import { Email } from '../components/Email/Email.js'
-import { LinkedAccounts } from '../components/LinkedAccounts.js'
-import { Notifications } from '../components/Notifications.js'
-import { Profile } from '../components/Profile.js'
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { APP_PATH } from '../../constants';
+import { ErrorView } from '../../error/views/ErrorView';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { buildLink } from '../../shared/helpers/build-link';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { ToastService } from '../../shared/services/toast-service';
+import { getPageNotFoundError } from '../../shared/translations/page-not-found';
+import { Account } from '../components/Account';
+import { Email } from '../components/Email/Email';
+import { LinkedAccounts } from '../components/LinkedAccounts';
+import { Notifications } from '../components/Notifications';
+import { Profile } from '../components/Profile';
 import {
   ACCOUNT_ID,
   EMAIL_ID,
@@ -42,7 +42,7 @@ import {
   NOTIFICATIONS_ID,
   PROFILE_ID,
   type SettingsTab,
-} from '../settings.const.js'
+} from '../settings.const';
 
 export const Settings: FC = () => {
   const navigateFunc = useNavigate()

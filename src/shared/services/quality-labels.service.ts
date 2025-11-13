@@ -1,12 +1,12 @@
-import { type QualityLabel } from '../../collection/collection.types.js'
+import { type QualityLabel } from '../../collection/collection.types';
 import {
   type GetQualityLabelsQuery,
   type GetQualityLabelsQueryVariables,
-} from '../generated/graphql-db-operations.js'
-import { GetQualityLabelsDocument } from '../generated/graphql-db-react-query.js'
-import { CustomError } from '../helpers/custom-error.js'
+} from '../generated/graphql-db-operations';
+import { GetQualityLabelsDocument } from '../generated/graphql-db-react-query';
+import { CustomError } from '../helpers/custom-error';
 
-import { dataService } from './data-service.js'
+import { dataService } from './data-service';
 
 export class QualityLabelsService {
   static async fetchQualityLabels(): Promise<QualityLabel[]> {

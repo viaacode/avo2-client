@@ -10,12 +10,12 @@ import React, { type FC } from 'react'
 import { Helmet } from 'react-helmet'
 import { useNavigate } from 'react-router'
 
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants.js'
-import { navigate } from '../../shared/helpers/link.js'
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { navigate } from '../../shared/helpers/link';
 
 import './LinkYourAccount.scss'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 export const LinkYourAccount: FC = () => {
   const navigateFunc = useNavigate()

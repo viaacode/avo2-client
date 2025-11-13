@@ -3,14 +3,14 @@ import { type Avo } from '@viaa/avo2-types'
 import React, { type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
-import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const.js'
-import { APP_PATH } from '../../../constants.js'
-import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types.js'
-import { buildLink } from '../../../shared/helpers/build-link.js'
-import { formatDate } from '../../../shared/helpers/formatters/date.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { truncateTableValue } from '../../../shared/helpers/truncate.js'
+import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
+import { APP_PATH } from '../../../constants';
+import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { formatDate } from '../../../shared/helpers/formatters/date';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tText } from '../../../shared/helpers/translate-text';
+import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 export function renderPupilCollectionTableCellReact(
   pupilCollection: Partial<Avo.Assignment.Response>,

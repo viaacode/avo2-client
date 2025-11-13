@@ -13,9 +13,9 @@ import {
 import { noop } from 'es-toolkit'
 import React, { type FC, type ReactNode, useEffect, useState } from 'react'
 
-import { tHtml } from '../../helpers/translate-html.js'
-import { tText } from '../../helpers/translate-text.js'
-import { ToastService } from '../../services/toast-service.js'
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
+import { ToastService } from '../../services/toast-service';
 
 interface InputModalProps {
   title?: string | ReactNode

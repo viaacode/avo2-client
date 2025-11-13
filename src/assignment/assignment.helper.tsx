@@ -2,21 +2,21 @@ import { IconName, type RadioOption } from '@viaa/avo2-components'
 import { Avo, LomSchemeType } from '@viaa/avo2-types'
 import { compact, orderBy } from 'es-toolkit'
 import { type ReactNode } from 'react'
-import { stripHtml } from '../shared/helpers/formatters/strip-html.js'
-import { EducationLevelId } from '../shared/helpers/lom.js'
-import { tHtml } from '../shared/helpers/translate-html.js'
-import { tText } from '../shared/helpers/translate-text.js'
-import { type Positioned } from '../shared/types/index.js'
+import { stripHtml } from '../shared/helpers/formatters/strip-html';
+import { EducationLevelId } from '../shared/helpers/lom';
+import { tHtml } from '../shared/helpers/translate-html';
+import { tText } from '../shared/helpers/translate-text';
+import { type Positioned } from '../shared/types/index';
 
 import {
   MAX_LONG_DESCRIPTION_LENGTH,
   MAX_SEARCH_DESCRIPTION_LENGTH,
-} from './assignment.const.js'
-import { AssignmentService } from './assignment.service.js'
+} from './assignment.const';
+import { AssignmentService } from './assignment.service';
 import {
   AssignmentLayout,
   AssignmentRetrieveError,
-} from './assignment.types.js'
+} from './assignment.types';
 
 export class AssignmentHelper {
   public static getContentLayoutOptions(): RadioOption[] {

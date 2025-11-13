@@ -10,11 +10,11 @@ import React, { type FC, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { Link, useLocation } from 'react-router-dom'
 
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { StamboekInput } from '../../components/StamboekInput.js'
-import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects.js'
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { StamboekInput } from '../../components/StamboekInput';
+import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
 
 export type StamboekValidationStatus =
   | 'INCOMPLETE'

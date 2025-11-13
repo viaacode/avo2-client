@@ -19,15 +19,15 @@ import React, {
   useState,
 } from 'react'
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { ColorSelect } from '../../shared/components/ColorSelect/ColorSelect.js'
-import { type Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { ColorSelect } from '../../shared/components/ColorSelect/ColorSelect';
+import { type Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service';
+import { ToastService } from '../../shared/services/toast-service';
 
-import { ManageAssignmentLabels } from './modals/ManageAssignmentLabels.js'
+import { ManageAssignmentLabels } from './modals/ManageAssignmentLabels';
 
 import './AssignmentLabels.scss'
 

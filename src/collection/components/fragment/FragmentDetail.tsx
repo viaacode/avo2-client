@@ -3,13 +3,13 @@ import { type Avo } from '@viaa/avo2-types'
 
 import React, { type FC } from 'react'
 
-import { APP_PATH } from '../../../constants.js'
-import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription.js'
-import { DEFAULT_AUDIO_STILL } from '../../../shared/constants/index.js'
-import { buildLink } from '../../../shared/helpers/build-link.js'
-import { isMobileWidth } from '../../../shared/helpers/media-query.js'
-import { ContentTypeNumber } from '../../collection.types.js'
-import { getFragmentProperty } from '../../helpers/fragment.js'
+import { APP_PATH } from '../../../constants';
+import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription';
+import { DEFAULT_AUDIO_STILL } from '../../../shared/constants/index';
+import { buildLink } from '../../../shared/helpers/build-link';
+import { isMobileWidth } from '../../../shared/helpers/media-query';
+import { ContentTypeNumber } from '../../collection.types';
+import { getFragmentProperty } from '../../helpers/fragment';
 
 import './FragmentDetail.scss'
 

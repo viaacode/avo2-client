@@ -24,21 +24,21 @@ import React, {
 } from 'react'
 import { useNavigate } from 'react-router'
 
-import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../../../../collection/collection.types.js'
-import { SearchFilter } from '../../../../../search/search.const.js'
-import { fetchSearchResults } from '../../../../../search/search.service.js'
-import { searchAtom } from '../../../../../search/search.store.js'
-import { type SearchState } from '../../../../../search/search.types.js'
+import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../../../../collection/collection.types';
+import { SearchFilter } from '../../../../../search/search.const';
+import { fetchSearchResults } from '../../../../../search/search.service';
+import { searchAtom } from '../../../../../search/search.store';
+import { type SearchState } from '../../../../../search/search.types';
 import {
   generateContentLinkString,
   generateSearchLinkString,
-} from '../../../../../shared/helpers/link.js'
-import { useDebounce } from '../../../../../shared/hooks/useDebounce.js'
-import { ToastService } from '../../../../../shared/services/toast-service.js'
-import { KeyCode } from '../../../../../shared/types/index.js'
+} from '../../../../../shared/helpers/link';
+import { useDebounce } from '../../../../../shared/hooks/useDebounce';
+import { ToastService } from '../../../../../shared/services/toast-service';
+import { KeyCode } from '../../../../../shared/types/index';
 import './BlockSearch.scss'
-import { tHtml } from '../../../../../shared/helpers/translate-html.js'
-import { tText } from '../../../../../shared/helpers/translate-text.js'
+import { tHtml } from '../../../../../shared/helpers/translate-html';
+import { tText } from '../../../../../shared/helpers/translate-text';
 
 const ITEMS_IN_AUTOCOMPLETE = 5
 

@@ -1,6 +1,6 @@
 import { type Avo } from '@viaa/avo2-types'
 
-import { type TableColumnDataType } from '../types/table-column-data-type.js'
+import { type TableColumnDataType } from '../types/table-column-data-type';
 
 const DEFAULT_NULL_ORDER: Record<
   Avo.Search.OrderDirection,

@@ -1,4 +1,4 @@
-import { ROUTE_PARTS } from '../../shared/constants/index.js'
+import { ROUTE_PARTS } from '../../shared/constants/index';
 
 export const NAVIGATIONS_PATH = {
   NAVIGATIONS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.navigation}`,

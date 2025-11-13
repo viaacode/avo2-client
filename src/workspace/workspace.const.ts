@@ -1,13 +1,13 @@
 import { IconName } from '@viaa/avo2-components'
 
-import { ROUTE_PARTS } from '../shared/constants/index.js'
-import { tText } from '../shared/helpers/translate-text.js'
+import { ROUTE_PARTS } from '../shared/constants/index';
+import { tText } from '../shared/helpers/translate-text';
 
 import {
   type WorkspaceCounts,
   type WorkspaceTab,
   type WorkspaceTabNames,
-} from './workspace.types.js'
+} from './workspace.types';
 
 export const COLLECTIONS_ID = ROUTE_PARTS.collections
 export const BUNDLES_ID = ROUTE_PARTS.bundles

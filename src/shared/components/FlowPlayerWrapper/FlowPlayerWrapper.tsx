@@ -26,26 +26,26 @@ import React, {
 import { useNavigate } from 'react-router'
 import { useQueryParam } from 'use-query-params'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js'
-import { APP_PATH } from '../../../constants.js'
-import { CustomError } from '../../helpers/custom-error.js'
-import { getValidStartAndEnd } from '../../helpers/cut-start-and-end.js'
-import { getEnv } from '../../helpers/env.js'
-import { reorderDate } from '../../helpers/formatters/date.js'
-import { formatDurationHoursMinutesSeconds } from '../../helpers/formatters/duration.js'
-import { getSubtitles } from '../../helpers/get-subtitles.js'
-import { isMobileWidth } from '../../helpers/media-query.js'
-import { toSeconds } from '../../helpers/parsers/duration.js'
-import { tHtml } from '../../helpers/translate-html.js'
-import { tText } from '../../helpers/translate-text.js'
-import { BookmarksViewsPlaysService } from '../../services/bookmarks-views-plays-service/bookmarks-views-plays-service.js'
-import { trackEvents } from '../../services/event-logging-service.js'
-import { fetchPlayerTicket } from '../../services/player-ticket-service.js'
-import { ToastService } from '../../services/toast-service.js'
-import { lastVideoPlayedAtAtom } from '../../store/ui.store.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { APP_PATH } from '../../../constants';
+import { CustomError } from '../../helpers/custom-error';
+import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
+import { getEnv } from '../../helpers/env';
+import { reorderDate } from '../../helpers/formatters/date';
+import { formatDurationHoursMinutesSeconds } from '../../helpers/formatters/duration';
+import { getSubtitles } from '../../helpers/get-subtitles';
+import { isMobileWidth } from '../../helpers/media-query';
+import { toSeconds } from '../../helpers/parsers/duration';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
+import { BookmarksViewsPlaysService } from '../../services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { trackEvents } from '../../services/event-logging-service';
+import { fetchPlayerTicket } from '../../services/player-ticket-service';
+import { ToastService } from '../../services/toast-service';
+import { lastVideoPlayedAtAtom } from '../../store/ui.store';
 
-import { type FlowPlayerWrapperProps } from './FlowPlayerWrapper.types.js'
+import { type FlowPlayerWrapperProps } from './FlowPlayerWrapper.types';
 
 /**
  * Handle flowplayer play events for the whole app, so we track play count

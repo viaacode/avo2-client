@@ -4,11 +4,11 @@ import { flatten } from 'es-toolkit'
 import React, { type FC, type ReactElement, type ReactNode } from 'react'
 import { Link, type Location, NavLink, useLocation } from 'react-router-dom'
 
-import { APP_PATH } from '../../../../constants.js'
-import { CustomError } from '../../../../shared/helpers/custom-error.js'
-import { tHtml } from '../../../../shared/helpers/translate-html.js'
-import { tText } from '../../../../shared/helpers/translate-text.js'
-import { type NavigationItemInfo } from '../../../../shared/types/index.js'
+import { APP_PATH } from '../../../../constants';
+import { CustomError } from '../../../../shared/helpers/custom-error';
+import { tHtml } from '../../../../shared/helpers/translate-html';
+import { tText } from '../../../../shared/helpers/translate-text';
+import { type NavigationItemInfo } from '../../../../shared/types/index';
 
 import './Sidebar.scss'
 

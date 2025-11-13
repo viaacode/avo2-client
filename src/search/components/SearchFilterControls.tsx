@@ -7,16 +7,16 @@ import React, { type FC, type ReactNode, useMemo } from 'react'
 import {
   CheckboxDropdownModal,
   type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal.js'
-import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown.js'
-import { LANGUAGES } from '../../shared/constants/index.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { SearchFilter } from '../search.const.js'
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
+import { LANGUAGES } from '../../shared/constants/index';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { tText } from '../../shared/helpers/translate-text';
+import { SearchFilter } from '../search.const';
 import {
   type SearchFilterControlsProps,
   type SearchFilterMultiOptions,
-} from '../search.types.js'
+} from '../search.types';
 
 import './SearchFilterControls.scss'
 import { forEach } from 'es-toolkit/compat'

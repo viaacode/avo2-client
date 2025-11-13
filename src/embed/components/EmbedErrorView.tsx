@@ -10,7 +10,7 @@ import {
 import React, { type FC, type ReactNode } from 'react'
 
 import './EmbedErrorView.scss'
-import { tText } from '../../shared/helpers/translate-text.js'
+import { tText } from '../../shared/helpers/translate-text';
 
 export interface EmbedErrorViewProps {
   message: string | ReactNode

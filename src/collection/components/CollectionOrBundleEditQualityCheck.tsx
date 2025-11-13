@@ -13,14 +13,14 @@ import { Avo } from '@viaa/avo2-types'
 
 import React, { type FC } from 'react'
 
-import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker.js'
-import { type PickerItem } from '../../admin/shared/types/content-picker.js'
-import { getFullName } from '../../shared/helpers/formatters/avatar.js'
-import { toDateObject } from '../../shared/helpers/formatters/date.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { booleanToOkNok, okNokToBoolean } from '../helpers/ok-nok-parser.js'
+import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
+import { type PickerItem } from '../../admin/shared/types/content-picker';
+import { getFullName } from '../../shared/helpers/formatters/avatar';
+import { toDateObject } from '../../shared/helpers/formatters/date';
+import { tText } from '../../shared/helpers/translate-text';
+import { booleanToOkNok, okNokToBoolean } from '../helpers/ok-nok-parser';
 
-import { type CollectionAction } from './CollectionOrBundleEdit.types.js'
+import { type CollectionAction } from './CollectionOrBundleEdit.types';
 
 interface CollectionOrBundleEditQualityCheckProps {
   collection: Avo.Collection.Collection

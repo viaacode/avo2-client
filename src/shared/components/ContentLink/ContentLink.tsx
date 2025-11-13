@@ -3,9 +3,9 @@ import { type Avo } from '@viaa/avo2-types'
 import React, { type FC } from 'react'
 import { Link } from 'react-router-dom'
 
-import { CONTENT_LABEL_TO_ROUTE_PARTS } from '../../../assignment/assignment.const.js'
-import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../../collection/collection.types.js'
-import { tHtml } from '../../helpers/translate-html.js'
+import { CONTENT_LABEL_TO_ROUTE_PARTS } from '../../../assignment/assignment.const';
+import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../../collection/collection.types';
+import { tHtml } from '../../helpers/translate-html';
 
 type ParentType = {
   content_label: string | null

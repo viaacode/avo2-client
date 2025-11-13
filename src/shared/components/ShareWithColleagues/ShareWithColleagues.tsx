@@ -25,26 +25,26 @@ import { isNil } from 'es-toolkit'
 import { isEmpty } from 'es-toolkit/compat'
 import React, { type FC, useMemo, useState } from 'react'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { tHtml } from '../../helpers/translate-html.js'
-import { tText } from '../../helpers/translate-text.js'
-import { validateEmailAddress } from '../../helpers/validation/email.js'
-import { ConfirmModal } from '../ConfirmModal/ConfirmModal.js'
-import { ConfirmModalRememberKey } from '../ConfirmModal/ConfirmModal.consts.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
+import { validateEmailAddress } from '../../helpers/validation/email';
+import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
+import { ConfirmModalRememberKey } from '../ConfirmModal/ConfirmModal.consts';
 
-import { EditShareUserRightsModal } from './Modals/EditShareUserRightsModal.js'
-import { GET_EDUCATION_LEVEL_DIFFERENCE_DICT } from './ShareWithColleagues.const.js'
+import { EditShareUserRightsModal } from './Modals/EditShareUserRightsModal';
+import { GET_EDUCATION_LEVEL_DIFFERENCE_DICT } from './ShareWithColleagues.const';
 import {
   compareUsersEmail,
   findRightByValue,
   getContributorRightLabel,
   hasEducationLevel,
   sortContributors,
-} from './ShareWithColleagues.helpers.js'
+} from './ShareWithColleagues.helpers';
 import {
   type ContributorInfo,
   ContributorInfoRight,
-} from './ShareWithColleagues.types.js'
+} from './ShareWithColleagues.types';
 
 type ShareWithColleaguesProps = {
   contributors: ContributorInfo[]

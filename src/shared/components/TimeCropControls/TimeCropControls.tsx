@@ -3,13 +3,13 @@ import { clsx } from 'clsx'
 import { clamp } from 'es-toolkit'
 import React, { type FC, useEffect, useState } from 'react'
 
-import { getValidStartAndEnd } from '../../helpers/cut-start-and-end.js'
-import { formatDurationHoursMinutesSeconds } from '../../helpers/formatters/duration.js'
-import { parseDuration, toSeconds } from '../../helpers/parsers/duration.js'
-import { ToastService } from '../../services/toast-service.js'
+import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
+import { formatDurationHoursMinutesSeconds } from '../../helpers/formatters/duration';
+import { parseDuration, toSeconds } from '../../helpers/parsers/duration';
+import { ToastService } from '../../services/toast-service';
 
 import './TimeCropControls.scss'
-import { tHtml } from '../../helpers/translate-html.js'
+import { tHtml } from '../../helpers/translate-html';
 
 interface TimeCropControlsPops {
   startTime: number

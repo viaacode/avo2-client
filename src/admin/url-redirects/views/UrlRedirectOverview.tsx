@@ -7,42 +7,42 @@ import { Helmet } from 'react-helmet'
 import { useNavigate } from 'react-router'
 import { Link } from 'react-router-dom'
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page.js'
-import { GENERATE_SITE_TITLE } from '../../../constants.js'
-import { ErrorView } from '../../../error/views/ErrorView.js'
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal.js'
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { formatDate } from '../../../shared/helpers/formatters/date.js'
-import { navigate } from '../../../shared/helpers/link.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { useDebounce } from '../../../shared/hooks/useDebounce.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { GENERATE_SITE_TITLE } from '../../../constants';
+import { ErrorView } from '../../../error/views/ErrorView';
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { formatDate } from '../../../shared/helpers/formatters/date';
+import { navigate } from '../../../shared/helpers/link';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { useDebounce } from '../../../shared/hooks/useDebounce';
+import { ToastService } from '../../../shared/services/toast-service';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
   AdminLayoutBody,
   AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import {
   PROXY_PATH_SHORTCUT,
   replaceProxyUrlTemplateWithUrl,
-} from '../helpers/replace-proxy-url-template-with-url.js'
-import { useDeleteUrlRedirect } from '../hooks/useDeleteUrlRedirect.js'
-import { useGetUrlRedirects } from '../hooks/useGetUrlRedirects.js'
+} from '../helpers/replace-proxy-url-template-with-url';
+import { useDeleteUrlRedirect } from '../hooks/useDeleteUrlRedirect';
+import { useGetUrlRedirects } from '../hooks/useGetUrlRedirects';
 import {
   GET_URL_REDIRECT_OVERVIEW_TABLE_COLS,
   ITEMS_PER_PAGE,
   URL_REDIRECT_PATH,
   URL_REDIRECT_PATTERN_OPTIONS,
-} from '../url-redirects.const.js'
+} from '../url-redirects.const';
 import {
   type UrlRedirect,
   type UrlRedirectOverviewFilterState,
   type UrlRedirectOverviewTableCols,
-} from '../url-redirects.types.js'
+} from '../url-redirects.types';
 
 const UrlRedirectOverview: FC = () => {
   const navigateFunc = useNavigate()

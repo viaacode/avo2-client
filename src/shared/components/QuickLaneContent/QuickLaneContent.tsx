@@ -4,20 +4,20 @@ import { useAtomValue } from 'jotai'
 import { noop } from 'es-toolkit'
 import React, { type FC, useEffect, useState } from 'react'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { PermissionService } from '../../../authentication/helpers/permission-service.js'
-import { tHtml } from '../../helpers/translate-html.js'
-import { tText } from '../../helpers/translate-text.js'
-import { useTabs } from '../../hooks/useTabs.js'
-import { ToastService } from '../../services/toast-service.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionService } from '../../../authentication/helpers/permission-service';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
+import { useTabs } from '../../hooks/useTabs';
+import { ToastService } from '../../services/toast-service';
 
-import { isShareable } from './QuickLaneContent.helpers.js'
+import { isShareable } from './QuickLaneContent.helpers';
 import {
   type QuickLaneContentProps,
   QuickLaneTypeEnum,
-} from './QuickLaneContent.types.js'
-import { QuickLaneContentPublicationTab } from './QuickLaneContentPublicationTab.js'
-import { QuickLaneContentSharingTab } from './QuickLaneContentSharingTab.js'
+} from './QuickLaneContent.types';
+import { QuickLaneContentPublicationTab } from './QuickLaneContentPublicationTab';
+import { QuickLaneContentSharingTab } from './QuickLaneContentSharingTab';
 import './QuickLaneContent.scss'
 
 // State

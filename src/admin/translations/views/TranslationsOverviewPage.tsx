@@ -16,28 +16,28 @@ import React, {
 } from 'react'
 import { Helmet } from 'react-helmet'
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { GENERATE_SITE_TITLE } from '../../../constants.js'
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout.js'
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { GENERATE_SITE_TITLE } from '../../../constants';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { ToastService } from '../../../shared/services/toast-service';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import {
   AdminLayoutBody,
   AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots.js'
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import {
   fetchTranslations,
   updateTranslations,
-} from '../translations.service.js'
+} from '../translations.service';
 import {
   type Translation,
   type TranslationsState,
-} from '../translations.types.js'
+} from '../translations.types';
 
 import './TranslationsOverviewPage.scss'
-import { tText } from '../../../shared/helpers/translate-text.js'
+import { tText } from '../../../shared/helpers/translate-text';
 import { map } from 'es-toolkit/compat'
 
 const TranslationsOverview = lazy(() =>

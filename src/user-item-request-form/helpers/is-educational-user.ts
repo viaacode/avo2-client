@@ -1,6 +1,6 @@
 import type { Avo } from '@viaa/avo2-types'
 
-import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const.js'
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 
 export function isEducationalUser(
   commonUser: Avo.User.CommonUser | null,

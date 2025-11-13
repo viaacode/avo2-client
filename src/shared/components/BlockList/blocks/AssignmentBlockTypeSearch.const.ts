@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react'
 
-import { EducationLevelId } from '../../../helpers/lom.js'
-import { tHtml } from '../../../helpers/translate-html.js'
+import { EducationLevelId } from '../../../helpers/lom';
+import { tHtml } from '../../../helpers/translate-html';
 
 export const GET_EDUCATION_LEVEL_DICT: () => Partial<
   Record<EducationLevelId, ReactNode>

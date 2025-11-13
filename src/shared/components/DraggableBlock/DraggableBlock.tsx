@@ -4,11 +4,11 @@ import { type Avo } from '@viaa/avo2-types'
 import { clsx } from 'clsx'
 import React, { type FC } from 'react'
 
-import { stripHtml } from '../../helpers/formatters/strip-html.js'
-import { GET_BLOCK_ICON } from '../BlockList/BlockIconWrapper/BlockIconWrapper.consts.js'
+import { stripHtml } from '../../helpers/formatters/strip-html';
+import { GET_BLOCK_ICON } from '../BlockList/BlockIconWrapper/BlockIconWrapper.consts';
 
 import './DraggableBlock.scss'
-import { tHtml } from '../../helpers/translate-html.js'
+import { tHtml } from '../../helpers/translate-html';
 
 interface DraggableBlockProps extends DefaultProps {
   block?: Avo.Core.BlockItemBase

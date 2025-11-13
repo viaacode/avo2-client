@@ -13,7 +13,7 @@ import {
   type EMBEDS_ID,
   type ORGANISATION_CONTENT_ID,
   type QUICK_LANE_ID,
-} from './workspace.const.js'
+} from './workspace.const';
 
 export type TabView = {
   component: ReactNode

@@ -12,28 +12,28 @@ import { useAtomValue } from 'jotai'
 import { noop } from 'es-toolkit'
 import React, { type FC, useCallback, useMemo, useState } from 'react'
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { APP_PATH } from '../../constants.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { APP_PATH } from '../../constants';
 import {
   ShareDropdown,
   type ShareDropdownProps,
-} from '../../shared/components/ShareDropdown/ShareDropdown.js'
-import { type ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types.js'
-import { type ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils.js'
-import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+} from '../../shared/components/ShareDropdown/ShareDropdown';
+import { type ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { type ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils';
+import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
+import { tText } from '../../shared/helpers/translate-text';
 import {
   onAddNewContributor,
   onDeleteContributor,
   onEditContributor,
-} from '../helpers/assignment-share-with-collegue-handlers.js'
+} from '../helpers/assignment-share-with-collegue-handlers';
 
 import {
   DeleteAssignmentButton,
   type DeleteAssignmentButtonProps,
-} from './DeleteAssignmentButton.js'
+} from './DeleteAssignmentButton';
 
 interface ShareProps extends ShareWithPupilsProps {
   contributors: Avo.Assignment.Contributor[]

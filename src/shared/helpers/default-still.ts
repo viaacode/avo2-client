@@ -1,6 +1,6 @@
 import { type Avo } from '@viaa/avo2-types'
 
-import { DEFAULT_AUDIO_STILL } from '../constants/index.js'
+import { DEFAULT_AUDIO_STILL } from '../constants/index';
 
 export const addDefaultAudioStillToItem = (
   item: Avo.Item.Item,

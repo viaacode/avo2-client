@@ -7,17 +7,17 @@ import queryString from 'query-string'
 import React from 'react'
 import { type Location } from 'react-router'
 
-import { LTI_JWT_TOKEN_HEADER } from '../embed/embed.types.js'
-import { EmbedCodeService } from '../embed-code/embed-code-service.js'
-import { CustomError } from '../shared/helpers/custom-error.js'
-import { getEnv } from '../shared/helpers/env.js'
-import { tText } from '../shared/helpers/translate-text.js'
-import { ToastService } from '../shared/services/toast-service.js'
-import { historyLocationsAtom } from '../shared/store/ui.store.js'
+import { LTI_JWT_TOKEN_HEADER } from '../embed/embed.types';
+import { EmbedCodeService } from '../embed-code/embed-code-service';
+import { CustomError } from '../shared/helpers/custom-error';
+import { getEnv } from '../shared/helpers/env';
+import { tText } from '../shared/helpers/translate-text';
+import { ToastService } from '../shared/services/toast-service';
+import { historyLocationsAtom } from '../shared/store/ui.store';
 
-import { loginAtom } from './authentication.store.js'
-import { LoginMessage, type LoginState } from './authentication.types.js'
-import { logoutAndRedirectToLogin } from './helpers/redirects.js'
+import { loginAtom } from './authentication.store';
+import { LoginMessage, type LoginState } from './authentication.types';
+import { logoutAndRedirectToLogin } from './helpers/redirects';
 
 let checkSessionTimeoutTimerId: number | null = null
 

@@ -14,12 +14,12 @@ import React, { type FC, type ReactNode, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import teacherCardAppImage from '../../../src/assets/images/lerarenkaart-app.jpg'
-import { APP_PATH } from '../../constants.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { AvoToastType } from '../../shared/services/toast-service.js'
-import { verifyStamboekNumber } from '../authentication.service.js'
-import { type StamboekValidationStatus } from '../views/registration-flow/r3-stamboek.js'
+import { APP_PATH } from '../../constants';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { AvoToastType } from '../../shared/services/toast-service';
+import { verifyStamboekNumber } from '../authentication.service';
+import { type StamboekValidationStatus } from '../views/registration-flow/r3-stamboek';
 
 import './StamboekInput.scss'
 

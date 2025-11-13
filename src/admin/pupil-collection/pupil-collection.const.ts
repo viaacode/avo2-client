@@ -4,15 +4,15 @@ import {
 } from '@meemoo/admin-core-ui/admin'
 import { type Avo, PermissionName } from '@viaa/avo2-types'
 
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { type PupilCollectionOverviewTableColumns } from '../../pupil-collection/pupil-collection.types.js'
-import { type BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown.js'
-import { ROUTE_PARTS } from '../../shared/constants/index.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { TableColumnDataType } from '../../shared/types/table-column-data-type.js'
-import { type AssignmentBulkActionOption } from '../assignments/assignments.const.js'
-import { AssignmentsBulkAction } from '../assignments/assignments.types.js'
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { type PupilCollectionOverviewTableColumns } from '../../pupil-collection/pupil-collection.types';
+import { type BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
+import { ROUTE_PARTS } from '../../shared/constants/index';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import { tText } from '../../shared/helpers/translate-text';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
+import { type AssignmentBulkActionOption } from '../assignments/assignments.const';
+import { AssignmentsBulkAction } from '../assignments/assignments.types';
 
 export const PUPIL_COLLECTIONS_PATH = {
   ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.pupilCollections}`,

@@ -2,7 +2,7 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
 // eslint-disable-next-line import/no-unresolved
 import { type Requests } from 'node-zendesk'
 
-import { getEnv } from '../helpers/env.js'
+import { getEnv } from '../helpers/env';
 
 export class ZendeskService {
   public static async createTicket(

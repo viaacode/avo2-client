@@ -4,15 +4,15 @@ import React, { type FC } from 'react'
 import { Helmet } from 'react-helmet'
 import { useNavigate } from 'react-router'
 
-import { useGetContentPageByPath } from '../../admin/content-page/hooks/use-get-content-page-by-path.js'
-import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionGuard } from '../../authentication/components/PermissionGuard.js'
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants.js'
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour.js'
-import { ROUTE_PARTS } from '../../shared/constants/index.js'
-import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+import { useGetContentPageByPath } from '../../admin/content-page/hooks/use-get-content-page-by-path';
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionGuard } from '../../authentication/components/PermissionGuard';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { ROUTE_PARTS } from '../../shared/constants/index';
+import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
+import { tText } from '../../shared/helpers/translate-text';
 
 export const LoggedInHome: FC = () => {
   const navigateFunc = useNavigate()

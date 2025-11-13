@@ -19,16 +19,16 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import React, { type FC, useRef, useState } from 'react'
 
 import poster from '../../../assets/images/elementary-pupil-terms-of-service__poster.png'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
-import { useDisablePictureInPicture } from '../../../shared/hooks/useDisablePictureInPicture.js'
-import { NotificationService } from '../../../shared/services/notification-service.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
+import { useDisablePictureInPicture } from '../../../shared/hooks/useDisablePictureInPicture';
+import { NotificationService } from '../../../shared/services/notification-service';
+import { ToastService } from '../../../shared/services/toast-service';
 import {
   acceptConditionsAtom,
   commonUserAtom,
-} from '../../authentication.store.js'
+} from '../../authentication.store';
 
 const ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE =
   'ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE'

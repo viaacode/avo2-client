@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { goToAdminPage } from '../../helpers/go-to-admin.js'
+import { goToAdminPage } from '../../helpers/go-to-admin';
 
 /**
  * New: https://docs.google.com/spreadsheets/d/1sy6q3Q6Hl3LhvXY4JeCblhh4-REj8gyzAzyYwQVZZxc/edit#gid=95954947

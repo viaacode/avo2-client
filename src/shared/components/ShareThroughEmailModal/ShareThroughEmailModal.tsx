@@ -1,8 +1,8 @@
 import { Modal, ModalBody } from '@viaa/avo2-components'
 import React, { type FC, type ReactNode } from 'react'
 
-import { type EmailTemplateType } from '../../services/campaign-monitor-service.js'
-import { ShareThroughEmailContent } from '../ShareThroughEmailContent/ShareThroughEmailContent.js'
+import { type EmailTemplateType } from '../../services/campaign-monitor-service';
+import { ShareThroughEmailContent } from '../ShareThroughEmailContent/ShareThroughEmailContent';
 
 interface AddToCollectionModalProps {
   modalTitle: string | ReactNode

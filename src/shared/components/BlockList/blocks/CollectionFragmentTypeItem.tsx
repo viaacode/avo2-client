@@ -5,16 +5,16 @@ import React, { type FC, type ReactNode, useMemo } from 'react'
 import {
   CollectionFragmentFlowPlayer,
   type CollectionFragmentFlowPlayerProps,
-} from '../../../../collection/components/CollectionFragmentFlowPlayer.js'
+} from '../../../../collection/components/CollectionFragmentFlowPlayer';
 import {
   CollectionFragmentTitle,
   type CollectionFragmentTitleProps,
-} from '../../../../collection/components/CollectionFragmentTitle.js'
-import { tHtml } from '../../../helpers/translate-html.js'
-import { tText } from '../../../helpers/translate-text.js'
-import { ItemMetadata } from '../../BlockItemMetadata/ItemMetadata.js'
-import { CollapsibleColumn } from '../../CollapsibleColumn/CollapsibleColumn.js'
-import { TextWithTimestamps } from '../../TextWithTimestamp/TextWithTimestamps.js'
+} from '../../../../collection/components/CollectionFragmentTitle';
+import { tHtml } from '../../../helpers/translate-html';
+import { tText } from '../../../helpers/translate-text';
+import { ItemMetadata } from '../../BlockItemMetadata/ItemMetadata';
+import { CollapsibleColumn } from '../../CollapsibleColumn/CollapsibleColumn';
+import { TextWithTimestamps } from '../../TextWithTimestamp/TextWithTimestamps';
 
 import './CollectionFragmentTypeItem.scss'
 

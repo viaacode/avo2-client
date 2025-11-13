@@ -2,16 +2,16 @@ import {
   type FilterableColumn,
   TableFilterType,
 } from '@meemoo/admin-core-ui/admin'
-import { ROUTE_PARTS } from '../../shared/constants/index.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { TableColumnDataType } from '../../shared/types/table-column-data-type.js'
+import { ROUTE_PARTS } from '../../shared/constants/index';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import { tText } from '../../shared/helpers/translate-text';
+import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import {
   type UrlRedirect,
   type UrlRedirectOverviewTableCols,
   UrlRedirectPathPattern,
-} from './url-redirects.types.js'
+} from './url-redirects.types';
 
 export const URL_REDIRECT_PATH = {
   URL_REDIRECT_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.redirects}`,

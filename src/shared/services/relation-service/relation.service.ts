@@ -2,9 +2,9 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
 import { type Avo } from '@viaa/avo2-types'
 import { stringifyUrl } from 'query-string'
 
-import { type Lookup_Enum_Relation_Types_Enum } from '../../generated/graphql-db-types.js'
-import { CustomError } from '../../helpers/custom-error.js'
-import { getEnv } from '../../helpers/env.js'
+import { type Lookup_Enum_Relation_Types_Enum } from '../../generated/graphql-db-types';
+import { CustomError } from '../../helpers/custom-error';
+import { getEnv } from '../../helpers/env';
 
 export class RelationService {
   public static async fetchRelationsByObject(

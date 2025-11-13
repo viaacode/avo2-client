@@ -1,7 +1,7 @@
 import { expect, Page } from '@playwright/test'
 
-import { goToPageAndAcceptCookies } from './go-to-page-and-accept-cookies.js'
-import { loginOnderwijsAvo } from './login-onderwijs-avo.js'
+import { goToPageAndAcceptCookies } from './go-to-page-and-accept-cookies';
+import { loginOnderwijsAvo } from './login-onderwijs-avo';
 
 export async function goToAdminPage(page: Page): Promise<void> {
   await goToPageAndAcceptCookies(

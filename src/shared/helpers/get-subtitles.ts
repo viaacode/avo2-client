@@ -1,8 +1,8 @@
 import { type FlowplayerTrackSchema } from '@meemoo/react-components'
 import { type Avo } from '@viaa/avo2-types'
 
-import { getEnv } from './env.js'
-import { tText } from './translate-text.js'
+import { getEnv } from './env';
+import { tText } from './translate-text';
 
 export function getSubtitles(
   item: Avo.Item.Item | undefined | null,

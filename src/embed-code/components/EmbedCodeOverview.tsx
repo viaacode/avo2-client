@@ -14,38 +14,38 @@ import React, { type FC, useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useQueryParams } from 'use-query-params'
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { APP_PATH } from '../../constants.js'
-import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal.js'
-import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { copyToClipboard } from '../../shared/helpers/clipboard.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { navigate } from '../../shared/helpers/link.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { useDebounce } from '../../shared/hooks/useDebounce.js'
-import { trackEvents } from '../../shared/services/event-logging-service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { ITEMS_PER_PAGE } from '../../workspace/workspace.const.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { APP_PATH } from '../../constants';
+import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
+import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { copyToClipboard } from '../../shared/helpers/clipboard';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { navigate } from '../../shared/helpers/link';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { useDebounce } from '../../shared/hooks/useDebounce';
+import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
+import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import {
   type EmbedCodeFilters,
   EmbedCodeService,
-} from '../embed-code-service.js'
-import { OVERVIEW_COLUMNS } from '../embed-code.const.js'
+} from '../embed-code-service';
+import { OVERVIEW_COLUMNS } from '../embed-code.const';
 import {
   EMBED_CODE_DEFAULTS,
   type EmbedCode,
   type EmbedCodeOverviewFilterState,
   type EmbedCodeOverviewTableColumns,
-} from '../embed-code.types.js'
-import { toEmbedCodeIFrame } from '../helpers/links.js'
-import { createResource } from '../helpers/resourceForTrackEvents.js'
-import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode.js'
-import { useDeleteEmbedCode } from '../hooks/useDeleteEmbedCode.js'
-import { useUpdateEmbedCode } from '../hooks/useUpdateEmbedCode.js'
+} from '../embed-code.types';
+import { toEmbedCodeIFrame } from '../helpers/links';
+import { createResource } from '../helpers/resourceForTrackEvents';
+import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
+import { useDeleteEmbedCode } from '../hooks/useDeleteEmbedCode';
+import { useUpdateEmbedCode } from '../hooks/useUpdateEmbedCode';
 
-import { EmbedCodeFilterTableCell } from './EmbedCodeFilterTableCell.js'
-import { EditEmbedCodeModal } from './modals/EditEmbedCodeModal.js'
+import { EmbedCodeFilterTableCell } from './EmbedCodeFilterTableCell';
+import { EditEmbedCodeModal } from './modals/EditEmbedCodeModal';
 
 // Typings
 interface EmbedCodeOverviewProps {

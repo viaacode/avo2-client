@@ -4,10 +4,10 @@ import { Outlet, useSearchParams } from 'react-router'
 import 'react-datepicker/dist/react-datepicker.css' // TODO: lazy-load
 import './App.scss'
 import './styles/main.scss'
-import { ACMIDMNudgeModal } from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal.js'
-import { Footer } from './shared/components/Footer/Footer.js'
-import { Navigation } from './shared/components/Navigation/Navigation.js'
-import { ZendeskWrapper } from './shared/components/ZendeskWrapper/ZendeskWrapper.js'
+import { ACMIDMNudgeModal } from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
+import { Footer } from './shared/components/Footer/Footer';
+import { Navigation } from './shared/components/Navigation/Navigation';
+import { ZendeskWrapper } from './shared/components/ZendeskWrapper/ZendeskWrapper';
 
 export const AppClientLayout: FC = () => {
   const [query] = useSearchParams()

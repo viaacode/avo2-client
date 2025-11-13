@@ -35,24 +35,24 @@ import { Helmet } from 'react-helmet'
 import { useNavigate, useParams } from 'react-router'
 import { useLocation } from 'react-router-dom'
 
-import { AssignmentOverview } from '../../assignment/views/AssignmentOverview.js'
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page.js'
-import { CollectionOrBundle } from '../../collection/collection.types.js'
-import { CollectionOrBundleOverview } from '../../collection/components/CollectionOrBundleOverview.js'
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants.js'
-import { EmbedCodeOverview } from '../../embed-code/components/EmbedCodeOverview.js'
-import { ControlledDropdown } from '../../shared/components/ControlledDropdown/ControlledDropdown.js'
-import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour.js'
+import { AssignmentOverview } from '../../assignment/views/AssignmentOverview';
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { CollectionOrBundle } from '../../collection/collection.types';
+import { CollectionOrBundleOverview } from '../../collection/components/CollectionOrBundleOverview';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { EmbedCodeOverview } from '../../embed-code/components/EmbedCodeOverview';
+import { ControlledDropdown } from '../../shared/components/ControlledDropdown/ControlledDropdown';
+import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
-import { navigate } from '../../shared/helpers/link.js'
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop.js'
-import { useGetWorkspaceCounts } from '../hooks/useGetWorkspaceCounts.js'
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { buildLink } from '../../shared/helpers/build-link';
+import { navigate } from '../../shared/helpers/link';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
+import { useGetWorkspaceCounts } from '../hooks/useGetWorkspaceCounts';
 import {
   ASSIGNMENTS_ID,
   BOOKMARKS_ID,
@@ -63,21 +63,21 @@ import {
   ORGANISATION_CONTENT_ID,
   QUICK_LANE_ID,
   WORKSPACE_TAB_ID_TO_COUNT_ID,
-} from '../workspace.const.js'
+} from '../workspace.const';
 import {
   type NavTab,
   type TabFilter,
   type TabView,
   type TabViewMap,
-} from '../workspace.types.js'
+} from '../workspace.types';
 
-import { BookmarksOverview } from './BookmarksOverview.js'
-import { OrganisationContentOverview } from './OrganisationContentOverview.js'
-import { QuickLaneOverview } from './QuickLaneOverview.js'
+import { BookmarksOverview } from './BookmarksOverview';
+import { OrganisationContentOverview } from './OrganisationContentOverview';
+import { QuickLaneOverview } from './QuickLaneOverview';
 
 import './Workspace.scss'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface WorkspacePermissions {
   canViewOwnCollections?: boolean

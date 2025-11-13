@@ -1,7 +1,7 @@
 import { sortBy } from 'es-toolkit'
 
-import { type Positioned } from '../../shared/types/index.js'
-import { setBlockPositionToIndex } from '../assignment.helper.js'
+import { type Positioned } from '../../shared/types/index';
+import { setBlockPositionToIndex } from '../assignment.helper';
 
 export function insertMultipleAtPosition(
   list: Positioned[],

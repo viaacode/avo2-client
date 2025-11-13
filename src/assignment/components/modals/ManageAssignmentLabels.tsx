@@ -20,22 +20,22 @@ import { useAtomValue } from 'jotai'
 import { compact, intersection, sortBy, without } from 'es-toolkit'
 import React, { type FC, useCallback, useEffect, useState } from 'react'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { ColorSelect } from '../../../shared/components/ColorSelect/ColorSelect.js'
-import { type Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-db-types.js'
-import { CustomError } from '../../../shared/helpers/custom-error.js'
-import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list.js'
-import { generateRandomId } from '../../../shared/helpers/uuid.js'
-import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service/assignment-labels.service.js'
-import { ToastService } from '../../../shared/services/toast-service.js'
-import { MAX_LABEL_LENGTH } from '../../assignment.const.js'
-import { type AssignmentLabelColor } from '../../assignment.types.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { ColorSelect } from '../../../shared/components/ColorSelect/ColorSelect';
+import { type Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-db-types';
+import { CustomError } from '../../../shared/helpers/custom-error';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { generateRandomId } from '../../../shared/helpers/uuid';
+import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service/assignment-labels.service';
+import { ToastService } from '../../../shared/services/toast-service';
+import { MAX_LABEL_LENGTH } from '../../assignment.const';
+import { type AssignmentLabelColor } from '../../assignment.types';
 
-import { getManageAssignmentLabelsTranslations } from './ManageAssignmentLabels.translations.js'
+import { getManageAssignmentLabelsTranslations } from './ManageAssignmentLabels.translations';
 
 import './ManageAssignmentLabels.scss'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 
 export interface ManageAssignmentLabelsProps {
   isOpen: boolean

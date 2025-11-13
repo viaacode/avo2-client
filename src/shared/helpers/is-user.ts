@@ -1,6 +1,6 @@
 import { type Avo } from '@viaa/avo2-types'
 
-import { EducationLevelId } from './lom.js'
+import { EducationLevelId } from './lom';
 
 type UserLomsAndUserGroup = Partial<
   Pick<Avo.User.CommonUser, 'loms' | 'userGroup'>

@@ -1,11 +1,11 @@
 import { type Avo } from '@viaa/avo2-types'
 import React, { type FC } from 'react'
 
-import { CollectionFragmentRichText } from '../../../../collection/components/CollectionFragmentRichText.js'
+import { CollectionFragmentRichText } from '../../../../collection/components/CollectionFragmentRichText';
 import {
   CollectionFragmentTitle,
   type CollectionFragmentTitleProps,
-} from '../../../../collection/components/CollectionFragmentTitle.js'
+} from '../../../../collection/components/CollectionFragmentTitle';
 
 export interface CollectionFragmentTypeTextProps {
   title?: CollectionFragmentTitleProps

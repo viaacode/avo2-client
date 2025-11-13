@@ -2,13 +2,13 @@ import { type Avo } from '@viaa/avo2-types'
 import { noop } from 'es-toolkit'
 import React, { type FC, type ReactNode } from 'react'
 
-import { type APP_PATH } from '../../../../constants.js'
-import { ConfirmModal } from '../../../../shared/components/ConfirmModal/ConfirmModal.js'
-import { buildLink } from '../../../../shared/helpers/build-link.js'
-import { type ValueOf } from '../../../../shared/types/index.js'
+import { type APP_PATH } from '../../../../constants';
+import { ConfirmModal } from '../../../../shared/components/ConfirmModal/ConfirmModal';
+import { buildLink } from '../../../../shared/helpers/build-link';
+import { type ValueOf } from '../../../../shared/types/index';
 
 import './SubjectsBeingEditedWarningModal.scss'
-import { tText } from '../../../../shared/helpers/translate-text.js'
+import { tText } from '../../../../shared/helpers/translate-text';
 
 interface SubjectsBeingEditedWarningModalProps {
   isOpen: boolean

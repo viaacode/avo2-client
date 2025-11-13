@@ -1,9 +1,9 @@
 import { type TOptions } from 'i18next'
 import React, { type ReactNode } from 'react'
 
-import { Html } from '../components/Html/Html.js'
+import { Html } from '../components/Html/Html';
 
-import { tText } from './translate-text.js'
+import { tText } from './translate-text';
 
 /**
  * Wrapper around tText() that renders the translated text as html

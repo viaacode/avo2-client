@@ -1,8 +1,8 @@
 import { type Avo, LomSchemeType } from '@viaa/avo2-types'
 
-import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { getProfile } from '../../shared/helpers/formatters/avatar.js'
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { getProfile } from '../../shared/helpers/formatters/avatar';
 
 export const getUserGroupLabel = (
   userOrProfile:

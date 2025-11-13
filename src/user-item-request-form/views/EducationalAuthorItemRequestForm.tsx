@@ -16,25 +16,25 @@ import React, { type FC, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useNavigate } from 'react-router'
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page.js'
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants.js'
-import { FileUpload } from '../../shared/components/FileUpload/FileUpload.js'
-import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput.js'
-import { DOC_TYPES } from '../../shared/helpers/files.js'
-import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar.js'
-import { isMobileWidth } from '../../shared/helpers/media-query.js'
-import { validateForm } from '../../shared/helpers/validate-form.js'
-import { trackEvents } from '../../shared/services/event-logging-service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { ZendeskService } from '../../shared/services/zendesk-service.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
+import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
+import { DOC_TYPES } from '../../shared/helpers/files';
+import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar';
+import { isMobileWidth } from '../../shared/helpers/media-query';
+import { validateForm } from '../../shared/helpers/validate-form';
+import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
+import { ZendeskService } from '../../shared/services/zendesk-service';
 
-import { EDUCATIONAL_AUTHOR_ITEM_REQUEST_FORM_VALIDATION_SCHEMA } from './EducationalAuthorItemRequestForm.consts.js'
-import { renderAttachment } from './UserItemRequestForm.helpers.js'
+import { EDUCATIONAL_AUTHOR_ITEM_REQUEST_FORM_VALIDATION_SCHEMA } from './EducationalAuthorItemRequestForm.consts';
+import { renderAttachment } from './UserItemRequestForm.helpers';
 
 import './ItemRequestForm.scss'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
+import { tText } from '../../shared/helpers/translate-text';
+import { tHtml } from '../../shared/helpers/translate-html';
 
 interface FormValues {
   description: string

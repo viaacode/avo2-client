@@ -10,11 +10,11 @@ import { useAtomValue } from 'jotai'
 import React, { type FC, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { APP_PATH } from '../../constants.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { APP_PATH } from '../../constants';
+import { tText } from '../../shared/helpers/translate-text';
+import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 
 interface AssignmentTeacherTabsProps {
   activeTab: ASSIGNMENT_CREATE_UPDATE_TABS | null

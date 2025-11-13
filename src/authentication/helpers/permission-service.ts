@@ -2,11 +2,11 @@ import { type ContentPageInfo } from '@meemoo/admin-core-ui/admin'
 import { type Avo, PermissionName } from '@viaa/avo2-types'
 import { isString } from 'es-toolkit'
 
-import { AssignmentService } from '../../assignment/assignment.service.js'
-import { CollectionService } from '../../collection/collection.service.js'
-import { CollectionOrBundle } from '../../collection/collection.types.js'
-import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types.js'
-import { Locale } from '../../shared/translations/translations.types.js'
+import { AssignmentService } from '../../assignment/assignment.service';
+import { CollectionService } from '../../collection/collection.service';
+import { CollectionOrBundle } from '../../collection/collection.types';
+import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
+import { Locale } from '../../shared/translations/translations.types';
 
 type PermissionInfo = { name: PermissionName; obj?: any | null }
 

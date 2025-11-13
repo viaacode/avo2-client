@@ -5,18 +5,18 @@ import { compact, debounce } from 'es-toolkit'
 import React, { type FC, useCallback, useEffect, useState } from 'react'
 import Joyride, { type CallBackProps } from 'react-joyride'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { TEAL_BRIGHT } from '../../constants/index.js'
-import { CustomError } from '../../helpers/custom-error.js'
-import { tText } from '../../helpers/translate-text.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { TEAL_BRIGHT } from '../../constants/index';
+import { CustomError } from '../../helpers/custom-error';
+import { tText } from '../../helpers/translate-text';
 import {
   InteractiveTourService,
   type TourInfo,
-} from '../../services/interactive-tour.service.js'
-import { showNudgingModalAtom } from '../../store/ui.store.js'
-import { Html } from '../Html/Html.js'
+} from '../../services/interactive-tour.service';
+import { showNudgingModalAtom } from '../../store/ui.store';
+import { Html } from '../Html/Html';
 
-import { useGetInteractiveTourForPage } from './hooks/useGetInteractiveTourForPage.js'
+import { useGetInteractiveTourForPage } from './hooks/useGetInteractiveTourForPage';
 
 import './InteractiveTour.scss'
 

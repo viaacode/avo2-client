@@ -1,9 +1,9 @@
 import { noop } from 'es-toolkit'
 import React, { type FC } from 'react'
 
-import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
+import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 
 interface DeleteCollectionModalProps {
   isOpen: boolean

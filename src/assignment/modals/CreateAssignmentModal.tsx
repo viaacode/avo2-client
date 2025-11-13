@@ -14,7 +14,7 @@ import {
 import { noop } from 'es-toolkit'
 import React, { type FC, type ReactNode, useState } from 'react'
 
-import { tHtml } from '../../shared/helpers/translate-html.js'
+import { tHtml } from '../../shared/helpers/translate-html';
 
 interface CreateAssignmentModalProps {
   isOpen: boolean

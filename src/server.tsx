@@ -42,7 +42,7 @@ export {};
 //             "<!DOCTYPE html><html><head><title>App</title></head><body><div id='root'>",
 //           )
 //           pipe(res)
-//           res.write("</div><script src='/client.js'></script></body></html>")
+//           res.write("</div><script src='/client';></script></body></html>")
 //         },
 //         onError(err) {
 //           console.error(err)

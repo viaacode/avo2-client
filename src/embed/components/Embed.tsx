@@ -14,18 +14,18 @@ import { useAtomValue } from 'jotai'
 import { noop } from 'es-toolkit'
 import React, { type FC, useCallback, useEffect, useMemo } from 'react'
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { toEmbedCodeDetail } from '../../embed-code/helpers/links.js'
-import { createResource } from '../../embed-code/helpers/resourceForTrackEvents.js'
-import { useGetEmbedCode } from '../../embed-code/hooks/useGetEmbedCode.js'
-import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.js'
-import { type CustomError } from '../../shared/helpers/custom-error.js'
-import { reorderDate } from '../../shared/helpers/formatters/date.js'
-import { getFlowPlayerPoster } from '../../shared/helpers/get-poster.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { trackEvents } from '../../shared/services/event-logging-service.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
+import { createResource } from '../../embed-code/helpers/resourceForTrackEvents';
+import { useGetEmbedCode } from '../../embed-code/hooks/useGetEmbedCode';
+import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { type CustomError } from '../../shared/helpers/custom-error';
+import { reorderDate } from '../../shared/helpers/formatters/date';
+import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { trackEvents } from '../../shared/services/event-logging-service';
 
-import { EmbedErrorView } from './EmbedErrorView.js'
+import { EmbedErrorView } from './EmbedErrorView';
 
 import './Embed.scss'
 import { EmbedCodeContentType } from '../../embed-code/embed-code.types.ts'

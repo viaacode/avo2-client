@@ -4,7 +4,7 @@ import { isNil } from 'es-toolkit'
 import React, { type FC, type ReactNode } from 'react'
 import { toast, type ToastId, type ToastOptions } from 'react-toastify'
 
-import { ROUTE_PARTS } from '../constants/index.js'
+import { ROUTE_PARTS } from '../constants/index';
 
 export enum AvoToastType {
   DANGER = 'danger',

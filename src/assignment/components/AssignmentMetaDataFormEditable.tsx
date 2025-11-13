@@ -14,13 +14,13 @@ import { type Avo } from '@viaa/avo2-types'
 import { intersection } from 'es-toolkit'
 import React, { type FC, useState } from 'react'
 
-import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput.js'
-import { ShortDescriptionField } from '../../shared/components/ShortDescriptionField/ShortDescriptionField.js'
-import { ThumbnailStillsModal } from '../../shared/components/ThumbnailStillsModal/ThumbnailStillsModal.js'
-import { getBottomLoms } from '../../shared/helpers/get-bottom-loms.js'
-import { EducationLevelType } from '../../shared/helpers/lom.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
+import { ShortDescriptionField } from '../../shared/components/ShortDescriptionField/ShortDescriptionField';
+import { ThumbnailStillsModal } from '../../shared/components/ThumbnailStillsModal/ThumbnailStillsModal';
+import { getBottomLoms } from '../../shared/helpers/get-bottom-loms';
+import { EducationLevelType } from '../../shared/helpers/lom';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 type AssignmentMetaDataFormEditableProps = {
   assignment: Avo.Assignment.Assignment

@@ -10,19 +10,19 @@ import React, { type FC, type ReactNode } from 'react'
 import {
   formatDate,
   formatTimestamp,
-} from '../../shared/helpers/formatters/date.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { truncateTableValue } from '../../shared/helpers/truncate.js'
-import { bookWidgetsLogo, smartSchoolLogo } from '../embed-code.const.js'
+} from '../../shared/helpers/formatters/date';
+import { tText } from '../../shared/helpers/translate-text';
+import { truncateTableValue } from '../../shared/helpers/truncate';
+import { bookWidgetsLogo, smartSchoolLogo } from '../embed-code.const';
 import {
   EMBED_CONTENT_TYPE_TO_ENGLISH_CONTENT_TYPE,
   type EmbedCode,
   EmbedCodeContentType,
   EmbedCodeExternalWebsite,
-} from '../embed-code.types.js'
+} from '../embed-code.types';
 
 import './EmbedCodeFilterTableCell.scss'
-import { formatDurationHoursMinutesSeconds } from '../../shared/helpers/formatters/duration.js'
+import { formatDurationHoursMinutesSeconds } from '../../shared/helpers/formatters/duration';
 import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../collection/collection.types.ts'
 
 export interface EmbedCodeFilterTableCellProps {

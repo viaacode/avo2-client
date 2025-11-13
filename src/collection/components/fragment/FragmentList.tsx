@@ -4,11 +4,11 @@ import { useAtomValue } from 'jotai'
 import { sortBy } from 'es-toolkit'
 import React, { type FC } from 'react'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { tHtml } from '../../../shared/helpers/translate-html.js'
-import { showReplacementWarning } from '../../helpers/fragment.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { showReplacementWarning } from '../../helpers/fragment';
 
-import { FragmentDetail } from './FragmentDetail.js'
+import { FragmentDetail } from './FragmentDetail';
 
 interface FragmentListProps {
   collectionFragments: Avo.Collection.Fragment[]

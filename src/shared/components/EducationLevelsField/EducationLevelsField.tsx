@@ -3,9 +3,9 @@ import { type Avo } from '@viaa/avo2-types'
 import { compact } from 'es-toolkit'
 import React, { type FC } from 'react'
 
-import { lomToTagInfo } from '../../helpers/string-to-select-options.js'
-import { tText } from '../../helpers/translate-text.js'
-import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees.js'
+import { lomToTagInfo } from '../../helpers/string-to-select-options';
+import { tText } from '../../helpers/translate-text';
+import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 
 interface EducationLevelsFieldProps {
   onChange?: (values: TagInfo[]) => void

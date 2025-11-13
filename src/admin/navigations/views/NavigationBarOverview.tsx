@@ -2,12 +2,12 @@ import { PermissionName } from '@viaa/avo2-types'
 import React, { type FC, lazy, Suspense } from 'react'
 import { Helmet } from 'react-helmet'
 
-import { PermissionGuard } from '../../../authentication/components/PermissionGuard.js'
-import { GENERATE_SITE_TITLE } from '../../../constants.js'
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 
 import './NavigationBarOverview.scss'
-import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { tText } from '../../../shared/helpers/translate-text.js'
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { tText } from '../../../shared/helpers/translate-text';
 
 const NavigationOverview = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({

@@ -25,30 +25,30 @@ import React, {
   useState,
 } from 'react'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { PermissionService } from '../../../authentication/helpers/permission-service.js'
-import { EmbedContent } from '../../../embed-code/components/EmbedContent.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionService } from '../../../authentication/helpers/permission-service';
+import { EmbedContent } from '../../../embed-code/components/EmbedContent';
 import {
   bookWidgetsLogo,
   smartSchoolLogo,
-} from '../../../embed-code/embed-code.const.js'
+} from '../../../embed-code/embed-code.const';
 import {
   type EmbedCode,
   EmbedCodeContentType,
   EmbedCodeDescriptionType,
   EmbedCodeExternalWebsite,
-} from '../../../embed-code/embed-code.types.js'
-import { createResource } from '../../../embed-code/helpers/resourceForTrackEvents.js'
-import { toSeconds } from '../../helpers/parsers/duration.js'
-import { tHtml } from '../../helpers/translate-html.js'
-import { tText } from '../../helpers/translate-text.js'
-import { useTabs } from '../../hooks/useTabs.js'
-import { trackEvents } from '../../services/event-logging-service.js'
-import { embedFlowAtom } from '../../store/ui.store.js'
-import { QuickLaneContent } from '../QuickLaneContent/QuickLaneContent.js'
-import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types.js'
-import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types.js'
-import { ShareThroughEmailContent } from '../ShareThroughEmailContent/ShareThroughEmailContent.js'
+} from '../../../embed-code/embed-code.types';
+import { createResource } from '../../../embed-code/helpers/resourceForTrackEvents';
+import { toSeconds } from '../../helpers/parsers/duration';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
+import { useTabs } from '../../hooks/useTabs';
+import { trackEvents } from '../../services/event-logging-service';
+import { embedFlowAtom } from '../../store/ui.store';
+import { QuickLaneContent } from '../QuickLaneContent/QuickLaneContent';
+import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';
+import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
+import { ShareThroughEmailContent } from '../ShareThroughEmailContent/ShareThroughEmailContent';
 
 import './FragmentShareModal.scss'
 

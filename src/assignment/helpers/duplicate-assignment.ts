@@ -1,9 +1,9 @@
 import { type Avo } from '@viaa/avo2-types'
 
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { AssignmentService } from '../assignment.service.js'
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { ToastService } from '../../shared/services/toast-service';
+import { AssignmentService } from '../assignment.service';
 
 export async function duplicateAssignment(
   assignment: Avo.Assignment.Assignment | null | undefined,

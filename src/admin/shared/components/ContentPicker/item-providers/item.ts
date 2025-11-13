@@ -1,7 +1,7 @@
-import { type ItemMeta } from '../../../../../shared/types/item.js'
-import { ItemsService } from '../../../../items/items.service.js'
-import { type PickerItem } from '../../../types/content-picker.js'
-import { parsePickerItem } from '../helpers/parse-picker.js'
+import { type ItemMeta } from '../../../../../shared/types/item';
+import { ItemsService } from '../../../../items/items.service';
+import { type PickerItem } from '../../../types/content-picker';
+import { parsePickerItem } from '../helpers/parse-picker';
 import { Avo } from '@viaa/avo2-types'
 
 // Fetch content items from GQL

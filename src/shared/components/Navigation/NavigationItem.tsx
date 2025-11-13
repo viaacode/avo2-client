@@ -9,8 +9,8 @@ import { noop } from 'es-toolkit'
 import React, { type FC } from 'react'
 import { NavLink } from 'react-router-dom'
 
-import { type BooleanDictionary } from '../../helpers/navigation.js'
-import { type NavigationItemInfo } from '../../types/index.js'
+import { type BooleanDictionary } from '../../helpers/navigation';
+import { type NavigationItemInfo } from '../../types/index';
 
 import './Navigation.scss'
 

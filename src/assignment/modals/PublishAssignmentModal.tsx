@@ -15,16 +15,16 @@ import { type Avo } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
 import React, { type FC, type ReactNode, useEffect, useState } from 'react'
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import type { ParentBundle } from '../../collection/collection.types.js'
-import { APP_PATH } from '../../constants.js'
-import { buildLink } from '../../shared/helpers/build-link.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { trackEvents } from '../../shared/services/event-logging-service.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { getValidationErrorsForPublishAssignment } from '../assignment.helper.js'
-import { AssignmentService } from '../assignment.service.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
+import type { ParentBundle } from '../../collection/collection.types';
+import { APP_PATH } from '../../constants';
+import { buildLink } from '../../shared/helpers/build-link';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
+import { getValidationErrorsForPublishAssignment } from '../assignment.helper';
+import { AssignmentService } from '../assignment.service';
 
 interface PublishAssignmentModalProps {
   isOpen: boolean

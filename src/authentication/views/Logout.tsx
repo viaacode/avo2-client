@@ -2,11 +2,11 @@ import { useAtomValue } from 'jotai'
 import { type FC, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import { APP_PATH } from '../../constants.js'
-import { ROUTE_PARTS } from '../../shared/constants/index.js'
-import { isPupil } from '../../shared/helpers/is-pupil.js'
-import { commonUserAtom } from '../authentication.store.js'
-import { redirectToServerLogoutPage } from '../helpers/redirects.js'
+import { APP_PATH } from '../../constants';
+import { ROUTE_PARTS } from '../../shared/constants/index';
+import { isPupil } from '../../shared/helpers/is-pupil';
+import { commonUserAtom } from '../authentication.store';
+import { redirectToServerLogoutPage } from '../helpers/redirects';
 
 export const Logout: FC = () => {
   const location = useLocation()

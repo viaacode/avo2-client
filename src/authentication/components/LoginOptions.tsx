@@ -4,21 +4,21 @@ import React, { type FC, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { Link } from 'react-router-dom'
 
-import { APP_PATH } from '../../constants.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { useTabs } from '../../shared/hooks/useTabs.js'
-import { setLoginCounter } from '../helpers/login-counter-before-nudging.js'
+import { APP_PATH } from '../../constants';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { useTabs } from '../../shared/hooks/useTabs';
+import { setLoginCounter } from '../helpers/login-counter-before-nudging';
 import {
   getPreferredLoginOption,
   LoginOptionsTabs,
   removePreferredLoginOption,
   setPreferredLoginOption,
-} from '../helpers/login-options-preferred-tab.js'
-import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page.js'
+} from '../helpers/login-options-preferred-tab';
+import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';
 
-import { LoginOptionsForPupil } from './LoginOptionsForPupil.js'
-import { LoginOptionsForTeacher } from './LoginOptionsForTeacher.js'
+import { LoginOptionsForPupil } from './LoginOptionsForPupil';
+import { LoginOptionsForTeacher } from './LoginOptionsForTeacher';
 import './LoginOptions.scss'
 
 interface LoginOptionsProps {

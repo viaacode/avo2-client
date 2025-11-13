@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
 
-import { tHtml } from '../shared/helpers/translate-html.js'
+import { tHtml } from '../shared/helpers/translate-html';
 
 export const GET_ERROR_MESSAGES: () => { [key: string]: ReactNode } = () => ({
   DEPUBLISHED_PAGINA: tHtml(

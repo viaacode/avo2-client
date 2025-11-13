@@ -15,9 +15,9 @@ import {
 import { noop } from 'es-toolkit'
 import React, { type FC, type ReactNode, useEffect, useState } from 'react'
 
-import { tHtml } from '../../helpers/translate-html.js'
+import { tHtml } from '../../helpers/translate-html';
 
-import { type ConfirmModalRememberKey } from './ConfirmModal.consts.js'
+import { type ConfirmModalRememberKey } from './ConfirmModal.consts';
 
 export interface ConfirmModalProps {
   title?: string | ReactNode

@@ -14,17 +14,17 @@ import { useAtomValue } from 'jotai'
 import React, { type FC } from 'react'
 import { Helmet } from 'react-helmet'
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { redirectToExternalPage } from '../../authentication/helpers/redirects/redirect-to-external-page.js'
-import { GENERATE_SITE_TITLE } from '../../constants.js'
-import { ErrorView } from '../../error/views/ErrorView.js'
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner.js'
-import { Users_Idps_Enum } from '../../shared/generated/graphql-db-types.js'
-import { getEnv } from '../../shared/helpers/env.js'
-import { formatDate } from '../../shared/helpers/formatters/date.js'
-import { isPupil } from '../../shared/helpers/is-pupil.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { redirectToExternalPage } from '../../authentication/helpers/redirects/redirect-to-external-page';
+import { GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorView } from '../../error/views/ErrorView';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { Users_Idps_Enum } from '../../shared/generated/graphql-db-types';
+import { getEnv } from '../../shared/helpers/env';
+import { formatDate } from '../../shared/helpers/formatters/date';
+import { isPupil } from '../../shared/helpers/is-pupil';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 // const ssumAccountEditPage = getEnv('SSUM_ACCOUNT_EDIT_URL') as string;
 const ssumPasswordEditPage = getEnv('SSUM_PASSWORD_EDIT_URL') as string

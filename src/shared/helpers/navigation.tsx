@@ -3,14 +3,14 @@ import { type TFunction } from 'i18next'
 import { isNil, kebabCase, sortBy } from 'es-toolkit'
 import React from 'react'
 
-import { LoginOptionsDropdown } from '../../authentication/components/LoginOptionsDropdown.js'
-import { PupilOrTeacherDropdown } from '../../authentication/components/PupilOrTeacherDropdown.js'
-import { APP_PATH } from '../../constants.js'
-import { type AppContentNavElement } from '../services/navigation-items-service.js'
-import { type NavigationItemInfo } from '../types/index.js'
+import { LoginOptionsDropdown } from '../../authentication/components/LoginOptionsDropdown';
+import { PupilOrTeacherDropdown } from '../../authentication/components/PupilOrTeacherDropdown';
+import { APP_PATH } from '../../constants';
+import { type AppContentNavElement } from '../services/navigation-items-service';
+import { type NavigationItemInfo } from '../types/index';
 
-import { buildLink } from './build-link.js'
-import { isMobileWidth } from './media-query.js'
+import { buildLink } from './build-link';
+import { isMobileWidth } from './media-query';
 
 const NAVIGATION_COMPONENTS: { [componentLabel: string]: any } = {
   '<PupilOrTeacherDropdown>': PupilOrTeacherDropdown,

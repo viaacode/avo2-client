@@ -1,8 +1,8 @@
 import { type UseQueryResult, useQuery } from '@tanstack/react-query'
 
-import { QUERY_KEYS } from '../../shared/constants/query-keys.js'
-import type { QuickLaneUrlObject } from '../../shared/types/index.js'
-import { QuickLaneService } from '../quick-lane.service.js'
+import { QUERY_KEYS } from '../../shared/constants/query-keys';
+import type { QuickLaneUrlObject } from '../../shared/types/index';
+import { QuickLaneService } from '../quick-lane.service';
 
 export const useGetQuickLane = (
   quickLaneId: string | undefined,

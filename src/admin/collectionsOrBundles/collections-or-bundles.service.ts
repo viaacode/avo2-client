@@ -15,7 +15,7 @@ import {
   type BulkUpdateDateAndLastAuthorCollectionsMutationVariables,
   type BulkUpdatePublishStateForCollectionsMutation,
   type BulkUpdatePublishStateForCollectionsMutationVariables,
-} from '../../shared/generated/graphql-db-operations.js'
+} from '../../shared/generated/graphql-db-operations';
 import {
   BulkAddLabelsToCollectionsDocument,
   BulkDeleteCollectionsDocument,
@@ -23,15 +23,15 @@ import {
   BulkUpdateAuthorForCollectionsDocument,
   BulkUpdateDateAndLastAuthorCollectionsDocument,
   BulkUpdatePublishStateForCollectionsDocument,
-} from '../../shared/generated/graphql-db-react-query.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { getEnv } from '../../shared/helpers/env.js'
-import { dataService } from '../../shared/services/data-service.js'
+} from '../../shared/generated/graphql-db-react-query';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { getEnv } from '../../shared/helpers/env';
+import { dataService } from '../../shared/services/data-service';
 
 import {
   type CollectionSortProps,
   type EditorialType,
-} from './collections-or-bundles.types.js'
+} from './collections-or-bundles.types';
 
 export class CollectionsOrBundlesService {
   static async getCollections(

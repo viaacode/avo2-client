@@ -1,4 +1,4 @@
-import { type ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list.js'
+import { type ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list';
 
 export type PupilCollectionOverviewTableColumns =
   | 'title'

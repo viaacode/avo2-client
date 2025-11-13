@@ -1,8 +1,8 @@
 import { UseQueryResult, useQuery } from '@tanstack/react-query'
 
-import { QUERY_KEYS } from '../../shared/constants/query-keys.js'
-import { WorkspaceService } from '../workspace.service.js'
-import { type WorkspaceCounts } from '../workspace.types.js'
+import { QUERY_KEYS } from '../../shared/constants/query-keys';
+import { WorkspaceService } from '../workspace.service';
+import { type WorkspaceCounts } from '../workspace.types';
 
 export const useGetWorkspaceCounts = (
   options: {

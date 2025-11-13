@@ -10,18 +10,18 @@ import {
 import { noop } from 'es-toolkit'
 import React, { type FC } from 'react'
 
-import { tHtml } from '../../shared/helpers/translate-html.js'
+import { tHtml } from '../../shared/helpers/translate-html';
 import {
   redirectToServerACMIDMLogin,
   redirectToServerKlascementLogin,
   redirectToServerLoginPage,
   redirectToServerSmartschoolLogin,
-} from '../helpers/redirects.js'
+} from '../helpers/redirects';
 
 import './LoginOptionsForTeacher.scss'
 import { useLocation } from 'react-router-dom'
 
-import { tText } from '../../shared/helpers/translate-text.js'
+import { tText } from '../../shared/helpers/translate-text';
 
 interface LoginOptionsForTeacherProps {
   onOptionClicked?: () => void

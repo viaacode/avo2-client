@@ -3,13 +3,13 @@ import {
   type GetTranslationsQueryVariables,
   type UpdateTranslationsMutation,
   type UpdateTranslationsMutationVariables,
-} from '../../shared/generated/graphql-db-operations.js'
+} from '../../shared/generated/graphql-db-operations';
 import {
   GetTranslationsDocument,
   UpdateTranslationsDocument,
-} from '../../shared/generated/graphql-db-react-query.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { dataService } from '../../shared/services/data-service.js'
+} from '../../shared/generated/graphql-db-react-query';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { dataService } from '../../shared/services/data-service';
 
 export const fetchTranslations = async (): Promise<any> => {
   try {

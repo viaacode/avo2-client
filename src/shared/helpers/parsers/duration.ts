@@ -2,7 +2,7 @@
  * Converts a duration in the form: 00:00:00 to number of seconds
  * @param duration
  */
-import { CustomError } from '../custom-error.js'
+import { CustomError } from '../custom-error';
 
 export function parseDuration(duration: string) {
   const parts = duration.split(':')

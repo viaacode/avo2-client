@@ -1,6 +1,6 @@
 import { expect, Page } from '@playwright/test'
 
-import { goToVideoDetailPage } from './go-to-video-detail-page.js'
+import { goToVideoDetailPage } from './go-to-video-detail-page';
 
 export async function createCollection(page: Page): Promise<string> {
   // Go to video detail page

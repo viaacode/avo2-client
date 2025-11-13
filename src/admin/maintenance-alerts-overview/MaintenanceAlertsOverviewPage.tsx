@@ -4,8 +4,8 @@ import { PermissionName } from '@viaa/avo2-types'
 import type { FC, ReactNode } from 'react'
 import React from 'react'
 
-import { PermissionGuard } from '../../authentication/components/PermissionGuard.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+import { PermissionGuard } from '../../authentication/components/PermissionGuard';
+import { tText } from '../../shared/helpers/translate-text';
 
 export const MaintenanceAlertsOverviewPage: FC = () => {
   const renderPopup = ({

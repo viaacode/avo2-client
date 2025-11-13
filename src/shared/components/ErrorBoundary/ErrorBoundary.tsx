@@ -2,8 +2,8 @@ import { IconName } from '@viaa/avo2-components'
 import React from 'react'
 import { useRouteError } from 'react-router'
 
-import { ErrorView } from '../../../error/views/ErrorView.js'
-import { tText } from '../../helpers/translate-text.js'
+import { ErrorView } from '../../../error/views/ErrorView';
+import { tText } from '../../helpers/translate-text';
 
 import './ErrorBoundary.scss'
 

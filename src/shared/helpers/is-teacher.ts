@@ -1,4 +1,4 @@
-import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const.js'
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 
 /**
  * Checks if the user is an elementary or secondary teacher, any other user group will return false

@@ -5,18 +5,18 @@ import { useAtomValue } from 'jotai'
 import { isNil } from 'es-toolkit'
 import React, { type FC, type ReactNode, useEffect, useState } from 'react'
 
-import { commonUserAtom } from '../../authentication/authentication.store.js'
-import { PermissionService } from '../../authentication/helpers/permission-service.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { ToastService } from '../../shared/services/toast-service.js'
-import { type CollectionOrBundle } from '../collection.types.js'
-import FragmentEdit from '../components/fragment/FragmentEdit.js'
-import { showReplacementWarning } from '../helpers/fragment.js'
+import { commonUserAtom } from '../../authentication/authentication.store';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { ToastService } from '../../shared/services/toast-service';
+import { type CollectionOrBundle } from '../collection.types';
+import FragmentEdit from '../components/fragment/FragmentEdit';
+import { showReplacementWarning } from '../helpers/fragment';
 
-import { type CollectionAction } from './CollectionOrBundleEdit.types.js'
-import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts.js'
-import { FragmentAdd } from './fragment/FragmentAdd.js'
+import { type CollectionAction } from './CollectionOrBundleEdit.types';
+import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
+import { FragmentAdd } from './fragment/FragmentAdd';
 
 import './CollectionOrBundleEditContent.scss'
 

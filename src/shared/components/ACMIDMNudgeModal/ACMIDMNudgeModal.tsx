@@ -10,28 +10,28 @@ import { useAtom, useAtomValue } from 'jotai'
 import React, { type FC, useCallback, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import { commonUserAtom } from '../../../authentication/authentication.store.js'
-import { isProfileComplete } from '../../../authentication/helpers/get-profile-info.js'
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { isProfileComplete } from '../../../authentication/helpers/get-profile-info';
 import {
   getLoginCounter,
   LOGIN_COUNTER_BEFORE_NUDGING,
-} from '../../../authentication/helpers/login-counter-before-nudging.js'
-import { redirectToServerLinkAccount } from '../../../authentication/helpers/redirects.js'
-import { APP_PATH } from '../../../constants.js'
+} from '../../../authentication/helpers/login-counter-before-nudging';
+import { redirectToServerLinkAccount } from '../../../authentication/helpers/redirects';
+import { APP_PATH } from '../../../constants';
 import {
   NOT_NOW_LOCAL_STORAGE_KEY,
   NOT_NOW_VAL,
   ROUTE_PARTS,
-} from '../../constants/index.js'
-import { CustomError } from '../../helpers/custom-error.js'
-import { isPupil } from '../../helpers/is-pupil.js'
-import { ProfilePreferencesService } from '../../services/profile-preferences.service.js'
-import { ProfilePreferenceKey } from '../../services/profile-preferences.types.js'
-import { showNudgingModalAtom } from '../../store/ui.store.js'
+} from '../../constants/index';
+import { CustomError } from '../../helpers/custom-error';
+import { isPupil } from '../../helpers/is-pupil';
+import { ProfilePreferencesService } from '../../services/profile-preferences.service';
+import { ProfilePreferenceKey } from '../../services/profile-preferences.types';
+import { showNudgingModalAtom } from '../../store/ui.store';
 
 import './ACMIDMNudgeModal.scss'
-import { tText } from '../../helpers/translate-text.js'
-import { tHtml } from '../../helpers/translate-html.js'
+import { tText } from '../../helpers/translate-text';
+import { tHtml } from '../../helpers/translate-html';
 
 export const ACMIDMNudgeModal: FC = () => {
   const location = useLocation()

@@ -7,7 +7,7 @@ import XHR from 'i18next-xhr-backend'
 import { lowerCase, upperFirst } from 'es-toolkit'
 import { initReactI18next } from 'react-i18next'
 
-import { getEnv } from '../helpers/env.js'
+import { getEnv } from '../helpers/env';
 
 let resolveTranslations: (value?: unknown) => void | undefined
 export const waitForTranslations = new Promise((resolve) => {

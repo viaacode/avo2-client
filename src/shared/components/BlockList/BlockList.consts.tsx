@@ -1,6 +1,6 @@
 import { type Avo } from '@viaa/avo2-types'
 
-import { tText } from '../../helpers/translate-text.js'
+import { tText } from '../../helpers/translate-text';
 
 export const BLOCK_ITEM_LABELS = (
   isPupilCollection: boolean,

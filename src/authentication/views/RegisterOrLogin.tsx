@@ -8,12 +8,12 @@ import {
 import React, { type FC } from 'react'
 import { Helmet } from 'react-helmet'
 
-import { GENERATE_SITE_TITLE } from '../../constants.js'
-import { LoginOptions } from '../components/LoginOptions.js'
+import { GENERATE_SITE_TITLE } from '../../constants';
+import { LoginOptions } from '../components/LoginOptions';
 
 import './RegisterOrLogin.scss'
-import { tText } from '../../shared/helpers/translate-text.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
+import { tText } from '../../shared/helpers/translate-text';
+import { tHtml } from '../../shared/helpers/translate-html';
 
 export const RegisterOrLogin: FC = () => {
   return (

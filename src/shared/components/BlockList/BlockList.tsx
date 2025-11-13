@@ -1,21 +1,21 @@
 import { Avo } from '@viaa/avo2-types'
 import { noop } from 'es-toolkit'
 import React, { type FC } from 'react'
-import { getBlockColor } from '../../helpers/get-block-color.js'
+import { getBlockColor } from '../../helpers/get-block-color';
 
-import { BlockIconWrapper } from './BlockIconWrapper/BlockIconWrapper.js'
+import { BlockIconWrapper } from './BlockIconWrapper/BlockIconWrapper';
 import {
   AssignmentBlockTypeSearch,
   type AssignmentBlockTypeSearchProps,
-} from './blocks/AssignmentBlockTypeSearch.js'
+} from './blocks/AssignmentBlockTypeSearch';
 import {
   CollectionFragmentTypeItem,
   type CollectionFragmentTypeItemProps,
-} from './blocks/CollectionFragmentTypeItem.js'
+} from './blocks/CollectionFragmentTypeItem';
 import {
   CollectionFragmentTypeText,
   type CollectionFragmentTypeTextProps,
-} from './blocks/CollectionFragmentTypeText.js'
+} from './blocks/CollectionFragmentTypeText';
 
 import './BlockList.scss'
 

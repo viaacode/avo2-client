@@ -12,23 +12,23 @@ import {
   type InsertInteractiveTourMutationVariables,
   type UpdateInteractiveTourMutation,
   type UpdateInteractiveTourMutationVariables,
-} from '../../shared/generated/graphql-db-operations.js'
+} from '../../shared/generated/graphql-db-operations';
 import {
   DeleteInteractiveTourDocument,
   GetInteractiveTourByIdDocument,
   GetInteractiveToursDocument,
   InsertInteractiveTourDocument,
   UpdateInteractiveTourDocument,
-} from '../../shared/generated/graphql-db-react-query.js'
-import { CustomError } from '../../shared/helpers/custom-error.js'
-import { dataService } from '../../shared/services/data-service.js'
+} from '../../shared/generated/graphql-db-react-query';
+import { CustomError } from '../../shared/helpers/custom-error';
+import { dataService } from '../../shared/services/data-service';
 
-import { ITEMS_PER_PAGE } from './interactive-tour.const.js'
+import { ITEMS_PER_PAGE } from './interactive-tour.const';
 import {
   type EditableInteractiveTour,
   type EditableStep,
   type InteractiveTourOverviewTableCols,
-} from './interactive-tour.types.js'
+} from './interactive-tour.types';
 
 export class InteractiveTourService {
   public static async fetchInteractiveTours(

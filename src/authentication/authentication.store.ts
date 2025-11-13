@@ -2,7 +2,7 @@ import { type Avo } from '@viaa/avo2-types'
 import { atom } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 
-import { type LoginState } from './authentication.types.js'
+import { type LoginState } from './authentication.types';
 
 export const loginAtom = atom<LoginState>({
   data: null,

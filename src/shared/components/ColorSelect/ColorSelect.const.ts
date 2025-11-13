@@ -1,6 +1,6 @@
-import { tText } from '../../helpers/translate-text.js'
+import { tText } from '../../helpers/translate-text';
 
-import { type ColorOption } from './ColorSelect.types.js'
+import { type ColorOption } from './ColorSelect.types';
 
 export const GET_ASSIGNMENT_WHITE = () => ({
   label: tText('shared/components/color-select/color-select___wit'),

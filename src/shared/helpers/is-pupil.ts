@@ -1,4 +1,4 @@
-import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const.js'
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 
 /**
  * Checks if the user is a pupilElementary or pupilSecondary, any other user group will return false

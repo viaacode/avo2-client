@@ -1,8 +1,8 @@
 import { Avo } from '@viaa/avo2-types'
 
-import { tText } from '../../shared/helpers/translate-text.js'
+import { tText } from '../../shared/helpers/translate-text';
 
-import { type ReorderType } from './CollectionOrBundleEdit.types.js'
+import { type ReorderType } from './CollectionOrBundleEdit.types';
 
 export const REORDER_TYPE_TO_FRAGMENT_TYPE: Record<
   ReorderType,

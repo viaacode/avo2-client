@@ -3,8 +3,8 @@ import { Avo } from '@viaa/avo2-types'
 import {
   type EditableAssignmentBlock,
   type EditablePupilCollectionFragment,
-} from '../assignment.types.js'
-import { AssignmentBlockItemDescriptionType } from '../components/AssignmentBlockDescriptionButtons.js'
+} from '../assignment.types';
+import { AssignmentBlockItemDescriptionType } from '../components/AssignmentBlockDescriptionButtons';
 
 /**
  * To be able to keep track of the custom_title and custom_description for all editModes: original, custom and none, we need som extra fields to store these values

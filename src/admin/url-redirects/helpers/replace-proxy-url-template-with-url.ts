@@ -1,4 +1,4 @@
-import { getEnv } from '../../../shared/helpers/env.js'
+import { getEnv } from '../../../shared/helpers/env';
 
 export const PROXY_PATH_SHORTCUT = '{{PROXY_URL}}'
 

@@ -12,9 +12,9 @@ import {
 import { Avo } from '@viaa/avo2-types'
 import React, { type FC } from 'react'
 
-import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.consts.js'
-import { tHtml } from '../../shared/helpers/translate-html.js'
-import { tText } from '../../shared/helpers/translate-text.js'
+import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.consts';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 export interface ConfirmSliceModalProps
   extends Pick<ModalProps, 'isOpen' | 'onClose'> {

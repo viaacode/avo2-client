@@ -1,9 +1,9 @@
 import { Modal, ModalBody } from '@viaa/avo2-components'
 import React, { type FC } from 'react'
 
-import { QuickLaneContent } from '../QuickLaneContent/QuickLaneContent.js'
+import { QuickLaneContent } from '../QuickLaneContent/QuickLaneContent';
 
-import { type QuickLaneModalProps } from './QuickLaneModal.types.js'
+import { type QuickLaneModalProps } from './QuickLaneModal.types';
 
 export const QuickLaneModal: FC<QuickLaneModalProps> = (props) => {
   const { modalTitle, isOpen, onClose } = props

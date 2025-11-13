@@ -3,15 +3,15 @@ import { type Avo } from '@viaa/avo2-types'
 import immer, { type Draft } from 'immer'
 import { cloneDeep } from 'es-toolkit'
 
-import { tHtml } from '../../../../shared/helpers/translate-html.js'
-import { ToastService } from '../../../../shared/services/toast-service.js'
-import { type ValueOf } from '../../../../shared/types/index.js'
-import { InteractiveTourService } from '../../interactive-tour.service.js'
+import { tHtml } from '../../../../shared/helpers/translate-html';
+import { ToastService } from '../../../../shared/services/toast-service';
+import { type ValueOf } from '../../../../shared/types/index';
+import { InteractiveTourService } from '../../interactive-tour.service';
 import {
   type EditableInteractiveTour,
   InteractiveTourEditActionType,
   type InteractiveTourState,
-} from '../../interactive-tour.types.js'
+} from '../../interactive-tour.types';
 
 type StepPropUpdateAction = {
   type: InteractiveTourEditActionType.UPDATE_STEP_PROP

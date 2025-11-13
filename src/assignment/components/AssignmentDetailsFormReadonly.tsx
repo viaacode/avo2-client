@@ -3,10 +3,10 @@ import { Avo } from '@viaa/avo2-types'
 import { clsx } from 'clsx'
 import React, { type FC } from 'react'
 
-import { formatTimestamp } from '../../shared/helpers/formatters/date.js'
+import { formatTimestamp } from '../../shared/helpers/formatters/date';
 
 import './AssignmentDetailsForm.scss'
-import { tText } from '../../shared/helpers/translate-text.js'
+import { tText } from '../../shared/helpers/translate-text';
 
 interface AssignmentDetailsFormReadonlyProps {
   assignment: Avo.Assignment.Assignment
