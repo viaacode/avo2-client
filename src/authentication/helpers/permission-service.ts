@@ -207,9 +207,7 @@ export class PermissionService {
 
 			case PermissionName.EDIT_OWN_CONTENT_PAGES: {
 				try {
-					const { ContentPageService } = await import(
-						'@meemoo/admin-core-ui/admin'
-					);
+					const { ContentPageService } = await import('@meemoo/admin-core-ui/admin');
 					const contentPage: ContentPageInfo = isString(obj)
 						? await ContentPageService.getContentPageByLanguageAndPath(
 								Locale.Nl as any,
