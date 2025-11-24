@@ -46,6 +46,7 @@ import { setEmbedFlowAction, setHistoryLocationsAction } from './store/actions';
 import { selectHistoryLocations } from './store/selectors';
 
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
+import '@meemoo/admin-core-ui/styles.css';
 import './App.scss';
 import './styles/main.scss';
 
