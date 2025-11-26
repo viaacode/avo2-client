@@ -1,5 +1,6 @@
 import './accept-elementary-pupil-conditions.scss'
 
+import { BlockHeading, BlockRichText, BlockVideoWrapper } from '@meemoo/admin-core-ui/client';
 import {
   BlockHeading,
   BlockRichText,

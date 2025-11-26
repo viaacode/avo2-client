@@ -21,14 +21,17 @@ interface TimeCropControlsPops {
   className?: string
 }
 
-export const TimeCropControls: FC<TimeCropControlsPops> = ({
-  startTime,
-  endTime,
-  minTime,
-  maxTime,
-  disabled,
-  onChange,
-  className,
+/**
+ * @deprecated use the one of react-components instead
+ */
+const TimeCropControls: FC<TimeCropControlsPops> = ({
+	startTime,
+	endTime,
+	minTime,
+	maxTime,
+	disabled,
+	onChange,
+	className,
 }) => {
   const [fragmentStartString, setFragmentStartString] = useState<string>(
     formatDurationHoursMinutesSeconds(startTime),

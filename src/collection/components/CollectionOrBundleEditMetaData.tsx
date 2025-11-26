@@ -75,6 +75,20 @@ export const CollectionOrBundleEditMetaData: FC<
     })
   }
 
+	const handleBlurRichTextEditor = async () => {
+		const { sanitizeHtml, SanitizePreset } = await import('@meemoo/admin-core-ui/admin');
+		changeCollectionState({
+			type: 'UPDATE_COLLECTION_PROP',
+			collectionProp: 'description_long',
+			collectionPropValue: sanitizeHtml(
+				descriptionLongEditorState
+					? descriptionLongEditorState.toHTML()
+					: collection.description_long || '',
+				SanitizePreset.link
+			),
+		});
+	};
+
   return (
     <>
       <Container mode="vertical">

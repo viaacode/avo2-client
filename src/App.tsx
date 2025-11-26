@@ -33,6 +33,7 @@ import { embedFlowAtom, historyLocationsAtom } from './shared/store/ui.store';
 import { waitForTranslations } from './shared/translations/i18n';
 
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
+import '@meemoo/admin-core-ui/styles.css';
 import './App.scss';
 import './styles/main.scss';
 
