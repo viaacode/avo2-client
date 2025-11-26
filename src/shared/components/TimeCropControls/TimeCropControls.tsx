@@ -21,6 +21,9 @@ interface TimeCropControlsPops {
 	className?: string;
 }
 
+/**
+ * @deprecated use the one of react-components instead
+ */
 const TimeCropControls: FC<TimeCropControlsPops> = ({
 	startTime,
 	endTime,
