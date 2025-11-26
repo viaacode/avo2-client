@@ -4,7 +4,7 @@ import React, { type FC } from 'react'
 import { useNavigate } from 'react-router'
 
 import { APP_PATH } from '../../constants';
-import { ROUTE_PARTS } from '../../shared/constants/index';
+import { ROUTE_PARTS } from '../../shared/constants/routes';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';

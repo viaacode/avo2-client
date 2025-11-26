@@ -1,7 +1,7 @@
 @use "sass:math";
 
-@import "../../../styles/settings/colors";
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/colors" as colors;
+@use "../../../styles/settings/variables" as variables;
 
 /* ==========================================================================
    Component: Search results
@@ -32,11 +32,11 @@
 
 .c-search-result__title {
 	font-size: 2.1rem;
-	font-family: $g-headings-font-family;
-	font-weight: $g-headings-font-weight;
+	font-family: variables.$g-headings-font-family;
+	font-weight: variables.$g-headings-font-weight;
 
 	a {
-		color: $color-teal-bright;
+		color: colors.$color-teal-bright;
 		text-decoration: none;
 
 		&:hover {
@@ -87,11 +87,11 @@
 		.o-svg-icon {
 			width: 1.5rem;
 			height: 1.5rem;
-			margin-right: math.div($g-spacer-unit, 2);
+			margin-right: math.div(variables.$g-spacer-unit, 2);
 		}
 
 		&.c-search-result-item__assignment-label-tag {
-			background-color: $color-grey-blue;
+			background-color: colors.$color-grey-blue;
 			pointer-events: none;
 		}
 	}

@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Component: Text Field
    ---
@@ -10,8 +13,8 @@
 @mixin textfield-focus {
 	&:focus {
 		outline: 0;
-		border-color: $c-input-accent-color;
-		box-shadow: inset 0 0 0 0.1rem $c-input-accent-color;
+		border-color: variables.$c-input-accent-color;
+		box-shadow: inset 0 0 0 0.1rem variables.$c-input-accent-color;
 	}
 }
 
@@ -23,29 +26,29 @@
    ========================================================================== */
 
 .c-input {
-	border-radius: $c-input-border-radius;
-	background-color: $c-input-bg-color;
-	border: 1px solid $c-input-border-color;
+	border-radius: variables.$c-input-border-radius;
+	background-color: variables.$c-input-bg-color;
+	border: 1px solid variables.$c-input-border-color;
 	font-size: inherit;
 	height: 3.6rem;
-	padding: $c-input-padding;
+	padding: variables.$c-input-padding;
 	width: 100%;
 	appearance: none;
 	@include textfield-transition;
 	@include textfield-focus;
 
 	&[disabled] {
-		background-color: $color-gray-100;
+		background-color: colors.$color-gray-100;
 	}
 }
 
 .o-form-group--error {
-	border-color: $c-input-error-accent-color;
+	border-color: variables.$c-input-error-accent-color;
 
 	&:focus {
 		outline: 0;
-		border-color: $c-input-error-accent-color;
-		box-shadow: 0 0 0 2px rgba($c-input-error-accent-color, 0.2);
+		border-color: variables.$c-input-error-accent-color;
+		box-shadow: 0 0 0 2px rgba(variables.$c-input-error-accent-color, 0.2);
 	}
 }
 
@@ -85,11 +88,11 @@ textarea.c-input--h-large {
 }
 
 .c-input[readonly] {
-	background-color: $c-input-readonly-border-color;
+	background-color: variables.$c-input-readonly-border-color;
 }
 
 .c-input--code {
-	font-family: $g-code-font-family;
+	font-family: variables.$g-code-font-family;
 	line-height: 2.4rem;
 	font-size: 85%;
 }
@@ -156,15 +159,15 @@ textarea.c-input--h-large {
 .c-input-group__prepend {
 	height: 3.6rem;
 	width: 3.6rem;
-	color: $color-gray-400;
-	background-color: $color-gray-50;
+	color: colors.$color-gray-400;
+	background-color: colors.$color-gray-50;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	margin-right: -0.1rem;
 	padding: 0 0.8rem;
 	border-radius: 0.3rem 0 0 0.3rem;
-	border: 1px solid $color-gray-150;
+	border: 1px solid colors.$color-gray-150;
 }
 
 .c-input-group > .c-input:not(:first-child) {

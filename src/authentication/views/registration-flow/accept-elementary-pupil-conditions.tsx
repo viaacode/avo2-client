@@ -1,11 +1,8 @@
-import './accept-elementary-pupil-conditions.scss'
-
-import { BlockHeading, BlockRichText, BlockVideoWrapper } from '@meemoo/admin-core-ui/client';
 import {
   BlockHeading,
   BlockRichText,
   BlockVideoWrapper,
-} from '@meemoo/admin-core-ui/client'
+} from '@meemoo/admin-core-ui/client';
 import {
   Button,
   Column,
@@ -15,11 +12,11 @@ import {
   Spinner,
   Toolbar,
   ToolbarCenter,
-} from '@viaa/avo2-components'
-import { useAtomValue, useSetAtom } from 'jotai'
-import React, { type FC, useRef, useState } from 'react'
+} from '@viaa/avo2-components';
+import { useAtomValue, useSetAtom } from 'jotai';
+import React, { type FC, useRef, useState } from 'react';
 
-import poster from '../../../assets/images/elementary-pupil-terms-of-service__poster.png'
+import poster from '../../../assets/images/elementary-pupil-terms-of-service__poster.png';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
@@ -31,30 +28,32 @@ import {
   commonUserAtom,
 } from '../../authentication.store';
 
+import './accept-elementary-pupil-conditions.scss';
+
 const ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE =
-  'ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE'
+  'ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE';
 
 export const AcceptElementaryPupilConditions: FC = () => {
-  const section = useRef<HTMLElement>(null)
-  useDisablePictureInPicture(section)
+  const section = useRef<HTMLElement>(null);
+  useDisablePictureInPicture(section);
 
-  const [loading, setLoading] = useState(false)
-  const [finished, setFinished] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [finished, setFinished] = useState(false);
 
-  const commonUser = useAtomValue(commonUserAtom)
-  const acceptConditions = useSetAtom(acceptConditionsAtom)
+  const commonUser = useAtomValue(commonUserAtom);
+  const acceptConditions = useSetAtom(acceptConditionsAtom);
 
   const handleAcceptPupilConditions = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       await NotificationService.setNotification(
         ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE,
         commonUser.profileId,
         true,
         true,
-      )
+      );
 
-      acceptConditions()
+      acceptConditions();
     } catch (err) {
       console.error(
         new CustomError(
@@ -62,17 +61,17 @@ export const AcceptElementaryPupilConditions: FC = () => {
           err,
           { commonUser },
         ),
-      )
+      );
 
       ToastService.danger(
         tHtml(
           'authentication/views/registration-flow/accept-elementary-pupil-conditions___het-opslaan-van-je-voorkeuren-is-niet-gelukt',
         ),
-      )
+      );
 
-      setLoading(false) // Disable spinner on error, if success => we redirect to other route
+      setLoading(false); // Disable spinner on error, if success => we redirect to other route
     }
-  }
+  };
 
   return (
     <section ref={section}>
@@ -154,5 +153,5 @@ export const AcceptElementaryPupilConditions: FC = () => {
         </Container>
       </Container>
     </section>
-  )
-}
+  );
+};

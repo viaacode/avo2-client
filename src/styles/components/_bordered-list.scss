@@ -1,3 +1,5 @@
+@use "../settings/colors" as colors;
+
 /* ==========================================================================
    Component: Bordered list
    ========================================================================== */
@@ -14,7 +16,7 @@
 	}
 
 	li {
-		border-bottom: 0.1rem solid mix($color-gray-100, $color-gray-150);
+		border-bottom: 0.1rem solid mix(colors.$color-gray-100, colors.$color-gray-150);
 	}
 }
 

@@ -1,4 +1,4 @@
-import { ROUTE_PARTS } from '../../shared/constants/index';
+import { ROUTE_PARTS } from '../../shared/constants/routes';
 
 export const CONTENT_PAGE_PATH = {
   CONTENT_PAGE_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}`,
@@ -11,4 +11,4 @@ export const CONTENT_PAGE_PATH = {
   CONTENT_PAGE_SCREENCASTS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=SCREENCAST`,
   CONTENT_PAGE_PROJECTS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=PROJECT`,
   CONTENT_PAGE_OVERVIEWS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=OVERZICHT`,
-}
+};

@@ -1,3 +1,5 @@
+@use "../../settings/variables" as variables;
+
 .c-table {
 	th,
 	tr {
@@ -5,6 +7,6 @@
 	}
 
 	td {
-		padding: $g-spacer-unit;
+		padding: variables.$g-spacer-unit;
 	}
 }

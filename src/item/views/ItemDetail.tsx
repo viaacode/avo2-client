@@ -46,7 +46,7 @@ import {
   useQueryParams,
 } from 'use-query-params';
 
-import { ITEMS_PATH } from '../../admin/items/items.const';
+import { ITEMS_PATH } from '../../admin/items/items.routes';
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { AssignmentService } from '../../assignment/assignment.service';
@@ -66,7 +66,7 @@ import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { LANGUAGES, ROUTE_PARTS } from '../../shared/constants/index';
+import { LANGUAGES } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
 import {
@@ -92,8 +92,8 @@ import { isMobileWidth } from '../../shared/helpers/media-query';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
@@ -103,7 +103,7 @@ import {
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { embedFlowAtom } from '../../shared/store/ui.store';
-import { type UnpublishableItem } from '../../shared/types/index';
+import { type UnpublishableItem } from '../../shared/types';
 import { ItemVideoDescription } from '../components/ItemVideoDescription';
 import { AddToCollectionModal } from '../components/modals/AddToCollectionModal';
 import { CutFragmentForAssignmentModal } from '../components/modals/CutFragmentForAssignmentModal';
@@ -112,6 +112,7 @@ import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { type ItemTrimInfo } from '../item.types';
 
 import './ItemDetail.scss';
+import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 

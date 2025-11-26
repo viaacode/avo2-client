@@ -1,8 +1,8 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/variables" as variables;
 
 /* Ensure the Zendesk widget stays behind the modals */
 .zEWidget-launcher {
-	z-index: $g-c-global-navbar-z !important;
+	z-index: variables.$g-c-global-navbar-z !important;
 }
 
 .modal-open #launcher {
@@ -14,7 +14,7 @@
 }
 
 .react-datepicker-popper {
-	z-index: $g-c-modal-z;
+	z-index: variables.$g-c-modal-z;
 }
 
 .o-app > .o-container {

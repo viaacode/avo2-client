@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Component: USPs & grid
    ========================================================================== */
@@ -24,7 +27,7 @@
 	width: 5.6rem;
 	height: 5.6rem;
 
-	@media (min-width: $g-bp2) {
+	@media (min-width: variables.$g-bp2) {
 		width: 8rem;
 		height: 8rem;
 	}
@@ -34,7 +37,7 @@
 		width: 3.2rem;
 		height: 3.2rem;
 
-		@media (min-width: $g-bp2) {
+		@media (min-width: variables.$g-bp2) {
 			width: 4.8rem;
 			height: 4.8rem;
 		}
@@ -44,6 +47,6 @@
 .c-usp__title {
 	margin: 1.6rem 0;
 	font-weight: 500;
-	font-family: $g-headings-font-family;
+	font-family: variables.$g-headings-font-family;
 	font-size: 2.1rem;
 }

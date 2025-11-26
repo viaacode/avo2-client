@@ -1,6 +1,6 @@
 // Generic styles applicable to all Assignment pages
 
-@import "../../styles/settings/variables";
+@use "../../styles/settings/variables" as variables;
 
 .c-assignment-page {
 	display: flex;

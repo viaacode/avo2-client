@@ -1,8 +1,8 @@
-import { ContentPageRenderer } from '@meemoo/admin-core-ui/client'
-import { useAtomValue } from 'jotai'
-import React, { type FC } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate } from 'react-router'
+import { ContentPageRenderer } from '@meemoo/admin-core-ui/client';
+import { useAtomValue } from 'jotai';
+import React, { type FC } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
 
 import { useGetContentPageByPath } from '../../admin/content-page/hooks/use-get-content-page-by-path';
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
@@ -10,28 +10,28 @@ import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionGuard } from '../../authentication/components/PermissionGuard';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
-import { ROUTE_PARTS } from '../../shared/constants/index';
+import { ROUTE_PARTS } from '../../shared/constants/routes';
 import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
 import { tText } from '../../shared/helpers/translate-text';
 
 export const LoggedInHome: FC = () => {
-  const navigateFunc = useNavigate()
-  const commonUser = useAtomValue(commonUserAtom)
+  const navigateFunc = useNavigate();
+  const commonUser = useAtomValue(commonUserAtom);
 
   const { data: contentPageInfo } = useGetContentPageByPath(
     `/${ROUTE_PARTS.loggedInHome}`,
-  )
+  );
   const isPupil = [
     SpecialUserGroupId.PupilSecondary,
     SpecialUserGroupId.PupilElementary,
   ]
     .map(String)
-    .includes(String(commonUser?.userGroup?.id))
+    .includes(String(commonUser?.userGroup?.id));
 
   // /start when user is a pupil => should be redirected to /werkruimte/opdrachten
   if (isPupil) {
-    navigateFunc(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
-    return null
+    navigateFunc(APP_PATH.WORKSPACE_ASSIGNMENTS.route);
+    return null;
   }
   return (
     <>
@@ -61,7 +61,7 @@ export const LoggedInHome: FC = () => {
         )}
       </PermissionGuard>
     </>
-  )
-}
+  );
+};
 
-export default LoggedInHome
+export default LoggedInHome;

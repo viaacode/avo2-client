@@ -5,21 +5,21 @@ import { CustomError } from '../shared/helpers/custom-error';
 import { tText } from '../shared/helpers/translate-text';
 import { ToastService } from '../shared/services/toast-service';
 import { Locale } from '../shared/translations/translations.types';
-import { type NavigationItemInfo } from '../shared/types/index';
+import { type NavigationItemInfo } from '../shared/types';
 
-import { ASSIGNMENTS_PATH } from './assignments/assignments.const';
-import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.const';
-import { CONTENT_PAGE_PATH } from './content-page/content-page.consts';
-import { CONTENT_PAGE_LABEL_PATH } from './content-page-labels/content-page-label.const';
-import { DASHBOARD_PATH } from './dashboard/dashboard.const';
-import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.const';
-import { ITEMS_PATH } from './items/items.const';
-import { NAVIGATIONS_PATH } from './navigations/navigations.const';
-import { PUPIL_COLLECTIONS_PATH } from './pupil-collection/pupil-collection.const';
-import { TRANSLATIONS_PATH } from './translations/translations.const';
-import { URL_REDIRECT_PATH } from './url-redirects/url-redirects.const';
-import { USER_GROUP_PATH } from './user-groups/user-group.const';
-import { USER_PATH } from './users/user.const';
+import { ASSIGNMENTS_PATH } from './assignments/assignments.routes';
+import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.routes';
+import { CONTENT_PAGE_PATH } from './content-page/content-page.routes.ts';
+import { CONTENT_PAGE_LABEL_PATH } from './content-page-labels/content-page-label.routes.ts';
+import { DASHBOARD_PATH } from './dashboard/dashboard.routes.ts';
+import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.routes';
+import { ITEMS_PATH } from './items/items.routes';
+import { NAVIGATIONS_PATH } from './navigations/navigations.routes.ts';
+import { PUPIL_COLLECTIONS_PATH } from './pupil-collection/pupil-collection.routes';
+import { TRANSLATIONS_PATH } from './translations/translations.routes.ts';
+import { URL_REDIRECT_PATH } from './url-redirects/url-redirects.routes';
+import { USER_GROUP_PATH } from './user-groups/user-group.routes';
+import { USER_PATH } from './users/user.routes.ts';
 
 export const ADMIN_PATH = Object.freeze({
   ...DASHBOARD_PATH,

@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Component: Navbar
    ---
@@ -5,7 +8,7 @@
    ========================================================================== */
 
 .c-navbar {
-	height: $g-bar-size-regular;
+	height: variables.$g-bar-size-regular;
 	width: 100%;
 }
 
@@ -18,35 +21,35 @@
 }
 
 .c-navbar--bg-alt {
-	background-color: $color-gray-50;
+	background-color: colors.$color-gray-50;
 }
 
 .c-navbar--large {
-	height: $g-bar-size-large;
+	height: variables.$g-bar-size-large;
 }
 
 .c-navbar--huge {
-	height: $g-bar-size-huge;
+	height: variables.$g-bar-size-huge;
 }
 
 .c-navbar--inverse {
-	background-color: darken($color-night-blue, 5%);
+	background-color: darken(colors.$color-night-blue, 5%);
 }
 
 .c-navbar--fixed {
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: $g-c-global-navbar-z;
-	box-shadow: 0 0 0.8rem 0 rgba($color-gray-500, 0.35);
+	z-index: variables.$g-c-global-navbar-z;
+	box-shadow: 0 0 0.8rem 0 rgba(colors.$color-gray-500, 0.35);
 }
 
 .c-navbar--sticky {
 	position: sticky;
 	top: 6.4rem;
 	left: 0;
-	z-index: $g-c-global-navbar-z;
-	box-shadow: 0 0 0.8rem 0 rgba($color-gray-500, 0.35);
+	z-index: variables.$g-c-global-navbar-z;
+	box-shadow: 0 0 0.8rem 0 rgba(colors.$color-gray-500, 0.35);
 	padding: 1.6rem 0;
 }
 
@@ -54,14 +57,14 @@
 	========================================================================== */
 
 .c-navbar--bordered-top {
-	border-top: 0.1rem solid $color-gray-100;
+	border-top: 0.1rem solid colors.$color-gray-100;
 }
 
 .c-navbar--bordered-bottom {
-	border-bottom: 0.1rem solid $color-gray-100;
+	border-bottom: 0.1rem solid colors.$color-gray-100;
 
 	&.c-navbar--inverse {
-		border-bottom: 0.1rem solid darken($color-night-blue, 10%);
+		border-bottom: 0.1rem solid darken(colors.$color-night-blue, 10%);
 		box-shadow: none;
 	}
 }

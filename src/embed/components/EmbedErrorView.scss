@@ -1,4 +1,4 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/variables" as variables;
 
 $spacing-size: 2rem;
 
@@ -10,7 +10,7 @@ $spacing-size: 2rem;
 	.c-blankslate {
 		background-color: transparent;
 
-		@media screen and (max-width: $g-bp1) {
+		@media screen and (max-width: variables.$g-bp1) {
 			padding: $spacing-size;
 		}
 	}

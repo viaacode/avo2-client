@@ -1,11 +1,11 @@
-@import "../../../styles/settings/variables";
-@import "../../../styles/settings/colors";
+@use "../../../styles/settings/variables" as variables;
+@use "../../../styles/settings/colors" as colors;
 
 .c-draggable-block {
 	.o-flex__item:first-child > div {
 		width: 60px;
 		height: 40px;
-		margin-right: $g-spacer-unit * 2;
+		margin-right: variables.$g-spacer-unit * 2;
 		background-size: cover;
 		background-position: center;
 		background-repeat: no-repeat;

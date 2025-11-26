@@ -1,7 +1,7 @@
-@import "../../styles/settings/colors";
-@import "../../styles/settings/variables";
+@use "../../styles/settings/colors" as colors;
+@use "../../styles/settings/variables" as variables;
 
-$bp: $g-bp3;
+$bp: variables.$g-bp3;
 
 .c-account-link {
 	@media screen and (min-width: $bp) {
@@ -15,7 +15,7 @@ $bp: $g-bp3;
 		flex-direction: column;
 
 		@media screen and (max-width: ($bp - 1px)) {
-			margin-top: $g-spacer-unit;
+			margin-top: variables.$g-spacer-unit;
 		}
 
 		&--smartschool,
@@ -40,17 +40,17 @@ $bp: $g-bp3;
 
 		&--smartschool {
 			color: #fff;
-			background-color: $color-smartschool;
+			background-color: colors.$color-smartschool;
 		}
 
 		&--klascement {
 			color: #fff;
-			background-color: $color-klascement;
+			background-color: colors.$color-klascement;
 		}
 
 		&--leerid {
-			color: $g-text-color;
-			background-color: $color-gray-50;
+			color: variables.$g-text-color;
+			background-color: colors.$color-gray-50;
 		}
 	}
 

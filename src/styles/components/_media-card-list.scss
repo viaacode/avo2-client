@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Component: Media card list
    ========================================================================== */
@@ -8,9 +11,9 @@
 	}
 
 	.c-toolbar {
-		margin-bottom: $g-spacer-unit * 2;
+		margin-bottom: variables.$g-spacer-unit * 2;
 
-		@media screen and (max-width: ($g-bp2 - 1px)) {
+		@media screen and (max-width: (variables.$g-bp2 - 1px)) {
 			// https://meemoo.atlassian.net/browse/AVO-2246
 			// This code prevents long text from overstepping the container
 			// and is critical to ensure the navigation and popups display correctly
@@ -19,7 +22,7 @@
 			align-items: flex-start;
 
 			&__left {
-				margin-bottom: $g-spacer-unit;
+				margin-bottom: variables.$g-spacer-unit;
 			}
 		}
 	}

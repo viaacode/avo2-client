@@ -7,16 +7,16 @@
 }
 
 .u-color-gray-150 {
-	color: $color-gray-150 !important;
+	color: colors.$color-gray-150 !important;
 }
 
 .u-color-klascement {
-	background-color: $color-klascement !important;
-	border-color: $color-klascement !important;
+	background-color: colors.$color-klascement !important;
+	border-color: colors.$color-klascement !important;
 
 	&[disabled] {
-		background-color: $color-gray-100 !important;
-		border-color: $color-gray-150 !important;
+		background-color: colors.$color-gray-100 !important;
+		border-color: colors.$color-gray-150 !important;
 		cursor: not-allowed !important;
 	}
 }

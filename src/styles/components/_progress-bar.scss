@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Progress bar that changes width AND color using a CSS variable
    ---
@@ -7,7 +10,7 @@
 .c-progress-bar {
 	display: flex;
 	height: 0.8rem;
-	background-color: $color-gray-100;
+	background-color: colors.$color-gray-100;
 }
 
 .c-progress-bar:before {

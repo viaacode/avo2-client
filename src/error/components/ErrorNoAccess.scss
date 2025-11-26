@@ -1,4 +1,4 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/variables" as variables;
 .c-error-no-access {
 	.o-container {
 		display: flex;
@@ -9,7 +9,7 @@
 	.c-blankslate {
 		.c-h4 {
 			font-size: x-large;
-			font-family: $g-headings-font-family;
+			font-family: variables.$g-headings-font-family;
 		}
 	}
 
@@ -17,10 +17,10 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		margin-top: $g-spacer-unit * 2 !important;
+		margin-top: variables.$g-spacer-unit * 2 !important;
 
 		&__button {
-			margin: $g-spacer-unit * 4 0 !important ;
+			margin: variables.$g-spacer-unit * 4 0 !important ;
 		}
 	}
 }

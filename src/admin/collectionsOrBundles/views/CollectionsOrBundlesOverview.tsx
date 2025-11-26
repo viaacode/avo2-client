@@ -29,7 +29,7 @@ import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants/index';
+import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { getFullNameCommonUser } from '../../../shared/helpers/formatters/avatar';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
@@ -52,11 +52,11 @@ import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.sl
 import type { PickerItem } from '../../shared/types/content-picker';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import {
-  COLLECTIONS_OR_BUNDLES_PATH,
   GET_COLLECTION_BULK_ACTIONS,
   GET_COLLECTIONS_COLUMNS,
   ITEMS_PER_PAGE,
 } from '../collections-or-bundles.const';
+import { COLLECTIONS_OR_BUNDLES_PATH } from '../collections-or-bundles.routes.ts';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
   CollectionBulkAction,

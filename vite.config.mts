@@ -1,8 +1,7 @@
 import path from 'path';
 
-import { reactRouter } from '@react-router/dev/vite';
+import { reactRouter } from "@react-router/dev/vite";
 import {defineConfig, UserConfig} from 'vite';
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import svgrPlugin from 'vite-plugin-svgr';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import react from "@vitejs/plugin-react";
@@ -40,9 +39,6 @@ export default defineConfig((): UserConfig => {
 			reactRouter(),
 			viteTsconfigPaths(),
 			svgrPlugin(),
-			cssInjectedByJsPlugin({
-				topExecutionPriority: false,
-			}),
 		],
 		resolve: {
 			alias: {

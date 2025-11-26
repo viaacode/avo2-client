@@ -7,7 +7,7 @@ import {
   SearchFilter,
   SearchOrderAndDirectionProperty,
 } from '../search/search.const';
-import { ROUTE_PARTS } from '../shared/constants/index';
+import { ROUTE_PARTS } from '../shared/constants/routes';
 import { EducationLevelId } from '../shared/helpers/lom';
 import { ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list';
 import { tHtml } from '../shared/helpers/translate-html';

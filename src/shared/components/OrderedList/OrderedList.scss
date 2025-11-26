@@ -1,13 +1,13 @@
-@import "../../../styles/settings/colors";
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/colors" as colors;
+@use "../../../styles/settings/variables" as variables;
 
 .c-ordered-list {
-	padding: $g-spacer-unit * 2;
+	padding: variables.$g-spacer-unit * 2;
 
 	&__item {
 		display: flex;
 		max-width: 37rem;
-		margin-top: $g-spacer-unit * 2;
+		margin-top: variables.$g-spacer-unit * 2;
 	}
 
 	&__indicator {
@@ -17,10 +17,10 @@
 		width: 2.4rem;
 		min-width: 2.4rem;
 		height: 2.4rem;
-		margin-right: $g-spacer-unit * 2;
+		margin-right: variables.$g-spacer-unit * 2;
 		font-size: smaller;
-		color: $color-platinum;
-		background-color: $color-night-blue;
+		color: colors.$color-platinum;
+		background-color: colors.$color-night-blue;
 		border-radius: 2.5rem;
 	}
 }

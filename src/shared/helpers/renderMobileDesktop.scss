@@ -1,15 +1,15 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/variables" as variables;
 
 .u-hide {
-	// Hide the element when the viewport is at least $g-bp2, bigger than mobile
+	// Hide the element when the viewport is at least variables.$g-bp2, bigger than mobile
 	&-gte-bp2 {
-		@media (min-width: $g-bp2) {
+		@media (min-width: variables.$g-bp2) {
 			display: none;
 		}
 	}
-	// Hide the element when the viewport is less than $g-bp2, smaller than desktop
+	// Hide the element when the viewport is less than variables.$g-bp2, smaller than desktop
 	&-lt-bp2 {
-		@media (max-width: ($g-bp2 - 1px)) {
+		@media (max-width: (variables.$g-bp2 - 1px)) {
 			display: none;
 		}
 	}

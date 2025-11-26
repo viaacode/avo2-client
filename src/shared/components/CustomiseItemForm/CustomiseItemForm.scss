@@ -1,13 +1,13 @@
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/variables" as variables;
 
 $component: "c-customise-item-form";
 
 .#{$component} {
 	&--has-preview {
-		@media screen and (min-width: $g-bp3) {
+		@media screen and (min-width: variables.$g-bp3) {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
-			gap: $g-spacer-unit * 3;
+			gap: variables.$g-spacer-unit * 3;
 		}
 	}
 }

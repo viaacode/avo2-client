@@ -1,11 +1,11 @@
-import { FilterTable } from '@meemoo/admin-core-ui/admin'
-import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components'
-import { PermissionName } from '@viaa/avo2-types'
-import { isEqual, isNil } from 'es-toolkit'
-import React, { type FC, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate } from 'react-router'
-import { Link } from 'react-router-dom'
+import { FilterTable } from '@meemoo/admin-core-ui/admin';
+import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
+import { isEqual, isNil } from 'es-toolkit';
+import React, { type FC, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
@@ -35,9 +35,9 @@ import { useGetUrlRedirects } from '../hooks/useGetUrlRedirects';
 import {
   GET_URL_REDIRECT_OVERVIEW_TABLE_COLS,
   ITEMS_PER_PAGE,
-  URL_REDIRECT_PATH,
   URL_REDIRECT_PATTERN_OPTIONS,
 } from '../url-redirects.const';
+import { URL_REDIRECT_PATH } from '../url-redirects.routes.ts';
 import {
   type UrlRedirect,
   type UrlRedirectOverviewFilterState,
@@ -45,57 +45,57 @@ import {
 } from '../url-redirects.types';
 
 const UrlRedirectOverview: FC = () => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
   // State
-  const [selected, setSelected] = useState<UrlRedirect | undefined>(undefined)
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
+  const [selected, setSelected] = useState<UrlRedirect | undefined>(undefined);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   const [filters, setFilters] = useState<
     UrlRedirectOverviewFilterState | undefined
-  >(undefined)
+  >(undefined);
   const debouncedFilters: UrlRedirectOverviewFilterState | undefined =
-    useDebounce(filters, 250)
+    useDebounce(filters, 250);
 
   const {
     data: urlRedirectsAndCount,
     isLoading,
     error,
     refetch: refetchUrlRedirects,
-  } = useGetUrlRedirects(debouncedFilters)
-  const { mutateAsync: deleteUrlRedirect } = useDeleteUrlRedirect()
+  } = useGetUrlRedirects(debouncedFilters);
+  const { mutateAsync: deleteUrlRedirect } = useDeleteUrlRedirect();
 
   const handleDelete = async () => {
     try {
-      setIsConfirmationModalOpen(false)
+      setIsConfirmationModalOpen(false);
       if (!selected) {
         ToastService.danger(
           tHtml(
             'admin/url-redirects/views/url-redirect-overview___het-verwijderen-van-de-url-redirect-is-mislukt-probeer-te-herladen',
           ),
-        )
-        return
+        );
+        return;
       }
 
-      await deleteUrlRedirect(selected.id)
-      await refetchUrlRedirects()
+      await deleteUrlRedirect(selected.id);
+      await refetchUrlRedirects();
       ToastService.success(
         tHtml(
           'admin/url-redirects/views/url-redirect-overview___de-url-redirect-is-verwijderd',
         ),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError('Failed to delete url redirect', err, {
           selected,
         }),
-      )
+      );
       ToastService.danger(
         tHtml(
           'admin/url-redirects/views/url-redirect-overview___het-verwijderen-van-de-url-redirect-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const openModal = (redirect: UrlRedirect | undefined): void => {
     if (isNil(redirect)) {
@@ -103,12 +103,12 @@ const UrlRedirectOverview: FC = () => {
         tHtml(
           'admin/url-redirects/views/url-redirect-overview___de-url-redirect-kon-niet-worden-verwijderd',
         ),
-      )
-      return
+      );
+      return;
     }
-    setSelected(redirect)
-    setIsConfirmationModalOpen(true)
-  }
+    setSelected(redirect);
+    setIsConfirmationModalOpen(true);
+  };
 
   const renderTableCell = (
     rowData: UrlRedirect,
@@ -118,32 +118,32 @@ const UrlRedirectOverview: FC = () => {
       case 'oldPathPattern':
         return URL_REDIRECT_PATTERN_OPTIONS().find(
           (option) => option.value === rowData.oldPathPattern,
-        )?.label
+        )?.label;
 
       case 'oldPath':
-        return rowData[columnId]
+        return rowData[columnId];
 
       case 'newPath': {
-        const parsedPath = replaceProxyUrlTemplateWithUrl(rowData.newPath)
+        const parsedPath = replaceProxyUrlTemplateWithUrl(rowData.newPath);
 
         if (rowData.newPath.startsWith(PROXY_PATH_SHORTCUT)) {
           return (
             <a href={parsedPath} target="_blank" rel="noopener noreferrer">
               {rowData.newPath}
             </a>
-          )
+          );
         }
 
         return (
           <Link to={rowData.newPath} replace={true} target="_blank">
             {rowData.newPath}
           </Link>
-        )
+        );
       }
 
       case 'createdAt':
       case 'updatedAt':
-        return formatDate(rowData[columnId]) || '-'
+        return formatDate(rowData[columnId]) || '-';
 
       case ACTIONS_TABLE_COLUMN_ID:
         return (
@@ -177,12 +177,12 @@ const UrlRedirectOverview: FC = () => {
               type="danger-hover"
             />
           </ButtonToolbar>
-        )
+        );
 
       default:
-        return isNil(rowData[columnId]) ? '-' : rowData[columnId]
+        return isNil(rowData[columnId]) ? '-' : rowData[columnId];
     }
-  }
+  };
 
   const renderNoResults = () => {
     return (
@@ -206,12 +206,12 @@ const UrlRedirectOverview: FC = () => {
           />
         </Spacer>
       </ErrorView>
-    )
-  }
+    );
+  };
 
   const renderRedirectsPageBody = () => {
     if (isLoading) {
-      return <FullPageSpinner />
+      return <FullPageSpinner />;
     }
 
     if (error || !urlRedirectsAndCount) {
@@ -222,7 +222,7 @@ const UrlRedirectOverview: FC = () => {
           )}
           icon={IconName.alertTriangle}
         />
-      )
+      );
     }
 
     return (
@@ -241,7 +241,7 @@ const UrlRedirectOverview: FC = () => {
           onTableStateChanged={(state) => {
             // NOTE: prevents recursion loop but hits theoretical performance
             if (!isEqual(filters, state)) {
-              setFilters(state as UrlRedirectOverviewFilterState)
+              setFilters(state as UrlRedirectOverviewFilterState);
             }
           }}
           itemsPerPage={ITEMS_PER_PAGE}
@@ -257,8 +257,8 @@ const UrlRedirectOverview: FC = () => {
           onClose={() => setIsConfirmationModalOpen(false)}
         />
       </>
-    )
-  }
+    );
+  };
 
   return (
     <PermissionGuard permissions={[PermissionName.EDIT_REDIRECTS]}>
@@ -277,7 +277,7 @@ const UrlRedirectOverview: FC = () => {
               redirectToClientPage(
                 URL_REDIRECT_PATH.URL_REDIRECT_CREATE,
                 navigateFunc,
-              )
+              );
             }}
           />
         </AdminLayoutTopBarRight>
@@ -301,7 +301,7 @@ const UrlRedirectOverview: FC = () => {
         </AdminLayoutBody>
       </AdminLayout>
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default UrlRedirectOverview
+export default UrlRedirectOverview;

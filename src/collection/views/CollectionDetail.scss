@@ -1,4 +1,4 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/variables" as variables;
 
 .m-collection-detail {
 	&.hide-behind-login-popup {
@@ -10,12 +10,12 @@
 	.c-button-toolbar {
 		flex-wrap: wrap;
 		justify-content: end;
-		row-gap: $g-spacer-unit;
+		row-gap: variables.$g-spacer-unit;
 	}
 
 	.c-collection-list__item {
-		padding: $g-spacer-unit * 4 0;
-		border-bottom: 1px solid $color-gray-100;
+		padding: variables.$g-spacer-unit * 4 0;
+		border-bottom: 1px solid colors.$color-gray-100;
 	}
 
 	.c-header .o-container {

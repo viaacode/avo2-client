@@ -1,4 +1,4 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/variables" as variables;
 
 .m-bundle-detail {
 	&.hide-behind-login-popup {
@@ -10,7 +10,7 @@
 	.c-toolbar {
 		.c-tooltip {
 			// This is so dirty but seems to fix the issue of not aligning the tooltip for the bookmark
-			margin-left: $g-spacer-unit * 3;
+			margin-left: variables.$g-spacer-unit * 3;
 		}
 
 		.c-toolbar__left {
@@ -25,11 +25,11 @@
 	}
 
 	.c-collection-list__item {
-		padding: $g-spacer-unit * 4 0;
-		border-bottom: 1px solid $color-gray-100;
+		padding: variables.$g-spacer-unit * 4 0;
+		border-bottom: 1px solid colors.$color-gray-100;
 	}
 
-	@media (max-width: $g-bp2) {
+	@media (max-width: variables.$g-bp2) {
 		.m-bundle-detail-header {
 			.c-thumbnail {
 				width: 100%;

@@ -1,30 +1,30 @@
 @use "sass:math";
-@import "../../../../styles/settings/variables";
+@use "../../../../styles/settings/variables" as variables;
 
 $item-description-height-0: 188px;
 $item-description-height-2: 320px;
 
 .c-collection-fragment-type-item {
 	display: grid;
-	gap: $g-spacer-unit;
+	gap: variables.$g-spacer-unit;
 
-	@media screen and (min-width: $g-item-fragment-column-bp) {
+	@media screen and (min-width: variables.$g-item-fragment-column-bp) {
 		grid-template-columns: 1fr 244px;
-		gap: $g-spacer-unit ($g-spacer-unit * 2);
+		gap: variables.$g-spacer-unit (variables.$g-spacer-unit * 2);
 
 		> :first-child {
 			grid-column: 1/3;
 		}
 	}
 
-	@media screen and (min-width: $g-bp3) {
+	@media screen and (min-width: variables.$g-bp3) {
 		grid-template-columns: 1fr 366px;
-		gap: ($g-spacer-unit * 2) ($g-spacer-unit * 3);
+		gap: (variables.$g-spacer-unit * 2) (variables.$g-spacer-unit * 3);
 	}
 
-	@media screen and (min-width: $g-bp4) {
+	@media screen and (min-width: variables.$g-bp4) {
 		grid-template-columns: 1fr 488px;
-		gap: ($g-spacer-unit * 2) ($g-spacer-unit * 4);
+		gap: (variables.$g-spacer-unit * 2) (variables.$g-spacer-unit * 4);
 	}
 
 	.c-heading {
@@ -35,14 +35,14 @@ $item-description-height-2: 320px;
 	.c-collapsible-column {
 		max-height: $item-description-height-0;
 
-		@media screen and (min-width: $g-item-fragment-column-bp) {
+		@media screen and (min-width: variables.$g-item-fragment-column-bp) {
 			max-height: $item-description-height-2;
 		}
 
 		+ .c-collapsible-column {
-			margin-top: $g-spacer-unit * 2;
-			padding-top: $g-spacer-unit * 2 + 0.6rem; // 0.6rem is the button's Y-padding
-			border-top: 1px solid $color-gray-100;
+			margin-top: variables.$g-spacer-unit * 2;
+			padding-top: variables.$g-spacer-unit * 2 + 0.6rem; // 0.6rem is the button's Y-padding
+			border-top: 1px solid colors.$color-gray-100;
 			max-height: 9rem;
 		}
 	}

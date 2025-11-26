@@ -1,5 +1,6 @@
 @use "sass:math";
-@import "../settings/variables";
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
 
 $component: "c-content-input";
 
@@ -46,20 +47,20 @@ $component: "c-content-input";
 	&__cancel {
 		flex-grow: 0;
 		flex-shrink: 0;
-		margin-left: $g-spacer-unit;
+		margin-left: variables.$g-spacer-unit;
 	}
 
 	&__icon {
 		&--start {
-			margin-right: math.div($g-spacer-unit, 2);
+			margin-right: math.div(variables.$g-spacer-unit, 2);
 		}
 
 		&--end {
 			.c-button {
-				margin-left: $g-spacer-unit;
+				margin-left: variables.$g-spacer-unit;
 
-				@media (min-width: $g-bp2) {
-					margin-left: $g-spacer-unit * 2;
+				@media (min-width: variables.$g-bp2) {
+					margin-left: variables.$g-spacer-unit * 2;
 				}
 			}
 		}

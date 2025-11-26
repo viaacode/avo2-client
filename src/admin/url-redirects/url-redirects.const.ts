@@ -2,7 +2,6 @@ import {
   type FilterableColumn,
   TableFilterType,
 } from '@meemoo/admin-core-ui/admin'
-import { ROUTE_PARTS } from '../../shared/constants/index';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -12,12 +11,6 @@ import {
   type UrlRedirectOverviewTableCols,
   UrlRedirectPathPattern,
 } from './url-redirects.types';
-
-export const URL_REDIRECT_PATH = {
-  URL_REDIRECT_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.redirects}`,
-  URL_REDIRECT_CREATE: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.redirects}/${ROUTE_PARTS.create}`,
-  URL_REDIRECT_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.redirects}/:id/${ROUTE_PARTS.edit}`,
-}
 
 export const ITEMS_PER_PAGE = 10
 

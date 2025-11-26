@@ -1,4 +1,4 @@
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/variables" as variables;
 
 .c-modal__body-add-fragment {
 	.c-radio + div {

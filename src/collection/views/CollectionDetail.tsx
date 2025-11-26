@@ -69,8 +69,7 @@ import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import {
   EDIT_STATUS_REFETCH_TIME,
   getMoreOptionsLabel,
-  ROUTE_PARTS,
-} from '../../shared/constants/index';
+} from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { CustomError } from '../../shared/helpers/custom-error';
@@ -82,17 +81,14 @@ import {
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { getFullName } from '../../shared/helpers/formatters/avatar';
-import {
-  generateContentLinkString,
-  navigate,
-} from '../../shared/helpers/link';
+import { generateContentLinkString, navigate } from '../../shared/helpers/link';
 import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { isUuid } from '../../shared/helpers/uuid';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
@@ -131,6 +127,7 @@ import {
 } from '../hooks/useGetCollectionsOrBundlesContainingFragment';
 import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from './CollectionDetail.const';
 import './CollectionDetail.scss';
+import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;

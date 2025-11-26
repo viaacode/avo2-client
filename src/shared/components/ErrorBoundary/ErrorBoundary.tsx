@@ -1,23 +1,25 @@
-import { IconName } from '@viaa/avo2-components'
-import React from 'react'
-import { useRouteError } from 'react-router'
+import { IconName } from '@viaa/avo2-components';
+import React from 'react';
+import { useRouteError } from 'react-router';
 
-import { ErrorView } from '../../../error/views/ErrorView';
-import { tText } from '../../helpers/translate-text';
-
-import './ErrorBoundary.scss'
+import './ErrorBoundary.scss';
 
 export function ErrorBoundary() {
-  const error = useRouteError() as any
+  const error = useRouteError() as any;
 
+  // Lazy load ErrorView to prevent tText to be called who has a chain to the admin-core which uses use-query-params as commonJs with vite 7 cannot load
+  const ErrorView = React.lazy(() =>
+    import('../../../error/views/ErrorView').then((module) => ({
+      default: module.ErrorView,
+    })),
+  );
   return (
     <ErrorView
       icon={IconName.alertTriangle}
       message={
         <>
-          {tText(
-            'shared/components/error-boundary/error-boundary___een-onverwachte-error-is-opgetreden-als-dit-blijft-voorkomen-neem-contact-op-met-de-helpdesk',
-          )}
+          Een onverwachte error is opgetreden. Als dit blijft voorkomen, neem
+          contact op met de helpdesk.
           <br />
           <span className="c-error-boundary__error-message">
             {error?.status} {error?.statusText} {error?.message}
@@ -26,5 +28,5 @@ export function ErrorBoundary() {
       }
       actionButtons={['home', 'helpdesk']}
     />
-  )
+  );
 }

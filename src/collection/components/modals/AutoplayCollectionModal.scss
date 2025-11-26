@@ -1,9 +1,9 @@
 @import "../../../styles/utilities/spacer";
-@import "../../../styles/settings/colors";
+@use "../../../styles/settings/colors" as colors;
 @import "../../../styles/settings/_variables";
 
 .c-modal__autoplay-modal {
-	@media (min-width: $g-bp2) {
+	@media (min-width: variables.$g-bp2) {
 		.c-modal {
 			max-height: 90vh;
 		}

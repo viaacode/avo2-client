@@ -1,12 +1,12 @@
-@import "../../styles/settings/variables";
-@import "../../styles/settings/colors";
+@use "../../styles/settings/variables" as variables;
+@use "../../styles/settings/colors" as colors;
 
 .c-item-video-description {
 	.c-button-toolbar .c-button {
-		margin-bottom: $g-spacer-unit;
+		margin-bottom: variables.$g-spacer-unit;
 
 		&:not(:last-child) {
-			margin-right: $g-spacer-unit;
+			margin-right: variables.$g-spacer-unit;
 		}
 	}
 
@@ -21,20 +21,20 @@
 
 	.c-toolbar__right {
 		.c-button {
-			margin-left: $g-spacer-unit;
+			margin-left: variables.$g-spacer-unit;
 		}
 	}
 
 	.c-item-video-description__metadata {
-		@media (max-width: $g-bp2) {
-			margin-top: $g-spacer-unit;
+		@media (max-width: variables.$g-bp2) {
+			margin-top: variables.$g-spacer-unit;
 		}
 
 		.scrollbar-container {
 			padding-right: 10px;
 
 			.c-button {
-				margin-bottom: $g-spacer-unit;
+				margin-bottom: variables.$g-spacer-unit;
 			}
 
 			.ps__rail-x,
@@ -45,13 +45,13 @@
 		}
 	}
 
-	@media (max-width: $g-bp2) {
+	@media (max-width: variables.$g-bp2) {
 		.o-grid-col-bp2-7 {
 			margin-left: 0;
 			margin-right: 0;
 
 			+ .o-grid-col-bp2-5 {
-				margin-top: $g-spacer-unit * 2;
+				margin-top: variables.$g-spacer-unit * 2;
 			}
 		}
 

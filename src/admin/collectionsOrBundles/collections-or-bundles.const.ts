@@ -1,13 +1,13 @@
 import {
   type FilterableColumn,
   TableFilterType,
-} from '@meemoo/admin-core-ui/admin'
+} from '@meemoo/admin-core-ui/admin';
 import {
   type ButtonType,
   IconName,
   type SelectOption,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
 
 import { type BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
 import {
@@ -15,7 +15,6 @@ import {
   type CheckboxOption,
 } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { type DateRangeDropdownProps } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
-import { ROUTE_PARTS } from '../../shared/constants/index';
 import { lomToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';
@@ -27,23 +26,12 @@ import {
   type CollectionTableColumns,
 } from './collections-or-bundles.types';
 
-export const COLLECTIONS_OR_BUNDLES_PATH = {
-  COLLECTIONS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.collections}`,
-  COLLECTION_ACTUALISATION_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.collections}/${ROUTE_PARTS.actualisation}`,
-  COLLECTION_QUALITYCHECK_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.collections}/${ROUTE_PARTS.qualitycheck}`,
-  COLLECTION_MARCOM_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.collections}/${ROUTE_PARTS.marcom}`,
-  BUNDLES_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.bundles}`,
-  BUNDLE_ACTUALISATION_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.bundles}/${ROUTE_PARTS.actualisation}`,
-  BUNDLE_QUALITYCHECK_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.bundles}/${ROUTE_PARTS.qualitycheck}`,
-  BUNDLE_MARCOM_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.bundles}/${ROUTE_PARTS.marcom}`,
-}
-
-export const ITEMS_PER_PAGE = 10
+export const ITEMS_PER_PAGE = 10;
 
 type CollectionBulkActionOption = SelectOption<string> & {
-  confirm?: boolean
-  confirmButtonType?: ButtonType
-}
+  confirm?: boolean;
+  confirmButtonType?: ButtonType;
+};
 
 export const GET_COLLECTION_BULK_ACTIONS = (
   hasSelectedRows: boolean,
@@ -96,8 +84,8 @@ export const GET_COLLECTION_BULK_ACTIONS = (
       ),
       value: CollectionBulkAction.EXPORT_ALL,
     },
-  ]
-}
+  ];
+};
 
 const getCollectionTitleColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -106,7 +94,7 @@ const getCollectionTitleColumn =
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.string,
-  })
+  });
 
 const getCollectionAuthorColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -118,7 +106,7 @@ const getCollectionAuthorColumn =
     visibleByDefault: true,
     filterType: TableFilterType.MultiUserSelectDropdown,
     dataType: TableColumnDataType.string,
-  })
+  });
 
 const getCollectionAuthorUserGroupColumn = (
   userGroupOptions: CheckboxOption[],
@@ -135,7 +123,7 @@ const getCollectionAuthorUserGroupColumn = (
     options: userGroupOptions,
   } as CheckboxDropdownModalProps,
   dataType: TableColumnDataType.string,
-})
+});
 
 const getCollectionLastUpdatedByColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -146,7 +134,7 @@ const getCollectionLastUpdatedByColumn =
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.string,
-  })
+  });
 
 const getCollectionCreatedAtColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -159,7 +147,7 @@ const getCollectionCreatedAtColumn =
     filterType: TableFilterType.DateRangeDropdown,
     filterProps: {},
     dataType: TableColumnDataType.dateTime,
-  })
+  });
 
 const getCollectionUpdatedAtColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -172,7 +160,7 @@ const getCollectionUpdatedAtColumn =
     filterType: TableFilterType.DateRangeDropdown,
     filterProps: {},
     dataType: TableColumnDataType.dateTime,
-  })
+  });
 
 const getCollectionIsPublicColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -184,7 +172,7 @@ const getCollectionIsPublicColumn =
     visibleByDefault: true,
     filterType: TableFilterType.BooleanCheckboxDropdown,
     dataType: TableColumnDataType.boolean,
-  })
+  });
 
 const getCollectionLabelsColumn = (
   collectionLabelOptions: CheckboxOption[],
@@ -199,7 +187,7 @@ const getCollectionLabelsColumn = (
   filterProps: {
     options: collectionLabelOptions,
   } as CheckboxDropdownModalProps,
-})
+});
 
 const getCollectionIsCopyColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -210,7 +198,7 @@ const getCollectionIsCopyColumn =
     sortable: false,
     visibleByDefault: false,
     filterType: TableFilterType.BooleanCheckboxDropdown,
-  })
+  });
 
 const getCollectionManagedColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -222,7 +210,7 @@ const getCollectionManagedColumn =
     visibleByDefault: false,
     filterType: TableFilterType.BooleanCheckboxDropdown,
     dataType: TableColumnDataType.boolean,
-  })
+  });
 
 const getCollectionViewsColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -234,7 +222,7 @@ const getCollectionViewsColumn =
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.number,
-  })
+  });
 
 const getCollectionBookmarksColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -246,7 +234,7 @@ const getCollectionBookmarksColumn =
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.number,
-  })
+  });
 
 const getCollectionCopiesColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -258,7 +246,7 @@ const getCollectionCopiesColumn =
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.number,
-  })
+  });
 
 const getCollectionInBundleColumn = (
   isCollection: boolean,
@@ -275,10 +263,10 @@ const getCollectionInBundleColumn = (
         visibleByDefault: true,
         dataType: TableColumnDataType.number,
       },
-    ]
+    ];
   }
-  return []
-}
+  return [];
+};
 
 const getCollectionInAssignmentColumn = (
   isCollection: boolean,
@@ -295,10 +283,10 @@ const getCollectionInAssignmentColumn = (
         visibleByDefault: true,
         dataType: TableColumnDataType.number,
       },
-    ]
+    ];
   }
-  return []
-}
+  return [];
+};
 
 const getCollectionQuickLanesColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -310,12 +298,12 @@ const getCollectionQuickLanesColumn =
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.number,
-  })
+  });
 
 const getCollectionSharedColumn = (
   isCollection: boolean,
 ): FilterableColumn<CollectionTableColumns>[] => {
-  if (!isCollection) return []
+  if (!isCollection) return [];
 
   return [
     {
@@ -328,8 +316,8 @@ const getCollectionSharedColumn = (
       visibleByDefault: true,
       dataType: TableColumnDataType.number,
     },
-  ]
-}
+  ];
+};
 
 const getCollectionSubjectsColumn = (
   subjects: Avo.Lom.LomField[],
@@ -349,7 +337,7 @@ const getCollectionSubjectsColumn = (
       },
     ],
   } as CheckboxDropdownModalProps,
-})
+});
 
 const getCollectionThemesColumn = ()// themes: Avo.Lom.LomField[]
 : FilterableColumn<CollectionTableColumns> => ({
@@ -364,7 +352,7 @@ const getCollectionThemesColumn = ()// themes: Avo.Lom.LomField[]
   // 		{ checked: false, label: tText('admin/users/user___leeg'), id: NULL_FILTER },
   // 	],
   // } as CheckboxDropdownModalProps,
-})
+});
 
 const getCollectionEducationLevelsColumn = (
   educationLevels: Avo.Lom.LomField[],
@@ -386,7 +374,7 @@ const getCollectionEducationLevelsColumn = (
       },
     ],
   } as CheckboxDropdownModalProps,
-})
+});
 
 const getCollectionEducationDegreesColumn = (
   educationDegrees: Avo.Lom.LomField[],
@@ -408,7 +396,7 @@ const getCollectionEducationDegreesColumn = (
       },
     ],
   } as CheckboxDropdownModalProps,
-})
+});
 
 const getCollectionOrganisationColumn = (
   organisationOptions: CheckboxOption[],
@@ -423,7 +411,7 @@ const getCollectionOrganisationColumn = (
   filterProps: {
     options: organisationOptions,
   } as CheckboxDropdownModalProps,
-})
+});
 
 const getActualisationStatusColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -438,7 +426,7 @@ const getActualisationStatusColumn =
       options: getCollectionManagementStatuses(),
     } as CheckboxDropdownModalProps,
     dataType: TableColumnDataType.string,
-  })
+  });
 
 const getActualisationLastActualisedAtColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -450,7 +438,7 @@ const getActualisationLastActualisedAtColumn =
     visibleByDefault: true,
     filterType: TableFilterType.DateRangeDropdown,
     dataType: TableColumnDataType.dateTime,
-  })
+  });
 
 const getActualisationStatusValidUntilColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -466,7 +454,7 @@ const getActualisationStatusValidUntilColumn =
       defaultControls: 'past',
     } as Partial<DateRangeDropdownProps>,
     dataType: TableColumnDataType.dateTime,
-  })
+  });
 
 const getActualisationApprovedAtColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -478,7 +466,7 @@ const getActualisationApprovedAtColumn =
     visibleByDefault: true,
     filterType: TableFilterType.DateRangeDropdown,
     dataType: TableColumnDataType.dateTime,
-  })
+  });
 
 const getActualisationResponsibleProfileColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -490,7 +478,7 @@ const getActualisationResponsibleProfileColumn =
     visibleByDefault: false,
     filterType: TableFilterType.MultiUserSelectDropdown,
     dataType: TableColumnDataType.string,
-  })
+  });
 
 const getQualityCheckLanguageCheckColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -511,7 +499,7 @@ const getQualityCheckLanguageCheckColumn =
       includeEmpty: true,
     } as BooleanCheckboxDropdownProps,
     dataType: TableColumnDataType.boolean,
-  })
+  });
 
 const getQualityCheckQualityCheckColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -532,7 +520,7 @@ const getQualityCheckQualityCheckColumn =
       includeEmpty: true,
     } as BooleanCheckboxDropdownProps,
     dataType: TableColumnDataType.boolean,
-  })
+  });
 
 const getQualityCheckApprovedAtColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -543,7 +531,7 @@ const getQualityCheckApprovedAtColumn =
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.dateTime,
-  })
+  });
 
 const getMarcomLastCommunicationChannelTypeColumn = (
   channelTypeOptions: CheckboxOption[],
@@ -562,7 +550,7 @@ const getMarcomLastCommunicationChannelTypeColumn = (
   sortable: true,
   visibleByDefault: true,
   dataType: TableColumnDataType.string,
-})
+});
 
 const getMarcomLastCommunicationChannelNameColumn = (
   channelNameOptions: CheckboxOption[],
@@ -581,7 +569,7 @@ const getMarcomLastCommunicationChannelNameColumn = (
     options: channelNameOptions,
   },
   dataType: TableColumnDataType.string,
-})
+});
 
 const getMarcomLastCommunicationAtColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -592,7 +580,7 @@ const getMarcomLastCommunicationAtColumn =
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.dateTime,
-  })
+  });
 
 const getMarcomKlascementColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -603,7 +591,7 @@ const getMarcomKlascementColumn =
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.boolean,
-  })
+  });
 
 const getMarcomLastUpdatedByColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
@@ -614,7 +602,7 @@ const getMarcomLastUpdatedByColumn =
     sortable: true,
     visibleByDefault: false,
     dataType: TableColumnDataType.string,
-  })
+  });
 
 export const GET_COLLECTIONS_COLUMNS = (
   isCollection: boolean,
@@ -657,7 +645,7 @@ export const GET_COLLECTIONS_COLUMNS = (
     ),
     visibleByDefault: true,
   },
-]
+];
 
 export const GET_COLLECTION_ACTUALISATION_COLUMNS = (
   userGroupOptions: CheckboxOption[],
@@ -695,7 +683,7 @@ export const GET_COLLECTION_ACTUALISATION_COLUMNS = (
     ),
     visibleByDefault: true,
   },
-]
+];
 
 export const GET_COLLECTION_QUALITY_CHECK_COLUMNS = (
   userGroupOptions: CheckboxOption[],
@@ -731,7 +719,7 @@ export const GET_COLLECTION_QUALITY_CHECK_COLUMNS = (
     ),
     visibleByDefault: true,
   },
-]
+];
 
 export const GET_COLLECTION_MARCOM_COLUMNS = (
   userGroupOptions: CheckboxOption[],
@@ -769,7 +757,7 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
     ),
     visibleByDefault: true,
   },
-]
+];
 
 export const getCollectionManagementStatuses = (): CheckboxOption[] => [
   { checked: false, label: 'Actueel', id: 'ACTUEEL' },
@@ -777,4 +765,4 @@ export const getCollectionManagementStatuses = (): CheckboxOption[] => [
   { checked: false, label: 'Volledig te herzien', id: 'HERZIEN' },
   { checked: false, label: 'Gearchiveerd', id: 'GEARCHIVEERD' },
   { checked: false, label: tText('admin/users/user___leeg'), id: NULL_FILTER },
-]
+];

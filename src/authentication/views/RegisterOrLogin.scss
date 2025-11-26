@@ -1,7 +1,7 @@
 @use "sass:math";
 
-@import "../../styles/settings/colors";
-@import "../../styles/settings/variables";
+@use "../../styles/settings/colors" as colors;
+@use "../../styles/settings/variables" as variables;
 
 $grid-gutter: 2.4rem;
 
@@ -25,9 +25,9 @@ $grid-gutter: 2.4rem;
 		padding: 0;
 		border-radius: 0.3rem;
 
-		@media screen and (min-width: $g-bp2) {
-			border: 1px solid $c-register-login-view-modal-border-color;
-			background: $c-register-login-view-modal-background-color;
+		@media screen and (min-width: variables.$g-bp2) {
+			border: 1px solid variables.$c-register-login-view-modal-border-color;
+			background: variables.$c-register-login-view-modal-background-color;
 		}
 
 		[class*="o-grid-col"] {
@@ -43,14 +43,14 @@ $grid-gutter: 2.4rem;
 			}
 
 			&:not(:first-child) {
-				@media screen and (min-width: $g-bp3) {
-					border-left: 1px solid $c-register-login-view-modal-border-color;
+				@media screen and (min-width: variables.$g-bp3) {
+					border-left: 1px solid variables.$c-register-login-view-modal-border-color;
 				}
 			}
 		}
 
 		.c-tabs {
-			@media screen and (max-width: ($g-bp3 - 1)) {
+			@media screen and (max-width: (variables.$g-bp3 - 1)) {
 				border-top: 1px solid $c-register-login-view-modal-border-color;
 			}
 		}
@@ -63,5 +63,5 @@ $grid-gutter: 2.4rem;
 
 .c-register-login-view__text {
 	background: $c-register-login-view-modal-background-color;
-	padding: $g-spacer-unit * 4;
+	padding: variables.$g-spacer-unit * 4;
 }

@@ -4,11 +4,11 @@ import {
   Modal,
   ModalBody,
   Spacer,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { useAtom, useAtomValue } from 'jotai'
-import React, { type FC, useCallback, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { useAtom, useAtomValue } from 'jotai';
+import React, { type FC, useCallback, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { isProfileComplete } from '../../../authentication/helpers/get-profile-info';
@@ -18,26 +18,23 @@ import {
 } from '../../../authentication/helpers/login-counter-before-nudging';
 import { redirectToServerLinkAccount } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
-import {
-  NOT_NOW_LOCAL_STORAGE_KEY,
-  NOT_NOW_VAL,
-  ROUTE_PARTS,
-} from '../../constants/index';
+import { NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL } from '../../constants';
 import { CustomError } from '../../helpers/custom-error';
 import { isPupil } from '../../helpers/is-pupil';
 import { ProfilePreferencesService } from '../../services/profile-preferences.service';
 import { ProfilePreferenceKey } from '../../services/profile-preferences.types';
 import { showNudgingModalAtom } from '../../store/ui.store';
 
-import './ACMIDMNudgeModal.scss'
-import { tText } from '../../helpers/translate-text';
+import './ACMIDMNudgeModal.scss';
+import { ROUTE_PARTS } from '../../constants/routes.ts';
 import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 
 export const ACMIDMNudgeModal: FC = () => {
-  const location = useLocation()
+  const location = useLocation();
 
-  const commonUser = useAtomValue(commonUserAtom)
-  const [showNudgingModal, setShowNudgingModal] = useAtom(showNudgingModalAtom)
+  const commonUser = useAtomValue(commonUserAtom);
+  const [showNudgingModal, setShowNudgingModal] = useAtom(showNudgingModalAtom);
 
   // HTTP
 
@@ -48,25 +45,27 @@ export const ACMIDMNudgeModal: FC = () => {
           'Failed to set profile preference because the profile id is missing',
           null,
           { commonUser },
-        )
+        );
       }
       await ProfilePreferencesService.setProfilePreference(
         commonUser?.profileId,
         ProfilePreferenceKey.DoNotShow,
-      )
+      );
 
-      setShowNudgingModal(false)
+      setShowNudgingModal(false);
     } catch (err) {
-      console.error(new CustomError('Failed to insert profile preference', err))
+      console.error(
+        new CustomError('Failed to insert profile preference', err),
+      );
     }
-  }
+  };
 
   // Lifecycle
 
   const updateShowNudgingModal = useCallback(async () => {
     const hasDismissed =
-      localStorage.getItem(NOT_NOW_LOCAL_STORAGE_KEY) === NOT_NOW_VAL
-    const loginCounter = getLoginCounter()
+      localStorage.getItem(NOT_NOW_LOCAL_STORAGE_KEY) === NOT_NOW_VAL;
+    const loginCounter = getLoginCounter();
 
     // Stop early if previously dismissed
     // Or if user is logging out https://meemoo.atlassian.net/browse/ARC-1731
@@ -76,19 +75,19 @@ export const ACMIDMNudgeModal: FC = () => {
       !commonUser.profileId ||
       window.location.href.includes(ROUTE_PARTS.logout)
     ) {
-      setShowNudgingModal(false)
-      return
+      setShowNudgingModal(false);
+      return;
     }
 
     const isOnAssignmentPage = location.pathname.includes(
       ROUTE_PARTS.assignments,
-    )
+    );
     const isOnAccountLinkingPage = location.pathname.includes(
       APP_PATH.SETTINGS_LINKS.route,
-    )
-    const isUserAPupil = isPupil(commonUser.userGroup?.id)
+    );
+    const isUserAPupil = isPupil(commonUser.userGroup?.id);
     const didUserLoginEnoughTimesBeforeNudging =
-      loginCounter >= LOGIN_COUNTER_BEFORE_NUDGING
+      loginCounter >= LOGIN_COUNTER_BEFORE_NUDGING;
 
     if (
       didUserLoginEnoughTimesBeforeNudging &&
@@ -100,36 +99,36 @@ export const ACMIDMNudgeModal: FC = () => {
         (await ProfilePreferencesService.fetchProfilePreference(
           commonUser.profileId,
           ProfilePreferenceKey.DoNotShow,
-        )) || []
+        )) || [];
 
       const hasVlaamseOverheidLinked =
         !!commonUser &&
         (!!commonUser.idps?.[Avo.Auth.IdpType.VLAAMSEOVERHEID__SUB_ID] ||
-          !!commonUser.idps?.[Avo.Auth.IdpType.VLAAMSEOVERHEID__ACCOUNT_ID])
-      const profileIsComplete = commonUser && isProfileComplete(commonUser)
+          !!commonUser.idps?.[Avo.Auth.IdpType.VLAAMSEOVERHEID__ACCOUNT_ID]);
+      const profileIsComplete = commonUser && isProfileComplete(commonUser);
 
       setShowNudgingModal(
         !profilePreferences.length &&
           !hasVlaamseOverheidLinked &&
           profileIsComplete,
-      )
+      );
     } else {
-      setShowNudgingModal(false)
+      setShowNudgingModal(false);
     }
-  }, [commonUser, location, setShowNudgingModal])
+  }, [commonUser, location, setShowNudgingModal]);
 
   useEffect(() => {
-    updateShowNudgingModal()
-  }, [updateShowNudgingModal])
+    updateShowNudgingModal();
+  }, [updateShowNudgingModal]);
 
   // Events
 
   const onClose = () => {
-    setShowNudgingModal(false)
-    localStorage.setItem(NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL)
-  }
+    setShowNudgingModal(false);
+    localStorage.setItem(NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL);
+  };
 
-  const onClickDoNotShow = setProfilePreference
+  const onClickDoNotShow = setProfilePreference;
 
   // Render
 
@@ -150,8 +149,8 @@ export const ACMIDMNudgeModal: FC = () => {
         </span>
         ?
       </>
-    )
-  }
+    );
+  };
 
   const renderDescription = () => {
     return isPupil(commonUser?.userGroup?.id)
@@ -160,8 +159,8 @@ export const ACMIDMNudgeModal: FC = () => {
         )
       : tHtml(
           'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___koppel-dan-direct-je-burgerprofiel-aan-je-bestaande-account',
-        )
-  }
+        );
+  };
 
   const renderOptions = () => {
     return isPupil(commonUser?.userGroup?.id) ? (
@@ -181,8 +180,8 @@ export const ACMIDMNudgeModal: FC = () => {
                 location,
                 Avo.Auth.IdpType.VLAAMSEOVERHEID,
                 'authMech=leerid',
-              )
-              onClose()
+              );
+              onClose();
             }}
           />
         </Spacer>
@@ -204,8 +203,8 @@ export const ACMIDMNudgeModal: FC = () => {
                 location,
                 Avo.Auth.IdpType.VLAAMSEOVERHEID,
                 'authMech=itsme',
-              )
-              onClose()
+              );
+              onClose();
             }}
           />
         </Spacer>
@@ -224,14 +223,14 @@ export const ACMIDMNudgeModal: FC = () => {
                 location,
                 Avo.Auth.IdpType.VLAAMSEOVERHEID,
                 'authMech',
-              )
-              onClose()
+              );
+              onClose();
             }}
           />
         </Spacer>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <Modal
@@ -281,5 +280,5 @@ export const ACMIDMNudgeModal: FC = () => {
         </div>
       </ModalBody>
     </Modal>
-  )
-}
+  );
+};

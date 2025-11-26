@@ -1,15 +1,15 @@
-@import "../../../styles/settings/colors";
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/colors" as colors;
+@use "../../../styles/settings/variables" as variables;
 
 .c-admin__header {
-	border-bottom: 0.1rem solid $color-gray-100;
-	background-color: $color-gray-50;
+	border-bottom: 0.1rem solid colors.$color-gray-100;
+	background-color: colors.$color-gray-50;
 	display: flex;
 	padding: 2rem 4rem;
 
 	.c-admin__page-title {
 		font-size: 2.4rem;
-		font-family: $g-headings-font-family;
+		font-family: variables.$g-headings-font-family;
 		font-weight: 500;
 	}
 }

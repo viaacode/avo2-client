@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Component: Quote
    ========================================================================== */
@@ -31,7 +34,7 @@
 
 .c-quote__author {
 	align-items: center;
-	color: $color-gray-500;
+	color: colors.$color-gray-500;
 	display: flex;
 	font-size: 1.6rem;
 	font-style: normal;

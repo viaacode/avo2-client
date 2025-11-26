@@ -19,7 +19,7 @@
    ========================================================================== */
 
 .u-max-bp3-d-none {
-	@media (min-width: $g-bp3) {
+	@media (min-width: variables.$g-bp3) {
 		display: none;
 	}
 }
@@ -27,7 +27,7 @@
 .u-min-bp3-d-block {
 	display: none;
 
-	@media (min-width: $g-bp3) {
+	@media (min-width: variables.$g-bp3) {
 		display: block;
 	}
 }
@@ -35,7 +35,7 @@
 .u-min-bp3-d-flex {
 	display: none;
 
-	@media (min-width: $g-bp3) {
+	@media (min-width: variables.$g-bp3) {
 		display: flex;
 	}
 }

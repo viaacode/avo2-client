@@ -9,7 +9,6 @@ import {
   type CheckboxDropdownModalProps,
   type CheckboxOption,
 } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import { ROUTE_PARTS } from '../../shared/constants/index';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -18,12 +17,6 @@ import {
   type ItemsOverviewTableCols,
   type UnpublishedItemsOverviewTableCols,
 } from './items.types';
-
-export const ITEMS_PATH = {
-  ITEMS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.items}`,
-  PUBLISH_ITEMS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.publishItems}`,
-  ITEM_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.items}/:id`,
-};
 
 export enum ITEMS_TABS {
   GENERAL = 'GENERAL',

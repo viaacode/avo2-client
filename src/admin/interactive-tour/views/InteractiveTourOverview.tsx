@@ -36,9 +36,9 @@ import {
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import {
   GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS,
-  INTERACTIVE_TOUR_PATH,
   ITEMS_PER_PAGE,
 } from '../interactive-tour.const';
+import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.routes.ts';
 import { InteractiveTourService } from '../interactive-tour.service';
 import {
   InteractiveTour,

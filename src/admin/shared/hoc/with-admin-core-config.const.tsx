@@ -4,25 +4,23 @@ import {
   type LinkInfo,
   type ToastInfo,
   UserBulkAction,
-} from '@meemoo/admin-core-ui/admin'
+} from '@meemoo/admin-core-ui/admin';
 import {
   ContentBlockType,
   ContentPageWidth,
-} from '@meemoo/admin-core-ui/client'
-import { Icon, IconName, Spinner } from '@viaa/avo2-components'
-import { type Avo, DatabaseType } from '@viaa/avo2-types'
-import { compact, noop } from 'es-toolkit'
-import React, { type FC } from 'react'
-import { type NavigateFunction } from 'react-router'
-import { Link } from 'react-router-dom'
+} from '@meemoo/admin-core-ui/client';
+import { Icon, IconName, Spinner } from '@viaa/avo2-components';
+import { type Avo, DatabaseType } from '@viaa/avo2-types';
+import { compact, noop } from 'es-toolkit';
+import React, { type FC } from 'react';
+import { type NavigateFunction } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { APP_PATH, type RouteId } from '../../../constants';
 import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
-import {
-  DEFAULT_AUDIO_STILL,
-  ROUTE_PARTS,
-} from '../../../shared/constants/index';
+import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
+import { ROUTE_PARTS } from '../../../shared/constants/routes';
 import { getEnv } from '../../../shared/helpers/env';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
@@ -36,7 +34,7 @@ import { Locale } from '../../../shared/translations/translations.types';
 import { ADMIN_PATH } from '../../admin.const';
 import { BlockSearch } from '../../content-page/components/blocks/BlockSearch/BlockSearch';
 import { MediaGridWrapper } from '../../content-page/components/blocks/MediaGridWrapper/MediaGridWrapper';
-import { GET_ADMIN_ICON_OPTIONS } from '../constants/index';
+import { GET_ADMIN_ICON_OPTIONS } from '../constants';
 
 const alertIcons: IconName[] = [
   IconName.notification,
@@ -48,7 +46,7 @@ const alertIcons: IconName[] = [
   IconName.unlock,
   IconName.calendar,
   IconName.book,
-]
+];
 
 const getAlertIconNames = (): Partial<Record<IconName, string>> => ({
   [IconName.notification]: tText(
@@ -70,36 +68,36 @@ const getAlertIconNames = (): Partial<Record<IconName, string>> => ({
     'admin/shared/hoc/with-admin-core-config___kalender',
   ),
   [IconName.book]: tText('admin/shared/hoc/with-admin-core-config___boek'),
-})
+});
 
 const ALERT_ICON_LIST_CONFIG = (): {
-  key: IconName
-  value: IconName
-  label: string
+  key: IconName;
+  value: IconName;
+  label: string;
 }[] =>
   alertIcons.map((iconKey: IconName) => ({
     key: iconKey,
     value: iconKey,
     label: getAlertIconNames()[iconKey] || iconKey,
-  }))
+  }));
 
 export function getAdminCoreConfig(
   navigateFunc: NavigateFunction,
 ): AdminConfig {
   const InternalLink = (linkInfo: LinkInfo) => {
-    return <Link {...linkInfo} to={linkInfo.to || ''} />
-  }
+    return <Link {...linkInfo} to={linkInfo.to || ''} />;
+  };
 
-  const proxyUrl = getEnv('PROXY_URL') as string
+  const proxyUrl = getEnv('PROXY_URL') as string;
 
   return {
     staticPages: {
       [Locale.Nl]: compact(
         (Object.keys(APP_PATH) as RouteId[]).map((routeId) => {
           if (APP_PATH[routeId].showInContentPicker) {
-            return APP_PATH[routeId].route
+            return APP_PATH[routeId].route;
           } else {
-            return null
+            return null;
           }
         }),
       ),
@@ -272,10 +270,10 @@ export function getAdminCoreConfig(
             </div>,
             {},
             ToastTypeToAvoToastType[toastInfo.type],
-          ) as string
+          ) as string;
         },
         hideToast: (toastId: string) => {
-          ToastService.hideToast(toastId)
+          ToastService.hideToast(toastId);
         },
       },
       // Use the avo2-proxy to fetch content pages, so their media tile blocks are resolved
@@ -353,7 +351,7 @@ export function getAdminCoreConfig(
         UserBulkAction.EXPORT_ALL,
       ],
       getCommonUser: (): Avo.User.CommonUser | null => {
-        return store.get(commonUserAtom)
+        return store.get(commonUserAtom);
       },
     },
     locale: Locale.Nl as any,
@@ -362,5 +360,5 @@ export function getAdminCoreConfig(
       LDAP_DASHBOARD_PEOPLE_URL: getEnv('LDAP_DASHBOARD_PEOPLE_URL'),
       DATABASE_APPLICATION_TYPE: DatabaseType.avo,
     },
-  }
+  };
 }

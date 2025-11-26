@@ -1,4 +1,4 @@
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/variables" as variables;
 
 $component: "c-collapsible-column";
 
@@ -12,7 +12,7 @@ $component: "c-collapsible-column";
 
 	&__toggle {
 		background: var(--block-background);
-		margin: 0 (0 - ($g-spacer-unit * 2));
+		margin: 0 (0 - (variables.$g-spacer-unit * 2));
 
 		&:before {
 			background: rgb(255, 255, 255);

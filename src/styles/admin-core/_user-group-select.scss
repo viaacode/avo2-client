@@ -1,5 +1,4 @@
-@import "../settings/colors";
-@import "../settings/variables";
+@use "../settings/colors" as colors;
 
 .c-user-group-select {
 	.c-checkbox-group {
@@ -21,7 +20,7 @@
 			}
 
 			&:hover {
-				background-color: $color-gray-50;
+				background-color: colors.$color-gray-50;
 			}
 		}
 	}

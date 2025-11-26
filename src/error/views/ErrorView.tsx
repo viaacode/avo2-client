@@ -6,13 +6,14 @@ import {
   IconName,
   Toolbar,
   ToolbarCenter,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { compact, isNil, isString, omit, uniq } from 'es-toolkit'
-import queryString from 'query-string'
-import React, { type FC, type ReactNode } from 'react'
-import { useLocation } from 'react-router-dom'
+} from '@viaa/avo2-components';
+
+import { type Avo } from '@viaa/avo2-types';
+import { compact, isNil, isString, omit, uniq } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import queryString from 'query-string';
+import React, { type FC, type ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { redirectToServerLogoutPage } from '../../authentication/helpers/redirects';
@@ -20,27 +21,27 @@ import { redirectToHelp } from '../../authentication/helpers/redirects/redirect-
 import { redirectToLoggedInHome } from '../../authentication/helpers/redirects/redirect-logged-in-home';
 import { redirectToPupils } from '../../authentication/helpers/redirects/redirect-pupils';
 import { redirectToLoggedOutHome } from '../../authentication/helpers/redirects/redirect-to-logged-out-home';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { isMobileWidth } from '../../shared/helpers/media-query';
+import { tText } from '../../shared/helpers/translate-text';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 
-import './ErrorView.scss'
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
-import { tText } from '../../shared/helpers/translate-text';
+import './ErrorView.scss';
 
-type ErrorActionButton = Avo.Auth.ErrorActionButton | 'help' | 'pupils'
+type ErrorActionButton = Avo.Auth.ErrorActionButton | 'help' | 'pupils';
 
 export interface ErrorViewQueryParams {
-  message?: string | ReactNode
-  icon?: IconName
-  actionButtons?: ErrorActionButton[]
+  message?: string | ReactNode;
+  icon?: IconName;
+  actionButtons?: ErrorActionButton[];
 }
 
 interface ErrorViewProps {
-  message?: string | ReactNode
-  icon?: IconName
-  actionButtons?: ErrorActionButton[]
-  children?: ReactNode
+  message?: string | ReactNode;
+  icon?: IconName;
+  actionButtons?: ErrorActionButton[];
+  children?: ReactNode;
 }
 
 export const ErrorView: FC<ErrorViewProps> = ({
@@ -49,27 +50,27 @@ export const ErrorView: FC<ErrorViewProps> = ({
   children = null,
   actionButtons = [],
 }) => {
-  const location = useLocation()
-  const commonUser = useAtomValue(commonUserAtom)
+  const location = useLocation();
+  const commonUser = useAtomValue(commonUserAtom);
 
-  const queryParams = queryString.parse((location.search || '').substring(1))
+  const queryParams = queryString.parse((location.search || '').substring(1));
 
   if (queryParams.logout === 'true') {
     // redirect to log-out route and afterward redirect back to the error page
     redirectToServerLogoutPage(
       location,
       `/error?${queryString.stringify(omit(queryParams, ['logout']))}`,
-    )
-    return <FullPageSpinner />
+    );
+    return <FullPageSpinner />;
   }
 
   const messageText: string | ReactNode =
-    (queryParams.message as string) || message || ''
+    (queryParams.message as string) || message || '';
   const errorMessage: string | ReactNode = isNil(messageText)
     ? getPageNotFoundError(!!commonUser)
-    : messageText
+    : messageText;
   const errorIcon: IconName =
-    (queryParams.icon as IconName | undefined) || icon || IconName.search
+    (queryParams.icon as IconName | undefined) || icon || IconName.search;
   const buttons = uniq([
     ...actionButtons,
     ...(Array.isArray(queryParams.actionButtons)
@@ -81,7 +82,7 @@ export const ErrorView: FC<ErrorViewProps> = ({
           .map((button) => button.trim())
           .filter((button) => !!button)
       : []),
-  ])
+  ]);
 
   if (!(queryParams.message || message)) {
     console.error(
@@ -91,20 +92,20 @@ export const ErrorView: FC<ErrorViewProps> = ({
         icon,
         actionButtons,
       }),
-    )
+    );
   }
 
   const goToHome = () => {
     if (commonUser) {
-      redirectToLoggedInHome(location)
+      redirectToLoggedInHome(location);
     } else {
-      redirectToLoggedOutHome(location)
+      redirectToLoggedOutHome(location);
     }
-  }
+  };
 
   const renderButtons = (btns: string[]) => {
     if (btns.length === 0) {
-      return null
+      return null;
     }
     const buttons = (
       <>
@@ -136,10 +137,10 @@ export const ErrorView: FC<ErrorViewProps> = ({
           />
         )}
       </>
-    )
+    );
 
     if (isMobileWidth()) {
-      return <div className="c-error-buttons__mobile">{buttons}</div>
+      return <div className="c-error-buttons__mobile">{buttons}</div>;
     }
     return (
       <Toolbar>
@@ -147,8 +148,8 @@ export const ErrorView: FC<ErrorViewProps> = ({
           <ButtonToolbar>{buttons}</ButtonToolbar>
         </ToolbarCenter>
       </Toolbar>
-    )
-  }
+    );
+  };
 
   return (
     <Container mode="vertical" background="alt" className="m-error-view">
@@ -164,7 +165,7 @@ export const ErrorView: FC<ErrorViewProps> = ({
         </Blankslate>
       </Container>
     </Container>
-  )
-}
+  );
+};
 
-export default ErrorView
+export default ErrorView;

@@ -1,4 +1,4 @@
-@import "../../../../styles/settings/variables";
+@use "../../../../styles/settings/variables" as variables;
 
 .c-assignment-block-type-search {
 	display: flex;
@@ -6,7 +6,7 @@
 	.c-collection-fragment-rich-text {
 		min-height: 16rem;
 
-		@media screen and (max-width: $g-bp3) {
+		@media screen and (max-width: variables.$g-bp3) {
 			min-height: 0;
 		}
 	}
@@ -25,7 +25,7 @@
 	}
 
 	.c-pill {
-		background: $color-gray-400;
+		background: colors.$color-gray-400;
 		color: white;
 		border-color: transparent;
 		font-weight: 500;
@@ -50,7 +50,7 @@
 		position: relative;
 		overflow: visible;
 
-		@media screen and (max-width: $g-bp3) {
+		@media screen and (max-width: variables.$g-bp3) {
 			min-height: 25rem;
 		}
 
@@ -63,7 +63,7 @@
 		}
 	}
 
-	@media screen and (max-width: $g-bp2) {
+	@media screen and (max-width: variables.$g-bp2) {
 		flex-direction: column;
 
 		> div:first-child {

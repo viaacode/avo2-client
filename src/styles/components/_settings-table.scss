@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Component: Settings table
    ========================================================================== */
@@ -17,6 +20,6 @@
 }
 
 .c-settings-table__item--bold {
-	color: $color-gray-600;
+	color: colors.$color-gray-600;
 	font-weight: 500;
 }

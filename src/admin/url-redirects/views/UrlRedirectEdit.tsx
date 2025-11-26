@@ -9,18 +9,18 @@ import {
   IconName,
   Select,
   TextInput,
-} from '@viaa/avo2-components'
-import { PermissionName } from '@viaa/avo2-types'
-import React, { type FC, useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate, useParams } from 'react-router'
+} from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
+import React, { type FC, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { ROUTE_PARTS } from '../../../shared/constants/index';
+import { ROUTE_PARTS } from '../../../shared/constants/routes';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { navigate } from '../../../shared/helpers/link';
@@ -39,9 +39,9 @@ import { useGetUrlRedirectById } from '../hooks/useGetUrlRedirectById';
 import { useUpdateUrlRedirect } from '../hooks/useUpdateUrlRedirect';
 import {
   INITIAL_URL_REDIRECT,
-  URL_REDIRECT_PATH,
   URL_REDIRECT_PATTERN_OPTIONS,
 } from '../url-redirects.const';
+import { URL_REDIRECT_PATH } from '../url-redirects.routes';
 import {
   type UrlRedirect,
   type UrlRedirectEditFormErrorState,
@@ -49,40 +49,40 @@ import {
 } from '../url-redirects.types';
 
 const UrlRedirectEdit: FC = () => {
-  const { id } = useParams<{ id: string }>()
+  const { id } = useParams<{ id: string }>();
 
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
   const [formErrors, setFormErrors] = useState<UrlRedirectEditFormErrorState>(
     {},
-  )
-  const [isSaving, setIsSaving] = useState<boolean>(false)
+  );
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [updatedUrlRedirect, setUpdatedUrlRedirect] = useState<UrlRedirect>(
     INITIAL_URL_REDIRECT(),
-  )
+  );
 
   const isCreatePage: boolean = location.pathname.includes(
     `/${ROUTE_PARTS.create}`,
-  )
-  const urlRedirectId = parseInt(id as string, 10)
+  );
+  const urlRedirectId = parseInt(id as string, 10);
 
-  const { mutateAsync: createUrlRedirect } = useCreateUrlRedirect()
-  const { mutateAsync: updateUrlRedirect } = useUpdateUrlRedirect()
+  const { mutateAsync: createUrlRedirect } = useCreateUrlRedirect();
+  const { mutateAsync: updateUrlRedirect } = useUpdateUrlRedirect();
   const {
     data: loadedUrlRedirect,
     isLoading,
     error,
-  } = useGetUrlRedirectById(urlRedirectId)
+  } = useGetUrlRedirectById(urlRedirectId);
 
   useEffect(() => {
     if (loadedUrlRedirect) {
-      setUpdatedUrlRedirect(loadedUrlRedirect)
+      setUpdatedUrlRedirect(loadedUrlRedirect);
     }
-  }, [loadedUrlRedirect])
+  }, [loadedUrlRedirect]);
 
   const navigateBack = () => {
-    navigateFunc(URL_REDIRECT_PATH.URL_REDIRECT_OVERVIEW)
-  }
+    navigateFunc(URL_REDIRECT_PATH.URL_REDIRECT_OVERVIEW);
+  };
 
   const getFormErrors = (): UrlRedirectEditFormErrorState | null => {
     if (!updatedUrlRedirect?.oldPath) {
@@ -90,13 +90,13 @@ const UrlRedirectEdit: FC = () => {
         old_path: tText(
           'admin/url-redirects/views/url-redirect-edit___een-oude-url-is-verplicht',
         ),
-      }
+      };
     } else if (!updatedUrlRedirect.oldPath.startsWith('/')) {
       return {
         old_path: tText(
           'admin/url-redirects/views/url-redirect-edit___de-url-moet-starten-met',
         ),
-      }
+      };
     }
 
     if (!updatedUrlRedirect?.newPath) {
@@ -104,7 +104,7 @@ const UrlRedirectEdit: FC = () => {
         new_path: tText(
           'admin/url-redirects/views/url-redirect-edit___een-nieuwe-url-is-verplicht',
         ),
-      }
+      };
     } else if (
       !(
         updatedUrlRedirect.newPath.startsWith('/') ||
@@ -115,61 +115,61 @@ const UrlRedirectEdit: FC = () => {
         new_path: tText(
           'admin/url-redirects/views/url-redirect-edit___de-url-moet-starten-met-of-proxy-url',
         ),
-      }
+      };
     }
-    return null
-  }
+    return null;
+  };
 
   const handleSave = async () => {
     try {
-      const errors = getFormErrors()
-      setFormErrors(errors || {})
+      const errors = getFormErrors();
+      setFormErrors(errors || {});
       if (errors) {
         ToastService.danger(
           tHtml(
             'admin/url-redirects/views/url-redirect-edit___de-invoer-is-ongeldig',
           ),
-        )
-        return
+        );
+        return;
       }
 
-      setIsSaving(true)
+      setIsSaving(true);
 
       if (isCreatePage) {
-        await createUrlRedirect(updatedUrlRedirect)
+        await createUrlRedirect(updatedUrlRedirect);
       } else {
-        await updateUrlRedirect(updatedUrlRedirect)
+        await updateUrlRedirect(updatedUrlRedirect);
       }
 
       redirectToClientPage(
         buildLink(URL_REDIRECT_PATH.URL_REDIRECT_OVERVIEW),
         navigateFunc,
-      )
+      );
       ToastService.success(
         tHtml(
           'admin/url-redirects/views/url-redirect-edit___de-url-redirect-is-opgeslagen',
         ),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError('Failed to save url redirect', err, {
           updatedUrlRedirect,
         }),
-      )
+      );
 
       ToastService.danger(
         (err as CustomError)?.additionalInfo?.errorMessage ||
           tHtml(
             'admin/url-redirects/views/url-redirect-edit___het-opslaan-van-de-url-redirect-is-mislukt',
           ),
-      )
+      );
     }
-    setIsSaving(false)
-  }
+    setIsSaving(false);
+  };
 
   const renderEditPage = () => {
     if (isLoading) {
-      return <FullPageSpinner />
+      return <FullPageSpinner />;
     }
 
     if (error || !loadedUrlRedirect) {
@@ -180,7 +180,7 @@ const UrlRedirectEdit: FC = () => {
           )}
           icon={IconName.alertTriangle}
         />
-      )
+      );
     }
 
     return (
@@ -245,8 +245,8 @@ const UrlRedirectEdit: FC = () => {
           </FormGroup>
         </Form>
       </Container>
-    )
-  }
+    );
+  };
 
   // Render
   const renderPage = () => {
@@ -287,8 +287,8 @@ const UrlRedirectEdit: FC = () => {
         </AdminLayoutTopBarRight>
         <AdminLayoutBody>{renderEditPage()}</AdminLayoutBody>
       </AdminLayout>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -321,7 +321,7 @@ const UrlRedirectEdit: FC = () => {
         {renderPage()}
       </PermissionGuard>
     </>
-  )
-}
+  );
+};
 
-export default UrlRedirectEdit
+export default UrlRedirectEdit;

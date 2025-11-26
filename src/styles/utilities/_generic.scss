@@ -76,13 +76,13 @@
 	max-width: 60rem;
 }
 
-@media (min-width: $g-bp3) {
+@media (min-width: variables.$g-bp3) {
 	.u-limit-width-bp3 {
 		max-width: 60rem;
 	}
 }
 
-@media (min-width: $g-bp2) {
+@media (min-width: variables.$g-bp2) {
 	.u-limit-width-bp2-s {
 		max-width: 32rem;
 	}
@@ -95,7 +95,7 @@
 
 .u-remove-link-styling a,
 .u-remove-link-styling {
-	color: $color-gray-700;
+	color: colors.$color-gray-700;
 	text-decoration: none;
 }
 

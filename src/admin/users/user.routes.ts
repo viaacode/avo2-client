@@ -1,4 +1,4 @@
-import { ROUTE_PARTS } from '../../shared/constants/index';
+import { ROUTE_PARTS } from '../../shared/constants/routes';
 
 export const USER_PATH = {
   USER_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.users}`,

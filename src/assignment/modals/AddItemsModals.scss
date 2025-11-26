@@ -1,10 +1,10 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/variables" as variables;
 
 .c-add-fragment-modal,
 .c-add-collection-modal,
 .c-import-to-assignment-modal {
 	&__tab-select {
-		@media screen and (min-width: $g-bp2) {
+		@media screen and (min-width: variables.$g-bp2) {
 			display: none;
 		}
 	}
@@ -13,7 +13,7 @@
 	&__tab-buttons.c-button-toolbar {
 		display: none;
 
-		@media screen and (min-width: $g-bp2) {
+		@media screen and (min-width: variables.$g-bp2) {
 			display: block;
 		}
 	}
@@ -21,11 +21,11 @@
 	.c-modal__body,
 	.c-modal__footer {
 		.c-toolbar {
-			gap: $g-spacer-unit * 2;
+			gap: variables.$g-spacer-unit * 2;
 			flex-direction: column;
 			align-items: flex-start;
 
-			@media screen and (min-width: $g-bp2) {
+			@media screen and (min-width: variables.$g-bp2) {
 				flex-direction: row;
 				align-items: center;
 			}
@@ -44,17 +44,17 @@
 			.c-toolbar__item {
 				width: 100%;
 
-				@media screen and (min-width: $g-bp2) {
+				@media screen and (min-width: variables.$g-bp2) {
 					width: auto;
 				}
 			}
 		}
 
 		.c-table {
-			border-top: 1px solid $color-gray-100;
+			border-top: 1px solid colors.$color-gray-100;
 
 			th {
-				border-bottom: 1px solid $color-gray-100;
+				border-bottom: 1px solid colors.$color-gray-100;
 			}
 		}
 
@@ -70,7 +70,7 @@
 			margin: 3px 0 0;
 		}
 
-		@media screen and (min-width: $g-bp2) {
+		@media screen and (min-width: variables.$g-bp2) {
 			table td {
 				border-left: none;
 				border-right: none;
@@ -91,7 +91,7 @@
 
 	.c-modal__footer {
 		.c-toolbar {
-			padding: $g-spacer-unit * 2 $g-spacer-unit * 1.5;
+			padding: variables.$g-spacer-unit * 2 variables.$g-spacer-unit * 1.5;
 
 			.c-toolbar__right {
 				align-self: flex-end;

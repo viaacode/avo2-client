@@ -7,10 +7,10 @@
 /* Variables
    ========================================================================== */
 
-$u-text-muted-color: $color-gray-400 !default;
-$u-text-success-color: $color-green !default;
-$u-text-primary-color: $color-teal-bright !default;
-$u-text-danger-color: $color-error !default;
+$u-text-muted-color: colors.$color-gray-400 !default;
+$u-text-success-color: colors.$color-green !default;
+$u-text-primary-color: colors.$color-teal-bright !default;
+$u-text-danger-color: colors.$color-error !default;
 
 /* Utilities
    ========================================================================== */

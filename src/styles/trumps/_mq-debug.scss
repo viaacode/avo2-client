@@ -13,25 +13,25 @@
 	font-family: sans-serif;
 }
 
-@media (min-width: $g-bp1) {
+@media (min-width: variables.$g-bp1) {
 	.t-mq-debug:before {
 		content: "Breakpoint 1";
 	}
 }
 
-@media (min-width: $g-bp2) {
+@media (min-width: variables.$g-bp2) {
 	.t-mq-debug:before {
 		content: "Breakpoint 2";
 	}
 }
 
-@media (min-width: $g-bp3) {
+@media (min-width: variables.$g-bp3) {
 	.t-mq-debug:before {
 		content: "Breakpoint 3";
 	}
 }
 
-@media (min-width: $g-bp4) {
+@media (min-width: variables.$g-bp4) {
 	.t-mq-debug:before {
 		content: "Breakpoint 4";
 	}

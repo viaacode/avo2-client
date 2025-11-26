@@ -37,7 +37,7 @@ import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { ROUTE_PARTS } from '../../../shared/constants/index';
+import { ROUTE_PARTS } from '../../../shared/constants/routes';
 import {
   type GetInteractiveTourByIdQuery,
   type GetInteractiveTourByIdQueryVariables,
@@ -61,10 +61,9 @@ import {
   INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
   type InteractiveTourAction,
   interactiveTourEditReducer,
-} from '../helpers/reducers/index';
+} from '../helpers/reducers';
 import {
   getInitialInteractiveTour,
-  INTERACTIVE_TOUR_PATH,
   MAX_STEP_TEXT_LENGTH,
   MAX_STEP_TITLE_LENGTH,
 } from '../interactive-tour.const';
@@ -84,6 +83,7 @@ import { InteractiveTourEditStep } from './InteractiveTourEditStep';
 import './InteractiveTourEdit.scss';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
+import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.routes.ts';
 
 const BlockHeading = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({

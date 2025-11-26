@@ -1,82 +1,82 @@
-import { Container, MultiRange, TextInput } from '@viaa/avo2-components'
-import { clsx } from 'clsx'
-import { clamp } from 'es-toolkit'
-import React, { type FC, useEffect, useState } from 'react'
+import { Container, MultiRange, TextInput } from '@viaa/avo2-components';
+import { clsx } from 'clsx';
+import { clamp } from 'es-toolkit';
+import React, { type FC, useEffect, useState } from 'react';
 
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { formatDurationHoursMinutesSeconds } from '../../helpers/formatters/duration';
 import { parseDuration, toSeconds } from '../../helpers/parsers/duration';
+import { tHtml } from '../../helpers/translate-html';
 import { ToastService } from '../../services/toast-service';
 
-import './TimeCropControls.scss'
-import { tHtml } from '../../helpers/translate-html';
+import './TimeCropControls.scss';
 
 interface TimeCropControlsPops {
-  startTime: number
-  endTime: number
-  minTime: number
-  maxTime: number
-  disabled?: boolean
-  onChange: (newStartTime: number, newEndTime: number) => void
-  className?: string
+  startTime: number;
+  endTime: number;
+  minTime: number;
+  maxTime: number;
+  disabled?: boolean;
+  onChange: (newStartTime: number, newEndTime: number) => void;
+  className?: string;
 }
 
 /**
  * @deprecated use the one of react-components instead
  */
-const TimeCropControls: FC<TimeCropControlsPops> = ({
-	startTime,
-	endTime,
-	minTime,
-	maxTime,
-	disabled,
-	onChange,
-	className,
+export const TimeCropControls: FC<TimeCropControlsPops> = ({
+  startTime,
+  endTime,
+  minTime,
+  maxTime,
+  disabled,
+  onChange,
+  className,
 }) => {
   const [fragmentStartString, setFragmentStartString] = useState<string>(
     formatDurationHoursMinutesSeconds(startTime),
-  )
+  );
   const [fragmentEndString, setFragmentEndString] = useState<string>(
     formatDurationHoursMinutesSeconds(endTime),
-  )
+  );
 
   const clampDuration = (value: number): number => {
-    return clamp(value, minTime, maxTime)
-  }
+    return clamp(value, minTime, maxTime);
+  };
 
   useEffect(() => {
-    setFragmentStartString(formatDurationHoursMinutesSeconds(startTime))
-    setFragmentEndString(formatDurationHoursMinutesSeconds(endTime))
-  }, [startTime, endTime])
+    setFragmentStartString(formatDurationHoursMinutesSeconds(startTime));
+    setFragmentEndString(formatDurationHoursMinutesSeconds(endTime));
+  }, [startTime, endTime]);
 
   const onUpdateMultiRangeValues = (values: number[]) => {
-    onChange(values[0], values[1])
-  }
+    onChange(values[0], values[1]);
+  };
   const updateStartAndEnd = (type: 'start' | 'end', value?: string) => {
     if (value) {
       // onChange event
       if (type === 'start') {
-        setFragmentStartString(value)
+        setFragmentStartString(value);
       } else {
-        setFragmentEndString(value)
+        setFragmentEndString(value);
       }
       if (/[0-9]{2}:[0-9]{2}:[0-9]{2}/.test(value)) {
         // full duration
         if (type === 'start') {
-          const newStartTime = clampDuration(parseDuration(value))
+          const newStartTime = clampDuration(parseDuration(value));
 
           if (newStartTime > (endTime || maxTime)) {
-            onChange(newStartTime, newStartTime)
+            onChange(newStartTime, newStartTime);
           } else {
-            onChange(newStartTime, endTime)
+            onChange(newStartTime, endTime);
           }
         } else {
-          const newEndTime = clampDuration(parseDuration(value))
+          const newEndTime = clampDuration(parseDuration(value));
 
           if (newEndTime < (startTime || minTime)) {
-            onChange(newEndTime, newEndTime)
+            onChange(newEndTime, newEndTime);
           } else {
-            onChange(startTime, newEndTime)
+            onChange(startTime, newEndTime);
           }
         }
       }
@@ -85,47 +85,49 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
       // on blur event
       if (type === 'start') {
         if (/[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/.test(fragmentStartString)) {
-          const newStartTime = clampDuration(parseDuration(fragmentStartString))
+          const newStartTime = clampDuration(
+            parseDuration(fragmentStartString),
+          );
 
           if (newStartTime > (endTime || maxTime)) {
-            onChange(newStartTime, newStartTime)
+            onChange(newStartTime, newStartTime);
           } else {
-            onChange(newStartTime, endTime)
+            onChange(newStartTime, endTime);
           }
         } else {
-          onChange(0, endTime)
+          onChange(0, endTime);
           ToastService.danger(
             tHtml(
               'item/components/modals/add-to-collection-modal___de-ingevulde-starttijd-heeft-niet-het-correcte-formaat-uu-mm-ss',
             ),
-          )
+          );
         }
       } else {
         if (/[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/.test(fragmentEndString)) {
-          const newEndTime = clampDuration(parseDuration(fragmentEndString))
+          const newEndTime = clampDuration(parseDuration(fragmentEndString));
 
           if (newEndTime < (startTime || minTime)) {
-            onChange(newEndTime, newEndTime)
+            onChange(newEndTime, newEndTime);
           } else {
-            onChange(startTime, newEndTime)
+            onChange(startTime, newEndTime);
           }
         } else {
-          onChange(startTime, toSeconds(endTime) || 0)
+          onChange(startTime, toSeconds(endTime) || 0);
           ToastService.danger(
             tHtml(
               'item/components/modals/add-to-collection-modal___de-ingevulde-eidntijd-heeft-niet-het-correcte-formaat-uu-mm-ss',
             ),
-          )
+          );
         }
       }
     }
-  }
+  };
 
   const [start, end] = getValidStartAndEnd(
     startTime || minTime,
     endTime || maxTime,
     maxTime,
-  )
+  );
   return (
     <Container className={clsx('c-time-crop-controls', className)}>
       <TextInput
@@ -151,5 +153,5 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
         onChange={(endTime) => updateStartAndEnd('end', endTime)}
       />
     </Container>
-  )
-}
+  );
+};

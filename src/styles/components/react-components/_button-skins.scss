@@ -1,3 +1,6 @@
+@use "../../settings/colors" as colors;
+@use "../../settings/variables" as variables;
+
 /* ==========================================================================
    Component: Button Skins
    ---
@@ -7,11 +10,11 @@
 /* Variables
    ========================================================================== */
 
-$c-button-text-color: $g-text-color !default;
-$c-button-hover-border-color: $color-gray-100 !default;
-$c-button-outline-color: $color-primary !default;
-$c-button-focus-ring-color: $color-primary !default;
-$c-button-link-color: $color-primary !default;
+variables.$c-button-text-color: variables.$g-text-color !default;
+variables.$c-button-hover-border-color: colors.$color-gray-100 !default;
+variables.$c-button-outline-color: colors.$color-primary !default;
+variables.$c-button-focus-ring-color: colors.$color-primary !default;
+variables.$c-button-link-color: colors.$color-primary !default;
 
 .c-button {
 	transition: 0.18s background ease-in;
@@ -21,8 +24,8 @@ $c-button-link-color: $color-primary !default;
    ========================================================================== */
 
 .c-button.c-button--primary {
-	border: 1px solid $color-primary;
-	background-color: $color-primary;
+	border: 1px solid colors.$color-primary;
+	background-color: colors.$color-primary;
 	color: #fff;
 
 	svg * {
@@ -34,8 +37,8 @@ $c-button-link-color: $color-primary !default;
 	&.c-button--active,
 	&:active:focus,
 	&.c-button--active:focus {
-		background-color: darken($color-primary, 15%);
-		border-color: darken($color-primary, 15%);
+		background-color: darken(colors.$color-primary, 15%);
+		border-color: darken(colors.$color-primary, 15%);
 	}
 }
 
@@ -43,9 +46,9 @@ $c-button-link-color: $color-primary !default;
    ========================================================================== */
 
 .c-button.c-button--secondary {
-	border: 1px solid $color-gray-200;
-	background-color: $color-gray-50;
-	color: $color-gray-700;
+	border: 1px solid colors.$color-gray-200;
+	background-color: colors.$color-gray-50;
+	color: colors.$color-gray-700;
 
 	&:hover,
 	&:active,
@@ -79,15 +82,15 @@ $c-button-link-color: $color-primary !default;
 
 .c-button.c-button--tertiary {
 	background-color: #fff;
-	color: $color-gray-700;
-	border: 1px solid $color-gray-150;
+	color: colors.$color-gray-700;
+	border: 1px solid colors.$color-gray-150;
 
 	&:hover,
 	&:active,
 	&:focus,
 	&.c-button--active,
 	&.c-button--active:focus {
-		background-color: $color-gray-50;
+		background-color: colors.$color-gray-50;
 	}
 }
 
@@ -95,8 +98,8 @@ $c-button-link-color: $color-primary !default;
    ========================================================================== */
 
 .c-button.c-button--danger {
-	border: 1px solid $color-error;
-	background-color: $color-error;
+	border: 1px solid colors.$color-error;
+	background-color: colors.$color-error;
 	color: #fff;
 
 	svg * {
@@ -108,8 +111,8 @@ $c-button-link-color: $color-primary !default;
 	&:focus,
 	&.c-button--active,
 	&.c-button--active:focus {
-		background-color: darken($color-error, 10%);
-		border-color: darken($color-error, 10%);
+		background-color: darken(colors.$color-error, 10%);
+		border-color: darken(colors.$color-error, 10%);
 	}
 }
 
@@ -117,12 +120,12 @@ $c-button-link-color: $color-primary !default;
    ========================================================================== */
 
 .c-button.c-button--danger-hover {
-	border: 1px solid $color-gray-200;
-	background-color: $color-gray-50;
-	color: $color-gray-700;
+	border: 1px solid colors.$color-gray-200;
+	background-color: colors.$color-gray-50;
+	color: colors.$color-gray-700;
 
 	svg * {
-		fill: $c-button-text-color;
+		fill: variables.$c-button-text-color;
 	}
 
 	&:active,
@@ -130,8 +133,8 @@ $c-button-link-color: $color-primary !default;
 	&:focus,
 	&.c-button--active,
 	&.c-button--active:focus {
-		border-color: $color-error;
-		background-color: $color-error;
+		border-color: colors.$color-error;
+		background-color: colors.$color-error;
 		color: #fff;
 
 		svg * {
@@ -144,12 +147,12 @@ $c-button-link-color: $color-primary !default;
    ========================================================================== */
 
 .c-button.c-button--borderless {
-	color: $c-button-text-color;
+	color: variables.$c-button-text-color;
 	background: none;
 	border: 0;
 
 	&:hover {
-		box-shadow: inset 0 0 0 0.1rem $c-button-hover-border-color;
+		box-shadow: inset 0 0 0 0.1rem variables.$c-button-hover-border-color;
 	}
 
 	&:focus {
@@ -161,8 +164,8 @@ $c-button-link-color: $color-primary !default;
 	&:focus,
 	&.c-button--active,
 	&.c-button--active:focus {
-		background-color: $color-gray-100;
-		box-shadow: inset 0 0 0 0.1rem $c-button-hover-border-color;
+		background-color: colors.$color-gray-100;
+		box-shadow: inset 0 0 0 0.1rem variables.$c-button-hover-border-color;
 	}
 }
 
@@ -194,14 +197,14 @@ $c-button-link-color: $color-primary !default;
 .c-button.c-button--link {
 	background: none;
 	border: none;
-	color: $color-teal-bright;
+	color: colors.$color-teal-bright;
 
 	&:hover,
 	&:active,
 	&:focus,
 	&.c-button--active,
 	&.c-button--active:focus {
-		background-color: $color-gray-50;
+		background-color: colors.$color-gray-50;
 	}
 }
 
@@ -211,7 +214,7 @@ $c-button-link-color: $color-primary !default;
 .c-button.c-button--inline-link {
 	background: none;
 	border: none;
-	color: $color-teal-bright;
+	color: colors.$color-teal-bright;
 	padding: 0;
 	margin-top: -2px;
 	text-decoration: underline;
@@ -221,7 +224,7 @@ $c-button-link-color: $color-primary !default;
 	&:focus,
 	&.c-button--active,
 	&.c-button--active:focus {
-		background-color: $color-gray-50;
+		background-color: colors.$color-gray-50;
 	}
 }
 
@@ -238,7 +241,7 @@ $c-button-link-color: $color-primary !default;
 	&.c-button--active,
 	&.c-button--active:focus {
 		background-color: transparent;
-		color: $color-teal;
+		color: colors.$color-teal;
 	}
 }
 
@@ -246,8 +249,8 @@ $c-button-link-color: $color-primary !default;
    ========================================================================== */
 
 .c-button.c-button--pupil-primary {
-	border: 1px solid $color-yellow;
-	background-color: $color-yellow;
+	border: 1px solid colors.$color-yellow;
+	background-color: colors.$color-yellow;
 	color: #fff;
 
 	svg * {
@@ -259,8 +262,8 @@ $c-button-link-color: $color-primary !default;
 	&.c-button--active,
 	&:active:focus,
 	&.c-button--active:focus {
-		background: darken($color-yellow, 15%);
-		border-color: darken($color-yellow, 15%);
+		background: darken(colors.$color-yellow, 15%);
+		border-color: darken(colors.$color-yellow, 15%);
 	}
 }
 
@@ -270,14 +273,14 @@ $c-button-link-color: $color-primary !default;
 .c-button.c-button--pupil-link {
 	background: none;
 	border: none;
-	color: $color-yellow;
+	color: colors.$color-yellow;
 
 	&:hover,
 	&:active,
 	&:focus,
 	&.c-button--active,
 	&.c-button--active:focus {
-		background: $color-gray-50;
+		background: colors.$color-gray-50;
 	}
 }
 
@@ -287,7 +290,7 @@ $c-button-link-color: $color-primary !default;
 .c-button.c-button--pupil-inline-link {
 	background: none;
 	border: none;
-	color: $color-yellow;
+	color: colors.$color-yellow;
 	padding: 0;
 	margin-top: -2px;
 
@@ -296,7 +299,7 @@ $c-button-link-color: $color-primary !default;
 	&:focus,
 	&.c-button--active,
 	&.c-button--active:focus {
-		background: $color-gray-50;
+		background: colors.$color-gray-50;
 	}
 }
 
@@ -306,7 +309,7 @@ $c-button-link-color: $color-primary !default;
 .c-button.c-button--pupil-underlined-link {
 	@extend .c-button, .c-button--link;
 	text-decoration: underline;
-	color: $color-yellow;
+	color: colors.$color-yellow;
 
 	&:hover,
 	&:active,
@@ -314,7 +317,7 @@ $c-button-link-color: $color-primary !default;
 	&.c-button--active,
 	&.c-button--active:focus {
 		background: transparent;
-		color: darken($color-yellow, 15%);
+		color: darken(colors.$color-yellow, 15%);
 	}
 }
 
@@ -328,9 +331,9 @@ $c-button-link-color: $color-primary !default;
 .c-button.c-button--danger-hover {
 	&:disabled,
 	&.c-button--disabled {
-		background: $color-gray-100;
-		color: $color-gray-200;
-		border: 1px solid $color-gray-100;
+		background: colors.$color-gray-100;
+		color: colors.$color-gray-200;
+		border: 1px solid colors.$color-gray-100;
 		pointer-events: auto;
 		cursor: default;
 	}

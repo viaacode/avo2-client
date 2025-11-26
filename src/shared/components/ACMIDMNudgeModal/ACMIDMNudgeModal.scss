@@ -1,4 +1,4 @@
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/variables" as variables;
 
 .c-nudge-modal {
 	display: flex;
@@ -25,7 +25,7 @@
 
 	&__footer {
 		width: 100%;
-		border-top: 1px solid $color-gray-100;
+		border-top: 1px solid colors.$color-gray-100;
 	}
 
 	&__wrapper {

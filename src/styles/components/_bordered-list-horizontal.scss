@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Component: Bordered list horizontal
    ========================================================================== */
@@ -6,7 +9,7 @@
 	display: flex;
 
 	li {
-		border-right: 0.1rem solid $color-gray-150;
+		border-right: 0.1rem solid colors.$color-gray-150;
 
 		&:last-child {
 			border: none;
@@ -27,14 +30,14 @@
 /* Drop columns on request
    ========================================================================== */
 
-@media (max-width: $g-bp2 - 1) {
+@media (max-width: variables.$g-bp2 - 1) {
 	.c-bordered-list-horizontal--resp {
 		flex-direction: column;
 		width: 100%;
 
 		li {
 			border-right: none;
-			border-bottom: 0.1rem solid $color-gray-150;
+			border-bottom: 0.1rem solid colors.$color-gray-150;
 
 			&:last-child {
 				border: none;

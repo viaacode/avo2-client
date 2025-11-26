@@ -1,4 +1,4 @@
-@import "../../../styles/settings/colors";
+@use "../../../styles/settings/colors" as colors;
 
 .DraftEditor-editorContainer {
 	.public-DraftEditor-content > div > div:first-child {
@@ -10,7 +10,7 @@
 	.control-item,
 	.dropdown-handler {
 		&:focus {
-			outline: 2px solid $color-teal-bright;
+			outline: 2px solid colors.$color-teal-bright;
 		}
 	}
 }

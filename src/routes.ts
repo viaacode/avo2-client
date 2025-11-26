@@ -4,23 +4,22 @@ import {
   redirect,
 } from 'react-router';
 
-import { AppWithAdminCoreConfig } from './App';
-import { ASSIGNMENTS_PATH } from './admin/assignments/assignments.const';
-import { COLLECTIONS_OR_BUNDLES_PATH } from './admin/collectionsOrBundles/collections-or-bundles.const';
-import { CONTENT_PAGE_PATH } from './admin/content-page/content-page.consts';
-import { CONTENT_PAGE_LABEL_PATH } from './admin/content-page-labels/content-page-label.const';
-import { INTERACTIVE_TOUR_PATH } from './admin/interactive-tour/interactive-tour.const';
-import { ITEMS_PATH } from './admin/items/items.const';
-import { NAVIGATIONS_PATH } from './admin/navigations/navigations.const';
-import { PUPIL_COLLECTIONS_PATH } from './admin/pupil-collection/pupil-collection.const';
-import { TRANSLATIONS_PATH } from './admin/translations/translations.const';
-import { URL_REDIRECT_PATH } from './admin/url-redirects/url-redirects.const';
-import { USER_GROUP_PATH } from './admin/user-groups/user-group.const';
-import { USER_PATH } from './admin/users/user.const';
+import { ASSIGNMENTS_PATH } from './admin/assignments/assignments.routes';
+import { COLLECTIONS_OR_BUNDLES_PATH } from './admin/collectionsOrBundles/collections-or-bundles.routes';
+import { CONTENT_PAGE_PATH } from './admin/content-page/content-page.routes';
+import { CONTENT_PAGE_LABEL_PATH } from './admin/content-page-labels/content-page-label.routes';
+import { INTERACTIVE_TOUR_PATH } from './admin/interactive-tour/interactive-tour.routes';
+import { ITEMS_PATH } from './admin/items/items.routes';
+import { NAVIGATIONS_PATH } from './admin/navigations/navigations.routes.ts';
+import { PUPIL_COLLECTIONS_PATH } from './admin/pupil-collection/pupil-collection.routes';
+import { TRANSLATIONS_PATH } from './admin/translations/translations.routes.ts';
+import { URL_REDIRECT_PATH } from './admin/url-redirects/url-redirects.routes';
+import { USER_GROUP_PATH } from './admin/user-groups/user-group.routes';
+import { USER_PATH } from './admin/users/user.routes.ts';
 import { APP_PATH } from './constants';
 import { ErrorBoundary } from './shared/components/ErrorBoundary/ErrorBoundary';
 import { FullPageSpinner } from './shared/components/FullPageSpinner/FullPageSpinner';
-import { ROUTE_PARTS } from './shared/constants';
+import { ROUTE_PARTS } from './shared/constants/routes';
 import { reactRouterConvert } from './shared/helpers/routing/convert-route-component-to-react-router-v7-module';
 
 async function logRoutesMiddleware({
@@ -34,7 +33,7 @@ const APP_ROUTES: RouteObject[] = [
     id: 'root',
     path: '/',
     middleware: [logRoutesMiddleware],
-    Component: AppWithAdminCoreConfig,
+    lazy: () => import('./App').then(reactRouterConvert),
     children: [
       ////////////////////////////////////////////////////////////////////////////////////////
       // ADMIN ROUTES

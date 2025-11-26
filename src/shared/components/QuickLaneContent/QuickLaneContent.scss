@@ -1,4 +1,4 @@
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/variables" as variables;
 
 .c-thumbnail.m-content-thumbnail {
 	width: $m-content-thumbnail-width;
@@ -7,7 +7,7 @@
 .m-quick-lane-content {
 	&__avatar {
 		.c-avatar--img {
-			border: 1px solid $color-night-blue;
+			border: 1px solid colors.$color-night-blue;
 		}
 
 		.c-avatar-and-text__text {
@@ -20,12 +20,12 @@
 	&__tabs {
 		&-wrapper {
 			// Equate to avo2-components/src/components/Modal/Modal.scss without importing
-			margin: 0 - ($g-spacer-unit * 3);
-			padding: 0 ($g-spacer-unit * 1.5); // ensure text is aligned, 12 + 12
-			background-color: $color-gray-50;
+			margin: 0 - (variables.$g-spacer-unit * 3);
+			padding: 0 (variables.$g-spacer-unit * 1.5); // ensure text is aligned, 12 + 12
+			background-color: colors.$color-gray-50;
 
 			.c-tab-item.c-tab-item__active {
-				background-color: $g-base-background;
+				background-color: variables.$g-base-background;
 				box-shadow: none;
 			}
 		}

@@ -1,18 +1,18 @@
-import { ROUTE_PARTS } from '../shared/constants/index';
+import { ROUTE_PARTS } from '../shared/constants/routes';
 import { tText } from '../shared/helpers/translate-text';
 
-export const PROFILE_ID = ROUTE_PARTS.profile
-export const ACCOUNT_ID = ROUTE_PARTS.account
-export const LINKED_ACCOUNTS = ROUTE_PARTS.linkedAccounts
-export const EMAIL_ID = ROUTE_PARTS.email
-export const NOTIFICATIONS_ID = ROUTE_PARTS.notifications
+export const PROFILE_ID = ROUTE_PARTS.profile;
+export const ACCOUNT_ID = ROUTE_PARTS.account;
+export const LINKED_ACCOUNTS = ROUTE_PARTS.linkedAccounts;
+export const EMAIL_ID = ROUTE_PARTS.email;
+export const NOTIFICATIONS_ID = ROUTE_PARTS.notifications;
 
 export type SettingsTab =
   | typeof PROFILE_ID
   | typeof ACCOUNT_ID
   | typeof EMAIL_ID
   | typeof NOTIFICATIONS_ID
-  | typeof LINKED_ACCOUNTS
+  | typeof LINKED_ACCOUNTS;
 
 export const GET_NEWSLETTER_LABELS = () => ({
   newsletter: tText(
@@ -24,7 +24,7 @@ export const GET_NEWSLETTER_LABELS = () => ({
   ambassador: tText(
     'settings/settings___ik-krijg-graag-berichten-om-actief-mee-te-werken-aan-het-archief-voor-onderwijs',
   ),
-})
+});
 
 export const USERS_IN_SAME_COMPANY_COLUMNS = () => [
   {
@@ -47,4 +47,4 @@ export const USERS_IN_SAME_COMPANY_COLUMNS = () => [
     label: tText('settings/settings___tijdelijke-toegang'),
     id: 'temp_access',
   },
-]
+];

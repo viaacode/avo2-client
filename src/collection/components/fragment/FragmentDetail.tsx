@@ -5,7 +5,7 @@ import React, { type FC } from 'react'
 
 import { APP_PATH } from '../../../constants';
 import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription';
-import { DEFAULT_AUDIO_STILL } from '../../../shared/constants/index';
+import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
 import { ContentTypeNumber } from '../../collection.types';

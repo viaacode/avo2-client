@@ -3,7 +3,7 @@ import { type FC, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import { APP_PATH } from '../../constants';
-import { ROUTE_PARTS } from '../../shared/constants/index';
+import { ROUTE_PARTS } from '../../shared/constants/routes';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { commonUserAtom } from '../authentication.store';
 import { redirectToServerLogoutPage } from '../helpers/redirects';

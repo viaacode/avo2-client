@@ -6,14 +6,14 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { noop, once } from 'es-toolkit'
-import React, { type FC, useState } from 'react'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { noop, once } from 'es-toolkit';
+import React, { type FC, useState } from 'react';
 
 import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription';
 import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
-import { DEFAULT_AUDIO_STILL } from '../../../shared/constants/index';
+import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
@@ -24,22 +24,22 @@ import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
 import { ContentTypeNumber } from '../../collection.types';
 import { type CollectionAction } from '../CollectionOrBundleEdit.types';
 
-import './CutFragmentModal.scss'
+import './CutFragmentModal.scss';
 import { tText } from '../../../shared/helpers/translate-text';
 
 export interface CutFragmentModalProps {
-  isOpen: boolean
-  itemMetaData: Avo.Item.Item
-  index: number
+  isOpen: boolean;
+  itemMetaData: Avo.Item.Item;
+  index: number;
   fragment: Pick<
     Avo.Collection.Fragment,
     'start_oc' | 'end_oc' | 'item_meta' | 'thumbnail_path' | 'external_id'
-  >
-  changeCollectionState: (action: CollectionAction) => void
-  onClose: () => void
+  >;
+  changeCollectionState: (action: CollectionAction) => void;
+  onClose: () => void;
   onConfirm?: (
     update: Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>,
-  ) => void
+  ) => void;
 }
 
 export const CutFragmentModal: FC<CutFragmentModalProps> = ({
@@ -56,62 +56,64 @@ export const CutFragmentModal: FC<CutFragmentModalProps> = ({
     fragment.start_oc,
     fragment.end_oc,
     toSeconds(itemMetaData.duration),
-  )
+  );
 
-  const [fragmentStartTime, setFragmentStartTime] = useState<number>(start || 0)
+  const [fragmentStartTime, setFragmentStartTime] = useState<number>(
+    start || 0,
+  );
   const [fragmentEndTime, setFragmentEndTime] = useState<number>(
     end || toSeconds(itemMetaData.duration) || 0,
-  )
+  );
 
   const getValidationErrors = (): string[] => {
     return getValidationErrorsForStartAndEnd({
       ...fragment,
       start_oc: fragmentStartTime,
       end_oc: fragmentEndTime,
-    })
-  }
+    });
+  };
 
   const onSaveCut = async () => {
-    const errors = getValidationErrors()
+    const errors = getValidationErrors();
 
     if (errors && errors.length) {
-      ToastService.danger(errors)
+      ToastService.danger(errors);
 
-      return
+      return;
     }
 
     const hasNoCut =
-      fragmentStartTime === 0 && fragmentEndTime === fragmentDuration
+      fragmentStartTime === 0 && fragmentEndTime === fragmentDuration;
 
     changeCollectionState({
       index,
       type: 'UPDATE_FRAGMENT_PROP',
       fragmentProp: 'start_oc',
       fragmentPropValue: hasNoCut ? null : fragmentStartTime,
-    })
+    });
 
     changeCollectionState({
       index,
       type: 'UPDATE_FRAGMENT_PROP',
       fragmentProp: 'end_oc',
       fragmentPropValue: hasNoCut ? null : fragmentEndTime,
-    })
+    });
 
     try {
       if (fragment.item_meta?.type_id) {
-        let videoStill: string | null
+        let videoStill: string | null;
         if (hasNoCut) {
           if (fragment.item_meta.type_id === ContentTypeNumber.audio) {
-            videoStill = DEFAULT_AUDIO_STILL
+            videoStill = DEFAULT_AUDIO_STILL;
           } else {
-            videoStill = fragment.item_meta.thumbnail_path
+            videoStill = fragment.item_meta.thumbnail_path;
           }
         } else {
           videoStill = await VideoStillService.getVideoStill(
             fragment.external_id,
             fragment.item_meta.type_id,
             (fragmentStartTime || 0) * 1000,
-          )
+          );
         }
 
         if (videoStill) {
@@ -120,11 +122,11 @@ export const CutFragmentModal: FC<CutFragmentModalProps> = ({
             type: 'UPDATE_FRAGMENT_PROP',
             fragmentProp: 'thumbnail_path',
             fragmentPropValue: videoStill,
-          })
+          });
         }
       }
     } catch (error) {
-      console.warn('Failed to update video still.', error)
+      console.warn('Failed to update video still.', error);
     }
 
     changeCollectionState({
@@ -132,38 +134,38 @@ export const CutFragmentModal: FC<CutFragmentModalProps> = ({
       type: 'UPDATE_FRAGMENT_PROP',
       fragmentProp: 'start_oc',
       fragmentPropValue: fragmentStartTime,
-    })
+    });
 
     changeCollectionState({
       index,
       type: 'UPDATE_FRAGMENT_PROP',
       fragmentProp: 'end_oc',
       fragmentPropValue: fragmentEndTime,
-    })
+    });
 
     onConfirm &&
       onConfirm({
         start_oc: hasNoCut ? null : fragmentStartTime,
         end_oc: hasNoCut ? null : fragmentEndTime,
-      })
+      });
 
-    onClose()
-  }
+    onClose();
+  };
 
   const onCancelCut = () => {
     // Reset to default state
-    setFragmentStartTime(start || 0)
-    setFragmentEndTime(end || toSeconds(itemMetaData.duration) || 0)
+    setFragmentStartTime(start || 0);
+    setFragmentEndTime(end || toSeconds(itemMetaData.duration) || 0);
 
     // Close modal
-    onClose()
-  }
+    onClose();
+  };
 
   const startStartTimeOnce = once(() => {
-    setModalVideoSeekTime(fragmentStartTime)
-  })
+    setModalVideoSeekTime(fragmentStartTime);
+  });
 
-  const fragmentDuration: number = toSeconds(itemMetaData.duration, true) || 0
+  const fragmentDuration: number = toSeconds(itemMetaData.duration, true) || 0;
   return (
     <Modal
       isOpen={isOpen}
@@ -199,12 +201,12 @@ export const CutFragmentModal: FC<CutFragmentModalProps> = ({
           maxTime={fragmentDuration}
           onChange={(newStartTime: number, newEndTime: number) => {
             if (newStartTime !== fragmentStartTime) {
-              setModalVideoSeekTime(newStartTime)
+              setModalVideoSeekTime(newStartTime);
             } else if (newEndTime !== fragmentEndTime) {
-              setModalVideoSeekTime(newEndTime)
+              setModalVideoSeekTime(newEndTime);
             }
-            setFragmentStartTime(newStartTime)
-            setFragmentEndTime(newEndTime)
+            setFragmentStartTime(newStartTime);
+            setFragmentEndTime(newEndTime);
           }}
         />
         <Toolbar spaced>
@@ -231,5 +233,5 @@ export const CutFragmentModal: FC<CutFragmentModalProps> = ({
         </Toolbar>
       </ModalBody>
     </Modal>
-  )
-}
+  );
+};

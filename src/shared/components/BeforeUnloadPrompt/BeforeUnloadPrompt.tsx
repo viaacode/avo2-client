@@ -1,7 +1,7 @@
-import React, { type FC } from 'react'
-import { useBlocker } from 'react-router-dom'
+import React, { type FC } from 'react';
+import { useBlocker } from 'react-router-dom';
 
-import { ROUTE_PARTS } from '../../constants/index';
+import { ROUTE_PARTS } from '../../constants/routes';
 import { tText } from '../../helpers/translate-text';
 import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
 
@@ -12,12 +12,12 @@ export const BeforeUnloadPrompt: FC<{ when: boolean; message?: string }> = ({
   const blocker = useBlocker(({ currentLocation, nextLocation }) => {
     // Form has no unsaved changes => do not show the "before unload" message
     if (!when) {
-      return false
+      return false;
     }
 
     // Same page url => do not show the "before unload" message
     if (currentLocation.pathname === nextLocation.pathname) {
-      return false
+      return false;
     }
 
     // Specific tab on the same edit page => do not show the "before unload" message
@@ -26,19 +26,19 @@ export const BeforeUnloadPrompt: FC<{ when: boolean; message?: string }> = ({
     // eg: APP_PATH.ASSIGNMENT_EDIT_TAB
     const currentRouteWithoutTab =
       currentLocation.pathname.split(`/${ROUTE_PARTS.edit}/`)[0] +
-      `/${ROUTE_PARTS.edit}`
+      `/${ROUTE_PARTS.edit}`;
     const nextRouteWithoutTab =
       nextLocation.pathname.split(`/${ROUTE_PARTS.edit}/`)[0] +
-      `/${ROUTE_PARTS.edit}`
+      `/${ROUTE_PARTS.edit}`;
     if (currentRouteWithoutTab === nextRouteWithoutTab) {
-      return false
+      return false;
     }
 
-    return true
-  })
+    return true;
+  });
 
   if (blocker.state !== 'blocked') {
-    return null
+    return null;
   }
   return (
     <ConfirmModal
@@ -61,5 +61,5 @@ export const BeforeUnloadPrompt: FC<{ when: boolean; message?: string }> = ({
         'shared/components/before-unload-prompt/before-unload-prompt___blijven',
       )}
     />
-  )
-}
+  );
+};

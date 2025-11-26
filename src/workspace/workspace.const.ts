@@ -1,6 +1,6 @@
-import { IconName } from '@viaa/avo2-components'
+import { IconName } from '@viaa/avo2-components';
 
-import { ROUTE_PARTS } from '../shared/constants/index';
+import { ROUTE_PARTS } from '../shared/constants/routes';
 import { tText } from '../shared/helpers/translate-text';
 
 import {
@@ -9,13 +9,13 @@ import {
   type WorkspaceTabNames,
 } from './workspace.types';
 
-export const COLLECTIONS_ID = ROUTE_PARTS.collections
-export const BUNDLES_ID = ROUTE_PARTS.bundles
-export const ASSIGNMENTS_ID = ROUTE_PARTS.assignments
-export const BOOKMARKS_ID = ROUTE_PARTS.bookmarks
-export const ORGANISATION_CONTENT_ID = ROUTE_PARTS.organisationContent
-export const QUICK_LANE_ID = ROUTE_PARTS.quickLane
-export const EMBEDS_ID = ROUTE_PARTS.embeds
+export const COLLECTIONS_ID = ROUTE_PARTS.collections;
+export const BUNDLES_ID = ROUTE_PARTS.bundles;
+export const ASSIGNMENTS_ID = ROUTE_PARTS.assignments;
+export const BOOKMARKS_ID = ROUTE_PARTS.bookmarks;
+export const ORGANISATION_CONTENT_ID = ROUTE_PARTS.organisationContent;
+export const QUICK_LANE_ID = ROUTE_PARTS.quickLane;
+export const EMBEDS_ID = ROUTE_PARTS.embeds;
 
 export const GET_TABS: () => WorkspaceTab[] = () => [
   {
@@ -52,9 +52,9 @@ export const GET_TABS: () => WorkspaceTab[] = () => [
     icon: IconName.code,
     id: EMBEDS_ID,
   },
-]
+];
 
-export const ITEMS_PER_PAGE = 20
+export const ITEMS_PER_PAGE = 20;
 
 export const WORKSPACE_TAB_ID_TO_COUNT_ID: Record<
   WorkspaceTabNames,
@@ -67,4 +67,4 @@ export const WORKSPACE_TAB_ID_TO_COUNT_ID: Record<
   [ORGANISATION_CONTENT_ID]: 'organisationContent' as const,
   [QUICK_LANE_ID]: 'quickLanes' as const,
   [EMBEDS_ID]: 'embeds' as const,
-}
+};

@@ -1,7 +1,7 @@
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/variables" as variables;
 
 .c-share-through-email-modal__link {
-	@media (max-width: $g-bp2) {
+	@media (max-width: variables.$g-bp2) {
 		max-width: calc(100vw - 190px);
 	}
 }

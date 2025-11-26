@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 $base: "c-admin-core";
 
 .#{$base} {
@@ -15,13 +18,13 @@ $base: "c-admin-core";
 			padding: 0 4.2rem;
 			position: sticky;
 			inset: 0 0 auto 0;
-			z-index: $g-c-global-navbar-z;
+			z-index: variables.$g-c-global-navbar-z;
 
 			// Provide a background color for a container'ed element
 			// without breaking overflows
 			&::before {
-				background-color: $color-gray-50;
-				border-bottom: 0.1rem solid $color-gray-100;
+				background-color: colors.$color-gray-50;
+				border-bottom: 0.1rem solid colors.$color-gray-100;
 				content: "";
 				display: block;
 				inset: 0 0 0 0;
@@ -33,9 +36,9 @@ $base: "c-admin-core";
 		}
 
 		&__page-title {
-			font-family: $g-headings-font-family;
+			font-family: variables.$g-headings-font-family;
 			font-size: 2.4rem;
-			font-weight: $g-headings-font-weight;
+			font-weight: variables.$g-headings-font-weight;
 			line-height: 2.4rem;
 			margin: 0;
 			overflow: hidden;
@@ -45,7 +48,7 @@ $base: "c-admin-core";
 
 		&__back {
 			& > button {
-				margin-right: $g-spacer-unit * 2;
+				margin-right: variables.$g-spacer-unit * 2;
 			}
 		}
 	}
@@ -69,13 +72,13 @@ $base: "c-admin-core";
 		max-width: $o-container-max-width;
 		width: $o-container-width-bp1;
 
-		@media (min-width: $g-bp2) {
+		@media (min-width: variables.$g-bp2) {
 			width: $o-container-width-bp2;
 		}
-		@media (min-width: $g-bp3) {
+		@media (min-width: variables.$g-bp3) {
 			width: $o-container-width-bp3;
 		}
-		@media (min-width: $g-bp4) {
+		@media (min-width: variables.$g-bp4) {
 			width: $o-container-width-bp4;
 		}
 	}

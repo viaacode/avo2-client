@@ -1,10 +1,10 @@
-import { ToastType } from '@meemoo/admin-core-ui/client'
-import { Alert, type AlertProps, Spacer } from '@viaa/avo2-components'
-import { isNil } from 'es-toolkit'
-import React, { type FC, type ReactNode } from 'react'
-import { toast, type ToastId, type ToastOptions } from 'react-toastify'
+import { ToastType } from '@meemoo/admin-core-ui/client';
+import { Alert, type AlertProps, Spacer } from '@viaa/avo2-components';
+import { isNil } from 'es-toolkit';
+import React, { type FC, type ReactNode } from 'react';
+import { type ToastId, type ToastOptions, toast } from 'react-toastify';
 
-import { ROUTE_PARTS } from '../constants/index';
+import { ROUTE_PARTS } from '../constants/routes';
 
 export enum AvoToastType {
   DANGER = 'danger',
@@ -18,45 +18,45 @@ export const ToastTypeToAvoToastType: Record<ToastType, AvoToastType> = {
   [ToastType.INFO]: AvoToastType.INFO,
   [ToastType.SPINNER]: AvoToastType.SPINNER,
   [ToastType.SUCCESS]: AvoToastType.SUCCESS,
-}
+};
 
-type ToastMessage = string | string[] | ReactNode
+type ToastMessage = string | string[] | ReactNode;
 
 interface ToastProps extends AlertProps {
-  closeToast?: () => void
+  closeToast?: () => void;
 }
 
 const Toast: FC<ToastProps> = ({ closeToast, ...rest }) => (
   <Alert {...rest} className="u-spacer-top" onClose={closeToast} />
-)
+);
 
 export class ToastService {
   public static danger = (
     message: ToastMessage,
     options?: ToastOptions,
   ): ToastId | undefined =>
-    ToastService.showToast(message, options, AvoToastType.DANGER)
+    ToastService.showToast(message, options, AvoToastType.DANGER);
   public static info = (
     message: ToastMessage,
     options?: ToastOptions,
   ): ToastId | undefined =>
-    ToastService.showToast(message, options, AvoToastType.INFO)
+    ToastService.showToast(message, options, AvoToastType.INFO);
   public static spinner = (
     message: ToastMessage,
     options?: ToastOptions,
   ): ToastId | undefined =>
-    ToastService.showToast(message, options, AvoToastType.SPINNER)
+    ToastService.showToast(message, options, AvoToastType.SPINNER);
   public static success = (
     message: ToastMessage,
     options?: ToastOptions,
   ): ToastId | undefined =>
-    ToastService.showToast(message, options, AvoToastType.SUCCESS)
+    ToastService.showToast(message, options, AvoToastType.SUCCESS);
 
   public static close(toastId: ToastId | undefined) {
     if (isNil(toastId)) {
-      return
+      return;
     }
-    toast.dismiss(toastId)
+    toast.dismiss(toastId);
   }
 
   public static showToast(
@@ -65,13 +65,13 @@ export class ToastService {
     alertType: AvoToastType = AvoToastType.INFO,
   ): ToastId | undefined {
     if (isNil(message)) {
-      return
+      return;
     }
 
-    let alertMessage = message
+    let alertMessage = message;
 
     if (Array.isArray(message)) {
-      const messages = message as string[]
+      const messages = message as string[];
       alertMessage = (
         <div>
           {messages.map((message: string, index: number) => {
@@ -81,21 +81,21 @@ export class ToastService {
               </Spacer>
             ) : (
               message
-            )
+            );
           })}
         </div>
-      )
+      );
     }
 
-    const dark = !window.location.href.includes(`/${ROUTE_PARTS.admin}/`)
+    const dark = !window.location.href.includes(`/${ROUTE_PARTS.admin}/`);
 
     return toast(
       <Toast dark={dark} message={alertMessage} type={alertType} />,
       options,
-    )
+    );
   }
 
   public static hideToast(toastId: ToastId) {
-    toast.dismiss(toastId)
+    toast.dismiss(toastId);
   }
 }

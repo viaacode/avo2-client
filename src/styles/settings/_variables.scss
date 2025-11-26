@@ -1,4 +1,4 @@
-@import "./colors";
+@use "./colors" as colors;
 
 /* ==========================================================================
    Variables
@@ -27,7 +27,7 @@ $g-headings-font-family: "Avenir LT Std", "Avenir Next", Avenir, Montserrat, san
 /* Colors
    ========================================================================== */
 
-$g-text-color: $color-gray-700;
+$g-text-color: colors.$color-gray-700;
 $g-base-background: #fff;
 
 /* Breakpoints
@@ -82,28 +82,28 @@ $o-grid-bp4: 1200px;
 /* Button overrides
    ========================================================================== */
 
-$c-button-hover-border-color: $color-gray-100;
-$c-button-link-color: $color-night-blue;
+$c-button-hover-border-color: colors.$color-gray-100;
+$c-button-link-color: colors.$color-night-blue;
 
 /* Inputs
    ========================================================================== */
 
 $c-input-border-radius: 0.3rem !default;
-$c-input-dark-text-color: $color-gray-600 !default;
-$c-input-focus-icon-color: $color-gray-600 !default;
+$c-input-dark-text-color: colors.$color-gray-600 !default;
+$c-input-focus-icon-color: colors.$color-gray-600 !default;
 $c-input-bg-color: #fff !default;
-$c-input-border-color: $color-gray-150 !default;
-$c-input-readonly-border-color: $color-gray-150 !default;
-$c-input-accent-color: $color-teal-bright !default;
-$c-input-error-accent-color: $color-error !default;
+$c-input-border-color: colors.$color-gray-150 !default;
+$c-input-readonly-border-color: colors.$color-gray-150 !default;
+$c-input-accent-color: colors.$color-teal-bright !default;
+$c-input-error-accent-color: colors.$color-error !default;
 $c-input-padding: 0.8rem !default;
 
 $m-content-thumbnail-width: 150px;
 
 // Views
 
-$c-register-login-view-modal-background-color: $color-gray-50;
-$c-register-login-view-modal-border-color: $color-gray-200;
+$c-register-login-view-modal-background-color: colors.$color-gray-50;
+$c-register-login-view-modal-border-color: colors.$color-gray-200;
 
 $c-admin-core-header: 6rem;
 $admin-actions-bar-height: 8.4rem;

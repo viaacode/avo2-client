@@ -1,15 +1,15 @@
 @use "sass:math";
-@import "../../styles/settings/variables";
+@use "../../styles/settings/variables" as variables;
 
 .c-assignment-heading {
 	&__actions {
 		display: grid;
 		grid-template-columns: auto auto auto auto auto;
-		padding-left: $g-spacer-unit * 2;
-		z-index: $g-c-local-toolbar-z; // Ensure rich text does not overlap
+		padding-left: variables.$g-spacer-unit * 2;
+		z-index: variables.$g-c-local-toolbar-z; // Ensure rich text does not overlap
 
-		@media screen and (min-width: $g-bp2) {
-			gap: $g-spacer-unit;
+		@media screen and (min-width: variables.$g-bp2) {
+			gap: variables.$g-spacer-unit;
 		}
 
 		&--creating {
@@ -21,7 +21,7 @@
 		& > .c-assignment-heading__dropdown-wrapper {
 			transform: translateY(2px); // Account for visual centering
 
-			@media screen and (min-width: $g-bp2) {
+			@media screen and (min-width: variables.$g-bp2) {
 				transform: none;
 			}
 		}
@@ -53,7 +53,7 @@
 				overflow: hidden;
 			}
 
-			@media screen and (min-width: $g-bp2) {
+			@media screen and (min-width: variables.$g-bp2) {
 				min-width: 0;
 			}
 		}
@@ -84,20 +84,20 @@
 			&__left,
 			&__right {
 				flex: initial;
-				margin-bottom: $g-spacer-unit * 2;
+				margin-bottom: variables.$g-spacer-unit * 2;
 			}
 
 			&__left {
 				flex-grow: 1;
 				min-width: 0;
 
-				@media (min-width: $g-bp2) {
+				@media (min-width: variables.$g-bp2) {
 					margin-top: 0;
 				}
 			}
 
 			&__right {
-				@media (min-width: $g-bp2) {
+				@media (min-width: variables.$g-bp2) {
 					min-width: 0;
 				}
 			}
@@ -111,7 +111,7 @@
 		position: relative;
 
 		// Don't overwrite .o-container on wide screens
-		@media screen and (max-width: ($g-bp2 - 1px)) {
+		@media screen and (max-width: (variables.$g-bp2 - 1px)) {
 			max-width: 100%;
 		}
 
@@ -119,7 +119,7 @@
 			> .c-tab-item {
 				padding: 0.8rem;
 
-				@media screen and (min-width: $g-bp1) {
+				@media screen and (min-width: variables.$g-bp1) {
 					padding: 1.2rem;
 				}
 			}
@@ -134,13 +134,13 @@
 	.c-assignment-heading__hide-on-mobile {
 		display: none;
 
-		@media screen and (min-width: $g-bp2) {
+		@media screen and (min-width: variables.$g-bp2) {
 			display: block;
 		}
 	}
 
 	.c-assignment-heading__show-on-mobile {
-		@media screen and (min-width: $g-bp2) {
+		@media screen and (min-width: variables.$g-bp2) {
 			display: none;
 		}
 	}

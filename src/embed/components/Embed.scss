@@ -1,5 +1,5 @@
-@import "../../styles/settings/variables";
-@import "../../styles/settings/colors";
+@use "../../styles/settings/variables" as variables;
+@use "../../styles/settings/colors" as colors;
 
 $embed-metadata-height: 8rem;
 
@@ -52,7 +52,7 @@ $embed-metadata-height: 8rem;
 	.c-avo-button {
 		height: 3.2rem;
 		width: fit-content;
-		border: 1px solid $color-gray-200;
+		border: 1px solid colors.$color-gray-200;
 		padding: 0.5rem;
 		display: flex;
 		gap: 1rem;
@@ -60,7 +60,7 @@ $embed-metadata-height: 8rem;
 		margin-top: auto;
 
 		&:hover {
-			background-color: $color-gray-50;
+			background-color: colors.$color-gray-50;
 		}
 
 		.c-avo-logo {

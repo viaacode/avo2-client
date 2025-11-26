@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Button,
   Checkbox,
@@ -16,15 +16,15 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import type { Requests } from 'node-zendesk'
-import React, { type FC, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate } from 'react-router'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import type { Requests } from 'node-zendesk';
+import React, { type FC, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { ROUTE_PARTS } from '../../../shared/constants/index';
+import { ROUTE_PARTS } from '../../../shared/constants/routes';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { validateEmailAddress } from '../../../shared/helpers/validation/email';
@@ -33,97 +33,97 @@ import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ZendeskService } from '../../../shared/services/zendesk-service';
 
-import './r4-manual-registration.scss'
+import './r4-manual-registration.scss';
 
 export const ManualRegistration: FC = () => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
-  const [firstName, setFirstName] = useState<string>('')
-  const [lastName, setLastName] = useState<string>('')
-  const [email, setEmail] = useState<string>('')
-  const [organization, setOrganization] = useState<string>('')
-  const [profession, setProfession] = useState<string>('')
-  const [reason, setReason] = useState<string>('')
-  const [hasBeenSent, setHasBeenSent] = useState<boolean>(false)
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [organization, setOrganization] = useState<string>('');
+  const [profession, setProfession] = useState<string>('');
+  const [reason, setReason] = useState<string>('');
+  const [hasBeenSent, setHasBeenSent] = useState<boolean>(false);
   const [acceptedPrivacyConditions, setAcceptedPrivacyConditions] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [
     selectedEducationLevelsAndDegrees,
     setSelectedEducationLevelsAndDegrees,
-  ] = useState<TagInfo[]>([])
+  ] = useState<TagInfo[]>([]);
 
-  const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees()
+  const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 
   const getValidationErrors = (): string[] => {
-    const requiredError = 'is verplicht'
-    const errors = []
+    const requiredError = 'is verplicht';
+    const errors = [];
     if (!firstName) {
       errors.push(
         `${tText(
           'authentication/views/registration-flow/r-4-manual-registration___voornaam',
         )} ${requiredError}`,
-      )
+      );
     }
     if (!lastName) {
       errors.push(
         `${tText(
           'authentication/views/registration-flow/r-4-manual-registration___achternaam',
         )} ${requiredError}`,
-      )
+      );
     }
     if (!email) {
-      errors.push(`Email ${requiredError}`)
+      errors.push(`Email ${requiredError}`);
     } else if (!validateEmailAddress(email)) {
       errors.push(
         tText(
           'authentication/views/registration-flow/r-4-manual-registration___email-is-geen-geldig-email-adres',
         ),
-      )
+      );
     }
     if (!organization) {
       errors.push(
         `${tText(
           'authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie',
         )} ${requiredError}`,
-      )
+      );
     }
     if (!profession) {
       errors.push(
         `${tText(
           'authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep',
         )} ${requiredError}`,
-      )
+      );
     }
     if (!reason) {
       errors.push(
         `${tText(
           'authentication/views/registration-flow/r-4-manual-registration___reden-van-aanvraag',
         )} ${requiredError}`,
-      )
+      );
     }
     if (!acceptedPrivacyConditions) {
       errors.push(
         tText(
           'authentication/views/registration-flow/r-4-manual-registration___je-moet-de-privacy-voorwaarden-accepteren-om-manueel-toegang-aan-te-vragen',
         ),
-      )
+      );
     }
-    return errors
-  }
+    return errors;
+  };
 
   const onSend = async () => {
-    let ticket: Requests.CreateModel | undefined
+    let ticket: Requests.CreateModel | undefined;
     try {
-      const errors = getValidationErrors()
+      const errors = getValidationErrors();
 
       if (errors.length) {
-        ToastService.danger(errors)
-        return
+        ToastService.danger(errors);
+        return;
       }
 
       const parsedEducationLevels = selectedEducationLevelsAndDegrees
         .map((selectedEducationLevel) => selectedEducationLevel.label)
-        .join(', ')
+        .join(', ');
 
       // create zendesk ticket
       ticket = {
@@ -157,8 +157,8 @@ export const ManualRegistration: FC = () => {
           email,
           name: `${firstName} ${lastName}`,
         },
-      }
-      await ZendeskService.createTicket(ticket)
+      };
+      await ZendeskService.createTicket(ticket);
 
       trackEvents(
         {
@@ -167,30 +167,30 @@ export const ManualRegistration: FC = () => {
           action: 'request',
         },
         null,
-      )
+      );
 
       ToastService.success(
         tHtml(
           'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt',
         ),
-      )
-      setHasBeenSent(true)
+      );
+      setHasBeenSent(true);
     } catch (err) {
-      console.error('Failed to create zendesk ticket', err, ticket)
+      console.error('Failed to create zendesk ticket', err, ticket);
       ToastService.danger(
         tHtml(
           'authentication/views/registration-flow/r-4-manual-registration___het-versturen-van-je-aanvraag-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const links = {
     linkToStudentTeacher: APP_PATH.STUDENT_TEACHER.route,
     linkToPupilAccessVersionTeachers: '/leerlingen-toegang-versie-leerkrachten',
     linkForPupilAccess: `/${ROUTE_PARTS.pupils}`,
     linkToStamboek: APP_PATH.STAMBOEK.route,
-  }
+  };
 
   const renderForm = () => {
     return (
@@ -350,13 +350,13 @@ export const ManualRegistration: FC = () => {
           </Column>
         </Grid>
       </>
-    )
-  }
+    );
+  };
 
   const renderConfirmation = () =>
     tHtml(
       'authentication/views/registration-flow/r-4-manual-registration___bevestiging',
-    )
+    );
 
   return (
     <Container className="c-register-stamboek-view" mode="vertical">
@@ -381,7 +381,7 @@ export const ManualRegistration: FC = () => {
         </div>
       </Container>
     </Container>
-  )
-}
+  );
+};
 
-export default ManualRegistration
+export default ManualRegistration;

@@ -33,7 +33,7 @@ import {
   AdminLayoutTopBarRight,
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { useGetProfileById } from '../hooks/use-get-profile-by-id';
-import { USER_PATH } from '../user.const';
+import { USER_PATH } from '../user.routes.ts';
 
 export const UserEditPage: FC = () => {
   const navigateFunc = useNavigate();

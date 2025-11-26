@@ -1,10 +1,12 @@
+@use "../settings/variables" as variables;
+
 $base: "c-admin-core";
 
 .#{$base} {
 	.c-button {
 		&-toolbar {
 			a + button {
-				margin-left: $g-spacer-unit;
+				margin-left: variables.$g-spacer-unit;
 			}
 		}
 	}

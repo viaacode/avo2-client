@@ -1,5 +1,5 @@
-@import "../../../../styles/settings/colors";
-@import "../../../../styles/settings/variables";
+@use "../../../../styles/settings/colors" as colors;
+@use "../../../../styles/settings/variables" as variables;
 
 .l-admin {
 	display: flex;
@@ -7,7 +7,7 @@
 	flex: 1 1 auto;
 
 	.c-top-bar {
-		background-color: $color-gray-50;
+		background-color: colors.$color-gray-50;
 
 		h1 {
 			font-size: 2.4rem;
@@ -17,7 +17,7 @@
 	}
 
 	.c-toolbar .c-button + .c-button {
-		margin-left: $g-spacer-unit;
+		margin-left: variables.$g-spacer-unit;
 	}
 
 	.m-admin-layout-content {

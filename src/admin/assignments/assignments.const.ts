@@ -1,13 +1,13 @@
 import {
   type FilterableColumn,
   TableFilterType,
-} from '@meemoo/admin-core-ui/admin'
+} from '@meemoo/admin-core-ui/admin';
 import {
   type ButtonType,
   IconName,
   type SelectOption,
-} from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
+} from '@viaa/avo2-components';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 
 import { type AssignmentTableColumns } from '../../assignment/assignment.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -16,7 +16,6 @@ import {
   type CheckboxDropdownModalProps,
   type CheckboxOption,
 } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import { ROUTE_PARTS } from '../../shared/constants/index';
 import { EducationLevelId } from '../../shared/helpers/lom';
 import { lomToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
@@ -26,24 +25,19 @@ import { NULL_FILTER } from '../shared/helpers/filters';
 
 import { AssignmentsBulkAction } from './assignments.types';
 
-export const ASSIGNMENTS_PATH = {
-  ASSIGNMENTS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.assignments}`,
-  ASSIGNMENTS_MARCOM_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.assignments}/${ROUTE_PARTS.marcom}`,
-}
-
-export const ITEMS_PER_PAGE = 20
+export const ITEMS_PER_PAGE = 20;
 
 export type AssignmentBulkActionOption = SelectOption<string> & {
-  confirm?: boolean
-  confirmButtonType?: ButtonType
-}
+  confirm?: boolean;
+  confirmButtonType?: ButtonType;
+};
 
 export const GET_ASSIGNMENT_BULK_ACTIONS = (
   commonUser: Avo.User.CommonUser | null | undefined,
   areRowsSelected: boolean,
 ): AssignmentBulkActionOption[] => {
   if (!commonUser) {
-    return []
+    return [];
   }
   return [
     ...(PermissionService.hasPerm(
@@ -79,8 +73,8 @@ export const GET_ASSIGNMENT_BULK_ACTIONS = (
       value: AssignmentsBulkAction.EXPORT_ALL,
       disabled: false,
     },
-  ]
-}
+  ];
+};
 
 function getAssignmentTitleColumn(): FilterableColumn<AssignmentTableColumns> {
   return {
@@ -88,7 +82,7 @@ function getAssignmentTitleColumn(): FilterableColumn<AssignmentTableColumns> {
     label: tText('admin/assignments/assignments___title'),
     sortable: true,
     visibleByDefault: true,
-  }
+  };
 }
 
 function getAssignmentAuthorColumn(): FilterableColumn<AssignmentTableColumns> {
@@ -98,7 +92,7 @@ function getAssignmentAuthorColumn(): FilterableColumn<AssignmentTableColumns> {
     sortable: true,
     visibleByDefault: true,
     filterType: TableFilterType.MultiUserSelectDropdown,
-  }
+  };
 }
 
 function getAssignmentAuthorUserGroupColumn(
@@ -114,7 +108,7 @@ function getAssignmentAuthorUserGroupColumn(
       options: userGroupOptions,
     } as CheckboxDropdownModalProps,
     dataType: TableColumnDataType.string,
-  }
+  };
 }
 
 function getAssignmentLastUserEditProfileColumn(): FilterableColumn<AssignmentTableColumns> {
@@ -124,7 +118,7 @@ function getAssignmentLastUserEditProfileColumn(): FilterableColumn<AssignmentTa
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.string,
-  }
+  };
 }
 
 function getAssignmentCreatedAtColumn(): FilterableColumn<AssignmentTableColumns> {
@@ -135,7 +129,7 @@ function getAssignmentCreatedAtColumn(): FilterableColumn<AssignmentTableColumns
     visibleByDefault: true,
     filterType: TableFilterType.DateRangeDropdown,
     dataType: TableColumnDataType.dateTime,
-  }
+  };
 }
 
 function getAssignmentUpdatedAtColumn(): FilterableColumn<AssignmentTableColumns> {
@@ -146,7 +140,7 @@ function getAssignmentUpdatedAtColumn(): FilterableColumn<AssignmentTableColumns
     visibleByDefault: true,
     filterType: TableFilterType.DateRangeDropdown,
     dataType: TableColumnDataType.dateTime,
-  }
+  };
 }
 
 function getAssignmentDeadlineAtColumn(): FilterableColumn<AssignmentTableColumns> {
@@ -157,7 +151,7 @@ function getAssignmentDeadlineAtColumn(): FilterableColumn<AssignmentTableColumn
     visibleByDefault: true,
     filterType: TableFilterType.DateRangeDropdown,
     dataType: TableColumnDataType.dateTime,
-  }
+  };
 }
 
 function getAssignmentStatusColumn(): FilterableColumn<AssignmentTableColumns> {
@@ -173,7 +167,7 @@ function getAssignmentStatusColumn(): FilterableColumn<AssignmentTableColumns> {
       includeEmpty: false,
     } as BooleanCheckboxDropdownProps,
     dataType: TableColumnDataType.boolean,
-  }
+  };
 }
 
 function getAssignmentSubjectsColumn(
@@ -183,7 +177,7 @@ function getAssignmentSubjectsColumn(
     checked: false,
     label: tText('admin/users/user___leeg'),
     id: NULL_FILTER,
-  }
+  };
   return {
     id: 'subjects',
     label: tText('admin/assignments/assignments___vakken'),
@@ -193,7 +187,7 @@ function getAssignmentSubjectsColumn(
     filterProps: {
       options: [...subjects.map(lomToCheckboxOption), NULL_FILTER_OPTION],
     } as CheckboxDropdownModalProps,
-  }
+  };
 }
 
 function getAssignmentEducationLevelIdColumn(
@@ -203,7 +197,7 @@ function getAssignmentEducationLevelIdColumn(
     checked: false,
     label: tText('admin/users/user___leeg'),
     id: NULL_FILTER,
-  }
+  };
   return {
     id: 'education_level_id',
     label: tText('admin/assignments/assignments___kenmerk'),
@@ -217,13 +211,13 @@ function getAssignmentEducationLevelIdColumn(
             return [
               EducationLevelId.secundairOnderwijs,
               EducationLevelId.lagerOnderwijs,
-            ].includes(item.id as EducationLevelId)
+            ].includes(item.id as EducationLevelId);
           })
           .map(lomToCheckboxOption),
         NULL_FILTER_OPTION,
       ],
     } as CheckboxDropdownModalProps,
-  }
+  };
 }
 
 function getAssignmentEducationLevelsColumn(
@@ -233,7 +227,7 @@ function getAssignmentEducationLevelsColumn(
     checked: false,
     label: tText('admin/users/user___leeg'),
     id: NULL_FILTER,
-  }
+  };
   return {
     id: 'education_levels',
     label: tText('admin/assignments/assignments___onderwijsniveaus'),
@@ -248,7 +242,7 @@ function getAssignmentEducationLevelsColumn(
         NULL_FILTER_OPTION,
       ],
     } as CheckboxDropdownModalProps,
-  }
+  };
 }
 
 function getAssignmentEducationDegreesColumn(
@@ -258,7 +252,7 @@ function getAssignmentEducationDegreesColumn(
     checked: false,
     label: tText('admin/users/user___leeg'),
     id: NULL_FILTER,
-  }
+  };
   return {
     id: 'education_degrees',
     label: tText('admin/assignments/assignments___onderwijsgraden'),
@@ -273,7 +267,7 @@ function getAssignmentEducationDegreesColumn(
         NULL_FILTER_OPTION,
       ],
     } as CheckboxDropdownModalProps,
-  }
+  };
 }
 
 function getAssignmentIsPublicColumn(): FilterableColumn<AssignmentTableColumns> {
@@ -284,7 +278,7 @@ function getAssignmentIsPublicColumn(): FilterableColumn<AssignmentTableColumns>
     visibleByDefault: true,
     filterType: TableFilterType.BooleanCheckboxDropdown,
     dataType: TableColumnDataType.boolean,
-  }
+  };
 }
 
 function getAssignmentQualityLabelsColumn(
@@ -299,7 +293,7 @@ function getAssignmentQualityLabelsColumn(
     filterProps: {
       options: assignmentLabelOptions,
     } as CheckboxDropdownModalProps,
-  }
+  };
 }
 
 function getAssignmentIsCopyColumn(): FilterableColumn<AssignmentTableColumns> {
@@ -309,7 +303,7 @@ function getAssignmentIsCopyColumn(): FilterableColumn<AssignmentTableColumns> {
     sortable: false,
     visibleByDefault: false,
     filterType: TableFilterType.BooleanCheckboxDropdown,
-  }
+  };
 }
 
 function getAssignmentResponsesColumn(): FilterableColumn<AssignmentTableColumns> {
@@ -323,7 +317,7 @@ function getAssignmentResponsesColumn(): FilterableColumn<AssignmentTableColumns
       includeEmpty: false,
     } as BooleanCheckboxDropdownProps,
     dataType: TableColumnDataType.boolean,
-  }
+  };
 }
 
 function getAssignmentViewsColumn(): FilterableColumn<AssignmentTableColumns> {
@@ -334,7 +328,7 @@ function getAssignmentViewsColumn(): FilterableColumn<AssignmentTableColumns> {
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.number,
-  }
+  };
 }
 
 function getAssignmentBookmarksColumn(): FilterableColumn<AssignmentTableColumns> {
@@ -345,7 +339,7 @@ function getAssignmentBookmarksColumn(): FilterableColumn<AssignmentTableColumns
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.number,
-  }
+  };
 }
 
 function getAssignmentCopiesColumn(): FilterableColumn<AssignmentTableColumns> {
@@ -356,7 +350,7 @@ function getAssignmentCopiesColumn(): FilterableColumn<AssignmentTableColumns> {
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.number,
-  }
+  };
 }
 
 function getAssignmentInBundleColumn(): FilterableColumn<AssignmentTableColumns> {
@@ -369,7 +363,7 @@ function getAssignmentInBundleColumn(): FilterableColumn<AssignmentTableColumns>
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.number,
-  }
+  };
 }
 
 function getAssignmentContributorsColumn(): FilterableColumn<AssignmentTableColumns> {
@@ -380,7 +374,7 @@ function getAssignmentContributorsColumn(): FilterableColumn<AssignmentTableColu
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.number,
-  }
+  };
 }
 
 function getAssignmentActionsColumn(): FilterableColumn<AssignmentTableColumns> {
@@ -389,7 +383,7 @@ function getAssignmentActionsColumn(): FilterableColumn<AssignmentTableColumns> 
     tooltip: tText('admin/assignments/assignments___acties'),
     sortable: false,
     visibleByDefault: true,
-  }
+  };
 }
 
 const getMarcomLastCommunicationChannelTypeColumn = (
@@ -407,7 +401,7 @@ const getMarcomLastCommunicationChannelTypeColumn = (
   sortable: true,
   visibleByDefault: true,
   dataType: TableColumnDataType.string,
-})
+});
 
 const getMarcomLastCommunicationChannelNameColumn = (
   channelNameOptions: CheckboxOption[],
@@ -424,7 +418,7 @@ const getMarcomLastCommunicationChannelNameColumn = (
     options: channelNameOptions,
   },
   dataType: TableColumnDataType.string,
-})
+});
 
 const getMarcomLastCommunicationAtColumn =
   (): FilterableColumn<AssignmentTableColumns> => ({
@@ -433,7 +427,7 @@ const getMarcomLastCommunicationAtColumn =
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.dateTime,
-  })
+  });
 
 const getMarcomKlascementColumn =
   (): FilterableColumn<AssignmentTableColumns> => ({
@@ -442,7 +436,7 @@ const getMarcomKlascementColumn =
     sortable: true,
     visibleByDefault: true,
     dataType: TableColumnDataType.boolean,
-  })
+  });
 
 function getMarcomLastUpdatedByColumn(): FilterableColumn<AssignmentTableColumns> {
   return {
@@ -451,7 +445,7 @@ function getMarcomLastUpdatedByColumn(): FilterableColumn<AssignmentTableColumns
     sortable: true,
     visibleByDefault: false,
     dataType: TableColumnDataType.string,
-  }
+  };
 }
 
 const getAssignmentLabelsColumn = (
@@ -465,7 +459,7 @@ const getAssignmentLabelsColumn = (
   filterProps: {
     options: collectionLabelOptions,
   } as CheckboxDropdownModalProps,
-})
+});
 
 const getAssignmentOrganisationColumn = (
   organisationOptions: CheckboxOption[],
@@ -478,7 +472,7 @@ const getAssignmentOrganisationColumn = (
   filterProps: {
     options: organisationOptions,
   } as CheckboxDropdownModalProps,
-})
+});
 
 export function GET_ASSIGNMENT_OVERVIEW_TABLE_COLS(
   userGroupOptions: CheckboxOption[],
@@ -509,7 +503,7 @@ export function GET_ASSIGNMENT_OVERVIEW_TABLE_COLS(
     getAssignmentInBundleColumn(),
     getAssignmentContributorsColumn(),
     getAssignmentActionsColumn(),
-  ]
+  ];
 }
 
 export const GET_ASSIGNMENT_MARCOM_COLUMNS = (
@@ -546,4 +540,4 @@ export const GET_ASSIGNMENT_MARCOM_COLUMNS = (
     tooltip: tText('admin/assignments/assignments___acties'),
     visibleByDefault: true,
   },
-]
+];

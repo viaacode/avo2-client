@@ -1,8 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 
-import { ROUTE_PARTS } from './shared/constants/index';
-import { tText } from './shared/helpers/translate-text';
+import { ROUTE_PARTS } from './shared/constants/routes';
 
 export interface RouteInfo {
   route: string;
@@ -351,8 +350,4 @@ export const CONTENT_TYPE_TO_ROUTE: {
 
 export const GENERATE_SITE_TITLE = (
   ...pageTitleParts: (string | null | undefined)[]
-) =>
-  compact([
-    ...pageTitleParts,
-    tText('constants___het-archief-voor-onderwijs'),
-  ]).join(' | ');
+) => compact([...pageTitleParts, 'Het Archief voor Onderwijs']).join(' | ');

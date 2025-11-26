@@ -56,10 +56,8 @@ import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdo
 import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import {
-  getMoreOptionsLabel,
-  ROUTE_PARTS,
-} from '../../shared/constants/index';
+import { getMoreOptionsLabel } from '../../shared/constants';
+import { ROUTE_PARTS } from '../../shared/constants/routes';
 import { buildLink } from '../../shared/helpers/build-link';
 import {
   getContributorType,
@@ -74,8 +72,8 @@ import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -114,8 +112,8 @@ import {
 } from './CollectionOrBundleEdit.types';
 import { CollectionOrBundleEditActualisation } from './CollectionOrBundleEditActualisation';
 import { CollectionOrBundleEditAdmin } from './CollectionOrBundleEditAdmin';
-import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
 import { CollectionOrBundleEditContent } from './CollectionOrBundleEditContent';
+import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
 import { CollectionOrBundleEditMarcom } from './CollectionOrBundleEditMarcom';
 import { CollectionOrBundleEditMetaData } from './CollectionOrBundleEditMetaData';
 import { CollectionOrBundleEditQualityCheck } from './CollectionOrBundleEditQualityCheck';

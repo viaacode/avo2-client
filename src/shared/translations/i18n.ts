@@ -2,17 +2,17 @@
  * @jest-environment jsdom
  */
 
-import I18n from 'i18next'
-import XHR from 'i18next-xhr-backend'
-import { lowerCase, upperFirst } from 'es-toolkit'
-import { initReactI18next } from 'react-i18next'
+import { lowerCase, upperFirst } from 'es-toolkit';
+import I18n from 'i18next';
+import XHR from 'i18next-xhr-backend';
+import { initReactI18next } from 'react-i18next';
 
 import { getEnv } from '../helpers/env';
 
-let resolveTranslations: (value?: unknown) => void | undefined
+let resolveTranslations: (value?: unknown) => void | undefined;
 export const waitForTranslations = new Promise((resolve) => {
-  resolveTranslations = resolve
-})
+  resolveTranslations = resolve;
+});
 
 I18n.use(XHR)
   .use(initReactI18next) // passes i18n down to react-i18next
@@ -21,9 +21,9 @@ I18n.use(XHR)
       loadPath: `${getEnv('PROXY_URL')}/admin/translations/nl.json`,
       parse: (data: any) => {
         setTimeout(() => {
-          resolveTranslations()
-        }, 0)
-        return JSON.parse(data)
+          resolveTranslations();
+        }, 0);
+        return JSON.parse(data);
       },
     },
     debug: false,
@@ -40,10 +40,10 @@ I18n.use(XHR)
     },
     parseMissingKeyHandler: (key) => {
       if (key.includes('___')) {
-        return `${upperFirst(lowerCase(key.split('___').pop() || ''))} ***`
+        return `${upperFirst(lowerCase(key.split('___').pop() || ''))} ***`;
       }
-      return `${key} ***`
+      return `${key} ***`;
     },
-  })
+  });
 
-export default I18n
+export default I18n;

@@ -1,22 +1,22 @@
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/variables" as variables;
 
-$borderLight: 1px solid $color-gray-100;
+$borderLight: 1px solid colors.$color-gray-100;
 
 .c-add-colleague {
 	display: flex;
 
 	.c-button.c-button--primary {
 		border-radius: 0;
-		color: $color-navy;
+		color: colors.$color-navy;
 
 		svg * {
-			fill: $color-navy;
+			fill: colors.$color-navy;
 		}
 	}
 
 	&__error {
 		margin-top: 0.5rem;
-		color: $color-error;
+		color: colors.$color-error;
 	}
 
 	&__select.c-button {
@@ -28,14 +28,14 @@ $borderLight: 1px solid $color-gray-100;
 			width: 100%;
 			border: $borderLight;
 			border-right: none;
-			background-color: $g-base-background;
+			background-color: variables.$g-base-background;
 			text-transform: capitalize;
 
 			&:hover,
 			:active,
 			:active:focus {
-				background-color: $g-base-background;
-				border-color: $color-gray-100;
+				background-color: variables.$g-base-background;
+				border-color: colors.$color-gray-100;
 			}
 		}
 	}
@@ -44,7 +44,7 @@ $borderLight: 1px solid $color-gray-100;
 		width: 50%;
 		border: $borderLight;
 		border-right: none;
-		border-radius: $c-input-border-radius 0 0 $c-input-border-radius;
+		border-radius: variables.$c-input-border-radius 0 0 variables.$c-input-border-radius;
 	}
 
 	.c-dropdown__trigger {
@@ -55,8 +55,8 @@ $borderLight: 1px solid $color-gray-100;
 	&__button.c-button.c-button--secondary {
 		min-width: max-content;
 		border: $borderLight;
-		border-radius: 0 $c-input-border-radius $c-input-border-radius 0;
-		background-color: $color-gray-50;
+		border-radius: 0 variables.$c-input-border-radius variables.$c-input-border-radius 0;
+		background-color: colors.$color-gray-50;
 		margin-left: 0;
 	}
 
@@ -82,7 +82,7 @@ $borderLight: 1px solid $color-gray-100;
 	column-gap: 1rem;
 	grid-template-columns: max-content 1fr 15% 15%;
 	font-size: 1.5rem;
-	color: $color-navy;
+	color: colors.$color-navy;
 
 	&__avatar {
 		.c-avatar img {
@@ -94,7 +94,7 @@ $borderLight: 1px solid $color-gray-100;
 			width: 3.2rem;
 			height: 3.2rem;
 			border-radius: 50%;
-			border: dashed 1px $color-gray-200;
+			border: dashed 1px colors.$color-gray-200;
 		}
 	}
 
@@ -103,7 +103,7 @@ $borderLight: 1px solid $color-gray-100;
 
 		&__email {
 			font-size: 1.2rem;
-			color: $color-gray-200;
+			color: colors.$color-gray-200;
 			text-overflow: ellipsis;
 			overflow: hidden;
 		}
@@ -120,12 +120,12 @@ $borderLight: 1px solid $color-gray-100;
 }
 
 .c-icon-button {
-	background-color: $g-base-background;
+	background-color: variables.$g-base-background;
 	border: none;
 	cursor: pointer;
 
 	svg {
-		fill: $color-navy;
+		fill: colors.$color-navy;
 	}
 
 	&:not(:first-child) {

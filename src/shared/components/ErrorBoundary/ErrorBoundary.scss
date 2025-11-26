@@ -1,9 +1,9 @@
-@import "../../../styles/settings/colors";
+@use "../../../styles/settings/colors" as colors;
 
 .c-error-boundary__error-message {
 	display: inline-block;
 	margin: 2rem;
 	padding: 2rem;
-	background-color: $white;
+	background-color: colors.$white;
 	border-radius: 0.4rem;
 }

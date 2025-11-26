@@ -1,4 +1,4 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/variables" as variables;
 
 .l-assignment-response__meta-data {
 	flex-wrap: wrap;
@@ -6,13 +6,13 @@
 	> div {
 		width: 100%;
 
-		@media screen and (min-width: $g-bp2) {
+		@media screen and (min-width: variables.$g-bp2) {
 			width: 50%;
 		}
 
-		@media screen and (min-width: $g-bp3) {
+		@media screen and (min-width: variables.$g-bp3) {
 			width: auto;
-			margin-right: $g-spacer-unit * 2;
+			margin-right: variables.$g-spacer-unit * 2;
 		}
 	}
 }

@@ -43,10 +43,10 @@ import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import {
-  COLLECTIONS_OR_BUNDLES_PATH,
   GET_COLLECTION_QUALITY_CHECK_COLUMNS,
   ITEMS_PER_PAGE,
 } from '../collections-or-bundles.const';
+import { COLLECTIONS_OR_BUNDLES_PATH } from '../collections-or-bundles.routes.ts';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
   CollectionBulkAction,

@@ -1,4 +1,4 @@
-import { type RichEditorState } from '@meemoo/react-components'
+import { type RichEditorState } from '@meemoo/react-components';
 import {
   Button,
   Column,
@@ -9,11 +9,11 @@ import {
   Image,
   Spacer,
   TextArea,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { type StringMap } from 'i18next'
-import { compact } from 'es-toolkit'
-import React, { type FC, useState } from 'react'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { compact } from 'es-toolkit';
+import { type StringMap } from 'i18next';
+import React, { type FC, useState } from 'react';
 
 import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
@@ -33,10 +33,10 @@ import { type CollectionOrBundle } from '../collection.types';
 import { type CollectionAction } from './CollectionOrBundleEdit.types';
 
 interface CollectionOrBundleEditMetaDataProps {
-  type: CollectionOrBundle
-  collection: Avo.Collection.Collection
-  changeCollectionState: (action: CollectionAction) => void
-  onFocus?: () => void
+  type: CollectionOrBundle;
+  collection: Avo.Collection.Collection;
+  changeCollectionState: (action: CollectionAction) => void;
+  onFocus?: () => void;
 }
 
 export const CollectionOrBundleEditMetaData: FC<
@@ -44,25 +44,25 @@ export const CollectionOrBundleEditMetaData: FC<
 > = ({ type, collection, changeCollectionState, onFocus }) => {
   // State
   const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [descriptionLongEditorState, setDescriptionLongEditorState] = useState<
     RichEditorState | undefined
-  >(undefined)
+  >(undefined);
 
-  const isCollection = type === 'collection'
+  const isCollection = type === 'collection';
 
   const updateCollectionLoms = (loms: Avo.Lom.LomField[]) => {
     changeCollectionState({
       collectionProp: 'loms',
       type: 'UPDATE_COLLECTION_PROP',
       collectionPropValue: loms.map((lom) => ({ lom }) as Avo.Lom.Lom),
-    })
-  }
+    });
+  };
 
   const handleBlurRichTextEditor = async () => {
     const { sanitizeHtml, SanitizePreset } = await import(
       '@meemoo/admin-core-ui/admin'
-    )
+    );
     changeCollectionState({
       type: 'UPDATE_COLLECTION_PROP',
       collectionProp: 'description_long',
@@ -72,22 +72,8 @@ export const CollectionOrBundleEditMetaData: FC<
           : collection.description_long || '',
         SanitizePreset.link,
       ),
-    })
-  }
-
-	const handleBlurRichTextEditor = async () => {
-		const { sanitizeHtml, SanitizePreset } = await import('@meemoo/admin-core-ui/admin');
-		changeCollectionState({
-			type: 'UPDATE_COLLECTION_PROP',
-			collectionProp: 'description_long',
-			collectionPropValue: sanitizeHtml(
-				descriptionLongEditorState
-					? descriptionLongEditorState.toHTML()
-					: collection.description_long || '',
-				SanitizePreset.link
-			),
-		});
-	};
+    });
+  };
 
   return (
     <>
@@ -144,7 +130,7 @@ export const CollectionOrBundleEditMetaData: FC<
                             {
                               count,
                             } as StringMap,
-                          )
+                          );
                         },
                         true,
                       )}
@@ -277,18 +263,18 @@ export const CollectionOrBundleEditMetaData: FC<
       <ThumbnailStillsModal
         isOpen={isCollectionsStillsModalOpen}
         onClose={(updated) => {
-          setCollectionsStillsModalOpen(false)
+          setCollectionsStillsModalOpen(false);
 
           if (collection.thumbnail_path !== updated.thumbnail_path) {
             changeCollectionState({
               type: 'UPDATE_COLLECTION_PROP',
               collectionProp: 'thumbnail_path',
               collectionPropValue: updated.thumbnail_path,
-            })
+            });
           }
         }}
         subject={collection}
       />
     </>
-  )
-}
+  );
+};

@@ -20,7 +20,7 @@ import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
 } from './shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { ROUTE_PARTS } from './shared/constants';
+import { ROUTE_PARTS } from './shared/constants/routes';
 import { CustomError } from './shared/helpers/custom-error';
 import { getEnv } from './shared/helpers/env';
 import { ReactRouter7Adapter } from './shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
@@ -250,5 +250,6 @@ const App: FC = () => {
 };
 
 export const AppWithAdminCoreConfig = withAdminCoreConfig(App) as FC;
+export default AppWithAdminCoreConfig;
 
 let confirmUnsavedChangesCallback: ((navigateAway: boolean) => void) | null;

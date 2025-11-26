@@ -1,7 +1,7 @@
-@import "../../../styles/settings/colors";
+@use "../../../styles/settings/colors" as colors;
 
 .c-alert-bar {
-	background-color: $color-yellow;
+	background-color: colors.$color-yellow;
 	color: #fff;
 
 	.c-button__icon svg,

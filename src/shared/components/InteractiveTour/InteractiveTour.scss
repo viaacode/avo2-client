@@ -1,4 +1,4 @@
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/variables" as variables;
 
 .react-joyride__tooltip {
 	h4 {
@@ -17,7 +17,7 @@
 }
 
 .c-interactive-tour__button {
-	@media (max-width: $g-bp2) {
+	@media (max-width: variables.$g-bp2) {
 		display: none;
 	}
 }

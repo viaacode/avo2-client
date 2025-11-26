@@ -1,23 +1,23 @@
-@import "../../../styles/settings/colors";
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/colors" as colors;
+@use "../../../styles/settings/variables" as variables;
 
 .c-global-footer {
-	border-top: 1px solid $color-gray-100;
-	padding: $g-spacer-unit * 6 $g-spacer-unit * 3 $g-spacer-unit * 10 $g-spacer-unit * 3;
+	border-top: 1px solid colors.$color-gray-100;
+	padding: variables.$g-spacer-unit * 6 variables.$g-spacer-unit * 3 variables.$g-spacer-unit * 10 variables.$g-spacer-unit * 3;
 	margin-top: auto;
 	font-size: 1.3rem;
-	color: $color-gray-500;
+	color: colors.$color-gray-500;
 	min-height: 40rem;
 
 	.c-global-footer__inner {
 		display: grid;
 		grid-template-columns: repeat(4, 1fr);
-		grid-gap: $g-spacer-unit * 4;
+		grid-gap: variables.$g-spacer-unit * 4;
 
 		/**
 * Mobile
 */
-		@media screen and (max-width: $g-bp2) {
+		@media screen and (max-width: variables.$g-bp2) {
 			grid-template-columns: 1fr;
 			grid-template-rows: auto;
 		}
@@ -25,7 +25,7 @@
 		a {
 			display: flex;
 			align-items: center;
-			color: $color-gray-500;
+			color: colors.$color-gray-500;
 			text-decoration: none;
 			padding: 0;
 			box-sizing: border-box;
@@ -52,7 +52,7 @@
 			display: flex;
 			flex-direction: column;
 			flex-wrap: nowrap;
-			gap: $g-spacer-unit;
+			gap: variables.$g-spacer-unit;
 
 			&.c-global-footer__column-1 {
 				grid-column: 1 / 2;
@@ -78,7 +78,7 @@
 			/**
 * Mobile
 */
-			@media screen and (max-width: $g-bp2) {
+			@media screen and (max-width: variables.$g-bp2) {
 				&.c-global-footer__column-1 {
 					grid-column: 1 / 2;
 					grid-row: 1 / 2;
@@ -110,26 +110,26 @@
 					display: inline-block;
 
 					&:not(.u-text-decoration-none):hover {
-						color: $color-teal-bright !important;
-						text-decoration: underline $color-teal-bright !important;
+						color: colors.$color-teal-bright !important;
+						text-decoration: underline colors.$color-teal-bright !important;
 					}
 				}
 			}
 		}
 
 		.c-nav__item--i {
-			color: $color-gray-500;
+			color: colors.$color-gray-500;
 
 			&:hover,
 			&:focus {
 				background-color: transparent;
-				color: $color-gray-500;
+				color: colors.$color-gray-500;
 			}
 		}
 	}
 }
 
-@media (min-width: $g-bp2) {
+@media (min-width: variables.$g-bp2) {
 	.c-global-footer__inner {
 		display: flex;
 		justify-content: space-between;

@@ -1,4 +1,4 @@
-import { RichTextEditorWithInternalState } from '@meemoo/react-components'
+import { RichTextEditorWithInternalState } from '@meemoo/react-components';
 import {
   Button,
   Column,
@@ -14,10 +14,10 @@ import {
   ToolbarItem,
   ToolbarLeft,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { isEqual, isNil, isString } from 'es-toolkit'
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { isEqual, isNil, isString } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import React, {
   type FC,
   type ReactNode,
@@ -25,8 +25,8 @@ import React, {
   useCallback,
   useEffect,
   useState,
-} from 'react'
-import { Link } from 'react-router-dom'
+} from 'react';
+import { Link } from 'react-router-dom';
 
 import { buildGlobalSearchLink } from '../../../assignment/helpers/build-search-link';
 import { commonUserAtom } from '../../../authentication/authentication.store';
@@ -39,7 +39,7 @@ import {
   RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
   RICH_TEXT_EDITOR_OPTIONS_DEFAULT,
 } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
-import { getMoreOptionsLabel } from '../../../shared/constants/index';
+import { getMoreOptionsLabel } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { createDropdownMenuItem } from '../../../shared/helpers/dropdown';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
@@ -60,26 +60,26 @@ import {
 } from './FragmentEdit.const';
 import { FragmentEditAction } from './FragmentEdit.types';
 
-import './FragmentEdit.scss'
+import './FragmentEdit.scss';
 import { tText } from '../../../shared/helpers/translate-text';
 
 interface FragmentEditProps {
-  index: number
-  collectionId: string
-  numberOfFragments: number
-  changeCollectionState: (action: CollectionAction) => void
-  openOptionsId: number | string | null
-  setOpenOptionsId: (id: number | string | null) => void
+  index: number;
+  collectionId: string;
+  numberOfFragments: number;
+  changeCollectionState: (action: CollectionAction) => void;
+  openOptionsId: number | string | null;
+  setOpenOptionsId: (id: number | string | null) => void;
 
   /**
    * true: parent is a collection
    * false: parent is a bundle
    */
-  isParentACollection: boolean
-  fragment: Avo.Collection.Fragment
-  allowedToAddLinks: boolean
-  renderWarning?: () => ReactNode | null
-  onFocus?: () => void
+  isParentACollection: boolean;
+  fragment: Avo.Collection.Fragment;
+  allowedToAddLinks: boolean;
+  renderWarning?: () => ReactNode | null;
+  onFocus?: () => void;
 }
 
 const FragmentEdit: FC<FragmentEditProps> = ({
@@ -95,7 +95,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
   renderWarning = () => null,
   onFocus,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   /**
    * https://meemoo.atlassian.net/browse/AVO-3370
@@ -103,7 +103,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
    * We cannot update the fragment states live in the parent component, because that would also rerender the video players
    * and that would cause the video players to lose their current time setting
    */
-  const [shouldSave, setShouldSave] = useState(false)
+  const [shouldSave, setShouldSave] = useState(false);
 
   /**
    * Save the properties of this fragment locally and only update the parent component state, if the user clicks outside the fragment edit component
@@ -114,38 +114,38 @@ const FragmentEdit: FC<FragmentEditProps> = ({
    */
   const [useCustomFields, setUseCustomFields] = useState(
     fragment.use_custom_fields,
-  )
+  );
 
   const getTitle = useCallback(() => {
     if (useCustomFields) {
-      return fragment.custom_title || ''
+      return fragment.custom_title || '';
     }
-    return fragment.item_meta?.title || ''
-  }, [useCustomFields, fragment.custom_title, fragment.item_meta])
+    return fragment.item_meta?.title || '';
+  }, [useCustomFields, fragment.custom_title, fragment.item_meta]);
 
   const getDescription = (): string | undefined => {
-    let description: string | undefined | null
+    let description: string | undefined | null;
     if (useCustomFields) {
-      description = fragment.custom_description
+      description = fragment.custom_description;
     } else {
-      description = fragment?.item_meta?.description
+      description = fragment?.item_meta?.description;
     }
     if (isString(description)) {
-      description = convertToHtml(description)
+      description = convertToHtml(description);
     }
-    return description || undefined
-  }
+    return description || undefined;
+  };
 
-  const [customTitle, setCustomTitle] = useState(getTitle())
-  const [customDescription, setCustomDescription] = useState(getDescription())
+  const [customTitle, setCustomTitle] = useState(getTitle());
+  const [customDescription, setCustomDescription] = useState(getDescription());
 
-  const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false)
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
+  const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 
   // Check whether the current fragment is the first and/or last fragment in collection
-  const isFirst = (fragmentIndex: number) => fragmentIndex === 0
+  const isFirst = (fragmentIndex: number) => fragmentIndex === 0;
   const isLast = (fragmentIndex: number) =>
-    fragmentIndex === numberOfFragments - 1
+    fragmentIndex === numberOfFragments - 1;
 
   const FRAGMENT_DROPDOWN_ITEMS = [
     // TODO: DISABLED FEATURE
@@ -168,7 +168,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
     // TODO: DISABLED FEATURE
     // createDropdownMenuItem('copyToCollection', 'Kopiëren naar andere collectie', 'copy'),
     // createDropdownMenuItem('moveToCollection', 'Verplaatsen naar andere collectie', 'arrow-right'),
-  ]
+  ];
 
   const submitStateToParent = useCallback(() => {
     changeCollectionState({
@@ -176,26 +176,26 @@ const FragmentEdit: FC<FragmentEditProps> = ({
       fragmentProp: 'use_custom_fields',
       fragmentPropValue: useCustomFields,
       type: 'UPDATE_FRAGMENT_PROP',
-    })
+    });
     changeCollectionState({
       index,
       fragmentProp: 'custom_title',
       fragmentPropValue: customTitle,
       type: 'UPDATE_FRAGMENT_PROP',
-    })
+    });
     changeCollectionState({
       index,
       fragmentProp: 'custom_description',
       fragmentPropValue: customDescription,
       type: 'UPDATE_FRAGMENT_PROP',
-    })
+    });
   }, [
     changeCollectionState,
     customDescription,
     customTitle,
     index,
     useCustomFields,
-  ])
+  ]);
 
   const handleClickEvent = (evt: MouseEvent) => {
     if ((evt.target as HTMLElement)?.closest('.c-fragment-edit__form')) {
@@ -204,45 +204,45 @@ const FragmentEdit: FC<FragmentEditProps> = ({
       // User clicked inside the fragment edit component
       // Do not update the parent state
       // So the video playback will not be reset
-      return
+      return;
     }
     // User clicked outside the fragment edit component
     // Update parent state => which will trigger a re-render of the fragment edit component
     // Which will reset the video playback
     setTimeout(() => {
-      setShouldSave(true)
-    }, FRAGMENT_EDIT_DELAY)
-  }
+      setShouldSave(true);
+    }, FRAGMENT_EDIT_DELAY);
+  };
 
   useEffect(() => {
-    setShouldSave(true)
-  }, [useCustomFields])
+    setShouldSave(true);
+  }, [useCustomFields]);
 
   useEffect(() => {
     if (shouldSave) {
-      submitStateToParent()
-      setShouldSave(false)
+      submitStateToParent();
+      setShouldSave(false);
     }
-  }, [shouldSave, submitStateToParent])
+  }, [shouldSave, submitStateToParent]);
 
   useEffect(() => {
-    window.addEventListener('click', handleClickEvent)
-    return () => window.removeEventListener('click', handleClickEvent)
-  }, [])
+    window.addEventListener('click', handleClickEvent);
+    return () => window.removeEventListener('click', handleClickEvent);
+  }, []);
 
-  const itemMetaData = (fragment as any).item_meta
+  const itemMetaData = (fragment as any).item_meta;
 
   const onDeleteFragment = () => {
-    setDeleteModalOpen(false)
-    setOpenOptionsId(null)
+    setDeleteModalOpen(false);
+    setOpenOptionsId(null);
 
     changeCollectionState({
       index,
       type: 'DELETE_FRAGMENT',
-    })
+    });
 
     const eventObjectType =
-      COLLECTION_FRAGMENT_TYPE_TO_EVENT_OBJECT_TYPE[fragment.type]
+      COLLECTION_FRAGMENT_TYPE_TO_EVENT_OBJECT_TYPE[fragment.type];
     if (eventObjectType) {
       // We don't have to track the deletion of TEXT, ZOEK, BOUW blocks, only ITEM, COLLECTION, ASSIGNMENT
       trackEvents(
@@ -252,11 +252,11 @@ const FragmentEdit: FC<FragmentEditProps> = ({
           action: 'delete',
         },
         commonUser,
-      )
+      );
     }
 
-    ToastService.success(GET_FRAGMENT_DELETE_SUCCESS_MESSAGES()[fragment.type])
-  }
+    ToastService.success(GET_FRAGMENT_DELETE_SUCCESS_MESSAGES()[fragment.type]);
+  };
 
   // TODO: DISABLED FEATURE
   // const onDuplicateFragment = () => {
@@ -280,7 +280,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
   // };
 
   const onClickDropdownItem = (item: ReactText) => {
-    setOpenOptionsId(null)
+    setOpenOptionsId(null);
     switch (item) {
       // TODO: DISABLED FEATURE
       // case 'duplicate':
@@ -294,17 +294,17 @@ const FragmentEdit: FC<FragmentEditProps> = ({
         const routeInfo =
           fragment.type === Avo.Core.BlockItemType.COLLECTION
             ? APP_PATH.COLLECTION_DETAIL
-            : APP_PATH.ASSIGNMENT_DETAIL
+            : APP_PATH.ASSIGNMENT_DETAIL;
         window.open(
           buildLink(routeInfo.route, { id: fragment.external_id }),
           '_blank',
-        )
-        break
+        );
+        break;
       }
 
       case FragmentEditAction.DELETE:
-        setDeleteModalOpen(true)
-        break
+        setDeleteModalOpen(true);
+        break;
 
       // TODO: DISABLED FEATURE
       // case 'copyToCollection':
@@ -314,17 +314,17 @@ const FragmentEdit: FC<FragmentEditProps> = ({
       // 	onMoveFragmentToCollection();
       // 	break;
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   // Render functions
   const renderReorderButton = (index: number, direction: 'up' | 'down') => {
     if (direction === 'up' && isFirst(index)) {
-      return null
+      return null;
     }
     if (direction === 'down' && isLast(index)) {
-      return null
+      return null;
     }
     return (
       <Button
@@ -353,15 +353,15 @@ const FragmentEdit: FC<FragmentEditProps> = ({
             index,
             direction,
             type: 'SWAP_FRAGMENTS',
-          })
+          });
         }}
       />
-    )
-  }
+    );
+  };
 
   const renderForm = () => {
     const disableVideoFields: boolean =
-      !useCustomFields && fragment.type !== Avo.Core.BlockItemType.TEXT
+      !useCustomFields && fragment.type !== Avo.Core.BlockItemType.TEXT;
 
     return (
       <Form className="c-fragment-edit__form">
@@ -425,7 +425,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
                 )}
                 value={customDescription || undefined}
                 onChange={(newDescription: string) => {
-                  setCustomDescription(newDescription)
+                  setCustomDescription(newDescription);
                 }}
                 disabled={disableVideoFields}
                 onFocus={onFocus}
@@ -434,8 +434,8 @@ const FragmentEdit: FC<FragmentEditProps> = ({
           </FormGroup>
         )}
       </Form>
-    )
-  }
+    );
+  };
 
   const renderThumbnailOrVideo = () => {
     if (fragment.type === 'ITEM') {
@@ -457,7 +457,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
           canPlay={!isCutModalOpen && !isDeleteModalOpen}
           trackPlayEvent={false}
         />
-      )
+      );
     }
     if (fragment.type === 'COLLECTION' || fragment.type === 'ASSIGNMENT') {
       return (
@@ -465,16 +465,16 @@ const FragmentEdit: FC<FragmentEditProps> = ({
           category={Avo.ContentType.English.COLLECTION}
           src={itemMetaData.thumbnail_path}
         />
-      )
+      );
     }
-  }
+  };
 
   const renderToolbar = () => {
     const fragmentIsPublished: boolean | undefined = (
       fragment.item_meta as
         | Avo.Collection.Collection
         | Avo.Assignment.Assignment
-    )?.is_public
+    )?.is_public;
     return (
       <Toolbar>
         <ToolbarLeft>
@@ -539,8 +539,8 @@ const FragmentEdit: FC<FragmentEditProps> = ({
           </ToolbarItem>
         </ToolbarRight>
       </Toolbar>
-    )
-  }
+    );
+  };
 
   return (
     <div className="c-fragment-edit">
@@ -591,8 +591,8 @@ const FragmentEdit: FC<FragmentEditProps> = ({
           />
         )}
     </div>
-  )
-}
+  );
+};
 
 function areEqual(prevProps: FragmentEditProps, nextProps: FragmentEditProps) {
   return (
@@ -602,7 +602,7 @@ function areEqual(prevProps: FragmentEditProps, nextProps: FragmentEditProps) {
     isEqual(prevProps.openOptionsId, nextProps.openOptionsId) &&
     prevProps.allowedToAddLinks === nextProps.allowedToAddLinks &&
     prevProps.index === nextProps.index
-  )
+  );
 }
 
-export default React.memo(FragmentEdit, areEqual)
+export default React.memo(FragmentEdit, areEqual);

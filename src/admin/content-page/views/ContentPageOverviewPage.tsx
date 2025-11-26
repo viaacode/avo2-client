@@ -1,9 +1,9 @@
-import { Button } from '@viaa/avo2-components'
-import { PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import React, { type FC, lazy, Suspense, useCallback } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate } from 'react-router'
+import { Button } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
+import React, { type FC, lazy, Suspense, useCallback } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
@@ -15,35 +15,35 @@ import {
   AdminLayoutBody,
   AdminLayoutTopBarRight,
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { CONTENT_PAGE_PATH } from '../content-page.consts';
+import { CONTENT_PAGE_PATH } from '../content-page.routes.ts';
 
-import './ContentPage.scss'
+import './ContentPage.scss';
 
 const ContentPageOverview = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
     default: adminCoreModule.ContentPageOverview,
   })),
-)
+);
 
-const { CREATE_CONTENT_PAGES } = PermissionName
+const { CREATE_CONTENT_PAGES } = PermissionName;
 
 export const ContentPageOverviewPage: FC = () => {
-  const navigateFunc = useNavigate()
-  const commonUser = useAtomValue(commonUserAtom)
+  const navigateFunc = useNavigate();
+  const commonUser = useAtomValue(commonUserAtom);
 
   const hasPerm = useCallback(
     (permission: PermissionName) =>
       commonUser?.permissions?.includes(permission),
     [commonUser],
-  )
+  );
 
   const renderPageContent = () => {
     return (
       <Suspense fallback={<FullPageSpinner />}>
         <ContentPageOverview commonUser={commonUser} />
       </Suspense>
-    )
-  }
+    );
+  };
 
   return (
     <PermissionGuard
@@ -94,7 +94,7 @@ export const ContentPageOverviewPage: FC = () => {
         </AdminLayoutBody>
       </AdminLayout>
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default ContentPageOverviewPage
+export default ContentPageOverviewPage;

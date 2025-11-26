@@ -1,5 +1,5 @@
-@import "../../../styles/settings/colors";
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/colors" as colors;
+@use "../../../styles/settings/variables" as variables;
 
 // Elements
 .c-navigation-detail__table {
@@ -7,7 +7,7 @@
 		transition: background 500ms ease-in-out;
 
 		&.c-navigation-detail__table-row--active {
-			background-color: $color-gray-100;
+			background-color: colors.$color-gray-100;
 		}
 	}
 
@@ -27,18 +27,18 @@
 }
 
 .c-navigation-detail__nav-label {
-	margin: 0 auto 0 ($g-spacer-unit * 3);
+	margin: 0 auto 0 (variables.$g-spacer-unit * 3);
 }
 
 .c-admin__header {
-	border-bottom: 0.1rem solid $color-gray-100;
-	background-color: $color-gray-50;
+	border-bottom: 0.1rem solid colors.$color-gray-100;
+	background-color: colors.$color-gray-50;
 	display: flex;
 	padding: 2rem 4rem;
 
 	.c-admin__page-title {
 		font-size: 2.4rem;
-		font-family: $g-headings-font-family;
+		font-family: variables.$g-headings-font-family;
 		font-weight: 500;
 	}
 }
@@ -47,7 +47,7 @@
 	margin: 4rem;
 
 	.c-navigation-detail__table .c-table {
-		border: 1px solid $color-gray-100;
+		border: 1px solid colors.$color-gray-100;
 		border-radius: 0.3rem;
 		border-collapse: initial;
 	}

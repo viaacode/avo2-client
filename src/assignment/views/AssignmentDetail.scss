@@ -1,8 +1,8 @@
-@import "../../styles/settings/variables";
-@import "../../styles/settings/colors";
+@use "../../styles/settings/variables" as variables;
+@use "../../styles/settings/colors" as colors;
 
 .c-assignment-detail--metadata {
-	background-color: $color-gray-50;
+	background-color: colors.$color-gray-50;
 
 	.c-assignment-detail--metadata__inner-container {
 		margin-left: 10.6rem; // = distance assignment-item icon + paddings

@@ -1,4 +1,4 @@
-@import "../../../styles/settings/colors";
+@use "../../../styles/settings/colors" as colors;
 
 .c-draggable-list {
 	.o-grid-col-static {
@@ -10,7 +10,7 @@
 		transition: background-color ease-in-out 0.3s;
 
 		&:hover {
-			background-color: $color-gray-50;
+			background-color: colors.$color-gray-50;
 		}
 
 		&:last-child {

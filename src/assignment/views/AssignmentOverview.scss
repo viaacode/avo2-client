@@ -2,7 +2,7 @@
 @import "../../styles/utilities";
 
 .m-assignment-overview {
-	@media screen and (max-width: ($g-bp2 - 1)) {
+	@media screen and (max-width: (variables.$g-bp2 - 1)) {
 		&__header-toolbar {
 			&.c-toolbar {
 				@include blockifyToolbar();
@@ -17,7 +17,7 @@
 		}
 
 		.c-assignment-overview__actions {
-			margin-top: $g-spacer-unit;
+			margin-top: variables.$g-spacer-unit;
 		}
 	}
 
@@ -25,7 +25,7 @@
 		.c-toolbar {
 			&__left,
 			&__right {
-				margin-bottom: $g-spacer-unit * 1.5;
+				margin-bottom: variables.$g-spacer-unit * 1.5;
 			}
 
 			&__left {
@@ -55,7 +55,7 @@
 			padding: 0.6rem;
 			border-radius: 50%;
 			color: white;
-			background-color: $color-teal-bright;
+			background-color: colors.$color-teal-bright;
 
 			.o-svg-icon {
 				width: 1.6rem;
@@ -122,6 +122,6 @@
 	}
 
 	&__search-input {
-		margin-left: $g-spacer-unit;
+		margin-left: variables.$g-spacer-unit;
 	}
 }
