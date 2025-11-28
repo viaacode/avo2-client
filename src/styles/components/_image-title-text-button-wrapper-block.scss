@@ -1,9 +1,7 @@
 @use "../settings/colors" as colors;
 @use "../settings/variables" as variables;
 
-$component: "c-image-title-text-button-wrapper";
-
-.#{$component} {
+.c-image-title-text-button-wrapper {
 	&--image {
 		&-right {
 			@media screen and (max-width: variables.$o-grid-bp2) {

@@ -266,5 +266,5 @@ scripts/client-whitelist.json
 .graphqlconfig
 schema.graphql
 /tracing_output_folder
-
 graphql.config.yml
+/.react-router

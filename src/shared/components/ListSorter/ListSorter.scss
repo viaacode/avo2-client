@@ -1,6 +1,5 @@
+@use "../../../styles/settings/colors" as colors;
 @use "../../../styles/settings/variables" as variables;
-
-$component: "c-list-sorter";
 
 // Sizes
 $block-editor-border-radius: 0.4rem;
@@ -18,7 +17,7 @@ $block-editor-thumbnail-background-color: colors.$color-gray-50;
 // Shorthands
 $block-editor-border: 0.1rem solid $block-editor-border-color;
 
-.#{$component} {
+.c-list-sorter {
 	&__item,
 	&__divider {
 		margin-bottom: $block-editor-gap;

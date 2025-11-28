@@ -2,8 +2,6 @@
 @use "../settings/colors" as colors;
 @use "../settings/variables" as variables;
 
-$component: "c-content-input";
-
 @mixin hide-without-interaction-loss {
 	position: absolute;
 	pointer-events: none;
@@ -13,7 +11,7 @@ $component: "c-content-input";
 	overflow: hidden;
 }
 
-.#{$component} {
+.c-content-input {
 	display: flex;
 	flex-flow: row nowrap;
 
@@ -67,7 +65,7 @@ $component: "c-content-input";
 	}
 
 	&--open {
-		.#{$component} {
+		.c-content-input {
 			&__value {
 				@include hide-without-interaction-loss;
 			}
@@ -75,7 +73,7 @@ $component: "c-content-input";
 	}
 
 	&--closed {
-		.#{$component} {
+		.c-content-input {
 			&__field {
 				@include hide-without-interaction-loss;
 			}

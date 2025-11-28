@@ -1,5 +1,6 @@
 @use "../../../styles/settings/colors" as colors;
 @use "../../../styles/settings/variables" as variables;
+@use "../../../styles/components/input" as input;
 
 .c-content table td {
 	border: 0.1rem solid colors.$color-gray-100;
@@ -9,7 +10,7 @@
 	border: 0.1rem solid colors.$color-gray-150;
 	border-radius: 0.3rem;
 	background-color: #fff;
-	@include textfield-transition;
+	@include input.textfield-transition;
 
 	&.disabled {
 		.bf-controlbar {

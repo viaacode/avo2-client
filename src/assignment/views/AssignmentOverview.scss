@@ -1,11 +1,12 @@
-@import "../../styles/settings";
-@import "../../styles/utilities";
+@use "../../styles/settings/colors" as colors;
+@use "../../styles/settings/variables" as variables;
+@use "../../styles/utilities" as utilities;
 
 .m-assignment-overview {
 	@media screen and (max-width: (variables.$g-bp2 - 1)) {
 		&__header-toolbar {
 			&.c-toolbar {
-				@include blockifyToolbar();
+				@include utilities.blockifyToolbar();
 			}
 
 			> .c-toolbar__right {

@@ -1,10 +1,8 @@
 @use "../../styles/settings/colors" as colors;
 @use "../../styles/settings/variables" as variables;
 
-$bp: variables.$g-bp3;
-
 .c-account-link {
-	@media screen and (min-width: $bp) {
+	@media screen and (min-width: variables.$g-bp3) {
 		height: 100px;
 		border: 2px solid #e4f1f3;
 	}
@@ -14,7 +12,7 @@ $bp: variables.$g-bp3;
 		justify-content: center;
 		flex-direction: column;
 
-		@media screen and (max-width: ($bp - 1px)) {
+		@media screen and (max-width: (variables.$g-bp3 - 1px)) {
 			margin-top: variables.$g-spacer-unit;
 		}
 
@@ -27,13 +25,13 @@ $bp: variables.$g-bp3;
 
 			margin: 0 !important;
 
-			@media screen and (max-width: ($bp - 1px)) {
+			@media screen and (max-width: (variables.$g-bp3 - 1px)) {
 				min-height: 100px;
 			}
 		}
 
 		&--itsme-eid {
-			@media screen and (min-width: $bp) {
+			@media screen and (min-width: variables.$g-bp3) {
 				border-right: 2px solid #e4f1f3;
 			}
 		}

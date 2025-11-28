@@ -45,7 +45,7 @@
 	}
 }
 
-@media (min-width: $o-grid-bp2) {
+@media (min-width: variables.$o-grid-bp2) {
 	.c-search-result {
 		flex-direction: row;
 		align-items: stretch;
@@ -59,7 +59,7 @@
 	}
 }
 
-@media (min-width: $o-grid-bp3) {
+@media (min-width: variables.$o-grid-bp3) {
 	.c-search-result__title {
 		font-size: 2.4rem;
 	}

@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "../settings/colors" as colors;
 @use "../settings/variables" as variables;
 
@@ -33,7 +34,7 @@
 }
 
 .c-navbar--inverse {
-	background-color: darken(colors.$color-night-blue, 5%);
+	background-color: color.adjust(colors.$color-night-blue, $lightness: -5%);
 }
 
 .c-navbar--fixed {
@@ -64,7 +65,7 @@
 	border-bottom: 0.1rem solid colors.$color-gray-100;
 
 	&.c-navbar--inverse {
-		border-bottom: 0.1rem solid darken(colors.$color-night-blue, 10%);
+		border-bottom: 0.1rem solid color.adjust(colors.$color-night-blue, $lightness: -10%);
 		box-shadow: none;
 	}
 }

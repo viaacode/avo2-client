@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "../../../styles/settings/colors" as colors;
 
 .c-nav {
@@ -40,7 +41,7 @@
 
 	&:hover,
 	&:focus {
-		background-color: lighten(colors.$color-night-blue, 5%);
+	    background-color: color.adjust(colors.$color-night-blue, $lightness: 5%);
 		color: #fff;
 	}
 }
@@ -56,12 +57,12 @@
 }
 
 .c-nav__item--i.c-nav__item--active {
-	background-color: darken(colors.$color-night-blue, 10%);
+  	background-color: color.adjust(colors.$color-night-blue, $lightness: -10%);
 	color: #fff;
 
 	&:hover,
 	&:focus {
-		background-color: darken(colors.$color-night-blue, 30%);
+	    background-color: color.adjust(colors.$color-night-blue, $lightness: -30%);
 	}
 }
 

@@ -1,8 +1,6 @@
 @use "../../styles/settings/variables" as variables;
 
-$component: "c-assignment-block-description-buttons";
-
-.#{$component} {
+.c-assignment-block-description-buttons {
 	&--default {
 		display: none;
 

@@ -1,5 +1,5 @@
 @use "sass:math";
-@import "../settings/variables";
+@use "../settings/variables" as variables;
 
 /* ==========================================================================
    Utility: Spacing
@@ -47,11 +47,6 @@
 .u-p-b-0 {
 	padding-bottom: 0 !important;
 }
-
-/* Variables
-   ========================================================================== */
-
-variables.$g-spacer-unit: 0.8rem !default;
 
 /* All
    ========================================================================== */

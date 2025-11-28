@@ -10,7 +10,7 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router';
 import { createBrowserRouter } from 'react-router-dom';
 
-import ALL_APP_ROUTES from './routes';
+import ALL_APP_ROUTES from './routes-real.ts';
 
 // Set moment language to Dutch
 setDefaultOptions({

@@ -1,8 +1,7 @@
+@use "../../styles/settings/colors" as colors;
 @use "../../styles/settings/variables" as variables;
 
-$component: "c-add-block";
-
-.c-modal .#{$component} {
+.c-modal .c-add-block {
 	&__list {
 		list-style: none;
 		margin: 0;

@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "../../../styles/settings/colors" as colors;
 @use "../../../styles/settings/variables" as variables;
 
@@ -10,7 +11,7 @@
 	gap: variables.$g-spacer-unit;
 
 	&.c-Alert--info {
-		background-color: variables.$c-alert-info-bg-color;
-		border-color: darken(variables.$c-alert-info-bg-color, 10%);
+		background-color: colors.$c-alert-info-bg-color;
+		border-color: color.adjust(colors.$c-alert-info-bg-color, $lightness: -10%);
 	}
 }

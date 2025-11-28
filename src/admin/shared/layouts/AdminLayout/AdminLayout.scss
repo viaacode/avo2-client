@@ -31,7 +31,7 @@
 
 	&.l-admin--with-actions {
 		// Prevent overlap with admin actions bar when present
-		padding-bottom: $admin-actions-bar-height;
+		padding-bottom: variables.$admin-actions-bar-height;
 	}
 
 	.c-table.c-table_detail-page {

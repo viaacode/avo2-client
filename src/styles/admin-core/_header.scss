@@ -1,9 +1,7 @@
 @use "../settings/colors" as colors;
 @use "../settings/variables" as variables;
 
-$base: "c-admin-core";
-
-.#{$base} {
+.c-admin-core {
 	&.c-admin {
 		position: relative;
 		max-width: 100%;

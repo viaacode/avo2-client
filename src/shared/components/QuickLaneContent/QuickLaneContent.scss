@@ -1,7 +1,8 @@
+@use "../../../styles/settings/colors" as colors;
 @use "../../../styles/settings/variables" as variables;
 
 .c-thumbnail.m-content-thumbnail {
-	width: $m-content-thumbnail-width;
+	width: variables.$m-content-thumbnail-width;
 }
 
 .m-quick-lane-content {

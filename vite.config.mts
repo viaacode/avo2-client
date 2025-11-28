@@ -40,6 +40,9 @@ export default defineConfig((): UserConfig => {
 			viteTsconfigPaths(),
 			svgrPlugin(),
 		],
+		ssr: {
+			noExternal: ["@viaa/avo2-types"],
+		},
 		resolve: {
 			alias: {
 				'~': path.resolve(__dirname, 'public'),

@@ -1,6 +1,7 @@
+@use "../../../styles/settings/colors" as colors;
 @use "../../../styles/settings/variables" as variables;
 
-$borderLight: 1px solid colors.$color-gray-100;
+$border-light: 1px solid colors.$color-gray-100;
 
 .c-add-colleague {
 	display: flex;
@@ -26,7 +27,7 @@ $borderLight: 1px solid colors.$color-gray-100;
 
 		&.c-button--primary {
 			width: 100%;
-			border: $borderLight;
+			border: $border-light;
 			border-right: none;
 			background-color: variables.$g-base-background;
 			text-transform: capitalize;
@@ -42,7 +43,7 @@ $borderLight: 1px solid colors.$color-gray-100;
 
 	.c-input {
 		width: 50%;
-		border: $borderLight;
+		border: $border-light;
 		border-right: none;
 		border-radius: variables.$c-input-border-radius 0 0 variables.$c-input-border-radius;
 	}
@@ -54,14 +55,14 @@ $borderLight: 1px solid colors.$color-gray-100;
 
 	&__button.c-button.c-button--secondary {
 		min-width: max-content;
-		border: $borderLight;
+		border: $border-light;
 		border-radius: 0 variables.$c-input-border-radius variables.$c-input-border-radius 0;
 		background-color: colors.$color-gray-50;
 		margin-left: 0;
 	}
 
 	.c-dropdown__content-open {
-		border: $borderLight;
+		border: $border-light;
 		margin-top: 0;
 		width: fit-content;
 	}

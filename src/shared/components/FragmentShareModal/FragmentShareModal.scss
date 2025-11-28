@@ -1,12 +1,12 @@
 @use "../../../styles/settings/colors" as colors;
 @use "../../../styles/settings/variables" as variables;
 
-variables.$c-modal-padding-horizontal: 2.4rem !default;
+$c-modal-padding-horizontal: 2.4rem !default;
 
 div.embed-selection.o-container-vertical {
-	padding: 0 variables.$c-modal-padding-horizontal;
-	margin-left: -variables.$c-modal-padding-horizontal;
-	margin-right: -variables.$c-modal-padding-horizontal;
+	padding: 0 $c-modal-padding-horizontal;
+	margin-left: $c-modal-padding-horizontal;
+	margin-right: $c-modal-padding-horizontal;
 
 	.prepend-logo {
 		margin-right: 1rem;
@@ -14,11 +14,11 @@ div.embed-selection.o-container-vertical {
 	}
 
 	&.embed-selection-selected {
-		padding-bottom: variables.$c-modal-padding-horizontal;
+		padding-bottom: $c-modal-padding-horizontal;
 	}
 
 	~ .embed-content-wrapper {
-		padding-top: variables.$c-modal-padding-horizontal;
+		padding-top: $c-modal-padding-horizontal;
 	}
 }
 

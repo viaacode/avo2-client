@@ -51,7 +51,7 @@ $grid-gutter: 2.4rem;
 
 		.c-tabs {
 			@media screen and (max-width: (variables.$g-bp3 - 1)) {
-				border-top: 1px solid $c-register-login-view-modal-border-color;
+				border-top: 1px solid variables.$c-register-login-view-modal-border-color;
 			}
 		}
 
@@ -62,6 +62,6 @@ $grid-gutter: 2.4rem;
 }
 
 .c-register-login-view__text {
-	background: $c-register-login-view-modal-background-color;
+	background: variables.$c-register-login-view-modal-background-color;
 	padding: variables.$g-spacer-unit * 4;
 }

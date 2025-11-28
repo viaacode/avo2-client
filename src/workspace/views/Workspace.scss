@@ -1,5 +1,4 @@
-@import "../../styles/settings/index";
-@import "../../styles/utilities";
+@use "../../styles/utilities/toolbar" as toolbar;
 @use "../../styles/settings/variables" as variables;
 
 .p-my-workspace__action-placeholder {
@@ -12,7 +11,7 @@
 
 	@media screen and (max-width: (variables.$g-bp2 - 1)) {
 		.c-navbar .c-toolbar {
-			@include blockifyToolbar();
+			@include toolbar.blockifyToolbar();
 		}
 	}
 

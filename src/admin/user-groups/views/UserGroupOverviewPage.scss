@@ -1,5 +1,6 @@
+@use "../../../styles/settings/colors" as colors;
 @use "../../../styles/settings/variables" as variables;
-@import "../../../styles/components/input";
+@use "../../../styles/components/input" as input;
 
 .p-admin__user-group-overview {
 	margin: 0 auto;
@@ -11,8 +12,8 @@
 		position: relative;
 
 		.c-input__field {
-			@include textfield-transition;
-			@include textfield-focus;
+			@include input.textfield-transition;
+			@include input.textfield-focus;
 			border-radius: variables.$c-input-border-radius;
 			background-color: variables.$c-input-bg-color;
 			border: 1px solid variables.$c-input-border-color;
@@ -53,7 +54,6 @@
 		margin-bottom: variables.$g-spacer-unit * 4;
 
 		thead {
-			position: -webkit-sticky; /* Safari */
 			position: sticky;
 			top: 0;
 			background-color: white;

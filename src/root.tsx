@@ -98,28 +98,28 @@ export function Layout({ children }: { children: ReactNode }) {
 
         {/* Detect old browsers */}
         <script src="/old-browser-detector.min.js" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-							let Detector = new oldBrowserDetector(null, function () {
-								// unsupported browser
-								window.open("/unsupported-browser.html");
-							});
-							
-								Detector.detect();
-							</script>
-							
-							{/* Detect no access to localstorage */}
-							<script type="text/javascript">
-								try {
-								const _ls = window.localStorage;
-							} catch (err) {
-								// Local storage is not available => flowplayer will crash the page => redirect to the backend error page
-								window.location.href = window._ENV_.PROXY_URL + "/third-party-cookies";
-							}
-						`,
-          }}
-        />
+        <script type="text/javascript" dangerouslySetInnerHTML={{
+          __html: `
+            let Detector = new oldBrowserDetector(null, function () {
+              // unsupported browser
+              window.open("/unsupported-browser.html");
+            });
+  
+            Detector.detect();
+          `
+        }}/>
+
+        {/* Detect no access to localstorage */}
+        <script type="text/javascript" dangerouslySetInnerHTML={{
+          __html: `
+            try {
+              const _ls = window.localStorage;
+            } catch (err) {
+              // Local storage is not available => flowplayer will crash the page => redirect to the backend error page
+              window.location.href = window._ENV_.PROXY_URL + "/third-party-cookies";
+            }
+          `
+        }}/>
       </body>
     </html>
   )

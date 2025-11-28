@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "../../settings/colors" as colors;
 @use "../../settings/variables" as variables;
 
@@ -10,11 +11,11 @@
 /* Variables
    ========================================================================== */
 
-variables.$c-button-text-color: variables.$g-text-color !default;
-variables.$c-button-hover-border-color: colors.$color-gray-100 !default;
-variables.$c-button-outline-color: colors.$color-primary !default;
-variables.$c-button-focus-ring-color: colors.$color-primary !default;
-variables.$c-button-link-color: colors.$color-primary !default;
+$c-button-text-color: variables.$g-text-color !default;
+$c-button-hover-border-color: colors.$color-gray-100 !default;
+$c-button-outline-color: colors.$color-primary !default;
+$c-button-focus-ring-color: colors.$color-primary !default;
+$c-button-link-color: colors.$color-primary !default;
 
 .c-button {
 	transition: 0.18s background ease-in;
@@ -37,8 +38,8 @@ variables.$c-button-link-color: colors.$color-primary !default;
 	&.c-button--active,
 	&:active:focus,
 	&.c-button--active:focus {
-		background-color: darken(colors.$color-primary, 15%);
-		border-color: darken(colors.$color-primary, 15%);
+		background-color: color.adjust(colors.$color-primary, $lightness: -15%);
+		border-color: color.adjust(colors.$color-primary, $lightness: -15%);
 	}
 }
 
@@ -111,8 +112,8 @@ variables.$c-button-link-color: colors.$color-primary !default;
 	&:focus,
 	&.c-button--active,
 	&.c-button--active:focus {
-		background-color: darken(colors.$color-error, 10%);
-		border-color: darken(colors.$color-error, 10%);
+		background-color: color.adjust(colors.$color-error, $lightness: -10%);
+		border-color: color.adjust(colors.$color-error, $lightness: -10%);
 	}
 }
 
@@ -125,7 +126,7 @@ variables.$c-button-link-color: colors.$color-primary !default;
 	color: colors.$color-gray-700;
 
 	svg * {
-		fill: variables.$c-button-text-color;
+		fill: $c-button-text-color;
 	}
 
 	&:active,
@@ -147,7 +148,7 @@ variables.$c-button-link-color: colors.$color-primary !default;
    ========================================================================== */
 
 .c-button.c-button--borderless {
-	color: variables.$c-button-text-color;
+	color: $c-button-text-color;
 	background: none;
 	border: 0;
 
@@ -262,8 +263,8 @@ variables.$c-button-link-color: colors.$color-primary !default;
 	&.c-button--active,
 	&:active:focus,
 	&.c-button--active:focus {
-		background: darken(colors.$color-yellow, 15%);
-		border-color: darken(colors.$color-yellow, 15%);
+		background: color.adjust(colors.$color-yellow, $lightness: -15%);
+		border-color: color.adjust(colors.$color-yellow, $lightness: -15%);
 	}
 }
 
@@ -317,7 +318,7 @@ variables.$c-button-link-color: colors.$color-primary !default;
 	&.c-button--active,
 	&.c-button--active:focus {
 		background: transparent;
-		color: darken(colors.$color-yellow, 15%);
+		color: color.adjust(colors.$color-yellow, $lightness: -15%);
 	}
 }
 
