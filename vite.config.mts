@@ -42,10 +42,12 @@ export default defineConfig((): UserConfig => {
 			noExternal: [
 				// Ensures vite chooses the ESM build (module) of packages and not the common js build (main)
 				"@viaa/avo2-types",
-				"@viaa/avo2-components"
+				"@viaa/avo2-components",
 			],
 			external: [
-				'use-query-params'
+				'use-query-params',
+				'react',
+				'react-dom',
 			]
 		},
 		resolve: {
@@ -74,7 +76,6 @@ export default defineConfig((): UserConfig => {
 				'history',
 				'i18next',
 				'i18next-http-backend',
-				'i18next-xhr-backend',
 				'immer',
 				'isomorphic-dompurify',
 				'lodash-es',

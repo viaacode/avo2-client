@@ -1,7 +1,7 @@
-import { PermissionName } from '@viaa/avo2-types'
-import React, { type FC, lazy, Suspense } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate, useParams } from 'react-router'
+import { PermissionName } from '@viaa/avo2-types';
+import { type FC, lazy, Suspense } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -10,17 +10,17 @@ import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-ba
 import { tText } from '../../../shared/helpers/translate-text';
 import { ADMIN_PATH } from '../../admin.const';
 
-import './NavigationBarDetail.scss'
+import './NavigationBarDetail.scss';
 
 const NavigationDetail = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
     default: adminCoreModule.NavigationBarDetail,
   })),
-)
+);
 
 const NavigationBarDetail: FC = () => {
-  const navigateFunc = useNavigate()
-  const { navigationBarId } = useParams<{ navigationBarId: string }>()
+  const navigateFunc = useNavigate();
+  const { navigationBarId } = useParams<{ navigationBarId: string }>();
 
   return (
     <PermissionGuard permissions={[PermissionName.EDIT_NAVIGATION_BARS]}>
@@ -56,7 +56,7 @@ const NavigationBarDetail: FC = () => {
         </Suspense>
       </div>
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default NavigationBarDetail
+export default NavigationBarDetail;

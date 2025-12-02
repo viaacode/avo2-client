@@ -4,7 +4,7 @@
 
 import { lowerCase, upperFirst } from 'es-toolkit';
 import I18n from 'i18next';
-import XHR from 'i18next-xhr-backend';
+import i18nHttpFetch from 'i18next-http-backend';
 import { initReactI18next } from 'react-i18next';
 
 import { getEnv } from '../helpers/env';
@@ -14,7 +14,7 @@ export const waitForTranslations = new Promise((resolve) => {
   resolveTranslations = resolve;
 });
 
-I18n.use(XHR)
+I18n.use(i18nHttpFetch)
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     backend: {

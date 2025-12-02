@@ -2,7 +2,7 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { isEqual, noop, uniq } from 'es-toolkit';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { type FC, useCallback, useEffect, useState } from 'react';
 import { MetaDescriptor, Outlet, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';

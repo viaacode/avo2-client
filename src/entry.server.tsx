@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-// React is required to be imported for SSR even if it is not directly used in this file
+// React is required to be imported for SSR even if it is not directly used in this file. This import must be identical between server and client entry files
 // @ts-ignore
 import * as React from 'react';
 import { renderToString } from 'react-dom/server';
@@ -10,7 +10,7 @@ import {
   createStaticRouter,
   StaticRouterProvider,
 } from 'react-router';
-import APP_ROUTES from './routes.ts';
+import APP_ROUTES from './routes-real.ts';
 
 let { query, dataRoutes } = createStaticHandler(APP_ROUTES);
 
