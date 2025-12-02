@@ -1,6 +1,22 @@
-import {route, RouteConfig} from "@react-router/dev/routes";
+import type { MiddlewareFunction, RouteObject } from 'react-router';
+import { CatchAllComponent } from './catch-all.tsx';
+import { reactRouterConvert } from './shared/helpers/routing/convert-route-component-to-react-router-v7-module.ts';
 
-export default [
-	// * matches all URLs, the ? makes it optional so it will match / as well
-	route("*?", "catch-all.tsx"),
-] satisfies RouteConfig;
+async function logRoutesMiddleware({
+  request,
+}: Parameters<MiddlewareFunction>[0]) {
+  console.log(`${request.method} ${request.url}`);
+}
+
+const APP_ROUTES: RouteObject[] = [
+  // * matches all URLs, the ? makes it optional so it will match / as well
+  {
+    id: 'catch-all',
+    path: '*?',
+    middleware: [logRoutesMiddleware],
+    Component: CatchAllComponent,
+    lazy: () => import('./catch-all').then(reactRouterConvert),
+  },
+];
+
+export default APP_ROUTES;

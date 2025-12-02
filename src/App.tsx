@@ -3,7 +3,7 @@ import { clsx } from 'clsx';
 import { isEqual, noop, uniq } from 'es-toolkit';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router';
+import { MetaDescriptor, Outlet, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 
@@ -23,6 +23,7 @@ import { ROUTE_PARTS } from './shared/constants/routes';
 import { CustomError } from './shared/helpers/custom-error';
 import { getEnv } from './shared/helpers/env';
 import { ReactRouter7Adapter } from './shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
+import { QueryParamProvider } from './shared/helpers/routing/use-query-params-ssr';
 import { tHtml } from './shared/helpers/translate-html';
 import { tText } from './shared/helpers/translate-text';
 import { useHideZendeskWidget } from './shared/hooks/useHideZendeskWidget';
@@ -35,7 +36,6 @@ import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import '@meemoo/admin-core-ui/styles.css';
 import './App.scss';
 import './styles/main.scss';
-import { QueryParamProvider } from './shared/helpers/routing/use-query-params-ssr';
 
 const App: FC = () => {
   const location = useLocation();
@@ -248,6 +248,60 @@ const App: FC = () => {
     </>
   );
 };
+
+export function meta(): MetaDescriptor[] {
+  // {/* TODO react 19 */}
+  // {/* https://reactrouter.com/start/framework/route-module#meta */}
+  // <title>Het Archief voor Onderwijs</title>
+  // <meta charSet="utf-8" />
+  // <meta name="viewport" content="width=device-width, initial-scale=1" />
+  // <meta name="theme-color" content="#000000" />
+  return [
+    { title: 'Het Archief voor Onderwijs' },
+    { charSet: 'utf-8' },
+    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+    { name: 'theme-color', content: '#000000' },
+  ];
+}
+
+export function links() {
+  // {/* TODO react 19 */}
+  // {/* https://reactrouter.com/start/framework/route-module#meta */}
+  // <link rel="shortcut icon" href="/favicon.ico" />
+  // <link rel="manifest" href="/manifest.json" />
+  // <link rel="preload" href="/fonts/montserrat-italic.woff2" as="font" />
+  // <link rel="preload" href="/fonts/montserrat-medium.woff2" as="font" />
+  // <link
+  //     rel="preload"
+  //     href="/fonts/avenir-lt-std-medium.woff2"
+  //     as="font"
+  // />
+  return [
+    {
+      rel: 'shortcut icon',
+      href: '/favicon.ico',
+    },
+    {
+      rel: 'manifest',
+      href: '/manifest.json',
+    },
+    {
+      rel: 'preload',
+      href: '/fonts/montserrat-italic.woff2',
+      as: 'font',
+    },
+    {
+      rel: 'preload',
+      href: '/fonts/montserrat-medium.woff2',
+      as: 'font',
+    },
+    {
+      rel: 'preload',
+      href: '/fonts/avenir-lt-std-medium.woff2',
+      as: 'font',
+    },
+  ];
+}
 
 export const AppWithAdminCoreConfig = withAdminCoreConfig(App) as FC;
 export default AppWithAdminCoreConfig;

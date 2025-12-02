@@ -1,6 +1,5 @@
 import path from 'path';
 
-import { reactRouter } from "@react-router/dev/vite";
 import {defineConfig, UserConfig} from 'vite';
 import svgrPlugin from 'vite-plugin-svgr';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
@@ -36,7 +35,6 @@ export default defineConfig((): UserConfig => {
 			port: 8080,
 		},
 		plugins: [
-			reactRouter(),
 			viteTsconfigPaths(),
 			svgrPlugin(),
 		],

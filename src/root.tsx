@@ -4,17 +4,29 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import React, { type ReactNode } from 'react';
-import { Outlet, Scripts, ScrollRestoration } from 'react-router';
-
-import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
-import './App.scss';
-import './styles/main.scss';
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 import { ToastService } from './shared/services/toast-service';
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="nl">
       <head>
+        <Meta />
+        <Links />
+
+        {/* TODO react 19 */}
+        {/* https://reactrouter.com/start/framework/route-module#meta */}
+      </head>
+      <body>
+        {/* Main react app node */}
+        {children}
+
+        {/* Restore the scroll position after navigation */}
+        <ScrollRestoration />
+
+        {/* Load the React app scripts */}
+        <Scripts />
+
         {/* Cookiebot Script */}
         <script
           suppressHydrationWarning
@@ -26,30 +38,34 @@ export function Layout({ children }: { children: ReactNode }) {
         />
 
         {/* Init .env variables */}
-        <script src="/env-config.js" data-cookieconsent="ignore" />
+        <script
+          suppressHydrationWarning
+          src="/env-config.js"
+          data-cookieconsent="ignore"
+        />
 
         {/* Google Tag Manager */}
         <script
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `
-							(function (w, d, s, l, i) {
-								w[l] = w[l] || [];
-								w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-								let f = d.getElementsByTagName(s)[0],
-								j = d.createElement(s),
-								dl = l != "dataLayer" ? "&l=" + l : "";
-								j.async = true;
-								j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-								f.parentNode.insertBefore(j, f);
-							})(window, document, "script", "dataLayer", window._ENV_.GOOGLE_ANALYTICS_ID);
-						`,
+                (function (w, d, s, l, i) {
+                    w[l] = w[l] || [];
+                    w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+                    let f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != "dataLayer" ? "&l=" + l : "";
+                    j.async = true;
+                    j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+                    f.parentNode.insertBefore(j, f);
+                })(window, document, "script", "dataLayer", window._ENV_.GOOGLE_ANALYTICS_ID);
+            `,
           }}
         />
         {/* End Google Tag Manager */}
 
         {/*	Mouseflow Tag */}
-        {/*{typeof window !== 'undefined' && (*/}
-        {/*	<script type="text/javascript">*/}
+        {/*	<script type="text/javascript" suppressHydrationWarning>*/}
         {/*		if (window._ENV_.MOUSEFLOW_ANALYTICS_ID) {*/}
         {/*			window._mfq = window._mfq || [];*/}
         {/*			(function () {*/}
@@ -61,49 +77,11 @@ export function Layout({ children }: { children: ReactNode }) {
         {/*			})();*/}
         {/*		}*/}
         {/*	</script>*/}
-        {/*	)} */}
-
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#000000" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="preload" href="/fonts/montserrat-italic.woff2" as="font" />
-        <link rel="preload" href="/fonts/montserrat-medium.woff2" as="font" />
-        <link
-          rel="preload"
-          href="/fonts/avenir-lt-std-medium.woff2"
-          as="font"
-        />
-        <title>Het Archief voor Onderwijs</title>
-      </head>
-      <body>
-        {/* Google Tag Manager (noscript) */}
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-MNSTNVJ"
-            height="0"
-            width="0"
-            style={{ display: 'none', visibility: 'hidden' }}
-          />
-        </noscript>
-        {/* End Google Tag Manager (noscript) */}
-
-        {/* No-JS fallback */}
-        <noscript>You need to enable JavaScript to run this app.</noscript>
-
-        {/* Main react app node */}
-        {children}
-
-        {/* Restore the scroll position after navigation */}
-        <ScrollRestoration />
-
-        {/* Load the React app scripts */}
-        <Scripts />
 
         {/* Detect old browsers */}
-        <script src="/old-browser-detector.min.js" />
+        <script suppressHydrationWarning src="/old-browser-detector.min.js" />
         <script
+          suppressHydrationWarning
           type="text/javascript"
           dangerouslySetInnerHTML={{
             __html: `
@@ -119,6 +97,7 @@ export function Layout({ children }: { children: ReactNode }) {
 
         {/* Detect no access to localstorage */}
         <script
+          suppressHydrationWarning
           type="text/javascript"
           dangerouslySetInnerHTML={{
             __html: `

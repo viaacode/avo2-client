@@ -1,3 +1,3 @@
-export default function Component() {
-	return <div>Hello, world!</div>;
+export function CatchAllComponent() {
+  return <div>Hello, world!</div>;
 }
