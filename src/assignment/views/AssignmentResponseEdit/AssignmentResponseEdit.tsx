@@ -20,12 +20,6 @@ import React, {
   useState,
 } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  JsonParam,
-  NumberParam,
-  StringParam,
-  useQueryParams,
-} from 'use-query-params';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { type FilterState } from '../../../search/search.types';
@@ -60,6 +54,12 @@ import { AssignmentResponseSearchTab } from './tabs/AssignmentResponseSearchTab'
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import {
+  JsonParam,
+  NumberParam,
+  StringParam,
+  useQueryParams,
+} from '../../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { validateForm } from '../../../shared/helpers/validate-form.ts';

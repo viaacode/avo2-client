@@ -29,12 +29,6 @@ import React, {
 import { Helmet } from 'react-helmet';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import {
-  BooleanParam,
-  StringParam,
-  useQueryParam,
-  useQueryParams,
-} from 'use-query-params';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -87,10 +81,16 @@ import {
   getGroupedLomsKeyValue,
 } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
+import {
+  BooleanParam,
+  StringParam,
+  useQueryParam,
+  useQueryParams,
+} from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {

@@ -1,10 +1,9 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Flex, IconName, Spinner } from '@viaa/avo2-components'
-import queryString from 'query-string'
-import React, { type FC, useCallback, useEffect, useState } from 'react'
-import { useLocation } from 'react-router'
-import { BrowserRouter } from 'react-router-dom'
-import { QueryParamProvider } from 'use-query-params'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Flex, IconName, Spinner } from '@viaa/avo2-components';
+import queryString from 'query-string';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { useLocation } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 
 import { LoginMessage } from '../authentication/authentication.types';
 import { EmbedCodeService } from '../embed-code/embed-code-service';
@@ -20,40 +19,41 @@ import { EmbedErrorView } from './components/EmbedErrorView';
 import { RegisterOrLogin } from './components/RegisterOrLogin';
 import { useGetLoginStateForEmbed } from './hooks/useGetLoginStateForEmbed';
 
-import '../styles/main.scss'
+import '../styles/main.scss';
 import { ReactRouter7Adapter } from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
+import { QueryParamProvider } from '../shared/helpers/routing/use-query-params-ssr';
 
 const EmbedApp: FC = () => {
-  const location = useLocation()
+  const location = useLocation();
 
-  const [translationsLoaded, setTranslationsLoaded] = useState<boolean>(false)
-  const [originalUrl, setOriginalUrl] = useState<string | null>(null)
-  const [embedId, setEmbedId] = useState<string | null>(null)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [errorIcon, setErrorIcon] = useState<IconName | null>(null)
-  const [parentPageUrl, setParentPageUrl] = useState<string>('')
-  const [showMetadata, setShowMetadata] = useState<boolean>(false)
-  const ltiJwtToken = EmbedCodeService.getJwtToken()
+  const [translationsLoaded, setTranslationsLoaded] = useState<boolean>(false);
+  const [originalUrl, setOriginalUrl] = useState<string | null>(null);
+  const [embedId, setEmbedId] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorIcon, setErrorIcon] = useState<IconName | null>(null);
+  const [parentPageUrl, setParentPageUrl] = useState<string>('');
+  const [showMetadata, setShowMetadata] = useState<boolean>(false);
+  const ltiJwtToken = EmbedCodeService.getJwtToken();
 
   const {
     data: loginState,
     isLoading: loginStateLoading,
     refetch: refetchLoginState,
-  } = useGetLoginStateForEmbed()
+  } = useGetLoginStateForEmbed();
 
   const isRenderedInAnIframe = () => {
-    let isIframe = false
+    let isIframe = false;
 
     // Try to access the location href of the parent. If we are in an Iframe, this will fail
     try {
-      window.parent?.location.href
+      window.parent?.location.href;
     } catch (err) {
       // Most likely this is an iframe, and we encountered a security error for a cross-origin frame
       // There is no other reason why the line above would fail otherwise
-      isIframe = true
+      isIframe = true;
     }
-    return isIframe
-  }
+    return isIframe;
+  };
 
   /*
    * Method called by the explicit click on the reload button of the Error View
@@ -61,11 +61,11 @@ const EmbedApp: FC = () => {
    */
   const onReloadPage = useCallback(() => {
     if (!originalUrl) {
-      console.error("Can't reload iframe, original iframe url was not stored")
-      return
+      console.error("Can't reload iframe, original iframe url was not stored");
+      return;
     }
-    window.location.replace(originalUrl)
-  }, [originalUrl])
+    window.location.replace(originalUrl);
+  }, [originalUrl]);
 
   /**
    * Refetch the login state when the browser tab becomes visible again and the user is not logged in yet
@@ -78,71 +78,71 @@ const EmbedApp: FC = () => {
       ) {
         // Refetch the login state when the tab becomes visible
         // Since the user might just have logged in through the external browser tab
-        await refetchLoginState()
+        await refetchLoginState();
       }
-    }
-    document.addEventListener('visibilitychange', handleVisibilityChange)
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-    }
-  }, [loginState, refetchLoginState])
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [loginState, refetchLoginState]);
 
   /**
    * Store query params in specific state variables
    */
   useEffect(() => {
-    setOriginalUrl(window.location.href)
-    const query = new URLSearchParams(location?.search || '')
+    setOriginalUrl(window.location.href);
+    const query = new URLSearchParams(location?.search || '');
 
     if (!query) {
-      return
+      return;
     }
 
-    EmbedCodeService.setJwtToken(query.get('jwtToken') || '')
-    setShowMetadata(query.get('showMetadata') === 'true')
+    EmbedCodeService.setJwtToken(query.get('jwtToken') || '');
+    setShowMetadata(query.get('showMetadata') === 'true');
 
-    const urlInfo = queryString.parseUrl(window.location.href)
+    const urlInfo = queryString.parseUrl(window.location.href);
     const foundEmbedId =
-      query.get('embedId') || urlInfo.url.split('/').pop() || ''
+      query.get('embedId') || urlInfo.url.split('/').pop() || '';
 
     if (foundEmbedId && isUuid(foundEmbedId)) {
-      setEmbedId(foundEmbedId)
+      setEmbedId(foundEmbedId);
 
       // If the embed code url is loaded outside an iframe, we'll redirect to the view url of that embed
       // eg: /embed/506951e8-a3c9-4e2a-80aa-8e68531add20 => /ingesloten-fragment/506951e8-a3c9-4e2a-80aa-8e68531add20
       // https://meemoo.atlassian.net/browse/AVO-3719
       if (!isRenderedInAnIframe()) {
-        const newUrl = toEmbedCodeDetail(foundEmbedId)
-        window.location.href = newUrl
-        window.history.replaceState(null, '', newUrl)
-        return
+        const newUrl = toEmbedCodeDetail(foundEmbedId);
+        window.location.href = newUrl;
+        window.history.replaceState(null, '', newUrl);
+        return;
       }
     }
 
     // Get the parentPage from the URL query parameters if they are present
-    const parentPage = query.get('parentPageUrl')
+    const parentPage = query.get('parentPageUrl');
     if (!parentPage) {
       console.error(
         'Parent page niet beschikbaar, geen tracking mogelijk voor',
         window.location.href,
         foundEmbedId,
-      )
+      );
     }
-    setParentPageUrl(parentPage || '')
+    setParentPageUrl(parentPage || '');
 
     // Get the error message and icon from the URL query parameters if they are present
-    const errorMessageTemp = query.get('errorMessage')
+    const errorMessageTemp = query.get('errorMessage');
     if (errorMessageTemp) {
-      setErrorMessage(errorMessageTemp)
+      setErrorMessage(errorMessageTemp);
     }
 
-    const errorIconTemp = query.get('icon')
+    const errorIconTemp = query.get('icon');
     if (errorIconTemp) {
-      setErrorIcon(errorIconTemp as IconName)
+      setErrorIcon(errorIconTemp as IconName);
     }
 
-    window.history.replaceState(null, '', window.location.href.split('?')[0])
-  }, [])
+    window.history.replaceState(null, '', window.location.href.split('?')[0]);
+  }, []);
 
   /**
    * Wait for translations to be loaded before rendering the app
@@ -150,17 +150,17 @@ const EmbedApp: FC = () => {
   useEffect(() => {
     waitForTranslations
       .then(() => {
-        setTranslationsLoaded(true)
+        setTranslationsLoaded(true);
       })
       .catch((err) => {
-        console.error(new CustomError('Failed to wait for translations', err))
-      })
-  }, [setTranslationsLoaded])
+        console.error(new CustomError('Failed to wait for translations', err));
+      });
+  }, [setTranslationsLoaded]);
 
   // Render
   const renderApp = useCallback(() => {
     if (errorMessage) {
-      return <EmbedErrorView message={errorMessage} icon={errorIcon} />
+      return <EmbedErrorView message={errorMessage} icon={errorIcon} />;
     }
 
     if (loginStateLoading || !translationsLoaded) {
@@ -169,7 +169,7 @@ const EmbedApp: FC = () => {
         <Flex center style={{ height: '100%' }}>
           <Spinner size="large" />
         </Flex>
-      )
+      );
     }
 
     if (!ltiJwtToken) {
@@ -181,11 +181,11 @@ const EmbedApp: FC = () => {
           )}
           icon={IconName.alertTriangle}
         />
-      )
+      );
     }
 
     if (loginState?.message !== LoginMessage.LOGGED_IN) {
-      return <RegisterOrLogin />
+      return <RegisterOrLogin />;
     }
 
     // Check if the page requires the user to be logged in and not both logged in or out
@@ -196,7 +196,7 @@ const EmbedApp: FC = () => {
         parentPage={parentPageUrl}
         onReload={onReloadPage}
       />
-    )
+    );
   }, [
     embedId,
     errorIcon,
@@ -208,14 +208,14 @@ const EmbedApp: FC = () => {
     parentPageUrl,
     showMetadata,
     translationsLoaded,
-  ])
+  ]);
 
-  return renderApp()
-}
+  return renderApp();
+};
 
-const EmbedAppWithRouter = EmbedApp
+const EmbedAppWithRouter = EmbedApp;
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 export const EmbedRoot: FC = () => {
   return (
@@ -226,5 +226,5 @@ export const EmbedRoot: FC = () => {
         </QueryParamProvider>
       </BrowserRouter>
     </QueryClientProvider>
-  )
-}
+  );
+};

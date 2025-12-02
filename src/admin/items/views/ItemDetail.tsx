@@ -23,7 +23,6 @@ import React, { type FC, type ReactNode, useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import { StringParam, useQueryParams } from 'use-query-params';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
@@ -44,6 +43,10 @@ import {
 } from '../../../shared/helpers/formatters/date';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
+import {
+  StringParam,
+  useQueryParams,
+} from '../../../shared/helpers/routing/use-query-params-ssr';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
@@ -75,10 +78,7 @@ import {
   ITEMS_TABS,
 } from '../items.const';
 import { ItemsService } from '../items.service';
-import {
-  type ItemUsedByColumnId,
-  type ItemUsedByEntry,
-} from '../items.types';
+import { type ItemUsedByColumnId, type ItemUsedByEntry } from '../items.types';
 
 export const ItemDetail: FC = () => {
   const navigateFunc = useNavigate();

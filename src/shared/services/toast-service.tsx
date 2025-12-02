@@ -2,7 +2,7 @@ import { ToastType } from '@meemoo/admin-core-ui/client';
 import { Alert, type AlertProps, Spacer } from '@viaa/avo2-components';
 import { isNil } from 'es-toolkit';
 import React, { type FC, type ReactNode } from 'react';
-import { type ToastId, type ToastOptions, toast } from 'react-toastify';
+import { type Id, type ToastOptions, toast } from 'react-toastify';
 
 import { ROUTE_PARTS } from '../constants/routes';
 
@@ -34,25 +34,25 @@ export class ToastService {
   public static danger = (
     message: ToastMessage,
     options?: ToastOptions,
-  ): ToastId | undefined =>
+  ): Id | undefined =>
     ToastService.showToast(message, options, AvoToastType.DANGER);
   public static info = (
     message: ToastMessage,
     options?: ToastOptions,
-  ): ToastId | undefined =>
+  ): Id | undefined =>
     ToastService.showToast(message, options, AvoToastType.INFO);
   public static spinner = (
     message: ToastMessage,
     options?: ToastOptions,
-  ): ToastId | undefined =>
+  ): Id | undefined =>
     ToastService.showToast(message, options, AvoToastType.SPINNER);
   public static success = (
     message: ToastMessage,
     options?: ToastOptions,
-  ): ToastId | undefined =>
+  ): Id | undefined =>
     ToastService.showToast(message, options, AvoToastType.SUCCESS);
 
-  public static close(toastId: ToastId | undefined) {
+  public static close(toastId: Id | undefined) {
     if (isNil(toastId)) {
       return;
     }
@@ -63,7 +63,7 @@ export class ToastService {
     message: ToastMessage,
     options: ToastOptions = {},
     alertType: AvoToastType = AvoToastType.INFO,
-  ): ToastId | undefined {
+  ): Id | undefined {
     if (isNil(message)) {
       return;
     }
@@ -95,7 +95,7 @@ export class ToastService {
     );
   }
 
-  public static hideToast(toastId: ToastId) {
+  public static hideToast(toastId: Id) {
     toast.dismiss(toastId);
   }
 }

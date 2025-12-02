@@ -22,12 +22,6 @@ import React, {
 } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import {
-  JsonParam,
-  NumberParam,
-  StringParam,
-  useQueryParams,
-} from 'use-query-params';
 
 import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -50,6 +44,12 @@ import { type FilterState } from '../search.types';
 
 import './Search.scss';
 import { SortDirectionParam } from '../../admin/shared/helpers/query-string-converters.ts';
+import {
+  JsonParam,
+  NumberParam,
+  StringParam,
+  useQueryParams,
+} from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 

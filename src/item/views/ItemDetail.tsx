@@ -39,12 +39,6 @@ import React, {
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import {
-  JsonParam,
-  StringParam,
-  useQueryParam,
-  useQueryParams,
-} from 'use-query-params';
 
 import { ITEMS_PATH } from '../../admin/items/items.routes';
 import { ItemsService } from '../../admin/items/items.service';
@@ -113,6 +107,12 @@ import { type ItemTrimInfo } from '../item.types';
 
 import './ItemDetail.scss';
 import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
+import {
+  JsonParam,
+  StringParam,
+  useQueryParam,
+  useQueryParams,
+} from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 

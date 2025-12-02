@@ -41,14 +41,6 @@ import React, {
 } from 'react';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
-import {
-  ArrayParam,
-  DelimitedArrayParam,
-  NumberParam,
-  StringParam,
-  useQueryParams,
-  withDefault,
-} from 'use-query-params';
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -74,6 +66,14 @@ import { formatDate } from '../../shared/helpers/formatters/date';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
+import {
+  ArrayParam,
+  DelimitedArrayParam,
+  NumberParam,
+  StringParam,
+  useQueryParams,
+  withDefault,
+} from '../../shared/helpers/routing/use-query-params-ssr';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tHtml } from '../../shared/helpers/translate-html';

@@ -3,16 +3,15 @@ import {
   type FilterableColumn,
   FilterTable,
   TableFilterType,
-} from '@meemoo/admin-core-ui/admin'
+} from '@meemoo/admin-core-ui/admin';
 import {
   IconName,
   type MenuItemInfo,
   MoreOptionsDropdown,
-} from '@viaa/avo2-components'
-import { useAtomValue } from 'jotai'
-import { isEqual } from 'es-toolkit'
-import React, { type FC, useCallback, useEffect, useState } from 'react'
-import { useQueryParams } from 'use-query-params'
+} from '@viaa/avo2-components';
+import { isEqual } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { QuickLaneService } from '../../quick-lane/quick-lane.service';
@@ -34,8 +33,8 @@ import {
 } from '../../shared/helpers/quick-lane';
 import { useDebounce } from '../../shared/hooks/useDebounce';
 import {
-  type QuickLaneFilters,
   QuickLaneFilterService,
+  type QuickLaneFilters,
 } from '../../shared/services/quick-lane-filter-service';
 import { ToastService } from '../../shared/services/toast-service';
 import {
@@ -45,14 +44,15 @@ import {
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../workspace.const';
 
-import './QuickLaneOverview.scss'
-import { tText } from '../../shared/helpers/translate-text';
+import './QuickLaneOverview.scss';
+import { useQueryParams } from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 // Typings
 
 interface QuickLaneOverviewProps {
-  numberOfItems: number
+  numberOfItems: number;
 }
 
 enum QuickLaneAction {
@@ -62,33 +62,33 @@ enum QuickLaneAction {
 
 // Component
 
-const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([])
+const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 
 export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
   // State
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
-  const [quickLanes, setQuickLanes] = useState<QuickLaneUrlObject[]>([])
+  });
+  const [quickLanes, setQuickLanes] = useState<QuickLaneUrlObject[]>([]);
   const [selected, setSelected] = useState<QuickLaneUrlObject | undefined>(
     undefined,
-  )
-  const [quickLanesCount, setQuickLanesCount] = useState<number>(0)
-  const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false)
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
-  const commonUser = useAtomValue(commonUserAtom)
+  );
+  const [quickLanesCount, setQuickLanesCount] = useState<number>(0);
+  const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const commonUser = useAtomValue(commonUserAtom);
 
   // Set default sorting
   const [query, setQuery] = useQueryParams({
     sort_order: queryParamConfig.sort_order,
     sort_column: queryParamConfig.sort_column,
-  })
+  });
 
   const [filters, setFilters] = useState<
     QuickLaneOverviewFilterState | undefined
-  >(undefined)
+  >(undefined);
   const debouncedFilters: QuickLaneOverviewFilterState | undefined =
-    useDebounce(filters, 250)
+    useDebounce(filters, 250);
 
   // Configuration
 
@@ -156,12 +156,12 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
       sortable: false,
       visibleByDefault: true,
     },
-  ]
+  ];
 
   // Data
 
   const fetchQuickLanes = useCallback(async () => {
-    setLoadingInfo({ state: 'loading' })
+    setLoadingInfo({ state: 'loading' });
 
     try {
       if (!commonUser?.profileId || debouncedFilters === undefined) {
@@ -170,8 +170,8 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
           message: tHtml(
             'workspace/views/quick-lane-overview___er-is-onvoldoende-informatie-beschikbaar-om-gedeelde-links-op-te-halen',
           ),
-        })
-        return
+        });
+        return;
       }
 
       let params: QuickLaneFilters = {
@@ -182,11 +182,11 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
         sortOrder: debouncedFilters.sort_order,
         sortColumn: debouncedFilters.sort_column,
         sortType: columns.find((column) => {
-          return column.id === debouncedFilters.sort_column
+          return column.id === debouncedFilters.sort_column;
         })?.dataType as TableColumnDataType,
         limit: ITEMS_PER_PAGE,
         offset: debouncedFilters.page * ITEMS_PER_PAGE,
-      }
+      };
 
       if (isOrganisational(commonUser)) {
         if (!commonUser.companyId) {
@@ -195,8 +195,8 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
             message: tHtml(
               'workspace/views/quick-lane-overview___de-huidige-gebruiker-is-niet-geassocieerd-met-een-organisatie',
             ),
-          })
-          return
+          });
+          return;
         }
 
         // If the user has access to their entire organisation's quick_lane urls load them all, including their own
@@ -204,7 +204,7 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
           ...params,
           companyIds: [commonUser.companyId],
           profileIds: debouncedFilters.author,
-        }
+        };
       } else if (isPersonal(commonUser)) {
         if (!commonUser.profileId) {
           setLoadingInfo({
@@ -212,82 +212,82 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
             message: tHtml(
               'workspace/views/quick-lane-overview___de-huidige-gebruiker-heeft-een-corrupt-profiel',
             ),
-          })
-          return
+          });
+          return;
         }
 
         // If they do not have access to their organisation's but do have access to their own, change the params
         params = {
           ...params,
           profileIds: [commonUser.profileId],
-        }
+        };
       }
 
       const response =
-        await QuickLaneFilterService.fetchFilteredQuickLanes(params)
+        await QuickLaneFilterService.fetchFilteredQuickLanes(params);
 
-      setQuickLanes(response.urls)
-      setQuickLanesCount(response.count)
+      setQuickLanes(response.urls);
+      setQuickLanesCount(response.count);
 
-      setLoadingInfo({ state: 'loaded' })
+      setLoadingInfo({ state: 'loaded' });
     } catch (err) {
       console.error(
         new CustomError('Failed to get all quick_lanes for user', err, {
           commonUser,
         }),
-      )
+      );
 
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'workspace/views/quick-lane-overview___het-ophalen-van-je-gedeelde-links-is-mislukt',
         ),
-      })
+      });
     }
-  }, [commonUser, setQuickLanes, setLoadingInfo, debouncedFilters]) // eslint-disable-line
+  }, [commonUser, setQuickLanes, setLoadingInfo, debouncedFilters]); // eslint-disable-line
 
   const removeQuickLane = (id: QuickLaneUrlObject['id']) => {
     if (!commonUser?.profileId) {
-      return
+      return;
     }
 
     try {
       QuickLaneService.removeQuickLanesById([id], commonUser.profileId).then(
         async () => {
-          await fetchQuickLanes()
+          await fetchQuickLanes();
 
           ToastService.success(
             tHtml(
               'workspace/views/quick-lane-overview___de-gedeelde-link-is-verwijderd',
             ),
-          )
+          );
         },
-      )
+      );
     } catch (error) {
-      console.error(error)
+      console.error(error);
 
       ToastService.danger(
         tHtml(
           'workspace/views/quick-lane-overview___er-ging-iets-mis-bij-het-verwijderen-van-de-gedeelde-link',
         ),
-      )
+      );
     }
 
-    setIsConfirmationModalOpen(false)
-  }
+    setIsConfirmationModalOpen(false);
+  };
 
   // Lifecycle
 
   useEffect(() => {
-    fetchQuickLanes()
-  }, [fetchQuickLanes])
+    fetchQuickLanes();
+  }, [fetchQuickLanes]);
 
   useEffect(() => {
     setQuery({
       sort_column: query.sort_column || QUICK_LANE_DEFAULTS.sort_column,
       sort_order: query.sort_order || QUICK_LANE_DEFAULTS.sort_order,
-    })
-  }, []) // eslint-disable-line
+    });
+  }, []); // eslint-disable-line
 
   // Rendering
 
@@ -307,7 +307,7 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
             id: QuickLaneAction.DELETE,
             label: tText('workspace/views/quick-lane-overview___verwijder'),
           },
-        ] as (MenuItemInfo & { id: QuickLaneAction })[]
+        ] as (MenuItemInfo & { id: QuickLaneAction })[];
 
         return (
           data && (
@@ -316,37 +316,37 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
               onOpen={() => setSelected(data as QuickLaneUrlObject)}
               onClose={() => {
                 const isAModalOpen =
-                  isQuickLaneModalOpen || isConfirmationModalOpen
+                  isQuickLaneModalOpen || isConfirmationModalOpen;
 
-                !isAModalOpen && setSelected(undefined)
+                !isAModalOpen && setSelected(undefined);
               }}
               label={tText('workspace/views/quick-lane-overview___meer-acties')}
               menuItems={items}
               onOptionClicked={async (action) => {
                 if (selected === undefined) {
-                  return
+                  return;
                 }
 
                 switch (action.toString() as QuickLaneAction) {
                   case QuickLaneAction.COPY:
-                    copyQuickLaneToClipboard(data.id)
-                    setSelected(undefined)
-                    break
+                    copyQuickLaneToClipboard(data.id);
+                    setSelected(undefined);
+                    break;
 
                   case QuickLaneAction.DELETE:
-                    setIsConfirmationModalOpen(true)
-                    break
+                    setIsConfirmationModalOpen(true);
+                    break;
 
                   default:
-                    break
+                    break;
                 }
               }}
             />
           )
-        )
+        );
       }}
     />
-  )
+  );
 
   return (
     <>
@@ -365,7 +365,7 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
         onTableStateChanged={(state: { [id: string]: any }) => {
           // NOTE: prevents recursion loop but hits theoretical performance
           if (!isEqual(filters, state)) {
-            setFilters(state as QuickLaneOverviewFilterState)
+            setFilters(state as QuickLaneOverviewFilterState);
           }
         }}
         renderCell={renderCell as any}
@@ -389,9 +389,9 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
         content={selected?.content}
         content_label={selected?.content_label}
         onClose={async () => {
-          setIsQuickLaneModalOpen(false)
-          setSelected(undefined)
-          await fetchQuickLanes()
+          setIsQuickLaneModalOpen(false);
+          setSelected(undefined);
+          await fetchQuickLanes();
         }}
       />
 
@@ -404,11 +404,11 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
         )}
         isOpen={isConfirmationModalOpen}
         onClose={() => {
-          setIsConfirmationModalOpen(false)
-          setSelected(undefined)
+          setIsConfirmationModalOpen(false);
+          setSelected(undefined);
         }}
         confirmCallback={async () => selected && removeQuickLane(selected.id)}
       />
     </>
-  )
-}
+  );
+};

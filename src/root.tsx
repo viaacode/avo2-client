@@ -2,20 +2,22 @@ import {
   QueryCache,
   QueryClient,
   QueryClientProvider,
-} from '@tanstack/react-query'
-import React, { type ReactNode } from 'react'
-import { Outlet, Scripts, ScrollRestoration } from 'react-router'
+} from '@tanstack/react-query';
+import React, { type ReactNode } from 'react';
+import { Outlet, Scripts, ScrollRestoration } from 'react-router';
 
-import 'react-datepicker/dist/react-datepicker.css' // TODO: lazy-load
-import './App.scss'
-import './styles/main.scss'
+import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
+import './App.scss';
+import './styles/main.scss';
 import { ToastService } from './shared/services/toast-service';
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="nl">
       <head>
+        {/* Cookiebot Script */}
         <script
+          suppressHydrationWarning
           id="Cookiebot"
           src="https://consent.cookiebot.com/uc.js"
           data-cbid="8fb68e92-94b2-4334-bc47-7bcda08bc9c7"
@@ -46,6 +48,7 @@ export function Layout({ children }: { children: ReactNode }) {
         {/* End Google Tag Manager */}
 
         {/*	Mouseflow Tag */}
+        {/*{typeof window !== 'undefined' && (*/}
         {/*	<script type="text/javascript">*/}
         {/*		if (window._ENV_.MOUSEFLOW_ANALYTICS_ID) {*/}
         {/*			window._mfq = window._mfq || [];*/}
@@ -58,7 +61,7 @@ export function Layout({ children }: { children: ReactNode }) {
         {/*			})();*/}
         {/*		}*/}
         {/*	</script>*/}
-        {/*	End Mouseflow Tag */}
+        {/*	)} */}
 
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -81,7 +84,7 @@ export function Layout({ children }: { children: ReactNode }) {
             src="https://www.googletagmanager.com/ns.html?id=GTM-MNSTNVJ"
             height="0"
             width="0"
-            style="display: none; visibility: hidden"
+            style={{ display: 'none', visibility: 'hidden' }}
           />
         </noscript>
         {/* End Google Tag Manager (noscript) */}
@@ -91,6 +94,8 @@ export function Layout({ children }: { children: ReactNode }) {
 
         {/* Main react app node */}
         {children}
+
+        {/* Restore the scroll position after navigation */}
         <ScrollRestoration />
 
         {/* Load the React app scripts */}
@@ -98,43 +103,49 @@ export function Layout({ children }: { children: ReactNode }) {
 
         {/* Detect old browsers */}
         <script src="/old-browser-detector.min.js" />
-        <script type="text/javascript" dangerouslySetInnerHTML={{
-          __html: `
+        <script
+          type="text/javascript"
+          dangerouslySetInnerHTML={{
+            __html: `
             let Detector = new oldBrowserDetector(null, function () {
               // unsupported browser
               window.open("/unsupported-browser.html");
             });
   
             Detector.detect();
-          `
-        }}/>
+          `,
+          }}
+        />
 
         {/* Detect no access to localstorage */}
-        <script type="text/javascript" dangerouslySetInnerHTML={{
-          __html: `
+        <script
+          type="text/javascript"
+          dangerouslySetInnerHTML={{
+            __html: `
             try {
               const _ls = window.localStorage;
             } catch (err) {
               // Local storage is not available => flowplayer will crash the page => redirect to the backend error page
               window.location.href = window._ENV_.PROXY_URL + "/third-party-cookies";
             }
-          `
-        }}/>
+          `,
+          }}
+        />
       </body>
     </html>
-  )
+  );
 }
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error: any, query: any) => {
       if (query.meta?.errorMessage) {
-        console.error(error)
-        ToastService.danger(query.meta.errorMessage as ReactNode | string)
+        console.error(error);
+        ToastService.danger(query.meta.errorMessage as ReactNode | string);
       }
     },
   }),
-})
+});
 
 export default function Root() {
   return (
@@ -142,5 +153,5 @@ export default function Root() {
       {/* React router */}
       <Outlet />
     </QueryClientProvider>
-  )
+  );
 }

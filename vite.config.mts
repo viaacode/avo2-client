@@ -41,7 +41,14 @@ export default defineConfig((): UserConfig => {
 			svgrPlugin(),
 		],
 		ssr: {
-			noExternal: ["@viaa/avo2-types"],
+			noExternal: [
+				// Ensures vite chooses the ESM build (module) of packages and not the common js build (main)
+				"@viaa/avo2-types",
+				"@viaa/avo2-components"
+			],
+			external: [
+				'use-query-params'
+			]
 		},
 		resolve: {
 			alias: {

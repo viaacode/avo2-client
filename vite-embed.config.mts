@@ -2,7 +2,7 @@ import path from 'path';
 
 import react from '@vitejs/plugin-react';
 import sourcemaps from 'rollup-plugin-sourcemaps';
-import { defineConfig } from 'vite';
+import {defineConfig, UserConfig} from 'vite';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import svgrPlugin from 'vite-plugin-svgr';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
@@ -14,7 +14,7 @@ const ASSETS_WITHOUT_A_HASH = [
 	'audio-still.svg',
 ];
 
-export default defineConfig(() => {
+export default defineConfig((): UserConfig => {
 	return {
 		build: {
 			outDir: 'dist-embed',
@@ -26,7 +26,7 @@ export default defineConfig(() => {
 				plugins: [sourcemaps()],
 				output: {
 					assetFileNames: function (file) {
-						return ASSETS_WITHOUT_A_HASH.includes(file.name)
+						return ASSETS_WITHOUT_A_HASH.includes(file.name as string)
 							? `assets/[name].[ext]`
 							: `assets/[name]-[hash].[ext]`;
 					},
@@ -55,8 +55,6 @@ export default defineConfig(() => {
 		},
 		plugins: [react(), viteTsconfigPaths(), svgrPlugin(), cssInjectedByJsPlugin()],
 		sourcemap: true,
-		// TODO, see if we can load graphql files instead of the documents from the react-query generated file, since we don't use the react query a lot
-		// assetsInclude: ['**/*.graphql'],
 		resolve: {
 			alias: {
 				// eslint-disable-next-line no-undef

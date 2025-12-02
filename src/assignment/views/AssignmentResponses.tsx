@@ -30,7 +30,6 @@ import React, {
 } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
@@ -65,6 +64,11 @@ import { isItemWithMeta } from '../helpers/is-item-with-meta';
 
 import './AssignmentOverview.scss';
 import './AssignmentResponses.scss';
+import { StringParam } from '../../shared/helpers/routing/use-query-params-ssr';
+import {
+  NumberParam,
+  useQueryParams,
+} from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 

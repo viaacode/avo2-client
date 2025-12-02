@@ -6,7 +6,6 @@ import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
-import { QueryParamProvider } from 'use-query-params';
 
 import pkg from '../package.json' with { type: 'json' };
 
@@ -36,6 +35,7 @@ import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import '@meemoo/admin-core-ui/styles.css';
 import './App.scss';
 import './styles/main.scss';
+import { QueryParamProvider } from './shared/helpers/routing/use-query-params-ssr';
 
 const App: FC = () => {
   const location = useLocation();

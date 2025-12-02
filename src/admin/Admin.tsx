@@ -4,7 +4,6 @@ import { useAtomValue } from 'jotai';
 import React, { type FC, ReactElement, useEffect, useState } from 'react';
 import * as ReactPageSplit from 'react-page-split';
 import { Outlet } from 'react-router';
-import { QueryParamProvider } from 'use-query-params';
 import { commonUserAtom } from '../authentication/authentication.store';
 import { PermissionGuard } from '../authentication/components/PermissionGuard';
 import { PermissionService } from '../authentication/helpers/permission-service';
@@ -14,9 +13,10 @@ import {
 } from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../shared/helpers/custom-error';
 import { ReactRouter7Adapter } from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
+import { QueryParamProvider } from '../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../shared/helpers/translate-html';
 import { ToastService } from '../shared/services/toast-service';
-import { type NavigationItemInfo } from '../shared/types/index';
+import { type NavigationItemInfo } from '../shared/types';
 import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
 import { Sidebar } from './shared/components/Sidebar/Sidebar';
 

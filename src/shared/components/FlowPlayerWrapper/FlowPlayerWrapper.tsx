@@ -1,20 +1,20 @@
-import './FlowPlayerWrapper.scss'
+import './FlowPlayerWrapper.scss';
 import {
   FlowPlayer,
   type FlowplayerSourceItem,
   type FlowplayerSourceList,
-} from '@meemoo/react-components'
+} from '@meemoo/react-components';
 import {
   Icon,
   IconName,
   MediaCard,
   MediaCardThumbnail,
   Thumbnail,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { useAtomValue, useSetAtom } from 'jotai'
-import { isNil, isString, throttle } from 'es-toolkit'
-import { stringifyUrl } from 'query-string'
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { isNil, isString, throttle } from 'es-toolkit';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { stringifyUrl } from 'query-string';
 import React, {
   type FC,
   type MouseEvent,
@@ -22,9 +22,8 @@ import React, {
   useCallback,
   useEffect,
   useState,
-} from 'react'
-import { useNavigate } from 'react-router'
-import { useQueryParam } from 'use-query-params'
+} from 'react';
+import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
@@ -37,6 +36,7 @@ import { formatDurationHoursMinutesSeconds } from '../../helpers/formatters/dura
 import { getSubtitles } from '../../helpers/get-subtitles';
 import { isMobileWidth } from '../../helpers/media-query';
 import { toSeconds } from '../../helpers/parsers/duration';
+import { useQueryParam } from '../../helpers/routing/use-query-params-ssr';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import { BookmarksViewsPlaysService } from '../../services/bookmarks-views-plays-service/bookmarks-views-plays-service';
@@ -44,7 +44,6 @@ import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
 import { ToastService } from '../../services/toast-service';
 import { lastVideoPlayedAtAtom } from '../../store/ui.store';
-
 import { type FlowPlayerWrapperProps } from './FlowPlayerWrapper.types';
 
 /**
@@ -57,77 +56,77 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
   placeholder = true,
   ...props
 }) => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
-  const commonUser = useAtomValue(commonUserAtom)
-  const setLastVideoPlayedAt = useSetAtom(lastVideoPlayedAtAtom)
+  const commonUser = useAtomValue(commonUserAtom);
+  const setLastVideoPlayedAt = useSetAtom(lastVideoPlayedAtAtom);
 
-  const item: Avo.Item.Item | undefined = props.item
-  const poster: string | undefined = props.poster || item?.thumbnail_path
+  const item: Avo.Item.Item | undefined = props.item;
+  const poster: string | undefined = props.poster || item?.thumbnail_path;
 
   const [triggeredForUrl, setTriggeredForUrl] = useState<
     Record<string, boolean>
-  >({})
+  >({});
 
   // AVO-2241:
   // The flowplayer play event is created from outside react, so to be able to update the state, we need to use a ref.
   // see: https://medium.com/geographit/accessing-react-state-in-event-listeners-with-usestate-and-useref-hooks-8cceee73c559
-  const triggeredForUrlRef = React.useRef(triggeredForUrl)
+  const triggeredForUrlRef = React.useRef(triggeredForUrl);
   const setTriggeredForUrlRef = (data: Record<string, boolean>) => {
-    triggeredForUrlRef.current = data
-    setTriggeredForUrl(data)
-  }
+    triggeredForUrlRef.current = data;
+    setTriggeredForUrl(data);
+  };
 
-  const [clickedThumbnail, setClickedThumbnail] = useState<boolean>(false)
+  const [clickedThumbnail, setClickedThumbnail] = useState<boolean>(false);
   const [src, setSrc] = useState<string | FlowplayerSourceList | undefined>(
     props.src,
-  )
+  );
 
-  const isPlaylist = !isString(src) && !isNil(src)
+  const isPlaylist = !isString(src) && !isNil(src);
 
-  const [autoplayVideo] = useQueryParam('autoplayVideo')
+  const [autoplayVideo] = useQueryParam('autoplayVideo');
 
   useEffect(() => {
     // reset token when item changes
-    setSrc(props.src)
-    setClickedThumbnail(false)
-  }, [item, props.src, setSrc, setClickedThumbnail])
+    setSrc(props.src);
+    setClickedThumbnail(false);
+  }, [item, props.src, setSrc, setClickedThumbnail]);
 
   const initFlowPlayer = useCallback(async () => {
     try {
       if (!item && !props.src) {
         throw new CustomError(
           'Failed to init flowplayer since item is undefined',
-        )
+        );
       }
       if (item) {
-        setSrc(await fetchPlayerTicket(item.external_id))
+        setSrc(await fetchPlayerTicket(item.external_id));
       }
     } catch (err) {
       console.error(
         new CustomError('Failed to initFlowPlayer in FlowPlayerWrapper', err, {
           item,
         }),
-      )
+      );
       ToastService.danger(
         tHtml(
           'item/components/item-video-description___het-ophalen-van-de-mediaplayer-ticket-is-mislukt',
         ),
-      )
+      );
     }
-  }, [item, setSrc])
+  }, [item, setSrc]);
 
   useEffect(() => {
     if (
       item &&
       (props.autoplay || !placeholder || autoplayVideo === item.external_id)
     ) {
-      initFlowPlayer()
+      initFlowPlayer();
     }
-  }, [props.autoplay, autoplayVideo, item, initFlowPlayer, placeholder])
+  }, [props.autoplay, autoplayVideo, item, initFlowPlayer, placeholder]);
 
   const handlePlay = (playingSrc: string) => {
-    setClickedThumbnail(true)
+    setClickedThumbnail(true);
 
     // Only trigger once per video
     if (
@@ -148,8 +147,8 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
           new CustomError('Failed to track item play event', err, {
             itemUuid: item.uid,
           }),
-        )
-      })
+        );
+      });
       trackEvents(
         {
           object: item.external_id,
@@ -157,45 +156,45 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
           action: 'play',
         },
         commonUser,
-      )
+      );
 
       if (props.onPlay) {
-        props.onPlay(playingSrc)
+        props.onPlay(playingSrc);
       }
 
       setTriggeredForUrlRef({
         ...triggeredForUrl,
         [playingSrc]: true,
-      })
+      });
     } else if (!triggeredForUrlRef.current[playingSrc] && props.onPlay) {
-      props.onPlay(playingSrc)
+      props.onPlay(playingSrc);
 
       setTriggeredForUrlRef({
         ...triggeredForUrl,
         [playingSrc]: true,
-      })
+      });
     }
-  }
+  };
 
   const handleTimeUpdate = throttle(
     () => {
       // Keep track of the last time a video was played in the redux store
       // Since it influences when we want to show the "you are inactive" modal for editing collections and assignments
       // https://meemoo.atlassian.net/browse/AVO-2983
-      setLastVideoPlayedAt(new Date())
+      setLastVideoPlayedAt(new Date());
     },
     30000,
     { edges: ['leading', 'trailing'] },
-  )
+  );
 
   const handlePosterClicked = async (evt: MouseEvent<HTMLDivElement>) => {
-    setClickedThumbnail(true)
+    setClickedThumbnail(true);
 
     if (!src) {
       if (!commonUser) {
         const anchorId = evt.currentTarget
           .closest('[data-anchor]')
-          ?.getAttribute('data-anchor')
+          ?.getAttribute('data-anchor');
         redirectToClientPage(
           stringifyUrl({
             url: APP_PATH.REGISTER_OR_LOGIN.route,
@@ -210,22 +209,22 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
             },
           }),
           navigateFunc,
-        )
-        return
+        );
+        return;
       }
-      await initFlowPlayer()
+      await initFlowPlayer();
     }
-  }
+  };
 
   const hasHlsSupport = (): boolean => {
     try {
-      new MediaSource()
+      new MediaSource();
 
-      return true
+      return true;
     } catch (err) {
-      return false
+      return false;
     }
-  }
+  };
 
   const renderPlaylistTile = (item: FlowplayerSourceItem): ReactNode => {
     return (
@@ -243,25 +242,25 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
           />
         </MediaCardThumbnail>
       </MediaCard>
-    )
-  }
+    );
+  };
 
   const getBrowserSafeUrl = (
     src: string | FlowplayerSourceList,
   ): string | FlowplayerSourceList => {
     if (hasHlsSupport()) {
-      return src
+      return src;
     }
 
     if (isPlaylist) {
       // Convert each url in the entry in the playlist if possible
-      ;(src as FlowplayerSourceList).items.forEach((entry) => {
+      (src as FlowplayerSourceList).items.forEach((entry) => {
         if (entry.src.includes('flowplayer')) {
           entry.src = entry.src
             .replace('/hls/', '/v-')
-            .replace('/playlist.m3u8', '_original.mp4')
+            .replace('/playlist.m3u8', '_original.mp4');
         }
-      })
+      });
 
       if (
         (src as FlowplayerSourceList).items.some((entry) =>
@@ -272,14 +271,14 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
           tHtml(
             'shared/components/flow-player-wrapper/flow-player-wrapper___bepaalde-videos-in-de-playlist-kunnen-niet-worden-afgespeeld-probeer-een-andere-browser',
           ),
-        )
+        );
       }
     } else {
       // Convert src url
       if ((src as string).includes('flowplayer')) {
         return (src as string)
           .replace('/hls/', '/v-')
-          .replace('/playlist.m3u8', '_original.mp4')
+          .replace('/playlist.m3u8', '_original.mp4');
       }
 
       if ((src as string).endsWith('.m3u8')) {
@@ -287,23 +286,23 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
           tHtml(
             'shared/components/flow-player-wrapper/flow-player-wrapper___deze-video-kan-niet-worden-afgespeeld-probeer-een-andere-browser',
           ),
-        )
+        );
       }
     }
 
-    return src
-  }
+    return src;
+  };
 
   const [start, end]: [number | null, number | null] = getValidStartAndEnd(
     props.cuePointsVideo?.start,
     props.cuePointsVideo?.end,
     toSeconds(item?.duration),
-  )
+  );
 
   const trackingId =
     window.ga && typeof window.ga.getAll === 'function' && window.ga.getAll()[0]
       ? window.ga.getAll()[0].get('trackingId')
-      : undefined
+      : undefined;
 
   const renderCutOverlay = () => {
     return (
@@ -317,8 +316,8 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
           )} - ${formatDurationHoursMinutesSeconds(end)}`}
         </div>
       )
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -443,5 +442,5 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
         </div>
       )}
     </>
-  )
-}
+  );
+};

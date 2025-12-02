@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "__prepare": "husky install",
+    "postinstall": "patch-package",
     "prestart": "npm run env",
     "start": "vite",
     "dev": "dotenv -e .env.qas vite",
@@ -71,6 +72,7 @@
     "jotai": "2.14.0",
     "marked": "4.0.15",
     "node-fetch": "2.7.0",
+    "patch-package": "^8.0.1",
     "query-string": "7.1.1",
     "raf": "3.4.1",
     "react": "18.2.0",
@@ -100,7 +102,7 @@
     "to-camel-case": "1.0.0",
     "to-slug-case": "1.0.0",
     "ts-retry-promise": "0.8.1",
-    "use-query-params": "2.2.1",
+    "use-query-params": "2.2.2",
     "yup": "1.4.0"
   },
   "devDependencies": {
@@ -164,6 +166,7 @@
     "typescript": "5.9.3",
     "uuid": "13.0.0",
     "vite": "7.2.2",
+    "vite-plugin-cjs-interop": "^2.3.0",
     "vite-plugin-css-injected-by-js": "3.5.2",
     "vite-plugin-svgr": "4.5.0",
     "vite-svg-loader": "5.1.0",
@@ -182,7 +185,7 @@
     "typescript": "5.9.3",
     "react-router": "^7.9.1",
     "react-router-dom": "^7.9.1",
-    "use-query-params": "2.2.1",
+    "use-query-params": "2.2.2",
     "react-hook-form": "7.66.0",
     "@tanstack/react-query": "5.90.7",
     "@types/node": "20.4.10"

@@ -1,18 +1,17 @@
 import {
   FILTER_TABLE_QUERY_PARAM_CONFIG,
   FilterTable,
-} from '@meemoo/admin-core-ui/admin'
+} from '@meemoo/admin-core-ui/admin';
 import {
   IconName,
   type MenuItemInfo,
   MoreOptionsDropdown,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { isEqual } from 'es-toolkit'
-import React, { type FC, useCallback, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
-import { useQueryParams } from 'use-query-params'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { isEqual } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { APP_PATH } from '../../constants';
@@ -21,16 +20,13 @@ import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComp
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { navigate } from '../../shared/helpers/link';
+import { useQueryParams } from '../../shared/helpers/routing/use-query-params-ssr';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { useDebounce } from '../../shared/hooks/useDebounce';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-import {
-  type EmbedCodeFilters,
-  EmbedCodeService,
-} from '../embed-code-service';
 import { OVERVIEW_COLUMNS } from '../embed-code.const';
 import {
   EMBED_CODE_DEFAULTS,
@@ -38,19 +34,19 @@ import {
   type EmbedCodeOverviewFilterState,
   type EmbedCodeOverviewTableColumns,
 } from '../embed-code.types';
+import { type EmbedCodeFilters, EmbedCodeService } from '../embed-code-service';
 import { toEmbedCodeIFrame } from '../helpers/links';
 import { createResource } from '../helpers/resourceForTrackEvents';
 import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 import { useDeleteEmbedCode } from '../hooks/useDeleteEmbedCode';
 import { useUpdateEmbedCode } from '../hooks/useUpdateEmbedCode';
-
 import { EmbedCodeFilterTableCell } from './EmbedCodeFilterTableCell';
 import { EditEmbedCodeModal } from './modals/EditEmbedCodeModal';
 
 // Typings
 interface EmbedCodeOverviewProps {
-  numberOfItems: number
-  onUpdate: () => void | Promise<void>
+  numberOfItems: number;
+  onUpdate: () => void | Promise<void>;
 }
 
 enum EmbedCodeAction {
@@ -63,46 +59,46 @@ enum EmbedCodeAction {
 
 // Component
 
-const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([])
+const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 
 export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
-  const navigateFunc = useNavigate()
-  const commonUser = useAtomValue(commonUserAtom)
+  const navigateFunc = useNavigate();
+  const commonUser = useAtomValue(commonUserAtom);
 
   // State
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
-  const [embedCodes, setEmbedCodes] = useState<EmbedCode[]>([])
+  });
+  const [embedCodes, setEmbedCodes] = useState<EmbedCode[]>([]);
   const [selected, setSelected] = useState<Partial<EmbedCode> | undefined>(
     undefined,
-  )
-  const [embedCodesCount, setEmbedCodesCount] = useState<number>(0)
+  );
+  const [embedCodesCount, setEmbedCodesCount] = useState<number>(0);
   const [embedCodeForEditModal, setEmbedCodeForEditModal] = useState<
     Partial<EmbedCode> | undefined
-  >(undefined)
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
+  >(undefined);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   // Set default sorting
   const [query, setQuery] = useQueryParams({
     sort_order: queryParamConfig.sort_order,
     sort_column: queryParamConfig.sort_column,
-  })
+  });
 
   const [filters, setFilters] = useState<
     EmbedCodeOverviewFilterState | undefined
-  >(undefined)
+  >(undefined);
   const debouncedFilters: EmbedCodeOverviewFilterState | undefined =
-    useDebounce(filters, 250)
-  const columns = OVERVIEW_COLUMNS()
+    useDebounce(filters, 250);
+  const columns = OVERVIEW_COLUMNS();
 
-  const { mutateAsync: duplicateEmbedCode } = useCreateEmbedCode()
-  const { mutateAsync: deleteEmbedCode } = useDeleteEmbedCode()
-  const { mutateAsync: updateEmbedCode } = useUpdateEmbedCode()
+  const { mutateAsync: duplicateEmbedCode } = useCreateEmbedCode();
+  const { mutateAsync: deleteEmbedCode } = useDeleteEmbedCode();
+  const { mutateAsync: updateEmbedCode } = useUpdateEmbedCode();
 
   // Data
   const fetchEmbedCodes = useCallback(async () => {
-    setLoadingInfo({ state: 'loading' })
+    setLoadingInfo({ state: 'loading' });
 
     try {
       if (!commonUser?.profileId || debouncedFilters === undefined) {
@@ -111,52 +107,52 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
           message: tHtml(
             'embed-code/components/embed-code-overview___er-is-onvoldoende-informatie-beschikbaar-om-ingesloten-fragmenten-op-te-halen',
           ),
-        })
-        return
+        });
+        return;
       }
 
       const sortOrder =
         debouncedFilters.sort_order ||
         query.sort_order ||
-        EMBED_CODE_DEFAULTS.sort_order
+        EMBED_CODE_DEFAULTS.sort_order;
       const sortColumn =
         debouncedFilters.sort_column ||
         query.sort_column ||
-        EMBED_CODE_DEFAULTS.sort_column
+        EMBED_CODE_DEFAULTS.sort_column;
       const params: EmbedCodeFilters = {
         filterString: debouncedFilters.query,
         sortOrder: sortOrder as Avo.Search.OrderDirection,
         sortColumn: sortColumn,
         limit: ITEMS_PER_PAGE,
         offset: debouncedFilters.page * ITEMS_PER_PAGE,
-      }
+      };
 
-      const response = await EmbedCodeService.getEmbedCodes(params)
+      const response = await EmbedCodeService.getEmbedCodes(params);
 
-      setEmbedCodes(response.embedCodes)
-      setEmbedCodesCount(response.count)
+      setEmbedCodes(response.embedCodes);
+      setEmbedCodesCount(response.count);
 
-      setLoadingInfo({ state: 'loaded' })
+      setLoadingInfo({ state: 'loaded' });
     } catch (err) {
       console.error(
         new CustomError('Failed to get all embed codes for user', err, {
           commonUser,
         }),
-      )
+      );
 
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'embed-code/components/embed-code-overview___het-ophalen-van-je-ingesloten-fragmenten-is-mislukt',
         ),
-      })
+      });
     }
-  }, [commonUser, setEmbedCodes, setLoadingInfo, debouncedFilters]) // eslint-disable-line
+  }, [commonUser, setEmbedCodes, setLoadingInfo, debouncedFilters]); // eslint-disable-line
 
   const reloadEmbedCodes = async () => {
-    await fetchEmbedCodes()
-    onUpdate?.()
-  }
+    await fetchEmbedCodes();
+    onUpdate?.();
+  };
 
   const duplicateSelectedEmbedCode = async (selected: Partial<EmbedCode>) => {
     try {
@@ -169,91 +165,91 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
         start: selected.start,
         end: selected.end,
         externalWebsite: selected.externalWebsite,
-      } as EmbedCode)
+      } as EmbedCode);
 
       ToastService.success(
         tHtml(
           'embed-code/components/embed-code-overview___het-fragment-werd-succesvol-gedupliceerd',
         ),
-      )
+      );
 
-      setSelected(undefined)
-      await reloadEmbedCodes()
+      setSelected(undefined);
+      await reloadEmbedCodes();
     } catch (err) {
-      console.error(err)
+      console.error(err);
       ToastService.danger(
         tText(
           'embed-code/components/embed-code-overview___fragment-dupliceren-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const changeEmbedCode = async (data: EmbedCode) => {
     try {
-      await updateEmbedCode(data)
+      await updateEmbedCode(data);
       ToastService.success(
         tText(
           'embed-code/components/embed-code-overview___fragment-succesvol-gewijzigd',
         ),
-      )
+      );
 
-      await reloadEmbedCodes()
+      await reloadEmbedCodes();
 
-      setEmbedCodeForEditModal(undefined)
+      setEmbedCodeForEditModal(undefined);
     } catch (err) {
-      console.error(err)
+      console.error(err);
       ToastService.danger(
         tText(
           'embed-code/components/embed-code-overview___fragment-wijzigen-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const removeEmbedCode = async (id: EmbedCode['id']) => {
     try {
-      await deleteEmbedCode(id)
+      await deleteEmbedCode(id);
       ToastService.success(
         tHtml(
           'embed-code/components/embed-code-overview___het-ingesloten-fragment-is-verwijderd',
         ),
-      )
+      );
     } catch (error) {
-      console.error(error)
+      console.error(error);
 
       ToastService.danger(
         tHtml(
           'embed-code/components/embed-code-overview___er-ging-iets-mis-bij-het-verwijderen-van-het-ingesloten-fragment',
         ),
-      )
+      );
     }
 
-    await reloadEmbedCodes()
+    await reloadEmbedCodes();
 
-    setIsConfirmationModalOpen(false)
-    setSelected(undefined)
-  }
+    setIsConfirmationModalOpen(false);
+    setSelected(undefined);
+  };
 
   const handleEditEmbedCode = async (embedCodeId: string) => {
-    const correctEmbed = await EmbedCodeService.getEmbedCode(embedCodeId)
+    const correctEmbed = await EmbedCodeService.getEmbedCode(embedCodeId);
 
-    setSelected(undefined)
-    setEmbedCodeForEditModal(correctEmbed)
-  }
+    setSelected(undefined);
+    setEmbedCodeForEditModal(correctEmbed);
+  };
 
   // Lifecycle
 
   useEffect(() => {
-    fetchEmbedCodes()
-  }, [fetchEmbedCodes])
+    fetchEmbedCodes();
+  }, [fetchEmbedCodes]);
 
   useEffect(() => {
     setQuery({
       sort_column: query.sort_column || EMBED_CODE_DEFAULTS.sort_column,
       sort_order: query.sort_order || EMBED_CODE_DEFAULTS.sort_order,
-    })
-  }, []) // eslint-disable-line
+    });
+  }, []); // eslint-disable-line
 
   // Rendering
 
@@ -299,7 +295,7 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
               'embed-code/components/embed-code-overview___verwijder',
             ),
           },
-        ] as (MenuItemInfo & { id: EmbedCodeAction })[]
+        ] as (MenuItemInfo & { id: EmbedCodeAction })[];
 
         return (
           data && (
@@ -308,9 +304,9 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
               onOpen={() => setSelected(data as EmbedCode)}
               onClose={() => {
                 const isAModalOpen =
-                  embedCodeForEditModal || isConfirmationModalOpen
+                  embedCodeForEditModal || isConfirmationModalOpen;
 
-                !isAModalOpen && setSelected(undefined)
+                !isAModalOpen && setSelected(undefined);
               }}
               label={tText(
                 'embed-code/components/embed-code-overview___meer-acties',
@@ -318,13 +314,13 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
               menuItems={items}
               onOptionClicked={async (action) => {
                 if (selected === undefined) {
-                  return
+                  return;
                 }
 
                 switch (action.toString() as EmbedCodeAction) {
                   case EmbedCodeAction.EDIT:
-                    await handleEditEmbedCode(selected.id as string)
-                    break
+                    await handleEditEmbedCode(selected.id as string);
+                    break;
 
                   case EmbedCodeAction.COPY_TO_CLIPBOARD:
                     if (!selected?.id) {
@@ -334,13 +330,13 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
                           undefined,
                           { selected },
                         ),
-                      )
+                      );
                       ToastService.danger(
                         tHtml(
                           'embed-code/components/embed-code-overview___er-ging-iets-mis-bij-het-kopieren-van-de-code',
                         ),
-                      )
-                      return
+                      );
+                      return;
                     }
                     trackEvents(
                       {
@@ -356,40 +352,40 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
                         },
                       },
                       commonUser,
-                    )
-                    copyToClipboard(toEmbedCodeIFrame(selected?.id))
+                    );
+                    copyToClipboard(toEmbedCodeIFrame(selected?.id));
                     ToastService.success(
                       tHtml(
                         'embed-code/components/embed-code-overview___de-code-werd-succesvol-gekopieerd',
                       ),
-                    )
-                    setSelected(undefined)
-                    break
+                    );
+                    setSelected(undefined);
+                    break;
 
                   case EmbedCodeAction.DUPLICATE:
-                    await duplicateSelectedEmbedCode(selected)
-                    break
+                    await duplicateSelectedEmbedCode(selected);
+                    break;
 
                   case EmbedCodeAction.SHOW_ORIGINAL:
                     navigate(navigateFunc, APP_PATH.ITEM_DETAIL.route, {
                       id: (selected.content as Avo.Item.Item).external_id,
-                    })
-                    break
+                    });
+                    break;
 
                   case EmbedCodeAction.DELETE:
-                    setIsConfirmationModalOpen(true)
-                    break
+                    setIsConfirmationModalOpen(true);
+                    break;
 
                   default:
-                    break
+                    break;
                 }
               }}
             />
           )
-        )
+        );
       }}
     />
-  )
+  );
 
   return (
     <>
@@ -408,7 +404,7 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
         onTableStateChanged={(state) => {
           // NOTE: prevents recursion loop but hits theoretical performance
           if (!isEqual(filters, state)) {
-            setFilters(state as EmbedCodeOverviewFilterState)
+            setFilters(state as EmbedCodeOverviewFilterState);
           }
         }}
         renderCell={renderCell as any}
@@ -440,13 +436,13 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
         isOpen={isConfirmationModalOpen}
         size="medium"
         onClose={() => {
-          setIsConfirmationModalOpen(false)
-          setSelected(undefined)
+          setIsConfirmationModalOpen(false);
+          setSelected(undefined);
         }}
         confirmCallback={async () =>
           selected?.id && removeEmbedCode(selected.id)
         }
       />
     </>
-  )
-}
+  );
+};

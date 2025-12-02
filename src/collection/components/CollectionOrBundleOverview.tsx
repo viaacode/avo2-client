@@ -29,12 +29,6 @@ import React, {
 } from 'react';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
-import {
-  ArrayParam,
-  NumberParam,
-  StringParam,
-  useQueryParams,
-} from 'use-query-params';
 
 import { type CollectionsOrBundlesOverviewTableCols } from '../../admin/collectionsOrBundles/collections-or-bundles.types';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
@@ -55,7 +49,7 @@ import {
 import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
 import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal';
-import { getMoreOptionsLabel } from '../../shared/constants/index';
+import { getMoreOptionsLabel } from '../../shared/constants';
 import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generated/graphql-db-react-query';
 import { buildLink } from '../../shared/helpers/build-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
@@ -95,6 +89,12 @@ import { DeleteCollectionModal } from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
 import './CollectionOrBundleOverview.scss';
+import {
+  ArrayParam,
+  NumberParam,
+  StringParam,
+  useQueryParams,
+} from '../../shared/helpers/routing/use-query-params-ssr.ts';
 
 interface CollectionOrBundleOverviewProps {
   numberOfItems: number;

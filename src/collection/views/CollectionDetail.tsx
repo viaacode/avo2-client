@@ -30,12 +30,6 @@ import React, {
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import {
-  BooleanParam,
-  StringParam,
-  useQueryParam,
-  useQueryParams,
-} from 'use-query-params';
 
 import { AssignmentService } from '../../assignment/assignment.service';
 import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
@@ -128,6 +122,12 @@ import {
 import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from './CollectionDetail.const';
 import './CollectionDetail.scss';
 import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
+import {
+  BooleanParam,
+  StringParam,
+  useQueryParam,
+  useQueryParams,
+} from '../../shared/helpers/routing/use-query-params-ssr.ts';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;

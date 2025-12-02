@@ -1,6 +1,9 @@
 import { Avo } from '@viaa/avo2-types';
 import type { QueryParamConfig } from 'use-query-params';
-import { decodeString, encodeString } from 'use-query-params';
+import {
+  decodeString,
+  encodeString,
+} from '../../../shared/helpers/routing/use-query-params-ssr.ts';
 
 const QUERY_PARAM_SORT_DIRECTIONS = [
   Avo.Search.OrderDirection.ASC,

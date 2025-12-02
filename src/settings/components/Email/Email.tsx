@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Button,
   Checkbox,
@@ -8,16 +8,19 @@ import {
   FormGroup,
   Spacer,
   Spinner,
-} from '@viaa/avo2-components'
-import { useAtomValue } from 'jotai'
-import React, { type FC, useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { StringParam, useQueryParams } from 'use-query-params'
+} from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
+import React, { type FC, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { CustomError } from '../../../shared/helpers/custom-error';
+import {
+  StringParam,
+  useQueryParams,
+} from '../../../shared/helpers/routing/use-query-params-ssr';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import {
@@ -27,21 +30,20 @@ import {
 import { ToastService } from '../../../shared/services/toast-service';
 import { type NewsletterList } from '../../../shared/types/index';
 import { GET_NEWSLETTER_LABELS } from '../../settings.const';
-
 import { useGetEmailPreferences } from './hooks/getEmailPreferences';
 
 const INITIAL_NEWSLETTER_PREFERENCES_STATE = (): NewsletterPreferences => ({
   newsletter: false,
   workshop: false,
   ambassador: false,
-})
+});
 
 export const Email: FC = () => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [{ preferenceCenterKey }] = useQueryParams({
     preferenceCenterKey: StringParam,
-  })
+  });
 
   const {
     data: fetchedNewsletterPreferences,
@@ -49,42 +51,42 @@ export const Email: FC = () => {
     isError: getPreferencesIsError,
   } = useGetEmailPreferences(preferenceCenterKey as string, {
     enabled: !!preferenceCenterKey || !!commonUser?.profileId,
-  })
+  });
 
   const [isLoadingUpdatePreferences, setIsLoadingUpdatePreferences] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
   const [initialNewsletterPreferences, setInitialNewsletterPreferences] =
-    useState<NewsletterPreferences>(INITIAL_NEWSLETTER_PREFERENCES_STATE())
+    useState<NewsletterPreferences>(INITIAL_NEWSLETTER_PREFERENCES_STATE());
   const [currentNewsletterPreferences, setCurrentNewsletterPreferences] =
-    useState<NewsletterPreferences>(INITIAL_NEWSLETTER_PREFERENCES_STATE())
+    useState<NewsletterPreferences>(INITIAL_NEWSLETTER_PREFERENCES_STATE());
 
-  const newsletterLabels = GET_NEWSLETTER_LABELS()
+  const newsletterLabels = GET_NEWSLETTER_LABELS();
 
   useEffect(() => {
     if (fetchedNewsletterPreferences) {
-      setInitialNewsletterPreferences(fetchedNewsletterPreferences)
-      setCurrentNewsletterPreferences(fetchedNewsletterPreferences)
+      setInitialNewsletterPreferences(fetchedNewsletterPreferences);
+      setCurrentNewsletterPreferences(fetchedNewsletterPreferences);
     }
-  }, [fetchedNewsletterPreferences])
+  }, [fetchedNewsletterPreferences]);
 
   const onChangePreference = (preference: Partial<NewsletterPreferences>) => {
     setCurrentNewsletterPreferences((currentPreferences) => {
       return {
         ...currentPreferences,
         ...preference,
-      }
-    })
-  }
+      };
+    });
+  };
 
   const onSavePreferences = async () => {
     try {
-      setIsLoadingUpdatePreferences(true)
+      setIsLoadingUpdatePreferences(true);
 
       await CampaignMonitorService.updateNewsletterPreferences(
         currentNewsletterPreferences,
         preferenceCenterKey as string | undefined,
-      )
+      );
 
       // No await for logging events
       CampaignMonitorService.triggerEventsForNewsletterPreferences(
@@ -92,34 +94,34 @@ export const Email: FC = () => {
         currentNewsletterPreferences,
         commonUser,
         preferenceCenterKey,
-      )
+      );
 
       setInitialNewsletterPreferences({
         ...initialNewsletterPreferences,
         ...currentNewsletterPreferences,
-      })
+      });
 
       ToastService.success(
         tHtml('settings/components/email___je-voorkeuren-zijn-opgeslagen'),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError('Failed to update newsletter preferences', err),
-      )
+      );
 
       setCurrentNewsletterPreferences({
         ...initialNewsletterPreferences,
-      })
+      });
 
       ToastService.danger(
         tHtml(
           'settings/components/email___de-nieuwsbriefvoorkeuren-konden-niet-worden-geupdatet',
         ),
-      )
+      );
     }
 
-    setIsLoadingUpdatePreferences(false)
-  }
+    setIsLoadingUpdatePreferences(false);
+  };
 
   const renderFetchPreferencesError = () => {
     return (
@@ -138,11 +140,11 @@ export const Email: FC = () => {
               )}
         </p>
       </ErrorView>
-    )
-  }
+    );
+  };
 
   if (getPreferencesIsError) {
-    return renderFetchPreferencesError()
+    return renderFetchPreferencesError();
   }
 
   return (
@@ -185,7 +187,7 @@ export const Email: FC = () => {
                         onChangePreference({
                           [newsletterKey]:
                             !currentNewsletterPreferences[newsletterKey],
-                        })
+                        });
                       }}
                     />
                   ),
@@ -212,7 +214,7 @@ export const Email: FC = () => {
         </Spacer>
       </Container>
     </Container>
-  )
-}
+  );
+};
 
-export default Email
+export default Email;

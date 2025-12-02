@@ -23,7 +23,7 @@ import React, {
 import PupilSvg from '../../../../assets/images/leerling.svg?react';
 import { BlockList } from '../../../../shared/components/BlockList/BlockList';
 import { EmptyStateMessage } from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
-import { getMoreOptionsLabel } from '../../../../shared/constants/index';
+import { getMoreOptionsLabel } from '../../../../shared/constants';
 import { isMobileWidth } from '../../../../shared/helpers/media-query';
 import { tHtml } from '../../../../shared/helpers/translate-html';
 import { tText } from '../../../../shared/helpers/translate-text';
