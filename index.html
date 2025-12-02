@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="8fb68e92-94b2-4334-bc47-7bcda08bc9c7" data-blockingmode="auto" type="text/javascript"></script>
+
+    <!-- Init .env variables -->
+    <script src="/env-config.js" data-cookieconsent="ignore"></script>
+
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        let f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", window._ENV_.GOOGLE_ANALYTICS_ID);
+    </script>
+    <!-- End Google Tag Manager -->
+
+    <!--		&lt;!&ndash; Mouseflow Tag &ndash;&gt;-->
+    <!--		<script type="text/javascript">-->
+    <!--			if (window._ENV_.MOUSEFLOW_ANALYTICS_ID) {-->
+    <!--				window._mfq = window._mfq || [];-->
+    <!--				(function () {-->
+    <!--					var mf = document.createElement("script");-->
+    <!--					mf.type = "text/javascript";-->
+    <!--					mf.defer = true;-->
+    <!--					mf.src = "//cdn.mouseflow.com/projects/" + window._ENV_.MOUSEFLOW_ANALYTICS_ID + ".js";-->
+    <!--					document.getElementsByTagName("head")[0].appendChild(mf);-->
+    <!--				})();-->
+    <!--			}-->
+    <!--		</script>-->
+    <!--		&lt;!&ndash; End Mouseflow Tag &ndash;&gt;-->
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="preload" href="/fonts/montserrat-italic.woff2" as="font" crossorigin />
+    <link rel="preload" href="/fonts/montserrat-medium.woff2" as="font" crossorigin />
+    <link rel="preload" href="/fonts/avenir-lt-std-medium.woff2" as="font" crossorigin />
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MNSTNVJ" height="0" width="0" style="display: none; visibility: hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- No-JS fallback -->
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <!-- Main react app node -->
+    <div id="root"></div>
+
+    <!-- Load main script entry file -->
+    <script type="module" src="/src/entry.client.tsx"></script>
+
+    <!-- Detect old browsers -->
+    <script src="/old-browser-detector.min.js"></script>
+    <script type="text/javascript">
+      let Detector = new oldBrowserDetector(null, function () {
+        // unsupported browser
+        window.open("/unsupported-browser.html");
+      });
+
+      Detector.detect();
+    </script>
+
+    <!-- Detect no access to localstorage -->
+    <script type="text/javascript">
+      try {
+        const _ls = window.localStorage;
+      } catch (err) {
+        // Local storage is not available => flowplayer will crash the page => redirect to the backend error page
+        window.location.href = window._ENV_.PROXY_URL + "/third-party-cookies";
+      }
+    </script>
+  </body>
+</html>

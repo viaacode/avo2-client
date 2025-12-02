@@ -1,6 +1,5 @@
 import type { MiddlewareFunction, RouteObject } from 'react-router';
 import { CatchAllComponent } from './catch-all.tsx';
-import { reactRouterConvert } from './shared/helpers/routing/convert-route-component-to-react-router-v7-module.ts';
 
 async function logRoutesMiddleware({
   request,
@@ -15,7 +14,7 @@ const APP_ROUTES: RouteObject[] = [
     path: '*?',
     middleware: [logRoutesMiddleware],
     Component: CatchAllComponent,
-    lazy: () => import('./catch-all').then(reactRouterConvert),
+    // lazy: { Component: () => import('./catch-all').then(reactRouterConvert) },
   },
 ];
 
