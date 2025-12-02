@@ -1,6 +1,6 @@
 import { Button, IconName } from '@viaa/avo2-components'
 import { useAtom, useSetAtom } from 'jotai'
-import React, { type FC, useEffect } from 'react'
+import { type FC, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { useLocation } from 'react-router-dom'
 

@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
-import React, { type FC, type ReactNode, useState } from 'react'
+import { type FC, type ReactNode, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import teacherCardAppImage from '../../../src/assets/images/lerarenkaart-app.jpg'

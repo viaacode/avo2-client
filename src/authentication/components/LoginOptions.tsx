@@ -1,6 +1,6 @@
 import { Button, IconName, Spacer, Tabs } from '@viaa/avo2-components'
 import { noop } from 'es-toolkit'
-import React, { type FC, useCallback, useEffect } from 'react'
+import { type FC, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { Link } from 'react-router-dom'
 

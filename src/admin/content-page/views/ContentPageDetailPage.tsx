@@ -1,6 +1,6 @@
 import type { ContentPageInfo } from '@meemoo/admin-core-ui/admin'
 import { useAtomValue } from 'jotai'
-import React, { type FC, lazy, Suspense, useState } from 'react'
+import { type FC, lazy, Suspense, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useNavigate, useParams } from 'react-router'
 

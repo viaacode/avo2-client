@@ -1,6 +1,6 @@
 import { Container, Icon } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { type ContentTypeNumber } from '../../../../collection/collection.types';
 

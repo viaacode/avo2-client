@@ -3,7 +3,7 @@ import { type Avo, type PermissionName } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
 import { isNil } from 'es-toolkit'
 import { stringifyUrl } from 'query-string'
-import React, { type FC, type ReactNode, useEffect, useState } from 'react'
+import { type FC, type ReactNode, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 
 import { APP_PATH } from '../../constants';

@@ -1,7 +1,7 @@
 import { BlockIntro } from '@meemoo/admin-core-ui/client'
 import { type Avo } from '@viaa/avo2-types'
 
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { APP_PATH } from '../../../constants';
 import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription';

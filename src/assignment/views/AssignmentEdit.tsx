@@ -20,7 +20,7 @@ import { Avo, PermissionName } from '@viaa/avo2-types';
 import { isAfter, isPast } from 'date-fns';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import React, {
+import {
   type FC,
   useCallback,
   useEffect,

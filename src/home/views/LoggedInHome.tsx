@@ -1,6 +1,6 @@
 import { ContentPageRenderer } from '@meemoo/admin-core-ui/client';
 import { useAtomValue } from 'jotai';
-import React, { type FC } from 'react';
+import { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 

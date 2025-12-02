@@ -1,6 +1,6 @@
 import { convertToHtml } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
-import React, { type FC, type ReactNode } from 'react'
+import { type FC, type ReactNode } from 'react'
 
 import { type FilterState } from '../../../search/search.types';
 import { ItemMetadata } from '../../../shared/components/BlockItemMetadata/ItemMetadata';

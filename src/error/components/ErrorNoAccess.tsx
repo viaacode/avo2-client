@@ -1,5 +1,5 @@
 import { Blankslate, Button, Container, IconName } from '@viaa/avo2-components'
-import React, { type FC, type ReactNode } from 'react'
+import { type FC, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 
 import { APP_PATH } from '../../constants';

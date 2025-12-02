@@ -17,7 +17,7 @@ import { Avo, PermissionName } from '@viaa/avo2-types';
 import { noop, orderBy } from 'es-toolkit';
 import { get } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { type FC, useCallback, useEffect, useState } from 'react';
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../admin/shared/types/content-picker';
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -36,7 +36,7 @@ import { tText } from '../../shared/helpers/translate-text';
 import { QualityLabelsService } from '../../shared/services/quality-labels.service';
 import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service';
 import { ToastService } from '../../shared/services/toast-service';
-import { type QuickLaneUrlObject } from '../../shared/types/index';
+import { type QuickLaneUrlObject } from '../../shared/types';
 import { type QualityLabel } from '../collection.types';
 import { type CollectionAction } from './CollectionOrBundleEdit.types';
 

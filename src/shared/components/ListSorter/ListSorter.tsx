@@ -4,7 +4,7 @@ import { type ColorOption } from '@meemoo/admin-core-ui/admin'
 import { Button, Icon, IconName } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 import { sortBy } from 'es-toolkit'
-import React, { type FC, Fragment, type ReactNode, useMemo } from 'react'
+import { type FC, Fragment, type ReactNode, useMemo } from 'react'
 
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../../../assignment/assignment.const';
 import { ColorSelect } from '../ColorSelect/ColorSelect';

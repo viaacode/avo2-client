@@ -11,7 +11,7 @@ import {
   Tabs,
 } from '@viaa/avo2-components'
 import { type Avo, type PermissionName } from '@viaa/avo2-types'
-import React, { type FC, useState } from 'react'
+import { type FC, useState } from 'react'
 
 import { tText } from '../../helpers/translate-text';
 import { useTabs } from '../../hooks/useTabs';

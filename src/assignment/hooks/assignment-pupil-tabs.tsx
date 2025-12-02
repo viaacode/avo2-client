@@ -5,7 +5,7 @@ import {
   type TabProps,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';

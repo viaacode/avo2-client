@@ -13,7 +13,7 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isEmpty } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
-import React, {
+import {
   type FC,
   type ReactNode,
   type ReactText,
@@ -34,7 +34,7 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
-import { getMoreOptionsLabel } from '../../shared/constants/index';
+import { getMoreOptionsLabel } from '../../shared/constants';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { generateContentLinkString } from '../../shared/helpers/link';
 import { trackEvents } from '../../shared/services/event-logging-service';

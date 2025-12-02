@@ -1,5 +1,5 @@
 import { Modal, ModalBody } from '@viaa/avo2-components'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { QuickLaneContent } from '../QuickLaneContent/QuickLaneContent';
 

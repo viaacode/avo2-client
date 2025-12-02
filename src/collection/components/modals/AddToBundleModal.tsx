@@ -17,7 +17,7 @@ import {
 } from '@viaa/avo2-components'
 import { Avo } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
-import React, { type FC, useCallback, useEffect, useState } from 'react'
+import { type FC, useCallback, useEffect, useState } from 'react'
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { CustomError } from '../../../shared/helpers/custom-error';

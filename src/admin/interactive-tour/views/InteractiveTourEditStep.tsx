@@ -16,29 +16,29 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@viaa/avo2-components'
-import { isEqual } from 'es-toolkit'
-import React, { type FC } from 'react'
+} from '@viaa/avo2-components';
+import { isEqual } from 'es-toolkit';
+import { type FC, memo } from 'react';
 
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { stripHtml } from '../../../shared/helpers/formatters/strip-html';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
-import { type InteractiveTourAction } from '../helpers/reducers/index';
+import { type InteractiveTourAction } from '../helpers/reducers';
 import {
   type EditableStep,
   InteractiveTourEditActionType,
 } from '../interactive-tour.types';
 
-import './InteractiveTourEdit.scss'
+import './InteractiveTourEdit.scss';
 
 interface InteractiveTourEditStepProps {
-  step: EditableStep
-  index: number
-  numberOfSteps: number
-  stepErrors: { title?: string; content?: string } | undefined
-  changeInteractiveTourState: (action: InteractiveTourAction) => void
+  step: EditableStep;
+  index: number;
+  numberOfSteps: number;
+  stepErrors: { title?: string; content?: string } | undefined;
+  changeInteractiveTourState: (action: InteractiveTourAction) => void;
 }
 
 export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
@@ -79,14 +79,14 @@ export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
           direction,
           index,
           type: InteractiveTourEditActionType.SWAP_STEPS,
-        })
+        });
       }}
       disabled={disabled}
     />
-  )
+  );
 
   if (!step) {
-    return null
+    return null;
   }
 
   return (
@@ -114,7 +114,7 @@ export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
                   changeInteractiveTourState({
                     index,
                     type: InteractiveTourEditActionType.REMOVE_STEP,
-                  })
+                  });
                 }}
                 ariaLabel={tText(
                   'admin/interactive-tour/views/interactive-tour-edit___verwijder-stap',
@@ -143,7 +143,7 @@ export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
                   stepIndex: index,
                   stepProp: 'title',
                   stepPropValue: newTitle,
-                })
+                });
               }}
             />
             <Spacer margin="top-small">{step.title.length} / 28</Spacer>
@@ -164,7 +164,7 @@ export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
                     stepIndex: index,
                     stepProp: 'contentState',
                     stepPropValue: newContentState,
-                  })
+                  });
                 }
               }}
               controls={RICH_TEXT_EDITOR_OPTIONS_FULL}
@@ -198,7 +198,7 @@ export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
                   stepIndex: index,
                   stepProp: 'target',
                   stepPropValue: newTarget,
-                })
+                });
               }}
               className="c-text-input__selector"
             />
@@ -224,7 +224,7 @@ export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
         </Form>
       </PanelBody>
     </Panel>
-  )
-}
+  );
+};
 
-export default React.memo(InteractiveTourEditStep)
+export default memo(InteractiveTourEditStep);

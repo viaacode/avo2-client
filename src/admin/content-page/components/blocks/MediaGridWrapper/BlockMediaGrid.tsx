@@ -26,7 +26,7 @@ import {
 } from '@viaa/avo2-components'
 import { Avo } from '@viaa/avo2-types'
 import clsx from 'clsx'
-import React, {
+import {
   type FC,
   type ReactNode,
   useEffect,

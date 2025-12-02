@@ -2,7 +2,7 @@ import { Avo } from '@viaa/avo2-types';
 import { atom } from 'jotai';
 
 import { type LoginState } from '../authentication/authentication.types';
-import { DEFAULT_AUDIO_STILL } from '../shared/constants/index';
+import { DEFAULT_AUDIO_STILL } from '../shared/constants';
 import { CustomError } from '../shared/helpers/custom-error';
 
 import { fetchSearchResults } from './search.service';

@@ -1,5 +1,5 @@
 import { Button, type ButtonProps, IconName } from '@viaa/avo2-components'
-import React, { type ReactNode, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 
 import {
   CutFragmentModal,

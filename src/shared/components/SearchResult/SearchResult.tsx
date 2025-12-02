@@ -15,7 +15,7 @@ import {
 import { type Avo } from '@viaa/avo2-types'
 import { clsx } from 'clsx'
 import { isNil, noop } from 'es-toolkit'
-import React, { type FC, type ReactNode, type ReactText } from 'react'
+import { type FC, type ReactNode, type ReactText } from 'react'
 
 import { defaultRenderBookmarkButton } from '../../helpers/default-render-bookmark-button';
 import { tText } from '../../helpers/translate-text';

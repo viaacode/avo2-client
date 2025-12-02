@@ -11,7 +11,7 @@ import {
   ToolbarRight,
 } from '@viaa/avo2-components'
 import { noop } from 'es-toolkit'
-import React, { type FC, type ReactNode, useEffect, useState } from 'react'
+import { type FC, type ReactNode, useEffect, useState } from 'react'
 
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';

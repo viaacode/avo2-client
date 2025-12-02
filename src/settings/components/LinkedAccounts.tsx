@@ -12,7 +12,7 @@ import {
 } from '@viaa/avo2-components'
 import { Avo } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
-import React, {
+import {
   type Dispatch,
   type FC,
   type ReactNode,

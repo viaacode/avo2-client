@@ -1,6 +1,6 @@
 import { RadioButtonGroup, type RadioOption } from '@viaa/avo2-components'
 import { isNil, noop } from 'es-toolkit'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { AssignmentHelper } from '../../../assignment/assignment.helper';
 import { AssignmentLayout } from '../../../assignment/assignment.types';

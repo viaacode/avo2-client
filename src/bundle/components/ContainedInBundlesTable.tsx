@@ -1,7 +1,7 @@
 import { toggleSortOrder } from '@meemoo/admin-core-ui/admin'
 import { BlockHeading } from '@meemoo/admin-core-ui/client'
 import { Button, Icon, IconName, Spacer, Table } from '@viaa/avo2-components'
-import React, { type FC, type ReactNode, useState } from 'react'
+import { type FC, type ReactNode, useState } from 'react'
 import { useNavigate } from 'react-router'
 
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';

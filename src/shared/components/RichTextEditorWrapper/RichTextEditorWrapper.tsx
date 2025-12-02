@@ -6,7 +6,7 @@ import {
 } from '@meemoo/react-components'
 import { type Avo } from '@viaa/avo2-types'
 import { isEqual } from 'es-toolkit'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { CustomError } from '../../helpers/custom-error';
 import { tHtml } from '../../helpers/translate-html';

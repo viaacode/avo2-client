@@ -12,7 +12,7 @@ import {
   ToolbarRight,
 } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
-import React, { type FC, useCallback, useMemo, useState } from 'react'
+import { type FC, useCallback, useMemo, useState } from 'react'
 
 import { EducationLevelId } from '../../helpers/lom';
 import { tHtml } from '../../helpers/translate-html';

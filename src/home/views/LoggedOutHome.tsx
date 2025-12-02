@@ -1,7 +1,7 @@
 import { ContentPageRenderer } from '@meemoo/admin-core-ui/client'
 import { IconName } from '@viaa/avo2-components'
 import { useAtomValue } from 'jotai'
-import React, { type FC, useEffect } from 'react'
+import { type FC, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { useNavigate } from 'react-router'
 import { useLocation } from 'react-router-dom'

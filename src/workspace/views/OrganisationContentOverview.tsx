@@ -7,7 +7,7 @@ import {
   type TableColumn,
 } from '@viaa/avo2-components'
 import { useAtomValue } from 'jotai'
-import React, { type FC, useCallback, useEffect, useState } from 'react'
+import { type FC, useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';

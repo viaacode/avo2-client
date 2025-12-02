@@ -1,24 +1,24 @@
-import { type Avo } from '@viaa/avo2-types'
-import { noop } from 'es-toolkit'
-import React, { type FC, type ReactNode } from 'react'
+import { type Avo } from '@viaa/avo2-types';
+import { noop } from 'es-toolkit';
+import { type FC, type ReactNode } from 'react';
 
 import { type APP_PATH } from '../../../../constants';
 import { ConfirmModal } from '../../../../shared/components/ConfirmModal/ConfirmModal';
 import { buildLink } from '../../../../shared/helpers/build-link';
-import { type ValueOf } from '../../../../shared/types/index';
+import { type ValueOf } from '../../../../shared/types';
 
-import './SubjectsBeingEditedWarningModal.scss'
+import './SubjectsBeingEditedWarningModal.scss';
 import { tText } from '../../../../shared/helpers/translate-text';
 
 interface SubjectsBeingEditedWarningModalProps {
-  isOpen: boolean
-  onClose?: () => void
-  title: ReactNode
-  editWarningSection1: ReactNode
-  editWarningSection2: ReactNode
-  route: ValueOf<typeof APP_PATH>['route']
-  confirmCallback: () => void
-  subjects: Avo.Share.EditStatus[]
+  isOpen: boolean;
+  onClose?: () => void;
+  title: ReactNode;
+  editWarningSection1: ReactNode;
+  editWarningSection2: ReactNode;
+  route: ValueOf<typeof APP_PATH>['route'];
+  confirmCallback: () => void;
+  subjects: Avo.Share.EditStatus[];
 }
 
 export const SubjectsBeingEditedWarningModal: FC<
@@ -54,8 +54,8 @@ export const SubjectsBeingEditedWarningModal: FC<
         </ul>
         <p>{editWarningSection2}</p>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <ConfirmModal
@@ -69,5 +69,5 @@ export const SubjectsBeingEditedWarningModal: FC<
         'admin/shared/components/subjects-being-edited-warning-modal/subjects-being-edited-warning-modal___doorgaan',
       )}
     />
-  )
-}
+  );
+};

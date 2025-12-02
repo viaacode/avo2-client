@@ -3,7 +3,7 @@ import { Container, Icon, IconName } from '@viaa/avo2-components'
 import { type Avo, PermissionName } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
 import { noop } from 'es-toolkit'
-import React, {
+import {
   type FC,
   useCallback,
   useEffect,

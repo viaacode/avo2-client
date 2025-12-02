@@ -1,5 +1,5 @@
 import { isBoolean, isNil, isString } from 'es-toolkit';
-import React, { type ReactElement, type ReactNode } from 'react';
+import { type ReactElement, type ReactNode } from 'react';
 
 import { Html } from '../../../shared/components/Html/Html';
 import { formatDate } from '../../../shared/helpers/formatters/date';

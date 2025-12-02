@@ -24,7 +24,7 @@ import type { Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { debounce } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import React, {
+import {
   type FC,
   type LegacyRef,
   type ReactNode,

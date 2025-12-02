@@ -21,7 +21,7 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact, isNil, uniq } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import React, {
+import {
   type FC,
   type ReactNode,
   useCallback,

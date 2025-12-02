@@ -1,10 +1,14 @@
-import { Table, type TableColumn, type TableProps } from '@viaa/avo2-components'
-import React, { type FC } from 'react'
+import {
+  Table,
+  type TableColumn,
+  type TableProps,
+} from '@viaa/avo2-components';
+import { type FC } from 'react';
 
 import { QuickLaneFilterTableCell } from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { tText } from '../../shared/helpers/translate-text';
-import { type QuickLaneUrlObject } from '../../shared/types/index';
+import { type QuickLaneUrlObject } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 export const AssociatedQuickLaneTable: FC<TableProps> = ({
@@ -17,7 +21,7 @@ export const AssociatedQuickLaneTable: FC<TableProps> = ({
   const renderAssociatedQuickLaneTableCell = (
     data: QuickLaneUrlObject,
     id: string,
-  ) => <QuickLaneFilterTableCell id={id} data={data} />
+  ) => <QuickLaneFilterTableCell id={id} data={data} />;
 
   return (
     <>
@@ -71,11 +75,11 @@ export const AssociatedQuickLaneTable: FC<TableProps> = ({
         rowKey="id"
       />
     </>
-  )
-}
+  );
+};
 
 export const AssociatedQuickLaneTableOrderBy: Partial<Record<string, string>> =
   {
     author: 'owner.user.full_name',
     organisation: 'owner.organisation.name',
-  }
+  };

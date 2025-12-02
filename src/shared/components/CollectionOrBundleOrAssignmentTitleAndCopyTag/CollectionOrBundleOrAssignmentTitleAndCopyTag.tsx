@@ -1,5 +1,5 @@
 import { TagList } from '@viaa/avo2-components'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 import { Link } from 'react-router-dom'
 
 interface CollectionOrBundleOrAssignmentTitleAndCopyTagProps {

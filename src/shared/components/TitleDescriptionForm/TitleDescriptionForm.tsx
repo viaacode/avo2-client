@@ -6,7 +6,7 @@ import {
   TextInput,
   type TextInputProps,
 } from '@viaa/avo2-components'
-import React, { type FC, useEffect, useState } from 'react'
+import { type FC, useEffect, useState } from 'react'
 
 import {
   RichTextEditorWrapper,

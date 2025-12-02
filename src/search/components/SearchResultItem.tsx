@@ -8,7 +8,7 @@ import {
 } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 import { compact, isNil, trimStart } from 'es-toolkit'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../collection/collection.types';
 import { SearchResult } from '../../shared/components/SearchResult/SearchResult';

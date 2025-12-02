@@ -1,5 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { CollectionService } from '../../collection/collection.service';
@@ -13,7 +13,7 @@ import {
 } from '../../shared/hooks/useSingleEntityModal';
 import { ToastService } from '../../shared/services/toast-service';
 import { VideoStillService } from '../../shared/services/video-stills-service';
-import { type Positioned } from '../../shared/types/index';
+import { type Positioned } from '../../shared/types';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
 import { insertMultipleAtPosition } from '../helpers/insert-at-position';
 import {

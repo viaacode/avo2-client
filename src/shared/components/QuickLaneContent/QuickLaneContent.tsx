@@ -2,7 +2,7 @@ import { Alert, Spacer, Tabs } from '@viaa/avo2-components'
 import { type Avo, PermissionName } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
 import { noop } from 'es-toolkit'
-import React, { type FC, useEffect, useState } from 'react'
+import { type FC, useEffect, useState } from 'react'
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';

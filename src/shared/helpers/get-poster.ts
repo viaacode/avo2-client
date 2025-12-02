@@ -1,7 +1,7 @@
-import { type Avo } from '@viaa/avo2-types'
+import { type Avo } from '@viaa/avo2-types';
 
 import { ContentTypeNumber } from '../../collection/collection.types';
-import { DEFAULT_AUDIO_STILL } from '../constants/index';
+import { DEFAULT_AUDIO_STILL } from '../constants';
 
 /**
  * Returns the thumbnail for video items and the default audio still for audio items
@@ -14,7 +14,7 @@ export function getFlowPlayerPoster(
   itemMeta: Avo.Item.Item | Avo.Collection.Collection | undefined,
 ): string | undefined {
   if (itemMeta?.type_id === ContentTypeNumber.audio) {
-    return DEFAULT_AUDIO_STILL
+    return DEFAULT_AUDIO_STILL;
   }
-  return thumbnail || itemMeta?.thumbnail_path || undefined
+  return thumbnail || itemMeta?.thumbnail_path || undefined;
 }

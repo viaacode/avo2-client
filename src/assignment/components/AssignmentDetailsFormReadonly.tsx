@@ -1,7 +1,7 @@
 import { type DefaultProps, Form, FormGroup } from '@viaa/avo2-components'
 import { Avo } from '@viaa/avo2-types'
 import { clsx } from 'clsx'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { formatTimestamp } from '../../shared/helpers/formatters/date';
 

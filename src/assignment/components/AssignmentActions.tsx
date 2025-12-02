@@ -10,7 +10,7 @@ import { type Avo, PermissionName } from '@viaa/avo2-types'
 import { clsx } from 'clsx'
 import { useAtomValue } from 'jotai'
 import { noop } from 'es-toolkit'
-import React, { type FC, useCallback, useMemo, useState } from 'react'
+import { type FC, useCallback, useMemo, useState } from 'react'
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { APP_PATH } from '../../constants';

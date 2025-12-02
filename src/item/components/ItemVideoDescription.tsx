@@ -11,7 +11,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { debounce } from 'es-toolkit';
-import React, {
+import {
   createRef,
   type FC,
   type ReactNode,
@@ -28,7 +28,7 @@ import { ItemMetadata } from '../../shared/components/BlockItemMetadata/ItemMeta
 import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { type CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper.types';
 import { TextWithTimestamps } from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
-import { TEAL_BRIGHT } from '../../shared/constants/index';
+import { TEAL_BRIGHT } from '../../shared/constants';
 import { stripHtml } from '../../shared/helpers/formatters/strip-html';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 

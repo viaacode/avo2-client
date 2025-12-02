@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { type NavigateFunction } from 'react-router';
 import { Link } from 'react-router-dom';
 

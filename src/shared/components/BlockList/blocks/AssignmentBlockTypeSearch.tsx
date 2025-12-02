@@ -18,7 +18,7 @@ import {
 } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 import { clsx } from 'clsx'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 // eslint-disable-next-line import/no-unresolved
 import NewPartSvg from '../../../../assets/images/nieuw-onderdeel.svg?react'

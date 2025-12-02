@@ -17,7 +17,7 @@ import { type Avo, PermissionName } from '@viaa/avo2-types'
 import { clsx } from 'clsx'
 import { useAtomValue } from 'jotai'
 import { isNil } from 'es-toolkit'
-import React, {
+import {
   createRef,
   type FC,
   type ReactNode,

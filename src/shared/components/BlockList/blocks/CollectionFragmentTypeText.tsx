@@ -1,5 +1,5 @@
 import { type Avo } from '@viaa/avo2-types'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { CollectionFragmentRichText } from '../../../../collection/components/CollectionFragmentRichText';
 import {

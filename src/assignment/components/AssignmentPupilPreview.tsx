@@ -2,7 +2,7 @@ import { Button, IconName } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
 import { noop } from 'es-toolkit'
-import React, {
+import {
   type Dispatch,
   type FC,
   type SetStateAction,

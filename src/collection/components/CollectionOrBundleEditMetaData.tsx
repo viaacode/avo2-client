@@ -13,7 +13,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import { type StringMap } from 'i18next';
-import React, { type FC, useState } from 'react';
+import { type FC, useState } from 'react';
 
 import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';

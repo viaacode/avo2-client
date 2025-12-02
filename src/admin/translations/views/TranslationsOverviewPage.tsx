@@ -6,7 +6,7 @@ import {
 } from '@viaa/avo2-components'
 import { PermissionName } from '@viaa/avo2-types'
 import { flatten, groupBy, isNil } from 'es-toolkit'
-import React, {
+import {
   type FC,
   lazy,
   type ReactNode,

@@ -4,13 +4,13 @@ import {
   IconName,
   Toolbar,
   ToolbarItem,
-} from '@viaa/avo2-components'
-import { cloneDeep } from 'es-toolkit'
-import React, { type FC } from 'react'
+} from '@viaa/avo2-components';
+import { cloneDeep } from 'es-toolkit';
+import { type FC } from 'react';
 
 import { tText } from '../../../shared/helpers/translate-text';
 import { generateRandomId } from '../../../shared/helpers/uuid';
-import { type InteractiveTourAction } from '../helpers/reducers/index';
+import { type InteractiveTourAction } from '../helpers/reducers';
 import {
   type EditableInteractiveTour,
   type EditableStep,
@@ -18,9 +18,9 @@ import {
 } from '../interactive-tour.types';
 
 interface InteractiveTourAddProps {
-  index: number
-  interactiveTour: EditableInteractiveTour
-  changeInteractiveTourState: (action: InteractiveTourAction) => void
+  index: number;
+  interactiveTour: EditableInteractiveTour;
+  changeInteractiveTourState: (action: InteractiveTourAction) => void;
 }
 
 export const InteractiveTourAdd: FC<InteractiveTourAddProps> = ({
@@ -29,7 +29,7 @@ export const InteractiveTourAdd: FC<InteractiveTourAddProps> = ({
   changeInteractiveTourState,
 }) => {
   const getStepsAfterInsertNewStep = (): EditableStep[] => {
-    const steps = cloneDeep(interactiveTour.steps || [])
+    const steps = cloneDeep(interactiveTour.steps || []);
 
     steps.splice(index, 0, {
       title: '',
@@ -37,9 +37,9 @@ export const InteractiveTourAdd: FC<InteractiveTourAddProps> = ({
       contentState: undefined,
       target: '',
       id: generateRandomId(),
-    })
-    return steps
-  }
+    });
+    return steps;
+  };
 
   // Listeners
   const handleAddStepClick = () => {
@@ -47,15 +47,15 @@ export const InteractiveTourAdd: FC<InteractiveTourAddProps> = ({
       type: InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR_PROP,
       interactiveTourProp: 'steps',
       interactiveTourPropValue: getStepsAfterInsertNewStep(),
-    })
-  }
+    });
+  };
 
   // Render methods
   const renderDivider = () => (
     <ToolbarItem grow>
       <div className="c-hr" />
     </ToolbarItem>
-  )
+  );
 
   return (
     <Container>
@@ -77,5 +77,5 @@ export const InteractiveTourAdd: FC<InteractiveTourAddProps> = ({
         {renderDivider()}
       </Toolbar>
     </Container>
-  )
-}
+  );
+};

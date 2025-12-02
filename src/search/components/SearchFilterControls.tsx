@@ -1,15 +1,15 @@
-import { Accordion, AccordionBody, Spacer } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { cloneDeep, omit, uniqBy } from 'es-toolkit'
-import React, { type FC, type ReactNode, useMemo } from 'react'
+import { Accordion, AccordionBody, Spacer } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
+import { cloneDeep, omit, uniqBy } from 'es-toolkit';
+import { type FC, type ReactNode, useMemo } from 'react';
 
 import {
   CheckboxDropdownModal,
   type CheckboxOption,
 } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
-import { LANGUAGES } from '../../shared/constants/index';
+import { LANGUAGES } from '../../shared/constants';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { tText } from '../../shared/helpers/translate-text';
 import { SearchFilter } from '../search.const';
@@ -18,12 +18,12 @@ import {
   type SearchFilterMultiOptions,
 } from '../search.types';
 
-import './SearchFilterControls.scss'
-import { forEach } from 'es-toolkit/compat'
+import './SearchFilterControls.scss';
+import { forEach } from 'es-toolkit/compat';
 
 const languageCodeToLabel = (code: string): string => {
-  return LANGUAGES.nl[code] || code
-}
+  return LANGUAGES.nl[code] || code;
+};
 
 export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
   filterState,
@@ -35,14 +35,14 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
 }) => {
   const getCombinedMultiOptions = useMemo(() => {
     const combinedMultiOptions: SearchFilterMultiOptions =
-      cloneDeep(multiOptions)
+      cloneDeep(multiOptions);
     const arrayFilters: Record<string, string[]> = omit(filterState, [
       SearchFilter.query,
       SearchFilter.broadcastDate,
       SearchFilter.elementary,
     ]) as {
-      [filterName: string]: string[]
-    }
+      [filterName: string]: string[];
+    };
     forEach(
       arrayFilters,
       (values: string[] | Avo.Core.ContentType[], filterName: string) => {
@@ -55,18 +55,18 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
             })),
           ],
           (filterEntry) => filterEntry.option_name,
-        )
+        );
       },
-    )
-    return combinedMultiOptions
-  }, [multiOptions])
+    );
+    return combinedMultiOptions;
+  }, [multiOptions]);
 
   const isFilterEnabled = (filterName: keyof Avo.Search.Filters): boolean => {
     if (!enabledFilters) {
-      return true
+      return true;
     }
-    return enabledFilters.includes(filterName)
-  }
+    return enabledFilters.includes(filterName);
+  };
 
   const renderCheckboxDropdownModal = (
     label: string,
@@ -81,14 +81,14 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
         option_name,
         option_count,
       }: Avo.Search.OptionProp): CheckboxOption => {
-        let checkboxLabel = option_name
+        let checkboxLabel = option_name;
 
         if (propertyName === SearchFilter.language) {
-          checkboxLabel = languageCodeToLabel(option_name)
+          checkboxLabel = languageCodeToLabel(option_name);
         }
 
         if (labelsMapping) {
-          checkboxLabel = labelsMapping[option_name]
+          checkboxLabel = labelsMapping[option_name];
         }
 
         return {
@@ -98,9 +98,9 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
           checked: ((filterState?.[propertyName] || []) as string[]).includes(
             option_name,
           ),
-        }
+        };
       },
-    )
+    );
 
     return (
       <li
@@ -113,13 +113,13 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
           showMaxOptions={40}
           disabled={disabled}
           onChange={async (values: string[]) => {
-            await handleFilterFieldChange(values, propertyName)
+            await handleFilterFieldChange(values, propertyName);
           }}
           onSearch={onSearch}
         />
       </li>
-    )
-  }
+    );
+  };
 
   const renderDateRangeDropdown = (
     label: string,
@@ -130,11 +130,11 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
     ] || {
       gte: '',
       lte: '',
-    }
+    };
     const correctRange: Avo.Search.DateRange = {
       gte: range.gte || '',
       lte: range.lte || '',
-    }
+    };
 
     return (
       <li
@@ -145,12 +145,12 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
           id={propertyName}
           range={correctRange as { gte: string; lte: string }}
           onChange={(dateRange: Avo.Search.DateRange) => {
-            handleFilterFieldChange(dateRange, propertyName)
+            handleFilterFieldChange(dateRange, propertyName);
           }}
         />
       </li>
-    )
-  }
+    );
+  };
 
   const renderFilters = () => (
     <ul
@@ -218,7 +218,7 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
           ),
         )}
     </ul>
-  )
+  );
 
   if (isMobileWidth()) {
     return (
@@ -230,8 +230,8 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
           <AccordionBody>{renderFilters()}</AccordionBody>
         </Accordion>
       </Spacer>
-    )
+    );
   }
 
-  return renderFilters()
-}
+  return renderFilters();
+};

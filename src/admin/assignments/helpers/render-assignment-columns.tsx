@@ -7,7 +7,7 @@ import {
 } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 import { compact } from 'es-toolkit'
-import React, { type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';

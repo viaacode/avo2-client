@@ -20,7 +20,7 @@ import { clsx } from 'clsx';
 import { compact, isNil, noop } from 'es-toolkit';
 import { isEmpty } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
-import React, {
+import {
   type FC,
   type ReactText,
   useCallback,

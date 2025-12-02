@@ -1,5 +1,5 @@
 import { type Avo } from '@viaa/avo2-types'
-import React, { type ReactNode, useMemo } from 'react'
+import { type ReactNode, useMemo } from 'react'
 
 import { switchAssignmentBlockPositions } from '../../assignment/helpers/switch-positions';
 import { GET_BLOCK_ICON } from '../components/BlockList/BlockIconWrapper/BlockIconWrapper.consts';

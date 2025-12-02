@@ -12,7 +12,7 @@ import {
 } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 import { intersection } from 'es-toolkit'
-import React, { type FC, useState } from 'react'
+import { type FC, useState } from 'react'
 
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { ShortDescriptionField } from '../../shared/components/ShortDescriptionField/ShortDescriptionField';

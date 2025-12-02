@@ -1,6 +1,6 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client'
 import { Button, Container, IconName, Spacer } from '@viaa/avo2-components'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 import { Helmet } from 'react-helmet'
 import { useNavigate } from 'react-router'
 

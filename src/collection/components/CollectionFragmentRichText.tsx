@@ -1,5 +1,5 @@
 import { convertToHtml } from '@viaa/avo2-components'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { Html, type HtmlProps } from '../../shared/components/Html/Html';
 import { type BlockItemComponent } from '../collection.types';

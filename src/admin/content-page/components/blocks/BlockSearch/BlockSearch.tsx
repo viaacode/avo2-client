@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Button,
   Container,
@@ -11,18 +11,18 @@ import {
   Spacer,
   Spinner,
   TextInput,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { useAtom } from 'jotai'
-import { isNil } from 'es-toolkit'
-import React, {
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { isNil } from 'es-toolkit';
+import { useAtom } from 'jotai';
+import {
   type FC,
   type KeyboardEvent,
   useCallback,
   useEffect,
   useState,
-} from 'react'
-import { useNavigate } from 'react-router'
+} from 'react';
+import { useNavigate } from 'react-router';
 
 import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../../../../collection/collection.types';
 import { SearchFilter } from '../../../../../search/search.const';
@@ -35,25 +35,25 @@ import {
 } from '../../../../../shared/helpers/link';
 import { useDebounce } from '../../../../../shared/hooks/useDebounce';
 import { ToastService } from '../../../../../shared/services/toast-service';
-import { KeyCode } from '../../../../../shared/types/index';
-import './BlockSearch.scss'
+import { KeyCode } from '../../../../../shared/types';
+import './BlockSearch.scss';
 import { tHtml } from '../../../../../shared/helpers/translate-html';
 import { tText } from '../../../../../shared/helpers/translate-text';
 
-const ITEMS_IN_AUTOCOMPLETE = 5
+const ITEMS_IN_AUTOCOMPLETE = 5;
 
 export const BlockSearch: FC = () => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
-  const [searchState, setSearchState] = useAtom<SearchState>(searchAtom)
-  const [searchTerms, setSearchTerms] = useState<string>('')
+  const [searchState, setSearchState] = useAtom<SearchState>(searchAtom);
+  const [searchTerms, setSearchTerms] = useState<string>('');
   const [isAutocompleteSearchOpen, setAutocompleteSearchOpen] =
-    useState<boolean>(false)
-  const debouncedSearchTerms = useDebounce(searchTerms, 200)
+    useState<boolean>(false);
+  const debouncedSearchTerms = useDebounce(searchTerms, 200);
 
   const refetchSearchResults = useCallback(async () => {
     // Only do initial search after query params have been analysed and have been added to the state
-    const filters = { query: debouncedSearchTerms || '' }
+    const filters = { query: debouncedSearchTerms || '' };
     const searchResults = await fetchSearchResults(
       'relevance',
       Avo.Search.OrderDirection.DESC,
@@ -61,21 +61,21 @@ export const BlockSearch: FC = () => {
       ITEMS_IN_AUTOCOMPLETE,
       filters,
       {},
-    )
+    );
     setSearchState({
       ...searchState,
       data: searchResults,
-    })
-  }, [debouncedSearchTerms, searchState, setSearchState])
+    });
+  }, [debouncedSearchTerms, searchState, setSearchState]);
 
   /**
    * Trigger a new call to the backend for getting new search results when the searchTerms change
    */
   useEffect(() => {
     if (debouncedSearchTerms.trim().length > 0) {
-      refetchSearchResults()
+      refetchSearchResults();
     }
-  }, [refetchSearchResults])
+  }, [refetchSearchResults]);
 
   // Computed
   const autocompleteMenuItems = (
@@ -89,16 +89,16 @@ export const BlockSearch: FC = () => {
         searchResult.administrative_type
       ],
     }),
-  )
+  );
 
   const autocompleteButtonLabel = autocompleteMenuItems.length
     ? 'Alle zoekresultaten'
-    : 'Ga naar de zoek pagina'
+    : 'Ga naar de zoek pagina';
 
   // Methods
   const gotoSearchPage = () => {
-    navigateFunc(generateSearchLinkString(SearchFilter.query, searchTerms))
-  }
+    navigateFunc(generateSearchLinkString(SearchFilter.query, searchTerms));
+  };
 
   const goToSearchResult = (searchResultId: string | undefined) => {
     if (!isNil(searchResultId)) {
@@ -108,7 +108,7 @@ export const BlockSearch: FC = () => {
       ).find(
         (searchResult) =>
           searchResult.id === (searchResultId as string).toString(),
-      )
+      );
 
       if (searchResultItem) {
         navigateFunc(
@@ -116,27 +116,27 @@ export const BlockSearch: FC = () => {
             searchResultItem.administrative_type,
             searchResultItem.id,
           ),
-        )
+        );
       } else {
         ToastService.danger(
           tHtml('home/views/home___geen-zoekresultaten-gevonden-met-id-id', {
             id: searchResultId,
           }),
-        )
+        );
       }
     }
-  }
+  };
 
   const handleSearchTermChanged = (searchTerm: string) => {
-    setSearchTerms(searchTerm)
-    setAutocompleteSearchOpen(true)
-  }
+    setSearchTerms(searchTerm);
+    setAutocompleteSearchOpen(true);
+  };
 
   const handleSearchFieldKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
     if (evt.keyCode === KeyCode.Enter) {
-      gotoSearchPage()
+      gotoSearchPage();
     }
-  }
+  };
 
   return (
     <Container mode="horizontal" size="medium" className="m-search-block">
@@ -193,5 +193,5 @@ export const BlockSearch: FC = () => {
         </div>
       </Spacer>
     </Container>
-  )
-}
+  );
+};

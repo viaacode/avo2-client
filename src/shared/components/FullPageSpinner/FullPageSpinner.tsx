@@ -1,5 +1,5 @@
 import { Spinner } from '@viaa/avo2-components'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 export const FullPageSpinner: FC = () => {
   return (

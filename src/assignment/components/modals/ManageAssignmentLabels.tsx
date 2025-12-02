@@ -18,7 +18,7 @@ import { Avo } from '@viaa/avo2-types'
 import { clsx } from 'clsx'
 import { useAtomValue } from 'jotai'
 import { compact, intersection, sortBy, without } from 'es-toolkit'
-import React, { type FC, useCallback, useEffect, useState } from 'react'
+import { type FC, useCallback, useEffect, useState } from 'react'
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { ColorSelect } from '../../../shared/components/ColorSelect/ColorSelect';

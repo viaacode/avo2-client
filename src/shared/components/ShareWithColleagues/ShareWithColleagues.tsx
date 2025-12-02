@@ -23,7 +23,7 @@ import { clsx } from 'clsx'
 import { useAtomValue } from 'jotai'
 import { isNil } from 'es-toolkit'
 import { isEmpty } from 'es-toolkit/compat'
-import React, { type FC, useMemo, useState } from 'react'
+import { type FC, useMemo, useState } from 'react'
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { tHtml } from '../../helpers/translate-html';

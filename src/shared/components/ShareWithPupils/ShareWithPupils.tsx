@@ -8,7 +8,7 @@ import {
 } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 import { clsx } from 'clsx'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { APP_PATH } from '../../../constants';
 import { buildLink } from '../../helpers/build-link';

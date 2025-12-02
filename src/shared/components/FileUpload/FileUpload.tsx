@@ -11,7 +11,7 @@ import {
 import { type Avo } from '@viaa/avo2-types'
 import { compact, isString } from 'es-toolkit'
 import queryString from 'query-string'
-import React, { type FC, useState } from 'react'
+import { type FC, useState } from 'react'
 
 import { CustomError } from '../../helpers/custom-error';
 import {

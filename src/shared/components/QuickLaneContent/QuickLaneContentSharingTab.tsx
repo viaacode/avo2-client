@@ -11,13 +11,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
-import React, {
-  type FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { type AssignmentLayout } from '../../../assignment/assignment.types';
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription';
@@ -30,7 +24,7 @@ import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import { useDebounce } from '../../hooks/useDebounce';
 import { ToastService } from '../../services/toast-service';
-import { type QuickLaneUrlObject } from '../../types/index';
+import { type QuickLaneUrlObject } from '../../types';
 import { ContentLink } from '../ContentLink/ContentLink';
 import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
 import { QuickLaneLink } from '../QuickLaneLink/QuickLaneLink';

@@ -2,7 +2,7 @@ import { IconName } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isString, noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import React, {
+import {
   type FC,
   type ReactNode,
   useCallback,

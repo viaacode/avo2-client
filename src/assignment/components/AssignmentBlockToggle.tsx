@@ -6,7 +6,7 @@ import {
   Toggle,
   type ToggleProps,
 } from '@viaa/avo2-components'
-import React, { type FC, type ReactNode } from 'react'
+import { type FC, type ReactNode } from 'react'
 
 import './AssignmentBlockToggle.scss'
 

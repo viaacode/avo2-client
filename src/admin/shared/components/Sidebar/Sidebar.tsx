@@ -1,23 +1,23 @@
-import { Icon, IconName } from '@viaa/avo2-components'
-import { clsx } from 'clsx'
-import { flatten } from 'es-toolkit'
-import React, { type FC, type ReactElement, type ReactNode } from 'react'
-import { Link, type Location, NavLink, useLocation } from 'react-router-dom'
+import { Icon, IconName } from '@viaa/avo2-components';
+import { clsx } from 'clsx';
+import { flatten } from 'es-toolkit';
+import { type FC, type ReactElement, type ReactNode } from 'react';
+import { Link, type Location, NavLink, useLocation } from 'react-router-dom';
 
 import { APP_PATH } from '../../../../constants';
 import { CustomError } from '../../../../shared/helpers/custom-error';
 import { tHtml } from '../../../../shared/helpers/translate-html';
 import { tText } from '../../../../shared/helpers/translate-text';
-import { type NavigationItemInfo } from '../../../../shared/types/index';
+import { type NavigationItemInfo } from '../../../../shared/types';
 
-import './Sidebar.scss'
+import './Sidebar.scss';
 
 interface SidebarProps {
-  children?: ReactNode
-  className?: string
-  headerLink?: string
-  light?: boolean
-  navItems?: NavigationItemInfo[]
+  children?: ReactNode;
+  className?: string;
+  headerLink?: string;
+  light?: boolean;
+  navItems?: NavigationItemInfo[];
 }
 
 export const Sidebar: FC<SidebarProps> = ({
@@ -27,7 +27,7 @@ export const Sidebar: FC<SidebarProps> = ({
   light = false,
   navItems,
 }) => {
-  const location = useLocation()
+  const location = useLocation();
 
   const isActiveClass = (
     item: NavigationItemInfo,
@@ -38,8 +38,8 @@ export const Sidebar: FC<SidebarProps> = ({
       (!!item.location &&
         item.location === location.pathname + location.search &&
         !!item.exact)
-    )
-  }
+    );
+  };
 
   const renderNavigationItem = (
     navItem: NavigationItemInfo,
@@ -53,7 +53,7 @@ export const Sidebar: FC<SidebarProps> = ({
           null,
           { navItem, index, isSubLink },
         ),
-      )
+      );
     }
     return (
       <li
@@ -74,8 +74,8 @@ export const Sidebar: FC<SidebarProps> = ({
           {navItem.label}
         </NavLink>
       </li>
-    )
-  }
+    );
+  };
 
   const renderNavItems = () => {
     const renderedNavItems: ReactElement[] = flatten(
@@ -87,13 +87,13 @@ export const Sidebar: FC<SidebarProps> = ({
               subLinkItem,
               `${itemIndex}-${subItemIndex}`,
               true,
-            )
+            );
           },
         ),
       ]),
-    )
-    return <>{renderedNavItems}</>
-  }
+    );
+    return <>{renderedNavItems}</>;
+  };
 
   return (
     <div
@@ -145,5 +145,5 @@ export const Sidebar: FC<SidebarProps> = ({
         )}
       </div>
     </div>
-  )
-}
+  );
+};

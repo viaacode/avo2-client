@@ -2,7 +2,7 @@ import {
   type AdminConfig,
   AdminConfigManager,
 } from '@meemoo/admin-core-ui/client';
-import React, {
+import {
   type ComponentType,
   useCallback,
   useEffect,

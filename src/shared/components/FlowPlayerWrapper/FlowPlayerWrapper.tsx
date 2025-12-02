@@ -15,7 +15,7 @@ import { Avo } from '@viaa/avo2-types';
 import { isNil, isString, throttle } from 'es-toolkit';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { stringifyUrl } from 'query-string';
-import React, {
+import {
   type FC,
   type MouseEvent,
   type ReactNode,

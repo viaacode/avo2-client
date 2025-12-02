@@ -10,7 +10,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { isEqual } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { type FC, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';

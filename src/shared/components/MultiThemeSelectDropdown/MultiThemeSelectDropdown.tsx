@@ -3,7 +3,7 @@ import { type Avo } from '@viaa/avo2-types'
 import { clsx } from 'clsx'
 import { groupBy } from 'es-toolkit'
 import { map } from 'es-toolkit/compat'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 import Select from 'react-select'
 
 import { MultiThemeSelectOptionGroupHeading } from './MultiThemeSelectOptionGroupHeading';

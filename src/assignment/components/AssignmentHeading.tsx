@@ -10,7 +10,7 @@ import {
   ToolbarRight,
 } from '@viaa/avo2-components'
 import { clsx } from 'clsx'
-import React, { type FC, type ReactNode, useEffect, useState } from 'react'
+import { type FC, type ReactNode, useEffect, useState } from 'react'
 
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 

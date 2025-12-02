@@ -12,7 +12,7 @@ import {
   ToolbarRight,
 } from '@viaa/avo2-components'
 import { noop } from 'es-toolkit'
-import React, { type FC, type ReactNode, useState } from 'react'
+import { type FC, type ReactNode, useState } from 'react'
 
 import { tHtml } from '../../shared/helpers/translate-html';
 

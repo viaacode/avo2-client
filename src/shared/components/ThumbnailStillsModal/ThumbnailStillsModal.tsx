@@ -14,23 +14,23 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { compact, uniq } from 'es-toolkit'
-import React, { type FC, useEffect, useState } from 'react'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { compact, uniq } from 'es-toolkit';
+import { type FC, useEffect, useState } from 'react';
 
-import { STILL_DIMENSIONS } from '../../constants/index';
+import { STILL_DIMENSIONS } from '../../constants';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import { ToastService } from '../../services/toast-service';
 import { VideoStillService } from '../../services/video-stills-service';
 
 interface ThumbnailStillsModalProps {
-  isOpen: boolean
+  isOpen: boolean;
   onClose: (
     collection: Avo.Collection.Collection | Avo.Assignment.Assignment,
-  ) => void
-  subject: Avo.Collection.Collection | Avo.Assignment.Assignment
+  ) => void;
+  subject: Avo.Collection.Collection | Avo.Assignment.Assignment;
 }
 
 export const ThumbnailStillsModal: FC<ThumbnailStillsModalProps> = ({
@@ -38,14 +38,14 @@ export const ThumbnailStillsModal: FC<ThumbnailStillsModalProps> = ({
   isOpen,
   subject,
 }) => {
-  const [videoStills, setVideoStills] = useState<string[] | null>(null)
+  const [videoStills, setVideoStills] = useState<string[] | null>(null);
   const [selectedCoverImages, setSelectedCoverImages] = useState<string[]>(
     subject.thumbnail_path ? [subject.thumbnail_path] : [],
-  )
+  );
 
   useEffect(() => {
     if (!isOpen) {
-      return
+      return;
     }
 
     const fetchThumbnailImages = async () => {
@@ -65,29 +65,29 @@ export const ThumbnailStillsModal: FC<ThumbnailStillsModalProps> = ({
               ...(await VideoStillService.getThumbnailsForSubject(subject)),
             ]),
           ),
-        )
+        );
       } catch (err) {
-        console.error(err)
+        console.error(err);
         ToastService.danger(
           tHtml(
             'shared/components/thumbnail-stills-modal/thumbnail-stills-modal___het-ophalen-van-de-media-afbeeldingen-is-mislukt',
           ),
-        )
-        setVideoStills([])
+        );
+        setVideoStills([]);
       }
-    }
+    };
 
-    fetchThumbnailImages()
-  }, [isOpen, subject])
+    fetchThumbnailImages();
+  }, [isOpen, subject]);
 
   const saveCoverImage = () => {
-    onClose({ ...subject, thumbnail_path: selectedCoverImages[0] })
+    onClose({ ...subject, thumbnail_path: selectedCoverImages[0] });
     ToastService.success(
       tHtml(
         'shared/components/thumbnail-stills-modal/thumbnail-stills-modal___de-hoofdafbeelding-is-ingesteld',
       ),
-    )
-  }
+    );
+  };
 
   return (
     <Modal
@@ -138,7 +138,7 @@ export const ThumbnailStillsModal: FC<ThumbnailStillsModalProps> = ({
                   type="secondary"
                   block
                   onClick={() => {
-                    onClose(subject)
+                    onClose(subject);
                   }}
                 />
                 <Button
@@ -155,5 +155,5 @@ export const ThumbnailStillsModal: FC<ThumbnailStillsModalProps> = ({
         </Toolbar>
       </ModalFooterRight>
     </Modal>
-  )
-}
+  );
+};

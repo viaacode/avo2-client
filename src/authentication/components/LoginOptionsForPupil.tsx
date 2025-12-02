@@ -1,6 +1,6 @@
 import { Button, IconName, Spacer } from '@viaa/avo2-components'
 import { noop } from 'es-toolkit'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import {
   redirectToServerLeerIDLogin,

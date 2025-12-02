@@ -1,6 +1,6 @@
 import { Button, type ButtonProps, IconName } from '@viaa/avo2-components'
 import { isNil } from 'es-toolkit'
-import React, { type ReactNode, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 
 import { DraggableBlock } from '../components/DraggableBlock/DraggableBlock';
 import {

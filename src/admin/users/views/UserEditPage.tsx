@@ -10,7 +10,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
-import React, { type FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 

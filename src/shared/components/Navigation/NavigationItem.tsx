@@ -3,25 +3,25 @@ import {
   DropdownButton,
   DropdownContent,
   Icon,
-} from '@viaa/avo2-components'
-import clsx from 'clsx'
-import { noop } from 'es-toolkit'
-import React, { type FC } from 'react'
-import { NavLink } from 'react-router-dom'
+} from '@viaa/avo2-components';
+import clsx from 'clsx';
+import { noop } from 'es-toolkit';
+import { type FC } from 'react';
+import { NavLink } from 'react-router-dom';
 
 import { type BooleanDictionary } from '../../helpers/navigation';
-import { type NavigationItemInfo } from '../../types/index';
+import { type NavigationItemInfo } from '../../types';
 
-import './Navigation.scss'
+import './Navigation.scss';
 
 interface NavigationItemProps {
-  item: NavigationItemInfo
-  className: string
-  showActive: boolean
-  isMobile?: boolean
-  areDropdownsOpen: BooleanDictionary
-  setDropdownsOpen: (areDropdownsOpen: BooleanDictionary) => void
-  onNavigate?: () => void
+  item: NavigationItemInfo;
+  className: string;
+  showActive: boolean;
+  isMobile?: boolean;
+  areDropdownsOpen: BooleanDictionary;
+  setDropdownsOpen: (areDropdownsOpen: BooleanDictionary) => void;
+  onNavigate?: () => void;
 }
 
 export const NavigationItem: FC<NavigationItemProps> = ({
@@ -39,10 +39,10 @@ export const NavigationItem: FC<NavigationItemProps> = ({
     areDropdownsOpen: BooleanDictionary,
     setDropdownsOpen: (areDropdownsOpen: BooleanDictionary) => void,
   ): void => {
-    const openStates = { ...areDropdownsOpen }
-    openStates[label] = isOpen
-    setDropdownsOpen(openStates)
-  }
+    const openStates = { ...areDropdownsOpen };
+    openStates[label] = isOpen;
+    setDropdownsOpen(openStates);
+  };
 
   return (
     <li
@@ -110,5 +110,5 @@ export const NavigationItem: FC<NavigationItemProps> = ({
         </Dropdown>
       )}
     </li>
-  )
-}
+  );
+};

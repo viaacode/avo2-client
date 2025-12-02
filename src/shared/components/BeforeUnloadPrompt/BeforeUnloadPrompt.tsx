@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import { type FC } from 'react';
 import { useBlocker } from 'react-router-dom';
 
 import { ROUTE_PARTS } from '../../constants/routes';

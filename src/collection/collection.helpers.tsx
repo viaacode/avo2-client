@@ -11,13 +11,13 @@ import {
 } from '@viaa/avo2-components';
 import { Avo, LomSchemeType } from '@viaa/avo2-types';
 import { compact, isNil, omit } from 'es-toolkit';
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { reorderBlockPositions } from '../assignment/assignment.helper';
 import { stripHtml } from '../shared/helpers/formatters/strip-html';
 import { tHtml } from '../shared/helpers/translate-html';
 import { tText } from '../shared/helpers/translate-text';
-import { type Positioned } from '../shared/types/index';
+import { type Positioned } from '../shared/types';
 
 import {
   MAX_LONG_DESCRIPTION_LENGTH,

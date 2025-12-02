@@ -6,7 +6,7 @@ import {
 } from '@viaa/avo2-components'
 import { type Avo, LomType } from '@viaa/avo2-types'
 import { uniq } from 'es-toolkit'
-import React, { type FC, useMemo } from 'react'
+import { type FC, useMemo } from 'react'
 
 import { getBottomLoms } from '../../helpers/get-bottom-loms';
 import { groupLoms } from '../../helpers/lom';

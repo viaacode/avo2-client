@@ -1,7 +1,7 @@
 import { type DefaultProps, IconName } from '@viaa/avo2-components'
 import { Avo } from '@viaa/avo2-types'
 import { clsx } from 'clsx'
-import React, { type FC, type ReactNode, useMemo } from 'react'
+import { type FC, type ReactNode, useMemo } from 'react'
 import {
   CollectionFragmentFlowPlayer,
   type CollectionFragmentFlowPlayerProps,

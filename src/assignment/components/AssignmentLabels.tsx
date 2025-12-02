@@ -11,7 +11,7 @@ import {
 import { Avo } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
 import { cloneDeep } from 'es-toolkit'
-import React, {
+import {
   type FC,
   type MouseEvent,
   useCallback,

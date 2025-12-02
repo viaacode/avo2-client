@@ -10,7 +10,7 @@ import {
   Spinner,
 } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
-import React, { type FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
@@ -28,7 +28,7 @@ import {
   type NewsletterPreferences,
 } from '../../../shared/services/campaign-monitor-service';
 import { ToastService } from '../../../shared/services/toast-service';
-import { type NewsletterList } from '../../../shared/types/index';
+import { type NewsletterList } from '../../../shared/types';
 import { GET_NEWSLETTER_LABELS } from '../../settings.const';
 import { useGetEmailPreferences } from './hooks/getEmailPreferences';
 

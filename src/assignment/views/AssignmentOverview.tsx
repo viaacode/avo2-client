@@ -30,7 +30,7 @@ import { Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { cloneDeep, compact, isNil, noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import React, {
+import {
   type FC,
   type KeyboardEvent,
   type ReactNode,
@@ -57,7 +57,7 @@ import { ContributorInfoRight } from '../../shared/components/ShareWithColleague
 import {
   ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
   getMoreOptionsLabel,
-} from '../../shared/constants/index';
+} from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { getContributorType } from '../../shared/helpers/contributors';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
@@ -81,7 +81,7 @@ import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service';
 import { ToastService } from '../../shared/services/toast-service';
-import { KeyCode } from '../../shared/types/index';
+import { KeyCode } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import {

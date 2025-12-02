@@ -1,4 +1,4 @@
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 import { Outlet, useSearchParams } from 'react-router'
 
 import 'react-datepicker/dist/react-datepicker.css' // TODO: lazy-load

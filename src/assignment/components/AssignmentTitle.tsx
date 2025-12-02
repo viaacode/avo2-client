@@ -1,7 +1,7 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client'
 import { FormControl } from '@meemoo/react-components'
 import { ContentInput, Flex, Icon, IconName } from '@viaa/avo2-components'
-import React, { type FC, useState } from 'react'
+import { type FC, useState } from 'react'
 
 import { tText } from '../../shared/helpers/translate-text';
 import { MAX_TITLE_LENGTH } from '../assignment.const';

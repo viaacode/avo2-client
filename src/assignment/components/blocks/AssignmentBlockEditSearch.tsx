@@ -1,5 +1,5 @@
 import { convertToHtml } from '@viaa/avo2-components'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { TitleDescriptionForm } from '../../../shared/components/TitleDescriptionForm/TitleDescriptionForm';

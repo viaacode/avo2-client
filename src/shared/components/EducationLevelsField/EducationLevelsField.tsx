@@ -1,7 +1,7 @@
 import { FormGroup, type TagInfo, TagsInput } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 import { compact } from 'es-toolkit'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
 import { tText } from '../../helpers/translate-text';

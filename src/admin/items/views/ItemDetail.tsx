@@ -19,7 +19,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo, PermissionName } from '@viaa/avo2-types';
 import { compact, noop } from 'es-toolkit';
-import React, { type FC, type ReactNode, useCallback, useState } from 'react';
+import { type FC, type ReactNode, useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';

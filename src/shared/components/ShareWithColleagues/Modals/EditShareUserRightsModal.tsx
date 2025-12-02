@@ -15,7 +15,7 @@ import {
   ToolbarRight,
 } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
-import React, { type FC, useEffect, useMemo, useState } from 'react'
+import { type FC, useEffect, useMemo, useState } from 'react'
 
 import { tHtml } from '../../../helpers/translate-html';
 import { tText } from '../../../helpers/translate-text';

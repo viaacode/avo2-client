@@ -13,7 +13,7 @@ import {
   ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 
 import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';

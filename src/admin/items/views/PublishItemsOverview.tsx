@@ -2,7 +2,7 @@ import { FilterTable, getFilters } from '@meemoo/admin-core-ui/admin';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { Avo, PermissionName } from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 

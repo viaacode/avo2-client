@@ -1,5 +1,5 @@
 import { noop } from 'es-toolkit'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { LoginOptions } from './LoginOptions';
 import './LoginOptionsDropdown.scss'

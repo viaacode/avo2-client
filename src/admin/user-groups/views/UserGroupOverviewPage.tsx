@@ -1,7 +1,7 @@
 import { Button } from '@meemoo/react-components'
 import { Icon, IconName, Toolbar, ToolbarRight } from '@viaa/avo2-components'
 import { PermissionName } from '@viaa/avo2-types'
-import React, { type FC, lazy, Suspense, useRef, useState } from 'react'
+import { type FC, lazy, Suspense, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet'
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';

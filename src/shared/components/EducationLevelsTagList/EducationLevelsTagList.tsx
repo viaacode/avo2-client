@@ -1,7 +1,7 @@
 import { TagList, type TagOption } from '@viaa/avo2-components';
 import { clsx } from 'clsx';
 import { compact, sortBy } from 'es-toolkit';
-import React, { type FC, useMemo } from 'react';
+import { type FC, useMemo } from 'react';
 
 import { tText } from '../../helpers/translate-text';
 import './EducationLevelsTagList.scss';

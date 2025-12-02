@@ -15,7 +15,7 @@ import { Avo, PermissionName } from '@viaa/avo2-types';
 import { cloneDeep, isNil, noop } from 'es-toolkit';
 import { isEmpty, set } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
-import React, {
+import {
   type FC,
   type ReactNode,
   type ReactText,

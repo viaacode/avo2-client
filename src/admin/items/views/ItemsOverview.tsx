@@ -1,13 +1,7 @@
 import { ExportAllToCsvModal, FilterTable } from '@meemoo/admin-core-ui/admin';
 import { Avo, PermissionName } from '@viaa/avo2-types';
 
-import React, {
-  type FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
@@ -29,10 +23,7 @@ import {
   renderItemsOverviewTableCellText,
 } from '../helpers/render-item-overview-table-cell';
 import { useGetItemsWithFilters } from '../hooks/useGetItemsWithFilters';
-import {
-  GET_ITEM_OVERVIEW_TABLE_COLS,
-  ITEMS_PER_PAGE,
-} from '../items.const';
+import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
 import {
   type ItemsOverviewTableCols,

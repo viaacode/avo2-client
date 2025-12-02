@@ -1,5 +1,5 @@
 import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 export interface HtmlProps {
   content: string

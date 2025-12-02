@@ -13,7 +13,7 @@ import {
 import { clsx } from 'clsx'
 import { isAfter, isPast } from 'date-fns'
 import { useAtomValue } from 'jotai'
-import React, { type FC, useCallback } from 'react'
+import { type FC, useCallback } from 'react'
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';

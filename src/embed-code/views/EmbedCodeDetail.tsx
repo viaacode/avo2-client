@@ -20,7 +20,7 @@ import { type Avo, PermissionName } from '@viaa/avo2-types'
 import { clsx } from 'clsx'
 import { useAtomValue } from 'jotai'
 import { noop } from 'es-toolkit'
-import React, {
+import {
   type FC,
   type ReactNode,
   useCallback,

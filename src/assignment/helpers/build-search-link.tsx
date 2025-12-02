@@ -1,5 +1,5 @@
 import { Button } from '@viaa/avo2-components';
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Link, type LinkProps } from 'react-router-dom';
 import { APP_PATH } from '../../constants';
 import { type FilterState } from '../../search/search.types';

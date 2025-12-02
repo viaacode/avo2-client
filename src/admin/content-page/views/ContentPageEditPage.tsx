@@ -1,6 +1,6 @@
 import { PermissionName } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
-import React, { type FC, lazy, Suspense, useState } from 'react'
+import { type FC, lazy, Suspense, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 
 import { commonUserAtom } from '../../../authentication/authentication.store';

@@ -24,7 +24,7 @@ import {
 } from '@viaa/avo2-components'
 import { clsx } from 'clsx'
 import { clone, compact, take } from 'es-toolkit'
-import React, { type FC, type MouseEvent, useState } from 'react'
+import { type FC, type MouseEvent, useState } from 'react'
 
 import { isMobileWidth } from '../../helpers/media-query';
 

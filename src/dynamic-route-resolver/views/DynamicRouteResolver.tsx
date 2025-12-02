@@ -9,7 +9,7 @@ import { IconName } from '@viaa/avo2-components';
 import { Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtom, useSetAtom } from 'jotai';
 import { stringifyUrl } from 'query-string';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Navigate, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';

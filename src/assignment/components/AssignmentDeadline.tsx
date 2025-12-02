@@ -6,7 +6,7 @@ import {
   FlexItem,
 } from '@viaa/avo2-components'
 import { differenceInHours } from 'date-fns'
-import React, { type FC, useMemo } from 'react'
+import { type FC, useMemo } from 'react'
 
 import { formatCustomTimestamp } from '../../shared/helpers/formatters/date';
 

@@ -10,7 +10,7 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
 import { isNil } from 'es-toolkit'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import placeholderImage from '../../assets/images/assignment-placeholder.png'

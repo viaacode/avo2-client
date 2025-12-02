@@ -21,7 +21,7 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact, isNil } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import React, { type FC, type ReactNode, useMemo, useState } from 'react';
+import { type FC, type ReactNode, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';

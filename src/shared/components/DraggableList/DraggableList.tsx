@@ -1,6 +1,6 @@
 import { Icon, IconName } from '@viaa/avo2-components'
 import { clsx } from 'clsx'
-import React, { type FC, type ReactNode, useCallback, useState } from 'react'
+import { type FC, type ReactNode, useCallback, useState } from 'react'
 
 import './DraggableList.scss'
 

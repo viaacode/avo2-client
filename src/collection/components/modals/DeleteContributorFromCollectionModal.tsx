@@ -1,5 +1,5 @@
 import { noop } from 'es-toolkit'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { tHtml } from '../../../shared/helpers/translate-html';

@@ -5,7 +5,7 @@ import vlaamseOverheidLogoSrc from '@assets/images/vlaanderen-logo.svg';
 import { Container, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { orderBy } from 'es-toolkit';
-import React, { type FC, useState } from 'react';
+import { type FC, useState } from 'react';
 
 import { type BooleanDictionary } from '../../helpers/navigation';
 import { tText } from '../../helpers/translate-text';

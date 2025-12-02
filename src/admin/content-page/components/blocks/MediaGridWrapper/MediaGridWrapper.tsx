@@ -1,8 +1,8 @@
 import {
   type MediaGridBlockComponentState,
   type MediaGridBlockState,
-} from '@meemoo/admin-core-ui/admin'
-import type { DbContentPage } from '@meemoo/admin-core-ui/client'
+} from '@meemoo/admin-core-ui/admin';
+import type { DbContentPage } from '@meemoo/admin-core-ui/client';
 import {
   Button,
   type ButtonAction,
@@ -10,21 +10,21 @@ import {
   Modal,
   ModalBody,
   type RenderLinkFunction,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { compact, isNil } from 'es-toolkit'
-import { isEmpty } from 'es-toolkit/compat'
-import React, {
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { compact, isNil } from 'es-toolkit';
+import { isEmpty } from 'es-toolkit/compat';
+import { useAtomValue } from 'jotai';
+import {
   type FC,
   MouseEvent,
   type ReactNode,
   useCallback,
   useEffect,
   useState,
-} from 'react'
+} from 'react';
 
-import placeholderImage from '../../../../../assets/images/assignment-placeholder.png'
+import placeholderImage from '../../../../../assets/images/assignment-placeholder.png';
 import { commonUserAtom } from '../../../../../authentication/authentication.store';
 import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../../../../collection/collection.types';
 import { APP_PATH } from '../../../../../constants';
@@ -33,7 +33,7 @@ import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
 } from '../../../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { DEFAULT_AUDIO_STILL } from '../../../../../shared/constants/index';
+import { DEFAULT_AUDIO_STILL } from '../../../../../shared/constants';
 import { buildLink } from '../../../../../shared/helpers/build-link';
 import { CustomError } from '../../../../../shared/helpers/custom-error';
 import { defaultRenderBookmarkButton } from '../../../../../shared/helpers/default-render-bookmark-button';
@@ -51,16 +51,16 @@ import { BlockMediaGrid, type MediaListItem } from './BlockMediaGrid';
 import { type ResolvedItemOrCollectionOrAssignmentOrContentPage } from './MediaGridWrapper.types';
 
 interface MediaGridWrapperProps extends MediaGridBlockState {
-  searchQuery?: ButtonAction
-  searchQueryLimit: string
+  searchQuery?: ButtonAction;
+  searchQueryLimit: string;
   elements: {
-    mediaItem: ButtonAction
-    copyrightOwnerOrId: string | 'NO_COPYRIGHT_NOTICE'
-  }[]
-  results: ResolvedItemOrCollectionOrAssignmentOrContentPage[]
-  renderLink: RenderLinkFunction
-  buttonAltTitle?: string
-  ctaButtonAltTitle?: string
+    mediaItem: ButtonAction;
+    copyrightOwnerOrId: string | 'NO_COPYRIGHT_NOTICE';
+  }[];
+  results: ResolvedItemOrCollectionOrAssignmentOrContentPage[];
+  renderLink: RenderLinkFunction;
+  buttonAltTitle?: string;
+  ctaButtonAltTitle?: string;
 }
 
 export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
@@ -92,49 +92,49 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 }: any) => {
   // TODO remove any when typings for admin-core-ui is fixed
 
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const [resolvedResults, setResolvedResults] = useState<
     ResolvedItemOrCollectionOrAssignmentOrContentPage[] | null
-  >(null)
+  >(null);
 
   // cache search results
-  const [lastSearchQuery, setLastSearchQuery] = useState<string | null>(null)
+  const [lastSearchQuery, setLastSearchQuery] = useState<string | null>(null);
   const [lastSearchQueryLimit, setLastSearchQueryLimit] = useState<
     number | null
-  >(null)
+  >(null);
 
   const [activeItem, setActiveItem] = useState<
     (Avo.Item.Item & ResolvedItemOrCollectionOrAssignmentOrContentPage) | null
-  >(null)
+  >(null);
   const [activeItemBookmarkStatus, setActiveItemBookmarkStatus] = useState<
     boolean | null
-  >(null)
+  >(null);
   const [activeCopyright, setActiveCopyright] =
-    useState<Avo.Organization.Organization | null>(null)
+    useState<Avo.Organization.Organization | null>(null);
 
   const resolveMediaResults = useCallback(async () => {
     try {
       if (results && results.length) {
         // Results are filled in, we can render the block
-        setResolvedResults(results)
-        return
+        setResolvedResults(results);
+        return;
       }
       if (results && elements && !elements.length) {
         // Results is empty, but elements is also empty, so we don't need to render anything
-        setResolvedResults(results)
-        return
+        setResolvedResults(results);
+        return;
       }
       if (commonUser) {
         // If we are logged in and get no results, but we do get elements, then the block is loaded in preview mode,
         // and we should resolve the results ourselves using a separate route on the server
         const searchQueryLimitNumber =
-          parseIntOrDefault<undefined>(searchQueryLimit, undefined) || 8
+          parseIntOrDefault<undefined>(searchQueryLimit, undefined) || 8;
         const searchQueryValue: string | null =
-          (searchQuery?.value as string | undefined) || null
+          (searchQuery?.value as string | undefined) || null;
 
         if (
           (elements && elements.length && isNil(searchQueryValue)) ||
@@ -145,8 +145,8 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
           // - the manually selected elements changed without a search query being set or
           // - the search query changed or
           // - if the number of items increased
-          setLastSearchQuery(searchQueryValue || null)
-          setLastSearchQueryLimit(searchQueryLimitNumber)
+          setLastSearchQuery(searchQueryValue || null);
+          setLastSearchQueryLimit(searchQueryLimitNumber);
           const searchResults = await ContentPageService.resolveMediaItems(
             searchQueryValue,
             searchQueryLimitNumber,
@@ -154,7 +154,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
               (element: { mediaItem: ButtonAction }) =>
                 !isEmpty(element) && element.mediaItem,
             ),
-          )
+          );
 
           setResolvedResults((r) => {
             if (
@@ -164,29 +164,29 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
               searchResults.length !== (searchQueryLimitNumber || 8)
             ) {
               // older request that we should ignore
-              return r
+              return r;
             }
-            return searchResults
-          })
+            return searchResults;
+          });
         } else if (
           searchQueryValue === lastSearchQuery ||
           searchQueryLimitNumber < (lastSearchQueryLimit || 0)
         ) {
           // If the next query requests fewer items, we can resolve it without going to the server
           // by just trimming the items in the cache
-          setResolvedResults((r) => (r || []).slice(0, searchQueryLimitNumber))
-          setLastSearchQueryLimit(searchQueryLimitNumber)
+          setResolvedResults((r) => (r || []).slice(0, searchQueryLimitNumber));
+          setLastSearchQueryLimit(searchQueryLimitNumber);
         }
       }
     } catch (err) {
-      console.error(err)
+      console.error(err);
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'admin/content-block/components/wrappers/media-grid-wrapper/media-grid-wrapper___het-laden-van-deze-media-tegel-grid-is-mislukt',
         ),
         actionButtons: [],
-      })
+      });
     }
   }, [
     results,
@@ -198,21 +198,21 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
     lastSearchQueryLimit,
     setResolvedResults,
     setLoadingInfo,
-  ])
+  ]);
 
   useEffect(() => {
-    resolveMediaResults()
-  }, [resolveMediaResults])
+    resolveMediaResults();
+  }, [resolveMediaResults]);
 
   useEffect(() => {
     if (resolvedResults) {
-      setLoadingInfo({ state: 'loaded' })
+      setLoadingInfo({ state: 'loaded' });
     }
-  }, [resolvedResults])
+  }, [resolvedResults]);
 
   const fetchActiveItemBookmarkStatus = useCallback(async () => {
     if (!commonUser || !activeItem) {
-      return
+      return;
     }
     const statuses = await BookmarksViewsPlaysService.getBookmarkStatuses(
       commonUser.profileId,
@@ -222,17 +222,17 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
           uuid: activeItem.uid,
         },
       ],
-    )
-    setActiveItemBookmarkStatus(statuses['item'][activeItem.uid])
-  }, [activeItem?.external_id])
+    );
+    setActiveItemBookmarkStatus(statuses['item'][activeItem.uid]);
+  }, [activeItem?.external_id]);
 
   useEffect(() => {
-    fetchActiveItemBookmarkStatus()
-  }, [fetchActiveItemBookmarkStatus])
+    fetchActiveItemBookmarkStatus();
+  }, [fetchActiveItemBookmarkStatus]);
 
   const toggleBookmark = async () => {
     if (!commonUser || !activeItem || isNil(activeItemBookmarkStatus)) {
-      return
+      return;
     }
     try {
       await BookmarksViewsPlaysService.toggleBookmark(
@@ -240,9 +240,9 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
         commonUser,
         'item',
         activeItemBookmarkStatus as boolean,
-      )
+      );
 
-      setActiveItemBookmarkStatus(!activeItemBookmarkStatus)
+      setActiveItemBookmarkStatus(!activeItemBookmarkStatus);
       ToastService.success(
         activeItemBookmarkStatus
           ? tText(
@@ -251,7 +251,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
           : tText(
               'search/components/media-grid-wrapper/media-grid-wrapper___de-bladwijzer-is-aangemaakt',
             ),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError('Failed to toggle bookmark', err, {
@@ -260,7 +260,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
           type: 'item',
           activeItemBookmarkStatus,
         }),
-      )
+      );
       ToastService.danger(
         activeItemBookmarkStatus
           ? tText(
@@ -269,38 +269,40 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
           : tText(
               'search/components/media-grid-wrapper/media-grid-wrapper___het-aanmaken-van-de-bladwijzer-is-mislukt',
             ),
-      )
+      );
     }
-  }
+  };
 
   const getThumbnailFromItem = (
     itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignmentOrContentPage | null,
   ) => {
     if (itemOrCollectionOrAssignment?.type?.label === 'audio') {
-      return DEFAULT_AUDIO_STILL
+      return DEFAULT_AUDIO_STILL;
     }
     if (itemOrCollectionOrAssignment?.type?.label === 'opdracht') {
       return (
         (itemOrCollectionOrAssignment as Avo.Assignment.Assignment)
           ?.thumbnail_path || placeholderImage
-      )
+      );
     }
-    return (itemOrCollectionOrAssignment as Avo.Item.Item)?.thumbnail_path || ''
-  }
+    return (
+      (itemOrCollectionOrAssignment as Avo.Item.Item)?.thumbnail_path || ''
+    );
+  };
 
   const getLabelFromItem = (
     itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignmentOrContentPage | null,
   ): Avo.ContentType.Dutch => {
     if ((itemOrCollectionOrAssignment as any)?.type?.label) {
-      return (itemOrCollectionOrAssignment as any)?.type?.label
+      return (itemOrCollectionOrAssignment as any)?.type?.label;
     }
 
     if ((itemOrCollectionOrAssignment as any)?.content_type) {
-      return Avo.ContentType.Dutch.CONTENTPAGINA
+      return Avo.ContentType.Dutch.CONTENTPAGINA;
     }
 
-    return Avo.ContentType.Dutch.ITEM
-  }
+    return Avo.ContentType.Dutch.ITEM;
+  };
 
   const ITEM_LABEL_TO_TYPE: Partial<
     Record<Avo.ContentType.Dutch, Avo.Core.ContentPickerType>
@@ -311,18 +313,18 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
     bundel: Avo.Core.ContentPickerType.BUNDLE,
     opdracht: Avo.Core.ContentPickerType.ASSIGNMENT,
     contentPagina: Avo.Core.ContentPickerType.CONTENT_PAGE,
-  }
+  };
 
   const getThumbnailMetadata = (
     itemOrCollectionOrAssignment: any,
   ): string | null => {
-    const itemLabel = getLabelFromItem(itemOrCollectionOrAssignment)
+    const itemLabel = getLabelFromItem(itemOrCollectionOrAssignment);
     const itemDuration = String(
       (itemOrCollectionOrAssignment as Avo.Item.Item)?.duration || 0,
-    )
+    );
     const collectionItems =
       (itemOrCollectionOrAssignment as Avo.Collection.Collection)?.item_count ||
-      0
+      0;
 
     return (
       {
@@ -346,33 +348,33 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
         zoek: null,
         zoekopdracht: null,
       }[itemLabel] || null
-    )
-  }
+    );
+  };
 
   const handleCopyrightClicked = (
     evt: MouseEvent<HTMLElement>,
     orgInfo: Avo.Organization.Organization,
   ) => {
-    evt.stopPropagation()
-    evt.preventDefault()
-    setActiveCopyright(orgInfo)
-  }
+    evt.stopPropagation();
+    evt.preventDefault();
+    setActiveCopyright(orgInfo);
+  };
 
   const mapItemOrCollectionOrAssignmentOrBundleOrPageData = (
     itemOrCollectionOrAssignmentOrPage: ResolvedItemOrCollectionOrAssignmentOrContentPage,
     index: number,
   ): MediaListItem => {
-    const itemLabel = getLabelFromItem(itemOrCollectionOrAssignmentOrPage)
-    const viewCount = itemOrCollectionOrAssignmentOrPage?.view_count || 0
+    const itemLabel = getLabelFromItem(itemOrCollectionOrAssignmentOrPage);
+    const viewCount = itemOrCollectionOrAssignmentOrPage?.view_count || 0;
 
     const element: MediaGridBlockComponentState =
-      (elements || [])[index] || ({} as any)
+      (elements || [])[index] || ({} as any);
 
     // Show copy right notice when the block requires it and the user is not logged in, or when they are editing the content page (preview)
     // https://meemoo.atlassian.net/browse/AVO-3015
     const showCopyrightNotice =
       !!itemOrCollectionOrAssignmentOrPage.copyright_organisation &&
-      (!commonUser || location.pathname.startsWith(ADMIN_PATH.DASHBOARD))
+      (!commonUser || location.pathname.startsWith(ADMIN_PATH.DASHBOARD));
     const createdAt =
       (
         itemOrCollectionOrAssignmentOrPage as
@@ -380,7 +382,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
           | Avo.Collection.Collection
           | Avo.Assignment.Assignment
       )?.created_at ||
-      (itemOrCollectionOrAssignmentOrPage as DbContentPage)?.createdAt
+      (itemOrCollectionOrAssignmentOrPage as DbContentPage)?.createdAt;
 
     return {
       category: CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[itemLabel],
@@ -454,16 +456,16 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
       item_collaterals:
         (itemOrCollectionOrAssignmentOrPage as Avo.Item.Item)
           ?.item_collaterals || null,
-    } as any
-  }
+    } as any;
+  };
 
   const openInModal = (mediaListItem: MediaListItem): boolean => {
     return (
       openMediaInModal &&
       (mediaListItem?.itemAction?.type === 'ITEM' ||
         mediaListItem?.itemAction?.type === 'ITEM_WITH_CUE_POINTS')
-    )
-  }
+    );
+  };
 
   const renderMediaCardWrapper = (
     mediaCard: ReactNode,
@@ -485,18 +487,18 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
         >
           {mediaCard}
         </a>
-      )
+      );
     }
     return renderLink(
       item.itemAction,
       mediaCard,
       item.buttonAltTitle || item.title,
-    )
-  }
+    );
+  };
 
   const renderBookmarkButton = (): ReactNode => {
     if (!commonUser || isNil(activeItemBookmarkStatus)) {
-      return null
+      return null;
     }
     return defaultRenderBookmarkButton({
       active: activeItemBookmarkStatus as boolean,
@@ -507,19 +509,19 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
         'search/components/media-grid-wrapper/media-grid-wrapper___toggle-bladwijzer',
       ),
       onClick: toggleBookmark,
-    })
-  }
+    });
+  };
 
   // Render
   const renderMediaGridBlock = () => {
     const elements = compact(resolvedResults || []).map(
       mapItemOrCollectionOrAssignmentOrBundleOrPageData,
-    )
+    );
 
     const activeItemCuePoints = {
       start: activeItem?.start_cue_point || null,
       end: activeItem?.end_cue_point || null,
-    }
+    };
 
     return (
       <>
@@ -552,8 +554,8 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
         <Modal
           isOpen={!!activeItem}
           onClose={() => {
-            setActiveItem(null)
-            setActiveItemBookmarkStatus(null)
+            setActiveItem(null);
+            setActiveItemBookmarkStatus(null);
           }}
           scrollable
           size="medium"
@@ -588,7 +590,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
         <Modal
           isOpen={!!activeCopyright}
           onClose={() => {
-            setActiveCopyright(null)
+            setActiveCopyright(null);
           }}
           size="small"
           title={tText(
@@ -606,8 +608,8 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
           </ModalBody>
         </Modal>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <LoadingErrorLoadedComponent
@@ -615,5 +617,5 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
       dataObject={resolvedResults}
       render={renderMediaGridBlock}
     />
-  )
-}
+  );
+};

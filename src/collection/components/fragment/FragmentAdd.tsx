@@ -5,7 +5,7 @@ import {
   Toolbar,
   ToolbarItem,
 } from '@viaa/avo2-components'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { tText } from '../../../shared/helpers/translate-text';
 import { NEW_FRAGMENT } from '../../collection.const';

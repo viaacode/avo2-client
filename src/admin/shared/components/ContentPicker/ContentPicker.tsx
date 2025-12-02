@@ -9,7 +9,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { isNull } from 'es-toolkit';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { type FC, useCallback, useEffect, useState } from 'react';
 import ReactSelect from 'react-select';
 import AsyncSelect from 'react-select/async';
 

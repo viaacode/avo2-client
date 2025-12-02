@@ -1,5 +1,5 @@
 import { Avo } from '@viaa/avo2-types'
-import React, { type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
 import { type FilterState } from '../../search/search.types';
 import { type EditableAssignmentBlock } from '../assignment.types';

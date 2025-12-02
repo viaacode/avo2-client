@@ -7,7 +7,7 @@ import {
 } from '@viaa/avo2-components'
 import { Avo } from '@viaa/avo2-types'
 import { compact } from 'es-toolkit'
-import React, { type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
 import { renderMobileDesktop } from './renderMobileDesktop';
 import { tHtml } from './translate-html';

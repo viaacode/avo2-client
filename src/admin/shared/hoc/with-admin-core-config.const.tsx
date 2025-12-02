@@ -12,7 +12,7 @@ import {
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo, DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'es-toolkit';
-import React, { type FC } from 'react';
+import { type FC } from 'react';
 import { type NavigateFunction } from 'react-router';
 import { Link } from 'react-router-dom';
 

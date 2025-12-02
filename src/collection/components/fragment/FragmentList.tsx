@@ -2,7 +2,7 @@ import { Alert, Spacer } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
 import { sortBy } from 'es-toolkit'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { tHtml } from '../../../shared/helpers/translate-html';

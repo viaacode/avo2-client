@@ -8,7 +8,7 @@ import {
 } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
-import React, { type FC, type ReactNode } from 'react'
+import { type FC, type ReactNode } from 'react'
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { getFullName } from '../../helpers/formatters/avatar';

@@ -8,7 +8,7 @@ import {
   TextInput,
 } from '@viaa/avo2-components'
 import { useAtomValue } from 'jotai'
-import React, { type FC, useState } from 'react'
+import { type FC, useState } from 'react'
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { copyToClipboard } from '../../helpers/clipboard';

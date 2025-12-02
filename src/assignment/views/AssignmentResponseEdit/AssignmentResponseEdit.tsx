@@ -12,7 +12,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { useAtomValue } from 'jotai';
-import React, {
+import {
   type Dispatch,
   type FC,
   type SetStateAction,

@@ -1,6 +1,6 @@
 import { Button, Container, Spacer } from '@viaa/avo2-components'
 import { noop } from 'es-toolkit'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 import { useNavigate } from 'react-router'
 
 import { APP_PATH } from '../../constants';

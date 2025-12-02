@@ -24,7 +24,7 @@ import { PermissionName } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
 import { compact } from 'es-toolkit'
 import { isEmpty } from 'es-toolkit/compat'
-import React, {
+import {
   type FC,
   type ReactText,
   useCallback,

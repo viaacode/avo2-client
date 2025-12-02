@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import queryString from 'query-string';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { type FC, useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 

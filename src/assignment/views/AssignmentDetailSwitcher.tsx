@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { commonUserAtom } from '../../authentication/authentication.store';

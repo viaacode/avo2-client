@@ -1,5 +1,5 @@
 import { type TOptions } from 'i18next'
-import React, { type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
 import { Html } from '../components/Html/Html';
 

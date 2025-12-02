@@ -11,7 +11,7 @@ import {
   TextInput,
 } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
-import React, { type FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 

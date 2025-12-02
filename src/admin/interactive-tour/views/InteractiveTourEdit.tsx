@@ -17,7 +17,7 @@ import {
 import { Avo, PermissionName } from '@viaa/avo2-types';
 import { cloneDeep, compact, orderBy } from 'es-toolkit';
 import { isEmpty, map } from 'es-toolkit/compat';
-import React, {
+import {
   type FC,
   lazy,
   type Reducer,

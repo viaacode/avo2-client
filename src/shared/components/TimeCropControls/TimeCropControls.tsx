@@ -1,7 +1,7 @@
 import { Container, MultiRange, TextInput } from '@viaa/avo2-components';
 import { clsx } from 'clsx';
 import { clamp } from 'es-toolkit';
-import React, { type FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { formatDurationHoursMinutesSeconds } from '../../helpers/formatters/duration';

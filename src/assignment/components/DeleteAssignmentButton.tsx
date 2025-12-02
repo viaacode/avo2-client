@@ -6,7 +6,7 @@ import {
 } from '@viaa/avo2-components'
 import { type Avo, PermissionName } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
-import React, { type FC, useState } from 'react'
+import { type FC, useState } from 'react'
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';

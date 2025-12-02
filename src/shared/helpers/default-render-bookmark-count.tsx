@@ -3,7 +3,7 @@ import {
   MetaDataItem,
   type MetaDataItemProps,
 } from '@viaa/avo2-components'
-import React, { type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
 export type renderBookmarkCountProps = Pick<MetaDataItemProps, 'label'>
 

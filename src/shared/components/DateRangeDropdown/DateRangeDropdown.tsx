@@ -13,7 +13,7 @@ import {
   TextInput,
 } from '@viaa/avo2-components'
 import { format } from 'date-fns'
-import React, {
+import {
   type FC,
   type MouseEvent,
   type ReactText,

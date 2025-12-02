@@ -5,7 +5,7 @@ import {
 import { GetQuickLanesByContentIdDocument } from '../generated/graphql-db-react-query';
 import { CustomError } from '../helpers/custom-error';
 import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object';
-import { type QuickLaneUrlObject } from '../types/index';
+import { type QuickLaneUrlObject } from '../types';
 
 import { dataService } from './data-service';
 
@@ -16,7 +16,7 @@ export class QuickLaneContainingService {
     try {
       const variables = {
         contentId,
-      }
+      };
 
       const response = await dataService.query<
         GetQuickLanesByContentIdQuery,
@@ -24,9 +24,9 @@ export class QuickLaneContainingService {
       >({
         variables,
         query: GetQuickLanesByContentIdDocument,
-      })
+      });
 
-      return response?.app_quick_lanes?.map(quickLaneUrlRecordToObject) || []
+      return response?.app_quick_lanes?.map(quickLaneUrlRecordToObject) || [];
     } catch (err) {
       throw new CustomError(
         'Failed to get quick lane urls by content id from database',
@@ -35,7 +35,7 @@ export class QuickLaneContainingService {
           contentId,
           query: 'GET_QUICK_LANE_BY_CONTENT_ID',
         },
-      )
+      );
     }
   }
 }

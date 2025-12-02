@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@viaa/avo2-components'
-import React, { type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
 export type renderBookmarkButtonProps = Pick<
   ToggleButtonProps,

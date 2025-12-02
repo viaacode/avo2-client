@@ -12,7 +12,7 @@ import {
 import { type Avo } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
 import type { Requests } from 'node-zendesk'
-import React, { type FC, useState } from 'react'
+import { type FC, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useNavigate } from 'react-router'
 

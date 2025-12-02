@@ -1,6 +1,6 @@
 import { Avatar, type AvatarProps } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
-import React, { type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
 export const getProfile = (
   obj:

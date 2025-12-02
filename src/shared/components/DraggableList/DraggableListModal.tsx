@@ -7,7 +7,7 @@ import {
 } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 
-import React, { type FC, type ReactNode, useState } from 'react'
+import { type FC, type ReactNode, useState } from 'react'
 
 import { DraggableList } from './DraggableList';
 

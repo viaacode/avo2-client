@@ -13,7 +13,7 @@ import {
 import { Avo } from '@viaa/avo2-types'
 import { clsx } from 'clsx'
 import { uniqBy } from 'es-toolkit'
-import React, {
+import {
   type FC,
   type ReactText,
   useCallback,

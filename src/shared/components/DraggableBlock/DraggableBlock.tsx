@@ -2,7 +2,7 @@ import { BlockHeading } from '@meemoo/admin-core-ui/client'
 import { type DefaultProps, Flex, FlexItem, Icon } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 import { clsx } from 'clsx'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { stripHtml } from '../../helpers/formatters/strip-html';
 import { GET_BLOCK_ICON } from '../BlockList/BlockIconWrapper/BlockIconWrapper.consts';

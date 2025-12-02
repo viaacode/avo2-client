@@ -4,7 +4,7 @@ import {
 } from '@meemoo/react-components'
 import { Flex, Modal, ModalBody, Spinner } from '@viaa/avo2-components'
 import { Avo } from '@viaa/avo2-types'
-import React, { type FC, useCallback, useEffect, useState } from 'react'
+import { type FC, useCallback, useEffect, useState } from 'react'
 
 import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';

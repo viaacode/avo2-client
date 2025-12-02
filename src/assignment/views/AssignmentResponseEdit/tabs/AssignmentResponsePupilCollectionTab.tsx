@@ -14,7 +14,7 @@ import {
   ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import React, {
+import {
   type Dispatch,
   type FC,
   type SetStateAction,

@@ -1,6 +1,6 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client'
 import { Avo } from '@viaa/avo2-types'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 import { Link } from 'react-router-dom'
 
 import { APP_PATH } from '../../constants';

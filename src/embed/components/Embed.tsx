@@ -12,7 +12,7 @@ import {
 import { type Avo } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
 import { noop } from 'es-toolkit'
-import React, { type FC, useCallback, useEffect, useMemo } from 'react'
+import { type FC, useCallback, useEffect, useMemo } from 'react'
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { toEmbedCodeDetail } from '../../embed-code/helpers/links';

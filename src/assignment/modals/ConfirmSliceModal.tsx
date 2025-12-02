@@ -10,7 +10,7 @@ import {
   ToolbarRight,
 } from '@viaa/avo2-components'
 import { Avo } from '@viaa/avo2-types'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.consts';
 import { tHtml } from '../../shared/helpers/translate-html';

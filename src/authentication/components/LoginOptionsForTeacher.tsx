@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from '@viaa/avo2-components'
 import { noop } from 'es-toolkit'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { tHtml } from '../../shared/helpers/translate-html';
 import {

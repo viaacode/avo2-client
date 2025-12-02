@@ -1,5 +1,5 @@
 import { PermissionName } from '@viaa/avo2-types'
-import React, { type FC, lazy, Suspense } from 'react'
+import { type FC, lazy, Suspense } from 'react'
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';

@@ -1,5 +1,5 @@
 import { PermissionName } from '@viaa/avo2-types'
-import React, { type FC, lazy, Suspense } from 'react'
+import { type FC, lazy, Suspense } from 'react'
 import { useNavigate, useParams } from 'react-router'
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';

@@ -1,9 +1,9 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
-import { Avo } from '@viaa/avo2-types'
-import { compact, isNil, uniq, without } from 'es-toolkit'
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
+import { Avo } from '@viaa/avo2-types';
+import { compact, isNil, uniq, without } from 'es-toolkit';
 
 import { ContentTypeNumber } from '../../collection/collection.types';
-import { DEFAULT_AUDIO_STILL } from '../constants/index';
+import { DEFAULT_AUDIO_STILL } from '../constants';
 import { CustomError } from '../helpers/custom-error';
 import { getEnv } from '../helpers/env';
 import { toSeconds } from '../helpers/parsers/duration';
@@ -18,16 +18,16 @@ export class VideoStillService {
   ): Promise<Avo.Stills.StillInfo[]> {
     try {
       if (!stillRequests || !stillRequests.length) {
-        return []
+        return [];
       }
       return fetchWithLogoutJson(`${getEnv('PROXY_URL')}/video-stills`, {
         method: 'POST',
         body: JSON.stringify(stillRequests),
-      })
+      });
     } catch (err) {
       throw new CustomError('Failed to get video stills', err, {
         stillRequests,
-      })
+      });
     }
   }
 
@@ -45,19 +45,19 @@ export class VideoStillService {
   ): Promise<string> {
     try {
       if (contentType === ContentTypeNumber.audio) {
-        return DEFAULT_AUDIO_STILL
+        return DEFAULT_AUDIO_STILL;
       }
       const stills = await VideoStillService.getVideoStills([
         { externalId, startTime },
-      ])
+      ]);
       if (stills[0] && stills[0].previewImagePath) {
-        return stills[0].previewImagePath
+        return stills[0].previewImagePath;
       }
-      return ''
+      return '';
     } catch (err) {
       throw new CustomError('Failed to get video still previewImagePath', err, {
         externalId,
-      })
+      });
     }
   }
 
@@ -71,19 +71,19 @@ export class VideoStillService {
       (subject as Avo.Collection.Collection).collection_fragments ||
       (subject as Avo.Assignment.Assignment).blocks ||
       []
-    ).filter((block) => block.type === 'ITEM')
+    ).filter((block) => block.type === 'ITEM');
     const videoBlocks = mediaFragments.filter(
       (block) =>
         block.item_meta &&
         (block.item_meta as Avo.Item.Item).type.label ===
           Avo.Core.ContentType.VIDEO,
-    )
+    );
     const audioBlocks = mediaFragments.filter(
       (block) =>
         block.item_meta &&
         (block.item_meta as Avo.Item.Item).type.label ===
           Avo.Core.ContentType.AUDIO,
-    )
+    );
     const cutVideoBlocks = videoBlocks.filter(
       (block) =>
         (block.start_oc !== 0 && !isNil(block.start_oc)) ||
@@ -91,17 +91,17 @@ export class VideoStillService {
           !isNil(block.end_oc) &&
           block.end_oc !==
             toSeconds((block.item_meta as Avo.Item.Item).duration)),
-    )
-    const uncutVideoFragments = without(videoBlocks, ...cutVideoBlocks)
+    );
+    const uncutVideoFragments = without(videoBlocks, ...cutVideoBlocks);
     const cutVideoStillRequests: Avo.Stills.StillRequest[] = compact(
       cutVideoBlocks.map((block) => ({
         externalId: block.fragment_id || block.external_id,
         startTime: (block.start_oc || 0) * 1000,
       })),
-    )
+    );
     const cutVideoStills = compact(
       await VideoStillService.getVideoStills(cutVideoStillRequests),
-    )
+    );
 
     return uniq(
       compact([
@@ -118,7 +118,7 @@ export class VideoStillService {
           ? [DEFAULT_AUDIO_STILL]
           : []),
       ]),
-    )
+    );
   }
 
   public static async getThumbnailForSubject(
@@ -128,6 +128,6 @@ export class VideoStillService {
   ): Promise<string | null> {
     return (
       (await VideoStillService.getThumbnailsForSubject(collection))[0] || null
-    )
+    );
   }
 }

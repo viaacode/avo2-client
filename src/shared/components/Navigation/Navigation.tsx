@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
-import AvoLogoSrc from '@assets/images/avo-logo-i.svg'
-import { ContentPagePreviewUserRoleSelector } from '@meemoo/admin-core-ui/admin'
+import AvoLogoSrc from '@assets/images/avo-logo-i.svg';
+import { ContentPagePreviewUserRoleSelector } from '@meemoo/admin-core-ui/admin';
 import {
   Avatar,
   Button,
@@ -13,12 +13,12 @@ import {
   ToolbarItem,
   ToolbarLeft,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { useAtom, useSetAtom } from 'jotai'
-import { last } from 'es-toolkit'
-import React, { type FC, type ReactText, useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { last } from 'es-toolkit';
+import { useAtom, useSetAtom } from 'jotai';
+import { type FC, type ReactText, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { loginAtom } from '../../../authentication/authentication.store';
 import { getLoginStateAtom } from '../../../authentication/authentication.store.actions';
@@ -36,63 +36,64 @@ import {
 import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
 import { useHideZendeskWidget } from '../../hooks/useHideZendeskWidget';
 import { ToastService } from '../../services/toast-service';
-import { type NavigationItemInfo } from '../../types/index';
+import { type NavigationItemInfo } from '../../types';
 
 import { NavigationBarId } from './Navigation.const';
 import { NavigationItem } from './NavigationItem';
 
-import './Navigation.scss'
-import { tText } from '../../helpers/translate-text';
+import './Navigation.scss';
 import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 
 type NavigationParams = {
-  isPreviewRoute: boolean
-}
+  isPreviewRoute: boolean;
+};
 
 /**
  * Main navigation bar component
  */
 export const Navigation: FC<NavigationParams> = ({ isPreviewRoute }) => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
-  const [loginAtomValue] = useAtom(loginAtom)
-  const loginState = loginAtomValue.data
-  const loginStateLoading = loginAtomValue.loading
-  const loginStateError = loginAtomValue.error
-  const getLoginState = useSetAtom(getLoginStateAtom)
+  const [loginAtomValue] = useAtom(loginAtom);
+  const loginState = loginAtomValue.data;
+  const loginStateLoading = loginAtomValue.loading;
+  const loginStateError = loginAtomValue.error;
+  const getLoginState = useSetAtom(getLoginStateAtom);
 
   const [areDropdownsOpen, setDropdownsOpen] = useState<{
-    [key: string]: boolean
-  }>({})
-  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [isUserGroupSelectorOpen, setIsUserGroupSelectorOpen] = useState(false)
+    [key: string]: boolean;
+  }>({});
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isUserGroupSelectorOpen, setIsUserGroupSelectorOpen] = useState(false);
 
-  const { data: allNavItems } = useAllGetNavItems()
+  const { data: allNavItems } = useAllGetNavItems();
 
   /**
    * @deprecated
    */
-  const user = (loginState as Avo.Auth.LoginResponseLoggedIn)?.userInfo
+  const user = (loginState as Avo.Auth.LoginResponseLoggedIn)?.userInfo;
   const commonUser = (loginState as Avo.Auth.LoginResponseLoggedIn)
-    ?.commonUserInfo
+    ?.commonUserInfo;
 
   /**
    * Computed
    */
-  const navItemsLeft = allNavItems?.[NavigationBarId.MAIN_NAVIGATION_LEFT] || []
+  const navItemsLeft =
+    allNavItems?.[NavigationBarId.MAIN_NAVIGATION_LEFT] || [];
   const navItemsRight =
-    allNavItems?.[NavigationBarId.MAIN_NAVIGATION_RIGHT] || []
+    allNavItems?.[NavigationBarId.MAIN_NAVIGATION_RIGHT] || [];
   const navItemsProfileDropdown =
-    allNavItems?.[NavigationBarId.PROFILE_DROPDOWN] || []
+    allNavItems?.[NavigationBarId.PROFILE_DROPDOWN] || [];
 
-  useHideZendeskWidget(commonUser, isUserGroupSelectorOpen)
+  useHideZendeskWidget(commonUser, isUserGroupSelectorOpen);
 
   useEffect(() => {
     if (!loginState && !loginStateLoading && !loginStateError) {
-      getLoginState(false)
-      return
+      getLoginState(false);
+      return;
     }
-  })
+  });
 
   const mapNavItems = (navItems: NavigationItemInfo[], isMobile: boolean) => {
     return navItems.map((item) => (
@@ -106,28 +107,28 @@ export const Navigation: FC<NavigationParams> = ({ isPreviewRoute }) => {
         isMobile={isMobile}
         onNavigate={() => setMobileMenuOpen(false)}
       />
-    ))
-  }
+    ));
+  };
 
   const getNavigationItemsLeft = (): NavigationItemInfo[] => {
-    return mapNavElementsToNavigationItems(navItemsLeft, tText)
-  }
+    return mapNavElementsToNavigationItems(navItemsLeft, tText);
+  };
 
   const getNavigationItemsRight = (): NavigationItemInfo[] => {
     if (
       (!navItemsRight || !navItemsRight.length) &&
       (!navItemsProfileDropdown || !navItemsProfileDropdown.length)
     ) {
-      return []
+      return [];
     }
     const dynamicNavItemsRight: NavigationItemInfo[] =
-      mapNavElementsToNavigationItems(navItemsRight, tText)
+      mapNavElementsToNavigationItems(navItemsRight, tText);
     const dynamicNavItemsProfileDropdown: NavigationItemInfo[] =
-      mapNavElementsToNavigationItems(navItemsProfileDropdown, tText)
+      mapNavElementsToNavigationItems(navItemsProfileDropdown, tText);
 
     const logoutNavItem = last(
       dynamicNavItemsProfileDropdown,
-    ) as NavigationItemInfo
+    ) as NavigationItemInfo;
 
     if (
       // (user && logoutNavItem.location !== APP_PATH.LOGOUT.route) ||
@@ -135,12 +136,12 @@ export const Navigation: FC<NavigationParams> = ({ isPreviewRoute }) => {
       logoutNavItem?.location === APP_PATH.LOGOUT.route
     ) {
       // Avoid flashing the menu items for a second without them being in a dropdown menu
-      return []
+      return [];
     }
 
     if (commonUser) {
       if (isMobileMenuOpen) {
-        return [...dynamicNavItemsRight, ...dynamicNavItemsProfileDropdown]
+        return [...dynamicNavItemsRight, ...dynamicNavItemsProfileDropdown];
       }
       // Navigatie items voor ingelogde gebruikers (dropdown onder profile avatar)
       return [
@@ -178,44 +179,44 @@ export const Navigation: FC<NavigationParams> = ({ isPreviewRoute }) => {
           target: '_self',
           key: 'profile',
         },
-      ]
+      ];
     }
 
     // Navigatie items voor niet ingelogde gebruikers: items naast elkaar
-    return dynamicNavItemsRight
-  }
+    return dynamicNavItemsRight;
+  };
 
-  const onToggleMenu = () => setMobileMenuOpen(!isMobileMenuOpen)
+  const onToggleMenu = () => setMobileMenuOpen(!isMobileMenuOpen);
 
-  const closeAllDropdowns = () => setDropdownsOpen({})
+  const closeAllDropdowns = () => setDropdownsOpen({});
 
   const handleMenuClick = (menuItemId: string | ReactText) => {
     try {
       const navItemId: number = parseInt(
         menuItemId.toString().substring('nav-item-'.length),
         10,
-      )
+      );
       const navItem = [...navItemsRight, ...navItemsProfileDropdown].find(
         (navItem) => navItem.id === navItemId,
-      )
+      );
       if (!navItem) {
-        console.error('Could not find navigation item by id', { menuItemId })
+        console.error('Could not find navigation item by id', { menuItemId });
         ToastService.danger(
           tHtml(
             'shared/components/navigation/navigation___dit-menu-item-kon-niet-worden-geopend-1',
           ),
-        )
-        return
+        );
+        return;
       }
-      const link = getLocation(navItem, tText)
+      const link = getLocation(navItem, tText);
       if (link.includes('//')) {
         // external link
-        redirectToExternalPage(link, navItem.link_target || '_blank')
+        redirectToExternalPage(link, navItem.link_target || '_blank');
       } else {
         // Internal link to react page or to content block page
-        redirectToClientPage(link, navigateFunc)
+        redirectToClientPage(link, navigateFunc);
       }
-      closeAllDropdowns()
+      closeAllDropdowns();
     } catch (err) {
       console.error(
         'Failed to handle menu item click because it is not a number',
@@ -223,14 +224,14 @@ export const Navigation: FC<NavigationParams> = ({ isPreviewRoute }) => {
         {
           menuItemId,
         },
-      )
+      );
       ToastService.danger(
         tHtml(
           'shared/components/navigation/navigation___dit-menu-item-kon-niet-worden-geopend-2',
         ),
-      )
+      );
     }
-  }
+  };
 
   return (
     <>
@@ -333,5 +334,5 @@ export const Navigation: FC<NavigationParams> = ({ isPreviewRoute }) => {
         </Navbar>
       )}
     </>
-  )
-}
+  );
+};

@@ -1,28 +1,28 @@
-import { Modal, ModalBody } from '@viaa/avo2-components'
-import { addMinutes, differenceInSeconds, isAfter } from 'date-fns'
-import { useAtomValue } from 'jotai'
-import React, { type FC, type ReactNode, useEffect, useState } from 'react'
-import { useIdleTimer } from 'react-idle-timer'
-import { matchPath } from 'react-router'
+import { Modal, ModalBody } from '@viaa/avo2-components';
+import { addMinutes, differenceInSeconds, isAfter } from 'date-fns';
+import { useAtomValue } from 'jotai';
+import { type FC, type ReactNode, useEffect, useState } from 'react';
+import { useIdleTimer } from 'react-idle-timer';
+import { matchPath } from 'react-router';
 
 import {
   EDIT_STATUS_REFETCH_TIME,
   IDLE_TIME_UNTIL_WARNING,
   MAX_EDIT_IDLE_TIME,
-} from '../../constants/index';
+} from '../../constants';
 import { formatDurationMinutesSeconds } from '../../helpers/formatters/duration';
 import { tHtml } from '../../helpers/translate-html';
 import { useBeforeUnload } from '../../hooks/useBeforeUnload';
 import { lastVideoPlayedAtAtom } from '../../store/ui.store';
 
 type InActivityWarningModalProps = {
-  onActivity: () => void
-  onExit: () => void
-  onForcedExit: () => void
-  warningMessage: string | ReactNode
-  editPath: string
-  currentPath: string
-}
+  onActivity: () => void;
+  onExit: () => void;
+  onForcedExit: () => void;
+  warningMessage: string | ReactNode;
+  editPath: string;
+  currentPath: string;
+};
 
 export const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
   onActivity,
@@ -32,41 +32,41 @@ export const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
   editPath,
   currentPath,
 }) => {
-  const maxIdleTime = MAX_EDIT_IDLE_TIME / 1000
-  const [remainingTime, setRemainingTime] = useState<number>(maxIdleTime)
-  const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false)
-  const [isTimedOut, setIsTimedOut] = useState<boolean>(false)
-  const [idleStart, setIdleStart] = useState<Date | null>(null)
-  const [documentTitle] = useState(document.title)
+  const maxIdleTime = MAX_EDIT_IDLE_TIME / 1000;
+  const [remainingTime, setRemainingTime] = useState<number>(maxIdleTime);
+  const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
+  const [isTimedOut, setIsTimedOut] = useState<boolean>(false);
+  const [idleStart, setIdleStart] = useState<Date | null>(null);
+  const [documentTitle] = useState(document.title);
 
-  const lastVideoPlayedAt = useAtomValue(lastVideoPlayedAtAtom)
+  const lastVideoPlayedAt = useAtomValue(lastVideoPlayedAtAtom);
 
   useEffect(() => {
     if (!isTimedOut) {
       return () => {
-        onExit()
-      }
+        onExit();
+      };
     }
-  }, [isTimedOut])
+  }, [isTimedOut]);
 
   useBeforeUnload(() => {
-    onExit()
-  })
+    onExit();
+  });
 
   useEffect(() => {
-    const changingRoute = !matchPath(currentPath, editPath)
+    const changingRoute = !matchPath(currentPath, editPath);
     if (changingRoute) {
-      onExit()
+      onExit();
     }
-  }, [currentPath])
+  }, [currentPath]);
 
   const handleOnAction = () => {
-    setIdleStart(null)
-    setRemainingTime(maxIdleTime)
-    setIsWarningModalOpen(false)
-    onActivity()
-    reset()
-  }
+    setIdleStart(null);
+    setRemainingTime(maxIdleTime);
+    setIsWarningModalOpen(false);
+    onActivity();
+    reset();
+  };
 
   const onIdle = () => {
     // Last video play was less than 1 minute ago?
@@ -78,10 +78,10 @@ export const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
       // https://meemoo.atlassian.net/browse/AVO-2983
     } else {
       // No video is playing and user is idle
-      setIsWarningModalOpen(true)
-      setIdleStart(new Date())
+      setIsWarningModalOpen(true);
+      setIdleStart(new Date());
     }
-  }
+  };
 
   const { reset } = useIdleTimer({
     onAction: handleOnAction,
@@ -89,42 +89,42 @@ export const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
     onIdle,
     throttle: EDIT_STATUS_REFETCH_TIME,
     timeout: IDLE_TIME_UNTIL_WARNING,
-  })
+  });
 
   useEffect(() => {
-    let timerId: number | null = null
+    let timerId: number | null = null;
     if (idleStart) {
       timerId = window.setInterval(() => {
-        const idledTime = differenceInSeconds(new Date(), idleStart)
+        const idledTime = differenceInSeconds(new Date(), idleStart);
 
-        setRemainingTime(Math.max(maxIdleTime - idledTime, 0))
-      }, 500)
+        setRemainingTime(Math.max(maxIdleTime - idledTime, 0));
+      }, 500);
     }
 
     return () => {
       if (timerId) {
-        clearInterval(timerId)
+        clearInterval(timerId);
       }
-    }
-  }, [idleStart])
+    };
+  }, [idleStart]);
 
   useEffect(() => {
     if (remainingTime === 0) {
-      setIsTimedOut(true)
-      onForcedExit()
+      setIsTimedOut(true);
+      onForcedExit();
     }
 
     // AVO-2846: show timer before tab title when timer starts counting down
     if (remainingTime < maxIdleTime) {
       document.title =
-        formatDurationMinutesSeconds(remainingTime) + ' | ' + documentTitle
+        formatDurationMinutesSeconds(remainingTime) + ' | ' + documentTitle;
     }
 
     // AVO-2846: hide timer in tab title when there is activity
     if (remainingTime >= maxIdleTime) {
-      document.title = documentTitle
+      document.title = documentTitle;
     }
-  }, [remainingTime])
+  }, [remainingTime]);
 
   return (
     <Modal
@@ -140,5 +140,5 @@ export const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
         {warningMessage}
       </ModalBody>
     </Modal>
-  )
-}
+  );
+};

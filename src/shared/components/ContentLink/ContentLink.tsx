@@ -1,6 +1,6 @@
 import { Flex, FlexItem, Spacer, Thumbnail } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 import { Link } from 'react-router-dom'
 
 import { CONTENT_LABEL_TO_ROUTE_PARTS } from '../../../assignment/assignment.const';

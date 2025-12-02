@@ -12,7 +12,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact, isNil, isString, omit, uniq } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import queryString from 'query-string';
-import React, { type FC, type ReactNode } from 'react';
+import { type FC, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';

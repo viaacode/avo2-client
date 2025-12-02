@@ -1,5 +1,5 @@
 import { Container, Flex, Spacer } from '@viaa/avo2-components'
-import React, { type FC, type ReactNode } from 'react'
+import { type FC, type ReactNode } from 'react'
 
 // eslint-disable-next-line import/no-unresolved
 import TeacherSvg from '../../../assets/images/leerkracht.svg?react'

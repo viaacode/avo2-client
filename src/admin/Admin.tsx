@@ -1,7 +1,7 @@
 import { Flex, IconName } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
-import React, { type FC, ReactElement, useEffect, useState } from 'react';
+import { type FC, ReactElement, useEffect, useState } from 'react';
 import * as ReactPageSplit from 'react-page-split';
 import { Outlet } from 'react-router';
 import { commonUserAtom } from '../authentication/authentication.store';

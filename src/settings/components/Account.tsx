@@ -11,7 +11,7 @@ import {
   Spacer,
 } from '@viaa/avo2-components'
 import { useAtomValue } from 'jotai'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 import { Helmet } from 'react-helmet'
 
 import { commonUserAtom } from '../../authentication/authentication.store';

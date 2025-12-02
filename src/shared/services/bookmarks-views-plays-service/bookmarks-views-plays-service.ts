@@ -1,8 +1,8 @@
-import { type Avo } from '@viaa/avo2-types'
-import { compact, groupBy, noop } from 'es-toolkit'
+import { type Avo } from '@viaa/avo2-types';
+import { compact, groupBy, noop } from 'es-toolkit';
 
 import { WorkspaceService } from '../../../workspace/workspace.service';
-import { DEFAULT_AUDIO_STILL } from '../../constants/index';
+import { DEFAULT_AUDIO_STILL } from '../../constants';
 import {
   type DeleteAssignmentBookmarksForUserMutationVariables,
   type DeleteCollectionBookmarksForUserMutation,
@@ -84,7 +84,7 @@ export class BookmarksViewsPlaysService {
           contentUuid,
           commonUser || null,
           silent,
-        )
+        );
       } else {
         // Bookmark or unbookmark action
         const { query, variables } = this.getQueryAndVariables(
@@ -93,7 +93,7 @@ export class BookmarksViewsPlaysService {
           contentType,
           contentUuid,
           commonUser || null,
-        )
+        );
 
         await dataService.query<
           | InsertItemBookmarkMutation
@@ -108,7 +108,7 @@ export class BookmarksViewsPlaysService {
         >({
           query,
           variables,
-        })
+        });
       }
 
       // Finished incrementing
@@ -122,11 +122,11 @@ export class BookmarksViewsPlaysService {
           contentUuid,
           commonUser,
         },
-      )
+      );
       if (silent) {
-        console.error(error)
+        console.error(error);
       } else {
-        throw error
+        throw error;
       }
     }
   }
@@ -141,18 +141,18 @@ export class BookmarksViewsPlaysService {
     >({
       query: GetItemBookmarkViewPlayCountsDocument,
       variables: { itemUuid, profileId: commonUser?.profileId || null },
-    })
-    const isBookmarked = !!response.app_item_bookmarks[0]
+    });
+    const isBookmarked = !!response.app_item_bookmarks[0];
     const bookmarkCount =
-      response.app_item_bookmarks_aggregate.aggregate?.count ?? 0
-    const viewCount = response.app_item_views[0]?.count ?? 0
-    const playCount = response.app_item_plays[0]?.count ?? 0
+      response.app_item_bookmarks_aggregate.aggregate?.count ?? 0;
+    const viewCount = response.app_item_views[0]?.count ?? 0;
+    const playCount = response.app_item_plays[0]?.count ?? 0;
     return {
       bookmarkCount,
       viewCount,
       playCount,
       isBookmarked,
-    }
+    };
   }
 
   public static async getCollectionCounts(
@@ -165,18 +165,18 @@ export class BookmarksViewsPlaysService {
     >({
       query: GetCollectionBookmarkViewPlayCountsDocument,
       variables: { collectionUuid, profileId: commonUser?.profileId || null },
-    })
-    const isBookmarked = !!response.app_collection_bookmarks[0]
+    });
+    const isBookmarked = !!response.app_collection_bookmarks[0];
     const bookmarkCount =
-      response.app_collection_bookmarks_aggregate.aggregate?.count || 0
-    const viewCount = response.app_collection_views[0]?.count ?? 0
-    const playCount = response.app_collection_plays[0]?.count ?? 0
+      response.app_collection_bookmarks_aggregate.aggregate?.count || 0;
+    const viewCount = response.app_collection_views[0]?.count ?? 0;
+    const playCount = response.app_collection_plays[0]?.count ?? 0;
     return {
       bookmarkCount,
       viewCount,
       playCount,
       isBookmarked,
-    }
+    };
   }
 
   public static async getAssignmentCounts(
@@ -192,20 +192,20 @@ export class BookmarksViewsPlaysService {
         assignmentUuid,
         profileId: commonUser?.profileId || null,
       },
-    })
+    });
 
-    const isBookmarked = !!response.app_assignments_v2_bookmarks[0]
+    const isBookmarked = !!response.app_assignments_v2_bookmarks[0];
     const bookmarkCount =
-      response.app_assignments_v2_bookmarks_aggregate.aggregate?.count || 0
-    const viewCount = response.app_assignment_v2_views[0]?.count ?? 0
-    const playCount = 0
+      response.app_assignments_v2_bookmarks_aggregate.aggregate?.count || 0;
+    const viewCount = response.app_assignment_v2_views[0]?.count ?? 0;
+    const playCount = 0;
 
     return {
       bookmarkCount,
       viewCount,
       isBookmarked,
       playCount,
-    }
+    };
   }
 
   /**
@@ -228,7 +228,7 @@ export class BookmarksViewsPlaysService {
           `Failed to bookmark ${type} because the ${type} doesn't seem to be loaded yet`,
           null,
           { contentId },
-        )
+        );
       }
       await BookmarksViewsPlaysService.action(
         isBookmarked ? 'unbookmark' : 'bookmark',
@@ -236,7 +236,7 @@ export class BookmarksViewsPlaysService {
         contentId,
         commonUser,
         false,
-      )
+      );
 
       if (!isBookmarked) {
         trackEvents(
@@ -246,12 +246,12 @@ export class BookmarksViewsPlaysService {
             action: 'bookmark',
           },
           commonUser,
-        )
+        );
       }
     } catch (err) {
       throw new CustomError('Failed to bookmark/unbookmark the item', err, {
         contentId,
-      })
+      });
     }
   }
 
@@ -260,13 +260,13 @@ export class BookmarksViewsPlaysService {
   ): (BookmarkInfo | null)[] {
     return itemBookmarks.map((itemBookmark): BookmarkInfo | null => {
       if (!itemBookmark.bookmarkedItem) {
-        return null
+        return null;
       }
 
       const thumbnailPath =
         itemBookmark.bookmarkedItem.item.item_meta.type.label === 'audio'
           ? DEFAULT_AUDIO_STILL
-          : itemBookmark.bookmarkedItem.thumbnail_path
+          : itemBookmark.bookmarkedItem.thumbnail_path;
 
       return {
         contentId: itemBookmark.item_id,
@@ -285,8 +285,8 @@ export class BookmarksViewsPlaysService {
           itemBookmark?.bookmarkedItem?.view_counts?.[0]?.count || 0,
         contentOrganisation:
           itemBookmark.bookmarkedItem?.item?.item_meta?.organisation?.name,
-      }
-    })
+      };
+    });
   }
 
   public static async getItemBookmarksForUser(
@@ -298,19 +298,19 @@ export class BookmarksViewsPlaysService {
       profileId: commonUser?.profileId,
       filter: [{ bookmarkedItem: { title: { _ilike: `%${filterString}%` } } }],
       order: orderObject,
-    }
+    };
     const response = await dataService.query<
       GetItemBookmarksForUserQuery,
       GetItemBookmarksForUserQueryVariables
     >({
       query: GetItemBookmarksForUserDocument,
       variables,
-    })
+    });
     const itemBookmarks: AppItemBookmark[] =
-      response.app_item_bookmarks as AppItemBookmark[]
+      response.app_item_bookmarks as AppItemBookmark[];
     const itemBookmarkInfos: (BookmarkInfo | null)[] =
-      BookmarksViewsPlaysService.getItemBookmarkInfos(itemBookmarks)
-    return compact(itemBookmarkInfos)
+      BookmarksViewsPlaysService.getItemBookmarkInfos(itemBookmarks);
+    return compact(itemBookmarkInfos);
   }
 
   /**
@@ -318,7 +318,7 @@ export class BookmarksViewsPlaysService {
    * since we cannot order items across both tables: item_bookmarks and collection_bookmarks
    */
   public static async getAllBookmarksForUser(): Promise<BookmarkInfo[]> {
-    const bookmarks = await WorkspaceService.getAllBookmarksForUser()
+    const bookmarks = await WorkspaceService.getAllBookmarksForUser();
 
     return bookmarks.map((item) => ({
       ...item,
@@ -326,7 +326,7 @@ export class BookmarksViewsPlaysService {
         item.contentType === 'audio'
           ? DEFAULT_AUDIO_STILL
           : item.contentThumbnailPath,
-    }))
+    }));
   }
 
   private static getQueryAndVariables(
@@ -336,27 +336,27 @@ export class BookmarksViewsPlaysService {
     contentUuid: string,
     commonUser: Avo.User.CommonUser | null,
   ): {
-    query: string
-    variables: any
-    getResponseCount?: (response: any) => number
+    query: string;
+    variables: any;
+    getResponseCount?: (response: any) => number;
   } {
     // bundle is handled the same way as a collection
     const contentTypeSimplified =
-      contentType === 'bundle' ? 'collection' : contentType
+      contentType === 'bundle' ? 'collection' : contentType;
 
-    const eventQueries = GET_EVENT_QUERIES()
-    const query = eventQueries?.[action]?.[contentTypeSimplified]?.[queryType]
+    const eventQueries = GET_EVENT_QUERIES();
+    const query = eventQueries?.[action]?.[contentTypeSimplified]?.[queryType];
     const getVariablesFunc =
-      GET_EVENT_QUERIES()?.[action]?.[contentTypeSimplified]?.variables ?? noop
-    const variables = getVariablesFunc(contentUuid, commonUser)
+      GET_EVENT_QUERIES()?.[action]?.[contentTypeSimplified]?.variables ?? noop;
+    const variables = getVariablesFunc(contentUuid, commonUser);
     if (!query || !variables) {
       throw new CustomError(
         'Failed to find query/variables in query lookup table',
-      )
+      );
     }
     const getResponseCount =
-      eventQueries?.[action]?.[contentTypeSimplified]?.getResponseCount
-    return { query, variables, getResponseCount }
+      eventQueries?.[action]?.[contentTypeSimplified]?.getResponseCount;
+    return { query, variables, getResponseCount };
   }
 
   public static async getMultipleViewCounts(
@@ -366,7 +366,7 @@ export class BookmarksViewsPlaysService {
     const variables:
       | GetMultipleItemViewCountsQueryVariables
       | GetMultipleCollectionViewCountsQueryVariables
-      | GetMultipleAssignmentViewCountsQueryVariables = { uuids: contentIds }
+      | GetMultipleAssignmentViewCountsQueryVariables = { uuids: contentIds };
     const response = await dataService.query<
       | GetMultipleItemViewCountsQuery
       | GetMultipleCollectionViewCountsQuery
@@ -382,9 +382,9 @@ export class BookmarksViewsPlaysService {
         quick_lane: '', // We don't track total view counts for quick lanes
       }[type],
       variables,
-    })
-    const items = response.items
-    return Object.fromEntries(items.map((item) => [item.id, item.count]))
+    });
+    const items = response.items;
+    return Object.fromEntries(items.map((item) => [item.id, item.count]));
   }
 
   private static async incrementCount(
@@ -401,7 +401,7 @@ export class BookmarksViewsPlaysService {
         contentType,
         contentUuid,
         commonUser,
-      )
+      );
 
       await dataService.query<
         | IncrementAssignmentViewsMutation
@@ -417,7 +417,7 @@ export class BookmarksViewsPlaysService {
       >({
         query,
         variables,
-      })
+      });
     } catch (err) {
       const error = new CustomError(
         'Failed to increment view/play count in the database',
@@ -428,11 +428,11 @@ export class BookmarksViewsPlaysService {
           contentUuid,
           user: commonUser,
         },
-      )
+      );
       if (silent) {
-        console.error(error)
+        console.error(error);
       } else {
-        throw error
+        throw error;
       }
     }
   }
@@ -460,24 +460,24 @@ export class BookmarksViewsPlaysService {
   ): Promise<BookmarkStatusLookup> {
     try {
       const groupedObjectInfos: {
-        [type: string]: BookmarkRequestInfo[]
-      } = groupBy(objectInfos, (info) => info.type)
+        [type: string]: BookmarkRequestInfo[];
+      } = groupBy(objectInfos, (info) => info.type);
       const itemObjectInfos: BookmarkRequestInfo[] =
-        groupedObjectInfos['item'] || []
+        groupedObjectInfos['item'] || [];
       const collectionObjectInfos: BookmarkRequestInfo[] =
-        groupedObjectInfos['collection'] || []
+        groupedObjectInfos['collection'] || [];
       const assignmentObjectInfos: BookmarkRequestInfo[] =
-        groupedObjectInfos['assignment'] || []
+        groupedObjectInfos['assignment'] || [];
       // Get list of item ids and collection ids from the object infos
       const itemUuids: string[] = itemObjectInfos.map(
         (objectInfo) => objectInfo.uuid,
-      )
+      );
       const collectionUuids: string[] = collectionObjectInfos.map(
         (objectInfo) => objectInfo.uuid,
-      )
+      );
       const assignmentUuids: string[] = assignmentObjectInfos.map(
         (objectInfo) => objectInfo.uuid,
-      )
+      );
 
       const response = await dataService.query<
         GetBookmarkStatusesQuery,
@@ -490,41 +490,41 @@ export class BookmarksViewsPlaysService {
           collectionUuids,
           assignmentUuids,
         },
-      })
+      });
 
       // Extract the ids of the bookmark items that were found
       const itemBookmarkIds = (response.app_item_bookmarks ?? []).map(
         (itemBookmark: { item_id: string }) => itemBookmark.item_id,
-      )
+      );
       const collectionBookmarkIds = (
         response.app_collection_bookmarks ?? []
       ).map(
         (itemBookmark: { collection_uuid: string }) =>
           itemBookmark.collection_uuid,
-      )
+      );
       const assignmentBookmarkIds = (
         response.app_assignments_v2_bookmarks ?? []
       ).map(
         (itemBookmark: { assignment_id: string }) => itemBookmark.assignment_id,
-      )
+      );
       // Map the ids that were found to the original id
       // if the id was found we set the isBookmarked status to true
       // if the id was not found we set the isBookmarked status to false
       const itemBookmarkStatuses: { [uuid: string]: boolean } =
         Object.fromEntries(
           itemObjectInfos.map((objectInfo) => {
-            return [objectInfo.uuid, itemBookmarkIds.includes(objectInfo.uuid)]
+            return [objectInfo.uuid, itemBookmarkIds.includes(objectInfo.uuid)];
           }),
-        )
+        );
       const collectionBookmarkStatuses: { [uuid: string]: boolean } =
         Object.fromEntries(
           collectionObjectInfos.map((objectInfo) => {
             return [
               objectInfo.uuid,
               collectionBookmarkIds.includes(objectInfo.uuid),
-            ]
+            ];
           }),
-        )
+        );
 
       const assignmentBookmarkStatuses: { [uuid: string]: boolean } =
         Object.fromEntries(
@@ -532,22 +532,22 @@ export class BookmarksViewsPlaysService {
             return [
               objectInfo.uuid,
               assignmentBookmarkIds.includes(objectInfo.uuid),
-            ]
+            ];
           }),
-        )
+        );
 
       return {
         item: itemBookmarkStatuses,
         collection: collectionBookmarkStatuses,
         assignment: assignmentBookmarkStatuses,
         quick_lane: {}, // Quick lanes cannot be bookmarked
-      }
+      };
     } catch (err) {
       throw new CustomError('Failed to get bookmark statuses', err, {
         profileId,
         objectInfos,
         query: 'GET_BOOKMARK_STATUSES',
-      })
+      });
     }
   }
 }

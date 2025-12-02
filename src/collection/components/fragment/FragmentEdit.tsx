@@ -18,7 +18,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { isEqual, isNil, isString } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import React, {
+import {
   type FC,
   type ReactNode,
   type ReactText,

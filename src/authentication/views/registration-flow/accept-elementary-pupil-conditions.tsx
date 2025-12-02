@@ -14,7 +14,7 @@ import {
   ToolbarCenter,
 } from '@viaa/avo2-components';
 import { useAtomValue, useSetAtom } from 'jotai';
-import React, { type FC, useRef, useState } from 'react';
+import { type FC, useRef, useState } from 'react';
 
 import poster from '../../../assets/images/elementary-pupil-terms-of-service__poster.png';
 import { CustomError } from '../../../shared/helpers/custom-error';

@@ -54,7 +54,7 @@ import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
 import { getEnv } from '../../shared/helpers/env';
 import { dataService } from '../../shared/services/data-service';
 import { RelationService } from '../../shared/services/relation-service/relation.service';
-import { type UnpublishableItem } from '../../shared/types/index';
+import { type UnpublishableItem } from '../../shared/types';
 
 import { ITEMS_PER_PAGE } from './items.const';
 import {

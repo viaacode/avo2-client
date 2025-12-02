@@ -1,6 +1,6 @@
 import { type FlowPlayerWrapperProps } from '@meemoo/admin-core-ui/admin'
 import { type Avo } from '@viaa/avo2-types'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';

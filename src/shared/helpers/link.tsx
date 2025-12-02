@@ -2,7 +2,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
 import { isEmpty } from 'es-toolkit/compat';
 import queryString from 'query-string';
-import React, { Fragment, type ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import { type NavigateFunction } from 'react-router';
 
 import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';

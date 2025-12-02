@@ -14,7 +14,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
-import React, { type FC, useState } from 'react';
+import { type FC, useState } from 'react';
 
 import { RichTextEditorWrapper } from '../../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../../shared/generated/graphql-db-types';

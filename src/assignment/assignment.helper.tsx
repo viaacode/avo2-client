@@ -1,22 +1,19 @@
-import { IconName, type RadioOption } from '@viaa/avo2-components'
-import { Avo, LomSchemeType } from '@viaa/avo2-types'
-import { compact, orderBy } from 'es-toolkit'
-import { type ReactNode } from 'react'
+import { IconName, type RadioOption } from '@viaa/avo2-components';
+import { Avo, LomSchemeType } from '@viaa/avo2-types';
+import { compact, orderBy } from 'es-toolkit';
+import { type ReactNode } from 'react';
 import { stripHtml } from '../shared/helpers/formatters/strip-html';
 import { EducationLevelId } from '../shared/helpers/lom';
 import { tHtml } from '../shared/helpers/translate-html';
 import { tText } from '../shared/helpers/translate-text';
-import { type Positioned } from '../shared/types/index';
+import { type Positioned } from '../shared/types';
 
 import {
   MAX_LONG_DESCRIPTION_LENGTH,
   MAX_SEARCH_DESCRIPTION_LENGTH,
 } from './assignment.const';
 import { AssignmentService } from './assignment.service';
-import {
-  AssignmentLayout,
-  AssignmentRetrieveError,
-} from './assignment.types';
+import { AssignmentLayout, AssignmentRetrieveError } from './assignment.types';
 
 export class AssignmentHelper {
   public static getContentLayoutOptions(): RadioOption[] {
@@ -31,7 +28,7 @@ export class AssignmentHelper {
         label: tText('assignment/views/assignment-edit___enkel-mediaspeler'),
         value: AssignmentLayout.OnlyPlayer.toString(),
       },
-    ]
+    ];
   }
 
   public static getLabels(
@@ -42,7 +39,7 @@ export class AssignmentHelper {
       assignment?.labels?.filter(
         (label) => label.assignment_label.type === type,
       ) || []
-    )
+    );
   }
 }
 
@@ -57,11 +54,11 @@ export function reorderBlockPositions(items: Positioned[]): Positioned[] {
     items || [],
     ['position', 'created_at'],
     [Avo.Search.OrderDirection.ASC, Avo.Search.OrderDirection.ASC],
-  )
+  );
   orderedBlocks.forEach((block, blockIndex) => {
-    block.position = blockIndex
-  })
-  return orderedBlocks
+    block.position = blockIndex;
+  });
+  return orderedBlocks;
 }
 
 /**
@@ -70,14 +67,14 @@ export function reorderBlockPositions(items: Positioned[]): Positioned[] {
  */
 export function setBlockPositionToIndex(items: Positioned[]): Positioned[] {
   items.forEach((block, blockIndex) => {
-    block.position = blockIndex
-  })
-  return items
+    block.position = blockIndex;
+  });
+  return items;
 }
 
 export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
-  message: string | ReactNode
-  icon: IconName
+  message: string | ReactNode;
+  icon: IconName;
 } {
   switch (errorType) {
     case AssignmentRetrieveError.DELETED:
@@ -86,7 +83,7 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
           'assignment/views/assignment-detail___de-opdracht-werd-verwijderd',
         ),
         icon: IconName.delete,
-      }
+      };
 
     case AssignmentRetrieveError.NOT_YET_AVAILABLE:
       return {
@@ -94,7 +91,7 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
           'assignment/views/assignment-detail___de-opdracht-is-nog-niet-beschikbaar',
         ),
         icon: IconName.clock,
-      }
+      };
 
     default:
       return {
@@ -102,7 +99,7 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
           'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt',
         ),
         icon: IconName.alertTriangle,
-      }
+      };
   }
 }
 
@@ -111,14 +108,14 @@ export function isUserAssignmentOwner(
   assignment: Partial<Avo.Assignment.Assignment>,
 ): boolean {
   if (!commonUser) {
-    return false
+    return false;
   }
   return (
     // New assignment
     assignment.owner_profile_id === undefined ||
     // Existing assignment
     assignment.owner_profile_id === commonUser.profileId
-  )
+  );
 }
 
 export function isUserAssignmentContributor(
@@ -130,9 +127,9 @@ export function isUserAssignmentContributor(
       (contributor) =>
         contributor.profile_id === commonUser?.profileId &&
         contributor.rights !== 'VIEWER',
-    )
+    );
   }
-  return false
+  return false;
 }
 
 export const getValidationErrorsForPublishAssignment = async (
@@ -142,17 +139,18 @@ export const getValidationErrorsForPublishAssignment = async (
     ...GET_VALIDATION_RULES_FOR_SAVE(),
     ...GET_VALIDATION_RULES_FOR_PUBLISH(),
   ].map((rule) => {
-    return rule.isValid(assignment) ? null : getError(rule, assignment)
-  })
+    return rule.isValid(assignment) ? null : getError(rule, assignment);
+  });
 
-  const duplicateErrors = await getDuplicateTitleOrDescriptionErrors(assignment)
-  return compact([...validationErrors, ...duplicateErrors])
-}
+  const duplicateErrors =
+    await getDuplicateTitleOrDescriptionErrors(assignment);
+  return compact([...validationErrors, ...duplicateErrors]);
+};
 
 type ValidationRule<T> = {
-  error: string | ((object: T) => string)
-  isValid: (object: T) => boolean
-}
+  error: string | ((object: T) => string);
+  isValid: (object: T) => boolean;
+};
 
 const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
   Partial<Avo.Assignment.Assignment>
@@ -174,7 +172,7 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
       stripHtml((assignment as any).description_long).length <=
         MAX_LONG_DESCRIPTION_LENGTH,
   },
-]
+];
 
 const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
   Partial<Avo.Assignment.Assignment>
@@ -214,16 +212,16 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
             EducationLevelId.secundairOnderwijs,
             EducationLevelId.kleuteronderwijs,
           ].includes((lom.id || lom.lom_id) as EducationLevelId),
-        ) !== undefined
+        ) !== undefined;
 
       // Does the assignment have subjects?
       const hasSubjects = !!assignment.loms?.find(
         (lom) => lom.lom?.scheme === LomSchemeType.subject,
-      )
+      );
 
       // (true & true) or (false & false)
       // return (subjectsAvailable && hasSubjects) || (!subjectsAvailable && !hasSubjects);
-      return subjectsAvailable === hasSubjects
+      return subjectsAvailable === hasSubjects;
     },
   },
   {
@@ -232,9 +230,9 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
     ),
     isValid: (assignment: Partial<Avo.Assignment.Assignment>) => {
       if (!assignment.blocks) {
-        return false
+        return false;
       }
-      return areTextBlocksValid(assignment.blocks)
+      return areTextBlocksValid(assignment.blocks);
     },
   },
   {
@@ -244,15 +242,15 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
     isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
       areCollectionBlocksValid(assignment.blocks),
   },
-]
+];
 
 const areCollectionBlocksValid = (
   blocks: Avo.Assignment.Block[] | undefined,
 ): boolean => {
   return (blocks || [])
     .filter((block) => block.type === Avo.Core.BlockItemType.COLLECTION)
-    .every((block) => !block.use_custom_fields || !block.custom_title)
-}
+    .every((block) => !block.use_custom_fields || !block.custom_title);
+};
 
 const areTextBlocksValid = (
   blocks: Avo.Assignment.Block[] | undefined,
@@ -263,37 +261,37 @@ const areTextBlocksValid = (
       (block) =>
         stripHtml(block.custom_title || '').trim() ||
         stripHtml(block.custom_description || '').trim(),
-    )
-}
+    );
+};
 
 function getError<T>(rule: ValidationRule<T>, object: T) {
   if (typeof rule.error === 'string') {
-    return rule.error
+    return rule.error;
   }
-  return rule.error(object)
+  return rule.error(object);
 }
 
 const getDuplicateTitleOrDescriptionErrors = async (
   assignment: Partial<Avo.Assignment.Assignment>,
 ): Promise<string[]> => {
-  const errors = []
+  const errors = [];
 
   if (!assignment.title || !assignment.description) {
-    return []
+    return [];
   }
 
   const duplicates = await AssignmentService.getAssignmentsByTitleOrDescription(
     assignment.title || '',
     assignment.description || '',
     assignment.id as string,
-  )
+  );
 
   if (duplicates.byTitle) {
     errors.push(
       tText(
         'assignment/assignment___een-publieke-opdracht-met-deze-titel-bestaat-reeds',
       ),
-    )
+    );
   }
 
   if (duplicates.byDescription) {
@@ -301,8 +299,8 @@ const getDuplicateTitleOrDescriptionErrors = async (
       tText(
         'assignment/assignment___een-publieke-opdracht-met-deze-beschrijving-bestaat-reeds',
       ),
-    )
+    );
   }
 
-  return errors
-}
+  return errors;
+};

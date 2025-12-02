@@ -5,7 +5,7 @@ import {
 } from '@meemoo/admin-core-ui/admin';
 import { Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
-import React, {
+import {
   type FC,
   type ReactNode,
   useEffect,

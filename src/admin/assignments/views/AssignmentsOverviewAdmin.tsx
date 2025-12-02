@@ -7,7 +7,7 @@ import {
 import { Avo, PermissionName } from '@viaa/avo2-types';
 import { compact, noop, partition } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import React, {
+import {
   type FC,
   type ReactNode,
   useCallback,

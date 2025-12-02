@@ -1,5 +1,5 @@
 import { IconName } from '@viaa/avo2-components'
-import React, { type FC, type ReactElement } from 'react'
+import { type FC, type ReactElement } from 'react'
 
 import {
   ErrorView,

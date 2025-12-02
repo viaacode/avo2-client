@@ -19,7 +19,7 @@ import {
 import { Avo, PermissionName } from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import React, {
+import {
   type FC,
   type ReactText,
   useCallback,
@@ -67,7 +67,7 @@ import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import {
   EDIT_STATUS_REFETCH_TIME,
   getMoreOptionsLabel,
-} from '../../shared/constants/index';
+} from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { CustomError } from '../../shared/helpers/custom-error';

@@ -1,6 +1,6 @@
 import { Flex, Spacer } from '@viaa/avo2-components';
 import clsx from 'clsx';
-import React, { type FC, type ReactNode } from 'react';
+import { type FC, type ReactNode } from 'react';
 import Select from 'react-select';
 
 import './ColorSelect.scss';

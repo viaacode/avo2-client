@@ -10,7 +10,7 @@ import {
 } from '@viaa/avo2-components'
 import { PermissionName } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
-import React, {
+import {
   type FC,
   type ReactElement,
   type ReactText,

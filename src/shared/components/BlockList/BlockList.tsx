@@ -1,6 +1,6 @@
 import { Avo } from '@viaa/avo2-types'
 import { noop } from 'es-toolkit'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 import { getBlockColor } from '../../helpers/get-block-color';
 
 import { BlockIconWrapper } from './BlockIconWrapper/BlockIconWrapper';

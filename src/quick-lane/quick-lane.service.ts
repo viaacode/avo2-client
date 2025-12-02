@@ -33,7 +33,7 @@ import { dataService } from '../shared/services/data-service';
 import {
   type QuickLaneUrlObject,
   type QuickLaneUrlRecord,
-} from '../shared/types/index';
+} from '../shared/types';
 
 // Mappers
 

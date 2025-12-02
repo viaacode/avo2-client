@@ -1,13 +1,13 @@
-import { IconName } from '@viaa/avo2-components'
-import { type TFunction } from 'i18next'
-import { isNil, kebabCase, sortBy } from 'es-toolkit'
-import React from 'react'
+import { IconName } from '@viaa/avo2-components';
+import { isNil, kebabCase, sortBy } from 'es-toolkit';
+import { type TFunction } from 'i18next';
+import React from 'react';
 
 import { LoginOptionsDropdown } from '../../authentication/components/LoginOptionsDropdown';
 import { PupilOrTeacherDropdown } from '../../authentication/components/PupilOrTeacherDropdown';
 import { APP_PATH } from '../../constants';
 import { type AppContentNavElement } from '../services/navigation-items-service';
-import { type NavigationItemInfo } from '../types/index';
+import { type NavigationItemInfo } from '../types';
 
 import { buildLink } from './build-link';
 import { isMobileWidth } from './media-query';
@@ -15,9 +15,9 @@ import { isMobileWidth } from './media-query';
 const NAVIGATION_COMPONENTS: { [componentLabel: string]: any } = {
   '<PupilOrTeacherDropdown>': PupilOrTeacherDropdown,
   '<LoginOptionsDropdown>': LoginOptionsDropdown,
-}
+};
 
-export type BooleanDictionary = { [id: string]: boolean }
+export type BooleanDictionary = { [id: string]: boolean };
 
 export function getLocation(
   navItem: AppContentNavElement,
@@ -25,16 +25,16 @@ export function getLocation(
 ): string {
   if (!isNil(navItem.content_id)) {
     // Link to content block page
-    return `/${navItem.content_id}/${kebabCase(navItem.label)}`
+    return `/${navItem.content_id}/${kebabCase(navItem.label)}`;
   }
 
   if (navItem.content_path) {
-    return navItem.content_path
+    return navItem.content_path;
   }
 
   console.error('Failed to generate navigation link for navigation item', {
     navItem,
-  })
+  });
   return buildLink(
     APP_PATH.ERROR.route,
     {},
@@ -44,7 +44,7 @@ export function getLocation(
       ),
       icon: IconName.search,
     },
-  )
+  );
 }
 
 export function mapNavElementsToNavigationItems(
@@ -53,7 +53,7 @@ export function mapNavElementsToNavigationItems(
 ): NavigationItemInfo[] {
   return sortBy(navItems, ['position']).map(
     (navItem: AppContentNavElement): NavigationItemInfo => {
-      const navLocation: string = getLocation(navItem, tText)
+      const navLocation: string = getLocation(navItem, tText);
 
       if (NAVIGATION_COMPONENTS[navLocation]) {
         if (isMobileWidth()) {
@@ -64,11 +64,11 @@ export function mapNavElementsToNavigationItems(
             location: APP_PATH.REGISTER_OR_LOGIN.route,
             target: '_self',
             key: `nav-item-${navItem.id}`,
-          }
+          };
         }
 
         // Show component when clicking this nav item
-        const Component = NAVIGATION_COMPONENTS[navLocation]
+        const Component = NAVIGATION_COMPONENTS[navLocation];
 
         return {
           label: navItem.label,
@@ -77,7 +77,7 @@ export function mapNavElementsToNavigationItems(
           target: '_self',
           component: <Component />,
           key: `nav-item-${navItem.id}`,
-        }
+        };
       }
 
       // Navigate to link
@@ -88,7 +88,7 @@ export function mapNavElementsToNavigationItems(
         location: getLocation(navItem, tText),
         target: navItem.link_target,
         key: `nav-item-${navItem.id}`,
-      }
+      };
     },
-  )
+  );
 }

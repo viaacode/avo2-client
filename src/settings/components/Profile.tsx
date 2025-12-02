@@ -18,7 +18,7 @@ import { type Avo, PermissionName } from '@viaa/avo2-types'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { compact, isNil } from 'es-toolkit'
 import { stringifyUrl } from 'query-string'
-import React, { type FC, type ReactNode, useEffect, useState } from 'react'
+import { type FC, type ReactNode, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';

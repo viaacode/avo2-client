@@ -1,7 +1,7 @@
 import { Button } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
-import React, { type FC, lazy, Suspense, useCallback } from 'react';
+import { type FC, lazy, Suspense, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 

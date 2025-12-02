@@ -9,7 +9,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop, once } from 'es-toolkit';
-import React, { type FC, useState } from 'react';
+import { type FC, useState } from 'react';
 
 import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription';
 import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';

@@ -1,6 +1,6 @@
 import { type DefaultProps } from '@viaa/avo2-components'
 import { noop } from 'es-toolkit'
-import React, { type FC, type ReactNode } from 'react'
+import { type FC, type ReactNode } from 'react'
 
 import {
   ConfirmModal,

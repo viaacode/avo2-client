@@ -7,7 +7,7 @@ import {
 } from '@viaa/avo2-components'
 import { PermissionName } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
-import React, { type FC, useMemo } from 'react'
+import { type FC, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import { commonUserAtom } from '../../authentication/authentication.store';

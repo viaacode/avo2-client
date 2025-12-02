@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import { type FC } from 'react';
 
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';

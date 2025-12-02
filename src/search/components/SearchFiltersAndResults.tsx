@@ -26,7 +26,7 @@ import {
 } from 'es-toolkit';
 import { every, isEmpty, set } from 'es-toolkit/compat';
 import { useAtomValue, useSetAtom } from 'jotai';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { type FC, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';

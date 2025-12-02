@@ -1,4 +1,4 @@
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 import Zendesk from 'react-zendesk'
 
 import { getEnv } from '../../helpers/env';

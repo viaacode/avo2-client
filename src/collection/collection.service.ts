@@ -122,7 +122,7 @@ import { QualityLabelsService } from '../shared/services/quality-labels.service'
 import { RelationService } from '../shared/services/relation-service/relation.service';
 import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
-import { type Positioned } from '../shared/types/index';
+import { type Positioned } from '../shared/types';
 import {
   cleanCollectionBeforeSave,
   getFragmentIdsFromCollection,

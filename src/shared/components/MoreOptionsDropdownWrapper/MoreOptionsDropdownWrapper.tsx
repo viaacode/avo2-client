@@ -3,7 +3,7 @@ import {
   type IconName,
   MoreOptionsDropdown,
 } from '@viaa/avo2-components'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 type MoreOptionsDropdownWrapperProps = React.ComponentProps<
   typeof MoreOptionsDropdown

@@ -13,7 +13,7 @@ import {
 } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
-import React, { type FC, type ReactNode, useEffect, useState } from 'react'
+import { type FC, type ReactNode, useEffect, useState } from 'react'
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { APP_PATH } from '../../../constants';

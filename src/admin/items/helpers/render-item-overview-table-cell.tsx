@@ -1,7 +1,7 @@
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
 import { buildLink } from '../../../shared/helpers/build-link';

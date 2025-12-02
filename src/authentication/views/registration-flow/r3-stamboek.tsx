@@ -6,7 +6,7 @@ import {
   FormGroup,
   Spacer,
 } from '@viaa/avo2-components'
-import React, { type FC, useState } from 'react'
+import { type FC, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { Link, useLocation } from 'react-router-dom'
 

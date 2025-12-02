@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Select } from '@viaa/avo2-components'
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { tText } from '../../shared/helpers/translate-text';
 import { type EditableAssignmentBlock } from '../assignment.types';

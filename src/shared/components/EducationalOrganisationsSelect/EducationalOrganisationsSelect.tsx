@@ -2,7 +2,7 @@ import { Alert, Select, Spacer } from '@viaa/avo2-components'
 import { type Avo } from '@viaa/avo2-types'
 import { clsx } from 'clsx'
 import { remove, uniq } from 'es-toolkit'
-import React, { type FC, useEffect, useState } from 'react'
+import { type FC, useEffect, useState } from 'react'
 
 import { CustomError } from '../../helpers/custom-error';
 import { stringsToTagList } from '../../helpers/strings-to-taglist';

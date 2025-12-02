@@ -1,7 +1,7 @@
 import { ToastType } from '@meemoo/admin-core-ui/client';
 import { Alert, type AlertProps, Spacer } from '@viaa/avo2-components';
 import { isNil } from 'es-toolkit';
-import React, { type FC, type ReactNode } from 'react';
+import { type FC, type ReactNode } from 'react';
 import { type Id, type ToastOptions, toast } from 'react-toastify';
 
 import { ROUTE_PARTS } from '../constants/routes';

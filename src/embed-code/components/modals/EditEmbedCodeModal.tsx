@@ -1,5 +1,5 @@
 import { Modal, ModalBody, type ModalRef } from '@viaa/avo2-components'
-import React, { createRef, type FC, type ReactNode } from 'react'
+import { createRef, type FC, type ReactNode } from 'react'
 
 import { tHtml } from '../../../shared/helpers/translate-html';
 import {

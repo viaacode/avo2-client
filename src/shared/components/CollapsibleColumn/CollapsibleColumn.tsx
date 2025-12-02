@@ -4,7 +4,7 @@ import {
   type DefaultProps,
   IconName,
 } from '@viaa/avo2-components'
-import React, { type FC, type ReactNode, useState } from 'react'
+import { type FC, type ReactNode, useState } from 'react'
 
 import { useResizeObserver } from '../../hooks/useResizeObserver';
 

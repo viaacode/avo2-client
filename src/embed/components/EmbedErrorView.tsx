@@ -7,7 +7,7 @@ import {
   Toolbar,
   ToolbarCenter,
 } from '@viaa/avo2-components'
-import React, { type FC, type ReactNode } from 'react'
+import { type FC, type ReactNode } from 'react'
 
 import './EmbedErrorView.scss'
 import { tText } from '../../shared/helpers/translate-text';

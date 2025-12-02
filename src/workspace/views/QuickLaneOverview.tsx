@@ -11,7 +11,7 @@ import {
 } from '@viaa/avo2-components';
 import { isEqual } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
+import { type FC, useCallback, useEffect, useState } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { QuickLaneService } from '../../quick-lane/quick-lane.service';
@@ -40,7 +40,7 @@ import { ToastService } from '../../shared/services/toast-service';
 import {
   type QuickLaneOverviewFilterState,
   type QuickLaneUrlObject,
-} from '../../shared/types/index';
+} from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../workspace.const';
 

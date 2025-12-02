@@ -19,7 +19,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import type { Requests } from 'node-zendesk';
-import React, { type FC, useState } from 'react';
+import { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 

@@ -11,7 +11,7 @@ import {
   TextArea,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import React, { type FC } from 'react';
+import { type FC } from 'react';
 
 import { getCollectionManagementStatuses } from '../../admin/collectionsOrBundles/collections-or-bundles.const';
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';

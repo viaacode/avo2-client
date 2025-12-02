@@ -11,7 +11,7 @@ import {
 } from '@viaa/avo2-components'
 import { Avo } from '@viaa/avo2-types'
 
-import React, { type FC } from 'react'
+import { type FC } from 'react'
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../admin/shared/types/content-picker';

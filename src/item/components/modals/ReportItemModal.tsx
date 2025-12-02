@@ -15,7 +15,7 @@ import {
 } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
 import type { Requests } from 'node-zendesk';
-import React, { type FC, useState } from 'react';
+import { type FC, useState } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { getFullNameCommonUser } from '../../../shared/helpers/formatters/avatar';

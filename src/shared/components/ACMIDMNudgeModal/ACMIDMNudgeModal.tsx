@@ -7,7 +7,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { useAtom, useAtomValue } from 'jotai';
-import React, { type FC, useCallback, useEffect } from 'react';
+import { type FC, useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
