@@ -1,9 +1,7 @@
 import path from 'path';
 
 import react from '@vitejs/plugin-react';
-import sourcemaps from 'rollup-plugin-sourcemaps';
 import {defineConfig, UserConfig} from 'vite';
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import svgrPlugin from 'vite-plugin-svgr';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 
@@ -23,7 +21,7 @@ export default defineConfig((): UserConfig => {
 				input: {
 					embed: path.resolve(__dirname, 'embed/index.html'),
 				},
-				plugins: [sourcemaps()],
+				plugins: [],
 				output: {
 					assetFileNames: function (file) {
 						return ASSETS_WITHOUT_A_HASH.includes(file.name as string)
@@ -53,8 +51,7 @@ export default defineConfig((): UserConfig => {
 		server: {
 			port: 8080,
 		},
-		plugins: [react(), viteTsconfigPaths(), svgrPlugin(), cssInjectedByJsPlugin()],
-		sourcemap: true,
+		plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
 		resolve: {
 			alias: {
 				// eslint-disable-next-line no-undef
