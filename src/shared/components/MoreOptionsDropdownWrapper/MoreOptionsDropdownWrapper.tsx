@@ -2,31 +2,31 @@ import {
   Button,
   type IconName,
   MoreOptionsDropdown,
-} from '@viaa/avo2-components'
-import { type FC } from 'react'
+} from '@viaa/avo2-components';
+import { type ComponentProps, type FC } from 'react';
 
-type MoreOptionsDropdownWrapperProps = React.ComponentProps<
+type MoreOptionsDropdownWrapperProps = ComponentProps<
   typeof MoreOptionsDropdown
->
+>;
 
 export const MoreOptionsDropdownWrapper: FC<MoreOptionsDropdownWrapperProps> = (
   props,
 ) => {
-  const { menuItems, onOptionClicked } = props
+  const { menuItems, onOptionClicked } = props;
   if (menuItems.length === 0) {
-    return null
+    return null;
   }
 
   if (menuItems.length > 1) {
-    return <MoreOptionsDropdown {...props} />
+    return <MoreOptionsDropdown {...props} />;
   }
 
   const singleButton = menuItems[0] as {
-    id: string
-    key: string
-    label: string
-    icon: IconName
-  }
+    id: string;
+    key: string;
+    label: string;
+    icon: IconName;
+  };
 
   return (
     <Button
@@ -36,5 +36,5 @@ export const MoreOptionsDropdownWrapper: FC<MoreOptionsDropdownWrapperProps> = (
       icon={singleButton.icon}
       onClick={() => onOptionClicked?.(singleButton.id)}
     />
-  )
-}
+  );
+};

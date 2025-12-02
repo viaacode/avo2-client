@@ -1,20 +1,19 @@
-import { convertToHtml } from '@viaa/avo2-components'
-import { type FC } from 'react'
-
+import { convertToHtml } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { type FC, type MutableRefObject } from 'react';
 import { Html, type HtmlProps } from '../../shared/components/Html/Html';
 import { type BlockItemComponent } from '../collection.types';
-import { Avo } from '@viaa/avo2-types'
 
 type CollectionFragmentRichTextProps = BlockItemComponent &
   Omit<HtmlProps, 'content'> &
   Partial<Pick<HtmlProps, 'content'>> & {
-    ref?: React.MutableRefObject<HTMLDivElement | null>
-  }
+    ref?: MutableRefObject<HTMLDivElement | null>;
+  };
 
 export const CollectionFragmentRichText: FC<CollectionFragmentRichTextProps> = (
   props,
 ) => {
-  const { block, ...rest } = props
+  const { block, ...rest } = props;
 
   return (
     <div className="c-collection-fragment-rich-text" ref={rest.ref}>
@@ -31,5 +30,5 @@ export const CollectionFragmentRichText: FC<CollectionFragmentRichTextProps> = (
         {...rest}
       />
     </div>
-  )
-}
+  );
+};

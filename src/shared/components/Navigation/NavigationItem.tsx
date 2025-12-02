@@ -6,7 +6,7 @@ import {
 } from '@viaa/avo2-components';
 import clsx from 'clsx';
 import { noop } from 'es-toolkit';
-import { type FC } from 'react';
+import { cloneElement, type FC } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import { type BooleanDictionary } from '../../helpers/navigation';
@@ -97,7 +97,7 @@ export const NavigationItem: FC<NavigationItemProps> = ({
             </div>
           </DropdownButton>
           <DropdownContent>
-            {React.cloneElement(item.component, {
+            {cloneElement(item.component, {
               closeDropdown: () =>
                 setDropdownOpen(
                   item.key,

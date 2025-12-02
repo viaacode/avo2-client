@@ -1,13 +1,13 @@
-import { Button, type ButtonProps, StickyEdgeBar } from '@viaa/avo2-components'
-import { type FC } from 'react'
+import { Button, type ButtonProps, StickyEdgeBar } from '@viaa/avo2-components';
+import { type FC, ReactNode } from 'react';
 
-import './StickyBar.scss'
+import './StickyBar.scss';
 
 interface StickySaveBarProps {
-  title: string | React.ReactNode
-  isVisible: boolean
-  actionButtonProps?: ButtonProps
-  cancelButtonProps?: ButtonProps
+  title: string | ReactNode;
+  isVisible: boolean;
+  actionButtonProps?: ButtonProps;
+  cancelButtonProps?: ButtonProps;
 }
 
 export const StickyBar: FC<StickySaveBarProps> = ({
@@ -17,7 +17,7 @@ export const StickyBar: FC<StickySaveBarProps> = ({
   cancelButtonProps,
 }) => {
   if (!isVisible) {
-    return null
+    return null;
   }
 
   return (
@@ -28,5 +28,5 @@ export const StickyBar: FC<StickySaveBarProps> = ({
 
       <Button {...actionButtonProps} />
     </StickyEdgeBar>
-  )
-}
+  );
+};

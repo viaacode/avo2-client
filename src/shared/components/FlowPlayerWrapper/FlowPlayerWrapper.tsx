@@ -21,6 +21,7 @@ import {
   type ReactNode,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import { useNavigate } from 'react-router';
@@ -71,7 +72,7 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
   // AVO-2241:
   // The flowplayer play event is created from outside react, so to be able to update the state, we need to use a ref.
   // see: https://medium.com/geographit/accessing-react-state-in-event-listeners-with-usestate-and-useref-hooks-8cceee73c559
-  const triggeredForUrlRef = React.useRef(triggeredForUrl);
+  const triggeredForUrlRef = useRef(triggeredForUrl);
   const setTriggeredForUrlRef = (data: Record<string, boolean>) => {
     triggeredForUrlRef.current = data;
     setTriggeredForUrl(data);

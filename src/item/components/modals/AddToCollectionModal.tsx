@@ -20,13 +20,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { once } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { CollectionService } from '../../../collection/collection.service';
@@ -80,7 +74,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
     Partial<Avo.Collection.Collection>[]
   >([]);
 
-  const fetchCollections = React.useCallback(
+  const fetchCollections = useCallback(
     () =>
       CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
         commonUser,

@@ -1,5 +1,5 @@
 import { IconName } from '@viaa/avo2-components';
-import React from 'react';
+import { lazy } from 'react';
 import { useRouteError } from 'react-router';
 
 import './ErrorBoundary.scss';
@@ -8,7 +8,7 @@ export function ErrorBoundary() {
   const error = useRouteError() as any;
 
   // Lazy load ErrorView to prevent tText to be called who has a chain to the admin-core which uses use-query-params as commonJs with vite 7 cannot load
-  const ErrorView = React.lazy(() =>
+  const ErrorView = lazy(() =>
     import('../../../error/views/ErrorView').then((module) => ({
       default: module.ErrorView,
     })),

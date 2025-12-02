@@ -1,19 +1,19 @@
-import { Container, Icon } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { type FC } from 'react'
+import { Container, Icon } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { type FC, type ReactNode } from 'react';
 
 import { type ContentTypeNumber } from '../../../../collection/collection.types';
 
-import './BlockIconWrapper.scss'
+import './BlockIconWrapper.scss';
 import { BLOCK_TYPE_TO_ICON_NAME } from './BlockIconWrapper.consts';
 import { getBlockType } from './BlockIconWrapper.helpers';
 
 interface BlockIconWrapperProps {
-  backgroundColor?: string
-  key: string | number // Needs to be defined where you use the component
-  type: Avo.Core.BlockItemType
-  type_id?: ContentTypeNumber
-  children: React.ReactNode
+  backgroundColor?: string;
+  key: string | number; // Needs to be defined where you use the component
+  type: Avo.Core.BlockItemType;
+  type_id?: ContentTypeNumber;
+  children: ReactNode;
 }
 
 export const BlockIconWrapper: FC<BlockIconWrapperProps> = ({
@@ -40,5 +40,5 @@ export const BlockIconWrapper: FC<BlockIconWrapperProps> = ({
         </div>
       </Container>
     </div>
-  )
-}
+  );
+};

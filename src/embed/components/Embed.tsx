@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
-import AvoLogoSrc from '@assets/images/avo-logo-button.svg'
+import AvoLogoSrc from '@assets/images/avo-logo-button.svg';
 import {
   Alert,
   Column,
@@ -8,11 +8,17 @@ import {
   Icon,
   IconName,
   Spinner,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { noop } from 'es-toolkit'
-import { type FC, useCallback, useEffect, useMemo } from 'react'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import {
+  type FC,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
@@ -27,14 +33,14 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 
 import { EmbedErrorView } from './EmbedErrorView';
 
-import './Embed.scss'
-import { EmbedCodeContentType } from '../../embed-code/embed-code.types.ts'
+import './Embed.scss';
+import { EmbedCodeContentType } from '../../embed-code/embed-code.types.ts';
 
 export interface EmbedProps {
-  embedId: string | null
-  parentPage: string
-  showMetadata: boolean
-  onReload: () => void
+  embedId: string | null;
+  parentPage: string;
+  showMetadata: boolean;
+  onReload: () => void;
 }
 
 export const Embed: FC<EmbedProps> = ({
@@ -43,42 +49,42 @@ export const Embed: FC<EmbedProps> = ({
   parentPage,
   onReload,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
   const {
     data: embedCode,
     isLoading: isLoadingEmbedCode,
     isError: isErrorEmbedCode,
     error: embedErrorEmbedCode,
-  } = useGetEmbedCode(embedId, true)
+  } = useGetEmbedCode(embedId, true);
 
   const content = useMemo(
     () => embedCode?.content as Avo.Item.Item,
     [embedCode],
-  )
+  );
 
   const errorInfo = useMemo(() => {
-    let errorMessage: React.ReactNode | string = ''
-    let showReloadButton = false
-    let icon: IconName | null = null
+    let errorMessage: ReactNode | string = '';
+    let showReloadButton = false;
+    let icon: IconName | null = null;
 
     if (isErrorEmbedCode) {
       if ((embedErrorEmbedCode as CustomError)?.additionalInfo?.errorMessage) {
         errorMessage = (embedErrorEmbedCode as CustomError).additionalInfo
-          .errorMessage
+          .errorMessage;
       } else {
         errorMessage = tHtml(
           'embed/components/error-view___oeps-er-liep-iets-mis-probeer-het-opnieuw-br-lukt-het-nog-steeds-niet-dan-is-dit-fragment-mogelijks-verwijderd',
-        )
-        showReloadButton = true
+        );
+        showReloadButton = true;
       }
     } else if (embedCode && !content) {
       errorMessage = tHtml(
         'embed/components/embed___deze-video-is-niet-meer-beschikbaar',
-      )
+      );
     } else if (content?.is_deleted) {
       errorMessage = tHtml(
         'embed/components/embed___deze-video-werd-verwijderd',
-      )
+      );
     } else if (content && !content?.is_published) {
       if (content.depublish_reason) {
         errorMessage = tHtml(
@@ -86,20 +92,20 @@ export const Embed: FC<EmbedProps> = ({
           {
             depublishReason: content.depublish_reason,
           },
-        )
+        );
       } else {
         errorMessage = tHtml(
           'embed/components/embed___deze-video-werd-gedepubliceerd',
-        )
+        );
       }
-      icon = IconName.cameraOff
+      icon = IconName.cameraOff;
     }
 
     if (errorMessage) {
-      return { errorMessage, showReloadButton, icon }
+      return { errorMessage, showReloadButton, icon };
     }
-    return null
-  }, [content, embedCode, isErrorEmbedCode])
+    return null;
+  }, [content, embedCode, isErrorEmbedCode]);
 
   const triggerViewEvents = useCallback(async () => {
     if (embedCode && embedCode.contentType === EmbedCodeContentType.item) {
@@ -114,19 +120,19 @@ export const Embed: FC<EmbedProps> = ({
           },
         },
         commonUser,
-      )
+      );
     }
-  }, [commonUser, embedCode])
+  }, [commonUser, embedCode]);
 
   useEffect(() => {
     if (embedCode) {
-      triggerViewEvents().then(noop)
+      triggerViewEvents().then(noop);
     }
-  }, [embedCode, triggerViewEvents])
+  }, [embedCode, triggerViewEvents]);
 
   const onPlay = () => {
     if (!embedCode) {
-      return
+      return;
     }
     trackEvents(
       {
@@ -139,12 +145,12 @@ export const Embed: FC<EmbedProps> = ({
         },
       },
       commonUser,
-    )
-  }
+    );
+  };
 
   const trackViewEmbedLinkClicked = () => {
     if (!embedCode) {
-      return
+      return;
     }
     trackEvents(
       {
@@ -157,8 +163,8 @@ export const Embed: FC<EmbedProps> = ({
         },
       },
       commonUser,
-    )
-  }
+    );
+  };
 
   if (errorInfo) {
     return (
@@ -167,7 +173,7 @@ export const Embed: FC<EmbedProps> = ({
         onReload={errorInfo.showReloadButton ? onReload : null}
         icon={errorInfo.icon}
       />
-    )
+    );
   }
 
   if (isLoadingEmbedCode || !embedCode) {
@@ -175,7 +181,7 @@ export const Embed: FC<EmbedProps> = ({
       <Flex center style={{ height: '100%' }}>
         <Spinner size="large" />
       </Flex>
-    )
+    );
   }
 
   return (
@@ -271,5 +277,5 @@ export const Embed: FC<EmbedProps> = ({
         )}
       </div>
     </>
-  )
-}
+  );
+};

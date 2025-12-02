@@ -19,6 +19,7 @@ import {
   type FC,
   type ReactNode,
   type ReactText,
+  type Reducer,
   useCallback,
   useEffect,
   useMemo,
@@ -485,7 +486,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
   }
 
   const [collectionState, changeCollectionState] = useReducer<
-    React.Reducer<CollectionState, CollectionAction>
+    Reducer<CollectionState, CollectionAction>
   >(currentCollectionReducer, {
     currentCollection: null,
     initialCollection: null,

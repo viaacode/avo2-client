@@ -20,6 +20,7 @@ import { isEqual, isNil, isString } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import {
   type FC,
+  memo,
   type ReactNode,
   type ReactText,
   useCallback,
@@ -605,4 +606,4 @@ function areEqual(prevProps: FragmentEditProps, nextProps: FragmentEditProps) {
   );
 }
 
-export default React.memo(FragmentEdit, areEqual);
+export default memo(FragmentEdit, areEqual);
