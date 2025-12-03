@@ -196,7 +196,7 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
 
       const newFormErrors = await validateForm(
         formValues,
-        PUPIL_COLLECTION_FORM_SCHEMA(tText),
+        PUPIL_COLLECTION_FORM_SCHEMA(),
       );
       if (newFormErrors) {
         setFormErrors(newFormErrors);

@@ -1,16 +1,19 @@
-import { FormGroup, type FormGroupProps, TextArea } from '@viaa/avo2-components'
-import { type StringMap } from 'i18next'
-import { type FC } from 'react'
+import {
+  FormGroup,
+  type FormGroupProps,
+  TextArea,
+} from '@viaa/avo2-components';
+import { type FC } from 'react';
 
 import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../../collection/collection.const';
 import { getValidationFeedbackForDescription } from '../../../collection/collection.helpers';
 import { tText } from '../../helpers/translate-text';
 
 interface ShortDescriptionFieldProps extends Pick<FormGroupProps, 'error'> {
-  onChange: (value: string) => void
-  value: string | null
-  placeholder?: string
-  onFocus?: () => void
+  onChange: (value: string) => void;
+  value: string | null;
+  placeholder?: string;
+  onFocus?: () => void;
 }
 
 export const ShortDescriptionField: FC<ShortDescriptionFieldProps> = ({
@@ -28,10 +31,10 @@ export const ShortDescriptionField: FC<ShortDescriptionFieldProps> = ({
           'collection/collection___de-korte-omschrijving-is-te-lang-count',
           {
             count,
-          } as StringMap,
+          },
         ),
       isError,
-    )
+    );
 
   return (
     <FormGroup
@@ -52,5 +55,5 @@ export const ShortDescriptionField: FC<ShortDescriptionFieldProps> = ({
       />
       <label>{error(false)}</label>
     </FormGroup>
-  )
-}
+  );
+};

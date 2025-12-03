@@ -50,7 +50,6 @@ import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsD
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
 import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
-import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generated/graphql-db-react-query';
 import { buildLink } from '../../shared/helpers/build-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import {
@@ -95,6 +94,7 @@ import {
   StringParam,
   useQueryParams,
 } from '../../shared/helpers/routing/use-query-params-ssr.ts';
+import { useDeleteCollectionOrBundleByUuid } from '../hooks/useDeleteCollectionOrBundleByUuid.tsx';
 
 interface CollectionOrBundleOverviewProps {
   numberOfItems: number;
@@ -167,7 +167,7 @@ export const CollectionOrBundleOverview: FC<
 
   // Mutations
   const { mutateAsync: triggerCollectionOrBundleDelete } =
-    useDeleteCollectionOrBundleByUuidMutation();
+    useDeleteCollectionOrBundleByUuid();
 
   const isCollection = type === 'collection';
 
@@ -462,7 +462,7 @@ export const CollectionOrBundleOverview: FC<
       async () => {
         await triggerCollectionOrBundleDelete(
           {
-            collectionOrBundleUuid: activeModalInfo?.collectionUuid,
+            collectionOrBundleUuid: activeModalInfo?.collectionUuid as string,
             collectionOrBundleUuidAsText:
               activeModalInfo?.collectionUuid as string,
           },

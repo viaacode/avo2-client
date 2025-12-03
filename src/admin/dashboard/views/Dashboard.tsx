@@ -1,5 +1,4 @@
-import React from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { tHtml } from '../../../shared/helpers/translate-html';
@@ -36,7 +35,7 @@ export const Dashboard = () => {
         </p>
       </AdminLayoutBody>
     </AdminLayout>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

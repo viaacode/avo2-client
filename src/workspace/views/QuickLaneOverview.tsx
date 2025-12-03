@@ -1,5 +1,4 @@
 import {
-  FILTER_TABLE_QUERY_PARAM_CONFIG,
   type FilterableColumn,
   FilterTable,
   TableFilterType,
@@ -45,7 +44,10 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../workspace.const';
 
 import './QuickLaneOverview.scss';
-import { useQueryParams } from '../../shared/helpers/routing/use-query-params-ssr.ts';
+import {
+  StringParam,
+  useQueryParams,
+} from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
@@ -61,8 +63,6 @@ enum QuickLaneAction {
 }
 
 // Component
-
-const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 
 export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
   // State
@@ -80,8 +80,8 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
 
   // Set default sorting
   const [query, setQuery] = useQueryParams({
-    sort_order: queryParamConfig.sort_order,
-    sort_column: queryParamConfig.sort_column,
+    sort_order: StringParam,
+    sort_column: StringParam,
   });
 
   const [filters, setFilters] = useState<

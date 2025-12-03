@@ -1,11 +1,10 @@
-import { Button, Spacer } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { subMinutes } from 'date-fns'
-import { atom } from 'jotai'
-import { compact } from 'es-toolkit'
-import queryString from 'query-string'
-import React from 'react'
-import { type Location } from 'react-router'
+import { Button, Spacer } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { subMinutes } from 'date-fns';
+import { compact } from 'es-toolkit';
+import { atom } from 'jotai';
+import queryString from 'query-string';
+import { type Location } from 'react-router';
 
 import { LTI_JWT_TOKEN_HEADER } from '../embed/embed.types';
 import { EmbedCodeService } from '../embed-code/embed-code-service';
@@ -19,10 +18,10 @@ import { loginAtom } from './authentication.store';
 import { LoginMessage, type LoginState } from './authentication.types';
 import { logoutAndRedirectToLogin } from './helpers/redirects';
 
-let checkSessionTimeoutTimerId: number | null = null
+let checkSessionTimeoutTimerId: number | null = null;
 
 function checkIfSessionExpires(expiresAt: string) {
-  const date = new Date(expiresAt)
+  const date = new Date(expiresAt);
 
   // Create fake location object
   const location = {
@@ -33,9 +32,9 @@ function checkIfSessionExpires(expiresAt: string) {
         search: window.location.search,
       },
     },
-  } as unknown as Location
+  } as unknown as Location;
   if (subMinutes(date, 5).getTime() < new Date().getTime()) {
-    logoutAndRedirectToLogin(location)
+    logoutAndRedirectToLogin(location);
   } else if (subMinutes(date, 10).getTime() < new Date().getTime()) {
     // Show warning since user is about to be logged out
     ToastService.info(
@@ -55,55 +54,55 @@ function checkIfSessionExpires(expiresAt: string) {
         autoClose: false,
         position: 'bottom-left',
       },
-    )
+    );
   }
 }
 
 export const getLoginStateAtom = atom<LoginState | null, [boolean], void>(
   null,
   async (get, set, forceRefetch) => {
-    const loginState: LoginState = get(loginAtom)
+    const loginState: LoginState = get(loginAtom);
 
     // Don't fetch login state if we already logged in
     if (loginState?.data?.message === LoginMessage.LOGGED_IN && !forceRefetch) {
-      return null
+      return null;
     }
 
     // Don't fetch login state from server if a call is already in progress
     if (loginState.loading) {
-      return null
+      return null;
     }
 
     set(loginAtom, {
       ...get(loginAtom),
       loading: true,
-    })
+    });
 
     try {
-      const historyLocations: string[] = get(historyLocationsAtom) || []
+      const historyLocations: string[] = get(historyLocationsAtom) || [];
       const loginStateResponse = await getLoginResponse(
         forceRefetch,
         historyLocations,
-      )
+      );
 
       set(loginAtom, {
         ...get(loginAtom),
         loading: false,
         error: false,
         data: loginStateResponse,
-      })
+      });
     } catch (err) {
       console.error(
         new CustomError('failed to check login state', err, { forceRefetch }),
-      )
+      );
       set(loginAtom, {
         ...get(loginAtom),
         loading: false,
         error: true,
-      })
+      });
     }
   },
-)
+);
 
 export async function getLoginResponse(
   forceRefetch = false,
@@ -115,9 +114,11 @@ export async function getLoginResponse(
         force: forceRefetch,
         history: historyLocations,
       },
-    )}`
+    )}`;
 
-    const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client')
+    const { fetchWithLogoutJson } = await import(
+      '@meemoo/admin-core-ui/client'
+    );
     const loginStateResponse =
       await fetchWithLogoutJson<Avo.Auth.LoginResponse>(url, {
         forceLogout: false,
@@ -125,27 +126,27 @@ export async function getLoginResponse(
           'Content-Type': 'application/json',
           [LTI_JWT_TOKEN_HEADER]: EmbedCodeService.getJwtToken() || '',
         },
-      })
+      });
 
     // Check if session is about to expire and show warning toast
     // Redirect to login page when session actually expires
     const expiresAt = (loginStateResponse as Avo.Auth.LoginResponseLoggedIn)
-      ?.sessionExpiresAt
+      ?.sessionExpiresAt;
     if (expiresAt) {
       if (checkSessionTimeoutTimerId) {
-        clearInterval(checkSessionTimeoutTimerId)
+        clearInterval(checkSessionTimeoutTimerId);
       }
       checkSessionTimeoutTimerId = window.setInterval(
         () => checkIfSessionExpires(expiresAt),
         5 * 60 * 1000,
-      )
+      );
     }
 
     if (loginStateResponse.message === 'LOGGED_IN') {
       // Trigger extra Google Analytics event to track what the user group is of the logged-in user
       // https://meemoo.atlassian.net/browse/AVO-3011
       const userInfo = (loginStateResponse as Avo.Auth.LoginResponseLoggedIn)
-        .userInfo
+        .userInfo;
       const event = {
         event: 'visit',
         userData: {
@@ -154,12 +155,12 @@ export async function getLoginResponse(
             (userInfo?.profile?.loms || []).map((lom) => lom?.lom?.label),
           ),
         },
-      }
-      ;(window as any)?.dataLayer?.push(event)
+      };
+      (window as any)?.dataLayer?.push(event);
     }
-    return loginStateResponse
+    return loginStateResponse;
   } catch (err) {
-    console.error('failed to check login state', err)
-    throw err
+    console.error('failed to check login state', err);
+    throw err;
   }
 }

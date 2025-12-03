@@ -1,7 +1,5 @@
 import { IconName } from '@viaa/avo2-components';
 import { isNil, kebabCase, sortBy } from 'es-toolkit';
-import { type TFunction } from 'i18next';
-import React from 'react';
 
 import { LoginOptionsDropdown } from '../../authentication/components/LoginOptionsDropdown';
 import { PupilOrTeacherDropdown } from '../../authentication/components/PupilOrTeacherDropdown';
@@ -11,6 +9,7 @@ import { type NavigationItemInfo } from '../types';
 
 import { buildLink } from './build-link';
 import { isMobileWidth } from './media-query';
+import { tText } from './translate-text.ts';
 
 const NAVIGATION_COMPONENTS: { [componentLabel: string]: any } = {
   '<PupilOrTeacherDropdown>': PupilOrTeacherDropdown,
@@ -19,10 +18,7 @@ const NAVIGATION_COMPONENTS: { [componentLabel: string]: any } = {
 
 export type BooleanDictionary = { [id: string]: boolean };
 
-export function getLocation(
-  navItem: AppContentNavElement,
-  tText: TFunction,
-): string {
+export function getLocation(navItem: AppContentNavElement): string {
   if (!isNil(navItem.content_id)) {
     // Link to content block page
     return `/${navItem.content_id}/${kebabCase(navItem.label)}`;
@@ -49,11 +45,10 @@ export function getLocation(
 
 export function mapNavElementsToNavigationItems(
   navItems: AppContentNavElement[],
-  tText: TFunction,
 ): NavigationItemInfo[] {
   return sortBy(navItems, ['position']).map(
     (navItem: AppContentNavElement): NavigationItemInfo => {
-      const navLocation: string = getLocation(navItem, tText);
+      const navLocation: string = getLocation(navItem);
 
       if (NAVIGATION_COMPONENTS[navLocation]) {
         if (isMobileWidth()) {
@@ -85,7 +80,7 @@ export function mapNavElementsToNavigationItems(
         label: navItem.label,
         icon: navItem.icon_name,
         tooltip: navItem.tooltip,
-        location: getLocation(navItem, tText),
+        location: getLocation(navItem),
         target: navItem.link_target,
         key: `nav-item-${navItem.id}`,
       };

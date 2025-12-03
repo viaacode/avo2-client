@@ -4,7 +4,6 @@
 
 import { decodeHTML } from 'entities';
 import { isNil } from 'es-toolkit';
-import { type TOptions } from 'i18next';
 
 import i18n from '../translations/i18n';
 
@@ -15,7 +14,7 @@ import i18n from '../translations/i18n';
  */
 export function tText(
   key: string,
-  params?: TOptions | string | undefined,
+  params?: Record<string, string | number>,
 ): string {
   const translation: string | null | undefined = i18n?.t(key, params);
 

@@ -3,7 +3,6 @@ import { Alert, type AlertProps, Spacer } from '@viaa/avo2-components';
 import { isNil } from 'es-toolkit';
 import { type FC, type ReactNode } from 'react';
 import { type Id, type ToastOptions, toast } from 'react-toastify';
-
 import { ROUTE_PARTS } from '../constants/routes';
 
 export enum AvoToastType {
@@ -24,11 +23,24 @@ type ToastMessage = string | string[] | ReactNode;
 
 interface ToastProps extends AlertProps {
   closeToast?: () => void;
+  data: {
+    message: ToastMessage;
+    type: AvoToastType;
+  };
 }
 
-const Toast: FC<ToastProps> = ({ closeToast, ...rest }) => (
-  <Alert {...rest} className="u-spacer-top" onClose={closeToast} />
-);
+const Toast: FC<ToastProps> = (toastProps: ToastProps) => {
+  const dark = !window.location.href.includes(`/${ROUTE_PARTS.admin}/`);
+  return (
+    <Alert
+      dark={dark}
+      message={toastProps.data.message}
+      type={toastProps.data.type}
+      className="u-spacer-top"
+      onClose={toastProps.closeToast}
+    />
+  );
+};
 
 export class ToastService {
   public static danger = (
@@ -68,7 +80,7 @@ export class ToastService {
       return;
     }
 
-    let alertMessage = message;
+    let alertMessage: ToastMessage = message;
 
     if (Array.isArray(message)) {
       const messages = message as string[];
@@ -87,12 +99,19 @@ export class ToastService {
       );
     }
 
-    const dark = !window.location.href.includes(`/${ROUTE_PARTS.admin}/`);
+    const data = {
+      message: alertMessage,
+      type: alertType,
+    } as {
+      message: ToastMessage;
+      type: AvoToastType;
+    };
 
-    return toast(
-      <Toast dark={dark} message={alertMessage} type={alertType} />,
-      options,
-    );
+    return toast(Toast, {
+      closeButton: false,
+      data: data as any,
+      ...options,
+    });
   }
 
   public static hideToast(toastId: Id) {

@@ -12,7 +12,6 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
-import { type StringMap } from 'i18next';
 import { type FC, useState } from 'react';
 
 import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
@@ -129,7 +128,7 @@ export const CollectionOrBundleEditMetaData: FC<
                             'collection/components/collection-or-bundle-edit-meta-data___de-beschrijving-is-te-lang-count',
                             {
                               count,
-                            } as StringMap,
+                            },
                           );
                         },
                         true,
@@ -160,7 +159,7 @@ export const CollectionOrBundleEditMetaData: FC<
                               'collection/components/collection-or-bundle-edit-meta-data___de-beschrijving-is-te-lang-count',
                               {
                                 count,
-                              } as StringMap,
+                              },
                             ),
                         )}
                       </label>

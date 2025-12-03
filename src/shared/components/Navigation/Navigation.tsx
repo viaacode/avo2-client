@@ -111,7 +111,7 @@ export const Navigation: FC<NavigationParams> = ({ isPreviewRoute }) => {
   };
 
   const getNavigationItemsLeft = (): NavigationItemInfo[] => {
-    return mapNavElementsToNavigationItems(navItemsLeft, tText);
+    return mapNavElementsToNavigationItems(navItemsLeft);
   };
 
   const getNavigationItemsRight = (): NavigationItemInfo[] => {
@@ -122,9 +122,9 @@ export const Navigation: FC<NavigationParams> = ({ isPreviewRoute }) => {
       return [];
     }
     const dynamicNavItemsRight: NavigationItemInfo[] =
-      mapNavElementsToNavigationItems(navItemsRight, tText);
+      mapNavElementsToNavigationItems(navItemsRight);
     const dynamicNavItemsProfileDropdown: NavigationItemInfo[] =
-      mapNavElementsToNavigationItems(navItemsProfileDropdown, tText);
+      mapNavElementsToNavigationItems(navItemsProfileDropdown);
 
     const logoutNavItem = last(
       dynamicNavItemsProfileDropdown,
@@ -208,7 +208,7 @@ export const Navigation: FC<NavigationParams> = ({ isPreviewRoute }) => {
         );
         return;
       }
-      const link = getLocation(navItem, tText);
+      const link = getLocation(navItem);
       if (link.includes('//')) {
         // external link
         redirectToExternalPage(link, navItem.link_target || '_blank');

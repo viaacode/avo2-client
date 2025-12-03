@@ -1,8 +1,7 @@
-import { MaintenanceAlertsOverview } from '@meemoo/admin-core-ui/admin'
-import { Button, Modal } from '@meemoo/react-components'
-import { PermissionName } from '@viaa/avo2-types'
-import type { FC, ReactNode } from 'react'
-import React from 'react'
+import { MaintenanceAlertsOverview } from '@meemoo/admin-core-ui/admin';
+import { Button, Modal } from '@meemoo/react-components';
+import { PermissionName } from '@viaa/avo2-types';
+import type { FC, ReactNode } from 'react';
 
 import { PermissionGuard } from '../../authentication/components/PermissionGuard';
 import { tText } from '../../shared/helpers/translate-text';
@@ -15,11 +14,11 @@ export const MaintenanceAlertsOverviewPage: FC = () => {
     onSave,
     onClose,
   }: {
-    title: string
-    body: ReactNode
-    isOpen: boolean
-    onSave: () => void
-    onClose: () => void
+    title: string;
+    body: ReactNode;
+    isOpen: boolean;
+    onSave: () => void;
+    onClose: () => void;
   }) => {
     const renderFooter = () => {
       return (
@@ -40,8 +39,8 @@ export const MaintenanceAlertsOverviewPage: FC = () => {
             )}
           />
         </div>
-      )
-    }
+      );
+    };
 
     return (
       <Modal
@@ -52,8 +51,8 @@ export const MaintenanceAlertsOverviewPage: FC = () => {
       >
         {body}
       </Modal>
-    )
-  }
+    );
+  };
 
   return (
     <PermissionGuard permissions={[PermissionName.VIEW_ANY_MAINTENANCE_ALERTS]}>
@@ -62,7 +61,7 @@ export const MaintenanceAlertsOverviewPage: FC = () => {
         renderPopup={renderPopup}
       />
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default MaintenanceAlertsOverviewPage
+export default MaintenanceAlertsOverviewPage;

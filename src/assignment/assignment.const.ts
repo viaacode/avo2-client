@@ -1,5 +1,4 @@
 import { Avo } from '@viaa/avo2-types';
-import { type TFunction } from 'i18next';
 import { type ReactNode } from 'react';
 import { array, object, type Schema, string } from 'yup';
 
@@ -183,9 +182,9 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
   ...getActionsColumn(canEditAssignments),
 ];
 
-export const PUPIL_COLLECTION_FORM_SCHEMA = (
-  tText: TFunction,
-): Schema<Partial<AssignmentResponseFormState>> => {
+export const PUPIL_COLLECTION_FORM_SCHEMA = (): Schema<
+  Partial<AssignmentResponseFormState>
+> => {
   return object({
     id: string().optional(),
     collection_title: string().required(

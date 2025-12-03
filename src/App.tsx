@@ -199,13 +199,16 @@ const App: FC = () => {
         })}
       >
         <ToastContainer
-          autoClose={4000}
+          autoClose={400000}
           className="c-alert-stack"
           closeButton={false}
           closeOnClick={false}
           draggable={false}
           position="bottom-left"
           transition={Slide}
+          hideProgressBar={true}
+          pauseOnFocusLoss={true}
+          pauseOnHover={true}
         />
         <Outlet />
       </div>
@@ -213,39 +216,34 @@ const App: FC = () => {
   };
 
   return (
-    <>
-      {/* Use query params*/}
-      <QueryParamProvider adapter={ReactRouter7Adapter}>
-        <>
-          <LoadingErrorLoadedComponent
-            loadingInfo={loadingInfo}
-            dataObject={{}}
-            render={renderApp}
-          />
-          <ConfirmModal
-            className="c-modal__unsaved-changes"
-            isOpen={isUnsavedChangesModalOpen}
-            confirmCallback={() => {
-              setIsUnsavedChangesModalOpen(false);
-              (confirmUnsavedChangesCallback || noop)(true);
-              confirmUnsavedChangesCallback = null;
-            }}
-            onClose={() => {
-              setIsUnsavedChangesModalOpen(false);
-              (confirmUnsavedChangesCallback || noop)(false);
-              confirmUnsavedChangesCallback = null;
-            }}
-            cancelLabel={tText('app___blijven')}
-            confirmLabel={tText('app___verlaten')}
-            title={tHtml('app___wijzigingen-opslaan')}
-            body={tHtml(
-              'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten',
-            )}
-            confirmButtonType="primary"
-          />
-        </>
-      </QueryParamProvider>
-    </>
+    <QueryParamProvider adapter={ReactRouter7Adapter}>
+      <LoadingErrorLoadedComponent
+        loadingInfo={loadingInfo}
+        dataObject={{}}
+        render={renderApp}
+      />
+      <ConfirmModal
+        className="c-modal__unsaved-changes"
+        isOpen={isUnsavedChangesModalOpen}
+        confirmCallback={() => {
+          setIsUnsavedChangesModalOpen(false);
+          (confirmUnsavedChangesCallback || noop)(true);
+          confirmUnsavedChangesCallback = null;
+        }}
+        onClose={() => {
+          setIsUnsavedChangesModalOpen(false);
+          (confirmUnsavedChangesCallback || noop)(false);
+          confirmUnsavedChangesCallback = null;
+        }}
+        cancelLabel={tText('app___blijven')}
+        confirmLabel={tText('app___verlaten')}
+        title={tHtml('app___wijzigingen-opslaan')}
+        body={tHtml(
+          'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten',
+        )}
+        confirmButtonType="primary"
+      />
+    </QueryParamProvider>
   );
 };
 

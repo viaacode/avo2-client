@@ -1,8 +1,8 @@
 import { Flex, IconName } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
-import { type FC, ReactElement, useEffect, useState } from 'react';
-import * as ReactPageSplit from 'react-page-split';
+import { type FC, useEffect, useState } from 'react';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { Outlet } from 'react-router';
 import { commonUserAtom } from '../authentication/authentication.store';
 import { PermissionGuard } from '../authentication/components/PermissionGuard';
@@ -19,12 +19,6 @@ import { ToastService } from '../shared/services/toast-service';
 import { type NavigationItemInfo } from '../shared/types';
 import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
 import { Sidebar } from './shared/components/Sidebar/Sidebar';
-
-const HorizontalPageSplit = (ReactPageSplit as any).HorizontalPageSplit as FC<{
-  children: ReactElement[];
-  className: string;
-  widths: string[];
-}>;
 
 export const Admin: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);
@@ -83,22 +77,28 @@ export const Admin: FC = () => {
       return null;
     }
     return (
-      <HorizontalPageSplit
+      <PanelGroup
+        autoSaveId="admin-dashboard"
+        direction="horizontal"
         className="m-resizable-panels"
-        widths={['300px', '*']}
       >
-        <Sidebar
-          headerLink={ADMIN_PATH.DASHBOARD}
-          navItems={navigationItems}
-          className="o-app--admin__sidebar"
-        />
-        <Flex
-          className="o-app--admin__main u-flex-auto u-scroll"
-          orientation="vertical"
-        >
-          <Outlet />
-        </Flex>
-      </HorizontalPageSplit>
+        <Panel defaultSize={15}>
+          <Sidebar
+            headerLink={ADMIN_PATH.DASHBOARD}
+            navItems={navigationItems}
+            className="o-app--admin__sidebar"
+          />
+        </Panel>
+        <PanelResizeHandle />
+        <Panel>
+          <Flex
+            className="o-app--admin__main u-flex-auto u-scroll"
+            orientation="vertical"
+          >
+            <Outlet />
+          </Flex>
+        </Panel>
+      </PanelGroup>
     );
   };
 

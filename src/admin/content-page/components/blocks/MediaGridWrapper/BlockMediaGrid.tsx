@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Button,
   type ButtonAction,
@@ -23,74 +23,75 @@ import {
   Toolbar,
   ToolbarLeft,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import clsx from 'clsx'
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import clsx from 'clsx';
 import {
+  createRef,
   type FC,
   type ReactNode,
   useEffect,
   useMemo,
   useState,
-} from 'react'
+} from 'react';
 
-import './BlockMediaGrid.scss'
+import './BlockMediaGrid.scss';
 
 const FONT_TYPE_TO_VW: Record<HeadingType, number> = {
   h4: 1.8,
   h3: 2.1,
   h2: 2.4,
   h1: 2.7,
-}
+};
 
 export type MediaListItem = {
-  category: Avo.ContentType.English
-  subCategory: Avo.ContentPage.Type
-  metadata?: MetaDataItemProps[]
+  category: Avo.ContentType.English;
+  subCategory: Avo.ContentPage.Type;
+  metadata?: MetaDataItemProps[];
   thumbnail?: {
-    label: string
-    meta?: string
-    src?: string
-    topRight?: ReactNode
-  }
-  src?: string
-  title: string
-  itemAction: ButtonAction
-  buttonLabel?: string
-  buttonAltTitle?: string
-  buttonIcon?: IconName
-  buttonType?: ButtonType
-  buttonAction?: ButtonAction
-}
+    label: string;
+    meta?: string;
+    src?: string;
+    topRight?: ReactNode;
+  };
+  src?: string;
+  title: string;
+  itemAction: ButtonAction;
+  buttonLabel?: string;
+  buttonAltTitle?: string;
+  buttonIcon?: IconName;
+  buttonType?: ButtonType;
+  buttonAction?: ButtonAction;
+};
 
 interface BlockMediaGridProps extends DefaultProps {
-  title?: string
-  titleType?: HeadingType
-  buttonLabel?: string
-  buttonAltTitle?: string
-  buttonAction?: ButtonAction
-  ctaTitle?: string
-  ctaTitleColor?: string
-  ctaTitleBackgroundColor?: string
-  ctaTitleSize?: HeadingType
-  ctaContent?: string
-  ctaContentColor?: string
-  ctaButtonLabel?: string
-  ctaButtonAltTitle?: string
-  ctaButtonType?: ButtonType
-  ctaButtonIcon?: IconName
-  ctaBackgroundColor?: string
-  ctaBackgroundImage?: string
-  ctaWidth?: string
-  ctaButtonAction?: ButtonAction
-  fullWidth?: boolean
-  elements: MediaListItem[]
-  orientation?: Orientation
-  renderLink?: RenderLinkFunction
+  title?: string;
+  titleType?: HeadingType;
+  buttonLabel?: string;
+  buttonAltTitle?: string;
+  buttonAction?: ButtonAction;
+  ctaTitle?: string;
+  ctaTitleColor?: string;
+  ctaTitleBackgroundColor?: string;
+  ctaTitleSize?: HeadingType;
+  ctaContent?: string;
+  ctaContentColor?: string;
+  ctaButtonLabel?: string;
+  ctaButtonAltTitle?: string;
+  ctaButtonType?: ButtonType;
+  ctaButtonIcon?: IconName;
+  ctaBackgroundColor?: string;
+  ctaBackgroundImage?: string;
+  ctaWidth?: string;
+  ctaButtonAction?: ButtonAction;
+  fullWidth?: boolean;
+  elements: MediaListItem[];
+  orientation?: Orientation;
+  renderLink?: RenderLinkFunction;
   renderMediaCardWrapper: (
     mediaCard: ReactNode,
     item: MediaListItem,
-  ) => ReactNode
+  ) => ReactNode;
 }
 
 export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
@@ -119,42 +120,42 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
   renderLink = defaultRenderLinkFunction,
   renderMediaCardWrapper,
 }) => {
-  const ref = React.createRef<HTMLDivElement>()
-  const hasCTA = ctaTitle || ctaButtonLabel || ctaContent
+  const ref = createRef<HTMLDivElement>();
+  const hasCTA = ctaTitle || ctaButtonLabel || ctaContent;
 
-  const [blockWidth, setBlockWidth] = useState<number | null>(null) // pixels
-  const [windowWidth, setWindowWidth] = useState<number>(0) // pixels
+  const [blockWidth, setBlockWidth] = useState<number | null>(null); // pixels
+  const [windowWidth, setWindowWidth] = useState<number>(0); // pixels
 
   useEffect(() => {
     if (ref.current) {
-      setBlockWidth(ref.current.clientWidth)
+      setBlockWidth(ref.current.clientWidth);
     }
-  }, [ref])
+  }, [ref]);
 
   useEffect(() => {
     const handleResize = () => {
-      setWindowWidth(window.innerWidth)
-    }
+      setWindowWidth(window.innerWidth);
+    };
 
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const sizing = useMemo(() => {
     if (!fullWidth) {
       const fontSize =
         (FONT_TYPE_TO_VW[ctaTitleSize] * (blockWidth || windowWidth)) /
-        windowWidth
-      const lineHeightTitle = fontSize * 1.2
-      const fontWeight = ctaTitleSize === 'h4' ? 'normal' : 'inherit'
+        windowWidth;
+      const lineHeightTitle = fontSize * 1.2;
+      const fontWeight = ctaTitleSize === 'h4' ? 'normal' : 'inherit';
       return {
         fontSize: `${fontSize * 3.5}vw`,
         lineHeight: `${lineHeightTitle}vw`,
         fontWeight,
-      }
+      };
     }
-    return {}
-  }, [blockWidth, ctaTitleSize, fullWidth, windowWidth])
+    return {};
+  }, [blockWidth, ctaTitleSize, fullWidth, windowWidth]);
 
   const renderCTA = () => {
     return (
@@ -209,8 +210,8 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
           </Spacer>
         </div>
       </>
-    )
-  }
+    );
+  };
 
   const renderMediaCard = (mediaListItem: MediaListItem) => {
     const {
@@ -222,7 +223,7 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
       buttonLabel,
       buttonIcon,
       buttonType,
-    } = mediaListItem
+    } = mediaListItem;
 
     return (
       <MediaCard
@@ -254,7 +255,7 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
               <Spacer margin="top-small">
                 <div
                   onClick={(evt) => {
-                    evt.stopPropagation() // Avoid triggering the click on the media card
+                    evt.stopPropagation(); // Avoid triggering the click on the media card
                   }}
                 >
                   {renderLink(
@@ -279,8 +280,8 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
           </div>
         </MediaCardMetaData>
       </MediaCard>
-    )
-  }
+    );
+  };
 
   return (
     <div className={clsx(className, 'c-block-media-list c-media-card-list')}>
@@ -312,7 +313,7 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
                 mediaListItem,
               )}
             </Column>
-          )
+          );
         })}
         {hasCTA && (
           <Column size={fullWidth ? '3-12' : '3-3'}>
@@ -331,5 +332,5 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
         )}
       </Grid>
     </div>
-  )
-}
+  );
+};

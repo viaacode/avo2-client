@@ -1,6 +1,5 @@
-import { type PaginationBarProps } from '@meemoo/react-components'
-import { Icon, IconName } from '@viaa/avo2-components'
-import React from 'react'
+import { type PaginationBarProps } from '@meemoo/react-components';
+import { Icon, IconName } from '@viaa/avo2-components';
 
 import { tText } from '../../../../shared/helpers/translate-text';
 
@@ -52,5 +51,5 @@ export function GET_DEFAULT_PAGINATION_BAR_PROPS(): Pick<
     showButtonLabels: false,
     showFirstAndLastButtons: true,
     showBackToTop: true,
-  }
+  };
 }

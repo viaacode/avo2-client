@@ -1,7 +1,4 @@
-import {
-  FILTER_TABLE_QUERY_PARAM_CONFIG,
-  FilterTable,
-} from '@meemoo/admin-core-ui/admin';
+import { FilterTable } from '@meemoo/admin-core-ui/admin';
 import {
   IconName,
   type MenuItemInfo,
@@ -20,7 +17,10 @@ import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComp
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { navigate } from '../../shared/helpers/link';
-import { useQueryParams } from '../../shared/helpers/routing/use-query-params-ssr';
+import {
+  StringParam,
+  useQueryParams,
+} from '../../shared/helpers/routing/use-query-params-ssr';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { useDebounce } from '../../shared/hooks/useDebounce';
@@ -59,8 +59,6 @@ enum EmbedCodeAction {
 
 // Component
 
-const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
-
 export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
   const navigateFunc = useNavigate();
   const commonUser = useAtomValue(commonUserAtom);
@@ -81,8 +79,8 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
 
   // Set default sorting
   const [query, setQuery] = useQueryParams({
-    sort_order: queryParamConfig.sort_order,
-    sort_column: queryParamConfig.sort_column,
+    sort_order: StringParam,
+    sort_column: StringParam,
   });
 
   const [filters, setFilters] = useState<
@@ -147,7 +145,7 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
         ),
       });
     }
-  }, [commonUser, setEmbedCodes, setLoadingInfo, debouncedFilters]); // eslint-disable-line
+  }, [commonUser, setEmbedCodes, setLoadingInfo, debouncedFilters]);
 
   const reloadEmbedCodes = async () => {
     await fetchEmbedCodes();
