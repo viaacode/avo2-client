@@ -213,11 +213,9 @@ export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <Spacer padding="small">
-                  {tHtml(
-                    'admin/interactive-tour/views/interactive-tour-edit___hoe-kopieer-je-een-css-selector',
-                  )}
-                </Spacer>
+                {tHtml(
+                  'admin/interactive-tour/views/interactive-tour-edit___hoe-kopieer-je-een-css-selector',
+                )}
               </TooltipContent>
             </Tooltip>
           </FormGroup>

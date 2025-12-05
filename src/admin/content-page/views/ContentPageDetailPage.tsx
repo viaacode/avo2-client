@@ -49,7 +49,7 @@ export const ContentPageDetailPage: FC = () => {
         >
           {!!id && (
             <ContentPageDetail
-              className="c-admin-core"
+              className="c-admin-core p-content-page-detail"
               id={id}
               loaded={setItem}
               commonUser={commonUser}

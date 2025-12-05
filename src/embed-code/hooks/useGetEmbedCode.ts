@@ -10,7 +10,7 @@ export const useGetEmbedCode = (
 ): UseQueryResult<EmbedCode | null, Error> => {
   return useQuery({
     queryKey: [
-      QUERY_KEYS.GET_EMBED_CODES,
+      QUERY_KEYS.GET_EMBED_CODE,
       embedCodeId,
       EmbedCodeService.getJwtToken(),
     ],

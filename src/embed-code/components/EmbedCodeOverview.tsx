@@ -7,13 +7,12 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { isEqual } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type FC, useCallback, useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { APP_PATH } from '../../constants';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
-import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { navigate } from '../../shared/helpers/link';
@@ -34,11 +33,12 @@ import {
   type EmbedCodeOverviewFilterState,
   type EmbedCodeOverviewTableColumns,
 } from '../embed-code.types';
-import { type EmbedCodeFilters, EmbedCodeService } from '../embed-code-service';
+import { EmbedCodeService } from '../embed-code-service';
 import { toEmbedCodeIFrame } from '../helpers/links';
 import { createResource } from '../helpers/resourceForTrackEvents';
 import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 import { useDeleteEmbedCode } from '../hooks/useDeleteEmbedCode';
+import { useGetEmbedCodes } from '../hooks/useGetEmbedCodes.ts';
 import { useUpdateEmbedCode } from '../hooks/useUpdateEmbedCode';
 import { EmbedCodeFilterTableCell } from './EmbedCodeFilterTableCell';
 import { EditEmbedCodeModal } from './modals/EditEmbedCodeModal';
@@ -64,14 +64,9 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
   const commonUser = useAtomValue(commonUserAtom);
 
   // State
-  const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
-    state: 'loading',
-  });
-  const [embedCodes, setEmbedCodes] = useState<EmbedCode[]>([]);
   const [selected, setSelected] = useState<Partial<EmbedCode> | undefined>(
     undefined,
   );
-  const [embedCodesCount, setEmbedCodesCount] = useState<number>(0);
   const [embedCodeForEditModal, setEmbedCodeForEditModal] = useState<
     Partial<EmbedCode> | undefined
   >(undefined);
@@ -94,61 +89,29 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
   const { mutateAsync: deleteEmbedCode } = useDeleteEmbedCode();
   const { mutateAsync: updateEmbedCode } = useUpdateEmbedCode();
 
+  const {
+    data: embedCodesResponse,
+    isLoading: isLoadingEmbedCodes,
+    refetch: refetchEmbedCodes,
+  } = useGetEmbedCodes({
+    filterString: debouncedFilters?.query,
+    sortOrder: (debouncedFilters?.sort_order ||
+      query.sort_order ||
+      EMBED_CODE_DEFAULTS.sort_order) as Avo.Search.OrderDirection,
+    sortColumn:
+      debouncedFilters?.sort_column ||
+      query.sort_column ||
+      EMBED_CODE_DEFAULTS.sort_column,
+    limit: ITEMS_PER_PAGE,
+    offset: (debouncedFilters?.page || 0) * ITEMS_PER_PAGE,
+  });
+  const embedCodes = embedCodesResponse?.embedCodes || [];
+  const embedCodesCount = embedCodesResponse?.count || 0;
+
   // Data
-  const fetchEmbedCodes = useCallback(async () => {
-    setLoadingInfo({ state: 'loading' });
-
-    try {
-      if (!commonUser?.profileId || debouncedFilters === undefined) {
-        setLoadingInfo({
-          state: 'error',
-          message: tHtml(
-            'embed-code/components/embed-code-overview___er-is-onvoldoende-informatie-beschikbaar-om-ingesloten-fragmenten-op-te-halen',
-          ),
-        });
-        return;
-      }
-
-      const sortOrder =
-        debouncedFilters.sort_order ||
-        query.sort_order ||
-        EMBED_CODE_DEFAULTS.sort_order;
-      const sortColumn =
-        debouncedFilters.sort_column ||
-        query.sort_column ||
-        EMBED_CODE_DEFAULTS.sort_column;
-      const params: EmbedCodeFilters = {
-        filterString: debouncedFilters.query,
-        sortOrder: sortOrder as Avo.Search.OrderDirection,
-        sortColumn: sortColumn,
-        limit: ITEMS_PER_PAGE,
-        offset: debouncedFilters.page * ITEMS_PER_PAGE,
-      };
-
-      const response = await EmbedCodeService.getEmbedCodes(params);
-
-      setEmbedCodes(response.embedCodes);
-      setEmbedCodesCount(response.count);
-
-      setLoadingInfo({ state: 'loaded' });
-    } catch (err) {
-      console.error(
-        new CustomError('Failed to get all embed codes for user', err, {
-          commonUser,
-        }),
-      );
-
-      setLoadingInfo({
-        state: 'error',
-        message: tHtml(
-          'embed-code/components/embed-code-overview___het-ophalen-van-je-ingesloten-fragmenten-is-mislukt',
-        ),
-      });
-    }
-  }, [commonUser, setEmbedCodes, setLoadingInfo, debouncedFilters]);
 
   const reloadEmbedCodes = async () => {
-    await fetchEmbedCodes();
+    await refetchEmbedCodes();
     onUpdate?.();
   };
 
@@ -237,10 +200,6 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
   };
 
   // Lifecycle
-
-  useEffect(() => {
-    fetchEmbedCodes();
-  }, [fetchEmbedCodes]);
 
   useEffect(() => {
     setQuery({
@@ -393,7 +352,7 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
         dataCount={embedCodesCount}
         itemsPerPage={ITEMS_PER_PAGE}
         noContentMatchingFiltersMessage={
-          loadingInfo.state === 'loaded'
+          isLoadingEmbedCodes
             ? tText(
                 'embed-code/components/embed-code-overview___er-werden-geen-ingesloten-fragmenten-gevonden-die-voldoen-aan-de-opgegeven-criteria',
               )
@@ -412,7 +371,7 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
         )}
         rowKey="id"
         variant="styled"
-        isLoading={loadingInfo.state === 'loading'}
+        isLoading={isLoadingEmbedCodes}
         showColumnsVisibility={false}
         showCheckboxes={false}
       />

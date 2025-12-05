@@ -47,8 +47,6 @@ $c-admin-core-add-content-block-height: 7rem;
 }
 
 .c-admin-core.c-admin.c-admin__content-page-edit {
-  overflow-y: hidden;
-
   .c-content-edit-view__preview {
 	overflow-y: auto;
 	height: calc(100vh - #{variables.$c-admin-core-header} - #{$c-admin-core-content-metadata-bar});
@@ -61,8 +59,13 @@ $c-admin-core-add-content-block-height: 7rem;
 	  padding: 1.6rem;
 	}
   }
+}
 
-  .c-admin__content {
+.c-admin-core.c-admin.c-admin__content-page-edit,
+.c-admin-core.c-admin.p-content-page-detail{
+  overflow-y: hidden;
+
+  > .c-admin__content {
 	height: calc(100% - 6.4rem);
 
 	.o-sidebar__content .c-scrollable {
@@ -72,6 +75,12 @@ $c-admin-core-add-content-block-height: 7rem;
 	.m-edit-content-blocks {
 	  overflow-y: hidden;
 	  height: calc(100% - 4.9rem);
+	}
+
+	> .o-container-vertical,
+	> .c-content-page-preview {
+	  height: calc(100% - 4.9rem);
+	  overflow-y: auto;
 	}
   }
 }
