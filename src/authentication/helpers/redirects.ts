@@ -8,7 +8,7 @@ import { EmbedCodeService } from '../../embed-code/embed-code-service';
 import { ROUTE_PARTS } from '../../shared/constants/routes';
 import { getEnv } from '../../shared/helpers/env';
 import { SERVER_LOGOUT_PAGE } from '../authentication.const';
-import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
+import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/register-stamboek.tsx';
 
 import { getBaseUrl } from './get-base-url';
 

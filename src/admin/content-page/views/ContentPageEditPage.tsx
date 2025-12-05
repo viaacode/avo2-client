@@ -18,7 +18,7 @@ const ContentPageEdit = lazy(() =>
   })),
 );
 
-const ContentPageDetailPage: FC = () => {
+export const ContentPageEditPage: FC = () => {
   const navigateFunc = useNavigate();
   const { id: contentPageId } = useParams<{ id: string }>();
 
@@ -57,4 +57,4 @@ const ContentPageDetailPage: FC = () => {
   );
 };
 
-export default ContentPageDetailPage;
+export default ContentPageEditPage;

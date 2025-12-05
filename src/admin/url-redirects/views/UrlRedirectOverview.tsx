@@ -44,7 +44,7 @@ import {
   type UrlRedirectOverviewTableCols,
 } from '../url-redirects.types';
 
-const UrlRedirectOverview: FC = () => {
+export const UrlRedirectOverview: FC = () => {
   const navigateFunc = useNavigate();
   // State
   const [selected, setSelected] = useState<UrlRedirect | undefined>(undefined);

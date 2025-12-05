@@ -11,35 +11,35 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { isNil, noop } from 'es-toolkit'
-import { type FC, type ReactNode, type ReactText } from 'react'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
+import { isNil, noop } from 'es-toolkit';
+import { type FC, type ReactNode, type ReactText } from 'react';
 
 import { defaultRenderBookmarkButton } from '../../helpers/default-render-bookmark-button';
 import { tText } from '../../helpers/translate-text';
 import EducationLevelsTagList from '../EducationLevelsTagList/EducationLevelsTagList';
 
-import './SearchResult.scss'
+import './SearchResult.scss';
 
 interface SearchResultProps extends DefaultProps {
-  title: ReactNode
-  subTitle: ReactNode
-  thumbnail: ReactNode
-  type: Avo.ContentType.English
-  thumbnailPath?: string
-  description?: string
-  maxDescriptionLength?: number
-  isBookmarked: boolean | null
-  date: string
-  dateTooltip: string
-  bookmarkCount: number | null // null hides the counter
-  viewCount: number
-  typeTags?: (TagOption & { dark?: boolean })[]
-  loms?: string[]
-  onToggleBookmark?: (active: boolean) => void
-  onTagClicked?: (tagId: string) => void
+  title: ReactNode;
+  subTitle: ReactNode;
+  thumbnail: ReactNode;
+  type: Avo.ContentType.English;
+  thumbnailPath?: string;
+  description?: string;
+  maxDescriptionLength?: number;
+  isBookmarked: boolean | null;
+  date: string;
+  dateTooltip: string;
+  bookmarkCount: number | null; // null hides the counter
+  viewCount: number;
+  typeTags?: (TagOption & { dark?: boolean })[];
+  loms?: string[];
+  onToggleBookmark?: (active: boolean) => void;
+  onTagClicked?: (tagId: string) => void;
 }
 
 export const SearchResult: FC<SearchResultProps> = ({
@@ -62,7 +62,7 @@ export const SearchResult: FC<SearchResultProps> = ({
 }) => {
   const renderEducationLevels = () => {
     if (type !== 'collection' && type !== 'bundle' && type !== 'assignment') {
-      return null
+      return null;
     }
     return (
       <FlexItem>
@@ -71,8 +71,8 @@ export const SearchResult: FC<SearchResultProps> = ({
           loms={loms}
         />
       </FlexItem>
-    )
-  }
+    );
+  };
 
   return (
     <div className={clsx(className, 'c-search-result')}>
@@ -102,7 +102,7 @@ export const SearchResult: FC<SearchResultProps> = ({
           )}
         </Flex>
         <p className="c-search-result__description">
-          {description.slice(maxDescriptionLength)}
+          {description.slice(0, maxDescriptionLength)}
         </p>
         <Spacer margin="bottom-small">
           <Flex justify="between" wrap align="baseline">
@@ -138,5 +138,5 @@ export const SearchResult: FC<SearchResultProps> = ({
         />
       </div>
     </div>
-  )
-}
+  );
+};

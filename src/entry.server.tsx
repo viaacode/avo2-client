@@ -10,7 +10,7 @@ import {
   createStaticRouter,
   StaticRouterProvider,
 } from 'react-router';
-import APP_ROUTES from './routes-real.ts';
+import APP_ROUTES from './routes.ts';
 
 let { query, dataRoutes } = createStaticHandler(APP_ROUTES);
 

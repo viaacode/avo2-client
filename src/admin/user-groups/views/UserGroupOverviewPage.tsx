@@ -1,8 +1,8 @@
-import { Button } from '@meemoo/react-components'
-import { Icon, IconName, Toolbar, ToolbarRight } from '@viaa/avo2-components'
-import { PermissionName } from '@viaa/avo2-types'
-import { type FC, lazy, Suspense, useRef, useState } from 'react'
-import { Helmet } from 'react-helmet'
+import { Button } from '@meemoo/react-components';
+import { Icon, IconName, Toolbar, ToolbarRight } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
+import { type FC, lazy, Suspense, useRef, useState } from 'react';
+import { Helmet } from 'react-helmet';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -16,19 +16,19 @@ import {
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { type UserGroupOverviewRef } from '../../shared/services/user-groups/user-groups.types';
 
-import './UserGroupOverviewPage.scss'
+import './UserGroupOverviewPage.scss';
 
 const UserGroupOverview = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
     default: adminCoreModule.UserGroupOverview,
   })),
-)
+);
 
-const UserGroupGroupOverviewPage: FC = () => {
+export const UserGroupOverviewPage: FC = () => {
   // Access child functions
-  const permissionsRef = useRef<UserGroupOverviewRef>()
+  const permissionsRef = useRef<UserGroupOverviewRef>();
 
-  const [hasChanges, setHasChanges] = useState<boolean>(false)
+  const [hasChanges, setHasChanges] = useState<boolean>(false);
 
   const renderSearchButtons = (search?: string) => {
     return (
@@ -41,7 +41,7 @@ const UserGroupGroupOverviewPage: FC = () => {
               'pages/admin/gebruikersbeheer/permissies/index___opnieuw-instellen',
             )}
             onClick={() => {
-              permissionsRef.current?.onSearch(undefined)
+              permissionsRef.current?.onSearch(undefined);
             }}
           />
         )}
@@ -54,8 +54,8 @@ const UserGroupGroupOverviewPage: FC = () => {
           onClick={() => permissionsRef.current?.onSearch(search)}
         />
       </>
-    )
-  }
+    );
+  };
 
   const renderActionButtons = () => {
     return (
@@ -75,8 +75,8 @@ const UserGroupGroupOverviewPage: FC = () => {
           )}
         />
       </>
-    )
-  }
+    );
+  };
 
   const renderPageContent = () => {
     return (
@@ -94,8 +94,8 @@ const UserGroupGroupOverviewPage: FC = () => {
           </Toolbar>
         )}
       </>
-    )
-  }
+    );
+  };
 
   return (
     <PermissionGuard permissions={[PermissionName.EDIT_USER_GROUPS]}>
@@ -129,7 +129,7 @@ const UserGroupGroupOverviewPage: FC = () => {
         </AdminLayoutBody>
       </AdminLayout>
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default UserGroupGroupOverviewPage
+export default UserGroupOverviewPage;

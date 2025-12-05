@@ -17,8 +17,8 @@ import { useLocation } from 'react-router-dom';
 import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state';
 import { ItemsService } from '../../admin/items/items.service';
 import { UrlRedirectsService } from '../../admin/url-redirects/url-redirects.service';
-import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
 import { loginAtom } from '../../authentication/authentication.store';
+import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page';
@@ -54,7 +54,7 @@ interface RouteInfo {
   data: any;
 }
 
-const DynamicRouteResolver: FC = () => {
+export const DynamicRouteResolver: FC = () => {
   const navigateFunc = useNavigate();
   const location = useLocation();
 
@@ -284,17 +284,6 @@ const DynamicRouteResolver: FC = () => {
       setLoadingInfo({ state: 'loaded' });
     }
   }, [routeInfo]);
-
-  // const handleLoaded = () => {
-  // 	if (location.hash) {
-  // 		const element = document.getElementById(location.hash.slice(1));
-  // 		if (element) {
-  // 			element.scrollIntoView({ behavior: 'smooth' });
-  // 		}
-  // 	} else {
-  // 		scrollTo({ top: 0 });
-  // 	}
-  // };
 
   const renderRouteComponent = () => {
     if (routeInfo && routeInfo.type === DynamicRouteType.CONTENT_PAGE) {

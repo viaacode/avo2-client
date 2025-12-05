@@ -1,6 +1,6 @@
-import { PermissionName } from '@viaa/avo2-types'
-import { type FC, lazy, Suspense } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import { PermissionName } from '@viaa/avo2-types';
+import { type FC, lazy, Suspense } from 'react';
+import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
@@ -11,11 +11,11 @@ const ContentPageLabelDetail = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
     default: adminCoreModule.ContentPageLabelDetail,
   })),
-)
+);
 
-const ContentPageLabelDetailPage: FC = () => {
-  const navigateFunc = useNavigate()
-  const { id } = useParams<{ id: string }>()
+export const ContentPageLabelDetailPage: FC = () => {
+  const navigateFunc = useNavigate();
+  const { id } = useParams<{ id: string }>();
 
   return (
     <Suspense fallback={<FullPageSpinner />}>
@@ -34,7 +34,7 @@ const ContentPageLabelDetailPage: FC = () => {
         )}
       </PermissionGuard>
     </Suspense>
-  )
-}
+  );
+};
 
-export default ContentPageLabelDetailPage
+export default ContentPageLabelDetailPage;

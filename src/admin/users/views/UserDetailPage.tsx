@@ -21,7 +21,7 @@ const UserDetail = lazy(() =>
   })),
 );
 
-const UserDetailPage: FC = () => {
+export const UserDetailPage: FC = () => {
   const navigateFunc = useNavigate();
   const commonUser = useAtomValue(commonUserAtom);
 

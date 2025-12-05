@@ -1,9 +1,9 @@
-import type { ContentPageInfo } from '@meemoo/admin-core-ui/admin'
-import { useAtomValue } from 'jotai'
-import { type FC, lazy, Suspense, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate, useParams } from 'react-router'
-
+import type { ContentPageInfo } from '@meemoo/admin-core-ui/admin';
+import { PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
+import { type FC, lazy, Suspense, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate, useParams } from 'react-router';
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -11,20 +11,19 @@ import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/Full
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { tText } from '../../../shared/helpers/translate-text';
 import { ADMIN_PATH } from '../../admin.const';
-import { PermissionName } from '@viaa/avo2-types'
 
 const ContentPageDetail = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
     default: adminCoreModule.ContentPageDetail,
   })),
-)
+);
 
-const ContentPageDetailPage: FC = () => {
-  const navigateFunc = useNavigate()
-  const { id } = useParams<{ id: string }>()
-  const commonUser = useAtomValue(commonUserAtom)
+export const ContentPageDetailPage: FC = () => {
+  const navigateFunc = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const commonUser = useAtomValue(commonUserAtom);
 
-  const [item, setItem] = useState<ContentPageInfo | undefined>(undefined)
+  const [item, setItem] = useState<ContentPageInfo | undefined>(undefined);
 
   return (
     <>
@@ -65,7 +64,7 @@ const ContentPageDetailPage: FC = () => {
         </PermissionGuard>
       </Suspense>
     </>
-  )
-}
+  );
+};
 
-export default ContentPageDetailPage
+export default ContentPageDetailPage;

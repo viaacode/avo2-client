@@ -3,9 +3,9 @@ import {
   Modal,
   ModalBody,
   ModalFooterRight,
-} from '@viaa/avo2-components'
-import { PermissionName } from '@viaa/avo2-types'
-import { flatten, groupBy, isNil } from 'es-toolkit'
+} from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
+import { flatten, groupBy, isNil } from 'es-toolkit';
 import {
   type FC,
   lazy,
@@ -13,8 +13,8 @@ import {
   Suspense,
   useCallback,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
+} from 'react';
+import { Helmet } from 'react-helmet';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -27,68 +27,65 @@ import {
   AdminLayoutBody,
   AdminLayoutTopBarRight,
 } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import {
-  fetchTranslations,
-  updateTranslations,
-} from '../translations.service';
+import { fetchTranslations, updateTranslations } from '../translations.service';
 import {
   type Translation,
   type TranslationsState,
 } from '../translations.types';
 
-import './TranslationsOverviewPage.scss'
+import './TranslationsOverviewPage.scss';
+import { map } from 'es-toolkit/compat';
 import { tText } from '../../../shared/helpers/translate-text';
-import { map } from 'es-toolkit/compat'
 
 const TranslationsOverview = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
     default: adminCoreModule.TranslationsOverview,
   })),
-)
+);
 
-const TranslationsOverviewPage: FC = () => {
+export const TranslationsOverviewPage: FC = () => {
   const [initialTranslations, setInitialTranslations] = useState<Translation[]>(
     [],
-  )
-  const [translations, setTranslations] = useState<Translation[]>([])
+  );
+  const [translations, setTranslations] = useState<Translation[]>([]);
 
   const getTranslations = useCallback(async () => {
     fetchTranslations()
       .then((translationsState: TranslationsState[]) => {
-        const translationRows = convertTranslationsToData(translationsState)
-        setInitialTranslations(translationRows)
-        setTranslations(translationRows)
+        const translationRows = convertTranslationsToData(translationsState);
+        setInitialTranslations(translationRows);
+        setTranslations(translationRows);
       })
       .catch((err) => {
-        console.error(new CustomError('Failed to fetch translations', err))
+        console.error(new CustomError('Failed to fetch translations', err));
         ToastService.danger(
           tHtml(
             'admin/translations/views/translations-overview___het-ophalen-van-de-vertalingen-is-mislukt',
           ),
-        )
-      })
-  }, [])
+        );
+      });
+  }, []);
 
   const onSaveTranslations = async () => {
     // convert translations to db format and save translations
-    const promises: any = []
+    const promises: any = [];
 
     const freshTranslations = convertTranslationsToData(
       await fetchTranslations(),
-    )
+    );
 
     const updatedTranslations = freshTranslations.map(
       (freshTranslation: Translation): [string, string] => {
         const initialTranslation = initialTranslations.find(
           (trans) => trans[0] === freshTranslation[0],
-        )
+        );
         const currentTranslation = translations.find(
           (trans) => trans[0] === freshTranslation[0],
-        )
+        );
 
         if (isNil(currentTranslation)) {
           // This translation has been added to the database but didn't exist yet when the page was loaded
-          return freshTranslation
+          return freshTranslation;
         }
 
         if (
@@ -97,42 +94,42 @@ const TranslationsOverviewPage: FC = () => {
           initialTranslation[1] !== currentTranslation[1]
         ) {
           // This translation has changed since the page was loaded
-          return currentTranslation
+          return currentTranslation;
         }
 
         // This translation has not changed, we write the fresh value from the database back to the database
-        return freshTranslation
+        return freshTranslation;
       },
-    )
+    );
 
     convertDataToTranslations(updatedTranslations).forEach((context: any) => {
-      promises.push(updateTranslations(context.name, context))
-    })
+      promises.push(updateTranslations(context.name, context));
+    });
 
     try {
-      await Promise.all(promises)
+      await Promise.all(promises);
 
-      await getTranslations()
+      await getTranslations();
 
       ToastService.success(
         tHtml(
           'admin/translations/views/translations-overview___de-vertalingen-zijn-opgeslagen',
         ),
-      )
+      );
     } catch (err) {
-      console.error(new CustomError('Failed to save translations', err))
+      console.error(new CustomError('Failed to save translations', err));
       ToastService.danger(
         tHtml(
           'admin/translations/views/translations-overview___het-opslaan-van-de-vertalingen-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const convertDataToTranslations = (data: Translation[]) => {
     const translationsPerContext = groupBy(data, (dataItem) => {
-      return splitOnFirstSlash(dataItem[0])[0]
-    })
+      return splitOnFirstSlash(dataItem[0])[0];
+    });
 
     return map(
       translationsPerContext,
@@ -145,16 +142,16 @@ const TranslationsOverviewPage: FC = () => {
           ]),
         ),
       }),
-    )
-  }
+    );
+  };
 
   const splitOnFirstSlash = (text: string): string[] => {
-    const firstSlashIndex = text.indexOf('/')
+    const firstSlashIndex = text.indexOf('/');
     return [
       text.substring(0, firstSlashIndex),
       text.substring(firstSlashIndex + 1),
-    ]
-  }
+    ];
+  };
 
   const convertTranslationsToData = (
     translations: TranslationsState[],
@@ -163,7 +160,7 @@ const TranslationsOverviewPage: FC = () => {
     return flatten(
       translations.map((context: TranslationsState) => {
         // convert object-based translations to array-based translations
-        const translationsArray: Translation[] = Object.entries(context?.value)
+        const translationsArray: Translation[] = Object.entries(context?.value);
 
         // add context to translations id
         return translationsArray.map(
@@ -171,10 +168,10 @@ const TranslationsOverviewPage: FC = () => {
             `${context?.name?.replace('translations-', '')}/${item[0]}`,
             item[1],
           ],
-        )
+        );
       }),
-    )
-  }
+    );
+  };
 
   const renderPopup = ({
     title,
@@ -183,11 +180,11 @@ const TranslationsOverviewPage: FC = () => {
     onSave,
     onClose,
   }: {
-    title: string | ReactNode
-    body: ReactNode
-    onSave: () => void
-    onClose: () => void
-    isOpen: boolean
+    title: string | ReactNode;
+    body: ReactNode;
+    onSave: () => void;
+    onClose: () => void;
+    isOpen: boolean;
   }) => {
     const renderFooter = () => {
       return (
@@ -204,8 +201,8 @@ const TranslationsOverviewPage: FC = () => {
             label={tText('pages/admin/vertalingen-v-2/index___annuleer')}
           />
         </div>
-      )
-    }
+      );
+    };
 
     return (
       <Modal
@@ -217,8 +214,8 @@ const TranslationsOverviewPage: FC = () => {
         <ModalBody>{body}</ModalBody>
         <ModalFooterRight>{renderFooter()}</ModalFooterRight>
       </Modal>
-    )
-  }
+    );
+  };
 
   return (
     <PermissionGuard permissions={[PermissionName.EDIT_TRANSLATIONS]}>
@@ -256,7 +253,7 @@ const TranslationsOverviewPage: FC = () => {
         </AdminLayoutBody>
       </AdminLayout>
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default TranslationsOverviewPage
+export default TranslationsOverviewPage;

@@ -48,7 +48,7 @@ import {
   type UrlRedirectPathPattern,
 } from '../url-redirects.types';
 
-const UrlRedirectEdit: FC = () => {
+export const UrlRedirectEdit: FC = () => {
   const { id } = useParams<{ id: string }>();
 
   const navigateFunc = useNavigate();

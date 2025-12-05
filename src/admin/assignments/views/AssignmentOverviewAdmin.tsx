@@ -64,7 +64,7 @@ import {
   renderAssignmentsMarcomCellText,
 } from '../helpers/render-assignment-columns';
 
-import './AssignmentsOverviewAdmin.scss';
+import './AssignmentOverviewAdmin.scss';
 
 export const AssignmentOverviewAdmin: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);

@@ -15,7 +15,7 @@ const ContentPageLabelEdit = lazy(() =>
   })),
 );
 
-const ContentPageLabelEditPage: FC = () => {
+export const ContentPageLabelEditPage: FC = () => {
   const navigateFunc = useNavigate();
   const matchContentPageLabelCreate = useMatch<'id', string>(
     CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_CREATE,

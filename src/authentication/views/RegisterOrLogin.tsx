@@ -4,16 +4,16 @@ import {
   Grid,
   Modal,
   ModalBody,
-} from '@viaa/avo2-components'
-import { type FC } from 'react'
-import { Helmet } from 'react-helmet'
+} from '@viaa/avo2-components';
+import { type FC } from 'react';
+
+import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
-import { LoginOptions } from '../components/LoginOptions';
-
-import './RegisterOrLogin.scss'
-import { tText } from '../../shared/helpers/translate-text';
 import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { LoginOptions } from '../components/LoginOptions';
+import './RegisterOrLogin.scss';
 
 export const RegisterOrLogin: FC = () => {
   return (
@@ -59,7 +59,7 @@ export const RegisterOrLogin: FC = () => {
         </Modal>
       </Container>
     </Container>
-  )
-}
+  );
+};
 
-export default RegisterOrLogin
+export default RegisterOrLogin;

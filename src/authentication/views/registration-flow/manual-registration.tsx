@@ -33,7 +33,7 @@ import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ZendeskService } from '../../../shared/services/zendesk-service';
 
-import './r4-manual-registration.scss';
+import './manual-registration.scss';
 
 export const ManualRegistration: FC = () => {
   const navigateFunc = useNavigate();

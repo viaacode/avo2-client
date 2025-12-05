@@ -8,24 +8,24 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { type FC, type ReactNode, useState } from 'react'
-import { Link } from 'react-router-dom'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { type FC, type ReactNode, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import teacherCardAppImage from '../../../src/assets/images/lerarenkaart-app.jpg'
+import teacherCardAppImage from '../../../src/assets/images/lerarenkaart-app.jpg';
 import { APP_PATH } from '../../constants';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { AvoToastType } from '../../shared/services/toast-service';
 import { verifyStamboekNumber } from '../authentication.service';
-import { type StamboekValidationStatus } from '../views/registration-flow/r3-stamboek';
+import { type StamboekValidationStatus } from '../views/registration-flow/register-stamboek.tsx';
 
-import './StamboekInput.scss'
+import './StamboekInput.scss';
 
 interface StamboekInputProps {
-  value?: string
-  onChange: (validStamboekNumber: string) => void
+  value?: string;
+  onChange: (validStamboekNumber: string) => void;
 }
 
 export const StamboekInput: FC<StamboekInputProps> = ({
@@ -33,16 +33,16 @@ export const StamboekInput: FC<StamboekInputProps> = ({
   value = '',
 }) => {
   const [stamboekValidationStatus, setStamboekValidationStatus] =
-    useState<StamboekValidationStatus>('INCOMPLETE')
-  const [rawStamboekNumber, setRawStamboekNumber] = useState<string>(value)
+    useState<StamboekValidationStatus>('INCOMPLETE');
+  const [rawStamboekNumber, setRawStamboekNumber] = useState<string>(value);
 
   const STAMBOEK_MESSAGES: {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     [status in StamboekValidationStatus]: {
       /* eslint-enable @typescript-eslint/no-unused-vars */
-      message: string | ReactNode
-      status: AvoToastType | undefined
-    }
+      message: string | ReactNode;
+      status: AvoToastType | undefined;
+    };
   } = {
     INCOMPLETE: {
       message: '',
@@ -98,48 +98,48 @@ export const StamboekInput: FC<StamboekInputProps> = ({
       ),
       status: AvoToastType.DANGER,
     },
-  }
+  };
 
   const setStamboekNumber = async (rawStamboekNumber: string) => {
     try {
-      setRawStamboekNumber(rawStamboekNumber)
-      const cleanedStamboekNumber = rawStamboekNumber.replace(/[^0-9-]+/, '')
+      setRawStamboekNumber(rawStamboekNumber);
+      const cleanedStamboekNumber = rawStamboekNumber.replace(/[^0-9-]+/, '');
       // Check if stamboek number is incomplete
       // eg: 3256
       // or: 43457876543-34
       if (/^[0-9]{0,10}$/g.test(cleanedStamboekNumber)) {
-        onChange('')
-        setStamboekValidationStatus('INCOMPLETE')
-        return
+        onChange('');
+        setStamboekValidationStatus('INCOMPLETE');
+        return;
       }
 
       // Only allow numbers that start with a 6 or are our test number that starts with a 9
       // https://meemoo.atlassian.net/browse/AVO-3508
       if (/^[69][0-9]{10}$/g.test(cleanedStamboekNumber)) {
-        const stamboekNumber = cleanedStamboekNumber.substring(0, 11)
-        setStamboekValidationStatus('VALID_FORMAT')
+        const stamboekNumber = cleanedStamboekNumber.substring(0, 11);
+        setStamboekValidationStatus('VALID_FORMAT');
         const validationStatus: Avo.Stamboek.ValidationStatuses =
-          await verifyStamboekNumber(stamboekNumber)
+          await verifyStamboekNumber(stamboekNumber);
         if (validationStatus === 'VALID') {
-          onChange(stamboekNumber)
-          setStamboekValidationStatus('VALID')
+          onChange(stamboekNumber);
+          setStamboekValidationStatus('VALID');
         } else if (validationStatus === 'ALREADY_IN_USE') {
-          onChange('')
-          setStamboekValidationStatus('ALREADY_IN_USE')
+          onChange('');
+          setStamboekValidationStatus('ALREADY_IN_USE');
         } else {
           // 'INVALID' server response
-          onChange('')
-          setStamboekValidationStatus('INVALID_NUMBER')
+          onChange('');
+          setStamboekValidationStatus('INVALID_NUMBER');
         }
       } else {
-        onChange('')
-        setStamboekValidationStatus('INVALID_FORMAT')
+        onChange('');
+        setStamboekValidationStatus('INVALID_FORMAT');
       }
     } catch (err) {
-      onChange('')
-      setStamboekValidationStatus('SERVER_ERROR')
+      onChange('');
+      setStamboekValidationStatus('SERVER_ERROR');
     }
-  }
+  };
 
   return (
     <Spacer className="m-stamboek-input" margin={['bottom-large']}>
@@ -185,5 +185,5 @@ export const StamboekInput: FC<StamboekInputProps> = ({
         )}
       </Spacer>
     </Spacer>
-  )
-}
+  );
+};
