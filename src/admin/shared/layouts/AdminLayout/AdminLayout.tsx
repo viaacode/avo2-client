@@ -1,22 +1,22 @@
-import { Container, useSlot } from '@viaa/avo2-components'
-import { type FC, type ReactNode } from 'react'
+import { Container, useSlot } from '@viaa/avo2-components';
+import { type FC, type ReactNode } from 'react';
 
 import { TopBar } from '../../components/TopBar/TopBar';
 
-import './AdminLayout.scss'
 import {
   AdminLayoutBody,
   AdminLayoutHeader,
   AdminLayoutTopBarCenter,
   AdminLayoutTopBarRight,
 } from './AdminLayout.slots';
+import './AdminLayout.scss';
 
 interface AdminLayoutProps {
-  children?: ReactNode
-  className?: string
-  pageTitle?: string
-  onClickBackButton?: () => void
-  size: 'small' | 'medium' | 'large' | 'full-width' | 'no-margin' // TODO move this to a type in the Container component in the components repo
+  children?: ReactNode;
+  className?: string;
+  pageTitle?: string;
+  onClickBackButton?: () => void;
+  size: 'small' | 'medium' | 'large' | 'full-width' | 'no-margin'; // TODO move this to a type in the Container component in the components repo
 }
 
 export const AdminLayout: FC<AdminLayoutProps> = ({
@@ -26,10 +26,10 @@ export const AdminLayout: FC<AdminLayoutProps> = ({
   onClickBackButton,
   size,
 }) => {
-  const body = useSlot(AdminLayoutBody, children)
-  const topBarCenter = useSlot(AdminLayoutTopBarCenter, children)
-  const topBarRight = useSlot(AdminLayoutTopBarRight, children)
-  const header = useSlot(AdminLayoutHeader, children)
+  const body = useSlot(AdminLayoutBody, children);
+  const topBarCenter = useSlot(AdminLayoutTopBarCenter, children);
+  const topBarRight = useSlot(AdminLayoutTopBarRight, children);
+  const header = useSlot(AdminLayoutHeader, children);
 
   return (
     <div className="l-admin">
@@ -52,5 +52,5 @@ export const AdminLayout: FC<AdminLayoutProps> = ({
         {size === 'no-margin' && <>{body || children}</>}
       </div>
     </div>
-  )
-}
+  );
+};

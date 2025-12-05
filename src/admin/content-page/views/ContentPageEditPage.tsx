@@ -1,7 +1,7 @@
-import { PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { type FC, lazy, Suspense, useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import { PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
+import { type FC, lazy, Suspense, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
@@ -16,18 +16,18 @@ const ContentPageEdit = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
     default: adminCoreModule.ContentPageEdit,
   })),
-)
+);
 
 const ContentPageDetailPage: FC = () => {
-  const navigateFunc = useNavigate()
-  const { id: contentPageId } = useParams<{ id: string }>()
+  const navigateFunc = useNavigate();
+  const { id: contentPageId } = useParams<{ id: string }>();
 
-  const commonUser = useAtomValue(commonUserAtom)
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false)
+  const commonUser = useAtomValue(commonUserAtom);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
 
   useWarningBeforeUnload({
     when: hasUnsavedChanges,
-  })
+  });
 
   return (
     <Suspense fallback={<FullPageSpinner />}>
@@ -42,7 +42,7 @@ const ContentPageDetailPage: FC = () => {
           id={contentPageId}
           commonUser={commonUser}
           onHasUnsavedChangesChanged={(state) => {
-            setHasUnsavedChanges(state)
+            setHasUnsavedChanges(state);
           }}
           onGoBack={() =>
             goBrowserBackWithFallback(
@@ -54,7 +54,7 @@ const ContentPageDetailPage: FC = () => {
         <BeforeUnloadPrompt when={hasUnsavedChanges} />
       </PermissionGuard>
     </Suspense>
-  )
-}
+  );
+};
 
-export default ContentPageDetailPage
+export default ContentPageDetailPage;

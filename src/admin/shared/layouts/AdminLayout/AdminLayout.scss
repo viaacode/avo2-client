@@ -1,78 +1,96 @@
 @use "../../../../styles/settings/colors" as colors;
 @use "../../../../styles/settings/variables" as variables;
 
-.l-admin {
+.o-app--admin__main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+
+  .c-top-bar {
+	background-color: colors.$color-gray-50;
+
+	.c-admin__header {
+	  display: flex;
+	  align-items: center;
+
+	  .c-admin__page-title {
+		font-size: 2.4rem;
+		line-height: 2.4rem;
+		margin: 0;
+		flex-grow: 1;
+	  }
+	}
+  }
+
+  .c-toolbar .c-button + .c-button {
+	margin-left: variables.$g-spacer-unit;
+  }
+
+  .m-admin-layout-content {
+	overflow-y: auto;
+	height: calc(100vh - 6.4rem);
+
+	> .o-container-vertical {
+	  padding-bottom: 40rem; // Leave space for the dropdown to open without having to scroll again
+	}
+  }
+
+  &.l-admin--with-actions {
+	// Prevent overlap with admin actions bar when present
+	padding-bottom: variables.$admin-actions-bar-height;
+  }
+
+  .c-table.c-table_detail-page {
+	tr {
+	  &:nth-child(even) {
+		background-color: #eee;
+	  }
+
+	  th,
+	  td {
+		padding: 1rem 1rem;
+		vertical-align: middle;
+	  }
+
+	  th {
+		text-align: right;
+	  }
+	}
+  }
+
+  .c-table {
+	margin-top: 2rem !important;
+  }
+
+  .c-table__row {
+	border: 1px solid lightgray;
+
+	&--header {
+	  padding: 2rem;
+	}
+
+	&--header th:nth-child(2) {
+	  border-left: 1px solid lightgray;
+	}
+  }
+
+  .c-table__cell {
+	justify-content: center;
+
+	&--header {
+	  padding: 1rem;
+	}
+  }
+}
+
+// Admin core layout inside an admin-core page since we need to save / cancel buttons in the header
+.c-admin {
+  .c-admin__header {
 	display: flex;
-	flex-direction: column;
-	flex: 1 1 auto;
+	align-items: center;
 
-	.c-top-bar {
-		background-color: colors.$color-gray-50;
-
-		h1 {
-			font-size: 2.4rem;
-			line-height: 2.4rem;
-			margin: 0;
-		}
+	.c-admin__page-title {
+	  flex-grow: 1;
 	}
-
-	.c-toolbar .c-button + .c-button {
-		margin-left: variables.$g-spacer-unit;
-	}
-
-	.m-admin-layout-content {
-		overflow-y: auto;
-		height: calc(100vh - 6.4rem);
-
-		> .o-container-vertical {
-			padding-bottom: 40rem; // Leave space for the dropdown to open without having to scroll again
-		}
-	}
-
-	&.l-admin--with-actions {
-		// Prevent overlap with admin actions bar when present
-		padding-bottom: variables.$admin-actions-bar-height;
-	}
-
-	.c-table.c-table_detail-page {
-		tr {
-			&:nth-child(even) {
-				background-color: #eee;
-			}
-
-			th,
-			td {
-				padding: 1rem 1rem;
-				vertical-align: middle;
-			}
-
-			th {
-				text-align: right;
-			}
-		}
-	}
-
-	.c-table {
-		margin-top: 2rem !important;
-	}
-
-	.c-table__row {
-		border: 1px solid lightgray;
-
-		&--header {
-			padding: 2rem;
-		}
-
-		&--header th:nth-child(2) {
-			border-left: 1px solid lightgray;
-		}
-	}
-
-	.c-table__cell {
-		justify-content: center;
-
-		&--header {
-			padding: 1rem;
-		}
-	}
+  }
 }

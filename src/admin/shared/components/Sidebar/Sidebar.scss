@@ -5,6 +5,8 @@
    Component: Sidebar
    ========================================================================== */
 
+$sidebar-header-height: 6.4rem;
+
 .o-sidebar__avo {
 	width: 100%;
 	height: 100vh;
@@ -13,6 +15,9 @@
 
 	&__content {
 		background-color: colors.$color-gray-700;
+	  overflow-y: auto;
+	  max-height: calc(100vh - $sidebar-header-height);
+	  padding-bottom: 4rem;
 	}
 }
 
@@ -23,7 +28,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: stretch;
-	height: 6.4rem;
+	height: $sidebar-header-height;
 	padding: 0 1.5rem 0 3.2rem !important;
 	border-bottom: 2px solid colors.$color-gray-400;
 	font-size: 2.4rem;

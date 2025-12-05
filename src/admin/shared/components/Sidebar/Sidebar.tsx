@@ -2,7 +2,7 @@ import { Icon, IconName } from '@viaa/avo2-components';
 import { clsx } from 'clsx';
 import { flatten } from 'es-toolkit';
 import { type FC, type ReactElement, type ReactNode } from 'react';
-import { Link, type Location, NavLink, useLocation } from 'react-router-dom';
+import { Link, type Location, NavLink, useLocation } from 'react-router';
 
 import { APP_PATH } from '../../../../constants';
 import { CustomError } from '../../../../shared/helpers/custom-error';
@@ -92,7 +92,7 @@ export const Sidebar: FC<SidebarProps> = ({
         ),
       ]),
     );
-    return <>{renderedNavItems}</>;
+    return renderedNavItems;
   };
 
   return (

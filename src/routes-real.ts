@@ -1,10 +1,4 @@
 import {
-  NavigationBarDetail,
-  NavigationBarOverview,
-  NavigationItemEdit,
-} from '@meemoo/admin-core-ui/admin';
-import { ComponentType } from 'react';
-import {
   type MiddlewareFunction,
   type RouteObject,
   redirect,
@@ -16,11 +10,18 @@ import { ASSIGNMENTS_PATH } from './admin/assignments/assignments.routes';
 import AssignmentsMarcomOverview from './admin/assignments/views/AssignmentsMarcomOverview.tsx';
 import AssignmentsOverviewAdmin from './admin/assignments/views/AssignmentsOverviewAdmin.tsx';
 import { COLLECTIONS_OR_BUNDLES_PATH } from './admin/collectionsOrBundles/collections-or-bundles.routes';
+import CollectionOrBundleActualisationOverview from './admin/collectionsOrBundles/views/CollectionOrBundleActualisationOverview.tsx';
+import CollectionOrBundleMarcomOverview from './admin/collectionsOrBundles/views/CollectionOrBundleMarcomOverview.tsx';
+import CollectionOrBundleQualityCheckOverview from './admin/collectionsOrBundles/views/CollectionOrBundleQualityCheckOverview.tsx';
+import CollectionsOrBundlesOverview from './admin/collectionsOrBundles/views/CollectionsOrBundlesOverview.tsx';
 import { CONTENT_PAGE_PATH } from './admin/content-page/content-page.routes';
 import ContentPageEditPage from './admin/content-page/views/ContentPageEditPage.tsx';
 import ContentPageDetailPage from './admin/content-page/views/ContentPageEditPage.tsx';
 import ContentPageOverviewPage from './admin/content-page/views/ContentPageOverviewPage.tsx';
 import { CONTENT_PAGE_LABEL_PATH } from './admin/content-page-labels/content-page-label.routes';
+import ContentPageLabelDetailPage from './admin/content-page-labels/views/ContentPageLabelDetailPage.tsx';
+import ContentPageLabelEditPage from './admin/content-page-labels/views/ContentPageLabelEditPage.tsx';
+import ContentPageLabelOverviewPage from './admin/content-page-labels/views/ContentPageLabelOverviewPage.tsx';
 import Dashboard from './admin/dashboard/views/Dashboard.tsx';
 import { INTERACTIVE_TOUR_PATH } from './admin/interactive-tour/interactive-tour.routes';
 import InteractiveTourDetail from './admin/interactive-tour/views/InteractiveTourDetail.tsx';
@@ -29,7 +30,11 @@ import InteractiveTourOverview from './admin/interactive-tour/views/InteractiveT
 import { ITEMS_PATH } from './admin/items/items.routes';
 import { ItemsOverview } from './admin/items/views/ItemsOverview.tsx';
 import { PublishItemsOverview } from './admin/items/views/PublishItemsOverview.tsx';
+import MaintenanceAlertsOverviewPage from './admin/maintenance-alerts-overview/MaintenanceAlertsOverviewPage.tsx';
 import { NAVIGATIONS_PATH } from './admin/navigations/navigations.routes.ts';
+import { NavigationBarDetailPage } from './admin/navigations/views/NavigationBarDetailPage.tsx';
+import { NavigationBarOverviewPage } from './admin/navigations/views/NavigationBarOverviewPage.tsx';
+import { NavigationItemEditPage } from './admin/navigations/views/NavigationItemEditPage.tsx';
 import { PUPIL_COLLECTIONS_PATH } from './admin/pupil-collection/pupil-collection.routes';
 import { PupilCollectionsOverview } from './admin/pupil-collection/views/PupilCollectionsOverview.tsx';
 import { TRANSLATIONS_PATH } from './admin/translations/translations.routes.ts';
@@ -46,16 +51,21 @@ import { UserOverviewPage } from './admin/users/views/UserOverviewPage.tsx';
 import AssignmentDetailSwitcher from './assignment/views/AssignmentDetailSwitcher.tsx';
 import AssignmentEdit from './assignment/views/AssignmentEdit.tsx';
 import AssignmentPupilCollectionDetail from './assignment/views/AssignmentPupilCollectionDetail.tsx';
+import AssignmentResponseAdminEdit from './assignment/views/AssignmentResponseEdit/AssignmentResponseAdminEdit.tsx';
 import LinkYourAccount from './authentication/views/LinkYourAccount.tsx';
 import Login from './authentication/views/Login.tsx';
 import Logout from './authentication/views/Logout.tsx';
+import L8AcceptConditions from './authentication/views/registration-flow/l8-accept-conditions.tsx';
 import R3Stamboek from './authentication/views/registration-flow/r3-stamboek.tsx';
+import R4ManualRegistration from './authentication/views/registration-flow/r4-manual-registration.tsx';
+import R10StudentTeacher from './authentication/views/registration-flow/r10-student-teacher.tsx';
 import BundleDetail from './bundle/views/BundleDetail.tsx';
 import BundleEdit from './bundle/views/BundleEdit.tsx';
 import CollectionDetail from './collection/views/CollectionDetail.tsx';
 import CollectionEdit from './collection/views/CollectionEdit.tsx';
 import { APP_PATH } from './constants';
 import CookiePolicy from './cookie-policy/views/CookiePolicy.tsx';
+import DynamicRouteResolver from './dynamic-route-resolver/views/DynamicRouteResolver.tsx';
 import { RegisterOrLogin } from './embed/components/RegisterOrLogin.tsx';
 import EmbedCodeDetail from './embed-code/views/EmbedCodeDetail.tsx';
 import ErrorView from './error/views/ErrorView.tsx';
@@ -72,7 +82,10 @@ import Settings from './settings/views/Settings.tsx';
 import { ErrorBoundary } from './shared/components/ErrorBoundary/ErrorBoundary';
 import { FullPageSpinner } from './shared/components/FullPageSpinner/FullPageSpinner';
 import { ROUTE_PARTS } from './shared/constants/routes';
+import EducationalAuthorItemRequestForm from './user-item-request-form/views/EducationalAuthorItemRequestForm.tsx';
+import EducationalAuthorItemRequestFormConfirm from './user-item-request-form/views/EducationalAuthorItemRequestFormConfirm.tsx';
 import UserItemRequestForm from './user-item-request-form/views/UserItemRequestForm.tsx';
+import UserItemRequestFormConfirm from './user-item-request-form/views/UserItemRequestFormConfirm.tsx';
 import Workspace from './workspace/views/Workspace.tsx';
 
 async function logRoutesMiddleware({
@@ -145,6 +158,7 @@ const APP_ROUTES: RouteObject[] = [
             //   import(
             //     './dynamic-route-resolver/views/DynamicRouteResolver'
             //   ).then(reactRouterConvert),
+            Component: DynamicRouteResolver,
             path: APP_PATH.ALL_ROUTES.route,
           },
         ],
@@ -189,6 +203,7 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
     {
       id: 'ManualRegistration',
       path: APP_PATH.MANUAL_ACCESS_REQUEST.route,
+      Component: R4ManualRegistration,
       // lazy: () =>
       //   import(
       //     './authentication/views/registration-flow/r4-manual-registration'
@@ -199,6 +214,7 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
     {
       id: 'StudentTeacher',
       path: APP_PATH.STUDENT_TEACHER.route,
+      Component: R10StudentTeacher,
       // lazy: () =>
       //   import(
       //     './authentication/views/registration-flow/r10-student-teacher'
@@ -231,6 +247,7 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
     {
       id: 'AcceptConditions',
       path: APP_PATH.ACCEPT_CONDITIONS.route,
+      Component: L8AcceptConditions,
       // lazy: () =>
       //   import(
       //     './authentication/views/registration-flow/l8-accept-conditions'
@@ -435,6 +452,7 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
     // edit pupil collection response as admin
     {
       path: APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route,
+      Component: AssignmentResponseAdminEdit,
       // lazy: () =>
       //   import(
       //     './assignment/views/AssignmentResponseEdit/AssignmentResponseAdminEdit'
@@ -512,6 +530,7 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
     },
     {
       path: APP_PATH.USER_ITEM_REQUEST_FORM_CONFIRM.route,
+      Component: UserItemRequestFormConfirm,
       // lazy: () =>
       //   import(
       // './user-item-request-form/views/UserItemRequestFormConfirm'
@@ -522,6 +541,7 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
     },
     {
       path: APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM.route,
+      Component: EducationalAuthorItemRequestForm,
       // lazy: () =>
       //   import(
       //     './user-item-request-form/views/EducationalAuthorItemRequestForm'
@@ -532,6 +552,7 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
     },
     {
       path: APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM_CONFIRM.route,
+      Component: EducationalAuthorItemRequestFormConfirm,
       // lazy: () =>
       //   import(
       //     './user-item-request-form/views/EducationalAuthorItemRequestFormConfirm'
@@ -596,6 +617,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'CollectionsOverview',
+      Component: CollectionsOrBundlesOverview,
       // lazy: () =>
       //   import(
       //     './admin/collectionsOrBundles/views/CollectionsOrBundlesOverview'
@@ -606,6 +628,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'CollectionActualisationOverview',
+      Component: CollectionOrBundleActualisationOverview,
       // lazy: () =>
       //   import(
       //     './admin/collectionsOrBundles/views/CollectionOrBundleActualisationOverview'
@@ -616,6 +639,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'CollectionQualityCheckOverview',
+      Component: CollectionOrBundleQualityCheckOverview,
       // lazy: () =>
       //   import(
       //     './admin/collectionsOrBundles/views/CollectionOrBundleQualityCheckOverview'
@@ -626,6 +650,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'CollectionMarcomOverview',
+      Component: CollectionOrBundleMarcomOverview,
       // lazy: () =>
       //   import(
       //     './admin/collectionsOrBundles/views/CollectionOrBundleMarcomOverview'
@@ -636,6 +661,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'BundlesOverview',
+      Component: CollectionsOrBundlesOverview,
       // lazy: () =>
       //   import(
       //     './admin/collectionsOrBundles/views/CollectionsOrBundlesOverview'
@@ -646,6 +672,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'BundleActualisationOverview',
+      Component: CollectionOrBundleActualisationOverview,
       // lazy: () =>
       //   import(
       //     './admin/collectionsOrBundles/views/CollectionOrBundleActualisationOverview'
@@ -656,6 +683,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'BundleQualityCheckOverview',
+      Component: CollectionOrBundleQualityCheckOverview,
       // lazy: () =>
       //   import(
       //     './admin/collectionsOrBundles/views/CollectionOrBundleQualityCheckOverview'
@@ -666,6 +694,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'BundleMarcomOverview',
+      Component: CollectionOrBundleMarcomOverview,
       // lazy: () =>
       //   import(
       //     './admin/collectionsOrBundles/views/CollectionOrBundleMarcomOverview'
@@ -720,6 +749,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'ContentPageLabelOverviewPage',
+      Component: ContentPageLabelOverviewPage,
       // lazy: () =>
       //   import(
       //     './admin/content-page-labels/views/ContentPageLabelOverviewPage'
@@ -730,6 +760,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'ContentPageLabelEditPage create',
+      Component: ContentPageLabelEditPage,
       // lazy: () =>
       //   import(
       //     './admin/content-page-labels/views/ContentPageLabelEditPage'
@@ -740,6 +771,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'ContentPageLabelEditPage edit',
+      Component: ContentPageLabelEditPage,
       // lazy: () =>
       //   import(
       //     './admin/content-page-labels/views/ContentPageLabelEditPage'
@@ -750,6 +782,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'ContentPageLabelDetailPage',
+      Component: ContentPageLabelDetailPage,
       // lazy: () =>
       //   import(
       //     './admin/content-page-labels/views/ContentPageLabelDetailPage'
@@ -833,7 +866,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'NavigationBarOverview',
-      Component: NavigationBarOverview,
+      Component: NavigationBarOverviewPage,
       // lazy: () =>
       //import('./admin/navigations/views/NavigationBarOverview').then(
       //   reactRouterConvert,
@@ -844,7 +877,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'NavigationBarDetail',
-      Component: NavigationBarDetail as ComponentType<{}>,
+      Component: NavigationBarDetailPage,
       // lazy: () =>
       //import('./admin/navigations/views/NavigationBarDetail').then(
       //   reactRouterConvert,
@@ -855,7 +888,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'NavigationItemEdit create',
-      Component: NavigationItemEdit as ComponentType<{}>,
+      Component: NavigationItemEditPage,
       // lazy: () =>
       //import('./admin/navigations/views/NavigationItemEdit').then(
       //   reactRouterConvert,
@@ -866,7 +899,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'NavigationItemEdit edit',
-      Component: NavigationItemEdit as ComponentType<{}>,
+      Component: NavigationItemEditPage,
       // lazy: () =>
       //import('./admin/navigations/views/NavigationItemEdit').then(
       //   reactRouterConvert,
@@ -970,6 +1003,7 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'MaintenanceAlertsOverviewPage',
+      Component: MaintenanceAlertsOverviewPage,
       // lazy: () =>
       //   import(
       //     './admin/maintenance-alerts-overview/MaintenanceAlertsOverviewPage'

@@ -10,7 +10,7 @@ import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-ba
 import { tText } from '../../../shared/helpers/translate-text';
 import { ADMIN_PATH } from '../../admin.const';
 
-import './NavigationBarDetail.scss';
+import './NavigationBarDetailPage.scss';
 
 const NavigationDetail = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -18,7 +18,7 @@ const NavigationDetail = lazy(() =>
   })),
 );
 
-const NavigationBarDetail: FC = () => {
+export const NavigationBarDetailPage: FC = () => {
   const navigateFunc = useNavigate();
   const { navigationBarId } = useParams<{ navigationBarId: string }>();
 
@@ -59,4 +59,4 @@ const NavigationBarDetail: FC = () => {
   );
 };
 
-export default NavigationBarDetail;
+export default NavigationBarDetailPage;

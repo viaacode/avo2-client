@@ -94,17 +94,17 @@ import {
   StringParam,
   useQueryParams,
 } from '../../shared/helpers/routing/use-query-params-ssr.ts';
+import { useGetWorkspaceCounts } from '../../workspace/hooks/useGetWorkspaceCounts.ts';
 import { useDeleteCollectionOrBundleByUuid } from '../hooks/useDeleteCollectionOrBundleByUuid.tsx';
 
 interface CollectionOrBundleOverviewProps {
-  numberOfItems: number;
   type: CollectionOrBundle;
   onUpdate: () => void | Promise<void>;
 }
 
 export const CollectionOrBundleOverview: FC<
   CollectionOrBundleOverviewProps
-> = ({ numberOfItems, type, onUpdate = noop }) => {
+> = ({ type, onUpdate = noop }) => {
   const navigateFunc = useNavigate();
   const commonUser = useAtomValue(commonUserAtom);
 
@@ -150,6 +150,8 @@ export const CollectionOrBundleOverview: FC<
     sortColumn: StringParam,
     sortOrder: StringParam,
   });
+  const { data: workspaceCounts } = useGetWorkspaceCounts();
+  const numberOfItems = workspaceCounts?.collections || 0;
 
   const isContributor =
     selectedCollection?.share_type ===

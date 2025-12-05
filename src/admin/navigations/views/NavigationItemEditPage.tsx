@@ -1,6 +1,6 @@
-import { type FC, lazy, Suspense } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate, useParams } from 'react-router'
+import { type FC, lazy, Suspense } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -10,22 +10,22 @@ import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-ba
 import { tText } from '../../../shared/helpers/translate-text';
 import { ADMIN_PATH } from '../../admin.const';
 
-import './NavigationItemEdit.scss'
+import './NavigationItemEdit.scss';
 
-import { PermissionName } from '@viaa/avo2-types'
+import { PermissionName } from '@viaa/avo2-types';
 
 const NavigationEdit = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
     default: adminCoreModule.NavigationItemEdit,
   })),
-)
+);
 
-const NavigationItemEdit: FC = () => {
-  const navigateFunc = useNavigate()
+export const NavigationItemEditPage: FC = () => {
+  const navigateFunc = useNavigate();
   const { navigationBarId, navigationItemId } = useParams<{
-    navigationBarId: string
-    navigationItemId: string
-  }>()
+    navigationBarId: string;
+    navigationItemId: string;
+  }>();
 
   // Render
   return (
@@ -68,7 +68,7 @@ const NavigationItemEdit: FC = () => {
         </Suspense>
       </div>
     </PermissionGuard>
-  )
-}
+  );
+};
 
-export default NavigationItemEdit
+export default NavigationItemEditPage;
