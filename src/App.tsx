@@ -199,7 +199,7 @@ const App: FC = () => {
         })}
       >
         <ToastContainer
-          autoClose={400000}
+          autoClose={4000}
           className="c-alert-stack"
           closeButton={false}
           closeOnClick={false}
