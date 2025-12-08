@@ -1,3 +1,6 @@
+import { AdminConfig } from '@meemoo/admin-core-ui/admin';
+import { AdminConfigManager } from '@meemoo/admin-core-ui/client';
+import { noop } from 'es-toolkit';
 import {
   type MiddlewareFunction,
   type RouteObject,
@@ -15,6 +18,7 @@ import { CollectionOrBundleMarcomOverview } from './admin/collectionsOrBundles/v
 import { CollectionOrBundleQualityCheckOverview } from './admin/collectionsOrBundles/views/CollectionOrBundleQualityCheckOverview.tsx';
 import { CollectionsOrBundlesOverview } from './admin/collectionsOrBundles/views/CollectionsOrBundlesOverview.tsx';
 import { CONTENT_PAGE_PATH } from './admin/content-page/content-page.routes';
+import { getContentPageByPath } from './admin/content-page/hooks/use-get-content-page-by-path.ts';
 import { ContentPageDetailPage } from './admin/content-page/views/ContentPageDetailPage.tsx';
 import { ContentPageEditPage } from './admin/content-page/views/ContentPageEditPage.tsx';
 import ContentPageOverviewPage from './admin/content-page/views/ContentPageOverviewPage.tsx';
@@ -37,6 +41,7 @@ import { NavigationBarOverviewPage } from './admin/navigations/views/NavigationB
 import { NavigationItemEditPage } from './admin/navigations/views/NavigationItemEditPage.tsx';
 import { PUPIL_COLLECTIONS_PATH } from './admin/pupil-collection/pupil-collection.routes';
 import { PupilCollectionsOverview } from './admin/pupil-collection/views/PupilCollectionsOverview.tsx';
+import { getAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config.const.tsx';
 import { TRANSLATIONS_PATH } from './admin/translations/translations.routes.ts';
 import { TranslationsOverviewPage } from './admin/translations/views/TranslationsOverviewPage.tsx';
 import { URL_REDIRECT_PATH } from './admin/url-redirects/url-redirects.routes';
@@ -82,6 +87,7 @@ import { Settings } from './settings/views/Settings.tsx';
 import { ErrorBoundary } from './shared/components/ErrorBoundary/ErrorBoundary';
 import { FullPageSpinner } from './shared/components/FullPageSpinner/FullPageSpinner';
 import { ROUTE_PARTS } from './shared/constants/routes';
+import { TestWrapper } from './test-wrapper.tsx';
 import { EducationalAuthorItemRequestForm } from './user-item-request-form/views/EducationalAuthorItemRequestForm.tsx';
 import { EducationalAuthorItemRequestFormConfirm } from './user-item-request-form/views/EducationalAuthorItemRequestFormConfirm.tsx';
 import { UserItemRequestForm } from './user-item-request-form/views/UserItemRequestForm.tsx';
@@ -93,6 +99,47 @@ async function logRoutesMiddleware({
 }: Parameters<MiddlewareFunction>[0]) {
   console.log(`${request.method} ${request.url}`);
 }
+
+const TEST_APP_ROUTES: RouteObject[] = [
+  {
+    id: 'wrapper',
+    path: '/',
+    loader: () => {
+      try {
+        // Set admin-core config with dummy navigate function during SSR
+        // The config will be set again in the client after hydration
+        const config: AdminConfig = getAdminCoreConfig(noop);
+        AdminConfigManager.setConfig(config);
+      } catch (err) {
+        console.error(
+          'Failed to load admin-core-config in react-router loader for route wrapper',
+          err,
+        );
+      }
+    },
+    Component: TestWrapper,
+    children: [
+      {
+        id: 'root-test',
+        path: '/',
+        loader: async () => {
+          try {
+            // Load content page for logged out homepage
+            const contentPage = await getContentPageByPath('/');
+            return contentPage;
+          } catch (err) {
+            console.error(
+              'Failed to load content page in react-router loader for route root-test',
+              err,
+              { path: '/' },
+            );
+          }
+        },
+        Component: LoggedOutHome,
+      },
+    ],
+  },
+];
 
 const APP_ROUTES: RouteObject[] = [
   {
@@ -1015,4 +1062,4 @@ function getAdminRoutes(): RouteObject[] {
   ];
 }
 
-export default APP_ROUTES;
+export default TEST_APP_ROUTES;

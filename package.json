@@ -41,7 +41,7 @@
   "dependencies": {
     "@flowplayer/player": "3.32.1",
     "@hookform/resolvers": "2.9.11",
-    "@meemoo/admin-core-ui": "5.0.11",
+    "@meemoo/admin-core-ui": "5.0.17",
     "@meemoo/react-components": "5.0.8",
     "@popperjs/core": "2.11.6",
     "@react-router/node": "^7.9.6",

@@ -1,6 +1,7 @@
 interface Window {
   // Environment values that are injected using the env-config.js during build
   _ENV_: {
+    CLIENT_URL: string;
     PROXY_URL: string;
     FLOW_PLAYER_TOKEN: string;
     FLOW_PLAYER_ID: string;

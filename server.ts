@@ -48,18 +48,17 @@ async function createServer() {
       // 4. render the app HTML. This assumes entry-server.js's exported
       //     `render` function calls appropriate framework SSR APIs,
       //    e.g. ReactDOMServer.renderToString()
-      const appHtml = await render(new Request(
+      const response = await render(new Request(
         url
       ));
-
-      // 5. Inject the app-rendered HTML into the template.
-      const html = template.replace(`<!--ssr-outlet-->`, () => appHtml);
+      const html = await response.text();
 
       // 6. Send the rendered HTML back.
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
     } catch (err: any) {
       // If an error is caught, let Vite fix the stack trace so it maps back
       // to your actual source code.
+      console.error('[SSR]: Error during render', err);
       vite.ssrFixStacktrace(err);
       next(err);
     }

@@ -22,41 +22,58 @@ const indexHtml = fs.readFileSync(
 );
 
 export async function render(request: Request) {
-  // 1. run actions/loaders to get the routing context with `query`
-  let context = await query(request);
+  try {
+    console.log('[SSR] requesting route: ' + new URL(request.url).pathname);
 
-  // If `query` returns a Response, send it raw (a route probably a redirected)
-  if (context instanceof Response) {
-    return context;
-  }
+    // 1. run actions/loaders to get the routing context with `query`
+    let context = await query(request);
 
-  // 2. Create a static router for SSR
-  let router = createStaticRouter(dataRoutes, context);
-
-  // 3. Render everything with StaticRouterProvider
-  let html = renderToString(
-    <StaticRouterProvider router={router} context={context} />,
-  );
-
-  // Setup headers from action and loaders from deepest match
-  let leaf = context.matches[context.matches.length - 1];
-  let actionHeaders = context.actionHeaders[leaf.route.id];
-  let loaderHeaders = context.loaderHeaders[leaf.route.id];
-  let headers = new Headers(actionHeaders);
-  if (loaderHeaders) {
-    for (let [key, value] of loaderHeaders.entries()) {
-      headers.append(key, value);
+    // If `query` returns a Response, send it raw (a route probably a redirected)
+    if (context instanceof Response) {
+      return context;
     }
-  }
 
-  headers.set('Content-Type', 'text/html; charset=utf-8');
+    // 2. Create a static router for SSR
+    let router = createStaticRouter(dataRoutes, context);
 
-  // 4. send a response
-  return new Response(
-    indexHtml.replace('<div id="root"></div>', `<div id="root">${html}</div>`),
-    {
+    // 3. Render everything with StaticRouterProvider
+    let html = renderToString(
+      <StaticRouterProvider router={router} context={context} />,
+    );
+    console.log('html: ' + html);
+
+    // Setup headers from action and loaders from deepest match
+    let leaf = context.matches[context.matches.length - 1];
+    let actionHeaders = context.actionHeaders[leaf.route.id];
+    let loaderHeaders = context.loaderHeaders[leaf.route.id];
+    let headers = new Headers(actionHeaders);
+    if (loaderHeaders) {
+      for (let [key, value] of loaderHeaders.entries()) {
+        headers.append(key, value);
+      }
+    }
+
+    headers.set('Content-Type', 'text/html; charset=utf-8');
+
+    console.log('index html: ' + indexHtml);
+
+    const mergedHtml = indexHtml.replace(
+      '<div id="root"></div>',
+      `<div id="root">${html}</div>`,
+    );
+
+    console.log('index html: ' + indexHtml);
+
+    // 4. send a response
+    return new Response(mergedHtml, {
       status: context.statusCode,
       headers,
-    },
-  );
+    });
+  } catch (err) {
+    console.error('Error during SSR rendering:', err);
+
+    return new Response(`<pre>${String(err)}</pre>`, {
+      status: 500,
+    });
+  }
 }

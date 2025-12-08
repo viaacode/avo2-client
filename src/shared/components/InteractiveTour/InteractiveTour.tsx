@@ -19,6 +19,7 @@ import { Html } from '../Html/Html';
 import { useGetInteractiveTourForPage } from './hooks/useGetInteractiveTourForPage';
 
 import './InteractiveTour.scss';
+import { useLocation } from 'react-router';
 
 const TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY = 'AVO.tour_display_dates';
 
@@ -31,6 +32,7 @@ const INTERACTIVE_TOUR_IN_PROGRESS_CLASS = 'c-interactive-tour--in-progress';
 export const InteractiveTour: FC<InteractiveTourProps> = ({ showButton }) => {
   const commonUser = useAtomValue(commonUserAtom);
   const showNudgingModal = useAtomValue(showNudgingModalAtom);
+  const location = useLocation();
 
   // Sometimes we render things with displayDesktopMobile so elements can be loaded but should not initialize since they are hidden for that media query (eg: mobile)
   const [tourDisplayDates, setTourDisplayDates] = useState<{

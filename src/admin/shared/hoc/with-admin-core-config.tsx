@@ -2,12 +2,7 @@ import {
   type AdminConfig,
   AdminConfigManager,
 } from '@meemoo/admin-core-ui/client';
-import {
-  type ComponentType,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { type ComponentType, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';

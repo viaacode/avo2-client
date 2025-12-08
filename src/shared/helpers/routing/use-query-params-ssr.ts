@@ -1,5 +1,6 @@
 // This module is safe for SSR and delegates to the useQueryParamLib library in the browser.
 
+import { noop } from 'es-toolkit';
 import { QueryParamConfig } from 'serialize-query-params';
 import { QueryParamOptions } from 'use-query-params/src/options.ts';
 
@@ -14,10 +15,10 @@ export const useQueryParam = (
   name: string,
   paramConfig?: QueryParamConfig<any, any>,
   options?: QueryParamOptions,
-) => {
+): [string, (newValue: any) => void] => {
   return useQueryParamLib
     ? useQueryParamLib.useQueryParam(name, paramConfig, options)
-    : undefined;
+    : [undefined, noop];
 };
 
 export const useQueryParams = (options: any) => {

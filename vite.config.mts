@@ -36,7 +36,7 @@ export default defineConfig((): UserConfig => {
 		},
 		plugins: [
 			viteTsconfigPaths(),
-			svgrPlugin(),
+			svgrPlugin()
 		],
 		ssr: {
 			noExternal: [

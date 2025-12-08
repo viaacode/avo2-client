@@ -356,7 +356,7 @@ export function getAdminCoreConfig(
     },
     locale: Locale.Nl as any,
     env: {
-      CLIENT_URL: window.location.origin,
+      CLIENT_URL: getEnv('CLIENT_URL') as string,
       LDAP_DASHBOARD_PEOPLE_URL: getEnv('LDAP_DASHBOARD_PEOPLE_URL'),
       DATABASE_APPLICATION_TYPE: DatabaseType.avo,
     },
