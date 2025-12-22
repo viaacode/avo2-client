@@ -135,7 +135,9 @@ pipeline {
 				//	script {
 				//		env.BRANCH_NAME = env.CHANGE_BRANCH
 				//	}
-					jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'int', environmentName: 'int', environmentType: 'testing'
+					catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+					    jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'int', environmentName: 'int', environmentType: 'testing'
+					}
 				}
 			}
 		}
@@ -226,10 +228,12 @@ pipeline {
 			}
 			post {
 				always {
-				jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'tst', environmentName: 'tst', environmentType: 'staging'
+					catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+				        jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'tst', environmentName: 'tst', environmentType: 'staging'
+				    }
 				}
 			}
-			}
+		}
 		stage('Deploy QAS') {
 			when {
 				anyOf { branch 'master'; branch 'main' }
@@ -241,7 +245,9 @@ pipeline {
 			}
 			post {
 				always {
-					jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'qas', environmentName: 'qas', environmentType: 'staging'
+					catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+					    jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'qas', environmentName: 'qas', environmentType: 'staging'
+					}
 				}
 			}
 		}
@@ -271,7 +277,10 @@ pipeline {
 						previous_tag = sh(script: 'git describe --abbrev=0 --tags `git rev-list --tags --skip=1 --max-count=1`', returnStdout: true).trim()
 						echo getAllCommitsBetweenTags(previous_tag, env.TAG_NAME)
 					}
-					jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'prd', environmentName: 'prd', environmentType: 'production'
+
+					catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+					    jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'prd', environmentName: 'prd', environmentType: 'production'
+					}
 				}
 			}
 		}
