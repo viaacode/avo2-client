@@ -45,7 +45,7 @@ pipeline {
             tty: true
             imagePullPolicy: Always
           - name: buildimage
-            image: node:20.4-alpine
+            image: node:24-alpine
             command:
             - cat
             tty: true

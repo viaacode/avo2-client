@@ -1,6 +1,6 @@
 FROM nginxinc/nginx-unprivileged
 USER nginx
-FROM node:20.4-alpine AS compile
+FROM node:24-alpine AS compile
 # set our node environment, defaults to production
 ARG NODE_ENV=ci
 ARG PRODUCTION=$PRODUCTION
@@ -16,8 +16,9 @@ RUN apk update
 RUN apk add --no-cache --virtual python2 make g++ tzdata && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 USER node
 RUN npm ci --include=dev --legacy-peer-deps
+
 ## Builder image
-FROM node:20.4-alpine AS build
+FROM node:24-alpine AS build
 USER node
 COPY --from=compile /app /app
 # set our node environment, defaults to production
@@ -30,6 +31,7 @@ WORKDIR /app
 RUN alias npm='node --max_old_space_size=2048 /usr/bin/npm' >> ~/.bash_aliases && . ~/.bash_aliases && npm run build
 # Add cookiebot attribute to script in index.html. Fails if no replacements were made.
 RUN npm run add-cookiebot-attribute
+
 ## final image with static serving with nginx
 FROM nginxinc/nginx-unprivileged
 ENV NODE_ENV $NODE_ENV
