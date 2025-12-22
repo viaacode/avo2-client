@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Button,
   Column,
@@ -9,18 +9,18 @@ import {
   Icon,
   IconName,
   Spacer,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
 import {
   type Dispatch,
   type FC,
   type ReactNode,
   type SetStateAction,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
-import { useLocation } from 'react-router-dom'
+} from 'react';
+import { Helmet } from 'react-helmet';
+import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import {
@@ -31,41 +31,41 @@ import { GENERATE_SITE_TITLE } from '../../constants';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { isPupil } from '../../shared/helpers/is-pupil';
 
-import './LinkedAccounts.scss'
+import './LinkedAccounts.scss';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
 interface IdpProps {
-  label: ReactNode
-  description?: ReactNode
-  iconNames: IconName[]
-  hideForPupil?: boolean
-  idpParameters?: string
+  label: ReactNode;
+  description?: ReactNode;
+  iconNames: IconName[];
+  hideForPupil?: boolean;
+  idpParameters?: string;
 }
 
 interface DeleteModalToggle {
-  open: boolean
-  setter: Dispatch<SetStateAction<boolean>>
+  open: boolean;
+  setter: Dispatch<SetStateAction<boolean>>;
 }
 
 // This tab is only loaded if user is NOT a pupil (see Settings.tsx) -- no more checks here
 export const LinkedAccounts: FC = () => {
-  const location = useLocation()
-  const commonUser = useAtomValue(commonUserAtom)
+  const location = useLocation();
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [
     isDeleteVlaamseOverheidModalOpen,
     setIsDeleteVlaamseOverheidModalOpen,
-  ] = useState<boolean>(false)
+  ] = useState<boolean>(false);
   const [isDeleteSmartschoolModalOpen, setIsDeleteSmartschoolModalOpe] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [isDeleteKlascementModalOpen, setIsDeleteKlascementModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [isDeleteLeerIDModalOpen, setIsDeleteLeerIDModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
-  const isUserAPupil = isPupil(commonUser?.userGroup?.id)
+  const isUserAPupil = isPupil(commonUser?.userGroup?.id);
 
   const deleteIdpModals: Record<string, DeleteModalToggle> = {
     VLAAMSEOVERHEID: {
@@ -84,7 +84,7 @@ export const LinkedAccounts: FC = () => {
       open: isDeleteKlascementModalOpen,
       setter: setIsDeleteKlascementModalOpen,
     },
-  }
+  };
 
   const idpProps: Record<string, IdpProps> = {
     VLAAMSEOVERHEID: {
@@ -112,18 +112,18 @@ export const LinkedAccounts: FC = () => {
       iconNames: [IconName.klascement],
       hideForPupil: true,
     },
-  }
+  };
 
   const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
-    let linked = !!(commonUser?.idps as any)?.[idpType]
+    let linked = !!(commonUser?.idps as any)?.[idpType];
     if (!linked && idpType === Avo.Auth.IdpType.VLAAMSEOVERHEID__SUB_ID) {
-      linked = !!commonUser?.idps?.VLAAMSEOVERHEID__ACCOUNT_ID
+      linked = !!commonUser?.idps?.VLAAMSEOVERHEID__ACCOUNT_ID;
     }
-    const baseIdp = idpType.split('__')[0]
-    const currentIdp = idpProps[baseIdp]
+    const baseIdp = idpType.split('__')[0];
+    const currentIdp = idpProps[baseIdp];
     const { open: confirmModalOpen, setter: setConfirmModalOpen } =
-      deleteIdpModals[baseIdp.split('__')[0]]
-    const className = `c-account-link__column--${currentIdp.iconNames.join('-')}`
+      deleteIdpModals[baseIdp.split('__')[0]];
+    const className = `c-account-link__column--${currentIdp.iconNames.join('-')}`;
 
     return (
       <Spacer margin="top">
@@ -207,18 +207,18 @@ export const LinkedAccounts: FC = () => {
             'settings/components/linked-accounts___verbreek-koppeling',
           )}
           confirmCallback={() => {
-            setConfirmModalOpen(false)
-            redirectToServerUnlinkAccount(location, idpType)
+            setConfirmModalOpen(false);
+            redirectToServerUnlinkAccount(location, idpType);
           }}
           isOpen={confirmModalOpen}
           onClose={() => setConfirmModalOpen(false)}
         />
       </Spacer>
-    )
-  }
+    );
+  };
 
   if (!commonUser) {
-    return <FullPageSpinner />
+    return <FullPageSpinner locationId="linked-accounts--loading" />;
   }
 
   return (
@@ -275,5 +275,5 @@ export const LinkedAccounts: FC = () => {
         </Spacer>
       </Container>
     </>
-  )
-}
+  );
+};

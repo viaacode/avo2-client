@@ -1,5 +1,5 @@
-import { useAtomValue } from 'jotai'
-import { type FC } from 'react'
+import { useAtomValue } from 'jotai';
+import { type FC } from 'react';
 
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -8,15 +8,15 @@ import { ALL_SEARCH_FILTERS } from '../../search/search.const';
 import { AssignmentDetail } from './AssignmentDetail';
 import { AssignmentResponseEditPage } from './AssignmentResponseEdit/AssignmentResponseEditPage';
 
-import './AssignmentEdit.scss'
-import './AssignmentPage.scss'
+import './AssignmentEdit.scss';
+import './AssignmentPage.scss';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 
 export const AssignmentDetailSwitcher: FC = () => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   if (!commonUser?.userGroup?.id) {
-    return <FullPageSpinner />
+    return <FullPageSpinner locationId="assignment-detail-switcher--loading" />;
   }
   if (
     [SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]
@@ -24,10 +24,10 @@ export const AssignmentDetailSwitcher: FC = () => {
       .includes(String(commonUser?.userGroup?.id))
   ) {
     // Render assignment response edit page
-    return <AssignmentResponseEditPage />
+    return <AssignmentResponseEditPage />;
   }
   // Render teacher assignment detail page
-  return <AssignmentDetail enabledMetaData={ALL_SEARCH_FILTERS} />
-}
+  return <AssignmentDetail enabledMetaData={ALL_SEARCH_FILTERS} />;
+};
 
-export default AssignmentDetailSwitcher
+export default AssignmentDetailSwitcher;

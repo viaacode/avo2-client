@@ -408,10 +408,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         break;
 
       case 'SWAP_FRAGMENTS': {
-        if (
-          !newCurrentCollection.collection_fragments ||
-          !newCurrentCollection.collection_fragments.length
-        ) {
+        if (!newCurrentCollection.collection_fragments?.length) {
           ToastService.danger(
             isCollection
               ? tHtml(
@@ -2019,6 +2016,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
   if (!collectionId) {
     return (
       <ErrorView
+        locationId="collection-edit--error"
         icon={IconName.search}
         message={'De collectie id kon niet worden gevonden'}
         actionButtons={['home', 'helpdesk']}
@@ -2048,6 +2046,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         loadingInfo={loadingInfo}
         dataObject={collectionState.currentCollection}
         render={renderCollectionOrBundleEdit}
+        locationId="collection-edit"
       />
     </>
   );

@@ -1,6 +1,6 @@
-import './EmbedCodeDetail.scss'
+import './EmbedCodeDetail.scss';
 
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Alert,
   Button,
@@ -15,20 +15,20 @@ import {
   ToolbarItem,
   ToolbarLeft,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { useAtomValue } from 'jotai'
-import { noop } from 'es-toolkit'
+} from '@viaa/avo2-components';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
+import { noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import {
   type FC,
   type ReactNode,
   useCallback,
   useEffect,
   useMemo,
-} from 'react'
-import { Helmet } from 'react-helmet'
-import { generatePath, useNavigate, useParams } from 'react-router'
+} from 'react';
+import { Helmet } from 'react-helmet';
+import { generatePath, useNavigate, useParams } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -43,40 +43,40 @@ import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { EmbedCodeContentType } from '../embed-code.types.ts';
 import { createResource } from '../helpers/resourceForTrackEvents';
 import { useGetEmbedCode } from '../hooks/useGetEmbedCode';
-import { EmbedCodeContentType } from '../embed-code.types.ts'
 
 export const EmbedCodeDetail: FC = () => {
-  const navigateFunc = useNavigate()
-  const { id: embedCodeId } = useParams<{ id: string }>()
+  const navigateFunc = useNavigate();
+  const { id: embedCodeId } = useParams<{ id: string }>();
 
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const {
     data: embedCode,
     isLoading: isLoadingEmbedCode,
     isError: isErrorEmbedCode,
-  } = useGetEmbedCode(embedCodeId as string, !!embedCodeId)
+  } = useGetEmbedCode(embedCodeId as string, !!embedCodeId);
 
   const canReadOriginal = useMemo(() => {
     if (!embedCode || !commonUser) {
-      return false
+      return false;
     }
 
     if (embedCode.contentType === EmbedCodeContentType.item) {
       return PermissionService.hasPerm(
         commonUser,
         PermissionName.VIEW_ANY_PUBLISHED_ITEMS,
-      )
+      );
     } else {
-      return false
+      return false;
     }
-  }, [commonUser, embedCode])
+  }, [commonUser, embedCode]);
 
   const triggerViewEvents = useCallback(async () => {
     if (!embedCode?.content) {
-      return null
+      return null;
     }
 
     if (embedCode.contentType === EmbedCodeContentType.item) {
@@ -91,7 +91,7 @@ export const EmbedCodeDetail: FC = () => {
           },
         },
         commonUser,
-      )
+      );
 
       // Also increase the view count for the item or collection
       await BookmarksViewsPlaysService.action(
@@ -99,15 +99,15 @@ export const EmbedCodeDetail: FC = () => {
         'item',
         (embedCode.content as Avo.Item.Item).uid,
         commonUser,
-      ).then(noop)
+      ).then(noop);
     }
-  }, [commonUser, embedCode])
+  }, [commonUser, embedCode]);
 
   useEffect(() => {
     if (embedCode) {
-      triggerViewEvents().then(noop)
+      triggerViewEvents().then(noop);
     }
-  }, [embedCode, triggerViewEvents])
+  }, [embedCode, triggerViewEvents]);
 
   const onPlay = () => {
     if (embedCode) {
@@ -122,24 +122,24 @@ export const EmbedCodeDetail: FC = () => {
           },
         },
         commonUser,
-      )
+      );
     }
-  }
+  };
 
   // Render methods
   const renderContent = () => {
     if (!embedCode?.content) {
-      return null
+      return null;
     }
 
-    const content = embedCode.content as Avo.Item.Item
-    const contentLabel = embedCode.contentType
+    const content = embedCode.content as Avo.Item.Item;
+    const contentLabel = embedCode.contentType;
 
     const [start, end] = getValidStartAndEnd(
       embedCode.start,
       embedCode.end,
       toSeconds(content.duration || 0),
-    )
+    );
 
     switch (contentLabel) {
       case EmbedCodeContentType.item:
@@ -157,10 +157,11 @@ export const EmbedCodeDetail: FC = () => {
             // Not tracking the playevent in the FlowPlayer since that is bound to the item and not an embed
             trackPlayEvent={false}
           />
-        )
+        );
       default:
         return (
           <ErrorView
+            locationId="embed-code-detail--error"
             icon={IconName.alertTriangle}
             message={tHtml(
               'embed-code/views/embed-code-detail___onverwacht-inhoudstype',
@@ -169,31 +170,31 @@ export const EmbedCodeDetail: FC = () => {
               },
             )}
           />
-        )
+        );
     }
-  }
+  };
 
   const handleClickGoToContentButton = () => {
     if (!embedCode?.content) {
-      return
+      return;
     }
 
-    let path: string | undefined
+    let path: string | undefined;
 
     if (embedCode?.contentType === EmbedCodeContentType.item) {
       path = generatePath(APP_PATH.ITEM_DETAIL.route, {
         id: (embedCode.content as Avo.Item.Item).external_id.toString(),
-      })
+      });
     }
 
     if (path) {
-      navigateFunc(path)
+      navigateFunc(path);
     }
-  }
+  };
 
   const renderGoToContentButton = () => {
     if (!canReadOriginal) {
-      return null
+      return null;
     }
 
     return (
@@ -210,15 +211,15 @@ export const EmbedCodeDetail: FC = () => {
           onClick={handleClickGoToContentButton}
         />
       </ToolbarItem>
-    )
-  }
+    );
+  };
 
   const renderEmbedCodeDetail = () => {
     if (!embedCode) {
-      return null
+      return null;
     }
-    const { title } = embedCode
-    const profile = embedCode.owner
+    const { title } = embedCode;
+    const profile = embedCode.owner;
 
     return (
       <div
@@ -274,8 +275,8 @@ export const EmbedCodeDetail: FC = () => {
           <Container mode="horizontal">{renderContent()}</Container>
         </Container>
       </div>
-    )
-  }
+    );
+  };
 
   const renderPageContent = (): ReactNode | null => {
     if (isLoadingEmbedCode) {
@@ -285,22 +286,23 @@ export const EmbedCodeDetail: FC = () => {
             <Spinner size="large" />
           </Flex>
         </Container>
-      )
+      );
     }
 
     if (isErrorEmbedCode) {
       return (
         <ErrorView
+          locationId="embed-code-detail--error"
           icon={IconName.alertTriangle}
           message={tHtml(
             'embed-code/views/embed-code-detail___het-laden-van-het-ingesloten-fragment-is-mislukt',
           )}
         />
-      )
+      );
     }
 
-    return renderEmbedCodeDetail()
-  }
+    return renderEmbedCodeDetail();
+  };
 
   return (
     <>
@@ -317,7 +319,7 @@ export const EmbedCodeDetail: FC = () => {
       </Helmet>
       {renderPageContent()}
     </>
-  )
-}
+  );
+};
 
-export default EmbedCodeDetail
+export default EmbedCodeDetail;

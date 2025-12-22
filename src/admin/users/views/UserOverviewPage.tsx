@@ -39,7 +39,11 @@ export const UserOverviewPage: FC = () => {
             />
           </Helmet>
 
-          <Suspense fallback={<FullPageSpinner />}>
+          <Suspense
+            fallback={
+              <FullPageSpinner locationId="user-overview-page--loading" />
+            }
+          >
             <UserOverview />
           </Suspense>
         </AdminLayoutBody>

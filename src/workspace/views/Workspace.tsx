@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Button,
   Container,
@@ -19,21 +19,21 @@ import {
   Toolbar,
   ToolbarLeft,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { compact } from 'es-toolkit'
-import { isEmpty } from 'es-toolkit/compat'
+} from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
+import { compact } from 'es-toolkit';
+import { isEmpty } from 'es-toolkit/compat';
+import { useAtomValue } from 'jotai';
 import {
   type FC,
   type ReactText,
   useCallback,
   useEffect,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate, useParams } from 'react-router'
-import { useLocation } from 'react-router-dom'
+} from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate, useParams } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 import { AssignmentOverview } from '../../assignment/views/AssignmentOverview';
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -75,45 +75,45 @@ import { BookmarksOverview } from './BookmarksOverview';
 import { OrganisationContentOverview } from './OrganisationContentOverview';
 import { QuickLaneOverview } from './QuickLaneOverview';
 
-import './Workspace.scss'
+import './Workspace.scss';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
 interface WorkspacePermissions {
-  canViewOwnCollections?: boolean
-  canViewOwnBundles?: boolean
-  canCreateAssignments?: boolean
-  canViewAssignments?: boolean
-  canCreateBookmarks?: boolean
-  canViewContentInSameCompany?: boolean
-  canViewSomeQuickLanes?: boolean
-  canEmbedItemsOnOtherSites?: boolean
+  canViewOwnCollections?: boolean;
+  canViewOwnBundles?: boolean;
+  canCreateAssignments?: boolean;
+  canViewAssignments?: boolean;
+  canCreateBookmarks?: boolean;
+  canViewContentInSameCompany?: boolean;
+  canViewSomeQuickLanes?: boolean;
+  canEmbedItemsOnOtherSites?: boolean;
 }
 
 export const Workspace: FC = () => {
-  const location = useLocation()
-  const navigateFunc = useNavigate()
-  const { tabId: tabIdFromUrl } = useParams<{ tabId: string }>()
+  const location = useLocation();
+  const navigateFunc = useNavigate();
+  const { tabId: tabIdFromUrl } = useParams<{ tabId: string }>();
 
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
   // State
-  const [activeFilter, setActiveFilter] = useState<ReactText>()
-  const [tabId, setTabId] = useState<string | null>(null)
-  const [tabs, setTabs] = useState<TabViewMap>({})
-  const [permissions, setPermissions] = useState<WorkspacePermissions>({})
+  const [activeFilter, setActiveFilter] = useState<ReactText>();
+  const [tabId, setTabId] = useState<string | null>(null);
+  const [tabs, setTabs] = useState<TabViewMap>({});
+  const [permissions, setPermissions] = useState<WorkspacePermissions>({});
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const { data: workspaceCounts, refetch: refetchWorkspaceCounts } =
-    useGetWorkspaceCounts()
+    useGetWorkspaceCounts();
 
   // Methods
   // react to route changes by navigating back wih the browser history back button
   useEffect(() => {
     if (tabIdFromUrl) {
-      setTabId(tabIdFromUrl)
+      setTabId(tabIdFromUrl);
     }
-  }, [tabIdFromUrl])
+  }, [tabIdFromUrl]);
 
   const updatePermissions = useCallback(() => {
     Promise.all([
@@ -167,7 +167,7 @@ export const Workspace: FC = () => {
           canViewContentInSameCompany: response[5],
           canViewSomeQuickLanes: response[6],
           canEmbedItemsOnOtherSites: response[7],
-        })
+        });
       })
       .catch((err) => {
         console.error(
@@ -176,29 +176,28 @@ export const Workspace: FC = () => {
           {
             commonUser,
           },
-        )
+        );
         setLoadingInfo({
           state: 'error',
           message: tHtml(
             'workspace/views/workspace___het-laden-van-de-werkruimte-is-mislukt',
           ),
-        })
-      })
-  }, [commonUser])
+        });
+      });
+  }, [commonUser]);
 
   // Make map for available tab views
   useEffect(() => {
-    const empty = { component: null }
+    const empty = { component: null };
 
     setTabs({
       [COLLECTIONS_ID]: permissions.canViewOwnCollections
         ? {
             component: (
               <CollectionOrBundleOverview
-                numberOfItems={workspaceCounts?.collections || 0}
                 type={CollectionOrBundle.COLLECTION}
                 onUpdate={() => {
-                  refetchWorkspaceCounts()
+                  refetchWorkspaceCounts();
                 }}
               />
             ),
@@ -208,10 +207,9 @@ export const Workspace: FC = () => {
         ? {
             component: (
               <CollectionOrBundleOverview
-                numberOfItems={workspaceCounts?.bundles || 0}
                 type={CollectionOrBundle.BUNDLE}
                 onUpdate={() => {
-                  refetchWorkspaceCounts()
+                  refetchWorkspaceCounts();
                 }}
               />
             ),
@@ -223,7 +221,7 @@ export const Workspace: FC = () => {
               component: (
                 <AssignmentOverview
                   onUpdate={() => {
-                    refetchWorkspaceCounts()
+                    refetchWorkspaceCounts();
                   }}
                 />
               ),
@@ -234,7 +232,7 @@ export const Workspace: FC = () => {
             component: (
               <BookmarksOverview
                 onUpdate={() => {
-                  refetchWorkspaceCounts()
+                  refetchWorkspaceCounts();
                 }}
                 numberOfItems={workspaceCounts?.bookmarks || 0}
               />
@@ -246,7 +244,7 @@ export const Workspace: FC = () => {
             component: (
               <OrganisationContentOverview
                 onUpdate={() => {
-                  refetchWorkspaceCounts()
+                  refetchWorkspaceCounts();
                 }}
                 numberOfItems={workspaceCounts?.organisationContent || 0}
               />
@@ -267,14 +265,14 @@ export const Workspace: FC = () => {
             component: (
               <EmbedCodeOverview
                 onUpdate={() => {
-                  refetchWorkspaceCounts()
+                  refetchWorkspaceCounts();
                 }}
                 numberOfItems={workspaceCounts?.embeds || 0}
               />
             ),
           }
         : empty,
-    })
+    });
   }, [
     workspaceCounts,
     permissions,
@@ -282,7 +280,7 @@ export const Workspace: FC = () => {
     commonUser,
     updatePermissions,
     refetchWorkspaceCounts,
-  ])
+  ]);
 
   const goToTab = useCallback(
     (id: ReactText) => {
@@ -292,31 +290,31 @@ export const Workspace: FC = () => {
         { tabId: id },
         undefined,
         'replace',
-      )
-      setTabId(String(id))
+      );
+      setTabId(String(id));
     },
     [navigateFunc, setTabId],
-  )
+  );
 
   const getFirstRenderableTab = useCallback(() => {
-    return Object.values(tabs).findIndex((tab) => tab.component !== null)
-  }, [tabs])
+    return Object.values(tabs).findIndex((tab) => tab.component !== null);
+  }, [tabs]);
 
   // If no active tab is specified, navigate to the first renderable tab
   useEffect(() => {
     if (tabId === null) {
-      const first = Object.keys(tabs)[getFirstRenderableTab()]
-      first && goToTab(first)
+      const first = Object.keys(tabs)[getFirstRenderableTab()];
+      first && goToTab(first);
     }
-  }, [tabs, tabId, goToTab, getFirstRenderableTab])
+  }, [tabs, tabId, goToTab, getFirstRenderableTab]);
 
   const getActiveTab = useCallback(() => {
-    return tabs[tabId || getFirstRenderableTab() || 0]
-  }, [tabs, tabId, getFirstRenderableTab])
+    return tabs[tabId || getFirstRenderableTab() || 0];
+  }, [tabs, tabId, getFirstRenderableTab]);
 
   useEffect(() => {
-    updatePermissions()
-  }, [updatePermissions])
+    updatePermissions();
+  }, [updatePermissions]);
 
   useEffect(() => {
     if (!isEmpty(permissions) && !isEmpty(tabs)) {
@@ -324,7 +322,7 @@ export const Workspace: FC = () => {
         // Use has access to at least one tab
         setLoadingInfo({
           state: 'loaded',
-        })
+        });
       } else {
         setLoadingInfo({
           state: 'error',
@@ -332,16 +330,16 @@ export const Workspace: FC = () => {
             'workspace/views/workspace___je-hebt-geen-rechten-om-je-werkruimte-te-bekijken',
           ),
           icon: IconName.lock,
-        })
+        });
       }
     }
-  }, [setLoadingInfo, getActiveTab, permissions, tabs])
+  }, [setLoadingInfo, getActiveTab, permissions, tabs]);
 
   const getNavTabs = useCallback(() => {
     return compact(
       GET_TABS().map((tab) => {
         if (tabs[tab.id].component) {
-          const isTabActive = (tabId || Object.keys(tabs)[0]) === tab.id
+          const isTabActive = (tabId || Object.keys(tabs)[0]) === tab.id;
           return {
             ...tab,
             active: isTabActive,
@@ -355,28 +353,28 @@ export const Workspace: FC = () => {
             ) : (
               tab.label
             ),
-          }
+          };
         }
-        return null
+        return null;
       }),
-    )
-  }, [tabs, tabId, workspaceCounts])
+    );
+  }, [tabs, tabId, workspaceCounts]);
 
   const handleMenuContentClick = (menuItemId: ReactText) =>
-    setActiveFilter(menuItemId)
+    setActiveFilter(menuItemId);
 
   const handleCreateNewAssignmentClick = () => {
     redirectToClientPage(
       buildLink(APP_PATH.ASSIGNMENT_CREATE.route),
       navigateFunc,
-    )
-  }
+    );
+  };
 
   // Render
   const renderFilter = (filter: TabFilter) => {
     const currentFilter = filter.options.find(
       (f) => f.id === (activeFilter || filter.options[0].id),
-    )
+    );
 
     return (
       <Form type="inline">
@@ -403,8 +401,8 @@ export const Workspace: FC = () => {
           </ControlledDropdown>
         </FormGroup>
       </Form>
-    )
-  }
+    );
+  };
 
   const renderMobileTabs = (tabs: NavTab[]) => {
     return (
@@ -421,18 +419,18 @@ export const Workspace: FC = () => {
           className="c-tab-select"
         />
       </Spacer>
-    )
-  }
+    );
+  };
 
   const renderNavTabs = (tabs: NavTab[]) => {
     return renderMobileDesktop({
       mobile: renderMobileTabs(tabs),
       desktop: <Tabs tabs={tabs} onClick={goToTab} />,
-    })
-  }
+    });
+  };
 
   const renderToolbar = (tabs: NavTab[], activeTab: TabView) => {
-    const filter = activeTab?.filter || null
+    const filter = activeTab?.filter || null;
 
     return filter ? (
       <Toolbar autoHeight>
@@ -443,8 +441,8 @@ export const Workspace: FC = () => {
       </Toolbar>
     ) : (
       tabs.length > 1 && renderNavTabs(tabs)
-    )
-  }
+    );
+  };
 
   const renderActionButton = (activeTabName: string) => {
     switch (activeTabName) {
@@ -460,16 +458,16 @@ export const Workspace: FC = () => {
               )}
             />
           )
-        )
+        );
 
       default:
-        break
+        break;
     }
-  }
+  };
 
   const renderTabsAndContent = () => {
-    const tabs = getNavTabs() as NavTab[]
-    const activeTab: TabView = getActiveTab()
+    const tabs = getNavTabs() as NavTab[];
+    const activeTab: TabView = getActiveTab();
 
     return (
       <div className="m-workspace">
@@ -507,8 +505,8 @@ export const Workspace: FC = () => {
           <Container mode="horizontal">{activeTab.component}</Container>
         </Container>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -530,9 +528,10 @@ export const Workspace: FC = () => {
         render={renderTabsAndContent}
         dataObject={permissions}
         showSpinner
+        locationId="workspace"
       />
     </>
-  )
-}
+  );
+};
 
-export default Workspace
+export default Workspace;

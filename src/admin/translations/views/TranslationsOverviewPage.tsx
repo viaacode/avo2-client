@@ -244,7 +244,11 @@ export const TranslationsOverviewPage: FC = () => {
               )}
             />
           </Helmet>
-          <Suspense fallback={<FullPageSpinner />}>
+          <Suspense
+            fallback={
+              <FullPageSpinner locationId="translations-overview-page--loading" />
+            }
+          >
             <TranslationsOverview
               renderPopup={renderPopup}
               className="c-translations-overview"

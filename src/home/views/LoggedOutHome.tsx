@@ -51,11 +51,12 @@ export const LoggedOutHome: FC = () => {
   }, [commonUser, location.pathname, navigateFunc]);
 
   if (loginState.loading || contentPageLoading) {
-    return <FullPageSpinner />;
+    return <FullPageSpinner locationId="logged-out-home--loading" />;
   }
   if (contentPageError) {
     return (
       <ErrorView
+        locationId="logged-out-home--error"
         message={tText(
           'home/views/logged-out-home___het-laden-van-deze-pagina-is-mislukt-pagina-kon-niet-worden-opgehaald-van-de-server',
         )}

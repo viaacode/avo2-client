@@ -3,6 +3,7 @@ import { useLocation } from 'react-router';
 import Zendesk from 'react-zendesk';
 import { APP_PATH } from '../../../constants.ts';
 import { getEnv } from '../../helpers/env';
+import { isServerSideRendering } from '../../helpers/routing/is-server-side-rendering.ts';
 
 declare const ResizeObserver: any;
 
@@ -75,6 +76,10 @@ export const ZendeskWrapper: FC = () => {
     getZendeskWidget();
   };
 
+  if (isServerSideRendering()) {
+    // Don't render zendesk widget during server-side rendering
+    return null;
+  }
   return (
     <Zendesk
       zendeskKey={getEnv('ZENDESK_KEY') as string}

@@ -324,6 +324,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
   const renderNoResults = () => {
     return (
       <ErrorView
+        locationId="collection-or-bundle-marcom-overview--error"
         message={tHtml(
           'admin/collections-or-bundles/views/collections-or-bundles-overview___er-bestaan-nog-geen-collecties',
         )}
@@ -522,6 +523,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
             loadingInfo={loadingInfo}
             dataObject={collections}
             render={renderCollectionOrBundleMarcomOverview}
+            locationId="collection-or-bundle-marcom-overview"
           />
         </AdminLayoutBody>
       </AdminLayout>

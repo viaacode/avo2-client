@@ -593,6 +593,7 @@ export const InteractiveTourEdit: FC = () => {
           loadingInfo={loadingInfo}
           dataObject={interactiveTourState.currentInteractiveTour}
           render={renderPage}
+          locationId="interactive-tour-edit"
         />
       </PermissionGuard>
     </>

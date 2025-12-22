@@ -6,6 +6,7 @@ import { ErrorView } from '../../error/views/ErrorView';
 export function renderWrongUserRoleError() {
   return (
     <ErrorView
+      locationId="render-wrong-user-role-error--error"
       icon={IconName.clock}
       actionButtons={['help', 'helpdesk']}
       message={GET_ERROR_MESSAGES()[`OTHER_ROLES`]}

@@ -1,6 +1,6 @@
-import { IconName } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { type FC, type ReactNode } from 'react'
+import { IconName } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { type FC, type ReactNode } from 'react';
 
 import { ErrorView } from '../../../../error/views/ErrorView';
 import { type FilterState } from '../../../../search/search.types';
@@ -9,10 +9,10 @@ import { tHtml } from '../../../../shared/helpers/translate-html';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment.const';
 
 interface AssignmentResponseAssignmentTabProps {
-  blocks: Avo.Assignment.Assignment['blocks'] | null
-  pastDeadline: boolean
-  setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void
-  buildSearchLink: (props: Partial<FilterState>) => ReactNode | string
+  blocks: Avo.Assignment.Assignment['blocks'] | null;
+  pastDeadline: boolean;
+  setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
+  buildSearchLink: (props: Partial<FilterState>) => ReactNode | string;
 }
 
 export const AssignmentResponseAssignmentTab: FC<
@@ -24,12 +24,13 @@ export const AssignmentResponseAssignmentTab: FC<
     if ((blocks?.length || 0) === 0) {
       return (
         <ErrorView
+          locationId="assignment-response-assignment-tab--error"
           message={tHtml(
             'assignment/views/assignment-response-edit___deze-opdracht-heeft-nog-geen-inhoud',
           )}
           icon={IconName.search}
         />
-      )
+      );
     }
     return (
       <BlockList
@@ -55,8 +56,8 @@ export const AssignmentResponseAssignmentTab: FC<
           },
         }}
       />
-    )
-  }
+    );
+  };
 
-  return renderAssignmentBlocks()
-}
+  return renderAssignmentBlocks();
+};

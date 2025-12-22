@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Alert,
   Box,
@@ -13,13 +13,13 @@ import {
   Table,
   TextArea,
   TextInput,
-} from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue, useSetAtom } from 'jotai'
-import { compact, isNil } from 'es-toolkit'
-import { stringifyUrl } from 'query-string'
-import { type FC, type ReactNode, useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet'
+} from '@viaa/avo2-components';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { compact, isNil } from 'es-toolkit';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { stringifyUrl } from 'query-string';
+import { type FC, type ReactNode, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { SERVER_LOGOUT_PAGE } from '../../authentication/authentication.const';
@@ -45,72 +45,72 @@ import { USERS_IN_SAME_COMPANY_COLUMNS } from '../settings.const';
 import { SettingsService } from '../settings.service';
 import { type UsersInSameCompanyColumn } from '../settings.types';
 
-import './Profile.scss'
+import './Profile.scss';
 
 type FieldPermissionKey =
   | 'SUBJECTS'
   | 'EDUCATION_LEVEL'
   | 'EDUCATIONAL_ORGANISATION'
-  | 'ORGANISATION'
+  | 'ORGANISATION';
 
 interface FieldPermission {
-  VIEW: boolean
-  EDIT: boolean
-  REQUIRED: boolean
+  VIEW: boolean;
+  EDIT: boolean;
+  REQUIRED: boolean;
 }
 
 interface FieldPermissions {
-  THEME: FieldPermission
-  SUBJECTS: FieldPermission
-  EDUCATION_LEVEL: FieldPermission
-  EDUCATIONAL_ORGANISATION: FieldPermission
-  ORGANISATION: FieldPermission & { VIEW_USERS_IN_SAME_COMPANY: boolean }
+  THEME: FieldPermission;
+  SUBJECTS: FieldPermission;
+  EDUCATION_LEVEL: FieldPermission;
+  EDUCATIONAL_ORGANISATION: FieldPermission;
+  ORGANISATION: FieldPermission & { VIEW_USERS_IN_SAME_COMPANY: boolean };
 }
 
 export const Profile: FC = () => {
-  const commonUser = useAtomValue(commonUserAtom)
-  const getLoginState = useSetAtom(getLoginStateAtom)
+  const commonUser = useAtomValue(commonUserAtom);
+  const getLoginState = useSetAtom(getLoginStateAtom);
   const [selectedOrganisations, setSelectedOrganisations] = useState<
     Avo.EducationOrganization.Organization[]
-  >(commonUser?.educationalOrganisations || [])
+  >(commonUser?.educationalOrganisations || []);
   const [selectedLoms, setSelectedLoms] = useState<Avo.Lom.LomField[]>(
     compact(commonUser?.loms.map((lom) => lom.lom)),
-  )
+  );
 
-  const firstName = commonUser?.firstName || ''
-  const lastName = commonUser?.lastName || ''
-  const email = commonUser?.email || ''
-  const [alias, setAlias] = useState<string>(commonUser?.alias ?? '')
+  const firstName = commonUser?.firstName || '';
+  const lastName = commonUser?.lastName || '';
+  const email = commonUser?.email || '';
+  const [alias, setAlias] = useState<string>(commonUser?.alias ?? '');
   const [avatar, setAvatar] = useState<string | null>(
     commonUser?.avatar || null,
-  )
-  const [title, setTitle] = useState<string | null>(commonUser?.title || null)
-  const [bio, setBio] = useState<string | null>(commonUser?.bio || null)
-  const [isSaving, setIsSaving] = useState<boolean>(false)
+  );
+  const [title, setTitle] = useState<string | null>(commonUser?.title || null);
+  const [bio, setBio] = useState<string | null>(commonUser?.bio || null);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [allOrganisations, setAllOrganisations] = useState<
     Partial<Avo.Organization.Organization>[] | null
-  >(null)
+  >(null);
   const [companyId, setCompanyId] = useState<string | null>(
     commonUser?.companyId || null,
-  )
+  );
   const [uiPermissions, setUiPermissions] = useState<FieldPermissions | null>(
     null,
-  )
+  );
   const [profileErrors, setProfileErrors] = useState<
     Partial<{ [prop in keyof Avo.User.UpdateProfileValues]: string }>
-  >({})
+  >({});
   const [usersInSameCompany, setUsersInSameCompany] = useState<
     Partial<Avo.User.Profile>[]
-  >([])
+  >([]);
 
-  const isExceptionAccount = commonUser?.isException || false
+  const isExceptionAccount = commonUser?.isException || false;
 
   const isPupil = [
     SpecialUserGroupId.PupilSecondary,
     SpecialUserGroupId.PupilElementary,
   ]
     .map(String)
-    .includes(String(commonUser.userGroup?.id))
+    .includes(String(commonUser.userGroup?.id));
 
   useEffect(() => {
     const tempUiPermissions = {
@@ -182,13 +182,13 @@ export const Profile: FC = () => {
           PermissionName.VIEW_USERS_IN_SAME_COMPANY,
         ),
       },
-    }
-    setUiPermissions(tempUiPermissions)
-  }, [isExceptionAccount, commonUser])
+    };
+    setUiPermissions(tempUiPermissions);
+  }, [isExceptionAccount, commonUser]);
 
   useEffect(() => {
     if (!uiPermissions) {
-      return
+      return;
     }
 
     // TODO for view we should use the company name from the profile object instead of the company_id and lookup in the list
@@ -199,13 +199,13 @@ export const Profile: FC = () => {
         .catch((err) => {
           console.error(
             new CustomError('Failed to get organisations from database', err),
-          )
+          );
           ToastService.danger(
             tHtml(
               'settings/components/profile___het-ophalen-van-de-organisaties-is-mislukt',
             ),
-          )
-        })
+          );
+        });
     }
 
     if (
@@ -218,7 +218,7 @@ export const Profile: FC = () => {
             usersInSameCompany.filter(
               (profile) => profile.id !== commonUser?.profileId,
             ),
-          )
+          );
         })
         .catch((err) => {
           console.error(
@@ -226,41 +226,41 @@ export const Profile: FC = () => {
               'Failed to get users in the same company from database',
               err,
             ),
-          )
+          );
           ToastService.danger(
             tHtml(
               'settings/components/profile___het-ophalen-van-de-gebruikers-in-dezelfde-organisatie-is-mislukt',
             ),
-          )
-        })
+          );
+        });
     }
-  }, [uiPermissions, commonUser, setAllOrganisations])
+  }, [uiPermissions, commonUser, setAllOrganisations]);
 
   const areRequiredFieldsFilledIn = (
     profileInfo: Partial<Avo.User.UpdateProfileValues>,
   ) => {
     if (!uiPermissions) {
-      return false
+      return false;
     }
-    const errors = []
-    let filledIn = true
-    const groupedLoms = groupLoms(selectedLoms)
+    const errors = [];
+    let filledIn = true;
+    const groupedLoms = groupLoms(selectedLoms);
 
     if (
       uiPermissions.SUBJECTS.REQUIRED &&
       uiPermissions.SUBJECTS.EDIT &&
       !groupedLoms.subject?.length
     ) {
-      errors.push(tText('settings/components/profile___vakken-zijn-verplicht'))
-      filledIn = false
+      errors.push(tText('settings/components/profile___vakken-zijn-verplicht'));
+      filledIn = false;
     }
     if (
       uiPermissions.THEME.REQUIRED &&
       uiPermissions.THEME.EDIT &&
       !groupedLoms.theme?.length
     ) {
-      errors.push(tText('settings/components/profile___themas-zijn-verplicht'))
-      filledIn = false
+      errors.push(tText('settings/components/profile___themas-zijn-verplicht'));
+      filledIn = false;
     }
     if (
       uiPermissions.EDUCATION_LEVEL.REQUIRED &&
@@ -269,8 +269,8 @@ export const Profile: FC = () => {
     ) {
       errors.push(
         tText('settings/components/profile___opleidingsniveau-is-verplicht'),
-      )
-      filledIn = false
+      );
+      filledIn = false;
     }
     if (
       uiPermissions.EDUCATIONAL_ORGANISATION.REQUIRED &&
@@ -281,8 +281,8 @@ export const Profile: FC = () => {
         tText(
           'settings/components/profile___educatieve-organisatie-is-verplicht',
         ),
-      )
-      filledIn = false
+      );
+      filledIn = false;
     }
     if (
       uiPermissions.ORGANISATION.REQUIRED &&
@@ -291,19 +291,19 @@ export const Profile: FC = () => {
     ) {
       errors.push(
         tText('settings/components/profile___organisatie-is-verplicht'),
-      )
-      filledIn = false
+      );
+      filledIn = false;
     }
     if (errors.length) {
-      ToastService.danger(errors)
+      ToastService.danger(errors);
     }
-    return filledIn
-  }
+    return filledIn;
+  };
 
   const saveProfileChanges = async () => {
     try {
-      setIsSaving(true)
-      const profileId: string = commonUser?.profileId
+      setIsSaving(true);
+      const profileId: string = commonUser?.profileId;
       const newProfileInfo: Partial<Avo.User.UpdateProfileValues> = {
         firstName,
         lastName,
@@ -322,49 +322,49 @@ export const Profile: FC = () => {
           unit_id: option.unitId || null,
         })),
         company_id: companyId || null,
-      }
+      };
       if (!areRequiredFieldsFilledIn(newProfileInfo)) {
-        setIsSaving(false)
-        return
+        setIsSaving(false);
+        return;
       }
       try {
-        await SettingsService.updateProfileInfo(newProfileInfo)
+        await SettingsService.updateProfileInfo(newProfileInfo);
       } catch (err) {
-        setIsSaving(false)
+        setIsSaving(false);
         if (JSON.stringify(err).includes('DUPLICATE_ALIAS')) {
           ToastService.danger(
             tText(
               'settings/components/profile___deze-schermnaam-is-reeds-in-gebruik',
             ),
-          )
+          );
           setProfileErrors({
             alias: tText(
               'settings/components/profile___schermnaam-is-reeds-in-gebruik',
             ),
-          })
-          return
+          });
+          return;
         }
-        throw err
+        throw err;
       }
 
       // Refresh the login state, so the profile info will be up-to-date
-      getLoginState(true)
-      ToastService.success(tHtml('settings/components/profile___opgeslagen'))
-      setIsSaving(false)
+      getLoginState(true);
+      ToastService.success(tHtml('settings/components/profile___opgeslagen'));
+      setIsSaving(false);
     } catch (err) {
-      console.error(err)
+      console.error(err);
       ToastService.danger(
         tHtml(
           'settings/components/profile___het-opslaan-van-de-profiel-information-is-mislukt',
         ),
-      )
-      setIsSaving(false)
+      );
+      setIsSaving(false);
     }
-  }
+  };
 
   const renderOrganisationField = (editable: boolean, required: boolean) => {
     if (!uiPermissions?.ORGANISATION?.VIEW) {
-      return null
+      return null;
     }
     return (
       <FormGroup
@@ -377,12 +377,12 @@ export const Profile: FC = () => {
             options={compact(
               (allOrganisations || []).map((org) => {
                 if (!org.name || !org.or_id) {
-                  return null
+                  return null;
                 }
                 return {
                   label: org.name,
                   value: org.or_id,
-                }
+                };
               }),
             )}
             value={companyId}
@@ -396,8 +396,8 @@ export const Profile: FC = () => {
           tText('settings/components/profile___onbekende-organisatie')
         )}
       </FormGroup>
-    )
-  }
+    );
+  };
 
   const renderEducationOrganisationsField = (
     editable: boolean,
@@ -410,7 +410,7 @@ export const Profile: FC = () => {
       // Only show schools if user has permissions to see them
       !uiPermissions?.EDUCATIONAL_ORGANISATION?.VIEW
     ) {
-      return null
+      return null;
     }
     return (
       <FormGroup
@@ -437,24 +437,24 @@ export const Profile: FC = () => {
           )
         )}
       </FormGroup>
-    )
-  }
+    );
+  };
 
   const renderFieldVisibleOrRequired = (
     permissionName: FieldPermissionKey,
     renderFunc: (editable: boolean, required: boolean) => ReactNode,
   ) => {
     if (!uiPermissions) {
-      return null
+      return null;
     }
     if (uiPermissions[permissionName].VIEW) {
       return renderFunc(
         uiPermissions[permissionName].EDIT,
         uiPermissions[permissionName].REQUIRED,
-      )
+      );
     }
-    return null
-  }
+    return null;
+  };
 
   const renderUsersInSameCompanyTableCell = (
     profile: Partial<Avo.User.Profile>,
@@ -462,26 +462,26 @@ export const Profile: FC = () => {
   ) => {
     switch (columnId) {
       case 'full_name':
-        return commonUser?.fullName || '-'
+        return commonUser?.fullName || '-';
 
       case 'mail':
-        return commonUser?.email || '-'
+        return commonUser?.email || '-';
 
       case 'user_group':
-        return commonUser?.userGroup?.label || '-'
+        return commonUser?.userGroup?.label || '-';
 
       case 'is_blocked':
         return commonUser?.isBlocked
           ? tText('settings/components/profile___ja')
-          : tText('settings/components/profile___nee')
+          : tText('settings/components/profile___nee');
 
       case 'last_access_at': {
-        const lastAccessDate = commonUser?.lastAccessAt
-        return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-'
+        const lastAccessDate = commonUser?.lastAccessAt;
+        return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
       }
 
       case 'temp_access': {
-        const tempAccess = profile?.temp_access
+        const tempAccess = profile?.temp_access;
 
         return tempAccess?.has_currently_access?.status
           ? `${tText('settings/components/profile___van')} ${formatDate(
@@ -489,10 +489,10 @@ export const Profile: FC = () => {
             )} ${tText('settings/components/profile___tot')} ${formatDate(
               tempAccess?.until,
             )}`
-          : '-'
+          : '-';
       }
     }
-  }
+  };
 
   const generateEditProfileInfoLink = () => {
     return stringifyUrl({
@@ -505,8 +505,8 @@ export const Profile: FC = () => {
           },
         }),
       },
-    })
-  }
+    });
+  };
 
   const renderProfilePage = () => {
     return (
@@ -712,11 +712,11 @@ export const Profile: FC = () => {
           </Grid>
         </Spacer>
       </Container>
-    )
-  }
+    );
+  };
 
   if (isSaving) {
-    return <FullPageSpinner />
+    return <FullPageSpinner locationId="profile--loading" />;
   }
   return (
     <>
@@ -737,7 +737,7 @@ export const Profile: FC = () => {
       </Helmet>
       {renderProfilePage()}
     </>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;

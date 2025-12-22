@@ -187,6 +187,7 @@ export const UrlRedirectOverview: FC = () => {
   const renderNoResults = () => {
     return (
       <ErrorView
+        locationId="url-redirect-overview--error"
         message={tHtml(
           'admin/url-redirects/views/url-redirect-overview___er-zijn-nog-geen-url-redirects-aangemaakt',
         )}
@@ -211,12 +212,13 @@ export const UrlRedirectOverview: FC = () => {
 
   const renderRedirectsPageBody = () => {
     if (isLoading) {
-      return <FullPageSpinner />;
+      return <FullPageSpinner locationId="url-redirect-overview--loading" />;
     }
 
     if (error || !urlRedirectsAndCount) {
       return (
         <ErrorView
+          locationId="url-redirect-overview--error"
           message={tHtml(
             'admin/url-redirects/views/url-redirect-overview___het-ophalen-van-de-url-redirects-is-mislukt',
           )}

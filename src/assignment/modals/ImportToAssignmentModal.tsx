@@ -15,10 +15,10 @@ import {
   Table,
   TextInput,
   Toggle,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { noop } from 'es-toolkit'
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import {
   type FC,
   type ReactNode,
@@ -26,8 +26,8 @@ import {
   useEffect,
   useMemo,
   useState,
-} from 'react'
-import { Link } from 'react-router-dom'
+} from 'react';
+import { Link } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { APP_PATH } from '../../constants';
@@ -54,23 +54,23 @@ import { AssignmentService } from '../assignment.service';
 import { type AssignmentTableColumns } from '../assignment.types';
 import { AssignmentDeadline } from '../components/AssignmentDeadline';
 
-import './AddItemsModals.scss'
+import './AddItemsModals.scss';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
 interface ImportToAssignmentModalProps {
-  isOpen: boolean
-  onClose?: () => void
+  isOpen: boolean;
+  onClose?: () => void;
   importToAssignmentCallback: (
     assignmentId: string,
     createWithDescription: boolean,
-  ) => void
-  showToggle: boolean
+  ) => void;
+  showToggle: boolean;
   translations: {
-    title: string | ReactNode
-    primaryButton: string
-    secondaryButton: string
-  }
+    title: string | ReactNode;
+    primaryButton: string;
+    secondaryButton: string;
+  };
 }
 
 export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
@@ -80,25 +80,25 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
   showToggle,
   translations,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const [createWithDescription, setCreateWithDescription] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [assignments, setAssignments] = useState<
     Partial<Avo.Assignment.Assignment>[] | null
-  >(null)
-  const [selectedAssignmentId, setSelectedAssignmentId] = useState<string>()
+  >(null);
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState<string>();
   const [sortColumn, sortOrder, handleColumnClick] =
-    useTableSort<AssignmentTableColumns>('updated_at')
-  const [filterString, setFilterString] = useState<string>('')
+    useTableSort<AssignmentTableColumns>('updated_at');
+  const [filterString, setFilterString] = useState<string>('');
 
   const tableColumns = useMemo(
     () => GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL(true),
     [],
-  )
+  );
 
   const fetchAssignments = useCallback(async () => {
     try {
@@ -107,14 +107,14 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
           tHtml(
             'assignment/modals/import-to-assignment-modal___er-ging-iets-mis-bij-het-ophalen-van-de-opdrachten-gelieve-de-pagina-te-herladen',
           ),
-        )
-        return
+        );
+        return;
       }
       const column = tableColumns.find(
         (tableColumn: any) => tableColumn.id || '' === (sortColumn as any),
-      )
+      );
       const columnDataType = (column?.dataType ||
-        TableColumnDataType.string) as TableColumnDataType
+        TableColumnDataType.string) as TableColumnDataType;
       const assignmentData = await AssignmentService.fetchAssignments({
         pastDeadline: false,
         sortColumn,
@@ -123,32 +123,32 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
         offset: 0,
         limit: ITEMS_PER_PAGE,
         filterString,
-      })
-      setAssignments(assignmentData.assignments)
+      });
+      setAssignments(assignmentData.assignments);
     } catch (err) {
-      console.error(new CustomError('Failed to get assignments', err))
+      console.error(new CustomError('Failed to get assignments', err));
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'assignment/modals/import-to-assignment-modal___het-ophalen-van-bestaande-opdrachten-is-mislukt',
         ),
-      })
+      });
     }
-  }, [commonUser, tableColumns, sortColumn, sortOrder, filterString])
+  }, [commonUser, tableColumns, sortColumn, sortOrder, filterString]);
 
   useEffect(() => {
     if (assignments) {
       setLoadingInfo({
         state: 'loaded',
-      })
+      });
     }
-  }, [assignments, setLoadingInfo])
+  }, [assignments, setLoadingInfo]);
 
   useEffect(() => {
     if (isOpen) {
-      fetchAssignments()
+      fetchAssignments();
     }
-  }, [isOpen, fetchAssignments])
+  }, [isOpen, fetchAssignments]);
 
   const handleImportToAssignment = () => {
     if (!selectedAssignmentId) {
@@ -156,25 +156,25 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
         tHtml(
           'assignment/modals/import-to-assignment-modal___gelieve-een-opdracht-te-selecteren',
         ),
-      )
-      return
+      );
+      return;
     }
-    importToAssignmentCallback(selectedAssignmentId, createWithDescription)
-    ;(onClose || noop)()
-  }
+    importToAssignmentCallback(selectedAssignmentId, createWithDescription);
+    (onClose || noop)();
+  };
 
   const handleSelectedAssignmentChanged = (
     selectedIds: (string | number)[],
   ) => {
-    setSelectedAssignmentId((selectedIds[0] as string) || undefined)
-  }
+    setSelectedAssignmentId((selectedIds[0] as string) || undefined);
+  };
 
   // very similar to table in assignment overview, but with differences
   const renderCell = (
     assignment: Avo.Assignment.Assignment,
     colKey: AssignmentTableColumns,
   ) => {
-    const cellData: any = (assignment as any)[colKey]
+    const cellData: any = (assignment as any)[colKey];
 
     switch (
       colKey as any // TODO remove cast once assignment_v2 types are fixed (labels, class_room, author)
@@ -186,13 +186,13 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
               {truncateTableValue(assignment.title)}
             </h3>
           </div>
-        )
+        );
 
         return isMobileWidth() ? (
           <Spacer margin="bottom-small">{renderTitle()}</Spacer>
         ) : (
           renderTitle()
-        )
+        );
       }
       case 'labels':
         return AssignmentHelper.getLabels(
@@ -200,7 +200,7 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
           Avo.Assignment.LabelType.LABEL,
         )
           .map((labelLink: any) => labelLink.assignment_label.label)
-          .join(', ')
+          .join(', ');
 
       case 'class_room':
         return AssignmentHelper.getLabels(
@@ -208,15 +208,15 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
           Avo.Assignment.LabelType.CLASS,
         )
           .map((label: any) => label.assignment_label.label)
-          .join(', ')
+          .join(', ');
 
       case 'author': {
-        const profile = assignment?.profile || null
+        const profile = assignment?.profile || null;
         const avatarOptions = {
           dark: true,
           abbreviatedName: true,
           small: isMobileWidth(),
-        }
+        };
 
         return isMobileWidth() ? (
           <Spacer margin="bottom-small">
@@ -224,13 +224,13 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
           </Spacer>
         ) : (
           renderAvatar(profile, avatarOptions)
-        )
+        );
       }
       case 'deadline_at':
-        return <AssignmentDeadline deadline={cellData} />
+        return <AssignmentDeadline deadline={cellData} />;
 
       case 'updated_at':
-        return formatDate(cellData)
+        return formatDate(cellData);
 
       case 'responses':
         return (cellData || []).length === 0 ? (
@@ -244,12 +244,12 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
           >
             {(cellData || []).length}
           </Link>
-        )
+        );
 
       default:
-        return cellData
+        return cellData;
     }
-  }
+  };
 
   const renderModalBody = () => {
     return (
@@ -296,8 +296,8 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
           />
         </div>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <Modal
@@ -313,6 +313,7 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
           loadingInfo={loadingInfo}
           dataObject={assignments}
           render={renderModalBody}
+          locationId="import-to-assignment-modal"
         />
       </ModalBody>
 
@@ -349,5 +350,5 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
         </ButtonToolbar>
       </ModalFooterRight>
     </Modal>
-  )
-}
+  );
+};

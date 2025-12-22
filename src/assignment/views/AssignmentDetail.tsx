@@ -40,7 +40,10 @@ import {
   BundleSortProp,
   useGetCollectionsOrBundlesContainingFragment,
 } from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
-import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from '../../collection/views/CollectionDetail.const';
+import {
+  QUERY_PARAM_INVITE_TOKEN,
+  QUERY_PARAM_SHOW_PUBLISH_MODAL,
+} from '../../collection/views/CollectionDetail.const';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
 import {
@@ -84,7 +87,6 @@ import { isMobileWidth } from '../../shared/helpers/media-query';
 import {
   BooleanParam,
   StringParam,
-  useQueryParam,
   useQueryParams,
 } from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
@@ -99,6 +101,7 @@ import {
   ObjectTypesAll,
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
+import { UrlUpdateType } from '../../shared/types/use-query-params.ts';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentAction } from '../assignment.types';
@@ -173,18 +176,18 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
     useState<Partial<ErrorViewQueryParams> | null>(null);
 
   // Modals
-  const [isPublishModalOpen, setIsPublishModalOpen] = useQueryParam(
-    QUERY_PARAM_SHOW_PUBLISH_MODAL,
-    BooleanParam,
-  );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
   const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] =
     useState<boolean>(false);
 
-  const [query, setQuery] = useQueryParams({ inviteToken: StringParam });
-  const { inviteToken } = query;
+  const [query, setQuery] = useQueryParams({
+    [QUERY_PARAM_INVITE_TOKEN]: StringParam,
+    [QUERY_PARAM_SHOW_PUBLISH_MODAL]: BooleanParam,
+  });
+  const inviteToken = query[QUERY_PARAM_INVITE_TOKEN];
+  const showPublishModal = query[QUERY_PARAM_SHOW_PUBLISH_MODAL];
 
   // Computed
   const isPublic = assignment?.is_public || false;
@@ -585,7 +588,13 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         break;
       case AssignmentAction.openPublishCollectionModal:
       case AssignmentAction.publish:
-        setIsPublishModalOpen(true, 'replaceIn');
+        setQuery(
+          {
+            ...query,
+            [QUERY_PARAM_SHOW_PUBLISH_MODAL]: true,
+          },
+          UrlUpdateType.REPLACE_IN,
+        );
         break;
       case AssignmentAction.toggleBookmark:
         await toggleBookmark();
@@ -908,6 +917,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
     if ((blocks?.length || 0) === 0) {
       return (
         <ErrorView
+          locationId="assignment-detail--error"
           message={tHtml(
             'assignment/views/assignment-response-edit___deze-opdracht-heeft-nog-geen-inhoud',
           )}
@@ -1097,10 +1107,12 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 
   const renderPageContent = () => {
     if (assignmentLoading) {
-      return <FullPageSpinner />;
+      return <FullPageSpinner locationId="assignment-detail--loading" />;
     }
     if (assignmentError) {
-      return <ErrorView {...assignmentError} />;
+      return (
+        <ErrorView locationId="assignment-detail--error" {...assignmentError} />
+      );
     }
 
     return (
@@ -1151,7 +1163,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
               title={tHtml(
                 'assignment/views/assignment-detail___wil-je-de-opdracht-title-toevoegen-aan-je-werkruimte',
                 {
-                  title: assignment?.title,
+                  title: assignment?.title || '',
                 },
               )}
               isVisible={!!inviteToken}
@@ -1173,12 +1185,15 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
       {!!assignment && !!commonUser && (
         <PublishAssignmentModal
           onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
-            setIsPublishModalOpen(undefined, 'replaceIn');
+            setQuery({
+              ...query,
+              [QUERY_PARAM_SHOW_PUBLISH_MODAL]: undefined,
+            });
             if (newAssignment) {
               setAssignment(newAssignment);
             }
           }}
-          isOpen={!!isPublishModalOpen}
+          isOpen={!!showPublishModal}
           assignment={assignment as Avo.Assignment.Assignment}
           parentBundles={bundlesContainingAssignment}
         />

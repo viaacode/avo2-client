@@ -39,7 +39,11 @@ export const ContentPageOverviewPage: FC = () => {
 
   const renderPageContent = () => {
     return (
-      <Suspense fallback={<FullPageSpinner />}>
+      <Suspense
+        fallback={
+          <FullPageSpinner locationId="content-page-overview-page--loading" />
+        }
+      >
         <ContentPageOverview commonUser={commonUser} />
       </Suspense>
     );

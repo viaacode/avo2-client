@@ -14,7 +14,6 @@ import { Helmet } from 'react-helmet';
 import { Navigate, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
-import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state';
 import { ItemsService } from '../../admin/items/items.service';
 import { UrlRedirectsService } from '../../admin/url-redirects/url-redirects.service';
 import { loginAtom } from '../../authentication/authentication.store';
@@ -28,7 +27,6 @@ import { ErrorView } from '../../error/views/ErrorView';
 import { SearchFilter } from '../../search/search.const';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
-import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
@@ -36,7 +34,6 @@ import {
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
-import { getFullName } from '../../shared/helpers/formatters/avatar';
 import { stripHtml } from '../../shared/helpers/formatters/strip-html';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { generateSearchLinkString } from '../../shared/helpers/link';
@@ -312,16 +309,16 @@ export const DynamicRouteResolver: FC = () => {
             <title>{GENERATE_SITE_TITLE(routeInfo.data?.title)}</title>
             <meta name="description" content={description} />
           </Helmet>
-          <JsonLd
-            url={window.location.href}
-            title={routeInfo.data?.title || ''}
-            description={description}
-            image={routeInfo.data?.thumbnail_path}
-            isOrganisation={!!routeInfo.data?.profile?.organisation}
-            author={getFullName(routeInfo.data?.profile, true, false)}
-            publishedAt={getPublishedDate(routeInfo.data)}
-            updatedAt={routeInfo.data?.updated_at}
-          />
+          {/*<JsonLd*/}
+          {/*  url={window.location.href}*/}
+          {/*  title={routeInfo.data?.title || ''}*/}
+          {/*  description={description}*/}
+          {/*  image={routeInfo.data?.thumbnail_path}*/}
+          {/*  isOrganisation={!!routeInfo.data?.profile?.organisation}*/}
+          {/*  author={getFullName(routeInfo.data?.profile, true, false)}*/}
+          {/*  publishedAt={getPublishedDate(routeInfo.data)}*/}
+          {/*  updatedAt={routeInfo.data?.updated_at}*/}
+          {/*/>*/}
           {routeInfo.data && (
             <>
               <InteractiveTour showButton={false} />
@@ -346,6 +343,7 @@ export const DynamicRouteResolver: FC = () => {
     ) {
       return (
         <ErrorView
+          locationId="dynamic-route-resolver--error"
           icon={IconName.clock}
           actionButtons={['home', 'helpdesk']}
           message={
@@ -358,6 +356,7 @@ export const DynamicRouteResolver: FC = () => {
     if (routeInfo && routeInfo.type === DynamicRouteType.PUPIL_ONLY_PAGE) {
       return (
         <ErrorView
+          locationId="dynamic-route-resolver--error"
           icon={IconName.clock}
           actionButtons={['help', 'helpdesk']}
           message={GET_ERROR_MESSAGES()[`PUPIL_ONLY`]}
@@ -367,6 +366,7 @@ export const DynamicRouteResolver: FC = () => {
     if (routeInfo && routeInfo.type === DynamicRouteType.NOT_FOR_PUPIL_PAGE) {
       return (
         <ErrorView
+          locationId="dynamic-route-resolver--error"
           icon={IconName.clock}
           actionButtons={['pupils']}
           message={GET_ERROR_MESSAGES()[`NOT_FOR_PUPILS`]}
@@ -400,7 +400,7 @@ export const DynamicRouteResolver: FC = () => {
       }),
       '_self',
     );
-    return <FullPageSpinner />;
+    return <FullPageSpinner locationId="dynamic-route-resolver--loading" />;
   };
 
   return (
@@ -408,6 +408,7 @@ export const DynamicRouteResolver: FC = () => {
       loadingInfo={loadingInfo}
       dataObject={routeInfo}
       render={renderRouteComponent}
+      locationId="dynamic-route-resolver"
     />
   );
 };

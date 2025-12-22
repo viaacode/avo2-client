@@ -340,6 +340,7 @@ export const PupilCollectionsOverview: FC = () => {
   const renderNoResults = () => {
     return (
       <ErrorView
+        locationId="pupil-collections-overview--error"
         message={tHtml(
           'admin/pupil-collection/views/pupil-collections-overview___er-bestaan-nog-geen-leerlingencollecties',
         )}
@@ -496,6 +497,7 @@ export const PupilCollectionsOverview: FC = () => {
             loadingInfo={loadingInfo}
             dataObject={pupilCollections}
             render={renderAssignmentOverview}
+            locationId="pupil-collections-overview"
           />
         </AdminLayoutBody>
       </AdminLayout>

@@ -36,8 +36,8 @@ import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import {
   type BookmarkInfo,
   type EventContentType,
@@ -403,6 +403,7 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
 
   const renderEmptyFallback = () => (
     <ErrorView
+      locationId="bookmarks-overview--error"
       icon={IconName.bookmark}
       message={tHtml(
         'workspace/views/bookmarks___je-hebt-nog-geen-bladwijzers-aangemaakt',
@@ -453,6 +454,7 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
       loadingInfo={loadingInfo}
       dataObject={bookmarks}
       render={renderBookmarks}
+      locationId="bookmarks-overview"
     />
   );
 };

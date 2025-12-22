@@ -1,8 +1,8 @@
-import { Alert, Spacer } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { sortBy } from 'es-toolkit'
-import { type FC } from 'react'
+import { Alert, Spacer } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { sortBy } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import { type FC } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { tHtml } from '../../../shared/helpers/translate-html';
@@ -11,12 +11,12 @@ import { showReplacementWarning } from '../../helpers/fragment';
 import { FragmentDetail } from './FragmentDetail';
 
 interface FragmentListProps {
-  collectionFragments: Avo.Collection.Fragment[]
-  showDescription: boolean
-  showMetadata: boolean
-  linkToItems: boolean
-  collection: Avo.Collection.Collection
-  canPlay?: boolean
+  collectionFragments: Avo.Collection.Fragment[];
+  showDescription: boolean;
+  showMetadata: boolean;
+  linkToItems: boolean;
+  collection: Avo.Collection.Collection;
+  canPlay?: boolean;
 }
 
 /**
@@ -33,10 +33,13 @@ export const FragmentList: FC<FragmentListProps> = ({
   linkToItems,
   collection,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
-  const renderCollectionFragments = () =>
-    sortBy(collectionFragments, ['position']).map(
+  const renderCollectionFragments = () => {
+    if (collectionFragments.length === 0) {
+      return null;
+    }
+    return sortBy(collectionFragments, ['position']).map(
       (collectionFragment: Avo.Collection.Fragment) => {
         return (
           <li
@@ -70,9 +73,10 @@ export const FragmentList: FC<FragmentListProps> = ({
             />
             {/*</BlockIconWrapper>*/}
           </li>
-        )
+        );
       },
-    )
+    );
+  };
 
-  return <ul className="c-collection-list">{renderCollectionFragments()}</ul>
-}
+  return <ul className="c-collection-list">{renderCollectionFragments()}</ul>;
+};

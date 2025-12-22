@@ -250,7 +250,7 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
             />
           </>
         ) : (
-          <FullPageSpinner />
+          <FullPageSpinner locationId="assignment-edit-marcom--loading" />
         )}
       </>
     );

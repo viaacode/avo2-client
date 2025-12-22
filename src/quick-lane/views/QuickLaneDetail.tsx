@@ -175,11 +175,12 @@ export const QuickLaneDetail: FC = () => {
       default:
         return (
           <ErrorView
+            locationId="quick-lane-detail--error"
             icon={IconName.alertTriangle}
             message={tHtml(
               'quick-lane/views/quick-lane-detail___onverwacht-inhoudstype',
               {
-                type: contentLabel || undefined,
+                type: contentLabel || '',
               },
             )}
           />
@@ -287,12 +288,13 @@ export const QuickLaneDetail: FC = () => {
 
   const renderPageContent = (): ReactNode | null => {
     if (isLoadingQuickLane) {
-      return <FullPageSpinner />;
+      return <FullPageSpinner locationId="quick-lane-detail--loading" />;
     }
 
     if (isErrorQuickLane) {
       return (
         <ErrorView
+          locationId="quick-lane-detail--error"
           icon={IconName.alertTriangle}
           message={tHtml(
             'quick-lane/views/quick-lane-detail___het-laden-van-de-gedeelde-link-is-mislukt',
@@ -304,6 +306,7 @@ export const QuickLaneDetail: FC = () => {
     if (!canViewQuickLanes) {
       return (
         <ErrorView
+          locationId="quick-lane-detail--error"
           icon={IconName.lock}
           message={tHtml(
             'quick-lane/views/quick-lane-detail___je-hebt-geen-rechten-om-deze-gedeelde-link-te-bekijken',
@@ -320,6 +323,7 @@ export const QuickLaneDetail: FC = () => {
       if (!content || !content.is_public) {
         return (
           <ErrorView
+            locationId="quick-lane-detail--error"
             icon={IconName.search}
             message={tHtml(
               'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden',
@@ -340,6 +344,7 @@ export const QuickLaneDetail: FC = () => {
 
         return (
           <ErrorView
+            locationId="quick-lane-detail--error"
             message={tHtml(
               'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden',
               { depublishReason },
@@ -354,6 +359,7 @@ export const QuickLaneDetail: FC = () => {
       if (!content.is_published) {
         return (
           <ErrorView
+            locationId="quick-lane-detail--error"
             message={tHtml('item/views/item___dit-item-werd-niet-gevonden')}
             icon={IconName.search}
           />

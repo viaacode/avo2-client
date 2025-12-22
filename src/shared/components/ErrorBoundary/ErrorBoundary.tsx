@@ -4,7 +4,7 @@ import { useRouteError } from 'react-router';
 
 import './ErrorBoundary.scss';
 
-export function ErrorBoundary() {
+export function ErrorBoundary(locationId: string) {
   const error = useRouteError() as any;
 
   // Lazy load ErrorView to prevent tText to be called who has a chain to the admin-core which uses use-query-params as commonJs with vite 7 cannot load
@@ -15,6 +15,7 @@ export function ErrorBoundary() {
   );
   return (
     <ErrorView
+      locationId={`${locationId}--error`}
       icon={IconName.alertTriangle}
       message={
         <>

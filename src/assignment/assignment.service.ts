@@ -886,7 +886,7 @@ export class AssignmentService {
     assignmentId: string,
     withDescription: boolean,
   ): Promise<boolean> {
-    if (collection.collection_fragments.length > 0) {
+    if (collection.collection_fragments?.length > 0) {
       const currentMaxPosition =
         await AssignmentService.getAssignmentBlockMaxPosition(assignmentId);
       const startPosition =

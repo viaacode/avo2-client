@@ -295,6 +295,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
   const renderNoResults = () => {
     return (
       <ErrorView
+        locationId="collection-or-bundle-quality-check-overview--error"
         message={tHtml(
           'admin/collections-or-bundles/views/collections-or-bundles-overview___er-bestaan-nog-geen-collecties',
         )}
@@ -493,6 +494,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
             loadingInfo={loadingInfo}
             dataObject={collections}
             render={renderCollectionOrBundleQualityCheckOverview}
+            locationId="collection-or-bundle-quality-check-overview"
           />
         </AdminLayoutBody>
       </AdminLayout>

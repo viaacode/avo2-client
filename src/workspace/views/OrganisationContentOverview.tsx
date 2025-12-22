@@ -1,15 +1,15 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/admin'
-import { PaginationBar } from '@meemoo/react-components'
+import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
+import { PaginationBar } from '@meemoo/react-components';
 import {
   IconName,
   Spacer,
   Table,
   type TableColumn,
-} from '@viaa/avo2-components'
-import { useAtomValue } from 'jotai'
-import { type FC, useCallback, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
+import { type FC, useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import {
@@ -32,17 +32,16 @@ import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { Avo } from '@viaa/avo2-types'
 
 // Constants
 
-const ITEMS_PER_PAGE = 10
+const ITEMS_PER_PAGE = 10;
 
 // Typing
 
 interface OrganisationContentOverviewProps {
-  numberOfItems: number
-  onUpdate: () => void | Promise<void>
+  numberOfItems: number;
+  onUpdate: () => void | Promise<void>;
 }
 
 // Component
@@ -50,37 +49,37 @@ interface OrganisationContentOverviewProps {
 export const OrganisationContentOverview: FC<
   OrganisationContentOverviewProps
 > = ({ numberOfItems }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   // State
   const [organisationContent, setOrganisationContent] = useState<
     OrganisationContentItem[] | null
-  >(null)
+  >(null);
   const [sortColumn, setSortColumn] =
-    useState<keyof OrganisationContentItem>('title')
+    useState<keyof OrganisationContentItem>('title');
   const [sortOrder, setSortOrder] = useState<Avo.Search.OrderDirection>(
     Avo.Search.OrderDirection.DESC,
-  )
-  const [page, setPage] = useState<number>(0)
+  );
+  const [page, setPage] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
 
   // TODO: Make shared function because also used in assignments
   const onClickColumn = (columnId: keyof OrganisationContentItem) => {
     if (sortColumn === columnId) {
       // Change column sort order
-      setSortOrder(toggleSortOrder(sortOrder))
+      setSortOrder(toggleSortOrder(sortOrder));
     } else {
       // Initial column sort order
-      setSortColumn(columnId)
-      setSortOrder(Avo.Search.OrderDirection.ASC)
+      setSortColumn(columnId);
+      setSortOrder(Avo.Search.OrderDirection.ASC);
     }
-  }
+  };
 
   const fetchOrganisationContent = useCallback(async () => {
     try {
-      const organisationId = commonUser?.organisation?.or_id || 'NONE'
+      const organisationId = commonUser?.organisation?.or_id || 'NONE';
 
       const items: OrganisationContentItem[] =
         await CollectionService.fetchOrganisationContent(
@@ -88,13 +87,13 @@ export const OrganisationContentOverview: FC<
           ITEMS_PER_PAGE,
           { [sortColumn]: sortOrder },
           organisationId,
-        )
+        );
 
-      setOrganisationContent(items)
+      setOrganisationContent(items);
     } catch (err) {
       console.error('Failed to fetch organisation content', err, {
         organisation: commonUser?.organisation,
-      })
+      });
 
       setLoadingInfo({
         state: 'error',
@@ -102,25 +101,25 @@ export const OrganisationContentOverview: FC<
           'workspace/views/organisation-content-overview___het-ophalen-van-de-organisatieinhoud-is-mislukt',
         ),
         actionButtons: ['home'],
-      })
+      });
     }
-  }, [page, sortColumn, sortOrder, commonUser])
+  }, [page, sortColumn, sortOrder, commonUser]);
 
   useEffect(() => {
-    fetchOrganisationContent()
-  }, [fetchOrganisationContent])
+    fetchOrganisationContent();
+  }, [fetchOrganisationContent]);
 
   useEffect(() => {
     if (organisationContent) {
-      setLoadingInfo({ state: 'loaded' })
+      setLoadingInfo({ state: 'loaded' });
     }
-  }, [setLoadingInfo, organisationContent, commonUser])
+  }, [setLoadingInfo, organisationContent, commonUser]);
 
   // Render functions
   const getLinkProps = (
     item: OrganisationContentItem,
   ): { to: string; title: string } => {
-    const type = item.type.label
+    const type = item.type.label;
 
     return {
       title: item.title,
@@ -132,8 +131,8 @@ export const OrganisationContentOverview: FC<
           id: item.id,
         },
       ),
-    }
-  }
+    };
+  };
 
   const renderTitle = (item: OrganisationContentItem) => (
     <div className="c-content-header">
@@ -141,55 +140,55 @@ export const OrganisationContentOverview: FC<
         <Link {...getLinkProps(item)}>{truncateTableValue(item.title)}</Link>
       </h3>
     </div>
-  )
+  );
 
   const renderType = (item: OrganisationContentItem): string => {
     if (!item.type.label) {
-      return '-'
+      return '-';
     }
 
     // Account for `npm run extract-translations`
     switch (item.type.label) {
       case 'audio':
-        return tText('workspace/views/organisation-content-overview___audio')
+        return tText('workspace/views/organisation-content-overview___audio');
       case 'bundel':
-        return tText('workspace/views/organisation-content-overview___bundel')
+        return tText('workspace/views/organisation-content-overview___bundel');
       case 'collectie':
         return tText(
           'workspace/views/organisation-content-overview___collectie',
-        )
+        );
       case 'video':
-        return tText('workspace/views/organisation-content-overview___video')
+        return tText('workspace/views/organisation-content-overview___video');
       default:
-        return '-'
+        return '-';
     }
-  }
+  };
 
   const renderCell = (item: OrganisationContentItem, colKey: string) => {
     switch (colKey) {
       case 'title':
-        return renderTitle(item)
+        return renderTitle(item);
 
       case 'type':
-        return renderType(item)
+        return renderType(item);
 
       case 'author':
-        return item.owner.full_name
+        return item.owner.full_name;
 
       case 'last_edited':
-        return item.last_editor ? item.last_editor.full_name : '-'
+        return item.last_editor ? item.last_editor.full_name : '-';
 
       case 'created_at':
       case 'updated_at': {
-        const date = item[colKey as 'created_at' | 'updated_at']
+        const date = item[colKey as 'created_at' | 'updated_at'];
 
-        return <span title={formatTimestamp(date)}>{formatDate(date)}</span>
+        return <span title={formatTimestamp(date)}>{formatDate(date)}</span>;
       }
 
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   const getColumns = (): TableColumn[] => {
     if (isMobileWidth()) {
@@ -214,7 +213,7 @@ export const OrganisationContentOverview: FC<
           col: '3',
           dataType: TableColumnDataType.string,
         },
-      ]
+      ];
     }
 
     return [
@@ -260,8 +259,8 @@ export const OrganisationContentOverview: FC<
         col: '2',
         dataType: TableColumnDataType.string,
       },
-    ]
-  }
+    ];
+  };
 
   const renderPagination = () => (
     <PaginationBar
@@ -271,7 +270,7 @@ export const OrganisationContentOverview: FC<
       totalItems={numberOfItems}
       onPageChange={setPage}
     />
-  )
+  );
 
   const renderTable = (items: OrganisationContentItem[]) => (
     <>
@@ -289,19 +288,21 @@ export const OrganisationContentOverview: FC<
       />
       <Spacer margin="top-large">{renderPagination()}</Spacer>
     </>
-  )
+  );
 
   const renderEmptyFallback = () => (
     <ErrorView
+      locationId="organisation-content-overview--error"
       icon={IconName.folder}
       message={tHtml(
         'workspace/views/organisation-content-overview___geen-content-binnen-uw-organsatie',
       )}
     />
-  )
+  );
 
   const renderNoOrganisationFallback = () => (
     <ErrorView
+      locationId="organisation-content-overview--error"
       message={tHtml(
         'workspace/views/organisation-content-overview___u-hebt-geen-organisatie',
       )}
@@ -312,7 +313,7 @@ export const OrganisationContentOverview: FC<
         )}
       </p>
     </ErrorView>
-  )
+  );
 
   const renderOrganisationContent = () => {
     return (
@@ -323,14 +324,15 @@ export const OrganisationContentOverview: FC<
             : renderEmptyFallback()
           : renderNoOrganisationFallback()}
       </>
-    )
-  }
+    );
+  };
 
   return (
     <LoadingErrorLoadedComponent
       loadingInfo={loadingInfo}
       dataObject={organisationContent}
       render={renderOrganisationContent}
+      locationId="organisation-content-overview"
     />
-  )
-}
+  );
+};

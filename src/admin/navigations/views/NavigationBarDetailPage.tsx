@@ -41,7 +41,11 @@ export const NavigationBarDetailPage: FC = () => {
             )}
           />
         </Helmet>
-        <Suspense fallback={<FullPageSpinner />}>
+        <Suspense
+          fallback={
+            <FullPageSpinner locationId="navigation-bar-detail-page--loading" />
+          }
+        >
           {!!navigationBarId && (
             <NavigationDetail
               navigationBarId={navigationBarId}

@@ -20,13 +20,7 @@ import { Avo, PermissionName } from '@viaa/avo2-types';
 import { isAfter, isPast } from 'date-fns';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { matchPath, Navigate, useNavigate, useParams } from 'react-router';
 import { Link, useLocation } from 'react-router-dom';
@@ -76,8 +70,8 @@ import { useBlocksList } from '../../shared/hooks/use-blocks-list';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -992,7 +986,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         if (pastDeadline) {
           if (!assignment) {
             if (!assignment) {
-              return <FullPageSpinner />;
+              return <FullPageSpinner locationId="assignment-edit--loading" />;
             }
           }
           return (
@@ -1289,10 +1283,12 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
 
   const renderPageContent = () => {
     if (isAssignmentLoading && !originalAssignment) {
-      return <FullPageSpinner />;
+      return <FullPageSpinner locationId="assignment-edit--loading" />;
     }
     if (assignmentError) {
-      return <ErrorView {...assignmentError} />;
+      return (
+        <ErrorView locationId="assignment-edit--error" {...assignmentError} />
+      );
     }
 
     if (

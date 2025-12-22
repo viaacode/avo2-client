@@ -346,7 +346,9 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
           return null;
         }
         if (!assignmentResponse) {
-          return <FullPageSpinner />;
+          return (
+            <FullPageSpinner locationId="assignment-response-edit--loading" />
+          );
         }
         return (
           <AssignmentResponsePupilCollectionTab

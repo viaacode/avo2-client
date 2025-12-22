@@ -17,7 +17,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
-import { compact, isNil, noop } from 'es-toolkit';
+import { isNil, noop } from 'es-toolkit';
 import { isEmpty } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
 import {
@@ -28,7 +28,7 @@ import {
   useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { useNavigate, useParams } from 'react-router';
+import { useLoaderData, useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { AssignmentService } from '../../assignment/assignment.service';
@@ -51,7 +51,6 @@ import EducationLevelsTagList from '../../shared/components/EducationLevelsTagLi
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
-import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
 import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
@@ -74,7 +73,6 @@ import {
 } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { getFullName } from '../../shared/helpers/formatters/avatar';
 import { generateContentLinkString, navigate } from '../../shared/helpers/link';
 import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
@@ -119,15 +117,18 @@ import {
   BundleSortProp,
   useGetCollectionsOrBundlesContainingFragment,
 } from '../hooks/useGetCollectionsOrBundlesContainingFragment';
-import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from './CollectionDetail.const';
 import './CollectionDetail.scss';
 import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
+import { isServerSideRendering } from '../../shared/helpers/routing/is-server-side-rendering.ts';
 import {
   BooleanParam,
   StringParam,
-  useQueryParam,
   useQueryParams,
 } from '../../shared/helpers/routing/use-query-params-ssr.ts';
+import {
+  QUERY_PARAM_INVITE_TOKEN,
+  QUERY_PARAM_SHOW_PUBLISH_MODAL,
+} from './CollectionDetail.const.tsx';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -164,6 +165,10 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
   const navigateFunc = useNavigate();
+  const loaderData = useLoaderData();
+  console.log('Loader data for CollectionDetail', JSON.stringify(loaderData));
+  const collectionFromLoader =
+    loaderData?.collection as Avo.Collection.Collection | null;
 
   const { id: collectionIdFromUrl } = useParams<{ id: string }>();
 
@@ -171,18 +176,23 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   // State
   const [collectionId, setCollectionId] = useState(id || collectionIdFromUrl);
 
-  const [collectionInfo, setCollectionInfo] = useState<CollectionInfo | null>(
-    null,
-  );
-  const permissions = collectionInfo?.permissions;
-  const showLoginPopup = collectionInfo?.showLoginPopup;
-  const showNoAccessPopup = collectionInfo?.showNoAccessPopup;
+  const [collectionInfo, setCollectionInfo] = useState<CollectionInfo>({
+    collection: collectionFromLoader || null,
+    permissions: {},
+    showLoginPopup: !commonUser,
+    showNoAccessPopup: false,
+  });
   const collection = collectionInfo?.collection;
   const isContributor = !!(collection?.contributors || []).find(
     (contributor) =>
       !!contributor.profile_id &&
       contributor.profile_id === commonUser?.profileId,
   );
+  const permissions = collectionInfo?.permissions;
+  const shouldDeleteSelfFromCollection =
+    isContributor && !permissions?.canDeleteCollections;
+  const showLoginPopup = collectionInfo?.showLoginPopup;
+  const showNoAccessPopup = collectionInfo?.showNoAccessPopup;
   const isEditContributor = !!(collection?.contributors || []).find(
     (contributor) =>
       !!contributor.profile_id &&
@@ -197,17 +207,10 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
     commonUser,
     PermissionName.EDIT_ANY_COLLECTIONS,
   );
-  const shouldDeleteSelfFromCollection =
-    isContributor && !permissions?.canDeleteCollections;
-
   const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isDeleteContributorModalOpen, setIsDeleteContributorModalOpen] =
     useState<boolean>(false);
-  const [isPublishModalOpen, setIsPublishModalOpen] = useQueryParam(
-    QUERY_PARAM_SHOW_PUBLISH_MODAL,
-    BooleanParam,
-  );
   const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] =
     useState<boolean>(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
@@ -239,8 +242,12 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   const [importWithDescription, setImportWithDescription] =
     useState<boolean>(false);
 
-  const [query, setQuery] = useQueryParams({ inviteToken: StringParam });
-  const { inviteToken } = query;
+  const [query, setQuery] = useQueryParams({
+    [QUERY_PARAM_INVITE_TOKEN]: StringParam,
+    [QUERY_PARAM_SHOW_PUBLISH_MODAL]: BooleanParam,
+  });
+  const inviteToken = query[QUERY_PARAM_INVITE_TOKEN];
+  const isPublishModalOpen = query[QUERY_PARAM_SHOW_PUBLISH_MODAL] ?? false;
 
   const { data: editStatuses } = useGetCollectionsEditStatuses(
     [collectionId as string],
@@ -307,6 +314,10 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
     const response =
       await CollectionService.fetchContributorsByCollectionId(collectionId);
 
+    console.log(
+      'setting collection info in state 1: ',
+      JSON.stringify(collectionInfo),
+    );
     setCollectionInfo({
       ...collectionInfo,
       collection: {
@@ -450,24 +461,17 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
       const showNoAccessPopup = false;
 
       if (!commonUser) {
-        // Not logged in
-        // If thr collection is public, we should still load the metadata
-        let collectionObj: Avo.Collection.Collection | null = null;
-        try {
-          collectionObj =
-            await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
-              uuid,
-              CollectionOrBundle.COLLECTION,
-              undefined,
-            );
-        } catch (err) {
-          // Ignore errors when fetching collections when user is not logged in
-        }
+        // Set collection with metadata only when not logged in
+
+        console.log(
+          'setting collection info in state 2: ',
+          JSON.stringify(collectionInfo),
+        );
         setCollectionInfo({
+          ...collectionInfo,
           showNoAccessPopup: false,
           showLoginPopup: true,
           permissions: permissionObj,
-          collection: collectionObj,
         });
         setLoadingInfo({
           state: 'loaded',
@@ -480,8 +484,13 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         !permissionObj.canViewAnyPublishedCollections &&
         (!permissionObj.canViewQuickLanes ||
           (permissionObj.canViewQuickLanes &&
+            !isServerSideRendering() &&
             !window.location.href.includes(ROUTE_PARTS.quickLane)))
       ) {
+        console.log(
+          'setting collection info in state 3: ',
+          JSON.stringify(collectionInfo),
+        );
         setCollectionInfo({
           showNoAccessPopup: true,
           showLoginPopup: false,
@@ -683,7 +692,9 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         break;
 
       case CollectionMenuAction.openPublishCollectionModal:
-        setIsPublishModalOpen(!isPublishModalOpen || undefined, 'replaceIn');
+        setQuery({
+          [QUERY_PARAM_SHOW_PUBLISH_MODAL]: !isPublishModalOpen,
+        });
         break;
 
       case CollectionMenuAction.toggleBookmark:
@@ -1319,7 +1330,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
     return (
       <>
         <Container mode="horizontal">
-          {!!collection && !!commonUser && (
+          {!!collection && !!commonUser && collection_fragments?.length > 0 && (
             <FragmentList
               collectionFragments={collection_fragments}
               showDescription
@@ -1422,7 +1433,10 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
             parentBundles={bundlesContainingCollection}
             isOpen={!!isPublishModalOpen}
             onClose={(newCollection: Avo.Collection.Collection | undefined) => {
-              setIsPublishModalOpen(undefined, 'replaceIn');
+              setQuery({
+                ...query,
+                [QUERY_PARAM_SHOW_PUBLISH_MODAL]: undefined,
+              });
 
               if (newCollection) {
                 setCollectionInfo((oldCollectionInfo) => ({
@@ -1617,12 +1631,13 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
   const renderCollection = () => {
     if (loadingInfo.state === 'loading') {
-      return <FullPageSpinner />;
+      return <FullPageSpinner locationId="collection-detail--loading" />;
     }
 
     if (showNoAccessPopup) {
       return (
         <ErrorView
+          locationId="collection-detail--error"
           icon={IconName.lock}
           message={tHtml(
             'collection/views/collection-detail___je-hebt-geen-rechten-om-deze-collectie-te-bekijken',
@@ -1648,6 +1663,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
     if (loadingInfo.state === 'error') {
       return (
         <ErrorView
+          locationId="collection-detail--error"
           icon={IconName.alertTriangle}
           message={tHtml(
             'collection/views/collection-detail___het-laden-van-de-collectie-is-mislukt',
@@ -1701,6 +1717,10 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
     );
   };
 
+  console.log(
+    'collectionInfoFromLoader: ',
+    JSON.stringify(collectionFromLoader),
+  );
   const renderPageContent = () => {
     return (
       <div className="c-sticky-bar__wrapper">
@@ -1708,29 +1728,32 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           <Helmet>
             <title>
               {GENERATE_SITE_TITLE(
-                collection?.title ||
+                collectionFromLoader?.title ||
                   tText(
                     'collection/views/collection-detail___collectie-detail-titel-fallback',
                   ),
               )}
             </title>
 
-            <meta name="description" content={collection?.description || ''} />
+            <meta
+              name="description"
+              content={collectionFromLoader?.description || ''}
+            />
           </Helmet>
 
-          <JsonLd
-            url={window.location.href}
-            title={collection?.title ?? ''}
-            description={collection?.description}
-            image={collection?.thumbnail_path}
-            isOrganisation={!!collection?.profile?.organisation}
-            author={getFullName(collection?.profile, true, false)}
-            publishedAt={collection?.published_at}
-            updatedAt={collection?.updated_at}
-            keywords={compact(
-              (collection?.loms || []).map((lom) => lom.lom?.label),
-            )}
-          />
+          {/*<JsonLd*/}
+          {/*  url={window.location.href}*/}
+          {/*  title={collection?.title ?? ''}*/}
+          {/*  description={collection?.description}*/}
+          {/*  image={collection?.thumbnail_path}*/}
+          {/*  isOrganisation={!!collection?.profile?.organisation}*/}
+          {/*  author={getFullName(collection?.profile, true, false)}*/}
+          {/*  publishedAt={collection?.published_at}*/}
+          {/*  updatedAt={collection?.updated_at}*/}
+          {/*  keywords={compact(*/}
+          {/*    (collection?.loms || []).map((lom) => lom.lom?.label),*/}
+          {/*  )}*/}
+          {/*/>*/}
 
           {renderCollection()}
         </div>
@@ -1739,7 +1762,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           title={tHtml(
             'collection/views/collection-detail___wil-je-de-collectie-title-toevoegen-aan-je-werkruimte',
             {
-              title: collection?.title,
+              title: collection?.title || '',
             },
           )}
           isVisible={!!inviteToken && !!collection}

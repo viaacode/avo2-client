@@ -179,7 +179,9 @@ export const AssignmentResponseEditPage: FC = () => {
 
   const renderPageContent = () => {
     if (assignmentLoading) {
-      return <FullPageSpinner />;
+      return (
+        <FullPageSpinner locationId="assignment-response-edit-page--loading" />
+      );
     }
     if (assignmentError) {
       return (
@@ -187,10 +189,11 @@ export const AssignmentResponseEditPage: FC = () => {
           message={
             assignmentError.message ||
             tHtml(
-              'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt',
+              'assignment/views/assignment-response-edit/assignment-response-edit-page___het-ophalen-van-de-opdracht-is-mislukt',
             )
           }
           icon={assignmentError.icon || 'alert-triangle'}
+          locationId="assignment-response-edit-page--error"
         />
       );
     }
@@ -198,9 +201,10 @@ export const AssignmentResponseEditPage: FC = () => {
       return (
         <ErrorView
           message={tHtml(
-            'assignment/views/assignment-response-edit___de-opdracht-is-niet-gevonden',
+            'assignment/views/assignment-response-edit/assignment-response-edit-page___de-opdracht-is-niet-gevonden',
           )}
           icon={IconName.search}
+          locationId="assignment-response-edit-page--error"
         />
       );
     }
@@ -232,6 +236,7 @@ export const AssignmentResponseEditPage: FC = () => {
             'assignment/views/assignment-response-edit/assignment-response-edit-page___de-opdracht-antwoord-entry-kon-niet-worden-aangemaakt',
           )}
           icon={IconName.alertTriangle}
+          locationId="assignment-response-edit-page--error"
         />
       );
     }

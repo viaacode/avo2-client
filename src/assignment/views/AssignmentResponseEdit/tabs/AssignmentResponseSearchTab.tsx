@@ -318,6 +318,7 @@ export const AssignmentResponseSearchTab: FC<
     ) {
       return (
         <ErrorView
+          locationId="assignment-response-search-tab--error"
           message={tHtml(
             'assignment/views/assignment-response-edit___je-hebt-geen-rechten-om-te-zoeken-binnen-een-opdracht',
           )}

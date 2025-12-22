@@ -1,5 +1,5 @@
-import { IconName } from '@viaa/avo2-components'
-import { type FC, type ReactElement } from 'react'
+import { IconName } from '@viaa/avo2-components';
+import { type FC, type ReactElement } from 'react';
 
 import {
   ErrorView,
@@ -8,18 +8,19 @@ import {
 import { tHtml } from '../../helpers/translate-html';
 import { FullPageSpinner } from '../FullPageSpinner/FullPageSpinner';
 
-export type LoadingState = 'loading' | 'loaded' | 'error' | 'forbidden'
+export type LoadingState = 'loading' | 'loaded' | 'error' | 'forbidden';
 
 export interface LoadingInfo extends ErrorViewQueryParams {
-  state: LoadingState
+  state: LoadingState;
 }
 
 interface LoadingErrorLoadedComponentProps {
-  loadingInfo: LoadingInfo
-  notFoundError?: string | null
-  showSpinner?: boolean
-  dataObject: any | undefined | null
-  render: () => ReactElement | null
+  loadingInfo: LoadingInfo;
+  notFoundError?: string | null;
+  showSpinner?: boolean;
+  dataObject: any | undefined | null;
+  render: () => ReactElement | null;
+  locationId: string;
 }
 
 export const LoadingErrorLoadedComponent: FC<
@@ -30,11 +31,15 @@ export const LoadingErrorLoadedComponent: FC<
   showSpinner = true,
   dataObject,
   render,
+  locationId,
 }) => {
-  const renderSpinner = () => <FullPageSpinner />
+  const renderSpinner = () => (
+    <FullPageSpinner locationId={`${locationId}--loading`} />
+  );
 
   const renderError = () => (
     <ErrorView
+      locationId={`${locationId}--error`}
       message={
         loadingInfo.message ||
         tHtml(
@@ -44,20 +49,21 @@ export const LoadingErrorLoadedComponent: FC<
       icon={loadingInfo.icon || IconName.alertTriangle}
       actionButtons={loadingInfo.actionButtons || ['home']}
     />
-  )
+  );
 
   // Render
   switch (loadingInfo.state) {
     case 'error':
     case 'forbidden':
-      return renderError()
+      return renderError();
 
     case 'loaded':
       if (dataObject) {
-        return render()
+        return render();
       }
       return (
         <ErrorView
+          locationId={`${locationId}--error`}
           message={
             notFoundError ||
             tHtml(
@@ -67,10 +73,10 @@ export const LoadingErrorLoadedComponent: FC<
           icon={IconName.search}
           actionButtons={['home', 'helpdesk']}
         />
-      )
+      );
 
     case 'loading':
     default:
-      return showSpinner ? renderSpinner() : <></>
+      return showSpinner ? renderSpinner() : <></>;
   }
-}
+};

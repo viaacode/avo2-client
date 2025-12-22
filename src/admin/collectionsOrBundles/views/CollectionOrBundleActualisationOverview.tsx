@@ -293,6 +293,7 @@ export const CollectionOrBundleActualisationOverview: FC = () => {
   const renderNoResults = () => {
     return (
       <ErrorView
+        locationId="collection-or-bundle-actualisation-overview--error"
         message={tHtml(
           'admin/collections-or-bundles/views/collections-or-bundles-overview___er-bestaan-nog-geen-collecties',
         )}
@@ -491,6 +492,7 @@ export const CollectionOrBundleActualisationOverview: FC = () => {
             loadingInfo={loadingInfo}
             dataObject={collections}
             render={renderCollectionOrBundleActualisationOverview}
+            locationId="collection-or-bundle-actualisation-overview"
           />
         </AdminLayoutBody>
       </AdminLayout>

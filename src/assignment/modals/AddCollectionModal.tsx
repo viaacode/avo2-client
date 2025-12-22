@@ -27,13 +27,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { CollectionService } from '../../collection/collection.service';
@@ -431,6 +425,7 @@ export const AddCollectionModal: FC<AddCollectionModalProps> = ({
           loadingInfo={loadingInfo}
           dataObject={collections}
           render={renderModalBody}
+          locationId="add-collection-modal"
         />
       </ModalBody>
 

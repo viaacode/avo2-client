@@ -23,7 +23,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo, PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
-import { compact, noop } from 'es-toolkit';
+import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -61,7 +61,6 @@ import EducationLevelsTagList from '../../shared/components/EducationLevelsTagLi
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { Html } from '../../shared/components/Html/Html';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
-import { JsonLd } from '../../shared/components/JsonLd/JsonLd';
 import { ShareThroughEmailModal } from '../../shared/components/ShareThroughEmailModal/ShareThroughEmailModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
@@ -794,19 +793,19 @@ export const BundleDetail: FC<BundleDetailProps> = ({
           </title>
           <meta name="description" content={bundleObj?.description || ''} />
         </Helmet>
-        <JsonLd
-          url={window.location.href}
-          title={bundleObj?.title}
-          description={bundleObj?.description}
-          image={bundleObj?.thumbnail_path}
-          isOrganisation={!!bundleObj?.profile?.organisation}
-          author={getFullName(bundleObj?.profile, true, false)}
-          publishedAt={bundleObj?.published_at}
-          updatedAt={bundleObj?.updated_at}
-          keywords={compact(
-            (bundleObj?.loms || []).map((lom) => lom.lom?.label),
-          )}
-        />
+        {/*<JsonLd*/}
+        {/*  url={window.location.href}*/}
+        {/*  title={bundleObj?.title}*/}
+        {/*  description={bundleObj?.description}*/}
+        {/*  image={bundleObj?.thumbnail_path}*/}
+        {/*  isOrganisation={!!bundleObj?.profile?.organisation}*/}
+        {/*  author={getFullName(bundleObj?.profile, true, false)}*/}
+        {/*  publishedAt={bundleObj?.published_at}*/}
+        {/*  updatedAt={bundleObj?.updated_at}*/}
+        {/*  keywords={compact(*/}
+        {/*    (bundleObj?.loms || []).map((lom) => lom.lom?.label),*/}
+        {/*  )}*/}
+        {/*/>*/}
         <div
           className={clsx(
             'm-bundle-detail',
@@ -992,11 +991,12 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 
   const renderPageContent = () => {
     if (isLoadingBundle) {
-      return <FullPageSpinner />;
+      return <FullPageSpinner locationId="bundle-detail--loading" />;
     }
     if (isErrorBundle) {
       return (
         <ErrorView
+          locationId="bundle-detail--error"
           icon={IconName.alertTriangle}
           message={tHtml(
             'bundle/views/bundle-detail___het-laden-van-de-bundel-is-mislukt',

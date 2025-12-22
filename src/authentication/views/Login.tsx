@@ -1,8 +1,8 @@
-import { Button, IconName } from '@viaa/avo2-components'
-import { useAtom, useSetAtom } from 'jotai'
-import { type FC, useEffect } from 'react'
-import { useNavigate } from 'react-router'
-import { useLocation } from 'react-router-dom'
+import { Button, IconName } from '@viaa/avo2-components';
+import { useAtom, useSetAtom } from 'jotai';
+import { type FC, useEffect } from 'react';
+import { useNavigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
@@ -14,22 +14,22 @@ import { getLoginStateAtom } from '../authentication.store.actions';
 import { LoginMessage } from '../authentication.types';
 import { redirectToServerLoginPage } from '../helpers/redirects';
 
-const LOGIN_ATTEMPT_KEY = 'AVO_LOGIN_ATTEMPT'
+const LOGIN_ATTEMPT_KEY = 'AVO_LOGIN_ATTEMPT';
 
 export const Login: FC = () => {
-  const location = useLocation()
-  const navigateFunc = useNavigate()
+  const location = useLocation();
+  const navigateFunc = useNavigate();
 
-  const [loginAtomValue] = useAtom(loginAtom)
-  const loginState = loginAtomValue.data
-  const loginStateLoading = loginAtomValue.loading
-  const loginStateError = loginAtomValue.error
-  const getLoginState = useSetAtom(getLoginStateAtom)
+  const [loginAtomValue] = useAtom(loginAtom);
+  const loginState = loginAtomValue.data;
+  const loginStateLoading = loginAtomValue.loading;
+  const loginStateError = loginAtomValue.error;
+  const getLoginState = useSetAtom(getLoginStateAtom);
 
   useEffect(() => {
     if (!loginState && !loginStateLoading && !loginStateError) {
-      getLoginState(false)
-      return
+      getLoginState(false);
+      return;
     }
 
     // Redirect to previous requested path or the default page for that user group (LOGGED_IN_HOME or WORKSPACE_ASSIGNMENTS)
@@ -38,19 +38,19 @@ export const Login: FC = () => {
       loginState.message === LoginMessage.LOGGED_IN &&
       !loginStateLoading
     ) {
-      let path: string | undefined = (location?.state as any)?.from?.pathname
+      let path: string | undefined = (location?.state as any)?.from?.pathname;
 
       if (!path) {
         if (isPupil(loginState?.commonUserInfo?.userGroup?.id)) {
-          path = APP_PATH.WORKSPACE_ASSIGNMENTS.route
+          path = APP_PATH.WORKSPACE_ASSIGNMENTS.route;
         } else {
-          path = APP_PATH.LOGGED_IN_HOME.route
+          path = APP_PATH.LOGGED_IN_HOME.route;
         }
       }
 
-      navigateFunc(path)
+      navigateFunc(path);
 
-      return
+      return;
     }
 
     if (
@@ -59,7 +59,7 @@ export const Login: FC = () => {
       !loginStateLoading &&
       !loginStateError
     ) {
-      redirectToServerLoginPage(location)
+      redirectToServerLoginPage(location);
     }
   }, [
     getLoginState,
@@ -68,18 +68,19 @@ export const Login: FC = () => {
     loginStateError,
     navigateFunc,
     location,
-  ])
+  ]);
 
   const tryLoginAgainManually = () => {
     if (localStorage) {
-      localStorage.removeItem(LOGIN_ATTEMPT_KEY)
+      localStorage.removeItem(LOGIN_ATTEMPT_KEY);
     }
-    getLoginState(false)
-  }
+    getLoginState(false);
+  };
 
   if (loginStateError) {
     return (
       <ErrorView
+        locationId="login--error"
         message={tText('authentication/views/login___het-inloggen-is-mislukt')}
         icon={IconName.lock}
       >
@@ -89,15 +90,15 @@ export const Login: FC = () => {
           label={tText('authentication/views/login___probeer-opnieuw')}
         />
       </ErrorView>
-    )
+    );
   }
 
   if (!loginState || loginStateLoading) {
     // Wait for login check
-    return <FullPageSpinner />
+    return <FullPageSpinner locationId="login--loading" />;
   }
 
-  return null
-}
+  return null;
+};
 
-export default Login
+export default Login;

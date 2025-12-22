@@ -616,6 +616,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
       loadingInfo={loadingInfo}
       dataObject={resolvedResults}
       render={renderMediaGridBlock}
+      locationId="media-grid-wrapper"
     />
   );
 };

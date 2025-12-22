@@ -40,11 +40,11 @@ import { isMobileWidth } from '../../shared/helpers/media-query';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { useQualityLabels } from '../../shared/hooks/useQualityLabels';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import {
   CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
   CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED,
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import {
   type BookmarkRequestInfo,
   type BookmarkStatusLookup,
@@ -442,11 +442,14 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 
   const renderSearchResults = () => {
     if (searchResultsLoading || (!searchResultsError && !searchResults)) {
-      return <FullPageSpinner />;
+      return (
+        <FullPageSpinner locationId="search-filters-and-results--loading" />
+      );
     }
     if (searchResultsError) {
       return (
         <ErrorView
+          locationId="search-filters-and-results--error"
           message={tHtml(
             'search/views/search___fout-tijdens-ophalen-zoek-resultaten',
           )}

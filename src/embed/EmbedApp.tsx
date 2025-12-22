@@ -14,7 +14,6 @@ import { isUuid } from '../shared/helpers/isUuid';
 import { ReactRouter7Adapter } from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
 import { QueryParamProvider } from '../shared/helpers/routing/use-query-params-ssr';
 import { tText } from '../shared/helpers/translate-text';
-import { waitForTranslations } from '../shared/translations/i18n';
 import { Embed } from './components/Embed';
 import { EmbedErrorView } from './components/EmbedErrorView';
 import { RegisterOrLogin } from './components/RegisterOrLogin';
@@ -22,6 +21,7 @@ import { useGetLoginStateForEmbed } from './hooks/useGetLoginStateForEmbed';
 import '@meemoo/admin-core-ui/styles.css';
 import '../App.scss';
 import '../styles/main.scss';
+import { loadTranslations } from '../shared/translations/i18n.ts';
 
 const EmbedApp: FC = () => {
   const location = useLocation();
@@ -148,7 +148,7 @@ const EmbedApp: FC = () => {
    * Wait for translations to be loaded before rendering the app
    */
   useEffect(() => {
-    waitForTranslations
+    loadTranslations()
       .then(() => {
         setTranslationsLoaded(true);
       })
@@ -176,6 +176,7 @@ const EmbedApp: FC = () => {
       // No JWT token in URL, redirect to error page
       return (
         <ErrorView
+          locationId="embed-app--error"
           message={tText(
             'embed/embed-app___deze-embedcode-heeft-geen-jwt-query-param-en-kan-dus-niet-geladen-worden',
           )}

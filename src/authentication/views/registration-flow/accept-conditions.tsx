@@ -3,21 +3,21 @@ import {
   ContentPageRenderer,
   ContentPageService,
   convertDbContentPagesToContentPageInfos,
-} from '@meemoo/admin-core-ui/client'
+} from '@meemoo/admin-core-ui/client';
 import {
   Button,
   Spacer,
   Spinner,
   Toolbar,
   ToolbarCenter,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { useAtomValue, useSetAtom } from 'jotai'
-import { compact } from 'es-toolkit'
-import { type FC, useCallback, useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate } from 'react-router'
-import { useLocation } from 'react-router-dom'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { compact } from 'es-toolkit';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { type FC, useCallback, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 import { SpecialUserGroupId } from '../../../admin/user-groups/user-group.const';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -42,30 +42,30 @@ import { redirectToClientPage } from '../../helpers/redirects/redirect-to-client
 import { AcceptElementaryPupilConditions } from './accept-elementary-pupil-conditions';
 
 const ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS =
-  'ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS'
+  'ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS';
 
 export const AcceptConditions: FC = () => {
-  const navigateFunc = useNavigate()
-  const location = useLocation()
+  const navigateFunc = useNavigate();
+  const location = useLocation();
 
   // The term of use and the privacy conditions
-  const [pages, setPages] = useState<(ContentPageInfo | null)[]>([])
+  const [pages, setPages] = useState<(ContentPageInfo | null)[]>([]);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
-  const [acceptInProgress, setAcceptInProgress] = useState<boolean>(false)
-  const loginState = useAtomValue(loginAtom)
-  const loggedInLoginState = loginState.data as Avo.Auth.LoginResponseLoggedIn
-  const commonUser = useAtomValue(commonUserAtom)
-  const acceptConditions = useSetAtom(acceptConditionsAtom)
+  });
+  const [acceptInProgress, setAcceptInProgress] = useState<boolean>(false);
+  const loginState = useAtomValue(loginAtom);
+  const loggedInLoginState = loginState.data as Avo.Auth.LoginResponseLoggedIn;
+  const commonUser = useAtomValue(commonUserAtom);
+  const acceptConditions = useSetAtom(acceptConditionsAtom);
   const isElementaryPupil =
-    commonUser?.userGroup?.id === SpecialUserGroupId.PupilElementary
-  const dataObject = isElementaryPupil ? {} : pages[0]
+    commonUser?.userGroup?.id === SpecialUserGroupId.PupilElementary;
+  const dataObject = isElementaryPupil ? {} : pages[0];
 
   const fetchContentPage = useCallback(async () => {
     if (isElementaryPupil) {
-      setLoadingInfo({ state: 'loaded' })
-      return
+      setLoadingInfo({ state: 'loaded' });
+      return;
     }
 
     try {
@@ -80,67 +80,67 @@ export const AcceptConditions: FC = () => {
             '/privacy-voorwaarden',
           ),
         ]),
-      )
-      setPages(convertDbContentPagesToContentPageInfos(dbContentPages) || [])
+      );
+      setPages(convertDbContentPagesToContentPageInfos(dbContentPages) || []);
     } catch (err) {
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'authentication/views/registration-flow/l-8-accept-conditions___het-ophalen-van-de-gebruikers-en-privacy-voorwaarden-is-mislukt',
         ),
-      })
+      });
     }
-  }, [isElementaryPupil])
+  }, [isElementaryPupil]);
 
   useEffect(() => {
-    fetchContentPage()
-  }, [fetchContentPage])
+    fetchContentPage();
+  }, [fetchContentPage]);
 
   useEffect(() => {
     if (pages && pages.length === 2) {
       if (pages[0] && pages[1]) {
-        setLoadingInfo({ state: 'loaded' })
+        setLoadingInfo({ state: 'loaded' });
       } else {
         setLoadingInfo({
           state: 'error',
           message: tHtml(
             'authentication/views/registration-flow/l-8-accept-conditions___het-ophalen-van-de-gebruikers-en-privacy-voorwaarden-is-mislukt',
           ),
-        })
+        });
       }
     }
-  }, [pages])
+  }, [pages]);
 
   useEffect(() => {
     if (loggedInLoginState?.acceptedConditions) {
-      const fromRoute = (location?.state as any)?.from?.pathname
+      const fromRoute = (location?.state as any)?.from?.pathname;
       if (!fromRoute) {
         throw new CustomError(
           'Failed to navigate to previously requested route because location.state.from is not set',
           null,
           { location },
-        )
+        );
       }
-      redirectToClientPage(fromRoute, navigateFunc)
+      redirectToClientPage(fromRoute, navigateFunc);
     }
   }, [
     loginState,
     location,
     navigateFunc,
     loggedInLoginState?.acceptedConditions,
-  ])
+  ]);
 
   const handleAcceptConditions = async () => {
     try {
-      setAcceptInProgress(true)
+      setAcceptInProgress(true);
       await NotificationService.setNotification(
         ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS,
         commonUser?.profileId || '',
         true,
         true,
-      )
+      );
 
-      acceptConditions()
+      acceptConditions();
     } catch (err) {
       console.error(
         new CustomError(
@@ -148,15 +148,15 @@ export const AcceptConditions: FC = () => {
           err,
           { commonUser },
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'authentication/views/registration-flow/l-8-accept-conditions___het-opslaan-van-de-accepteer-condities-is-mislukt',
         ),
-      )
-      setAcceptInProgress(false) // Disable on on error, if success => we redirect to other route
+      );
+      setAcceptInProgress(false); // Disable on on error, if success => we redirect to other route
     }
-  }
+  };
 
   const renderAcceptConditionsPage = () => {
     return (
@@ -200,8 +200,8 @@ export const AcceptConditions: FC = () => {
           </Toolbar>
         </Spacer>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -228,9 +228,10 @@ export const AcceptConditions: FC = () => {
             ? () => <AcceptElementaryPupilConditions />
             : renderAcceptConditionsPage
         }
+        locationId="accept-conditions"
       />
     </>
-  )
-}
+  );
+};
 
-export default AcceptConditions
+export default AcceptConditions;

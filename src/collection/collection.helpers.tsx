@@ -147,10 +147,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
         ? tText('collection/collection___de-collectie-heeft-geen-items')
         : tText('collection/collection___de-bundel-heeft-geen-collecties'),
     isValid: (collection: Partial<Avo.Collection.Collection>) =>
-      !!(
-        collection.collection_fragments &&
-        collection.collection_fragments.length
-      ),
+      !!collection?.collection_fragments?.length,
   },
   {
     error: (collection) =>
@@ -193,7 +190,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
       if (bundle.type_id === ContentTypeNumber.collection) {
         return true; // Only applies to bundles
       }
-      if (!bundle.collection_fragments || !bundle.collection_fragments.length) {
+      if (!bundle.collection_fragments?.length) {
         return true; // No fragments, no problem
       }
       // Check that all collections/assignments in the bundle still exist (have not been deleted)
@@ -213,7 +210,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
       if (bundle.type_id === ContentTypeNumber.collection) {
         return true; // Only applies to bundles
       }
-      if (!bundle.collection_fragments || !bundle.collection_fragments.length) {
+      if (!bundle.collection_fragments?.length) {
         return true; // No fragments, no problem
       }
       // Check that all collections/assignments in the bundle are public

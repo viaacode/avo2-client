@@ -40,7 +40,11 @@ export const ContentPageDetailPage: FC = () => {
           <meta name="description" content={item.seoDescription || ''} />
         </Helmet>
       )}
-      <Suspense fallback={<FullPageSpinner />}>
+      <Suspense
+        fallback={
+          <FullPageSpinner locationId="content-page-detail-page--loading" />
+        }
+      >
         <PermissionGuard
           permissions={[
             PermissionName.EDIT_OWN_CONTENT_PAGES,

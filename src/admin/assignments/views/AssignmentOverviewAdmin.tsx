@@ -380,6 +380,7 @@ export const AssignmentOverviewAdmin: FC = () => {
   const renderNoResults = () => {
     return (
       <ErrorView
+        locationId="assignment-overview-admin--error"
         message={tHtml(
           'admin/assignments/views/assignments-overview-admin___er-bestaan-nog-geen-opdrachten',
         )}
@@ -647,6 +648,7 @@ export const AssignmentOverviewAdmin: FC = () => {
             loadingInfo={loadingInfo}
             dataObject={assignments}
             render={renderAssignmentOverview}
+            locationId="assignment-overview-admin"
           />
         </AdminLayoutBody>
       </AdminLayout>

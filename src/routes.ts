@@ -1,6 +1,3 @@
-import { AdminConfig } from '@meemoo/admin-core-ui/admin';
-import { AdminConfigManager } from '@meemoo/admin-core-ui/client';
-import { noop } from 'es-toolkit';
 import {
   type MiddlewareFunction,
   type RouteObject,
@@ -18,7 +15,6 @@ import { CollectionOrBundleMarcomOverview } from './admin/collectionsOrBundles/v
 import { CollectionOrBundleQualityCheckOverview } from './admin/collectionsOrBundles/views/CollectionOrBundleQualityCheckOverview.tsx';
 import { CollectionsOrBundlesOverview } from './admin/collectionsOrBundles/views/CollectionsOrBundlesOverview.tsx';
 import { CONTENT_PAGE_PATH } from './admin/content-page/content-page.routes';
-import { getContentPageByPath } from './admin/content-page/hooks/use-get-content-page-by-path.ts';
 import { ContentPageDetailPage } from './admin/content-page/views/ContentPageDetailPage.tsx';
 import { ContentPageEditPage } from './admin/content-page/views/ContentPageEditPage.tsx';
 import ContentPageOverviewPage from './admin/content-page/views/ContentPageOverviewPage.tsx';
@@ -41,7 +37,6 @@ import { NavigationBarOverviewPage } from './admin/navigations/views/NavigationB
 import { NavigationItemEditPage } from './admin/navigations/views/NavigationItemEditPage.tsx';
 import { PUPIL_COLLECTIONS_PATH } from './admin/pupil-collection/pupil-collection.routes';
 import { PupilCollectionsOverview } from './admin/pupil-collection/views/PupilCollectionsOverview.tsx';
-import { getAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config.const.tsx';
 import { TRANSLATIONS_PATH } from './admin/translations/translations.routes.ts';
 import { TranslationsOverviewPage } from './admin/translations/views/TranslationsOverviewPage.tsx';
 import { URL_REDIRECT_PATH } from './admin/url-redirects/url-redirects.routes';
@@ -73,21 +68,25 @@ import { APP_PATH } from './constants';
 import CookiePolicy from './cookie-policy/views/CookiePolicy.tsx';
 import { DynamicRouteResolver } from './dynamic-route-resolver/views/DynamicRouteResolver.tsx';
 import { EmbedCodeDetail } from './embed-code/views/EmbedCodeDetail.tsx';
-import { ErrorView } from './error/views/ErrorView.tsx';
+import ErrorViewPage from './error/views/ErrorViewPage.tsx';
 import { LoggedInHome } from './home/views/LoggedInHome.tsx';
 import { LoggedOutHome } from './home/views/LoggedOutHome.tsx';
 import { ItemDetail } from './item/views/ItemDetail.tsx';
 import { ItemDetailRoute } from './item/views/ItemDetailRoute.tsx';
 import { QuickLaneDetail } from './quick-lane/views/QuickLaneDetail.tsx';
+import {
+  fetchCollectionLoader,
+  initAppLoader,
+  loadLoggedOutHomeContentPage,
+} from './routes.loaders.ts';
 import { Search } from './search/views/Search.tsx';
 import { CompleteProfileStep } from './settings/components/CompleteProfileStep.tsx';
 import { Email } from './settings/components/Email/Email.tsx';
 import { Profile } from './settings/components/Profile.tsx';
 import { Settings } from './settings/views/Settings.tsx';
 import { ErrorBoundary } from './shared/components/ErrorBoundary/ErrorBoundary';
-import { FullPageSpinner } from './shared/components/FullPageSpinner/FullPageSpinner';
+import FullPageSpinnerPage from './shared/components/FullPageSpinner/FullPageSpinnerRoute.tsx';
 import { ROUTE_PARTS } from './shared/constants/routes';
-import { TestWrapper } from './test-wrapper.tsx';
 import { EducationalAuthorItemRequestForm } from './user-item-request-form/views/EducationalAuthorItemRequestForm.tsx';
 import { EducationalAuthorItemRequestFormConfirm } from './user-item-request-form/views/EducationalAuthorItemRequestFormConfirm.tsx';
 import { UserItemRequestForm } from './user-item-request-form/views/UserItemRequestForm.tsx';
@@ -100,54 +99,13 @@ async function logRoutesMiddleware({
   console.log(`${request.method} ${request.url}`);
 }
 
-const TEST_APP_ROUTES: RouteObject[] = [
-  {
-    id: 'wrapper',
-    path: '/',
-    loader: () => {
-      try {
-        // Set admin-core config with dummy navigate function during SSR
-        // The config will be set again in the client after hydration
-        const config: AdminConfig = getAdminCoreConfig(noop);
-        AdminConfigManager.setConfig(config);
-      } catch (err) {
-        console.error(
-          'Failed to load admin-core-config in react-router loader for route wrapper',
-          err,
-        );
-      }
-    },
-    Component: TestWrapper,
-    children: [
-      {
-        id: 'root-test',
-        path: '/',
-        loader: async () => {
-          try {
-            // Load content page for logged out homepage
-            const contentPage = await getContentPageByPath('/');
-            return contentPage;
-          } catch (err) {
-            console.error(
-              'Failed to load content page in react-router loader for route root-test',
-              err,
-              { path: '/' },
-            );
-          }
-        },
-        Component: LoggedOutHome,
-      },
-    ],
-  },
-];
-
 const APP_ROUTES: RouteObject[] = [
   {
     id: 'root-set-admin-core-config',
     path: '/',
     middleware: [logRoutesMiddleware],
+    loader: initAppLoader,
     Component: App,
-    // lazy: () => import('./App').then(reactRouterConvert),
     // hydrateFallbackElement: <FullPageSpinner/>,
     children: [
       ////////////////////////////////////////////////////////////////////////////////////////
@@ -157,16 +115,13 @@ const APP_ROUTES: RouteObject[] = [
         // Redirect /beheer to /admin
         id: 'beheer',
         path: `/${ROUTE_PARTS.beheer}`,
-        loader: () => {
-          return redirect(`/${ROUTE_PARTS.admin}`);
-        },
-        Component: FullPageSpinner,
+        loader: () => redirect(`/${ROUTE_PARTS.admin}`),
+        Component: FullPageSpinnerPage,
       },
       {
         id: 'admin',
         path: `/${ROUTE_PARTS.admin}`,
         Component: Admin,
-        // lazy: () => import('./admin/Admin').then(reactRouterConvert),
         children: getAdminRoutes(),
       },
       ////////////////////////////////////////////////////////////////////////////////////////
@@ -177,13 +132,10 @@ const APP_ROUTES: RouteObject[] = [
         // Login route doesn't need navigation or footer
         path: APP_PATH.LOGIN.route,
         Component: Login,
-        // lazy: () =>
-        //   import('./authentication/views/Login').then(reactRouterConvert),
       },
       {
         id: 'app-client-layout',
         Component: AppClientLayout,
-        // lazy: () => import('./AppClientLayout').then(reactRouterConvert),
         children: [
           ////////////////////////////////////////////////////////////////////////////////////////
           // UNAUTHENTICATED
@@ -201,10 +153,6 @@ const APP_ROUTES: RouteObject[] = [
           ////////////////////////////////////////////////////////////////////////////////////////
           // This route needs to be the last one, since it handles all remaining routes
           {
-            // lazy: () =>
-            //   import(
-            //     './dynamic-route-resolver/views/DynamicRouteResolver'
-            //   ).then(reactRouterConvert),
             Component: DynamicRouteResolver,
             path: APP_PATH.ALL_ROUTES.route,
           },
@@ -222,121 +170,86 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
     {
       id: 'LoggedOutHome',
       index: true,
+      loader: loadLoggedOutHomeContentPage,
       Component: LoggedOutHome,
-      // lazy: () => import('./home/views/LoggedOutHome').then(reactRouterConvert),
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('LoggedOutHome--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'Logout',
       path: APP_PATH.LOGOUT.route,
       Component: Logout,
-      // lazy: () =>
-      //   import('./authentication/views/Logout').then(reactRouterConvert),
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('Logout--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'RegisterStamboek',
       path: APP_PATH.STAMBOEK.route,
       Component: RegisterStamboek,
-      // lazy: () =>
-      //   import('./authentication/views/registration-flow/r3-stamboek').then(
-      //     reactRouterConvert,
-      //   ),
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('RegisterStamboek--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'ManualRegistration',
       path: APP_PATH.MANUAL_ACCESS_REQUEST.route,
       Component: ManualRegistration,
-      // lazy: () =>
-      //   import(
-      //     './authentication/views/registration-flow/r4-manual-registration'
-      //   ).then(reactRouterConvert),
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('ManualRegistration--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'StudentTeacher',
       path: APP_PATH.STUDENT_TEACHER.route,
       Component: StudentTeacher,
-      // lazy: () =>
-      //   import(
-      //     './authentication/views/registration-flow/r10-student-teacher'
-      //   ).then(reactRouterConvert),
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('StudentTeacher--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'RegisterOrLogin',
       path: APP_PATH.REGISTER_OR_LOGIN.route,
       Component: RegisterOrLogin,
-      // lazy: () =>
-      //   import('./authentication/views/RegisterOrLogin').then(
-      //     reactRouterConvert,
-      //   ),
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('RegisterOrLogin--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'LinkYourAccount',
       path: APP_PATH.LINK_YOUR_ACCOUNT.route,
       Component: LinkYourAccount,
-      // lazy: () =>
-      //   import('./authentication/views/LinkYourAccount').then(
-      //     reactRouterConvert,
-      //   ),
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('LinkYourAccount--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'AcceptConditions',
       path: APP_PATH.ACCEPT_CONDITIONS.route,
       Component: AcceptConditions,
-      // lazy: () =>
-      //   import(
-      //     './authentication/views/registration-flow/l8-accept-conditions'
-      //   ).then(reactRouterConvert),
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('AcceptConditions--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'CompleteProfileStep',
       path: APP_PATH.COMPLETE_PROFILE.route,
       Component: CompleteProfileStep,
-      // lazy: () =>
-      //   import('./settings/components/CompleteProfileStep').then(
-      //     reactRouterConvert,
-      //   ),
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('CompleteProfileStep--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'ErrorView',
       path: APP_PATH.ERROR.route,
-      Component: ErrorView,
-      // lazy: () => import('./error/views/ErrorView').then(reactRouterConvert),
-      ErrorBoundary: ErrorBoundary,
+      Component: ErrorViewPage,
+      ErrorBoundary: () => ErrorBoundary('ErrorView--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'CookiePolicy',
       path: APP_PATH.COOKIE_POLICY.route,
       Component: CookiePolicy,
-      // lazy: () =>
-      //   import('./cookie-policy/views/CookiePolicy').then(reactRouterConvert),
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('CookiePolicy--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'Email',
       path: APP_PATH.EMAIL_PREFERENCES_LOGGED_OUT.route,
       Component: Email,
-      // lazy: () =>
-      //   import('./settings/components/Email/Email').then(reactRouterConvert),
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('Email--route'),
       hasErrorBoundary: true,
     },
   ];
@@ -350,279 +263,216 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
     {
       path: APP_PATH.LOGGED_IN_HOME.route,
       Component: LoggedInHome,
-      // lazy: () => import('./home/views/LoggedInHome').then(reactRouterConvert),
       id: 'LoggedInHome',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('LoggedInHome--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.SEARCH.route,
       Component: Search,
-      // lazy: () => import('./search/views/Search').then(reactRouterConvert),
       id: 'Search',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('Search--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.ITEM_DETAIL.route,
       Component: ItemDetailRoute,
-      // lazy: () =>
-      //   import('./item/views/ItemDetailRoute').then(reactRouterConvert),
       id: 'ItemDetailRoute',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('ItemDetailRoute--route'),
       hasErrorBoundary: true,
     },
     {
-      path: APP_PATH.COLLECTION_DETAIL.route,
-      Component: CollectionDetail,
-      // lazy: () =>
-      //   import('./collection/views/CollectionDetail').then(reactRouterConvert),
       id: 'CollectionDetail',
-      ErrorBoundary: ErrorBoundary,
+      path: APP_PATH.COLLECTION_DETAIL.route,
+      loader: fetchCollectionLoader,
+      Component: CollectionDetail,
+      ErrorBoundary: () => ErrorBoundary('CollectionDetail--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'CollectionEdit-tab',
       path: APP_PATH.COLLECTION_EDIT_TAB.route,
       Component: CollectionEdit,
-      // lazy: () =>
-      //   import('./collection/views/CollectionEdit').then(reactRouterConvert),
-      id: 'CollectionEdit tab',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('CollectionEdit-tab--route--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.COLLECTION_EDIT.route,
       Component: CollectionEdit,
-      // lazy: () =>
-      //   import('./collection/views/CollectionEdit').then(reactRouterConvert),
       id: 'CollectionEdit',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('CollectionEdit--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.BUNDLE_DETAIL.route,
       Component: BundleDetail,
-      // lazy: () =>
-      //   import('./bundle/views/BundleDetail').then(reactRouterConvert),
       id: 'BundleDetail',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('BundleDetail--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.BUNDLE_EDIT_TAB.route,
       Component: BundleEdit,
-      // lazy: () => import('./bundle/views/BundleEdit').then(reactRouterConvert),
-      id: 'BundleEdit tab',
-      ErrorBoundary: ErrorBoundary,
+      id: 'BundleEdit-tab',
+      ErrorBoundary: () => ErrorBoundary('BundleEdit-tab--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.BUNDLE_EDIT.route,
       Component: BundleEdit,
-      // lazy: () => import('./bundle/views/BundleEdit').then(reactRouterConvert),
       id: 'BundleEdit',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('BundleEdit--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.ASSIGNMENT_CREATE.route,
       Component: AssignmentEdit,
-      // lazy: () =>
-      //   import('./assignment/views/AssignmentEdit').then(reactRouterConvert),
-      id: 'AssignmentEdit create',
-      ErrorBoundary: ErrorBoundary,
+      id: 'AssignmentEdit-create',
+      ErrorBoundary: () => ErrorBoundary('AssignmentEdit-create--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.ASSIGNMENT_DETAIL.route,
       Component: AssignmentDetailSwitcher,
-      // lazy: () =>
-      //   import('./assignment/views/AssignmentDetailSwitcher').then(
-      //     reactRouterConvert,
-      //   ),
       id: 'AssignmentDetailSwitcher',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('AssignmentDetailSwitcher--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.ASSIGNMENT_EDIT_TAB.route,
       Component: AssignmentEdit,
-      // lazy: () =>
-      //   import('./assignment/views/AssignmentEdit').then(reactRouterConvert),
-      id: 'AssignmentEdit edit tab',
-      ErrorBoundary: ErrorBoundary,
+      id: 'AssignmentEdit-edit-tab',
+      ErrorBoundary: () => ErrorBoundary('AssignmentEdit-edit-tab--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.ASSIGNMENT_EDIT.route,
       Component: AssignmentEdit,
-      // lazy: () =>
-      //   import('./assignment/views/AssignmentEdit').then(reactRouterConvert),
-      id: 'AssignmentEdit edit',
-      ErrorBoundary: ErrorBoundary,
+      id: 'AssignmentEdit-edit',
+      ErrorBoundary: () => ErrorBoundary('AssignmentEdit-edit--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.ASSIGNMENT_RESPONSE_CREATE.route,
       Component: AssignmentDetailSwitcher,
-      // lazy: () =>
-      //   import('./assignment/views/AssignmentDetailSwitcher').then(
-      //     reactRouterConvert,
-      //   ),
-      id: 'AssignmentDetailSwitcher create',
-      ErrorBoundary: ErrorBoundary,
+      id: 'AssignmentDetailSwitcher-create',
+      ErrorBoundary: () =>
+        ErrorBoundary('AssignmentDetailSwitcher-create--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.ASSIGNMENT_RESPONSE_EDIT.route,
       Component: AssignmentDetailSwitcher,
-      // lazy: () =>
-      //   import('./assignment/views/AssignmentDetailSwitcher').then(
-      //     reactRouterConvert,
-      // ),
-      id: 'AssignmentDetailSwitcher edit',
-      ErrorBoundary: ErrorBoundary,
+      id: 'AssignmentDetailSwitcher-edit',
+      ErrorBoundary: () =>
+        ErrorBoundary('AssignmentDetailSwitcher-edit--route'),
       hasErrorBoundary: true,
     },
     // view pupil collection response as teacher/ad{min
     {
       path: APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route,
       Component: AssignmentPupilCollectionDetail,
-      // lazy: () =>
-      //   import('./assignment/views/AssignmentPupilCollectionDetail').then(
-      //     reactRouterConvert,
-      //   ),
       id: 'AssignmentPupilCollectionDetail',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () =>
+        ErrorBoundary('AssignmentPupilCollectionDetail--route'),
       hasErrorBoundary: true,
     },
     // edit pupil collection response as admin
     {
       path: APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route,
       Component: AssignmentResponseAdminEdit,
-      // lazy: () =>
-      //   import(
-      //     './assignment/views/AssignmentResponseEdit/AssignmentResponseAdminEdit'
-      //   ).then(reactRouterConvert),
       id: 'AssignmentResponseAdminEdit',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('AssignmentResponseAdminEdit--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.WORKSPACE_TAB.route,
       Component: Workspace,
-      // lazy: () =>
-      //   import('./workspace/views/Workspace').then(reactRouterConvert),
-      id: 'Workspace tab',
-      ErrorBoundary: ErrorBoundary,
+      id: 'Workspace-tab',
+      ErrorBoundary: () => ErrorBoundary('Workspace-tab--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.WORKSPACE.route,
       Component: Workspace,
-      // lazy: () =>
-      //   import('./workspace/views/Workspace').then(reactRouterConvert),
       id: 'Workspace',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('Workspace--route'),
       hasErrorBoundary: true,
     },
     {
       path: `${APP_PATH.WORKSPACE.route}${APP_PATH.ASSIGNMENT_DETAIL.route}`,
-      loader: (props) => {
-        const assignmentId = props.params?.assignmentId;
-        return redirect(
-          `/${ROUTE_PARTS.assignments}/${assignmentId}${location.search}`,
-        );
-      },
-      Component: FullPageSpinner,
+      loader: (props) =>
+        redirect(
+          `/${ROUTE_PARTS.assignments}/${props.params?.assignmentId}${location.search}`,
+        ),
+      Component: FullPageSpinnerPage,
       id: 'WorkspaceAssignmentRedirect',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('WorkspaceAssignmentRedirect--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.SETTINGS_TAB.route,
       Component: Settings,
-      // lazy: () => import('./settings/views/Settings').then(reactRouterConvert),
-      id: 'Settings tab',
-      ErrorBoundary: ErrorBoundary,
+      id: 'Settings-tab',
+      ErrorBoundary: () => ErrorBoundary('Settings-tab--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.SETTINGS.route,
       Component: Settings,
-      // lazy: () => import('./settings/views/Settings').then(reactRouterConvert),
       id: 'Settings',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('Settings--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.COMPLETE_PROFILE.route,
       Component: Profile,
-      // lazy: () =>
-      //   import('./settings/components/Profile').then(reactRouterConvert),
       id: 'Profile',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('Profile--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.USER_ITEM_REQUEST_FORM.route,
       Component: UserItemRequestForm,
-      // lazy: () =>
-      //   import('./user-item-request-form/views/UserItemRequestForm').then(
-      //     reactRouterConvert,
-      //   ),
       id: 'UserItemRequestForm',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('UserItemRequestForm--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.USER_ITEM_REQUEST_FORM_CONFIRM.route,
       Component: UserItemRequestFormConfirm,
-      // lazy: () =>
-      //   import(
-      // './user-item-request-form/views/UserItemRequestFormConfirm'
-      // ).then(reactRouterConvert),
       id: 'UserItemRequestFormConfirm',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('UserItemRequestFormConfirm--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM.route,
       Component: EducationalAuthorItemRequestForm,
-      // lazy: () =>
-      //   import(
-      //     './user-item-request-form/views/EducationalAuthorItemRequestForm'
-      //   ).then(reactRouterConvert),
       id: 'EducationalAuthorItemRequestForm',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () =>
+        ErrorBoundary('EducationalAuthorItemRequestForm--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM_CONFIRM.route,
       Component: EducationalAuthorItemRequestFormConfirm,
-      // lazy: () =>
-      //   import(
-      //     './user-item-request-form/views/EducationalAuthorItemRequestFormConfirm'
-      //   ).then(reactRouterConvert),
       id: 'EducationalAuthorItemRequestFormConfirm',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () =>
+        ErrorBoundary('EducationalAuthorItemRequestFormConfirm--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.QUICK_LANE.route,
       Component: QuickLaneDetail,
-      // lazy: () =>
-      //   import('./quick-lane/views/QuickLaneDetail').then(reactRouterConvert),
       id: 'QuickLaneDetail',
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('QuickLaneDetail--route'),
       hasErrorBoundary: true,
     },
     {
       path: APP_PATH.EMBED.route,
       Component: EmbedCodeDetail,
-      // lazy: () =>
-      //   import('./embed-code/views/EmbedCodeDetail').then(reactRouterConvert),
-      ErrorBoundary: ErrorBoundary,
+      id: 'EmbedCodeDetail',
+      ErrorBoundary: () => ErrorBoundary('EmbedCodeDetail--route'),
       hasErrorBoundary: true,
     },
   ];
@@ -634,432 +484,289 @@ function getAdminRoutes(): RouteObject[] {
     {
       id: 'Dashboard',
       Component: Dashboard,
-      // lazy: () =>
-      //import('./admin/dashboard/views/Dashboard').then(reactRouterConvert),
       index: true,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('Dashboard--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'AssignmentOverviewAdmin',
       Component: AssignmentOverviewAdmin,
-      // lazy: () =>
-      //import('./admin/assignments/views/AssignmentsOverviewAdmin').then(
-      //   reactRouterConvert,
-      // ),
       path: ASSIGNMENTS_PATH.ASSIGNMENTS_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('AssignmentOverviewAdmin--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'AssignmentMarcomOverview',
       Component: AssignmentMarcomOverview,
-      // lazy: () =>
-      //import('./admin/assignments/views/AssignmentsMarcomOverview').then(
-      //   reactRouterConvert,
-      // ),
       path: ASSIGNMENTS_PATH.ASSIGNMENTS_MARCOM_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('AssignmentMarcomOverview--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'CollectionsOverview',
       Component: CollectionsOrBundlesOverview,
-      // lazy: () =>
-      //   import(
-      //     './admin/collectionsOrBundles/views/CollectionsOrBundlesOverview'
-      //   ).then(reactRouterConvert),
       path: COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('CollectionsOverview--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'CollectionActualisationOverview',
       Component: CollectionOrBundleActualisationOverview,
-      // lazy: () =>
-      //   import(
-      //     './admin/collectionsOrBundles/views/CollectionOrBundleActualisationOverview'
-      //   ).then(reactRouterConvert),
       path: COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_ACTUALISATION_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () =>
+        ErrorBoundary('CollectionActualisationOverview--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'CollectionQualityCheckOverview',
       Component: CollectionOrBundleQualityCheckOverview,
-      // lazy: () =>
-      //   import(
-      //     './admin/collectionsOrBundles/views/CollectionOrBundleQualityCheckOverview'
-      //   ).then(reactRouterConvert),
       path: COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_QUALITYCHECK_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () =>
+        ErrorBoundary('CollectionQualityCheckOverview--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'CollectionMarcomOverview',
       Component: CollectionOrBundleMarcomOverview,
-      // lazy: () =>
-      //   import(
-      //     './admin/collectionsOrBundles/views/CollectionOrBundleMarcomOverview'
-      //   ).then(reactRouterConvert),
       path: COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_MARCOM_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('CollectionMarcomOverview--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'BundlesOverview',
       Component: CollectionsOrBundlesOverview,
-      // lazy: () =>
-      //   import(
-      //     './admin/collectionsOrBundles/views/CollectionsOrBundlesOverview'
-      //   ).then(reactRouterConvert),
       path: COLLECTIONS_OR_BUNDLES_PATH.BUNDLES_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('BundlesOverview--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'BundleActualisationOverview',
       Component: CollectionOrBundleActualisationOverview,
-      // lazy: () =>
-      //   import(
-      //     './admin/collectionsOrBundles/views/CollectionOrBundleActualisationOverview'
-      //   ).then(reactRouterConvert),
       path: COLLECTIONS_OR_BUNDLES_PATH.BUNDLE_ACTUALISATION_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('BundleActualisationOverview--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'BundleQualityCheckOverview',
       Component: CollectionOrBundleQualityCheckOverview,
-      // lazy: () =>
-      //   import(
-      //     './admin/collectionsOrBundles/views/CollectionOrBundleQualityCheckOverview'
-      //   ).then(reactRouterConvert),
       path: COLLECTIONS_OR_BUNDLES_PATH.BUNDLE_QUALITYCHECK_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('BundleQualityCheckOverview--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'BundleMarcomOverview',
       Component: CollectionOrBundleMarcomOverview,
-      // lazy: () =>
-      //   import(
-      //     './admin/collectionsOrBundles/views/CollectionOrBundleMarcomOverview'
-      //   ).then(reactRouterConvert),
       path: COLLECTIONS_OR_BUNDLES_PATH.BUNDLE_MARCOM_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('BundleMarcomOverview--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'ContentPageOverviewPage',
       Component: ContentPageOverviewPage,
-      // lazy: () =>
-      //import('./admin/content-page/views/ContentPageOverviewPage').then(
-      //   reactRouterConvert,
-      // ),
       path: CONTENT_PAGE_PATH.CONTENT_PAGE_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('ContentPageOverviewPage--route'),
       hasErrorBoundary: true,
     },
     {
-      id: 'ContentPageEditPage create',
+      id: 'ContentPageEditPage-create',
       Component: ContentPageEditPage,
-      // lazy: () =>
-      //import('./admin/content-page/views/ContentPageEditPage').then(
-      //   reactRouterConvert,
-      // ),
       path: CONTENT_PAGE_PATH.CONTENT_PAGE_CREATE,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('ContentPageEditPage-create--route'),
       hasErrorBoundary: true,
     },
     {
-      id: 'ContentPageEditPage edit',
+      id: 'ContentPageEditPage-edit',
       Component: ContentPageEditPage,
-      // lazy: () =>
-      //import('./admin/content-page/views/ContentPageEditPage').then(
-      //   reactRouterConvert,
-      // ),
       path: CONTENT_PAGE_PATH.CONTENT_PAGE_EDIT,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('ContentPageEditPage-edit--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'ContentPageDetailPage',
       Component: ContentPageDetailPage,
-      // lazy: () =>
-      //import('./admin/content-page/views/ContentPageDetailPage').then(
-      //   reactRouterConvert,
-      // ),
       path: CONTENT_PAGE_PATH.CONTENT_PAGE_DETAIL,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('ContentPageDetailPage--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'ContentPageLabelOverviewPage',
       Component: ContentPageLabelOverviewPage,
-      // lazy: () =>
-      //   import(
-      //     './admin/content-page-labels/views/ContentPageLabelOverviewPage'
-      //   ).then(reactRouterConvert),
       path: CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('ContentPageLabelOverviewPage--route'),
       hasErrorBoundary: true,
     },
     {
-      id: 'ContentPageLabelEditPage create',
+      id: 'ContentPageLabelEditPage-create',
       Component: ContentPageLabelEditPage,
-      // lazy: () =>
-      //   import(
-      //     './admin/content-page-labels/views/ContentPageLabelEditPage'
-      //   ).then(reactRouterConvert),
       path: CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_CREATE,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () =>
+        ErrorBoundary('ContentPageLabelEditPage-create--route'),
       hasErrorBoundary: true,
     },
     {
-      id: 'ContentPageLabelEditPage edit',
+      id: 'ContentPageLabelEditPage-edit',
       Component: ContentPageLabelEditPage,
-      // lazy: () =>
-      //   import(
-      //     './admin/content-page-labels/views/ContentPageLabelEditPage'
-      //   ).then(reactRouterConvert),
       path: CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_EDIT,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () =>
+        ErrorBoundary('ContentPageLabelEditPage-edit--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'ContentPageLabelDetailPage',
       Component: ContentPageLabelDetailPage,
-      // lazy: () =>
-      //   import(
-      //     './admin/content-page-labels/views/ContentPageLabelDetailPage'
-      //   ).then(reactRouterConvert),
       path: CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_DETAIL,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('ContentPageLabelDetailPage--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'InteractiveTourOverview',
       Component: InteractiveTourOverview,
-      // lazy: () =>
-      //import('./admin/interactive-tour/views/InteractiveTourOverview').then(
-      //   reactRouterConvert,
-      // ),
       path: INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('InteractiveTourOverview--route'),
       hasErrorBoundary: true,
     },
     {
-      id: 'InteractiveTourEdit create',
+      id: 'InteractiveTourEdit-create',
       Component: InteractiveTourEdit,
-      // lazy: () =>
-      //import('./admin/interactive-tour/views/InteractiveTourEdit').then(
-      //   reactRouterConvert,
-      // ),
       path: INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('InteractiveTourEdit-create--route'),
       hasErrorBoundary: true,
     },
     {
-      id: 'InteractiveTourEdit edit',
+      id: 'InteractiveTourEdit-edit',
       Component: InteractiveTourEdit,
-      // lazy: () =>
-      //import('./admin/interactive-tour/views/InteractiveTourEdit').then(
-      //   reactRouterConvert,
-      // ),
       path: INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('InteractiveTourEdit-edit--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'InteractiveTourDetail',
       Component: InteractiveTourDetail,
-      // lazy: () =>
-      //import('./admin/interactive-tour/views/InteractiveTourDetail').then(
-      //   reactRouterConvert,
-      // ),
       path: INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('InteractiveTourDetail--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'ItemsOverview',
       Component: ItemsOverview,
-      // lazy: () =>
-      //import('./admin/items/views/ItemsOverview').then(reactRouterConvert),
       path: ITEMS_PATH.ITEMS_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('ItemsOverview--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'ItemDetail',
       Component: ItemDetail,
-      // lazy: () =>
-      //import('./admin/items/views/ItemDetail').then(reactRouterConvert),
       path: ITEMS_PATH.ITEM_DETAIL,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('ItemDetail--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'PublishItemsOverview',
       Component: PublishItemsOverview,
-      // lazy: () =>
-      //import('./admin/items/views/PublishItemsOverview').then(
-      //   reactRouterConvert,
-      // ),
       path: ITEMS_PATH.PUBLISH_ITEMS_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('PublishItemsOverview--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'NavigationBarOverview',
       Component: NavigationBarOverviewPage,
-      // lazy: () =>
-      //import('./admin/navigations/views/NavigationBarOverview').then(
-      //   reactRouterConvert,
-      // ),
       path: NAVIGATIONS_PATH.NAVIGATIONS_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('NavigationBarOverview--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'NavigationBarDetail',
       Component: NavigationBarDetailPage,
-      // lazy: () =>
-      //import('./admin/navigations/views/NavigationBarDetail').then(
-      //   reactRouterConvert,
-      // ),
       path: NAVIGATIONS_PATH.NAVIGATIONS_DETAIL,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('NavigationBarDetail--route'),
       hasErrorBoundary: true,
     },
     {
-      id: 'NavigationItemEdit create',
+      id: 'NavigationItemEdit-create',
       Component: NavigationItemEditPage,
-      // lazy: () =>
-      //import('./admin/navigations/views/NavigationItemEdit').then(
-      //   reactRouterConvert,
-      // ),
       path: NAVIGATIONS_PATH.NAVIGATIONS_ITEM_CREATE,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('NavigationItemEdit-create--route'),
       hasErrorBoundary: true,
     },
     {
-      id: 'NavigationItemEdit edit',
+      id: 'NavigationItemEdit-edit',
       Component: NavigationItemEditPage,
-      // lazy: () =>
-      //import('./admin/navigations/views/NavigationItemEdit').then(
-      //   reactRouterConvert,
-      // ),
       path: NAVIGATIONS_PATH.NAVIGATIONS_ITEM_EDIT,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('NavigationItemEdit-edit--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'UrlRedirectOverview',
       Component: UrlRedirectOverview,
-      // lazy: () =>
-      //import('./admin/url-redirects/views/UrlRedirectOverview').then(
-      //   reactRouterConvert,
-      // ),
       path: URL_REDIRECT_PATH.URL_REDIRECT_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('UrlRedirectOverview--route'),
       hasErrorBoundary: true,
     },
     {
-      id: 'UrlRedirectEdit create',
+      id: 'UrlRedirectEdit-create',
       Component: UrlRedirectEdit,
-      // lazy: () =>
-      //import('./admin/url-redirects/views/UrlRedirectEdit').then(
-      //   reactRouterConvert,
-      // ),
       path: URL_REDIRECT_PATH.URL_REDIRECT_CREATE,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('UrlRedirectEdit-create--route'),
       hasErrorBoundary: true,
     },
     {
-      id: 'UrlRedirectEdit edit',
+      id: 'UrlRedirectEdit-edit',
       Component: UrlRedirectEdit,
-      // lazy: () =>
-      //import('./admin/url-redirects/views/UrlRedirectEdit').then(
-      //   reactRouterConvert,
-      // ),
       path: URL_REDIRECT_PATH.URL_REDIRECT_EDIT,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('UrlRedirectEdit-edit--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'PupilCollectionsOverview',
       Component: PupilCollectionsOverview,
-      // lazy: () =>
-      //import('./admin/pupil-collection/views/PupilCollectionsOverview').then(
-      //   reactRouterConvert,
-      // ),
       path: PUPIL_COLLECTIONS_PATH.ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('PupilCollectionsOverview--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'TranslationsOverviewPage',
       Component: TranslationsOverviewPage,
-      // lazy: () =>
-      //import('./admin/translations/views/TranslationsOverviewPage').then(
-      //   reactRouterConvert,
-      // ),
       path: TRANSLATIONS_PATH.TRANSLATIONS,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('TranslationsOverviewPage--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'UserGroupOverviewPage',
       Component: UserGroupOverviewPage,
-      // lazy: () =>
-      //import('./admin/user-groups/views/UserGroupOverviewPage').then(
-      //   reactRouterConvert,
-      // ),
       path: USER_GROUP_PATH.USER_GROUP_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('UserGroupOverviewPage--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'UserOverviewPage',
       Component: UserOverviewPage,
-      // lazy: () =>
-      //import('./admin/users/views/UserOverviewPage').then(reactRouterConvert),
       path: USER_PATH.USER_OVERVIEW,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('UserOverviewPage--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'UserDetailPage',
       Component: UserDetailPage,
-      // lazy: () =>
-      //import('./admin/users/views/UserDetailPage').then(reactRouterConvert),
       path: USER_PATH.USER_DETAIL,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('UserDetailPage--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'UserEditPage',
       Component: UserEditPage,
-      // lazy: () =>
-      //import('./admin/users/views/UserEditPage').then(reactRouterConvert),
       path: USER_PATH.USER_EDIT,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () => ErrorBoundary('UserEditPage--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'MaintenanceAlertsOverviewPage',
       Component: MaintenanceAlertsOverviewPage,
-      // lazy: () =>
-      //   import(
-      //     './admin/maintenance-alerts-overview/MaintenanceAlertsOverviewPage'
-      //   ).then(reactRouterConvert),
       path: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.alerts}`,
-      ErrorBoundary: ErrorBoundary,
+      ErrorBoundary: () =>
+        ErrorBoundary('MaintenanceAlertsOverviewPage--route'),
       hasErrorBoundary: true,
     },
   ];
 }
 
-export default TEST_APP_ROUTES;
+export default APP_ROUTES;

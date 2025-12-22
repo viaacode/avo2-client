@@ -126,6 +126,7 @@ export const Email: FC = () => {
   const renderFetchPreferencesError = () => {
     return (
       <ErrorView
+        locationId="email-settings--error"
         message={tHtml(
           'settings/components/email___het-ophalen-van-je-email-voorkeuren-is-mislukt',
         )}

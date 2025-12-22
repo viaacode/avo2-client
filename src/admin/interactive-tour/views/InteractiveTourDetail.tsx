@@ -274,6 +274,7 @@ export const InteractiveTourDetail: FC = () => {
           loadingInfo={loadingInfo}
           dataObject={interactiveTour}
           render={renderInteractiveTourDetailPage}
+          locationId="interactive-tour-detail"
         />
       </PermissionGuard>
     </>

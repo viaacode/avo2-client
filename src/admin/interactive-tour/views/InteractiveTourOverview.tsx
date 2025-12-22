@@ -268,6 +268,7 @@ export const InteractiveTourOverview: FC = () => {
   const renderNoResults = () => {
     return (
       <ErrorView
+        locationId="interactive-tour-overview--error"
         message={tHtml(
           'admin/interactive-tour/views/interactive-tour-overview___er-zijn-nog-geen-interactieve-tours-aangemaakt',
         )}
@@ -370,6 +371,7 @@ export const InteractiveTourOverview: FC = () => {
             loadingInfo={loadingInfo}
             dataObject={interactiveTours}
             render={renderInteractiveTourPageBody}
+            locationId="interactive-tour-overview"
           />
         </AdminLayoutBody>
       </AdminLayout>

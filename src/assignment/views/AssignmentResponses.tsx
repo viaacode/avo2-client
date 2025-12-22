@@ -559,6 +559,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
     <>
       {renderHeader()}
       <ErrorView
+        locationId="assignment-responses--error"
         icon={IconName.clipboard}
         message={tHtml(
           'assignment/views/assignment-responses___er-zijn-nog-geen-antwoorden-geregistreerd-voor-deze-opdracht',
@@ -645,6 +646,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
       loadingInfo={loadingInfo}
       dataObject={assignmentResponses}
       render={renderAssignmentResponsePage}
+      locationId="assignment-responses"
     />
   ) : null;
 };

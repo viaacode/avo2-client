@@ -11,7 +11,6 @@ import { type FC } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router';
 import { createBrowserRouter } from 'react-router-dom';
-
 import ALL_APP_ROUTES from './routes.ts';
 
 // Set moment language to Dutch

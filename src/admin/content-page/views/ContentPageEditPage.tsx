@@ -30,7 +30,11 @@ export const ContentPageEditPage: FC = () => {
   });
 
   return (
-    <Suspense fallback={<FullPageSpinner />}>
+    <Suspense
+      fallback={
+        <FullPageSpinner locationId="content-page-edit-page--loading" />
+      }
+    >
       <PermissionGuard
         permissions={[
           PermissionName.EDIT_OWN_CONTENT_PAGES,

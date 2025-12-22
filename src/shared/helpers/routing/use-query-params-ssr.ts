@@ -1,12 +1,13 @@
 // This module is safe for SSR and delegates to the useQueryParamLib library in the browser.
 
-import { noop } from 'es-toolkit';
 import { QueryParamConfig } from 'serialize-query-params';
 import { QueryParamOptions } from 'use-query-params/src/options.ts';
+import { UrlUpdateType } from '../../types/use-query-params.ts';
+import { isServerSideRendering } from './is-server-side-rendering.ts';
 
 let useQueryParamLib: any | null = null;
 
-if (typeof window !== 'undefined') {
+if (!isServerSideRendering()) {
   // Loaded only on the client
   useQueryParamLib = await import('use-query-params');
 }
@@ -15,16 +16,25 @@ export const useQueryParam = (
   name: string,
   paramConfig?: QueryParamConfig<any, any>,
   options?: QueryParamOptions,
-): [string, (newValue: any) => void] => {
-  return useQueryParamLib
-    ? useQueryParamLib.useQueryParam(name, paramConfig, options)
-    : [undefined, noop];
+): [string, (newValue: any, urlUpdateType?: UrlUpdateType) => void] => {
+  console.log('useQueryParam called for:', {
+    name,
+    paramConfig,
+    options,
+    useQueryParamLib,
+  });
+  if (!useQueryParamLib) {
+    console.warn('useQueryParam called on server side');
+    return ['' as any, () => {}];
+  }
+  console.log('useQueryParam called on client side');
+  return useQueryParamLib.useQueryParam(name, paramConfig, options);
 };
 
 export const useQueryParams = (options: any) => {
   return useQueryParamLib
     ? useQueryParamLib.useQueryParams(options)
-    : ({} as any);
+    : [{} as any, () => {}];
 };
 
 export const StringParam = useQueryParamLib

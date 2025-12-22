@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Alert,
   Button,
@@ -7,13 +7,13 @@ import {
   Form,
   FormGroup,
   Spacer,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { useAtomValue, useSetAtom } from 'jotai'
-import { compact } from 'es-toolkit'
-import { type FC, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate } from 'react-router'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { compact } from 'es-toolkit';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { type FC, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
@@ -29,86 +29,86 @@ import { ToastService } from '../../shared/services/toast-service';
 import { useGetEmailPreferences } from '../hooks/useGetEmailPreferences';
 import { useUpdateEmailPreferences } from '../hooks/useUpdateEmailPreferences';
 import { SettingsService } from '../settings.service';
-import './Profile.scss'
-import { tText } from '../../shared/helpers/translate-text';
+import './Profile.scss';
 import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface CompleteProfileStepProps {
-  redirectTo?: string
+  redirectTo?: string;
 }
 
 export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
   redirectTo = APP_PATH.LOGGED_IN_HOME.route,
 }) => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
-  const commonUser = useAtomValue(commonUserAtom)
-  const getLoginState = useSetAtom(getLoginStateAtom)
+  const commonUser = useAtomValue(commonUserAtom);
+  const getLoginState = useSetAtom(getLoginStateAtom);
 
   const [selectedOrganisations, setSelectedOrganisations] = useState<
     Avo.EducationOrganization.Organization[]
-  >(commonUser?.educationalOrganisations || [])
+  >(commonUser?.educationalOrganisations || []);
   const [selectedLoms, setSelectedLoms] = useState<Avo.Lom.LomField[]>(
     compact(commonUser?.loms.map((lomLink) => lomLink.lom)),
-  )
-  const groupedLoms = groupLoms(selectedLoms)
-  const firstName = commonUser?.firstName || ''
-  const lastName = commonUser?.lastName || ''
-  const [isSaving, setIsSaving] = useState<boolean>(false)
+  );
+  const groupedLoms = groupLoms(selectedLoms);
+  const firstName = commonUser?.firstName || '';
+  const lastName = commonUser?.lastName || '';
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [subscribeToNewsletter, setSubscribeToNewsletter] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const {
     data: existingEmailPreferences,
     isLoading: isLoadingExistingEmailPreferences,
-  } = useGetEmailPreferences()
-  const { mutateAsync: updateEmailPreferences } = useUpdateEmailPreferences()
+  } = useGetEmailPreferences();
+  const { mutateAsync: updateEmailPreferences } = useUpdateEmailPreferences();
 
   const isThemesRequired = !!groupedLoms.educationLevel.find(
     (level) => level.id !== EducationLevelId.secundairOnderwijs,
-  )
+  );
   const isSubjectsRequired = !!groupedLoms.educationLevel.find(
     (level) => level.id === EducationLevelId.secundairOnderwijs,
-  )
+  );
 
   // Only show the subscribe checkbox to teachers and only if they are currently unsubscribed
   const shouldShowSubscribeCheckbox =
     isTeacher(commonUser?.userGroup?.id) &&
     !isLoadingExistingEmailPreferences &&
-    !existingEmailPreferences?.newsletter
+    !existingEmailPreferences?.newsletter;
 
   const areRequiredFieldsFilledIn = (
     profileInfo: Partial<Avo.User.UpdateProfileValues>,
   ) => {
-    const errors = []
-    let filledIn = true
+    const errors = [];
+    let filledIn = true;
 
     if (!groupedLoms.subject?.length && isSubjectsRequired) {
-      errors.push(tText('settings/components/profile___vakken-zijn-verplicht'))
-      filledIn = false
+      errors.push(tText('settings/components/profile___vakken-zijn-verplicht'));
+      filledIn = false;
     }
     if (!groupedLoms.theme?.length && isThemesRequired) {
-      errors.push(tText('settings/components/profile___themas-zijn-verplicht'))
-      filledIn = false
+      errors.push(tText('settings/components/profile___themas-zijn-verplicht'));
+      filledIn = false;
     }
     if (!groupedLoms.educationLevel?.length) {
       errors.push(
         tText('settings/components/profile___opleidingsniveau-is-verplicht'),
-      )
-      filledIn = false
+      );
+      filledIn = false;
     }
     if (!profileInfo.organizations?.length) {
       errors.push(
         tText(
           'settings/components/profile___educatieve-organisatie-is-verplicht',
         ),
-      )
-      filledIn = false
+      );
+      filledIn = false;
     }
     if (errors.length) {
-      ToastService.danger(errors)
+      ToastService.danger(errors);
     }
-    return filledIn
-  }
+    return filledIn;
+  };
 
   const saveNewsletterPreferences = () => {
     // Only update the newsletter preferences if the user opted in
@@ -122,17 +122,17 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
           newsletter: true,
         },
         preferencesCenterKey: undefined,
-      }
+      };
       updateEmailPreferences(prefs, undefined).catch((err: any) => {
         console.error(
           new CustomError('Failed to subscribe to newsletter', err, prefs),
-        )
+        );
         ToastService.danger(
           tHtml(
             'settings/components/complete-profile-step___het-inschrijven-op-de-nieuwsbrief-is-mislukt',
           ),
-        )
-      })
+        );
+      });
     } else {
       updateEmailPreferences(
         {
@@ -146,24 +146,24 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
             newEmailPreferences: null,
             preferenceCenterKey: undefined,
           }),
-        )
+        );
         ToastService.danger(
           tHtml(
             'settings/components/complete-profile-step___het-inschrijven-op-de-nieuwsbrief-is-mislukt',
           ),
-        )
-      })
+        );
+      });
     }
-  }
+  };
 
   const saveProfileChanges = async () => {
     try {
       if (!commonUser) {
-        console.error('trying to save profile changes without a user')
-        return
+        console.error('trying to save profile changes without a user');
+        return;
       }
-      setIsSaving(true)
-      const profileId: string = commonUser.profileId
+      setIsSaving(true);
+      const profileId: string = commonUser.profileId;
       const newProfileInfo: Partial<Avo.User.UpdateProfileValues> = {
         firstName,
         lastName,
@@ -177,46 +177,46 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
           organization_id: option.organisationId,
           unit_id: option.unitId || null,
         })),
-      }
+      };
       if (!areRequiredFieldsFilledIn(newProfileInfo)) {
-        setIsSaving(false)
-        return
+        setIsSaving(false);
+        return;
       }
       try {
-        await SettingsService.updateProfileInfo(newProfileInfo)
+        await SettingsService.updateProfileInfo(newProfileInfo);
       } catch (err) {
-        setIsSaving(false)
+        setIsSaving(false);
         if (JSON.stringify(err).includes('DUPLICATE_ALIAS')) {
           ToastService.danger(
             tText(
               'settings/components/profile___deze-schermnaam-is-reeds-in-gebruik',
             ),
-          )
-          return
+          );
+          return;
         }
-        throw err
+        throw err;
       }
 
       // Refetch user permissions since education level can change user group
       // Refresh the login state, so the profile info will be up-to-date
-      getLoginState(false)
-      saveNewsletterPreferences()
+      getLoginState(false);
+      saveNewsletterPreferences();
 
       // Wait for login response to be set into the store before redirecting
       setTimeout(() => {
-        redirectToClientPage(redirectTo, navigateFunc)
-        setIsSaving(false)
-      }, 0)
+        redirectToClientPage(redirectTo, navigateFunc);
+        setIsSaving(false);
+      }, 0);
     } catch (err) {
-      console.error(err)
+      console.error(err);
       ToastService.danger(
         tHtml(
           'settings/components/profile___het-opslaan-van-de-profiel-information-is-mislukt',
         ),
-      )
-      setIsSaving(false)
+      );
+      setIsSaving(false);
     }
-  }
+  };
 
   const renderEducationOrganisationsField = () => {
     return (
@@ -236,8 +236,8 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
           )}
         />
       </FormGroup>
-    )
-  }
+    );
+  };
 
   const renderCompleteProfilePage = () => {
     return (
@@ -302,11 +302,11 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
           />
         </Container>
       </Container>
-    )
-  }
+    );
+  };
 
   return isSaving ? (
-    <FullPageSpinner />
+    <FullPageSpinner locationId="complete-profile-step--loading" />
   ) : (
     <>
       <Helmet>
@@ -326,7 +326,7 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
       </Helmet>
       {renderCompleteProfilePage()}
     </>
-  )
-}
+  );
+};
 
-export default CompleteProfileStep
+export default CompleteProfileStep;

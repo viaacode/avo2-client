@@ -18,7 +18,11 @@ export const ContentPageLabelDetailPage: FC = () => {
   const { id } = useParams<{ id: string }>();
 
   return (
-    <Suspense fallback={<FullPageSpinner />}>
+    <Suspense
+      fallback={
+        <FullPageSpinner locationId="content-page-label-detail-page--loading" />
+      }
+    >
       <PermissionGuard permissions={[PermissionName.EDIT_CONTENT_PAGE_LABELS]}>
         {!!id && (
           <ContentPageLabelDetail

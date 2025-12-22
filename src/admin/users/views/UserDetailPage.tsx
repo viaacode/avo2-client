@@ -46,7 +46,9 @@ export const UserDetailPage: FC = () => {
           />
         </Helmet>
 
-        <Suspense fallback={<FullPageSpinner />}>
+        <Suspense
+          fallback={<FullPageSpinner locationId="user-detail-page--loading" />}
+        >
           {!!id && (
             <UserDetail
               id={id}

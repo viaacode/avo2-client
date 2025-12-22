@@ -9,18 +9,12 @@ import { Slide, ToastContainer } from 'react-toastify';
 
 import pkg from '../package.json' with { type: 'json' };
 
-import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config';
 import { SpecialUserGroupId } from './admin/user-groups/user-group.const';
 import { commonUserAtom } from './authentication/authentication.store';
 import { getLoginStateAtom } from './authentication/authentication.store.actions';
 import { PermissionService } from './authentication/helpers/permission-service';
 import { ConfirmModal } from './shared/components/ConfirmModal/ConfirmModal';
-import {
-  LoadingErrorLoadedComponent,
-  type LoadingInfo,
-} from './shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { ROUTE_PARTS } from './shared/constants/routes';
-import { CustomError } from './shared/helpers/custom-error';
 import { getEnv } from './shared/helpers/env';
 import { ReactRouter7Adapter } from './shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
 import { QueryParamProvider } from './shared/helpers/routing/use-query-params-ssr';
@@ -30,14 +24,32 @@ import { useHideZendeskWidget } from './shared/hooks/useHideZendeskWidget';
 import { usePageLoaded } from './shared/hooks/usePageLoaded';
 import { ToastService } from './shared/services/toast-service';
 import { embedFlowAtom, historyLocationsAtom } from './shared/store/ui.store';
-import { waitForTranslations } from './shared/translations/i18n';
 
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import '@meemoo/admin-core-ui/styles.css';
 import './App.scss';
 import './styles/main.scss';
+import { AdminConfig } from '@meemoo/admin-core-ui/admin';
+import { AdminConfigManager } from '@meemoo/admin-core-ui/client';
+import {
+  keepPreviousData,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
+import { getAdminCoreConfig } from './admin/shared/helpers/get-admin-core-config.tsx';
 
-const App: FC = () => {
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      placeholderData: keepPreviousData,
+      retry: false,
+      refetchInterval: false,
+      refetchIntervalInBackground: false,
+    },
+  },
+});
+
+export const App: FC = () => {
   const location = useLocation();
   const navigateFunc = useNavigate();
   const getLoginState = useSetAtom(getLoginStateAtom);
@@ -61,9 +73,9 @@ const App: FC = () => {
   const query = new URLSearchParams(location?.search || '');
   const isPreviewRoute = query.get('preview') === 'true';
 
-  const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
-    state: 'loading',
-  });
+  // const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
+  //   state: 'loading',
+  // });
 
   const consoleLogClientAndServerVersions = useCallback(async () => {
     console.info(`%c client version: ${pkg.version}`, 'color: #bada55');
@@ -97,17 +109,13 @@ const App: FC = () => {
   usePageLoaded(handlePageLoaded, !!location.hash);
 
   /**
-   * Wait for translations to be loaded before rendering the app
+   * Set admin core config once navigateFunc is available
+   * Since during route loading we only set the config, but we don't have access to navigateFunc yet
    */
   useEffect(() => {
-    waitForTranslations
-      .then(() => {
-        setLoadingInfo({ state: 'loaded' });
-      })
-      .catch((err: any) => {
-        console.error(new CustomError('Failed to wait for translations', err));
-      });
-  }, [setLoadingInfo]);
+    const config: AdminConfig = getAdminCoreConfig(navigateFunc);
+    AdminConfigManager.setConfig(config);
+  }, [navigateFunc]);
 
   /**
    * Load login status as soon as possible
@@ -132,17 +140,17 @@ const App: FC = () => {
    * Redirect after linking an account the the hetarchief account (eg: leerid, smartschool, klascement)
    */
   useEffect(() => {
-    if (loadingInfo.state === 'loaded') {
-      const url = new URL(window.location.href);
-      const linked: Avo.Auth.IdpLinkedSuccessQueryParam = 'linked';
-      const hasLinked = url.searchParams.get(linked) !== null;
-      if (hasLinked) {
-        ToastService.success(tHtml('app___je-account-is-gekoppeld'));
-        url.searchParams.delete(linked);
-        navigateFunc(url.toString().replace(url.origin, ''), { replace: true });
-      }
+    // if (loadingInfo.state === 'loaded') {
+    const url = new URL(window.location.href);
+    const linked: Avo.Auth.IdpLinkedSuccessQueryParam = 'linked';
+    const hasLinked = url.searchParams.get(linked) !== null;
+    if (hasLinked) {
+      ToastService.success(tHtml('app___je-account-is-gekoppeld'));
+      url.searchParams.delete(linked);
+      navigateFunc(url.toString().replace(url.origin, ''), { replace: true });
     }
-  }, [loadingInfo, navigateFunc]);
+    // }
+  }, [navigateFunc]);
 
   /**
    * Keep track of route changes and track the 3 last visited pages for tracking events
@@ -211,38 +219,42 @@ const App: FC = () => {
           pauseOnHover={true}
         />
         <Outlet />
+        <ConfirmModal
+          className="c-modal__unsaved-changes"
+          isOpen={isUnsavedChangesModalOpen}
+          confirmCallback={() => {
+            setIsUnsavedChangesModalOpen(false);
+            (confirmUnsavedChangesCallback || noop)(true);
+            confirmUnsavedChangesCallback = null;
+          }}
+          onClose={() => {
+            setIsUnsavedChangesModalOpen(false);
+            (confirmUnsavedChangesCallback || noop)(false);
+            confirmUnsavedChangesCallback = null;
+          }}
+          cancelLabel={tText('app___blijven')}
+          confirmLabel={tText('app___verlaten')}
+          title={tHtml('app___wijzigingen-opslaan')}
+          body={tHtml(
+            'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten',
+          )}
+          confirmButtonType="primary"
+        />
       </div>
     );
   };
 
   return (
     <QueryParamProvider adapter={ReactRouter7Adapter}>
-      <LoadingErrorLoadedComponent
-        loadingInfo={loadingInfo}
-        dataObject={{}}
-        render={renderApp}
-      />
-      <ConfirmModal
-        className="c-modal__unsaved-changes"
-        isOpen={isUnsavedChangesModalOpen}
-        confirmCallback={() => {
-          setIsUnsavedChangesModalOpen(false);
-          (confirmUnsavedChangesCallback || noop)(true);
-          confirmUnsavedChangesCallback = null;
-        }}
-        onClose={() => {
-          setIsUnsavedChangesModalOpen(false);
-          (confirmUnsavedChangesCallback || noop)(false);
-          confirmUnsavedChangesCallback = null;
-        }}
-        cancelLabel={tText('app___blijven')}
-        confirmLabel={tText('app___verlaten')}
-        title={tHtml('app___wijzigingen-opslaan')}
-        body={tHtml(
-          'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten',
-        )}
-        confirmButtonType="primary"
-      />
+      <QueryClientProvider client={queryClient}>
+        {/*<LoadingErrorLoadedComponent*/}
+        {/*  loadingInfo={loadingInfo}*/}
+        {/*  dataObject={{}}*/}
+        {/*  render={}*/}
+        {/*  locationId="app"*/}
+        {/*/>*/}
+        {renderApp()}
+      </QueryClientProvider>
     </QueryParamProvider>
   );
 };
@@ -301,7 +313,6 @@ export function links() {
   ];
 }
 
-export const AppWithAdminCoreConfig = withAdminCoreConfig(App) as FC;
-export default AppWithAdminCoreConfig;
+export default App;
 
 let confirmUnsavedChangesCallback: ((navigateAway: boolean) => void) | null;

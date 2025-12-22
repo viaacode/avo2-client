@@ -28,7 +28,11 @@ export const ContentPageLabelEditPage: FC = () => {
   const contentPageLabelId = match?.params.id;
 
   return (
-    <Suspense fallback={<FullPageSpinner />}>
+    <Suspense
+      fallback={
+        <FullPageSpinner locationId="content-page-label-edit--loading" />
+      }
+    >
       <PermissionGuard permissions={[PermissionName.EDIT_CONTENT_PAGE_LABELS]}>
         <ContentPageLabelEdit
           className="c-admin-core c-admin__content-page-label-edit"

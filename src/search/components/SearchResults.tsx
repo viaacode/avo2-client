@@ -1,4 +1,4 @@
-import { PaginationBar } from '@meemoo/react-components'
+import { PaginationBar } from '@meemoo/react-components';
 import {
   Blankslate,
   Box,
@@ -6,16 +6,16 @@ import {
   Container,
   Flex,
   IconName,
-} from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { isNil } from 'es-toolkit'
-import { type FC } from 'react'
+} from '@viaa/avo2-components';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { isNil } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import { type FC } from 'react';
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
-import placeholderImage from '../../assets/images/assignment-placeholder.png'
+import placeholderImage from '../../assets/images/assignment-placeholder.png';
 // eslint-disable-next-line import/no-unresolved
-import TeacherSvg from '../../assets/images/leerkracht.svg?react'
+import TeacherSvg from '../../assets/images/leerkracht.svg?react';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
@@ -41,11 +41,11 @@ export const SearchResults: FC<SearchResultsProps> = ({
   qualityLabels,
   ...resultProps
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const getIsBookmarked = (result: Avo.Search.ResultItem) => {
     if (!bookmarkStatuses) {
-      return null
+      return null;
     }
 
     return (
@@ -54,17 +54,17 @@ export const SearchResults: FC<SearchResultsProps> = ({
           result.administrative_type
         ]
       ][result.uid] || false
-    )
-  }
+    );
+  };
 
   const renderSearchResultItem = (result: Avo.Search.ResultItem) => {
-    const searchResult = { ...result }
+    const searchResult = { ...result };
 
     if (
       result.administrative_type === 'opdracht' &&
       isNil(searchResult.thumbnail_path)
     ) {
-      searchResult.thumbnail_path = placeholderImage
+      searchResult.thumbnail_path = placeholderImage;
     }
 
     return (
@@ -81,13 +81,13 @@ export const SearchResults: FC<SearchResultsProps> = ({
         renderDetailLink={renderDetailLink}
         renderSearchLink={renderSearchLink}
       />
-    )
-  }
+    );
+  };
 
   const renderTooManyResults = () => {
-    const currentPage = currentItemIndex / ITEMS_PER_PAGE
+    const currentPage = currentItemIndex / ITEMS_PER_PAGE;
     if (totalItemCount <= 10000 || currentPage < 999) {
-      return null
+      return null;
     }
 
     return (
@@ -112,12 +112,12 @@ export const SearchResults: FC<SearchResultsProps> = ({
           </h3>
         </Flex>
       </Box>
-    )
-  }
+    );
+  };
 
   const renderResultsOrNoResults = () => {
     if (loading) {
-      return <FullPageSpinner />
+      return <FullPageSpinner locationId="search-results--loading" />;
     }
     if (data && data.results && data.count !== 0) {
       return (
@@ -138,7 +138,7 @@ export const SearchResults: FC<SearchResultsProps> = ({
             }
           />
         </>
-      )
+      );
     }
     if (
       PermissionService.hasPerm(
@@ -162,7 +162,7 @@ export const SearchResults: FC<SearchResultsProps> = ({
             onClick={navigateUserRequestForm}
           />
         </Blankslate>
-      )
+      );
     } else {
       // Pupils
       return (
@@ -173,13 +173,13 @@ export const SearchResults: FC<SearchResultsProps> = ({
             'search/components/search-results___we-vonden-jammer-genoeg-geen-resultaten-voor-jouw-zoekopdracht-probeer-een-andere-schrijfwijze-of-een-synoniem-of-beperk-het-aantal-filters',
           )}
         />
-      )
+      );
     }
-  }
+  };
 
   return (
     <Container mode="vertical">
       <Container mode="horizontal">{renderResultsOrNoResults()}</Container>
     </Container>
-  )
-}
+  );
+};

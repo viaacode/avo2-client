@@ -4,10 +4,10 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { compact } from 'es-toolkit'
-import { type ReactNode } from 'react'
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { compact } from 'es-toolkit';
+import { type ReactNode } from 'react';
 
 import { renderMobileDesktop } from './renderMobileDesktop';
 import { tHtml } from './translate-html';
@@ -23,16 +23,16 @@ export function contributorsToString(
   return compact(
     (contributors || []).map((contributor) => {
       if (!contributor.profile) {
-        return null
+        return null;
       }
-      const fullName = contributor.profile?.user?.full_name
+      const fullName = contributor.profile?.user?.full_name;
       const orgName = contributor.profile?.organisation?.name
         ? `(${contributor.profile?.organisation?.name})`
-        : undefined
+        : undefined;
 
-      return compact([fullName, orgName]).join(' ')
+      return compact([fullName, orgName]).join(' ');
     }),
-  ).join(', ')
+  ).join(', ');
 }
 
 export function createShareIconTableOverview(
@@ -58,44 +58,44 @@ export function createShareIconTableOverview(
         contentType === 'assignment'
           ? tText('shared/helpers/share-icon-table-overview___mijn-opdracht')
           : tText('shared/helpers/share-icon-table-overview___mijn-collectie'),
-    }[shareType]
+    }[shareType];
 
-  let shareTypeText: ReactNode
-  const count = contributors?.length
-  const names = contributorsToString(contributors)
+  let shareTypeText: ReactNode;
+  const count = contributors?.length;
+  const names = contributorsToString(contributors);
   switch (shareType) {
     case Avo.Share.ShareWithColleagueType.GEDEELD_MET_ANDERE:
       shareTypeText = tHtml(
         'shared/helpers/share-icon-table-overview___b-gedeeld-met-count-anderen-b-names',
         {
-          count,
+          count: count || 0,
           names,
         },
-      )
-      break
+      );
+      break;
 
     case Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ:
       if ((contributors?.length || 0) > 1) {
         shareTypeText = tHtml(
           'shared/helpers/share-icon-table-overview___b-gedeeld-met-mij-en-count-anderen-b-br-names',
           {
-            count,
+            count: count || 0,
             names,
           },
-        )
+        );
       } else {
         shareTypeText = tHtml(
           'shared/helpers/share-icon-table-overview___gedeeld-met-mij',
-        )
+        );
       }
-      break
+      break;
 
     case Avo.Share.ShareWithColleagueType.NIET_GEDEELD:
     default:
       shareTypeText =
         contentType === 'assignment'
           ? tHtml('shared/helpers/share-icon-table-overview___mijn-opdracht')
-          : tHtml('shared/helpers/share-icon-table-overview___mijn-collectie')
+          : tHtml('shared/helpers/share-icon-table-overview___mijn-collectie');
   }
 
   const shareTypeIcon =
@@ -103,7 +103,7 @@ export function createShareIconTableOverview(
       ? IconName.userGroup
       : shareType === Avo.Share.ShareWithColleagueType.GEDEELD_MET_ANDERE
         ? IconName.userGroup2
-        : IconName.user2
+        : IconName.user2;
   return renderMobileDesktop({
     mobile: null,
     desktop: (
@@ -116,5 +116,5 @@ export function createShareIconTableOverview(
         <TooltipContent>{shareTypeText}</TooltipContent>
       </Tooltip>
     ),
-  })
+  });
 }

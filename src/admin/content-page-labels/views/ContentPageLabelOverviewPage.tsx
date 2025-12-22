@@ -12,7 +12,11 @@ const ContentPageLabelOverview = lazy(() =>
 
 export const ContentPageLabelOverviewPage: FC = () => {
   return (
-    <Suspense fallback={<FullPageSpinner />}>
+    <Suspense
+      fallback={
+        <FullPageSpinner locationId="content-page-label-overview-page--loading" />
+      }
+    >
       <PermissionGuard permissions={[PermissionName.EDIT_CONTENT_PAGE_LABELS]}>
         <ContentPageLabelOverview className="c-admin-core c-admin__content-page-label-overview" />
       </PermissionGuard>

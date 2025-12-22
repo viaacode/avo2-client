@@ -449,7 +449,7 @@ export const CollectionOrBundleEditMarcom: FC<
             />
           </>
         ) : (
-          <FullPageSpinner />
+          <FullPageSpinner locationId="collection-or-bundle-edit-marcom--loading" />
         )}
       </>
     );

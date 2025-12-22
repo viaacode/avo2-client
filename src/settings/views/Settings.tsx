@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Container,
   IconName,
@@ -7,16 +7,11 @@ import {
   Toolbar,
   ToolbarLeft,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import {
-  type FC,
-  type ReactElement,
-  type ReactText,
-  useState,
-} from 'react'
-import { useNavigate, useParams } from 'react-router'
+} from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
+import { type FC, type ReactElement, type ReactText, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
 
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -45,32 +40,32 @@ import {
 } from '../settings.const';
 
 export const Settings: FC = () => {
-  const navigateFunc = useNavigate()
-  const { tabId } = useParams<{ tabId: string }>()
-  const commonUser = useAtomValue(commonUserAtom)
+  const navigateFunc = useNavigate();
+  const { tabId } = useParams<{ tabId: string }>();
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [activeTab, setActiveTab] = useState<SettingsTab>(
     (tabId as SettingsTab) || PROFILE_ID,
-  )
+  );
 
   const isPupil = [
     SpecialUserGroupId.PupilSecondary,
     SpecialUserGroupId.PupilElementary,
   ]
     .map(String)
-    .includes(String(commonUser?.userGroup?.id))
+    .includes(String(commonUser?.userGroup?.id));
 
   const generateTabHeader = (id: SettingsTab, label: string) => ({
     id,
     label,
     active: activeTab === id,
     onClick: () => setActiveTab(id),
-  })
+  });
 
   const getTabHeaders = () => {
     const tabHeaders = [
       generateTabHeader(PROFILE_ID, tText('settings/views/settings___profiel')),
-    ]
+    ];
 
     // Only pupils with an archief account can view the account tab
     if (!isPupil || !!(commonUser?.idps || {})['HETARCHIEF']) {
@@ -79,7 +74,7 @@ export const Settings: FC = () => {
           ACCOUNT_ID,
           tText('settings/views/settings___account'),
         ),
-      )
+      );
     }
 
     tabHeaders.push(
@@ -87,7 +82,7 @@ export const Settings: FC = () => {
         LINKED_ACCOUNTS,
         tText('settings/views/settings___koppelingen'),
       ),
-    )
+    );
 
     if (
       PermissionService.hasPerm(
@@ -100,7 +95,7 @@ export const Settings: FC = () => {
           EMAIL_ID,
           tText('settings/views/settings___e-mail-voorkeuren'),
         ),
-      )
+      );
     }
     if (
       PermissionService.hasPerm(
@@ -111,11 +106,11 @@ export const Settings: FC = () => {
       generateTabHeader(
         NOTIFICATIONS_ID,
         tText('settings/views/settings___notifications'),
-      )
+      );
     }
 
-    return tabHeaders
-  }
+    return tabHeaders;
+  };
 
   const tabContents = {
     [PROFILE_ID]: {
@@ -133,18 +128,18 @@ export const Settings: FC = () => {
     [LINKED_ACCOUNTS]: {
       component: <LinkedAccounts />,
     },
-  }
+  };
 
   const goToTab = (tabId: string | ReactText) => {
     redirectToClientPage(
       buildLink(APP_PATH.SETTINGS_TAB.route, { tabId }),
       navigateFunc,
-    )
-    setActiveTab(tabId as SettingsTab)
-  }
+    );
+    setActiveTab(tabId as SettingsTab);
+  };
 
   const getActiveTabComponent = (): ReactElement | null => {
-    let tab = tabContents[activeTab]
+    let tab = tabContents[activeTab];
     if (!tab) {
       ToastService.danger(
         tHtml(
@@ -153,20 +148,20 @@ export const Settings: FC = () => {
             activeTab,
           },
         ),
-      )
-      tab = tabContents[PROFILE_ID]
+      );
+      tab = tabContents[PROFILE_ID];
     }
-    return tab.component
-  }
+    return tab.component;
+  };
 
   const viewNewsletterPage = PermissionService.hasPerm(
     commonUser,
     PermissionName.VIEW_NEWSLETTERS_PAGE,
-  )
+  );
   const viewNotificationsPage = PermissionService.hasPerm(
     commonUser,
     PermissionName.VIEW_NOTIFICATIONS_PAGE,
-  )
+  );
   if (
     !Object.keys(tabContents).includes(activeTab) ||
     (activeTab === EMAIL_ID && !viewNewsletterPage) ||
@@ -174,11 +169,12 @@ export const Settings: FC = () => {
   ) {
     return (
       <ErrorView
+        locationId="settings--error"
         message={getPageNotFoundError(!!commonUser)}
         icon={IconName.search}
         actionButtons={['home', 'helpdesk']}
       />
-    )
+    );
   }
 
   return (
@@ -212,7 +208,7 @@ export const Settings: FC = () => {
         <Container mode="horizontal">{getActiveTabComponent()}</Container>
       </Container>
     </>
-  )
-}
+  );
+};
 
-export default Settings
+export default Settings;

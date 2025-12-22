@@ -30,7 +30,6 @@ import {
   PermissionGuardFail,
   PermissionGuardPass,
 } from '../../authentication/components/PermissionGuard.slots';
-import { PermissionService } from '../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
@@ -170,28 +169,19 @@ export const Search: FC = () => {
               </Toolbar>
             </Container>
           </Navbar>
-          {PermissionService.hasPerm(commonUser, PermissionName.SEARCH) ? (
-            <SearchFiltersAndResults
-              bookmarks
-              filterState={filterState as FilterState}
-              setFilterState={(newFilterState) =>
-                setFilterState(newFilterState as any)
-              }
-              renderDetailLink={renderDetailLink}
-              renderSearchLink={renderSearchLink}
-            />
-          ) : (
-            <ErrorView
-              message={tHtml(
-                'search/views/search___je-hebt-geen-rechten-om-te-zoeken',
-              )}
-              actionButtons={['home', 'helpdesk']}
-              icon={IconName.lock}
-            />
-          )}
+          <SearchFiltersAndResults
+            bookmarks
+            filterState={filterState as FilterState}
+            setFilterState={(newFilterState) =>
+              setFilterState(newFilterState as any)
+            }
+            renderDetailLink={renderDetailLink}
+            renderSearchLink={renderSearchLink}
+          />
         </PermissionGuardPass>
         <PermissionGuardFail>
           <ErrorView
+            locationId="search-page--permission--error"
             message={tHtml(
               'search/views/search___je-hebt-geen-rechten-om-de-zoek-pagina-te-bekijken',
             )}

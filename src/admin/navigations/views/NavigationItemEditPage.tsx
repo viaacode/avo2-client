@@ -54,7 +54,11 @@ export const NavigationItemEditPage: FC = () => {
           />
         </Helmet>
 
-        <Suspense fallback={<FullPageSpinner />}>
+        <Suspense
+          fallback={
+            <FullPageSpinner locationId="navigation-item-edit-page--loading" />
+          }
+        >
           <NavigationEdit
             navigationBarId={navigationBarId as string}
             navigationItemId={navigationItemId}

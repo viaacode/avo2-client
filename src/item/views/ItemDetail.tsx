@@ -1203,6 +1203,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
         dataObject={item}
         render={renderItem}
         notFoundError={tText('item/views/item___dit-item-werd-niet-gevonden')}
+        locationId="item-detail"
       />
     </>
   );

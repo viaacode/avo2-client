@@ -81,7 +81,11 @@ export const UserGroupOverviewPage: FC = () => {
   const renderPageContent = () => {
     return (
       <>
-        <Suspense fallback={<FullPageSpinner />}>
+        <Suspense
+          fallback={
+            <FullPageSpinner locationId="user-group-overview-page--loading" />
+          }
+        >
           <UserGroupOverview
             renderSearchButtons={renderSearchButtons}
             ref={permissionsRef}

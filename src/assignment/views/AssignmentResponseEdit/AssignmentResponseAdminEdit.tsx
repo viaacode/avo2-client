@@ -1,7 +1,7 @@
-import { IconName } from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { noop } from 'es-toolkit'
+import { IconName } from '@viaa/avo2-components';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import {
   type Dispatch,
   type FC,
@@ -10,9 +10,9 @@ import {
   useCallback,
   useEffect,
   useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
-import { useParams } from 'react-router'
+} from 'react';
+import { Helmet } from 'react-helmet';
+import { useParams } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
@@ -28,39 +28,39 @@ import { PupilCollectionForTeacherPreview } from '../../components/PupilCollecti
 
 import { AssignmentResponseEdit } from './AssignmentResponseEdit';
 
-import '../AssignmentPage.scss'
-import './AssignmentResponseEdit.scss'
+import '../AssignmentPage.scss';
+import './AssignmentResponseEdit.scss';
 
 export const AssignmentResponseAdminEdit: FC = () => {
   const { assignmentId, responseId: assignmentResponseId } = useParams<{
-    assignmentId: string
-    responseId: string
-  }>()
+    assignmentId: string;
+    responseId: string;
+  }>();
 
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
   // Data
   const [assignment, setAssignment] =
-    useState<Avo.Assignment.Assignment | null>(null)
-  const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false)
+    useState<Avo.Assignment.Assignment | null>(null);
+  const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
   const [assignmentError, setAssignmentError] = useState<{
-    message: string | ReactNode
-    icon?: IconName
-  } | null>(null)
+    message: string | ReactNode;
+    icon?: IconName;
+  } | null>(null);
   const [assignmentResponse, setAssignmentResponse] =
-    useState<Avo.Assignment.Response | null>(null)
+    useState<Avo.Assignment.Response | null>(null);
 
   // UI
 
   const [isTeacherPreviewEnabled, setIsTeacherPreviewEnabled] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
   // HTTP
   const fetchAssignment = useCallback(async () => {
     try {
       if (!assignmentId || !assignmentResponseId) {
-        return
+        return;
       }
-      setAssignmentLoading(true)
+      setAssignmentLoading(true);
 
       // Check if the user is a teacher, they do not have permission to create a response for assignments and should see a clear error message
       if (
@@ -74,61 +74,61 @@ export const AssignmentResponseAdminEdit: FC = () => {
             'assignment/views/assignment-response-edit/assignment-response-admin-edit___enkel-een-admin-kan-leerlingencollecties-bewerken',
           ),
           icon: IconName.userStudent,
-        })
-        setAssignmentLoading(false)
-        return
+        });
+        setAssignmentLoading(false);
+        return;
       }
 
       // Get assignment
-      setAssignmentError(null)
+      setAssignmentError(null);
       if (!commonUser?.profileId) {
         ToastService.danger(
           tHtml(
             'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt-de-ingelogde-gebruiker-heeft-geen-profiel-id',
           ),
-        )
-        return
+        );
+        return;
       }
 
       const assignment = await AssignmentService.fetchAssignmentAndContent(
         commonUser?.profileId,
         assignmentId,
-      )
+      );
 
       // Create an assignment response if needed
       const response =
-        await AssignmentService.getAssignmentResponseById(assignmentResponseId)
+        await AssignmentService.getAssignmentResponseById(assignmentResponseId);
       if (!response) {
         setAssignmentError({
           message: tText(
             'assignment/views/assignment-response-edit/assignment-response-admin-edit___de-leerlingencollectie-kon-niet-opgehaald-worden',
           ),
           icon: IconName.userStudent,
-        })
-        setAssignmentLoading(false)
-        return
+        });
+        setAssignmentLoading(false);
+        return;
       }
 
-      setAssignmentResponse(response)
+      setAssignmentResponse(response);
 
-      setAssignment(assignment)
+      setAssignment(assignment);
     } catch (err) {
-      console.error(err)
+      console.error(err);
       setAssignmentError({
         message: tHtml(
           'assignment/views/assignment-response-edit/assignment-response-admin-edit___het-ophalen-van-de-opdracht-antwoord-is-mislukt',
         ),
         icon: IconName.alertTriangle,
-      })
+      });
     }
-    setAssignmentLoading(false)
-  }, [assignmentId, assignmentResponseId])
+    setAssignmentLoading(false);
+  }, [assignmentId, assignmentResponseId]);
 
   // Effects
 
   useEffect(() => {
-    fetchAssignment().then(noop)
-  }, [fetchAssignment])
+    fetchAssignment().then(noop);
+  }, [fetchAssignment]);
 
   // Events
 
@@ -136,7 +136,9 @@ export const AssignmentResponseAdminEdit: FC = () => {
 
   const renderPageContent = () => {
     if (assignmentLoading) {
-      return <FullPageSpinner />
+      return (
+        <FullPageSpinner locationId="assignment-response-admin-edit--loading" />
+      );
     }
     if (assignmentError) {
       return (
@@ -148,8 +150,9 @@ export const AssignmentResponseAdminEdit: FC = () => {
             )
           }
           icon={assignmentError.icon || IconName.alertTriangle}
+          locationId="assignment-response-admin-edit--error"
         />
-      )
+      );
     }
     if (!assignment) {
       return (
@@ -158,8 +161,9 @@ export const AssignmentResponseAdminEdit: FC = () => {
             'assignment/views/assignment-response-edit___de-opdracht-is-niet-gevonden',
           )}
           icon={IconName.search}
+          locationId="assignment-response-admin-edit--error"
         />
-      )
+      );
     }
 
     if (isTeacherPreviewEnabled) {
@@ -179,7 +183,7 @@ export const AssignmentResponseAdminEdit: FC = () => {
             />
           </div>
         )
-      )
+      );
     }
 
     if (!assignmentResponse) {
@@ -189,8 +193,9 @@ export const AssignmentResponseAdminEdit: FC = () => {
             'assignment/views/assignment-response-edit/assignment-response-edit-page___de-opdracht-antwoord-entry-kon-niet-worden-aangemaakt',
           )}
           icon={IconName.alertTriangle}
+          locationId="assignment-response-admin-edit--error"
         />
-      )
+      );
     }
 
     return (
@@ -201,7 +206,7 @@ export const AssignmentResponseAdminEdit: FC = () => {
           setAssignmentResponse as Dispatch<
             SetStateAction<
               | (Omit<Avo.Assignment.Response, 'assignment' | 'id'> & {
-                  id: string | undefined
+                  id: string | undefined;
                 })
               | null
             >
@@ -209,12 +214,12 @@ export const AssignmentResponseAdminEdit: FC = () => {
         }
         showBackButton
         onShowPreviewClicked={() => {
-          setIsTeacherPreviewEnabled(true)
+          setIsTeacherPreviewEnabled(true);
         }}
         onAssignmentChanged={fetchAssignment}
       />
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -237,7 +242,7 @@ export const AssignmentResponseAdminEdit: FC = () => {
 
       {renderPageContent()}
     </>
-  )
-}
+  );
+};
 
-export default AssignmentResponseAdminEdit
+export default AssignmentResponseAdminEdit;

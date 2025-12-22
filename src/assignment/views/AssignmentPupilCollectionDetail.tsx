@@ -1,18 +1,12 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
-import { Container, Icon, IconName } from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { noop } from 'es-toolkit'
-import {
-  type FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-import { Helmet } from 'react-helmet'
-import { useParams } from 'react-router'
-import { Link } from 'react-router-dom'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import { Container, Icon, IconName } from '@viaa/avo2-components';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -33,27 +27,27 @@ import { buildGlobalSearchLink } from '../helpers/build-search-link';
 import { toAssignmentResponsesOverview } from '../helpers/links';
 
 export const AssignmentPupilCollectionDetail: FC = () => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const { assignmentId, responseId: assignmentResponseId } = useParams<{
-    assignmentId: string
-    responseId: string
-  }>()
+    assignmentId: string;
+    responseId: string;
+  }>();
 
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
+  });
   const [assignment, setAssignment] =
-    useState<Avo.Assignment.Assignment | null>(null)
+    useState<Avo.Assignment.Assignment | null>(null);
   const [assignmentResponse, setAssignmentResponse] =
-    useState<Avo.Assignment.Response | null>()
+    useState<Avo.Assignment.Response | null>();
 
   const fetchAssignmentResponse = useCallback(
     async (
       tempAssignment: Avo.Assignment.Assignment,
     ): Promise<Avo.Assignment.Response | null> => {
       if (!assignmentResponseId) {
-        return null
+        return null;
       }
       const canViewAssignmentResponses = await PermissionService.hasPermissions(
         [
@@ -61,62 +55,62 @@ export const AssignmentPupilCollectionDetail: FC = () => {
           { name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: tempAssignment },
         ],
         commonUser,
-      )
+      );
       if (!canViewAssignmentResponses) {
         setLoadingInfo({
           state: 'error',
           message: tHtml(
             'assignment/views/assignment-pupil-collection-detail___je-hebt-geen-toegang-om-deze-leerlingencollectie-te-bekijken',
           ),
-        })
-        return null
+        });
+        return null;
       }
 
-      return AssignmentService.getAssignmentResponseById(assignmentResponseId)
+      return AssignmentService.getAssignmentResponseById(assignmentResponseId);
     },
     [setAssignmentResponse, assignmentResponseId],
-  )
+  );
 
   const fetchAssignment = useCallback(async () => {
     try {
       if (!assignmentId) {
-        return
+        return;
       }
       const tempAssignment: Avo.Assignment.Assignment =
-        await AssignmentService.fetchAssignmentById(assignmentId)
+        await AssignmentService.fetchAssignmentById(assignmentId);
 
-      setAssignmentResponse(await fetchAssignmentResponse(tempAssignment))
+      setAssignmentResponse(await fetchAssignmentResponse(tempAssignment));
 
-      setAssignment(tempAssignment)
+      setAssignment(tempAssignment);
     } catch (err) {
       console.error(
         new CustomError('Failed to fetch assignment and response', err, {
           commonUser,
           id: assignmentResponseId,
         }),
-      )
+      );
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'assignment/views/assignment-pupil-collection-detail___het-ophalen-van-de-leerlingencollectie-is-mislukt',
         ),
-      })
+      });
     }
-  }, [assignmentId, fetchAssignmentResponse, commonUser, assignmentResponseId])
+  }, [assignmentId, fetchAssignmentResponse, commonUser, assignmentResponseId]);
 
   // Effects
 
   useEffect(() => {
-    fetchAssignment().then(noop)
-  }, [fetchAssignment, commonUser])
+    fetchAssignment().then(noop);
+  }, [fetchAssignment, commonUser]);
 
   useEffect(() => {
     if (assignment && assignmentResponse) {
       setLoadingInfo({
         state: 'loaded',
-      })
+      });
     }
-  }, [assignment, assignmentResponse])
+  }, [assignment, assignmentResponse]);
 
   // Render
 
@@ -134,14 +128,14 @@ export const AssignmentPupilCollectionDetail: FC = () => {
         </Link>
       ),
     [assignment],
-  )
+  );
 
   const renderReadOnlyPupilCollectionBlocks = () => {
     const collectionTitle = (
       <BlockHeading className="u-spacer-top-l" type="h2">
         {assignmentResponse?.collection_title || ''}
       </BlockHeading>
-    )
+    );
     return (
       <>
         <AssignmentHeading
@@ -182,6 +176,7 @@ export const AssignmentPupilCollectionDetail: FC = () => {
           </Container>
         ) : (
           <ErrorView
+            locationId="assignment-pupil-collection-detail--error"
             message={tText(
               'assignment/views/assignment-pupil-collection-detail___deze-leerlingencollectie-bevat-geen-fragmenten',
             )}
@@ -189,8 +184,8 @@ export const AssignmentPupilCollectionDetail: FC = () => {
           />
         )}
       </>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -212,9 +207,10 @@ export const AssignmentPupilCollectionDetail: FC = () => {
         )}
         dataObject={assignmentResponse}
         render={renderReadOnlyPupilCollectionBlocks}
+        locationId="assignment-pupil-collection-detail"
       />
     </>
-  )
-}
+  );
+};
 
-export default AssignmentPupilCollectionDetail
+export default AssignmentPupilCollectionDetail;

@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 // @ts-ignore
 import * as React from 'react';
 import { renderToString } from 'react-dom/server';
+import { Helmet } from 'react-helmet';
 import {
   createStaticHandler,
   createStaticRouter,
@@ -35,12 +36,14 @@ export async function render(request: Request) {
 
     // 2. Create a static router for SSR
     let router = createStaticRouter(dataRoutes, context);
+    const helmet = Helmet.renderStatic();
+    console.log('[SSR] Helmet title:', helmet.title.toString());
+    console.log('[SSR] Helmet meta tags:', helmet.meta.toString());
 
     // 3. Render everything with StaticRouterProvider
     let html = renderToString(
       <StaticRouterProvider router={router} context={context} />,
     );
-    console.log('html: ' + html);
 
     // Setup headers from action and loaders from deepest match
     let leaf = context.matches[context.matches.length - 1];
@@ -55,14 +58,19 @@ export async function render(request: Request) {
 
     headers.set('Content-Type', 'text/html; charset=utf-8');
 
-    console.log('index html: ' + indexHtml);
-
-    const mergedHtml = indexHtml.replace(
+    let mergedHtml = indexHtml.replace(
       '<div id="root"></div>',
       `<div id="root">${html}</div>`,
     );
 
-    console.log('index html: ' + indexHtml);
+    // Render title and meta tags from the Helmet component during server side rendering
+    mergedHtml = mergedHtml.replace(
+      '<!-- HELMET_TAGS_REPLACEMENT_MARKER -->',
+      `    
+        ${helmet?.title.toString()}
+        ${helmet?.meta.toString()}
+      `,
+    );
 
     // 4. send a response
     return new Response(mergedHtml, {

@@ -317,6 +317,7 @@ export const PublishItemsOverview: FC = () => {
   const renderNoResults = () => {
     return (
       <ErrorView
+        locationId="publish-items-overview--error"
         message={tHtml(
           'admin/items/views/items-overview___er-bestaan-nog-geen-items',
         )}
@@ -417,6 +418,7 @@ export const PublishItemsOverview: FC = () => {
             loadingInfo={loadingInfo}
             dataObject={items}
             render={renderItemsOverview}
+            locationId="publish-items-overview"
           />
         </AdminLayoutBody>
       </AdminLayout>

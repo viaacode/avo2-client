@@ -169,7 +169,7 @@ export const UrlRedirectEdit: FC = () => {
 
   const renderEditPage = () => {
     if (isLoading) {
-      return <FullPageSpinner />;
+      return <FullPageSpinner locationId="url-redirect-edit--loading" />;
     }
 
     if (error || !loadedUrlRedirect) {
@@ -179,6 +179,7 @@ export const UrlRedirectEdit: FC = () => {
             'admin/url-redirects/views/url-redirect-edit___het-ophalen-van-de-url-redirect-is-mislukt',
           )}
           icon={IconName.alertTriangle}
+          locationId="url-redirect-edit--error"
         />
       );
     }

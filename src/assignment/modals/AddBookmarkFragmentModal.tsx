@@ -15,17 +15,11 @@ import {
   type TableColumn,
   TextInput,
   Thumbnail,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { noop } from 'es-toolkit'
-import {
-  type FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import {
@@ -45,7 +39,7 @@ import { type BookmarkInfo } from '../../shared/services/bookmarks-views-plays-s
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
-import './AddItemsModals.scss'
+import './AddItemsModals.scss';
 
 // Column definitions
 enum AddBookmarkFragmentColumn {
@@ -75,12 +69,12 @@ const GET_ADD_BOOKMARK_FRAGMENT_COLUMNS = (): TableColumn[] => [
     sortable: true,
     dataType: 'dateTime',
   },
-]
+];
 
 const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
   [columnId in AddBookmarkFragmentColumn]: (
     order: Avo.Search.OrderDirection,
-  ) => any
+  ) => any;
 }> = {
   contentTitle: (order: Avo.Search.OrderDirection) => ({
     bookmarkedItem: {
@@ -95,45 +89,47 @@ const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
   createdAt: (order: Avo.Search.OrderDirection) => ({
     created_at: order,
   }),
-}
+};
 
 export interface AddBookmarkFragmentModalProps {
-  isOpen: boolean
-  onClose?: () => void
-  addFragmentCallback?: (fragmentId: string) => void
+  isOpen: boolean;
+  onClose?: () => void;
+  addFragmentCallback?: (fragmentId: string) => void;
 }
 
 export const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
   isOpen,
   onClose,
   addFragmentCallback = () => {
-    return
+    return;
   },
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
-  })
-  const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null)
-  const [selectedBookmarkId, setSelectedBookmarkId] = useState<string>()
+  });
+  const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null);
+  const [selectedBookmarkId, setSelectedBookmarkId] = useState<string>();
   const [sortColumn, sortOrder, handleColumnClick] =
-    useTableSort<AddBookmarkFragmentColumn>(AddBookmarkFragmentColumn.createdAt)
-  const [filterString, setFilterString] = useState<string>('')
+    useTableSort<AddBookmarkFragmentColumn>(
+      AddBookmarkFragmentColumn.createdAt,
+    );
+  const [filterString, setFilterString] = useState<string>('');
 
-  const tableColumns = useMemo(() => GET_ADD_BOOKMARK_FRAGMENT_COLUMNS(), [])
+  const tableColumns = useMemo(() => GET_ADD_BOOKMARK_FRAGMENT_COLUMNS(), []);
 
   const fetchBookmarks = useCallback(async () => {
     try {
       if (!commonUser) {
-        throw new CustomError('Could not determine authenticated user.')
+        throw new CustomError('Could not determine authenticated user.');
       }
 
       const column = tableColumns.find(
         (tableColumn: any) => tableColumn.id || '' === (sortColumn as any),
-      )
+      );
       const columnDataType: TableColumnDataType = (column?.dataType ||
-        TableColumnDataType.string) as TableColumnDataType
+        TableColumnDataType.string) as TableColumnDataType;
 
       const bookmarkInfos =
         await BookmarksViewsPlaysService.getItemBookmarksForUser(
@@ -145,32 +141,32 @@ export const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
             columnDataType,
             TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
           ),
-        )
-      setBookmarks(bookmarkInfos)
+        );
+      setBookmarks(bookmarkInfos);
     } catch (err) {
-      console.error(new CustomError('Failed to get bookmarks', err))
+      console.error(new CustomError('Failed to get bookmarks', err));
       setLoadingInfo({
         state: 'error',
         message: tHtml(
           'assignment/modals/add-bookmark-fragment-modal___het-ophalen-van-bladwijzers-is-mislukt',
         ),
-      })
+      });
     }
-  }, [tableColumns, commonUser, filterString, sortColumn, sortOrder])
+  }, [tableColumns, commonUser, filterString, sortColumn, sortOrder]);
 
   useEffect(() => {
     if (bookmarks) {
       setLoadingInfo({
         state: 'loaded',
-      })
+      });
     }
-  }, [bookmarks, setLoadingInfo])
+  }, [bookmarks, setLoadingInfo]);
 
   useEffect(() => {
     if (isOpen) {
-      fetchBookmarks()
+      fetchBookmarks();
     }
-  }, [isOpen, fetchBookmarks])
+  }, [isOpen, fetchBookmarks]);
 
   const handleImportToAssignment = () => {
     if (!selectedBookmarkId) {
@@ -178,18 +174,18 @@ export const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
         tHtml(
           'assignment/modals/add-bookmark-fragment-modal___gelieve-een-fragment-te-selecteren',
         ),
-      )
-      return
+      );
+      return;
     }
-    addFragmentCallback(selectedBookmarkId)
-    ;(onClose || noop)()
-  }
+    addFragmentCallback(selectedBookmarkId);
+    (onClose || noop)();
+  };
 
   const handleSelectedBookmarkItemChanged = (
     selectedIds: (string | number)[],
   ) => {
-    setSelectedBookmarkId((selectedIds[0] as string) || undefined)
-  }
+    setSelectedBookmarkId((selectedIds[0] as string) || undefined);
+  };
 
   const renderCell = (
     bookmark: BookmarkInfo,
@@ -217,24 +213,24 @@ export const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
               </Flex>
             </Flex>
           </div>
-        )
+        );
 
         return isMobileWidth() ? (
           <Spacer margin="bottom-small">{renderTitle()}</Spacer>
         ) : (
           renderTitle()
-        )
+        );
       }
 
       case AddBookmarkFragmentColumn.createdAt:
-        return formatDate(new Date(bookmark.createdAt))
+        return formatDate(new Date(bookmark.createdAt));
 
       // duration does not require specific rendering
 
       default:
-        return (bookmark as any)[colKey]
+        return (bookmark as any)[colKey];
     }
-  }
+  };
 
   const renderModalBody = () => {
     return (
@@ -278,13 +274,13 @@ export const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
             selectedItemIds={selectedBookmarkId ? [selectedBookmarkId] : []}
             onSelectionChanged={handleSelectedBookmarkItemChanged}
             onRowClick={(bookmark) => {
-              setSelectedBookmarkId(bookmark.contentLinkId)
+              setSelectedBookmarkId(bookmark.contentLinkId);
             }}
           />
         </div>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <Modal
@@ -302,6 +298,7 @@ export const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
           loadingInfo={loadingInfo}
           dataObject={bookmarks}
           render={renderModalBody}
+          locationId="add-bookmark-fragment-modal"
         />
       </ModalBody>
 
@@ -324,5 +321,5 @@ export const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
         </ButtonToolbar>
       </ModalFooterRight>
     </Modal>
-  )
-}
+  );
+};

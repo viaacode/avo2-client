@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Alert,
   Button,
@@ -9,10 +9,10 @@ import {
   Grid,
   IconName,
   Spacer,
-} from '@viaa/avo2-components'
-import { useAtomValue } from 'jotai'
-import { type FC } from 'react'
-import { Helmet } from 'react-helmet'
+} from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
+import { type FC } from 'react';
+import { Helmet } from 'react-helmet';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { redirectToExternalPage } from '../../authentication/helpers/redirects/redirect-to-external-page';
@@ -27,15 +27,15 @@ import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
 // const ssumAccountEditPage = getEnv('SSUM_ACCOUNT_EDIT_URL') as string;
-const ssumPasswordEditPage = getEnv('SSUM_PASSWORD_EDIT_URL') as string
+const ssumPasswordEditPage = getEnv('SSUM_PASSWORD_EDIT_URL') as string;
 
 export const Account: FC = () => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
-  const hasTempAccess = commonUser?.tempAccess?.has_currently_access?.status
+  const hasTempAccess = commonUser?.tempAccess?.has_currently_access?.status;
 
   if (!commonUser) {
-    return <FullPageSpinner />
+    return <FullPageSpinner locationId="account--loading" />;
   }
 
   if (
@@ -44,12 +44,13 @@ export const Account: FC = () => {
   ) {
     return (
       <ErrorView
+        locationId="account--error"
         message={tHtml(
           'settings/components/account___je-hebt-geen-toegang-tot-de-account-pagina',
         )}
         icon={IconName.lock}
       />
-    )
+    );
   }
   return (
     <>
@@ -82,18 +83,6 @@ export const Account: FC = () => {
                   >
                     <span>{commonUser?.email || '-'}</span>
                   </FormGroup>
-                  {/* TODO re-enable when summ allows you to change your email address */}
-                  {/*<Spacer margin="bottom">*/}
-                  {/*	<Button*/}
-                  {/*		type="secondary"*/}
-                  {/*		onClick={() =>*/}
-                  {/*			redirectToExternalPage(ssumAccountEditPage, null)*/}
-                  {/*		}*/}
-                  {/*		label={tText(*/}
-                  {/*			'settings/components/account___wijzig-accountgegevens'*/}
-                  {/*		)}*/}
-                  {/*	/>*/}
-                  {/*</Spacer>*/}
                   <BlockHeading type="h3">
                     {tText('settings/components/account___wachtwoord')}
                   </BlockHeading>
@@ -149,5 +138,5 @@ export const Account: FC = () => {
         </Spacer>
       </Container>
     </>
-  )
-}
+  );
+};

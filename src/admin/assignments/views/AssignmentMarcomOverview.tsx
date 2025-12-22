@@ -5,13 +5,7 @@ import {
 } from '@meemoo/admin-core-ui/admin';
 import { Avo, PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactNode,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { type FC, type ReactNode, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
@@ -260,6 +254,7 @@ export const AssignmentMarcomOverview: FC = () => {
   const renderNoResults = () => {
     return (
       <ErrorView
+        locationId="assignment-marcom-overview--error"
         message={tHtml(
           'admin/assignments/views/assignments-marcom-overview___er-bestaan-nog-geen-opdrachten',
         )}
@@ -275,7 +270,9 @@ export const AssignmentMarcomOverview: FC = () => {
 
   const renderAssignmentMarcomOverview = () => {
     if (isLoadingAssignments || isLoadingAssignmentIds) {
-      return <FullPageSpinner />;
+      return (
+        <FullPageSpinner locationId="assignment-marcom-overview--loading" />
+      );
     }
     return (
       <>

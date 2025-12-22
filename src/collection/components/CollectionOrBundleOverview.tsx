@@ -904,6 +904,7 @@ export const CollectionOrBundleOverview: FC<
 
   const renderEmptyFallback = () => (
     <ErrorView
+      locationId="collection-overview--error"
       icon={isCollection ? IconName.collection : IconName.folder}
       message={
         isCollection
@@ -1040,6 +1041,7 @@ export const CollectionOrBundleOverview: FC<
       loadingInfo={loadingInfo}
       dataObject={collections}
       render={renderCollections}
+      locationId="collection-or-bundle-overview"
     />
   );
 };

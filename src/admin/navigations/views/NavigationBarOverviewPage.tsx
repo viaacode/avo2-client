@@ -39,7 +39,11 @@ export const NavigationBarOverviewPage: FC = () => {
               )}
             />
           </Helmet>
-          <Suspense fallback={<FullPageSpinner />}>
+          <Suspense
+            fallback={
+              <FullPageSpinner locationId="navigation-bar-overview-page--loading" />
+            }
+          >
             <NavigationOverview />
           </Suspense>
         </AdminLayoutBody>

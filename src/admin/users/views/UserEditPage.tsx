@@ -151,7 +151,7 @@ export const UserEditPage: FC = () => {
 
   const renderUserEdit = () => {
     if (isLoading) {
-      return <FullPageSpinner />;
+      return <FullPageSpinner locationId="user-edit-page--loading" />;
     }
 
     const companyLogo = profile?.organisation?.logo_url || null;

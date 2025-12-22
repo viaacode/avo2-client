@@ -115,6 +115,7 @@ export const Admin: FC = () => {
           loadingInfo={loadingInfo}
           dataObject={{}}
           render={renderAdminPage}
+          locationId="admin"
         />
       </PermissionGuard>
     </QueryParamProvider>

@@ -9,11 +9,11 @@ import {
   Grid,
   Spacer,
   TextInput,
-} from '@viaa/avo2-components'
-import { clsx } from 'clsx'
-import { isAfter, isPast } from 'date-fns'
-import { useAtomValue } from 'jotai'
-import { type FC, useCallback } from 'react'
+} from '@viaa/avo2-components';
+import { clsx } from 'clsx';
+import { isAfter, isPast } from 'date-fns';
+import { useAtomValue } from 'jotai';
+import { type FC, useCallback } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
@@ -27,8 +27,8 @@ import { type AssignmentFields } from '../hooks/assignment-form';
 
 import { AssignmentLabels } from './AssignmentLabels';
 
-import './AssignmentDetailsForm.scss'
-import { Avo } from '@viaa/avo2-types'
+import './AssignmentDetailsForm.scss';
+import { Avo } from '@viaa/avo2-types';
 
 const AssignmentDetailsFormIds = {
   classrooms: 'c-assignment-details-form__classrooms', // labels with type 'CLASS'
@@ -36,36 +36,38 @@ const AssignmentDetailsFormIds = {
   available_at: 'c-assignment-details-form__available_at',
   deadline_at: 'c-assignment-details-form__deadline_at',
   answer_url: 'c-assignment-details-form__answer_url',
-}
+};
 
 interface AssignmentDetailsFormEditableProps {
-  assignment: Partial<AssignmentFields>
-  setAssignment: (newAssignmentFields: Partial<AssignmentFields>) => void
-  onFocus?: () => void
+  assignment: Partial<AssignmentFields>;
+  setAssignment: (newAssignmentFields: Partial<AssignmentFields>) => void;
+  onFocus?: () => void;
 }
 
 export const AssignmentDetailsFormEditable: FC<
   AssignmentDetailsFormEditableProps & DefaultProps
 > = ({ assignment, setAssignment, className, style, onFocus }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const getId = useCallback(
     (key: string | number) => `${assignment.id}--${key}`,
     [assignment.id],
-  )
+  );
 
   // Render
 
   if (!commonUser) {
-    return <FullPageSpinner />
+    return (
+      <FullPageSpinner locationId="assignment-details-form-editable--loading" />
+    );
   }
 
   const deadline = assignment.deadline_at
     ? new Date(assignment.deadline_at)
-    : null
+    : null;
   const availableAt = assignment.available_at
     ? new Date(assignment.available_at)
-    : new Date()
+    : new Date();
   return (
     <div className={clsx('c-assignment-details-form', className)} style={style}>
       <Container mode="vertical">
@@ -95,27 +97,27 @@ export const AssignmentDetailsFormEditable: FC<
                         ),
                       }}
                       onChange={(changed) => {
-                        let target = changed
+                        let target = changed;
 
                         if (changed.length > 1) {
                           ToastService.danger(
                             tHtml(
                               'assignment/components/assignment-details-form-editable___opgepast-je-kan-maar-1-klas-instellen-per-opdracht',
                             ),
-                          )
-                          target = [changed[0]]
+                          );
+                          target = [changed[0]];
                         }
 
                         const newLabels = mergeWithOtherLabels(
                           assignment.labels || [],
                           target,
                           Avo.Assignment.LabelType.CLASS,
-                        )
+                        );
 
                         setAssignment({
                           ...assignment,
                           labels: newLabels,
-                        })
+                        });
                       }}
                     />
                   </FormGroup>
@@ -148,7 +150,7 @@ export const AssignmentDetailsFormEditable: FC<
                             changed,
                             Avo.Assignment.LabelType.LABEL,
                           ),
-                        })
+                        });
                       }}
                     />
                   </FormGroup>
@@ -167,7 +169,7 @@ export const AssignmentDetailsFormEditable: FC<
                         setAssignment({
                           ...assignment,
                           available_at: value ? value.toISOString() : null,
-                        })
+                        });
                       }}
                     />
                   </FormGroup>
@@ -186,7 +188,7 @@ export const AssignmentDetailsFormEditable: FC<
                         setAssignment({
                           ...assignment,
                           deadline_at: value ? value.toISOString() : null,
-                        })
+                        });
                       }}
                       defaultTime="23:59"
                     />
@@ -230,7 +232,7 @@ export const AssignmentDetailsFormEditable: FC<
                         setAssignment({
                           ...assignment,
                           answer_url: answerUrl,
-                        } as AssignmentFields)
+                        } as AssignmentFields);
                       }}
                       value={assignment.answer_url || undefined}
                       onFocus={onFocus}
@@ -256,5 +258,5 @@ export const AssignmentDetailsFormEditable: FC<
         </Container>
       </Container>
     </div>
-  )
-}
+  );
+};

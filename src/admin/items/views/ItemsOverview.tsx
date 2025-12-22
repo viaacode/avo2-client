@@ -119,6 +119,7 @@ export const ItemsOverview: FC = () => {
   const renderNoResults = () => {
     return (
       <ErrorView
+        locationId="items-overview--error"
         message={tHtml(
           'admin/items/views/items-overview___er-bestaan-nog-geen-items',
         )}

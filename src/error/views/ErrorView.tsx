@@ -42,6 +42,7 @@ interface ErrorViewProps {
   icon?: IconName;
   actionButtons?: ErrorActionButton[];
   children?: ReactNode;
+  locationId: string;
 }
 
 export const ErrorView: FC<ErrorViewProps> = ({
@@ -49,6 +50,7 @@ export const ErrorView: FC<ErrorViewProps> = ({
   icon,
   children = null,
   actionButtons = [],
+  locationId,
 }) => {
   const location = useLocation();
   const commonUser = useAtomValue(commonUserAtom);
@@ -61,7 +63,7 @@ export const ErrorView: FC<ErrorViewProps> = ({
       location,
       `/error?${queryString.stringify(omit(queryParams, ['logout']))}`,
     );
-    return <FullPageSpinner />;
+    return <FullPageSpinner locationId={locationId} />;
   }
 
   const messageText: string | ReactNode =
@@ -159,6 +161,7 @@ export const ErrorView: FC<ErrorViewProps> = ({
           icon={errorIcon}
           title={errorMessage}
           className="c-content"
+          data-location-id={locationId}
         >
           {children}
           {renderButtons(compact(buttons))}

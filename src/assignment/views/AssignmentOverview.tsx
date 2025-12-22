@@ -969,6 +969,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
     <>
       {renderHeader()}
       <ErrorView
+        locationId="assignment-overview--error"
         icon={getEmptyFallbackIcon()}
         message={getEmptyFallbackTitle()}
       >
@@ -1023,7 +1024,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
 
   const renderAssignmentsView = () => {
     if (isLoadingAssignments) {
-      return <FullPageSpinner />;
+      return <FullPageSpinner locationId="assignment-overview--loading" />;
     }
     if (!assignments.length) {
       return renderEmptyFallback();
