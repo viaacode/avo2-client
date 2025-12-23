@@ -1,6 +1,6 @@
 FROM nginxinc/nginx-unprivileged
 USER nginx
-FROM node:20.4-alpine AS compile
+FROM node:24-alpine AS compile
 # set our node environment, defaults to production
 ARG NODE_ENV=ci
 ARG PRODUCTION=$PRODUCTION
