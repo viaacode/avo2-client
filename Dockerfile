@@ -17,7 +17,7 @@ RUN apk add --no-cache --virtual python2 make g++ tzdata && ln -snf /usr/share/z
 USER node
 RUN npm ci --include=dev --legacy-peer-deps
 ## Builder image
-FROM node:20.4-alpine AS build
+FROM node:24-alpine AS build
 USER node
 COPY --from=compile /app /app
 # set our node environment, defaults to production
