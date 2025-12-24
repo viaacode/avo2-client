@@ -266,6 +266,7 @@ pipeline {
                     ]) {
                         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                             sh '''
+                                cd tests
                                 export NODE_ENV=dev
                                 npm install --force
                                 npm install junit-report-builder --save --force
@@ -273,8 +274,8 @@ pipeline {
                                 npx playwright install
                                 npx playwright install-deps
                                 npx playwright install chrome
+                                PLAYWRIGHT_JUNIT_OUTPUT_NAME=tests/e2e_test_results.xml npx playwright test --reporter=junit || echo failed
                             '''
-                            sh 'PLAYWRIGHT_JUNIT_OUTPUT_NAME=tests/e2e_test_results.xml npx playwright test --reporter=junit || echo failed'
                         }
                     }
                 }
