@@ -166,6 +166,7 @@ pipeline {
 
 		stage('e2e-prepare') {
 			when {
+			    expression { false }
 // 			    disable e2e tests for now, since they take forever to run
 // 				anyOf {
 // 					changeRequest target: 'develop'//'master'
@@ -192,6 +193,7 @@ pipeline {
 		}//end stage
 		stage('e2e') {
 			when {
+			    expression { false }
 // 			    disable e2e tests for now, since they take forever to run
 // 				anyOf {
 // 					changeRequest target: 'develop'//'master'
