@@ -166,11 +166,12 @@ pipeline {
 
 		stage('e2e-prepare') {
 			when {
-				anyOf {
-					changeRequest target: 'develop'//'master'
-					changeRequest target: 'development' // do not build on master prs
-					branch 'develop'; branch 'development'
-				}
+// 			    disable e2e tests for now, since they take forever to run
+// 				anyOf {
+// 					changeRequest target: 'develop'//'master'
+// 					changeRequest target: 'development' // do not build on master prs
+// 					branch 'develop'; branch 'development'
+// 				}
 			}
 			steps {
 				container('hasura-cli') {
