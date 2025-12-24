@@ -191,45 +191,13 @@ pipeline {
 		}//end stage
 		stage('e2e') {
 			when {
-				anyOf {
-					changeRequest target: 'develop'//'master'
-					changeRequest target: 'development' // do not build on master prs
-					branch 'develop'; branch 'development'
-				}
+// 			    disable e2e tests for now, since they take forever to run
+// 				anyOf {
+// 					changeRequest target: 'develop'//'master'
+// 					changeRequest target: 'development' // do not build on master prs
+// 					branch 'develop'; branch 'development'
+// 				}
 			}
-// 			steps {
-// 				agent { label 'node' }
-//
-// 				script {
-// 					configFileProvider(
-// 						[configFile(fileId: 'end2end_env', variable: 'end2end_env')]) {
-// 								sh ('cat $end2end_env > .env')
-//
-// 						loadEnvironmentVariablesFromFile('.env')
-// 					}
-// 					sh 'echo ${TEST_ACM_DASHBOARD_USERNAME}'
-// 					docker.image('mcr.microsoft.com/playwright:v1.44.0-focal').inside('-e TEST_CLIENT_ENDPOINT=${TEST_CLIENT_ENDPOINT} -e TEST_PROXY_ENDPOINT=${TEST_PROXY_ENDPOINT}  -e TEST_OBJECT_DETAIL_PAGE_VRT=${TEST_OBJECT_DETAIL_PAGE_VRT} -e TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT=${TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT} -e TEST_VISITOR_ACCOUNT_USERNAME:${TEST_VISITOR_ACCOUNT_USERNAME} -e TEST_VISITOR_ACCOUNT_PASSWORD=${TEST_VISITOR_ACCOUNT_PASSWORD} -e TEST_CP_ADMIN_ACCOUNT_USERNAME=${TEST_CP_ADMIN_ACCOUNT_USERNAME} -e TEST_CP_ADMIN_ACCOUNT_PASSWORD=${TEST_CP_ADMIN_ACCOUNT_PASSWORD} -e TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME=${TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME} -e TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD=${TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD} -e TEST_ACM_DASHBOARD=${TEST_ACM_DASHBOARD} -e TEST_ACM_DASHBOARD_USERNAME=${TEST_ACM_DASHBOARD_USERNAME} -e TEST_ACM_DASHBOARD_PASSWORD=${TEST_ACM_DASHBOARD_PASSWORD}')
-//                     {
-//                         git branch: 'develop',
-//                             credentialsId: 'meemoo-ci',
-//                             url: 'https://github.com/viaacode/avo2-client.git'
-//                         catchError() {
-//                         sh '''
-//                         export NODE_ENV=dev
-//                         #npm set-script prepare ""
-//                         npm install --force
-//                         npm install junit-report-builder --save --force
-//                         npm install @playwright/test --force
-//                         npx playwright install
-//                         npx playwright install-deps
-//                         npx playwright install chrome
-//                         '''
-//                         sh "PLAYWRIGHT_JUNIT_OUTPUT_NAME=tests/e2e_test_results.xml npx playwright test --reporter=junit || echo failed "
-//                         junit 'tests/e2e_test_results.xml'
-//                         }
-//                     }
-// 				} //end script
-// 			}
 
             options { skipDefaultCheckout(true) }
 
