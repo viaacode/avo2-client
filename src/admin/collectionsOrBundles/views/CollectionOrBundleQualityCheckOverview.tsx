@@ -1,9 +1,4 @@
-import {
-	ExportAllToCsvModal,
-	type FilterableColumn,
-	FilterTable,
-	getFilters,
-} from '@meemoo/admin-core-ui/admin';
+import { ExportAllToCsvModal, FilterTable, getFilters } from '@meemoo/admin-core-ui/admin';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
@@ -27,7 +22,6 @@ import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
-import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
@@ -159,12 +153,6 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 		location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_QUALITYCHECK_OVERVIEW;
 
 	// methods
-	const getColumnDataType = useCallback(() => {
-		const column = tableColumns.find(
-			(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
-		);
-		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
-	}, [tableColumns, tableState.sort_column]);
 
 	const fetchCollectionsOrBundles = useCallback(async () => {
 		setIsLoading(true);
@@ -208,7 +196,7 @@ const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
 		}
 
 		setIsLoading(false);
-	}, [tableState, getColumnDataType, isCollection, tText]);
+	}, [tableState, tText, tableState.sort_column, tableState.sort_order]);
 
 	useEffect(() => {
 		if (commonUser && educationLevelsAndDegrees?.length) {

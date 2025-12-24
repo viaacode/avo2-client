@@ -510,7 +510,7 @@ const CollectionDetail: FC<
 			});
 		}
 		// Ensure callback only runs once even if user object is set twice // TODO investigate why user object is set twice
-	}, [collectionId, setCollectionInfo, tText, commonUser, history, defaultGoToDetailLink]);
+	}, [collectionId, setCollectionInfo, commonUser, history, defaultGoToDetailLink]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection();

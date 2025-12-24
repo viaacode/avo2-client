@@ -938,66 +938,77 @@ const CollectionOrBundleEdit: FC<
 	// TODO: DISABLED FEATURE
 	// const onPreviewCollection = () => {};
 
-	const executeAction = async (item: CollectionMenuAction) => {
-		setIsOptionsMenuOpen(false);
-		switch (item) {
-			case CollectionMenuAction.deleteCollection:
-				onClickDelete();
-				break;
+	const executeAction = useCallback(
+		async (item: CollectionMenuAction) => {
+			setIsOptionsMenuOpen(false);
+			switch (item) {
+				case CollectionMenuAction.deleteCollection:
+					onClickDelete();
+					break;
 
-			case CollectionMenuAction.deleteContributor:
-				setIsOptionsMenuOpen(false);
-				setIsDeleteContributorModalOpen(true);
-				break;
+				case CollectionMenuAction.deleteContributor:
+					setIsOptionsMenuOpen(false);
+					setIsDeleteContributorModalOpen(true);
+					break;
 
-			case CollectionMenuAction.save:
-				if (!isSavingCollection) {
-					await onSaveCollection();
-				}
-				break;
+				case CollectionMenuAction.save:
+					if (!isSavingCollection) {
+						await onSaveCollection();
+					}
+					break;
 
-			case CollectionMenuAction.openPublishModal:
-				if (unsavedChanges && !collectionState?.initialCollection?.is_public) {
-					ToastService.info(
-						tHtml(
-							'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
-						)
+				case CollectionMenuAction.openPublishModal:
+					if (unsavedChanges && !collectionState?.initialCollection?.is_public) {
+						ToastService.info(
+							tHtml(
+								'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
+							)
+						);
+					} else {
+						setIsPublishModalOpen(!isPublishModalOpen);
+					}
+					break;
+
+				case CollectionMenuAction.redirectToDetail:
+					redirectToClientPage(
+						buildLink(
+							isCollection
+								? APP_PATH.COLLECTION_DETAIL.route
+								: APP_PATH.BUNDLE_DETAIL.route,
+							{
+								id: match.params.id,
+							}
+						),
+						history
 					);
-				} else {
-					setIsPublishModalOpen(!isPublishModalOpen);
-				}
-				break;
+					break;
 
-			case CollectionMenuAction.redirectToDetail:
-				redirectToClientPage(
-					buildLink(
-						isCollection
-							? APP_PATH.COLLECTION_DETAIL.route
-							: APP_PATH.BUNDLE_DETAIL.route,
-						{
-							id: match.params.id,
-						}
-					),
-					history
-				);
-				break;
+				case CollectionMenuAction.addItemById:
+					setEnterItemIdModalOpen(true);
+					break;
 
-			case CollectionMenuAction.addItemById:
-				setEnterItemIdModalOpen(true);
-				break;
+				case CollectionMenuAction.addAssignmentById:
+					setEnterAssignmentIdModalOpen(true);
+					break;
 
-			case CollectionMenuAction.addAssignmentById:
-				setEnterAssignmentIdModalOpen(true);
-				break;
+				case CollectionMenuAction.share:
+					setIsShareModalOpen(true);
+					break;
 
-			case CollectionMenuAction.share:
-				setIsShareModalOpen(true);
-				break;
-
-			default:
-				return null;
-		}
-	};
+				default:
+					return null;
+			}
+		},
+		[
+			isSavingCollection,
+			unsavedChanges,
+			collectionState?.initialCollection?.is_public,
+			tHtml,
+			isPublishModalOpen,
+			match.params.id,
+			history,
+		]
+	);
 
 	/**
 	 * https://meemoo.atlassian.net/browse/AVO-3370

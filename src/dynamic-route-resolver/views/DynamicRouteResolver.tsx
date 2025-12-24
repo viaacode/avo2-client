@@ -19,7 +19,6 @@ import { getPublishedDate } from '../../admin/content-page/helpers/get-published
 import { ItemsService } from '../../admin/items/items.service';
 import { withAdminCoreConfig } from '../../admin/shared/hoc/with-admin-core-config';
 import { UrlRedirectsService } from '../../admin/url-redirects/url-redirects.service';
-import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page';

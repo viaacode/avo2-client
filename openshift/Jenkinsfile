@@ -56,6 +56,12 @@ pipeline {
             - cat
             tty: true
             imagePullPolicy: Always
+          - name: playwright
+            image: mcr.microsoft.com/playwright:v1.44.0-focal
+            command:
+            - cat
+            tty: true
+            imagePullPolicy: Always
         """.stripIndent()
 		}
 	}
@@ -130,16 +136,30 @@ pipeline {
 					tagNewImage('int')
 				}
 			}
-			post {
-				always {
-				//	script {
-				//		env.BRANCH_NAME = env.CHANGE_BRANCH
-				//	}
-					catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-					    jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'int', environmentName: 'int', environmentType: 'testing'
-					}
-				}
-			}
+// 			these jira update calls always fail with error:
+//          [ATLASSIAN CLOUD PLUGIN] [WARN] FAILURE_DEPLOYMENTS_API_RESPONSE:
+//          Failed to send deployment information to Jira: meemoo.atlassian.net.
+//          {
+//              "timestamp":"2025-12-24T09:05:46.871+00:00",
+//              "path":"/x1/ZM_ZLxXDay3PNrZlt6sp7vFD1a0",
+//              "status":424,
+//              "error":"Failed Dependency",
+//              "requestId":"211b97ab-233118"
+//          }.
+//          Failed Dependency errors can be related to a network glitch.
+//          Please try again and if it continues to fail,
+//          please reach out to Atlassian support via https://support.atlassian.com/contact/
+
+// 			post {
+// 				always {
+// 				//	script {
+// 				//		env.BRANCH_NAME = env.CHANGE_BRANCH
+// 				//	}
+// 					catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+// 					    jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'int', environmentName: 'int', environmentType: 'testing'
+// 					}
+// 				}
+// 			}
 		}
 
 
@@ -177,40 +197,91 @@ pipeline {
 					branch 'develop'; branch 'development'
 				}
 			}
-			steps {
-				agent { label 'node' }
+// 			steps {
+// 				agent { label 'node' }
+//
+// 				script {
+// 					configFileProvider(
+// 						[configFile(fileId: 'end2end_env', variable: 'end2end_env')]) {
+// 								sh ('cat $end2end_env > .env')
+//
+// 						loadEnvironmentVariablesFromFile('.env')
+// 					}
+// 					sh 'echo ${TEST_ACM_DASHBOARD_USERNAME}'
+// 					docker.image('mcr.microsoft.com/playwright:v1.44.0-focal').inside('-e TEST_CLIENT_ENDPOINT=${TEST_CLIENT_ENDPOINT} -e TEST_PROXY_ENDPOINT=${TEST_PROXY_ENDPOINT}  -e TEST_OBJECT_DETAIL_PAGE_VRT=${TEST_OBJECT_DETAIL_PAGE_VRT} -e TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT=${TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT} -e TEST_VISITOR_ACCOUNT_USERNAME:${TEST_VISITOR_ACCOUNT_USERNAME} -e TEST_VISITOR_ACCOUNT_PASSWORD=${TEST_VISITOR_ACCOUNT_PASSWORD} -e TEST_CP_ADMIN_ACCOUNT_USERNAME=${TEST_CP_ADMIN_ACCOUNT_USERNAME} -e TEST_CP_ADMIN_ACCOUNT_PASSWORD=${TEST_CP_ADMIN_ACCOUNT_PASSWORD} -e TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME=${TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME} -e TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD=${TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD} -e TEST_ACM_DASHBOARD=${TEST_ACM_DASHBOARD} -e TEST_ACM_DASHBOARD_USERNAME=${TEST_ACM_DASHBOARD_USERNAME} -e TEST_ACM_DASHBOARD_PASSWORD=${TEST_ACM_DASHBOARD_PASSWORD}')
+//                     {
+//                         git branch: 'develop',
+//                             credentialsId: 'meemoo-ci',
+//                             url: 'https://github.com/viaacode/avo2-client.git'
+//                         catchError() {
+//                         sh '''
+//                         export NODE_ENV=dev
+//                         #npm set-script prepare ""
+//                         npm install --force
+//                         npm install junit-report-builder --save --force
+//                         npm install @playwright/test --force
+//                         npx playwright install
+//                         npx playwright install-deps
+//                         npx playwright install chrome
+//                         '''
+//                         sh "PLAYWRIGHT_JUNIT_OUTPUT_NAME=tests/e2e_test_results.xml npx playwright test --reporter=junit || echo failed "
+//                         junit 'tests/e2e_test_results.xml'
+//                         }
+//                     }
+// 				} //end script
+// 			}
 
-				script {
-					configFileProvider(
-						[configFile(fileId: 'end2end_env', variable: 'end2end_env')]) {
-								sh ('cat $end2end_env > .env')
+            options { skipDefaultCheckout(true) }
 
+            steps {
+                script {
+					configFileProvider([configFile(fileId: 'end2end_env', variable: 'end2end_env')]) {
+						sh ('cat $end2end_env > .env')
 						loadEnvironmentVariablesFromFile('.env')
 					}
-					sh 'echo ${TEST_ACM_DASHBOARD_USERNAME}'
-					docker.image('mcr.microsoft.com/playwright:v1.44.0-focal').inside('-e TEST_CLIENT_ENDPOINT=${TEST_CLIENT_ENDPOINT} -e TEST_PROXY_ENDPOINT=${TEST_PROXY_ENDPOINT}  -e TEST_OBJECT_DETAIL_PAGE_VRT=${TEST_OBJECT_DETAIL_PAGE_VRT} -e TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT=${TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT} -e TEST_VISITOR_ACCOUNT_USERNAME:${TEST_VISITOR_ACCOUNT_USERNAME} -e TEST_VISITOR_ACCOUNT_PASSWORD=${TEST_VISITOR_ACCOUNT_PASSWORD} -e TEST_CP_ADMIN_ACCOUNT_USERNAME=${TEST_CP_ADMIN_ACCOUNT_USERNAME} -e TEST_CP_ADMIN_ACCOUNT_PASSWORD=${TEST_CP_ADMIN_ACCOUNT_PASSWORD} -e TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME=${TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME} -e TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD=${TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD} -e TEST_ACM_DASHBOARD=${TEST_ACM_DASHBOARD} -e TEST_ACM_DASHBOARD_USERNAME=${TEST_ACM_DASHBOARD_USERNAME} -e TEST_ACM_DASHBOARD_PASSWORD=${TEST_ACM_DASHBOARD_PASSWORD}')
-						{
-							git branch: 'develop',
-								credentialsId: 'meemoo-ci',
-								url: 'https://github.com/viaacode/avo2-client.git'
-							catchError() {
-							sh '''
-							export NODE_ENV=dev
-							#npm set-script prepare ""
-							npm install --force
-							npm install junit-report-builder --save --force
-							npm install @playwright/test --force
-							npx playwright install
-							npx playwright install-deps
-							npx playwright install chrome
-							'''
-							sh "PLAYWRIGHT_JUNIT_OUTPUT_NAME=tests/e2e_test_results.xml npx playwright test --reporter=junit || echo failed "
-							junit 'tests/e2e_test_results.xml'
-							}
-						}
-				} //end script
-				}
-	}
+                }
+
+
+                container('jnlp') {
+                    git branch: 'develop',
+                        credentialsId: 'meemoo-ci',
+                        url: 'https://github.com/viaacode/avo2-client.git'
+                }
+
+                container('playwright') {
+                    withEnv([
+                      "TEST_CLIENT_ENDPOINT=${env.TEST_CLIENT_ENDPOINT}",
+                      "TEST_PROXY_ENDPOINT=${env.TEST_PROXY_ENDPOINT}",
+                      "TEST_OBJECT_DETAIL_PAGE_VRT=${env.TEST_OBJECT_DETAIL_PAGE_VRT}",
+                      "TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT=${env.TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT}",
+                      "TEST_VISITOR_ACCOUNT_USERNAME=${env.TEST_VISITOR_ACCOUNT_USERNAME}",
+                      "TEST_VISITOR_ACCOUNT_PASSWORD=${env.TEST_VISITOR_ACCOUNT_PASSWORD}",
+                      "TEST_CP_ADMIN_ACCOUNT_USERNAME=${env.TEST_CP_ADMIN_ACCOUNT_USERNAME}",
+                      "TEST_CP_ADMIN_ACCOUNT_PASSWORD=${env.TEST_CP_ADMIN_ACCOUNT_PASSWORD}",
+                      "TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME=${env.TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME}",
+                      "TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD=${env.TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD}",
+                      "TEST_ACM_DASHBOARD=${env.TEST_ACM_DASHBOARD}",
+                      "TEST_ACM_DASHBOARD_USERNAME=${env.TEST_ACM_DASHBOARD_USERNAME}",
+                      "TEST_ACM_DASHBOARD_PASSWORD=${env.TEST_ACM_DASHBOARD_PASSWORD}",
+                    ]) {
+                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                            sh '''
+                                export NODE_ENV=dev
+                                npm install --force
+                                npm install junit-report-builder --save --force
+                                npm install @playwright/test --force
+                                npx playwright install
+                                npx playwright install-deps
+                                npx playwright install chrome
+                            '''
+                            sh 'PLAYWRIGHT_JUNIT_OUTPUT_NAME=tests/e2e_test_results.xml npx playwright test --reporter=junit || echo failed'
+                        }
+                    }
+                }
+
+                junit 'tests/e2e_test_results.xml'
+            }
+	    }
 		stage('Deploy TST') {
 			when {
 				anyOf { branch 'develop'; branch 'development' }
@@ -226,13 +297,13 @@ pipeline {
 				}
 				}
 			}
-			post {
-				always {
-					catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-				        jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'tst', environmentName: 'tst', environmentType: 'staging'
-				    }
-				}
-			}
+// 			post {
+// 				always {
+// 					catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+// 				        jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'tst', environmentName: 'tst', environmentType: 'staging'
+// 				    }
+// 				}
+// 			}
 		}
 		stage('Deploy QAS') {
 			when {
@@ -243,32 +314,31 @@ pipeline {
 					tagNewImage('qas')
 				}
 			}
-			post {
-				always {
-					catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-					    jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'qas', environmentName: 'qas', environmentType: 'staging'
-					}
-				}
-			}
+// 			post {
+// 				always {
+// 					catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+// 					    jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'qas', environmentName: 'qas', environmentType: 'staging'
+// 					}
+// 				}
+// 			}
 		}
 		stage('Deploy PRD') {
 			when {
 				buildingTag()
 			}
 			steps {
-								container('oc') {
+				container('oc') {
 				script {
-									// Prompt user for input with a timeout
-								def userInput = input(
-										id: 'userApproval',
-										message: 'Click "Proceed" to start the stage',
-										parameters: [
-												[$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Proceed with the stage?', name: 'Proceed']
-										]
-									)
-									tagNewImage('prd')
-								}
-
+                    // Prompt user for input with a timeout
+                    def userInput = input(
+                            id: 'userApproval',
+                            message: 'Click "Proceed" to start the stage',
+                            parameters: [
+                                    [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Proceed with the stage?', name: 'Proceed']
+                            ]
+                        )
+                        tagNewImage('prd')
+                    }
 				}
 			}
 			post {
@@ -278,9 +348,9 @@ pipeline {
 						echo getAllCommitsBetweenTags(previous_tag, env.TAG_NAME)
 					}
 
-					catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-					    jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'prd', environmentName: 'prd', environmentType: 'production'
-					}
+// 					catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+// 					    jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'prd', environmentName: 'prd', environmentType: 'production'
+// 					}
 				}
 			}
 		}
@@ -301,7 +371,7 @@ pipeline {
 			}
 		}
 		always {
-			jiraSendBuildInfo site: "${JIRA_URL}"
+// 			jiraSendBuildInfo site: "${JIRA_URL}"
 			container('default') {
 				// Archive tets results
 				script {
