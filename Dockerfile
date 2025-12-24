@@ -1,6 +1,6 @@
 FROM nginxinc/nginx-unprivileged
 USER nginx
-FROM node:24-alpine AS compile
+FROM docker.io/library/node:24-alpine AS compile
 # set our node environment, defaults to production
 ARG NODE_ENV=ci
 ARG PRODUCTION=$PRODUCTION
@@ -18,7 +18,7 @@ USER node
 RUN npm ci --include=dev --legacy-peer-deps
 
 ## Builder image
-FROM node:24-alpine AS build
+FROM docker.io/library/node:24-alpine AS build
 USER node
 COPY --from=compile /app /app
 # set our node environment, defaults to production
