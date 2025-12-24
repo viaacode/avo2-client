@@ -1018,13 +1018,11 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
     );
   };
 
-  // TODO: DISABLED FEATURE
-  // const onPreviewCollection = () => {};
-
   const executeAction = useCallback(
     async (item: CollectionMenuAction) => {
       setIsOptionsMenuOpen(false);
       switch (item) {
+
         case CollectionMenuAction.deleteCollection:
           onClickDelete();
           break;
@@ -1032,6 +1030,17 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         case CollectionMenuAction.deleteContributor:
           setIsOptionsMenuOpen(false);
           setIsDeleteContributorModalOpen(true);
+          break;
+
+        case CollectionMenuAction.deleteContributor:
+          setIsOptionsMenuOpen(false);
+          setIsDeleteContributorModalOpen(true);
+          break;
+
+        case CollectionMenuAction.save:
+          if (!isSavingCollection) {
+            await onSaveCollection();
+          }
           break;
 
         case CollectionMenuAction.save:
@@ -1053,6 +1062,25 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
           } else {
             setIsPublishModalOpen(!isPublishModalOpen);
           }
+          break;
+
+        case CollectionMenuAction.openPublishModal:
+          if (
+            unsavedChanges &&
+            !collectionState?.initialCollection?.is_public
+          ) {
+            ToastService.info(
+              tHtml(
+                'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan',
+              ),
+            );
+          } else {
+            setIsPublishModalOpen(!isPublishModalOpen);
+          }
+          break;
+
+        case CollectionMenuAction.addItemById:
+          setEnterItemIdModalOpen(true);
           break;
 
         case CollectionMenuAction.redirectToDetail:
@@ -1077,6 +1105,30 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
           setEnterAssignmentIdModalOpen(true);
           break;
 
+        case CollectionMenuAction.addItemById:
+          setEnterItemIdModalOpen(true);
+          break;
+
+        case CollectionMenuAction.addAssignmentById:
+          setEnterAssignmentIdModalOpen(true);
+          break;
+
+        case CollectionMenuAction.share:
+          setIsShareModalOpen(true);
+          break;
+
+        case CollectionMenuAction.addAssignmentById:
+          setEnterAssignmentIdModalOpen(true);
+          break;
+
+        case CollectionMenuAction.share:
+          setIsShareModalOpen(true);
+          break;
+
+        default:
+          return null;
+      }
+
         case CollectionMenuAction.share:
           setIsShareModalOpen(true);
           break;
@@ -1094,8 +1146,22 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
       navigateFunc,
       onSaveCollection,
       unsavedChanges,
+      tHtml,
     ],
   );
+
+  /**
+   * https://meemoo.atlassian.net/browse/AVO-3370
+   * Delay the save action by 100ms to ensure the  fragment properties are saved
+   * We cannot update the fragment states live in the parent component, because that would also rerender the video players
+   * and that would cause the video players to lose their current time setting
+   */
+  useEffect(() => {
+    if (shouldDelaySave) {
+      executeAction(CollectionMenuAction.save);
+      setShouldDelaySave(false);
+    }
+  }, [collectionState.currentCollection?.collection_fragments, executeAction, shouldDelaySave]);
 
   /**
    * https://meemoo.atlassian.net/browse/AVO-3370

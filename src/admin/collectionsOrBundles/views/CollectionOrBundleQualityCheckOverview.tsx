@@ -37,7 +37,6 @@ import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEdu
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import { ToastService } from '../../../shared/services/toast-service';
-import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
@@ -182,15 +181,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
     location.pathname ===
     COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_QUALITYCHECK_OVERVIEW;
 
-  // methods
-  const getColumnDataType = useCallback(() => {
-    const column = tableColumns.find(
-      (tableColumn: FilterableColumn) =>
-        tableColumn.id === tableState.sort_column,
-    );
-    return (column?.dataType ||
-      TableColumnDataType.string) as TableColumnDataType;
-  }, [tableColumns, tableState.sort_column]);
+	// methods
 
   const fetchCollectionsOrBundles = useCallback(async () => {
     setIsLoading(true);
@@ -233,8 +224,8 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
       });
     }
 
-    setIsLoading(false);
-  }, [tableState, getColumnDataType, isCollection]);
+		setIsLoading(false);
+	}, [tableState, tText, tableState.sort_column, tableState.sort_order]);
 
   useEffect(() => {
     if (commonUser && educationLevelsAndDegrees?.length) {
