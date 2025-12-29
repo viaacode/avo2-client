@@ -1,24 +1,14 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import {
-  Alert,
-  Button,
-  Column,
-  Container,
-  Form,
-  FormGroup,
-  Grid,
-  IconName,
-  Spacer,
-} from '@viaa/avo2-components';
+import { Alert, Button, Column, Container, Form, FormGroup, Grid, IconName, Spacer, } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
 import { type FC } from 'react';
-import { Helmet } from 'react-helmet';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { redirectToExternalPage } from '../../authentication/helpers/redirects/redirect-to-external-page';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { Users_Idps_Enum } from '../../shared/generated/graphql-db-types';
 import { getEnv } from '../../shared/helpers/env';
 import { formatDate } from '../../shared/helpers/formatters/date';
@@ -54,21 +44,16 @@ export const Account: FC = () => {
   }
   return (
     <>
-      <Helmet>
-        <title>
-          {GENERATE_SITE_TITLE(
-            tText(
-              'settings/components/account___account-instellingen-pagina-titel',
-            ),
-          )}
-        </title>
-        <meta
-          name="description"
-          content={tText(
-            'settings/components/account___account-pagina-beschrijving',
-          )}
-        />
-      </Helmet>
+      <SeoMetadata
+        title={GENERATE_SITE_TITLE(
+          tText(
+            'settings/components/account___account-instellingen-pagina-titel',
+          ),
+        )}
+        description={tText(
+          'settings/components/account___account-pagina-beschrijving',
+        )}
+      />
       <Container mode="vertical">
         <Spacer margin="bottom">
           <Grid>

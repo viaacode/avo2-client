@@ -1,20 +1,7 @@
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalFooterRight,
-} from '@viaa/avo2-components';
+import { Button, Modal, ModalBody, ModalFooterRight, } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { flatten, groupBy, isNil } from 'es-toolkit';
-import {
-  type FC,
-  lazy,
-  type ReactNode,
-  Suspense,
-  useCallback,
-  useState,
-} from 'react';
-import { Helmet } from 'react-helmet';
+import { type FC, lazy, type ReactNode, Suspense, useCallback, useState, } from 'react';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -23,18 +10,13 @@ import { CustomError } from '../../../shared/helpers/custom-error';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import {
-  AdminLayoutBody,
-  AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { fetchTranslations, updateTranslations } from '../translations.service';
-import {
-  type Translation,
-  type TranslationsState,
-} from '../translations.types';
+import { type Translation, type TranslationsState, } from '../translations.types';
 
 import './TranslationsOverviewPage.scss';
 import { map } from 'es-toolkit/compat';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tText } from '../../../shared/helpers/translate-text';
 
 const TranslationsOverview = lazy(() =>
@@ -229,21 +211,16 @@ export const TranslationsOverviewPage: FC = () => {
           <Button label="Opslaan" onClick={onSaveTranslations} />
         </AdminLayoutTopBarRight>
         <AdminLayoutBody>
-          <Helmet>
-            <title>
-              {GENERATE_SITE_TITLE(
-                tText(
-                  'admin/translations/views/translations-overview___vertalingen-beheer-pagina-titel',
-                ),
-              )}
-            </title>
-            <meta
-              name="description"
-              content={tText(
-                'admin/translations/views/translations-overview___vertalingen-beheer-pagina-beschrijving',
-              )}
-            />
-          </Helmet>
+          <SeoMetadata
+            title={GENERATE_SITE_TITLE(
+              tText(
+                'admin/translations/views/translations-overview___vertalingen-beheer-pagina-titel',
+              ),
+            )}
+            description={tText(
+              'admin/translations/views/translations-overview___vertalingen-beheer-pagina-beschrijving',
+            )}
+          />
           <Suspense
             fallback={
               <FullPageSpinner locationId="translations-overview-page--loading" />

@@ -1,8 +1,4 @@
-import {
-  type MiddlewareFunction,
-  type RouteObject,
-  redirect,
-} from 'react-router';
+import { type MiddlewareFunction, redirect, type RouteObject, } from 'react-router';
 import App from './App.tsx';
 import AppClientLayout from './AppClientLayout.tsx';
 import { Admin } from './admin/Admin.tsx';
@@ -74,11 +70,7 @@ import { LoggedOutHome } from './home/views/LoggedOutHome.tsx';
 import { ItemDetail } from './item/views/ItemDetail.tsx';
 import { ItemDetailRoute } from './item/views/ItemDetailRoute.tsx';
 import { QuickLaneDetail } from './quick-lane/views/QuickLaneDetail.tsx';
-import {
-  fetchCollectionLoader,
-  initAppLoader,
-  loadLoggedOutHomeContentPage,
-} from './routes.loaders.ts';
+import { fetchAssignmentLoader, fetchCollectionLoader, initAppLoader, loadLoggedOutHomeContentPage, } from './routes.loaders.ts';
 import { Search } from './search/views/Search.tsx';
 import { CompleteProfileStep } from './settings/components/CompleteProfileStep.tsx';
 import { Email } from './settings/components/Email/Email.tsx';
@@ -261,23 +253,23 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
 function getAuthenticatedClientRoutes(): RouteObject[] {
   return [
     {
+      id: 'LoggedInHome',
       path: APP_PATH.LOGGED_IN_HOME.route,
       Component: LoggedInHome,
-      id: 'LoggedInHome',
       ErrorBoundary: () => ErrorBoundary('LoggedInHome--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'Search',
       path: APP_PATH.SEARCH.route,
       Component: Search,
-      id: 'Search',
       ErrorBoundary: () => ErrorBoundary('Search--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'ItemDetailRoute',
       path: APP_PATH.ITEM_DETAIL.route,
       Component: ItemDetailRoute,
-      id: 'ItemDetailRoute',
       ErrorBoundary: () => ErrorBoundary('ItemDetailRoute--route'),
       hasErrorBoundary: true,
     },
@@ -297,181 +289,186 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
       hasErrorBoundary: true,
     },
     {
+      id: 'CollectionEdit',
       path: APP_PATH.COLLECTION_EDIT.route,
       Component: CollectionEdit,
-      id: 'CollectionEdit',
       ErrorBoundary: () => ErrorBoundary('CollectionEdit--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'BundleDetail',
       path: APP_PATH.BUNDLE_DETAIL.route,
       Component: BundleDetail,
-      id: 'BundleDetail',
+      loader: fetchCollectionLoader,
       ErrorBoundary: () => ErrorBoundary('BundleDetail--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'BundleEdit-tab',
       path: APP_PATH.BUNDLE_EDIT_TAB.route,
       Component: BundleEdit,
-      id: 'BundleEdit-tab',
       ErrorBoundary: () => ErrorBoundary('BundleEdit-tab--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'BundleEdit',
       path: APP_PATH.BUNDLE_EDIT.route,
       Component: BundleEdit,
-      id: 'BundleEdit',
       ErrorBoundary: () => ErrorBoundary('BundleEdit--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'AssignmentEdit-create',
       path: APP_PATH.ASSIGNMENT_CREATE.route,
       Component: AssignmentEdit,
-      id: 'AssignmentEdit-create',
       ErrorBoundary: () => ErrorBoundary('AssignmentEdit-create--route'),
       hasErrorBoundary: true,
     },
     {
-      path: APP_PATH.ASSIGNMENT_DETAIL.route,
-      Component: AssignmentDetailSwitcher,
       id: 'AssignmentDetailSwitcher',
+      path: APP_PATH.ASSIGNMENT_DETAIL.route,
+      // Switches between the pupil and teacher view of an assignment
+      // Pupil can view the assignment and build a pupil collection response for the assignment
+      // Teacher can view the assignment details and manage responses and edit the assignment through an edit button
+      Component: AssignmentDetailSwitcher,
+      loader: fetchAssignmentLoader,
       ErrorBoundary: () => ErrorBoundary('AssignmentDetailSwitcher--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'AssignmentEdit-edit-tab',
       path: APP_PATH.ASSIGNMENT_EDIT_TAB.route,
       Component: AssignmentEdit,
-      id: 'AssignmentEdit-edit-tab',
       ErrorBoundary: () => ErrorBoundary('AssignmentEdit-edit-tab--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'AssignmentEdit-edit',
       path: APP_PATH.ASSIGNMENT_EDIT.route,
       Component: AssignmentEdit,
-      id: 'AssignmentEdit-edit',
       ErrorBoundary: () => ErrorBoundary('AssignmentEdit-edit--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'AssignmentDetailSwitcher-create',
       path: APP_PATH.ASSIGNMENT_RESPONSE_CREATE.route,
       Component: AssignmentDetailSwitcher,
-      id: 'AssignmentDetailSwitcher-create',
       ErrorBoundary: () =>
         ErrorBoundary('AssignmentDetailSwitcher-create--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'AssignmentDetailSwitcher-edit',
       path: APP_PATH.ASSIGNMENT_RESPONSE_EDIT.route,
       Component: AssignmentDetailSwitcher,
-      id: 'AssignmentDetailSwitcher-edit',
       ErrorBoundary: () =>
         ErrorBoundary('AssignmentDetailSwitcher-edit--route'),
       hasErrorBoundary: true,
     },
     // view pupil collection response as teacher/ad{min
     {
+      id: 'AssignmentPupilCollectionDetail',
       path: APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route,
       Component: AssignmentPupilCollectionDetail,
-      id: 'AssignmentPupilCollectionDetail',
       ErrorBoundary: () =>
         ErrorBoundary('AssignmentPupilCollectionDetail--route'),
       hasErrorBoundary: true,
     },
     // edit pupil collection response as admin
     {
+      id: 'AssignmentResponseAdminEdit',
       path: APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route,
       Component: AssignmentResponseAdminEdit,
-      id: 'AssignmentResponseAdminEdit',
       ErrorBoundary: () => ErrorBoundary('AssignmentResponseAdminEdit--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'Workspace-tab',
       path: APP_PATH.WORKSPACE_TAB.route,
       Component: Workspace,
-      id: 'Workspace-tab',
       ErrorBoundary: () => ErrorBoundary('Workspace-tab--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'Workspace',
       path: APP_PATH.WORKSPACE.route,
       Component: Workspace,
-      id: 'Workspace',
       ErrorBoundary: () => ErrorBoundary('Workspace--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'WorkspaceAssignmentRedirect',
       path: `${APP_PATH.WORKSPACE.route}${APP_PATH.ASSIGNMENT_DETAIL.route}`,
       loader: (props) =>
         redirect(
           `/${ROUTE_PARTS.assignments}/${props.params?.assignmentId}${location.search}`,
         ),
       Component: FullPageSpinnerPage,
-      id: 'WorkspaceAssignmentRedirect',
       ErrorBoundary: () => ErrorBoundary('WorkspaceAssignmentRedirect--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'Settings-tab',
       path: APP_PATH.SETTINGS_TAB.route,
       Component: Settings,
-      id: 'Settings-tab',
       ErrorBoundary: () => ErrorBoundary('Settings-tab--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'Settings',
       path: APP_PATH.SETTINGS.route,
       Component: Settings,
-      id: 'Settings',
       ErrorBoundary: () => ErrorBoundary('Settings--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'Profile',
       path: APP_PATH.COMPLETE_PROFILE.route,
       Component: Profile,
-      id: 'Profile',
       ErrorBoundary: () => ErrorBoundary('Profile--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'UserItemRequestForm',
       path: APP_PATH.USER_ITEM_REQUEST_FORM.route,
       Component: UserItemRequestForm,
-      id: 'UserItemRequestForm',
       ErrorBoundary: () => ErrorBoundary('UserItemRequestForm--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'UserItemRequestFormConfirm',
       path: APP_PATH.USER_ITEM_REQUEST_FORM_CONFIRM.route,
       Component: UserItemRequestFormConfirm,
-      id: 'UserItemRequestFormConfirm',
       ErrorBoundary: () => ErrorBoundary('UserItemRequestFormConfirm--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'EducationalAuthorItemRequestForm',
       path: APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM.route,
       Component: EducationalAuthorItemRequestForm,
-      id: 'EducationalAuthorItemRequestForm',
       ErrorBoundary: () =>
         ErrorBoundary('EducationalAuthorItemRequestForm--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'EducationalAuthorItemRequestFormConfirm',
       path: APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM_CONFIRM.route,
       Component: EducationalAuthorItemRequestFormConfirm,
-      id: 'EducationalAuthorItemRequestFormConfirm',
       ErrorBoundary: () =>
         ErrorBoundary('EducationalAuthorItemRequestFormConfirm--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'QuickLaneDetail',
       path: APP_PATH.QUICK_LANE.route,
       Component: QuickLaneDetail,
-      id: 'QuickLaneDetail',
       ErrorBoundary: () => ErrorBoundary('QuickLaneDetail--route'),
       hasErrorBoundary: true,
     },
     {
+      id: 'EmbedCodeDetail',
       path: APP_PATH.EMBED.route,
       Component: EmbedCodeDetail,
-      id: 'EmbedCodeDetail',
       ErrorBoundary: () => ErrorBoundary('EmbedCodeDetail--route'),
       hasErrorBoundary: true,
     },

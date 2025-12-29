@@ -4,18 +4,15 @@ import { useQueryClient } from '@tanstack/react-query';
 import { IconName } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
 import { type FC, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
 import { useLoaderData, useNavigate, useSearchParams } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { useGetContentPageByPath } from '../../admin/content-page/hooks/use-get-content-page-by-path';
-import {
-  commonUserAtom,
-  loginAtom,
-} from '../../authentication/authentication.store';
+import { commonUserAtom, loginAtom, } from '../../authentication/authentication.store';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { QUERY_KEYS } from '../../shared/constants/query-keys.ts';
 import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
 import { tText } from '../../shared/helpers/translate-text';
@@ -68,19 +65,14 @@ export const LoggedOutHome: FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>
-          {GENERATE_SITE_TITLE(
-            tText('home/views/logged-out-home___uitgelogde-start-pagina-titel'),
-          )}
-        </title>
-        <meta
-          name="description"
-          content={tText(
-            'home/views/logged-out-home___uitgelogde-start-pagina-beschrijving',
-          )}
-        />
-      </Helmet>
+      <SeoMetadata
+        title={GENERATE_SITE_TITLE(
+          tText('home/views/logged-out-home___uitgelogde-start-pagina-titel'),
+        )}
+        description={tText(
+          'home/views/logged-out-home___uitgelogde-start-pagina-beschrijving',
+        )}
+      />
       {contentPageInfo && (
         <>
           <InteractiveTour showButton={false} />

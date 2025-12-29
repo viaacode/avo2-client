@@ -31,7 +31,6 @@ import { isAfter, isPast } from 'date-fns';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { matchPath, Navigate, useNavigate, useParams } from 'react-router';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -45,30 +44,21 @@ import {
 } from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
-import {
-  ErrorView,
-  type ErrorViewQueryParams,
-} from '../../error/views/ErrorView';
+import { ErrorView, type ErrorViewQueryParams, } from '../../error/views/ErrorView';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { BlockList } from '../../shared/components/BlockList/BlockList';
 import { EmptyStateMessage } from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import { InActivityWarningModal } from '../../shared/components/InActivityWarningModal/InActivityWarningModal';
-import {
-  ListSorterColor,
-  ListSorterPosition,
-  ListSorterSlice,
-} from '../../shared/components/ListSorter/ListSorter';
+import { ListSorterColor, ListSorterPosition, ListSorterSlice, } from '../../shared/components/ListSorter/ListSorter';
 import { SelectEducationLevelModal } from '../../shared/components/SelectEducationLevelModal/SelectEducationLevelModal';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { buildLink } from '../../shared/helpers/build-link';
-import {
-  getContributorType,
-  transformContributorsToSimpleContributors,
-} from '../../shared/helpers/contributors';
+import { getContributorType, transformContributorsToSimpleContributors, } from '../../shared/helpers/contributors';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { navigate } from '../../shared/helpers/link';
 import { type EducationLevelId } from '../../shared/helpers/lom';
@@ -110,11 +100,7 @@ import { AssignmentPupilPreview } from '../components/AssignmentPupilPreview';
 import { AssignmentTeacherTabs } from '../components/AssignmentTeacherTabs';
 import { AssignmentTitle } from '../components/AssignmentTitle';
 import { endOfAcademicYear } from '../helpers/academic-year';
-import {
-  onAddNewContributor,
-  onDeleteContributor,
-  onEditContributor,
-} from '../helpers/assignment-share-with-collegue-handlers';
+import { onAddNewContributor, onDeleteContributor, onEditContributor, } from '../helpers/assignment-share-with-collegue-handlers';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
 import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
@@ -126,7 +112,6 @@ import { type AssignmentFields } from '../hooks/assignment-form';
 import { useEditBlocks } from '../hooks/use-edit-blocks';
 import { useEducationLevelModal } from '../hooks/use-education-level-modal';
 import { PublishAssignmentModal } from '../modals/PublishAssignmentModal';
-
 import { AssignmentEditMarcom } from './AssignmentEditMarcom';
 import { AssignmentResponses } from './AssignmentResponses';
 
@@ -1342,9 +1327,9 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
 
   return (
     <>
-      <Helmet>
-        <title>
-          {isCreatingAssignment
+      <SeoMetadata
+        title={
+          isCreatingAssignment
             ? GENERATE_SITE_TITLE(
                 tText(
                   'assignment/views/assignment-create___maak-opdracht-pagina-titel',
@@ -1354,22 +1339,18 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
                 tText(
                   'assignment/views/assignment-edit___bewerk-opdracht-pagina-titel',
                 ),
-              )}
-        </title>
-
-        <meta
-          name="description"
-          content={
-            isCreatingAssignment
-              ? tText(
-                  'assignment/views/assignment-create___maak-opdracht-pagina-beschrijving',
-                )
-              : tText(
-                  'assignment/views/assignment-edit___bewerk-opdracht-pagina-beschrijving',
-                )
-          }
-        />
-      </Helmet>
+              )
+        }
+        description={
+          isCreatingAssignment
+            ? tText(
+                'assignment/views/assignment-create___maak-opdracht-pagina-beschrijving',
+              )
+            : tText(
+                'assignment/views/assignment-edit___bewerk-opdracht-pagina-beschrijving',
+              )
+        }
+      />
 
       {renderPageContent()}
 

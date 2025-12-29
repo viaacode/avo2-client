@@ -3,7 +3,6 @@ import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { isEqual, isNil } from 'es-toolkit';
 import { type FC, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -13,6 +12,7 @@ import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { formatDate } from '../../../shared/helpers/formatters/date';
 import { navigate } from '../../../shared/helpers/link';
@@ -22,27 +22,13 @@ import { tText } from '../../../shared/helpers/translate-text';
 import { useDebounce } from '../../../shared/hooks/useDebounce';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import {
-  AdminLayoutBody,
-  AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import {
-  PROXY_PATH_SHORTCUT,
-  replaceProxyUrlTemplateWithUrl,
-} from '../helpers/replace-proxy-url-template-with-url';
+import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { PROXY_PATH_SHORTCUT, replaceProxyUrlTemplateWithUrl, } from '../helpers/replace-proxy-url-template-with-url';
 import { useDeleteUrlRedirect } from '../hooks/useDeleteUrlRedirect';
 import { useGetUrlRedirects } from '../hooks/useGetUrlRedirects';
-import {
-  GET_URL_REDIRECT_OVERVIEW_TABLE_COLS,
-  ITEMS_PER_PAGE,
-  URL_REDIRECT_PATTERN_OPTIONS,
-} from '../url-redirects.const';
+import { GET_URL_REDIRECT_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE, URL_REDIRECT_PATTERN_OPTIONS, } from '../url-redirects.const';
 import { URL_REDIRECT_PATH } from '../url-redirects.routes.ts';
-import {
-  type UrlRedirect,
-  type UrlRedirectOverviewFilterState,
-  type UrlRedirectOverviewTableCols,
-} from '../url-redirects.types';
+import { type UrlRedirect, type UrlRedirectOverviewFilterState, type UrlRedirectOverviewTableCols, } from '../url-redirects.types';
 
 export const UrlRedirectOverview: FC = () => {
   const navigateFunc = useNavigate();
@@ -284,21 +270,16 @@ export const UrlRedirectOverview: FC = () => {
           />
         </AdminLayoutTopBarRight>
         <AdminLayoutBody>
-          <Helmet>
-            <title>
-              {GENERATE_SITE_TITLE(
-                tText(
-                  'admin/url-redirects/views/url-redirect-overview___url-redirect-beheer-overview-pagina-titel',
-                ),
-              )}
-            </title>
-            <meta
-              name="description"
-              content={tText(
-                'admin/url-redirects/views/url-redirect-overview___url-redirect-beheer-overview-pagina-beschrijving',
-              )}
-            />
-          </Helmet>
+          <SeoMetadata
+            title={GENERATE_SITE_TITLE(
+              tText(
+                'admin/url-redirects/views/url-redirect-overview___url-redirect-beheer-overview-pagina-titel',
+              ),
+            )}
+            description={tText(
+              'admin/url-redirects/views/url-redirect-overview___url-redirect-beheer-overview-pagina-beschrijving',
+            )}
+          />
           {renderRedirectsPageBody()}
         </AdminLayoutBody>
       </AdminLayout>

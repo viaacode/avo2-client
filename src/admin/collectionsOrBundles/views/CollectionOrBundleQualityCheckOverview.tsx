@@ -1,9 +1,8 @@
 import { ExportAllToCsvModal, FilterTable, getFilters, } from '@meemoo/admin-core-ui/admin';
-import { AvoCollectionCollection, AvoSearchOrderDirection, PermissionName } from '@viaa/avo2-types';
+import { AvoCollectionCollection, AvoSearchOrderDirection, PermissionName, } from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactNode, useCallback, useEffect, useMemo, useState, } from 'react';
-import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
@@ -16,6 +15,7 @@ import {
     LoadingErrorLoadedComponent,
     type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { tHtml } from '../../../shared/helpers/translate-html';
@@ -441,31 +441,26 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
         size="full-width"
       >
         <AdminLayoutBody>
-          <Helmet>
-            <title>
-              {GENERATE_SITE_TITLE(
-                isCollection
-                  ? tText(
-                      'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collectie-kwaliteitscontrole-beheer-overview-pagina-titel',
-                    )
-                  : tText(
-                      'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundel-kwaliteitscontrole-beheer-overview-pagina-titel',
-                    ),
-              )}
-            </title>
-            <meta
-              name="description"
-              content={
-                isCollection
-                  ? tText(
-                      'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collectie-kwaliteitscontrole-beheer-overview-pagina-beschrijving',
-                    )
-                  : tText(
-                      'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundel-kwaliteitscontrole-beheer-overview-pagina-beschrijving',
-                    )
-              }
-            />
-          </Helmet>
+          <SeoMetadata
+            title={GENERATE_SITE_TITLE(
+              isCollection
+                ? tText(
+                    'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collectie-kwaliteitscontrole-beheer-overview-pagina-titel',
+                  )
+                : tText(
+                    'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundel-kwaliteitscontrole-beheer-overview-pagina-titel',
+                  ),
+            )}
+            description={
+              isCollection
+                ? tText(
+                    'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collectie-kwaliteitscontrole-beheer-overview-pagina-beschrijving',
+                  )
+                : tText(
+                    'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundel-kwaliteitscontrole-beheer-overview-pagina-beschrijving',
+                  )
+            }
+          />
           <LoadingErrorLoadedComponent
             loadingInfo={loadingInfo}
             dataObject={collections}

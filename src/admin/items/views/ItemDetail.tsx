@@ -1,5 +1,5 @@
 import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
-import { SanitizePreset, sanitizeHtml } from '@meemoo/admin-core-ui/client';
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client';
 import { type RichEditorState } from '@meemoo/react-components';
 import {
   Button,
@@ -17,14 +17,9 @@ import {
   Toolbar,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import {
-  AvoFileUploadAssetType,
-  AvoSearchOrderDirection,
-  PermissionName,
-} from '@viaa/avo2-types';
+import { AvoFileUploadAssetType, AvoSearchOrderDirection, PermissionName, } from '@viaa/avo2-types';
 import { compact, noop } from 'es-toolkit';
 import { type FC, type ReactNode, useCallback, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -38,19 +33,14 @@ import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmMod
 import { QuickLaneFilterTableCell } from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import {
-  formatDate,
-  formatTimestamp,
-} from '../../../shared/helpers/formatters/date';
+import { formatDate, formatTimestamp, } from '../../../shared/helpers/formatters/date';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
-import {
-  StringParam,
-  useQueryParams,
-} from '../../../shared/helpers/routing/use-query-params-ssr';
+import { StringParam, useQueryParams, } from '../../../shared/helpers/routing/use-query-params-ssr';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
@@ -59,17 +49,9 @@ import { useTabs } from '../../../shared/hooks/useTabs';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
-import {
-  renderDateDetailRows,
-  renderDetailRow,
-  renderSimpleDetailRows,
-} from '../../shared/helpers/render-detail-fields';
+import { renderDateDetailRows, renderDetailRow, renderSimpleDetailRows, } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import {
-  AdminLayoutBody,
-  AdminLayoutHeader,
-  AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { AdminLayoutBody, AdminLayoutHeader, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { DepublishItemModal } from '../components/DepublishItemModal/DepublishItemModal';
 import { mapItemUsedByToQuickLane } from '../helpers/map-item-used-by-to-quick-lane';
 import { useGetItemUsedBy } from '../hooks/useGetItemUsedBy';
@@ -748,17 +730,15 @@ export const ItemDetail: FC = () => {
   return (
     <>
       <PermissionGuard permissions={[PermissionName.VIEW_ITEMS_OVERVIEW]}>
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              item?.title,
-              tText(
-                'admin/items/views/item-detail___item-beheer-detail-pagina-titel',
-              ),
-            )}
-          </title>
-          <meta name="description" content={item?.description || ''} />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            item?.title,
+            tText(
+              'admin/items/views/item-detail___item-beheer-detail-pagina-titel',
+            ),
+          )}
+          description={item?.description || ''}
+        />
         {renderItemDetailPage()}
       </PermissionGuard>
     </>

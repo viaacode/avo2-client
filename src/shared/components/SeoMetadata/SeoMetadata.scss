@@ -1,0 +1,15 @@
+@use "../../../styles/settings/colors" as colors;
+
+.c-alert-bar {
+	background-color: colors.$color-yellow;
+	color: #fff;
+
+	.c-button__icon svg,
+	.c-button__label {
+		color: #fff;
+	}
+
+	.c-toolbar {
+		min-height: 40px;
+	}
+}

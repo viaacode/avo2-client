@@ -6,11 +6,7 @@ import { fileURLToPath } from 'node:url';
 import * as React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Helmet } from 'react-helmet';
-import {
-  createStaticHandler,
-  createStaticRouter,
-  StaticRouterProvider,
-} from 'react-router';
+import { createStaticHandler, createStaticRouter, StaticRouterProvider, } from 'react-router';
 import APP_ROUTES from './routes.ts';
 
 let { query, dataRoutes } = createStaticHandler(APP_ROUTES);
@@ -64,12 +60,11 @@ export async function render(request: Request) {
     );
 
     // Render title and meta tags from the Helmet component during server side rendering
+    const title = helmet?.title.toString();
+    const metaTags = helmet?.meta.toString().replace(/<meta/g, '\n\t<meta');
     mergedHtml = mergedHtml.replace(
       '<!-- HELMET_TAGS_REPLACEMENT_MARKER -->',
-      `    
-        ${helmet?.title.toString()}
-        ${helmet?.meta.toString()}
-      `,
+      `${title}${metaTags}`.replace(/ data-react-helmet="true"/g, ''),
     );
 
     // 4. send a response

@@ -1,18 +1,13 @@
 import { ExportAllToCsvModal, FilterTable } from '@meemoo/admin-core-ui/admin';
-import {
-  AvoItemItem,
-  AvoOrganizationOrganization,
-  AvoSearchOrderDirection,
-  PermissionName,
-} from '@viaa/avo2-types';
+import { AvoItemItem, AvoOrganizationOrganization, AvoSearchOrderDirection, PermissionName, } from '@viaa/avo2-types';
 
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
@@ -23,18 +18,11 @@ import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import {
-  renderItemsOverviewTableCell,
-  renderItemsOverviewTableCellText,
-} from '../helpers/render-item-overview-table-cell';
+import { renderItemsOverviewTableCell, renderItemsOverviewTableCellText, } from '../helpers/render-item-overview-table-cell';
 import { useGetItemsWithFilters } from '../hooks/useGetItemsWithFilters';
 import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
-import {
-  type ItemsOverviewTableCols,
-  type ItemsTableState,
-} from '../items.types';
-
+import { type ItemsOverviewTableCols, type ItemsTableState, } from '../items.types';
 import { ItemBulkAction } from './ItemsOverview.types';
 
 export const ItemsOverview: FC = () => {
@@ -240,21 +228,16 @@ export const ItemsOverview: FC = () => {
         size="full-width"
       >
         <AdminLayoutBody>
-          <Helmet>
-            <title>
-              {GENERATE_SITE_TITLE(
-                tText(
-                  'admin/items/views/items-overview___item-beheer-overview-pagina-titel',
-                ),
-              )}
-            </title>
-            <meta
-              name="description"
-              content={tText(
-                'admin/items/views/items-overview___item-beheer-overview-pagina-beschrijving',
-              )}
-            />
-          </Helmet>
+          <SeoMetadata
+            title={GENERATE_SITE_TITLE(
+              tText(
+                'admin/items/views/items-overview___item-beheer-overview-pagina-titel',
+              ),
+            )}
+            description={tText(
+              'admin/items/views/items-overview___item-beheer-overview-pagina-beschrijving',
+            )}
+          />
           {renderItemsOverview()}
         </AdminLayoutBody>
       </AdminLayout>

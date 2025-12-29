@@ -1,28 +1,23 @@
-import { type FC } from 'react'
-import { Helmet } from 'react-helmet'
+import { type FC } from 'react';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tText } from '../../shared/helpers/translate-text';
 
 export const Notifications: FC = () => {
   return (
     <>
-      <Helmet>
-        <title>
-          {GENERATE_SITE_TITLE(
-            tText(
-              'settings/components/notifications___notificatie-voorkeuren-pagina-titel',
-            ),
-          )}
-        </title>
-        <meta
-          name="description"
-          content={tText(
-            'settings/components/notifications___notificatie-voorkeuren-pagina-beschrijving',
-          )}
-        />
-      </Helmet>
+      <SeoMetadata
+        title={GENERATE_SITE_TITLE(
+          tText(
+            'settings/components/notifications___notificatie-voorkeuren-pagina-titel',
+          ),
+        )}
+        description={tText(
+          'settings/components/notifications___notificatie-voorkeuren-pagina-beschrijving',
+        )}
+      />
       <span>TODO notificaties</span>
     </>
-  )
-}
+  );
+};

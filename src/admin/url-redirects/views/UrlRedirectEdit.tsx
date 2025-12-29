@@ -1,18 +1,6 @@
-import {
-  Button,
-  ButtonToolbar,
-  Column,
-  Container,
-  Form,
-  FormGroup,
-  Grid,
-  IconName,
-  Select,
-  TextInput,
-} from '@viaa/avo2-components';
+import { Button, ButtonToolbar, Column, Container, Form, FormGroup, Grid, IconName, Select, TextInput, } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { type FC, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
@@ -20,6 +8,7 @@ import { redirectToClientPage } from '../../../authentication/helpers/redirects/
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { ROUTE_PARTS } from '../../../shared/constants/routes';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
@@ -29,24 +18,14 @@ import { tText } from '../../../shared/helpers/translate-text';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import {
-  AdminLayoutBody,
-  AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { PROXY_PATH_SHORTCUT } from '../helpers/replace-proxy-url-template-with-url';
 import { useCreateUrlRedirect } from '../hooks/useCreateUrlRedirect';
 import { useGetUrlRedirectById } from '../hooks/useGetUrlRedirectById';
 import { useUpdateUrlRedirect } from '../hooks/useUpdateUrlRedirect';
-import {
-  INITIAL_URL_REDIRECT,
-  URL_REDIRECT_PATTERN_OPTIONS,
-} from '../url-redirects.const';
+import { INITIAL_URL_REDIRECT, URL_REDIRECT_PATTERN_OPTIONS, } from '../url-redirects.const';
 import { URL_REDIRECT_PATH } from '../url-redirects.routes';
-import {
-  type UrlRedirect,
-  type UrlRedirectEditFormErrorState,
-  type UrlRedirectPathPattern,
-} from '../url-redirects.types';
+import { type UrlRedirect, type UrlRedirectEditFormErrorState, type UrlRedirectPathPattern, } from '../url-redirects.types';
 
 export const UrlRedirectEdit: FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -294,31 +273,26 @@ export const UrlRedirectEdit: FC = () => {
   return (
     <>
       <PermissionGuard permissions={[PermissionName.EDIT_REDIRECTS]}>
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              isCreatePage
-                ? tText(
-                    'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-aanmaak-pagina-titel',
-                  )
-                : tText(
-                    'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-bewerk-pagina-titel',
-                  ),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={
-              isCreatePage
-                ? tText(
-                    'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-aanmaak-pagina-beschrijving',
-                  )
-                : tText(
-                    'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-bewerk-pagina-beschrijving',
-                  )
-            }
-          />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            isCreatePage
+              ? tText(
+                  'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-aanmaak-pagina-titel',
+                )
+              : tText(
+                  'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-bewerk-pagina-titel',
+                ),
+          )}
+          description={
+            isCreatePage
+              ? tText(
+                  'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-aanmaak-pagina-beschrijving',
+                )
+              : tText(
+                  'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-bewerk-pagina-beschrijving',
+                )
+          }
+        />
         {renderPage()}
       </PermissionGuard>
     </>

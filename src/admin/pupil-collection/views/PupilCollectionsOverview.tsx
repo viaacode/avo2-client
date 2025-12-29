@@ -1,25 +1,8 @@
-import {
-  ExportAllToCsvModal,
-  type FilterableColumn,
-  FilterTable,
-  getFilters,
-} from '@meemoo/admin-core-ui/admin';
-import {
-  AvoAssignmentResponse,
-  AvoSearchOrderDirection,
-  PermissionName,
-} from '@viaa/avo2-types';
+import { ExportAllToCsvModal, type FilterableColumn, FilterTable, getFilters, } from '@meemoo/admin-core-ui/admin';
+import { AvoAssignmentResponse, AvoSearchOrderDirection, PermissionName, } from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactText,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { Helmet } from 'react-helmet';
+import { type FC, type ReactText, useCallback, useEffect, useMemo, useState, } from 'react';
 
 import { AssignmentService } from '../../../assignment/assignment.service';
 import { commonUserAtom } from '../../../authentication/authentication.store';
@@ -33,6 +16,7 @@ import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { tHtml } from '../../../shared/helpers/translate-html';
@@ -41,10 +25,7 @@ import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { AssignmentsBulkAction } from '../../assignments/assignments.types';
 import { ChangeAuthorModal } from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
-import {
-  getDateRangeFilters,
-  getMultiOptionFilters,
-} from '../../shared/helpers/filters';
+import { getDateRangeFilters, getMultiOptionFilters, } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { type PickerItem } from '../../shared/types/content-picker';
@@ -52,11 +33,7 @@ import {
   renderPupilCollectionTableCellReact,
   renderPupilCollectionTableCellText,
 } from '../helpers/render-pupil-collections-overview-table-cell';
-import {
-  GET_PUPIL_COLLECTION_BULK_ACTIONS,
-  GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS,
-  ITEMS_PER_PAGE,
-} from '../pupil-collection.const';
+import { GET_PUPIL_COLLECTION_BULK_ACTIONS, GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE, } from '../pupil-collection.const';
 import { type PupilCollectionsOverviewTableState } from '../pupil-collection.types';
 
 export const PupilCollectionsOverview: FC = () => {
@@ -482,21 +459,16 @@ export const PupilCollectionsOverview: FC = () => {
         size="full-width"
       >
         <AdminLayoutBody>
-          <Helmet>
-            <title>
-              {GENERATE_SITE_TITLE(
-                tText(
-                  'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-titel',
-                ),
-              )}
-            </title>
-            <meta
-              name="description"
-              content={tText(
-                'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-beschrijving',
-              )}
-            />
-          </Helmet>
+          <SeoMetadata
+            title={GENERATE_SITE_TITLE(
+              tText(
+                'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-titel',
+              ),
+            )}
+            description={tText(
+              'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-beschrijving',
+            )}
+          />
           <LoadingErrorLoadedComponent
             loadingInfo={loadingInfo}
             dataObject={pupilCollections}

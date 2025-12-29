@@ -1,17 +1,6 @@
-import {
-  Column,
-  Container,
-  Grid,
-  Modal,
-  ModalBody,
-} from '@viaa/avo2-components';
+import { Column, Container, Grid, Modal, ModalBody, } from '@viaa/avo2-components';
 import { type FC } from 'react';
-
-import { Helmet } from 'react-helmet';
-
-import { GENERATE_SITE_TITLE } from '../../constants';
 import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
 import { LoginOptions } from '../components/LoginOptions';
 import './RegisterOrLogin.scss';
 
@@ -19,21 +8,21 @@ export const RegisterOrLogin: FC = () => {
   return (
     <Container className="c-register-login-view" mode="horizontal">
       <Container mode="vertical">
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              tText(
-                'authentication/views/register-or-login___registratie-of-login-pagina-titel',
-              ),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={tText(
-              'authentication/views/register-or-login___registratie-of-login-pagina-beschrijving',
-            )}
-          />
-        </Helmet>
+        {/*<Helmet>*/}
+        {/*  <title>*/}
+        {/*    {GENERATE_SITE_TITLE(*/}
+        {/*      tText(*/}
+        {/*        'authentication/views/register-or-login___registratie-of-login-pagina-titel',*/}
+        {/*      ),*/}
+        {/*    )}*/}
+        {/*  </title>*/}
+        {/*  <meta*/}
+        {/*    name="description"*/}
+        {/*    content={tText(*/}
+        {/*      'authentication/views/register-or-login___registratie-of-login-pagina-beschrijving',*/}
+        {/*    )}*/}
+        {/*  />*/}
+        {/*</Helmet>*/}
 
         <Modal className="c-register-login-view__modal" isOpen size="medium">
           <ModalBody>

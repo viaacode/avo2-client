@@ -1,6 +1,5 @@
 import { PermissionName } from '@viaa/avo2-types';
 import { type FC, lazy, Suspense } from 'react';
-import { Helmet } from 'react-helmet';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -11,6 +10,7 @@ import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 
 import './NavigationBarOverviewPage.scss';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 
 const NavigationOverview = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -24,21 +24,16 @@ export const NavigationBarOverviewPage: FC = () => {
     <PermissionGuard permissions={[PermissionName.EDIT_NAVIGATION_BARS]}>
       <AdminLayout pageTitle={title} size="full-width">
         <AdminLayoutBody>
-          <Helmet>
-            <title>
-              {GENERATE_SITE_TITLE(
-                tText(
-                  'admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-titel',
-                ),
-              )}
-            </title>
-            <meta
-              name="description"
-              content={tText(
-                'admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-beschrijving',
-              )}
-            />
-          </Helmet>
+          <SeoMetadata
+            title={GENERATE_SITE_TITLE(
+              tText(
+                'admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-titel',
+              ),
+            )}
+            description={tText(
+              'admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-beschrijving',
+            )}
+          />
           <Suspense
             fallback={
               <FullPageSpinner locationId="navigation-bar-overview-page--loading" />

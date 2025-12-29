@@ -16,22 +16,11 @@ import {
   ToolbarLeft,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import {
-  AvoItemItem,
-  AvoUserCommonUser,
-  PermissionName,
-} from '@viaa/avo2-types';
+import { AvoItemItem, AvoUserCommonUser, PermissionName, } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-} from 'react';
-import { Helmet } from 'react-helmet';
+import { type FC, type ReactNode, useCallback, useEffect, useMemo, } from 'react';
 import { generatePath, useNavigate, useParams } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -39,6 +28,7 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { ItemVideoDescription } from '../../item/components/ItemVideoDescription';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { isMobileWidth } from '../../shared/helpers/media-query';
@@ -310,17 +300,15 @@ export const EmbedCodeDetail: FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>
-          {GENERATE_SITE_TITLE(
-            embedCode?.title ||
-              tText(
-                'embed-code/views/embed-code-detail___ingesloten-fragment-detail-pagina-titel-fallback',
-              ),
-          )}
-        </title>
-        <meta name="description" content={embedCode?.description || ''} />
-      </Helmet>
+      <SeoMetadata
+        title={GENERATE_SITE_TITLE(
+          embedCode?.title ||
+            tText(
+              'embed-code/views/embed-code-detail___ingesloten-fragment-detail-pagina-titel-fallback',
+            ),
+        )}
+        description={embedCode?.description || ''}
+      />
       {renderPageContent()}
     </>
   );

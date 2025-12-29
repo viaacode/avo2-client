@@ -4,7 +4,6 @@ import { Alert, Button, Checkbox, Container, Form, FormGroup, Spacer, } from '@v
 import { compact } from 'es-toolkit';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { type FC, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -23,6 +22,7 @@ import { useUpdateEmailPreferences } from '../hooks/useUpdateEmailPreferences';
 import { SettingsService } from '../settings.service';
 import './Profile.scss';
 import { AvoEducationOrganizationOrganization, AvoLomLomField, AvoUserUpdateProfileValues, } from '@viaa/avo2-types';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
@@ -302,21 +302,16 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
     <FullPageSpinner locationId="complete-profile-step--loading" />
   ) : (
     <>
-      <Helmet>
-        <title>
-          {GENERATE_SITE_TITLE(
-            tText(
-              'settings/components/profile___profiel-instellingen-pagina-titel',
-            ),
-          )}
-        </title>
-        <meta
-          name="description"
-          content={tText(
-            'settings/components/profile___profiel-instellingen-pagina-beschrijving',
-          )}
-        />
-      </Helmet>
+      <SeoMetadata
+        title={GENERATE_SITE_TITLE(
+          tText(
+            'settings/components/profile___profiel-instellingen-pagina-titel',
+          ),
+        )}
+        description={tText(
+          'settings/components/profile___profiel-instellingen-pagina-beschrijving',
+        )}
+      />
       {renderCompleteProfilePage()}
     </>
   );

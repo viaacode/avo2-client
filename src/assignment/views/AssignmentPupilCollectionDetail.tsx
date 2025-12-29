@@ -1,15 +1,9 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import { Container, Icon, IconName } from '@viaa/avo2-components';
-import {
-  AvoAssignmentAssignment,
-  AvoAssignmentResponse,
-  AvoCoreBlockItemBase,
-  PermissionName,
-} from '@viaa/avo2-types';
+import { AvoAssignmentAssignment, AvoAssignmentResponse, AvoCoreBlockItemBase, PermissionName, } from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -22,6 +16,7 @@ import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
@@ -195,17 +190,15 @@ export const AssignmentPupilCollectionDetail: FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>
-          {GENERATE_SITE_TITLE(
-            assignmentResponse?.collection_title ||
-              tText(
-                'assignment/views/assignment-pupil-collection-detail___leerlingencollectie-detail',
-              ),
-          )}
-        </title>
-        <meta name="description" content={assignment?.description || ''} />
-      </Helmet>
+      <SeoMetadata
+        title={GENERATE_SITE_TITLE(
+          assignmentResponse?.collection_title ||
+            tText(
+              'assignment/views/assignment-pupil-collection-detail___leerlingencollectie-detail',
+            ),
+        )}
+        description={assignment?.description || ''}
+      />
       <LoadingErrorLoadedComponent
         loadingInfo={loadingInfo}
         notFoundError={tText(

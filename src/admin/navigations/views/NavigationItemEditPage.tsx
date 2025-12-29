@@ -1,5 +1,4 @@
 import { type FC, lazy, Suspense } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
@@ -13,6 +12,7 @@ import { ADMIN_PATH } from '../../admin.const';
 import './NavigationItemEdit.scss';
 
 import { PermissionName } from '@viaa/avo2-types';
+import { SeoMetadata } from "../../../shared/components/SeoMetadata/SeoMetadata.tsx";
 
 const NavigationEdit = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -31,28 +31,23 @@ export const NavigationItemEditPage: FC = () => {
   return (
     <PermissionGuard permissions={[PermissionName.EDIT_NAVIGATION_BARS]}>
       <div className="c-admin__navigation-edit">
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              tText(
-                'admin/navigations/views/navigation-item-edit___navigation-item-edit-page-title',
-              ),
-              navigationItemId
-                ? tText(
-                    'admin/menu/views/menu-edit___menu-item-beheer-bewerk-pagina-titel',
-                  )
-                : tText(
-                    'admin/menu/views/menu-edit___menu-item-beheer-aanmaak-pagina-titel',
-                  ),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={tText(
-              'admin/navigations/views/navigation-item-edit___navigation-item-edit-page-description',
-            )}
-          />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            tText(
+              'admin/navigations/views/navigation-item-edit___navigation-item-edit-page-title',
+            ),
+            navigationItemId
+              ? tText(
+                  'admin/menu/views/menu-edit___menu-item-beheer-bewerk-pagina-titel',
+                )
+              : tText(
+                  'admin/menu/views/menu-edit___menu-item-beheer-aanmaak-pagina-titel',
+                ),
+          )}
+          description={tText(
+            'admin/navigations/views/navigation-item-edit___navigation-item-edit-page-description',
+          )}
+        />
 
         <Suspense
           fallback={

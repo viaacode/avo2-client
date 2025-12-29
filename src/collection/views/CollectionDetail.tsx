@@ -25,14 +25,13 @@ import {
   AvoSearchResultItem,
   AvoUserCommonUser,
   AvoUserUser,
-  PermissionName
+  PermissionName,
 } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
-import { isNil, noop } from 'es-toolkit';
+import { compact, isNil, noop } from 'es-toolkit';
 import { isEmpty } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactText, useCallback, useEffect, useState, } from 'react';
-import { Helmet } from 'react-helmet';
 import { useLoaderData, useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -43,7 +42,7 @@ import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignm
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH } from '../../constants';
 import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
 import { ErrorView } from '../../error/views/ErrorView';
 import { ALL_SEARCH_FILTERS, type SearchFilter, } from '../../search/search.const';
@@ -95,7 +94,9 @@ import { deleteCollection, deleteSelfFromCollection, } from '../helpers/delete-c
 import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
 import { BundleSortProp, useGetCollectionsOrBundlesContainingFragment, } from '../hooks/useGetCollectionsOrBundlesContainingFragment';
 import './CollectionDetail.scss';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
+import { getFullName } from '../../shared/helpers/formatters/avatar.tsx';
 import { isServerSideRendering } from '../../shared/helpers/routing/is-server-side-rendering.ts';
 import { BooleanParam, StringParam, useQueryParams, } from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { QUERY_PARAM_INVITE_TOKEN, QUERY_PARAM_SHOW_PUBLISH_MODAL, } from './CollectionDetail.const.tsx';
@@ -135,7 +136,10 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
   const navigateFunc = useNavigate();
-  const loaderData = useLoaderData();
+  const loaderData = useLoaderData<{
+    collection: AvoCollectionCollection;
+    url: string;
+  }>();
   const collectionFromLoader =
     loaderData?.collection as AvoCollectionCollection | null;
 
@@ -1676,36 +1680,29 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
     return (
       <div className="c-sticky-bar__wrapper">
         <div>
-          <Helmet>
-            <title>
-              {GENERATE_SITE_TITLE(
-                collectionFromLoader?.title ||
-                  tText(
-                    'collection/views/collection-detail___collectie-detail-titel-fallback',
-                  ),
-              )}
-            </title>
-
-            <meta
-              name="description"
-              content={collectionFromLoader?.description || ''}
-            />
-          </Helmet>
-
-          {/*<JsonLd*/}
-          {/*  url={window.location.href}*/}
-          {/*  title={collection?.title ?? ''}*/}
-          {/*  description={collection?.description}*/}
-          {/*  image={collection?.thumbnail_path}*/}
-          {/*  isOrganisation={!!collection?.profile?.organisation}*/}
-          {/*  author={getFullName(collection?.profile, true, false)}*/}
-          {/*  publishedAt={collection?.published_at}*/}
-          {/*  updatedAt={collection?.updated_at}*/}
-          {/*  keywords={compact(*/}
-          {/*    (collection?.loms || []).map((lom) => lom.lom?.label),*/}
-          {/*  )}*/}
-          {/*/>*/}
-
+          <SeoMetadata
+            title={
+              collectionFromLoader?.title ||
+              tText(
+                'collection/views/collection-detail___collectie-detail-titel-fallback',
+              )
+            }
+            description={collectionFromLoader?.description}
+            image={collectionFromLoader?.seo_image_path}
+            url={loaderData.url}
+            updatedAt={collectionFromLoader?.updated_at}
+            publishedAt={collectionFromLoader?.published_at}
+            createdAt={collectionFromLoader?.created_at}
+            author={
+              !!collectionFromLoader?.profile
+                ? getFullName(collectionFromLoader?.profile, false, false)
+                : null
+            }
+            organisationName={collectionFromLoader?.profile?.organisation?.name}
+            keywords={compact(
+              (collectionFromLoader?.loms || []).map((lom) => lom.lom?.label),
+            )}
+          />
           {renderCollection()}
         </div>
 

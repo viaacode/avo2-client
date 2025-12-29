@@ -24,14 +24,7 @@ import { PermissionName } from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import { isEmpty } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactText,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
-import { Helmet } from 'react-helmet';
+import { type FC, type ReactText, useCallback, useEffect, useState, } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
@@ -64,18 +57,14 @@ import {
   QUICK_LANE_ID,
   WORKSPACE_TAB_ID_TO_COUNT_ID,
 } from '../workspace.const';
-import {
-  type NavTab,
-  type TabFilter,
-  type TabView,
-  type TabViewMap,
-} from '../workspace.types';
+import { type NavTab, type TabFilter, type TabView, type TabViewMap, } from '../workspace.types';
 
 import { BookmarksOverview } from './BookmarksOverview';
 import { OrganisationContentOverview } from './OrganisationContentOverview';
 import { QuickLaneOverview } from './QuickLaneOverview';
 
 import './Workspace.scss';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
@@ -510,19 +499,14 @@ export const Workspace: FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>
-          {GENERATE_SITE_TITLE(
-            tText('workspace/views/workspace___mijn-werkruimte-pagina-titel'),
-          )}
-        </title>
-        <meta
-          name="description"
-          content={tText(
-            'workspace/views/workspace___mijn-werkruimte-pagina-beschrijving',
-          )}
-        />
-      </Helmet>
+      <SeoMetadata
+        title={GENERATE_SITE_TITLE(
+          tText('workspace/views/workspace___mijn-werkruimte-pagina-titel'),
+        )}
+        description={tText(
+          'workspace/views/workspace___mijn-werkruimte-pagina-beschrijving',
+        )}
+      />
       <LoadingErrorLoadedComponent
         loadingInfo={loadingInfo}
         render={renderTabsAndContent}

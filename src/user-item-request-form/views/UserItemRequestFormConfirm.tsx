@@ -1,33 +1,28 @@
-import { Button, Container, Spacer } from '@viaa/avo2-components'
-import { type FC } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate } from 'react-router'
+import { Button, Container, Spacer } from '@viaa/avo2-components';
+import { type FC } from 'react';
+import { useNavigate } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
 export const UserItemRequestFormConfirm: FC = () => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
   return (
     <Container className="c-register-stamboek-view" mode="vertical">
       <Container mode="horizontal" size="large">
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              tText(
-                'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-titel',
-              ),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={tText(
-              'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-beschrijving',
-            )}
-          />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            tText(
+              'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-titel',
+            ),
+          )}
+          description={tText(
+            'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-beschrijving',
+          )}
+        />
         <div className="c-content">
           {tHtml(
             'authentication/views/registration-flow/r-4-manual-registration___bevestiging',
@@ -50,7 +45,7 @@ export const UserItemRequestFormConfirm: FC = () => {
         </div>
       </Container>
     </Container>
-  )
-}
+  );
+};
 
-export default UserItemRequestFormConfirm
+export default UserItemRequestFormConfirm;

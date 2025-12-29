@@ -1,41 +1,29 @@
-import {
-  Button,
-  ButtonToolbar,
-  Container,
-  Icon,
-  IconName,
-  Spacer,
-} from '@viaa/avo2-components'
-import { type FC } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate } from 'react-router'
+import { Button, ButtonToolbar, Container, Icon, IconName, Spacer, } from '@viaa/avo2-components';
+import { type FC } from 'react';
+import { useNavigate } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { navigate } from '../../shared/helpers/link';
 
-import './LinkYourAccount.scss'
+import './LinkYourAccount.scss';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
 export const LinkYourAccount: FC = () => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
   return (
     <Container mode="horizontal" size="medium">
       <Container mode="vertical">
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              tText('authentication/views/link-your-account___link-uw-account'),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={tText(
-              'authentication/views/link-your-account___link-uw-account-paginabeschrijving',
-            )}
-          />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            tText('authentication/views/link-your-account___link-uw-account'),
+          )}
+          description={tText(
+            'authentication/views/link-your-account___link-uw-account-paginabeschrijving',
+          )}
+        />
         <Spacer margin="bottom-extra-large">
           <h1 className="c-h1 u-m-0">
             {tHtml(
@@ -102,7 +90,7 @@ export const LinkYourAccount: FC = () => {
         </ButtonToolbar>
       </Container>
     </Container>
-  )
-}
+  );
+};
 
-export default LinkYourAccount
+export default LinkYourAccount;

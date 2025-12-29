@@ -5,6 +5,7 @@ import { compact } from 'es-toolkit';
 import { type FC, useState } from 'react';
 
 import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
+import { FileUploadImagePosition } from '../../shared/components/FileUpload/FileUpload.const.ts';
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import {
   RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION,
@@ -18,7 +19,6 @@ import { tText } from '../../shared/helpers/translate-text';
 import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
 import { type CollectionOrBundle } from '../collection.types';
-
 import { type CollectionAction } from './CollectionOrBundleEdit.types';
 
 interface CollectionOrBundleEditPublicationDetailsProps {
@@ -236,6 +236,7 @@ export const CollectionOrBundleEditPublicationDetails: FC<
                             : AvoFileUploadAssetType.BUNDLE_COVER
                         }
                         ownerId={collection.id}
+                        imagePosition={FileUploadImagePosition.BELOW_BUTTON}
                         onChange={(urls) =>
                           changeCollectionState({
                             type: 'UPDATE_COLLECTION_PROP',
@@ -248,56 +249,31 @@ export const CollectionOrBundleEditPublicationDetails: FC<
                   </FormGroup>
                   {showOgImageUpload && (
                     <FormGroup
-                      label={tText('OG afbeelding')}
+                      label={tText('OG afbeelding (1200 x 630 px)')}
                       labelFor="ogImageId"
                     >
-                      {isCollection ? (
-                        <>
-                          <Button
-                            type="secondary"
-                            label={tText('Stel een OG afbeelding in')}
-                            title={
-                              isCollection
-                                ? tText(
-                                    'Kies een afbeelding om te gebruiken als OG afbeelding voor deze collectie op social media',
-                                  )
-                                : tText(
-                                    'Kies een afbeelding om te gebruiken als OG afbeelding voor deze bundel op social media',
-                                  )
-                            }
-                            onClick={() => setCollectionsStillsModalOpen(true)}
-                          />
-                          {collection.thumbnail_path && (
-                            <Image
-                              className="u-spacer-top"
-                              src={collection.thumbnail_path}
-                            />
-                          )}
-                        </>
-                      ) : (
-                        <FileUpload
-                          label={tText('Upload een OG afbeelding')}
-                          urls={
-                            collection.seo_image_path
-                              ? [collection.seo_image_path]
-                              : []
-                          }
-                          allowMulti={false}
-                          assetType={
-                            isCollection
-                              ? AvoFileUploadAssetType.COLLECTION_OG_IMAGE
-                              : AvoFileUploadAssetType.BUNDLE_OG_IMAGE
-                          }
-                          ownerId={collection.id}
-                          onChange={(urls) =>
-                            changeCollectionState({
-                              type: 'UPDATE_COLLECTION_PROP',
-                              collectionProp: 'og_thumbnail_path',
-                              collectionPropValue: urls[0] || null,
-                            })
-                          }
-                        />
-                      )}
+                      <FileUpload
+                        label={tText('Upload een OG afbeelding')}
+                        urls={
+                          collection.seo_image_path
+                            ? [collection.seo_image_path]
+                            : []
+                        }
+                        allowMulti={false}
+                        assetType={
+                          isCollection
+                            ? AvoFileUploadAssetType.COLLECTION_OG_IMAGE
+                            : AvoFileUploadAssetType.BUNDLE_OG_IMAGE
+                        }
+                        ownerId={collection.id}
+                        onChange={(urls) =>
+                          changeCollectionState({
+                            type: 'UPDATE_COLLECTION_PROP',
+                            collectionProp: 'seo_image_path',
+                            collectionPropValue: urls[0] || null,
+                          })
+                        }
+                      />
                     </FormGroup>
                   )}
                 </Column>

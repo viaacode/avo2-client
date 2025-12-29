@@ -3,7 +3,6 @@ import { Button, Checkbox, Container, FormGroup, Spacer, Spinner, TextArea, } fr
 import { useAtomValue } from 'jotai';
 import type { Requests } from 'node-zendesk';
 import { type FC, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -24,6 +23,7 @@ import { renderAttachment } from './UserItemRequestForm.helpers';
 
 import './ItemRequestForm.scss';
 import { AvoFileUploadAssetType } from '@viaa/avo2-types';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
@@ -230,21 +230,16 @@ export const UserItemRequestForm: FC = () => {
   return (
     <Container className="p-item-request-form" mode="vertical">
       <Container mode="horizontal" size="large">
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              tText(
-                'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-titel',
-              ),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={tText(
-              'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-beschrijving',
-            )}
-          />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            tText(
+              'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-titel',
+            ),
+          )}
+          description={tText(
+            'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-beschrijving',
+          )}
+        />
         <div className="c-content">{renderForm()}</div>
       </Container>
     </Container>

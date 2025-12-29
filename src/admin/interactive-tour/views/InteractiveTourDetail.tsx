@@ -1,15 +1,7 @@
-import {
-  Button,
-  ButtonToolbar,
-  Container,
-  HeaderButtons,
-  Spacer,
-  Table,
-} from '@viaa/avo2-components';
+import { Button, ButtonToolbar, Container, HeaderButtons, Spacer, Table, } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 
 import { type FC, useCallback, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
@@ -20,6 +12,7 @@ import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { navigate } from '../../../shared/helpers/link';
@@ -27,16 +20,9 @@ import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
-import {
-  renderDateDetailRows,
-  renderDetailRow,
-  renderSimpleDetailRows,
-} from '../../shared/helpers/render-detail-fields';
+import { renderDateDetailRows, renderDetailRow, renderSimpleDetailRows, } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import {
-  AdminLayoutBody,
-  AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.routes';
 import { InteractiveTourService } from '../interactive-tour.service';
 import { InteractiveTour } from '../interactive-tour.types.ts';
@@ -254,22 +240,17 @@ export const InteractiveTourDetail: FC = () => {
   return (
     <>
       <PermissionGuard permissions={[PermissionName.EDIT_INTERACTIVE_TOURS]}>
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              interactiveTour?.name,
-              tText(
-                'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-titel',
-              ),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={tText(
-              'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-beschrijving',
-            )}
-          />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            interactiveTour?.name,
+            tText(
+              'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-titel',
+            ),
+          )}
+          description={tText(
+            'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-beschrijving',
+          )}
+        />
         <LoadingErrorLoadedComponent
           loadingInfo={loadingInfo}
           dataObject={interactiveTour}

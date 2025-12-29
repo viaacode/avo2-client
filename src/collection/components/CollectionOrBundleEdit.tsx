@@ -24,7 +24,6 @@ import { cloneDeep, isNil, noop } from 'es-toolkit';
 import { isEmpty, set } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactNode, type ReactText, type Reducer, useCallback, useEffect, useMemo, useReducer, useState, } from 'react';
-import { Helmet } from 'react-helmet';
 import { matchPath, Navigate, useNavigate, useParams } from 'react-router';
 
 import { ItemsService } from '../../admin/items/items.service';
@@ -33,7 +32,7 @@ import { AssignmentService } from '../../assignment/assignment.service';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH } from '../../constants';
 import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
 import { ErrorView } from '../../error/views/ErrorView';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
@@ -103,6 +102,7 @@ import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/Del
 import { PublishCollectionModal } from './modals/PublishCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { isServerSideRendering } from '../../shared/helpers/routing/is-server-side-rendering.ts';
 
 export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
@@ -891,6 +891,9 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
 
   // Listeners
   const onSaveCollection = useCallback(async () => {
+    if (isSavingCollection) {
+      return;
+    }
     setIsSavingCollection(true);
     try {
       const validationError: ReactNode | null = isCollectionValid();
@@ -1083,23 +1086,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
    */
   useEffect(() => {
     if (shouldDelaySave) {
-      executeAction(CollectionMenuAction.save);
-      setShouldDelaySave(false);
-    }
-  }, [
-    collectionState.currentCollection?.collection_fragments,
-    executeAction,
-    shouldDelaySave,
-  ]);
-
-  /**
-   * https://meemoo.atlassian.net/browse/AVO-3370
-   * Delay the save action by 100ms to ensure the  fragment properties are saved
-   * We cannot update the fragment states live in the parent component, because that would also rerender the video players
-   * and that would cause the video players to lose their current time setting
-   */
-  useEffect(() => {
-    if (shouldDelaySave) {
+      setIsSavingCollection(true);
       executeAction(CollectionMenuAction.save);
       setShouldDelaySave(false);
     }
@@ -1996,7 +1983,10 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
     );
   };
 
-  if (matchPath(location.pathname, APP_PATH.BUNDLE_EDIT.route)) {
+  if (
+    !isServerSideRendering() &&
+    matchPath(location.pathname, APP_PATH.BUNDLE_EDIT.route)
+  ) {
     return (
       <Navigate
         to={buildLink(APP_PATH.BUNDLE_EDIT_TAB.route, {
@@ -2007,7 +1997,10 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
     );
   }
 
-  if (matchPath(location.pathname, APP_PATH.COLLECTION_EDIT.route)) {
+  if (
+    !isServerSideRendering() &&
+    matchPath(location.pathname, APP_PATH.COLLECTION_EDIT.route)
+  ) {
     return (
       <Navigate
         to={buildLink(APP_PATH.COLLECTION_EDIT_TAB.route, {
@@ -2027,25 +2020,19 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
       />
     );
   }
+  const title =
+    collectionState?.currentCollection?.title || isCollection
+      ? tText(
+          'collection/components/collection-or-bundle-edit___collectie-bewerken-titel-fallback',
+        )
+      : tText(
+          'collection/components/collection-or-bundle-edit___bundel-bewerken-titel-fallback',
+        );
+  const description = collectionState?.currentCollection?.description;
+  const image = collectionState?.currentCollection?.seo_image_path;
   return (
     <>
-      <Helmet>
-        <title>
-          {GENERATE_SITE_TITLE(
-            collectionState?.currentCollection?.title || isCollection
-              ? tText(
-                  'collection/components/collection-or-bundle-edit___collectie-bewerken-titel-fallback',
-                )
-              : tText(
-                  'collection/components/collection-or-bundle-edit___bundel-bewerken-titel-fallback',
-                ),
-          )}
-        </title>
-        <meta
-          name="description"
-          content={collectionState?.currentCollection?.description || ''}
-        />
-      </Helmet>
+      <SeoMetadata title={title} description={description} image={image} />
       <LoadingErrorLoadedComponent
         loadingInfo={loadingInfo}
         dataObject={collectionState.currentCollection}

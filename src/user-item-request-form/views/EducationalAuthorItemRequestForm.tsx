@@ -5,7 +5,6 @@ import { AvoFileUploadAssetType, AvoLomLomField } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import type { Requests } from 'node-zendesk';
 import { type FC, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -25,6 +24,7 @@ import { EDUCATIONAL_AUTHOR_ITEM_REQUEST_FORM_VALIDATION_SCHEMA } from './Educat
 import { renderAttachment } from './UserItemRequestForm.helpers';
 
 import './ItemRequestForm.scss';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
@@ -294,21 +294,16 @@ export const EducationalAuthorItemRequestForm: FC = () => {
   return (
     <Container className="p-item-request-form" mode="vertical">
       <Container mode="horizontal" size="large">
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              tText(
-                'user-item-request-form/views/educational-author-item-request-form___gebruikersaanvraag-pagina-titel',
-              ),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={tText(
-              'user-item-request-form/views/educational-author-item-request-form___gebruikersaanvraag-pagina-beschrijving',
-            )}
-          />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            tText(
+              'user-item-request-form/views/educational-author-item-request-form___gebruikersaanvraag-pagina-titel',
+            ),
+          )}
+          description={tText(
+            'user-item-request-form/views/educational-author-item-request-form___gebruikersaanvraag-pagina-beschrijving',
+          )}
+        />
         <div className="c-content">{renderForm()}</div>
       </Container>
     </Container>

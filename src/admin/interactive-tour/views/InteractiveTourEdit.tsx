@@ -18,7 +18,6 @@ import { AvoCoreContentPickerType, AvoSearchOrderDirection, PermissionName, } fr
 import { cloneDeep, compact, orderBy } from 'es-toolkit';
 import { isEmpty, map } from 'es-toolkit/compat';
 import { type FC, lazy, type Reducer, useCallback, useEffect, useReducer, useState, } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
@@ -62,6 +61,7 @@ import {
 import { InteractiveTourEditStep } from './InteractiveTourEditStep';
 
 import './InteractiveTourEdit.scss';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.routes.ts';
@@ -544,32 +544,27 @@ export const InteractiveTourEdit: FC = () => {
   return (
     <>
       <PermissionGuard permissions={[PermissionName.EDIT_INTERACTIVE_TOURS]}>
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              interactiveTourState?.currentInteractiveTour?.name,
-              isCreatePage
-                ? tText(
-                    'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-aanmaak-pagina-titel',
-                  )
-                : tText(
-                    'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-bewerk-pagina-titel',
-                  ),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={
-              isCreatePage
-                ? tText(
-                    'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-aanmaak-pagina-beschrijving',
-                  )
-                : tText(
-                    'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-bewerk-pagina-beschrijving',
-                  )
-            }
-          />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            interactiveTourState?.currentInteractiveTour?.name,
+            isCreatePage
+              ? tText(
+                  'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-aanmaak-pagina-titel',
+                )
+              : tText(
+                  'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-bewerk-pagina-titel',
+                ),
+          )}
+          description={
+            isCreatePage
+              ? tText(
+                  'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-aanmaak-pagina-beschrijving',
+                )
+              : tText(
+                  'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-bewerk-pagina-beschrijving',
+                )
+          }
+        />
         <LoadingErrorLoadedComponent
           loadingInfo={loadingInfo}
           dataObject={interactiveTourState.currentInteractiveTour}

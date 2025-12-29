@@ -1,32 +1,12 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import {
-  Button,
-  Column,
-  Container,
-  Form,
-  FormGroup,
-  Grid,
-  Icon,
-  IconName,
-  Spacer,
-} from '@viaa/avo2-components';
+import { Button, Column, Container, Form, FormGroup, Grid, Icon, IconName, Spacer, } from '@viaa/avo2-components';
 
 import { useAtomValue } from 'jotai';
-import {
-  type Dispatch,
-  type FC,
-  type ReactNode,
-  type SetStateAction,
-  useState,
-} from 'react';
-import { Helmet } from 'react-helmet';
+import { type Dispatch, type FC, type ReactNode, type SetStateAction, useState, } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
-import {
-  redirectToServerLinkAccount,
-  redirectToServerUnlinkAccount,
-} from '../../authentication/helpers/redirects/redirects';
+import { redirectToServerLinkAccount, redirectToServerUnlinkAccount, } from '../../authentication/helpers/redirects/redirects';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { isPupil } from '../../shared/helpers/is-pupil';
@@ -34,6 +14,7 @@ import { isPupil } from '../../shared/helpers/is-pupil';
 import './LinkedAccounts.scss';
 import { AvoAuthIdpType } from '@viaa/avo2-types';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
@@ -224,21 +205,16 @@ export const LinkedAccounts: FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>
-          {GENERATE_SITE_TITLE(
-            tText(
-              'settings/components/linked-accounts___koppelingen-pagina-titel',
-            ),
-          )}
-        </title>
-        <meta
-          name="description"
-          content={tText(
-            'settings/components/linked-accounts___koppelingen-pagina-beschrijving',
-          )}
-        />
-      </Helmet>
+      <SeoMetadata
+        title={GENERATE_SITE_TITLE(
+          tText(
+            'settings/components/linked-accounts___koppelingen-pagina-titel',
+          ),
+        )}
+        description={tText(
+          'settings/components/linked-accounts___koppelingen-pagina-beschrijving',
+        )}
+      />
       <Container mode="vertical">
         <Spacer margin="bottom">
           <Grid>

@@ -20,7 +20,6 @@ import {
 
 import type { Requests } from 'node-zendesk';
 import { type FC, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
@@ -35,6 +34,7 @@ import { ZendeskService } from '../../../shared/services/zendesk-service';
 
 import './manual-registration.scss';
 import { AvoLomLomField } from '@viaa/avo2-types';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 
 export const ManualRegistration: FC = () => {
   const navigateFunc = useNavigate();
@@ -362,21 +362,16 @@ export const ManualRegistration: FC = () => {
   return (
     <Container className="c-register-stamboek-view" mode="vertical">
       <Container mode="horizontal" size="medium">
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              tText(
-                'authentication/views/registration-flow/r-4-manual-registration___manuele-account-aanvraag-pagina-titel',
-              ),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={tText(
-              'authentication/views/registration-flow/r-4-manual-registration___manuele-account-aanvraag-pagina-beschrijving',
-            )}
-          />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            tText(
+              'authentication/views/registration-flow/r-4-manual-registration___manuele-account-aanvraag-pagina-titel',
+            ),
+          )}
+          description={tText(
+            'authentication/views/registration-flow/r-4-manual-registration___manuele-account-aanvraag-pagina-beschrijving',
+          )}
+        />
         <div className="c-content">
           {hasBeenSent ? renderConfirmation() : renderForm()}
         </div>

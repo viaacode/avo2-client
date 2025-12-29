@@ -12,6 +12,7 @@ export const useGetCollectionOrBundleByIdOrInviteToken = (
     enabled?: boolean;
     refetchInterval?: number | false;
     refetchIntervalInBackground?: boolean;
+    initialData?: AvoCollectionCollection | null;
   } = {},
 ) => {
   return useQuery<AvoCollectionCollection | null>({

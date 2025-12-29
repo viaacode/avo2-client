@@ -28,7 +28,6 @@ import { compact, isNil } from 'es-toolkit';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { stringifyUrl } from 'query-string';
 import { type FC, type ReactNode, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { SERVER_LOGOUT_PAGE } from '../../authentication/authentication.const';
@@ -55,6 +54,7 @@ import { SettingsService } from '../settings.service';
 import { type UsersInSameCompanyColumn } from '../settings.types';
 
 import './Profile.scss';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 
 type FieldPermissionKey =
   | 'SUBJECTS'
@@ -729,21 +729,16 @@ export const Profile: FC = () => {
   }
   return (
     <>
-      <Helmet>
-        <title>
-          {GENERATE_SITE_TITLE(
-            tText(
-              'settings/components/profile___profiel-instellingen-pagina-titel',
-            ),
-          )}
-        </title>
-        <meta
-          name="description"
-          content={tText(
-            'settings/components/profile___profiel-instellingen-pagina-beschrijving',
-          )}
-        />
-      </Helmet>
+      <SeoMetadata
+        title={GENERATE_SITE_TITLE(
+          tText(
+            'settings/components/profile___profiel-instellingen-pagina-titel',
+          ),
+        )}
+        description={tText(
+          'settings/components/profile___profiel-instellingen-pagina-beschrijving',
+        )}
+      />
       {renderProfilePage()}
     </>
   );

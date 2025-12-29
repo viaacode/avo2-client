@@ -1,21 +1,8 @@
 import { IconName } from '@viaa/avo2-components';
-import {
-  AvoAssignmentAssignment,
-  AvoAssignmentResponse,
-  PermissionName,
-} from '@viaa/avo2-types';
+import { AvoAssignmentAssignment, AvoAssignmentResponse, PermissionName, } from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type Dispatch,
-  type FC,
-  type ReactNode,
-  type SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
-import { Helmet } from 'react-helmet';
+import { type Dispatch, type FC, type ReactNode, type SetStateAction, useCallback, useEffect, useState, } from 'react';
 import { useParams } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
@@ -34,6 +21,7 @@ import { AssignmentResponseEdit } from './AssignmentResponseEdit';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
+import { SeoMetadata } from "../../../shared/components/SeoMetadata/SeoMetadata.tsx";
 
 export const AssignmentResponseAdminEdit: FC = () => {
   const { assignmentId, responseId: assignmentResponseId } = useParams<{
@@ -228,22 +216,16 @@ export const AssignmentResponseAdminEdit: FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>
-          {GENERATE_SITE_TITLE(
-            tText(
-              'assignment/views/assignment-response-edit___maak-opdracht-antwoord-pagina-titel',
-            ),
-          )}
-        </title>
-
-        <meta
-          name="description"
-          content={tText(
-            'assignment/views/assignment-response-edit___maak-opdracht-antwoord-pagina-beschrijving',
-          )}
-        />
-      </Helmet>
+      <SeoMetadata
+        title={GENERATE_SITE_TITLE(
+          tText(
+            'assignment/views/assignment-response-edit___maak-opdracht-antwoord-pagina-titel',
+          ),
+        )}
+        description={tText(
+          'assignment/views/assignment-response-edit___maak-opdracht-antwoord-pagina-beschrijving',
+        )}
+      />
 
       {renderPageContent()}
     </>

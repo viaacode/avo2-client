@@ -1,34 +1,29 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
-import { Button, Container, IconName, Spacer } from '@viaa/avo2-components'
-import { type FC } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate } from 'react-router'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import { Button, Container, IconName, Spacer } from '@viaa/avo2-components';
+import { type FC } from 'react';
+import { useNavigate } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 
 export const StudentTeacher: FC = () => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
   return (
     <Container className="c-register-stamboek-view" mode="vertical">
       <Container mode="horizontal" size="large">
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              tText(
-                'authentication/views/registration-flow/r-10-student-teacher___student-lesgever-pagina-titel',
-              ),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={tText(
-              'authentication/views/registration-flow/r-10-student-teacher___student-lesgever-pagina-beschrijving',
-            )}
-          />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            tText(
+              'authentication/views/registration-flow/r-10-student-teacher___student-lesgever-pagina-titel',
+            ),
+          )}
+          description={tText(
+            'authentication/views/registration-flow/r-10-student-teacher___student-lesgever-pagina-beschrijving',
+          )}
+        />
         <div className="c-content">
           <Spacer margin="bottom-large">
             <Button
@@ -54,7 +49,7 @@ export const StudentTeacher: FC = () => {
         </div>
       </Container>
     </Container>
-  )
-}
+  );
+};
 
-export default StudentTeacher
+export default StudentTeacher;

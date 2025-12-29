@@ -1,7 +1,6 @@
 import { PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { type FC, lazy, Suspense, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
@@ -13,6 +12,7 @@ import { ADMIN_PATH } from '../../admin.const';
 import { UserService } from '../user.service';
 
 import './UserDetailPage.scss';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tText } from '../../../shared/helpers/translate-text';
 
 const UserDetail = lazy(() =>
@@ -31,20 +31,15 @@ export const UserDetailPage: FC = () => {
   return (
     <>
       <PermissionGuard permissions={[PermissionName.VIEW_USERS]}>
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              user?.fullName,
-              tText('admin/users/views/user-detail___item-detail-pagina-titel'),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={tText(
-              'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving',
-            )}
-          />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            user?.fullName,
+            tText('admin/users/views/user-detail___item-detail-pagina-titel'),
+          )}
+          description={tText(
+            'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving',
+          )}
+        />
 
         <Suspense
           fallback={<FullPageSpinner locationId="user-detail-page--loading" />}

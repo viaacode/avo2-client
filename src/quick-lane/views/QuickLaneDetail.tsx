@@ -14,22 +14,11 @@ import {
   ToolbarLeft,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import {
-  AvoCollectionCollection,
-  AvoItemItem,
-  PermissionName,
-} from '@viaa/avo2-types';
+import { AvoCollectionCollection, AvoItemItem, PermissionName, } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-} from 'react';
-import { Helmet } from 'react-helmet';
+import { type FC, type ReactNode, useCallback, useEffect, useMemo, } from 'react';
 import { generatePath, useNavigate, useParams } from 'react-router';
 
 import { AssignmentLayout } from '../../assignment/assignment.types';
@@ -41,6 +30,7 @@ import { ErrorView } from '../../error/views/ErrorView';
 import { ItemVideoDescription } from '../../item/components/ItemVideoDescription';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { QuickLaneTypeEnum } from '../../shared/components/QuickLaneContent/QuickLaneContent.types';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { isMobileWidth } from '../../shared/helpers/media-query';
@@ -373,20 +363,15 @@ export const QuickLaneDetail: FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>
-          {GENERATE_SITE_TITLE(
-            quickLane?.title ||
-              tText(
-                'quick-lane/views/quick-lane-detail___gedeelde-link-detail-pagina-titel-fallback',
-              ),
-          )}
-        </title>
-        <meta
-          name="description"
-          content={quickLane?.content?.description || ''}
-        />
-      </Helmet>
+      <SeoMetadata
+        title={GENERATE_SITE_TITLE(
+          quickLane?.title ||
+            tText(
+              'quick-lane/views/quick-lane-detail___gedeelde-link-detail-pagina-titel-fallback',
+            ),
+        )}
+        description={quickLane?.content?.description || ''}
+      />
       {renderPageContent()}
     </>
   );

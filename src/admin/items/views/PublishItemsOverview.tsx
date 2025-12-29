@@ -3,7 +3,6 @@ import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { AvoSearchOrderDirection, PermissionName } from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
 import { type FC, useCallback, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
@@ -14,6 +13,7 @@ import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { formatTimestamp } from '../../../shared/helpers/formatters/date';
@@ -386,21 +386,16 @@ export const PublishItemsOverview: FC = () => {
           </ButtonToolbar>
         </AdminLayoutTopBarRight>
         <AdminLayoutBody>
-          <Helmet>
-            <title>
-              {GENERATE_SITE_TITLE(
-                tText(
-                  'admin/items/views/publish-items-overview___publiceer-items-beheer-overview-pagina-titel',
-                ),
-              )}
-            </title>
-            <meta
-              name="description"
-              content={tText(
-                'admin/items/views/publish-items-overview___unpublished-item-beheer-overview-pagina-beschrijving',
-              )}
-            />
-          </Helmet>
+          <SeoMetadata
+            title={GENERATE_SITE_TITLE(
+              tText(
+                'admin/items/views/publish-items-overview___publiceer-items-beheer-overview-pagina-titel',
+              ),
+            )}
+            description={tText(
+              'admin/items/views/publish-items-overview___unpublished-item-beheer-overview-pagina-beschrijving',
+            )}
+          />
           <LoadingErrorLoadedComponent
             loadingInfo={loadingInfo}
             dataObject={items}

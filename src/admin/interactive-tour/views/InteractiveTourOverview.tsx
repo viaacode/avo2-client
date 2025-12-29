@@ -3,7 +3,6 @@ import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
 import { AvoSearchOrderDirection, PermissionName } from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
 import { type FC, useCallback, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -16,6 +15,7 @@ import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { formatDate } from '../../../shared/helpers/formatters/date';
@@ -339,21 +339,16 @@ export const InteractiveTourOverview: FC = () => {
           />
         </AdminLayoutTopBarRight>
         <AdminLayoutBody>
-          <Helmet>
-            <title>
-              {GENERATE_SITE_TITLE(
-                tText(
-                  'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-titel',
-                ),
-              )}
-            </title>
-            <meta
-              name="description"
-              content={tText(
-                'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-beschrijving',
-              )}
-            />
-          </Helmet>
+          <SeoMetadata
+            title={GENERATE_SITE_TITLE(
+              tText(
+                'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-titel',
+              ),
+            )}
+            description={tText(
+              'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-beschrijving',
+            )}
+          />
           <LoadingErrorLoadedComponent
             loadingInfo={loadingInfo}
             dataObject={interactiveTours}

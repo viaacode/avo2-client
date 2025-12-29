@@ -29,7 +29,6 @@ import { clsx } from 'clsx';
 import { isNil, noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactNode, type ReactText, useCallback, useEffect, useState, } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -80,6 +79,7 @@ import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { type ItemTrimInfo } from '../item.types';
 
 import './ItemDetail.scss';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
 import { JsonParam, StringParam, useQueryParam, useQueryParams, } from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
@@ -1156,17 +1156,13 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 
   return (
     <>
-      <Helmet>
-        <title>
-          {GENERATE_SITE_TITLE(
-            item?.title ||
-              tText(
-                'item/views/item-detail___item-detail-pagina-titel-fallback',
-              ),
-          )}
-        </title>
-        <meta name="description" content={item?.description || ''} />
-      </Helmet>
+      <SeoMetadata
+        title={GENERATE_SITE_TITLE(
+          item?.title ||
+            tText('item/views/item-detail___item-detail-pagina-titel-fallback'),
+        )}
+        description={item?.description || ''}
+      />
       <LoadingErrorLoadedComponent
         loadingInfo={loadingInfo}
         dataObject={item}

@@ -1,7 +1,6 @@
 import { ContentPageRenderer } from '@meemoo/admin-core-ui/client';
 import { useAtomValue } from 'jotai';
 import { type FC } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
 import { useGetContentPageByPath } from '../../admin/content-page/hooks/use-get-content-page-by-path';
@@ -10,6 +9,7 @@ import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionGuard } from '../../authentication/components/PermissionGuard';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { ROUTE_PARTS } from '../../shared/constants/routes';
 import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
 import { tText } from '../../shared/helpers/translate-text';
@@ -36,19 +36,14 @@ export const LoggedInHome: FC = () => {
   return (
     <>
       <PermissionGuard hasToBeLoggedIn={true}>
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              tText('home/views/home___ingelogde-start-pagina-titel'),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={tText(
-              'home/views/home___ingelogde-start-pagina-beschrijving',
-            )}
-          />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            tText('home/views/home___ingelogde-start-pagina-titel'),
+          )}
+          description={tText(
+            'home/views/home___ingelogde-start-pagina-beschrijving',
+          )}
+        />
         {contentPageInfo && (
           <>
             <InteractiveTour showButton={false} />

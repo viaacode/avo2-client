@@ -10,14 +10,10 @@ import { AssignmentResponseEditPage } from './AssignmentResponseEdit/AssignmentR
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
-import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 
 export const AssignmentDetailSwitcher: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);
 
-  if (!commonUser?.userGroup?.id) {
-    return <FullPageSpinner locationId="assignment-detail-switcher--loading" />;
-  }
   if (
     [SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]
       .map(String)

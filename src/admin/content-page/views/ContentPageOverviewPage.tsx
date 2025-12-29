@@ -2,7 +2,6 @@ import { Button } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { type FC, lazy, Suspense, useCallback } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
@@ -11,13 +10,11 @@ import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { tText } from '../../../shared/helpers/translate-text';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import {
-  AdminLayoutBody,
-  AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { CONTENT_PAGE_PATH } from '../content-page.routes.ts';
 
 import './ContentPage.scss';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 
 const ContentPageOverview = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -79,21 +76,16 @@ export const ContentPageOverviewPage: FC = () => {
           )}
         </AdminLayoutTopBarRight>
         <AdminLayoutBody>
-          <Helmet>
-            <title>
-              {GENERATE_SITE_TITLE(
-                tText(
-                  'admin/content-page/views/content-page-overview-page___contentpaginas-beheer',
-                ),
-              )}
-            </title>
-            <meta
-              name="description"
-              content={tText(
-                'admin/content-page/views/content-page-overview-page___contentbeheer-beheer-content-paginas-via-dit-overzicht',
-              )}
-            />
-          </Helmet>
+          <SeoMetadata
+            title={GENERATE_SITE_TITLE(
+              tText(
+                'admin/content-page/views/content-page-overview-page___contentpaginas-beheer',
+              ),
+            )}
+            description={tText(
+              'admin/content-page/views/content-page-overview-page___contentbeheer-beheer-content-paginas-via-dit-overzicht',
+            )}
+          />
           {renderPageContent()}
         </AdminLayoutBody>
       </AdminLayout>

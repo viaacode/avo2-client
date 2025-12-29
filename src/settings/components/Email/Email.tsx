@@ -1,32 +1,17 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import {
-  Button,
-  Checkbox,
-  CheckboxGroup,
-  Container,
-  Form,
-  FormGroup,
-  Spacer,
-  Spinner,
-} from '@viaa/avo2-components';
+import { Button, Checkbox, CheckboxGroup, Container, Form, FormGroup, Spacer, Spinner, } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
 import { type FC, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import {
-  StringParam,
-  useQueryParams,
-} from '../../../shared/helpers/routing/use-query-params-ssr';
+import { StringParam, useQueryParams, } from '../../../shared/helpers/routing/use-query-params-ssr';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
-import {
-  CampaignMonitorService,
-  type NewsletterPreferences,
-} from '../../../shared/services/campaign-monitor-service';
+import { CampaignMonitorService, type NewsletterPreferences, } from '../../../shared/services/campaign-monitor-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { type NewsletterList } from '../../../shared/types';
 import { GET_NEWSLETTER_LABELS } from '../../settings.const';
@@ -151,21 +136,16 @@ export const Email: FC = () => {
   return (
     <Container mode="horizontal">
       <Container mode="vertical">
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              tText(
-                'settings/components/email___nieuwsbrief-voorkeuren-pagina-titel',
-              ),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={tText(
-              'settings/components/email___nieuwsbrief-voorkeuren-pagina-beschrijving',
-            )}
-          />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            tText(
+              'settings/components/email___nieuwsbrief-voorkeuren-pagina-titel',
+            ),
+          )}
+          description={tText(
+            'settings/components/email___nieuwsbrief-voorkeuren-pagina-beschrijving',
+          )}
+        />
         <Spacer margin="bottom-small">
           <BlockHeading type="h3">
             {tText('settings/components/email___e-mail-nieuwsbrief-voorkeuren')}

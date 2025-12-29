@@ -32,11 +32,10 @@ import {
   PermissionName,
 } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
-import { noop } from 'es-toolkit';
+import { compact, noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { useNavigate, useParams } from 'react-router';
+import { useLoaderData, useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -54,7 +53,7 @@ import {
 import { PublishCollectionModal } from '../../collection/components/modals/PublishCollectionModal';
 import { useGetCollectionOrBundleByIdOrInviteToken } from '../../collection/hooks/useGetCollectionOrBundleByIdOrInviteToken';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX, } from '../../collection/views/CollectionDetail';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { ALL_SEARCH_FILTERS, type SearchFilter, } from '../../search/search.const';
 import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
@@ -72,7 +71,7 @@ import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render
 import { defaultGoToDetailLink, defaultRenderDetailLink, } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { renderAvatar } from '../../shared/helpers/formatters/avatar';
+import { getFullName, renderAvatar, } from '../../shared/helpers/formatters/avatar';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
@@ -86,6 +85,8 @@ import { ToastService } from '../../shared/services/toast-service';
 import { BundleAction } from '../bundle.types';
 
 import './BundleDetail.scss';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
+import { isServerSideRendering } from '../../shared/helpers/routing/is-server-side-rendering.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
@@ -99,6 +100,12 @@ export const BundleDetail: FC<BundleDetailProps> = ({
   enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
   const navigateFunc = useNavigate();
+  const loaderData = useLoaderData<{
+    collection: AvoCollectionCollection;
+    url: string;
+  }>();
+  const bundleFromLoader =
+    loaderData?.collection as AvoCollectionCollection | null;
 
   const { id: bundleIdFromUrl } = useParams<{ id: string }>();
 
@@ -141,7 +148,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
     bundleId as string,
     CollectionOrBundle.BUNDLE,
     undefined,
-    { enabled: !!bundleId },
+    { enabled: !!bundleId, initialData: bundleFromLoader },
   );
 
   // Computed
@@ -774,30 +781,6 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 
     return (
       <>
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              bundleObj?.title,
-              tText(
-                'bundle/views/bundle-detail___bundel-detail-titel-fallback',
-              ),
-            )}
-          </title>
-          <meta name="description" content={bundleObj?.description || ''} />
-        </Helmet>
-        {/*<JsonLd*/}
-        {/*  url={window.location.href}*/}
-        {/*  title={bundleObj?.title}*/}
-        {/*  description={bundleObj?.description}*/}
-        {/*  image={bundleObj?.thumbnail_path}*/}
-        {/*  isOrganisation={!!bundleObj?.profile?.organisation}*/}
-        {/*  author={getFullName(bundleObj?.profile, true, false)}*/}
-        {/*  publishedAt={bundleObj?.published_at}*/}
-        {/*  updatedAt={bundleObj?.updated_at}*/}
-        {/*  keywords={compact(*/}
-        {/*    (bundleObj?.loms || []).map((lom) => lom.lom?.label),*/}
-        {/*  )}*/}
-        {/*/>*/}
         <div
           className={clsx(
             'm-bundle-detail',
@@ -951,7 +934,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
             )}
           </Container>
         </div>
-        {!showLoginPopup && (
+        {!showLoginPopup && !isServerSideRendering() && (
           <>
             <ConfirmModal
               title={tText(
@@ -985,6 +968,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
     if (isLoadingBundle) {
       return <FullPageSpinner locationId="bundle-detail--loading" />;
     }
+    console.log('bundle from loader: ', bundleFromLoader);
     if (isErrorBundle) {
       return (
         <ErrorView
@@ -1000,7 +984,29 @@ export const BundleDetail: FC<BundleDetailProps> = ({
     return renderBundle();
   };
 
-  return renderPageContent();
+  return (
+    <>
+      <SeoMetadata
+        title={bundleFromLoader?.title || tText('bundel-detail-titel-fallback')}
+        description={bundleFromLoader?.description}
+        image={bundleFromLoader?.seo_image_path}
+        url={loaderData?.url}
+        updatedAt={bundleFromLoader?.updated_at}
+        publishedAt={bundleFromLoader?.published_at}
+        createdAt={bundleFromLoader?.created_at}
+        author={
+          !!bundleFromLoader?.profile
+            ? getFullName(bundleFromLoader?.profile, false, false)
+            : null
+        }
+        organisationName={bundleFromLoader?.profile?.organisation?.name}
+        keywords={compact(
+          (bundleFromLoader?.loms || []).map((lom) => lom.lom?.label),
+        )}
+      />
+      {renderPageContent()}
+    </>
+  );
 };
 
 export default BundleDetail;

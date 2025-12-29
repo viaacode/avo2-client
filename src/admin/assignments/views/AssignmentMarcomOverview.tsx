@@ -2,7 +2,6 @@ import { ExportAllToCsvModal, FilterTable, getFilters, } from '@meemoo/admin-cor
 import { AvoAssignmentAssignment, AvoSearchOrderDirection, PermissionName, } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactNode, useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
 
 import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
 import { commonUserAtom } from '../../../authentication/authentication.store';
@@ -13,6 +12,7 @@ import { ErrorView } from '../../../error/views/ErrorView';
 
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { tHtml } from '../../../shared/helpers/translate-html';
@@ -371,21 +371,16 @@ export const AssignmentMarcomOverview: FC = () => {
         size="full-width"
       >
         <AdminLayoutBody>
-          <Helmet>
-            <title>
-              {GENERATE_SITE_TITLE(
-                tText(
-                  'admin/assignments/views/assignments-marcom-overview___collectie-marcom-beheer-overview-pagina-titel',
-                ),
-              )}
-            </title>
-            <meta
-              name="description"
-              content={tText(
-                'admin/assignments/views/assignments-marcom-overview___collectie-marcom-beheer-overview-pagina-beschrijving',
-              )}
-            />
-          </Helmet>
+          <SeoMetadata
+            title={GENERATE_SITE_TITLE(
+              tText(
+                'admin/assignments/views/assignments-marcom-overview___collectie-marcom-beheer-overview-pagina-titel',
+              ),
+            )}
+            description={tText(
+              'admin/assignments/views/assignments-marcom-overview___collectie-marcom-beheer-overview-pagina-beschrijving',
+            )}
+          />
           {renderAssignmentMarcomOverview()}
         </AdminLayoutBody>
       </AdminLayout>

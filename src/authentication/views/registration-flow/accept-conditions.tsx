@@ -4,19 +4,12 @@ import {
   ContentPageService,
   convertDbContentPagesToContentPageInfos,
 } from '@meemoo/admin-core-ui/client';
-import {
-  Button,
-  Spacer,
-  Spinner,
-  Toolbar,
-  ToolbarCenter,
-} from '@viaa/avo2-components';
+import { Button, Spacer, Spinner, Toolbar, ToolbarCenter, } from '@viaa/avo2-components';
 
 import { AvoAuthLoginResponseLoggedIn } from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { type FC, useCallback, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { SpecialUserGroupId } from '../../../admin/user-groups/user-group.const';
@@ -25,6 +18,7 @@ import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { renderWrongUserRoleError } from '../../../shared/helpers/render-wrong-user-role-error';
 import { tHtml } from '../../../shared/helpers/translate-html';
@@ -32,11 +26,7 @@ import { tText } from '../../../shared/helpers/translate-text';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { Locale } from '../../../shared/translations/translations.types';
-import {
-  acceptConditionsAtom,
-  commonUserAtom,
-  loginAtom,
-} from '../../authentication.store';
+import { acceptConditionsAtom, commonUserAtom, loginAtom, } from '../../authentication.store';
 import { redirectToClientPage } from '../../helpers/redirects/redirects';
 import { AcceptElementaryPupilConditions } from './accept-elementary-pupil-conditions';
 
@@ -204,21 +194,16 @@ export const AcceptConditions: FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>
-          {GENERATE_SITE_TITLE(
-            tText(
-              'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-titel',
-            ),
-          )}
-        </title>
-        <meta
-          name="description"
-          content={tText(
-            'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-beschrijving',
-          )}
-        />
-      </Helmet>
+      <SeoMetadata
+        title={GENERATE_SITE_TITLE(
+          tText(
+            'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-titel',
+          ),
+        )}
+        description={tText(
+          'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-beschrijving',
+        )}
+      />
       <LoadingErrorLoadedComponent
         loadingInfo={loadingInfo}
         dataObject={dataObject}

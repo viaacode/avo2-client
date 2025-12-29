@@ -1,26 +1,8 @@
-import {
-  ExportAllToCsvModal,
-  type FilterableColumn,
-  FilterTable,
-  getFilters,
-} from '@meemoo/admin-core-ui/admin';
-import {
-  AvoAssignmentAssignment,
-  AvoSearchOrderDirection,
-  AvoShareEditStatus,
-  PermissionName,
-} from '@viaa/avo2-types';
+import { ExportAllToCsvModal, type FilterableColumn, FilterTable, getFilters, } from '@meemoo/admin-core-ui/admin';
+import { AvoAssignmentAssignment, AvoSearchOrderDirection, AvoShareEditStatus, PermissionName, } from '@viaa/avo2-types';
 import { compact, noop, partition } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { Helmet } from 'react-helmet';
+import { type FC, type ReactNode, useCallback, useEffect, useMemo, useState, } from 'react';
 
 import { AssignmentService } from '../../../assignment/assignment.service';
 import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
@@ -55,21 +37,12 @@ import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.sl
 import { type PickerItem } from '../../shared/types/content-picker';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import { AssignmentsAdminService } from '../assignments.admin.service';
-import {
-  GET_ASSIGNMENT_BULK_ACTIONS,
-  GET_ASSIGNMENT_OVERVIEW_TABLE_COLS,
-  ITEMS_PER_PAGE,
-} from '../assignments.const';
-import {
-  AssignmentsBulkAction,
-  type AssignmentsOverviewTableState,
-} from '../assignments.types';
-import {
-  renderAssignmentOverviewCellReact,
-  renderAssignmentsMarcomCellText,
-} from '../helpers/render-assignment-columns';
+import { GET_ASSIGNMENT_BULK_ACTIONS, GET_ASSIGNMENT_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE, } from '../assignments.const';
+import { AssignmentsBulkAction, type AssignmentsOverviewTableState, } from '../assignments.types';
+import { renderAssignmentOverviewCellReact, renderAssignmentsMarcomCellText, } from '../helpers/render-assignment-columns';
 
 import './AssignmentOverviewAdmin.scss';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 
 export const AssignmentOverviewAdmin: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);
@@ -635,21 +608,16 @@ export const AssignmentOverviewAdmin: FC = () => {
         size="full-width"
       >
         <AdminLayoutBody>
-          <Helmet>
-            <title>
-              {GENERATE_SITE_TITLE(
-                tText(
-                  'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-titel',
-                ),
-              )}
-            </title>
-            <meta
-              name="description"
-              content={tText(
-                'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-beschrijving',
-              )}
-            />
-          </Helmet>
+          <SeoMetadata
+            title={GENERATE_SITE_TITLE(
+              tText(
+                'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-titel',
+              ),
+            )}
+            description={tText(
+              'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-beschrijving',
+            )}
+          />
           <LoadingErrorLoadedComponent
             loadingInfo={loadingInfo}
             dataObject={assignments}

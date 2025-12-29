@@ -1,10 +1,10 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import { Alert, Button, Container, FormGroup, Spacer, } from '@viaa/avo2-components';
 import { type FC, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { Link, useLocation } from 'react-router-dom';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { StamboekInput } from '../../components/StamboekInput';
@@ -33,21 +33,16 @@ export const RegisterStamboek: FC = () => {
   return (
     <Container className="c-register-stamboek-view" mode="vertical">
       <Container mode="horizontal" size="medium">
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              tText(
-                'authentication/views/registration-flow/r-3-stamboek___stamboek-pagina-titel',
-              ),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={tText(
-              'authentication/views/registration-flow/r-3-stamboek___stamboek-pagina-beschrijving',
-            )}
-          />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            tText(
+              'authentication/views/registration-flow/r-3-stamboek___stamboek-pagina-titel',
+            ),
+          )}
+          description={tText(
+            'authentication/views/registration-flow/r-3-stamboek___stamboek-pagina-beschrijving',
+          )}
+        />
         <div className="c-content">
           <BlockHeading type="h2">
             {tHtml(

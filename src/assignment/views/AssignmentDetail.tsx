@@ -27,13 +27,12 @@ import {
   AvoShareRights,
   AvoUserCommonUser,
   AvoUserUser,
-  PermissionName
+  PermissionName,
 } from '@viaa/avo2-types';
-import { noop } from 'es-toolkit';
+import { compact, noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactText, useCallback, useEffect, useState, } from 'react';
-import { Helmet } from 'react-helmet';
-import { generatePath, useNavigate, useParams } from 'react-router';
+import { generatePath, useLoaderData, useNavigate, useParams, } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -47,7 +46,7 @@ import {
   useGetCollectionsOrBundlesContainingFragment,
 } from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
 import { QUERY_PARAM_INVITE_TOKEN, QUERY_PARAM_SHOW_PUBLISH_MODAL, } from '../../collection/views/CollectionDetail.const';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH } from '../../constants';
 import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
 import { ErrorView, type ErrorViewQueryParams, } from '../../error/views/ErrorView';
 import { ALL_SEARCH_FILTERS, type SearchFilter, } from '../../search/search.const';
@@ -59,6 +58,7 @@ import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPag
 import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown';
 import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
@@ -72,6 +72,7 @@ import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
+import { getFullName } from '../../shared/helpers/formatters/avatar.tsx';
 import { navigate } from '../../shared/helpers/link';
 import { type EducationLevelId, getGroupedLomsKeyValue, } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
@@ -117,9 +118,16 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
   const { id: assignmentId } = useParams<{ id: string }>();
 
   // Data
+  const loaderData = useLoaderData<{
+    assignment: AvoAssignmentAssignment;
+    url: string;
+  }>();
+  const assignmentFromLoader =
+    loaderData?.assignment as AvoAssignmentAssignment | null;
   const [assignment, setAssignment] = useState<AvoAssignmentAssignment | null>(
-    null,
+    assignmentFromLoader,
   );
+
   const [permissions, setPermissions] =
     useState<AssignmentDetailPermissions | null>(null);
   const [relatedAssignments, setRelatedAssignments] = useState<
@@ -1100,15 +1108,9 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
     );
   };
 
-  const pageTitle = GENERATE_SITE_TITLE(
-    assignment?.title ||
-      tText(
-        'assignment/views/assignment-detail___opdracht-detail-pagina-titel',
-      ),
-  );
-  return (
-    <>
-      {!assignment && !assignmentLoading && !assignmentError && isForbidden ? (
+  const renderPage = () => {
+    if (!assignment && !assignmentLoading && !assignmentError && isForbidden) {
+      return (
         <ErrorNoAccess
           title={tHtml(
             'assignment/views/assignment-detail___je-hebt-geen-toegang',
@@ -1117,22 +1119,12 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
             'assignment/views/assignment-detail___je-hebt-geen-toegang-om-deze-opdracht-te-bekijken',
           )}
         />
-      ) : (
+      );
+    }
+    return (
+      <>
         <div className="c-sticky-bar__wrapper">
-          <div>
-            <Helmet>
-              <title>{pageTitle}</title>
-
-              <meta
-                name="description"
-                content={tText(
-                  'assignment/views/assignment-detail___opdracht-detail-pagina-beschrijving',
-                )}
-              />
-            </Helmet>
-
-            {renderPageContent()}
-          </div>
+          <div>{renderPageContent()}</div>
 
           {!assignmentError && (
             <StickyBar
@@ -1156,103 +1148,132 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
             />
           )}
         </div>
-      )}
 
-      {!!assignment && !!commonUser && (
-        <PublishAssignmentModal
-          onClose={(newAssignment: AvoAssignmentAssignment | undefined) => {
-            setQuery({
-              ...query,
-              [QUERY_PARAM_SHOW_PUBLISH_MODAL]: undefined,
-            });
-            if (newAssignment) {
-              setAssignment(newAssignment);
+        {!!assignment && !!commonUser && (
+          <PublishAssignmentModal
+            onClose={(newAssignment: AvoAssignmentAssignment | undefined) => {
+              setQuery({
+                ...query,
+                [QUERY_PARAM_SHOW_PUBLISH_MODAL]: undefined,
+              });
+              if (newAssignment) {
+                setAssignment(newAssignment);
+              }
+            }}
+            isOpen={!!showPublishModal}
+            assignment={assignment as AvoAssignmentAssignment}
+            parentBundles={bundlesContainingAssignment}
+          />
+        )}
+
+        {assignment && isMobileWidth() && (
+          <ShareModal
+            title={tText(
+              'assignment/views/assignment-detail___deel-deze-opdracht-met-collegas',
+            )}
+            isOpen={isShareModalOpen}
+            onClose={() => setIsShareModalOpen(false)}
+            contributors={transformContributorsToSimpleContributors(
+              shareWithPupilsProps?.assignment?.owner as AvoUserUser,
+              (assignment?.contributors || []) as AvoAssignmentContributor[],
+            )}
+            onDeleteContributor={(contributorInfo) =>
+              onDeleteContributor(
+                contributorInfo,
+                shareWithPupilsProps,
+                fetchContributors,
+              )
             }
-          }}
-          isOpen={!!showPublishModal}
-          assignment={assignment as AvoAssignmentAssignment}
-          parentBundles={bundlesContainingAssignment}
-        />
-      )}
+            onEditContributorRights={(contributorInfo, newRights) =>
+              onEditContributor(
+                contributorInfo,
+                newRights,
+                shareWithPupilsProps,
+                fetchContributors,
+                fetchAssignment,
+              )
+            }
+            onAddContributor={(info) =>
+              onAddNewContributor(
+                info,
+                shareWithPupilsProps,
+                fetchContributors,
+                commonUser,
+              )
+            }
+            shareWithPupilsProps={shareWithPupilsProps}
+            availableRights={{
+              [ContributorInfoRight.CONTRIBUTOR]:
+                PermissionName.SHARE_ASSIGNMENT_WITH_CONTRIBUTOR,
+              [ContributorInfoRight.VIEWER]:
+                PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
+            }}
+            isAdmin={
+              commonUser?.permissions?.includes(
+                PermissionName.EDIT_ANY_ASSIGNMENTS,
+              ) || false
+            }
+            assignment={assignment}
+          />
+        )}
 
-      {assignment && isMobileWidth() && (
-        <ShareModal
-          title={tText(
-            'assignment/views/assignment-detail___deel-deze-opdracht-met-collegas',
-          )}
-          isOpen={isShareModalOpen}
-          onClose={() => setIsShareModalOpen(false)}
-          contributors={transformContributorsToSimpleContributors(
-            shareWithPupilsProps?.assignment?.owner as AvoUserUser,
-            (assignment?.contributors || []) as AvoAssignmentContributor[],
-          )}
-          onDeleteContributor={(contributorInfo) =>
-            onDeleteContributor(
-              contributorInfo,
-              shareWithPupilsProps,
-              fetchContributors,
+        {!!assignment?.id && permissions?.canEditBundles && (
+          <AddToBundleModal
+            fragmentId={assignment.id}
+            fragmentInfo={assignment}
+            fragmentType={AvoCoreBlockItemType.ASSIGNMENT}
+            isOpen={isAddToBundleModalOpen}
+            onClose={async () => {
+              setIsAddToBundleModalOpen(false);
+              await refetchBundlesContainingAssignment();
+            }}
+          />
+        )}
+
+        <DeleteAssignmentModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          deleteAssignmentCallback={onDeleteAssignment}
+          deleteSelfFromAssignmentCallback={onDeleteSelfFromAssignment}
+          contributorCount={assignment?.contributors?.length || 0}
+          shouldDeleteSelfFromAssignment={shouldDeleteSelfFromAssignment}
+          hasPupilResponses={!!assignment?.responses?.length}
+          hasPupilResponseCollections={
+            !!assignment?.blocks?.find(
+              (block) => block.type === AvoCoreBlockItemType.BOUW,
             )
           }
-          onEditContributorRights={(contributorInfo, newRights) =>
-            onEditContributor(
-              contributorInfo,
-              newRights,
-              shareWithPupilsProps,
-              fetchContributors,
-              fetchAssignment,
-            )
-          }
-          onAddContributor={(info) =>
-            onAddNewContributor(
-              info,
-              shareWithPupilsProps,
-              fetchContributors,
-              commonUser,
-            )
-          }
-          shareWithPupilsProps={shareWithPupilsProps}
-          availableRights={{
-            [ContributorInfoRight.CONTRIBUTOR]:
-              PermissionName.SHARE_ASSIGNMENT_WITH_CONTRIBUTOR,
-            [ContributorInfoRight.VIEWER]:
-              PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
-          }}
-          isAdmin={
-            commonUser?.permissions?.includes(
-              PermissionName.EDIT_ANY_ASSIGNMENTS,
-            ) || false
-          }
-          assignment={assignment}
         />
-      )}
+      </>
+    );
+  };
 
-      {!!assignment?.id && permissions?.canEditBundles && (
-        <AddToBundleModal
-          fragmentId={assignment.id}
-          fragmentInfo={assignment}
-          fragmentType={AvoCoreBlockItemType.ASSIGNMENT}
-          isOpen={isAddToBundleModalOpen}
-          onClose={async () => {
-            setIsAddToBundleModalOpen(false);
-            await refetchBundlesContainingAssignment();
-          }}
-        />
-      )}
-
-      <DeleteAssignmentModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        deleteAssignmentCallback={onDeleteAssignment}
-        deleteSelfFromAssignmentCallback={onDeleteSelfFromAssignment}
-        contributorCount={assignment?.contributors?.length || 0}
-        shouldDeleteSelfFromAssignment={shouldDeleteSelfFromAssignment}
-        hasPupilResponses={!!assignment?.responses?.length}
-        hasPupilResponseCollections={
-          !!assignment?.blocks?.find(
-            (block) => block.type === AvoCoreBlockItemType.BOUW,
+  return (
+    <>
+      <SeoMetadata
+        title={
+          assignmentFromLoader?.title ||
+          tText(
+            'assignment/views/assignment-detail___opdracht-detail-pagina-titel',
           )
         }
+        description={assignmentFromLoader?.description}
+        image={assignmentFromLoader?.seo_image_path}
+        url={loaderData?.url}
+        updatedAt={assignmentFromLoader?.updated_at}
+        publishedAt={assignmentFromLoader?.published_at}
+        createdAt={assignmentFromLoader?.created_at}
+        author={
+          !!assignmentFromLoader?.profile
+            ? getFullName(assignmentFromLoader?.profile, false, false)
+            : null
+        }
+        organisationName={assignmentFromLoader?.profile?.organisation?.name}
+        keywords={compact(
+          (assignmentFromLoader?.loms || []).map((lom) => lom.lom?.label),
+        )}
       />
+      {renderPage()}
     </>
   );
 };

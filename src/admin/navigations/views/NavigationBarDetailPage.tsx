@@ -1,6 +1,5 @@
 import { PermissionName } from '@viaa/avo2-types';
 import { type FC, lazy, Suspense } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
@@ -11,6 +10,7 @@ import { tText } from '../../../shared/helpers/translate-text';
 import { ADMIN_PATH } from '../../admin.const';
 
 import './NavigationBarDetailPage.scss';
+import { SeoMetadata } from "../../../shared/components/SeoMetadata/SeoMetadata.tsx";
 
 const NavigationDetail = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -25,22 +25,17 @@ export const NavigationBarDetailPage: FC = () => {
   return (
     <PermissionGuard permissions={[PermissionName.EDIT_NAVIGATION_BARS]}>
       <div className="c-admin__navigation-detail">
-        <Helmet>
-          <title>
-            {GENERATE_SITE_TITLE(
-              navigationBarId,
-              tText(
-                'admin/menu/views/menu-detail___menu-beheer-detail-pagina-titel',
-              ),
-            )}
-          </title>
-          <meta
-            name="description"
-            content={tText(
-              'admin/menu/views/menu-detail___menu-beheer-detail-pagina-beschrijving',
-            )}
-          />
-        </Helmet>
+        <SeoMetadata
+          title={GENERATE_SITE_TITLE(
+            navigationBarId,
+            tText(
+              'admin/menu/views/menu-detail___menu-beheer-detail-pagina-titel',
+            ),
+          )}
+          description={tText(
+            'admin/menu/views/menu-detail___menu-beheer-detail-pagina-beschrijving',
+          )}
+        />
         <Suspense
           fallback={
             <FullPageSpinner locationId="navigation-bar-detail-page--loading" />

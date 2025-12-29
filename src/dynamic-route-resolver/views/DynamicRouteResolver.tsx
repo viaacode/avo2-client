@@ -10,7 +10,6 @@ import { AvoAuthLoginResponseLoggedIn, AvoSearchOrderDirection, PermissionName, 
 import { useAtom, useSetAtom } from 'jotai';
 import { stringifyUrl } from 'query-string';
 import { type FC, useCallback, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { Navigate, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
@@ -31,6 +30,7 @@ import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
@@ -302,10 +302,10 @@ export const DynamicRouteResolver: FC = () => {
         '';
       return (
         <>
-          <Helmet>
-            <title>{GENERATE_SITE_TITLE(routeInfo.data?.title)}</title>
-            <meta name="description" content={description} />
-          </Helmet>
+          <SeoMetadata
+            title={GENERATE_SITE_TITLE(routeInfo.data?.title)}
+            description={description}
+          />
           {/*<JsonLd*/}
           {/*  url={window.location.href}*/}
           {/*  title={routeInfo.data?.title || ''}*/}

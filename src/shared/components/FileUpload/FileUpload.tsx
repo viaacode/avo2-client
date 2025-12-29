@@ -13,6 +13,7 @@ import { ToastService } from '../../services/toast-service';
 import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
 
 import './FileUpload.scss';
+import { FileUploadImagePosition } from "./FileUpload.const.ts";
 
 interface FileUploadProps {
   icon?: IconName;
@@ -26,6 +27,7 @@ interface FileUploadProps {
   showDeleteButton?: boolean;
   disabled?: boolean;
   onChange: (urls: string[]) => void;
+  imagePosition?: FileUploadImagePosition;
 }
 
 interface FileUploadDimensions {
@@ -47,6 +49,7 @@ export const FileUpload: FC<FileUploadProps> = ({
   showDeleteButton = true,
   disabled = false,
   onChange,
+  imagePosition = FileUploadImagePosition.BELOW_BUTTON,
 }) => {
   const [urlToDelete, setUrlToDelete] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -271,7 +274,8 @@ export const FileUpload: FC<FileUploadProps> = ({
   // Render
   return (
     <div className="c-file-upload">
-      {renderFilesPreview()}
+      {imagePosition === FileUploadImagePosition.ABOVE_BUTTON &&
+        renderFilesPreview()}
       {!disabled &&
         (!isProcessing ? (
           <Flex>
@@ -312,6 +316,8 @@ export const FileUpload: FC<FileUploadProps> = ({
         ) : (
           <Spinner size="large" />
         ))}
+      {imagePosition === FileUploadImagePosition.BELOW_BUTTON &&
+        renderFilesPreview()}
       <ConfirmModal
         title={tHtml(
           'shared/components/file-upload/file-upload___ben-je-zeker-dat-je-dit-bestand-wil-verwijderen',
