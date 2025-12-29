@@ -24,26 +24,20 @@ import {
   ToolbarLeft,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { CollectionService } from '../../collection/collection.service';
-import {
-  type Collection,
-  ContentTypeNumber,
-} from '../../collection/collection.types';
+import { type Collection, ContentTypeNumber, } from '../../collection/collection.types';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../shared/helpers/custom-error';
-import {
-  formatDate,
-  formatTimestamp,
-} from '../../shared/helpers/formatters/date';
+import { formatDate, formatTimestamp, } from '../../shared/helpers/formatters/date';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
@@ -53,6 +47,7 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { type AssignmentTableColumns } from '../assignment.types';
 
 import './AddItemsModals.scss';
+import { AvoCollectionCollection, AvoSearchOrderDirection, } from '@viaa/avo2-types';
 import { tHtml } from '../../shared/helpers/translate-html';
 
 // Column definitions
@@ -78,33 +73,33 @@ const GET_ADD_COLLECTION_COLUMNS = (): TableColumn[] => [
 ];
 
 const OWN_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
-  [columnId in keyof Avo.Collection.Collection]: (
-    order: Avo.Search.OrderDirection,
+  [columnId in keyof AvoCollectionCollection]: (
+    order: AvoSearchOrderDirection,
   ) => any;
 }> = {
-  title: (order: Avo.Search.OrderDirection) => ({
+  title: (order: AvoSearchOrderDirection) => ({
     title: order,
   }),
-  updated_at: (order: Avo.Search.OrderDirection) => ({
+  updated_at: (order: AvoSearchOrderDirection) => ({
     updated_at: order,
   }),
-  is_public: (order: Avo.Search.OrderDirection) => ({
+  is_public: (order: AvoSearchOrderDirection) => ({
     is_public: order,
   }),
 };
 
 const BOOKMARKED_COLLECTION_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
-  [columnId in keyof Avo.Collection.Collection]: (
-    order: Avo.Search.OrderDirection,
+  [columnId in keyof AvoCollectionCollection]: (
+    order: AvoSearchOrderDirection,
   ) => any;
 }> = {
-  title: (order: Avo.Search.OrderDirection) => ({
+  title: (order: AvoSearchOrderDirection) => ({
     bookmarkedCollection: { title: order },
   }),
-  updated_at: (order: Avo.Search.OrderDirection) => ({
+  updated_at: (order: AvoSearchOrderDirection) => ({
     bookmarkedCollection: { updated_at: order },
   }),
-  is_public: (order: Avo.Search.OrderDirection) => ({
+  is_public: (order: AvoSearchOrderDirection) => ({
     bookmarkedCollection: { is_public: order },
   }),
 };
@@ -165,7 +160,7 @@ export const AddCollectionModal: FC<AddCollectionModalProps> = ({
       const columnDataType: TableColumnDataType = (column?.dataType ||
         TableColumnDataType.string) as TableColumnDataType;
 
-      let collections: Partial<Avo.Collection.Collection>[];
+      let collections: Partial<AvoCollectionCollection>[];
       if (activeView === AddCollectionTab.myCollections) {
         collections =
           await CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
@@ -236,7 +231,7 @@ export const AddCollectionModal: FC<AddCollectionModalProps> = ({
     setSelectedCollectionId(null);
     setActiveView(AddCollectionTab.myCollections);
     setSortColumn('updated_at');
-    setSortOrder(Avo.Search.OrderDirection.DESC);
+    setSortOrder(AvoSearchOrderDirection.DESC);
     setFilterString('');
 
     onClose();
@@ -262,8 +257,8 @@ export const AddCollectionModal: FC<AddCollectionModalProps> = ({
   };
 
   const renderCell = (
-    collection: Avo.Collection.Collection,
-    colKey: keyof Avo.Collection.Collection,
+    collection: AvoCollectionCollection,
+    colKey: keyof AvoCollectionCollection,
   ) => {
     const cellData: any = (collection as any)[colKey];
 
@@ -391,8 +386,8 @@ export const AddCollectionModal: FC<AddCollectionModalProps> = ({
                     'assignment/modals/add-collection-modal___er-zijn-nog-geen-collecties-aangemaakt',
                   )
             }
-            renderCell={(rowData: Avo.Collection.Collection, colKey: string) =>
-              renderCell(rowData, colKey as keyof Avo.Collection.Collection)
+            renderCell={(rowData: AvoCollectionCollection, colKey: string) =>
+              renderCell(rowData, colKey as keyof AvoCollectionCollection)
             }
             rowKey="id"
             variant="styled"

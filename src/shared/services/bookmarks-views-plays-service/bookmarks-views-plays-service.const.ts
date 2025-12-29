@@ -1,5 +1,4 @@
-import { type Avo } from '@viaa/avo2-types'
-
+import { AvoUserCommonUser } from '@viaa/avo2-types';
 import {
   type DeleteAssignmentBookmarksForUserMutationVariables,
   type DeleteCollectionBookmarksForUserMutationVariables,
@@ -29,7 +28,6 @@ import {
   InsertCollectionBookmarkDocument,
   InsertItemBookmarkDocument,
 } from '../../generated/graphql-db-react-query';
-
 import {
   type BookmarkViewPlayCounts,
   type EventAction,
@@ -42,30 +40,27 @@ export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
   viewCount: 0,
   playCount: 0,
   isBookmarked: false,
-}
+};
 
 interface QueryDefinition {
-  query?: string
-  get?: string
-  increment?: string
-  variables: (uuid: string, commonUser: Avo.User.CommonUser | null) => any
-  getResponseCount?: (response: any) => number
+  query?: string;
+  get?: string;
+  increment?: string;
+  variables: (uuid: string, commonUser: AvoUserCommonUser | null) => any;
+  getResponseCount?: (response: any) => number;
 }
 
 export const GET_EVENT_QUERIES: () => {
   /* eslint-disable @typescript-eslint/no-unused-vars */
   [action in EventAction]: {
-    [contentType in EventContentTypeSimplified]: QueryDefinition
+    [contentType in EventContentTypeSimplified]: QueryDefinition;
     /* eslint-enable @typescript-eslint/no-unused-vars */
-  }
+  };
 } = () => ({
   bookmark: {
     item: {
       query: InsertItemBookmarkDocument,
-      variables: (
-        itemUuid: string,
-        commonUser: Avo.User.CommonUser | null,
-      ) => ({
+      variables: (itemUuid: string, commonUser: AvoUserCommonUser | null) => ({
         bookmarkItem: {
           item_id: itemUuid,
           profile_id: commonUser?.profileId || null,
@@ -76,7 +71,7 @@ export const GET_EVENT_QUERIES: () => {
       query: InsertCollectionBookmarkDocument,
       variables: (
         collectionUuid: string,
-        commonUser: Avo.User.CommonUser | null,
+        commonUser: AvoUserCommonUser | null,
       ) => ({
         bookmarkItem: {
           collection_uuid: collectionUuid,
@@ -88,7 +83,7 @@ export const GET_EVENT_QUERIES: () => {
       query: InsertAssignmentBookmarkDocument,
       variables: (
         assignmentUuid: string,
-        commonUser: Avo.User.CommonUser | null,
+        commonUser: AvoUserCommonUser | null,
       ): InsertAssignmentBookmarkMutationVariables => ({
         bookmarkAssignment: {
           assignment_id: assignmentUuid,
@@ -106,7 +101,7 @@ export const GET_EVENT_QUERIES: () => {
       query: DeleteItemBookmarkDocument,
       variables: (
         itemUuid: string,
-        commonUser: Avo.User.CommonUser | null,
+        commonUser: AvoUserCommonUser | null,
       ): DeleteItemBookmarkMutationVariables => ({
         itemUuid,
         profileId: commonUser?.profileId || null,
@@ -116,7 +111,7 @@ export const GET_EVENT_QUERIES: () => {
       query: DeleteCollectionBookmarksForUserDocument,
       variables: (
         collectionUuid: string,
-        commonUser: Avo.User.CommonUser | null,
+        commonUser: AvoUserCommonUser | null,
       ): DeleteCollectionBookmarksForUserMutationVariables => ({
         collectionUuid: collectionUuid,
         profileId: commonUser?.profileId || null,
@@ -126,7 +121,7 @@ export const GET_EVENT_QUERIES: () => {
       query: DeleteAssignmentBookmarksForUserDocument,
       variables: (
         assignmentUuid: string,
-        commonUser: Avo.User.CommonUser | null,
+        commonUser: AvoUserCommonUser | null,
       ): DeleteAssignmentBookmarksForUserMutationVariables => ({
         assignmentUuid,
         profileId: commonUser?.profileId || null,
@@ -201,10 +196,10 @@ export const GET_EVENT_QUERIES: () => {
       variables: () => ({}),
     },
   },
-})
+});
 
 export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED: {
-  [type: string]: EventContentTypeSimplified
+  [type: string]: EventContentTypeSimplified;
 } = {
   item: 'item',
   video: 'item',
@@ -216,10 +211,10 @@ export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED: {
   bundle: 'collection',
   bundel: 'collection',
   map: 'collection',
-}
+};
 
 export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE: {
-  [type: string]: EventContentType
+  [type: string]: EventContentType;
 } = {
   item: 'item',
   video: 'item',
@@ -232,4 +227,4 @@ export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE: {
   bundle: 'bundle',
   bundel: 'bundle',
   map: 'bundle',
-}
+};

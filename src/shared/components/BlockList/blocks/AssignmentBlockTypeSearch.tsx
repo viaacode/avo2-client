@@ -1,6 +1,6 @@
-import './AssignmentBlockTypeSearch.scss'
+import './AssignmentBlockTypeSearch.scss';
 
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Button,
   convertToHtml,
@@ -15,30 +15,28 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { type FC } from 'react'
-
+} from '@viaa/avo2-components';
+import { AvoCoreBlockItemBase } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
+import { type FC } from 'react';
 // eslint-disable-next-line import/no-unresolved
-import NewPartSvg from '../../../../assets/images/nieuw-onderdeel.svg?react'
+import NewPartSvg from '../../../../assets/images/nieuw-onderdeel.svg?react';
 import { CollectionFragmentRichText } from '../../../../collection/components/CollectionFragmentRichText';
 import { type EducationLevelId } from '../../../helpers/lom';
 import { tHtml } from '../../../helpers/translate-html';
 import { tText } from '../../../helpers/translate-text';
-
 import {
   GET_EDUCATION_LEVEL_DICT,
   GET_EDUCATION_LEVEL_TOOLTIP_DICT,
 } from './AssignmentBlockTypeSearch.const';
 
 export interface AssignmentBlockTypeSearchProps extends DefaultProps {
-  block: Avo.Core.BlockItemBase
-  showCollectionButton: boolean
-  pastDeadline: boolean
-  educationLevelId?: EducationLevelId
-  onSearchButtonClicked: () => void
-  onCollectionButtonClicked: () => void
+  block: AvoCoreBlockItemBase;
+  showCollectionButton: boolean;
+  pastDeadline: boolean;
+  educationLevelId?: EducationLevelId;
+  onSearchButtonClicked: () => void;
+  onCollectionButtonClicked: () => void;
 }
 
 export const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
@@ -51,9 +49,9 @@ export const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
   className,
 }) => {
   const educationLevelLabel =
-    educationLevelId && GET_EDUCATION_LEVEL_DICT()[educationLevelId]
+    educationLevelId && GET_EDUCATION_LEVEL_DICT()[educationLevelId];
   const educationLevelTooltip =
-    educationLevelId && GET_EDUCATION_LEVEL_TOOLTIP_DICT()[educationLevelId]
+    educationLevelId && GET_EDUCATION_LEVEL_TOOLTIP_DICT()[educationLevelId];
 
   return (
     <div className={clsx('c-assignment-block-type-search', className)}>
@@ -91,8 +89,8 @@ export const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
             'shared/components/block-list/blocks/assignment-block-type-search___start-met-zoeken',
           )}
           onClick={() => {
-            onSearchButtonClicked()
-            scrollTo({ top: 0 })
+            onSearchButtonClicked();
+            scrollTo({ top: 0 });
           }}
           disabled={pastDeadline}
         />
@@ -104,8 +102,8 @@ export const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
               'shared/components/block-list/blocks/assignment-block-type-search___naar-mijn-collectie',
             )}
             onClick={() => {
-              onCollectionButtonClicked()
-              scrollTo({ top: 0 })
+              onCollectionButtonClicked();
+              scrollTo({ top: 0 });
             }}
           />
         )}
@@ -114,5 +112,5 @@ export const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
         <NewPartSvg />
       </div>
     </div>
-  )
-}
+  );
+};

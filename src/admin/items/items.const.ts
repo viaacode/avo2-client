@@ -1,22 +1,12 @@
-import {
-  type FilterableColumn,
-  TableFilterType,
-} from '@meemoo/admin-core-ui/admin';
+import { type FilterableColumn, TableFilterType, } from '@meemoo/admin-core-ui/admin';
 import { IconName, type TabProps } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
 
-import {
-  type CheckboxDropdownModalProps,
-  type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { AvoSearchOrderDirection } from '@viaa/avo2-types';
+import { type CheckboxDropdownModalProps, type CheckboxOption, } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-
-import {
-  type ItemsOverviewTableCols,
-  type UnpublishedItemsOverviewTableCols,
-} from './items.types';
+import { type ItemsOverviewTableCols, type UnpublishedItemsOverviewTableCols, } from './items.types';
 
 export enum ITEMS_TABS {
   GENERAL = 'GENERAL',
@@ -56,27 +46,25 @@ export const GET_TABS: () => TabProps[] = () => [
 export const ITEMS_PER_PAGE = 10;
 
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
-  [columnId in ItemsOverviewTableCols]: (
-    order: Avo.Search.OrderDirection,
-  ) => any;
+  [columnId in ItemsOverviewTableCols]: (order: AvoSearchOrderDirection) => any;
 }> = {
-  organisation: (order: Avo.Search.OrderDirection) => ({
+  organisation: (order: AvoSearchOrderDirection) => ({
     organisation: { name: order },
   }),
-  type: (order: Avo.Search.OrderDirection) => ({ type: { label: order } }),
-  views: (order: Avo.Search.OrderDirection) => ({
+  type: (order: AvoSearchOrderDirection) => ({ type: { label: order } }),
+  views: (order: AvoSearchOrderDirection) => ({
     item_counts: { views: order },
   }),
-  in_collection: (order: Avo.Search.OrderDirection) => ({
+  in_collection: (order: AvoSearchOrderDirection) => ({
     item_counts: { in_collection: order },
   }),
-  bookmarks: (order: Avo.Search.OrderDirection) => ({
+  bookmarks: (order: AvoSearchOrderDirection) => ({
     item_counts: { bookmarks: order },
   }),
-  in_assignment: (order: Avo.Search.OrderDirection) => ({
+  in_assignment: (order: AvoSearchOrderDirection) => ({
     item_counts: { in_assignment: order },
   }),
-  quick_lane_links: (order: Avo.Search.OrderDirection) => ({
+  quick_lane_links: (order: AvoSearchOrderDirection) => ({
     item_counts: {
       quick_lane_links: order,
     },

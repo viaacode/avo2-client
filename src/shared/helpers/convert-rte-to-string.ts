@@ -1,16 +1,15 @@
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client'
-import { type Avo } from '@viaa/avo2-types'
-import { cloneDeep } from 'es-toolkit'
-
+import { SanitizePreset, sanitizeHtml } from '@meemoo/admin-core-ui/client';
+import { AvoCollectionCollection } from '@viaa/avo2-types';
+import { cloneDeep } from 'es-toolkit';
 import { getFragmentsFromCollection } from '../../collection/collection.helpers';
 
 export function convertRteToString(
-  collection: Partial<Avo.Collection.Collection> | null,
-): Partial<Avo.Collection.Collection> | null {
+  collection: Partial<AvoCollectionCollection> | null,
+): Partial<AvoCollectionCollection> | null {
   if (!collection) {
-    return collection
+    return collection;
   }
-  const clonedCollection = cloneDeep(collection)
+  const clonedCollection = cloneDeep(collection);
   getFragmentsFromCollection(clonedCollection).forEach((fragment) => {
     if (
       fragment.custom_description &&
@@ -19,8 +18,8 @@ export function convertRteToString(
       fragment.custom_description = sanitizeHtml(
         (fragment.custom_description as any).toHTML(),
         SanitizePreset.link,
-      )
+      );
     }
-  })
-  return clonedCollection
+  });
+  return clonedCollection;
 }

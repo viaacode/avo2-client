@@ -10,9 +10,12 @@ import {
   Spacer,
   TextArea,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoCoreContentPickerType,
+  AvoUserCommonUser,
+} from '@viaa/avo2-types';
 import { type FC } from 'react';
-
 import { getCollectionManagementStatuses } from '../../admin/collectionsOrBundles/collections-or-bundles.const';
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { NULL_FILTER } from '../../admin/shared/helpers/filters';
@@ -20,11 +23,10 @@ import { type PickerItem } from '../../admin/shared/types/content-picker';
 import { getFullName } from '../../shared/helpers/formatters/avatar';
 import { toDateObject } from '../../shared/helpers/formatters/date';
 import { tText } from '../../shared/helpers/translate-text';
-
 import { type CollectionAction } from './CollectionOrBundleEdit.types';
 
 interface CollectionOrBundleEditActualisationProps {
-  collection: Avo.Collection.Collection;
+  collection: AvoCollectionCollection;
   changeCollectionState: (action: CollectionAction) => void;
   onFocus?: () => void;
 }
@@ -117,14 +119,14 @@ export const CollectionOrBundleEditActualisation: FC<
                               label:
                                 getFullName(
                                   collection?.management
-                                    ?.manager as unknown as Avo.User.CommonUser,
+                                    ?.manager as unknown as AvoUserCommonUser,
                                   false,
                                   true,
                                 ) || '',
                               value:
                                 collection?.management?.manager_profile_id ??
                                 '',
-                              type: Avo.Core.ContentPickerType.PROFILE,
+                              type: AvoCoreContentPickerType.PROFILE,
                             }
                           : null
                       }
@@ -133,7 +135,7 @@ export const CollectionOrBundleEditActualisation: FC<
                       )}
                       hideTargetSwitch
                       hideTypeDropdown
-                      allowedTypes={[Avo.Core.ContentPickerType.PROFILE]}
+                      allowedTypes={[AvoCoreContentPickerType.PROFILE]}
                       onSelect={(value: PickerItem | null) => {
                         changeCollectionState({
                           type: 'UPDATE_COLLECTION_PROP',

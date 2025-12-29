@@ -1,16 +1,7 @@
-import {
-  type AdminConfig,
-  type FlowPlayerWrapperProps,
-  type LinkInfo,
-  type ToastInfo,
-  UserBulkAction,
-} from '@meemoo/admin-core-ui/admin';
-import {
-  ContentBlockType,
-  ContentPageWidth,
-} from '@meemoo/admin-core-ui/client';
+import { type AdminConfig, type FlowPlayerWrapperProps, type LinkInfo, type ToastInfo, UserBulkAction, } from '@meemoo/admin-core-ui/admin';
+import { ContentBlockType, ContentPageWidth, } from '@meemoo/admin-core-ui/client';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
-import { type Avo, DatabaseType } from '@viaa/avo2-types';
+import { AvoCoreDatabaseType, AvoUserCommonUser } from '@viaa/avo2-types';
 import { compact, noop } from 'es-toolkit';
 import { type FC } from 'react';
 import { type NavigateFunction } from 'react-router';
@@ -25,10 +16,7 @@ import { getEnv } from '../../../shared/helpers/env';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
-import {
-  ToastService,
-  ToastTypeToAvoToastType,
-} from '../../../shared/services/toast-service';
+import { ToastService, ToastTypeToAvoToastType, } from '../../../shared/services/toast-service';
 import { store } from '../../../shared/store/ui.store';
 import { Locale } from '../../../shared/translations/translations.types';
 import { ADMIN_PATH } from '../../admin.const';
@@ -307,7 +295,7 @@ export function getAdminCoreConfig(
       onExternalLink: noop,
     },
     routes: {
-      ADMIN_ALERTS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.alerts}`,
+      ADMIN_DASHBOARD: `/${ROUTE_PARTS.admin}`,
       ADMIN_ASSIGNMENTS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.assignments}`,
       ADMIN_ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.pupilCollections}`,
       ADMIN_BUNDLES_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.bundles}`,
@@ -333,6 +321,7 @@ export function getAdminCoreConfig(
       ADMIN_USER_GROUP_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.userGroup}/:id/${ROUTE_PARTS.edit}`,
       ADMIN_USER_GROUP_OVERVIEW: ADMIN_PATH.USER_GROUP_OVERVIEW,
       ADMIN_USER_OVERVIEW: ADMIN_PATH.USER_OVERVIEW,
+      ADMIN_MAINTENANCE_ALERTS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.alerts}`,
       ASSIGNMENT_DETAIL: APP_PATH.ASSIGNMENT_DETAIL.route,
       BUNDLE_DETAIL: APP_PATH.BUNDLE_DETAIL.route,
       BUNDLE_EDIT: APP_PATH.BUNDLE_EDIT.route,
@@ -350,7 +339,7 @@ export function getAdminCoreConfig(
         UserBulkAction.EXPORT_SELECTION,
         UserBulkAction.EXPORT_ALL,
       ],
-      getCommonUser: (): Avo.User.CommonUser | null => {
+      getCommonUser: (): AvoUserCommonUser | null => {
         return store.get(commonUserAtom);
       },
     },
@@ -358,7 +347,7 @@ export function getAdminCoreConfig(
     env: {
       CLIENT_URL: getEnv('CLIENT_URL') as string,
       LDAP_DASHBOARD_PEOPLE_URL: getEnv('LDAP_DASHBOARD_PEOPLE_URL'),
-      DATABASE_APPLICATION_TYPE: DatabaseType.avo,
+      DATABASE_APPLICATION_TYPE: AvoCoreDatabaseType.avo,
     },
   };
 }

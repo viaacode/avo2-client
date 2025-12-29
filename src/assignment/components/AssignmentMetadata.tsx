@@ -1,17 +1,21 @@
-import { Flex } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { type FC } from 'react'
+import { Flex } from '@viaa/avo2-components';
+
+import { type FC } from 'react';
 
 import { formatTimestamp } from '../../shared/helpers/formatters/date';
 
-import './AssignmentMetadata.scss'
+import './AssignmentMetadata.scss';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentResponse,
+} from '@viaa/avo2-types';
 import { tHtml } from '../../shared/helpers/translate-html';
 
 type AssignmentMetadataProps = {
-  assignment: Avo.Assignment.Assignment
-  assignmentResponse?: Omit<Avo.Assignment.Response, 'assignment'> | null
-  who: 'teacher' | 'pupil'
-}
+  assignment: AvoAssignmentAssignment;
+  assignmentResponse?: Omit<AvoAssignmentResponse, 'assignment'> | null;
+  who: 'teacher' | 'pupil';
+};
 
 export const AssignmentMetadata: FC<AssignmentMetadataProps> = ({
   assignment,
@@ -19,12 +23,12 @@ export const AssignmentMetadata: FC<AssignmentMetadataProps> = ({
   who,
 }) => {
   if (!assignment) {
-    return null
+    return null;
   }
 
-  const teacherName = who === 'teacher' && assignment?.owner?.full_name
-  const pupilName = who === 'pupil' && assignmentResponse?.owner?.full_name
-  const deadline = formatTimestamp(assignment?.deadline_at, false)
+  const teacherName = who === 'teacher' && assignment?.owner?.full_name;
+  const pupilName = who === 'pupil' && assignmentResponse?.owner?.full_name;
+  const deadline = formatTimestamp(assignment?.deadline_at, false);
 
   return (
     <section className="u-spacer-bottom">
@@ -60,5 +64,5 @@ export const AssignmentMetadata: FC<AssignmentMetadataProps> = ({
           ))}
       </Flex>
     </section>
-  )
-}
+  );
+};

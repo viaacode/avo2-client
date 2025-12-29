@@ -12,7 +12,7 @@ import {
   ToolbarItem,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+
 import { noop } from 'es-toolkit';
 import { type FC, useState } from 'react';
 
@@ -28,6 +28,7 @@ import { ContentPicker } from '../../../shared/components/ContentPicker/ContentP
 import { ItemsService } from '../../items.service';
 
 import './DepublishItemModal.scss';
+import { AvoCollectionRelationEntry, AvoCoreContentPickerType, AvoItemItem, } from '@viaa/avo2-types';
 
 type DepublishType =
   | 'depublish'
@@ -35,7 +36,7 @@ type DepublishType =
   | 'depublish_with_replacement';
 
 interface DepublishItemModalProps {
-  item: Avo.Item.Item;
+  item: AvoItemItem;
   isOpen: boolean;
   onClose?: () => void;
 }
@@ -111,7 +112,7 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
         depublishType === 'depublish_with_replacement' &&
         replacementExternalId
       ) {
-        const replacementItem: Avo.Item.Item | null =
+        const replacementItem: AvoItemItem | null =
           await ItemsService.fetchItemByExternalId(replacementExternalId);
 
         if (!replacementItem) {
@@ -147,15 +148,15 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
         // The final replacement should look like this:
         // A => C
         // B => C
-        const itemsReplacedByCurrentItem: Avo.Collection.RelationEntry<Avo.Item.Item>[] =
+        const itemsReplacedByCurrentItem: AvoCollectionRelationEntry<AvoItemItem>[] =
           (await RelationService.fetchRelationsByObject(
             'item',
             Lookup_Enum_Relation_Types_Enum.IsReplacedBy,
             [item.uid],
-          )) as Avo.Collection.RelationEntry<Avo.Item.Item>[];
+          )) as AvoCollectionRelationEntry<AvoItemItem>[];
         await Promise.all(
           itemsReplacedByCurrentItem.map(
-            async (relation: Avo.Collection.RelationEntry<Avo.Item.Item>) => {
+            async (relation: AvoCollectionRelationEntry<AvoItemItem>) => {
               // Remove the old relationship (A => B)
               await RelationService.deleteRelationsBySubject(
                 'item',
@@ -263,7 +264,7 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
                 initialValue={
                   replacementExternalId
                     ? {
-                        type: Avo.Core.ContentPickerType.ITEM,
+                        type: AvoCoreContentPickerType.ITEM,
                         value: replacementExternalId,
                       }
                     : undefined
@@ -273,7 +274,7 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
                 }
                 hideTypeDropdown
                 hideTargetSwitch
-                allowedTypes={[Avo.Core.ContentPickerType.ITEM]}
+                allowedTypes={[AvoCoreContentPickerType.ITEM]}
               />
             </FormGroup>
           )}

@@ -1,26 +1,26 @@
 import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
-import { Avo } from '@viaa/avo2-types';
+import { AvoSearchOrderDirection } from '@viaa/avo2-types';
 import { type Dispatch, type SetStateAction, useState } from 'react';
 
 type UseTableSortTuple<T> = [
   T,
-  Avo.Search.OrderDirection,
-  (columnId: T) => { sortColumn: T; sortOrder: Avo.Search.OrderDirection },
+  AvoSearchOrderDirection,
+  (columnId: T) => { sortColumn: T; sortOrder: AvoSearchOrderDirection },
   Dispatch<SetStateAction<T>>,
-  Dispatch<SetStateAction<Avo.Search.OrderDirection>>,
+  Dispatch<SetStateAction<AvoSearchOrderDirection>>,
 ];
 
 export const useTableSort = <T>(
   initialSortColumn: T,
-  initialSortOrder: Avo.Search.OrderDirection = Avo.Search.OrderDirection.DESC,
+  initialSortOrder: AvoSearchOrderDirection = AvoSearchOrderDirection.DESC,
 ): UseTableSortTuple<T> => {
   const [sortColumn, setSortColumn] = useState<T>(initialSortColumn);
   const [sortOrder, setSortOrder] =
-    useState<Avo.Search.OrderDirection>(initialSortOrder);
+    useState<AvoSearchOrderDirection>(initialSortOrder);
 
   const handleTableSortClick = (
     columnId: T,
-  ): { sortColumn: T; sortOrder: Avo.Search.OrderDirection } => {
+  ): { sortColumn: T; sortOrder: AvoSearchOrderDirection } => {
     if (sortColumn === columnId) {
       // Change column sort order
       setSortOrder(toggleSortOrder(sortOrder));

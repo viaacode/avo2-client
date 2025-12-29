@@ -1,15 +1,11 @@
 import { getFilters } from '@meemoo/admin-core-ui/admin';
 import { UseQueryResult, useQuery } from '@tanstack/react-query';
-import { Avo } from '@viaa/avo2-types';
-
+import { AvoItemItem, AvoSearchOrderDirection } from '@viaa/avo2-types';
 import { QUERY_KEYS } from '../../../shared/constants/query-keys';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { ITEMS_PER_PAGE } from '../../collectionsOrBundles/collections-or-bundles.const';
 import { ItemsService } from '../items.service';
-import type {
-  ItemsOverviewTableCols,
-  ItemsTableState,
-} from '../items.types';
+import type { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
 
 export const useGetItemsWithFilters = (
   tableState: Partial<ItemsTableState>,
@@ -18,7 +14,7 @@ export const useGetItemsWithFilters = (
     refetchInterval?: number | false;
     refetchIntervalInBackground?: boolean;
   } = {},
-): UseQueryResult<{ items: Avo.Item.Item[]; total: number }> => {
+): UseQueryResult<{ items: AvoItemItem[]; total: number }> => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_ITEMS_WITH_FILTER, tableState],
     queryFn: () => {
@@ -26,7 +22,7 @@ export const useGetItemsWithFilters = (
         (tableState.page || 0) * ITEMS_PER_PAGE,
         ITEMS_PER_PAGE,
         (tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
-        tableState.sort_order || Avo.Search.OrderDirection.DESC,
+        tableState.sort_order || AvoSearchOrderDirection.DESC,
         getFilters(tableState),
       );
     },

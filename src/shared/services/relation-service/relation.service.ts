@@ -1,7 +1,12 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
-import { type Avo } from '@viaa/avo2-types'
-import { stringifyUrl } from 'query-string'
-
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentRelationEntry,
+  AvoCollectionCollection,
+  AvoCollectionRelationEntry,
+  AvoItemItem,
+} from '@viaa/avo2-types';
+import { stringifyUrl } from 'query-string';
 import { type Lookup_Enum_Relation_Types_Enum } from '../../generated/graphql-db-types';
 import { CustomError } from '../../helpers/custom-error';
 import { getEnv } from '../../helpers/env';
@@ -12,15 +17,15 @@ export class RelationService {
     relationType: Lookup_Enum_Relation_Types_Enum,
     objectIds: string[],
   ): Promise<
-    | Avo.Collection.RelationEntry<
-        Avo.Item.Item | Avo.Collection.Collection | Avo.Assignment.Assignment
+    | AvoCollectionRelationEntry<
+        AvoItemItem | AvoCollectionCollection | AvoAssignmentAssignment
       >[]
-    | Avo.Assignment.RelationEntry<Avo.Assignment.Assignment>[]
+    | AvoAssignmentRelationEntry<AvoAssignmentAssignment>[]
   > {
     if (!objectIds?.length) {
-      return []
+      return [];
     }
-    return this.fetchRelations(type, null, relationType, objectIds)
+    return this.fetchRelations(type, null, relationType, objectIds);
   }
 
   public static async fetchRelationsBySubject(
@@ -28,15 +33,15 @@ export class RelationService {
     subjectIds: string[],
     relationType: Lookup_Enum_Relation_Types_Enum,
   ): Promise<
-    | Avo.Collection.RelationEntry<
-        Avo.Item.Item | Avo.Collection.Collection | Avo.Assignment.Assignment
+    | AvoCollectionRelationEntry<
+        AvoItemItem | AvoCollectionCollection | AvoAssignmentAssignment
       >[]
-    | Avo.Assignment.RelationEntry<Avo.Assignment.Assignment>[]
+    | AvoAssignmentRelationEntry<AvoAssignmentAssignment>[]
   > {
     if (!subjectIds?.length) {
-      return []
+      return [];
     }
-    return this.fetchRelations(type, subjectIds, relationType, null)
+    return this.fetchRelations(type, subjectIds, relationType, null);
   }
 
   private static async fetchRelations(
@@ -45,10 +50,10 @@ export class RelationService {
     relationType: Lookup_Enum_Relation_Types_Enum,
     objectIds: string[] | null,
   ): Promise<
-    | Avo.Collection.RelationEntry<
-        Avo.Item.Item | Avo.Collection.Collection | Avo.Assignment.Assignment
+    | AvoCollectionRelationEntry<
+        AvoItemItem | AvoCollectionCollection | AvoAssignmentAssignment
       >[]
-    | Avo.Assignment.RelationEntry<Avo.Assignment.Assignment>[]
+    | AvoAssignmentRelationEntry<AvoAssignmentAssignment>[]
   > {
     try {
       return fetchWithLogoutJson(
@@ -61,14 +66,14 @@ export class RelationService {
             objectIds: objectIds ? objectIds.join(',') : undefined,
           },
         }),
-      )
+      );
     } catch (err) {
       throw new CustomError('Failed to get relation from the database', err, {
         type,
         subjectIds,
         relationType,
         objectIds,
-      })
+      });
     }
   }
 
@@ -99,7 +104,7 @@ export class RelationService {
         {
           method: 'POST',
         },
-      )
+      );
     } catch (err) {
       throw new CustomError(
         'Failed to insert relation into the database',
@@ -110,7 +115,7 @@ export class RelationService {
           relationType,
           objectId,
         },
-      )
+      );
     }
   }
 
@@ -119,7 +124,7 @@ export class RelationService {
     relationType: Lookup_Enum_Relation_Types_Enum,
     objectId: string,
   ): Promise<void> {
-    return RelationService.deleteRelations(type, null, relationType, objectId)
+    return RelationService.deleteRelations(type, null, relationType, objectId);
   }
 
   public static async deleteRelationsBySubject(
@@ -127,7 +132,7 @@ export class RelationService {
     subjectId: string,
     relationType: Lookup_Enum_Relation_Types_Enum,
   ): Promise<void> {
-    return RelationService.deleteRelations(type, subjectId, relationType, null)
+    return RelationService.deleteRelations(type, subjectId, relationType, null);
   }
 
   private static async deleteRelations(
@@ -150,7 +155,7 @@ export class RelationService {
         {
           method: 'DELETE',
         },
-      )
+      );
     } catch (err) {
       throw new CustomError(
         'Failed to delete relation from the database',
@@ -161,7 +166,7 @@ export class RelationService {
           relationType,
           objectId,
         },
-      )
+      );
     }
   }
 }

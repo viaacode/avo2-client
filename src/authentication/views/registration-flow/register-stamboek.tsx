@@ -1,20 +1,14 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
-import {
-  Alert,
-  Button,
-  Container,
-  FormGroup,
-  Spacer,
-} from '@viaa/avo2-components'
-import { type FC, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { Link, useLocation } from 'react-router-dom'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import { Alert, Button, Container, FormGroup, Spacer, } from '@viaa/avo2-components';
+import { type FC, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { Link, useLocation } from 'react-router-dom';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { StamboekInput } from '../../components/StamboekInput';
-import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
+import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects/redirects';
 
 export type StamboekValidationStatus =
   | 'INCOMPLETE'
@@ -23,18 +17,18 @@ export type StamboekValidationStatus =
   | 'VALID_FORMAT'
   | 'VALID'
   | 'ALREADY_IN_USE'
-  | 'SERVER_ERROR'
+  | 'SERVER_ERROR';
 
-export const STAMBOEK_LOCAL_STORAGE_KEY = 'AVO.stamboek'
+export const STAMBOEK_LOCAL_STORAGE_KEY = 'Avostamboek';
 
 export const RegisterStamboek: FC = () => {
-  const location = useLocation()
+  const location = useLocation();
 
-  const [validStamboekNumber, setValidStamboekNumber] = useState<string>('')
+  const [validStamboekNumber, setValidStamboekNumber] = useState<string>('');
 
   const handleCreateAccountButtonClicked = () => {
-    redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)
-  }
+    redirectToServerArchiefRegistrationIdp(location, validStamboekNumber);
+  };
 
   return (
     <Container className="c-register-stamboek-view" mode="vertical">
@@ -112,7 +106,7 @@ export const RegisterStamboek: FC = () => {
         </Spacer>
       </Container>
     </Container>
-  )
-}
+  );
+};
 
-export default RegisterStamboek
+export default RegisterStamboek;

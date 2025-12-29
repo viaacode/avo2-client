@@ -9,7 +9,7 @@ import {
   Spacer,
   TextInput,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { AvoItemItem } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { type AssignmentLayout } from '../../../assignment/assignment.types';
@@ -47,7 +47,7 @@ export const QuickLaneContentSharingTab: FC<QuickLaneContentProps> = ({
   const commonUser = useAtomValue(commonUserAtom);
 
   const fragmentDuration = useMemo(
-    () => toSeconds((content as Avo.Item.Item).duration) || 0,
+    () => toSeconds((content as AvoItemItem).duration) || 0,
     [content],
   );
 
@@ -256,7 +256,7 @@ export const QuickLaneContentSharingTab: FC<QuickLaneContentProps> = ({
             <>
               <div className="u-spacer-bottom">
                 <ItemVideoDescription
-                  itemMetaData={content as Avo.Item.Item}
+                  itemMetaData={content as AvoItemItem}
                   showMetadata={false}
                   enableMetadataLink={false}
                   showTitle={false}

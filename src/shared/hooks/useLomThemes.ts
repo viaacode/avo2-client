@@ -1,38 +1,37 @@
-import { type Avo } from '@viaa/avo2-types'
-import { useEffect, useState } from 'react'
-
+import { AvoLomLomField } from '@viaa/avo2-types';
+import { useEffect, useState } from 'react';
 import { CustomError } from '../helpers/custom-error';
 import { tHtml } from '../helpers/translate-html';
 import { LomService } from '../services/lom.service';
 import { ToastService } from '../services/toast-service';
 
-type UseLomThemesTuple = [Avo.Lom.LomField[], boolean]
+type UseLomThemesTuple = [AvoLomLomField[], boolean];
 
 export const useLomThemes = (): UseLomThemesTuple => {
-  const [themes, setThemes] = useState<Avo.Lom.LomField[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [themes, setThemes] = useState<AvoLomLomField[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     LomService.fetchThemes()
-      .then((educationLevels: Avo.Lom.LomField[]) => {
-        setThemes(educationLevels)
+      .then((educationLevels: AvoLomLomField[]) => {
+        setThemes(educationLevels);
       })
       .catch((err) => {
         console.error(
           new CustomError('Failed to get lom themes from the database', err),
-        )
+        );
         ToastService.danger(
           tHtml(
             'shared/hooks/use-lom-themes___het-ophalen-van-de-themas-is-mislukt',
           ),
-        )
+        );
       })
       .finally(() => {
-        setIsLoading(false)
-      })
-  }, [])
+        setIsLoading(false);
+      });
+  }, []);
 
-  return [themes, isLoading]
-}
+  return [themes, isLoading];
+};

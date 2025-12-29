@@ -11,33 +11,28 @@ import {
   type TabProps,
   Tabs,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoCollectionContributor,
+  AvoCollectionFragment,
+  AvoCoreBlockItemType,
+  AvoSearchOrderDirection,
+  AvoUserUser,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { cloneDeep, isNil, noop } from 'es-toolkit';
 import { isEmpty, set } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactNode,
-  type ReactText,
-  type Reducer,
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState,
-} from 'react';
+import { type FC, type ReactNode, type ReactText, type Reducer, useCallback, useEffect, useMemo, useReducer, useState, } from 'react';
 import { Helmet } from 'react-helmet';
 import { matchPath, Navigate, useNavigate, useParams } from 'react-router';
 
 import { ItemsService } from '../../admin/items/items.service';
-import {
-  reorderBlockPositions,
-  setBlockPositionToIndex,
-} from '../../assignment/assignment.helper';
+import { reorderBlockPositions, setBlockPositionToIndex, } from '../../assignment/assignment.helper';
 import { AssignmentService } from '../../assignment/assignment.service';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
 import { ErrorView } from '../../error/views/ErrorView';
@@ -60,10 +55,7 @@ import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveB
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { ROUTE_PARTS } from '../../shared/constants/routes';
 import { buildLink } from '../../shared/helpers/build-link';
-import {
-  getContributorType,
-  transformContributorsToSimpleContributors,
-} from '../../shared/helpers/contributors';
+import { getContributorType, transformContributorsToSimpleContributors, } from '../../shared/helpers/contributors';
 import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
@@ -88,23 +80,10 @@ import {
   CollectionOrBundle,
   ContentTypeNumber,
 } from '../collection.types';
-import {
-  onAddContributor,
-  onDeleteContributor,
-  onEditContributor,
-} from '../helpers/collection-share-with-collegue-handlers';
-import {
-  deleteCollection,
-  deleteSelfFromCollection,
-} from '../helpers/delete-collection';
-import {
-  BundleSortProp,
-  useGetCollectionsOrBundlesContainingFragment,
-} from '../hooks/useGetCollectionsOrBundlesContainingFragment';
-import {
-  GET_REORDER_TYPE_TO_BUTTON_LABEL,
-  REORDER_TYPE_TO_FRAGMENT_TYPE,
-} from './CollectionOrBundleEdit.consts';
+import { onAddContributor, onDeleteContributor, onEditContributor, } from '../helpers/collection-share-with-collegue-handlers';
+import { deleteCollection, deleteSelfFromCollection, } from '../helpers/delete-collection';
+import { BundleSortProp, useGetCollectionsOrBundlesContainingFragment, } from '../hooks/useGetCollectionsOrBundlesContainingFragment';
+import { GET_REORDER_TYPE_TO_BUTTON_LABEL, REORDER_TYPE_TO_FRAGMENT_TYPE, } from './CollectionOrBundleEdit.consts';
 import {
   type CollectionAction,
   type CollectionOrBundleEditProps,
@@ -116,7 +95,7 @@ import { CollectionOrBundleEditAdmin } from './CollectionOrBundleEditAdmin';
 import { CollectionOrBundleEditContent } from './CollectionOrBundleEditContent';
 import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
 import { CollectionOrBundleEditMarcom } from './CollectionOrBundleEditMarcom';
-import { CollectionOrBundleEditMetaData } from './CollectionOrBundleEditMetaData';
+import { CollectionOrBundleEditPublicationDetails } from './CollectionOrBundleEditPublicationDetails.tsx';
 import { CollectionOrBundleEditQualityCheck } from './CollectionOrBundleEditQualityCheck';
 import { CollectionOrBundleTitle } from './CollectionOrBundleTitle';
 import { DeleteCollectionModal } from './modals/DeleteCollectionModal';
@@ -124,6 +103,7 @@ import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/Del
 import { PublishCollectionModal } from './modals/PublishCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
+import { isServerSideRendering } from '../../shared/helpers/routing/is-server-side-rendering.ts';
 
 export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
   type,
@@ -171,7 +151,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
   });
   const [shouldDelaySave, setShouldDelaySave] = useState(false);
   const [contributors, setContributors] =
-    useState<Avo.Collection.Contributor[]>();
+    useState<AvoCollectionContributor[]>();
   const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 
   // Computed values
@@ -264,7 +244,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
   }, [updateCollectionEditorWithLoading]);
 
   const createInitialCollection = (
-    collection: Avo.Collection.Collection | null,
+    collection: AvoCollectionCollection | null,
   ) => {
     if (!collection) {
       return collection;
@@ -288,15 +268,15 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
                     description: mapDescription(item_meta.description),
                   }
                 : item_meta,
-            } as Avo.Collection.Fragment;
+            } as AvoCollectionFragment;
           })
         : collection.collection_fragments,
     };
   };
 
   const updateHasUnsavedChanges = (
-    initialCollection: Avo.Collection.Collection | null,
-    currentCollection: Avo.Collection.Collection | null,
+    initialCollection: AvoCollectionCollection | null,
+    currentCollection: AvoCollectionCollection | null,
   ): void => {
     const hasChanges =
       JSON.stringify(convertRteToString(initialCollection)) !==
@@ -314,7 +294,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
     const response =
       await CollectionService.fetchContributorsByCollectionId(collectionId);
 
-    setContributors(response as Avo.Collection.Contributor[]);
+    setContributors(response as AvoCollectionContributor[]);
   }, [collectionId]);
 
   useEffect(() => {
@@ -335,15 +315,15 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         // Ensure collection fragments come first and then the assignment fragments inside the bundle fragments list
         const orderedBlocks = reorderBlockPositions(
           newCollection?.collection_fragments || [],
-        ) as unknown as Avo.Collection.Fragment[];
+        ) as unknown as AvoCollectionFragment[];
         newCollection.collection_fragments = setBlockPositionToIndex([
           ...orderedBlocks.filter(
-            (fragment) => fragment.type === Avo.Core.BlockItemType.COLLECTION,
+            (fragment) => fragment.type === AvoCoreBlockItemType.COLLECTION,
           ),
           ...orderedBlocks.filter(
-            (fragment) => fragment.type === Avo.Core.BlockItemType.ASSIGNMENT,
+            (fragment) => fragment.type === AvoCoreBlockItemType.ASSIGNMENT,
           ),
-        ]) as unknown as Avo.Collection.Fragment[];
+        ]) as unknown as AvoCollectionFragment[];
       }
 
       return {
@@ -362,15 +342,15 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         // Ensure collection fragments come first and then the assignment fragments inside the bundle fragments list
         const orderedBlocks = reorderBlockPositions(
           newCollection?.collection_fragments || [],
-        ) as unknown as Avo.Collection.Fragment[];
+        ) as unknown as AvoCollectionFragment[];
         newCollection.collection_fragments = setBlockPositionToIndex([
           ...orderedBlocks.filter(
-            (fragment) => fragment.type === Avo.Core.BlockItemType.COLLECTION,
+            (fragment) => fragment.type === AvoCoreBlockItemType.COLLECTION,
           ),
           ...orderedBlocks.filter(
-            (fragment) => fragment.type === Avo.Core.BlockItemType.ASSIGNMENT,
+            (fragment) => fragment.type === AvoCoreBlockItemType.ASSIGNMENT,
           ),
-        ]) as unknown as Avo.Collection.Fragment[];
+        ]) as unknown as AvoCollectionFragment[];
       }
 
       return {
@@ -379,10 +359,10 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
       };
     }
 
-    const newCurrentCollection: Avo.Collection.Collection | null = cloneDeep(
+    const newCurrentCollection: AvoCollectionCollection | null = cloneDeep(
       collectionState.currentCollection,
     );
-    const newInitialCollection: Avo.Collection.Collection | null = cloneDeep(
+    const newInitialCollection: AvoCollectionCollection | null = cloneDeep(
       collectionState.initialCollection,
     );
 
@@ -435,7 +415,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
 
         newCurrentCollection.collection_fragments = reorderBlockPositions(
           fragments,
-        ) as Avo.Collection.Fragment[];
+        ) as AvoCollectionFragment[];
         break;
       }
 
@@ -445,7 +425,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         fragments.splice(action.index, 0, action.fragment);
         newCurrentCollection.collection_fragments = setBlockPositionToIndex(
           fragments,
-        ) as Avo.Collection.Fragment[];
+        ) as AvoCollectionFragment[];
         break;
       }
 
@@ -454,7 +434,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         fragments.splice(action.index, 1);
         newCurrentCollection.collection_fragments = reorderBlockPositions(
           fragments,
-        ) as Avo.Collection.Fragment[];
+        ) as AvoCollectionFragment[];
         break;
       }
 
@@ -507,7 +487,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
     useGetCollectionsOrBundlesContainingFragment(
       collectionId as string,
       BundleSortProp.title,
-      Avo.Search.OrderDirection.ASC,
+      AvoSearchOrderDirection.ASC,
       { enabled: !!collectionId && !!collectionState.currentCollection },
     );
 
@@ -515,7 +495,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
     if (collectionState.currentCollection && contributors && isCollection) {
       const userContributorRole = getContributorType(
         commonUser?.profileId,
-        collectionState.currentCollection as Avo.Collection.Collection,
+        collectionState.currentCollection as AvoCollectionCollection,
         contributors,
       );
 
@@ -624,7 +604,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         if (contributors?.length) {
           const userContributorRole = getContributorType(
             commonUser?.profileId,
-            collectionObj as Avo.Collection.Collection,
+            collectionObj as AvoCollectionCollection,
             contributors,
           );
 
@@ -785,7 +765,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         icon: IconName.collection,
       },
       {
-        id: CollectionCreateUpdateTab.PUBLISH,
+        id: CollectionCreateUpdateTab.PUBLICATION_DETAILS,
         label: tText('collection/collection___publicatiedetails'),
         icon: IconName.fileText,
       },
@@ -1022,7 +1002,6 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
     async (item: CollectionMenuAction) => {
       setIsOptionsMenuOpen(false);
       switch (item) {
-
         case CollectionMenuAction.deleteCollection:
           onClickDelete();
           break;
@@ -1032,17 +1011,6 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
           setIsDeleteContributorModalOpen(true);
           break;
 
-        case CollectionMenuAction.deleteContributor:
-          setIsOptionsMenuOpen(false);
-          setIsDeleteContributorModalOpen(true);
-          break;
-
-        case CollectionMenuAction.save:
-          if (!isSavingCollection) {
-            await onSaveCollection();
-          }
-          break;
-
         case CollectionMenuAction.save:
           if (!isSavingCollection) {
             await onSaveCollection();
@@ -1062,25 +1030,6 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
           } else {
             setIsPublishModalOpen(!isPublishModalOpen);
           }
-          break;
-
-        case CollectionMenuAction.openPublishModal:
-          if (
-            unsavedChanges &&
-            !collectionState?.initialCollection?.is_public
-          ) {
-            ToastService.info(
-              tHtml(
-                'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan',
-              ),
-            );
-          } else {
-            setIsPublishModalOpen(!isPublishModalOpen);
-          }
-          break;
-
-        case CollectionMenuAction.addItemById:
-          setEnterItemIdModalOpen(true);
           break;
 
         case CollectionMenuAction.redirectToDetail:
@@ -1104,30 +1053,6 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         case CollectionMenuAction.addAssignmentById:
           setEnterAssignmentIdModalOpen(true);
           break;
-
-        case CollectionMenuAction.addItemById:
-          setEnterItemIdModalOpen(true);
-          break;
-
-        case CollectionMenuAction.addAssignmentById:
-          setEnterAssignmentIdModalOpen(true);
-          break;
-
-        case CollectionMenuAction.share:
-          setIsShareModalOpen(true);
-          break;
-
-        case CollectionMenuAction.addAssignmentById:
-          setEnterAssignmentIdModalOpen(true);
-          break;
-
-        case CollectionMenuAction.share:
-          setIsShareModalOpen(true);
-          break;
-
-        default:
-          return null;
-      }
 
         case CollectionMenuAction.share:
           setIsShareModalOpen(true);
@@ -1161,7 +1086,11 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
       executeAction(CollectionMenuAction.save);
       setShouldDelaySave(false);
     }
-  }, [collectionState.currentCollection?.collection_fragments, executeAction, shouldDelaySave]);
+  }, [
+    collectionState.currentCollection?.collection_fragments,
+    executeAction,
+    shouldDelaySave,
+  ]);
 
   /**
    * https://meemoo.atlassian.net/browse/AVO-3370
@@ -1181,7 +1110,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
   ]);
 
   const onCloseShareCollectionModal = (
-    collection?: Avo.Collection.Collection,
+    collection?: AvoCollectionCollection,
   ) => {
     setIsPublishModalOpen(false);
 
@@ -1218,7 +1147,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
             collectionState,
           });
         }
-        const fragment: Partial<Avo.Collection.Fragment> = {
+        const fragment: Partial<AvoCollectionFragment> = {
           use_custom_fields: false,
           start_oc: null,
           position: getFragmentsFromCollection(
@@ -1230,11 +1159,11 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
           custom_description: null,
           collection_uuid: collectionId,
           item_meta: item,
-          type: Avo.Core.BlockItemType.ITEM,
+          type: AvoCoreBlockItemType.ITEM,
         };
         changeCollectionState({
           type: 'INSERT_FRAGMENT',
-          fragment: fragment as Avo.Collection.Fragment,
+          fragment: fragment as AvoCollectionFragment,
           index: getFragmentsFromCollection(collectionState.currentCollection)
             .length,
         });
@@ -1245,7 +1174,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         );
       } else {
         // We're adding a collection to the bundle
-        const collection: Avo.Collection.Collection | null =
+        const collection: AvoCollectionCollection | null =
           await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
             id,
             CollectionOrBundle.COLLECTION,
@@ -1265,7 +1194,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
             collectionState,
           });
         }
-        const fragment: Partial<Avo.Collection.Fragment> = {
+        const fragment: Partial<AvoCollectionFragment> = {
           use_custom_fields: false,
           start_oc: null,
           position: getFragmentsFromCollection(
@@ -1277,12 +1206,12 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
           custom_description: null,
           collection_uuid: bundleId,
           item_meta: collection,
-          type: Avo.Core.BlockItemType.COLLECTION,
+          type: AvoCoreBlockItemType.COLLECTION,
           created_at: new Date().toISOString(),
         };
         changeCollectionState({
           type: 'INSERT_FRAGMENT',
-          fragment: fragment as Avo.Collection.Fragment,
+          fragment: fragment as AvoCollectionFragment,
           index: getFragmentsFromCollection(collectionState.currentCollection)
             .length,
         });
@@ -1329,7 +1258,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
           collectionState,
         });
       }
-      const fragment: Partial<Avo.Collection.Fragment> = {
+      const fragment: Partial<AvoCollectionFragment> = {
         use_custom_fields: false,
         start_oc: null,
         position: getFragmentsFromCollection(collectionState.currentCollection)
@@ -1343,11 +1272,11 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
           type_id: ContentTypeNumber.assignment,
         },
         collection_uuid: bundleId,
-        type: Avo.Core.BlockItemType.ASSIGNMENT,
+        type: AvoCoreBlockItemType.ASSIGNMENT,
       };
       changeCollectionState({
         type: 'INSERT_FRAGMENT',
-        fragment: fragment as Avo.Collection.Fragment,
+        fragment: fragment as AvoCollectionFragment,
         index: getFragmentsFromCollection(collectionState.currentCollection)
           .length,
       });
@@ -1421,12 +1350,21 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
               onFocus={() => setUnsavedChanges(true)}
             />
           );
-        case CollectionCreateUpdateTab.PUBLISH:
+        case CollectionCreateUpdateTab.PUBLICATION_DETAILS:
           return (
-            <CollectionOrBundleEditMetaData
+            <CollectionOrBundleEditPublicationDetails
               type={type}
               collection={collectionState.currentCollection}
               changeCollectionState={changeCollectionState}
+              showOgImageUpload={
+                (isCollection
+                  ? commonUser?.permissions?.includes(
+                      PermissionName.EDIT_OG_IMAGE_COLLECTION,
+                    )
+                  : commonUser?.permissions?.includes(
+                      PermissionName.EDIT_OG_IMAGE_BUNDLE,
+                    )) || false
+              }
               onFocus={() => setUnsavedChanges(true)}
             />
           );
@@ -1559,11 +1497,11 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
       } else {
         const collectionFragments =
           collectionState.currentCollection?.collection_fragments?.filter(
-            (fragment) => fragment.type === Avo.Core.BlockItemType.COLLECTION,
+            (fragment) => fragment.type === AvoCoreBlockItemType.COLLECTION,
           ) || [];
         const assignmentFragments =
           collectionState.currentCollection?.collection_fragments?.filter(
-            (fragment) => fragment.type === Avo.Core.BlockItemType.ASSIGNMENT,
+            (fragment) => fragment.type === AvoCoreBlockItemType.ASSIGNMENT,
           ) || [];
 
         if (collectionFragments.length > 0) {
@@ -1643,8 +1581,8 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
               {
                 ...collectionState.currentCollection?.profile?.user,
                 profile: collectionState.currentCollection?.profile,
-              } as Avo.User.User,
-              contributors as Avo.Collection.Contributor[],
+              } as AvoUserUser,
+              contributors as AvoCollectionContributor[],
             )}
             onDeleteContributor={(info) =>
               onDeleteContributor(info, collectionId, fetchContributors)
@@ -1881,8 +1819,8 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
                   {
                     ...collectionState.currentCollection?.profile?.user,
                     profile: collectionState.currentCollection?.profile,
-                  } as Avo.User.User,
-                  contributors as Avo.Collection.Contributor[],
+                  } as AvoUserUser,
+                  contributors as AvoCollectionContributor[],
                 )}
                 onDeleteContributor={(info) =>
                   onDeleteContributor(info, collectionId, fetchContributors)
@@ -1973,7 +1911,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
           inputCallback={handleAddAssignmentById}
         />
 
-        {isCollection && (
+        {isCollection && !isServerSideRendering() && (
           <InActivityWarningModal
             onActivity={updateCollectionEditor}
             onExit={releaseCollectionEditStatus}
@@ -1986,7 +1924,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
           />
         )}
 
-        {draggableListType && (
+        {draggableListType && !isServerSideRendering() && (
           <DraggableListModal
             items={getFragmentsFromCollection(
               collectionState.currentCollection,
@@ -1994,7 +1932,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
             )}
             renderItem={(item) => <DraggableBlock block={item} />}
             isOpen={!!draggableListType}
-            onClose={(reorderedFragments?: Avo.Collection.Fragment[]) => {
+            onClose={(reorderedFragments?: AvoCollectionFragment[]) => {
               setDraggableListType(null);
               if (reorderedFragments) {
                 const blocks = setBlockPositionToIndex(reorderedFragments);
@@ -2005,21 +1943,21 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
                       type: 'UPDATE_COLLECTION_PROP',
                       updateInitialCollection: false,
                       collectionProp: 'collection_fragments',
-                      collectionPropValue: blocks as Avo.Collection.Fragment[],
+                      collectionPropValue: blocks as AvoCollectionFragment[],
                     });
                     break;
 
                   case 'BUNDLE_COLLECTION_FRAGMENTS': {
                     const fragmentCollections =
-                      blocks as Avo.Collection.Fragment[];
+                      blocks as AvoCollectionFragment[];
                     const fragmentAssignments = getFragmentsFromCollection(
                       collectionState.currentCollection,
-                      Avo.Core.BlockItemType.ASSIGNMENT,
+                      AvoCoreBlockItemType.ASSIGNMENT,
                     );
                     const newFragments = setBlockPositionToIndex([
                       ...fragmentCollections,
                       ...fragmentAssignments,
-                    ]) as Avo.Collection.Fragment[];
+                    ]) as AvoCollectionFragment[];
                     changeCollectionState({
                       type: 'UPDATE_COLLECTION_PROP',
                       updateInitialCollection: false,
@@ -2032,14 +1970,14 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
                   case 'BUNDLE_ASSIGNMENT_FRAGMENTS': {
                     const fragmentCollections = getFragmentsFromCollection(
                       collectionState.currentCollection,
-                      Avo.Core.BlockItemType.COLLECTION,
+                      AvoCoreBlockItemType.COLLECTION,
                     );
                     const fragmentAssignments =
-                      blocks as Avo.Collection.Fragment[];
+                      blocks as AvoCollectionFragment[];
                     const newFragments = setBlockPositionToIndex([
                       ...fragmentCollections,
                       ...fragmentAssignments,
-                    ]) as Avo.Collection.Fragment[];
+                    ]) as AvoCollectionFragment[];
                     changeCollectionState({
                       type: 'UPDATE_COLLECTION_PROP',
                       updateInitialCollection: false,

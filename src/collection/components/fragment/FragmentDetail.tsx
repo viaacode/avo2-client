@@ -1,7 +1,6 @@
-import { BlockIntro } from '@meemoo/admin-core-ui/client'
-import { type Avo } from '@viaa/avo2-types'
+import { BlockIntro } from '@meemoo/admin-core-ui/client';
 
-import { type FC } from 'react'
+import { type FC } from 'react';
 
 import { APP_PATH } from '../../../constants';
 import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription';
@@ -11,14 +10,15 @@ import { isMobileWidth } from '../../../shared/helpers/media-query';
 import { ContentTypeNumber } from '../../collection.types';
 import { getFragmentProperty } from '../../helpers/fragment';
 
-import './FragmentDetail.scss'
+import './FragmentDetail.scss';
+import { AvoCollectionFragment, AvoItemItem } from '@viaa/avo2-types';
 
 interface FragmentDetailProps {
-  collectionFragment: Avo.Collection.Fragment
-  showDescription: boolean
-  showMetadata: boolean
-  linkToItems: boolean
-  canPlay?: boolean
+  collectionFragment: AvoCollectionFragment;
+  showDescription: boolean;
+  showMetadata: boolean;
+  linkToItems: boolean;
+  canPlay?: boolean;
 }
 
 /**
@@ -34,10 +34,8 @@ export const FragmentDetail: FC<FragmentDetailProps> = ({
   showMetadata,
   linkToItems,
 }) => {
-  if (
-    (collectionFragment?.item_meta as Avo.Item.Item)?.type?.label === 'audio'
-  ) {
-    collectionFragment.thumbnail_path = DEFAULT_AUDIO_STILL
+  if ((collectionFragment?.item_meta as AvoItemItem)?.type?.label === 'audio') {
+    collectionFragment.thumbnail_path = DEFAULT_AUDIO_STILL;
   }
 
   const getTitleLink = (): string | undefined => {
@@ -49,11 +47,11 @@ export const FragmentDetail: FC<FragmentDetailProps> = ({
       )
     ) {
       return buildLink(APP_PATH.ITEM_DETAIL.route, {
-        id: (collectionFragment.item_meta as Avo.Item.Item).external_id,
-      })
+        id: (collectionFragment.item_meta as AvoItemItem).external_id,
+      });
     }
-    return undefined
-  }
+    return undefined;
+  };
 
   return collectionFragment.item_meta ? (
     <ItemVideoDescription
@@ -62,19 +60,19 @@ export const FragmentDetail: FC<FragmentDetailProps> = ({
       enableMetadataLink={false}
       showTitle
       itemMetaData={{
-        ...(collectionFragment.item_meta as Avo.Item.Item),
+        ...(collectionFragment.item_meta as AvoItemItem),
         thumbnail_path:
           collectionFragment.thumbnail_path ||
-          (collectionFragment.item_meta as Avo.Item.Item).thumbnail_path,
+          (collectionFragment.item_meta as AvoItemItem).thumbnail_path,
       }}
       title={getFragmentProperty(
-        collectionFragment.item_meta as Avo.Item.Item,
+        collectionFragment.item_meta as AvoItemItem,
         collectionFragment,
         collectionFragment.use_custom_fields,
         'title',
       )}
       description={getFragmentProperty(
-        collectionFragment.item_meta as Avo.Item.Item,
+        collectionFragment.item_meta as AvoItemItem,
         collectionFragment,
         collectionFragment.use_custom_fields,
         'description',
@@ -99,5 +97,5 @@ export const FragmentDetail: FC<FragmentDetailProps> = ({
       align="center"
       className="c-fragment-detail__intro-block"
     />
-  )
-}
+  );
+};

@@ -1,14 +1,8 @@
 import { IconName } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { AvoAssignmentAssignment, AvoAssignmentResponse, PermissionName, } from '@viaa/avo2-types';
 import { isString, noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { type FC, type ReactNode, useCallback, useEffect, useState, } from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
 
@@ -38,15 +32,16 @@ export const AssignmentResponseEditPage: FC = () => {
 
   const commonUser = useAtomValue(commonUserAtom);
   // Data
-  const [assignment, setAssignment] =
-    useState<Avo.Assignment.Assignment | null>(null);
+  const [assignment, setAssignment] = useState<AvoAssignmentAssignment | null>(
+    null,
+  );
   const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
   const [assignmentError, setAssignmentError] = useState<{
     message: string | ReactNode;
     icon: IconName;
   } | null>(null);
   const [assignmentResponse, setAssignmentResponse] = useState<Omit<
-    Avo.Assignment.Response,
+    AvoAssignmentResponse,
     'assignment'
   > | null>(null);
 
@@ -103,7 +98,7 @@ export const AssignmentResponseEditPage: FC = () => {
         return;
       }
 
-      const assignmentOrError: Avo.Assignment.Assignment =
+      const assignmentOrError: AvoAssignmentAssignment =
         await AssignmentService.fetchAssignmentAndContent(
           commonUser.profileId,
           assignmentId,
@@ -150,7 +145,7 @@ export const AssignmentResponseEditPage: FC = () => {
         );
       setAssignmentResponse(
         newOrExistingAssignmentResponse as Omit<
-          Avo.Assignment.Response,
+          AvoAssignmentResponse,
           'assignment'
         >,
       );

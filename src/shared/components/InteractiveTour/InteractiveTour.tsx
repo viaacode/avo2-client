@@ -1,5 +1,5 @@
 import { Button, IconName } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+
 import { compact, debounce } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useState } from 'react';
@@ -19,9 +19,10 @@ import { Html } from '../Html/Html';
 import { useGetInteractiveTourForPage } from './hooks/useGetInteractiveTourForPage';
 
 import './InteractiveTour.scss';
+import { AvoInteractiveTourStep } from '@viaa/avo2-types';
 import { useLocation } from 'react-router';
 
-const TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY = 'AVO.tour_display_dates';
+const TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY = 'Avotour_display_dates';
 
 interface InteractiveTourProps {
   showButton: boolean;
@@ -102,11 +103,11 @@ export const InteractiveTour: FC<InteractiveTourProps> = ({ showButton }) => {
   }, [getTourDisplayDates]);
 
   const mapSteps = (
-    dbSteps: Avo.InteractiveTour.Step[],
-  ): Avo.InteractiveTour.Step[] => {
+    dbSteps: AvoInteractiveTourStep[],
+  ): AvoInteractiveTourStep[] => {
     return compact(
-      dbSteps.map((dbStep): Avo.InteractiveTour.Step | null => {
-        const mappedStep: Partial<Avo.InteractiveTour.Step> = {};
+      dbSteps.map((dbStep): AvoInteractiveTourStep | null => {
+        const mappedStep: Partial<AvoInteractiveTourStep> = {};
         if (!dbStep.target) {
           mappedStep.placement = 'center';
           mappedStep.target = 'body';
@@ -131,7 +132,7 @@ export const InteractiveTour: FC<InteractiveTourProps> = ({ showButton }) => {
           return null;
         }
 
-        return mappedStep as Avo.InteractiveTour.Step;
+        return mappedStep as AvoInteractiveTourStep;
       }),
     );
   };

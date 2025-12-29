@@ -1,24 +1,9 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import {
-  Alert,
-  Box,
-  Container,
-  Flex,
-  Icon,
-  IconName,
-  Spacer,
-  Tabs,
-} from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { Alert, Box, Container, Flex, Icon, IconName, Spacer, Tabs, } from '@viaa/avo2-components';
+
 import { clsx } from 'clsx';
 import { useAtomValue } from 'jotai';
-import {
-  type Dispatch,
-  type FC,
-  type SetStateAction,
-  useMemo,
-  useState,
-} from 'react';
+import { type Dispatch, type FC, type SetStateAction, useMemo, useState, } from 'react';
 import { Link } from 'react-router-dom';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
@@ -30,16 +15,10 @@ import { formatTimestamp } from '../../../shared/helpers/formatters/date';
 import { useAssignmentPastDeadline } from '../../../shared/hooks/useAssignmentPastDeadline';
 import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
 import { ToastService } from '../../../shared/services/toast-service';
-import {
-  ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
-  PUPIL_COLLECTION_FORM_SCHEMA,
-} from '../../assignment.const';
+import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS, PUPIL_COLLECTION_FORM_SCHEMA, } from '../../assignment.const';
 import { reorderBlockPositions } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
-import {
-  type PupilCollectionFragment,
-  type PupilSearchFilterState,
-} from '../../assignment.types';
+import { type PupilCollectionFragment, type PupilSearchFilterState, } from '../../assignment.types';
 import { AssignmentHeading } from '../../components/AssignmentHeading';
 import { AssignmentMetadata } from '../../components/AssignmentMetadata';
 import { buildAssignmentSearchLink } from '../../helpers/build-search-link';
@@ -53,23 +32,19 @@ import { AssignmentResponseSearchTab } from './tabs/AssignmentResponseSearchTab'
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
+import { AvoAssignmentAssignment, AvoAssignmentResponse, AvoCoreBlockItemBase, AvoCoreBlockItemType, } from '@viaa/avo2-types';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import {
-  JsonParam,
-  NumberParam,
-  StringParam,
-  useQueryParams,
-} from '../../../shared/helpers/routing/use-query-params-ssr.ts';
+import { JsonParam, NumberParam, StringParam, useQueryParams, } from '../../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { validateForm } from '../../../shared/helpers/validate-form.ts';
 import { UrlUpdateType } from '../../../shared/types/use-query-params.ts';
 
 interface AssignmentResponseEditProps {
-  assignment: Avo.Assignment.Assignment;
-  assignmentResponse: Omit<Avo.Assignment.Response, 'assignment'> | null;
+  assignment: AvoAssignmentAssignment;
+  assignmentResponse: Omit<AvoAssignmentResponse, 'assignment'> | null;
   setAssignmentResponse: (
-    newResponse: Omit<Avo.Assignment.Response, 'assignment'> | null,
+    newResponse: Omit<AvoAssignmentResponse, 'assignment'> | null,
   ) => void;
   showBackButton: boolean;
   isPreview?: boolean;
@@ -91,7 +66,7 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
 
   // Data
   const [assignmentResponseOriginal, setAssignmentResponseOriginal] =
-    useState<Omit<Avo.Assignment.Response, 'assignment'> | null>(
+    useState<Omit<AvoAssignmentResponse, 'assignment'> | null>(
       assignmentResponse,
     );
   const [formErrors, setFormErrors] = useState<
@@ -146,7 +121,7 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
     useAssignmentPupilTabs(
       assignment,
       assignmentResponse?.pupil_collection_blocks?.filter(
-        (b) => b.type === Avo.Core.BlockItemType.ITEM,
+        (b) => b.type === AvoCoreBlockItemType.ITEM,
       )?.length || 0,
       (filterState.tab as ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) ||
         ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT,
@@ -206,10 +181,7 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
       }
 
       const updated = await AssignmentService.updateAssignmentResponse(
-        assignmentResponseOriginal as Omit<
-          Avo.Assignment.Response,
-          'assignment'
-        >,
+        assignmentResponseOriginal as Omit<AvoAssignmentResponse, 'assignment'>,
         {
           collection_title: formValues.collection_title || '',
           pupil_collection_blocks: cleanupTitleAndDescriptions(
@@ -261,7 +233,7 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
     }
   };
 
-  const appendBlockToPupilCollection = (newBlock: Avo.Core.BlockItemBase) => {
+  const appendBlockToPupilCollection = (newBlock: AvoCoreBlockItemBase) => {
     const newBlocks = reorderBlockPositions([
       ...(assignmentResponse?.pupil_collection_blocks || []),
       newBlock,
@@ -269,7 +241,7 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
     setAssignmentResponse({
       ...assignmentResponse,
       pupil_collection_blocks: newBlocks as PupilCollectionFragment[],
-    } as Omit<Avo.Assignment.Response, 'assignment'>);
+    } as Omit<AvoAssignmentResponse, 'assignment'>);
     setPupilCollectionBlocks(newBlocks as PupilCollectionFragment[]);
     animatePill();
   };
@@ -306,10 +278,10 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
       case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH:
         if (
           !assignment.lom_learning_resource_type?.includes(
-            Avo.Core.BlockItemType.ZOEK,
+            AvoCoreBlockItemType.ZOEK,
           ) &&
           !assignment.lom_learning_resource_type?.includes(
-            Avo.Core.BlockItemType.BOUW,
+            AvoCoreBlockItemType.BOUW,
           )
         ) {
           setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT);
@@ -318,7 +290,7 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
         return (
           <AssignmentResponseSearchTab
             assignment={assignment}
-            assignmentResponse={assignmentResponse as Avo.Assignment.Response}
+            assignmentResponse={assignmentResponse as AvoAssignmentResponse}
             filterState={filterState}
             setFilterState={(
               newFilterState: FilterState,
@@ -339,7 +311,7 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
       case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION:
         if (
           !assignment.lom_learning_resource_type?.includes(
-            Avo.Core.BlockItemType.BOUW,
+            AvoCoreBlockItemType.BOUW,
           )
         ) {
           setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT);
@@ -353,10 +325,10 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
         return (
           <AssignmentResponsePupilCollectionTab
             pastDeadline={pastDeadline}
-            assignmentResponse={assignmentResponse as Avo.Assignment.Response}
+            assignmentResponse={assignmentResponse as AvoAssignmentResponse}
             setAssignmentResponse={
               setAssignmentResponse as Dispatch<
-                SetStateAction<Avo.Assignment.Response>
+                SetStateAction<AvoAssignmentResponse>
               >
             }
             setCollectionTitle={setCollectionTitle}
@@ -376,7 +348,7 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
         return (
           <AssignmentResponseAssignmentTab
             blocks={
-              (assignment as unknown as Avo.Assignment.Assignment)?.blocks || []
+              (assignment as unknown as AvoAssignmentAssignment)?.blocks || []
             } // TODO figure out if blocks are available on this assignment, typings suggest they are not
             pastDeadline={pastDeadline}
             setTab={setTab}

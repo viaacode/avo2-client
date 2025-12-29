@@ -9,11 +9,10 @@ import {
   Image,
   Spacer,
   TextArea,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { intersection } from 'es-toolkit'
-import { type FC, useState } from 'react'
-
+} from '@viaa/avo2-components';
+import { AvoAssignmentAssignment, AvoLomLomField } from '@viaa/avo2-types';
+import { intersection } from 'es-toolkit';
+import { type FC, useState } from 'react';
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { ShortDescriptionField } from '../../shared/components/ShortDescriptionField/ShortDescriptionField';
 import { ThumbnailStillsModal } from '../../shared/components/ThumbnailStillsModal/ThumbnailStillsModal';
@@ -23,53 +22,49 @@ import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
 type AssignmentMetaDataFormEditableProps = {
-  assignment: Avo.Assignment.Assignment
-  setAssignment: (newAssignment: Partial<Avo.Assignment.Assignment>) => void
-  onFocus?: () => void
-}
+  assignment: AvoAssignmentAssignment;
+  setAssignment: (newAssignment: Partial<AvoAssignmentAssignment>) => void;
+  onFocus?: () => void;
+};
 
 export const AssignmentMetaDataFormEditable: FC<
   AssignmentMetaDataFormEditableProps
 > = ({ assignment, setAssignment, onFocus }) => {
   const [isAssignmentStillsModalOpen, setIsAssignmentStillsModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
-  const mappedLoms: Avo.Lom.LomField[] = (assignment?.loms || []).map(
-    (item) => ({
-      ...{ label: '' }, // Fallback
-      ...item?.lom,
-      id: item?.id || item?.lom_id || '',
-    }),
-  )
+  const mappedLoms: AvoLomLomField[] = (assignment?.loms || []).map((item) => ({
+    ...{ label: '' }, // Fallback
+    ...item?.lom,
+    id: item?.id || item?.lom_id || '',
+  }));
 
-  const onLomsChange = (loms: Avo.Lom.LomField[]) => {
+  const onLomsChange = (loms: AvoLomLomField[]) => {
     const mappedLoms = loms.map((lom) => ({
       id: null,
       lom_id: lom.id,
       assignment_id: assignment?.id,
       lom,
-    }))
+    }));
 
     setAssignment({
       ...assignment,
       loms: mappedLoms,
-    })
-  }
+    });
+  };
 
-  const filterSubjects = (
-    subject: Avo.Lom.LomField & { related?: string[] },
-  ) => {
+  const filterSubjects = (subject: AvoLomLomField & { related?: string[] }) => {
     const selectedEducationLevels = getBottomLoms(mappedLoms).filter((lom) => {
-      return lom?.scheme === EducationLevelType.structuur
-    })
+      return lom?.scheme === EducationLevelType.structuur;
+    });
 
     const inter = intersection(
       subject.related || [],
       selectedEducationLevels.map(({ id }) => id),
-    )
+    );
 
-    return inter.length > 0
-  }
+    return inter.length > 0;
+  };
 
   return (
     <>
@@ -96,7 +91,7 @@ export const AssignmentMetaDataFormEditable: FC<
                         setAssignment({
                           ...assignment,
                           description: value,
-                        })
+                        });
                       }
                     }}
                     onFocus={onFocus}
@@ -121,7 +116,7 @@ export const AssignmentMetaDataFormEditable: FC<
                           setAssignment({
                             ...assignment,
                             note: value,
-                          })
+                          });
                         }
                       }}
                       onFocus={onFocus}
@@ -170,17 +165,17 @@ export const AssignmentMetaDataFormEditable: FC<
       <ThumbnailStillsModal
         isOpen={isAssignmentStillsModalOpen}
         onClose={(updated) => {
-          setIsAssignmentStillsModalOpen(false)
+          setIsAssignmentStillsModalOpen(false);
 
           if (assignment.thumbnail_path !== updated.thumbnail_path) {
             setAssignment({
               ...assignment,
               thumbnail_path: updated.thumbnail_path,
-            })
+            });
           }
         }}
         subject={assignment}
       />
     </>
-  )
-}
+  );
+};

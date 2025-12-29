@@ -15,18 +15,23 @@ import {
   MoreOptionsDropdown,
   Spacer,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoCollectionContributor,
+  AvoContentTypeEnglish,
+  AvoCoreBlockItemType,
+  AvoCoreContentType,
+  AvoSearchOrderDirection,
+  AvoSearchResultItem,
+  AvoUserCommonUser,
+  AvoUserUser,
+  PermissionName
+} from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { isNil, noop } from 'es-toolkit';
 import { isEmpty } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactText,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { type FC, type ReactText, useCallback, useEffect, useState, } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLoaderData, useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -41,10 +46,7 @@ import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
 import { ErrorView } from '../../error/views/ErrorView';
-import {
-  ALL_SEARCH_FILTERS,
-  type SearchFilter,
-} from '../../search/search.const';
+import { ALL_SEARCH_FILTERS, type SearchFilter, } from '../../search/search.const';
 import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EditButton } from '../../shared/components/EditButton/EditButton';
 import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList';
@@ -59,18 +61,12 @@ import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdo
 import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
-import {
-  EDIT_STATUS_REFETCH_TIME,
-  getMoreOptionsLabel,
-} from '../../shared/constants';
+import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render-bookmark-button';
-import {
-  defaultGoToDetailLink,
-  defaultRenderDetailLink,
-} from '../../shared/helpers/default-render-detail-link';
+import { defaultGoToDetailLink, defaultRenderDetailLink, } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { generateContentLinkString, navigate } from '../../shared/helpers/link';
@@ -83,52 +79,26 @@ import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-view
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import {
-  getRelatedItems,
-  ObjectTypes,
-  ObjectTypesAll,
-} from '../../shared/services/related-items-service';
+import { getRelatedItems, ObjectTypes, ObjectTypesAll, } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { renderRelatedItems } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
-import {
-  CollectionCreateUpdateTab,
-  CollectionMenuAction,
-  CollectionOrBundle,
-  type Relation,
-} from '../collection.types';
+import { CollectionCreateUpdateTab, CollectionMenuAction, CollectionOrBundle, type Relation, } from '../collection.types';
 import { FragmentList } from '../components/fragment/FragmentList';
 import { AddToBundleModal } from '../components/modals/AddToBundleModal';
 import { AutoplayCollectionModal } from '../components/modals/AutoplayCollectionModal';
 import { DeleteCollectionModal } from '../components/modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from '../components/modals/DeleteContributorFromCollectionModal';
 import { PublishCollectionModal } from '../components/modals/PublishCollectionModal';
-import {
-  onAddContributor,
-  onDeleteContributor,
-  onEditContributor,
-} from '../helpers/collection-share-with-collegue-handlers';
-import {
-  deleteCollection,
-  deleteSelfFromCollection,
-} from '../helpers/delete-collection';
+import { onAddContributor, onDeleteContributor, onEditContributor, } from '../helpers/collection-share-with-collegue-handlers';
+import { deleteCollection, deleteSelfFromCollection, } from '../helpers/delete-collection';
 import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
-import {
-  BundleSortProp,
-  useGetCollectionsOrBundlesContainingFragment,
-} from '../hooks/useGetCollectionsOrBundlesContainingFragment';
+import { BundleSortProp, useGetCollectionsOrBundlesContainingFragment, } from '../hooks/useGetCollectionsOrBundlesContainingFragment';
 import './CollectionDetail.scss';
 import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
 import { isServerSideRendering } from '../../shared/helpers/routing/is-server-side-rendering.ts';
-import {
-  BooleanParam,
-  StringParam,
-  useQueryParams,
-} from '../../shared/helpers/routing/use-query-params-ssr.ts';
-import {
-  QUERY_PARAM_INVITE_TOKEN,
-  QUERY_PARAM_SHOW_PUBLISH_MODAL,
-} from './CollectionDetail.const.tsx';
+import { BooleanParam, StringParam, useQueryParams, } from '../../shared/helpers/routing/use-query-params-ssr.ts';
+import { QUERY_PARAM_INVITE_TOKEN, QUERY_PARAM_SHOW_PUBLISH_MODAL, } from './CollectionDetail.const.tsx';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -149,7 +119,7 @@ type CollectionDetailPermissions = Partial<{
 }>;
 
 type CollectionInfo = {
-  collection: Avo.Collection.Collection | null;
+  collection: AvoCollectionCollection | null;
   permissions: CollectionDetailPermissions;
   showLoginPopup: boolean;
   showNoAccessPopup: boolean;
@@ -166,9 +136,8 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 }) => {
   const navigateFunc = useNavigate();
   const loaderData = useLoaderData();
-  console.log('Loader data for CollectionDetail', JSON.stringify(loaderData));
   const collectionFromLoader =
-    loaderData?.collection as Avo.Collection.Collection | null;
+    loaderData?.collection as AvoCollectionCollection | null;
 
   const { id: collectionIdFromUrl } = useParams<{ id: string }>();
 
@@ -182,7 +151,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
     showLoginPopup: !commonUser,
     showNoAccessPopup: false,
   });
-  const collection = collectionInfo?.collection;
+  const collection = collectionFromLoader;
   const isContributor = !!(collection?.contributors || []).find(
     (contributor) =>
       !!contributor.profile_id &&
@@ -230,7 +199,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
   const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
   const [relatedCollections, setRelatedCollections] = useState<
-    Avo.Search.ResultItem[] | null
+    AvoSearchResultItem[] | null
   >(null);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
@@ -264,7 +233,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   } = useGetCollectionsOrBundlesContainingFragment(
     collectionId as string,
     BundleSortProp.title,
-    Avo.Search.OrderDirection.ASC,
+    AvoSearchOrderDirection.ASC,
     {
       enabled:
         !!collectionId && !!collectionInfo?.collection && !showLoginPopup,
@@ -314,15 +283,11 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
     const response =
       await CollectionService.fetchContributorsByCollectionId(collectionId);
 
-    console.log(
-      'setting collection info in state 1: ',
-      JSON.stringify(collectionInfo),
-    );
     setCollectionInfo({
       ...collectionInfo,
       collection: {
         ...collectionInfo.collection,
-        contributors: response as Avo.Collection.Contributor[],
+        contributors: response as AvoCollectionContributor[],
       },
     } as CollectionInfo);
   }, [collectionId, collectionInfo, showLoginPopup]);
@@ -381,7 +346,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
   const getPermissions = async (
     collectionId: string,
-    commonUser: Avo.User.CommonUser | undefined,
+    commonUser: AvoUserCommonUser | undefined,
   ): Promise<CollectionDetailPermissions> => {
     if (!commonUser) {
       return {};
@@ -449,10 +414,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
         // Redirect to new url that uses the collection uuid instead of the collection avo1 id
         // and continue loading the collection
-        defaultGoToDetailLink(navigateFunc)(
-          uuid,
-          Avo.Core.ContentType.COLLECTIE,
-        );
+        defaultGoToDetailLink(navigateFunc)(uuid, AvoCoreContentType.COLLECTIE);
         return;
       }
 
@@ -463,10 +425,6 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
       if (!commonUser) {
         // Set collection with metadata only when not logged in
 
-        console.log(
-          'setting collection info in state 2: ',
-          JSON.stringify(collectionInfo),
-        );
         setCollectionInfo({
           ...collectionInfo,
           showNoAccessPopup: false,
@@ -487,10 +445,6 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
             !isServerSideRendering() &&
             !window.location.href.includes(ROUTE_PARTS.quickLane)))
       ) {
-        console.log(
-          'setting collection info in state 3: ',
-          JSON.stringify(collectionInfo),
-        );
         setCollectionInfo({
           showNoAccessPopup: true,
           showLoginPopup: false,
@@ -608,7 +562,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   // Listeners
   const onEditCollection = () => {
     navigateFunc(
-      `${generateContentLinkString(Avo.Core.ContentType.COLLECTIE, `${collectionId}`)}/${
+      `${generateContentLinkString(AvoCoreContentType.COLLECTIE, `${collectionId}`)}/${
         ROUTE_PARTS.edit
       }/${CollectionCreateUpdateTab.CONTENT}`,
     );
@@ -655,7 +609,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
           defaultGoToDetailLink(navigateFunc)(
             duplicateCollection.id,
-            Avo.Core.ContentType.COLLECTIE,
+            AvoCoreContentType.COLLECTIE,
           );
           setCollectionId(duplicateCollection.id);
           ToastService.success(
@@ -1094,9 +1048,8 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
                 {
                   ...collection?.profile?.user,
                   profile: collection?.profile,
-                } as Avo.User.User,
-                (collection?.contributors ||
-                  []) as Avo.Collection.Contributor[],
+                } as AvoUserUser,
+                (collection?.contributors || []) as AvoCollectionContributor[],
               )}
               onDeleteContributor={(info) =>
                 onDeleteContributor(info, collectionId, fetchContributors)
@@ -1323,7 +1276,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   };
 
   const renderCollectionBody = () => {
-    const { collection_fragments } = collection as Avo.Collection.Collection;
+    const { collection_fragments } = collection as AvoCollectionCollection;
     const hasCopies = (collection?.relations || []).length > 0;
     const hasParentBundles = !!bundlesContainingCollection?.length;
 
@@ -1423,7 +1376,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   };
 
   const renderModals = () => {
-    const { collection_fragments } = collection as Avo.Collection.Collection;
+    const { collection_fragments } = collection as AvoCollectionCollection;
 
     return (
       <>
@@ -1432,7 +1385,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
             collection={collection}
             parentBundles={bundlesContainingCollection}
             isOpen={!!isPublishModalOpen}
-            onClose={(newCollection: Avo.Collection.Collection | undefined) => {
+            onClose={(newCollection: AvoCollectionCollection | undefined) => {
               setQuery({
                 ...query,
                 [QUERY_PARAM_SHOW_PUBLISH_MODAL]: undefined,
@@ -1453,8 +1406,8 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         {collectionId !== undefined && !!commonUser && (
           <AddToBundleModal
             fragmentId={collectionId as string}
-            fragmentInfo={collection as Avo.Collection.Collection}
-            fragmentType={Avo.Core.BlockItemType.COLLECTION}
+            fragmentInfo={collection as AvoCollectionCollection}
+            fragmentType={AvoCoreBlockItemType.COLLECTION}
             isOpen={isAddToBundleModalOpen}
             onClose={async () => {
               setIsAddToBundleModalOpen(false);
@@ -1496,7 +1449,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
             }}
             onUpdate={(newCollection) => {
               if (
-                (collection as Avo.Collection.Collection).collection_fragments
+                (collection as AvoCollectionCollection).collection_fragments
               ) {
                 setCollectionInfo((oldCollectionInfo) => ({
                   showLoginPopup: oldCollectionInfo?.showLoginPopup || false,
@@ -1504,7 +1457,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
                     oldCollectionInfo?.showNoAccessPopup || false,
                   permissions: oldCollectionInfo?.permissions || {},
                   collection:
-                    (newCollection as Avo.Collection.Collection) || null,
+                    (newCollection as AvoCollectionCollection) || null,
                 }));
               }
             }}
@@ -1586,8 +1539,8 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
               {
                 ...collection?.profile?.user,
                 profile: collection?.profile,
-              } as Avo.User.User,
-              (collection?.contributors || []) as Avo.Collection.Contributor[],
+              } as AvoUserUser,
+              (collection?.contributors || []) as AvoCollectionContributor[],
             )}
             onDeleteContributor={(info) =>
               onDeleteContributor(info, collectionId, fetchContributors)
@@ -1630,47 +1583,49 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   };
 
   const renderCollection = () => {
-    if (loadingInfo.state === 'loading') {
-      return <FullPageSpinner locationId="collection-detail--loading" />;
-    }
+    if (!collection) {
+      if (loadingInfo.state === 'loading') {
+        return <FullPageSpinner locationId="collection-detail--loading" />;
+      }
 
-    if (showNoAccessPopup) {
-      return (
-        <ErrorView
-          locationId="collection-detail--error"
-          icon={IconName.lock}
-          message={tHtml(
-            'collection/views/collection-detail___je-hebt-geen-rechten-om-deze-collectie-te-bekijken',
-          )}
-          actionButtons={['home']}
-        />
-      );
-    }
+      if (showNoAccessPopup) {
+        return (
+          <ErrorView
+            locationId="collection-detail--error"
+            icon={IconName.lock}
+            message={tHtml(
+              'collection/views/collection-detail___je-hebt-geen-rechten-om-deze-collectie-te-bekijken',
+            )}
+            actionButtons={['home']}
+          />
+        );
+      }
 
-    if (loadingInfo.state === 'forbidden') {
-      return (
-        <ErrorNoAccess
-          title={tHtml(
-            'collection/views/collection-detail___je-hebt-geen-toegang',
-          )}
-          message={tHtml(
-            'collection/views/collection-detail___je-hebt-geen-toegang-beschrijving',
-          )}
-        />
-      );
-    }
+      if (loadingInfo.state === 'forbidden') {
+        return (
+          <ErrorNoAccess
+            title={tHtml(
+              'collection/views/collection-detail___je-hebt-geen-toegang',
+            )}
+            message={tHtml(
+              'collection/views/collection-detail___je-hebt-geen-toegang-beschrijving',
+            )}
+          />
+        );
+      }
 
-    if (loadingInfo.state === 'error') {
-      return (
-        <ErrorView
-          locationId="collection-detail--error"
-          icon={IconName.alertTriangle}
-          message={tHtml(
-            'collection/views/collection-detail___het-laden-van-de-collectie-is-mislukt',
-          )}
-          actionButtons={['home']}
-        />
-      );
+      if (loadingInfo.state === 'error') {
+        return (
+          <ErrorView
+            locationId="collection-detail--error"
+            icon={IconName.alertTriangle}
+            message={tHtml(
+              'collection/views/collection-detail___het-laden-van-de-collectie-is-mislukt',
+            )}
+            actionButtons={['home']}
+          />
+        );
+      }
     }
 
     return (
@@ -1683,7 +1638,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         {collection && (
           <Header
             title={collection.title}
-            category={Avo.ContentType.English.COLLECTION}
+            category={AvoContentTypeEnglish.COLLECTION}
             showMetaData={true}
             bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
             views={String(bookmarkViewPlayCounts.viewCount || 0)}
@@ -1717,10 +1672,6 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
     );
   };
 
-  console.log(
-    'collectionInfoFromLoader: ',
-    JSON.stringify(collectionFromLoader),
-  );
   const renderPageContent = () => {
     return (
       <div className="c-sticky-bar__wrapper">

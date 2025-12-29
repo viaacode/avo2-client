@@ -12,7 +12,7 @@ import { tText } from '../../shared/helpers/translate-text';
 import { loginAtom } from '../authentication.store';
 import { getLoginStateAtom } from '../authentication.store.actions';
 import { LoginMessage } from '../authentication.types';
-import { redirectToServerLoginPage } from '../helpers/redirects';
+import { redirectToServerLoginPage } from '../helpers/redirects/redirects';
 
 const LOGIN_ATTEMPT_KEY = 'AVO_LOGIN_ATTEMPT';
 

@@ -1,7 +1,7 @@
 import { IconName } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { type FC, type ReactNode } from 'react';
 
+import { AvoAssignmentAssignment, AvoCoreBlockItemBase } from '@viaa/avo2-types';
+import { type FC, type ReactNode } from 'react';
 import { ErrorView } from '../../../../error/views/ErrorView';
 import { type FilterState } from '../../../../search/search.types';
 import { BlockList } from '../../../../shared/components/BlockList/BlockList';
@@ -9,7 +9,7 @@ import { tHtml } from '../../../../shared/helpers/translate-html';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment.const';
 
 interface AssignmentResponseAssignmentTabProps {
-  blocks: Avo.Assignment.Assignment['blocks'] | null;
+  blocks: AvoAssignmentAssignment['blocks'] | null;
   pastDeadline: boolean;
   setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
   buildSearchLink: (props: Partial<FilterState>) => ReactNode | string;
@@ -34,7 +34,7 @@ export const AssignmentResponseAssignmentTab: FC<
     }
     return (
       <BlockList
-        blocks={(blocks || []) as Avo.Core.BlockItemBase[]}
+        blocks={(blocks || []) as AvoCoreBlockItemBase[]}
         config={{
           TEXT: {
             title: {

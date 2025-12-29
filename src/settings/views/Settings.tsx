@@ -16,7 +16,7 @@ import { useNavigate, useParams } from 'react-router';
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';

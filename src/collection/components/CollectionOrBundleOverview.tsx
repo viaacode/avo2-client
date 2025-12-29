@@ -16,17 +16,16 @@ import {
   ToolbarItem,
   ToolbarLeft,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoCollectionContributor,
+  AvoSearchOrderDirection,
+  AvoShareShareWithColleagueType,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { cloneDeep, compact, isNil, noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactNode,
-  type ReactText,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { type FC, type ReactNode, type ReactText, useCallback, useEffect, useState, } from 'react';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -38,10 +37,7 @@ import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
-import {
-  CheckboxDropdownModal,
-  type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { CheckboxDropdownModal, type CheckboxOption, } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
@@ -52,10 +48,7 @@ import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLane
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import {
-  formatDate,
-  formatTimestamp,
-} from '../../shared/helpers/formatters/date';
+import { formatDate, formatTimestamp, } from '../../shared/helpers/formatters/date';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
@@ -70,30 +63,22 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CollectionService } from '../collection.service';
 import {
-  COLLECTION_OR_BUNDLE_TO_CONTENT_TYPE_ENGLISH,
   type Collection,
+  COLLECTION_OR_BUNDLE_TO_CONTENT_TYPE_ENGLISH,
   CollectionCreateUpdateTab,
   CollectionMenuAction,
   CollectionOrBundle,
   CollectionShareType,
   ContentTypeNumber,
 } from '../collection.types';
-import {
-  deleteCollection,
-  deleteSelfFromCollection,
-} from '../helpers/delete-collection';
+import { deleteCollection, deleteSelfFromCollection, } from '../helpers/delete-collection';
 
 import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './CollectionOrBundleOverview.consts';
 import { DeleteCollectionModal } from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
 import './CollectionOrBundleOverview.scss';
-import {
-  ArrayParam,
-  NumberParam,
-  StringParam,
-  useQueryParams,
-} from '../../shared/helpers/routing/use-query-params-ssr.ts';
+import { ArrayParam, NumberParam, StringParam, useQueryParams, } from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { useGetWorkspaceCounts } from '../../workspace/hooks/useGetWorkspaceCounts.ts';
 import { useDeleteCollectionOrBundleByUuid } from '../hooks/useDeleteCollectionOrBundleByUuid.tsx';
 
@@ -124,15 +109,15 @@ export const CollectionOrBundleOverview: FC<
   const [dropdownOpenForCollectionUuid, setDropdownOpenForCollectionUuid] =
     useState<string | null>(null);
   const [selectedCollectionDetail, setSelectedCollectionDetail] = useState<
-    Avo.Collection.Collection | undefined
+    AvoCollectionCollection | undefined
   >(undefined);
   const [selectedCollection, setSelectedCollection] = useState<
     Collection | undefined
   >(undefined);
   const [sortColumn, setSortColumn] =
     useState<CollectionsOrBundlesOverviewTableCols>('updated_at');
-  const [sortOrder, setSortOrder] = useState<Avo.Search.OrderDirection>(
-    Avo.Search.OrderDirection.DESC,
+  const [sortOrder, setSortOrder] = useState<AvoSearchOrderDirection>(
+    AvoSearchOrderDirection.DESC,
   );
   const [page, setPage] = useState<number>(0);
   const [activeModalInfo, setActiveModalInfo] = useState<{
@@ -155,12 +140,12 @@ export const CollectionOrBundleOverview: FC<
 
   const isContributor =
     selectedCollection?.share_type ===
-    Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ;
+    AvoShareShareWithColleagueType.GEDEELD_MET_MIJ;
   const isOwner =
     selectedCollection?.share_type ===
-      Avo.Share.ShareWithColleagueType.GEDEELD_MET_ANDERE ||
+      AvoShareShareWithColleagueType.GEDEELD_MET_ANDERE ||
     selectedCollection?.share_type ===
-      Avo.Share.ShareWithColleagueType.NIET_GEDEELD;
+      AvoShareShareWithColleagueType.NIET_GEDEELD;
   const hasDeleteRightsForAllCollections =
     commonUser?.permissions?.includes(PermissionName.DELETE_ANY_COLLECTIONS) ||
     false;
@@ -296,7 +281,7 @@ export const CollectionOrBundleOverview: FC<
       if (isCollection) {
         perms = await Promise.all(
           (collections || []).map(
-            async (collection: Partial<Avo.Collection.Collection>) => {
+            async (collection: Partial<AvoCollectionCollection>) => {
               return await PermissionService.checkPermissions(
                 {
                   canEdit: [
@@ -322,29 +307,27 @@ export const CollectionOrBundleOverview: FC<
       } else {
         // bundles
         perms = await Promise.all(
-          collections.map(
-            async (bundle: Partial<Avo.Collection.Collection>) => {
-              return await PermissionService.checkPermissions(
-                {
-                  canEdit: [
-                    {
-                      name: PermissionName.EDIT_OWN_BUNDLES,
-                      obj: bundle,
-                    },
-                    { name: PermissionName.EDIT_ANY_BUNDLES },
-                  ],
-                  canDelete: [
-                    {
-                      name: PermissionName.DELETE_OWN_BUNDLES,
-                      obj: bundle,
-                    },
-                    { name: PermissionName.DELETE_ANY_BUNDLES },
-                  ],
-                },
-                commonUser,
-              );
-            },
-          ),
+          collections.map(async (bundle: Partial<AvoCollectionCollection>) => {
+            return await PermissionService.checkPermissions(
+              {
+                canEdit: [
+                  {
+                    name: PermissionName.EDIT_OWN_BUNDLES,
+                    obj: bundle,
+                  },
+                  { name: PermissionName.EDIT_ANY_BUNDLES },
+                ],
+                canDelete: [
+                  {
+                    name: PermissionName.DELETE_OWN_BUNDLES,
+                    obj: bundle,
+                  },
+                  { name: PermissionName.DELETE_ANY_BUNDLES },
+                ],
+              },
+              commonUser,
+            );
+          }),
         );
       }
       setPermissions(
@@ -435,7 +418,7 @@ export const CollectionOrBundleOverview: FC<
       setSortColumn(query.sortColumn as CollectionsOrBundlesOverviewTableCols);
     }
     if (query.sortOrder) {
-      setSortOrder(query.sortOrder as Avo.Search.OrderDirection);
+      setSortOrder(query.sortOrder as AvoSearchOrderDirection);
     }
   }, []);
 
@@ -519,7 +502,7 @@ export const CollectionOrBundleOverview: FC<
     } else {
       // Initial column sort order
       setSortColumn(columnId);
-      setSortOrder(Avo.Search.OrderDirection.ASC);
+      setSortOrder(AvoSearchOrderDirection.ASC);
     }
   };
 
@@ -792,7 +775,7 @@ export const CollectionOrBundleOverview: FC<
 
       // TODO re-enable once users can give share collection view/edit rights with other users
       // case 'access':
-      // 	const userProfiles: Avo.User.Profile[] = compact([profile]); // TODO: Get all users that are allowed to edit this collection
+      // 	const userProfiles: AvoUserProfile[] = compact([profile]); // TODO: Get all users that are allowed to edit this collection
       // 	const avatarProps = userProfiles.map(userProfile => {
       // 		const props = getAvatarProps(userProfile);
       // 		(props as any).subtitle = 'mag bewerken'; // TODO: Check permissions for all users
@@ -814,9 +797,9 @@ export const CollectionOrBundleOverview: FC<
 
       case 'share_type':
         return createShareIconTableOverview(
-          collection.share_type as Avo.Share.ShareWithColleagueType | undefined,
+          collection.share_type as AvoShareShareWithColleagueType | undefined,
           collection.contributors as unknown as
-            | Avo.Collection.Contributor[]
+            | AvoCollectionContributor[]
             | null
             | undefined,
           'collection',

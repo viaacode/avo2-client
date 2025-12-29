@@ -1,9 +1,9 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
-import { Alert, Container, Icon, IconName, Spacer } from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { isNil } from 'es-toolkit'
-import { type FC, type ReactNode, useEffect, useState } from 'react'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import { Alert, Container, Icon, IconName, Spacer, } from '@viaa/avo2-components';
+import { AvoCollectionCollection, AvoCollectionFragment, PermissionName, } from '@viaa/avo2-types';
+import { isNil } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -18,33 +18,33 @@ import { type CollectionAction } from './CollectionOrBundleEdit.types';
 import { COLLECTION_SAVE_DELAY } from './CollectionOrBundleEditContent.consts';
 import { FragmentAdd } from './fragment/FragmentAdd';
 
-import './CollectionOrBundleEditContent.scss'
+import './CollectionOrBundleEditContent.scss';
 
 interface CollectionOrBundleEditContentProps {
-  type: CollectionOrBundle
-  collection: Avo.Collection.Collection
-  changeCollectionState: (action: CollectionAction) => void
-  onFocus?: () => void
+  type: CollectionOrBundle;
+  collection: AvoCollectionCollection;
+  changeCollectionState: (action: CollectionAction) => void;
+  onFocus?: () => void;
 }
 
 export const CollectionOrBundleEditContent: FC<
   CollectionOrBundleEditContentProps
 > = ({ type, collection, changeCollectionState, onFocus }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   // State
   const [openOptionsId, setOpenOptionsId] = useState<number | string | null>(
     null,
-  )
+  );
   const [allowedToAddLinks, setAllowedToAddLinks] = useState<boolean | null>(
     null,
-  )
+  );
 
   // Computed
-  const isCollection = type === 'collection'
-  const fragments = collection.collection_fragments || []
-  const fragmentCollections = fragments.filter((f) => f.type === 'COLLECTION')
-  const fragmentAssignments = fragments.filter((f) => f.type === 'ASSIGNMENT')
+  const isCollection = type === 'collection';
+  const fragments = collection.collection_fragments || [];
+  const fragmentCollections = fragments.filter((f) => f.type === 'COLLECTION');
+  const fragmentAssignments = fragments.filter((f) => f.type === 'ASSIGNMENT');
 
   useEffect(() => {
     PermissionService.hasPermission(
@@ -53,25 +53,25 @@ export const CollectionOrBundleEditContent: FC<
       commonUser,
     )
       .then((hasPermission) => {
-        setAllowedToAddLinks(hasPermission)
+        setAllowedToAddLinks(hasPermission);
       })
       .catch((err) => {
         console.error(
           'Failed to check permissions for adding hyperlinks in collection fragment editors',
           err,
           { commonUser, permission: PermissionName.ADD_HYPERLINK_COLLECTIONS },
-        )
+        );
         ToastService.danger(
           tHtml(
             'collection/components/fragment/fragment-edit___het-controleren-van-je-account-rechten-is-mislukt',
           ),
-        )
-      })
-  }, [commonUser])
+        );
+      });
+  }, [commonUser]);
 
-  const getFragmentKey = (fragment: Avo.Collection.Fragment) => {
-    return `fragment_${fragment.id}-${fragment?.created_at}-${fragment?.position}`
-  }
+  const getFragmentKey = (fragment: AvoCollectionFragment) => {
+    return `fragment_${fragment.id}-${fragment?.created_at}-${fragment?.position}`;
+  };
 
   const handleChangedCollectionState = (
     action: CollectionAction,
@@ -85,7 +85,7 @@ export const CollectionOrBundleEditContent: FC<
     ) {
       // We need to map the indexes back to the original indexes in the collection/bundle
       // Since we have 2 lists of fragments in a bundle (collections and assignments)
-      action.index = startIndex + action.index
+      action.index = startIndex + action.index;
       if (
         action.type === 'INSERT_FRAGMENT' ||
         action.type === 'SWAP_FRAGMENTS' ||
@@ -98,16 +98,16 @@ export const CollectionOrBundleEditContent: FC<
         // Do not update the parent state
         // So the video playback will not be reset
         setTimeout(() => {
-          changeCollectionState(action)
-        }, COLLECTION_SAVE_DELAY)
+          changeCollectionState(action);
+        }, COLLECTION_SAVE_DELAY);
       } else {
-        changeCollectionState(action)
+        changeCollectionState(action);
       }
     }
-  }
+  };
 
   const renderFragmentEditor = (
-    fragment: Avo.Collection.Fragment,
+    fragment: AvoCollectionFragment,
     index: number,
     startIndex: number,
     endIndex: number,
@@ -140,14 +140,14 @@ export const CollectionOrBundleEditContent: FC<
                   )}
                 </Alert>
               </Spacer>
-            )
+            );
           }
-          return null
+          return null;
         }}
         onFocus={onFocus}
       />
-    )
-  }
+    );
+  };
 
   const renderFragmentEditors = () => {
     if (isCollection) {
@@ -166,7 +166,7 @@ export const CollectionOrBundleEditContent: FC<
             renderFragmentEditor(fragment, index, 0, fragments.length),
           )}
         </>
-      )
+      );
     } else {
       // Render bundle fragments: collections and assignments
       return (
@@ -229,12 +229,12 @@ export const CollectionOrBundleEditContent: FC<
             </>
           )}
         </>
-      )
+      );
     }
-  }
+  };
 
   if (isNil(allowedToAddLinks)) {
-    return null
+    return null;
   }
 
   return (
@@ -246,5 +246,5 @@ export const CollectionOrBundleEditContent: FC<
         {renderFragmentEditors()}
       </Container>
     </Container>
-  )
-}
+  );
+};

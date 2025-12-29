@@ -1,6 +1,5 @@
-import { type Avo } from '@viaa/avo2-types'
-import { isNil } from 'es-toolkit'
-
+import { AvoSearchOrderDirection } from '@viaa/avo2-types';
+import { isNil } from 'es-toolkit';
 import {
   type DeleteInteractiveTourMutation,
   type DeleteInteractiveTourMutationVariables,
@@ -22,7 +21,6 @@ import {
 } from '../../shared/generated/graphql-db-react-query';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { dataService } from '../../shared/services/data-service';
-
 import { ITEMS_PER_PAGE } from './interactive-tour.const';
 import {
   type EditableInteractiveTour,
@@ -34,27 +32,27 @@ export class InteractiveTourService {
   public static async fetchInteractiveTours(
     page: number,
     sortColumn: InteractiveTourOverviewTableCols,
-    sortOrder: Avo.Search.OrderDirection,
+    sortOrder: AvoSearchOrderDirection,
     where: GetInteractiveToursQueryVariables['where'],
   ): Promise<[GetInteractiveToursQuery['app_interactive_tour'], number]> {
-    let variables: GetInteractiveToursQueryVariables | null = null
+    let variables: GetInteractiveToursQueryVariables | null = null;
     try {
       variables = {
         where,
         offset: ITEMS_PER_PAGE * page,
         limit: ITEMS_PER_PAGE,
         orderBy: [{ [sortColumn]: sortOrder }],
-      }
+      };
       const response = await dataService.query<
         GetInteractiveToursQuery,
         GetInteractiveToursQueryVariables
       >({
         variables,
         query: GetInteractiveToursDocument,
-      })
-      const interactiveTours = response?.app_interactive_tour
+      });
+      const interactiveTours = response?.app_interactive_tour;
       const interactiveTourCount =
-        response?.app_interactive_tour_aggregate?.aggregate?.count || 0
+        response?.app_interactive_tour_aggregate?.aggregate?.count || 0;
 
       if (!interactiveTours) {
         throw new CustomError(
@@ -63,10 +61,10 @@ export class InteractiveTourService {
           {
             response,
           },
-        )
+        );
       }
 
-      return [interactiveTours, interactiveTourCount]
+      return [interactiveTours, interactiveTourCount];
     } catch (err) {
       throw new CustomError(
         'Failed to get interactive tours from the database',
@@ -75,26 +73,26 @@ export class InteractiveTourService {
           variables,
           query: 'GET_INTERACTIVE_TOURS',
         },
-      )
+      );
     }
   }
 
   public static async fetchInteractiveTour(
     id: string,
   ): Promise<GetInteractiveTourByIdQuery['app_interactive_tour'][0]> {
-    let variables: any
+    let variables: any;
     try {
       variables = {
         id,
-      }
+      };
       const response = await dataService.query<
         GetInteractiveTourByIdQuery,
         GetInteractiveTourByIdQueryVariables
       >({
         variables,
         query: GetInteractiveTourByIdDocument,
-      })
-      const interactiveTour = response?.app_interactive_tour?.[0]
+      });
+      const interactiveTour = response?.app_interactive_tour?.[0];
 
       if (!interactiveTour) {
         throw new CustomError(
@@ -103,10 +101,10 @@ export class InteractiveTourService {
           {
             response,
           },
-        )
+        );
       }
 
-      return interactiveTour
+      return interactiveTour;
     } catch (err) {
       throw new CustomError(
         'Failed to get the interactiveTour from the database',
@@ -115,7 +113,7 @@ export class InteractiveTourService {
           variables,
           query: 'GET_INTERACTIVE_TOUR_BY_ID',
         },
-      )
+      );
     }
   }
 
@@ -135,17 +133,17 @@ export class InteractiveTourService {
             steps: interactiveTour.steps,
           } as any,
         },
-      })
+      });
       const interactiveTourId =
-        response.insert_app_interactive_tour?.returning?.[0]?.id
+        response.insert_app_interactive_tour?.returning?.[0]?.id;
       if (isNil(interactiveTourId)) {
         throw new CustomError(
           'Response from database does not contain the id of the inserted interactive tour',
           null,
           { response },
-        )
+        );
       }
-      return interactiveTourId
+      return interactiveTourId;
     } catch (err) {
       throw new CustomError(
         'Failed to insert interactive tour in the database',
@@ -154,7 +152,7 @@ export class InteractiveTourService {
           interactiveTour,
           query: 'INSERT_INTERACTIVE_TOUR',
         },
-      )
+      );
     }
   }
 
@@ -166,7 +164,7 @@ export class InteractiveTourService {
         throw new CustomError(
           'Cannot update interactive tour because the id is undefined',
           null,
-        )
+        );
       }
       await dataService.query<
         UpdateInteractiveTourMutation,
@@ -181,7 +179,7 @@ export class InteractiveTourService {
           } as any,
           interactiveTourId: interactiveTour.id,
         },
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to update interactive tour in the database',
@@ -190,7 +188,7 @@ export class InteractiveTourService {
           interactiveTour,
           query: 'UPDATE_INTERACTIVE_TOUR',
         },
-      )
+      );
     }
   }
 
@@ -204,7 +202,7 @@ export class InteractiveTourService {
         variables: {
           interactiveTourId,
         },
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to delete interactive tour from the database',
@@ -213,7 +211,7 @@ export class InteractiveTourService {
           interactiveTourId,
           query: 'DELETE_INTERACTIVE_TOUR',
         },
-      )
+      );
     }
   }
 
@@ -222,10 +220,10 @@ export class InteractiveTourService {
     currentStapIndex: number,
     delta: number,
   ): EditableStep[] {
-    const currentStep = steps[currentStapIndex]
-    steps[currentStapIndex] = steps[currentStapIndex + delta]
-    steps[currentStapIndex + delta] = currentStep
+    const currentStep = steps[currentStapIndex];
+    steps[currentStapIndex] = steps[currentStapIndex + delta];
+    steps[currentStapIndex + delta] = currentStep;
 
-    return steps
+    return steps;
   }
 }

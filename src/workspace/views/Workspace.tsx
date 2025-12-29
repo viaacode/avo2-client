@@ -38,7 +38,7 @@ import { useLocation } from 'react-router-dom';
 import { AssignmentOverview } from '../../assignment/views/AssignmentOverview';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
 import { CollectionOrBundle } from '../../collection/collection.types';
 import { CollectionOrBundleOverview } from '../../collection/components/CollectionOrBundleOverview';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';

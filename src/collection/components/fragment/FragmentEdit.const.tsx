@@ -1,19 +1,21 @@
-import { Avo } from '@viaa/avo2-types';
+import {
+  AvoCoreBlockItemType,
+  AvoEventLoggingObjectType,
+} from '@viaa/avo2-types';
 import { type ReactNode } from 'react';
-
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 
 export const COLLECTION_FRAGMENT_TYPE_TO_EVENT_OBJECT_TYPE: Partial<
-  Record<Avo.Core.BlockItemType, Avo.EventLogging.ObjectType>
+  Record<AvoCoreBlockItemType, AvoEventLoggingObjectType>
 > = {
-  [Avo.Core.BlockItemType.ITEM]: 'item',
-  [Avo.Core.BlockItemType.COLLECTION]: 'collection',
-  [Avo.Core.BlockItemType.ASSIGNMENT]: 'assignment',
+  [AvoCoreBlockItemType.ITEM]: 'item',
+  [AvoCoreBlockItemType.COLLECTION]: 'collection',
+  [AvoCoreBlockItemType.ASSIGNMENT]: 'assignment',
 };
 
 export function GET_FRAGMENT_DELETE_SUCCESS_MESSAGES(): Record<
-  Avo.Core.BlockItemType,
+  AvoCoreBlockItemType,
   ReactNode
 > {
   return {
@@ -39,7 +41,7 @@ export function GET_FRAGMENT_DELETE_SUCCESS_MESSAGES(): Record<
 }
 
 export function GET_FRAGMENT_DELETE_LABELS(): Record<
-  Avo.Core.BlockItemType,
+  AvoCoreBlockItemType,
   string
 > {
   return {
@@ -61,7 +63,7 @@ export function GET_FRAGMENT_DELETE_LABELS(): Record<
 }
 
 export function GET_FRAGMENT_EDIT_SWITCH_LABELS(): Record<
-  Avo.Core.BlockItemType,
+  AvoCoreBlockItemType,
   string
 > {
   return {
@@ -87,7 +89,7 @@ export function GET_FRAGMENT_EDIT_SWITCH_LABELS(): Record<
  * @constructor
  */
 export function GET_FRAGMENT_PUBLISH_STATUS_LABELS(): Record<
-  Avo.Core.BlockItemType,
+  AvoCoreBlockItemType,
   Record<string | 'true' | 'false', string>
 > {
   return {

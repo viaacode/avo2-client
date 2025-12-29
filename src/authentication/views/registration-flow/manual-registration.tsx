@@ -17,7 +17,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+
 import type { Requests } from 'node-zendesk';
 import { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -34,6 +34,7 @@ import { ToastService } from '../../../shared/services/toast-service';
 import { ZendeskService } from '../../../shared/services/zendesk-service';
 
 import './manual-registration.scss';
+import { AvoLomLomField } from '@viaa/avo2-types';
 
 export const ManualRegistration: FC = () => {
   const navigateFunc = useNavigate();
@@ -306,7 +307,7 @@ export const ManualRegistration: FC = () => {
             >
               <TagsInput
                 options={(educationLevelsAndDegrees || []).map(
-                  (item: Avo.Lom.LomField) => ({
+                  (item: AvoLomLomField) => ({
                     value: item.id,
                     label: item.label,
                   }),

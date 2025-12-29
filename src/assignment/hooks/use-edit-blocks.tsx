@@ -1,6 +1,5 @@
-import { Avo } from '@viaa/avo2-types'
-import { type ReactNode } from 'react'
-
+import { AvoCoreBlockItemBase, AvoCoreBlockItemType } from '@viaa/avo2-types';
+import { type ReactNode } from 'react';
 import { type FilterState } from '../../search/search.types';
 import { type EditableAssignmentBlock } from '../assignment.types';
 import { type AssignmentBlockItemDescriptionType } from '../components/AssignmentBlockDescriptionButtons';
@@ -9,23 +8,23 @@ import { AssignmentBlockEditSearch } from '../components/blocks/AssignmentBlockE
 import { AssignmentBlockEditText } from '../components/blocks/AssignmentBlockEditText';
 
 export function useEditBlocks(
-  setBlock: (updatedBlock: Avo.Core.BlockItemBase) => void,
+  setBlock: (updatedBlock: AvoCoreBlockItemBase) => void,
   buildSearchLink?: (props: Partial<FilterState>) => ReactNode | string,
   AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[],
   onFocus?: () => void,
-): (block: Avo.Core.BlockItemBase) => ReactNode | null {
-  return function useEditBlocks(block: Avo.Core.BlockItemBase) {
+): (block: AvoCoreBlockItemBase) => ReactNode | null {
+  return function useEditBlocks(block: AvoCoreBlockItemBase) {
     switch (block.type) {
-      case Avo.Core.BlockItemType.TEXT:
+      case AvoCoreBlockItemType.TEXT:
         return (
           <AssignmentBlockEditText
             setBlock={setBlock}
             block={block as EditableAssignmentBlock}
             onFocus={onFocus}
           />
-        )
+        );
 
-      case Avo.Core.BlockItemType.ITEM:
+      case AvoCoreBlockItemType.ITEM:
         return (
           <AssignmentBlockEditItem
             setBlock={setBlock}
@@ -35,19 +34,19 @@ export function useEditBlocks(
             }
             buildSearchLink={buildSearchLink}
           />
-        )
+        );
 
-      case Avo.Core.BlockItemType.ZOEK:
-      case Avo.Core.BlockItemType.BOUW:
+      case AvoCoreBlockItemType.ZOEK:
+      case AvoCoreBlockItemType.BOUW:
         return (
           <AssignmentBlockEditSearch
             setBlock={setBlock}
             block={block as EditableAssignmentBlock}
           />
-        )
+        );
 
       default:
-        break
+        break;
     }
-  }
+  };
 }

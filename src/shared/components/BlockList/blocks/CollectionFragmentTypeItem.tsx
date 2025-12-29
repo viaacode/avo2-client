@@ -1,29 +1,27 @@
-import { type DefaultProps, IconName } from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { type FC, type ReactNode, useMemo } from 'react'
+import { type DefaultProps, IconName } from '@viaa/avo2-components';
+
+import { clsx } from 'clsx';
+import { type FC, type ReactNode, useMemo } from 'react';
 import {
   CollectionFragmentFlowPlayer,
   type CollectionFragmentFlowPlayerProps,
 } from '../../../../collection/components/CollectionFragmentFlowPlayer';
-import {
-  CollectionFragmentTitle,
-  type CollectionFragmentTitleProps,
-} from '../../../../collection/components/CollectionFragmentTitle';
+import { CollectionFragmentTitle, type CollectionFragmentTitleProps, } from '../../../../collection/components/CollectionFragmentTitle';
 import { tHtml } from '../../../helpers/translate-html';
 import { tText } from '../../../helpers/translate-text';
 import { ItemMetadata } from '../../BlockItemMetadata/ItemMetadata';
 import { CollapsibleColumn } from '../../CollapsibleColumn/CollapsibleColumn';
 import { TextWithTimestamps } from '../../TextWithTimestamp/TextWithTimestamps';
 
-import './CollectionFragmentTypeItem.scss'
+import './CollectionFragmentTypeItem.scss';
+import { AvoAssignmentBlock, AvoCoreBlockItemBase, AvoCoreBlockItemType, AvoItemItem } from "@viaa/avo2-types";
 
 export interface CollectionFragmentTypeItemProps extends DefaultProps {
-  block: Avo.Core.BlockItemBase
-  flowPlayer?: CollectionFragmentFlowPlayerProps
-  buildSeriesLink?: (series: string) => ReactNode
-  title?: CollectionFragmentTitleProps
-  canOpenOriginal?: boolean
+  block: AvoCoreBlockItemBase;
+  flowPlayer?: CollectionFragmentFlowPlayerProps;
+  buildSeriesLink?: (series: string) => ReactNode;
+  title?: CollectionFragmentTitleProps;
+  canOpenOriginal?: boolean;
 }
 
 export const CollectionFragmentTypeItem: FC<
@@ -36,10 +34,10 @@ export const CollectionFragmentTypeItem: FC<
   className,
   canOpenOriginal,
 }) => {
-  const custom = block.use_custom_fields && block.custom_description
+  const custom = block.use_custom_fields && block.custom_description;
   const original =
-    (block as Avo.Assignment.Block).original_description ||
-    block.item_meta?.description
+    (block as AvoAssignmentBlock).original_description ||
+    block.item_meta?.description;
 
   const customDescription = useMemo(
     () => (
@@ -55,7 +53,7 @@ export const CollectionFragmentTypeItem: FC<
         <TextWithTimestamps
           content={
             (block?.use_custom_fields ||
-            block?.type === Avo.Core.BlockItemType.TEXT
+            block?.type === AvoCoreBlockItemType.TEXT
               ? block.custom_description
               : block?.item_meta?.description) || ''
           }
@@ -63,7 +61,7 @@ export const CollectionFragmentTypeItem: FC<
       </>
     ),
     [canOpenOriginal, block],
-  )
+  );
 
   const originalDescription = useMemo(
     () => (
@@ -80,7 +78,7 @@ export const CollectionFragmentTypeItem: FC<
       </>
     ),
     [canOpenOriginal, original],
-  )
+  );
 
   return (
     <div className={clsx(className, 'c-collection-fragment-type-item')}>
@@ -97,7 +95,7 @@ export const CollectionFragmentTypeItem: FC<
           <CollapsibleColumn>
             {
               <ItemMetadata
-                item={block.item_meta as Avo.Item.Item}
+                item={block.item_meta as AvoItemItem}
                 buildSeriesLink={buildSeriesLink}
               />
             }
@@ -129,5 +127,5 @@ export const CollectionFragmentTypeItem: FC<
         </div>
       )}
     </div>
-  )
-}
+  );
+};

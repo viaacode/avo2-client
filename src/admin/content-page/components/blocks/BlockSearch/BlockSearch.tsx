@@ -12,16 +12,10 @@ import {
   Spinner,
   TextInput,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+
 import { isNil } from 'es-toolkit';
 import { useAtom } from 'jotai';
-import {
-  type FC,
-  type KeyboardEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { type FC, type KeyboardEvent, useCallback, useEffect, useState, } from 'react';
 import { useNavigate } from 'react-router';
 
 import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../../../../collection/collection.types';
@@ -29,14 +23,12 @@ import { SearchFilter } from '../../../../../search/search.const';
 import { fetchSearchResults } from '../../../../../search/search.service';
 import { searchAtom } from '../../../../../search/search.store';
 import { type SearchState } from '../../../../../search/search.types';
-import {
-  generateContentLinkString,
-  generateSearchLinkString,
-} from '../../../../../shared/helpers/link';
+import { generateContentLinkString, generateSearchLinkString, } from '../../../../../shared/helpers/link';
 import { useDebounce } from '../../../../../shared/hooks/useDebounce';
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { KeyCode } from '../../../../../shared/types';
 import './BlockSearch.scss';
+import { AvoSearchOrderDirection, AvoSearchResultItem } from '@viaa/avo2-types';
 import { tHtml } from '../../../../../shared/helpers/translate-html';
 import { tText } from '../../../../../shared/helpers/translate-text';
 
@@ -56,7 +48,7 @@ export const BlockSearch: FC = () => {
     const filters = { query: debouncedSearchTerms || '' };
     const searchResults = await fetchSearchResults(
       'relevance',
-      Avo.Search.OrderDirection.DESC,
+      AvoSearchOrderDirection.DESC,
       0,
       ITEMS_IN_AUTOCOMPLETE,
       filters,
@@ -79,9 +71,9 @@ export const BlockSearch: FC = () => {
 
   // Computed
   const autocompleteMenuItems = (
-    (searchState?.data?.results || []) as Avo.Search.ResultItem[]
+    (searchState?.data?.results || []) as AvoSearchResultItem[]
   ).map(
-    (searchResult: Avo.Search.ResultItem): MenuSearchResultItemInfo => ({
+    (searchResult: AvoSearchResultItem): MenuSearchResultItemInfo => ({
       label: searchResult.dc_title,
       id: searchResult.external_id,
       key: searchResult.external_id,
@@ -103,7 +95,7 @@ export const BlockSearch: FC = () => {
   const goToSearchResult = (searchResultId: string | undefined) => {
     if (!isNil(searchResultId)) {
       // Collection ids are numbers and item ids are strings
-      const searchResultItem: Avo.Search.ResultItem | undefined = (
+      const searchResultItem: AvoSearchResultItem | undefined = (
         searchState?.data?.results || []
       ).find(
         (searchResult) =>

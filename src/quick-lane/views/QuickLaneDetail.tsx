@@ -14,7 +14,11 @@ import {
   ToolbarLeft,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoItemItem,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
@@ -142,7 +146,7 @@ export const QuickLaneDetail: FC = () => {
     const [start, end] = getValidStartAndEnd(
       quickLane.start_oc,
       quickLane.end_oc,
-      toSeconds((quickLane.content as Avo.Item.Item)?.duration || 0),
+      toSeconds((quickLane.content as AvoItemItem)?.duration || 0),
     );
 
     switch (contentLabel) {
@@ -150,19 +154,19 @@ export const QuickLaneDetail: FC = () => {
         return (
           <FragmentList
             collectionFragments={
-              (quickLane.content as Avo.Collection.Collection)
+              (quickLane.content as AvoCollectionCollection)
                 .collection_fragments
             }
             showDescription={contentLayout === AssignmentLayout.PlayerAndText}
             showMetadata
             linkToItems={false}
-            collection={quickLane.content as Avo.Collection.Collection}
+            collection={quickLane.content as AvoCollectionCollection}
           />
         );
       case QuickLaneTypeEnum.ITEM:
         return (
           <ItemVideoDescription
-            itemMetaData={quickLane.content as Avo.Item.Item}
+            itemMetaData={quickLane.content as AvoItemItem}
             showMetadata={true}
             enableMetadataLink={false}
             showDescription={contentLayout === AssignmentLayout.PlayerAndText}
@@ -197,7 +201,7 @@ export const QuickLaneDetail: FC = () => {
 
     if (quickLane?.content_label === QuickLaneTypeEnum.ITEM) {
       path = generatePath(APP_PATH.ITEM_DETAIL.route, {
-        id: (quickLane.content as Avo.Item.Item).external_id.toString(),
+        id: (quickLane.content as AvoItemItem).external_id.toString(),
       });
     } else if (quickLane.content_label === QuickLaneTypeEnum.COLLECTION) {
       path = generatePath(APP_PATH.COLLECTION_DETAIL.route, {
@@ -316,9 +320,7 @@ export const QuickLaneDetail: FC = () => {
     }
 
     if (quickLane?.content_label === QuickLaneTypeEnum.COLLECTION) {
-      const content = quickLane?.content as
-        | Avo.Collection.Collection
-        | undefined;
+      const content = quickLane?.content as AvoCollectionCollection | undefined;
 
       if (!content || !content.is_public) {
         return (
@@ -334,12 +336,12 @@ export const QuickLaneDetail: FC = () => {
     } else {
       // ITEM
       // We assume the response isItem but don't check so we can handle the absence of VIEW_ANY_UNPUBLISHED_ITEMS
-      const content = quickLane?.content as Avo.Item.Item;
+      const content = quickLane?.content as AvoItemItem;
 
       // Check for a depublish reason first
       if (content.depublish_reason) {
         const depublishReason = stripRichTextParagraph(
-          (quickLane?.content as Avo.Item.Item).depublish_reason || '',
+          (quickLane?.content as AvoItemItem).depublish_reason || '',
         );
 
         return (

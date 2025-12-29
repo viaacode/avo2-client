@@ -1,13 +1,5 @@
-import {
-  Button,
-  ButtonToolbar,
-  Modal,
-  ModalBody,
-  Toolbar,
-  ToolbarItem,
-  ToolbarRight,
-} from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { Button, ButtonToolbar, Modal, ModalBody, Toolbar, ToolbarItem, ToolbarRight, } from '@viaa/avo2-components';
+
 import { noop, once } from 'es-toolkit';
 import { type FC, useState } from 'react';
 
@@ -25,20 +17,21 @@ import { ContentTypeNumber } from '../../collection.types';
 import { type CollectionAction } from '../CollectionOrBundleEdit.types';
 
 import './CutFragmentModal.scss';
+import { AvoCollectionFragment, AvoItemItem } from '@viaa/avo2-types';
 import { tText } from '../../../shared/helpers/translate-text';
 
 export interface CutFragmentModalProps {
   isOpen: boolean;
-  itemMetaData: Avo.Item.Item;
+  itemMetaData: AvoItemItem;
   index: number;
   fragment: Pick<
-    Avo.Collection.Fragment,
+    AvoCollectionFragment,
     'start_oc' | 'end_oc' | 'item_meta' | 'thumbnail_path' | 'external_id'
   >;
   changeCollectionState: (action: CollectionAction) => void;
   onClose: () => void;
   onConfirm?: (
-    update: Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>,
+    update: Pick<AvoCollectionFragment, 'start_oc' | 'end_oc'>,
   ) => void;
 }
 

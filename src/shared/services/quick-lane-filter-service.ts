@@ -1,4 +1,4 @@
-import { type Avo } from '@viaa/avo2-types';
+import { AvoSearchOrderDirection } from '@viaa/avo2-types';
 
 import { type DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
 import { type QuickLaneType } from '../components/QuickLaneContent/QuickLaneContent.types';
@@ -24,7 +24,7 @@ export interface QuickLaneFilters {
   createdAt?: DateRange;
   updatedAt?: DateRange;
   sortColumn?: string;
-  sortOrder?: Avo.Search.OrderDirection;
+  sortOrder?: AvoSearchOrderDirection;
   sortType?: TableColumnDataType;
   limit: number;
   offset: number;
@@ -110,7 +110,7 @@ export class QuickLaneFilterService {
                 params.sortOrder,
                 params.sortType,
                 {
-                  author: (order: Avo.Search.OrderDirection) => ({
+                  author: (order: AvoSearchOrderDirection) => ({
                     owner: { first_name: order },
                   }),
                 },

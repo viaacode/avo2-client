@@ -1,12 +1,15 @@
-import { type Avo } from '@viaa/avo2-types'
-import { stringifyUrl } from 'query-string'
-
+import {
+  AvoAssignmentResponse,
+  AvoCoreBlockItemBase,
+  AvoItemItem,
+  AvoSearchOrderDirection,
+} from '@viaa/avo2-types';
+import { stringifyUrl } from 'query-string';
 import { ITEMS_PER_PAGE } from '../admin/pupil-collection/pupil-collection.const';
 import { type ItemTrimInfo } from '../item/item.types';
 import { CustomError } from '../shared/helpers/custom-error';
 import { getEnv } from '../shared/helpers/env';
 import { type TableColumnDataType } from '../shared/types/table-column-data-type';
-
 import { type PupilCollectionOverviewTableColumns } from './pupil-collection.types';
 
 export class PupilCollectionService {
@@ -14,14 +17,14 @@ export class PupilCollectionService {
     offset: number,
     limit: number,
     sortColumn: PupilCollectionOverviewTableColumns,
-    sortOrder: Avo.Search.OrderDirection,
+    sortOrder: AvoSearchOrderDirection,
     tableColumnDataType: TableColumnDataType,
     where: any = {},
   ): Promise<{
-    assignmentResponses: Avo.Assignment.Response[]
-    count: number
+    assignmentResponses: AvoAssignmentResponse[];
+    count: number;
   }> {
-    let url: string | undefined = undefined
+    let url: string | undefined = undefined;
 
     try {
       url = stringifyUrl({
@@ -34,11 +37,11 @@ export class PupilCollectionService {
           tableColumnDataType,
           filters: JSON.stringify(where),
         },
-      })
+      });
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
-      )
-      return fetchWithLogoutJson(url)
+      );
+      return fetchWithLogoutJson(url);
     } catch (err) {
       throw new CustomError(
         'Failed to get pupil collections from the database',
@@ -46,12 +49,12 @@ export class PupilCollectionService {
         {
           url,
         },
-      )
+      );
     }
   }
 
   static async getPupilCollectionIds(where: any = {}): Promise<string[]> {
-    let url: string | undefined = undefined
+    let url: string | undefined = undefined;
 
     try {
       url = stringifyUrl({
@@ -59,11 +62,11 @@ export class PupilCollectionService {
         query: {
           filters: JSON.stringify(where),
         },
-      })
+      });
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
-      )
-      return fetchWithLogoutJson(url)
+      );
+      return fetchWithLogoutJson(url);
     } catch (err) {
       throw new CustomError(
         'Failed to get pupil collection ids from the database',
@@ -71,7 +74,7 @@ export class PupilCollectionService {
         {
           url,
         },
-      )
+      );
     }
   }
 
@@ -82,7 +85,7 @@ export class PupilCollectionService {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
-      )
+      );
       return await fetchWithLogoutJson(
         `${getEnv('PROXY_URL')}/pupil-collection/update-author`,
         {
@@ -92,7 +95,7 @@ export class PupilCollectionService {
             pupilCollectionIds,
           }),
         },
-      )
+      );
     } catch (err) {
       const error = new CustomError(
         'Failed to update author for pupil collections in the database',
@@ -101,22 +104,22 @@ export class PupilCollectionService {
           profileId,
           pupilCollectionIds,
         },
-      )
+      );
 
-      console.error(error)
-      throw error
+      console.error(error);
+      throw error;
     }
   }
 
   static async importFragmentToPupilCollection(
-    item: Avo.Item.Item,
+    item: AvoItemItem,
     assignmentResponseId: string,
     itemTrimInfo?: ItemTrimInfo,
-  ): Promise<Avo.Core.BlockItemBase> {
+  ): Promise<AvoCoreBlockItemBase> {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
-      )
+      );
       return await fetchWithLogoutJson(
         `${getEnv('PROXY_URL')}/pupil-collection/${assignmentResponseId}/import-fragment`,
         {
@@ -126,7 +129,7 @@ export class PupilCollectionService {
             itemTrimInfo,
           }),
         },
-      )
+      );
     } catch (err) {
       const error = new CustomError(
         'Failed to insert block into pupil collection',
@@ -136,10 +139,10 @@ export class PupilCollectionService {
           item,
           itemTrimInfo,
         },
-      )
+      );
 
-      console.error(error)
-      throw error
+      console.error(error);
+      throw error;
     }
   }
 }

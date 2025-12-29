@@ -16,23 +16,29 @@ import {
   MoreOptionsDropdown,
   Spacer,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentContributor,
+  AvoContentTypeEnglish,
+  AvoCoreBlockItemBase,
+  AvoCoreBlockItemType,
+  AvoSearchOrderDirection,
+  AvoSearchResultItem,
+  AvoShareRights,
+  AvoUserCommonUser,
+  AvoUserUser,
+  PermissionName
+} from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactText,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { type FC, type ReactText, useCallback, useEffect, useState, } from 'react';
 import { Helmet } from 'react-helmet';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { type Relation } from '../../collection/collection.types';
 import { AddToBundleModal } from '../../collection/components/modals/AddToBundleModal';
@@ -40,20 +46,11 @@ import {
   BundleSortProp,
   useGetCollectionsOrBundlesContainingFragment,
 } from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
-import {
-  QUERY_PARAM_INVITE_TOKEN,
-  QUERY_PARAM_SHOW_PUBLISH_MODAL,
-} from '../../collection/views/CollectionDetail.const';
+import { QUERY_PARAM_INVITE_TOKEN, QUERY_PARAM_SHOW_PUBLISH_MODAL, } from '../../collection/views/CollectionDetail.const';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
-import {
-  ErrorView,
-  type ErrorViewQueryParams,
-} from '../../error/views/ErrorView';
-import {
-  ALL_SEARCH_FILTERS,
-  type SearchFilter,
-} from '../../search/search.const';
+import { ErrorView, type ErrorViewQueryParams, } from '../../error/views/ErrorView';
+import { ALL_SEARCH_FILTERS, type SearchFilter, } from '../../search/search.const';
 import { BlockList } from '../../shared/components/BlockList/BlockList';
 import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EditButton } from '../../shared/components/EditButton/EditButton';
@@ -67,10 +64,7 @@ import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { type ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
-import {
-  EDIT_STATUS_REFETCH_TIME,
-  getMoreOptionsLabel,
-} from '../../shared/constants';
+import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { CustomError } from '../../shared/helpers/custom-error';
@@ -79,41 +73,23 @@ import { defaultRenderDetailLink } from '../../shared/helpers/default-render-det
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { navigate } from '../../shared/helpers/link';
-import {
-  type EducationLevelId,
-  getGroupedLomsKeyValue,
-} from '../../shared/helpers/lom';
+import { type EducationLevelId, getGroupedLomsKeyValue, } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import {
-  BooleanParam,
-  StringParam,
-  useQueryParams,
-} from '../../shared/helpers/routing/use-query-params-ssr.ts';
+import { BooleanParam, StringParam, useQueryParams, } from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import {
-  getRelatedItems,
-  ObjectTypes,
-  ObjectTypesAll,
-} from '../../shared/services/related-items-service';
+import { getRelatedItems, ObjectTypes, ObjectTypesAll, } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { UrlUpdateType } from '../../shared/types/use-query-params.ts';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentAction } from '../assignment.types';
-import {
-  onAddNewContributor,
-  onDeleteContributor,
-  onEditContributor,
-} from '../helpers/assignment-share-with-collegue-handlers';
-import {
-  deleteAssignment,
-  deleteSelfFromAssignment,
-} from '../helpers/delete-assignment';
+import { onAddNewContributor, onDeleteContributor, onEditContributor, } from '../helpers/assignment-share-with-collegue-handlers';
+import { deleteAssignment, deleteSelfFromAssignment, } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { toAssignmentDetail } from '../helpers/links';
 import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses';
@@ -141,12 +117,13 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
   const { id: assignmentId } = useParams<{ id: string }>();
 
   // Data
-  const [assignment, setAssignment] =
-    useState<Avo.Assignment.Assignment | null>(null);
+  const [assignment, setAssignment] = useState<AvoAssignmentAssignment | null>(
+    null,
+  );
   const [permissions, setPermissions] =
     useState<AssignmentDetailPermissions | null>(null);
   const [relatedAssignments, setRelatedAssignments] = useState<
-    Avo.Search.ResultItem[] | null
+    AvoSearchResultItem[] | null
   >(null);
   const [bookmarkViewCounts, setBookmarkViewCounts] =
     useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS);
@@ -165,7 +142,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
   } = useGetCollectionsOrBundlesContainingFragment(
     assignmentId as string,
     BundleSortProp.title,
-    Avo.Search.OrderDirection.ASC,
+    AvoSearchOrderDirection.ASC,
     { enabled: !!assignmentId && !!assignment },
   );
 
@@ -201,7 +178,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
       contributor.profile_id &&
       contributor.profile_id === commonUser?.profileId &&
       contributor.rights ===
-        (ContributorInfoRight.CONTRIBUTOR as Avo.Share.Rights),
+        (ContributorInfoRight.CONTRIBUTOR as AvoShareRights),
   );
   const isOwner =
     !!assignment?.owner_profile_id &&
@@ -234,8 +211,8 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 
   const getPermissions = useCallback(
     async (
-      commonUser: Avo.User.CommonUser | undefined,
-      assignment: Avo.Assignment.Assignment,
+      commonUser: AvoUserCommonUser | undefined,
+      assignment: AvoAssignmentAssignment,
     ): Promise<AssignmentDetailPermissions> => {
       if (!commonUser || !assignment) {
         return {};
@@ -322,7 +299,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         });
       }
 
-      let tempAssignment: Avo.Assignment.Assignment | null = null;
+      let tempAssignment: AvoAssignmentAssignment | null = null;
 
       try {
         tempAssignment = await AssignmentService.fetchAssignmentById(
@@ -409,7 +386,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 
     setAssignment({
       ...assignment,
-      contributors: (response || []) as Avo.Assignment.Contributor[],
+      contributors: (response || []) as AvoAssignmentContributor[],
     });
   }, [assignment, assignmentId]);
 
@@ -675,9 +652,8 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           !inviteToken && (
             <ShareDropdown
               contributors={transformContributorsToSimpleContributors(
-                shareWithPupilsProps?.assignment?.owner as Avo.User.User,
-                (assignment?.contributors ||
-                  []) as Avo.Assignment.Contributor[],
+                shareWithPupilsProps?.assignment?.owner as AvoUserUser,
+                (assignment?.contributors || []) as AvoAssignmentContributor[],
               )}
               onDeleteContributor={(contributorInfo) =>
                 onDeleteContributor(
@@ -889,7 +865,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
       return (
         <Header
           title={assignment.title || ''}
-          category={Avo.ContentType.English.ASSIGNMENT}
+          category={AvoContentTypeEnglish.ASSIGNMENT}
           showMetaData={true}
           bookmarks={String(bookmarkViewCounts.bookmarkCount || 0)}
           views={String(bookmarkViewCounts.viewCount || 0)}
@@ -928,7 +904,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 
     return (
       <BlockList
-        blocks={(blocks || []) as Avo.Core.BlockItemBase[]}
+        blocks={(blocks || []) as AvoCoreBlockItemBase[]}
         config={{
           ITEM: {
             title: {
@@ -1184,7 +1160,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 
       {!!assignment && !!commonUser && (
         <PublishAssignmentModal
-          onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
+          onClose={(newAssignment: AvoAssignmentAssignment | undefined) => {
             setQuery({
               ...query,
               [QUERY_PARAM_SHOW_PUBLISH_MODAL]: undefined,
@@ -1194,7 +1170,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
             }
           }}
           isOpen={!!showPublishModal}
-          assignment={assignment as Avo.Assignment.Assignment}
+          assignment={assignment as AvoAssignmentAssignment}
           parentBundles={bundlesContainingAssignment}
         />
       )}
@@ -1207,8 +1183,8 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           isOpen={isShareModalOpen}
           onClose={() => setIsShareModalOpen(false)}
           contributors={transformContributorsToSimpleContributors(
-            shareWithPupilsProps?.assignment?.owner as Avo.User.User,
-            (assignment?.contributors || []) as Avo.Assignment.Contributor[],
+            shareWithPupilsProps?.assignment?.owner as AvoUserUser,
+            (assignment?.contributors || []) as AvoAssignmentContributor[],
           )}
           onDeleteContributor={(contributorInfo) =>
             onDeleteContributor(
@@ -1254,7 +1230,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         <AddToBundleModal
           fragmentId={assignment.id}
           fragmentInfo={assignment}
-          fragmentType={Avo.Core.BlockItemType.ASSIGNMENT}
+          fragmentType={AvoCoreBlockItemType.ASSIGNMENT}
           isOpen={isAddToBundleModalOpen}
           onClose={async () => {
             setIsAddToBundleModalOpen(false);
@@ -1273,7 +1249,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         hasPupilResponses={!!assignment?.responses?.length}
         hasPupilResponseCollections={
           !!assignment?.blocks?.find(
-            (block) => block.type === Avo.Core.BlockItemType.BOUW,
+            (block) => block.type === AvoCoreBlockItemType.BOUW,
           )
         }
       />

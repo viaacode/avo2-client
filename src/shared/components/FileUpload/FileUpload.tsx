@@ -1,52 +1,38 @@
-import {
-  Blankslate,
-  Button,
-  Flex,
-  FlexItem,
-  Icon,
-  IconName,
-  Spacer,
-  Spinner,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { compact, isString } from 'es-toolkit'
-import queryString from 'query-string'
-import { type FC, useState } from 'react'
+import { Blankslate, Button, Flex, FlexItem, Icon, IconName, Spacer, Spinner, } from '@viaa/avo2-components';
+import { AvoFileUploadAssetType } from '@viaa/avo2-types';
+import { compact, isString } from 'es-toolkit';
+import queryString from 'query-string';
+import { type FC, useState } from 'react';
 
 import { CustomError } from '../../helpers/custom-error';
-import {
-  getUrlInfo,
-  isPhoto,
-  isVideo,
-  PHOTO_TYPES,
-} from '../../helpers/files';
+import { getUrlInfo, isPhoto, isVideo, PHOTO_TYPES } from '../../helpers/files';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import { FileUploadService } from '../../services/file-upload-service';
 import { ToastService } from '../../services/toast-service';
 import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
 
-import './FileUpload.scss'
+import './FileUpload.scss';
 
 interface FileUploadProps {
-  icon?: IconName
-  label?: string
-  allowedTypes?: string[]
-  allowMulti?: boolean
-  allowedDimensions?: FileUploadDimensions
-  assetType: Avo.FileUpload.AssetType
-  ownerId: string
-  urls: string[] | null
-  showDeleteButton?: boolean
-  disabled?: boolean
-  onChange: (urls: string[]) => void
+  icon?: IconName;
+  label?: string;
+  allowedTypes?: string[];
+  allowMulti?: boolean;
+  allowedDimensions?: FileUploadDimensions;
+  assetType: AvoFileUploadAssetType;
+  ownerId: string;
+  urls: string[] | null;
+  showDeleteButton?: boolean;
+  disabled?: boolean;
+  onChange: (urls: string[]) => void;
 }
 
 interface FileUploadDimensions {
-  minWidth: number
-  minHeight: number
-  maxWidth: number
-  maxHeight: number
+  minWidth: number;
+  minHeight: number;
+  maxWidth: number;
+  maxHeight: number;
 }
 
 export const FileUpload: FC<FileUploadProps> = ({
@@ -62,147 +48,149 @@ export const FileUpload: FC<FileUploadProps> = ({
   disabled = false,
   onChange,
 }) => {
-  const [urlToDelete, setUrlToDelete] = useState<string | null>(null)
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
-  const [isProcessing, setIsProcessing] = useState<boolean>(false)
+  const [urlToDelete, setUrlToDelete] = useState<string | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   const openDeleteModal = (url: string) => {
-    setUrlToDelete(url)
-    setIsDeleteModalOpen(true)
-  }
+    setUrlToDelete(url);
+    setIsDeleteModalOpen(true);
+  };
 
   const closeDeleteModal = () => {
-    setUrlToDelete(null)
-    setIsDeleteModalOpen(false)
-  }
+    setUrlToDelete(null);
+    setIsDeleteModalOpen(false);
+  };
 
   const validateFile = async (file: File) => {
     return new Promise((resolve) => {
       // If allowedTypes array is empty, all filetypes are allowed
       if (allowedTypes.length && !allowedTypes.includes(file.type)) {
-        return resolve(false)
+        return resolve(false);
       }
 
       // If file type is not an image, the file is allowed
       // if allowedDimensions is empty, every image is allowed
       if (!PHOTO_TYPES.includes(file.type) || !allowedDimensions) {
-        return resolve(true)
+        return resolve(true);
       }
 
-      const img = new Image()
+      const img = new Image();
       img.onload = () => {
         resolve(
           img.naturalWidth >= allowedDimensions.minWidth &&
             img.naturalWidth <= allowedDimensions.maxWidth &&
             img.naturalHeight >= allowedDimensions.minHeight &&
             img.naturalHeight <= allowedDimensions.maxHeight,
-        )
-      }
+        );
+      };
       img.onerror = (err) => {
         console.error(
           new CustomError('Failed to load image', err, { fileName: file.name }),
-        )
-        resolve(false)
-      }
-      img.src = URL.createObjectURL(file)
-    })
-  }
+        );
+        resolve(false);
+      };
+      img.src = URL.createObjectURL(file);
+    });
+  };
 
   const uploadSelectedFile = async (files: File[] | null) => {
     try {
       if (files && files.length) {
         const validationResults = await Promise.all(
           files.map((file) => validateFile(file)),
-        )
+        );
         const hasNotAllowedFiles: boolean = validationResults.some(
           (validationResult) => !validationResult,
-        )
+        );
         if (hasNotAllowedFiles) {
           ToastService.danger(
             tHtml(
               'shared/components/file-upload/file-upload___een-geselecteerde-bestand-is-niet-toegelaten',
             ),
-          )
-          return
+          );
+          return;
         }
 
         // Upload all files in series
-        setIsProcessing(true)
-        const uploadedUrls: string[] = []
+        setIsProcessing(true);
+        const uploadedUrls: string[] = [];
         for (let i = 0; i < (allowMulti ? files.length : 1); i += 1) {
           uploadedUrls.push(
             await FileUploadService.uploadFile(files[i], assetType, ownerId),
-          )
+          );
         }
-        onChange(allowMulti ? [...(urls || []), ...uploadedUrls] : uploadedUrls)
+        onChange(
+          allowMulti ? [...(urls || []), ...uploadedUrls] : uploadedUrls,
+        );
       }
     } catch (err) {
       console.error(
         new CustomError('Failed to upload files in FileUpload component', err, {
           files,
         }),
-      )
+      );
       if (files && files.length > 1 && allowMulti) {
         ToastService.danger(
           tHtml(
             'shared/components/file-upload/file-upload___het-uploaden-van-de-bestanden-is-mislukt',
           ),
-        )
+        );
       } else {
         ToastService.danger(
           tHtml(
             'shared/components/file-upload/file-upload___het-uploaden-van-het-bestand-is-mislukt',
           ),
-        )
+        );
       }
     }
-    setIsProcessing(false)
-  }
+    setIsProcessing(false);
+  };
 
   const deleteUploadedFile = async (url: string) => {
     if (!url) {
-      closeDeleteModal()
-      return
+      closeDeleteModal();
+      return;
     }
 
     try {
       if (assetType === 'ZENDESK_ATTACHMENT') {
         // We don't manage zendesk attachments
-        onChange([])
-        return
+        onChange([]);
+        return;
       }
-      setIsProcessing(true)
+      setIsProcessing(true);
       if (urls) {
-        const newUrls = [...urls]
+        const newUrls = [...urls];
         for (let i = newUrls.length - 1; i >= 0; i -= 1) {
           if (newUrls[i] === url) {
             const { AssetsService } = await import(
               '@meemoo/admin-core-ui/admin'
-            )
-            await AssetsService.deleteFile(url)
-            newUrls.splice(i, 1)
+            );
+            await AssetsService.deleteFile(url);
+            newUrls.splice(i, 1);
           }
         }
-        onChange(newUrls)
+        onChange(newUrls);
       } else {
-        onChange([])
+        onChange([]);
       }
     } catch (err) {
-      console.error(new CustomError('Failed to delete asset', err, { urls }))
+      console.error(new CustomError('Failed to delete asset', err, { urls }));
       ToastService.danger(
         tHtml(
           'shared/components/file-upload/file-upload___het-verwijderen-van-het-bestand-is-mislukt',
         ),
-      )
+      );
     }
 
-    setIsProcessing(false)
-    closeDeleteModal()
-  }
+    setIsProcessing(false);
+    closeDeleteModal();
+  };
 
   const renderDeleteButton = (url: string) => {
     if (disabled || !showDeleteButton) {
-      return null
+      return null;
     }
     return (
       <Button
@@ -219,12 +207,12 @@ export const FileUpload: FC<FileUploadProps> = ({
         disabled={isProcessing}
         onClick={() => openDeleteModal(url)}
       />
-    )
-  }
+    );
+  };
 
   const renderFilesPreview = () => {
     if (!urls) {
-      return null
+      return null;
     }
 
     return compact(urls).map((url) => {
@@ -238,7 +226,7 @@ export const FileUpload: FC<FileUploadProps> = ({
               {renderDeleteButton(url)}
             </div>
           </Spacer>
-        )
+        );
       }
       if (isVideo(url)) {
         return (
@@ -248,22 +236,22 @@ export const FileUpload: FC<FileUploadProps> = ({
               {renderDeleteButton(url)}
             </div>
           </Spacer>
-        )
+        );
       }
-      let fileName: string | undefined
+      let fileName: string | undefined;
       if (url.includes('?')) {
-        const queryParams = queryString.parse(url.split('?').pop() || '')
+        const queryParams = queryString.parse(url.split('?').pop() || '');
         if (queryParams && queryParams.name && isString(queryParams.name)) {
-          fileName = queryParams.name as string
+          fileName = queryParams.name as string;
         }
       }
       if (!fileName && url) {
-        const urlInfo = getUrlInfo(url.split('?')[0])
+        const urlInfo = getUrlInfo(url.split('?')[0]);
         fileName = `${urlInfo.fileName.substring(
           0,
           urlInfo.fileName.length -
             '-00000000-0000-0000-0000-000000000000'.length,
-        )}.${urlInfo.extension}`
+        )}.${urlInfo.extension}`;
       }
 
       return (
@@ -276,9 +264,9 @@ export const FileUpload: FC<FileUploadProps> = ({
             {renderDeleteButton(url)}
           </Blankslate>
         </Spacer>
-      )
-    })
-  }
+      );
+    });
+  };
 
   // Render
   return (
@@ -335,21 +323,21 @@ export const FileUpload: FC<FileUploadProps> = ({
         onClose={closeDeleteModal}
         confirmCallback={async () => {
           try {
-            await deleteUploadedFile(urlToDelete || '')
+            await deleteUploadedFile(urlToDelete || '');
           } catch (err) {
             console.error(
               new CustomError('Failed to delete uploaded file', err, {
                 urlToDelete,
               }),
-            )
+            );
             ToastService.danger(
               tHtml(
                 'shared/components/file-upload/file-upload___het-verwijderen-van-het-bestand-is-mislukt',
               ),
-            )
+            );
           }
         }}
       />
     </div>
-  )
-}
+  );
+};

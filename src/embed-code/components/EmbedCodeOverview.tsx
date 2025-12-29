@@ -4,12 +4,16 @@ import {
   type MenuItemInfo,
   MoreOptionsDropdown,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+
+import {
+  AvoItemItem,
+  AvoSearchOrderDirection,
+  AvoUserCommonUser,
+} from '@viaa/avo2-types';
 import { isEqual } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { APP_PATH } from '../../constants';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
@@ -97,7 +101,7 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
     filterString: debouncedFilters?.query,
     sortOrder: (debouncedFilters?.sort_order ||
       query.sort_order ||
-      EMBED_CODE_DEFAULTS.sort_order) as Avo.Search.OrderDirection,
+      EMBED_CODE_DEFAULTS.sort_order) as AvoSearchOrderDirection,
     sortColumn:
       debouncedFilters?.sort_column ||
       query.sort_column ||
@@ -120,7 +124,7 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
       await duplicateEmbedCode({
         title: selected.title,
         contentType: selected.contentType,
-        contentId: (selected.content as Avo.Item.Item).external_id,
+        contentId: (selected.content as AvoItemItem).external_id,
         descriptionType: selected.descriptionType,
         description: selected.description,
         start: selected.start,
@@ -303,7 +307,7 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
                         resource: {
                           ...createResource(
                             selected as EmbedCode,
-                            commonUser as Avo.User.CommonUser,
+                            commonUser as AvoUserCommonUser,
                           ),
                           pageUrl: window.location.href,
                         },
@@ -325,7 +329,7 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
 
                   case EmbedCodeAction.SHOW_ORIGINAL:
                     navigate(navigateFunc, APP_PATH.ITEM_DETAIL.route, {
-                      id: (selected.content as Avo.Item.Item).external_id,
+                      id: (selected.content as AvoItemItem).external_id,
                     });
                     break;
 

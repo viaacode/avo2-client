@@ -24,18 +24,12 @@ import {
   ToolbarLeft,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+
 import clsx from 'clsx';
-import {
-  createRef,
-  type FC,
-  type ReactNode,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { createRef, type FC, type ReactNode, useEffect, useMemo, useState, } from 'react';
 
 import './BlockMediaGrid.scss';
+import { AvoContentPageType, AvoContentTypeEnglish } from '@viaa/avo2-types';
 
 const FONT_TYPE_TO_VW: Record<HeadingType, number> = {
   h4: 1.8,
@@ -45,8 +39,8 @@ const FONT_TYPE_TO_VW: Record<HeadingType, number> = {
 };
 
 export type MediaListItem = {
-  category: Avo.ContentType.English;
-  subCategory: Avo.ContentPage.Type;
+  category: AvoContentTypeEnglish;
+  subCategory: AvoContentPageType;
   metadata?: MetaDataItemProps[];
   thumbnail?: {
     label: string;
@@ -194,7 +188,7 @@ export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
           {!!elements.at(-1)?.buttonLabel && !fullWidth && (
             <div>
               <h4 className="c-media-card__title">titel</h4>
-              <MetaData category={Avo.ContentType.English.ITEM}>
+              <MetaData category={AvoContentTypeEnglish.ITEM}>
                 <MetaDataItem key={'block-media-list-meta-cta'} label="meta" />
               </MetaData>
             </div>

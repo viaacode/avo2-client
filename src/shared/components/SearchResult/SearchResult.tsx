@@ -12,7 +12,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+
 import { clsx } from 'clsx';
 import { isNil, noop } from 'es-toolkit';
 import { type FC, type ReactNode, type ReactText } from 'react';
@@ -22,12 +22,13 @@ import { tText } from '../../helpers/translate-text';
 import EducationLevelsTagList from '../EducationLevelsTagList/EducationLevelsTagList';
 
 import './SearchResult.scss';
+import { AvoContentTypeEnglish } from '@viaa/avo2-types';
 
 interface SearchResultProps extends DefaultProps {
   title: ReactNode;
   subTitle: ReactNode;
   thumbnail: ReactNode;
-  type: Avo.ContentType.English;
+  type: AvoContentTypeEnglish;
   thumbnailPath?: string;
   description?: string;
   maxDescriptionLength?: number;

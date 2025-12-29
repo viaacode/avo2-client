@@ -7,8 +7,8 @@ import {
   IconName,
   type SelectOption,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
 
+import { AvoLomLomField } from '@viaa/avo2-types';
 import { type BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
 import {
   type CheckboxDropdownModalProps,
@@ -20,7 +20,6 @@ import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-
 import { tText } from '../../shared/helpers/translate-text';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { NULL_FILTER } from '../shared/helpers/filters';
-
 import {
   CollectionBulkAction,
   type CollectionTableColumns,
@@ -320,7 +319,7 @@ const getCollectionSharedColumn = (
 };
 
 const getCollectionSubjectsColumn = (
-  subjects: Avo.Lom.LomField[],
+  subjects: AvoLomLomField[],
 ): FilterableColumn<CollectionTableColumns> => ({
   id: 'subjects',
   label: tText('admin/collections-or-bundles/collections-or-bundles___vakken'),
@@ -339,7 +338,7 @@ const getCollectionSubjectsColumn = (
   } as CheckboxDropdownModalProps,
 });
 
-const getCollectionThemesColumn = ()// themes: Avo.Lom.LomField[]
+const getCollectionThemesColumn = ()// themes: AvoLomLomField[]
 : FilterableColumn<CollectionTableColumns> => ({
   id: 'themas',
   label: tText('admin/collections-or-bundles/collections-or-bundles___themas'),
@@ -355,7 +354,7 @@ const getCollectionThemesColumn = ()// themes: Avo.Lom.LomField[]
 });
 
 const getCollectionEducationLevelsColumn = (
-  educationLevels: Avo.Lom.LomField[],
+  educationLevels: AvoLomLomField[],
 ): FilterableColumn<CollectionTableColumns> => ({
   id: 'education_levels',
   label: tText(
@@ -377,7 +376,7 @@ const getCollectionEducationLevelsColumn = (
 });
 
 const getCollectionEducationDegreesColumn = (
-  educationDegrees: Avo.Lom.LomField[],
+  educationDegrees: AvoLomLomField[],
 ): FilterableColumn<CollectionTableColumns> => ({
   id: 'education_degrees',
   label: tText(
@@ -608,8 +607,8 @@ export const GET_COLLECTIONS_COLUMNS = (
   isCollection: boolean,
   userGroupOptions: CheckboxOption[],
   collectionLabelOptions: CheckboxOption[],
-  subjects: Avo.Lom.LomField[],
-  educationLevelsAndDegrees: Avo.Lom.LomField[],
+  subjects: AvoLomLomField[],
+  educationLevelsAndDegrees: AvoLomLomField[],
   organisations: CheckboxOption[],
 ): FilterableColumn<CollectionTableColumns>[] => [
   getCollectionTitleColumn(),
@@ -650,8 +649,8 @@ export const GET_COLLECTIONS_COLUMNS = (
 export const GET_COLLECTION_ACTUALISATION_COLUMNS = (
   userGroupOptions: CheckboxOption[],
   collectionLabelOptions: CheckboxOption[],
-  subjects: Avo.Lom.LomField[],
-  educationLevelsAndDegrees: Avo.Lom.LomField[],
+  subjects: AvoLomLomField[],
+  educationLevelsAndDegrees: AvoLomLomField[],
   organisations: CheckboxOption[],
 ): FilterableColumn<CollectionTableColumns>[] => [
   getCollectionTitleColumn(),
@@ -688,8 +687,8 @@ export const GET_COLLECTION_ACTUALISATION_COLUMNS = (
 export const GET_COLLECTION_QUALITY_CHECK_COLUMNS = (
   userGroupOptions: CheckboxOption[],
   collectionLabelOptions: CheckboxOption[],
-  subjects: Avo.Lom.LomField[],
-  educationLevelsAndDegrees: Avo.Lom.LomField[],
+  subjects: AvoLomLomField[],
+  educationLevelsAndDegrees: AvoLomLomField[],
   organisations: CheckboxOption[],
 ): FilterableColumn<CollectionTableColumns>[] => [
   getCollectionTitleColumn(),
@@ -725,8 +724,8 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
   userGroupOptions: CheckboxOption[],
   collectionLabelOptions: CheckboxOption[],
   channelNameOptions: CheckboxOption[],
-  subjects: Avo.Lom.LomField[],
-  educationLevelsAndDegrees: Avo.Lom.LomField[],
+  subjects: AvoLomLomField[],
+  educationLevelsAndDegrees: AvoLomLomField[],
   organisations: CheckboxOption[],
   channelTypeOptions: CheckboxOption[],
 ): FilterableColumn<CollectionTableColumns>[] => [

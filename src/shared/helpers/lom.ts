@@ -1,5 +1,5 @@
-import { type Avo, LomSchemeType, type LomType } from '@viaa/avo2-types'
-import { compact, groupBy } from 'es-toolkit'
+import { AvoLomLom, AvoLomLomField, AvoLomLomSchemeType, type AvoLomLomType, } from '@viaa/avo2-types';
+import { compact, groupBy } from 'es-toolkit';
 
 import { type LomFieldsByScheme } from '../types/lom';
 
@@ -19,54 +19,55 @@ export enum EducationLevelType {
   vak = 'https://w3id.org/onderwijs-vlaanderen/id/vak',
 }
 
-const EDUCATION_LEVEL_IDS = Object.values(EducationLevelId)
+const EDUCATION_LEVEL_IDS = Object.values(EducationLevelId);
 
 export const groupLoms = (
-  loms: Avo.Lom.LomField[] | undefined | null,
+  loms: AvoLomLomField[] | undefined | null,
 ): LomFieldsByScheme => {
-  const groupedLoms = groupBy(loms || [], (lom) => lom?.scheme || '')
+  const groupedLoms = groupBy(loms || [], (lom) => lom?.scheme || '');
 
   return {
-    educationLevel: (groupedLoms[LomSchemeType.structure] || []).filter((lom) =>
-      EDUCATION_LEVEL_IDS.includes(lom.id as EducationLevelId),
+    educationLevel: (groupedLoms[AvoLomLomSchemeType.structure] || []).filter(
+      (lom) => EDUCATION_LEVEL_IDS.includes(lom.id as EducationLevelId),
     ),
-    educationDegree: (groupedLoms[LomSchemeType.structure] || []).filter(
+    educationDegree: (groupedLoms[AvoLomLomSchemeType.structure] || []).filter(
       (lom) => !EDUCATION_LEVEL_IDS.includes(lom.id as EducationLevelId),
     ),
-    subject: (groupedLoms[LomSchemeType.subject] as Avo.Lom.LomField[]) || [],
-    theme: (groupedLoms[LomSchemeType.theme] as Avo.Lom.LomField[]) || [],
-  }
-}
+    subject:
+      (groupedLoms[AvoLomLomSchemeType.subject] as AvoLomLomField[]) || [],
+    theme: (groupedLoms[AvoLomLomSchemeType.theme] as AvoLomLomField[]) || [],
+  };
+};
 
 export const groupLomLinks = (
-  lomLinks: Avo.Lom.Lom[] | undefined | null,
+  lomLinks: AvoLomLom[] | undefined | null,
 ): LomFieldsByScheme => {
   const groupedLoms = groupBy(
     compact((lomLinks || []).map((lomLink) => lomLink.lom)),
     (lom) => lom?.scheme || '',
-  )
+  );
 
   return {
-    educationLevel: (groupedLoms[LomSchemeType.structure] || []).filter(
+    educationLevel: (groupedLoms[AvoLomLomSchemeType.structure] || []).filter(
       (lom) =>
         lom?.id && EDUCATION_LEVEL_IDS.includes(lom?.id as EducationLevelId),
     ),
-    educationDegree: (groupedLoms[LomSchemeType.structure] || []).filter(
+    educationDegree: (groupedLoms[AvoLomLomSchemeType.structure] || []).filter(
       (lom) =>
         lom?.id && !EDUCATION_LEVEL_IDS.includes(lom?.id as EducationLevelId),
     ),
-    subject: groupedLoms[LomSchemeType.subject] || [],
-    theme: groupedLoms[LomSchemeType.theme] || [],
-  }
-}
+    subject: groupedLoms[AvoLomLomSchemeType.subject] || [],
+    theme: groupedLoms[AvoLomLomSchemeType.theme] || [],
+  };
+};
 
 export const getGroupedLomsKeyValue = (
-  loms: Avo.Lom.Lom[],
-  lomKey: keyof Avo.Lom.LomField,
-): Record<LomType, string[]> => {
+  loms: AvoLomLom[],
+  lomKey: keyof AvoLomLomField,
+): Record<AvoLomLomType, string[]> => {
   return Object.fromEntries(
     Object.entries(groupLoms(compact(loms.map((lom) => lom.lom)))).map(
       ([key, value]) => [key, value.map((val) => val[lomKey])],
     ),
-  ) as Record<LomType, string[]>
-}
+  ) as Record<AvoLomLomType, string[]>;
+};

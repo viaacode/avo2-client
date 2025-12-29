@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query'
-import { Avo } from '@viaa/avo2-types'
+import { useQuery } from '@tanstack/react-query';
+import { AvoSearchOrderDirection } from '@viaa/avo2-types';
 import { QUERY_KEYS } from '../../shared/constants/query-keys';
 import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { CollectionService } from '../collection.service';
@@ -10,7 +10,7 @@ export type BundleColumnId =
   | 'author'
   | 'is_public'
   | 'organisation'
-  | typeof ACTIONS_TABLE_COLUMN_ID
+  | typeof ACTIONS_TABLE_COLUMN_ID;
 
 export enum BundleSortProp {
   title = 'title',
@@ -21,11 +21,11 @@ export enum BundleSortProp {
 export const useGetCollectionsOrBundlesContainingFragment = (
   fragmentId: string,
   orderProp: BundleSortProp = BundleSortProp.title,
-  orderDirection: Avo.Search.OrderDirection = Avo.Search.OrderDirection.ASC,
+  orderDirection: AvoSearchOrderDirection = AvoSearchOrderDirection.ASC,
   options: Partial<{
-    enabled: boolean
-    refetchInterval: number | false
-    refetchIntervalInBackground?: boolean
+    enabled: boolean;
+    refetchInterval: number | false;
+    refetchIntervalInBackground?: boolean;
   }> = {},
 ) => {
   return useQuery<ParentBundle[]>({
@@ -40,11 +40,11 @@ export const useGetCollectionsOrBundlesContainingFragment = (
         fragmentId,
         orderProp,
         orderDirection,
-      )
+      );
     },
     enabled: true,
     refetchInterval: false,
     refetchIntervalInBackground: false,
     ...options,
-  })
-}
+  });
+};

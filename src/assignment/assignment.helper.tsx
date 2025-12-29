@@ -1,5 +1,13 @@
 import { IconName, type RadioOption } from '@viaa/avo2-components';
-import { Avo, LomSchemeType } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentBlock,
+  AvoAssignmentLabel,
+  AvoCoreBlockItemType,
+  AvoLomLomSchemeType,
+  AvoSearchOrderDirection,
+  AvoUserCommonUser,
+} from '@viaa/avo2-types';
 import { compact, orderBy } from 'es-toolkit';
 import { type ReactNode } from 'react';
 import { stripHtml } from '../shared/helpers/formatters/strip-html';
@@ -32,9 +40,9 @@ export class AssignmentHelper {
   }
 
   public static getLabels(
-    assignment: Avo.Assignment.Assignment,
+    assignment: AvoAssignmentAssignment,
     type: string,
-  ): { assignment_label: Avo.Assignment.Label }[] {
+  ): { assignment_label: AvoAssignmentLabel }[] {
     return (
       assignment?.labels?.filter(
         (label) => label.assignment_label.type === type,
@@ -53,7 +61,7 @@ export function reorderBlockPositions(items: Positioned[]): Positioned[] {
   const orderedBlocks: Positioned[] = orderBy(
     items || [],
     ['position', 'created_at'],
-    [Avo.Search.OrderDirection.ASC, Avo.Search.OrderDirection.ASC],
+    [AvoSearchOrderDirection.ASC, AvoSearchOrderDirection.ASC],
   );
   orderedBlocks.forEach((block, blockIndex) => {
     block.position = blockIndex;
@@ -104,8 +112,8 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 }
 
 export function isUserAssignmentOwner(
-  commonUser: Pick<Avo.User.CommonUser, 'profileId'> | null | undefined,
-  assignment: Partial<Avo.Assignment.Assignment>,
+  commonUser: Pick<AvoUserCommonUser, 'profileId'> | null | undefined,
+  assignment: Partial<AvoAssignmentAssignment>,
 ): boolean {
   if (!commonUser) {
     return false;
@@ -119,8 +127,8 @@ export function isUserAssignmentOwner(
 }
 
 export function isUserAssignmentContributor(
-  commonUser: Avo.User.CommonUser | undefined,
-  assignment: Partial<Avo.Assignment.Assignment>,
+  commonUser: AvoUserCommonUser | undefined,
+  assignment: Partial<AvoAssignmentAssignment>,
 ): boolean {
   if (assignment.contributors) {
     return !!assignment.contributors.find(
@@ -133,7 +141,7 @@ export function isUserAssignmentContributor(
 }
 
 export const getValidationErrorsForPublishAssignment = async (
-  assignment: Partial<Avo.Assignment.Assignment>,
+  assignment: Partial<AvoAssignmentAssignment>,
 ): Promise<string[]> => {
   const validationErrors = [
     ...GET_VALIDATION_RULES_FOR_SAVE(),
@@ -153,13 +161,13 @@ type ValidationRule<T> = {
 };
 
 const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
-  Partial<Avo.Assignment.Assignment>
+  Partial<AvoAssignmentAssignment>
 >[] = () => [
   {
     error: tText(
       'assignment/assignment___de-beschrijving-van-de-opdracht-is-te-lang',
     ),
-    isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+    isValid: (assignment: Partial<AvoAssignmentAssignment>) =>
       !assignment.description ||
       assignment.description.length <= MAX_SEARCH_DESCRIPTION_LENGTH,
   },
@@ -167,7 +175,7 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
     error: tText(
       'assignment/assignment___de-lange-beschrijving-van-de-opdracht-is-te-lang',
     ),
-    isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+    isValid: (assignment: Partial<AvoAssignmentAssignment>) =>
       !(assignment as any).description_long ||
       stripHtml((assignment as any).description_long).length <=
         MAX_LONG_DESCRIPTION_LENGTH,
@@ -175,35 +183,37 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 ];
 
 const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
-  Partial<Avo.Assignment.Assignment>
+  Partial<AvoAssignmentAssignment>
 >[] => [
   {
     error: tText('assignment/assignment___de-opdracht-heeft-geen-titel'),
-    isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+    isValid: (assignment: Partial<AvoAssignmentAssignment>) =>
       !!assignment.title,
   },
   {
     error: tText('assignment/assignment___de-opdracht-heeft-geen-beschrijving'),
-    isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+    isValid: (assignment: Partial<AvoAssignmentAssignment>) =>
       !!assignment.description,
   },
   {
     error: tText(
       'assignment/assignment___de-opdracht-bevat-geen-onderwijs-waarden',
     ),
-    isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+    isValid: (assignment: Partial<AvoAssignmentAssignment>) =>
       !!assignment.loms?.find(
-        (lom) => lom.lom?.scheme === LomSchemeType.structure,
+        (lom) => lom.lom?.scheme === AvoLomLomSchemeType.structure,
       ),
   },
   {
     error: tText('assignment/assignment___de-opdracht-heeft-geen-themas'),
-    isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
-      !!assignment.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.theme),
+    isValid: (assignment: Partial<AvoAssignmentAssignment>) =>
+      !!assignment.loms?.find(
+        (lom) => lom.lom?.scheme === AvoLomLomSchemeType.theme,
+      ),
   },
   {
     error: tText('assignment/assignment___de-opdracht-heeft-geen-vakken'),
-    isValid: (assignment: Partial<Avo.Assignment.Assignment>) => {
+    isValid: (assignment: Partial<AvoAssignmentAssignment>) => {
       // We only have subjects available for kindergarten, elementary and secondary education levels
       const subjectsAvailable =
         assignment.loms?.find((lom) =>
@@ -216,7 +226,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 
       // Does the assignment have subjects?
       const hasSubjects = !!assignment.loms?.find(
-        (lom) => lom.lom?.scheme === LomSchemeType.subject,
+        (lom) => lom.lom?.scheme === AvoLomLomSchemeType.subject,
       );
 
       // (true & true) or (false & false)
@@ -228,7 +238,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
     error: tText(
       'assignment/assignment___de-tekst-items-moeten-een-titel-of-beschrijving-bevatten',
     ),
-    isValid: (assignment: Partial<Avo.Assignment.Assignment>) => {
+    isValid: (assignment: Partial<AvoAssignmentAssignment>) => {
       if (!assignment.blocks) {
         return false;
       }
@@ -239,21 +249,21 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
     error: tText(
       'assignment/assignment___de-collecties-moeten-een-titel-hebben',
     ),
-    isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+    isValid: (assignment: Partial<AvoAssignmentAssignment>) =>
       areCollectionBlocksValid(assignment.blocks),
   },
 ];
 
 const areCollectionBlocksValid = (
-  blocks: Avo.Assignment.Block[] | undefined,
+  blocks: AvoAssignmentBlock[] | undefined,
 ): boolean => {
   return (blocks || [])
-    .filter((block) => block.type === Avo.Core.BlockItemType.COLLECTION)
+    .filter((block) => block.type === AvoCoreBlockItemType.COLLECTION)
     .every((block) => !block.use_custom_fields || !block.custom_title);
 };
 
 const areTextBlocksValid = (
-  blocks: Avo.Assignment.Block[] | undefined,
+  blocks: AvoAssignmentBlock[] | undefined,
 ): boolean => {
   return (blocks || [])
     .filter((block) => block.type === 'TEXT')
@@ -272,7 +282,7 @@ function getError<T>(rule: ValidationRule<T>, object: T) {
 }
 
 const getDuplicateTitleOrDescriptionErrors = async (
-  assignment: Partial<Avo.Assignment.Assignment>,
+  assignment: Partial<AvoAssignmentAssignment>,
 ): Promise<string[]> => {
   const errors = [];
 

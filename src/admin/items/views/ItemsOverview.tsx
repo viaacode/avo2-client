@@ -1,5 +1,10 @@
 import { ExportAllToCsvModal, FilterTable } from '@meemoo/admin-core-ui/admin';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoItemItem,
+  AvoOrganizationOrganization,
+  AvoSearchOrderDirection,
+  PermissionName,
+} from '@viaa/avo2-types';
 
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -54,7 +59,7 @@ export const ItemsOverview: FC = () => {
   const companyOptions = useMemo(
     () =>
       companies.map(
-        (option: Partial<Avo.Organization.Organization>): CheckboxOption => ({
+        (option: Partial<AvoOrganizationOrganization>): CheckboxOption => ({
           id: option.or_id as string,
           label: option.name as string,
           checked: ((tableState?.organisation || []) as string[]).includes(
@@ -140,7 +145,7 @@ export const ItemsOverview: FC = () => {
           columns={tableColumns}
           data={items || []}
           dataCount={itemCount || 0}
-          renderCell={(rowData: Partial<Avo.Item.Item>, columnId: string) =>
+          renderCell={(rowData: Partial<AvoItemItem>, columnId: string) =>
             renderItemsOverviewTableCell(
               rowData,
               columnId as ItemsOverviewTableCols,
@@ -197,7 +202,7 @@ export const ItemsOverview: FC = () => {
               0,
               (tableState.sort_column ||
                 'created_at') as ItemsOverviewTableCols,
-              tableState.sort_order || Avo.Search.OrderDirection.DESC,
+              tableState.sort_order || AvoSearchOrderDirection.DESC,
               {},
             );
             return response.total;
@@ -208,14 +213,14 @@ export const ItemsOverview: FC = () => {
               limit,
               (tableState.sort_column ||
                 'created_at') as ItemsOverviewTableCols,
-              tableState.sort_order || Avo.Search.OrderDirection.DESC,
+              tableState.sort_order || AvoSearchOrderDirection.DESC,
               {},
             );
             return response.items;
           }}
           renderValue={(value: any, columnId: string) =>
             renderItemsOverviewTableCellText(
-              value as Partial<Avo.Item.Item>,
+              value as Partial<AvoItemItem>,
               columnId as ItemsOverviewTableCols,
             )
           }

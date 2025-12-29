@@ -1,4 +1,5 @@
-import { type Avo } from '@viaa/avo2-types';
+import { AvoCoreContentType } from '@viaa/avo2-types';
+
 import { compact } from 'es-toolkit';
 
 import { ROUTE_PARTS } from './shared/constants/routes';
@@ -337,7 +338,7 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export const CONTENT_TYPE_TO_ROUTE: {
-  [contentType in Avo.Core.ContentType]: string;
+  [contentType in AvoCoreContentType]: string;
 } = {
   /* eslint-enable @typescript-eslint/no-unused-vars */
   video: APP_PATH.ITEM_DETAIL.route,

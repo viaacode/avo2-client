@@ -1,20 +1,8 @@
-import {
-  ExportAllToCsvModal,
-  type FilterableColumn,
-  FilterTable,
-  getFilters,
-} from '@meemoo/admin-core-ui/admin';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import { ExportAllToCsvModal, FilterTable, getFilters, } from '@meemoo/admin-core-ui/admin';
+import { AvoCollectionCollection, AvoSearchOrderDirection, PermissionName } from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { type FC, type ReactNode, useCallback, useEffect, useMemo, useState, } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 
@@ -25,8 +13,8 @@ import { ErrorView } from '../../../error/views/ErrorView';
 
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import {
-  LoadingErrorLoadedComponent,
-  type LoadingInfo,
+    LoadingErrorLoadedComponent,
+    type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
@@ -41,22 +29,19 @@ import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
-import {
-  GET_COLLECTION_QUALITY_CHECK_COLUMNS,
-  ITEMS_PER_PAGE,
-} from '../collections-or-bundles.const';
+import { GET_COLLECTION_QUALITY_CHECK_COLUMNS, ITEMS_PER_PAGE, } from '../collections-or-bundles.const';
 import { COLLECTIONS_OR_BUNDLES_PATH } from '../collections-or-bundles.routes.ts';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
-  CollectionBulkAction,
-  type CollectionOrBundleQualityCheckOverviewTableCols,
-  type CollectionOrBundleQualityCheckTableState,
-  type CollectionSortProps,
-  EditorialType,
+    CollectionBulkAction,
+    type CollectionOrBundleQualityCheckOverviewTableCols,
+    type CollectionOrBundleQualityCheckTableState,
+    type CollectionSortProps,
+    EditorialType,
 } from '../collections-or-bundles.types';
 import {
-  renderCollectionOrBundleQualityCheckCellReact,
-  renderCollectionOrBundleQualityCheckCellText,
+    renderCollectionOrBundleQualityCheckCellReact,
+    renderCollectionOrBundleQualityCheckCellText,
 } from '../helpers/render-collection-columns';
 
 export const CollectionOrBundleQualityCheckOverview: FC = () => {
@@ -64,7 +49,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);
 
   const [collections, setCollections] = useState<
-    Avo.Collection.Collection[] | null
+    AvoCollectionCollection[] | null
   >(null);
   const [collectionCount, setCollectionCount] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
@@ -181,7 +166,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
     location.pathname ===
     COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_QUALITYCHECK_OVERVIEW;
 
-	// methods
+  // methods
 
   const fetchCollectionsOrBundles = useCallback(async () => {
     setIsLoading(true);
@@ -192,7 +177,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
           (tableState.page || 0) * ITEMS_PER_PAGE,
           ITEMS_PER_PAGE,
           (tableState.sort_column || 'updated_at') as CollectionSortProps,
-          tableState.sort_order || Avo.Search.OrderDirection.DESC,
+          tableState.sort_order || AvoSearchOrderDirection.DESC,
           getFilters(tableState),
           EditorialType.QUALITY_CHECK,
           isCollection,
@@ -224,8 +209,8 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
       });
     }
 
-		setIsLoading(false);
-	}, [tableState, tText, tableState.sort_column, tableState.sort_order]);
+    setIsLoading(false);
+  }, [tableState, tText, tableState.sort_column, tableState.sort_order]);
 
   useEffect(() => {
     if (commonUser && educationLevelsAndDegrees?.length) {
@@ -384,7 +369,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
                 0,
                 0,
                 (tableState.sort_column || 'created_at') as CollectionSortProps,
-                tableState.sort_order || Avo.Search.OrderDirection.DESC,
+                tableState.sort_order || AvoSearchOrderDirection.DESC,
                 getFilters(tableState),
                 EditorialType.QUALITY_CHECK,
                 isCollection,
@@ -398,7 +383,7 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
                 offset,
                 limit,
                 (tableState.sort_column || 'created_at') as CollectionSortProps,
-                tableState.sort_order || Avo.Search.OrderDirection.DESC,
+                tableState.sort_order || AvoSearchOrderDirection.DESC,
                 getFilters(tableState),
                 EditorialType.QUALITY_CHECK,
                 isCollection,

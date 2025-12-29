@@ -1,8 +1,8 @@
+import { AvoCoreContentPickerType } from '@viaa/avo2-types';
 import { type ItemMeta } from '../../../../../shared/types/item';
 import { ItemsService } from '../../../../items/items.service';
 import { type PickerItem } from '../../../types/content-picker';
 import { parsePickerItem } from '../helpers/parse-picker';
-import { Avo } from '@viaa/avo2-types'
 
 // Fetch content items from GQL
 export const retrieveItems = async (
@@ -14,20 +14,20 @@ export const retrieveItems = async (
         titleOrExternalId,
         limit,
       )
-    : await ItemsService.fetchPublicItems(limit)
+    : await ItemsService.fetchPublicItems(limit);
 
-  return parseItems(items || [])
-}
+  return parseItems(items || []);
+};
 
 // Parse raw content items to react-select options
 const parseItems = (raw: ItemMeta[]): PickerItem[] => {
   return raw.map((item: ItemMeta): PickerItem => {
     return {
       ...parsePickerItem(
-        Avo.Core.ContentPickerType.ITEM,
+        AvoCoreContentPickerType.ITEM,
         item.external_id.toString(),
       ),
       label: item.title,
-    }
-  })
-}
+    };
+  });
+};

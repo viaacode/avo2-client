@@ -1,6 +1,6 @@
-import { TagList, type TagOption } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { type MouseEvent, type ReactNode } from 'react'
+import { TagList, type TagOption } from '@viaa/avo2-components';
+import { AvoLomLomField } from '@viaa/avo2-types';
+import { type MouseEvent, type ReactNode } from 'react';
 
 export function stringsToTagList(
   labelsOrObjs: string[] | any[],
@@ -9,24 +9,24 @@ export function stringsToTagList(
   onTagClosed?: (tagId: string | number, clickEvent: MouseEvent) => void,
 ): ReactNode {
   if (!labelsOrObjs || !labelsOrObjs.length) {
-    return null
+    return null;
   }
   return (
     <TagList
       tags={(labelsOrObjs as any[]).map(
         (labelOrObj: string | any): TagOption => {
-          let label: string
+          let label: string;
           if (typeof propOrLabelSelectFunc === 'string') {
-            label = labelOrObj[propOrLabelSelectFunc]
+            label = labelOrObj[propOrLabelSelectFunc];
           } else if (propOrLabelSelectFunc) {
-            label = propOrLabelSelectFunc(labelOrObj)
+            label = propOrLabelSelectFunc(labelOrObj);
           } else {
-            label = labelOrObj
+            label = labelOrObj;
           }
           return {
             label,
             id: label,
-          }
+          };
         },
       )}
       closable={!!onTagClosed}
@@ -34,25 +34,25 @@ export function stringsToTagList(
       onTagClosed={(tagId, evt) => onTagClosed?.(tagId, evt)}
       swatches={false}
     />
-  )
+  );
 }
 
 export function lomsToTagList(
-  labelsOrObjs: Avo.Lom.LomField[] | any[],
+  labelsOrObjs: AvoLomLomField[] | any[],
   onTagClicked?: (tagId: string | number, clickEvent: MouseEvent) => void,
   onTagClosed?: (tagId: string | number, clickEvent: MouseEvent) => void,
 ): ReactNode {
   if (!labelsOrObjs || !labelsOrObjs.length) {
-    return null
+    return null;
   }
   return (
     <TagList
       tags={(labelsOrObjs as any[]).map(
-        (lomEntry: Avo.Lom.LomField): TagOption => {
+        (lomEntry: AvoLomLomField): TagOption => {
           return {
             label: lomEntry.label,
             id: lomEntry.id,
-          }
+          };
         },
       )}
       closable={!!onTagClosed}
@@ -60,5 +60,5 @@ export function lomsToTagList(
       onTagClosed={(tagId, evt) => onTagClosed?.(tagId, evt)}
       swatches={false}
     />
-  )
+  );
 }

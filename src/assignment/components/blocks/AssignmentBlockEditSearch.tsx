@@ -1,15 +1,15 @@
-import { convertToHtml } from '@viaa/avo2-components'
-import { type FC } from 'react'
+import { convertToHtml } from '@viaa/avo2-components';
+import { type FC } from 'react';
 
 import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { TitleDescriptionForm } from '../../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
 import { type EditBlockProps } from '../../assignment.types';
 import { AssignmentBlockToggle } from '../AssignmentBlockToggle';
 
-import './AssignmentBlockEditSearch.scss'
-import { tText } from '../../../shared/helpers/translate-text';
+import './AssignmentBlockEditSearch.scss';
+import { AvoCoreBlockItemType } from '@viaa/avo2-types';
 import { tHtml } from '../../../shared/helpers/translate-html';
-import { Avo } from '@viaa/avo2-types'
+import { tText } from '../../../shared/helpers/translate-text';
 
 export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({
   block,
@@ -44,17 +44,17 @@ export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({
         description={tHtml(
           'assignment/hooks/assignment-blocks___met-leerlingencollecties-kunnen-de-leerlingen-hun-zoekresultaten-verzamelen-in-een-collectie-die-jij-als-leerkracht-nadien-kan-inkijken-en-verbeteren',
         )}
-        checked={block.type === Avo.Core.BlockItemType.BOUW}
+        checked={block.type === AvoCoreBlockItemType.BOUW}
         onChange={() => {
           setBlock({
             ...block,
             type:
-              block.type === Avo.Core.BlockItemType.ZOEK
-                ? Avo.Core.BlockItemType.BOUW
-                : Avo.Core.BlockItemType.ZOEK,
-          })
+              block.type === AvoCoreBlockItemType.ZOEK
+                ? AvoCoreBlockItemType.BOUW
+                : AvoCoreBlockItemType.ZOEK,
+          });
         }}
       />
     </>
-  )
-}
+  );
+};

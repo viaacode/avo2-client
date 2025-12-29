@@ -1,10 +1,14 @@
-import { Avo } from '@viaa/avo2-types';
+import {
+    AvoSearchFilterOption,
+    AvoSearchFilters,
+    AvoSearchOrderDirection,
+    AvoSearchOrderProperty,
+    AvoSearchResultItem,
+} from '@viaa/avo2-types';
 import { atom } from 'jotai';
-
 import { type LoginState } from '../authentication/authentication.types';
 import { DEFAULT_AUDIO_STILL } from '../shared/constants';
 import { CustomError } from '../shared/helpers/custom-error';
-
 import { fetchSearchResults } from './search.service';
 import { type SearchState } from './search.types';
 
@@ -17,12 +21,12 @@ export const searchAtom = atom<SearchState>({
 export const getSearchResultsAtom = atom<
   LoginState | null,
   [
-    Avo.Search.OrderProperty,
-    Avo.Search.OrderDirection,
+    AvoSearchOrderProperty,
+    AvoSearchOrderDirection,
     number,
     number,
-    Partial<Avo.Search.Filters> | undefined,
-    Partial<Avo.Search.FilterOption> | undefined,
+    Partial<AvoSearchFilters> | undefined,
+    Partial<AvoSearchFilterOption> | undefined,
   ],
   void
 >(
@@ -31,7 +35,7 @@ export const getSearchResultsAtom = atom<
     get,
     set,
     orderProperty = 'relevance',
-    orderDirection = Avo.Search.OrderDirection.DESC,
+    orderDirection = AvoSearchOrderDirection.DESC,
     from = 0,
     size: number,
     filters,
@@ -77,7 +81,7 @@ export const getSearchResultsAtom = atom<
       const processedData = {
         ...data,
         results:
-          data.results?.map((result: Avo.Search.ResultItem) => {
+          data.results?.map((result: AvoSearchResultItem) => {
             if (result.administrative_type === 'audio') {
               result.thumbnail_path = DEFAULT_AUDIO_STILL;
             }

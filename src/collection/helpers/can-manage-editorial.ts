@@ -1,9 +1,8 @@
-import { type Avo } from '@viaa/avo2-types'
-
+import { AvoUserCommonUser } from '@viaa/avo2-types';
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 
 export const canManageEditorial = (
-  commonUser: Avo.User.CommonUser | undefined,
+  commonUser: AvoUserCommonUser | undefined,
 ): boolean => {
   return (
     [
@@ -15,5 +14,5 @@ export const canManageEditorial = (
       SpecialUserGroupId.EducativePartner,
       SpecialUserGroupId.EducativePublisher,
     ] as (SpecialUserGroupId | '0')[]
-  ).includes(String(commonUser?.userGroup?.id) as SpecialUserGroupId)
-}
+  ).includes(String(commonUser?.userGroup?.id) as SpecialUserGroupId);
+};

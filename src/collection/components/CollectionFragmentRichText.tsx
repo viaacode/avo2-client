@@ -1,5 +1,5 @@
 import { convertToHtml } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { AvoCoreBlockItemType } from '@viaa/avo2-types';
 import { type FC, type MutableRefObject } from 'react';
 import { Html, type HtmlProps } from '../../shared/components/Html/Html';
 import { type BlockItemComponent } from '../collection.types';
@@ -22,8 +22,7 @@ export const CollectionFragmentRichText: FC<CollectionFragmentRichTextProps> = (
         className="c-collection-fragment-rich-text__parser c-content"
         sanitizePreset={'full' as any}
         content={convertToHtml(
-          block?.use_custom_fields ||
-            block?.type === Avo.Core.BlockItemType.TEXT
+          block?.use_custom_fields || block?.type === AvoCoreBlockItemType.TEXT
             ? block.custom_description
             : block?.item_meta?.description,
         )}

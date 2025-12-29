@@ -1,10 +1,8 @@
-import { Avo } from '@viaa/avo2-types'
-
+import { AvoSearchFilters, AvoSearchOrderDirection } from '@viaa/avo2-types';
 import { tText } from '../shared/helpers/translate-text';
-
 import { type SortOrder } from './search.types';
 
-export const ITEMS_PER_PAGE = 10
+export const ITEMS_PER_PAGE = 10;
 
 export enum SearchFilter {
   query = 'query',
@@ -35,9 +33,9 @@ export const ALL_SEARCH_FILTERS: SearchFilter[] = [
   SearchFilter.serie,
   SearchFilter.provider,
   SearchFilter.collectionLabel,
-]
+];
 
-export const DEFAULT_FILTER_STATE: Avo.Search.Filters = {
+export const DEFAULT_FILTER_STATE: AvoSearchFilters = {
   [SearchFilter.query]: '',
   [SearchFilter.type]: [],
   [SearchFilter.educationLevel]: [],
@@ -54,12 +52,12 @@ export const DEFAULT_FILTER_STATE: Avo.Search.Filters = {
   [SearchFilter.provider]: [],
   [SearchFilter.collectionLabel]: [],
   [SearchFilter.elementary]: false,
-}
+};
 
 export const DEFAULT_SORT_ORDER: SortOrder = {
   orderProperty: 'relevance',
-  orderDirection: Avo.Search.OrderDirection.DESC,
-}
+  orderDirection: AvoSearchOrderDirection.DESC,
+};
 
 export enum SearchOrderProperty {
   relevance = 'relevance',
@@ -79,8 +77,8 @@ export enum SearchOrderAndDirectionProperty {
 }
 
 export const GET_SEARCH_ORDER_OPTIONS = (): {
-  label: string
-  value: SearchOrderAndDirectionProperty
+  label: string;
+  value: SearchOrderAndDirectionProperty;
 }[] => [
   {
     label: tText('search/views/search___meest-relevant'),
@@ -106,4 +104,4 @@ export const GET_SEARCH_ORDER_OPTIONS = (): {
     label: tText('search/views/search___laatst-gewijzigd'),
     value: SearchOrderAndDirectionProperty.updatedAtDesc,
   },
-]
+];

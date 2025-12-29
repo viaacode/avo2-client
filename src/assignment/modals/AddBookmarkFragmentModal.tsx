@@ -16,7 +16,7 @@ import {
   TextInput,
   Thumbnail,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -40,6 +40,7 @@ import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import './AddItemsModals.scss';
+import { AvoSearchOrderDirection } from '@viaa/avo2-types';
 
 // Column definitions
 enum AddBookmarkFragmentColumn {
@@ -73,20 +74,20 @@ const GET_ADD_BOOKMARK_FRAGMENT_COLUMNS = (): TableColumn[] => [
 
 const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
   [columnId in AddBookmarkFragmentColumn]: (
-    order: Avo.Search.OrderDirection,
+    order: AvoSearchOrderDirection,
   ) => any;
 }> = {
-  contentTitle: (order: Avo.Search.OrderDirection) => ({
+  contentTitle: (order: AvoSearchOrderDirection) => ({
     bookmarkedItem: {
       title: order,
     },
   }),
-  contentDuration: (order: Avo.Search.OrderDirection) => ({
+  contentDuration: (order: AvoSearchOrderDirection) => ({
     bookmarkedItem: {
       duration: order,
     },
   }),
-  createdAt: (order: Avo.Search.OrderDirection) => ({
+  createdAt: (order: AvoSearchOrderDirection) => ({
     created_at: order,
   }),
 };

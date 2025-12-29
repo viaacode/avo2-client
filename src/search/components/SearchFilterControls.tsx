@@ -1,24 +1,19 @@
 import { Accordion, AccordionBody, Spacer } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+
 import { clsx } from 'clsx';
 import { cloneDeep, omit, uniqBy } from 'es-toolkit';
 import { type FC, type ReactNode, useMemo } from 'react';
 
-import {
-  CheckboxDropdownModal,
-  type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { CheckboxDropdownModal, type CheckboxOption, } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { LANGUAGES } from '../../shared/constants';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { tText } from '../../shared/helpers/translate-text';
 import { SearchFilter } from '../search.const';
-import {
-  type SearchFilterControlsProps,
-  type SearchFilterMultiOptions,
-} from '../search.types';
+import { type SearchFilterControlsProps, type SearchFilterMultiOptions, } from '../search.types';
 
 import './SearchFilterControls.scss';
+import { AvoCoreContentType, AvoSearchDateRange, AvoSearchFilterProp, AvoSearchFilters, AvoSearchOptionProp, } from '@viaa/avo2-types';
 import { forEach } from 'es-toolkit/compat';
 
 const languageCodeToLabel = (code: string): string => {
@@ -45,7 +40,7 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
     };
     forEach(
       arrayFilters,
-      (values: string[] | Avo.Core.ContentType[], filterName: string) => {
+      (values: string[] | AvoCoreContentType[], filterName: string) => {
         combinedMultiOptions[filterName] = uniqBy(
           [
             ...(combinedMultiOptions[filterName] || []),
@@ -61,7 +56,7 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
     return combinedMultiOptions;
   }, [multiOptions]);
 
-  const isFilterEnabled = (filterName: keyof Avo.Search.Filters): boolean => {
+  const isFilterEnabled = (filterName: keyof AvoSearchFilters): boolean => {
     if (!enabledFilters) {
       return true;
     }
@@ -70,17 +65,14 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
 
   const renderCheckboxDropdownModal = (
     label: string,
-    propertyName: Avo.Search.FilterProp,
+    propertyName: AvoSearchFilterProp,
     disabled = false,
     labelsMapping?: Record<string | number, string>,
   ): ReactNode => {
     const checkboxMultiOptions = (
       getCombinedMultiOptions[propertyName] || []
     ).map(
-      ({
-        option_name,
-        option_count,
-      }: Avo.Search.OptionProp): CheckboxOption => {
+      ({ option_name, option_count }: AvoSearchOptionProp): CheckboxOption => {
         let checkboxLabel = option_name;
 
         if (propertyName === SearchFilter.language) {
@@ -123,15 +115,15 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
 
   const renderDateRangeDropdown = (
     label: string,
-    propertyName: Avo.Search.FilterProp,
+    propertyName: AvoSearchFilterProp,
   ): ReactNode => {
-    const range: Avo.Search.DateRange = filterState?.[
+    const range: AvoSearchDateRange = filterState?.[
       SearchFilter.broadcastDate
     ] || {
       gte: '',
       lte: '',
     };
-    const correctRange: Avo.Search.DateRange = {
+    const correctRange: AvoSearchDateRange = {
       gte: range.gte || '',
       lte: range.lte || '',
     };
@@ -144,7 +136,7 @@ export const SearchFilterControls: FC<SearchFilterControlsProps> = ({
           label={label}
           id={propertyName}
           range={correctRange as { gte: string; lte: string }}
-          onChange={(dateRange: Avo.Search.DateRange) => {
+          onChange={(dateRange: AvoSearchDateRange) => {
             handleFilterFieldChange(dateRange, propertyName);
           }}
         />

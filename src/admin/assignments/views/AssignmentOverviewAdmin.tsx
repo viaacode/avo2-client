@@ -4,7 +4,12 @@ import {
   FilterTable,
   getFilters,
 } from '@meemoo/admin-core-ui/admin';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoSearchOrderDirection,
+  AvoShareEditStatus,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { compact, noop, partition } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import {
@@ -70,7 +75,7 @@ export const AssignmentOverviewAdmin: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);
 
   const [assignments, setAssignments] = useState<
-    Avo.Assignment.Assignment[] | null
+    AvoAssignmentAssignment[] | null
   >(null);
   const [assignmentCount, setAssignmentCount] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
@@ -80,7 +85,7 @@ export const AssignmentOverviewAdmin: FC = () => {
     Partial<AssignmentsOverviewTableState>
   >({
     sort_column: 'created_at',
-    sort_order: Avo.Search.OrderDirection.DESC,
+    sort_order: AvoSearchOrderDirection.DESC,
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] =
@@ -93,7 +98,7 @@ export const AssignmentOverviewAdmin: FC = () => {
   const [isChangeAuthorModalOpen, setIsChangeAuthorModalOpen] =
     useState<boolean>(false);
   const [assignmentsBeingEdited, setAssignmentsBeingEdited] = useState<
-    Avo.Share.EditStatus[]
+    AvoShareEditStatus[]
   >([]);
   const [selectedBulkAction, setSelectedBulkAction] =
     useState<AssignmentsBulkAction | null>(null);
@@ -190,7 +195,7 @@ export const AssignmentOverviewAdmin: FC = () => {
           (tableState.page || 0) * ITEMS_PER_PAGE,
           ITEMS_PER_PAGE,
           (tableState.sort_column || 'created_at') as AssignmentTableColumns,
-          tableState.sort_order || Avo.Search.OrderDirection.DESC,
+          tableState.sort_order || AvoSearchOrderDirection.DESC,
           getColumnDataType(),
           getFilters(tableState),
         );
@@ -280,8 +285,9 @@ export const AssignmentOverviewAdmin: FC = () => {
       Object.entries(selectedAssignmentEditStatuses),
       (entry) => !!entry[1],
     );
-    const selectedAssignmentsThatAreBeingEdited: Avo.Share.EditStatus[] =
-      compact(partitionedAssignmentIds[0].map((entry) => entry[1]));
+    const selectedAssignmentsThatAreBeingEdited: AvoShareEditStatus[] = compact(
+      partitionedAssignmentIds[0].map((entry) => entry[1]),
+    );
     const selectedAssignmentIdsThatAreNotBeingEdited =
       partitionedAssignmentIds[1].map((entry) => entry[0]);
 
@@ -439,7 +445,7 @@ export const AssignmentOverviewAdmin: FC = () => {
           data={assignments}
           dataCount={assignmentCount}
           renderCell={(
-            rowData: Partial<Avo.Assignment.Assignment>,
+            rowData: Partial<AvoAssignmentAssignment>,
             columnId: string,
           ) =>
             renderAssignmentOverviewCellReact(
@@ -477,7 +483,7 @@ export const AssignmentOverviewAdmin: FC = () => {
           onSelectBulkAction={handleBulkAction as any}
           rowKey="id"
           defaultOrderProp={'created_at'}
-          defaultOrderDirection={Avo.Search.OrderDirection.DESC}
+          defaultOrderDirection={AvoSearchOrderDirection.DESC}
         />
         <SubjectsBeingEditedWarningModal
           isOpen={assignmentsBeingEdited?.length > 0}
@@ -582,7 +588,7 @@ export const AssignmentOverviewAdmin: FC = () => {
               0,
               (tableState.sort_column ||
                 'created_at') as AssignmentTableColumns,
-              tableState.sort_order || Avo.Search.OrderDirection.DESC,
+              tableState.sort_order || AvoSearchOrderDirection.DESC,
               getColumnDataType(),
               {},
             );
@@ -594,7 +600,7 @@ export const AssignmentOverviewAdmin: FC = () => {
               limit,
               (tableState.sort_column ||
                 'created_at') as AssignmentTableColumns,
-              tableState.sort_order || Avo.Search.OrderDirection.DESC,
+              tableState.sort_order || AvoSearchOrderDirection.DESC,
               getColumnDataType(),
               {},
             );

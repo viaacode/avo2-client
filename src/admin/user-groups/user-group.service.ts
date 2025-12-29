@@ -1,5 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
-
+import { AvoSearchOrderDirection } from '@viaa/avo2-types';
 import {
   type GetUserGroupsWithFiltersQuery,
   type GetUserGroupsWithFiltersQueryVariables,
@@ -7,7 +6,6 @@ import {
 import { GetUserGroupsWithFiltersDocument } from '../../shared/generated/graphql-db-react-query';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { dataService } from '../../shared/services/data-service';
-
 import { ITEMS_PER_PAGE } from './user-group.const';
 import { type UserGroup } from './user-group.types';
 
@@ -15,7 +13,7 @@ export class UserGroupService {
   public static async fetchUserGroups(
     page: number,
     sortColumn: string,
-    sortOrder: Avo.Search.OrderDirection,
+    sortOrder: AvoSearchOrderDirection,
     where: GetUserGroupsWithFiltersQueryVariables['where'],
   ): Promise<[UserGroup[], number]> {
     let variables: GetUserGroupsWithFiltersQueryVariables | null = null;
@@ -65,7 +63,7 @@ export class UserGroupService {
     const response = await UserGroupService.fetchUserGroups(
       0,
       'label',
-      Avo.Search.OrderDirection.ASC,
+      AvoSearchOrderDirection.ASC,
       {},
     );
     return response[0];

@@ -1,14 +1,6 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import {
-  Alert,
-  Button,
-  Checkbox,
-  Container,
-  Form,
-  FormGroup,
-  Spacer,
-} from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { Alert, Button, Checkbox, Container, Form, FormGroup, Spacer, } from '@viaa/avo2-components';
+
 import { compact } from 'es-toolkit';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { type FC, useState } from 'react';
@@ -17,7 +9,7 @@ import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
@@ -30,6 +22,7 @@ import { useGetEmailPreferences } from '../hooks/useGetEmailPreferences';
 import { useUpdateEmailPreferences } from '../hooks/useUpdateEmailPreferences';
 import { SettingsService } from '../settings.service';
 import './Profile.scss';
+import { AvoEducationOrganizationOrganization, AvoLomLomField, AvoUserUpdateProfileValues, } from '@viaa/avo2-types';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
@@ -46,9 +39,9 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
   const getLoginState = useSetAtom(getLoginStateAtom);
 
   const [selectedOrganisations, setSelectedOrganisations] = useState<
-    Avo.EducationOrganization.Organization[]
+    AvoEducationOrganizationOrganization[]
   >(commonUser?.educationalOrganisations || []);
-  const [selectedLoms, setSelectedLoms] = useState<Avo.Lom.LomField[]>(
+  const [selectedLoms, setSelectedLoms] = useState<AvoLomLomField[]>(
     compact(commonUser?.loms.map((lomLink) => lomLink.lom)),
   );
   const groupedLoms = groupLoms(selectedLoms);
@@ -77,7 +70,7 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
     !existingEmailPreferences?.newsletter;
 
   const areRequiredFieldsFilledIn = (
-    profileInfo: Partial<Avo.User.UpdateProfileValues>,
+    profileInfo: Partial<AvoUserUpdateProfileValues>,
   ) => {
     const errors = [];
     let filledIn = true;
@@ -164,7 +157,7 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
       }
       setIsSaving(true);
       const profileId: string = commonUser.profileId;
-      const newProfileInfo: Partial<Avo.User.UpdateProfileValues> = {
+      const newProfileInfo: Partial<AvoUserUpdateProfileValues> = {
         firstName,
         lastName,
         userId: commonUser.userId,
@@ -259,7 +252,7 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
             <Spacer margin={['top-large', 'bottom-large']}>
               <LomFieldsInput
                 loms={selectedLoms || []}
-                onChange={(newLoms: Avo.Lom.LomField[]) =>
+                onChange={(newLoms: AvoLomLomField[]) =>
                   setSelectedLoms(newLoms)
                 }
                 educationLevelsPlaceholder={tText(

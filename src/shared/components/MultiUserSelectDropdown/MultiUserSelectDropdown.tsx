@@ -9,35 +9,36 @@ import {
   IconName,
   Spacer,
   TagList,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { uniqBy } from 'es-toolkit'
+} from '@viaa/avo2-components';
+
+import { clsx } from 'clsx';
+import { uniqBy } from 'es-toolkit';
 import {
   type FC,
   type ReactText,
   useCallback,
   useEffect,
   useState,
-} from 'react'
+} from 'react';
 
 import { ContentPicker } from '../../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../../admin/shared/types/content-picker';
 import { CustomError } from '../../helpers/custom-error';
 
-import './MultiUserSelectDropdown.scss'
+import './MultiUserSelectDropdown.scss';
+import { AvoCoreContentPickerType, AvoUserCommonUser } from '@viaa/avo2-types';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import { ToastService } from '../../services/toast-service';
 
 interface MultiUserSelectDropdownProps {
-  label: string
-  id: string
-  values: string[]
-  disabled?: boolean
-  placeholder?: string
-  onChange: (profileIds: string[], id: string) => void
-  showSelectedValuesOnCollapsed?: boolean
+  label: string;
+  id: string;
+  values: string[];
+  disabled?: boolean;
+  placeholder?: string;
+  onChange: (profileIds: string[], id: string) => void;
+  showSelectedValuesOnCollapsed?: boolean;
 }
 
 export const MultiUserSelectDropdown: FC<MultiUserSelectDropdownProps> = ({
@@ -49,30 +50,30 @@ export const MultiUserSelectDropdown: FC<MultiUserSelectDropdownProps> = ({
   onChange,
   showSelectedValuesOnCollapsed = true,
 }) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [selectedProfiles, setSelectedProfiles] = useState<PickerItem[]>([])
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedProfiles, setSelectedProfiles] = useState<PickerItem[]>([]);
   const [selectedProfile, setSelectedProfile] = useState<
     PickerItem | undefined
-  >(undefined)
+  >(undefined);
 
   const getProfilesByName = useCallback(async () => {
     try {
       if (!values.length) {
-        return
+        return;
       }
-      const { UserService } = await import('@meemoo/admin-core-ui/admin')
-      const users: Partial<Avo.User.CommonUser>[] =
-        await UserService.getNamesByProfileIds(values)
+      const { UserService } = await import('@meemoo/admin-core-ui/admin');
+      const users: Partial<AvoUserCommonUser>[] =
+        await UserService.getNamesByProfileIds(values);
 
       setSelectedProfiles(
         users.map(
           (user): PickerItem => ({
             label: `${user?.fullName} (${user?.email})`,
             value: user.profileId || '',
-            type: Avo.Core.ContentPickerType.PROFILE,
+            type: AvoCoreContentPickerType.PROFILE,
           }),
         ),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError(
@@ -82,48 +83,48 @@ export const MultiUserSelectDropdown: FC<MultiUserSelectDropdownProps> = ({
             values,
           },
         ),
-      )
+      );
       ToastService.danger(
         tHtml(
           'shared/components/multi-user-select-dropdown/multi-user-select-dropdown___het-ophalen-van-de-gebruikersaccount-namen-is-mislukt',
         ),
-      )
+      );
     }
-  }, [values])
+  }, [values]);
 
   useEffect(() => {
     if (selectedProfile) {
-      setSelectedProfile(undefined)
+      setSelectedProfile(undefined);
     }
-  }, [selectedProfile, setSelectedProfile])
+  }, [selectedProfile, setSelectedProfile]);
 
   useEffect(() => {
-    getProfilesByName()
-  }, [setSelectedProfiles, getProfilesByName])
+    getProfilesByName();
+  }, [setSelectedProfiles, getProfilesByName]);
 
   const closeDropdown = () => {
-    setSelectedProfiles([])
-    setIsOpen(false)
-  }
+    setSelectedProfiles([]);
+    setIsOpen(false);
+  };
 
   const applyFilter = () => {
     onChange(
       selectedProfiles.map((profile) => profile.value),
       id,
-    )
-    closeDropdown()
-  }
+    );
+    closeDropdown();
+  };
 
   const removeProfile = (tagId: ReactText) => {
     setSelectedProfiles((selectedProfiles) =>
       selectedProfiles.filter((profile) => profile.value !== tagId),
-    )
-  }
+    );
+  };
 
   const deleteAllSelectedProfiles = () => {
-    setSelectedProfiles([])
-    onChange([], id)
-  }
+    setSelectedProfiles([]);
+    onChange([], id);
+  };
 
   const renderCheckboxControl = () => {
     return (
@@ -196,12 +197,12 @@ export const MultiUserSelectDropdown: FC<MultiUserSelectDropdownProps> = ({
                             [...selectedProfiles, selectedProfile],
                             (pickerItem) => pickerItem.value,
                           ),
-                        )
-                        setSelectedProfile(selectedProfile)
+                        );
+                        setSelectedProfile(selectedProfile);
                       }
                     }}
                     hideTargetSwitch
-                    allowedTypes={[Avo.Core.ContentPickerType.PROFILE]}
+                    allowedTypes={[AvoCoreContentPickerType.PROFILE]}
                     hideTypeDropdown
                     placeholder={
                       placeholder ||
@@ -229,16 +230,16 @@ export const MultiUserSelectDropdown: FC<MultiUserSelectDropdownProps> = ({
           </Spacer>
         </DropdownContent>
       </Dropdown>
-    )
-  }
+    );
+  };
 
   if (disabled) {
     return (
       <div className={clsx({ 'u-opacity-50 u-disable-click': disabled })}>
         {renderCheckboxControl()}
       </div>
-    )
+    );
   }
 
-  return renderCheckboxControl()
-}
+  return renderCheckboxControl();
+};

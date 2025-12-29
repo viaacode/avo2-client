@@ -1,4 +1,4 @@
-import { type Avo } from '@viaa/avo2-types';
+import { AvoAssignmentAssignment } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
 import { ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS } from '../../shared/constants';
@@ -19,13 +19,13 @@ export function backToOverview(): string {
 }
 
 export function toAssignmentDetail(
-  assignment: Pick<Avo.Assignment.Assignment, 'id'>,
+  assignment: Pick<AvoAssignmentAssignment, 'id'>,
 ): string {
   return buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignment.id });
 }
 
 export function toAssignmentResponsesOverview(
-  assignment: Pick<Avo.Assignment.Assignment, 'id'>,
+  assignment: Pick<AvoAssignmentAssignment, 'id'>,
 ): string {
   return buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
     id: assignment.id,

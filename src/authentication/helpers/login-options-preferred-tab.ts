@@ -1,7 +1,7 @@
 import { NOT_NOW_LOCAL_STORAGE_KEY } from '../../shared/constants';
 
 const LOGIN_OPTIONS_PREFERRED_TAB_LOCAL_STORAGE_KEY =
-  'AVO.login_options_preferred_tab';
+  'Avologin_options_preferred_tab';
 
 export const LoginOptionsTabs = {
   TEACHER: 'lesgever',

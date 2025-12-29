@@ -1,23 +1,15 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
-import { TextInput } from '@meemoo/react-components'
-import {
-  Button,
-  Checkbox,
-  Container,
-  FormGroup,
-  Spacer,
-  Spinner,
-  TextArea,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import type { Requests } from 'node-zendesk'
-import { type FC, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate } from 'react-router'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import { TextInput } from '@meemoo/react-components';
+import { Button, Checkbox, Container, FormGroup, Spacer, Spinner, TextArea, } from '@viaa/avo2-components';
+import { AvoFileUploadAssetType, AvoLomLomField } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
+import type { Requests } from 'node-zendesk';
+import { type FC, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
@@ -32,22 +24,22 @@ import { ZendeskService } from '../../shared/services/zendesk-service';
 import { EDUCATIONAL_AUTHOR_ITEM_REQUEST_FORM_VALIDATION_SCHEMA } from './EducationalAuthorItemRequestForm.consts';
 import { renderAttachment } from './UserItemRequestForm.helpers';
 
-import './ItemRequestForm.scss'
-import { tText } from '../../shared/helpers/translate-text';
+import './ItemRequestForm.scss';
 import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface FormValues {
-  description: string
-  wantsToUploadAttachment: boolean
-  attachmentUrl: string | null
-  organisation: string
-  method: string
-  educationLevels: Avo.Lom.LomField[]
+  description: string;
+  wantsToUploadAttachment: boolean;
+  attachmentUrl: string | null;
+  organisation: string;
+  method: string;
+  educationLevels: AvoLomLomField[];
 }
 
 export const EducationalAuthorItemRequestForm: FC = () => {
-  const navigateFunc = useNavigate()
-  const commonUser = useAtomValue(commonUserAtom)
+  const navigateFunc = useNavigate();
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [formValues, setFormValues] = useState<FormValues>({
     description: '',
@@ -56,25 +48,25 @@ export const EducationalAuthorItemRequestForm: FC = () => {
     organisation: commonUser?.organisation?.name || '',
     method: '',
     educationLevels: [],
-  })
+  });
   const [formErrors, setFormErrors] = useState<
     Partial<Record<keyof FormValues, string>>
-  >({})
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  >({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onSend = async () => {
-    let ticket: Requests.CreateModel | undefined
+    let ticket: Requests.CreateModel | undefined;
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const newFormErrors = await validateForm(
         formValues,
         EDUCATIONAL_AUTHOR_ITEM_REQUEST_FORM_VALIDATION_SCHEMA,
-      )
+      );
       if (newFormErrors) {
-        setFormErrors(newFormErrors)
-        ToastService.danger(Object.values(newFormErrors)[0])
-        setIsLoading(false)
-        return
+        setFormErrors(newFormErrors);
+        ToastService.danger(Object.values(newFormErrors)[0]);
+        setIsLoading(false);
+        return;
       }
 
       // create zendesk ticket
@@ -88,7 +80,7 @@ export const EducationalAuthorItemRequestForm: FC = () => {
         educationLevels: formValues.educationLevels
           .map((educationLevel) => educationLevel.label)
           .join(', '),
-      }
+      };
       ticket = {
         comment: {
           url: window.location.href,
@@ -119,8 +111,8 @@ export const EducationalAuthorItemRequestForm: FC = () => {
           email: commonUser?.email,
           name: getFullNameCommonUser(commonUser, true, false) || '',
         },
-      }
-      await ZendeskService.createTicket(ticket)
+      };
+      await ZendeskService.createTicket(ticket);
 
       trackEvents(
         {
@@ -129,27 +121,27 @@ export const EducationalAuthorItemRequestForm: FC = () => {
           action: 'request',
         },
         commonUser,
-      )
+      );
 
       ToastService.success(
         tHtml(
           'user-item-request-form/views/educational-author-item-request-form___je-aanvraag-is-verstuurt',
         ),
-      )
+      );
       redirectToClientPage(
         APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM_CONFIRM.route,
         navigateFunc,
-      )
+      );
     } catch (err) {
-      console.error('Failed to create zendesk ticket', err, ticket)
+      console.error('Failed to create zendesk ticket', err, ticket);
       ToastService.danger(
         tHtml(
           'user-item-request-form/views/educational-author-item-request-form___het-versturen-van-je-aanvraag-is-mislukt',
         ),
-      )
+      );
     }
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const renderForm = () => {
     return (
@@ -194,7 +186,7 @@ export const EducationalAuthorItemRequestForm: FC = () => {
             />
             {formValues.wantsToUploadAttachment && (
               <FileUpload
-                assetType="ZENDESK_ATTACHMENT"
+                assetType={AvoFileUploadAssetType.ZENDESK_ATTACHMENT}
                 urls={
                   formValues.attachmentUrl ? [formValues.attachmentUrl] : []
                 }
@@ -296,8 +288,8 @@ export const EducationalAuthorItemRequestForm: FC = () => {
           )}
         </Container>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <Container className="p-item-request-form" mode="vertical">
@@ -320,7 +312,7 @@ export const EducationalAuthorItemRequestForm: FC = () => {
         <div className="c-content">{renderForm()}</div>
       </Container>
     </Container>
-  )
-}
+  );
+};
 
-export default EducationalAuthorItemRequestForm
+export default EducationalAuthorItemRequestForm;

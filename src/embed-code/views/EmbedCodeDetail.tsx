@@ -16,7 +16,11 @@ import {
   ToolbarLeft,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoItemItem,
+  AvoUserCommonUser,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
@@ -86,7 +90,7 @@ export const EmbedCodeDetail: FC = () => {
           object_type: 'embed_code',
           action: 'view',
           resource: {
-            ...createResource(embedCode, commonUser as Avo.User.CommonUser),
+            ...createResource(embedCode, commonUser as AvoUserCommonUser),
             parentPage: '', // No parent page since we are on the detail page in avo
           },
         },
@@ -97,7 +101,7 @@ export const EmbedCodeDetail: FC = () => {
       await BookmarksViewsPlaysService.action(
         'view',
         'item',
-        (embedCode.content as Avo.Item.Item).uid,
+        (embedCode.content as AvoItemItem).uid,
         commonUser,
       ).then(noop);
     }
@@ -117,7 +121,7 @@ export const EmbedCodeDetail: FC = () => {
           object_type: 'embed_code',
           action: 'play',
           resource: {
-            ...createResource(embedCode, commonUser as Avo.User.CommonUser),
+            ...createResource(embedCode, commonUser as AvoUserCommonUser),
             parentPage: '', // No parent page since we are on the detail page in avo
           },
         },
@@ -132,7 +136,7 @@ export const EmbedCodeDetail: FC = () => {
       return null;
     }
 
-    const content = embedCode.content as Avo.Item.Item;
+    const content = embedCode.content as AvoItemItem;
     const contentLabel = embedCode.contentType;
 
     const [start, end] = getValidStartAndEnd(
@@ -183,7 +187,7 @@ export const EmbedCodeDetail: FC = () => {
 
     if (embedCode?.contentType === EmbedCodeContentType.item) {
       path = generatePath(APP_PATH.ITEM_DETAIL.route, {
-        id: (embedCode.content as Avo.Item.Item).external_id.toString(),
+        id: (embedCode.content as AvoItemItem).external_id.toString(),
       });
     }
 

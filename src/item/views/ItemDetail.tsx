@@ -24,18 +24,11 @@ import {
   Table,
   Thumbnail,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import { AvoContentTypeEnglish, AvoCoreContentType, AvoItemItem, AvoSearchResultItem, PermissionName, } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { isNil, noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactNode,
-  type ReactText,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { type FC, type ReactNode, type ReactText, useCallback, useEffect, useState, } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -48,10 +41,7 @@ import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/mo
 import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import {
-  CONTENT_TYPE_TRANSLATIONS_NL_TO_EN,
-  ContentTypeNumber,
-} from '../../collection/collection.types';
+import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN, ContentTypeNumber, } from '../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { type FilterState } from '../../search/search.types';
@@ -63,23 +53,11 @@ import {
 import { LANGUAGES } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
-import {
-  defaultRenderBookmarkButton,
-  type renderBookmarkButtonProps,
-} from '../../shared/helpers/default-render-bookmark-button';
-import {
-  defaultRenderBookmarkCount,
-  type renderBookmarkCountProps,
-} from '../../shared/helpers/default-render-bookmark-count';
-import {
-  defaultGoToDetailLink,
-  defaultRenderDetailLink,
-} from '../../shared/helpers/default-render-detail-link';
+import { defaultRenderBookmarkButton, type renderBookmarkButtonProps, } from '../../shared/helpers/default-render-bookmark-button';
+import { defaultRenderBookmarkCount, type renderBookmarkCountProps, } from '../../shared/helpers/default-render-bookmark-count';
+import { defaultGoToDetailLink, defaultRenderDetailLink, } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderInteractiveTour } from '../../shared/helpers/default-render-interactive-tour';
-import {
-  defaultGoToSearchLink,
-  defaultRenderSearchLink,
-} from '../../shared/helpers/default-render-search-link';
+import { defaultGoToSearchLink, defaultRenderSearchLink, } from '../../shared/helpers/default-render-search-link';
 import { reorderDate } from '../../shared/helpers/formatters/date';
 import { renderSearchLinks } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
@@ -90,11 +68,7 @@ import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-view
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import {
-  getRelatedItems,
-  ObjectTypes,
-  ObjectTypesAll,
-} from '../../shared/services/related-items-service';
+import { getRelatedItems, ObjectTypes, ObjectTypesAll, } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { embedFlowAtom } from '../../shared/store/ui.store';
 import { type UnpublishableItem } from '../../shared/types';
@@ -107,12 +81,7 @@ import { type ItemTrimInfo } from '../item.types';
 
 import './ItemDetail.scss';
 import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
-import {
-  JsonParam,
-  StringParam,
-  useQueryParam,
-  useQueryParams,
-} from '../../shared/helpers/routing/use-query-params-ssr.ts';
+import { JsonParam, StringParam, useQueryParam, useQueryParams, } from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
@@ -121,7 +90,7 @@ interface ItemDetailProps {
   renderDetailLink?: (
     linkText: string | ReactNode,
     id: string,
-    type: Avo.Core.ContentType,
+    type: AvoCoreContentType,
     className?: string,
   ) => ReactNode;
   renderSearchLink?: (
@@ -129,7 +98,7 @@ interface ItemDetailProps {
     newFilters: FilterState,
     className?: string,
   ) => ReactNode;
-  goToDetailLink?: (id: string, type: Avo.Core.ContentType) => void;
+  goToDetailLink?: (id: string, type: AvoCoreContentType) => void;
   goToSearchLink?: (newFilters: FilterState) => void;
   enabledMetaData?: SearchFilter[];
   /**
@@ -137,7 +106,7 @@ interface ItemDetailProps {
    * Pupils can only see items
    */
   relatedObjectTypes?: ObjectTypesAll;
-  renderActionButtons?: (item: Avo.Item.Item) => ReactNode;
+  renderActionButtons?: (item: AvoItemItem) => ReactNode;
   renderBookmarkButton?: (props: renderBookmarkButtonProps) => ReactNode;
   renderBookmarkCount?: (props: renderBookmarkCountProps) => ReactNode;
   renderInteractiveTour?: () => ReactNode;
@@ -173,7 +142,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   const [cuePoint] = useQueryParam('t', StringParam);
   const [cutButton, cutModal] = useCutModal();
 
-  const [item, setItem] = useState<Avo.Item.Item | null>(null);
+  const [item, setItem] = useState<AvoItemItem | null>(null);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
   });
@@ -185,7 +154,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   const [isShareFragmentModalOpen, setIsShareFragmentModalOpen] =
     useState(false);
   const [relatedItems, setRelatedItems] = useState<
-    Avo.Search.ResultItem[] | null
+    AvoSearchResultItem[] | null
   >(null);
   const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] =
     useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS);
@@ -302,7 +271,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
       if (itemObj.replacement_for) {
         // Item was replaced by another item
         // We should reload the page, to update the url
-        goToDetailLink?.(itemObj.external_id, Avo.Core.ContentType.VIDEO);
+        goToDetailLink?.(itemObj.external_id, AvoCoreContentType.VIDEO);
         return;
       }
 
@@ -424,8 +393,8 @@ export const ItemDetail: FC<ItemDetailProps> = ({
     }
   };
 
-  const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
-    const englishContentType: Avo.ContentType.English =
+  const renderRelatedItem = (relatedItem: AvoSearchResultItem) => {
+    const englishContentType: AvoContentTypeEnglish =
       CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[
         relatedItem.administrative_type || 'video'
       ];
@@ -472,7 +441,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 
   const createNewAssignment = async (
     source:
-      | (Avo.Item.Item & { start_oc?: number | null; end_oc?: number | null })
+      | (AvoItemItem & { start_oc?: number | null; end_oc?: number | null })
       | null = item,
   ) => {
     if (!source || !commonUser) {
@@ -559,7 +528,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
     }
   };
 
-  const renderEducationLevels = (item: Avo.Item.Item) => {
+  const renderEducationLevels = (item: AvoItemItem) => {
     if (
       !item.external_id ||
       !item.lom_context ||
@@ -592,7 +561,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
     );
   };
 
-  const renderEducationDegrees = (item: Avo.Item.Item) => {
+  const renderEducationDegrees = (item: AvoItemItem) => {
     if (
       !item.external_id ||
       !item.lom_typical_age_range ||
@@ -627,7 +596,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
     );
   };
 
-  const renderSubjects = (item: Avo.Item.Item) => {
+  const renderSubjects = (item: AvoItemItem) => {
     if (
       !item.external_id ||
       !item.lom_classification ||
@@ -660,7 +629,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
     );
   };
 
-  const renderThemas = (item: Avo.Item.Item) => {
+  const renderThemas = (item: AvoItemItem) => {
     if (
       !item.external_id ||
       !item.lom_thema ||
@@ -693,7 +662,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
     );
   };
 
-  const renderKeywords = (item: Avo.Item.Item) => {
+  const renderKeywords = (item: AvoItemItem) => {
     if (
       !item.lom_keywords?.length ||
       !enabledMetaData.includes(SearchFilter.keyword)
@@ -737,7 +706,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
     );
   };
 
-  const renderGeneralMetaData = (item: Avo.Item.Item) => {
+  const renderGeneralMetaData = (item: AvoItemItem) => {
     return (
       <Table
         horizontal
@@ -942,7 +911,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
     if (!item) {
       return null;
     }
-    const englishContentType: Avo.ContentType.English =
+    const englishContentType: AvoContentTypeEnglish =
       CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[item?.type?.label || 'video'];
 
     return (

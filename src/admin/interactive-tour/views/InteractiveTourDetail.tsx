@@ -13,7 +13,7 @@ import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE, RouteId } from '../../../constants';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import {

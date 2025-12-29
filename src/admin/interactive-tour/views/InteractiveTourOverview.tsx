@@ -1,6 +1,6 @@
 import { FilterTable } from '@meemoo/admin-core-ui/admin';
 import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import { AvoSearchOrderDirection, PermissionName } from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
 import { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE, RouteId } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
@@ -25,26 +25,13 @@ import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
-import {
-  getDateRangeFilters,
-  getQueryFilter,
-} from '../../shared/helpers/filters';
+import { getDateRangeFilters, getQueryFilter, } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import {
-  AdminLayoutBody,
-  AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import {
-  GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS,
-  ITEMS_PER_PAGE,
-} from '../interactive-tour.const';
+import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE, } from '../interactive-tour.const';
 import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.routes.ts';
 import { InteractiveTourService } from '../interactive-tour.service';
-import {
-  InteractiveTour,
-  type InteractiveTourOverviewTableCols,
-  type InteractiveTourTableState,
-} from '../interactive-tour.types';
+import { InteractiveTour, type InteractiveTourOverviewTableCols, type InteractiveTourTableState, } from '../interactive-tour.types';
 
 export const InteractiveTourOverview: FC = () => {
   const navigateFunc = useNavigate();
@@ -92,7 +79,7 @@ export const InteractiveTourOverview: FC = () => {
             'page_id',
             'page',
           ) as any,
-          tableState.sort_order || Avo.Search.OrderDirection.DESC,
+          tableState.sort_order || AvoSearchOrderDirection.DESC,
           generateWhereObject(tableState),
         );
       setInteractiveTours(interactiveToursTemp);

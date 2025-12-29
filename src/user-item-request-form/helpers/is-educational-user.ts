@@ -1,9 +1,8 @@
-import type { Avo } from '@viaa/avo2-types'
-
+import { AvoUserCommonUser } from '@viaa/avo2-types';
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 
 export function isEducationalUser(
-  commonUser: Avo.User.CommonUser | null,
+  commonUser: AvoUserCommonUser | null,
 ): boolean {
   return (
     !!commonUser &&
@@ -12,5 +11,5 @@ export function isEducationalUser(
       SpecialUserGroupId.EducativeAuthor,
       SpecialUserGroupId.EducativePublisher,
     ].includes(String(commonUser.userGroup.id) as SpecialUserGroupId)
-  )
+  );
 }

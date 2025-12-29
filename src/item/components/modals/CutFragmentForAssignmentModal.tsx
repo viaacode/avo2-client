@@ -12,7 +12,7 @@ import {
   ToolbarItem,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+
 import { type FC, useEffect, useState } from 'react';
 
 import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
@@ -26,9 +26,10 @@ import { type ItemTrimInfo } from '../../item.types';
 import { ItemVideoDescription } from '../ItemVideoDescription';
 
 import './CutFragmentModal.scss';
+import { AvoItemItem } from '@viaa/avo2-types';
 
 interface CutFragmentForAssignmentModalProps {
-  itemMetaData: Avo.Item.Item;
+  itemMetaData: AvoItemItem;
   isOpen: boolean;
   onClose: () => void;
   afterCutCallback: (trimInfo: ItemTrimInfo) => void;

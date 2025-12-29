@@ -3,7 +3,7 @@ import meemooLogo from '@assets/images/meemoo-logo.png';
 // eslint-disable-next-line import/no-unresolved
 import vlaamseOverheidLogoSrc from '@assets/images/vlaanderen-logo.svg';
 import { Container, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+
 import { orderBy } from 'es-toolkit';
 import { type FC, useState } from 'react';
 
@@ -15,6 +15,7 @@ import { NavigationBarId } from '../Navigation/Navigation.const';
 import { NavigationItem } from '../Navigation/NavigationItem';
 
 import './Footer.scss';
+import { AvoSearchOrderDirection } from "@viaa/avo2-types";
 
 export const Footer: FC = () => {
   const [areDropdownsOpen, setDropdownsOpen] = useState<BooleanDictionary>({});
@@ -29,7 +30,7 @@ export const Footer: FC = () => {
     allNavItems?.[NavigationBarId.FOOTER_COLUMN_3] || [];
 
   const mapNavItems = (navItems: AppContentNavElement[]) => {
-    return orderBy(navItems, ['position'], [Avo.Search.OrderDirection.ASC]).map(
+    return orderBy(navItems, ['position'], [AvoSearchOrderDirection.ASC]).map(
       (item) => {
         return (
           <NavigationItem
@@ -50,7 +51,7 @@ export const Footer: FC = () => {
           />
         );
       },
-      [Avo.Search.OrderDirection.ASC],
+      [AvoSearchOrderDirection.ASC],
     );
   };
 

@@ -26,4 +26,65 @@ interface Window {
   zE: (...args) => unknown;
   // React router ssr
   __staticRouterHydrationData?: any;
+  // Google Analytics
+  ga?: Ga;
+}
+
+interface FieldsObject {
+  [fieldName: string]: any;
+}
+
+interface SendFields extends FieldsObject {
+  hitType?: string;
+  eventCategory?: string;
+  eventAction?: string;
+  eventLabel?: string;
+  eventValue?: number;
+  page?: string;
+  title?: string;
+  location?: string;
+  nonInteraction?: boolean;
+  transport?: string;
+}
+
+interface Tracker {
+  get(fieldName: string): any;
+  set(fieldName: string, value: any): void;
+  set(fieldsObject: FieldsObject): void;
+  send(hitType: string, ...args: any[]): void;
+  send(fieldsObject: SendFields): void;
+  /** Usually returns the tracker's name, e.g. "t0" or a custom name */
+  get(name: 'name'): string;
+}
+
+interface CreateOptions extends FieldsObject {
+  cookieDomain?: string | 'auto';
+  name?: string;
+  allowLinker?: boolean;
+  siteSpeedSampleRate?: number;
+  sampleRate?: number;
+  storage?: 'cookie' | 'none';
+  clientId?: string;
+  userId?: string;
+}
+
+interface Ga {
+  (command: string, ...fields: any[]): void;
+
+  create(
+    trackingId: string,
+    cookieDomain?: string | 'auto',
+    name?: string,
+  ): Tracker;
+  create(trackingId: string, options?: CreateOptions): Tracker;
+
+  getByName(name: string): Tracker | undefined;
+  getAll(): Tracker[];
+  remove(name: string): void;
+
+  loaded?: boolean;
+  answer?: number;
+
+  q?: Array<IArguments>;
+  l?: number;
 }

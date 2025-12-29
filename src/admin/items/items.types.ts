@@ -1,6 +1,6 @@
 import { type FilterableTableState } from '@meemoo/admin-core-ui/admin';
-import { type Avo } from '@viaa/avo2-types';
 
+import { AvoItemItem } from '@viaa/avo2-types';
 import { type EmbedCodeExternalWebsite } from '../../embed-code/embed-code.types';
 import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 
@@ -83,7 +83,7 @@ export interface UnpublishedItem {
   title: string;
   updated_at: string;
   status: UnpublishedStatus;
-  item_meta: Partial<Avo.Item.Item> | null;
+  item_meta: Partial<AvoItemItem> | null;
 }
 
 export interface UnpublishedItemsTableState

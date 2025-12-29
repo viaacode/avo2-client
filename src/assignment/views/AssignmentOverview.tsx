@@ -1,9 +1,6 @@
 import './AssignmentOverview.scss';
 
-import {
-  cleanupFilterTableState,
-  toggleSortOrder,
-} from '@meemoo/admin-core-ui/admin';
+import { cleanupFilterTableState, toggleSortOrder, } from '@meemoo/admin-core-ui/admin';
 import { PaginationBar } from '@meemoo/react-components';
 import {
   Button,
@@ -26,38 +23,33 @@ import {
   ToolbarRight,
   useKeyPress,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentLabel,
+  AvoAssignmentLabelType,
+  AvoAssignmentView,
+  AvoCoreBlockItemType,
+  AvoSearchOrderDirection,
+  AvoShareShareWithColleagueType,
+  PermissionName
+} from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { cloneDeep, compact, isNil, noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type KeyboardEvent,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { type FC, type KeyboardEvent, type ReactNode, useCallback, useEffect, useMemo, useState, } from 'react';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
-import {
-  CheckboxDropdownModal,
-  type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { CheckboxDropdownModal, type CheckboxOption, } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
-import {
-  ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
-  getMoreOptionsLabel,
-} from '../../shared/constants';
+import { ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS, getMoreOptionsLabel, } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { getContributorType } from '../../shared/helpers/contributors';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
@@ -90,16 +82,9 @@ import {
   GET_ASSIGNMENT_OVERVIEW_COLUMNS,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import {
-  AssignmentAction,
-  type AssignmentTableColumns,
-  AssignmentView,
-} from '../assignment.types';
+import { AssignmentAction, type AssignmentTableColumns, AssignmentView, } from '../assignment.types';
 import { AssignmentDeadline } from '../components/AssignmentDeadline';
-import {
-  deleteAssignment,
-  deleteSelfFromAssignment,
-} from '../helpers/delete-assignment';
+import { deleteAssignment, deleteSelfFromAssignment, } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { useGetAssignments } from '../hooks/useGetAssignments';
 import { DeleteAssignmentModal } from '../modals/DeleteAssignmentModal';
@@ -109,7 +94,7 @@ interface AssignmentOverviewProps {
 }
 
 const DEFAULT_SORT_COLUMN = 'updated_at';
-const DEFAULT_SORT_ORDER = Avo.Search.OrderDirection.DESC;
+const DEFAULT_SORT_ORDER = AvoSearchOrderDirection.DESC;
 
 const defaultFiltersAndSort = {
   selectedAssignmentLabelIds: [],
@@ -128,7 +113,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
   const commonUser = useAtomValue(commonUserAtom);
 
   const [allAssignmentLabels, setAllAssignmentLabels] = useState<
-    Avo.Assignment.Label[]
+    AvoAssignmentLabel[]
   >([]);
   const [filterString, setFilterString] = useState<string | undefined>(
     undefined,
@@ -138,7 +123,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
   const [isDeleteAssignmentModalOpen, setDeleteAssignmentModalOpen] =
     useState<boolean>(false);
   const [markedAssignment, setMarkedAssignment] =
-    useState<Avo.Assignment.Assignment | null>(null);
+    useState<AvoAssignmentAssignment | null>(null);
   const canEditAssignments = useMemo(
     () =>
       PermissionService.hasPerm(
@@ -166,12 +151,12 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
 
   const isOwner =
     markedAssignment?.share_type ===
-      Avo.Share.ShareWithColleagueType.GEDEELD_MET_ANDERE ||
+      AvoShareShareWithColleagueType.GEDEELD_MET_ANDERE ||
     markedAssignment?.share_type ===
-      Avo.Share.ShareWithColleagueType.NIET_GEDEELD;
+      AvoShareShareWithColleagueType.NIET_GEDEELD;
   const isContributor =
     markedAssignment?.share_type ===
-    Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ;
+    AvoShareShareWithColleagueType.GEDEELD_MET_MIJ;
   const isContributorWithContributeRights =
     !!markedAssignment?.contributors?.find(
       (c) =>
@@ -221,7 +206,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
       sortColumn: (query.sortColumn ||
         DEFAULT_SORT_COLUMN) as AssignmentTableColumns,
       sortOrder: (query.sortOrder ||
-        DEFAULT_SORT_ORDER) as Avo.Search.OrderDirection,
+        DEFAULT_SORT_ORDER) as AvoSearchOrderDirection,
       tableColumnDataType: getColumnDataType(),
       offset: query.page || 0,
       limit: ITEMS_PER_PAGE,
@@ -257,12 +242,9 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
     // Show both shareTypes for 'mijn opdrachten' option
     if (
       Array.isArray(value) &&
-      value.includes(Avo.Share.ShareWithColleagueType.NIET_GEDEELD)
+      value.includes(AvoShareShareWithColleagueType.NIET_GEDEELD)
     ) {
-      newValue = [
-        ...value,
-        Avo.Share.ShareWithColleagueType.GEDEELD_MET_ANDERE,
-      ];
+      newValue = [...value, AvoShareShareWithColleagueType.GEDEELD_MET_ANDERE];
     }
 
     newQuery = {
@@ -334,7 +316,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
 
   const handleExtraOptionsItemClicked = async (
     actionId: AssignmentAction,
-    assignmentRow: Avo.Assignment.Assignment,
+    assignmentRow: AvoAssignmentAssignment,
   ) => {
     setDropdownOpenForAssignmentId(null);
     if (!assignmentRow.id) {
@@ -364,7 +346,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
             );
             return;
           }
-          const latest: Avo.Assignment.Assignment =
+          const latest: AvoAssignmentAssignment =
             await AssignmentService.fetchAssignmentById(
               assignmentRow.id as unknown as string,
             );
@@ -412,7 +394,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
     handleDeleteModalClose();
   };
 
-  const renderActions = (assignmentRow: Avo.Assignment.Assignment) => {
+  const renderActions = (assignmentRow: AvoAssignmentAssignment) => {
     const handleOptionClicked = async (actionId: AssignmentAction) => {
       await handleExtraOptionsItemClicked(
         actionId as AssignmentAction,
@@ -483,7 +465,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
   };
 
   const renderLabels = (
-    labels: { assignment_label: Avo.Assignment.Label }[],
+    labels: { assignment_label: AvoAssignmentLabel }[],
     label: string,
   ) => {
     if (labels.length === 0) {
@@ -532,7 +514,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
 
   const renderResponsesCell = (
     cellData: any,
-    assignment: Avo.Assignment.Assignment,
+    assignment: AvoAssignmentAssignment,
   ) => {
     const responsesCount = (cellData || []).length;
 
@@ -575,7 +557,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
   };
 
   const renderCell = (
-    assignment: Avo.Assignment.Assignment,
+    assignment: AvoAssignmentAssignment,
     colKey: AssignmentTableColumns,
   ) => {
     const cellData: any = (assignment as any)[colKey];
@@ -591,7 +573,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
 
     const labels = (assignment.labels || []).filter(
       ({ assignment_label: item }) =>
-        item.type === Avo.Assignment.LabelType.LABEL,
+        item.type === AvoAssignmentLabelType.LABEL,
     );
 
     switch (colKey) {
@@ -627,7 +609,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
         return renderLabels(
           (assignment.labels || []).filter(
             ({ assignment_label: item }) =>
-              item.type === Avo.Assignment.LabelType.CLASS,
+              item.type === AvoAssignmentLabelType.CLASS,
           ),
           tText('assignment/views/assignment-overview___klas'),
         );
@@ -661,7 +643,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
 
       case 'share_type':
         return createShareIconTableOverview(
-          assignment.share_type as Avo.Share.ShareWithColleagueType,
+          assignment.share_type as AvoShareShareWithColleagueType,
           assignment.contributors,
           'assignment',
           'c-assignment-overview__shared',
@@ -705,12 +687,12 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
   };
 
   const getLabelOptions = (
-    labelType: Avo.Assignment.LabelType,
+    labelType: AvoAssignmentLabelType,
   ): CheckboxOption[] => {
     return compact(
       allAssignmentLabels
-        .filter((labelObj: Avo.Assignment.Label) => labelObj.type === labelType)
-        .map((labelObj: Avo.Assignment.Label): CheckboxOption | null => {
+        .filter((labelObj: AvoAssignmentLabel) => labelObj.type === labelType)
+        .map((labelObj: AvoAssignmentLabel): CheckboxOption | null => {
           if (!labelObj.label) {
             return null;
           }
@@ -730,16 +712,16 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
     return compact([
       {
         label: tText('assignment/views/assignment-overview___gedeeld-met-mij'),
-        id: Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ,
+        id: AvoShareShareWithColleagueType.GEDEELD_MET_MIJ,
         checked: [...(query.selectedShareTypeLabelIds || [])].includes(
-          Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ,
+          AvoShareShareWithColleagueType.GEDEELD_MET_MIJ,
         ),
       },
       {
         label: tText('assignment/views/assignment-overview___mijn-opdrachten'),
-        id: Avo.Share.ShareWithColleagueType.NIET_GEDEELD,
+        id: AvoShareShareWithColleagueType.NIET_GEDEELD,
         checked: [...(query.selectedShareTypeLabelIds || [])].includes(
-          Avo.Share.ShareWithColleagueType.NIET_GEDEELD,
+          AvoShareShareWithColleagueType.NIET_GEDEELD,
         ),
       },
     ]);
@@ -771,7 +753,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
                     value={query.view}
                     onChange={(activeViewId: string) =>
                       handleQueryChanged(
-                        activeViewId as Avo.Assignment.View,
+                        activeViewId as AvoAssignmentView,
                         'view',
                       )
                     }
@@ -828,7 +810,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
                   <CheckboxDropdownModal
                     label={tText('assignment/views/assignment-overview___klas')}
                     id="Klas"
-                    options={getLabelOptions(Avo.Assignment.LabelType.CLASS)}
+                    options={getLabelOptions(AvoAssignmentLabelType.CLASS)}
                     onChange={(selectedClasses) =>
                       handleQueryChanged(
                         selectedClasses,
@@ -841,7 +823,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
                       'assignment/views/assignment-overview___label',
                     )}
                     id="Label"
-                    options={getLabelOptions(Avo.Assignment.LabelType.LABEL)}
+                    options={getLabelOptions(AvoAssignmentLabelType.LABEL)}
                     onChange={(selectedLabels) =>
                       handleQueryChanged(
                         selectedLabels,
@@ -995,7 +977,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
       <Table
         className="m-assignment-overview__table"
         columns={tableColumns}
-        data={assignments as Avo.Assignment.Assignment[]}
+        data={assignments as AvoAssignmentAssignment[]}
         emptyStateMessage={
           query.filter
             ? tText(
@@ -1009,14 +991,14 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
                   'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt',
                 )
         }
-        renderCell={(rowData: Avo.Assignment.Assignment, colKey: string) =>
+        renderCell={(rowData: AvoAssignmentAssignment, colKey: string) =>
           renderCell(rowData, colKey as AssignmentTableColumns)
         }
         rowKey="id"
         variant="styled"
         onColumnClick={handleSortOrderChange}
         sortColumn={query.sortColumn as AssignmentTableColumns}
-        sortOrder={query.sortOrder as Avo.Search.OrderDirection}
+        sortOrder={query.sortOrder as AvoSearchOrderDirection}
         useCards={isMobileWidth()}
       />
     );
@@ -1056,7 +1038,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
           hasPupilResponses={!!markedAssignment?.responses?.length}
           hasPupilResponseCollections={
             markedAssignment?.lom_learning_resource_type?.includes(
-              Avo.Core.BlockItemType.BOUW,
+              AvoCoreBlockItemType.BOUW,
             ) || false
           }
           shouldDeleteSelfFromAssignment={shouldDeleteSelfFromAssignment}

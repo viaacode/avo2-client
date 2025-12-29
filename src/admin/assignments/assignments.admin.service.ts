@@ -1,9 +1,11 @@
-import { type Avo } from '@viaa/avo2-types'
-import { stringifyUrl } from 'query-string'
-
+import {
+  AvoAssignmentAssignment,
+  AvoCollectionCollection,
+  AvoSearchOrderDirection,
+} from '@viaa/avo2-types';
+import { stringifyUrl } from 'query-string';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
-
 import { type AssignmentSortProps } from './assignments.types';
 
 export class AssignmentsAdminService {
@@ -11,18 +13,18 @@ export class AssignmentsAdminService {
     offset: number,
     limit: number,
     sortColumn: AssignmentSortProps,
-    sortOrder: Avo.Search.OrderDirection,
+    sortOrder: AvoSearchOrderDirection,
     filters: any,
     isCollection: boolean,
     includeRelations: boolean,
-  ): Promise<{ assignments: Avo.Collection.Collection[]; total: number }> {
+  ): Promise<{ assignments: AvoCollectionCollection[]; total: number }> {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/admin'
-      )
+      );
       return await fetchWithLogoutJson<{
-        assignments: Avo.Collection.Collection[]
-        total: number
+        assignments: AvoCollectionCollection[];
+        total: number;
       }>(
         stringifyUrl({
           url: `${getEnv('PROXY_URL')}/assignments/admin/overview`,
@@ -36,7 +38,7 @@ export class AssignmentsAdminService {
             includeRelations,
           },
         }),
-      )
+      );
     } catch (err) {
       throw new CustomError(
         'Failed to get assignments from the database',
@@ -49,7 +51,7 @@ export class AssignmentsAdminService {
           filters,
           isCollection,
         },
-      )
+      );
     }
   }
 
@@ -57,17 +59,17 @@ export class AssignmentsAdminService {
     offset: number,
     limit: number,
     sortColumn: AssignmentSortProps,
-    sortOrder: Avo.Search.OrderDirection,
+    sortOrder: AvoSearchOrderDirection,
     filters: any,
     includeRelations: boolean,
-  ): Promise<{ assignments: Avo.Assignment.Assignment[]; total: number }> {
+  ): Promise<{ assignments: AvoAssignmentAssignment[]; total: number }> {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/admin'
-      )
+      );
       return await fetchWithLogoutJson<{
-        assignments: Avo.Assignment.Assignment[]
-        total: number
+        assignments: AvoAssignmentAssignment[];
+        total: number;
       }>(
         stringifyUrl({
           url: `${getEnv('PROXY_URL')}/assignments/admin/overview/marcom`,
@@ -80,7 +82,7 @@ export class AssignmentsAdminService {
             includeRelations,
           },
         }),
-      )
+      );
     } catch (err) {
       throw new CustomError(
         'Failed to get assignment marcom entries from the database',
@@ -92,7 +94,7 @@ export class AssignmentsAdminService {
           sortOrder,
           filters,
         },
-      )
+      );
     }
   }
 
@@ -100,9 +102,9 @@ export class AssignmentsAdminService {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/admin'
-      )
+      );
       const response = await fetchWithLogoutJson<{
-        assignmentIds: string[]
+        assignmentIds: string[];
       }>(
         stringifyUrl({
           url: `${getEnv('PROXY_URL')}/assignments/admin/overview/ids`,
@@ -110,8 +112,8 @@ export class AssignmentsAdminService {
             filters: JSON.stringify(filters),
           },
         }),
-      )
-      return response?.assignmentIds || []
+      );
+      return response?.assignmentIds || [];
     } catch (err) {
       throw new CustomError(
         'Failed to get assignment ids from the database',
@@ -119,7 +121,7 @@ export class AssignmentsAdminService {
         {
           filters,
         },
-      )
+      );
     }
   }
 
@@ -127,9 +129,9 @@ export class AssignmentsAdminService {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/admin'
-      )
+      );
       const response = await fetchWithLogoutJson<{
-        assignmentIds: string[]
+        assignmentIds: string[];
       }>(
         stringifyUrl({
           url: `${getEnv('PROXY_URL')}/assignments/admin/overview/marcom/ids`,
@@ -137,8 +139,8 @@ export class AssignmentsAdminService {
             filters: JSON.stringify(filters),
           },
         }),
-      )
-      return response?.assignmentIds || []
+      );
+      return response?.assignmentIds || [];
     } catch (err) {
       throw new CustomError(
         'Failed to get assignment marcom ids from the database',
@@ -146,7 +148,7 @@ export class AssignmentsAdminService {
         {
           filters,
         },
-      )
+      );
     }
   }
 }

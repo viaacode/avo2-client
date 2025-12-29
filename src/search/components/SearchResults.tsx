@@ -7,7 +7,7 @@ import {
   Flex,
   IconName,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { AvoSearchResultItem, PermissionName } from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC } from 'react';
@@ -43,7 +43,7 @@ export const SearchResults: FC<SearchResultsProps> = ({
 }) => {
   const commonUser = useAtomValue(commonUserAtom);
 
-  const getIsBookmarked = (result: Avo.Search.ResultItem) => {
+  const getIsBookmarked = (result: AvoSearchResultItem) => {
     if (!bookmarkStatuses) {
       return null;
     }
@@ -57,7 +57,7 @@ export const SearchResults: FC<SearchResultsProps> = ({
     );
   };
 
-  const renderSearchResultItem = (result: Avo.Search.ResultItem) => {
+  const renderSearchResultItem = (result: AvoSearchResultItem) => {
     const searchResult = { ...result };
 
     if (

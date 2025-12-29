@@ -1,21 +1,23 @@
 import { Alert, Spacer } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+
+import {
+  AvoCollectionCollection,
+  AvoCollectionFragment,
+} from '@viaa/avo2-types';
 import { sortBy } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC } from 'react';
-
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { showReplacementWarning } from '../../helpers/fragment';
-
 import { FragmentDetail } from './FragmentDetail';
 
 interface FragmentListProps {
-  collectionFragments: Avo.Collection.Fragment[];
+  collectionFragments: AvoCollectionFragment[];
   showDescription: boolean;
   showMetadata: boolean;
   linkToItems: boolean;
-  collection: Avo.Collection.Collection;
+  collection: AvoCollectionCollection;
   canPlay?: boolean;
 }
 
@@ -40,7 +42,7 @@ export const FragmentList: FC<FragmentListProps> = ({
       return null;
     }
     return sortBy(collectionFragments, ['position']).map(
-      (collectionFragment: Avo.Collection.Fragment) => {
+      (collectionFragment: AvoCollectionFragment) => {
         return (
           <li
             className="c-collection-list__item"

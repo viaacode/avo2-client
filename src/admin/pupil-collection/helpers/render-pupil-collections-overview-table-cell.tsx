@@ -1,8 +1,7 @@
-import { Button, IconName } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
-
+import { Button, IconName } from '@viaa/avo2-components';
+import { AvoAssignmentResponse } from '@viaa/avo2-types';
+import { type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
 import { APP_PATH } from '../../../constants';
 import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types';
@@ -13,11 +12,11 @@ import { tText } from '../../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 
 export function renderPupilCollectionTableCellReact(
-  pupilCollection: Partial<Avo.Assignment.Response>,
+  pupilCollection: Partial<AvoAssignmentResponse>,
   columnId: PupilCollectionOverviewTableColumns,
 ): ReactNode {
   const { id, created_at, updated_at, assignment_id, assignment } =
-    pupilCollection
+    pupilCollection;
 
   switch (columnId) {
     case 'title':
@@ -30,10 +29,10 @@ export function renderPupilCollectionTableCellReact(
         >
           {truncateTableValue(pupilCollection?.collection_title || '-')}
         </Link>
-      )
+      );
 
     case 'pupil':
-      return truncateTableValue(pupilCollection?.owner?.full_name)
+      return truncateTableValue(pupilCollection?.owner?.full_name);
 
     case 'assignmentTitle':
       return (
@@ -44,19 +43,19 @@ export function renderPupilCollectionTableCellReact(
         >
           {truncateTableValue(assignment?.title || '-')}
         </Link>
-      )
+      );
 
     case 'teacher':
-      return truncateTableValue(pupilCollection?.assignment?.owner?.full_name)
+      return truncateTableValue(pupilCollection?.assignment?.owner?.full_name);
 
     case 'created_at':
-      return formatDate(created_at) || '-'
+      return formatDate(created_at) || '-';
 
     case 'updated_at':
-      return formatDate(updated_at) || '-'
+      return formatDate(updated_at) || '-';
 
     case 'deadline_at':
-      return formatDate(assignment?.deadline_at) || '-'
+      return formatDate(assignment?.deadline_at) || '-';
 
     case 'status':
       return !!assignment?.deadline_at &&
@@ -66,7 +65,7 @@ export function renderPupilCollectionTableCellReact(
           )
         : tText(
             'admin/pupil-collection/views/pupil-collections-overview___actief',
-          )
+          );
 
     case ACTIONS_TABLE_COLUMN_ID:
     default:
@@ -89,37 +88,37 @@ export function renderPupilCollectionTableCellReact(
             type="secondary"
           />
         </Link>
-      )
+      );
   }
 }
 
 export function renderPupilCollectionTableCellText(
-  pupilCollection: Partial<Avo.Assignment.Response>,
+  pupilCollection: Partial<AvoAssignmentResponse>,
   columnId: PupilCollectionOverviewTableColumns,
 ): string {
-  const { created_at, updated_at, assignment } = pupilCollection
+  const { created_at, updated_at, assignment } = pupilCollection;
 
   switch (columnId) {
     case 'title':
-      return pupilCollection?.collection_title || ''
+      return pupilCollection?.collection_title || '';
 
     case 'pupil':
-      return pupilCollection?.owner?.full_name || ''
+      return pupilCollection?.owner?.full_name || '';
 
     case 'assignmentTitle':
-      return assignment?.title || ''
+      return assignment?.title || '';
 
     case 'teacher':
-      return pupilCollection?.assignment?.owner?.full_name || ''
+      return pupilCollection?.assignment?.owner?.full_name || '';
 
     case 'created_at':
-      return formatDate(created_at) || ''
+      return formatDate(created_at) || '';
 
     case 'updated_at':
-      return formatDate(updated_at) || ''
+      return formatDate(updated_at) || '';
 
     case 'deadline_at':
-      return formatDate(assignment?.deadline_at) || ''
+      return formatDate(assignment?.deadline_at) || '';
 
     case 'status':
       return !!assignment?.deadline_at &&
@@ -129,12 +128,12 @@ export function renderPupilCollectionTableCellText(
           )
         : tText(
             'admin/pupil-collection/views/pupil-collections-overview___actief',
-          )
+          );
 
     case ACTIONS_TABLE_COLUMN_ID:
-      return ''
+      return '';
 
     default:
-      return pupilCollection[columnId] || '-'
+      return pupilCollection[columnId] || '-';
   }
 }

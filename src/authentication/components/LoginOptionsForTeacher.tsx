@@ -6,9 +6,9 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@viaa/avo2-components'
-import { noop } from 'es-toolkit'
-import { type FC } from 'react'
+} from '@viaa/avo2-components';
+import { noop } from 'es-toolkit';
+import { type FC } from 'react';
 
 import { tHtml } from '../../shared/helpers/translate-html';
 import {
@@ -16,23 +16,23 @@ import {
   redirectToServerKlascementLogin,
   redirectToServerLoginPage,
   redirectToServerSmartschoolLogin,
-} from '../helpers/redirects';
+} from '../helpers/redirects/redirects';
 
-import './LoginOptionsForTeacher.scss'
-import { useLocation } from 'react-router-dom'
+import './LoginOptionsForTeacher.scss';
+import { useLocation } from 'react-router-dom';
 
 import { tText } from '../../shared/helpers/translate-text';
 
 interface LoginOptionsForTeacherProps {
-  onOptionClicked?: () => void
-  openInNewTab?: boolean
+  onOptionClicked?: () => void;
+  openInNewTab?: boolean;
 }
 
 export const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
   onOptionClicked = noop,
   openInNewTab = false,
 }) => {
-  const location = useLocation()
+  const location = useLocation();
 
   const getButtons = () => {
     return [
@@ -49,8 +49,8 @@ export const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
         type="primary"
         className="c-login-with-archief c-button-mail"
         onClick={() => {
-          onOptionClicked()
-          redirectToServerLoginPage(location, openInNewTab)
+          onOptionClicked();
+          redirectToServerLoginPage(location, openInNewTab);
         }}
       />,
 
@@ -89,8 +89,8 @@ export const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
           'authentication/components/login-options-for-teacher___itsme-of-e-id',
         )}
         onClick={() => {
-          onOptionClicked()
-          redirectToServerACMIDMLogin(location, openInNewTab)
+          onOptionClicked();
+          redirectToServerACMIDMLogin(location, openInNewTab);
         }}
       />,
 
@@ -106,8 +106,8 @@ export const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
           'authentication/components/login-options___inloggen-met-smartschool',
         )}
         onClick={() => {
-          onOptionClicked()
-          redirectToServerSmartschoolLogin(location, openInNewTab)
+          onOptionClicked();
+          redirectToServerSmartschoolLogin(location, openInNewTab);
         }}
       />,
 
@@ -123,12 +123,12 @@ export const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
           'authentication/components/login-options___inloggen-met-klas-cement',
         )}
         onClick={() => {
-          onOptionClicked()
-          redirectToServerKlascementLogin(location, openInNewTab)
+          onOptionClicked();
+          redirectToServerKlascementLogin(location, openInNewTab);
         }}
       />,
-    ]
-  }
+    ];
+  };
 
   return getButtons()?.map((button) => (
     <Spacer
@@ -137,5 +137,5 @@ export const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
     >
       {button}
     </Spacer>
-  ))
-}
+  ));
+};

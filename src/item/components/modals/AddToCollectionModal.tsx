@@ -17,7 +17,7 @@ import {
   ToolbarItem,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+
 import { once } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -43,10 +43,17 @@ import { VideoStillService } from '../../../shared/services/video-stills-service
 import { ItemVideoDescription } from '../ItemVideoDescription';
 
 import './AddToCollectionModal.scss';
+import {
+  AvoCollectionCollection,
+  AvoCollectionFragment,
+  AvoCoreBlockItemType,
+  AvoItemItem,
+  AvoSearchOrderDirection,
+} from '@viaa/avo2-types';
 
 interface AddToCollectionModalProps {
   externalId: string;
-  itemMetaData: Avo.Item.Item;
+  itemMetaData: AvoItemItem;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -64,14 +71,14 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
     useState<boolean>(false);
   const [selectedCollectionId, setSelectedCollectionId] = useState<string>('');
   const [selectedCollection, setSelectedCollection] =
-    useState<Avo.Collection.Collection | null>(null);
+    useState<AvoCollectionCollection | null>(null);
   const [newCollectionTitle, setNewCollectionTitle] = useState<string>('');
   const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
   const [fragmentEndTime, setFragmentEndTime] = useState<number>(
     toSeconds(itemMetaData.duration) || 0,
   );
   const [collections, setCollections] = useState<
-    Partial<Avo.Collection.Collection>[]
+    Partial<AvoCollectionCollection>[]
   >([]);
 
   const fetchCollections = useCallback(
@@ -80,7 +87,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
         commonUser,
         0,
         500,
-        { created_at: Avo.Search.OrderDirection.DESC },
+        { created_at: AvoSearchOrderDirection.DESC },
         ContentTypeNumber.collection,
         undefined,
         undefined,
@@ -99,7 +106,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
           },
         ],
       )
-        .then((collectionTitles: Partial<Avo.Collection.Collection>[]) => {
+        .then((collectionTitles: Partial<AvoCollectionCollection>[]) => {
           setCollections(collectionTitles);
         })
         .catch((err) => {
@@ -166,8 +173,8 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
   };
 
   const getFragment = async (
-    collection: Partial<Avo.Collection.Collection>,
-  ): Promise<Partial<Avo.Collection.Fragment>> => {
+    collection: Partial<AvoCollectionCollection>,
+  ): Promise<Partial<AvoCollectionFragment>> => {
     const hasCut =
       fragmentEndTime !== toSeconds(itemMetaData.duration) ||
       fragmentStartTime !== 0;
@@ -182,7 +189,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
       custom_description: null,
       collection_uuid: collection.id,
       item_meta: itemMetaData,
-      type: Avo.Core.BlockItemType.ITEM,
+      type: AvoCoreBlockItemType.ITEM,
       thumbnail_path: fragmentStartTime
         ? await VideoStillService.getVideoStill(
             externalId,
@@ -194,7 +201,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
   };
 
   const addItemToExistingCollection = async (
-    collection: Partial<Avo.Collection.Collection>,
+    collection: Partial<AvoCollectionCollection>,
   ) => {
     // Disable apply button
     setIsProcessing(true);
@@ -207,7 +214,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
       delete fragment.item_meta;
       fragment.position = collection.collection_fragments?.length || 0;
       await CollectionService.insertFragments(collection.id as string, [
-        fragment as Avo.Collection.Fragment,
+        fragment as AvoCollectionFragment,
       ]);
       ToastService.success(
         tHtml(
@@ -240,7 +247,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
     // Disable "Toepassen" button
     setIsProcessing(true);
 
-    let newCollection: Partial<Avo.Collection.Collection> | null = null;
+    let newCollection: Partial<AvoCollectionCollection> | null = null;
     try {
       // Create new collection with one fragment in it
       newCollection = {
@@ -255,13 +262,13 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
           await VideoStillService.getThumbnailForSubject({
             thumbnail_path: undefined,
             collection_fragments: [
-              (await getFragment(newCollection)) as Avo.Collection.Fragment,
+              (await getFragment(newCollection)) as AvoCollectionFragment,
             ],
           });
       } catch (err) {
         console.error('Failed to find cover image for new collection', err, {
           collectionFragments: [
-            (await getFragment(newCollection)) as Avo.Collection.Fragment,
+            (await getFragment(newCollection)) as AvoCollectionFragment,
           ],
         });
       }
@@ -272,7 +279,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
         newCollection.is_managed = true;
       }
 
-      const insertedCollection: Partial<Avo.Collection.Collection> =
+      const insertedCollection: Partial<AvoCollectionCollection> =
         await CollectionService.insertCollection(newCollection);
 
       trackEvents(
@@ -313,7 +320,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
     ? addItemToNewCollection
     : () =>
         addItemToExistingCollection(
-          selectedCollection as Partial<Avo.Collection.Collection>,
+          selectedCollection as Partial<AvoCollectionCollection>,
         );
 
   const handleCollectionTitleChange = (title: string) => {
@@ -434,7 +441,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
                                 },
                                 ...collections.map(
                                   (
-                                    collection: Partial<Avo.Collection.Collection>,
+                                    collection: Partial<AvoCollectionCollection>,
                                   ) => ({
                                     label: collection.title || '',
                                     value: String(collection.id),

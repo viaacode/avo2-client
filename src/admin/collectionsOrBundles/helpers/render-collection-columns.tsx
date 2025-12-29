@@ -5,12 +5,18 @@ import {
   TagList,
   type TagOption,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+
+import {
+  AvoCollectionCollection,
+  AvoShareEditStatusResponse,
+  AvoUserCommonUser,
+  AvoUserProfile,
+  AvoUserUser,
+} from '@viaa/avo2-types';
 import { isBefore } from 'date-fns';
 import { compact } from 'es-toolkit';
 import { type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import {
@@ -53,13 +59,13 @@ const getDisplayTextForManagementStatus = (
 };
 
 export function renderCollectionsOrBundlesOverviewCellReact(
-  collectionOrBundle: Partial<Avo.Collection.Collection>,
+  collectionOrBundle: Partial<AvoCollectionCollection>,
   columnId: CollectionsOrBundlesOverviewTableCols,
   info: {
     isCollection: boolean;
     allQualityLabels: QualityLabel[];
-    editStatuses: Avo.Share.EditStatusResponse;
-    commonUser: Avo.User.CommonUser | null;
+    editStatuses: AvoShareEditStatusResponse;
+    commonUser: AvoUserCommonUser | null;
   },
 ): ReactNode {
   const editLink = buildLink(
@@ -168,13 +174,13 @@ export function renderCollectionsOrBundlesOverviewCellReact(
 }
 
 export function renderCollectionsOrBundlesOverviewCellText(
-  collectionOrBundle: Partial<Avo.Collection.Collection>,
+  collectionOrBundle: Partial<AvoCollectionCollection>,
   columnId: CollectionsOrBundlesOverviewTableCols,
   info: {
     isCollection: boolean;
     allQualityLabels: QualityLabel[];
-    editStatuses: Avo.Share.EditStatusResponse;
-    commonUser: Avo.User.CommonUser | null;
+    editStatuses: AvoShareEditStatusResponse;
+    commonUser: AvoUserCommonUser | null;
   },
 ): string {
   switch (columnId) {
@@ -190,13 +196,13 @@ export function renderCollectionsOrBundlesOverviewCellText(
 }
 
 export function renderCollectionsOrBundleActualisationCellReact(
-  collectionOrBundle: Partial<Avo.Collection.Collection>,
+  collectionOrBundle: Partial<AvoCollectionCollection>,
   columnId: CollectionOrBundleActualisationOverviewTableCols,
   info: {
     isCollection: boolean;
     allQualityLabels: QualityLabel[];
-    editStatuses: Avo.Share.EditStatusResponse;
-    commonUser: Avo.User.CommonUser | null;
+    editStatuses: AvoShareEditStatusResponse;
+    commonUser: AvoUserCommonUser | null;
   },
 ) {
   const editLink = buildLink(
@@ -267,13 +273,13 @@ export function renderCollectionsOrBundleActualisationCellReact(
 }
 
 export function renderCollectionsOrBundleActualisationCellText(
-  collectionOrBundle: Partial<Avo.Collection.Collection>,
+  collectionOrBundle: Partial<AvoCollectionCollection>,
   columnId: CollectionOrBundleActualisationOverviewTableCols,
   info: {
     isCollection: boolean;
     allQualityLabels: QualityLabel[];
-    editStatuses: Avo.Share.EditStatusResponse;
-    commonUser: Avo.User.CommonUser | null;
+    editStatuses: AvoShareEditStatusResponse;
+    commonUser: AvoUserCommonUser | null;
   },
 ) {
   switch (columnId) {
@@ -290,13 +296,13 @@ export function renderCollectionsOrBundleActualisationCellText(
 }
 
 export function renderCollectionOrBundleQualityCheckCellReact(
-  collectionOrBundle: Partial<Avo.Collection.Collection>,
+  collectionOrBundle: Partial<AvoCollectionCollection>,
   columnId: CollectionOrBundleQualityCheckOverviewTableCols,
   info: {
     isCollection: boolean;
     allQualityLabels: QualityLabel[];
-    editStatuses: Avo.Share.EditStatusResponse;
-    commonUser: Avo.User.CommonUser | null;
+    editStatuses: AvoShareEditStatusResponse;
+    commonUser: AvoUserCommonUser | null;
   },
 ): ReactNode {
   const editLink = buildLink(
@@ -367,13 +373,13 @@ export function renderCollectionOrBundleQualityCheckCellReact(
 }
 
 export function renderCollectionOrBundleQualityCheckCellText(
-  collectionOrBundle: Partial<Avo.Collection.Collection>,
+  collectionOrBundle: Partial<AvoCollectionCollection>,
   columnId: CollectionOrBundleQualityCheckOverviewTableCols,
   info: {
     isCollection: boolean;
     allQualityLabels: QualityLabel[];
-    editStatuses: Avo.Share.EditStatusResponse;
-    commonUser: Avo.User.CommonUser | null;
+    editStatuses: AvoShareEditStatusResponse;
+    commonUser: AvoUserCommonUser | null;
   },
 ): string {
   switch (columnId) {
@@ -390,13 +396,13 @@ export function renderCollectionOrBundleQualityCheckCellText(
 }
 
 export function renderCollectionsOrBundlesMarcomCellReact(
-  collectionOrBundle: Partial<Avo.Collection.Collection>,
+  collectionOrBundle: Partial<AvoCollectionCollection>,
   columnId: CollectionOrBundleMarcomOverviewTableCols,
   info: {
     isCollection: boolean;
     allQualityLabels: QualityLabel[];
-    editStatuses: Avo.Share.EditStatusResponse;
-    commonUser: Avo.User.CommonUser | null;
+    editStatuses: AvoShareEditStatusResponse;
+    commonUser: AvoUserCommonUser | null;
   },
 ): ReactNode {
   const editLink = buildLink(
@@ -464,13 +470,13 @@ export function renderCollectionsOrBundlesMarcomCellReact(
 }
 
 export function renderCollectionsOrBundlesMarcomCellText(
-  collectionOrBundle: Partial<Avo.Collection.Collection>,
+  collectionOrBundle: Partial<AvoCollectionCollection>,
   columnId: CollectionOrBundleMarcomOverviewTableCols,
   info: {
     isCollection: boolean;
     allQualityLabels: QualityLabel[];
-    editStatuses: Avo.Share.EditStatusResponse;
-    commonUser: Avo.User.CommonUser | null;
+    editStatuses: AvoShareEditStatusResponse;
+    commonUser: AvoUserCommonUser | null;
   },
 ): string {
   switch (columnId) {
@@ -487,18 +493,18 @@ export function renderCollectionsOrBundlesMarcomCellText(
 }
 
 export function renderCollectionCellReact(
-  collection: Partial<Avo.Collection.Collection>,
+  collection: Partial<AvoCollectionCollection>,
   columnId: CollectionTableColumns,
   info: {
     isCollection: boolean;
     allQualityLabels: QualityLabel[];
-    editStatuses: Avo.Share.EditStatusResponse;
-    commonUser: Avo.User.CommonUser | null;
+    editStatuses: AvoShareEditStatusResponse;
+    commonUser: AvoUserCommonUser | null;
   },
 ): ReactNode {
   switch (columnId) {
     case 'owner_profile_id': {
-      const user: Avo.User.User | undefined =
+      const user: AvoUserUser | undefined =
         collection?.profile?.user || collection?.owner;
       return user ? truncateTableValue((user as any).full_name) : '-';
     }
@@ -507,8 +513,8 @@ export function renderCollectionCellReact(
       return (
         getUserGroupLabel(
           (collection?.profile || collection?.owner) as
-            | Avo.User.Profile
-            | { profile: Avo.User.Profile }
+            | AvoUserProfile
+            | { profile: AvoUserProfile }
             | undefined,
         ) || '-'
       );
@@ -731,18 +737,18 @@ export function renderCollectionCellReact(
 }
 
 export function renderCollectionCellText(
-  collection: Partial<Avo.Collection.Collection>,
+  collection: Partial<AvoCollectionCollection>,
   columnId: CollectionTableColumns,
   info: {
     isCollection: boolean;
     allQualityLabels: QualityLabel[];
-    editStatuses: Avo.Share.EditStatusResponse;
-    commonUser: Avo.User.CommonUser | null;
+    editStatuses: AvoShareEditStatusResponse;
+    commonUser: AvoUserCommonUser | null;
   },
 ): string {
   switch (columnId) {
     case 'owner_profile_id': {
-      const user: Avo.User.User | undefined =
+      const user: AvoUserUser | undefined =
         collection?.profile?.user || collection?.owner;
       return user ? (user as any).full_name : '';
     }
@@ -751,8 +757,8 @@ export function renderCollectionCellText(
       return (
         getUserGroupLabel(
           (collection?.profile || collection?.owner) as
-            | Avo.User.Profile
-            | { profile: Avo.User.Profile }
+            | AvoUserProfile
+            | { profile: AvoUserProfile }
             | undefined,
         ) || ''
       );

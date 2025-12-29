@@ -65,9 +65,9 @@ async function createServer() {
   });
 
   app.listen(process.env.PORT);
-  console.log(`Server is listening on http://localhost:${process.env.PORT}`);
+  console.info(`Client is listening on http://localhost:${process.env.PORT}`);
 }
 
 createServer().catch((err) => {
-  console.error('failed to start server: ', err);
+  console.error('failed to start client: ', err);
 });

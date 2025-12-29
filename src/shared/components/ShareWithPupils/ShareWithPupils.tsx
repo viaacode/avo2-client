@@ -5,10 +5,10 @@ import {
   IconName,
   Spacer,
   TextInput,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { type FC } from 'react'
+} from '@viaa/avo2-components';
+
+import { clsx } from 'clsx';
+import { type FC } from 'react';
 
 import { APP_PATH } from '../../../constants';
 import { buildLink } from '../../helpers/build-link';
@@ -18,20 +18,21 @@ import { tText } from '../../helpers/translate-text';
 import { useAssignmentPastDeadline } from '../../hooks/useAssignmentPastDeadline';
 import { ToastService } from '../../services/toast-service';
 
-import './ShareWithPupils.scss'
+import './ShareWithPupils.scss';
+import { AvoAssignmentAssignment } from '@viaa/avo2-types';
 
 export type ShareWithPupilsProps = {
-  assignment?: Avo.Assignment.Assignment
-  onDetailLinkClicked?: () => void
-  onContentLinkClicked?: () => void
-}
+  assignment?: AvoAssignmentAssignment;
+  onDetailLinkClicked?: () => void;
+  onContentLinkClicked?: () => void;
+};
 
 export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
   assignment,
   onDetailLinkClicked,
   onContentLinkClicked,
 }) => {
-  const isAssignmentExpired = useAssignmentPastDeadline(assignment)
+  const isAssignmentExpired = useAssignmentPastDeadline(assignment);
 
   // Computed
   const assignmentShareLink: string = assignment
@@ -39,34 +40,34 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
       buildLink(APP_PATH.ASSIGNMENT_RESPONSE_DETAIL.route, {
         id: assignment.id,
       })
-    : ''
+    : '';
 
   // https://meemoo.atlassian.net/browse/AVO-2819
   // https://meemoo.atlassian.net/browse/AVO-2051
   const isAssignmentDetailsComplete =
-    !!assignment?.available_at && !!assignment?.deadline_at
+    !!assignment?.available_at && !!assignment?.deadline_at;
 
-  const hasAssignmentContent = !!assignment?.blocks?.length
+  const hasAssignmentContent = !!assignment?.blocks?.length;
 
   const canCopy =
-    !isAssignmentExpired && hasAssignmentContent && isAssignmentDetailsComplete
+    !isAssignmentExpired && hasAssignmentContent && isAssignmentDetailsComplete;
 
   const handleCopyButtonClicked = () => {
-    copyToClipboard(assignmentShareLink)
+    copyToClipboard(assignmentShareLink);
     ToastService.success(
       tHtml(
         'assignment/components/share-assignment-with-pupil___de-link-is-naar-je-klembord-gekopieerd',
       ),
-    )
-  }
+    );
+  };
 
   const handleContentLinkClicked = () => {
-    onContentLinkClicked?.()
-  }
+    onContentLinkClicked?.();
+  };
 
   const handleDetailLinkClicked = () => {
-    onDetailLinkClicked?.()
-  }
+    onDetailLinkClicked?.();
+  };
 
   const determineAlertContent = () => {
     if (canCopy) {
@@ -79,7 +80,7 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
             )}
           </p>
         ),
-      }
+      };
     }
 
     if (isAssignmentExpired) {
@@ -94,7 +95,7 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
             )}
           </p>
         ),
-      }
+      };
     }
 
     if (!hasAssignmentContent) {
@@ -117,7 +118,7 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
             {'.'}
           </p>
         ),
-      }
+      };
     }
 
     if (!isAssignmentDetailsComplete) {
@@ -141,17 +142,17 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
               tText('assignment/components/share-assignment-with-pupil___aan')}
           </p>
         ),
-      }
+      };
     }
 
     return {
       title: '',
       content: '',
-    }
-  }
+    };
+  };
 
   const renderAlert = () => {
-    const { title, content } = determineAlertContent()
+    const { title, content } = determineAlertContent();
 
     return (
       (title || content) && (
@@ -172,8 +173,8 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
           />
         </>
       )
-    )
-  }
+    );
+  };
   return (
     <div
       className={clsx('c-share-with-pupil', {
@@ -194,5 +195,5 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
       </Flex>
       {renderAlert()}
     </div>
-  )
-}
+  );
+};

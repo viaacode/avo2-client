@@ -53,7 +53,6 @@ export async function fetchCollectionLoader(args: LoaderFunctionArgs<any>) {
           CollectionOrBundle.COLLECTION,
           undefined,
         );
-      console.log('Collection info', id, JSON.stringify(collection));
       return {
         collection,
       };

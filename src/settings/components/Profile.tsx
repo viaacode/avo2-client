@@ -14,7 +14,16 @@ import {
   TextArea,
   TextInput,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoEducationOrganizationOrganization,
+  AvoFileUploadAssetType,
+  AvoLomLom,
+  AvoLomLomField,
+  AvoOrganizationOrganization,
+  AvoUserProfile,
+  AvoUserUpdateProfileValues,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { compact, isNil } from 'es-toolkit';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { stringifyUrl } from 'query-string';
@@ -71,9 +80,9 @@ export const Profile: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);
   const getLoginState = useSetAtom(getLoginStateAtom);
   const [selectedOrganisations, setSelectedOrganisations] = useState<
-    Avo.EducationOrganization.Organization[]
+    AvoEducationOrganizationOrganization[]
   >(commonUser?.educationalOrganisations || []);
-  const [selectedLoms, setSelectedLoms] = useState<Avo.Lom.LomField[]>(
+  const [selectedLoms, setSelectedLoms] = useState<AvoLomLomField[]>(
     compact(commonUser?.loms.map((lom) => lom.lom)),
   );
 
@@ -88,7 +97,7 @@ export const Profile: FC = () => {
   const [bio, setBio] = useState<string | null>(commonUser?.bio || null);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [allOrganisations, setAllOrganisations] = useState<
-    Partial<Avo.Organization.Organization>[] | null
+    Partial<AvoOrganizationOrganization>[] | null
   >(null);
   const [companyId, setCompanyId] = useState<string | null>(
     commonUser?.companyId || null,
@@ -97,10 +106,10 @@ export const Profile: FC = () => {
     null,
   );
   const [profileErrors, setProfileErrors] = useState<
-    Partial<{ [prop in keyof Avo.User.UpdateProfileValues]: string }>
+    Partial<{ [prop in keyof AvoUserUpdateProfileValues]: string }>
   >({});
   const [usersInSameCompany, setUsersInSameCompany] = useState<
-    Partial<Avo.User.Profile>[]
+    Partial<AvoUserProfile>[]
   >([]);
 
   const isExceptionAccount = commonUser?.isException || false;
@@ -237,7 +246,7 @@ export const Profile: FC = () => {
   }, [uiPermissions, commonUser, setAllOrganisations]);
 
   const areRequiredFieldsFilledIn = (
-    profileInfo: Partial<Avo.User.UpdateProfileValues>,
+    profileInfo: Partial<AvoUserUpdateProfileValues>,
   ) => {
     if (!uiPermissions) {
       return false;
@@ -304,7 +313,7 @@ export const Profile: FC = () => {
     try {
       setIsSaving(true);
       const profileId: string = commonUser?.profileId;
-      const newProfileInfo: Partial<Avo.User.UpdateProfileValues> = {
+      const newProfileInfo: Partial<AvoUserUpdateProfileValues> = {
         firstName,
         lastName,
         alias,
@@ -457,7 +466,7 @@ export const Profile: FC = () => {
   };
 
   const renderUsersInSameCompanyTableCell = (
-    profile: Partial<Avo.User.Profile>,
+    profile: Partial<AvoUserProfile>,
     columnId: UsersInSameCompanyColumn,
   ) => {
     switch (columnId) {
@@ -586,7 +595,7 @@ export const Profile: FC = () => {
                             )}
                             urls={compact([avatar])}
                             allowMulti={false}
-                            assetType="PROFILE_AVATAR"
+                            assetType={AvoFileUploadAssetType.PROFILE_AVATAR}
                             ownerId={commonUser?.profileId}
                             onChange={(urls) => setAvatar(urls[0])}
                           />
@@ -628,7 +637,7 @@ export const Profile: FC = () => {
                             (lomField) =>
                               ({
                                 lom: lomField,
-                              }) as Avo.Lom.Lom,
+                              }) as AvoLomLom,
                           ),
                           id: commonUser.profileId,
                         }}

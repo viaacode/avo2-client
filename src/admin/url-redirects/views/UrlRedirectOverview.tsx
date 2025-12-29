@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';

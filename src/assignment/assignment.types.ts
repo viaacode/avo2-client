@@ -1,14 +1,13 @@
 import { type TableColumn } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
 
+import { AvoAssignmentBlock, AvoAssignmentResponse, AvoCoreBlockItemBase, AvoSearchOrderDirection, } from '@viaa/avo2-types';
 import { type FilterState } from '../search/search.types';
 import { type Lookup_Enum_Colors_Enum } from '../shared/generated/graphql-db-types';
 import { type ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list';
 import type { TableColumnDataType } from '../shared/types/table-column-data-type';
-
 import { type AssignmentBlockItemDescriptionType } from './components/AssignmentBlockDescriptionButtons';
 
-export type PupilCollectionFragment = Avo.Core.BlockItemBase & {
+export type PupilCollectionFragment = AvoCoreBlockItemBase & {
   fragment_id?: string | null;
   assignment_response_id: any;
 };
@@ -99,7 +98,7 @@ export interface AssignmentLabelColor {
 /// Zoek & bouw
 
 export type AssignmentResponseFormState = Pick<
-  Avo.Assignment.Response,
+  AvoAssignmentResponse,
   'collection_title' | 'id'
 > & {
   pupil_collection_blocks: Omit<PupilCollectionFragment, 'item_meta'>[]; // avoid circular reference ts error
@@ -117,8 +116,8 @@ export interface EditBlockProps {
   onFocus?: () => void;
 }
 
-export type EditableAssignmentBlock = Avo.Assignment.Block &
-  Pick<Avo.Core.BlockItemBase, 'item_meta'> &
+export type EditableAssignmentBlock = AvoAssignmentBlock &
+  Pick<AvoCoreBlockItemBase, 'item_meta'> &
   EditableBlockFields;
 
 export enum AssignmentAction {
@@ -135,7 +134,7 @@ export enum AssignmentAction {
 export interface FetchAssignmentsParams {
   pastDeadline: boolean | null;
   sortColumn: AssignmentTableColumns;
-  sortOrder: Avo.Search.OrderDirection;
+  sortOrder: AvoSearchOrderDirection;
   tableColumnDataType: TableColumnDataType;
   offset: number;
   limit?: number | null;

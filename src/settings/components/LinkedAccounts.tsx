@@ -10,7 +10,7 @@ import {
   IconName,
   Spacer,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+
 import { useAtomValue } from 'jotai';
 import {
   type Dispatch,
@@ -26,12 +26,13 @@ import { commonUserAtom } from '../../authentication/authentication.store';
 import {
   redirectToServerLinkAccount,
   redirectToServerUnlinkAccount,
-} from '../../authentication/helpers/redirects';
+} from '../../authentication/helpers/redirects/redirects';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { isPupil } from '../../shared/helpers/is-pupil';
 
 import './LinkedAccounts.scss';
+import { AvoAuthIdpType } from '@viaa/avo2-types';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
@@ -114,9 +115,9 @@ export const LinkedAccounts: FC = () => {
     },
   };
 
-  const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
+  const renderIdpLinkControls = (idpType: AvoAuthIdpType) => {
     let linked = !!(commonUser?.idps as any)?.[idpType];
-    if (!linked && idpType === Avo.Auth.IdpType.VLAAMSEOVERHEID__SUB_ID) {
+    if (!linked && idpType === AvoAuthIdpType.VLAAMSEOVERHEID__SUB_ID) {
       linked = !!commonUser?.idps?.VLAAMSEOVERHEID__ACCOUNT_ID;
     }
     const baseIdp = idpType.split('__')[0];
@@ -256,15 +257,11 @@ export const LinkedAccounts: FC = () => {
                   {/* Previously disabled for pupils due to https://meemoo.atlassian.net/browse/AVO-2062 */}
                   <div>
                     {renderIdpLinkControls(
-                      Avo.Auth.IdpType.VLAAMSEOVERHEID__SUB_ID,
+                      AvoAuthIdpType.VLAAMSEOVERHEID__SUB_ID,
                     )}
                   </div>
-                  <div>
-                    {renderIdpLinkControls(Avo.Auth.IdpType.SMARTSCHOOL)}
-                  </div>
-                  <div>
-                    {renderIdpLinkControls(Avo.Auth.IdpType.KLASCEMENT)}
-                  </div>
+                  <div>{renderIdpLinkControls(AvoAuthIdpType.SMARTSCHOOL)}</div>
+                  <div>{renderIdpLinkControls(AvoAuthIdpType.KLASCEMENT)}</div>
                 </FormGroup>
               </Form>
             </Column>

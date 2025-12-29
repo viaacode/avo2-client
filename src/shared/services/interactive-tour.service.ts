@@ -1,37 +1,35 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
-import { type Avo } from '@viaa/avo2-types'
-import { compact, last, uniqBy } from 'es-toolkit'
-import queryString from 'query-string'
-
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
+import { AvoInteractiveTourStep } from '@viaa/avo2-types';
+import { compact, last, uniqBy } from 'es-toolkit';
+import { findLast } from 'es-toolkit/compat';
+import queryString from 'query-string';
 import { type APP_PATH } from '../../constants';
 import { CustomError } from '../helpers/custom-error';
 import { getEnv } from '../helpers/env';
-
 import { type GetInteractiveTourResponse } from './interactive-tour.types';
 import { NotificationService } from './notification-service';
-import { findLast } from 'es-toolkit/compat'
 
-const INTERACTIVE_TOUR_LATER_COOLDOWN_PERIOD = 2 * 7 * 24 * 60 * 60 * 1000 // 2 weeks
+const INTERACTIVE_TOUR_LATER_COOLDOWN_PERIOD = 2 * 7 * 24 * 60 * 60 * 1000; // 2 weeks
 
 export interface TourInfo {
-  id: number
-  steps: Avo.InteractiveTour.Step[]
-  seen: boolean
+  id: number;
+  steps: AvoInteractiveTourStep[];
+  seen: boolean;
 }
 
 export class InteractiveTourService {
-  private static routeIds: string[] | null
+  private static routeIds: string[] | null;
 
   public static async fetchInteractiveTourRouteIds(): Promise<string[]> {
     try {
       if (!this.routeIds) {
         InteractiveTourService.routeIds = await fetchWithLogoutJson(
           `${getEnv('PROXY_URL')}/interactive-tours/route-ids`,
-        )
+        );
       }
-      return InteractiveTourService.routeIds as string[]
+      return InteractiveTourService.routeIds as string[];
     } catch (err) {
-      throw new CustomError('Failed to get interactive tour route ids', err)
+      throw new CustomError('Failed to get interactive tour route ids', err);
     }
   }
 
@@ -51,11 +49,11 @@ export class InteractiveTourService {
   ): Promise<TourInfo | null> {
     try {
       const response: GetInteractiveTourResponse =
-        await this.fetchInteractiveTourFromProxy(routeId, profileId)
-      const tours: Partial<TourInfo>[] = response.app_interactive_tour ?? null
+        await this.fetchInteractiveTourFromProxy(routeId, profileId);
+      const tours: Partial<TourInfo>[] = response.app_interactive_tour ?? null;
 
       const seenStatuses: { key: string; through_platform: boolean }[] =
-        this.getSeenStatuses(routeId, response)
+        this.getSeenStatuses(routeId, response);
 
       // Convert seen statuses from database notification table to a dictionary lookup with:
       // key: id of the tour (string)
@@ -65,8 +63,10 @@ export class InteractiveTourService {
           seenStatuses.map((seenStatus) => {
             try {
               // When user clicks on "later" the tour is not shown for 2 weeks
-              const tourId: string = last(seenStatus.key.split('___')) as string
-              return [tourId, !seenStatus.through_platform]
+              const tourId: string = last(
+                seenStatus.key.split('___'),
+              ) as string;
+              return [tourId, !seenStatus.through_platform];
             } catch (err) {
               console.error(
                 new CustomError(
@@ -74,12 +74,12 @@ export class InteractiveTourService {
                   err,
                   { seenStatus },
                 ),
-              )
-              return null // last part isn't a valid number
+              );
+              return null; // last part isn't a valid number
             }
           }),
         ),
-      )
+      );
 
       // Convert last display dates from local storage to a dictionary lookup with:
       // key: id of the tour (string)
@@ -89,34 +89,34 @@ export class InteractiveTourService {
       //        if date is stored and older than 2 weeks => show: true
       const tourPostponeStatuses = Object.fromEntries(
         tours.map((tour: Partial<TourInfo>) => {
-          const tourId = String(tour.id as number)
+          const tourId = String(tour.id as number);
           const showBasedOnDate =
             !tourLaterDates[tourId] ||
             new Date(tourLaterDates[tourId]).getTime() <
-              new Date().getTime() - INTERACTIVE_TOUR_LATER_COOLDOWN_PERIOD
-          return [tourId, showBasedOnDate]
+              new Date().getTime() - INTERACTIVE_TOUR_LATER_COOLDOWN_PERIOD;
+          return [tourId, showBasedOnDate];
         }),
-      )
+      );
 
       // Combine tourSeenStatuses and tourPostponeStatuses to figure out first tour that should be shown that has steps
       const firstUnseenTour: Partial<TourInfo> | undefined = tours.find(
         (tour) => {
-          const tourId = String(tour.id as number)
+          const tourId = String(tour.id as number);
           return (
             !tourSeenStatuses[tourId] &&
             tourPostponeStatuses[tourId] &&
             tour.steps &&
             tour.steps.length
-          )
+          );
         },
-      )
+      );
 
       // Return the first tour the user hasn't seen before
       if (firstUnseenTour) {
         return {
           ...firstUnseenTour,
           seen: false,
-        } as TourInfo
+        } as TourInfo;
       }
 
       // If all tours have been seen, return the last tour the user has seen already,
@@ -124,16 +124,16 @@ export class InteractiveTourService {
       const lastSeenTour = findLast(
         tours,
         (tour) => tour.steps && tour.steps.length,
-      ) as Partial<TourInfo> | undefined
+      ) as Partial<TourInfo> | undefined;
 
       if (lastSeenTour) {
         return {
           ...lastSeenTour,
           seen: true,
-        } as TourInfo
+        } as TourInfo;
       }
 
-      return null
+      return null;
     } catch (err) {
       throw new CustomError(
         'Failed to get interactive tour from the proxy',
@@ -142,7 +142,7 @@ export class InteractiveTourService {
           routeId,
           profileId,
         },
-      )
+      );
     }
   }
 
@@ -156,18 +156,18 @@ export class InteractiveTourService {
           routeId,
           profileId,
         })}`,
-      )
+      );
       if (!response) {
-        throw new Error('Re')
+        throw new Error('Re');
       }
 
-      return response
+      return response;
     } catch (err) {
       throw new CustomError(
         'Failed to get interactive tour and seen statuses by route id from proxy',
         err,
         { routeId, profileId },
-      )
+      );
     }
   }
 
@@ -183,14 +183,14 @@ export class InteractiveTourService {
     response: GetInteractiveTourResponse,
   ): { key: string; through_platform: boolean }[] {
     const seenStatuses: { key: string; through_platform: boolean }[] =
-      response.users_notifications || []
-    const seenTourKeyPrefix = `INTERACTIVE-TOUR___${routeId}___`
+      response.users_notifications || [];
+    const seenTourKeyPrefix = `INTERACTIVE-TOUR___${routeId}___`;
     Object.keys(localStorage || {}).forEach((key: string) => {
       if (key?.startsWith(seenTourKeyPrefix)) {
-        seenStatuses.push({ key, through_platform: false })
+        seenStatuses.push({ key, through_platform: false });
       }
-    })
-    return uniqBy(seenStatuses, (status) => status.key)
+    });
+    return uniqBy(seenStatuses, (status) => status.key);
   }
 
   /**
@@ -205,18 +205,18 @@ export class InteractiveTourService {
     interactiveTourId: number,
   ): Promise<void> {
     try {
-      const key = `INTERACTIVE-TOUR___${routeId}___${interactiveTourId}`
+      const key = `INTERACTIVE-TOUR___${routeId}___${interactiveTourId}`;
       if (profileId) {
-        await NotificationService.setNotification(key, profileId, false, false)
+        await NotificationService.setNotification(key, profileId, false, false);
       } else if (localStorage) {
-        localStorage.setItem(key, 'seen')
+        localStorage.setItem(key, 'seen');
       }
     } catch (err) {
       throw new CustomError('Failed to mark interactive tour as seen', err, {
         routeId,
         profileId,
         interactiveTourId,
-      })
+      });
     }
   }
 }

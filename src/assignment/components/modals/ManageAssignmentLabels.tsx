@@ -1,4 +1,4 @@
-import { type ColorOption } from '@meemoo/admin-core-ui/admin'
+import { type ColorOption } from '@meemoo/admin-core-ui/admin';
 import {
   Button,
   ButtonToolbar,
@@ -13,12 +13,12 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { useAtomValue } from 'jotai'
-import { compact, intersection, sortBy, without } from 'es-toolkit'
-import { type FC, useCallback, useEffect, useState } from 'react'
+} from '@viaa/avo2-components';
+
+import { clsx } from 'clsx';
+import { compact, intersection, sortBy, without } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import { type FC, useCallback, useEffect, useState } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { ColorSelect } from '../../../shared/components/ColorSelect/ColorSelect';
@@ -33,14 +33,15 @@ import { type AssignmentLabelColor } from '../../assignment.types';
 
 import { getManageAssignmentLabelsTranslations } from './ManageAssignmentLabels.translations';
 
-import './ManageAssignmentLabels.scss'
+import './ManageAssignmentLabels.scss';
+import { AvoAssignmentLabel, AvoAssignmentLabelType } from '@viaa/avo2-types';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 
 export interface ManageAssignmentLabelsProps {
-  isOpen: boolean
-  onClose: () => void
-  type?: Avo.Assignment.LabelType
+  isOpen: boolean;
+  onClose: () => void;
+  type?: AvoAssignmentLabelType;
 }
 
 export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
@@ -48,20 +49,20 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
   onClose,
   type,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [assignmentLabels, setAssignmentLabels] = useState<
-    Avo.Assignment.Label[]
-  >([])
+    AvoAssignmentLabel[]
+  >([]);
   const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<
-    Avo.Assignment.Label[]
-  >([])
+    AvoAssignmentLabel[]
+  >([]);
   const [assignmentLabelColors, setAssignmentLabelColors] = useState<
     AssignmentLabelColor[]
-  >([])
-  const [isProcessing, setIsProcessing] = useState<boolean>(false)
+  >([]);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
-  const profileId = commonUser?.profileId
+  const profileId = commonUser?.profileId;
 
   const fetchAssignmentLabels = useCallback(async () => {
     try {
@@ -69,46 +70,46 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
         const labels = sortBy(
           await AssignmentLabelsService.getLabelsForProfile(profileId, type),
           ['label'],
-        )
-        setAssignmentLabels(labels)
-        setInitialAssignmentLabels(labels)
+        );
+        setAssignmentLabels(labels);
+        setInitialAssignmentLabels(labels);
       }
     } catch (err) {
       console.error(
         new CustomError('Failed to fetch assignment labels for user', err, {
           commonUser,
         }),
-      )
+      );
       ToastService.danger(
         tHtml(
           'assignment/components/modals/manage-assignment-labels___het-ophalen-van-je-labels-is-mislukt',
         ),
-      )
+      );
     }
-  }, [profileId, type, commonUser])
+  }, [profileId, type, commonUser]);
 
   const fetchAssignmentColors = useCallback(async () => {
     try {
-      setAssignmentLabelColors(await AssignmentLabelsService.getLabelColors())
+      setAssignmentLabelColors(await AssignmentLabelsService.getLabelColors());
     } catch (err) {
       console.error(
         new CustomError('Failed to fetch assignment label colors', err),
-      )
+      );
       ToastService.danger(
         tHtml(
           'assignment/components/modals/manage-assignment-labels___het-ophalen-van-je-label-kleuren-is-mislukt',
         ),
-      )
+      );
     }
-  }, [setAssignmentLabelColors])
+  }, [setAssignmentLabelColors]);
 
   useEffect(() => {
     if (isOpen) {
       // Fetch labels and colors when modal opens
-      fetchAssignmentLabels()
-      fetchAssignmentColors()
+      fetchAssignmentLabels();
+      fetchAssignmentColors();
     }
-  }, [fetchAssignmentLabels, fetchAssignmentColors, isOpen])
+  }, [fetchAssignmentLabels, fetchAssignmentColors, isOpen]);
 
   const handleAddLabelClick = () => {
     setAssignmentLabels([
@@ -120,47 +121,49 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
         owner_profile_id: profileId as string,
         color_override: null,
         enum_color: assignmentLabelColors[0],
-        type: type || Avo.Assignment.LabelType.LABEL,
+        type: type || AvoAssignmentLabelType.LABEL,
       },
-    ])
-  }
+    ]);
+  };
 
   const handleRowColorChanged = (
-    assignmentLabel: Avo.Assignment.Label,
+    assignmentLabel: AvoAssignmentLabel,
     newColor?: ColorOption,
   ) => {
     if (!newColor) {
-      return
+      return;
     }
-    assignmentLabel.color_enum_value = (newColor as AssignmentLabelColor).value
-    setAssignmentLabels([...assignmentLabels])
-  }
+    assignmentLabel.color_enum_value = (newColor as AssignmentLabelColor).value;
+    setAssignmentLabels([...assignmentLabels]);
+  };
 
   const handleRowLabelChanged = (
-    assignmentLabel: Avo.Assignment.Label,
+    assignmentLabel: AvoAssignmentLabel,
     newLabel: string,
   ) => {
-    assignmentLabel.label = newLabel
-    setAssignmentLabels([...assignmentLabels])
-  }
+    assignmentLabel.label = newLabel;
+    setAssignmentLabels([...assignmentLabels]);
+  };
 
   const handleRowDelete = (id: string) => {
     setAssignmentLabels([
       ...assignmentLabels.filter((labelObj) => labelObj.id !== id),
-    ])
-  }
+    ]);
+  };
 
-  const labelsExceedMaxLength = (labels: Avo.Assignment.Label[]) => {
+  const labelsExceedMaxLength = (labels: AvoAssignmentLabel[]) => {
     return !labels.find(
       (label) => (label.label?.length || 0) > MAX_LABEL_LENGTH,
-    )
-  }
+    );
+  };
 
   const handleSaveLabels = async () => {
     try {
-      setIsProcessing(true)
-      const initialAssignmentLabelIds = initialAssignmentLabels.map((l) => l.id)
-      const updatedAssignmentLabelIds = assignmentLabels.map((l) => l.id)
+      setIsProcessing(true);
+      const initialAssignmentLabelIds = initialAssignmentLabels.map(
+        (l) => l.id,
+      );
+      const updatedAssignmentLabelIds = assignmentLabels.map((l) => l.id);
 
       if (!labelsExceedMaxLength(assignmentLabels)) {
         ToastService.danger(
@@ -170,32 +173,32 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
               maxLength: MAX_LABEL_LENGTH,
             },
           ),
-        )
-        setIsProcessing(false)
-        return
+        );
+        setIsProcessing(false);
+        return;
       }
 
       const newIds = without(
         updatedAssignmentLabelIds,
         ...initialAssignmentLabelIds,
-      )
+      );
       const oldIds = without(
         initialAssignmentLabelIds,
         ...updatedAssignmentLabelIds,
-      )
+      );
       const updatedIds = intersection(
         initialAssignmentLabelIds,
         updatedAssignmentLabelIds,
-      )
+      );
 
       const newLabels = compact(
         newIds.map((newId) => assignmentLabels.find((l) => l.id === newId)),
-      )
+      );
       const updatedLabels = compact(
         updatedIds.map((updatedId) =>
           assignmentLabels.find((l) => l.id === updatedId),
         ),
-      )
+      );
 
       await Promise.all([
         AssignmentLabelsService.insertLabels(
@@ -221,42 +224,42 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
               ),
             ]
           : []),
-      ])
-      onClose()
+      ]);
+      onClose();
       ToastService.success(
-        type === Avo.Assignment.LabelType.LABEL
+        type === AvoAssignmentLabelType.LABEL
           ? tHtml(
               'assignment/components/modals/manage-assignment-labels___de-nieuwe-labels-zijn-opgeslagen',
             )
           : tHtml(
               'assignment/components/modals/manage-assignment-labels___de-nieuwe-klassen-zijn-opgeslagen',
             ),
-      )
+      );
     } catch (err) {
       console.error(
         new CustomError('Failed to save label changes', err, {
           initialAssignmentLabels,
           assignmentLabels,
         }),
-      )
+      );
       ToastService.danger(
         tHtml(
           'assignment/components/modals/manage-assignment-labels___het-opslaan-van-de-labels-is-mislukt',
         ),
-      )
+      );
     }
-    setIsProcessing(false)
-  }
+    setIsProcessing(false);
+  };
 
   const renderCell = (rowData: any, columnId: string) => {
-    const assignmentLabel = rowData as Avo.Assignment.Label
+    const assignmentLabel = rowData as AvoAssignmentLabel;
     const colorOptions: ColorOption[] = assignmentLabelColors.map(
       (assignmentLabelColor) => ({
         label: '',
         value: assignmentLabelColor.value,
         color: assignmentLabelColor.label,
       }),
-    )
+    );
     switch (columnId) {
       case 'color':
         return (
@@ -272,7 +275,7 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
               }
             />
           </Spacer>
-        )
+        );
 
       case 'label':
         return (
@@ -293,7 +296,7 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
               {`${assignmentLabel.label?.length || 0}/${MAX_LABEL_LENGTH}`}
             </label>
           </Spacer>
-        )
+        );
 
       case ACTIONS_TABLE_COLUMN_ID:
         return (
@@ -308,9 +311,9 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
             type="danger-hover"
             icon={IconName.delete}
           />
-        )
+        );
     }
-  }
+  };
 
   return (
     <Modal
@@ -381,5 +384,5 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
         </Toolbar>
       </ModalFooterRight>
     </Modal>
-  )
-}
+  );
+};

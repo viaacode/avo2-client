@@ -1,14 +1,7 @@
-import {
-  Avatar,
-  Flex,
-  Spacer,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { type FC, type ReactNode } from 'react'
+import { Avatar, Flex, Spacer, Tooltip, TooltipContent, TooltipTrigger, } from '@viaa/avo2-components';
+
+import { useAtomValue } from 'jotai';
+import { type FC, type ReactNode } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { getFullName } from '../../helpers/formatters/avatar';
@@ -16,47 +9,48 @@ import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import { ContributorInfoRight } from '../ShareWithColleagues/ShareWithColleagues.types';
 
-import './HeaderOwnerAndContributors.scss'
+import './HeaderOwnerAndContributors.scss';
+import { AvoAssignmentAssignment, AvoAssignmentContributor, AvoCollectionCollection, AvoCollectionContributor, } from '@viaa/avo2-types';
 
 type HeaderOwnerAndContributorsProps = {
-  subject: Partial<Avo.Assignment.Assignment> | Avo.Collection.Collection
-}
+  subject: Partial<AvoAssignmentAssignment> | AvoCollectionCollection;
+};
 
 export const HeaderOwnerAndContributors: FC<
   HeaderOwnerAndContributorsProps
 > = ({ subject }) => {
-  const commonUser = useAtomValue(commonUserAtom)
-  const { contributors, profile: owner } = subject
-  const isOwner = owner?.id === commonUser?.profileId
+  const commonUser = useAtomValue(commonUserAtom);
+  const { contributors, profile: owner } = subject;
+  const isOwner = owner?.id === commonUser?.profileId;
   const nonPendingContributors = (
     (contributors || []) as
-      | Omit<Avo.Assignment.Contributor, 'assignment_id'>[]
-      | Omit<Avo.Collection.Contributor, 'collection_id'>[]
+      | Omit<AvoAssignmentContributor, 'assignment_id'>[]
+      | Omit<AvoCollectionContributor, 'collection_id'>[]
   ).filter(
     (contrib) =>
       !!contrib.profile_id && !(contrib.rights === ContributorInfoRight.VIEWER),
-  )
+  );
 
   const renderOwner = () => {
     const organisation = owner?.organisation?.name
       ? ` (${owner?.organisation?.name})`
-      : ''
+      : '';
 
-    return getFullName(owner, false, false) + organisation
-  }
+    return getFullName(owner, false, false) + organisation;
+  };
 
   const renderContributors = (): ReactNode => {
     if (nonPendingContributors?.length) {
       const couplingWord = ` ${tText(
         'shared/components/header-owner-and-contributors/header-owner-and-contributors___en',
-      )} `
+      )} `;
       if (nonPendingContributors.length === 1) {
         return (
           <span>
             {couplingWord}
             {getFullName(nonPendingContributors[0].profile, false, false)}
           </span>
-        )
+        );
       }
 
       return (
@@ -77,15 +71,15 @@ export const HeaderOwnerAndContributors: FC<
             <p>
               {nonPendingContributors
                 .map((contributor) => {
-                  return getFullName(contributor.profile, false, false)
+                  return getFullName(contributor.profile, false, false);
                 })
                 .join(', ')}
             </p>
           </TooltipContent>
         </Tooltip>
-      )
+      );
     }
-  }
+  };
 
   return (
     <Spacer margin={'top-small'}>
@@ -119,5 +113,5 @@ export const HeaderOwnerAndContributors: FC<
         </Spacer>
       </Flex>
     </Spacer>
-  )
-}
+  );
+};

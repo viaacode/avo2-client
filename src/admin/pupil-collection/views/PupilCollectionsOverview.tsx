@@ -4,7 +4,11 @@ import {
   FilterTable,
   getFilters,
 } from '@meemoo/admin-core-ui/admin';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoAssignmentResponse,
+  AvoSearchOrderDirection,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import {
@@ -59,7 +63,7 @@ export const PupilCollectionsOverview: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);
 
   const [pupilCollections, setPupilCollections] = useState<
-    Avo.Assignment.Response[] | null
+    AvoAssignmentResponse[] | null
   >(null);
   const [pupilCollectionsCount, setPupilCollectionsCount] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
@@ -69,7 +73,7 @@ export const PupilCollectionsOverview: FC = () => {
     Partial<PupilCollectionsOverviewTableState>
   >({
     sort_column: 'created_at',
-    sort_order: Avo.Search.OrderDirection.DESC,
+    sort_order: AvoSearchOrderDirection.DESC,
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] =
@@ -169,7 +173,7 @@ export const PupilCollectionsOverview: FC = () => {
           ITEMS_PER_PAGE,
           (tableState.sort_column ||
             'created_at') as PupilCollectionOverviewTableColumns,
-          tableState.sort_order || Avo.Search.OrderDirection.DESC,
+          tableState.sort_order || AvoSearchOrderDirection.DESC,
           getColumnDataType(),
           generateWhereObject(getFilters(tableState)),
         );
@@ -366,7 +370,7 @@ export const PupilCollectionsOverview: FC = () => {
           dataCount={pupilCollectionsCount}
           renderCell={(rowData: any, columnId: string) =>
             renderPupilCollectionTableCellReact(
-              rowData as Partial<Avo.Assignment.Response>,
+              rowData as Partial<AvoAssignmentResponse>,
               columnId as PupilCollectionOverviewTableColumns,
             )
           }
@@ -395,7 +399,7 @@ export const PupilCollectionsOverview: FC = () => {
           onSelectBulkAction={handleBulkAction as any}
           rowKey="id"
           defaultOrderProp={'created_at'}
-          defaultOrderDirection={Avo.Search.OrderDirection.DESC}
+          defaultOrderDirection={AvoSearchOrderDirection.DESC}
         />
         <ConfirmModal
           body={tHtml(
@@ -435,7 +439,7 @@ export const PupilCollectionsOverview: FC = () => {
                 0,
                 (tableState.sort_column ||
                   'created_at') as PupilCollectionOverviewTableColumns,
-                tableState.sort_order || Avo.Search.OrderDirection.DESC,
+                tableState.sort_order || AvoSearchOrderDirection.DESC,
                 getColumnDataType(),
                 {},
               );
@@ -448,7 +452,7 @@ export const PupilCollectionsOverview: FC = () => {
                 limit,
                 (tableState.sort_column ||
                   'created_at') as PupilCollectionOverviewTableColumns,
-                tableState.sort_order || Avo.Search.OrderDirection.DESC,
+                tableState.sort_order || AvoSearchOrderDirection.DESC,
                 getColumnDataType(),
                 generateWhereObject(getFilters(tableState)),
               );
@@ -456,7 +460,7 @@ export const PupilCollectionsOverview: FC = () => {
           }}
           renderValue={(pupilCollection: any, columnId: string) =>
             renderPupilCollectionTableCellText(
-              pupilCollection as Partial<Avo.Assignment.Response>,
+              pupilCollection as Partial<AvoAssignmentResponse>,
               columnId as PupilCollectionOverviewTableColumns,
             )
           }

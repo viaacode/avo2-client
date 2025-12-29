@@ -1,5 +1,5 @@
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
-import { Avo } from '@viaa/avo2-types';
+import { AvoSearchOrderDirection } from '@viaa/avo2-types';
 import { QUERY_KEYS } from '../../../shared/constants/query-keys';
 import { ITEMS_PER_PAGE } from '../url-redirects.const';
 import { UrlRedirectsService } from '../url-redirects.service';
@@ -29,7 +29,7 @@ export const useGetUrlRedirects = (
         old_path_pattern: params?.oldPathPattern,
         sortOrder:
           params?.sort_order ||
-          (Avo.Search.OrderDirection.DESC as Avo.Search.OrderDirection),
+          (AvoSearchOrderDirection.DESC as AvoSearchOrderDirection),
         sortColumn: params?.sort_column || 'updated_at',
         limit: ITEMS_PER_PAGE,
         offset: (params?.page || 0) * ITEMS_PER_PAGE,

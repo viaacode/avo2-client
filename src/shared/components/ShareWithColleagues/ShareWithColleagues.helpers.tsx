@@ -1,10 +1,8 @@
-import { type Avo } from '@viaa/avo2-types'
-import { groupBy } from 'es-toolkit'
-
+import { AvoAssignmentAssignment } from '@viaa/avo2-types';
+import { groupBy } from 'es-toolkit';
 import { isUserLevel } from '../../helpers/is-user';
 import { EducationLevelId } from '../../helpers/lom';
 import { tText } from '../../helpers/translate-text';
-
 import {
   type ContributorInfo,
   ContributorInfoRight,
@@ -14,29 +12,29 @@ export const sortContributors = (
   users: ContributorInfo[],
 ): ContributorInfo[] => {
   const groupedUsers: Partial<Record<ContributorInfoRight, ContributorInfo[]>> =
-    groupBy(users, (user) => user.rights)
+    groupBy(users, (user) => user.rights);
 
   return [
     ...(groupedUsers[ContributorInfoRight.OWNER] || []),
     ...(groupedUsers[ContributorInfoRight.CONTRIBUTOR] || []),
     ...(groupedUsers[ContributorInfoRight.VIEWER] || []),
-  ]
-}
+  ];
+};
 
 export const compareUsersEmail = (
   user: ContributorInfo,
   toCompareUser: ContributorInfo,
 ) => {
-  return user.email === toCompareUser.email
-}
+  return user.email === toCompareUser.email;
+};
 
 export const findRightByValue = (
   right: ContributorInfoRight,
 ): ContributorInfoRight => {
   return Object.keys(ContributorInfoRight)[
     Object.values(ContributorInfoRight).indexOf(right)
-  ] as ContributorInfoRight
-}
+  ] as ContributorInfoRight;
+};
 
 export function getContributorRightLabel(right: ContributorInfoRight): string {
   return {
@@ -49,29 +47,29 @@ export function getContributorRightLabel(right: ContributorInfoRight): string {
     OWNER: tText(
       'shared/components/share-with-colleagues/share-with-colleagues___eigenaar',
     ),
-  }[right]
+  }[right];
 }
 
 export function hasEducationLevel(
   contributor: ContributorInfo,
-  assignment?: Partial<Avo.Assignment.Assignment>,
+  assignment?: Partial<AvoAssignmentAssignment>,
 ) {
-  if (!assignment) return false
+  if (!assignment) return false;
 
-  const { education_level_id } = assignment
+  const { education_level_id } = assignment;
   const isSecondary = isUserLevel(contributor, [
     EducationLevelId.secundairOnderwijs,
-  ])
+  ]);
   const isElementary = isUserLevel(contributor, [
     EducationLevelId.lagerOnderwijs,
-  ])
+  ]);
 
-  const isBoth = isSecondary && isElementary
+  const isBoth = isSecondary && isElementary;
 
   return (
     isBoth ||
     (isSecondary &&
       education_level_id === EducationLevelId.secundairOnderwijs) ||
     (isElementary && education_level_id === EducationLevelId.lagerOnderwijs)
-  )
+  );
 }

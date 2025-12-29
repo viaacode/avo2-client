@@ -3,10 +3,10 @@ import {
   Spacer,
   type TagInfo,
   TagsInput,
-} from '@viaa/avo2-components'
-import { type Avo, LomType } from '@viaa/avo2-types'
-import { uniq } from 'es-toolkit'
-import { type FC, useMemo } from 'react'
+} from '@viaa/avo2-components';
+import { AvoLomLomField, AvoLomLomType } from '@viaa/avo2-types';
+import { uniq } from 'es-toolkit';
+import { type FC, useMemo } from 'react';
 
 import { getBottomLoms } from '../../helpers/get-bottom-loms';
 import { groupLoms } from '../../helpers/lom';
@@ -25,32 +25,32 @@ import {
 } from './LomFieldsInput.helpers';
 
 type LomFieldsInputProps = {
-  loms: Avo.Lom.LomField[]
-  onChange: (newLoms: Avo.Lom.LomField[]) => void
-  showEducation?: boolean
-  showEducationDegrees?: boolean
-  showThemes?: boolean
-  showSubjects?: boolean
-  educationLabel?: string
-  educationDegreesLabel?: string
-  themesLabel?: string
-  subjectsLabel?: string
-  isEducationRequired?: boolean
-  isEducationDegreesRequired?: boolean
-  isThemesRequired?: boolean
-  isSubjectsRequired?: boolean
-  educationLevelsPlaceholder?: string
-  subjectsPlaceholder?: string
-  themesPlaceholder?: string
-  filterSubjects?: (subject: Avo.Lom.LomField) => boolean
+  loms: AvoLomLomField[];
+  onChange: (newLoms: AvoLomLomField[]) => void;
+  showEducation?: boolean;
+  showEducationDegrees?: boolean;
+  showThemes?: boolean;
+  showSubjects?: boolean;
+  educationLabel?: string;
+  educationDegreesLabel?: string;
+  themesLabel?: string;
+  subjectsLabel?: string;
+  isEducationRequired?: boolean;
+  isEducationDegreesRequired?: boolean;
+  isThemesRequired?: boolean;
+  isSubjectsRequired?: boolean;
+  educationLevelsPlaceholder?: string;
+  subjectsPlaceholder?: string;
+  themesPlaceholder?: string;
+  filterSubjects?: (subject: AvoLomLomField) => boolean;
 
   /**
    * only show degrees for the already selected education degrees. This option is only used to allow users that haven't selected a degree but have already an education level, to also specify their education ldegrees on their profile page
    * https://meemoo.atlassian.net/browse/AVO-2881?focusedCommentId=43453
    */
-  limitDegreesByAlreadySelectedLevels?: boolean
-  allowMultiSelect?: boolean
-}
+  limitDegreesByAlreadySelectedLevels?: boolean;
+  allowMultiSelect?: boolean;
+};
 
 export const LomFieldsInput: FC<LomFieldsInputProps> = ({
   loms,
@@ -74,47 +74,50 @@ export const LomFieldsInput: FC<LomFieldsInputProps> = ({
   filterSubjects = () => true,
   allowMultiSelect = true,
 }) => {
-  const lomFields = useMemo(() => groupLoms(loms), [loms])
+  const lomFields = useMemo(() => groupLoms(loms), [loms]);
   const {
     data: educationLevelsAndDegrees,
     isLoading: isEducationLevelsLoading,
-  } = useLomEducationLevelsAndDegrees()
-  const [allSubjects, isSubjectsLoading] = useLomSubjects()
-  const [allThemes, isThemesLoading] = useLomThemes()
+  } = useLomEducationLevelsAndDegrees();
+  const [allSubjects, isSubjectsLoading] = useLomSubjects();
+  const [allThemes, isThemesLoading] = useLomThemes();
 
-  const getEducationLevelOptions = (loms: Avo.Lom.LomField[]) =>
-    mapLomFieldsToOptions(getBottomLoms(loms))
+  const getEducationLevelOptions = (loms: AvoLomLomField[]) =>
+    mapLomFieldsToOptions(getBottomLoms(loms));
 
   const handleChange = (
     values: TagInfo[],
-    scheme: LomType,
-    allSchemeLoms: Avo.Lom.LomField[],
+    scheme: AvoLomLomType,
+    allSchemeLoms: AvoLomLomField[],
   ): void => {
-    let newLoms: LomFieldsByScheme
-    let flatLomList: Avo.Lom.LomField[]
-    const mappedLoms = mapOptionsToLomFields(values, allSchemeLoms)
+    let newLoms: LomFieldsByScheme;
+    let flatLomList: AvoLomLomField[];
+    const mappedLoms = mapOptionsToLomFields(values, allSchemeLoms);
 
-    if (scheme === LomType.educationDegree) {
-      const groupedLoms = groupLoms(mappedLoms)
+    if (scheme === AvoLomLomType.educationDegree) {
+      const groupedLoms = groupLoms(mappedLoms);
       newLoms = {
         ...lomFields,
         educationDegree: groupedLoms.educationDegree,
         educationLevel: groupedLoms.educationLevel,
-      }
+      };
 
       const parentEducationLevels = getParentEducationLevel(
         mappedLoms,
         educationLevelsAndDegrees || [],
-      )
+      );
 
-      flatLomList = [...Object.values(newLoms).flat(), ...parentEducationLevels]
+      flatLomList = [
+        ...Object.values(newLoms).flat(),
+        ...parentEducationLevels,
+      ];
     } else {
-      newLoms = { ...lomFields, [scheme]: mappedLoms }
-      flatLomList = Object.values(newLoms).flat()
+      newLoms = { ...lomFields, [scheme]: mappedLoms };
+      flatLomList = Object.values(newLoms).flat();
     }
 
-    onChange(uniq(flatLomList))
-  }
+    onChange(uniq(flatLomList));
+  };
 
   const getEducationDegreeOptions = () => {
     return groupLoms(educationLevelsAndDegrees || [])
@@ -125,12 +128,12 @@ export const LomFieldsInput: FC<LomFieldsInputProps> = ({
             lomFields.educationLevel
               .map((level) => level.id)
               .includes(degree.broader))
-        )
+        );
       })
-      ?.map(lomToTagInfo)
-  }
+      ?.map(lomToTagInfo);
+  };
 
-  const educationDegreeOptions = getEducationDegreeOptions()
+  const educationDegreeOptions = getEducationDegreeOptions();
   return (
     <Spacer margin="bottom">
       {showEducation && (
@@ -157,7 +160,7 @@ export const LomFieldsInput: FC<LomFieldsInputProps> = ({
             onChange={(values) =>
               handleChange(
                 values,
-                LomType.educationDegree,
+                AvoLomLomType.educationDegree,
                 educationLevelsAndDegrees || [],
               )
             }
@@ -191,7 +194,7 @@ export const LomFieldsInput: FC<LomFieldsInputProps> = ({
                   ...(getEducationLevelOptions([...lomFields.educationLevel]) ||
                     []),
                 ],
-                LomType.educationDegree,
+                AvoLomLomType.educationDegree,
                 educationLevelsAndDegrees || [],
               )
             }
@@ -216,7 +219,7 @@ export const LomFieldsInput: FC<LomFieldsInputProps> = ({
             allThemes={allThemes}
             value={mapLomFieldsToOptions(lomFields.theme) || []}
             onChange={(values) =>
-              handleChange(values, LomType.theme, allThemes || [])
+              handleChange(values, AvoLomLomType.theme, allThemes || [])
             }
             placeholder={themesPlaceholder}
             isLoading={isThemesLoading}
@@ -241,7 +244,7 @@ export const LomFieldsInput: FC<LomFieldsInputProps> = ({
             options={allSubjects?.filter(filterSubjects).map(lomToTagInfo)}
             value={mapLomFieldsToOptions(lomFields.subject) || []}
             onChange={(values) =>
-              handleChange(values, LomType.subject, allSubjects || [])
+              handleChange(values, AvoLomLomType.subject, allSubjects || [])
             }
             placeholder={subjectsPlaceholder}
             allowMulti={allowMultiSelect}
@@ -249,5 +252,5 @@ export const LomFieldsInput: FC<LomFieldsInputProps> = ({
         </FormGroup>
       )}
     </Spacer>
-  )
-}
+  );
+};

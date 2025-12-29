@@ -1,22 +1,21 @@
-import { FormGroup, type TagInfo, TagsInput } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { compact } from 'es-toolkit'
-import { type FC } from 'react'
-
+import { FormGroup, type TagInfo, TagsInput } from '@viaa/avo2-components';
+import { AvoLomLomField } from '@viaa/avo2-types';
+import { compact } from 'es-toolkit';
+import { type FC } from 'react';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
 import { tText } from '../../helpers/translate-text';
 import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 
 interface EducationLevelsFieldProps {
-  onChange?: (values: TagInfo[]) => void
-  value: string[] | null // id of lom field (collections, assignments, profiles) or string label (videos and audio)
+  onChange?: (values: TagInfo[]) => void;
+  value: string[] | null; // id of lom field (collections, assignments, profiles) or string label (videos and audio)
 }
 
 export const EducationLevelsField: FC<EducationLevelsFieldProps> = ({
   onChange,
   value,
 }) => {
-  const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees()
+  const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 
   return (
     <FormGroup
@@ -28,7 +27,7 @@ export const EducationLevelsField: FC<EducationLevelsFieldProps> = ({
       <TagsInput
         options={(educationLevelsAndDegrees || []).map(lomToTagInfo)}
         value={compact(
-          (value || []).map((stringValue): Avo.Lom.LomField | undefined =>
+          (value || []).map((stringValue): AvoLomLomField | undefined =>
             (educationLevelsAndDegrees || []).find(
               (educationLevel) =>
                 educationLevel.label.toLowerCase() === stringValue ||
@@ -39,5 +38,5 @@ export const EducationLevelsField: FC<EducationLevelsFieldProps> = ({
         onChange={onChange}
       />
     </FormGroup>
-  )
-}
+  );
+};

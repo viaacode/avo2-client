@@ -1,7 +1,6 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
-import { Avo } from '@viaa/avo2-types'
-import { stringifyUrl } from 'query-string'
-
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
+import { AvoCoreContentPickerType, AvoUserCommonUser } from '@viaa/avo2-types';
+import { stringifyUrl } from 'query-string';
 import { CustomError } from '../../../../../shared/helpers/custom-error';
 import { getEnv } from '../../../../../shared/helpers/env';
 import { type PickerItem } from '../../../types/content-picker';
@@ -13,27 +12,27 @@ export const retrieveProfiles = async (
   limit = 5,
 ): Promise<PickerItem[]> => {
   try {
-    return await getUsers(limit, name)
+    return await getUsers(limit, name);
   } catch (err) {
     throw new CustomError('Failed to get profiles for content picker', err, {
       name,
       limit,
-    })
+    });
   }
-}
+};
 
 // Convert profiles to react-select options
-const parseProfiles = (users: Partial<Avo.User.CommonUser>[]): PickerItem[] => {
+const parseProfiles = (users: Partial<AvoUserCommonUser>[]): PickerItem[] => {
   return users.map(
     (user): PickerItem => ({
       ...parsePickerItem(
-        Avo.Core.ContentPickerType.PROFILE,
+        AvoCoreContentPickerType.PROFILE,
         user.profileId as string,
       ),
       label: `${user.fullName} (${user.email})`,
     }),
-  )
-}
+  );
+};
 
 async function getUsers(
   limit: number,
@@ -46,8 +45,8 @@ async function getUsers(
       limit,
       name: partialName,
     },
-  })
-  const users = await fetchWithLogoutJson<Partial<Avo.User.CommonUser>[]>(url)
+  });
+  const users = await fetchWithLogoutJson<Partial<AvoUserCommonUser>[]>(url);
 
-  return parseProfiles(users)
+  return parseProfiles(users);
 }

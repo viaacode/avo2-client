@@ -1,13 +1,15 @@
-import { type Avo } from '@viaa/avo2-types'
-
 import {
-  type ContributorInfo,
-  ContributorInfoRight,
-} from '../components/ShareWithColleagues/ShareWithColleagues.types';
+  AvoAssignmentAssignment,
+  AvoAssignmentContributor,
+  AvoCollectionCollection,
+  AvoCollectionContributor,
+  AvoUserUser,
+} from '@viaa/avo2-types';
+import { type ContributorInfo, ContributorInfoRight, } from '../components/ShareWithColleagues/ShareWithColleagues.types';
 
 export const transformContributorsToSimpleContributors = (
-  owner: Avo.User.User | undefined,
-  contributors: (Avo.Collection.Contributor | Avo.Assignment.Contributor)[],
+  owner: AvoUserUser | undefined,
+  contributors: (AvoCollectionContributor | AvoAssignmentContributor)[],
 ): ContributorInfo[] => {
   const defaultContributors: ContributorInfo[] = [
     {
@@ -19,7 +21,7 @@ export const transformContributorsToSimpleContributors = (
         owner?.profile?.organisation?.logo_url || owner?.profile?.avatar,
       profileId: owner?.profile?.id,
     } as ContributorInfo,
-  ]
+  ];
 
   if (contributors) {
     const mappedContributors = contributors.map((contributor) => {
@@ -43,26 +45,26 @@ export const transformContributorsToSimpleContributors = (
         profileId: contributor.profile_id,
         contributorId: contributor.id,
         loms: contributor.profile?.loms,
-      } as ContributorInfo
-    })
+      } as ContributorInfo;
+    });
 
-    return defaultContributors.concat(mappedContributors)
+    return defaultContributors.concat(mappedContributors);
   }
 
-  return defaultContributors
-}
+  return defaultContributors;
+};
 
 export const getContributorType = (
   userProfileId: string | undefined,
-  subject: Avo.Assignment.Assignment | Avo.Collection.Collection,
-  contributors: (Avo.Assignment.Contributor | Avo.Collection.Contributor)[],
+  subject: AvoAssignmentAssignment | AvoCollectionCollection,
+  contributors: (AvoAssignmentContributor | AvoCollectionContributor)[],
 ): ContributorInfoRight => {
   if (userProfileId === subject.owner_profile_id) {
-    return ContributorInfoRight.OWNER
+    return ContributorInfoRight.OWNER;
   }
 
   return contributors.find(
     (contributor) =>
       (contributor.profile_id || contributor?.profile?.id) === userProfileId,
-  )?.rights as ContributorInfoRight
-}
+  )?.rights as ContributorInfoRight;
+};

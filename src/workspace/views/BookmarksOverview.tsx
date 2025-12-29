@@ -10,7 +10,12 @@ import {
   type TableColumn,
   Thumbnail,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoItemItem,
+  AvoSearchOrderDirection,
+  AvoUserCommonUser,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { orderBy } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useState } from 'react';
@@ -68,10 +73,10 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
   );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [mediaItemForEmbedCodeModal, setMediaItemForEmbedCodeModal] =
-    useState<Avo.Item.Item | null>(null);
+    useState<AvoItemItem | null>(null);
   const [sortColumn, setSortColumn] = useState<keyof BookmarkInfo>('createdAt');
-  const [sortOrder, setSortOrder] = useState<Avo.Search.OrderDirection>(
-    Avo.Search.OrderDirection.DESC,
+  const [sortOrder, setSortOrder] = useState<AvoSearchOrderDirection>(
+    AvoSearchOrderDirection.DESC,
   );
   const [page, setPage] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
@@ -159,7 +164,7 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
       }
       await BookmarksViewsPlaysService.toggleBookmark(
         bookmarkToDelete.contentId,
-        commonUser as Avo.User.CommonUser,
+        commonUser as AvoUserCommonUser,
         CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[bookmarkToDelete.contentType],
         true,
       );
@@ -194,7 +199,7 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
     } else {
       // Initial column sort order
       setSortColumn(columnId);
-      setSortOrder(Avo.Search.OrderDirection.ASC);
+      setSortOrder(AvoSearchOrderDirection.ASC);
     }
     setPage(0);
   };
@@ -207,7 +212,7 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
       external_id: bookmarkInfo.contentLinkId,
       thumbnail_path: bookmarkInfo.contentThumbnailPath,
       type: bookmarkInfo.contentType,
-    } as unknown as Avo.Item.Item);
+    } as unknown as AvoItemItem);
   };
 
   // Render functions

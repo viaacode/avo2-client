@@ -1,10 +1,10 @@
-import { toggleSortOrder } from '@meemoo/admin-core-ui/admin'
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
-import { Button, Icon, IconName, Spacer, Table } from '@viaa/avo2-components'
-import { type FC, type ReactNode, useState } from 'react'
-import { useNavigate } from 'react-router'
-
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import { Button, Icon, IconName, Spacer, Table } from '@viaa/avo2-components';
+import { AvoSearchOrderDirection } from '@viaa/avo2-types';
+import { type FC, type ReactNode, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
 import { type ParentBundle } from '../../collection/collection.types';
 import {
   type BundleColumnId,
@@ -16,47 +16,46 @@ import { buildLink } from '../../shared/helpers/build-link';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { Avo } from '@viaa/avo2-types'
 
 type ContainedInBundlesTableProps = {
-  fragmentId: string
-  title: string
-  emptyTableLabel: string
-}
+  fragmentId: string;
+  title: string;
+  emptyTableLabel: string;
+};
 
 export const ContainedInBundlesTable: FC<ContainedInBundlesTableProps> = ({
   fragmentId,
   emptyTableLabel,
   title,
 }) => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
   const [bundleSortColumn, setBundleSortColumn] = useState<BundleSortProp>(
     BundleSortProp.title,
-  )
+  );
   const [bundleSortOrder, setBundleSortOrder] =
-    useState<Avo.Search.OrderDirection>(Avo.Search.OrderDirection.ASC)
+    useState<AvoSearchOrderDirection>(AvoSearchOrderDirection.ASC);
 
   const { data: bundlesContainingThisFragment } =
     useGetCollectionsOrBundlesContainingFragment(
       fragmentId,
       bundleSortColumn,
       bundleSortOrder,
-    )
+    );
 
   const navigateToBundleDetail = (id: string) => {
-    const link = buildLink(APP_PATH.BUNDLE_DETAIL.route, { id })
-    redirectToClientPage(link, navigateFunc)
-  }
+    const link = buildLink(APP_PATH.BUNDLE_DETAIL.route, { id });
+    redirectToClientPage(link, navigateFunc);
+  };
 
   const handleBundleColumnClick = (columnId: BundleColumnId) => {
     if (!Object.values(BundleSortProp).includes(columnId as BundleSortProp)) {
-      return
+      return;
     }
-    const sortOrder = toggleSortOrder(bundleSortOrder)
-    setBundleSortColumn(columnId as BundleSortProp)
-    setBundleSortOrder(sortOrder)
-  }
+    const sortOrder = toggleSortOrder(bundleSortOrder);
+    setBundleSortColumn(columnId as BundleSortProp);
+    setBundleSortOrder(sortOrder);
+  };
 
   const renderBundleCell = (
     parentBundle: ParentBundle,
@@ -64,10 +63,10 @@ export const ContainedInBundlesTable: FC<ContainedInBundlesTableProps> = ({
   ): ReactNode => {
     switch (columnId) {
       case 'author':
-        return parentBundle.author || '-'
+        return parentBundle.author || '-';
 
       case 'organisation':
-        return parentBundle?.organisation || '-'
+        return parentBundle?.organisation || '-';
 
       case 'is_public':
         return (
@@ -86,7 +85,7 @@ export const ContainedInBundlesTable: FC<ContainedInBundlesTableProps> = ({
               name={parentBundle.is_public ? IconName.unlock3 : IconName.lock}
             />
           </div>
-        )
+        );
 
       case ACTIONS_TABLE_COLUMN_ID:
         return (
@@ -100,16 +99,16 @@ export const ContainedInBundlesTable: FC<ContainedInBundlesTableProps> = ({
               'collection/components/collection-or-bundle-edit-admin___ga-naar-de-bundel-detail-pagina',
             )}
             onClick={(evt) => {
-              evt.stopPropagation()
-              navigateToBundleDetail(parentBundle.id as string)
+              evt.stopPropagation();
+              navigateToBundleDetail(parentBundle.id as string);
             }}
           />
-        )
+        );
 
       default:
-        return parentBundle[columnId]
+        return parentBundle[columnId];
     }
-  }
+  };
 
   return (
     <>
@@ -170,5 +169,5 @@ export const ContainedInBundlesTable: FC<ContainedInBundlesTableProps> = ({
         emptyTableLabel
       )}
     </>
-  )
-}
+  );
+};

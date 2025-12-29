@@ -1,15 +1,17 @@
-import { Button, IconName } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { noop } from 'es-toolkit'
+import { Button, IconName } from '@viaa/avo2-components';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentResponse,
+} from '@viaa/avo2-types';
+import { noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import {
   type Dispatch,
   type FC,
   type SetStateAction,
   useMemo,
   useState,
-} from 'react'
-
+} from 'react';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { AlertBar } from '../../shared/components/AlertBar/AlertBar';
 import { EducationLevelId } from '../../shared/helpers/lom';
@@ -19,23 +21,23 @@ import { tText } from '../../shared/helpers/translate-text';
 import { AssignmentResponseEdit } from '../views/AssignmentResponseEdit/AssignmentResponseEdit';
 
 type AssignmentPupilPreviewProps = {
-  assignment: Partial<Avo.Assignment.Assignment>
-  isPreview?: boolean
-  onClose: () => void
-}
+  assignment: Partial<AvoAssignmentAssignment>;
+  isPreview?: boolean;
+  onClose: () => void;
+};
 
 export const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps> = ({
   assignment,
   isPreview = false,
   onClose,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
   const [assignmentResponse, setAssignmentResponse] =
-    useState<Avo.Assignment.Response>({
+    useState<AvoAssignmentResponse>({
       collection_title: '',
       pupil_collection_blocks: [],
       assignment_id: assignment.id as string,
-      assignment: assignment as unknown as Avo.Assignment.Assignment,
+      assignment: assignment as unknown as AvoAssignmentAssignment,
       owner: {
         full_name: tText(
           'assignment/components/assignment-pupil-preview___naam-leerling',
@@ -45,7 +47,7 @@ export const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps> = ({
       id: '///fake-assignment-response-id',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-    } as Avo.Assignment.Response)
+    } as AvoAssignmentResponse);
 
   const renderClosePreviewButton = () => (
     <Button
@@ -63,28 +65,28 @@ export const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps> = ({
       type="borderless-i"
       onClick={onClose}
     />
-  )
+  );
 
   const alertText = useMemo(() => {
-    const level = assignment.education_level_id
+    const level = assignment.education_level_id;
 
     switch (level) {
       case EducationLevelId.lagerOnderwijs:
         return tHtml(
           'assignment/components/assignment-pupil-preview___je-bent-aan-het-kijken-als-een-leerling-lager',
-        )
+        );
 
       case EducationLevelId.secundairOnderwijs:
         return tHtml(
           'assignment/components/assignment-pupil-preview___je-bent-aan-het-kijken-als-een-leerling-secundair',
-        )
+        );
 
       default:
         return tHtml(
           'assignment/components/assignment-pupil-preview___je-bent-aan-het-kijken-als-leerling',
-        )
+        );
     }
-  }, [assignment])
+  }, [assignment]);
 
   return (
     <>
@@ -95,13 +97,13 @@ export const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps> = ({
       />
       {assignmentResponse && (
         <AssignmentResponseEdit
-          assignment={assignment as Avo.Assignment.Assignment}
+          assignment={assignment as AvoAssignmentAssignment}
           assignmentResponse={assignmentResponse}
           setAssignmentResponse={
             setAssignmentResponse as Dispatch<
               SetStateAction<
-                | (Omit<Avo.Assignment.Response, 'assignment' | 'id'> & {
-                    id: string | undefined
+                | (Omit<AvoAssignmentResponse, 'assignment' | 'id'> & {
+                    id: string | undefined;
                   })
                 | null
               >
@@ -116,5 +118,5 @@ export const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps> = ({
         />
       )}
     </>
-  )
-}
+  );
+};

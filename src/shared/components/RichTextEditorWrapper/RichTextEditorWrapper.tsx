@@ -3,10 +3,10 @@ import {
   type RichTextEditorMedia,
   type RichTextEditorProps,
   type RichTextEditorUploadInfo,
-} from '@meemoo/react-components'
-import { type Avo } from '@viaa/avo2-types'
-import { isEqual } from 'es-toolkit'
-import { type FC } from 'react'
+} from '@meemoo/react-components';
+
+import { isEqual } from 'es-toolkit';
+import { type FC } from 'react';
 
 import { CustomError } from '../../helpers/custom-error';
 import { tHtml } from '../../helpers/translate-html';
@@ -16,13 +16,14 @@ import { ToastService } from '../../services/toast-service';
 
 import { RICH_TEXT_EDITOR_OPTIONS_DEFAULT } from './RichTextEditor.consts';
 
-import './RichTextEditorWrapper.scss'
+import './RichTextEditorWrapper.scss';
+import { AvoFileUploadAssetType } from '@viaa/avo2-types';
 
 export type RichTextEditorWrapperProps = RichTextEditorProps & {
-  fileType?: Avo.FileUpload.AssetType // Required to enable file upload
-  ownerId?: string
-  className?: string
-}
+  fileType?: AvoFileUploadAssetType; // Required to enable file upload
+  ownerId?: string;
+  className?: string;
+};
 
 /**
  * Handle RichTextEditor default controls and upload function
@@ -32,7 +33,7 @@ export type RichTextEditorWrapperProps = RichTextEditorProps & {
 export const RichTextEditorWrapper: FC<RichTextEditorWrapperProps> = (
   props,
 ) => {
-  const { controls, fileType, ownerId, state, onChange, ...rest } = props
+  const { controls, fileType, ownerId, state, onChange, ...rest } = props;
 
   if ((controls || []).includes('media') && !fileType) {
     console.error(
@@ -41,7 +42,7 @@ export const RichTextEditorWrapper: FC<RichTextEditorWrapperProps> = (
         null,
         props,
       ),
-    )
+    );
   }
 
   const media: RichTextEditorMedia | undefined = fileType
@@ -52,10 +53,10 @@ export const RichTextEditorWrapper: FC<RichTextEditorWrapperProps> = (
               param.file,
               fileType,
               ownerId || '',
-            )
+            );
             param.success({
               url,
-            })
+            });
           } catch (err) {
             const error = new CustomError(
               tText(
@@ -63,25 +64,25 @@ export const RichTextEditorWrapper: FC<RichTextEditorWrapperProps> = (
               ),
               err,
               { param },
-            )
-            console.error(error)
-            param.error(error)
+            );
+            console.error(error);
+            param.error(error);
           }
         },
         validateFn: (file: File) => {
           if (file.size < 1024 * 1000 * 10) {
             // MAX_FILE_SIZE: 10MB
-            return true
+            return true;
           }
           ToastService.danger(
             tHtml(
               'shared/components/wysiwyg-wrapper/wysiwyg-wrapper___dit-bestand-is-te-groot-max-10-mb',
             ),
-          )
-          return false
+          );
+          return false;
         },
       }
-    : undefined
+    : undefined;
 
   return (
     <RichTextEditor
@@ -91,9 +92,9 @@ export const RichTextEditorWrapper: FC<RichTextEditorWrapperProps> = (
       state={state}
       onChange={(newState) => {
         if (!!onChange && !isEqual(newState, state)) {
-          onChange(newState)
+          onChange(newState);
         }
       }}
     />
-  )
-}
+  );
+};

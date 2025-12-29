@@ -24050,11 +24050,11 @@ export enum Lookup_Enum_Profile_Flags_Constraint {
 export enum Lookup_Enum_Profile_Flags_Enum {
   /** Flag user for review bij verschil tussen bronnen, voorbeeld wanneer Vlaamse overheid zegt dat een gebruiker geen leerkracht is, maar volgens AVO wel. */
   LeerkrachtConflict = 'LEERKRACHT_CONFLICT',
-  /** Flag user for review bij verschil tussen bronnen, voorbeeld wanneer Vlaamse overheid een ander stamboeknummer doorgeeft dan wat geregistreerd is in AVO. */
+  /** Flag user for review bij verschil tussen bronnen, voorbeeld wanneer Vlaamse overheid een ander stamboeknummer doorgeeft dan wat geregistreerd is in Avo */
   StamboekConflict = 'STAMBOEK_CONFLICT'
 }
 
-/** Boolean expression to compare columns of type "lookup_enum_profile_flags_enum". All fields are combined with logical 'AND'. */
+/** Boolean expression to compare columns of type "lookup_enum_profile_flags_enum" All fields are combined with logical 'AND'. */
 export type Lookup_Enum_Profile_Flags_Enum_Comparison_Exp = {
   _eq?: InputMaybe<Lookup_Enum_Profile_Flags_Enum>;
   _in?: InputMaybe<Array<Lookup_Enum_Profile_Flags_Enum>>;

@@ -1,4 +1,15 @@
-import { type Avo } from '@viaa/avo2-types';
+import {
+  AvoCoreContentType,
+  AvoSearchDateRange,
+  AvoSearchFilterProp,
+  AvoSearchFilters,
+  AvoSearchOptionProp,
+  AvoSearchOrderDirection,
+  AvoSearchOrderProperty,
+  AvoSearchResultItem,
+  AvoSearchSearch,
+} from '@viaa/avo2-types';
+
 import { type ReactNode } from 'react';
 import {
   type CollectionLabelLookup,
@@ -14,14 +25,14 @@ import {
 export type SearchFilterFieldValues =
   | string
   | string[]
-  | Avo.Search.DateRange
+  | AvoSearchDateRange
   | null;
 export type SearchFilterMultiOptions = {
-  [key: string]: Avo.Search.OptionProp[];
+  [key: string]: AvoSearchOptionProp[];
 };
 
 export interface SearchState {
-  readonly data: Avo.Search.Search | null;
+  readonly data: AvoSearchSearch | null;
   readonly loading: boolean;
   readonly error: any | null;
 }
@@ -30,7 +41,7 @@ interface RenderLinks {
   renderDetailLink: (
     linkText: string | ReactNode,
     id: string,
-    type: Avo.Core.ContentType,
+    type: AvoCoreContentType,
   ) => ReactNode;
   renderSearchLink: (
     linkText: string | ReactNode,
@@ -40,8 +51,8 @@ interface RenderLinks {
 }
 
 export interface SearchFiltersAndResultsProps extends RenderLinks {
-  enabledFilters?: (keyof Avo.Search.Filters)[];
-  enabledTypeOptions?: Avo.Core.ContentType[];
+  enabledFilters?: (keyof AvoSearchFilters)[];
+  enabledTypeOptions?: AvoCoreContentType[];
   enabledOrderProperties?: SearchOrderAndDirectionProperty[];
   bookmarks: boolean;
   filterState: FilterState;
@@ -49,26 +60,26 @@ export interface SearchFiltersAndResultsProps extends RenderLinks {
 }
 
 export interface SortOrder {
-  orderProperty: Avo.Search.OrderProperty;
-  orderDirection: Avo.Search.OrderDirection;
+  orderProperty: AvoSearchOrderProperty;
+  orderDirection: AvoSearchOrderDirection;
 }
 
 export interface FilterState {
-  filters?: Partial<Avo.Search.Filters>;
+  filters?: Partial<AvoSearchFilters>;
   orderProperty?: SearchOrderProperty | undefined | null;
-  orderDirection?: Avo.Search.OrderDirection | undefined | null;
+  orderDirection?: AvoSearchOrderDirection | undefined | null;
   page?: number;
 }
 
 export interface SearchFilterControlsProps {
-  filterState: Partial<Avo.Search.Filters>;
+  filterState: Partial<AvoSearchFilters>;
   handleFilterFieldChange: (
     values: SearchFilterFieldValues,
-    propertyName: Avo.Search.FilterProp,
+    propertyName: AvoSearchFilterProp,
   ) => void;
   multiOptions: SearchFilterMultiOptions;
   onSearch?: (aggId: string) => void;
-  enabledFilters?: (keyof Avo.Search.Filters)[];
+  enabledFilters?: (keyof AvoSearchFilters)[];
   collectionLabels: QualityLabel[];
 }
 
@@ -81,7 +92,7 @@ export interface SearchResultItemProps
   extends SearchResultItemHandlers,
     RenderLinks {
   id: string;
-  result: Avo.Search.ResultItem;
+  result: AvoSearchResultItem;
   qualityLabelLookup: CollectionLabelLookup;
   isBookmarked: boolean | null;
   bookmarkButton: boolean;
@@ -89,7 +100,7 @@ export interface SearchResultItemProps
 
 export interface SearchResultsProps extends SearchResultItemHandlers {
   loading: boolean;
-  data: Avo.Search.Search | null;
+  data: AvoSearchSearch | null;
   currentItemIndex: number;
   totalItemCount: number;
   setCurrentItemIndex: (newCurrentItemIndex: number) => void;

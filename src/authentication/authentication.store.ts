@@ -1,28 +1,27 @@
-import { type Avo } from '@viaa/avo2-types'
-import { atom } from 'jotai'
-import { selectAtom } from 'jotai/utils'
-
+import { AvoAuthLoginResponse, AvoAuthLoginResponseLoggedIn, } from '@viaa/avo2-types';
+import { atom } from 'jotai';
+import { selectAtom } from 'jotai/utils';
 import { type LoginState } from './authentication.types';
 
 export const loginAtom = atom<LoginState>({
   data: null,
   loading: false,
   error: false,
-})
+});
 
 export const commonUserAtom = selectAtom(
   loginAtom,
   (loginState) =>
-    (loginState.data as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo,
-)
+    (loginState.data as AvoAuthLoginResponseLoggedIn)?.commonUserInfo,
+);
 
 /**
  * @deprecated please use commonUserAtom instead
  */
 export const userAtom = selectAtom(
   loginAtom,
-  (loginState) => (loginState.data as Avo.Auth.LoginResponseLoggedIn)?.userInfo,
-)
+  (loginState) => (loginState.data as AvoAuthLoginResponseLoggedIn)?.userInfo,
+);
 
 export const acceptConditionsAtom = atom<boolean | null, [], void>(
   null,
@@ -30,12 +29,12 @@ export const acceptConditionsAtom = atom<boolean | null, [], void>(
     const newLoginState = {
       ...get(loginAtom),
       data: {
-        ...(get(loginAtom).data as Avo.Auth.LoginResponse),
+        ...(get(loginAtom).data as AvoAuthLoginResponse),
         acceptedConditions: true,
       },
       loading: false,
       error: false,
-    }
-    set(loginAtom, newLoginState)
+    };
+    set(loginAtom, newLoginState);
   },
-)
+);

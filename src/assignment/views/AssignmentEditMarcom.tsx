@@ -18,7 +18,7 @@ import {
   TextArea,
   TextInput,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { AvoAssignmentAssignment, PermissionName } from '@viaa/avo2-types';
 import { compact, isNil } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactNode, useMemo, useState } from 'react';
@@ -30,10 +30,7 @@ import {
   GET_MARCOM_CHANNEL_TYPE_OPTIONS,
   GET_MARCOM_ENTRY_TABLE_COLUMNS,
 } from '../../collection/collection.const';
-import {
-  type AssignmentMarcomEntry,
-  CollectionCreateUpdateTab,
-} from '../../collection/collection.types';
+import { type AssignmentMarcomEntry, CollectionCreateUpdateTab, } from '../../collection/collection.types';
 import { type MarcomNoteInfo } from '../../collection/components/CollectionOrBundleEdit.types';
 import { APP_PATH } from '../../constants';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
@@ -53,9 +50,9 @@ import { useInsertAssignmentMarcomEntry } from '../hooks/useInsertAssignmentMarc
 import { usePublishAssignmentToKlascement } from '../hooks/usePublishAssignmentToKlascement';
 
 interface AssignmentEditMarcomProps {
-  assignment: Avo.Assignment.Assignment & { marcom_note?: MarcomNoteInfo };
+  assignment: AvoAssignmentAssignment & { marcom_note?: MarcomNoteInfo };
   setAssignment: (
-    newAssignment: Avo.Assignment.Assignment & { marcom_note: MarcomNoteInfo },
+    newAssignment: AvoAssignmentAssignment & { marcom_note: MarcomNoteInfo },
   ) => void;
   onFocus?: () => void;
 }

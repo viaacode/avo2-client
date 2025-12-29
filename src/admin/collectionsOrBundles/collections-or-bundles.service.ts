@@ -1,7 +1,9 @@
-import { type Avo } from '@viaa/avo2-types'
-import { flatten } from 'es-toolkit'
-import { stringifyUrl } from 'query-string'
-
+import {
+  AvoCollectionCollection,
+  AvoSearchOrderDirection,
+} from '@viaa/avo2-types';
+import { flatten } from 'es-toolkit';
+import { stringifyUrl } from 'query-string';
 import {
   type BulkAddLabelsToCollectionsMutation,
   type BulkAddLabelsToCollectionsMutationVariables,
@@ -27,7 +29,6 @@ import {
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
 import { dataService } from '../../shared/services/data-service';
-
 import {
   type CollectionSortProps,
   type EditorialType,
@@ -38,18 +39,18 @@ export class CollectionsOrBundlesService {
     offset: number,
     limit: number,
     sortColumn: CollectionSortProps,
-    sortOrder: Avo.Search.OrderDirection,
+    sortOrder: AvoSearchOrderDirection,
     filters: any,
     isCollection: boolean,
     includeRelations: boolean,
-  ): Promise<{ collections: Avo.Collection.Collection[]; total: number }> {
+  ): Promise<{ collections: AvoCollectionCollection[]; total: number }> {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/admin'
-      )
+      );
       return await fetchWithLogoutJson<{
-        collections: Avo.Collection.Collection[]
-        total: number
+        collections: AvoCollectionCollection[];
+        total: number;
       }>(
         stringifyUrl({
           url: `${getEnv('PROXY_URL')}/collections/admin-overview/general`,
@@ -63,7 +64,7 @@ export class CollectionsOrBundlesService {
             includeRelations,
           },
         }),
-      )
+      );
     } catch (err) {
       throw new CustomError(
         'Failed to get collections from the database',
@@ -76,7 +77,7 @@ export class CollectionsOrBundlesService {
           filters,
           isCollection,
         },
-      )
+      );
     }
   }
 
@@ -84,19 +85,19 @@ export class CollectionsOrBundlesService {
     offset: number,
     limit: number,
     sortColumn: CollectionSortProps,
-    sortOrder: Avo.Search.OrderDirection,
+    sortOrder: AvoSearchOrderDirection,
     filters: any,
     editorialType: EditorialType,
     isCollection: boolean,
     includeRelations: boolean,
-  ): Promise<{ collections: Avo.Collection.Collection[]; total: number }> {
+  ): Promise<{ collections: AvoCollectionCollection[]; total: number }> {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/admin'
-      )
+      );
       return await fetchWithLogoutJson<{
-        collections: Avo.Collection.Collection[]
-        total: number
+        collections: AvoCollectionCollection[];
+        total: number;
       }>(
         stringifyUrl({
           url: `${getEnv('PROXY_URL')}/collections/admin-overview/${editorialType}`,
@@ -110,7 +111,7 @@ export class CollectionsOrBundlesService {
             includeRelations,
           },
         }),
-      )
+      );
     } catch (err) {
       throw new CustomError(
         'Failed to get collection editorial entries from the database',
@@ -124,7 +125,7 @@ export class CollectionsOrBundlesService {
           editorialType,
           isCollection,
         },
-      )
+      );
     }
   }
 
@@ -135,9 +136,9 @@ export class CollectionsOrBundlesService {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/admin'
-      )
+      );
       const response = await fetchWithLogoutJson<{
-        collectionIds: string[]
+        collectionIds: string[];
       }>(
         stringifyUrl({
           url: `${getEnv('PROXY_URL')}/collections/admin-overview/ids`,
@@ -146,8 +147,8 @@ export class CollectionsOrBundlesService {
             isCollection,
           },
         }),
-      )
-      return response?.collectionIds || []
+      );
+      return response?.collectionIds || [];
     } catch (err) {
       throw new CustomError(
         'Failed to get collection ids from the database',
@@ -156,7 +157,7 @@ export class CollectionsOrBundlesService {
           filters,
           isCollection,
         },
-      )
+      );
     }
   }
 
@@ -177,9 +178,9 @@ export class CollectionsOrBundlesService {
           updatedByProfileId,
           now: new Date().toISOString(),
         },
-      })
+      });
 
-      return response.update_app_collections?.affected_rows ?? 0
+      return response.update_app_collections?.affected_rows ?? 0;
     } catch (err) {
       throw new CustomError(
         'Failed to update publish state for collections in the database',
@@ -189,7 +190,7 @@ export class CollectionsOrBundlesService {
           isPublic,
           query: 'BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS',
         },
-      )
+      );
     }
   }
 
@@ -210,9 +211,9 @@ export class CollectionsOrBundlesService {
           updatedByProfileId,
           now: new Date().toISOString(),
         },
-      })
+      });
 
-      return response.update_app_collections?.affected_rows ?? 0
+      return response.update_app_collections?.affected_rows ?? 0;
     } catch (err) {
       throw new CustomError(
         'Failed to update author for collections in the database',
@@ -222,7 +223,7 @@ export class CollectionsOrBundlesService {
           collectionIds,
           query: 'BULK_UPDATE_AUTHOR_FOR_COLLECTIONS',
         },
-      )
+      );
     }
   }
 
@@ -241,9 +242,9 @@ export class CollectionsOrBundlesService {
           updatedByProfileId,
           now: new Date().toISOString(),
         },
-      })
+      });
 
-      return response.update_app_collections?.affected_rows ?? 0
+      return response.update_app_collections?.affected_rows ?? 0;
     } catch (err) {
       throw new CustomError(
         'Failed to delete collections in the database',
@@ -252,7 +253,7 @@ export class CollectionsOrBundlesService {
           collectionIds,
           query: 'BULK_DELETE_COLLECTIONS',
         },
-      )
+      );
     }
   }
 
@@ -267,7 +268,7 @@ export class CollectionsOrBundlesService {
         labels,
         collectionIds,
         updatedByProfileId,
-      )
+      );
 
       // Add the labels
       const response = await dataService.query<
@@ -285,21 +286,21 @@ export class CollectionsOrBundlesService {
             ),
           ),
         },
-      })
+      });
 
       await this.bulkUpdateDateAndLastAuthorCollections(
         collectionIds,
         updatedByProfileId,
-      )
+      );
 
-      return response.insert_app_collection_labels?.affected_rows ?? 0
+      return response.insert_app_collection_labels?.affected_rows ?? 0;
     } catch (err) {
       throw new CustomError('Failed to bulk add labels to collections', err, {
         labels,
         collectionIds,
         query:
           'BULK_ADD_LABELS_TO_COLLECTIONS, BULK_UPDATE_DATE_AND_LAST_AUTHOR_COLLECTIONS',
-      })
+      });
     }
   }
 
@@ -318,14 +319,14 @@ export class CollectionsOrBundlesService {
           labels,
           collectionIds,
         },
-      })
+      });
 
       await this.bulkUpdateDateAndLastAuthorCollections(
         collectionIds,
         updatedByProfileId,
-      )
+      );
 
-      return response.delete_app_collection_labels?.affected_rows ?? 0
+      return response.delete_app_collection_labels?.affected_rows ?? 0;
     } catch (err) {
       throw new CustomError(
         'Failed to bulk delete labels from collections',
@@ -335,7 +336,7 @@ export class CollectionsOrBundlesService {
           collectionIds,
           query: 'BULK_DELETE_LABELS_FROM_COLLECTIONS',
         },
-      )
+      );
     }
   }
 
@@ -353,6 +354,6 @@ export class CollectionsOrBundlesService {
         updatedByProfileId,
         now: new Date().toISOString(),
       },
-    })
+    });
   }
 }

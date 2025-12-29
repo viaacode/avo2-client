@@ -1,21 +1,16 @@
+import { Button, Container, Icon, IconName, Spacer, } from '@viaa/avo2-components';
 import {
-  Button,
-  Container,
-  Icon,
-  IconName,
-  Spacer,
-} from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+  AvoAssignmentAssignment,
+  AvoAssignmentResponse,
+  AvoCoreBlockItemBase,
+  AvoCoreBlockItemType,
+  AvoItemItem,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { intersection } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { type FC, type ReactNode, useCallback, useEffect, useState, } from 'react';
 
 import { commonUserAtom } from '../../../../authentication/authentication.store';
 import { PermissionService } from '../../../../authentication/helpers/permission-service';
@@ -43,11 +38,11 @@ import { AssignmentService } from '../../../assignment.service';
 import { type PupilSearchFilterState } from '../../../assignment.types';
 
 interface AssignmentResponseSearchTabProps {
-  assignment: Avo.Assignment.Assignment | null;
-  assignmentResponse: Avo.Assignment.Response | null;
+  assignment: AvoAssignmentAssignment | null;
+  assignmentResponse: AvoAssignmentResponse | null;
   filterState: any;
   setFilterState: any;
-  appendBlockToPupilCollection: (block: Avo.Core.BlockItemBase) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
+  appendBlockToPupilCollection: (block: AvoCoreBlockItemBase) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
 }
 
 export const AssignmentResponseSearchTab: FC<
@@ -66,7 +61,7 @@ export const AssignmentResponseSearchTab: FC<
   // UI
   const [isAddToAssignmentModalOpen, setIsAddToAssignmentModalOpen] =
     useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = useState<Avo.Item.Item | null>(null);
+  const [selectedItem, setSelectedItem] = useState<AvoItemItem | null>(null);
 
   // HTTP
 
@@ -112,7 +107,7 @@ export const AssignmentResponseSearchTab: FC<
   };
 
   const handleAddToPupilCollection = async (
-    item: Avo.Item.Item,
+    item: AvoItemItem,
   ): Promise<void> => {
     if (!assignment) {
       ToastService.info(
@@ -242,10 +237,10 @@ export const AssignmentResponseSearchTab: FC<
     }
   };
 
-  const renderItemDetailActionButton = (item: Avo.Item.Item) => {
+  const renderItemDetailActionButton = (item: AvoItemItem) => {
     if (
       !assignment?.lom_learning_resource_type?.includes(
-        Avo.Core.BlockItemType.BOUW,
+        AvoCoreBlockItemType.BOUW,
       )
     ) {
       return null;

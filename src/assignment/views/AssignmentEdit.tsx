@@ -16,7 +16,17 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentBlock,
+  AvoAssignmentContributor,
+  AvoContentTypeEnglish,
+  AvoCoreBlockItemBase,
+  AvoLomLomField,
+  AvoSearchOrderDirection,
+  AvoUserUser,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { isAfter, isPast } from 'date-fns';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
@@ -27,7 +37,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
 import type { MarcomNoteInfo } from '../../collection/components/CollectionOrBundleEdit.types';
 import {
   BundleSortProp,
@@ -142,7 +152,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
     ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
   );
   const [originalAssignment, setOriginalAssignment] =
-    useState<Avo.Assignment.Assignment | null>(null);
+    useState<AvoAssignmentAssignment | null>(null);
   const [isAssignmentLoading, setIsAssignmentLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [assignmentError, setAssignmentError] =
@@ -154,12 +164,12 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
   >({});
 
   const [contributors, setContributors] =
-    useState<Avo.Assignment.Contributor[]>();
+    useState<AvoAssignmentContributor[]>();
   const [bookmarkViewCounts, setBookmarkViewCounts] =
     useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS);
 
   const assignment =
-    assignmentFormValues as unknown as Avo.Assignment.Assignment & {
+    assignmentFormValues as unknown as AvoAssignmentAssignment & {
       marcom_note?: MarcomNoteInfo;
     };
 
@@ -182,7 +192,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
     useGetCollectionsOrBundlesContainingFragment(
       assignmentId as string,
       BundleSortProp.title,
-      Avo.Search.OrderDirection.ASC,
+      AvoSearchOrderDirection.ASC,
       { enabled: !!assignmentId && !!assignment },
     );
 
@@ -196,15 +206,13 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
     }
     const response =
       await AssignmentService.fetchContributorsByAssignmentId(assignmentId);
-    setContributors((response || []) as Avo.Assignment.Contributor[]);
+    setContributors((response || []) as AvoAssignmentContributor[]);
   }, [assignmentId]);
 
-  const updateBlocksInAssignmentState = (
-    newBlocks: Avo.Core.BlockItemBase[],
-  ) => {
+  const updateBlocksInAssignmentState = (newBlocks: AvoCoreBlockItemBase[]) => {
     setAssignmentFormValues({
       ...assignmentFormValues,
-      blocks: newBlocks as Avo.Assignment.Block[],
+      blocks: newBlocks as AvoAssignmentBlock[],
     });
     setHasUnsavedChanges(true);
   };
@@ -322,7 +330,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
       }
       setIsAssignmentLoading(true);
       setAssignmentError(null);
-      let tempAssignment: Avo.Assignment.Assignment | null = null;
+      let tempAssignment: AvoAssignmentAssignment | null = null;
 
       if (
         !commonUser?.permissions?.includes(
@@ -561,9 +569,9 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
             ...assignment,
             blocks: cleanupTitleAndDescriptions(
               assignment?.blocks || [],
-            ) as Avo.Assignment.Block[],
+            ) as AvoAssignmentBlock[],
             owner_profile_id: commonUser?.profileId,
-          } as Partial<Avo.Assignment.Assignment>,
+          } as Partial<AvoAssignmentAssignment>,
           commonUser,
         );
 
@@ -643,9 +651,9 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
             ? 'ADMIN'
             : getContributorType(
                 commonUser?.profileId,
-                assignment as Avo.Assignment.Assignment,
+                assignment as AvoAssignmentAssignment,
                 (originalAssignment.contributors ||
-                  []) as Avo.Assignment.Contributor[],
+                  []) as AvoAssignmentContributor[],
               ).toLowerCase();
           trackEvents(
             {
@@ -692,7 +700,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
   }, [resetForm, setAssignmentFormValues, originalAssignment]);
 
   const selectEducationLevel = useCallback(
-    (lom: Avo.Lom.LomField) => {
+    (lom: AvoLomLomField) => {
       if (!assignment) return;
       setSelectEducationLevelModalOpen(false);
       setHasUnsavedChanges(true);
@@ -704,7 +712,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
   const handleAssignmentFieldUpdate = useCallback(
     (
       newAssignment:
-        | Partial<Avo.Assignment.Assignment>
+        | Partial<AvoAssignmentAssignment>
         | Partial<AssignmentFields>,
     ) => {
       setAssignmentFormValues(
@@ -806,11 +814,11 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
   const [draggableListButton, draggableListModal] = useDraggableListModal({
     modal: {
       items: assignment?.blocks,
-      onClose: (reorderedBlocks?: Avo.Assignment.Block[]) => {
+      onClose: (reorderedBlocks?: AvoAssignmentBlock[]) => {
         if (reorderedBlocks) {
           const blocks = setBlockPositionToIndex(
             reorderedBlocks,
-          ) as Avo.Assignment.Block[];
+          ) as AvoAssignmentBlock[];
 
           handleAssignmentFieldUpdate({
             ...assignmentFormValues,
@@ -912,10 +920,10 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
       ];
 
     return (
-      <MetaData spaced={true} category={Avo.ContentType.English.ASSIGNMENT}>
+      <MetaData spaced={true} category={AvoContentTypeEnglish.ASSIGNMENT}>
         <MetaDataItem>
           <HeaderContentType
-            category={Avo.ContentType.English.ASSIGNMENT}
+            category={AvoContentTypeEnglish.ASSIGNMENT}
             label={tText('admin/shared/constants/index___opdracht')}
           />
         </MetaDataItem>
@@ -992,7 +1000,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           return (
             <div className="c-assignment-details-tab">
               <AssignmentDetailsFormReadonly
-                assignment={assignment as Avo.Assignment.Assignment}
+                assignment={assignment as AvoAssignmentAssignment}
               />
             </div>
           );
@@ -1010,7 +1018,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         return (
           <div className="c-assignment-details-tab">
             <AssignmentMetaDataFormEditable
-              assignment={assignment as Avo.Assignment.Assignment}
+              assignment={assignment as AvoAssignmentAssignment}
               setAssignment={handleAssignmentFieldUpdate}
               onFocus={() => setHasUnsavedChanges(true)}
             />
@@ -1369,14 +1377,14 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
 
       {!!assignment && !!commonUser && (
         <PublishAssignmentModal
-          onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
+          onClose={(newAssignment: AvoAssignmentAssignment | undefined) => {
             setIsPublishModalOpen(false);
             if (newAssignment) {
               setAssignmentFormValues(newAssignment as any);
             }
           }}
           isOpen={isPublishModalOpen}
-          assignment={assignment as Avo.Assignment.Assignment}
+          assignment={assignment as AvoAssignmentAssignment}
           parentBundles={bundlesContainingAssignment}
         />
       )}
@@ -1392,8 +1400,8 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
               isOpen={isShareModalOpen}
               onClose={() => setIsShareModalOpen(false)}
               contributors={transformContributorsToSimpleContributors(
-                originalAssignment?.owner as Avo.User.User,
-                (contributors || []) as Avo.Assignment.Contributor[],
+                originalAssignment?.owner as AvoUserUser,
+                (contributors || []) as AvoAssignmentContributor[],
               )}
               onDeleteContributor={(contributorInfo) =>
                 onDeleteContributor(

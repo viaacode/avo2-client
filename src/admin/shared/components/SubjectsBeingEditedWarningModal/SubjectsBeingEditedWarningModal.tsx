@@ -1,4 +1,5 @@
-import { type Avo } from '@viaa/avo2-types';
+import { AvoShareEditStatus } from '@viaa/avo2-types';
+
 import { noop } from 'es-toolkit';
 import { type FC, type ReactNode } from 'react';
 
@@ -18,7 +19,7 @@ interface SubjectsBeingEditedWarningModalProps {
   editWarningSection2: ReactNode;
   route: ValueOf<typeof APP_PATH>['route'];
   confirmCallback: () => void;
-  subjects: Avo.Share.EditStatus[];
+  subjects: AvoShareEditStatus[];
 }
 
 export const SubjectsBeingEditedWarningModal: FC<

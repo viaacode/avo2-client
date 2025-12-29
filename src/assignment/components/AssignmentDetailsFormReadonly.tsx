@@ -1,15 +1,20 @@
-import { type DefaultProps, Form, FormGroup } from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { type FC } from 'react'
+import { type DefaultProps, Form, FormGroup } from '@viaa/avo2-components';
+
+import { clsx } from 'clsx';
+import { type FC } from 'react';
 
 import { formatTimestamp } from '../../shared/helpers/formatters/date';
 
-import './AssignmentDetailsForm.scss'
+import './AssignmentDetailsForm.scss';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentLabel,
+  AvoAssignmentLabelType,
+} from '@viaa/avo2-types';
 import { tText } from '../../shared/helpers/translate-text';
 
 interface AssignmentDetailsFormReadonlyProps {
-  assignment: Avo.Assignment.Assignment
+  assignment: AvoAssignmentAssignment;
 }
 
 export const AssignmentDetailsFormReadonly: FC<
@@ -22,11 +27,11 @@ export const AssignmentDetailsFormReadonly: FC<
           <p>
             {(assignment.labels || [])
               .filter(
-                (item: { assignment_label: Avo.Assignment.Label }) =>
-                  item.assignment_label.type === Avo.Assignment.LabelType.CLASS,
+                (item: { assignment_label: AvoAssignmentLabel }) =>
+                  item.assignment_label.type === AvoAssignmentLabelType.CLASS,
               )
               .map(
-                (item: { assignment_label: Avo.Assignment.Label }) =>
+                (item: { assignment_label: AvoAssignmentLabel }) =>
                   item.assignment_label.label,
               )
               .join(', ') || '-'}
@@ -37,11 +42,11 @@ export const AssignmentDetailsFormReadonly: FC<
           <p>
             {(assignment.labels || [])
               .filter(
-                (item: { assignment_label: Avo.Assignment.Label }) =>
-                  item.assignment_label.type === Avo.Assignment.LabelType.LABEL,
+                (item: { assignment_label: AvoAssignmentLabel }) =>
+                  item.assignment_label.type === AvoAssignmentLabelType.LABEL,
               )
               .map(
-                (item: { assignment_label: Avo.Assignment.Label }) =>
+                (item: { assignment_label: AvoAssignmentLabel }) =>
                   item.assignment_label.label,
               )
               .join(', ') || '-'}
@@ -65,5 +70,5 @@ export const AssignmentDetailsFormReadonly: FC<
         </FormGroup>
       </Form>
     </div>
-  )
-}
+  );
+};

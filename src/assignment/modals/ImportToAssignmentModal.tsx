@@ -16,7 +16,7 @@ import {
   TextInput,
   Toggle,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import {
@@ -55,6 +55,10 @@ import { type AssignmentTableColumns } from '../assignment.types';
 import { AssignmentDeadline } from '../components/AssignmentDeadline';
 
 import './AddItemsModals.scss';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentLabelType,
+} from '@viaa/avo2-types';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
@@ -88,7 +92,7 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
   const [createWithDescription, setCreateWithDescription] =
     useState<boolean>(false);
   const [assignments, setAssignments] = useState<
-    Partial<Avo.Assignment.Assignment>[] | null
+    Partial<AvoAssignmentAssignment>[] | null
   >(null);
   const [selectedAssignmentId, setSelectedAssignmentId] = useState<string>();
   const [sortColumn, sortOrder, handleColumnClick] =
@@ -171,7 +175,7 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
 
   // very similar to table in assignment overview, but with differences
   const renderCell = (
-    assignment: Avo.Assignment.Assignment,
+    assignment: AvoAssignmentAssignment,
     colKey: AssignmentTableColumns,
   ) => {
     const cellData: any = (assignment as any)[colKey];
@@ -197,7 +201,7 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
       case 'labels':
         return AssignmentHelper.getLabels(
           assignment,
-          Avo.Assignment.LabelType.LABEL,
+          AvoAssignmentLabelType.LABEL,
         )
           .map((labelLink: any) => labelLink.assignment_label.label)
           .join(', ');
@@ -205,7 +209,7 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
       case 'class_room':
         return AssignmentHelper.getLabels(
           assignment,
-          Avo.Assignment.LabelType.CLASS,
+          AvoAssignmentLabelType.CLASS,
         )
           .map((label: any) => label.assignment_label.label)
           .join(', ');
@@ -281,7 +285,7 @@ export const ImportToAssignmentModal: FC<ImportToAssignmentModalProps> = ({
                     'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt',
                   )
             }
-            renderCell={(rowData: Avo.Assignment.Assignment, colKey: string) =>
+            renderCell={(rowData: AvoAssignmentAssignment, colKey: string) =>
               renderCell(rowData, colKey as AssignmentTableColumns)
             }
             rowKey="id"

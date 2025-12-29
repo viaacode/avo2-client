@@ -1,7 +1,10 @@
-import { Avo } from '@viaa/avo2-types';
+import {
+  AvoAssignmentContentLabel,
+  AvoCoreBlockItemType,
+  AvoCoreContentType,
+} from '@viaa/avo2-types';
 import { type ReactNode } from 'react';
 import { array, object, type Schema, string } from 'yup';
-
 import {
   SearchFilter,
   SearchOrderAndDirectionProperty,
@@ -12,7 +15,6 @@ import { ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-
 import { tHtml } from '../shared/helpers/translate-html';
 import { tText } from '../shared/helpers/translate-text';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
-
 import {
   type AssignmentColumn,
   type AssignmentResponseColumn,
@@ -30,7 +32,7 @@ export const MAX_LABEL_LENGTH = 20;
 
 export const CONTENT_LABEL_TO_ROUTE_PARTS: {
   /* eslint-disable @typescript-eslint/no-unused-vars */
-  [contentType in Avo.Assignment.ContentLabel]: string /* eslint-enable @typescript-eslint/no-unused-vars */;
+  [contentType in AvoAssignmentContentLabel]: string /* eslint-enable @typescript-eslint/no-unused-vars */;
 } = {
   ITEM: ROUTE_PARTS.item,
   COLLECTIE: ROUTE_PARTS.collections,
@@ -220,7 +222,7 @@ export enum ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS {
 }
 
 export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
-  assignmentTypes: Avo.Core.BlockItemType[],
+  assignmentTypes: AvoCoreBlockItemType[],
 ): AssignmentResponseColumn[] => [
   {
     id: 'pupil',
@@ -228,7 +230,7 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
     sortable: true,
     dataType: TableColumnDataType.string,
   },
-  ...(assignmentTypes.includes(Avo.Core.BlockItemType.BOUW)
+  ...(assignmentTypes.includes(AvoCoreBlockItemType.BOUW)
     ? [
         {
           id: 'collection_title' as const,
@@ -267,8 +269,10 @@ export const ENABLED_FILTERS_PUPIL_SEARCH: SearchFilter[] = [
   SearchFilter.provider,
 ];
 
-export const ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH: Avo.Core.ContentType[] =
-  [Avo.Core.ContentType.VIDEO, Avo.Core.ContentType.AUDIO];
+export const ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH: AvoCoreContentType[] = [
+  AvoCoreContentType.VIDEO,
+  AvoCoreContentType.AUDIO,
+];
 
 export const ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH: SearchOrderAndDirectionProperty[] =
   [

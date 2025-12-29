@@ -1,5 +1,5 @@
 import { useSlot } from '@viaa/avo2-components';
-import { type Avo, type PermissionName } from '@viaa/avo2-types';
+import { AvoAuthLoginResponseLoggedIn, AvoUserCommonUser, type PermissionName } from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { stringifyUrl } from 'query-string';
@@ -7,16 +7,13 @@ import { type FC, type ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { APP_PATH } from '../../constants';
+import { checkLoginState } from '../../embed/hooks/useGetLoginStateForEmbed.ts';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
 import { loginAtom } from '../authentication.store';
 import { PermissionService } from '../helpers/permission-service';
-import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';
-
-import {
-  PermissionGuardFail,
-  PermissionGuardPass,
-} from './PermissionGuard.slots';
+import { redirectToClientPage } from '../helpers/redirects/redirects';
+import { PermissionGuardFail, PermissionGuardPass, } from './PermissionGuard.slots';
 
 interface PermissionGuardProps {
   children: ReactNode;
@@ -36,8 +33,8 @@ export const PermissionGuard: FC<PermissionGuardProps | LoggedInGuardProps> = (
   const hasToBeLoggedIn =
     (props as LoggedInGuardProps).hasToBeLoggedIn || false;
   const loginStatus = useAtomValue(loginAtom);
-  const commonUser: Avo.User.CommonUser | undefined = (
-    loginStatus?.data as Avo.Auth.LoginResponseLoggedIn | undefined
+  const commonUser: AvoUserCommonUser | undefined = (
+    loginStatus?.data as AvoAuthLoginResponseLoggedIn | undefined
   )?.commonUserInfo;
   const navigateFunc = useNavigate();
 
@@ -60,7 +57,13 @@ export const PermissionGuard: FC<PermissionGuardProps | LoggedInGuardProps> = (
   });
 
   useEffect(() => {
-    if (!loginStatus.loading && !commonUser) {
+    if (!loginStatus.loading && !loginStatus.data) {
+      // trigger login check
+      checkLoginState();
+    } else if (
+      !loginStatus.loading &&
+      loginStatus?.data?.message === 'LOGGED_OUT'
+    ) {
       redirectToClientPage(
         stringifyUrl({
           url: APP_PATH.REGISTER_OR_LOGIN.route,

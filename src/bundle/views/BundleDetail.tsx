@@ -21,7 +21,16 @@ import {
   ToolbarLeft,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoCollectionCollection,
+  AvoCollectionFragment,
+  AvoContentTypeEnglish,
+  AvoCoreBlockItemType,
+  AvoCoreContentType,
+  AvoSearchResultItem,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
@@ -32,7 +41,7 @@ import { Link } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
 import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionService } from '../../collection/collection.service';
@@ -44,16 +53,10 @@ import {
 } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components/modals/PublishCollectionModal';
 import { useGetCollectionOrBundleByIdOrInviteToken } from '../../collection/hooks/useGetCollectionOrBundleByIdOrInviteToken';
-import {
-  COLLECTION_COPY,
-  COLLECTION_COPY_REGEX,
-} from '../../collection/views/CollectionDetail';
+import { COLLECTION_COPY, COLLECTION_COPY_REGEX, } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
-import {
-  ALL_SEARCH_FILTERS,
-  type SearchFilter,
-} from '../../search/search.const';
+import { ALL_SEARCH_FILTERS, type SearchFilter, } from '../../search/search.const';
 import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { EditButton } from '../../shared/components/EditButton/EditButton';
@@ -66,16 +69,10 @@ import { getMoreOptionsLabel } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render-bookmark-button';
-import {
-  defaultGoToDetailLink,
-  defaultRenderDetailLink,
-} from '../../shared/helpers/default-render-detail-link';
+import { defaultGoToDetailLink, defaultRenderDetailLink, } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import {
-  getFullName,
-  renderAvatar,
-} from '../../shared/helpers/formatters/avatar';
+import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
@@ -84,11 +81,7 @@ import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-view
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import {
-  getRelatedItems,
-  ObjectTypes,
-  ObjectTypesAll,
-} from '../../shared/services/related-items-service';
+import { getRelatedItems, ObjectTypes, ObjectTypesAll, } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { BundleAction } from '../bundle.types';
 
@@ -119,7 +112,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
     useState(false);
   const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
   const [relatedItems, setRelatedBundles] = useState<
-    Avo.Search.ResultItem[] | null
+    AvoSearchResultItem[] | null
   >(null);
   const [permissions, setPermissions] = useState<
     Partial<{
@@ -406,7 +399,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 
       defaultGoToDetailLink(navigateFunc)(
         duplicateBundle.id,
-        Avo.Core.ContentType.BUNDEL,
+        AvoCoreContentType.BUNDEL,
       );
       setBundleId(duplicateBundle.id);
       ToastService.success(
@@ -509,21 +502,21 @@ export const BundleDetail: FC<BundleDetailProps> = ({
   };
 
   // Render functions
-  const renderChildFragments = (bundleFragments: Avo.Collection.Fragment[]) => {
+  const renderChildFragments = (bundleFragments: AvoCollectionFragment[]) => {
     if (!bundleObj) {
       return null;
     }
-    return bundleFragments.map((fragment: Avo.Collection.Fragment) => {
+    return bundleFragments.map((fragment: AvoCollectionFragment) => {
       const collectionOrAssignment = fragment.item_meta as
-        | Avo.Collection.Collection
-        | (Avo.Assignment.Assignment & { type_id: number });
+        | AvoCollectionCollection
+        | (AvoAssignmentAssignment & { type_id: number });
       if (!collectionOrAssignment) {
         return null;
       }
-      const category: Avo.ContentType.English =
+      const category: AvoContentTypeEnglish =
         collectionOrAssignment.type_id === ContentTypeNumber.collection
-          ? Avo.ContentType.English.COLLECTION
-          : Avo.ContentType.English.ASSIGNMENT;
+          ? AvoContentTypeEnglish.COLLECTION
+          : AvoContentTypeEnglish.ASSIGNMENT;
       const detailRoute =
         collectionOrAssignment.type_id === ContentTypeNumber.collection
           ? APP_PATH.COLLECTION_DETAIL.route
@@ -762,18 +755,17 @@ export const BundleDetail: FC<BundleDetailProps> = ({
     }
 
     const { is_public, thumbnail_path, title, description_long } =
-      bundleObj as Avo.Collection.Collection;
+      bundleObj as AvoCollectionCollection;
 
     if (!isFirstRender) {
       setIsFirstRender(true);
     }
 
     const collectionFragments = (bundleObj?.collection_fragments || []).filter(
-      (f: Avo.Collection.Fragment) =>
-        f.type === Avo.Core.BlockItemType.COLLECTION,
+      (f: AvoCollectionFragment) => f.type === AvoCoreBlockItemType.COLLECTION,
     );
     const assignmentFragments = (bundleObj?.collection_fragments || []).filter(
-      (f) => f.type === Avo.Core.BlockItemType.ASSIGNMENT,
+      (f) => f.type === AvoCoreBlockItemType.ASSIGNMENT,
     );
     const groupedLomsLabels = getGroupedLomsKeyValue(
       bundleObj?.loms || [],
@@ -824,14 +816,14 @@ export const BundleDetail: FC<BundleDetailProps> = ({
                     mobile: (
                       <Thumbnail
                         className="u-spacer"
-                        category={Avo.ContentType.English.BUNDLE}
+                        category={AvoContentTypeEnglish.BUNDLE}
                         src={thumbnail_path || undefined}
                       />
                     ),
                     desktop: (
                       <Thumbnail
                         className="u-spacer-right-l"
-                        category={Avo.ContentType.English.BUNDLE}
+                        category={AvoContentTypeEnglish.BUNDLE}
                         src={thumbnail_path || undefined}
                       />
                     ),
@@ -848,11 +840,11 @@ export const BundleDetail: FC<BundleDetailProps> = ({
                       <ToolbarItem>
                         <MetaData
                           spaced={true}
-                          category={Avo.ContentType.English.BUNDLE}
+                          category={AvoContentTypeEnglish.BUNDLE}
                         >
                           <MetaDataItem>
                             <HeaderContentType
-                              category={Avo.ContentType.English.BUNDLE}
+                              category={AvoContentTypeEnglish.BUNDLE}
                               label={
                                 is_public
                                   ? tText(
@@ -949,7 +941,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
                 collection={bundleObj}
                 parentBundles={[]}
                 isOpen={isPublishModalOpen}
-                onClose={(newBundle: Avo.Collection.Collection | undefined) => {
+                onClose={(newBundle: AvoCollectionCollection | undefined) => {
                   setIsPublishModalOpen(false);
                   if (newBundle) {
                     refetchBundle();
@@ -978,7 +970,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
               )}
               type="bundle"
               emailLinkHref={window.location.href}
-              emailLinkTitle={(bundleObj as Avo.Collection.Collection).title}
+              emailLinkTitle={(bundleObj as AvoCollectionCollection).title}
               isOpen={isShareThroughEmailModalOpen}
               onClose={() => setIsShareThroughEmailModalOpen(false)}
             />

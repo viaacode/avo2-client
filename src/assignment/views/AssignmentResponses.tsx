@@ -16,7 +16,14 @@ import {
   ToolbarRight,
   useKeyPress,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentResponse,
+  AvoCoreBlockItemBase,
+  AvoCoreBlockItemType,
+  AvoSearchOrderDirection,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { cloneDeep, compact, isNil, noop, uniq } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
@@ -77,7 +84,7 @@ interface AssignmentResponsesProps {
 }
 
 const DEFAULT_SORT_COLUMN = 'updated_at';
-const DEFAULT_SORT_ORDER = Avo.Search.OrderDirection.DESC;
+const DEFAULT_SORT_ORDER = AvoSearchOrderDirection.DESC;
 
 export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
   onUpdate = noop,
@@ -86,10 +93,11 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 
   const commonUser = useAtomValue(commonUserAtom);
   // Data
-  const [assignment, setAssignment] =
-    useState<Avo.Assignment.Assignment | null>(null);
+  const [assignment, setAssignment] = useState<AvoAssignmentAssignment | null>(
+    null,
+  );
   const [assignmentResponses, setAssignmentResponses] = useState<
-    Avo.Assignment.Response[] | null
+    AvoAssignmentResponse[] | null
   >(null);
   const [assignmentResponsesCount, setAssignmentResponsesCount] =
     useState<number>(0);
@@ -123,7 +131,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
     setDeleteAssignmentResponseModalOpen,
   ] = useState<boolean>(false);
   const [markedAssignmentResponse, setMarkedAssignmentResponse] =
-    useState<Avo.Assignment.Response | null>(null);
+    useState<AvoAssignmentResponse | null>(null);
 
   // Permissions
   const [canViewAssignmentResponses, setCanViewAssignmentResponses] = useState<
@@ -134,7 +142,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
     () =>
       GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS(
         (assignment?.lom_learning_resource_type ||
-          []) as Avo.Core.BlockItemType[],
+          []) as AvoCoreBlockItemType[],
       ),
     [assignment],
   );
@@ -154,7 +162,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
       setSortColumn(query.sort_column as AssignmentTableColumns);
     }
     if (query.sort_order) {
-      setSortOrder(query.sort_order as Avo.Search.OrderDirection);
+      setSortOrder(query.sort_order as AvoSearchOrderDirection);
     }
   }, []);
 
@@ -327,7 +335,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
               (await AssignmentService.enrichBlocksWithMeta(
                 response.pupil_collection_blocks,
                 fragments,
-              )) as Avo.Core.BlockItemBase[],
+              )) as AvoCoreBlockItemBase[],
           };
         }),
       ),
@@ -405,7 +413,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
     }
   };
 
-  const renderDeleteAction = (assignmentResponse: Avo.Assignment.Response) => (
+  const renderDeleteAction = (assignmentResponse: AvoAssignmentResponse) => (
     <Button
       title={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
       ariaLabel={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
@@ -446,7 +454,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
     );
 
   const renderCell = (
-    assignmentResponse: Avo.Assignment.Response,
+    assignmentResponse: AvoAssignmentResponse,
     colKey: AssignmentResponseTableColumns,
   ) => {
     const cellData: any = (assignmentResponse as any)[colKey];
@@ -472,7 +480,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
       case 'pupil_collection_block_count':
         return renderDataCell(
           (
-            assignmentResponse.pupil_collection_blocks as Avo.Core.BlockItemBase[]
+            assignmentResponse.pupil_collection_blocks as AvoCoreBlockItemBase[]
           )?.filter(isItemWithMeta).length || '',
           tText('assignment/views/assignment-responses___fragmenten'),
           'c-assignment-responses__block-count',
@@ -597,7 +605,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
                   'assignment/views/assignment-responses___er-zijn-nog-geen-antwoorden-geregistreerd-voor-deze-opdracht',
                 )
           }
-          renderCell={(rowData: Avo.Assignment.Response, colKey: string) =>
+          renderCell={(rowData: AvoAssignmentResponse, colKey: string) =>
             renderCell(rowData, colKey as AssignmentResponseTableColumns)
           }
           rowKey="id"

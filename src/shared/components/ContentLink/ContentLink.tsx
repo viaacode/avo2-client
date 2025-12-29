@@ -1,25 +1,30 @@
-import { Flex, FlexItem, Spacer, Thumbnail } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { type FC } from 'react'
-import { Link } from 'react-router-dom'
-
+import { Flex, FlexItem, Spacer, Thumbnail } from '@viaa/avo2-components';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentContentLabel,
+  AvoCollectionCollection,
+  AvoContentTypeDutch,
+  AvoItemItem,
+} from '@viaa/avo2-types';
+import { type FC } from 'react';
+import { Link } from 'react-router-dom';
 import { CONTENT_LABEL_TO_ROUTE_PARTS } from '../../../assignment/assignment.const';
 import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../../collection/collection.types';
 import { tHtml } from '../../helpers/translate-html';
 
 type ParentType = {
-  content_label: string | null
-  content_id: string
-}
+  content_label: string | null;
+  content_id: string;
+};
 
 interface ContentLinkProps {
-  parent: ParentType
-  content: Avo.Assignment.Assignment | Avo.Collection.Collection | Avo.Item.Item
+  parent: ParentType;
+  content: AvoAssignmentAssignment | AvoCollectionCollection | AvoItemItem;
 }
 
 export const ContentLink: FC<ContentLinkProps> = ({ parent, content }) => {
   const dutchLabel = ((content as any)?.type?.label ||
-    (parent.content_label || '').toLowerCase()) as Avo.ContentType.Dutch
+    (parent.content_label || '').toLowerCase()) as AvoContentTypeDutch;
 
   const linkContent = (
     <div className="c-box c-box--padding-small">
@@ -45,20 +50,20 @@ export const ContentLink: FC<ContentLinkProps> = ({ parent, content }) => {
         </FlexItem>
       </Flex>
     </div>
-  )
+  );
 
   if (content) {
     return (
       <Link
         to={`/${
           CONTENT_LABEL_TO_ROUTE_PARTS[
-            parent.content_label as Avo.Assignment.ContentLabel
+            parent.content_label as AvoAssignmentContentLabel
           ]
         }/${parent.content_id}`}
       >
         {linkContent}
       </Link>
-    )
+    );
   }
-  return linkContent
-}
+  return linkContent;
+};

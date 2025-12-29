@@ -3,9 +3,9 @@ import {
   MetaData,
   MetaDataItem,
   Thumbnail,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { type FC, type ReactNode } from 'react'
+} from '@viaa/avo2-components';
+
+import { type FC, type ReactNode } from 'react';
 
 import {
   formatDate,
@@ -21,15 +21,16 @@ import {
   EmbedCodeExternalWebsite,
 } from '../embed-code.types';
 
-import './EmbedCodeFilterTableCell.scss'
+import './EmbedCodeFilterTableCell.scss';
+import { AvoItemItem } from '@viaa/avo2-types';
+import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../collection/collection.types.ts';
 import { formatDurationHoursMinutesSeconds } from '../../shared/helpers/formatters/duration';
-import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../collection/collection.types.ts'
 
 export interface EmbedCodeFilterTableCellProps {
-  id: string
-  data: Partial<EmbedCode>
-  onNameClick: (data: Partial<EmbedCode>) => void
-  actions?: (data?: EmbedCodeFilterTableCellProps['data']) => ReactNode
+  id: string;
+  data: Partial<EmbedCode>;
+  onNameClick: (data: Partial<EmbedCode>) => void;
+  actions?: (data?: EmbedCodeFilterTableCellProps['data']) => ReactNode;
 }
 
 export const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
@@ -39,22 +40,22 @@ export const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
   actions = () => null,
 }) => {
   const getItemTimestamp = (date: string | undefined) => {
-    return <span title={formatTimestamp(date)}>{formatDate(date)}</span>
-  }
+    return <span title={formatTimestamp(date)}>{formatDate(date)}</span>;
+  };
 
   const renderThumbnail = ({ content, thumbnailPath }: Partial<EmbedCode>) => (
     <Thumbnail
       alt="thumbnail"
       category={
         CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[
-          (content as Avo.Item.Item)?.type?.label
+          (content as AvoItemItem)?.type?.label
         ]
       }
       className="m-embed-code-cell-thumbnail"
       src={thumbnailPath}
       showCategoryIcon
     />
-  )
+  );
 
   const renderTitle = ({ content, contentType, title }: Partial<EmbedCode>) => (
     <div className="c-content-header">
@@ -83,12 +84,12 @@ export const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
           </MetaDataItem>
           <MetaDataItem
             icon={IconName.eye}
-            label={String((content as Avo.Item.Item)?.item_counts?.views || 0)}
+            label={String((content as AvoItemItem)?.item_counts?.views || 0)}
           />
         </MetaData>
       </div>
     </div>
-  )
+  );
 
   const renderEmbedType = ({ externalWebsite }: Partial<EmbedCode>) => {
     if (externalWebsite === EmbedCodeExternalWebsite.SMARTSCHOOL) {
@@ -105,7 +106,7 @@ export const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
             'embed-code/components/embed-code-filter-table-cell___smartschool',
           )}
         </span>
-      )
+      );
     }
     if (externalWebsite === EmbedCodeExternalWebsite.BOOKWIDGETS) {
       return (
@@ -121,40 +122,40 @@ export const EmbedCodeFilterTableCell: FC<EmbedCodeFilterTableCellProps> = ({
             'embed-code/components/embed-code-filter-table-cell___bookwidgets',
           )}
         </span>
-      )
+      );
     }
-    return null
-  }
+    return null;
+  };
 
   switch (id) {
     case 'thumbnail':
-      return renderThumbnail(data)
+      return renderThumbnail(data);
 
     case 'title':
-      return renderTitle(data)
+      return renderTitle(data);
 
     case 'createdAt':
-      return getItemTimestamp(data?.createdAt)
+      return getItemTimestamp(data?.createdAt);
 
     case 'updatedAt':
-      return getItemTimestamp(data?.updatedAt)
+      return getItemTimestamp(data?.updatedAt);
 
     case 'externalWebsite':
-      return renderEmbedType(data)
+      return renderEmbedType(data);
 
     case 'start': {
       const cellData = `${formatDurationHoursMinutesSeconds(
         data.start,
-      )} - ${formatDurationHoursMinutesSeconds(data.end)}`
+      )} - ${formatDurationHoursMinutesSeconds(data.end)}`;
       return (
         <span className="time-code" title={cellData}>
           {cellData}
         </span>
-      )
+      );
     }
     case 'action':
-      return <>{actions(data)}</>
+      return <>{actions(data)}</>;
   }
 
-  return null
-}
+  return null;
+};

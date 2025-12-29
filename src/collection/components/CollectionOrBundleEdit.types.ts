@@ -1,5 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
-
+import { AvoCollectionCollection, AvoCollectionFragment, } from '@viaa/avo2-types';
 import type { ValueOf } from '../../shared/types';
 import { type CollectionOrBundle } from '../collection.types';
 
@@ -17,8 +16,8 @@ export interface MarcomNoteInfo {
 export type FragmentPropUpdateAction = {
   type: 'UPDATE_FRAGMENT_PROP';
   index: number;
-  fragmentProp: keyof Avo.Collection.Fragment;
-  fragmentPropValue: ValueOf<Avo.Collection.Fragment>;
+  fragmentProp: keyof AvoCollectionFragment;
+  fragmentPropValue: ValueOf<AvoCollectionFragment>;
 };
 
 export type FragmentSwapAction = {
@@ -30,7 +29,7 @@ export type FragmentSwapAction = {
 export type FragmentInsertAction = {
   type: 'INSERT_FRAGMENT';
   index: number;
-  fragment: Avo.Collection.Fragment;
+  fragment: AvoCollectionFragment;
 };
 
 export type FragmentDeleteAction = {
@@ -40,13 +39,13 @@ export type FragmentDeleteAction = {
 
 export type CollectionUpdateAction = {
   type: 'UPDATE_COLLECTION';
-  newCollection: Avo.Collection.Collection | null;
+  newCollection: AvoCollectionCollection | null;
 };
 
 export type CollectionPropUpdateAction = {
   type: 'UPDATE_COLLECTION_PROP';
-  collectionProp: keyof Avo.Collection.Collection | string; // nested values are also allowed
-  collectionPropValue: ValueOf<Avo.Collection.Collection> | MarcomNoteInfo; // marcom note only exists on collection object in the client
+  collectionProp: keyof AvoCollectionCollection | string; // nested values are also allowed
+  collectionPropValue: ValueOf<AvoCollectionCollection> | MarcomNoteInfo; // marcom note only exists on collection object in the client
   updateInitialCollection?: boolean;
 };
 
@@ -64,8 +63,8 @@ export type CollectionAction =
   | CollectionResetAction;
 
 export interface CollectionState {
-  currentCollection: Avo.Collection.Collection | null;
-  initialCollection: Avo.Collection.Collection | null;
+  currentCollection: AvoCollectionCollection | null;
+  initialCollection: AvoCollectionCollection | null;
 }
 
 export interface CollectionOrBundleEditProps {

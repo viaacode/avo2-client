@@ -1,15 +1,4 @@
-import {
-  Alert,
-  Column,
-  Container,
-  DatePicker,
-  type DefaultProps,
-  Form,
-  FormGroup,
-  Grid,
-  Spacer,
-  TextInput,
-} from '@viaa/avo2-components';
+import { Alert, Column, Container, DatePicker, type DefaultProps, Form, FormGroup, Grid, Spacer, TextInput, } from '@viaa/avo2-components';
 import { clsx } from 'clsx';
 import { isAfter, isPast } from 'date-fns';
 import { useAtomValue } from 'jotai';
@@ -28,7 +17,7 @@ import { type AssignmentFields } from '../hooks/assignment-form';
 import { AssignmentLabels } from './AssignmentLabels';
 
 import './AssignmentDetailsForm.scss';
-import { Avo } from '@viaa/avo2-types';
+import { AvoAssignmentLabelType } from '@viaa/avo2-types';
 
 const AssignmentDetailsFormIds = {
   classrooms: 'c-assignment-details-form__classrooms', // labels with type 'CLASS'
@@ -81,12 +70,12 @@ export const AssignmentDetailsFormEditable: FC<
                     labelFor={getId(AssignmentDetailsFormIds.classrooms)}
                   >
                     <AssignmentLabels
-                      type={Avo.Assignment.LabelType.CLASS}
+                      type={AvoAssignmentLabelType.CLASS}
                       id={getId(AssignmentDetailsFormIds.classrooms)}
                       labels={(assignment.labels || []).filter(
                         (item) =>
                           item.assignment_label.type ===
-                          Avo.Assignment.LabelType.CLASS,
+                          AvoAssignmentLabelType.CLASS,
                       )}
                       dictionary={{
                         placeholder: tText(
@@ -111,7 +100,7 @@ export const AssignmentDetailsFormEditable: FC<
                         const newLabels = mergeWithOtherLabels(
                           assignment.labels || [],
                           target,
-                          Avo.Assignment.LabelType.CLASS,
+                          AvoAssignmentLabelType.CLASS,
                         );
 
                         setAssignment({
@@ -129,7 +118,7 @@ export const AssignmentDetailsFormEditable: FC<
                     labelFor={getId(AssignmentDetailsFormIds.labels)}
                   >
                     <AssignmentLabels
-                      type={Avo.Assignment.LabelType.LABEL}
+                      type={AvoAssignmentLabelType.LABEL}
                       id={getId(AssignmentDetailsFormIds.labels)}
                       labels={(assignment.labels || []).filter(
                         (item) => item.assignment_label.type === 'LABEL',
@@ -148,7 +137,7 @@ export const AssignmentDetailsFormEditable: FC<
                           labels: mergeWithOtherLabels(
                             assignment.labels || [],
                             changed,
-                            Avo.Assignment.LabelType.LABEL,
+                            AvoAssignmentLabelType.LABEL,
                           ),
                         });
                       }}

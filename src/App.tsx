@@ -1,4 +1,4 @@
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { isEqual, noop, uniq } from 'es-toolkit';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
@@ -36,6 +36,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
+import { AvoAuthIdpLinkedSuccessQueryParam } from '@viaa/avo2-types';
 import { getAdminCoreConfig } from './admin/shared/helpers/get-admin-core-config.tsx';
 
 const queryClient = new QueryClient({
@@ -142,7 +143,7 @@ export const App: FC = () => {
   useEffect(() => {
     // if (loadingInfo.state === 'loaded') {
     const url = new URL(window.location.href);
-    const linked: Avo.Auth.IdpLinkedSuccessQueryParam = 'linked';
+    const linked: AvoAuthIdpLinkedSuccessQueryParam = 'linked';
     const hasLinked = url.searchParams.get(linked) !== null;
     if (hasLinked) {
       ToastService.success(tHtml('app___je-account-is-gekoppeld'));

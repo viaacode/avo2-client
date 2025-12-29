@@ -5,18 +5,21 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import {
+  AvoAssignmentContributor,
+  AvoCollectionContributor,
+  AvoShareShareWithColleagueType,
+} from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import { type ReactNode } from 'react';
-
 import { renderMobileDesktop } from './renderMobileDesktop';
 import { tHtml } from './translate-html';
 import { tText } from './translate-text';
 
 export function contributorsToString(
   contributors:
-    | Avo.Assignment.Contributor[]
-    | Avo.Collection.Contributor[]
+    | AvoAssignmentContributor[]
+    | AvoCollectionContributor[]
     | null
     | undefined,
 ) {
@@ -36,10 +39,10 @@ export function contributorsToString(
 }
 
 export function createShareIconTableOverview(
-  shareType: Avo.Share.ShareWithColleagueType | undefined,
+  shareType: AvoShareShareWithColleagueType | undefined,
   contributors:
-    | Avo.Assignment.Contributor[]
-    | Avo.Collection.Contributor[]
+    | AvoAssignmentContributor[]
+    | AvoCollectionContributor[]
     | null
     | undefined,
   contentType: 'assignment' | 'collection',
@@ -48,13 +51,13 @@ export function createShareIconTableOverview(
   const shareTypeTitle =
     shareType &&
     {
-      [Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ]: tText(
+      [AvoShareShareWithColleagueType.GEDEELD_MET_MIJ]: tText(
         'shared/helpers/share-icon-table-overview___gedeeld-met-mij',
       ),
-      [Avo.Share.ShareWithColleagueType.GEDEELD_MET_ANDERE]: tText(
+      [AvoShareShareWithColleagueType.GEDEELD_MET_ANDERE]: tText(
         'shared/helpers/share-icon-table-overview___gedeeld-met-anderen',
       ),
-      [Avo.Share.ShareWithColleagueType.NIET_GEDEELD]:
+      [AvoShareShareWithColleagueType.NIET_GEDEELD]:
         contentType === 'assignment'
           ? tText('shared/helpers/share-icon-table-overview___mijn-opdracht')
           : tText('shared/helpers/share-icon-table-overview___mijn-collectie'),
@@ -64,7 +67,7 @@ export function createShareIconTableOverview(
   const count = contributors?.length;
   const names = contributorsToString(contributors);
   switch (shareType) {
-    case Avo.Share.ShareWithColleagueType.GEDEELD_MET_ANDERE:
+    case AvoShareShareWithColleagueType.GEDEELD_MET_ANDERE:
       shareTypeText = tHtml(
         'shared/helpers/share-icon-table-overview___b-gedeeld-met-count-anderen-b-names',
         {
@@ -74,7 +77,7 @@ export function createShareIconTableOverview(
       );
       break;
 
-    case Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ:
+    case AvoShareShareWithColleagueType.GEDEELD_MET_MIJ:
       if ((contributors?.length || 0) > 1) {
         shareTypeText = tHtml(
           'shared/helpers/share-icon-table-overview___b-gedeeld-met-mij-en-count-anderen-b-br-names',
@@ -90,7 +93,7 @@ export function createShareIconTableOverview(
       }
       break;
 
-    case Avo.Share.ShareWithColleagueType.NIET_GEDEELD:
+    case AvoShareShareWithColleagueType.NIET_GEDEELD:
     default:
       shareTypeText =
         contentType === 'assignment'
@@ -99,9 +102,9 @@ export function createShareIconTableOverview(
   }
 
   const shareTypeIcon =
-    shareType === Avo.Share.ShareWithColleagueType.GEDEELD_MET_MIJ
+    shareType === AvoShareShareWithColleagueType.GEDEELD_MET_MIJ
       ? IconName.userGroup
-      : shareType === Avo.Share.ShareWithColleagueType.GEDEELD_MET_ANDERE
+      : shareType === AvoShareShareWithColleagueType.GEDEELD_MET_ANDERE
         ? IconName.userGroup2
         : IconName.user2;
   return renderMobileDesktop({

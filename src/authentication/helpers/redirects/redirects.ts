@@ -1,16 +1,24 @@
-import { type Avo } from '@viaa/avo2-types';
+import { AvoAuthIdpType } from '@viaa/avo2-types';
+
 import { isString, omit, trimStart } from 'es-toolkit';
 import queryString, { stringifyUrl } from 'query-string';
-import { type Location } from 'react-router';
+import { type Location, NavigateFunction } from 'react-router';
 
-import { APP_PATH } from '../../constants';
-import { EmbedCodeService } from '../../embed-code/embed-code-service';
-import { ROUTE_PARTS } from '../../shared/constants/routes';
-import { getEnv } from '../../shared/helpers/env';
-import { SERVER_LOGOUT_PAGE } from '../authentication.const';
-import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/register-stamboek.tsx';
+import { APP_PATH } from '../../../constants';
+import { EmbedCodeService } from '../../../embed-code/embed-code-service';
+import { ROUTE_PARTS } from '../../../shared/constants/routes';
+import { getEnv } from '../../../shared/helpers/env';
+import { SERVER_LOGOUT_PAGE } from '../../authentication.const';
+import { STAMBOEK_LOCAL_STORAGE_KEY } from '../../views/registration-flow/register-stamboek.tsx';
 
-import { getBaseUrl } from './get-base-url';
+import { getBaseUrl } from '../get-base-url';
+
+export function redirectToClientPage(
+  path: string,
+  navigate: NavigateFunction,
+): void {
+  navigate(path);
+}
 
 /**
  *
@@ -192,7 +200,7 @@ export function logoutAndRedirectToLogin(location?: Location): void {
  */
 export function redirectToServerLinkAccount(
   location: Location,
-  idpType: Avo.Auth.IdpType,
+  idpType: AvoAuthIdpType,
   idpParameters?: string,
 ): void {
   const returnToUrl = getBaseUrl(location) + location.pathname;
@@ -207,7 +215,7 @@ export function redirectToServerLinkAccount(
 
 export function redirectToServerUnlinkAccount(
   location: Location,
-  idpType: Avo.Auth.IdpType,
+  idpType: AvoAuthIdpType,
 ): void {
   const returnToUrl = getBaseUrl(location) + location.pathname;
   window.location.href = `${getEnv('PROXY_URL')}/auth/unlink-account?${queryString.stringify(

@@ -1,16 +1,16 @@
-import { type FC } from 'react'
-import { Outlet, useSearchParams } from 'react-router'
+import { type FC } from 'react';
+import { Outlet, useSearchParams } from 'react-router';
 
-import 'react-datepicker/dist/react-datepicker.css' // TODO: lazy-load
-import './App.scss'
-import './styles/main.scss'
+import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
+import './App.scss';
+import './styles/main.scss';
 import { ACMIDMNudgeModal } from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
 import { Footer } from './shared/components/Footer/Footer';
 import { Navigation } from './shared/components/Navigation/Navigation';
 import { ZendeskWrapper } from './shared/components/ZendeskWrapper/ZendeskWrapper';
 
 export const AppClientLayout: FC = () => {
-  const [query] = useSearchParams()
+  const [query] = useSearchParams();
   return (
     <>
       <Navigation isPreviewRoute={query.get('preview') === 'true'} />
@@ -19,7 +19,7 @@ export const AppClientLayout: FC = () => {
       <ACMIDMNudgeModal />
       <ZendeskWrapper />
     </>
-  )
-}
+  );
+};
 
-export default AppClientLayout
+export default AppClientLayout;

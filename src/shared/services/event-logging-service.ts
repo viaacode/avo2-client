@@ -1,41 +1,47 @@
-import { fetchWithLogout } from '@meemoo/admin-core-ui/client'
-import { type Avo } from '@viaa/avo2-types'
-
+import { fetchWithLogout } from '@meemoo/admin-core-ui/client';
+import {
+  AvoEventLoggingAction,
+  AvoEventLoggingEvent,
+  AvoEventLoggingObjectType,
+  AvoSearchDateRange,
+  AvoUserCommonUser,
+  AvoUserUser,
+} from '@viaa/avo2-types';
 import { getEnv } from '../helpers/env';
 import { historyLocationsAtom, store } from '../store/ui.store';
 
 export interface MinimalClientEvent {
-  action: Avo.EventLogging.Action
-  object: string // entity being modified
-  object_type: Avo.EventLogging.ObjectType
+  action: AvoEventLoggingAction;
+  object: string; // entity being modified
+  object_type: AvoEventLoggingObjectType;
   resource?: Record<
     string,
-    string | string[] | boolean | number | Avo.Search.DateRange
-  >
+    string | string[] | boolean | number | AvoSearchDateRange
+  >;
 }
 
 export function trackEvents(
   events: MinimalClientEvent[] | MinimalClientEvent,
-  user: Avo.User.User | Avo.User.CommonUser | null | undefined,
+  user: AvoUserUser | AvoUserCommonUser | null | undefined,
 ): void {
   try {
-    let eventsArray: MinimalClientEvent[]
+    let eventsArray: MinimalClientEvent[];
 
     if (Array.isArray(events)) {
-      eventsArray = events
+      eventsArray = events;
     } else {
-      eventsArray = [events]
+      eventsArray = [events];
     }
 
     const eventLogEntries = eventsArray.map(
-      (event: MinimalClientEvent): Avo.EventLogging.Event => {
-        const eventHistory = store.get(historyLocationsAtom) || []
+      (event: MinimalClientEvent): AvoEventLoggingEvent => {
+        const eventHistory = store.get(historyLocationsAtom) || [];
         return {
           occurred_at: new Date().toISOString(),
           source_url: window.location.origin + window.location.pathname, // url when the event was triggered
           subject:
-            (user as Avo.User.User)?.profile?.id ??
-            (user as Avo.User.CommonUser)?.profileId ??
+            (user as AvoUserUser)?.profile?.id ??
+            (user as AvoUserCommonUser)?.profileId ??
             'anonymous', // Entity making causing the event
           subject_type: 'user',
           source_querystring: window.location.search,
@@ -45,9 +51,9 @@ export function trackEvents(
             ...event.resource,
             history: eventHistory,
           },
-        }
+        };
       },
-    )
+    );
 
     // No await, since we never want to block the program from continuing
     // because something is wrong with the event tracking
@@ -62,9 +68,9 @@ export function trackEvents(
       console.error('Failed to log events to database', {
         eventLogEntries,
         innerException: err,
-      })
-    })
+      });
+    });
   } catch (err) {
-    console.error('Failed to log event to the server', err, { events })
+    console.error('Failed to log event to the server', err, { events });
   }
 }

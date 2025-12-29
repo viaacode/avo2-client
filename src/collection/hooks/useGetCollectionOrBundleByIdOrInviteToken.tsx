@@ -1,6 +1,5 @@
-import { useQuery } from '@tanstack/react-query'
-import { type Avo } from '@viaa/avo2-types'
-
+import { useQuery } from '@tanstack/react-query';
+import { AvoCollectionCollection } from '@viaa/avo2-types';
 import { QUERY_KEYS } from '../../shared/constants/query-keys';
 import { CollectionService } from '../collection.service';
 import { type CollectionOrBundle } from '../collection.types';
@@ -10,12 +9,12 @@ export const useGetCollectionOrBundleByIdOrInviteToken = (
   type: CollectionOrBundle,
   inviteToken: string | undefined,
   options: {
-    enabled?: boolean
-    refetchInterval?: number | false
-    refetchIntervalInBackground?: boolean
+    enabled?: boolean;
+    refetchInterval?: number | false;
+    refetchIntervalInBackground?: boolean;
   } = {},
 ) => {
-  return useQuery<Avo.Collection.Collection | null>({
+  return useQuery<AvoCollectionCollection | null>({
     queryKey: [
       QUERY_KEYS.GET_COLLECTION_OR_BUNDLE_BY_ID_OR_INVITE_TOKEN,
       collectionId,
@@ -27,11 +26,11 @@ export const useGetCollectionOrBundleByIdOrInviteToken = (
         collectionId,
         type,
         inviteToken,
-      )
+      );
     },
     enabled: true,
     refetchInterval: false,
     refetchIntervalInBackground: false,
     ...options,
-  })
-}
+  });
+};

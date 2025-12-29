@@ -1,11 +1,11 @@
 import { Button, Spacer } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+
+import { AvoAuthLoginResponse, AvoAuthLoginResponseLoggedIn, } from '@viaa/avo2-types';
 import { subMinutes } from 'date-fns';
 import { compact } from 'es-toolkit';
 import { atom } from 'jotai';
 import queryString from 'query-string';
 import { type Location } from 'react-router';
-
 import { LTI_JWT_TOKEN_HEADER } from '../embed/embed.types';
 import { EmbedCodeService } from '../embed-code/embed-code-service';
 import { CustomError } from '../shared/helpers/custom-error';
@@ -13,10 +13,9 @@ import { getEnv } from '../shared/helpers/env';
 import { tText } from '../shared/helpers/translate-text';
 import { ToastService } from '../shared/services/toast-service';
 import { historyLocationsAtom } from '../shared/store/ui.store';
-
 import { loginAtom } from './authentication.store';
 import { LoginMessage, type LoginState } from './authentication.types';
-import { logoutAndRedirectToLogin } from './helpers/redirects';
+import { logoutAndRedirectToLogin } from './helpers/redirects/redirects';
 
 let checkSessionTimeoutTimerId: number | null = null;
 
@@ -107,7 +106,7 @@ export const getLoginStateAtom = atom<LoginState | null, [boolean], void>(
 export async function getLoginResponse(
   forceRefetch = false,
   historyLocations: string[],
-): Promise<Avo.Auth.LoginResponse> {
+): Promise<AvoAuthLoginResponse> {
   try {
     const url = `${getEnv('PROXY_URL')}/auth/check-login?${queryString.stringify(
       {
@@ -119,18 +118,20 @@ export async function getLoginResponse(
     const { fetchWithLogoutJson } = await import(
       '@meemoo/admin-core-ui/client'
     );
-    const loginStateResponse =
-      await fetchWithLogoutJson<Avo.Auth.LoginResponse>(url, {
+    const loginStateResponse = await fetchWithLogoutJson<AvoAuthLoginResponse>(
+      url,
+      {
         forceLogout: false,
         headers: {
           'Content-Type': 'application/json',
           [LTI_JWT_TOKEN_HEADER]: EmbedCodeService.getJwtToken() || '',
         },
-      });
+      },
+    );
 
     // Check if session is about to expire and show warning toast
     // Redirect to login page when session actually expires
-    const expiresAt = (loginStateResponse as Avo.Auth.LoginResponseLoggedIn)
+    const expiresAt = (loginStateResponse as AvoAuthLoginResponseLoggedIn)
       ?.sessionExpiresAt;
     if (expiresAt) {
       if (checkSessionTimeoutTimerId) {
@@ -145,7 +146,7 @@ export async function getLoginResponse(
     if (loginStateResponse.message === 'LOGGED_IN') {
       // Trigger extra Google Analytics event to track what the user group is of the logged-in user
       // https://meemoo.atlassian.net/browse/AVO-3011
-      const userInfo = (loginStateResponse as Avo.Auth.LoginResponseLoggedIn)
+      const userInfo = (loginStateResponse as AvoAuthLoginResponseLoggedIn)
         .userInfo;
       const event = {
         event: 'visit',

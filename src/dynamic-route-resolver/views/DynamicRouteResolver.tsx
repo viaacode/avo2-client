@@ -6,7 +6,7 @@ import {
   type DbContentPage,
 } from '@meemoo/admin-core-ui/client';
 import { IconName } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import { AvoAuthLoginResponseLoggedIn, AvoSearchOrderDirection, PermissionName, } from '@viaa/avo2-types';
 import { useAtom, useSetAtom } from 'jotai';
 import { stringifyUrl } from 'query-string';
 import { type FC, useCallback, useEffect, useState } from 'react';
@@ -41,10 +41,7 @@ import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user
 import { tHtml } from '../../shared/helpers/translate-html';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Locale } from '../../shared/translations/translations.types';
-import {
-  DynamicRouteType,
-  GET_ERROR_MESSAGES,
-} from '../dynamic-route-resolver.const';
+import { DynamicRouteType, GET_ERROR_MESSAGES, } from '../dynamic-route-resolver.const';
 
 interface RouteInfo {
   type: DynamicRouteType;
@@ -141,7 +138,7 @@ export const DynamicRouteResolver: FC = () => {
 
       // Special route exception
       // /klaar/archief: redirect teachers to search page with klaar filter
-      const commonUserInfo = (loginState as Avo.Auth.LoginResponseLoggedIn)
+      const commonUserInfo = (loginState as AvoAuthLoginResponseLoggedIn)
         ?.commonUserInfo;
       if (
         pathname === '/klaar/archief' &&
@@ -153,7 +150,7 @@ export const DynamicRouteResolver: FC = () => {
             SearchFilter.serie,
             'KLAAR',
             SearchFilter.broadcastDate,
-            Avo.Search.OrderDirection.DESC,
+            AvoSearchOrderDirection.DESC,
           ),
           { replace: true },
         );
@@ -325,7 +322,7 @@ export const DynamicRouteResolver: FC = () => {
               <ContentPageRenderer
                 contentPageInfo={routeInfo.data as ContentPageInfo}
                 commonUser={
-                  (loginState as Avo.Auth.LoginResponseLoggedIn).commonUserInfo
+                  (loginState as AvoAuthLoginResponseLoggedIn).commonUserInfo
                 }
                 renderFakeTitle={
                   (routeInfo.data as ContentPageInfo).contentType === 'FAQ_ITEM'

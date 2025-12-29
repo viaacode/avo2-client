@@ -1,20 +1,19 @@
-import { type FlowPlayerWrapperProps } from '@meemoo/admin-core-ui/admin'
-import { type Avo } from '@viaa/avo2-types'
-import { type FC } from 'react'
-
+import { type FlowPlayerWrapperProps } from '@meemoo/admin-core-ui/admin';
+import { AvoItemItem } from '@viaa/avo2-types';
+import { type FC } from 'react';
 import { FlowPlayerWrapper } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 import { type BlockItemComponent } from '../collection.types';
 
 export type CollectionFragmentFlowPlayerProps = BlockItemComponent &
-  FlowPlayerWrapperProps
+  FlowPlayerWrapperProps;
 
 export const CollectionFragmentFlowPlayer: FC<
   CollectionFragmentFlowPlayerProps
 > = (props) => {
-  const { block, ...rest } = props
+  const { block, ...rest } = props;
 
-  const meta = block?.item_meta as Avo.Item.Item | undefined
+  const meta = block?.item_meta as AvoItemItem | undefined;
 
   return (
     <FlowPlayerWrapper
@@ -41,5 +40,5 @@ export const CollectionFragmentFlowPlayer: FC<
       }
       {...rest}
     />
-  )
-}
+  );
+};

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { type Avo } from '@viaa/avo2-types';
 
+import { AvoAuthLoginResponse } from '@viaa/avo2-types';
 import { loginAtom } from '../../authentication/authentication.store';
 import { LoginMessage } from '../../authentication/authentication.types';
 import { EmbedCodeService } from '../../embed-code/embed-code-service';
@@ -34,7 +34,7 @@ export async function checkLoginState() {
     }
     const loginResponse = await response.json();
     store.set(loginAtom, loginResponse);
-    return loginResponse as Avo.Auth.LoginResponse;
+    return loginResponse as AvoAuthLoginResponse;
   } catch (err) {
     console.error('Error fetching login state for embed:', err);
     throw new CustomError('Failed to fetch login state for embed', err);
@@ -42,7 +42,7 @@ export async function checkLoginState() {
 }
 
 export const useGetLoginStateForEmbed = () => {
-  return useQuery<Avo.Auth.LoginResponse>({
+  return useQuery<AvoAuthLoginResponse>({
     queryKey: [QUERY_KEYS.GET_LOGIN_STATE_EMBED],
     queryFn: async () => checkLoginState(),
     refetchOnWindowFocus: true,

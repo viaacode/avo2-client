@@ -1,5 +1,5 @@
-import './ShareWithColleagues.scss'
-import { useLocalStorage } from '@uidotdev/usehooks'
+import './ShareWithColleagues.scss';
+import { useLocalStorage } from '@uidotdev/usehooks';
 import {
   Avatar,
   Button,
@@ -17,13 +17,13 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@viaa/avo2-components'
-import { type Avo, type PermissionName } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { useAtomValue } from 'jotai'
-import { isNil } from 'es-toolkit'
-import { isEmpty } from 'es-toolkit/compat'
-import { type FC, useMemo, useState } from 'react'
+} from '@viaa/avo2-components';
+import { AvoAssignmentAssignment, type PermissionName } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
+import { isNil } from 'es-toolkit';
+import { isEmpty } from 'es-toolkit/compat';
+import { useAtomValue } from 'jotai';
+import { type FC, useMemo, useState } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { tHtml } from '../../helpers/translate-html';
@@ -47,21 +47,21 @@ import {
 } from './ShareWithColleagues.types';
 
 type ShareWithColleaguesProps = {
-  contributors: ContributorInfo[]
+  contributors: ContributorInfo[];
   availableRights: {
-    [ContributorInfoRight.CONTRIBUTOR]: PermissionName
-    [ContributorInfoRight.VIEWER]: PermissionName
-  }
-  isAdmin: boolean
-  onAddNewContributor: (info: Partial<ContributorInfo>) => Promise<void>
+    [ContributorInfoRight.CONTRIBUTOR]: PermissionName;
+    [ContributorInfoRight.VIEWER]: PermissionName;
+  };
+  isAdmin: boolean;
+  onAddNewContributor: (info: Partial<ContributorInfo>) => Promise<void>;
   onEditRights: (
     info: ContributorInfo,
     newRights: ContributorInfoRight,
-  ) => Promise<void>
-  onDeleteContributor: (info: ContributorInfo) => Promise<void>
-  hasModalOpen: (open: boolean) => void
-  assignment?: Partial<Avo.Assignment.Assignment>
-}
+  ) => Promise<void>;
+  onDeleteContributor: (info: ContributorInfo) => Promise<void>;
+  hasModalOpen: (open: boolean) => void;
+  assignment?: Partial<AvoAssignmentAssignment>;
+};
 
 export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
   assignment,
@@ -73,7 +73,7 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
   onDeleteContributor,
   onEditRights,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
   const currentUser =
     (contributors.find(
       (contributor) => contributor.profileId === commonUser?.profileId,
@@ -85,123 +85,123 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
       lastName: commonUser?.lastName,
       profileId: commonUser?.profileId,
       profileImage: commonUser?.organisation?.logo_url || commonUser?.avatar,
-    } as ContributorInfo)
+    } as ContributorInfo);
   const [isRightsDropdownOpen, setIsRightsDropdownOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [contributor, setNewContributor] = useState<Partial<ContributorInfo>>({
     email: undefined,
     rights: undefined,
-  })
-  const [error, setError] = useState<string | null>(null)
+  });
+  const [error, setError] = useState<string | null>(null);
   const [isEditRightsModalOpen, setIsEditRightsModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [toEditContributor, setToEditContributor] =
-    useState<ContributorInfo | null>(null)
+    useState<ContributorInfo | null>(null);
   const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [toDeleteContributor, setToDeleteContributor] =
-    useState<ContributorInfo | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+    useState<ContributorInfo | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isShareWarningModalOpen, setIsShareWarningModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   const [isShareWarningModalRemembered] = useLocalStorage(
     ConfirmModalRememberKey.AVO__REMEMBER__SHARE_WITH_COLLEAGUES,
     false,
-  )
+  );
 
   const handleRightsButtonClicked = () => {
-    setIsRightsDropdownOpen(!isRightsDropdownOpen)
-  }
+    setIsRightsDropdownOpen(!isRightsDropdownOpen);
+  };
 
   const addNewContributor = async () => {
-    setError(null) // Clear errors
-    setIsShareWarningModalOpen(false)
+    setError(null); // Clear errors
+    setIsShareWarningModalOpen(false);
 
     if (!contributor.email) {
       setError(
         tText(
           'shared/components/share-with-colleagues/share-with-colleagues___email-is-verplicht',
         ),
-      )
+      );
     } else if (!validateEmailAddress(contributor.email)) {
       setError(
         tText(
           'shared/components/share-with-colleagues/share-with-colleagues___email-is-geen-geldig-emailadres',
         ),
-      )
+      );
     } else {
-      setIsLoading(true)
+      setIsLoading(true);
       await onAddNewContributor({
         ...contributor,
         rights: findRightByValue(contributor.rights as ContributorInfoRight),
-      })
-      setNewContributor({ email: undefined, rights: undefined })
-      setError(null)
-      setIsLoading(false)
+      });
+      setNewContributor({ email: undefined, rights: undefined });
+      setError(null);
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleAddNewContributor = () => {
-    const isAssignment = assignment !== undefined
+    const isAssignment = assignment !== undefined;
     // Skip the warning if it's not an assignment, been dismissed or the new contributor is a viewer
     if (
       !isAssignment ||
       isShareWarningModalRemembered ||
       contributor.rights === ContributorInfoRight.VIEWER
     ) {
-      addNewContributor()
+      addNewContributor();
     } else {
-      setIsShareWarningModalOpen(true)
-      hasModalOpen(true)
+      setIsShareWarningModalOpen(true);
+      hasModalOpen(true);
     }
-  }
+  };
 
   const handleEditContributorRights = (user: ContributorInfo) => {
-    setToEditContributor(user)
-    setIsEditRightsModalOpen(true)
-    hasModalOpen(true)
-  }
+    setToEditContributor(user);
+    setIsEditRightsModalOpen(true);
+    hasModalOpen(true);
+  };
 
   const handleConfirmEditContributorRights = async (
     right: ContributorInfoRight,
   ) => {
-    await onEditRights(toEditContributor as ContributorInfo, right)
-    handleOnCloseEditUserRights()
-  }
+    await onEditRights(toEditContributor as ContributorInfo, right);
+    handleOnCloseEditUserRights();
+  };
 
   const handleOnCloseEditUserRights = () => {
-    setIsEditRightsModalOpen(false)
-    setToEditContributor(null)
-    hasModalOpen(false)
-  }
+    setIsEditRightsModalOpen(false);
+    setToEditContributor(null);
+    hasModalOpen(false);
+  };
 
   const handleDeleteContributor = (user: ContributorInfo) => {
-    setToDeleteContributor(user)
-    setIsDeleteUserModalOpen(true)
-    hasModalOpen(true)
-  }
+    setToDeleteContributor(user);
+    setIsDeleteUserModalOpen(true);
+    hasModalOpen(true);
+  };
 
   const handleConfirmDeleteContributor = async () => {
-    await onDeleteContributor(toDeleteContributor as ContributorInfo)
-    handleOnCloseDeleteContributor()
-  }
+    await onDeleteContributor(toDeleteContributor as ContributorInfo);
+    handleOnCloseDeleteContributor();
+  };
 
   const handleOnCloseDeleteContributor = () => {
-    setToDeleteContributor(null)
-    setIsDeleteUserModalOpen(false)
-    hasModalOpen(false)
-  }
+    setToDeleteContributor(null);
+    setIsDeleteUserModalOpen(false);
+    hasModalOpen(false);
+  };
 
   const handleOnCloseShareWarningModal = () => {
-    setIsShareWarningModalOpen(false)
-  }
+    setIsShareWarningModalOpen(false);
+  };
 
   const updateNewContributor = (value: Record<string, string>) => {
     setNewContributor({
       ...contributor,
       ...value,
-    })
-  }
+    });
+  };
 
   const renderColleaguesInfoList = () => {
     if (contributors.length > 0) {
@@ -209,31 +209,31 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
         <ul className="c-colleagues-info-list">
           {sortContributors(contributors).map((contributor, index) => {
             const currentUserIsOwner =
-              currentUser.rights === ContributorInfoRight.OWNER
+              currentUser.rights === ContributorInfoRight.OWNER;
             const currentUserIsContributor =
-              currentUser.rights === ContributorInfoRight.CONTRIBUTOR
+              currentUser.rights === ContributorInfoRight.CONTRIBUTOR;
 
             const contributorIsOwner =
-              contributor.rights === ContributorInfoRight.OWNER
+              contributor.rights === ContributorInfoRight.OWNER;
             const contributorIsCurrentUser =
-              contributor.email === currentUser.email
-            const contributorIsPending = isNil(contributor.profileId)
+              contributor.email === currentUser.email;
+            const contributorIsPending = isNil(contributor.profileId);
             const contributorIsConflicting = !hasEducationLevel(
               contributor,
               assignment,
-            )
+            );
 
             const showConflictIcon =
               !contributorIsPending &&
               contributorIsConflicting &&
-              !contributorIsOwner
+              !contributorIsOwner;
 
             const canEdit =
               !showConflictIcon &&
               ((!contributorIsCurrentUser && !contributorIsOwner) ||
                 (!currentUserIsOwner && contributorIsCurrentUser) ||
                 (currentUserIsContributor && !contributorIsOwner) ||
-                (isAdmin && !contributorIsOwner))
+                (isAdmin && !contributorIsOwner));
 
             // The owner cannot delete himself but can delete everyone else
             // Contributors can delete themselves and every other contributor and viewer
@@ -246,7 +246,7 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
               // The current user is a contributor and this contributor is not the owner
               (currentUserIsContributor && !contributorIsOwner) ||
               // The current user is an admin and this contributor is not the owner
-              (isAdmin && !contributorIsOwner)
+              (isAdmin && !contributorIsOwner);
 
             return (
               <li key={index} className="c-colleague-info-row">
@@ -325,16 +325,16 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
                   )}
                 </div>
               </li>
-            )
+            );
           })}
         </ul>
-      )
+      );
     }
-  }
+  };
 
   const changeRightsOptions =
     useMemo((): SelectOption<ContributorInfoRight>[] => {
-      const options: SelectOption<ContributorInfoRight>[] = []
+      const options: SelectOption<ContributorInfoRight>[] = [];
       if (
         commonUser?.permissions?.includes(
           availableRights[ContributorInfoRight.CONTRIBUTOR],
@@ -343,7 +343,7 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
         options.push({
           label: getContributorRightLabel(ContributorInfoRight.CONTRIBUTOR),
           value: ContributorInfoRight.CONTRIBUTOR,
-        })
+        });
       }
       if (
         commonUser?.permissions?.includes(
@@ -353,7 +353,7 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
         options.push({
           label: getContributorRightLabel(ContributorInfoRight.VIEWER),
           value: ContributorInfoRight.VIEWER,
-        })
+        });
       }
       if (currentUser.rights === ContributorInfoRight.OWNER) {
         options.push({
@@ -361,10 +361,10 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
             'shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___eigenaarschap-overdragen',
           ),
           value: ContributorInfoRight.OWNER,
-        })
+        });
       }
-      return options
-    }, [commonUser?.permissions, currentUser.rights, getContributorRightLabel])
+      return options;
+    }, [commonUser?.permissions, currentUser.rights, getContributorRightLabel]);
 
   const rightsDropdownOptions = [
     ...(commonUser?.permissions?.includes(availableRights.CONTRIBUTOR)
@@ -389,7 +389,7 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
           },
         ]
       : []),
-  ]
+  ];
   return (
     <>
       {(currentUser.rights === ContributorInfoRight.OWNER ||
@@ -433,8 +433,8 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
                   <MenuContent
                     menuItems={rightsDropdownOptions}
                     onClick={(id) => {
-                      updateNewContributor({ rights: id as string })
-                      handleRightsButtonClicked()
+                      updateNewContributor({ rights: id as string });
+                      handleRightsButtonClicked();
                     }}
                   />
                 </DropdownContent>
@@ -545,5 +545,5 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
         </Spacer>
       )}
     </>
-  )
-}
+  );
+};

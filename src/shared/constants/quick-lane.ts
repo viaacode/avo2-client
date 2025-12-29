@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types'
+import { AvoSearchOrderDirection } from '@viaa/avo2-types';
 
 export type QuickLaneColumn =
   | 'title'
@@ -7,9 +7,9 @@ export type QuickLaneColumn =
   | 'content_label'
   | 'author'
   | 'organisation'
-  | 'action'
+  | 'action';
 
 export const QUICK_LANE_DEFAULTS = {
   sort_column: 'created_at',
-  sort_order: Avo.Search.OrderDirection.DESC,
-}
+  sort_order: AvoSearchOrderDirection.DESC,
+};

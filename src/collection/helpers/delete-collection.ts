@@ -1,6 +1,5 @@
-import { type Avo } from '@viaa/avo2-types'
-import { isNil } from 'es-toolkit'
-
+import { AvoUserCommonUser } from '@viaa/avo2-types';
+import { isNil } from 'es-toolkit';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -8,7 +7,7 @@ import { CollectionService } from '../collection.service';
 
 export async function deleteCollection(
   collectionId: string | null | undefined,
-  commonUser: Avo.User.CommonUser | null | undefined,
+  commonUser: AvoUserCommonUser | null | undefined,
   isCollection: boolean,
   deleteCallback: () => Promise<void>,
   afterDeleteCallback?: () => void,
@@ -19,8 +18,8 @@ export async function deleteCollection(
         tHtml(
           'collection/helpers/delete-collection___de-huidige-collectie-werd-nog-nooit-opgeslagen-heeft-geen-id',
         ),
-      )
-      return
+      );
+      return;
     }
 
     if (!commonUser?.profileId) {
@@ -28,11 +27,11 @@ export async function deleteCollection(
         tHtml(
           'collection/helpers/delete-collection___kan-collectie-niet-verwijderen-omdat-de-gebruiker-geen-profiel-id-heeft-probeer-opnieuw-in-te-loggen',
         ),
-      )
-      return
+      );
+      return;
     }
 
-    await deleteCallback()
+    await deleteCallback();
 
     trackEvents(
       {
@@ -41,9 +40,9 @@ export async function deleteCollection(
         action: 'delete',
       },
       commonUser,
-    )
+    );
 
-    afterDeleteCallback?.()
+    afterDeleteCallback?.();
 
     ToastService.success(
       isCollection
@@ -53,9 +52,9 @@ export async function deleteCollection(
         : tHtml(
             'collection/helpers/delete-collection___de-bundel-werd-succesvol-verwijderd',
           ),
-    )
+    );
   } catch (err) {
-    console.error(err)
+    console.error(err);
     ToastService.danger(
       isCollection
         ? tHtml(
@@ -64,13 +63,13 @@ export async function deleteCollection(
         : tHtml(
             'collection/helpers/delete-collection___het-verwijderen-van-de-bundel-is-mislukt',
           ),
-    )
+    );
   }
 }
 
 export async function deleteSelfFromCollection(
   collectionId: string | null | undefined,
-  commonUser: Avo.User.CommonUser | null | undefined,
+  commonUser: AvoUserCommonUser | null | undefined,
   afterDeleteCallback?: () => void,
 ): Promise<void> {
   try {
@@ -79,8 +78,8 @@ export async function deleteSelfFromCollection(
         tHtml(
           'collection/helpers/delete-collection___de-huidige-collectie-werd-nog-nooit-opgeslagen-heeft-geen-id',
         ),
-      )
-      return
+      );
+      return;
     }
 
     if (!commonUser?.profileId) {
@@ -88,29 +87,29 @@ export async function deleteSelfFromCollection(
         tHtml(
           'collection/helpers/delete-collection___het-loskoppelen-van-je-profiel-van-de-collectie-is-mislukt-omdat-we-je-profiel-id-niet-konden-vinden-probeer-opnieuw-in-te-loggen',
         ),
-      )
-      return
+      );
+      return;
     }
 
     await CollectionService.deleteContributor(
       collectionId as string,
       undefined,
       commonUser?.profileId,
-    )
+    );
 
-    afterDeleteCallback?.()
+    afterDeleteCallback?.();
 
     ToastService.success(
       tHtml(
         'collection/helpers/delete-collection___je-bent-geen-bijdrager-meer-voor-de-collectie',
       ),
-    )
+    );
   } catch (err) {
-    console.error(err)
+    console.error(err);
     ToastService.danger(
       tHtml(
         'collection/helpers/delete-collection___het-loskoppelen-van-je-profiel-van-de-collectie-is-mislukt',
       ),
-    )
+    );
   }
 }

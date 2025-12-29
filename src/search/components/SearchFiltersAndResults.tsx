@@ -14,7 +14,14 @@ import {
   ToolbarRight,
   useKeyPress,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoCoreContentType,
+  AvoSearchFilterProp,
+  AvoSearchOrderDirection,
+  AvoSearchOrderProperty,
+  AvoSearchResultItem,
+  PermissionName,
+} from '@viaa/avo2-types';
 import {
   cloneDeep,
   intersection,
@@ -112,7 +119,7 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
   };
 
   const defaultOrder = `${filterState.orderProperty || 'relevance'}_${
-    filterState.orderDirection || Avo.Search.OrderDirection.DESC
+    filterState.orderDirection || AvoSearchOrderDirection.DESC
   }`;
   const hasFilters = !isEqual(filterState.filters, DEFAULT_FILTER_STATE);
   const resultStart = (filterState.page || 0) * ITEMS_PER_PAGE + 1;
@@ -138,7 +145,7 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
           'type'
         ].filter((typeOption) =>
           enabledTypeOptions.includes(
-            typeOption.option_name as Avo.Core.ContentType,
+            typeOption.option_name as AvoCoreContentType,
           ),
         );
         setMultiOptions(searchResults.aggregations);
@@ -156,12 +163,12 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
    * Update the search results when the filterState or the currentPage changes
    */
   const onFilterStateChanged = useCallback(() => {
-    const orderProperty: Avo.Search.OrderProperty =
-      (filterState.orderProperty as Avo.Search.OrderProperty | undefined) ||
+    const orderProperty: AvoSearchOrderProperty =
+      (filterState.orderProperty as AvoSearchOrderProperty | undefined) ||
       DEFAULT_SORT_ORDER.orderProperty;
 
-    const orderDirection: Avo.Search.OrderDirection =
-      (filterState.orderDirection as Avo.Search.OrderDirection | undefined) ||
+    const orderDirection: AvoSearchOrderDirection =
+      (filterState.orderDirection as AvoSearchOrderDirection | undefined) ||
       DEFAULT_SORT_ORDER.orderDirection;
 
     // Limit media types in query
@@ -211,7 +218,7 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
       }
 
       const objectInfos = results.map(
-        (result: Avo.Search.ResultItem): BookmarkRequestInfo => {
+        (result: AvoSearchResultItem): BookmarkRequestInfo => {
           const type =
             CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED[
               result.administrative_type
@@ -252,13 +259,13 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
   }, [getBookmarkStatuses, commonUser]);
 
   const handleOrderChanged = async (value = 'relevance_desc') => {
-    const valueParts: [SearchOrderProperty, Avo.Search.OrderDirection] =
-      value.split('_') as [SearchOrderProperty, Avo.Search.OrderDirection];
+    const valueParts: [SearchOrderProperty, AvoSearchOrderDirection] =
+      value.split('_') as [SearchOrderProperty, AvoSearchOrderDirection];
     setFilterState(
       {
         ...filterState,
         orderProperty: valueParts[0] as SearchOrderProperty,
-        orderDirection: valueParts[1] as Avo.Search.OrderDirection,
+        orderDirection: valueParts[1] as AvoSearchOrderDirection,
         page: 0,
       },
       urlUpdateType,
@@ -292,7 +299,7 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 
   const handleFilterFieldChange = async (
     value: SearchFilterFieldValues,
-    id: Avo.Search.FilterProp,
+    id: AvoSearchFilterProp,
   ) => {
     let newFilterState: any;
     if (value) {
@@ -371,8 +378,8 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
         return;
       }
       const results = searchResults?.results ?? [];
-      const resultItem: Avo.Search.ResultItem | undefined = results.find(
-        (result: Avo.Search.ResultItem | undefined) => result?.uid === uuid,
+      const resultItem: AvoSearchResultItem | undefined = results.find(
+        (result: AvoSearchResultItem | undefined) => result?.uid === uuid,
       );
       if (!resultItem) {
         throw new CustomError('Failed to find search result by id');

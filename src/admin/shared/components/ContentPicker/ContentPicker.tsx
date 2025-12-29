@@ -1,13 +1,5 @@
-import {
-  Button,
-  Flex,
-  FlexItem,
-  FormGroup,
-  IconName,
-  LinkTarget,
-  TextInput,
-} from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { Button, Flex, FlexItem, FormGroup, IconName, LinkTarget, TextInput, } from '@viaa/avo2-components';
+import { AvoCoreContentPickerType, AvoFileUploadAssetType } from '@viaa/avo2-types';
 import { isNull } from 'es-toolkit';
 import { type FC, useCallback, useEffect, useState } from 'react';
 import ReactSelect from 'react-select';
@@ -18,25 +10,14 @@ import { CustomError } from '../../../../shared/helpers/custom-error';
 import { tHtml } from '../../../../shared/helpers/translate-html';
 import { tText } from '../../../../shared/helpers/translate-text';
 import { ToastService } from '../../../../shared/services/toast-service';
-import {
-  type PickerItem,
-  type PickerTypeOption,
-} from '../../types/content-picker';
+import { type PickerItem, type PickerTypeOption, } from '../../types/content-picker';
 
-import {
-  DEFAULT_ALLOWED_TYPES,
-  GET_CONTENT_TYPES,
-  REACT_SELECT_DEFAULT_OPTIONS,
-} from './ContentPicker.const';
-import {
-  filterTypes,
-  setInitialInput,
-  setInitialItem,
-} from './ContentPicker.helpers';
+import { DEFAULT_ALLOWED_TYPES, GET_CONTENT_TYPES, REACT_SELECT_DEFAULT_OPTIONS, } from './ContentPicker.const';
+import { filterTypes, setInitialInput, setInitialItem, } from './ContentPicker.helpers';
 import './ContentPicker.scss';
 
 interface ContentPickerProps {
-  allowedTypes?: Avo.Core.ContentPickerType[];
+  allowedTypes?: AvoCoreContentPickerType[];
   initialValue: PickerItem | undefined | null;
   onSelect: (value: PickerItem | null) => void;
   placeholder?: string;
@@ -57,7 +38,7 @@ export const ContentPicker: FC<ContentPickerProps> = ({
   // filter available options for the type picker
   const typeOptions = filterTypes(
     GET_CONTENT_TYPES(),
-    allowedTypes as Avo.Core.ContentPickerType[],
+    allowedTypes as AvoCoreContentPickerType[],
   );
 
   // apply initial type from `initialValue`, default to first available type
@@ -65,7 +46,7 @@ export const ContentPicker: FC<ContentPickerProps> = ({
     (type) => type.value === initialValue?.type,
   );
   const [selectedType, setSelectedType] = useState<
-    PickerTypeOption<Avo.Core.ContentPickerType>
+    PickerTypeOption<AvoCoreContentPickerType>
   >(currentTypeObject || typeOptions[0]);
 
   // available options for the item picker.
@@ -98,7 +79,7 @@ export const ContentPicker: FC<ContentPickerProps> = ({
           items = [
             {
               label: initialValue?.label || '',
-              type: initialValue?.type as Avo.Core.ContentPickerType,
+              type: initialValue?.type as AvoCoreContentPickerType,
               value: initialValue?.value || '',
             },
             ...items.filter(
@@ -152,7 +133,7 @@ export const ContentPicker: FC<ContentPickerProps> = ({
   const onSelectType = async (selected: PickerTypeOption) => {
     if (selectedType !== selected) {
       const selectedOption =
-        selected as PickerTypeOption<Avo.Core.ContentPickerType>;
+        selected as PickerTypeOption<AvoCoreContentPickerType>;
       setSelectedType(selectedOption);
       setSelectedItem(null);
       propertyChanged('selectedItem', null);
@@ -204,16 +185,16 @@ export const ContentPicker: FC<ContentPickerProps> = ({
   const propertyChanged = (
     prop: 'type' | 'selectedItem' | 'value' | 'target' | 'label',
     propValue:
-      | Avo.Core.ContentPickerType
+      | AvoCoreContentPickerType
       | PickerItem
       | string
       | number
       | null
       | LinkTarget,
   ) => {
-    let newType: Avo.Core.ContentPickerType;
+    let newType: AvoCoreContentPickerType;
     if (prop === 'type') {
-      newType = propValue as Avo.Core.ContentPickerType;
+      newType = propValue as AvoCoreContentPickerType;
     } else {
       newType = selectedType.value;
     }
@@ -352,7 +333,7 @@ export const ContentPicker: FC<ContentPickerProps> = ({
   const renderFileUploadPicker = () => {
     return (
       <FileUpload
-        assetType={'CONTENT_BLOCK_FILE' as any}
+        assetType={AvoFileUploadAssetType.CONTENT_BLOCK_FILE}
         ownerId=""
         urls={[input]}
         allowMulti={false}

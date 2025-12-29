@@ -1,6 +1,12 @@
-import { IconName, Modal, ModalBody, Spacer, Tabs } from '@viaa/avo2-components'
-import { type Avo, type PermissionName } from '@viaa/avo2-types'
-import { type FC, useEffect, useState } from 'react'
+import {
+  IconName,
+  Modal,
+  ModalBody,
+  Spacer,
+  Tabs,
+} from '@viaa/avo2-components';
+import { AvoAssignmentAssignment, type PermissionName } from '@viaa/avo2-types';
+import { type FC, useEffect, useState } from 'react';
 
 import { tText } from '../../helpers/translate-text';
 import { useTabs } from '../../hooks/useTabs';
@@ -14,28 +20,28 @@ import {
   ShareWithPupil,
   type ShareWithPupilsProps,
 } from '../ShareWithPupils/ShareWithPupils';
-import './ShareModal.scss'
+import './ShareModal.scss';
 
 type ShareModalProps = {
-  title: string
-  isOpen: boolean
-  contributors?: ContributorInfo[]
-  onClose: () => void
-  onAddContributor: (info: Partial<ContributorInfo>) => Promise<void>
+  title: string;
+  isOpen: boolean;
+  contributors?: ContributorInfo[];
+  onClose: () => void;
+  onAddContributor: (info: Partial<ContributorInfo>) => Promise<void>;
   onEditContributorRights: (
     info: ContributorInfo,
     newRights: ContributorInfoRight,
-  ) => Promise<void>
-  onDeleteContributor: (info: ContributorInfo) => Promise<void>
-  shareWithPupilsProps?: ShareWithPupilsProps
-  withPupils?: boolean
+  ) => Promise<void>;
+  onDeleteContributor: (info: ContributorInfo) => Promise<void>;
+  shareWithPupilsProps?: ShareWithPupilsProps;
+  withPupils?: boolean;
   availableRights: {
-    [ContributorInfoRight.CONTRIBUTOR]: PermissionName
-    [ContributorInfoRight.VIEWER]: PermissionName
-  }
-  isAdmin: boolean
-  assignment?: Partial<Avo.Assignment.Assignment>
-}
+    [ContributorInfoRight.CONTRIBUTOR]: PermissionName;
+    [ContributorInfoRight.VIEWER]: PermissionName;
+  };
+  isAdmin: boolean;
+  assignment?: Partial<AvoAssignmentAssignment>;
+};
 
 export const ShareModal: FC<ShareModalProps> = ({
   assignment,
@@ -51,8 +57,8 @@ export const ShareModal: FC<ShareModalProps> = ({
   title,
   withPupils = true,
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-  const [hasModalOpen, setHasModalOpen] = useState<boolean>(false)
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [hasModalOpen, setHasModalOpen] = useState<boolean>(false);
 
   const [tab, setActiveTab, tabs] = useTabs(
     [
@@ -76,21 +82,21 @@ export const ShareModal: FC<ShareModalProps> = ({
         : []),
     ],
     withPupils ? ShareDropdownTabs.PUPILS : ShareDropdownTabs.COLLEAGUES,
-  )
+  );
 
   useEffect(() => {
     if (!hasModalOpen) {
-      setIsModalOpen(isOpen)
+      setIsModalOpen(isOpen);
     } else {
-      setIsModalOpen(false)
+      setIsModalOpen(false);
     }
-  }, [isOpen, hasModalOpen])
+  }, [isOpen, hasModalOpen]);
 
   const handleOnClose = () => {
     if (!hasModalOpen) {
-      onClose()
+      onClose();
     }
-  }
+  };
 
   return (
     <Modal isOpen={isModalOpen} onClose={handleOnClose} title={title}>
@@ -127,5 +133,5 @@ export const ShareModal: FC<ShareModalProps> = ({
         }
       </ModalBody>
     </Modal>
-  )
-}
+  );
+};

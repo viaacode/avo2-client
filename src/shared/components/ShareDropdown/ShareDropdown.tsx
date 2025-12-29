@@ -1,54 +1,38 @@
-import {
-  Dropdown,
-  DropdownButton,
-  DropdownContent,
-} from '@meemoo/react-components'
-import {
-  Button,
-  type ButtonProps,
-  type DropdownProps,
-  IconName,
-  Tabs,
-} from '@viaa/avo2-components'
-import { type Avo, type PermissionName } from '@viaa/avo2-types'
-import { type FC, useState } from 'react'
+import { Dropdown, DropdownButton, DropdownContent, } from '@meemoo/react-components';
+import { Button, type ButtonProps, type DropdownProps, IconName, Tabs, } from '@viaa/avo2-components';
+import { AvoAssignmentAssignment, type PermissionName } from '@viaa/avo2-types';
+import { type FC, useState } from 'react';
 
 import { tText } from '../../helpers/translate-text';
 import { useTabs } from '../../hooks/useTabs';
 import { ShareWithColleagues } from '../ShareWithColleagues/ShareWithColleagues';
-import {
-  type ContributorInfo,
-  type ContributorInfoRight,
-} from '../ShareWithColleagues/ShareWithColleagues.types';
-import {
-  ShareWithPupil,
-  type ShareWithPupilsProps,
-} from '../ShareWithPupils/ShareWithPupils';
+import { type ContributorInfo, type ContributorInfoRight, } from '../ShareWithColleagues/ShareWithColleagues.types';
+import { ShareWithPupil, type ShareWithPupilsProps, } from '../ShareWithPupils/ShareWithPupils';
 
 import { ShareDropdownTabs } from './ShareDropdown.types';
 
-import './ShareDropdown.scss'
+import './ShareDropdown.scss';
 
 export type ShareDropdownProps = {
-  contributors?: ContributorInfo[]
-  onAddContributor: (info: Partial<ContributorInfo>) => Promise<void>
+  contributors?: ContributorInfo[];
+  onAddContributor: (info: Partial<ContributorInfo>) => Promise<void>;
   onEditContributorRights: (
     info: ContributorInfo,
     newRights: ContributorInfoRight,
-  ) => Promise<void>
-  onDeleteContributor: (info: ContributorInfo) => Promise<void>
-  buttonProps?: Partial<ButtonProps>
-  dropdownProps?: Partial<DropdownProps>
-  shareWithPupilsProps?: ShareWithPupilsProps
-  withPupils?: boolean
+  ) => Promise<void>;
+  onDeleteContributor: (info: ContributorInfo) => Promise<void>;
+  buttonProps?: Partial<ButtonProps>;
+  dropdownProps?: Partial<DropdownProps>;
+  shareWithPupilsProps?: ShareWithPupilsProps;
+  withPupils?: boolean;
   availableRights: {
-    [ContributorInfoRight.CONTRIBUTOR]: PermissionName
-    [ContributorInfoRight.VIEWER]: PermissionName
-  }
-  isAdmin: boolean
-  isAssignmentExpired?: boolean
-  assignment?: Partial<Avo.Assignment.Assignment>
-}
+    [ContributorInfoRight.CONTRIBUTOR]: PermissionName;
+    [ContributorInfoRight.VIEWER]: PermissionName;
+  };
+  isAdmin: boolean;
+  isAssignmentExpired?: boolean;
+  assignment?: Partial<AvoAssignmentAssignment>;
+};
 export const ShareDropdown: FC<ShareDropdownProps> = ({
   assignment,
   availableRights,
@@ -62,7 +46,8 @@ export const ShareDropdown: FC<ShareDropdownProps> = ({
   shareWithPupilsProps,
   withPupils = true,
 }) => {
-  const [isShareDropdownOpen, setIsShareDropdownOpen] = useState<boolean>(false)
+  const [isShareDropdownOpen, setIsShareDropdownOpen] =
+    useState<boolean>(false);
   const [tab, setActiveTab, tabs] = useTabs(
     [
       {
@@ -85,18 +70,18 @@ export const ShareDropdown: FC<ShareDropdownProps> = ({
         : []),
     ],
     withPupils ? ShareDropdownTabs.PUPILS : ShareDropdownTabs.COLLEAGUES,
-  )
-  const [hasModalOpen, setHasModalOpen] = useState<boolean>(false)
+  );
+  const [hasModalOpen, setHasModalOpen] = useState<boolean>(false);
 
   const handleShareButtonClicked = () => {
-    setIsShareDropdownOpen(!isShareDropdownOpen)
-  }
+    setIsShareDropdownOpen(!isShareDropdownOpen);
+  };
 
   const handleOnClose = () => {
     if (!hasModalOpen) {
-      setIsShareDropdownOpen(false)
+      setIsShareDropdownOpen(false);
     }
-  }
+  };
 
   return (
     <Dropdown
@@ -145,5 +130,5 @@ export const ShareDropdown: FC<ShareDropdownProps> = ({
         </div>
       </DropdownContent>
     </Dropdown>
-  )
-}
+  );
+};

@@ -1,9 +1,8 @@
-import { compact, sortBy } from 'es-toolkit'
-
+import { AvoCoreContentPickerType } from '@viaa/avo2-types';
+import { compact, sortBy } from 'es-toolkit';
 import { APP_PATH, type RouteId } from '../../../../../constants';
 import { type PickerItem } from '../../../types/content-picker';
 import { parsePickerItem } from '../helpers/parse-picker';
-import { Avo } from '@viaa/avo2-types'
 
 // Return InternalLinkItems items from APP_PATH
 export const retrieveInternalLinks = async (
@@ -19,13 +18,13 @@ export const retrieveInternalLinks = async (
     ) {
       return {
         ...parsePickerItem(
-          Avo.Core.ContentPickerType.INTERNAL_LINK,
+          AvoCoreContentPickerType.INTERNAL_LINK,
           APP_PATH[pageId].route,
         ),
         label: APP_PATH[pageId].route,
-      }
+      };
     }
-    return null
-  })
-  return sortBy(compact(routeOptions), ['value']).slice(0, limit)
-}
+    return null;
+  });
+  return sortBy(compact(routeOptions), ['value']).slice(0, limit);
+};

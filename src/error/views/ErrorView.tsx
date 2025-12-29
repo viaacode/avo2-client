@@ -8,7 +8,6 @@ import {
   ToolbarCenter,
 } from '@viaa/avo2-components';
 
-import { type Avo } from '@viaa/avo2-types';
 import { compact, isNil, isString, omit, uniq } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import queryString from 'query-string';
@@ -16,11 +15,11 @@ import { type FC, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
-import { redirectToServerLogoutPage } from '../../authentication/helpers/redirects';
 import { redirectToHelp } from '../../authentication/helpers/redirects/redirect-help';
 import { redirectToLoggedInHome } from '../../authentication/helpers/redirects/redirect-logged-in-home';
 import { redirectToPupils } from '../../authentication/helpers/redirects/redirect-pupils';
 import { redirectToLoggedOutHome } from '../../authentication/helpers/redirects/redirect-to-logged-out-home';
+import { redirectToServerLogoutPage } from '../../authentication/helpers/redirects/redirects';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { isMobileWidth } from '../../shared/helpers/media-query';
@@ -28,8 +27,9 @@ import { tText } from '../../shared/helpers/translate-text';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 
 import './ErrorView.scss';
+import { AvoAuthErrorActionButton } from '@viaa/avo2-types';
 
-type ErrorActionButton = Avo.Auth.ErrorActionButton | 'help' | 'pupils';
+type ErrorActionButton = AvoAuthErrorActionButton | 'help' | 'pupils';
 
 export interface ErrorViewQueryParams {
   message?: string | ReactNode;

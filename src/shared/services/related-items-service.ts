@@ -1,7 +1,7 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
-import { type Avo } from '@viaa/avo2-types';
-import { stringify } from 'query-string';
 
+import { AvoSearchFilters, AvoSearchResultItem } from '@viaa/avo2-types';
+import { stringify } from 'query-string';
 import { DEFAULT_AUDIO_STILL } from '../constants';
 import { CustomError } from '../helpers/custom-error';
 import { getEnv } from '../helpers/env';
@@ -26,8 +26,8 @@ export async function getRelatedItems(
   type: ObjectTypes,
   returnType: ObjectTypesAll = ObjectTypesAll.all,
   limit = 5,
-  filters?: Partial<Avo.Search.Filters>,
-): Promise<Avo.Search.ResultItem[]> {
+  filters?: Partial<AvoSearchFilters>,
+): Promise<AvoSearchResultItem[]> {
   let url: string | undefined;
   let body: any | undefined;
   try {
@@ -39,12 +39,12 @@ export async function getRelatedItems(
       filters: JSON.stringify(filters || {}),
     })}`;
     const resolvedResponse = await fetchWithLogoutJson<{
-      results: Avo.Search.ResultItem[];
+      results: AvoSearchResultItem[];
     }>(url);
 
     // Apply default audio stills
     return (resolvedResponse.results || []).map(
-      (result: Avo.Search.ResultItem) => {
+      (result: AvoSearchResultItem) => {
         if (result.administrative_type === 'audio') {
           result.thumbnail_path = DEFAULT_AUDIO_STILL;
         }

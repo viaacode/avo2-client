@@ -8,20 +8,19 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { type FC } from 'react'
-
+} from '@viaa/avo2-components';
+import { AvoAssignmentBlock, AvoAssignmentResponse, AvoCoreBlockItemType, } from '@viaa/avo2-types';
+import { type FC } from 'react';
 import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.consts';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
 export interface ConfirmSliceModalProps
   extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-  responses?: Avo.Assignment.Response[]
-  block?: Pick<Avo.Assignment.Block, 'type'>
-  isPupilCollection: boolean
-  onConfirm?: () => void
+  responses?: AvoAssignmentResponse[];
+  block?: Pick<AvoAssignmentBlock, 'type'>;
+  isPupilCollection: boolean;
+  onConfirm?: () => void;
 }
 
 export const ConfirmSliceModal: FC<ConfirmSliceModalProps> = ({
@@ -34,11 +33,9 @@ export const ConfirmSliceModal: FC<ConfirmSliceModalProps> = ({
 }) => {
   const label = {
     type: block
-      ? BLOCK_ITEM_LABELS(isPupilCollection)[
-          block.type as Avo.Core.BlockItemType
-        ]
+      ? BLOCK_ITEM_LABELS(isPupilCollection)[block.type as AvoCoreBlockItemType]
       : '',
-  }
+  };
 
   const renderConfirmButtons = () => {
     return (
@@ -60,25 +57,25 @@ export const ConfirmSliceModal: FC<ConfirmSliceModalProps> = ({
           </ToolbarItem>
         </ToolbarRight>
       </Toolbar>
-    )
-  }
+    );
+  };
 
   const renderModalBody = () => {
     switch (block?.type) {
-      case Avo.Core.BlockItemType.ITEM:
+      case AvoCoreBlockItemType.ITEM:
         return tHtml(
           'assignment/modals/confirm-slice___ben-je-zeker-dat-je-dit-fragment-wil-verwijderen',
-        )
-      case Avo.Core.BlockItemType.TEXT:
+        );
+      case AvoCoreBlockItemType.TEXT:
         return isPupilCollection
           ? tHtml(
               'assignment/modals/confirm-slice-modal___ben-je-zeker-dat-je-dit-tekstblok-wil-verwijderen',
             )
           : tHtml(
               'assignment/modals/confirm-slice___ben-je-zeker-dat-je-dit-instructie-of-tekstblok-wil-verwijderen',
-            )
-      case Avo.Core.BlockItemType.ZOEK:
-      case Avo.Core.BlockItemType.BOUW:
+            );
+      case AvoCoreBlockItemType.ZOEK:
+      case AvoCoreBlockItemType.BOUW:
         return responses.length > 0 ? (
           <>
             <b>{tHtml('assignment/modals/confirm-slice___opgelet')}: </b>
@@ -90,12 +87,12 @@ export const ConfirmSliceModal: FC<ConfirmSliceModalProps> = ({
           tText(
             'assignment/modals/confirm-slice___ben-je-zeker-dat-je-de-zoekoefening-wil-verwijderen',
           )
-        )
+        );
 
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   return (
     <Modal
@@ -111,5 +108,5 @@ export const ConfirmSliceModal: FC<ConfirmSliceModalProps> = ({
         {renderConfirmButtons()}
       </ModalBody>
     </Modal>
-  )
-}
+  );
+};

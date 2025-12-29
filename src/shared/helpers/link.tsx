@@ -1,4 +1,10 @@
-import { type Avo } from '@viaa/avo2-types';
+import {
+  AvoCoreContentType,
+  AvoSearchFilterProp,
+  AvoSearchOrderDirection,
+  AvoSearchOrderProperty,
+} from '@viaa/avo2-types';
+
 import { isNil } from 'es-toolkit';
 import { isEmpty } from 'es-toolkit/compat';
 import queryString from 'query-string';
@@ -65,7 +71,7 @@ export const renderSearchLinks = (
     className?: string,
   ) => ReactNode,
   key: string,
-  filterProp: Avo.Search.FilterProp,
+  filterProp: AvoSearchFilterProp,
   filterValue: string | string[] | undefined,
   className = '',
 ): ReactNode => {
@@ -94,10 +100,10 @@ export const renderSearchLinks = (
 };
 
 export function generateSearchLinkString(
-  filterProp?: Avo.Search.FilterProp | null | undefined,
+  filterProp?: AvoSearchFilterProp | null | undefined,
   filterValue?: string | null | undefined,
-  orderProperty?: Avo.Search.OrderProperty | null | undefined,
-  orderDirection?: Avo.Search.OrderDirection | null | undefined,
+  orderProperty?: AvoSearchOrderProperty | null | undefined,
+  orderDirection?: AvoSearchOrderDirection | null | undefined,
 ): string {
   const queryParamObject: any = {};
   if (String(filterProp) === SearchFilter.query) {
@@ -120,7 +126,7 @@ export function generateSearchLinkString(
 }
 
 export function generateContentLinkString(
-  contentType: Avo.Core.ContentType,
+  contentType: AvoCoreContentType,
   id: string,
 ): string {
   return buildLink(`${CONTENT_TYPE_TO_ROUTE[contentType]}`, { id });

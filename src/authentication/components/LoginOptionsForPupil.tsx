@@ -1,28 +1,28 @@
-import { Button, IconName, Spacer } from '@viaa/avo2-components'
-import { noop } from 'es-toolkit'
-import { type FC } from 'react'
+import { Button, IconName, Spacer } from '@viaa/avo2-components';
+import { noop } from 'es-toolkit';
+import { type FC } from 'react';
 
 import {
   redirectToServerLeerIDLogin,
   redirectToServerLoginPage,
   redirectToServerSmartschoolLogin,
-} from '../helpers/redirects';
+} from '../helpers/redirects/redirects';
 
-import './LoginOptionsForPupil.scss'
-import { useLocation } from 'react-router-dom'
+import './LoginOptionsForPupil.scss';
+import { useLocation } from 'react-router-dom';
 
 import { tText } from '../../shared/helpers/translate-text';
 
 interface LoginOptionsForPupilProps {
-  onOptionClicked?: () => void
-  openInNewTab?: boolean
+  onOptionClicked?: () => void;
+  openInNewTab?: boolean;
 }
 
 export const LoginOptionsForPupil: FC<LoginOptionsForPupilProps> = ({
   onOptionClicked = noop,
   openInNewTab = false,
 }) => {
-  const location = useLocation()
+  const location = useLocation();
 
   const getButtons = () => {
     return [
@@ -36,8 +36,8 @@ export const LoginOptionsForPupil: FC<LoginOptionsForPupilProps> = ({
         label={tText('authentication/components/login-options___leerling-id')}
         title={tText('authentication/components/login-options___leerling-id')}
         onClick={() => {
-          onOptionClicked()
-          redirectToServerLeerIDLogin(location, openInNewTab)
+          onOptionClicked();
+          redirectToServerLeerIDLogin(location, openInNewTab);
         }}
       />,
 
@@ -53,8 +53,8 @@ export const LoginOptionsForPupil: FC<LoginOptionsForPupilProps> = ({
           'authentication/components/login-options___inloggen-met-smartschool',
         )}
         onClick={() => {
-          onOptionClicked()
-          redirectToServerSmartschoolLogin(location, openInNewTab)
+          onOptionClicked();
+          redirectToServerSmartschoolLogin(location, openInNewTab);
         }}
       />,
 
@@ -70,12 +70,12 @@ export const LoginOptionsForPupil: FC<LoginOptionsForPupilProps> = ({
         type="inline-link"
         className="c-login-with-archief c-button-mail c-login-button--pupil"
         onClick={() => {
-          onOptionClicked()
-          redirectToServerLoginPage(location, openInNewTab)
+          onOptionClicked();
+          redirectToServerLoginPage(location, openInNewTab);
         }}
       />,
-    ]
-  }
+    ];
+  };
 
   return getButtons()?.map((button) => (
     <Spacer
@@ -84,5 +84,5 @@ export const LoginOptionsForPupil: FC<LoginOptionsForPupilProps> = ({
     >
       {button}
     </Spacer>
-  ))
-}
+  ));
+};

@@ -1,5 +1,15 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoCollectionContributor,
+  AvoCollectionFragment,
+  AvoCollectionLabel,
+  AvoCollectionManagement,
+  AvoSearchOrderDirection,
+  AvoShareEditStatusResponse,
+  AvoUserCommonUser,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { endOfDay, startOfDay } from 'date-fns';
 import { cloneDeep, compact, isEqual, isNil, uniq, without } from 'es-toolkit';
 import { isEmpty } from 'es-toolkit/compat';
@@ -170,8 +180,8 @@ export class CollectionService {
    * @param newCollection Collection that must be inserted.
    */
   static async insertCollection(
-    newCollection: Partial<Avo.Collection.Collection>,
-  ): Promise<Avo.Collection.Collection> {
+    newCollection: Partial<AvoCollectionCollection>,
+  ): Promise<AvoCollectionCollection> {
     try {
       newCollection.created_at = new Date().toISOString();
       newCollection.updated_at = newCollection.created_at;
@@ -214,7 +224,7 @@ export class CollectionService {
           );
       }
 
-      return newCollection as Avo.Collection.Collection;
+      return newCollection as AvoCollectionCollection;
     } catch (err) {
       throw new CustomError('Failed to insert collection', err, {
         newCollection,
@@ -223,9 +233,9 @@ export class CollectionService {
   }
 
   private static getLabels(
-    collection: Partial<Avo.Collection.Collection> | null,
-  ): Avo.Collection.Label[] {
-    return (collection?.collection_labels || []) as Avo.Collection.Label[];
+    collection: Partial<AvoCollectionCollection> | null,
+  ): AvoCollectionLabel[] {
+    return (collection?.collection_labels || []) as AvoCollectionLabel[];
   }
 
   /**
@@ -238,15 +248,12 @@ export class CollectionService {
    * @param isCollection
    */
   static async updateCollection(
-    initialColl: Omit<
-      Avo.Collection.Collection,
-      'loms' | 'contributors'
-    > | null,
-    updatedColl: Partial<Avo.Collection.Collection>,
-    commonUser: Avo.User.CommonUser | null | undefined,
+    initialColl: Omit<AvoCollectionCollection, 'loms' | 'contributors'> | null,
+    updatedColl: Partial<AvoCollectionCollection>,
+    commonUser: AvoUserCommonUser | null | undefined,
     checkValidation = true,
     isCollection: boolean,
-  ): Promise<Avo.Collection.Collection | null> {
+  ): Promise<AvoCollectionCollection | null> {
     try {
       // Convert fragment description editor states to html strings
       const updatedCollection = convertRteToString(updatedColl);
@@ -280,12 +287,12 @@ export class CollectionService {
         }
       }
 
-      const newCollection: Partial<Avo.Collection.Collection> =
+      const newCollection: Partial<AvoCollectionCollection> =
         cloneDeep(updatedCollection);
 
       // remove custom_title and custom_description if user wants to use the item's original title and description
       (newCollection.collection_fragments || []).forEach(
-        (fragment: Avo.Collection.Fragment) => {
+        (fragment: AvoCollectionFragment) => {
           if (!fragment.use_custom_fields) {
             fragment.custom_title = null;
             fragment.custom_description = null;
@@ -303,7 +310,7 @@ export class CollectionService {
       const newFragments = (
         setBlockPositionToIndex(
           getFragmentsFromCollection(newCollection),
-        ) as Avo.Collection.Fragment[]
+        ) as AvoCollectionFragment[]
       ).filter(
         (fragment) =>
           (typeof fragment.id === 'number' && fragment.id < 0) ||
@@ -343,9 +350,9 @@ export class CollectionService {
       // update fragments
       const updatePromises = compact(
         updateFragmentIds.map((id: number | string) => {
-          let fragmentToUpdate: Avo.Collection.Fragment | undefined =
+          let fragmentToUpdate: AvoCollectionFragment | undefined =
             getFragmentsFromCollection(newCollection).find(
-              (fragment: Avo.Collection.Fragment) => {
+              (fragment: AvoCollectionFragment) => {
                 return Number(id) === fragment.id;
               },
             );
@@ -397,7 +404,7 @@ export class CollectionService {
       }
 
       // update collection
-      const cleanedCollection: Partial<Avo.Collection.Collection> =
+      const cleanedCollection: Partial<AvoCollectionCollection> =
         cleanCollectionBeforeSave(newCollection);
 
       // set updated_at date if collection has changes (without taking into account the management fields)
@@ -490,7 +497,7 @@ export class CollectionService {
         );
       }
 
-      return newCollection as Avo.Collection.Collection;
+      return newCollection as AvoCollectionCollection;
     } catch (err) {
       throw new CustomError(
         'Failed to update collection or its fragments',
@@ -523,9 +530,9 @@ export class CollectionService {
 
   private static saveCollectionManagementData = async (
     collectionId: string,
-    initialCollection: Partial<Avo.Collection.Collection> | null,
+    initialCollection: Partial<AvoCollectionCollection> | null,
     updatedCollection: Partial<
-      Avo.Collection.Collection & {
+      AvoCollectionCollection & {
         marcom_note?: MarcomNoteInfo;
       }
     >,
@@ -679,7 +686,7 @@ export class CollectionService {
 
   private static insertManagementEntry = async (
     collectionId: string,
-    managementData: Partial<Avo.Collection.Management>,
+    managementData: Partial<AvoCollectionManagement>,
   ) => {
     try {
       await dataService.query<
@@ -707,7 +714,7 @@ export class CollectionService {
 
   private static updateManagementEntry = async (
     collectionId: string,
-    managementData: Partial<Avo.Collection.Management>,
+    managementData: Partial<AvoCollectionManagement>,
   ) => {
     try {
       await dataService.query<
@@ -765,8 +772,8 @@ export class CollectionService {
 
   static updateCollectionProperties = async (
     id: string,
-    collection: Partial<Avo.Collection.Collection>,
-  ): Promise<Partial<Avo.Collection.Collection> | undefined> => {
+    collection: Partial<AvoCollectionCollection>,
+  ): Promise<Partial<AvoCollectionCollection> | undefined> => {
     try {
       const dbCollection = cleanCollectionBeforeSave(collection);
 
@@ -783,7 +790,7 @@ export class CollectionService {
       });
 
       return updatedCollection.update_app_collections
-        ?.returning?.[0] as Partial<Avo.Collection.Collection>;
+        ?.returning?.[0] as Partial<AvoCollectionCollection>;
     } catch (err) {
       throw new CustomError('Failed to update collection properties', err, {
         id,
@@ -833,11 +840,11 @@ export class CollectionService {
    * @returns Duplicate collection.
    */
   static async duplicateCollection(
-    collection: Avo.Collection.Collection,
-    commonUser: Avo.User.CommonUser,
+    collection: AvoCollectionCollection,
+    commonUser: AvoUserCommonUser,
     copyPrefix: string,
     copyRegex: RegExp,
-  ): Promise<Avo.Collection.Collection> {
+  ): Promise<AvoCollectionCollection> {
     try {
       const collectionToInsert = { ...collection };
 
@@ -1053,8 +1060,8 @@ export class CollectionService {
    */
   static async fetchCollectionsOrBundlesByUser(
     type: CollectionOrBundle,
-    commonUser: Avo.User.CommonUser | undefined,
-  ): Promise<Partial<Avo.Collection.Collection>[]> {
+    commonUser: AvoUserCommonUser | undefined,
+  ): Promise<Partial<AvoCollectionCollection>[]> {
     try {
       // retrieve collections or bundles according to given type and user
       const variables:
@@ -1104,7 +1111,7 @@ export class CollectionService {
     collectionId: string,
     type: CollectionOrBundle,
     inviteToken: string | undefined,
-  ): Promise<Avo.Collection.Collection | null> {
+  ): Promise<AvoCollectionCollection | null> {
     try {
       return await fetchWithLogoutJson(
         `${getEnv('PROXY_URL')}/collections/fetch-with-items-by-id?${queryString.stringify(
@@ -1137,7 +1144,7 @@ export class CollectionService {
   static async getCollectionsOrBundlesContainingFragment(
     fragmentId: string,
     orderProp: BundleSortProp,
-    orderDirection: Avo.Search.OrderDirection,
+    orderDirection: AvoSearchOrderDirection,
   ): Promise<ParentBundle[]> {
     try {
       return await fetchWithLogoutJson(
@@ -1162,8 +1169,8 @@ export class CollectionService {
 
   static async insertFragments(
     collectionId: string,
-    fragments: Partial<Avo.Collection.Fragment>[],
-  ): Promise<Avo.Collection.Fragment[]> {
+    fragments: Partial<AvoCollectionFragment>[],
+  ): Promise<AvoCollectionFragment[]> {
     try {
       const cleanedFragments = cloneDeep(fragments).map((fragment) => {
         delete (fragment as any).__typename;
@@ -1208,7 +1215,7 @@ export class CollectionService {
         },
       );
 
-      return fragments as Avo.Collection.Fragment[];
+      return fragments as AvoCollectionFragment[];
     } catch (err) {
       throw new CustomError('Failed to insert fragments into collection', err, {
         collectionId,
@@ -1219,7 +1226,7 @@ export class CollectionService {
   }
 
   private static async getThumbnailPathForCollection(
-    collection: Partial<Avo.Collection.Collection>,
+    collection: Partial<AvoCollectionCollection>,
   ): Promise<string | null> {
     try {
       // TODO: check if thumbnail was automatically selected from the first media fragment => need to update every save
@@ -1273,7 +1280,7 @@ export class CollectionService {
     copyPrefix: string,
     copyRegex: RegExp,
     existingTitle: string,
-    commonUser: Avo.User.CommonUser,
+    commonUser: AvoUserCommonUser,
   ): Promise<string> => {
     const collections = await CollectionService.fetchCollectionsOrBundlesByUser(
       CollectionOrBundle.COLLECTION,
@@ -1433,7 +1440,7 @@ export class CollectionService {
 
   static async fetchCollectionsByFragmentId(
     fragmentId: string,
-  ): Promise<Avo.Collection.Collection[]> {
+  ): Promise<AvoCollectionCollection[]> {
     try {
       // retrieve collections
       const response = await dataService.query<
@@ -1444,7 +1451,7 @@ export class CollectionService {
         variables: { fragmentId },
       });
 
-      return response.app_collections as Avo.Collection.Collection[];
+      return response.app_collections as AvoCollectionCollection[];
     } catch (err) {
       throw new CustomError('Fetch collections by fragment id failed', err, {
         query: 'GET_COLLECTIONS_BY_ITEM_UUID',
@@ -1454,17 +1461,17 @@ export class CollectionService {
   }
 
   static async fetchCollectionsByOwnerOrContributorProfileId(
-    commonUser: Avo.User.CommonUser | null | undefined,
+    commonUser: AvoUserCommonUser | null | undefined,
     offset: number,
     limit: number | null,
     order:
-      | Record<string, Avo.Search.OrderDirection>
-      | Record<string, Avo.Search.OrderDirection>[],
+      | Record<string, AvoSearchOrderDirection>
+      | Record<string, AvoSearchOrderDirection>[],
     contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
     filterString: string | undefined,
     shareTypeIds: string[] | undefined,
     where: any[] = [],
-  ): Promise<Partial<Avo.Collection.Collection>[]> {
+  ): Promise<Partial<AvoCollectionCollection>[]> {
     let variables: GetCollectionsByOwnerOrContributorQueryVariables | null =
       null;
     try {
@@ -1496,7 +1503,7 @@ export class CollectionService {
         variables,
       });
 
-      return response.app_collections_overview as unknown as Avo.Collection.Collection[];
+      return response.app_collections_overview as unknown as AvoCollectionCollection[];
     } catch (err) {
       throw new CustomError('Fetch collections by fragment id failed', err, {
         variables,
@@ -1506,12 +1513,12 @@ export class CollectionService {
   }
 
   static async fetchBookmarkedCollectionsByOwner(
-    commonUser: Avo.User.CommonUser,
+    commonUser: AvoUserCommonUser,
     offset: number,
     limit: number | null,
     order: GetBookmarkedCollectionsByOwnerQueryVariables['order'],
     filterString: string | undefined,
-  ): Promise<Avo.Collection.Collection[]> {
+  ): Promise<AvoCollectionCollection[]> {
     let variables: GetBookmarkedCollectionsByOwnerQueryVariables | undefined =
       undefined;
     try {
@@ -1769,7 +1776,7 @@ export class CollectionService {
 
   static async fetchContributorsByCollectionId(
     assignmentId: string,
-  ): Promise<Avo.Collection.Contributor[]> {
+  ): Promise<AvoCollectionContributor[]> {
     try {
       const variables: GetContributorsByCollectionUuidQueryVariables = {
         id: assignmentId,
@@ -1790,7 +1797,7 @@ export class CollectionService {
         });
       }
 
-      return contributors as Avo.Collection.Contributor[];
+      return contributors as AvoCollectionContributor[];
     } catch (err) {
       throw new CustomError(
         'Failed to get contributors by collection id from database',
@@ -1888,7 +1895,7 @@ export class CollectionService {
   static async acceptSharedCollection(
     collectionId: string,
     inviteToken: string,
-  ): Promise<Avo.Collection.Contributor> {
+  ): Promise<AvoCollectionContributor> {
     try {
       return await fetchWithLogoutJson(
         stringifyUrl({
@@ -2026,7 +2033,7 @@ export class CollectionService {
 
   static async getCollectionsEditStatuses(
     ids: string[],
-  ): Promise<Avo.Share.EditStatusResponse> {
+  ): Promise<AvoShareEditStatusResponse> {
     try {
       const url = stringifyUrl({
         url: `${getEnv('PROXY_URL')}/collections/share/edit-status`,
@@ -2046,7 +2053,7 @@ export class CollectionService {
 
   static async releaseCollectionEditStatus(
     collectionId: string,
-  ): Promise<Avo.Share.EditStatusResponse> {
+  ): Promise<AvoShareEditStatusResponse> {
     try {
       return await fetchWithLogoutJson(
         stringifyUrl({

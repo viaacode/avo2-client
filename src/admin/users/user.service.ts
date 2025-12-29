@@ -1,4 +1,5 @@
-import { type Avo } from '@viaa/avo2-types';
+import { AvoUserBulkTempAccessBody, AvoUserTempAccess } from '@viaa/avo2-types';
+
 import { endOfDay, isBefore } from 'date-fns';
 import { compact } from 'es-toolkit';
 
@@ -8,10 +9,7 @@ import {
   type UpdateUserTempAccessByIdMutation,
   type UpdateUserTempAccessByIdMutationVariables,
 } from '../../shared/generated/graphql-db-operations';
-import {
-  GetProfileIdsDocument,
-  UpdateUserTempAccessByIdDocument,
-} from '../../shared/generated/graphql-db-react-query';
+import { GetProfileIdsDocument, UpdateUserTempAccessByIdDocument, } from '../../shared/generated/graphql-db-react-query';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
 import { toIsoDate } from '../../shared/helpers/formatters/date';
@@ -23,7 +21,7 @@ export class UserService {
    */
   static updateTempAccessByProfileId = async (
     profileId: string,
-    tempAccess: Avo.User.TempAccess,
+    tempAccess: AvoUserTempAccess,
   ): Promise<void> => {
     try {
       // Update a users temp access
@@ -76,7 +74,7 @@ export class UserService {
     try {
       url = `${getEnv('PROXY_URL')}/user/bulk-temp-access`;
 
-      const body: Avo.User.BulkTempAccessBody = {
+      const body: AvoUserBulkTempAccessBody = {
         profileIds,
         isBlocked,
         tempAccessUntil,

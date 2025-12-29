@@ -1,8 +1,8 @@
 import {
   type FilterableColumn,
   TableFilterType,
-} from '@meemoo/admin-core-ui/admin'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
+} from '@meemoo/admin-core-ui/admin';
+import { AvoUserCommonUser, PermissionName } from '@viaa/avo2-types';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { type PupilCollectionOverviewTableColumns } from '../../pupil-collection/pupil-collection.types';
@@ -13,14 +13,14 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { type AssignmentBulkActionOption } from '../assignments/assignments.const';
 import { AssignmentsBulkAction } from '../assignments/assignments.types';
 
-export const ITEMS_PER_PAGE = 20
+export const ITEMS_PER_PAGE = 20;
 
 export const GET_PUPIL_COLLECTION_BULK_ACTIONS = (
-  commonUser: Avo.User.CommonUser | null | undefined,
+  commonUser: AvoUserCommonUser | null | undefined,
   areRowsSelected: boolean,
 ): AssignmentBulkActionOption[] => {
   if (!commonUser) {
-    return []
+    return [];
   }
   return [
     ...(PermissionService.hasPerm(
@@ -57,8 +57,8 @@ export const GET_PUPIL_COLLECTION_BULK_ACTIONS = (
       ),
       value: AssignmentsBulkAction.EXPORT_ALL,
     },
-  ]
-}
+  ];
+};
 
 export const GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS: () => FilterableColumn<PupilCollectionOverviewTableColumns>[] =
   () => [
@@ -131,4 +131,4 @@ export const GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS: () => FilterableColumn<P
       sortable: false,
       visibleByDefault: true,
     },
-  ]
+  ];

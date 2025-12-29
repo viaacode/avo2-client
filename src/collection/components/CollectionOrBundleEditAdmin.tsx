@@ -13,7 +13,13 @@ import {
   TextArea,
   TextInput,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoCollectionLabel,
+  AvoCoreContentPickerType,
+  AvoSearchOrderDirection,
+  PermissionName
+} from '@viaa/avo2-types';
 import { noop, orderBy } from 'es-toolkit';
 import { get } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
@@ -23,10 +29,7 @@ import { type PickerItem } from '../../admin/shared/types/content-picker';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable';
-import {
-  AssociatedQuickLaneTable,
-  AssociatedQuickLaneTableOrderBy,
-} from '../../quick-lane/components/AssociatedQuickLaneTable';
+import { AssociatedQuickLaneTable, AssociatedQuickLaneTableOrderBy, } from '../../quick-lane/components/AssociatedQuickLaneTable';
 import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar';
@@ -41,7 +44,7 @@ import { type QualityLabel } from '../collection.types';
 import { type CollectionAction } from './CollectionOrBundleEdit.types';
 
 interface CollectionOrBundleEditAdminProps {
-  collection: Avo.Collection.Collection;
+  collection: AvoCollectionCollection;
   changeCollectionState: (action: CollectionAction) => void;
   onFocus?: () => void;
 }
@@ -61,7 +64,7 @@ export const CollectionOrBundleEditAdmin: FC<
     QUICK_LANE_DEFAULTS.sort_column,
   );
   const [quickLaneSortOrder, setQuickLaneSortOrder] =
-    useState<Avo.Search.OrderDirection>(Avo.Search.OrderDirection.ASC);
+    useState<AvoSearchOrderDirection>(AvoSearchOrderDirection.ASC);
 
   // Computed
   const isCollection: boolean = collection.type_id === 3;
@@ -118,7 +121,7 @@ export const CollectionOrBundleEditAdmin: FC<
 
   const updateCollectionMultiProperty = (
     selectedTagOptions: TagInfo[],
-    collectionProp: keyof Avo.Collection.Collection,
+    collectionProp: keyof AvoCollectionCollection,
   ) => {
     changeCollectionState({
       collectionProp,
@@ -134,7 +137,7 @@ export const CollectionOrBundleEditAdmin: FC<
       return [];
     }
     const labelIds = (
-      (collection.collection_labels || []) as Avo.Collection.Label[]
+      (collection.collection_labels || []) as AvoCollectionLabel[]
     ).map((item: any) => item.label);
     return qualityLabels.filter((qualityLabel) =>
       labelIds.includes(qualityLabel.value),
@@ -186,7 +189,7 @@ export const CollectionOrBundleEditAdmin: FC<
   const owner: PickerItem | undefined = collection.profile
     ? {
         label: `${collection.profile.user.first_name} ${collection.profile.user.last_name} (${collection.profile.user.mail})`,
-        type: Avo.Core.ContentPickerType.PROFILE,
+        type: AvoCoreContentPickerType.PROFILE,
         value: collection.profile.id,
       }
     : undefined;
@@ -290,7 +293,7 @@ export const CollectionOrBundleEditAdmin: FC<
                         initialValue={owner}
                         hideTargetSwitch
                         hideTypeDropdown
-                        allowedTypes={[Avo.Core.ContentPickerType.PROFILE]}
+                        allowedTypes={[AvoCoreContentPickerType.PROFILE]}
                         onSelect={(value: PickerItem | null) => {
                           if (!value) {
                             return;

@@ -4,7 +4,13 @@ import {
   getFilters,
 } from '@meemoo/admin-core-ui/admin';
 import { type TagInfo } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoCoreContentPickerType,
+  AvoSearchOrderDirection,
+  AvoShareEditStatus,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { compact, noop, partition } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import {
@@ -74,7 +80,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);
 
   const [collections, setCollections] = useState<
-    Avo.Collection.Collection[] | null
+    AvoCollectionCollection[] | null
   >(null);
   const [collectionCount, setCollectionCount] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
@@ -111,7 +117,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
   const { data: allQualityLabels } = useQualityLabels();
   const [organisations] = useCompaniesWithUsers();
   const [collectionsBeingEdited, setCollectionsBeingEdited] = useState<
-    Avo.Share.EditStatus[]
+    AvoShareEditStatus[]
   >([]);
   const [selectedBulkAction, setSelectedBulkAction] =
     useState<CollectionBulkAction | null>(null);
@@ -221,7 +227,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
           (tableState.page || 0) * ITEMS_PER_PAGE,
           ITEMS_PER_PAGE,
           (tableState.sort_column || 'created_at') as CollectionSortProps,
-          tableState.sort_order || Avo.Search.OrderDirection.DESC,
+          tableState.sort_order || AvoSearchOrderDirection.DESC,
           getFilters(tableState),
           isCollection,
           true,
@@ -322,7 +328,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
       return;
     }
 
-    let selectedCollectionsThatAreBeingEdited: Avo.Share.EditStatus[] = [];
+    let selectedCollectionsThatAreBeingEdited: AvoShareEditStatus[] = [];
     let selectedCollectionIdsThatAreNotBeingEdited = selectedCollectionIds;
     if (isCollection) {
       const selectedCollectionEditStatuses =
@@ -591,7 +597,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
           dataCount={collectionCount}
           renderCell={(collection: any, columnId: string) =>
             renderCollectionsOrBundlesOverviewCellReact(
-              collection as Avo.Collection.Collection,
+              collection as AvoCollectionCollection,
               columnId as CollectionsOrBundlesOverviewTableCols,
               {
                 isCollection,
@@ -672,7 +678,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
               ? {
                   label: getFullNameCommonUser(commonUser, true, false) || '',
                   value: commonUser?.profileId,
-                  type: Avo.Core.ContentPickerType.PROFILE,
+                  type: AvoCoreContentPickerType.PROFILE,
                 }
               : undefined
           }
@@ -724,7 +730,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
               0,
               0,
               (tableState.sort_column || 'created_at') as CollectionSortProps,
-              tableState.sort_order || Avo.Search.OrderDirection.DESC,
+              tableState.sort_order || AvoSearchOrderDirection.DESC,
               getFilters(tableState),
               isCollection,
               false,
@@ -736,7 +742,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
               offset,
               limit,
               (tableState.sort_column || 'created_at') as CollectionSortProps,
-              tableState.sort_order || Avo.Search.OrderDirection.DESC,
+              tableState.sort_order || AvoSearchOrderDirection.DESC,
               getFilters(tableState),
               isCollection,
               false,

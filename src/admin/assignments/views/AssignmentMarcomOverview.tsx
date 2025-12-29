@@ -1,9 +1,5 @@
-import {
-  ExportAllToCsvModal,
-  FilterTable,
-  getFilters,
-} from '@meemoo/admin-core-ui/admin';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import { ExportAllToCsvModal, FilterTable, getFilters, } from '@meemoo/admin-core-ui/admin';
+import { AvoAssignmentAssignment, AvoSearchOrderDirection, PermissionName, } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactNode, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -11,10 +7,7 @@ import { Helmet } from 'react-helmet';
 import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import {
-  GET_MARCOM_CHANNEL_NAME_OPTIONS,
-  GET_MARCOM_CHANNEL_TYPE_OPTIONS,
-} from '../../../collection/collection.const';
+import { GET_MARCOM_CHANNEL_NAME_OPTIONS, GET_MARCOM_CHANNEL_TYPE_OPTIONS, } from '../../../collection/collection.const';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 
@@ -34,19 +27,9 @@ import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import { AssignmentsAdminService } from '../assignments.admin.service';
-import {
-  GET_ASSIGNMENT_MARCOM_COLUMNS,
-  ITEMS_PER_PAGE,
-} from '../assignments.const';
-import {
-  type AssignmentMarcomTableState,
-  type AssignmentSortProps,
-  AssignmentsBulkAction,
-} from '../assignments.types';
-import {
-  renderAssignmentMarcomCellReact,
-  renderAssignmentsMarcomCellText,
-} from '../helpers/render-assignment-columns';
+import { GET_ASSIGNMENT_MARCOM_COLUMNS, ITEMS_PER_PAGE, } from '../assignments.const';
+import { type AssignmentMarcomTableState, AssignmentsBulkAction, type AssignmentSortProps, } from '../assignments.types';
+import { renderAssignmentMarcomCellReact, renderAssignmentsMarcomCellText, } from '../helpers/render-assignment-columns';
 import { useGetAssignmentsWithMarcomForAdminOverview } from '../hooks/useGetAssignmentsWithMarcomForAdminOverview';
 
 export const AssignmentMarcomOverview: FC = () => {
@@ -282,7 +265,7 @@ export const AssignmentMarcomOverview: FC = () => {
           dataCount={assignmentCount || 0}
           renderCell={(assignment: any, columnId: string) =>
             renderAssignmentMarcomCellReact(
-              assignment as Partial<Avo.Assignment.Assignment>,
+              assignment as Partial<AvoAssignmentAssignment>,
               columnId as AssignmentTableColumns,
               {
                 allQualityLabels: allQualityLabels || [],
@@ -341,7 +324,7 @@ export const AssignmentMarcomOverview: FC = () => {
                 0,
                 0,
                 (tableState.sort_column || 'created_at') as AssignmentSortProps,
-                tableState.sort_order || Avo.Search.OrderDirection.DESC,
+                tableState.sort_order || AvoSearchOrderDirection.DESC,
                 getFilters(tableState),
                 false,
               );
@@ -353,7 +336,7 @@ export const AssignmentMarcomOverview: FC = () => {
                 offset,
                 limit,
                 (tableState.sort_column || 'created_at') as AssignmentSortProps,
-                tableState.sort_order || Avo.Search.OrderDirection.DESC,
+                tableState.sort_order || AvoSearchOrderDirection.DESC,
                 getFilters(tableState),
                 false,
               );

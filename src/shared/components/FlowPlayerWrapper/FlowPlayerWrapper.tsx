@@ -11,7 +11,7 @@ import {
   MediaCardThumbnail,
   Thumbnail,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { AvoContentTypeEnglish, AvoItemItem } from '@viaa/avo2-types';
 import { isNil, isString, throttle } from 'es-toolkit';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { stringifyUrl } from 'query-string';
@@ -25,9 +25,8 @@ import {
   useState,
 } from 'react';
 import { useNavigate } from 'react-router';
-
 import { commonUserAtom } from '../../../authentication/authentication.store';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
 import { APP_PATH } from '../../../constants';
 import { CustomError } from '../../helpers/custom-error';
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
@@ -62,7 +61,7 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
   const commonUser = useAtomValue(commonUserAtom);
   const setLastVideoPlayedAt = useSetAtom(lastVideoPlayedAtAtom);
 
-  const item: Avo.Item.Item | undefined = props.item;
+  const item: AvoItemItem | undefined = props.item;
   const poster: string | undefined = props.poster || item?.thumbnail_path;
 
   const [triggeredForUrl, setTriggeredForUrl] = useState<
@@ -232,7 +231,7 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
       <MediaCard
         title={item.title}
         orientation="vertical"
-        category={Avo.ContentType.English.SEARCH} // Clearest color on white background
+        category={AvoContentTypeEnglish.SEARCH} // Clearest color on white background
       >
         <MediaCardThumbnail>
           <Thumbnail
@@ -300,7 +299,7 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
     toSeconds(item?.duration),
   );
 
-  const trackingId =
+  const trackingId: string =
     window.ga && typeof window.ga.getAll === 'function' && window.ga.getAll()[0]
       ? window.ga.getAll()[0].get('trackingId')
       : undefined;

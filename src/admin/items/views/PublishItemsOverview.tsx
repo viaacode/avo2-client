@@ -1,13 +1,13 @@
 import { FilterTable, getFilters } from '@meemoo/admin-core-ui/admin';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import { AvoSearchOrderDirection, PermissionName } from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
 import { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import {
@@ -22,25 +22,12 @@ import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
-import {
-  getDateRangeFilters,
-  getQueryFilter,
-} from '../../shared/helpers/filters';
+import { getDateRangeFilters, getQueryFilter, } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import {
-  AdminLayoutBody,
-  AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import {
-  GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS,
-  ITEMS_PER_PAGE,
-} from '../items.const';
+import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE, } from '../items.const';
 import { ItemsService } from '../items.service';
-import {
-  type UnpublishedItem,
-  type UnpublishedItemsOverviewTableCols,
-  type UnpublishedItemsTableState,
-} from '../items.types';
+import { type UnpublishedItem, type UnpublishedItemsOverviewTableCols, type UnpublishedItemsTableState, } from '../items.types';
 
 export const PublishItemsOverview: FC = () => {
   const navigateFunc = useNavigate();
@@ -103,7 +90,7 @@ export const PublishItemsOverview: FC = () => {
           tableState.page || 0,
           (tableState.sort_column ||
             'updated_at') as UnpublishedItemsOverviewTableCols,
-          tableState.sort_order || Avo.Search.OrderDirection.DESC,
+          tableState.sort_order || AvoSearchOrderDirection.DESC,
           generateWhereObject(getFilters(tableState)),
         );
       setItems(itemsTemp);

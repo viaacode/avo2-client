@@ -1,17 +1,18 @@
 import { Container, Icon } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+
 import { type FC, type ReactNode } from 'react';
 
 import { type ContentTypeNumber } from '../../../../collection/collection.types';
 
 import './BlockIconWrapper.scss';
+import { AvoCoreBlockItemType } from '@viaa/avo2-types';
 import { BLOCK_TYPE_TO_ICON_NAME } from './BlockIconWrapper.consts';
 import { getBlockType } from './BlockIconWrapper.helpers';
 
 interface BlockIconWrapperProps {
   backgroundColor?: string;
   key: string | number; // Needs to be defined where you use the component
-  type: Avo.Core.BlockItemType;
+  type: AvoCoreBlockItemType;
   type_id?: ContentTypeNumber;
   children: ReactNode;
 }

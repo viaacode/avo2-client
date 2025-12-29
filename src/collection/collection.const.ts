@@ -1,5 +1,5 @@
 import { type SelectOption, type TableColumn } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { AvoCoreBlockItemType } from '@viaa/avo2-types';
 import { ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../shared/helpers/translate-text';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
@@ -18,7 +18,7 @@ export const NEW_FRAGMENT = {
     end_oc: null,
     start_oc: null,
     use_custom_fields: true,
-    type: Avo.Core.BlockItemType.TEXT,
+    type: AvoCoreBlockItemType.TEXT,
   },
 };
 

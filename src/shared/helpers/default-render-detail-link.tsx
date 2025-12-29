@@ -1,20 +1,19 @@
-import { type Avo } from '@viaa/avo2-types'
-import { type ReactNode } from 'react'
-import { type NavigateFunction } from 'react-router'
-import { Link } from 'react-router-dom'
-
+import { AvoCoreContentType } from '@viaa/avo2-types';
+import { type ReactNode } from 'react';
+import { type NavigateFunction } from 'react-router';
+import { Link } from 'react-router-dom';
 import { generateContentLinkString } from './link';
 
 export const defaultGoToDetailLink =
   (navigate: NavigateFunction) =>
-  (id: string, type: Avo.Core.ContentType): void => {
-    navigate(generateContentLinkString(type, id))
-  }
+  (id: string, type: AvoCoreContentType): void => {
+    navigate(generateContentLinkString(type, id));
+  };
 
 export const defaultRenderDetailLink = (
   linkText: string | ReactNode,
   id: string,
-  type: Avo.Core.ContentType,
+  type: AvoCoreContentType,
 ): ReactNode => {
   return (
     <Link
@@ -24,5 +23,5 @@ export const defaultRenderDetailLink = (
     >
       {linkText}
     </Link>
-  )
-}
+  );
+};

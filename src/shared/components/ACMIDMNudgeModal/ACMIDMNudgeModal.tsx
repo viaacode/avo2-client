@@ -5,7 +5,7 @@ import {
   ModalBody,
   Spacer,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+
 import { useAtom, useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -16,7 +16,7 @@ import {
   getLoginCounter,
   LOGIN_COUNTER_BEFORE_NUDGING,
 } from '../../../authentication/helpers/login-counter-before-nudging';
-import { redirectToServerLinkAccount } from '../../../authentication/helpers/redirects';
+import { redirectToServerLinkAccount } from '../../../authentication/helpers/redirects/redirects';
 import { APP_PATH } from '../../../constants';
 import { NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL } from '../../constants';
 import { CustomError } from '../../helpers/custom-error';
@@ -26,6 +26,7 @@ import { ProfilePreferenceKey } from '../../services/profile-preferences.types';
 import { showNudgingModalAtom } from '../../store/ui.store';
 
 import './ACMIDMNudgeModal.scss';
+import { AvoAuthIdpType } from '@viaa/avo2-types';
 import { ROUTE_PARTS } from '../../constants/routes.ts';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
@@ -103,8 +104,8 @@ export const ACMIDMNudgeModal: FC = () => {
 
       const hasVlaamseOverheidLinked =
         !!commonUser &&
-        (!!commonUser.idps?.[Avo.Auth.IdpType.VLAAMSEOVERHEID__SUB_ID] ||
-          !!commonUser.idps?.[Avo.Auth.IdpType.VLAAMSEOVERHEID__ACCOUNT_ID]);
+        (!!commonUser.idps?.[AvoAuthIdpType.VLAAMSEOVERHEID__SUB_ID] ||
+          !!commonUser.idps?.[AvoAuthIdpType.VLAAMSEOVERHEID__ACCOUNT_ID]);
       const profileIsComplete = commonUser && isProfileComplete(commonUser);
 
       setShowNudgingModal(
@@ -178,7 +179,7 @@ export const ACMIDMNudgeModal: FC = () => {
             onClick={() => {
               redirectToServerLinkAccount(
                 location,
-                Avo.Auth.IdpType.VLAAMSEOVERHEID,
+                AvoAuthIdpType.VLAAMSEOVERHEID,
                 'authMech=leerid',
               );
               onClose();
@@ -201,7 +202,7 @@ export const ACMIDMNudgeModal: FC = () => {
             onClick={() => {
               redirectToServerLinkAccount(
                 location,
-                Avo.Auth.IdpType.VLAAMSEOVERHEID,
+                AvoAuthIdpType.VLAAMSEOVERHEID,
                 'authMech=itsme',
               );
               onClose();
@@ -221,7 +222,7 @@ export const ACMIDMNudgeModal: FC = () => {
             onClick={() => {
               redirectToServerLinkAccount(
                 location,
-                Avo.Auth.IdpType.VLAAMSEOVERHEID,
+                AvoAuthIdpType.VLAAMSEOVERHEID,
                 'authMech',
               );
               onClose();

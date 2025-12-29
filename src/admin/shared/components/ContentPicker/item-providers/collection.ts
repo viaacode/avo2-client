@@ -1,5 +1,4 @@
-import { Avo } from '@viaa/avo2-types'
-
+import { AvoCoreContentPickerType } from '@viaa/avo2-types';
 import { CollectionService } from '../../../../../collection/collection.service';
 import {
   type Collection,
@@ -20,13 +19,13 @@ export const retrieveCollections = async (
     : await CollectionService.fetchCollectionsOrBundles(
         limit,
         ContentTypeNumber.collection,
-      )
+      );
 
   return parseCollections(
-    Avo.Core.ContentPickerType.COLLECTION,
+    AvoCoreContentPickerType.COLLECTION,
     collections || [],
-  )
-}
+  );
+};
 
 // fetch bundles by title-wildcard
 export const retrieveBundles = async (
@@ -38,14 +37,14 @@ export const retrieveBundles = async (
     : await CollectionService.fetchCollectionsOrBundles(
         limit,
         ContentTypeNumber.bundle,
-      )
+      );
 
-  return parseCollections(Avo.Core.ContentPickerType.BUNDLE, bundles || [])
-}
+  return parseCollections(AvoCoreContentPickerType.BUNDLE, bundles || []);
+};
 
 // parse raw data to react-select options
 const parseCollections = (
-  type: Avo.Core.ContentPickerType,
+  type: AvoCoreContentPickerType,
   raw: Collection[],
 ): PickerItem[] => {
   return raw.map(
@@ -53,5 +52,5 @@ const parseCollections = (
       ...parsePickerItem(type, item.id.toString()),
       label: item.title || '',
     }),
-  )
-}
+  );
+};

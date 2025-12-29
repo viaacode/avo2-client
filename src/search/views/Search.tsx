@@ -10,26 +10,17 @@ import {
   ToolbarRight,
   ToolbarTitle,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { AvoCoreContentType, PermissionName } from '@viaa/avo2-types';
 import { isEmpty } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactNode,
-  type ReactText,
-  useEffect,
-  useState,
-} from 'react';
+import { type FC, type ReactNode, type ReactText, useEffect, useState, } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
 import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-link';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionGuard } from '../../authentication/components/PermissionGuard';
-import {
-  PermissionGuardFail,
-  PermissionGuardPass,
-} from '../../authentication/components/PermissionGuard.slots';
+import { PermissionGuardFail, PermissionGuardPass, } from '../../authentication/components/PermissionGuard.slots';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
@@ -43,12 +34,7 @@ import { type FilterState } from '../search.types';
 
 import './Search.scss';
 import { SortDirectionParam } from '../../admin/shared/helpers/query-string-converters.ts';
-import {
-  JsonParam,
-  NumberParam,
-  StringParam,
-  useQueryParams,
-} from '../../shared/helpers/routing/use-query-params-ssr.ts';
+import { JsonParam, NumberParam, StringParam, useQueryParams, } from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
@@ -104,7 +90,7 @@ export const Search: FC = () => {
   const renderDetailLink = (
     linkText: string | ReactNode,
     id: string,
-    type: Avo.Core.ContentType,
+    type: AvoCoreContentType,
   ) => {
     return <Link to={generateContentLinkString(type, id)}>{linkText}</Link>;
   };

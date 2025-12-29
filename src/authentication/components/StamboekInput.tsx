@@ -9,7 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+
 import { type FC, type ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -22,6 +22,7 @@ import { verifyStamboekNumber } from '../authentication.service';
 import { type StamboekValidationStatus } from '../views/registration-flow/register-stamboek.tsx';
 
 import './StamboekInput.scss';
+import { AvoStamboekValidationStatuses } from '@viaa/avo2-types';
 
 interface StamboekInputProps {
   value?: string;
@@ -118,7 +119,7 @@ export const StamboekInput: FC<StamboekInputProps> = ({
       if (/^[69][0-9]{10}$/g.test(cleanedStamboekNumber)) {
         const stamboekNumber = cleanedStamboekNumber.substring(0, 11);
         setStamboekValidationStatus('VALID_FORMAT');
-        const validationStatus: Avo.Stamboek.ValidationStatuses =
+        const validationStatus: AvoStamboekValidationStatuses =
           await verifyStamboekNumber(stamboekNumber);
         if (validationStatus === 'VALID') {
           onChange(stamboekNumber);

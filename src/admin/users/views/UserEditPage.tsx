@@ -8,14 +8,20 @@ import {
   TextArea,
   TextInput,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoFileUploadAssetType,
+  AvoLomLom,
+  AvoLomLomField,
+  AvoUserUpdateProfileValues,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { SettingsService } from '../../../settings/settings.service';
 import { FileUpload } from '../../../shared/components/FileUpload/FileUpload';
@@ -44,7 +50,7 @@ export const UserEditPage: FC = () => {
   const { data: profile, isLoading } = useGetProfileById(profileId);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [profileErrors, setProfileErrors] = useState<
-    Partial<{ [prop in keyof Avo.User.UpdateProfileValues]: string }>
+    Partial<{ [prop in keyof AvoUserUpdateProfileValues]: string }>
   >({});
 
   const [firstName, setFirstName] = useState<string | undefined>();
@@ -54,7 +60,7 @@ export const UserEditPage: FC = () => {
   const [bio, setBio] = useState<string | undefined>();
   const [alias, setAlias] = useState<string | undefined>();
   const [companyId, setCompanyId] = useState<string | undefined>();
-  const [loms, setLoms] = useState<Avo.Lom.LomField[]>([]);
+  const [loms, setLoms] = useState<AvoLomLomField[]>([]);
 
   useEffect(() => {
     if (profile) {
@@ -68,7 +74,7 @@ export const UserEditPage: FC = () => {
 
       // Only educationDegrees are shown and education levels that don't have any degrees
       // To force users to choose the most specific option available
-      setLoms(compact(profile?.loms?.map((lom: Avo.Lom.Lom) => lom.lom)) || []);
+      setLoms(compact(profile?.loms?.map((lom: AvoLomLom) => lom.lom)) || []);
     }
   }, [profile]);
 
@@ -103,7 +109,7 @@ export const UserEditPage: FC = () => {
 
       try {
         await SettingsService.updateProfileInfo(
-          newProfileInfo as unknown as Avo.User.UpdateProfileValues,
+          newProfileInfo as unknown as AvoUserUpdateProfileValues,
         );
       } catch (err) {
         setIsSaving(false);
@@ -168,7 +174,7 @@ export const UserEditPage: FC = () => {
                   <FileUpload
                     urls={avatar ? [avatar] : []}
                     onChange={(urls) => setAvatar(urls[0])}
-                    assetType="PROFILE_AVATAR"
+                    assetType={AvoFileUploadAssetType.PROFILE_AVATAR}
                     allowMulti={false}
                     allowedTypes={PHOTO_TYPES}
                     ownerId={profileId}

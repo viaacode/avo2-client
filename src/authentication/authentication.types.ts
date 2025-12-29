@@ -1,4 +1,4 @@
-import { type Avo } from '@viaa/avo2-types'
+import { AvoAuthLoginResponse } from '@viaa/avo2-types';
 
 export enum LoginMessage {
   LOGGED_IN = 'LOGGED_IN',
@@ -11,7 +11,7 @@ export enum SpecialPermissionGroups {
 }
 
 export interface LoginState {
-  readonly data: Avo.Auth.LoginResponse | null
-  readonly loading: boolean
-  readonly error: boolean
+  readonly data: AvoAuthLoginResponse | null;
+  readonly loading: boolean;
+  readonly error: boolean;
 }

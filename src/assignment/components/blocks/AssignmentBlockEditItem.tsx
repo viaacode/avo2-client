@@ -1,7 +1,11 @@
-import { convertToHtml } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { type FC, type ReactNode } from 'react'
-
+import { convertToHtml } from '@viaa/avo2-components';
+import {
+  AvoAssignmentBlock,
+  AvoCollectionFragment,
+  AvoCoreBlockItemBase,
+  AvoItemItem,
+} from '@viaa/avo2-types';
+import { type FC, type ReactNode } from 'react';
 import { type FilterState } from '../../../search/search.types';
 import { ItemMetadata } from '../../../shared/components/BlockItemMetadata/ItemMetadata';
 import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm/CustomiseItemForm';
@@ -22,24 +26,24 @@ import {
 } from '../AssignmentBlockDescriptionButtons';
 
 function getBlockEditMode(
-  block: Avo.Core.BlockItemBase | EditableAssignmentBlock,
+  block: AvoCoreBlockItemBase | EditableAssignmentBlock,
 ) {
   if ((block as EditableAssignmentBlock).editMode) {
-    return (block as EditableAssignmentBlock).editMode
+    return (block as EditableAssignmentBlock).editMode;
   }
   if (!block.use_custom_fields) {
-    return AssignmentBlockItemDescriptionType.original
+    return AssignmentBlockItemDescriptionType.original;
   }
   if (block.use_custom_fields && isRichTextEmpty(block.custom_description)) {
-    return AssignmentBlockItemDescriptionType.none
+    return AssignmentBlockItemDescriptionType.none;
   }
-  return AssignmentBlockItemDescriptionType.custom
+  return AssignmentBlockItemDescriptionType.custom;
 }
 
 export const AssignmentBlockEditItem: FC<
   EditBlockProps & {
-    AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[]
-    buildSearchLink?: (props: Partial<FilterState>) => ReactNode | string
+    AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[];
+    buildSearchLink?: (props: Partial<FilterState>) => ReactNode | string;
   }
 > = ({
   block,
@@ -47,7 +51,7 @@ export const AssignmentBlockEditItem: FC<
   AssignmentBlockItemDescriptionTypes,
   buildSearchLink,
 }) => {
-  const [cutButton, cutModal] = useCutModal()
+  const [cutButton, cutModal] = useCutModal();
   const editableBlock = {
     ...block,
     editMode: block.editMode || getBlockEditMode(block),
@@ -69,12 +73,12 @@ export const AssignmentBlockEditItem: FC<
         block.original_title ||
         block.item_meta?.title ||
         undefined),
-  }
+  };
 
   const handleVideoCut = async (
-    update: Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>,
+    update: Pick<AvoCollectionFragment, 'start_oc' | 'end_oc'>,
   ) => {
-    let thumbnail: string | null = null
+    let thumbnail: string | null = null;
     if (editableBlock.item_meta?.type_id) {
       thumbnail = update.start_oc
         ? await VideoStillService.getVideoStill(
@@ -82,48 +86,48 @@ export const AssignmentBlockEditItem: FC<
             editableBlock.item_meta.type_id,
             (update?.start_oc || 0) * 1000,
           )
-        : null
+        : null;
     }
-    setBlock({ ...editableBlock, ...update, thumbnail_path: thumbnail })
-  }
+    setBlock({ ...editableBlock, ...update, thumbnail_path: thumbnail });
+  };
 
   if (!editableBlock.item_meta) {
-    return null
+    return null;
   }
 
-  let title: string | undefined = undefined
+  let title: string | undefined = undefined;
   if (editableBlock.editMode === AssignmentBlockItemDescriptionType.original) {
     title =
-      (editableBlock as unknown as Avo.Assignment.Block).original_title ||
+      (editableBlock as unknown as AvoAssignmentBlock).original_title ||
       editableBlock.item_meta?.title ||
-      undefined
+      undefined;
   } else if (
     editableBlock.editMode === AssignmentBlockItemDescriptionType.custom
   ) {
-    title = editableBlock.ownTitle
+    title = editableBlock.ownTitle;
   } else if (
     editableBlock.editMode === AssignmentBlockItemDescriptionType.none
   ) {
-    title = editableBlock.noTitle
+    title = editableBlock.noTitle;
   }
 
-  let description: string | undefined = undefined
+  let description: string | undefined = undefined;
   if (editableBlock.editMode === AssignmentBlockItemDescriptionType.original) {
     description =
-      (block as Avo.Assignment.Block).original_description ||
+      (block as AvoAssignmentBlock).original_description ||
       block.item_meta?.description ||
-      undefined
+      undefined;
   } else if (
     editableBlock.editMode === AssignmentBlockItemDescriptionType.custom
   ) {
-    description = editableBlock.ownDescription
+    description = editableBlock.ownDescription;
   }
   return (
     <CustomiseItemForm
       className="u-padding-l"
       id={editableBlock.item_meta.id}
       preview={() => {
-        const item = editableBlock.item_meta as Avo.Item.Item
+        const item = editableBlock.item_meta as AvoItemItem;
 
         return (
           <>
@@ -159,7 +163,7 @@ export const AssignmentBlockEditItem: FC<
               onConfirm: handleVideoCut,
             })}
           </>
-        )
+        );
       }}
       buttonsLabel={tText(
         'assignment/components/blocks/assignment-block-edit-item___titel-en-beschrijving',
@@ -184,12 +188,12 @@ export const AssignmentBlockEditItem: FC<
           if (
             editableBlock.editMode === AssignmentBlockItemDescriptionType.custom
           ) {
-            setBlock({ ...editableBlock, ownTitle: value })
+            setBlock({ ...editableBlock, ownTitle: value });
           }
           if (
             editableBlock.editMode === AssignmentBlockItemDescriptionType.none
           ) {
-            setBlock({ ...editableBlock, noTitle: value })
+            setBlock({ ...editableBlock, noTitle: value });
           }
         },
       }}
@@ -215,7 +219,7 @@ export const AssignmentBlockEditItem: FC<
       }
     >
       <ItemMetadata
-        item={editableBlock.item_meta as Avo.Item.Item}
+        item={editableBlock.item_meta as AvoItemItem}
         buildSeriesLink={
           buildSearchLink
             ? (series) => buildSearchLink({ filters: { serie: [series] } })
@@ -223,5 +227,5 @@ export const AssignmentBlockEditItem: FC<
         }
       />
     </CustomiseItemForm>
-  )
-}
+  );
+};

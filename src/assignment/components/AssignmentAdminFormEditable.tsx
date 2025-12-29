@@ -1,16 +1,5 @@
-import {
-  Checkbox,
-  Column,
-  Container,
-  Form,
-  FormGroup,
-  Grid,
-  Spacer,
-  type TagInfo,
-  TagsInput,
-  TextInput,
-} from '@viaa/avo2-components'
-import { Avo, PermissionName } from '@viaa/avo2-types'
+import { Checkbox, Column, Container, Form, FormGroup, Grid, Spacer, type TagInfo, TagsInput, TextInput, } from '@viaa/avo2-components'
+import { AvoAssignmentAssignment, AvoAssignmentQualityLabel, AvoCoreContentPickerType, PermissionName } from '@viaa/avo2-types'
 import { useAtomValue } from 'jotai'
 import { isNil } from 'es-toolkit'
 import { type FC } from 'react'
@@ -27,23 +16,23 @@ import { tText } from '../../shared/helpers/translate-text';
 import { useGetQualityLabels } from '../../shared/hooks/useGetQualityLabels';
 
 interface AssignmentAdminFormEditableProps {
-  assignment: Avo.Assignment.Assignment
-  setAssignment: (newAssignment: Avo.Assignment.Assignment) => void
+  assignment: AvoAssignmentAssignment;
+  setAssignment: (newAssignment: AvoAssignmentAssignment) => void;
 }
 
 export const AssignmentAdminFormEditable: FC<
   AssignmentAdminFormEditableProps
 > = ({ assignment, setAssignment }) => {
-  const commonUser = useAtomValue(commonUserAtom)
-  const { data: allQualityLabels, isLoading } = useGetQualityLabels()
+  const commonUser = useAtomValue(commonUserAtom);
+  const { data: allQualityLabels, isLoading } = useGetQualityLabels();
   const owner: PickerItem | undefined = assignment.profile
     ? {
         label: `${assignment.profile.user.first_name} ${assignment.profile.user.last_name} (${assignment.profile.user.mail})`,
-        type: Avo.Core.ContentPickerType.PROFILE,
+        type: AvoCoreContentPickerType.PROFILE,
         value: assignment.profile.id,
       }
-    : undefined
-  const isManaged: boolean = (assignment as any)?.is_managed || false // TODO remove any after update typings to v3.0.20
+    : undefined;
+  const isManaged: boolean = (assignment as any)?.is_managed || false; // TODO remove any after update typings to v3.0.20
 
   const transformQualityLabelsToTagInfo = (
     labels: QualityLabel[],
@@ -51,22 +40,22 @@ export const AssignmentAdminFormEditable: FC<
     return labels.map((label: QualityLabel) => ({
       label: label.description,
       value: label.value,
-    }))
-  }
+    }));
+  };
 
   const getSelectedQualityLabels = (): TagInfo[] => {
     if (!allQualityLabels) {
-      return []
+      return [];
     }
     const labelIds = (
-      (assignment.quality_labels || []) as Avo.Assignment.QualityLabel[]
-    ).map((item: any) => item.label)
+      (assignment.quality_labels || []) as AvoAssignmentQualityLabel[]
+    ).map((item: any) => item.label);
     const filteredQualityLabels = allQualityLabels.filter((qualityLabel) =>
       labelIds.includes(qualityLabel.value),
-    )
+    );
 
-    return transformQualityLabelsToTagInfo(filteredQualityLabels)
-  }
+    return transformQualityLabelsToTagInfo(filteredQualityLabels);
+  };
 
   const handleQualityLabelChange = (labels: TagInfo[]) => {
     const newQualityLabels = labels.map(
@@ -74,24 +63,24 @@ export const AssignmentAdminFormEditable: FC<
         ({
           assignment_id: assignment.id,
           label: label.value,
-        }) as Avo.Assignment.QualityLabel,
-    )
+        }) as AvoAssignmentQualityLabel,
+    );
 
     setAssignment({
       ...assignment,
       quality_labels: newQualityLabels,
-    })
-  }
+    });
+  };
 
   const handleOwnerChange = (newOwner: PickerItem | null) => {
     if (isNil(newOwner)) {
-      return
+      return;
     }
     setAssignment({
       ...assignment,
       owner_profile_id: newOwner.value,
-    })
-  }
+    });
+  };
 
   return (
     <Container mode="vertical">
@@ -165,7 +154,7 @@ export const AssignmentAdminFormEditable: FC<
                       initialValue={owner}
                       hideTargetSwitch
                       hideTypeDropdown
-                      allowedTypes={[Avo.Core.ContentPickerType.PROFILE]}
+                      allowedTypes={[AvoCoreContentPickerType.PROFILE]}
                       onSelect={handleOwnerChange}
                     />
                   </FormGroup>
@@ -185,7 +174,7 @@ export const AssignmentAdminFormEditable: FC<
                         setAssignment({
                           ...assignment,
                           is_managed: !isManaged,
-                        })
+                        });
                       }}
                     />
                   </FormGroup>
@@ -221,5 +210,5 @@ export const AssignmentAdminFormEditable: FC<
         </Form>
       </Container>
     </Container>
-  )
-}
+  );
+};

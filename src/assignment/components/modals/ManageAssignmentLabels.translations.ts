@@ -1,26 +1,25 @@
+import { AvoAssignmentLabelType } from '@viaa/avo2-types';
 import { tText } from '../../../shared/helpers/translate-text';
-
 import { type ManageAssignmentLabelsProps } from './ManageAssignmentLabels';
-import { Avo } from '@viaa/avo2-types'
 
 export interface ManageAssignmentLabelsTranslations {
   modal: {
-    title: string
-  }
+    title: string;
+  };
   buttons: {
-    addLabel: string
-  }
+    addLabel: string;
+  };
   columns: {
-    color: string
-    type: string
-  }
-  emptyState: string
+    color: string;
+    type: string;
+  };
+  emptyState: string;
 }
 
 export const getManageAssignmentLabelsTranslations = (
   type: ManageAssignmentLabelsProps['type'],
 ): ManageAssignmentLabelsTranslations => {
-  return type === Avo.Assignment.LabelType.LABEL
+  return type === AvoAssignmentLabelType.LABEL
     ? {
         modal: {
           title: tText(
@@ -66,5 +65,5 @@ export const getManageAssignmentLabelsTranslations = (
         emptyState: tText(
           'assignment/components/modals/manage-assignment-labels___er-zijn-nog-geen-klassen-aangemaakt',
         ),
-      }
-}
+      };
+};

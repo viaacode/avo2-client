@@ -17,17 +17,9 @@ export const useQueryParam = (
   paramConfig?: QueryParamConfig<any, any>,
   options?: QueryParamOptions,
 ): [string, (newValue: any, urlUpdateType?: UrlUpdateType) => void] => {
-  console.log('useQueryParam called for:', {
-    name,
-    paramConfig,
-    options,
-    useQueryParamLib,
-  });
   if (!useQueryParamLib) {
-    console.warn('useQueryParam called on server side');
     return ['' as any, () => {}];
   }
-  console.log('useQueryParam called on client side');
   return useQueryParamLib.useQueryParam(name, paramConfig, options);
 };
 

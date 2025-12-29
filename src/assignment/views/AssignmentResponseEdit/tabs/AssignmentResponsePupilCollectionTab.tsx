@@ -1,25 +1,20 @@
 import './AssignmentResponsePupilCollectionTab.scss';
 
 import {
-  Button,
-  ButtonToolbar,
-  Container,
-  Flex,
-  FormGroup,
-  IconName,
-  MoreOptionsDropdown,
-  TextInput,
-  Toolbar,
-  ToolbarLeft,
-  ToolbarRight,
+    Button,
+    ButtonToolbar,
+    Container,
+    Flex,
+    FormGroup,
+    IconName,
+    MoreOptionsDropdown,
+    TextInput,
+    Toolbar,
+    ToolbarLeft,
+    ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import {
-  type Dispatch,
-  type FC,
-  type SetStateAction,
-  useState,
-} from 'react';
+import { AvoAssignmentBlock, AvoAssignmentResponse, AvoCoreBlockItemBase, AvoCoreBlockItemType, } from '@viaa/avo2-types';
+import { type Dispatch, type FC, type SetStateAction, useState } from 'react';
 import PupilSvg from '../../../../assets/images/leerling.svg?react';
 import { BlockList } from '../../../../shared/components/BlockList/BlockList';
 import { EmptyStateMessage } from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
@@ -31,15 +26,9 @@ import { useBlocksList } from '../../../../shared/hooks/use-blocks-list';
 import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal';
 import { ToastService } from '../../../../shared/services/toast-service';
 import { UrlUpdateType } from '../../../../shared/types/use-query-params.ts';
-import {
-  ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
-  NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
-} from '../../../assignment.const';
+import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS, NEW_ASSIGNMENT_BLOCK_ID_PREFIX, } from '../../../assignment.const';
 import { setBlockPositionToIndex } from '../../../assignment.helper';
-import {
-  type PupilCollectionFragment,
-  type PupilSearchFilterState,
-} from '../../../assignment.types';
+import { type PupilCollectionFragment, type PupilSearchFilterState, } from '../../../assignment.types';
 import { AssignmentBlockItemDescriptionType } from '../../../components/AssignmentBlockDescriptionButtons';
 import { buildAssignmentSearchLink } from '../../../helpers/build-search-link';
 import { insertMultipleAtPosition } from '../../../helpers/insert-at-position';
@@ -54,8 +43,8 @@ enum MobileActionId {
 
 interface AssignmentResponsePupilCollectionTabProps {
   pastDeadline: boolean;
-  assignmentResponse: Avo.Assignment.Response;
-  setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response>>;
+  assignmentResponse: AvoAssignmentResponse;
+  setAssignmentResponse: Dispatch<SetStateAction<AvoAssignmentResponse>>;
   collectionTitle: string;
   setCollectionTitle: (newTitle: string) => void;
   pupilCollectionBlocks: PupilCollectionFragment[];
@@ -92,10 +81,10 @@ export const AssignmentResponsePupilCollectionTab: FC<
     useState<boolean>(false);
 
   const updateBlocksInAssignmentResponseState = (
-    newBlocks: Avo.Core.BlockItemBase[],
+    newBlocks: AvoCoreBlockItemBase[],
   ) => {
     setAssignmentResponse(
-      (prev: Avo.Assignment.Response) =>
+      (prev: AvoAssignmentResponse) =>
         ({
           ...prev,
           pupil_collection_blocks: newBlocks as PupilCollectionFragment[],
@@ -115,7 +104,7 @@ export const AssignmentResponsePupilCollectionTab: FC<
         if (reorderedBlocks) {
           const blocks = setBlockPositionToIndex(
             reorderedBlocks,
-          ) as Avo.Assignment.Block[];
+          ) as AvoAssignmentBlock[];
 
           updateBlocksInAssignmentResponseState(blocks);
         }
@@ -155,7 +144,7 @@ export const AssignmentResponsePupilCollectionTab: FC<
     updateBlocksInAssignmentResponseState,
     {
       listSorter: {
-        content: (item: Avo.Core.BlockItemBase | undefined) =>
+        content: (item: AvoCoreBlockItemBase | undefined) =>
           item && renderBlockContent(item),
         divider: (position: number) => (
           <Button
@@ -167,7 +156,7 @@ export const AssignmentResponsePupilCollectionTab: FC<
                 {
                   id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
                   assignment_response_id: assignmentResponse.id,
-                  type: Avo.Core.BlockItemType.TEXT,
+                  type: AvoCoreBlockItemType.TEXT,
                   position,
                   use_custom_fields: false,
                   custom_title: '',
@@ -181,7 +170,7 @@ export const AssignmentResponsePupilCollectionTab: FC<
               );
 
               updateBlocksInAssignmentResponseState(
-                newBlocks as Avo.Core.BlockItemBase[],
+                newBlocks as AvoCoreBlockItemBase[],
               );
             }}
           />
@@ -347,7 +336,7 @@ export const AssignmentResponsePupilCollectionTab: FC<
     return (
       <Container mode="vertical">
         <BlockList
-          blocks={(pupilCollectionBlocks || []) as Avo.Core.BlockItemBase[]}
+          blocks={(pupilCollectionBlocks || []) as AvoCoreBlockItemBase[]}
         />
       </Container>
     );

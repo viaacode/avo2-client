@@ -1,4 +1,5 @@
-import { type Avo } from '@viaa/avo2-types';
+import { AvoContentTypeEnglish, AvoUserCommonUser } from '@viaa/avo2-types';
+
 import { compact, groupBy, noop } from 'es-toolkit';
 
 import { WorkspaceService } from '../../../workspace/workspace.service';
@@ -73,7 +74,7 @@ export class BookmarksViewsPlaysService {
     action: EventAction,
     contentType: EventContentType,
     contentUuid: string,
-    commonUser: Avo.User.CommonUser | null | undefined,
+    commonUser: AvoUserCommonUser | null | undefined,
     silent = true,
   ): Promise<void> {
     try {
@@ -133,7 +134,7 @@ export class BookmarksViewsPlaysService {
 
   public static async getItemCounts(
     itemUuid: string,
-    commonUser?: Avo.User.CommonUser | null,
+    commonUser?: AvoUserCommonUser | null,
   ): Promise<BookmarkViewPlayCounts> {
     const response = await dataService.query<
       GetItemBookmarkViewPlayCountsQuery,
@@ -157,7 +158,7 @@ export class BookmarksViewsPlaysService {
 
   public static async getCollectionCounts(
     collectionUuid: string,
-    commonUser: Avo.User.CommonUser | undefined | null,
+    commonUser: AvoUserCommonUser | undefined | null,
   ): Promise<BookmarkViewPlayCounts> {
     const response = await dataService.query<
       GetCollectionBookmarkViewPlayCountsQuery,
@@ -181,7 +182,7 @@ export class BookmarksViewsPlaysService {
 
   public static async getAssignmentCounts(
     assignmentUuid: string,
-    commonUser: Avo.User.CommonUser | null | undefined,
+    commonUser: AvoUserCommonUser | null | undefined,
   ) {
     const response = await dataService.query<
       GetAssignmentBookmarkViewCountsQuery,
@@ -218,7 +219,7 @@ export class BookmarksViewsPlaysService {
    */
   public static async toggleBookmark(
     contentId: string,
-    commonUser: Avo.User.CommonUser | null | undefined,
+    commonUser: AvoUserCommonUser | null | undefined,
     type: EventContentType,
     isBookmarked: boolean,
   ): Promise<void> {
@@ -272,7 +273,7 @@ export class BookmarksViewsPlaysService {
         contentId: itemBookmark.item_id,
         contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
         contentType: itemBookmark.bookmarkedItem.item.item_meta.type
-          .label as Avo.ContentType.English,
+          .label as AvoContentTypeEnglish,
         contentDescription: '',
         createdAt: normalizeTimestamp(itemBookmark.created_at).getTime(),
         contentTitle: itemBookmark.bookmarkedItem.title,
@@ -290,7 +291,7 @@ export class BookmarksViewsPlaysService {
   }
 
   public static async getItemBookmarksForUser(
-    commonUser: Avo.User.CommonUser,
+    commonUser: AvoUserCommonUser,
     filterString: string,
     orderObject: GetItemBookmarksForUserQueryVariables['order'],
   ): Promise<BookmarkInfo[]> {
@@ -334,7 +335,7 @@ export class BookmarksViewsPlaysService {
     queryType: QueryType,
     contentType: EventContentType,
     contentUuid: string,
-    commonUser: Avo.User.CommonUser | null,
+    commonUser: AvoUserCommonUser | null,
   ): {
     query: string;
     variables: any;
@@ -391,7 +392,7 @@ export class BookmarksViewsPlaysService {
     action: EventAction,
     contentType: EventContentType,
     contentUuid: string,
-    commonUser: Avo.User.CommonUser | null,
+    commonUser: AvoUserCommonUser | null,
     silent = true,
   ) {
     try {

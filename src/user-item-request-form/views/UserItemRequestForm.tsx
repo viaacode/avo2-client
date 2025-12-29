@@ -1,21 +1,13 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
-import {
-  Button,
-  Checkbox,
-  Container,
-  FormGroup,
-  Spacer,
-  Spinner,
-  TextArea,
-} from '@viaa/avo2-components'
-import { useAtomValue } from 'jotai'
-import type { Requests } from 'node-zendesk'
-import { type FC, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { useNavigate } from 'react-router'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import { Button, Checkbox, Container, FormGroup, Spacer, Spinner, TextArea, } from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
+import type { Requests } from 'node-zendesk';
+import { type FC, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
-import { redirectToClientPage } from '../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
 import { DOC_TYPES } from '../../shared/helpers/files';
@@ -30,48 +22,49 @@ import { ZendeskService } from '../../shared/services/zendesk-service';
 import { USER_ITEM_REQUEST_FORM_VALIDATION_SCHEMA } from './UserItemRequestForm.consts';
 import { renderAttachment } from './UserItemRequestForm.helpers';
 
-import './ItemRequestForm.scss'
-import { tText } from '../../shared/helpers/translate-text';
+import './ItemRequestForm.scss';
+import { AvoFileUploadAssetType } from '@viaa/avo2-types';
 import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
 interface FormValues {
-  description: string
-  wantsToUploadAttachment: boolean
-  attachmentUrl: string | null
+  description: string;
+  wantsToUploadAttachment: boolean;
+  attachmentUrl: string | null;
 }
 
 export const UserItemRequestForm: FC = () => {
-  const navigateFunc = useNavigate()
-  const commonUser = useAtomValue(commonUserAtom)
+  const navigateFunc = useNavigate();
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [formValues, setFormValues] = useState<FormValues>({
     description: '',
     wantsToUploadAttachment: false,
     attachmentUrl: null,
-  })
+  });
   const [formErrors, setFormErrors] = useState<
     Partial<Record<keyof FormValues, string>>
-  >({})
+  >({});
 
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onSend = async () => {
-    let ticket: Requests.CreateModel | undefined
+    let ticket: Requests.CreateModel | undefined;
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const newFormErrors = await validateForm(
         formValues,
         USER_ITEM_REQUEST_FORM_VALIDATION_SCHEMA,
-      )
+      );
       if (newFormErrors) {
-        setFormErrors(newFormErrors)
-        ToastService.danger(Object.values(newFormErrors)[0])
-        setIsLoading(false)
-        return
+        setFormErrors(newFormErrors);
+        ToastService.danger(Object.values(newFormErrors)[0]);
+        setIsLoading(false);
+        return;
       }
 
       // create zendesk ticket
-      const groupedLoms = groupLomLinks(commonUser?.loms)
+      const groupedLoms = groupLomLinks(commonUser?.loms);
       const body = {
         description: formValues.description,
         firstName: commonUser?.firstName,
@@ -86,7 +79,7 @@ export const UserItemRequestForm: FC = () => {
         educationLevels: groupedLoms.educationLevel
           .map((educationLevel) => educationLevel.label)
           .join(', '),
-      }
+      };
       ticket = {
         comment: {
           url: window.location.href,
@@ -117,8 +110,8 @@ export const UserItemRequestForm: FC = () => {
           email: commonUser?.email,
           name: getFullNameCommonUser(commonUser, true, false) || '',
         },
-      }
-      await ZendeskService.createTicket(ticket)
+      };
+      await ZendeskService.createTicket(ticket);
 
       trackEvents(
         {
@@ -127,27 +120,27 @@ export const UserItemRequestForm: FC = () => {
           action: 'request',
         },
         commonUser,
-      )
+      );
 
       ToastService.success(
         tHtml(
           'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt',
         ),
-      )
+      );
       redirectToClientPage(
         APP_PATH.USER_ITEM_REQUEST_FORM_CONFIRM.route,
         navigateFunc,
-      )
+      );
     } catch (err) {
-      console.error('Failed to create zendesk ticket', err, ticket)
+      console.error('Failed to create zendesk ticket', err, ticket);
       ToastService.danger(
         tHtml(
           'user-item-request-form/views/user-item-request-form___het-versturen-van-je-aanvraag-is-mislukt',
         ),
-      )
+      );
     }
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const renderForm = () => {
     return (
@@ -192,7 +185,7 @@ export const UserItemRequestForm: FC = () => {
             />
             {formValues.wantsToUploadAttachment && (
               <FileUpload
-                assetType="ZENDESK_ATTACHMENT"
+                assetType={AvoFileUploadAssetType.ZENDESK_ATTACHMENT}
                 urls={
                   formValues.attachmentUrl ? [formValues.attachmentUrl] : []
                 }
@@ -231,8 +224,8 @@ export const UserItemRequestForm: FC = () => {
           )}
         </Container>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <Container className="p-item-request-form" mode="vertical">
@@ -255,7 +248,7 @@ export const UserItemRequestForm: FC = () => {
         <div className="c-content">{renderForm()}</div>
       </Container>
     </Container>
-  )
-}
+  );
+};
 
-export default UserItemRequestForm
+export default UserItemRequestForm;

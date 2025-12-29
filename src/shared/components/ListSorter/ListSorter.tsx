@@ -1,11 +1,10 @@
-import './ListSorter.scss'
+import './ListSorter.scss';
 
-import { type ColorOption } from '@meemoo/admin-core-ui/admin'
-import { Button, Icon, IconName } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { sortBy } from 'es-toolkit'
-import { type FC, Fragment, type ReactNode, useMemo } from 'react'
-
+import { type ColorOption } from '@meemoo/admin-core-ui/admin';
+import { Button, Icon, IconName } from '@viaa/avo2-components';
+import { AvoCoreBlockItemBase } from '@viaa/avo2-types';
+import { sortBy } from 'es-toolkit';
+import { type FC, Fragment, type ReactNode, useMemo } from 'react';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../../../assignment/assignment.const';
 import { ColorSelect } from '../ColorSelect/ColorSelect';
 import { GET_ASSIGNMENT_COLORS } from '../ColorSelect/ColorSelect.const';
@@ -13,41 +12,41 @@ import { GET_ASSIGNMENT_COLORS } from '../ColorSelect/ColorSelect.const';
 // Types
 
 export interface ListSorterItem {
-  id: string | number // Number is deprecated but still used in collection fragment blocks
-  onSlice?: (item: ListSorterItem) => void
-  onPositionChange?: (item: ListSorterItem, delta: number) => void
-  onBackgroundChange?: (item: ListSorterItem, color: string) => void
-  position: number
-  icon?: IconName
-  color?: string
+  id: string | number; // Number is deprecated but still used in collection fragment blocks
+  onSlice?: (item: ListSorterItem) => void;
+  onPositionChange?: (item: ListSorterItem, delta: number) => void;
+  onBackgroundChange?: (item: ListSorterItem, color: string) => void;
+  position: number;
+  icon?: IconName;
+  color?: string;
 }
 
 export type ListSorterRenderer<T> = (
   item?: T & ListSorterItem,
   i?: number,
-) => ReactNode
+) => ReactNode;
 
 export interface ListSorterProps<T> {
-  actions?: ListSorterRenderer<T>
-  items?: (T & ListSorterItem)[]
-  content?: ListSorterRenderer<T>
-  divider?: (position: number) => ReactNode
-  heading?: ListSorterRenderer<T>
-  thumbnail?: ListSorterRenderer<T>
+  actions?: ListSorterRenderer<T>;
+  items?: (T & ListSorterItem)[];
+  content?: ListSorterRenderer<T>;
+  divider?: (position: number) => ReactNode;
+  heading?: ListSorterRenderer<T>;
+  thumbnail?: ListSorterRenderer<T>;
 }
 
 // Default renderers
 
 export const ListSorterThumbnail: FC<{ item: ListSorterItem }> = ({ item }) => (
   <Icon name={item.icon} />
-)
+);
 
 export const ListSorterPosition: FC<{ item: ListSorterItem; i?: number }> = ({
   item,
   i,
 }) => {
-  const isFirst = useMemo(() => i === 0, [i])
-  const isLast = useMemo(() => i === undefined, [i])
+  const isFirst = useMemo(() => i === 0, [i]);
+  const isLast = useMemo(() => i === undefined, [i]);
 
   return (
     <>
@@ -66,8 +65,8 @@ export const ListSorterPosition: FC<{ item: ListSorterItem; i?: number }> = ({
         />
       )}
     </>
-  )
-}
+  );
+};
 
 export const ListSorterSlice: FC<{ item: ListSorterItem }> = ({ item }) => (
   <Button
@@ -75,14 +74,14 @@ export const ListSorterSlice: FC<{ item: ListSorterItem }> = ({ item }) => (
     icon={IconName.delete}
     onClick={() => item.onSlice?.(item)}
   />
-)
+);
 
 export const ListSorterColor: FC<{
-  item: ListSorterItem
-  options?: ColorOption[]
+  item: ListSorterItem;
+  options?: ColorOption[];
 }> = ({ item, options }) => {
-  const colors = options || GET_ASSIGNMENT_COLORS()
-  const selected = colors.find(({ value }) => value === item.color)
+  const colors = options || GET_ASSIGNMENT_COLORS();
+  const selected = colors.find(({ value }) => value === item.color);
 
   return (
     <ColorSelect
@@ -92,11 +91,11 @@ export const ListSorterColor: FC<{
         item.onBackgroundChange?.(item, (option as ColorOption).value)
       }
     />
-  )
-}
+  );
+};
 
 // Main renderer
-type ListSorterType<T = ListSorterItem & any> = FC<ListSorterProps<T>>
+type ListSorterType<T = ListSorterItem & any> = FC<ListSorterProps<T>>;
 const ListSorter: ListSorterType = ({
   items = [],
   thumbnail = ((item) =>
@@ -112,7 +111,7 @@ const ListSorter: ListSorterType = ({
     ),
   content = () => 'content',
 }) => {
-  const emptyId = `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}empty`
+  const emptyId = `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}empty`;
 
   const renderItem: ListSorterRenderer<unknown> = (
     item?: ListSorterItem,
@@ -163,7 +162,7 @@ const ListSorter: ListSorterType = ({
           </div>
         )}
       </Fragment>
-    )
+    );
 
   return (
     <ul className="c-list-sorter">
@@ -175,13 +174,13 @@ const ListSorter: ListSorterType = ({
         </div>
       )}
       {sortBy(items, ['position']).map((item, i) => {
-        const j = items.length === i + 1 ? undefined : i
-        return renderItem(item, j)
+        const j = items.length === i + 1 ? undefined : i;
+        return renderItem(item, j);
       })}
     </ul>
-  )
-}
+  );
+};
 
 // TODO: use this pattern for CollectionOrBundle to reduce overhead
 export const BlockListSorter =
-  ListSorter as ListSorterType<Avo.Core.BlockItemBase>
+  ListSorter as ListSorterType<AvoCoreBlockItemBase>;

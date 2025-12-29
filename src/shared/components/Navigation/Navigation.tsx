@@ -14,7 +14,7 @@ import {
   ToolbarLeft,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+
 import { last } from 'es-toolkit';
 import { useAtom, useSetAtom } from 'jotai';
 import { type FC, type ReactText, useEffect, useState } from 'react';
@@ -26,8 +26,8 @@ import {
   getProfileAvatar,
   getProfileInitials,
 } from '../../../authentication/helpers/get-profile-info';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects/redirect-to-external-page';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
 import { APP_PATH } from '../../../constants';
 import {
   getLocation,
@@ -42,6 +42,7 @@ import { NavigationBarId } from './Navigation.const';
 import { NavigationItem } from './NavigationItem';
 
 import './Navigation.scss';
+import { AvoAuthLoginResponseLoggedIn } from '@viaa/avo2-types';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 
@@ -72,8 +73,8 @@ export const Navigation: FC<NavigationParams> = ({ isPreviewRoute }) => {
   /**
    * @deprecated
    */
-  const user = (loginState as Avo.Auth.LoginResponseLoggedIn)?.userInfo;
-  const commonUser = (loginState as Avo.Auth.LoginResponseLoggedIn)
+  const user = (loginState as AvoAuthLoginResponseLoggedIn)?.userInfo;
+  const commonUser = (loginState as AvoAuthLoginResponseLoggedIn)
     ?.commonUserInfo;
 
   /**

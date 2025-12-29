@@ -1,7 +1,6 @@
-import { Column, Spacer } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { type FC, type ReactNode } from 'react'
-
+import { Column, Spacer } from '@viaa/avo2-components';
+import { AvoLomLom } from '@viaa/avo2-types';
+import { type FC, type ReactNode } from 'react';
 import { SearchFilter } from '../../../search/search.const';
 import { type FilterState } from '../../../search/search.types';
 import { formatDate } from '../../helpers/formatters/date';
@@ -11,35 +10,35 @@ import { LomInfoField } from '../LomInfoField/LomInfoField';
 
 type CommonMetadataProps = {
   subject: {
-    loms?: Avo.Lom.Lom[] | null
-    created_at?: string
-    updated_at?: string
-    id: string
-  }
-  enabledMetaData: SearchFilter[]
+    loms?: AvoLomLom[] | null;
+    created_at?: string;
+    updated_at?: string;
+    id: string;
+  };
+  enabledMetaData: SearchFilter[];
   renderSearchLink: (
     linkText: string | ReactNode,
     newFilters: FilterState,
     className?: string,
-  ) => ReactNode
-}
+  ) => ReactNode;
+};
 
 export const CommonMetadata: FC<CommonMetadataProps> = ({
   subject,
   enabledMetaData,
   renderSearchLink,
 }) => {
-  const { id, created_at, updated_at, loms } = subject
-  const groupedLomsLabels = getGroupedLomsKeyValue(loms || [], 'label')
+  const { id, created_at, updated_at, loms } = subject;
+  const groupedLomsLabels = getGroupedLomsKeyValue(loms || [], 'label');
   const isEducationLevelEnabled = enabledMetaData.includes(
     SearchFilter.educationLevel,
-  )
+  );
   const isEducationDegreeEnabled = enabledMetaData.includes(
     SearchFilter.educationDegree,
-  )
-  const isSubjectEnabled = enabledMetaData.includes(SearchFilter.subject)
-  const isThemeEnabled = enabledMetaData.includes(SearchFilter.thema)
-  const isDatesEnabled = enabledMetaData.includes(SearchFilter.broadcastDate)
+  );
+  const isSubjectEnabled = enabledMetaData.includes(SearchFilter.subject);
+  const isThemeEnabled = enabledMetaData.includes(SearchFilter.thema);
+  const isDatesEnabled = enabledMetaData.includes(SearchFilter.broadcastDate);
 
   return (
     <>
@@ -122,5 +121,5 @@ export const CommonMetadata: FC<CommonMetadataProps> = ({
         </>
       )}
     </>
-  )
-}
+  );
+};

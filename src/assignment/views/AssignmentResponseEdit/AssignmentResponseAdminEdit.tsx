@@ -1,5 +1,9 @@
 import { IconName } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentResponse,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import {
@@ -39,15 +43,16 @@ export const AssignmentResponseAdminEdit: FC = () => {
 
   const commonUser = useAtomValue(commonUserAtom);
   // Data
-  const [assignment, setAssignment] =
-    useState<Avo.Assignment.Assignment | null>(null);
+  const [assignment, setAssignment] = useState<AvoAssignmentAssignment | null>(
+    null,
+  );
   const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
   const [assignmentError, setAssignmentError] = useState<{
     message: string | ReactNode;
     icon?: IconName;
   } | null>(null);
   const [assignmentResponse, setAssignmentResponse] =
-    useState<Avo.Assignment.Response | null>(null);
+    useState<AvoAssignmentResponse | null>(null);
 
   // UI
 
@@ -205,7 +210,7 @@ export const AssignmentResponseAdminEdit: FC = () => {
         setAssignmentResponse={
           setAssignmentResponse as Dispatch<
             SetStateAction<
-              | (Omit<Avo.Assignment.Response, 'assignment' | 'id'> & {
+              | (Omit<AvoAssignmentResponse, 'assignment' | 'id'> & {
                   id: string | undefined;
                 })
               | null

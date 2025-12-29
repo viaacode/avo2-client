@@ -1,16 +1,6 @@
 import { type RichEditorState } from '@meemoo/react-components';
-import {
-  Button,
-  Column,
-  Container,
-  Form,
-  FormGroup,
-  Grid,
-  Image,
-  Spacer,
-  TextArea,
-} from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { Button, Column, Container, Form, FormGroup, Grid, Image, Spacer, TextArea, } from '@viaa/avo2-components';
+import { AvoCollectionCollection, AvoFileUploadAssetType, AvoLomLom, AvoLomLomField, } from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import { type FC, useState } from 'react';
 
@@ -31,16 +21,23 @@ import { type CollectionOrBundle } from '../collection.types';
 
 import { type CollectionAction } from './CollectionOrBundleEdit.types';
 
-interface CollectionOrBundleEditMetaDataProps {
+interface CollectionOrBundleEditPublicationDetailsProps {
   type: CollectionOrBundle;
-  collection: Avo.Collection.Collection;
+  collection: AvoCollectionCollection;
   changeCollectionState: (action: CollectionAction) => void;
+  showOgImageUpload: boolean;
   onFocus?: () => void;
 }
 
-export const CollectionOrBundleEditMetaData: FC<
-  CollectionOrBundleEditMetaDataProps
-> = ({ type, collection, changeCollectionState, onFocus }) => {
+export const CollectionOrBundleEditPublicationDetails: FC<
+  CollectionOrBundleEditPublicationDetailsProps
+> = ({
+  type,
+  collection,
+  changeCollectionState,
+  onFocus,
+  showOgImageUpload,
+}) => {
   // State
   const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] =
     useState<boolean>(false);
@@ -50,11 +47,11 @@ export const CollectionOrBundleEditMetaData: FC<
 
   const isCollection = type === 'collection';
 
-  const updateCollectionLoms = (loms: Avo.Lom.LomField[]) => {
+  const updateCollectionLoms = (loms: AvoLomLomField[]) => {
     changeCollectionState({
       collectionProp: 'loms',
       type: 'UPDATE_COLLECTION_PROP',
-      collectionPropValue: loms.map((lom) => ({ lom }) as Avo.Lom.Lom),
+      collectionPropValue: loms.map((lom) => ({ lom }) as AvoLomLom),
     });
   };
 
@@ -233,7 +230,11 @@ export const CollectionOrBundleEditMetaData: FC<
                             : []
                         }
                         allowMulti={false}
-                        assetType="BUNDLE_COVER"
+                        assetType={
+                          isCollection
+                            ? AvoFileUploadAssetType.COLLECTION_COVER
+                            : AvoFileUploadAssetType.BUNDLE_COVER
+                        }
                         ownerId={collection.id}
                         onChange={(urls) =>
                           changeCollectionState({
@@ -245,13 +246,60 @@ export const CollectionOrBundleEditMetaData: FC<
                       />
                     )}
                   </FormGroup>
-                  {/* TODO: DISABLED FEATURE
-											{ isCollection &&
-												<FormGroup label={tText('collection/views/collection-edit-meta-data___map')} labelFor="mapId">
-													<Button type="secondary" icon={IconName.add} label={tText('collection/views/collection-edit-meta-data___voeg-toe-aan-een-map')} />
-												</FormGroup>
-											}
-										*/}
+                  {showOgImageUpload && (
+                    <FormGroup
+                      label={tText('OG afbeelding')}
+                      labelFor="ogImageId"
+                    >
+                      {isCollection ? (
+                        <>
+                          <Button
+                            type="secondary"
+                            label={tText('Stel een OG afbeelding in')}
+                            title={
+                              isCollection
+                                ? tText(
+                                    'Kies een afbeelding om te gebruiken als OG afbeelding voor deze collectie op social media',
+                                  )
+                                : tText(
+                                    'Kies een afbeelding om te gebruiken als OG afbeelding voor deze bundel op social media',
+                                  )
+                            }
+                            onClick={() => setCollectionsStillsModalOpen(true)}
+                          />
+                          {collection.thumbnail_path && (
+                            <Image
+                              className="u-spacer-top"
+                              src={collection.thumbnail_path}
+                            />
+                          )}
+                        </>
+                      ) : (
+                        <FileUpload
+                          label={tText('Upload een OG afbeelding')}
+                          urls={
+                            collection.seo_image_path
+                              ? [collection.seo_image_path]
+                              : []
+                          }
+                          allowMulti={false}
+                          assetType={
+                            isCollection
+                              ? AvoFileUploadAssetType.COLLECTION_OG_IMAGE
+                              : AvoFileUploadAssetType.BUNDLE_OG_IMAGE
+                          }
+                          ownerId={collection.id}
+                          onChange={(urls) =>
+                            changeCollectionState({
+                              type: 'UPDATE_COLLECTION_PROP',
+                              collectionProp: 'og_thumbnail_path',
+                              collectionPropValue: urls[0] || null,
+                            })
+                          }
+                        />
+                      )}
+                    </FormGroup>
+                  )}
                 </Column>
               </Grid>
             </Spacer>

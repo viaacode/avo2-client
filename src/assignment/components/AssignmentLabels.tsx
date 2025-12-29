@@ -1,23 +1,8 @@
-import { type ColorOption } from '@meemoo/admin-core-ui/admin'
-import {
-  Button,
-  Flex,
-  FlexItem,
-  IconName,
-  Spacer,
-  TagList,
-  type TagOption,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { cloneDeep } from 'es-toolkit'
-import {
-  type FC,
-  type MouseEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { type ColorOption } from '@meemoo/admin-core-ui/admin';
+import { Button, Flex, FlexItem, IconName, Spacer, TagList, type TagOption, } from '@viaa/avo2-components';
+import { cloneDeep } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import { type FC, type MouseEvent, useCallback, useEffect, useState, } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { ColorSelect } from '../../shared/components/ColorSelect/ColorSelect';
@@ -29,27 +14,28 @@ import { ToastService } from '../../shared/services/toast-service';
 
 import { ManageAssignmentLabels } from './modals/ManageAssignmentLabels';
 
-import './AssignmentLabels.scss'
+import './AssignmentLabels.scss';
+import { AvoAssignmentLabel, AvoAssignmentLabelType } from '@viaa/avo2-types';
 
 type AssignmentLabelsProps = {
-  labels: { assignment_label: Avo.Assignment.Label }[]
-  id?: string
-  onChange: (changed: { assignment_label: Avo.Assignment.Label }[]) => void
+  labels: { assignment_label: AvoAssignmentLabel }[];
+  id?: string;
+  onChange: (changed: { assignment_label: AvoAssignmentLabel }[]) => void;
   dictionary?: {
-    placeholder: string
-    empty: string
-  }
-  type?: Avo.Assignment.LabelType
-}
+    placeholder: string;
+    empty: string;
+  };
+  type?: AvoAssignmentLabelType;
+};
 
 export const AssignmentLabels: FC<AssignmentLabelsProps> = ({
   id,
   labels,
   onChange,
-  type = Avo.Assignment.LabelType.LABEL,
+  type = AvoAssignmentLabelType.LABEL,
   ...props
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const dictionary = {
     placeholder: tText(
@@ -59,30 +45,30 @@ export const AssignmentLabels: FC<AssignmentLabelsProps> = ({
       'assignment/views/assignment-edit___geen-vakken-of-projecten-beschikbaar',
     ),
     ...(props.dictionary ? props.dictionary : {}),
-  }
+  };
 
   const [allAssignmentLabels, setAllAssignmentLabels] = useState<
-    Avo.Assignment.Label[]
-  >([])
+    AvoAssignmentLabel[]
+  >([]);
   const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
   const fetchAssignmentLabels = useCallback(async () => {
     if (commonUser?.profileId) {
       // Fetch labels every time the manage labels modal closes and once at startup
       const labels = await AssignmentLabelsService.getLabelsForProfile(
         commonUser.profileId,
-      )
-      setAllAssignmentLabels(labels)
+      );
+      setAllAssignmentLabels(labels);
     }
-  }, [commonUser?.profileId, setAllAssignmentLabels])
+  }, [commonUser?.profileId, setAllAssignmentLabels]);
 
   useEffect(() => {
-    fetchAssignmentLabels()
-  }, [fetchAssignmentLabels])
+    fetchAssignmentLabels();
+  }, [fetchAssignmentLabels]);
 
   const getAssignmentLabelOptions = (
-    labels: Avo.Assignment.Label[],
+    labels: AvoAssignmentLabel[],
   ): TagOption[] => {
     return labels.map((labelObj) => ({
       label: labelObj.label || '',
@@ -90,15 +76,15 @@ export const AssignmentLabels: FC<AssignmentLabelsProps> = ({
       // labelObj.enum_color.label contains hex code (graphql enum quirk)
       // The value of the enum has to be uppercase text, so the value contains the color name
       color: labelObj.color_override || labelObj?.enum_color?.label,
-    }))
-  }
+    }));
+  };
 
   const handleManageAssignmentLabelsModalClosed = () => {
-    fetchAssignmentLabels()
-    setIsManageLabelsModalOpen(false)
-  }
+    fetchAssignmentLabels();
+    setIsManageLabelsModalOpen(false);
+  };
 
-  const getColorOptions = (labels: Avo.Assignment.Label[]): ColorOption[] => {
+  const getColorOptions = (labels: AvoAssignmentLabel[]): ColorOption[] => {
     return labels
       .filter((item) => !type || item.type === type)
       .map((labelObj) => ({
@@ -107,8 +93,8 @@ export const AssignmentLabels: FC<AssignmentLabelsProps> = ({
         // labelObj.enum_color.label contains hex code (graphql enum quirk)
         // The value of the enum has to be uppercase text, so the value contains the color name
         color: labelObj.color_override || labelObj?.enum_color?.label,
-      }))
-  }
+      }));
+  };
 
   const addAssignmentLabel = (labelOption?: unknown) => {
     if (!labelOption) {
@@ -116,21 +102,21 @@ export const AssignmentLabels: FC<AssignmentLabelsProps> = ({
         tHtml(
           'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht',
         ),
-      )
-      return
+      );
+      return;
     }
 
     const assignmentLabel = allAssignmentLabels.find(
       (labelObj) => String(labelObj.id) === (labelOption as ColorOption).value,
-    )
+    );
 
     if (!assignmentLabel) {
       ToastService.danger(
         tHtml(
           'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht',
         ),
-      )
-      return
+      );
+      return;
     }
 
     onChange([
@@ -138,23 +124,23 @@ export const AssignmentLabels: FC<AssignmentLabelsProps> = ({
       {
         assignment_label: assignmentLabel,
       },
-    ])
-  }
+    ]);
+  };
 
   const deleteAssignmentLabel = (labelId: string | number, evt: MouseEvent) => {
-    evt.stopPropagation()
-    onChange(labels.filter((item) => item.assignment_label.id !== labelId))
-  }
+    evt.stopPropagation();
+    onChange(labels.filter((item) => item.assignment_label.id !== labelId));
+  };
 
-  const assignmentLabelIds = labels.map((item) => item.assignment_label.id)
+  const assignmentLabelIds = labels.map((item) => item.assignment_label.id);
   const unselectedLabels = cloneDeep(
     allAssignmentLabels.filter((item) => !assignmentLabelIds.includes(item.id)),
-  )
+  );
 
   const tooltip =
-    type === Avo.Assignment.LabelType.LABEL
+    type === AvoAssignmentLabelType.LABEL
       ? tText('assignment/components/assignment-labels___beheer-je-labels')
-      : tText('assignment/components/assignment-labels___beheer-je-klassen')
+      : tText('assignment/components/assignment-labels___beheer-je-klassen');
   return (
     <>
       <TagList
@@ -197,5 +183,5 @@ export const AssignmentLabels: FC<AssignmentLabelsProps> = ({
         type={type}
       />
     </>
-  )
-}
+  );
+};

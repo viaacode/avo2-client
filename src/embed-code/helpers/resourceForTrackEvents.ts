@@ -1,14 +1,13 @@
-import { type Avo } from '@viaa/avo2-types'
-
+import { AvoItemItem, AvoUserCommonUser } from '@viaa/avo2-types';
 import { type MinimalClientEvent } from '../../shared/services/event-logging-service';
 import { type EmbedCode } from '../embed-code.types';
 
 export function createResource(
   embedCode: EmbedCode,
-  commonUser: Avo.User.CommonUser,
+  commonUser: AvoUserCommonUser,
 ): MinimalClientEvent['resource'] {
-  const content = embedCode?.content as Avo.Item.Item
-  const userGroup = commonUser.userGroup
+  const content = embedCode?.content as AvoItemItem;
+  const userGroup = commonUser.userGroup;
 
   return {
     // User related
@@ -21,5 +20,5 @@ export function createResource(
 
     // Embed code related
     externalWebsite: embedCode.externalWebsite,
-  }
+  };
 }

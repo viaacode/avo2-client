@@ -26,12 +26,10 @@ import { stripHtml } from '../../../shared/helpers/formatters/strip-html';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { type InteractiveTourAction } from '../helpers/reducers';
-import {
-  type EditableStep,
-  InteractiveTourEditActionType,
-} from '../interactive-tour.types';
+import { type EditableStep, InteractiveTourEditActionType, } from '../interactive-tour.types';
 
 import './InteractiveTourEdit.scss';
+import { AvoFileUploadAssetType } from '@viaa/avo2-types';
 
 interface InteractiveTourEditStepProps {
   step: EditableStep;
@@ -168,7 +166,7 @@ export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
                 }
               }}
               controls={RICH_TEXT_EDITOR_OPTIONS_FULL}
-              fileType="INTERACTIVE_TOUR_IMAGE"
+              fileType={AvoFileUploadAssetType.INTERACTIVE_TOUR_IMAGE}
               id={`content_editor_${index}`}
               placeholder={tText(
                 'admin/interactive-tour/views/interactive-tour-edit___vul-een-stap-tekst-in',

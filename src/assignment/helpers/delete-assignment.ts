@@ -1,15 +1,18 @@
-import { Avo } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoCoreBlockItemType,
+  AvoUserCommonUser,
+} from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
 import { type ReactNode } from 'react';
-
 import { tHtml } from '../../shared/helpers/translate-html';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { AssignmentService } from '../assignment.service';
 
 export async function deleteAssignment(
-  assignment: Avo.Assignment.Assignment,
-  commonUser: Avo.User.CommonUser | null | undefined,
+  assignment: AvoAssignmentAssignment,
+  commonUser: AvoUserCommonUser | null | undefined,
   afterDeleteCallback?: () => void,
 ): Promise<void> {
   const assignmentId = assignment.id;
@@ -65,7 +68,7 @@ export async function deleteAssignment(
 
 export async function deleteSelfFromAssignment(
   assignmentId: string | null | undefined,
-  commonUser: Avo.User.CommonUser | null | undefined,
+  commonUser: AvoUserCommonUser | null | undefined,
   afterDeleteCallback?: () => void,
 ): Promise<void> {
   try {
@@ -112,7 +115,7 @@ export async function deleteSelfFromAssignment(
 }
 
 export function deleteAssignmentWarning(
-  assignment: Avo.Assignment.Assignment | undefined,
+  assignment: AvoAssignmentAssignment | undefined,
   profileId: string | undefined,
 ): ReactNode {
   const isSharedWithOthers = !!assignment?.contributors?.find(
@@ -140,9 +143,7 @@ export function deleteAssignmentWarning(
   }
 
   if (
-    assignment?.lom_learning_resource_type?.includes(
-      Avo.Core.BlockItemType.BOUW,
-    )
+    assignment?.lom_learning_resource_type?.includes(AvoCoreBlockItemType.BOUW)
   ) {
     return tHtml(
       'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden',

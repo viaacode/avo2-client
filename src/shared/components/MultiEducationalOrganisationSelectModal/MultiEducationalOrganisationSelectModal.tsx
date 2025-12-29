@@ -1,15 +1,5 @@
-import {
-  Button,
-  Checkbox,
-  Icon,
-  IconName,
-  Modal,
-  ModalBody,
-  ModalFooterRight,
-  Spacer,
-  TagList,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
+import { Button, Checkbox, Icon, IconName, Modal, ModalBody, ModalFooterRight, Spacer, TagList, } from '@viaa/avo2-components'
+
 import { clsx } from 'clsx'
 import { type FC, type MouseEvent, useEffect, useState } from 'react'
 
@@ -19,14 +9,15 @@ import { tText } from '../../helpers/translate-text';
 import { EducationalOrganisationsSelect } from '../EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 
 import './MultiEducationalOrganisationSelectModal.scss'
+import { AvoEducationOrganizationOrganization } from "@viaa/avo2-types";
 
 interface MultiEducationalOrganisationSelectModalProps {
-  label: string
-  id: string
-  values: Avo.EducationOrganization.Organization[]
-  disabled?: boolean
-  onChange: (organisations: string[], id: string) => void
-  showSelectedValuesOnCollapsed?: boolean
+  label: string;
+  id: string;
+  values: AvoEducationOrganizationOrganization[];
+  disabled?: boolean;
+  onChange: (organisations: string[], id: string) => void;
+  showSelectedValuesOnCollapsed?: boolean;
 }
 
 export const MultiEducationalOrganisationSelectModal: FC<
@@ -39,23 +30,23 @@ export const MultiEducationalOrganisationSelectModal: FC<
   onChange,
   showSelectedValuesOnCollapsed = true,
 }) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [includeEmpty, setIncludeEmpty] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [includeEmpty, setIncludeEmpty] = useState<boolean>(false);
   const [selectedOrganisations, setSelectedOrganisations] =
-    useState<Avo.EducationOrganization.Organization[]>(values)
+    useState<AvoEducationOrganizationOrganization[]>(values);
 
   useEffect(() => {
     setSelectedOrganisations(
       values.filter((org) => org.organisationLabel !== NULL_FILTER),
-    )
+    );
     setIncludeEmpty(
       !!values.find((org) => org.organisationLabel === NULL_FILTER),
-    )
-  }, [isOpen, values])
+    );
+  }, [isOpen, values]);
 
   const closeModal = () => {
-    setIsOpen(false)
-  }
+    setIsOpen(false);
+  };
 
   const applyFilter = () => {
     onChange(
@@ -66,22 +57,22 @@ export const MultiEducationalOrganisationSelectModal: FC<
         ...(includeEmpty ? [NULL_FILTER] : []),
       ],
       id,
-    )
-    closeModal()
-  }
+    );
+    closeModal();
+  };
 
   const deleteAllSelectedOrganisations = (
     _tagId: string | number,
     clickEvent: MouseEvent,
   ) => {
-    setSelectedOrganisations([])
-    onChange([], id)
-    clickEvent.stopPropagation()
-  }
+    setSelectedOrganisations([]);
+    onChange([], id);
+    clickEvent.stopPropagation();
+  };
 
   const renderCheckboxControl = () => {
     const selected: number =
-      selectedOrganisations.length + (includeEmpty ? 1 : 0)
+      selectedOrganisations.length + (includeEmpty ? 1 : 0);
     return (
       <>
         <div>
@@ -157,16 +148,16 @@ export const MultiEducationalOrganisationSelectModal: FC<
           </ModalFooterRight>
         </Modal>
       </>
-    )
-  }
+    );
+  };
 
   if (disabled) {
     return (
       <div className={clsx({ 'u-opacity-50 u-disable-click': disabled })}>
         {renderCheckboxControl()}
       </div>
-    )
+    );
   }
 
-  return renderCheckboxControl()
-}
+  return renderCheckboxControl();
+};

@@ -1,15 +1,14 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import { Column, Grid, MediaCard, MediaCardMetaData, MediaCardThumbnail, MetaData, MetaDataItem, Thumbnail, } from '@viaa/avo2-components';
 import {
-  Column,
-  Grid,
-  MediaCard,
-  MediaCardMetaData,
-  MediaCardThumbnail,
-  MetaData,
-  MetaDataItem,
-  Thumbnail,
-} from '@viaa/avo2-components';
-import { Avo, LomSchemeType } from '@viaa/avo2-types';
+  AvoAssignmentAssignment,
+  AvoCollectionCollection,
+  AvoCollectionFragment,
+  AvoCoreBlockItemType,
+  AvoCoreContentType,
+  AvoLomLomSchemeType,
+  AvoSearchResultItem,
+} from '@viaa/avo2-types';
 import { compact, isNil, omit } from 'es-toolkit';
 import { type ReactNode } from 'react';
 
@@ -19,15 +18,9 @@ import { tHtml } from '../shared/helpers/translate-html';
 import { tText } from '../shared/helpers/translate-text';
 import { type Positioned } from '../shared/types';
 
-import {
-  MAX_LONG_DESCRIPTION_LENGTH,
-  MAX_SEARCH_DESCRIPTION_LENGTH,
-} from './collection.const';
+import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH, } from './collection.const';
 import { CollectionService } from './collection.service';
-import {
-  CONTENT_TYPE_TRANSLATIONS_NL_TO_EN,
-  ContentTypeNumber,
-} from './collection.types';
+import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN, ContentTypeNumber, } from './collection.types';
 
 export const getValidationFeedbackForDescription = (
   description: string | null,
@@ -53,14 +46,14 @@ type ValidationRule<T> = {
 };
 
 const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
-  Partial<Avo.Collection.Collection>
+  Partial<AvoCollectionCollection>
 >[] = () => [
   {
     error: (collection) =>
       collection.type_id === ContentTypeNumber.collection
         ? tText('collection/collection___de-collectie-beschrijving-is-te-lang')
         : tText('collection/collection___de-bundel-beschrijving-is-te-lang'),
-    isValid: (collection: Partial<Avo.Collection.Collection>) =>
+    isValid: (collection: Partial<AvoCollectionCollection>) =>
       !collection.description ||
       collection.description.length <= MAX_SEARCH_DESCRIPTION_LENGTH,
   },
@@ -73,7 +66,7 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
         : tText(
             'collection/collection___de-lange-beschrijving-van-deze-bundel-is-te-lang',
           ),
-    isValid: (collection: Partial<Avo.Collection.Collection>) =>
+    isValid: (collection: Partial<AvoCollectionCollection>) =>
       !(collection as any).description_long ||
       stripHtml((collection as any).description_long).length <=
         MAX_LONG_DESCRIPTION_LENGTH,
@@ -81,7 +74,7 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 ];
 
 const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
-  Partial<Avo.Collection.Collection>
+  Partial<AvoCollectionCollection>
 >[] => [
   {
     error: (collection) =>
@@ -90,7 +83,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
             'collection/collection___de-collectie-heeft-geen-hoofdafbeelding',
           )
         : tText('collection/collection___de-bundel-heeft-geen-hoofdafbeelding'),
-    isValid: (collection: Partial<Avo.Collection.Collection>) =>
+    isValid: (collection: Partial<AvoCollectionCollection>) =>
       !!collection.thumbnail_path,
   },
   {
@@ -98,7 +91,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
       collection.type_id === ContentTypeNumber.collection
         ? tText('collection/collection___de-collectie-heeft-geen-titel')
         : tText('collection/collection___de-bundel-heeft-geen-titel'),
-    isValid: (collection: Partial<Avo.Collection.Collection>) =>
+    isValid: (collection: Partial<AvoCollectionCollection>) =>
       !!collection.title,
   },
   {
@@ -106,7 +99,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
       collection.type_id === ContentTypeNumber.collection
         ? tText('collection/collection___de-collectie-heeft-geen-beschrijving')
         : tText('collection/collection___de-bundel-heeft-geen-beschrijving'),
-    isValid: (collection: Partial<Avo.Collection.Collection>) =>
+    isValid: (collection: Partial<AvoCollectionCollection>) =>
       !!collection.description,
   },
   {
@@ -118,9 +111,9 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
         : tText(
             'collection/collection___de-bundel-heeft-geen-onderwijsniveaus',
           ),
-    isValid: (collection: Partial<Avo.Collection.Collection>) =>
+    isValid: (collection: Partial<AvoCollectionCollection>) =>
       !!collection.loms?.find(
-        (lom) => lom.lom?.scheme === LomSchemeType.structure,
+        (lom) => lom.lom?.scheme === AvoLomLomSchemeType.structure,
       ),
   },
   {
@@ -128,17 +121,19 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
       collection.type_id === ContentTypeNumber.collection
         ? tText('collection/collection___de-collectie-heeft-geen-themas')
         : tText('collection/collection___de-bundel-heeft-geen-themas'),
-    isValid: (collection: Partial<Avo.Collection.Collection>) =>
-      !!collection.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.theme),
+    isValid: (collection: Partial<AvoCollectionCollection>) =>
+      !!collection.loms?.find(
+        (lom) => lom.lom?.scheme === AvoLomLomSchemeType.theme,
+      ),
   },
   {
     error: (collection) =>
       collection.type_id === ContentTypeNumber.collection
         ? tText('collection/collection___de-collectie-heeft-geen-vakken')
         : tText('collection/collection___de-bundel-heeft-geen-vakken'),
-    isValid: (collection: Partial<Avo.Collection.Collection>) =>
+    isValid: (collection: Partial<AvoCollectionCollection>) =>
       !!collection.loms?.find(
-        (lom) => lom.lom?.scheme === LomSchemeType.subject,
+        (lom) => lom.lom?.scheme === AvoLomLomSchemeType.subject,
       ),
   },
   {
@@ -146,7 +141,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
       collection.type_id === ContentTypeNumber.collection
         ? tText('collection/collection___de-collectie-heeft-geen-items')
         : tText('collection/collection___de-bundel-heeft-geen-collecties'),
-    isValid: (collection: Partial<Avo.Collection.Collection>) =>
+    isValid: (collection: Partial<AvoCollectionCollection>) =>
       !!collection?.collection_fragments?.length,
   },
   {
@@ -158,26 +153,26 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
         : tText(
             'collection/collection___de-collecties-moeten-een-titel-hebben',
           ),
-    isValid: (collection: Partial<Avo.Collection.Collection>) =>
+    isValid: (collection: Partial<AvoCollectionCollection>) =>
       !collection.collection_fragments ||
       validateFragments(
         collection.collection_fragments,
         collection.type_id === ContentTypeNumber.collection
-          ? Avo.Core.BlockItemType.ITEM
-          : Avo.Core.BlockItemType.COLLECTION,
+          ? AvoCoreBlockItemType.ITEM
+          : AvoCoreBlockItemType.COLLECTION,
       ),
   },
   {
     error: tText(
       'collection/collection___uw-tekst-items-moeten-een-titel-of-beschrijving-bevatten',
     ),
-    isValid: (collection: Partial<Avo.Collection.Collection>) => {
+    isValid: (collection: Partial<AvoCollectionCollection>) => {
       return (
         collection.type_id === ContentTypeNumber.bundle ||
         !collection.collection_fragments ||
         validateFragments(
           collection.collection_fragments,
-          Avo.Core.BlockItemType.TEXT,
+          AvoCoreBlockItemType.TEXT,
         )
       );
     },
@@ -186,7 +181,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
     error: tText(
       'collection/collection___de-bundel-heeft-collecties-of-opdrachten-die-verwijderd-zijn',
     ),
-    isValid: (bundle: Partial<Avo.Collection.Collection>) => {
+    isValid: (bundle: Partial<AvoCollectionCollection>) => {
       if (bundle.type_id === ContentTypeNumber.collection) {
         return true; // Only applies to bundles
       }
@@ -196,8 +191,8 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
       // Check that all collections/assignments in the bundle still exist (have not been deleted)
       return bundle.collection_fragments.every((fragment) => {
         return fragment?.item_meta as
-          | Avo.Collection.Collection
-          | Avo.Assignment.Assignment
+          | AvoCollectionCollection
+          | AvoAssignmentAssignment
           | undefined;
       });
     },
@@ -206,7 +201,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
     error: tText(
       'collection/collection___de-bundel-heeft-niet-publieke-collecties-of-opdrachten',
     ),
-    isValid: (bundle: Partial<Avo.Collection.Collection>) => {
+    isValid: (bundle: Partial<AvoCollectionCollection>) => {
       if (bundle.type_id === ContentTypeNumber.collection) {
         return true; // Only applies to bundles
       }
@@ -216,8 +211,8 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
       // Check that all collections/assignments in the bundle are public
       return bundle.collection_fragments.every((fragment) => {
         const collectionOrAssignment = fragment?.item_meta as
-          | Avo.Collection.Collection
-          | Avo.Assignment.Assignment
+          | AvoCollectionCollection
+          | AvoAssignmentAssignment
           | undefined;
         return collectionOrAssignment?.is_public ?? true; // Only complain if not public, do not complain if deleted (that's a separate check)
       });
@@ -227,7 +222,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 ];
 
 const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRule<
-  Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>
+  Pick<AvoCollectionFragment, 'start_oc' | 'end_oc'>
 >[] = () => [
   {
     error: tText(
@@ -260,8 +255,8 @@ const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRul
 ];
 
 const validateFragments = (
-  fragments: Avo.Collection.Fragment[],
-  type: Avo.Core.BlockItemType,
+  fragments: AvoCollectionFragment[],
+  type: AvoCoreBlockItemType,
 ): boolean => {
   if (!fragments || !fragments.length) {
     return false;
@@ -270,7 +265,7 @@ const validateFragments = (
   let isValid = true;
 
   switch (type) {
-    case Avo.Core.BlockItemType.ITEM:
+    case AvoCoreBlockItemType.ITEM:
       // Check if video fragment has custom_title and custom_description if necessary.
       fragments.forEach((fragment) => {
         if (
@@ -283,11 +278,11 @@ const validateFragments = (
       });
       break;
 
-    case Avo.Core.BlockItemType.COLLECTION:
+    case AvoCoreBlockItemType.COLLECTION:
       // Check if video fragment has custom_title and custom_description if necessary.
       fragments.forEach((fragment) => {
         if (
-          fragment.type === Avo.Core.BlockItemType.COLLECTION &&
+          fragment.type === AvoCoreBlockItemType.COLLECTION &&
           fragment.use_custom_fields &&
           !fragment.custom_title
         ) {
@@ -296,11 +291,11 @@ const validateFragments = (
       });
       break;
 
-    case Avo.Core.BlockItemType.TEXT:
+    case AvoCoreBlockItemType.TEXT:
       // Check if text fragment has custom_title or custom_description.
       fragments.forEach((fragment) => {
         if (
-          fragment.type === Avo.Core.BlockItemType.TEXT &&
+          fragment.type === AvoCoreBlockItemType.TEXT &&
           !stripHtml(fragment.custom_title || '').trim() &&
           !stripHtml(fragment.custom_description || '').trim()
         ) {
@@ -316,7 +311,7 @@ const validateFragments = (
 };
 
 export const getValidationErrorsForStartAndEnd = (
-  collectionFragment: Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>,
+  collectionFragment: Pick<AvoCollectionFragment, 'start_oc' | 'end_oc'>,
 ): string[] => {
   return compact(
     GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT().map((rule) =>
@@ -328,7 +323,7 @@ export const getValidationErrorsForStartAndEnd = (
 };
 
 const getDuplicateTitleOrDescriptionErrors = async (
-  collection: Partial<Avo.Collection.Collection>,
+  collection: Partial<AvoCollectionCollection>,
 ): Promise<string[]> => {
   // Check if title and description isn't the same as an existing published collection
   const duplicates = await CollectionService.getCollectionByTitleOrDescription(
@@ -367,7 +362,7 @@ const getDuplicateTitleOrDescriptionErrors = async (
 };
 
 export const getValidationErrorsForPublish = async (
-  collection: Partial<Avo.Collection.Collection>,
+  collection: Partial<AvoCollectionCollection>,
 ): Promise<string[]> => {
   const validationErrors = [
     ...GET_VALIDATION_RULES_FOR_SAVE(),
@@ -381,7 +376,7 @@ export const getValidationErrorsForPublish = async (
 };
 
 export const getValidationErrorForSave = async (
-  collection: Partial<Avo.Collection.Collection>,
+  collection: Partial<AvoCollectionCollection>,
 ): Promise<string[]> => {
   // List of validator functions, so we can use the functions separately as well
   const validationErrors = GET_VALIDATION_RULES_FOR_SAVE().map((rule) =>
@@ -408,12 +403,12 @@ function getError<T>(rule: ValidationRule<T>, object: T) {
  * @param type
  */
 export const getFragmentsFromCollection = (
-  collection: Partial<Avo.Collection.Collection> | null | undefined,
-  type?: Avo.Core.BlockItemType,
-): Avo.Collection.Fragment[] => {
+  collection: Partial<AvoCollectionCollection> | null | undefined,
+  type?: AvoCoreBlockItemType,
+): AvoCollectionFragment[] => {
   const blocks = reorderBlockPositions(
     (collection?.collection_fragments || []) as Positioned[],
-  ) as Avo.Collection.Fragment[];
+  ) as AvoCollectionFragment[];
   if (type) {
     return blocks.filter((block) => block.type === type);
   }
@@ -434,8 +429,8 @@ const COLLECTION_MANAGEMENT_PROPS: string[] = [
  * Clean the collection of properties from other tables, properties that can't be saved
  */
 export const cleanCollectionBeforeSave = (
-  collection: Partial<Avo.Collection.Collection>,
-): Partial<Avo.Collection.Collection> => {
+  collection: Partial<AvoCollectionCollection>,
+): Partial<AvoCollectionCollection> => {
   // Remove some props
   const propertiesToDelete = [
     'collection_fragments',
@@ -464,8 +459,8 @@ export const cleanCollectionBeforeSave = (
  * This should only happen for core collection values and not for management changes
  */
 export const keepCoreCollectionProperties = (
-  collection: Partial<Avo.Collection.Collection> | null,
-): Partial<Avo.Collection.Collection> | null => {
+  collection: Partial<AvoCollectionCollection> | null,
+): Partial<AvoCollectionCollection> | null => {
   if (!collection) {
     return collection;
   }
@@ -488,16 +483,16 @@ export const keepCoreCollectionProperties = (
 };
 
 export const getFragmentIdsFromCollection = (
-  collection: Partial<Avo.Collection.Collection> | null,
+  collection: Partial<AvoCollectionCollection> | null,
 ): (number | string)[] => {
   return compact(
     getFragmentsFromCollection(collection).map(
-      (fragment: Avo.Collection.Fragment) => fragment.id,
+      (fragment: AvoCollectionFragment) => fragment.id,
     ),
   );
 };
 
-const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
+const renderRelatedItem = (relatedItem: AvoSearchResultItem) => {
   const englishContentType =
     CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[
       relatedItem.administrative_type || 'video'
@@ -526,15 +521,15 @@ const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
 };
 
 const renderRelatedContent = (
-  relatedItems: Avo.Search.ResultItem[],
+  relatedItems: AvoSearchResultItem[],
   renderDetailLink: (
     linkText: string | ReactNode,
     id: string,
-    type: Avo.Core.ContentType,
+    type: AvoCoreContentType,
     className?: string,
   ) => ReactNode,
 ) => {
-  return (relatedItems || []).map((relatedItem: Avo.Search.ResultItem) => {
+  return (relatedItems || []).map((relatedItem: AvoSearchResultItem) => {
     return (
       <Column size="2-6" key={`related-item-${relatedItem.id}`}>
         {renderDetailLink(
@@ -549,11 +544,11 @@ const renderRelatedContent = (
 };
 
 export const renderRelatedItems = (
-  relatedItems: Avo.Search.ResultItem[] | null,
+  relatedItems: AvoSearchResultItem[] | null,
   renderDetailLink: (
     linkText: string | ReactNode,
     id: string,
-    type: Avo.Core.ContentType,
+    type: AvoCoreContentType,
     className?: string,
   ) => ReactNode,
 ): ReactNode | null => {

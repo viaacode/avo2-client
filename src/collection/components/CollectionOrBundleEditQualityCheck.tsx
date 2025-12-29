@@ -8,40 +8,41 @@ import {
   Select,
   Spacer,
   TextArea,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-
-import { type FC } from 'react'
-
+} from '@viaa/avo2-components';
+import {
+  AvoCollectionCollection,
+  AvoCoreContentPickerType,
+  AvoUserProfile,
+} from '@viaa/avo2-types';
+import { type FC } from 'react';
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../admin/shared/types/content-picker';
 import { getFullName } from '../../shared/helpers/formatters/avatar';
 import { toDateObject } from '../../shared/helpers/formatters/date';
 import { tText } from '../../shared/helpers/translate-text';
 import { booleanToOkNok, okNokToBoolean } from '../helpers/ok-nok-parser';
-
 import { type CollectionAction } from './CollectionOrBundleEdit.types';
 
 interface CollectionOrBundleEditQualityCheckProps {
-  collection: Avo.Collection.Collection
-  changeCollectionState: (action: CollectionAction) => void
-  onFocus?: () => void
+  collection: AvoCollectionCollection;
+  changeCollectionState: (action: CollectionAction) => void;
+  onFocus?: () => void;
 }
 
 export const CollectionOrBundleEditQualityCheck: FC<
   CollectionOrBundleEditQualityCheckProps
 > = ({ collection, changeCollectionState, onFocus }) => {
   const getApprovedAtDate = (
-    collection: Avo.Collection.Collection,
+    collection: AvoCollectionCollection,
   ): Date | null => {
     if (
       collection?.management_language_check?.[0]?.qc_status &&
       collection?.management_quality_check?.[0]?.qc_status
     ) {
-      return toDateObject(collection?.management_final_check?.[0]?.created_at)
+      return toDateObject(collection?.management_final_check?.[0]?.created_at);
     }
-    return null
-  }
+    return null;
+  };
 
   return (
     <>
@@ -158,14 +159,14 @@ export const CollectionOrBundleEditQualityCheck: FC<
                               label:
                                 getFullName(
                                   collection?.management_language_check?.[0]
-                                    ?.assignee as unknown as Avo.User.Profile,
+                                    ?.assignee as unknown as AvoUserProfile,
                                   false,
                                   true,
                                 ) || '',
                               value:
                                 collection?.management_language_check?.[0]
                                   ?.assignee_profile_id ?? '',
-                              type: Avo.Core.ContentPickerType.PROFILE,
+                              type: AvoCoreContentPickerType.PROFILE,
                             }
                           : null
                       }
@@ -174,14 +175,14 @@ export const CollectionOrBundleEditQualityCheck: FC<
                       placeholder={tText(
                         'collection/components/collection-or-bundle-edit-quality-check___selecteer-een-verantwoordelijke',
                       )}
-                      allowedTypes={[Avo.Core.ContentPickerType.PROFILE]}
+                      allowedTypes={[AvoCoreContentPickerType.PROFILE]}
                       onSelect={(value: PickerItem | null) => {
                         changeCollectionState({
                           type: 'UPDATE_COLLECTION_PROP',
                           collectionProp:
                             'management_language_check[0].assignee_profile_id',
                           collectionPropValue: value ? value.value : null,
-                        })
+                        });
                       }}
                     />
                   </FormGroup>
@@ -217,5 +218,5 @@ export const CollectionOrBundleEditQualityCheck: FC<
         </Container>
       </Container>
     </>
-  )
-}
+  );
+};

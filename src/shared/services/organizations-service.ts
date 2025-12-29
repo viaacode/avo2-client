@@ -1,6 +1,5 @@
-import { type Avo } from '@viaa/avo2-types'
-import { sortBy } from 'es-toolkit'
-
+import { AvoOrganizationOrganization, AvoUserProfile } from '@viaa/avo2-types';
+import { sortBy } from 'es-toolkit';
 import {
   type GetAllOrganisationsQuery,
   type GetAllOrganisationsQueryVariables,
@@ -18,13 +17,12 @@ import {
   GetUsersByCompanyIdDocument,
 } from '../generated/graphql-db-react-query';
 import { CustomError } from '../helpers/custom-error';
-
 import { dataService } from './data-service';
 
 export class OrganisationService {
   public static async fetchOrganisations(
     onlyWithItems: boolean,
-  ): Promise<Partial<Avo.Organization.Organization>[]> {
+  ): Promise<Partial<AvoOrganizationOrganization>[]> {
     try {
       const response = await dataService.query<
         GetDistinctOrganisationsQuery | GetAllOrganisationsQuery,
@@ -34,16 +32,16 @@ export class OrganisationService {
         query: onlyWithItems
           ? GetDistinctOrganisationsDocument
           : GetAllOrganisationsDocument,
-      })
+      });
 
-      let organisations: any[] | null
+      let organisations: any[] | null;
       if (onlyWithItems) {
         organisations = (
           (response as GetDistinctOrganisationsQuery).app_item_meta ?? []
-        ).map((item) => item.organisation)
+        ).map((item) => item.organisation);
       } else {
         organisations = (response as GetAllOrganisationsQuery)
-          .shared_organisations
+          .shared_organisations;
       }
 
       if (!organisations) {
@@ -53,10 +51,10 @@ export class OrganisationService {
           {
             response,
           },
-        )
+        );
       }
 
-      return sortBy(organisations, ['name'])
+      return sortBy(organisations, ['name']);
     } catch (err) {
       throw new CustomError(
         'Failed to get organisations from the database',
@@ -64,12 +62,12 @@ export class OrganisationService {
         {
           query: 'GET_ALL_ORGANISATIONS',
         },
-      )
+      );
     }
   }
 
   public static async fetchOrganisationsWithUsers(): Promise<
-    Partial<Avo.Organization.Organization>[]
+    Partial<AvoOrganizationOrganization>[]
   > {
     try {
       const response = await dataService.query<
@@ -77,9 +75,9 @@ export class OrganisationService {
         GetOrganisationsWithUsersQueryVariables
       >({
         query: GetOrganisationsWithUsersDocument,
-      })
+      });
 
-      const organisations = response.shared_organisations_with_users
+      const organisations = response.shared_organisations_with_users;
 
       if (!organisations) {
         throw new CustomError(
@@ -88,12 +86,12 @@ export class OrganisationService {
           {
             response,
           },
-        )
+        );
       }
 
       return sortBy(organisations, [
         'name',
-      ]) as Partial<Avo.Organization.Organization>[]
+      ]) as Partial<AvoOrganizationOrganization>[];
     } catch (err) {
       throw new CustomError(
         'Failed to get organisations from the database',
@@ -101,13 +99,13 @@ export class OrganisationService {
         {
           query: 'GET_ORGANISATIONS_WITH_USERS',
         },
-      )
+      );
     }
   }
 
   public static async fetchUsersByCompanyId(
     companyId: string,
-  ): Promise<Partial<Avo.User.Profile>[]> {
+  ): Promise<Partial<AvoUserProfile>[]> {
     try {
       const response = await dataService.query<
         GetUsersByCompanyIdQuery,
@@ -117,17 +115,17 @@ export class OrganisationService {
         variables: {
           companyId,
         },
-      })
+      });
 
-      const users = response.users_profiles
+      const users = response.users_profiles;
 
       if (!users) {
         throw new CustomError('Response does not contain any users', null, {
           response,
-        })
+        });
       }
 
-      return users as Partial<Avo.User.Profile>[]
+      return users as Partial<AvoUserProfile>[];
     } catch (err) {
       throw new CustomError(
         'Failed to get users by companyId from the database',
@@ -135,7 +133,7 @@ export class OrganisationService {
         {
           query: 'GET_USERS_IN_COMPANY',
         },
-      )
+      );
     }
   }
 }

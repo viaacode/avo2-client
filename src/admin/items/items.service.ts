@@ -1,4 +1,5 @@
-import { type Avo } from '@viaa/avo2-types';
+import { AvoItemItem, AvoSearchOrderDirection } from '@viaa/avo2-types';
+
 import { compact } from 'es-toolkit';
 import queryString, { stringifyUrl } from 'query-string';
 
@@ -69,15 +70,15 @@ export class ItemsService {
     offset: number,
     limit: number,
     sortColumn: ItemsOverviewTableCols,
-    sortOrder: Avo.Search.OrderDirection,
+    sortOrder: AvoSearchOrderDirection,
     filters: any,
-  ): Promise<{ items: Avo.Item.Item[]; total: number }> {
+  ): Promise<{ items: AvoItemItem[]; total: number }> {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/admin'
       );
       return await fetchWithLogoutJson<{
-        items: Avo.Item.Item[];
+        items: AvoItemItem[];
         total: number;
       }>(
         stringifyUrl({
@@ -109,7 +110,7 @@ export class ItemsService {
   public static async fetchUnpublishedItemsWithFilters(
     page: number,
     sortColumn: UnpublishedItemsOverviewTableCols,
-    sortOrder: Avo.Search.OrderDirection,
+    sortOrder: AvoSearchOrderDirection,
     where: GetUnpublishedItemsWithFiltersQueryVariables['where'],
   ): Promise<[UnpublishedItem[], number]> {
     let variables: GetUnpublishedItemsWithFiltersQueryVariables | null = null;
@@ -154,7 +155,7 @@ export class ItemsService {
   public static async fetchItemByUuid(
     uuid: string,
     withRelations: boolean,
-  ): Promise<Avo.Item.Item> {
+  ): Promise<AvoItemItem> {
     let url: string | null = null;
     try {
       const { fetchWithLogoutJson } = await import(
@@ -166,7 +167,7 @@ export class ItemsService {
           withRelations,
         },
       });
-      return await fetchWithLogoutJson<Avo.Item.Item>(url);
+      return await fetchWithLogoutJson<AvoItemItem>(url);
     } catch (err) {
       throw new CustomError('Failed to get the item from the database', err, {
         uuid,
@@ -326,8 +327,7 @@ export class ItemsService {
 
           if (item) {
             return (
-              addDefaultAudioStillToItem(item as unknown as Avo.Item.Item) ||
-              null
+              addDefaultAudioStillToItem(item as unknown as AvoItemItem) || null
             );
           }
 
@@ -374,7 +374,7 @@ export class ItemsService {
     if (depublishReason) {
       return {
         depublish_reason: depublishReason,
-      } as Avo.Item.Item;
+      } as AvoItemItem;
     }
 
     // otherwise return null

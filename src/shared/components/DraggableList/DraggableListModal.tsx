@@ -4,22 +4,22 @@ import {
   Modal,
   ModalBody,
   ModalFooterRight,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
+} from '@viaa/avo2-components';
 
-import { type FC, type ReactNode, useState } from 'react'
+import { type FC, type ReactNode, useState } from 'react';
 
 import { DraggableList } from './DraggableList';
 
-import './DraggableListModal.scss'
+import './DraggableListModal.scss';
+import { AvoCollectionFragment } from '@viaa/avo2-types';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 
 export interface DraggableListModalProps {
-  items?: any[]
-  renderItem: (item: any) => ReactNode
-  isOpen: boolean
-  onClose: (elements?: any[]) => void
+  items?: any[];
+  renderItem: (item: any) => ReactNode;
+  isOpen: boolean;
+  onClose: (elements?: any[]) => void;
   size?:
     | 'small'
     | 'medium'
@@ -27,7 +27,7 @@ export interface DraggableListModalProps {
     | 'extra-large'
     | 'fullscreen'
     | 'fullwidth'
-    | 'auto'
+    | 'auto';
 }
 
 export const DraggableListModal: FC<DraggableListModalProps> = ({
@@ -37,11 +37,13 @@ export const DraggableListModal: FC<DraggableListModalProps> = ({
   onClose,
   size = 'medium',
 }) => {
-  const [reorderedElements, setReorderedElements] = useState<any[] | null>(null)
+  const [reorderedElements, setReorderedElements] = useState<any[] | null>(
+    null,
+  );
 
-  const getFragmentKey = (fragment: Avo.Collection.Fragment) => {
-    return `fragment_${fragment.id}-${fragment?.created_at}-${fragment?.position}`
-  }
+  const getFragmentKey = (fragment: AvoCollectionFragment) => {
+    return `fragment_${fragment.id}-${fragment?.created_at}-${fragment?.position}`;
+  };
 
   return (
     <Modal
@@ -77,12 +79,12 @@ export const DraggableListModal: FC<DraggableListModalProps> = ({
             )}
             type="primary"
             onClick={() => {
-              onClose(reorderedElements || items)
-              setReorderedElements(null)
+              onClose(reorderedElements || items);
+              setReorderedElements(null);
             }}
           />
         </ButtonToolbar>
       </ModalFooterRight>
     </Modal>
-  )
-}
+  );
+};

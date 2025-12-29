@@ -1,8 +1,19 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
-import { Avo } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentBlock,
+  AvoAssignmentContributor,
+  AvoAssignmentResponse,
+  AvoCollectionCollection,
+  AvoCoreBlockItemBase,
+  AvoCoreBlockItemType,
+  AvoItemItem,
+  AvoSearchOrderDirection,
+  AvoShareEditStatusResponse,
+  AvoUserCommonUser,
+} from '@viaa/avo2-types';
 import { cloneDeep, isNil } from 'es-toolkit';
 import { stringifyUrl } from 'query-string';
-
 import { type AssignmentsOverviewTableState } from '../admin/assignments/assignments.types';
 import { ItemsService } from '../admin/items/items.service';
 import { CollectionService } from '../collection/collection.service';
@@ -45,7 +56,6 @@ import { RelationService } from '../shared/services/relation-service/relation.se
 import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import { type TableColumnDataType } from '../shared/types/table-column-data-type';
-
 import { ITEMS_PER_PAGE } from './assignment.const';
 import {
   type AssignmentTableColumns,
@@ -57,7 +67,7 @@ import { isItemWithMeta } from './helpers/is-item-with-meta';
 
 export class AssignmentService {
   static async fetchAssignments(params: FetchAssignmentsParams): Promise<{
-    assignments: Avo.Assignment.Assignment[];
+    assignments: AvoAssignmentAssignment[];
     count: number;
   }> {
     let url: string | undefined = undefined;
@@ -90,7 +100,7 @@ export class AssignmentService {
   static async fetchAssignmentById(
     assignmentId: string,
     inviteToken?: string,
-  ): Promise<Avo.Assignment.Assignment> {
+  ): Promise<AvoAssignmentAssignment> {
     try {
       const url = stringifyUrl({
         url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}`,
@@ -101,7 +111,7 @@ export class AssignmentService {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
       );
-      const assignment: Avo.Assignment.Assignment = await fetchWithLogoutJson(
+      const assignment: AvoAssignmentAssignment = await fetchWithLogoutJson(
         url,
         {
           method: 'GET',
@@ -118,7 +128,7 @@ export class AssignmentService {
         ...assignment,
         blocks: (await this.enrichBlocksWithMeta(
           assignment.blocks,
-        )) as Avo.Assignment.Block[],
+        )) as AvoAssignmentBlock[],
       };
     } catch (err) {
       throw new CustomError(
@@ -134,7 +144,7 @@ export class AssignmentService {
 
   static async fetchAssignmentBlocks(
     assignmentId: string,
-  ): Promise<Avo.Assignment.Block[]> {
+  ): Promise<AvoAssignmentBlock[]> {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
@@ -161,7 +171,7 @@ export class AssignmentService {
    * @param profileId
    */
   private static async transformAssignment(
-    assignment: Partial<Avo.Assignment.Assignment>,
+    assignment: Partial<AvoAssignmentAssignment>,
     profileId: string,
   ): Promise<App_Assignments_V2_Insert_Input | App_Assignments_V2_Set_Input> {
     const assignmentToSave = cloneDeep(assignment);
@@ -188,7 +198,7 @@ export class AssignmentService {
     if (!isNil(assignment.blocks)) {
       assignmentToSave.blocks = cleanupTitleAndDescriptions(
         assignment.blocks,
-      ) as Avo.Assignment.Block[];
+      ) as AvoAssignmentBlock[];
     }
 
     if (isNil(assignment.thumbnail_path)) {
@@ -203,7 +213,7 @@ export class AssignmentService {
     delete assignmentToSave.contributors;
     delete assignmentToSave.updated_by;
 
-    return assignmentToSave as Avo.Assignment.Assignment;
+    return assignmentToSave as AvoAssignmentAssignment;
   }
 
   static async deleteAssignment(assignmentId: string): Promise<void> {
@@ -245,9 +255,9 @@ export class AssignmentService {
   }
 
   static async updateAssignment(
-    assignment: Partial<Avo.Assignment.Assignment>,
+    assignment: Partial<AvoAssignmentAssignment>,
     profileId: string,
-  ): Promise<Avo.Assignment.Assignment | null> {
+  ): Promise<AvoAssignmentAssignment | null> {
     try {
       const updatedAssignment = await this.transformAssignment(
         assignment,
@@ -302,12 +312,12 @@ export class AssignmentService {
   }
 
   static async updateAssignmentResponse(
-    original: Omit<Avo.Assignment.Response, 'assignment'>,
+    original: Omit<AvoAssignmentResponse, 'assignment'>,
     update: {
       collection_title: string;
       pupil_collection_blocks: PupilCollectionFragment[];
     },
-  ): Promise<Omit<Avo.Assignment.Response, 'assignment'> | null> {
+  ): Promise<Omit<AvoAssignmentResponse, 'assignment'> | null> {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
@@ -331,9 +341,9 @@ export class AssignmentService {
   }
 
   static async insertAssignment(
-    assignment: Partial<Avo.Assignment.Assignment>,
-    commonUser: Avo.User.CommonUser,
-  ): Promise<Avo.Assignment.Assignment | null> {
+    assignment: Partial<AvoAssignmentAssignment>,
+    commonUser: AvoUserCommonUser,
+  ): Promise<AvoAssignmentAssignment | null> {
     try {
       const assignmentToSave = await AssignmentService.transformAssignment(
         {
@@ -362,9 +372,9 @@ export class AssignmentService {
 
   static async duplicateAssignment(
     newTitle: string,
-    initialAssignment: Partial<Avo.Assignment.Assignment> | null,
-    commonUser: Avo.User.CommonUser,
-  ): Promise<Avo.Assignment.Assignment> {
+    initialAssignment: Partial<AvoAssignmentAssignment> | null,
+    commonUser: AvoUserCommonUser,
+  ): Promise<AvoAssignmentAssignment> {
     const ownerProfileId = commonUser?.profileId;
 
     if (!initialAssignment || !initialAssignment.id || !ownerProfileId) {
@@ -383,7 +393,7 @@ export class AssignmentService {
     // 	: EducationLevelId.lagerOnderwijs;
 
     // clone the assignment
-    const newAssignment: Partial<Avo.Assignment.Assignment> = {
+    const newAssignment: Partial<AvoAssignmentAssignment> = {
       ...cloneDeep(initialAssignment),
       title: newTitle,
       owner_profile_id: ownerProfileId,
@@ -411,7 +421,7 @@ export class AssignmentService {
     delete newAssignment.owner;
     delete newAssignment.marcom_note;
     newAssignment.updated_at = new Date().toISOString();
-    const blocks: Avo.Assignment.Block[] =
+    const blocks: AvoAssignmentBlock[] =
       await AssignmentService.fetchAssignmentBlocks(initialAssignment.id);
     const duplicatedAssignment = await AssignmentService.insertAssignment(
       {
@@ -445,7 +455,7 @@ export class AssignmentService {
   static async fetchAssignmentAndContent(
     pupilProfileId: string,
     assignmentId: string,
-  ): Promise<Avo.Assignment.Assignment> {
+  ): Promise<AvoAssignmentAssignment> {
     try {
       // Load assignment
       const variables: GetAssignmentWithResponseQueryVariables = {
@@ -467,7 +477,7 @@ export class AssignmentService {
       }
 
       // Load content (collection, item or search query) according to assignment
-      const initialAssignmentBlocks: Avo.Assignment.Block[] =
+      const initialAssignmentBlocks: AvoAssignmentBlock[] =
         await AssignmentService.fetchAssignmentBlocks(assignmentId);
 
       const blocks = await this.enrichBlocksWithMeta(initialAssignmentBlocks);
@@ -475,7 +485,7 @@ export class AssignmentService {
       return {
         ...tempAssignment,
         blocks,
-      } as unknown as Avo.Assignment.Assignment;
+      } as unknown as AvoAssignmentAssignment;
     } catch (err: any) {
       const graphqlError = err?.graphQLErrors?.[0]?.message;
 
@@ -499,8 +509,8 @@ export class AssignmentService {
   }
 
   static isOwnerOfAssignment(
-    assignment: Avo.Assignment.Assignment,
-    commonUser: Avo.User.CommonUser | undefined,
+    assignment: AvoAssignmentAssignment,
+    commonUser: AvoUserCommonUser | undefined,
   ): boolean {
     return (
       !!commonUser?.profileId &&
@@ -512,12 +522,12 @@ export class AssignmentService {
   static async fetchAssignmentResponses(
     assignmentId: string,
     sortColumn: AssignmentTableColumns,
-    sortOrder: Avo.Search.OrderDirection,
+    sortOrder: AvoSearchOrderDirection,
     tableColumnDataType: TableColumnDataType,
     page: number,
     filterString: string | undefined,
   ): Promise<{
-    assignmentResponses: Avo.Assignment.Response[];
+    assignmentResponses: AvoAssignmentResponse[];
     count: number;
   }> {
     let url: string | undefined = undefined;
@@ -615,11 +625,11 @@ export class AssignmentService {
    * @param items
    */
   static async enrichBlocksWithMeta(
-    blocks?: Avo.Core.BlockItemBase[],
-    items: (Avo.Item.Item | null)[] = [],
-  ): Promise<Avo.Core.BlockItemBase[]> {
+    blocks?: AvoCoreBlockItemBase[],
+    items: (AvoItemItem | null)[] = [],
+  ): Promise<AvoCoreBlockItemBase[]> {
     const enriched = await Promise.all(
-      (blocks || []).map(async (block): Promise<Avo.Core.BlockItemBase> => {
+      (blocks || []).map(async (block): Promise<AvoCoreBlockItemBase> => {
         if (block.fragment_id) {
           try {
             const item_meta =
@@ -659,7 +669,7 @@ export class AssignmentService {
    */
   static async getAssignmentResponses(
     assignmentId: string,
-  ): Promise<Avo.Assignment.Response[]> {
+  ): Promise<AvoAssignmentResponse[]> {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
@@ -670,7 +680,7 @@ export class AssignmentService {
         {
           method: 'GET',
         },
-      )) as Avo.Assignment.Response[];
+      )) as AvoAssignmentResponse[];
     } catch (err) {
       const error = new CustomError(
         'Failed to get assignment responses from database',
@@ -690,7 +700,7 @@ export class AssignmentService {
    */
   static async getAssignmentResponse(
     assignmentId: string,
-  ): Promise<Omit<Avo.Assignment.Response, 'assignment'> | undefined> {
+  ): Promise<Omit<AvoAssignmentResponse, 'assignment'> | undefined> {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
@@ -700,7 +710,7 @@ export class AssignmentService {
         {
           method: 'GET',
         },
-      )) as Avo.Assignment.Response | null;
+      )) as AvoAssignmentResponse | null;
 
       if (!assignmentResponse) {
         return undefined;
@@ -709,7 +719,7 @@ export class AssignmentService {
       return {
         ...assignmentResponse,
         pupil_collection_blocks: await AssignmentService.enrichBlocksWithMeta(
-          assignmentResponse.pupil_collection_blocks as Avo.Core.BlockItemBase[],
+          assignmentResponse.pupil_collection_blocks as AvoCoreBlockItemBase[],
         ),
       };
     } catch (err) {
@@ -730,7 +740,7 @@ export class AssignmentService {
    */
   static async getAssignmentResponseById(
     assignmentResponseId: string,
-  ): Promise<Avo.Assignment.Response | null> {
+  ): Promise<AvoAssignmentResponse | null> {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
@@ -740,7 +750,7 @@ export class AssignmentService {
         {
           method: 'GET',
         },
-      )) as Avo.Assignment.Response | null;
+      )) as AvoAssignmentResponse | null;
 
       if (!assignmentResponse) {
         return null;
@@ -749,9 +759,9 @@ export class AssignmentService {
       return {
         ...assignmentResponse,
         pupil_collection_blocks: await AssignmentService.enrichBlocksWithMeta(
-          assignmentResponse.pupil_collection_blocks as Avo.Core.BlockItemBase[],
+          assignmentResponse.pupil_collection_blocks as AvoCoreBlockItemBase[],
         ),
-      } as Avo.Assignment.Response;
+      } as AvoAssignmentResponse;
     } catch (err) {
       const error = new CustomError(
         'Failed to get assignment response from database',
@@ -773,15 +783,15 @@ export class AssignmentService {
    * @param commonUser
    */
   static async createOrFetchAssignmentResponseObject(
-    assignment: Avo.Assignment.Assignment,
-    commonUser: Avo.User.CommonUser | undefined,
-  ): Promise<Partial<Omit<Avo.Assignment.Response, 'assignment'>> | null> {
+    assignment: AvoAssignmentAssignment,
+    commonUser: AvoUserCommonUser | undefined,
+  ): Promise<Partial<Omit<AvoAssignmentResponse, 'assignment'>> | null> {
     try {
       if (!commonUser || !commonUser.profileId) {
         return null;
       }
       const existingAssignmentResponse:
-        | Omit<Avo.Assignment.Response, 'assignment'>
+        | Omit<AvoAssignmentResponse, 'assignment'>
         | undefined = await AssignmentService.getAssignmentResponse(
         assignment?.id,
       );
@@ -789,7 +799,7 @@ export class AssignmentService {
       if (existingAssignmentResponse) {
         if (
           assignment.lom_learning_resource_type?.includes(
-            Avo.Core.BlockItemType.BOUW,
+            AvoCoreBlockItemType.BOUW,
           )
         ) {
           existingAssignmentResponse.collection_title =
@@ -804,11 +814,11 @@ export class AssignmentService {
       }
 
       // Student has never viewed this assignment before, we should create a response object for him
-      const assignmentResponse: Partial<Avo.Assignment.Response> = {
+      const assignmentResponse: Partial<AvoAssignmentResponse> = {
         owner_profile_id: commonUser.profileId,
         assignment_id: assignment.id,
         collection_title: assignment.lom_learning_resource_type?.includes(
-          Avo.Core.BlockItemType.BOUW,
+          AvoCoreBlockItemType.BOUW,
         )
           ? tText('assignment/assignment___nieuwe-collectie')
           : null,
@@ -836,7 +846,7 @@ export class AssignmentService {
 
       const pupilCollectionBlocks =
         (insertedAssignmentResponse?.pupil_collection_blocks ||
-          []) as unknown as Avo.Core.BlockItemBase[];
+          []) as unknown as AvoCoreBlockItemBase[];
       return {
         ...insertedAssignmentResponse,
         owner: assignmentResponse.owner || undefined,
@@ -882,7 +892,7 @@ export class AssignmentService {
   }
 
   static async importCollectionToAssignment(
-    collection: Avo.Collection.Collection,
+    collection: AvoCollectionCollection,
     assignmentId: string,
     withDescription: boolean,
   ): Promise<boolean> {
@@ -893,7 +903,7 @@ export class AssignmentService {
         currentMaxPosition === null ? 0 : currentMaxPosition + 1;
       const blocks = collection.collection_fragments.map(
         (fragment: any, index: number) => {
-          const block: Partial<Avo.Assignment.Block> = {
+          const block: Partial<AvoAssignmentBlock> = {
             assignment_id: assignmentId,
             fragment_id: fragment.external_id,
             custom_title: null,
@@ -906,12 +916,12 @@ export class AssignmentService {
             position: startPosition + index,
             thumbnail_path: fragment.thumbnail_path,
           };
-          if (fragment.type === Avo.Core.BlockItemType.TEXT) {
+          if (fragment.type === AvoCoreBlockItemType.TEXT) {
             // text: original text null, custom text set
             block.custom_title = fragment.custom_title;
             block.custom_description = fragment.custom_description;
             block.use_custom_fields = true;
-            block.type = Avo.Core.BlockItemType.TEXT;
+            block.type = AvoCoreBlockItemType.TEXT;
           } else {
             // ITEM
             // custom_title and custom_description remain null
@@ -920,7 +930,7 @@ export class AssignmentService {
             block.original_title = fragment.custom_title;
             block.original_description = fragment.custom_description;
             block.use_custom_fields = !withDescription;
-            block.type = Avo.Core.BlockItemType.ITEM;
+            block.type = AvoCoreBlockItemType.ITEM;
           }
 
           return block;
@@ -960,8 +970,8 @@ export class AssignmentService {
   }
 
   static async createAssignmentFromCollection(
-    commonUser: Avo.User.CommonUser,
-    collection: Avo.Collection.Collection,
+    commonUser: AvoUserCommonUser,
+    collection: AvoCollectionCollection,
     withDescription: boolean,
   ): Promise<string> {
     const assignment = await AssignmentService.insertAssignment(
@@ -1011,8 +1021,8 @@ export class AssignmentService {
   }
 
   static async createAssignmentFromFragment(
-    commonUser: Avo.User.CommonUser,
-    item: Avo.Item.Item & {
+    commonUser: AvoUserCommonUser,
+    item: AvoItemItem & {
       start_oc?: number | null;
       end_oc?: number | null;
     },
@@ -1024,7 +1034,7 @@ export class AssignmentService {
         blocks: [
           {
             fragment_id: item.external_id,
-            type: Avo.Core.BlockItemType.ITEM,
+            type: AvoCoreBlockItemType.ITEM,
             position: 0,
             start_oc: item.start_oc || null,
             end_oc: item.end_oc || null,
@@ -1036,7 +1046,7 @@ export class AssignmentService {
                 )
               : null,
           },
-        ] as unknown as Avo.Assignment.Assignment['blocks'],
+        ] as unknown as AvoAssignmentAssignment['blocks'],
       },
       commonUser,
     );
@@ -1055,7 +1065,7 @@ export class AssignmentService {
   }
 
   static async importFragmentToAssignment(
-    item: Avo.Item.Item,
+    item: AvoItemItem,
     assignmentId: string,
     itemTrimInfo?: ItemTrimInfo,
   ): Promise<string> {
@@ -1083,7 +1093,7 @@ export class AssignmentService {
     const block = {
       assignment_id: assignmentId,
       fragment_id: item.external_id,
-      type: Avo.Core.BlockItemType.ITEM,
+      type: AvoCoreBlockItemType.ITEM,
       start_oc: trimInfo.hasCut ? trimInfo.fragmentStartTime : null,
       end_oc: trimInfo.hasCut ? trimInfo.fragmentEndTime : null,
       position: startPosition,
@@ -1111,10 +1121,10 @@ export class AssignmentService {
     offset: number,
     limit: number,
     sortColumn: AssignmentTableColumns,
-    sortOrder: Avo.Search.OrderDirection,
+    sortOrder: AvoSearchOrderDirection,
     tableColumnDataType: TableColumnDataType,
     filters: Partial<AssignmentsOverviewTableState> = {},
-  ): Promise<[Avo.Assignment.Assignment[], number]> {
+  ): Promise<[AvoAssignmentAssignment[], number]> {
     try {
       return fetchWithLogoutJson(
         stringifyUrl({
@@ -1226,7 +1236,7 @@ export class AssignmentService {
   }
 
   private static async getThumbnailPathForAssignment(
-    assignment: Partial<Avo.Assignment.Assignment>,
+    assignment: Partial<AvoAssignmentAssignment>,
   ): Promise<string | null> {
     try {
       if (!assignment.thumbnail_path) {
@@ -1259,7 +1269,7 @@ export class AssignmentService {
 
   static async fetchContributorsByAssignmentId(
     assignmentId: string,
-  ): Promise<Avo.Assignment.Contributor[]> {
+  ): Promise<AvoAssignmentContributor[]> {
     try {
       const variables: GetContributorsByAssignmentUuidQueryVariables = {
         id: assignmentId,
@@ -1280,7 +1290,7 @@ export class AssignmentService {
         });
       }
 
-      return contributors as Avo.Assignment.Contributor[];
+      return contributors as AvoAssignmentContributor[];
     } catch (err) {
       throw new CustomError(
         'Failed to get contributors by assignment id from database',
@@ -1294,9 +1304,9 @@ export class AssignmentService {
   }
 
   static async addContributor(
-    assignment: Avo.Assignment.Assignment | null | undefined,
+    assignment: AvoAssignmentAssignment | null | undefined,
     invitee: Partial<ContributorInfo>,
-    inviter?: Avo.User.CommonUser,
+    inviter?: AvoUserCommonUser,
   ): Promise<void> {
     if (!assignment) return;
 
@@ -1411,7 +1421,7 @@ export class AssignmentService {
   static async acceptSharedAssignment(
     assignmentId: string,
     inviteToken: string,
-  ): Promise<Avo.Assignment.Contributor> {
+  ): Promise<AvoAssignmentContributor> {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
@@ -1501,7 +1511,7 @@ export class AssignmentService {
 
   static async getAssignmentsEditStatuses(
     ids: string[],
-  ): Promise<Avo.Share.EditStatusResponse> {
+  ): Promise<AvoShareEditStatusResponse> {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'
@@ -1526,7 +1536,7 @@ export class AssignmentService {
 
   static async releaseAssignmentEditStatus(
     assignmentId: string,
-  ): Promise<Avo.Share.EditStatusResponse> {
+  ): Promise<AvoShareEditStatusResponse> {
     try {
       const { fetchWithLogoutJson } = await import(
         '@meemoo/admin-core-ui/client'

@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Button,
   ButtonToolbar,
@@ -10,11 +10,10 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { type FC, type ReactNode, useEffect, useState } from 'react'
-
+} from '@viaa/avo2-components';
+import { AvoAssignmentAssignment } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
+import { type FC, type ReactNode, useEffect, useState } from 'react';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import type { ParentBundle } from '../../collection/collection.types';
 import { APP_PATH } from '../../constants';
@@ -27,10 +26,10 @@ import { getValidationErrorsForPublishAssignment } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 
 interface PublishAssignmentModalProps {
-  isOpen: boolean
-  onClose: (assignment?: Avo.Assignment.Assignment) => void
-  assignment: Avo.Assignment.Assignment
-  parentBundles: ParentBundle[] | undefined
+  isOpen: boolean;
+  onClose: (assignment?: AvoAssignmentAssignment) => void;
+  assignment: AvoAssignmentAssignment;
+  parentBundles: ParentBundle[] | undefined;
 }
 
 export const PublishAssignmentModal: FC<PublishAssignmentModalProps> = ({
@@ -39,46 +38,46 @@ export const PublishAssignmentModal: FC<PublishAssignmentModalProps> = ({
   assignment,
   parentBundles,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
   const [validationErrors, setValidationErrors] = useState<
     (string | ReactNode)[]
-  >([])
+  >([]);
   const [isAssignmentPublic, setIsAssignmentPublic] = useState(
     assignment.is_public,
-  )
+  );
 
   useEffect(() => {
-    setIsAssignmentPublic(assignment.is_public)
-  }, [isOpen, setIsAssignmentPublic, assignment.is_public])
+    setIsAssignmentPublic(assignment.is_public);
+  }, [isOpen, setIsAssignmentPublic, assignment.is_public]);
 
   const onSave = async () => {
     try {
-      const isPublished = isAssignmentPublic && !assignment.is_public
-      const isDepublished = !isAssignmentPublic && assignment.is_public
+      const isPublished = isAssignmentPublic && !assignment.is_public;
+      const isDepublished = !isAssignmentPublic && assignment.is_public;
 
       // Close modal when isPublic doesn't change
       if (!isPublished && !isDepublished) {
-        onClose()
-        return
+        onClose();
+        return;
       }
 
       if (!commonUser?.profileId) {
         ToastService.danger(
           'Je moet ingelogd zijn om een opdracht te kunnen publiceren/depubliceren',
-        )
-        return
+        );
+        return;
       }
 
       // Validate if user wants to publish
       if (isPublished) {
         const validationErrorsTemp: string[] =
-          await getValidationErrorsForPublishAssignment(assignment)
+          await getValidationErrorsForPublishAssignment(assignment);
 
         if (validationErrorsTemp && validationErrorsTemp.length) {
-          setValidationErrors(validationErrorsTemp)
-          ToastService.danger(validationErrorsTemp)
-          return
+          setValidationErrors(validationErrorsTemp);
+          ToastService.danger(validationErrorsTemp);
+          return;
         }
       }
 
@@ -86,30 +85,30 @@ export const PublishAssignmentModal: FC<PublishAssignmentModalProps> = ({
       if (isDepublished) {
         const publishedParentBundle = parentBundles?.find(
           (bundle) => bundle.is_public,
-        )
+        );
         if (publishedParentBundle) {
           const linkToBundle = buildLink(APP_PATH.BUNDLE_DETAIL.route, {
             id: publishedParentBundle.id,
-          })
+          });
           const error: ReactNode = tHtml(
             'assignment/modals/publish-assignment-modal___deze-opdracht-zit-in-a-href-link-to-bundle-een-gepubliceerde-bundel-a-verwijder-eerst-de-opdracht-uit-die-bundel-en-sla-dan-op',
             { linkToBundle },
-          )
-          setValidationErrors([error])
-          ToastService.danger([error])
-          return
+          );
+          setValidationErrors([error]);
+          ToastService.danger([error]);
+          return;
         }
       }
 
-      const newAssignmentProps: Partial<Avo.Assignment.Assignment> = {
+      const newAssignmentProps: Partial<AvoAssignmentAssignment> = {
         is_public: isAssignmentPublic,
         published_at: new Date().toISOString(),
-      }
+      };
       await AssignmentService.updateAssignment(
         { ...assignment, ...newAssignmentProps },
         commonUser?.profileId,
-      )
-      setValidationErrors([])
+      );
+      setValidationErrors([]);
       ToastService.success(
         isAssignmentPublic
           ? tHtml(
@@ -118,11 +117,11 @@ export const PublishAssignmentModal: FC<PublishAssignmentModalProps> = ({
           : tHtml(
               'assignment/modals/publish-assignment-modal___de-opdracht-staat-nu-niet-meer-publiek',
             ),
-      )
+      );
       closeModal({
         ...assignment,
         ...newAssignmentProps,
-      })
+      });
 
       // Public status changed => log as event
       trackEvents(
@@ -135,20 +134,20 @@ export const PublishAssignmentModal: FC<PublishAssignmentModalProps> = ({
           },
         },
         commonUser,
-      )
+      );
     } catch (err) {
       ToastService.danger(
         tHtml(
           'collection/components/modals/share-collection-modal___de-aanpassingen-kunnen-niet-worden-opgeslagen',
         ),
-      )
+      );
     }
-  }
+  };
 
-  const closeModal = (newAssignment?: Avo.Assignment.Assignment) => {
-    setValidationErrors([])
-    onClose(newAssignment)
-  }
+  const closeModal = (newAssignment?: AvoAssignmentAssignment) => {
+    setValidationErrors([]);
+    onClose(newAssignment);
+  };
 
   return (
     <Modal
@@ -191,7 +190,7 @@ export const PublishAssignmentModal: FC<PublishAssignmentModalProps> = ({
             ]}
             value={isAssignmentPublic ? 'public' : 'private'}
             onChange={(value: string) => {
-              setIsAssignmentPublic(value === 'public')
+              setIsAssignmentPublic(value === 'public');
             }}
           />
         </FormGroup>
@@ -219,5 +218,5 @@ export const PublishAssignmentModal: FC<PublishAssignmentModalProps> = ({
         </Toolbar>
       </ModalBody>
     </Modal>
-  )
-}
+  );
+};

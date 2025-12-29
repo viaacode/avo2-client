@@ -7,7 +7,7 @@ import { APP_PATH } from '../../constants';
 import { ROUTE_PARTS } from '../../shared/constants/routes';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
-import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../helpers/redirects/redirects';
 
 interface PupilOrTeacherDropdownProps {
   closeDropdown?: () => void

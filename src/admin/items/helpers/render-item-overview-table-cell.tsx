@@ -1,9 +1,8 @@
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { AvoItemItem } from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
 import { type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-
 import { buildLink } from '../../../shared/helpers/build-link';
 import { formatDate } from '../../../shared/helpers/formatters/date';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
@@ -13,7 +12,7 @@ import { ADMIN_PATH } from '../../admin.const';
 import type { ItemsOverviewTableCols } from '../items.types';
 
 export function renderItemsOverviewTableCell(
-  rowData: Partial<Avo.Item.Item>,
+  rowData: Partial<AvoItemItem>,
   columnId: ItemsOverviewTableCols,
   info: {
     getItemDetailLink: (externalId: string | undefined) => string;
@@ -112,7 +111,7 @@ export function renderItemsOverviewTableCell(
 }
 
 export function renderItemsOverviewTableCellText(
-  item: Partial<Avo.Item.Item>,
+  item: Partial<AvoItemItem>,
   columnId: ItemsOverviewTableCols,
 ): string {
   switch (columnId) {

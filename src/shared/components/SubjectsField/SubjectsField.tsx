@@ -1,19 +1,18 @@
-import { FormGroup, type TagInfo, TagsInput } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { compact } from 'es-toolkit'
-import { type FC } from 'react'
-
+import { FormGroup, type TagInfo, TagsInput } from '@viaa/avo2-components';
+import { AvoLomLomField } from '@viaa/avo2-types';
+import { compact } from 'es-toolkit';
+import { type FC } from 'react';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
 import { tText } from '../../helpers/translate-text';
 import { useLomSubjects } from '../../hooks/useLomSubjects';
 
 interface SubjectsFieldProps {
-  onChange?: (values: TagInfo[]) => void
-  value: string[] | null // id of lom field (collections, assignments, profiles) or string label (videos and audio)
+  onChange?: (values: TagInfo[]) => void;
+  value: string[] | null; // id of lom field (collections, assignments, profiles) or string label (videos and audio)
 }
 
 export const SubjectsField: FC<SubjectsFieldProps> = ({ onChange, value }) => {
-  const [subjects] = useLomSubjects()
+  const [subjects] = useLomSubjects();
 
   return (
     <FormGroup
@@ -23,7 +22,7 @@ export const SubjectsField: FC<SubjectsFieldProps> = ({ onChange, value }) => {
       <TagsInput
         options={subjects.map(lomToTagInfo)}
         value={compact(
-          (value || []).map((stringValue): Avo.Lom.LomField | undefined =>
+          (value || []).map((stringValue): AvoLomLomField | undefined =>
             subjects.find(
               (subject) =>
                 subject.label.toLowerCase() === stringValue ||
@@ -34,5 +33,5 @@ export const SubjectsField: FC<SubjectsFieldProps> = ({ onChange, value }) => {
         onChange={onChange}
       />
     </FormGroup>
-  )
-}
+  );
+};

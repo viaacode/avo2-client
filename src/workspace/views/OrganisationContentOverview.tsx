@@ -1,21 +1,13 @@
 import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
 import { PaginationBar } from '@meemoo/react-components';
-import {
-  IconName,
-  Spacer,
-  Table,
-  type TableColumn,
-} from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { IconName, Spacer, Table, type TableColumn, } from '@viaa/avo2-components';
+import { AvoSearchOrderDirection } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { commonUserAtom } from '../../authentication/authentication.store';
-import {
-  CollectionService,
-  type OrganisationContentItem,
-} from '../../collection/collection.service';
+import { CollectionService, type OrganisationContentItem, } from '../../collection/collection.service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import {
@@ -23,10 +15,7 @@ import {
   type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink } from '../../shared/helpers/build-link';
-import {
-  formatDate,
-  formatTimestamp,
-} from '../../shared/helpers/formatters/date';
+import { formatDate, formatTimestamp, } from '../../shared/helpers/formatters/date';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
@@ -57,8 +46,8 @@ export const OrganisationContentOverview: FC<
   >(null);
   const [sortColumn, setSortColumn] =
     useState<keyof OrganisationContentItem>('title');
-  const [sortOrder, setSortOrder] = useState<Avo.Search.OrderDirection>(
-    Avo.Search.OrderDirection.DESC,
+  const [sortOrder, setSortOrder] = useState<AvoSearchOrderDirection>(
+    AvoSearchOrderDirection.DESC,
   );
   const [page, setPage] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
@@ -73,7 +62,7 @@ export const OrganisationContentOverview: FC<
     } else {
       // Initial column sort order
       setSortColumn(columnId);
-      setSortOrder(Avo.Search.OrderDirection.ASC);
+      setSortOrder(AvoSearchOrderDirection.ASC);
     }
   };
 

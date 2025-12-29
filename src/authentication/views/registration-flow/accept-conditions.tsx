@@ -11,14 +11,14 @@ import {
   Toolbar,
   ToolbarCenter,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+
+import { AvoAuthLoginResponseLoggedIn } from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
-
 import { SpecialUserGroupId } from '../../../admin/user-groups/user-group.const';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import {
@@ -37,8 +37,7 @@ import {
   commonUserAtom,
   loginAtom,
 } from '../../authentication.store';
-import { redirectToClientPage } from '../../helpers/redirects/redirect-to-client-page';
-
+import { redirectToClientPage } from '../../helpers/redirects/redirects';
 import { AcceptElementaryPupilConditions } from './accept-elementary-pupil-conditions';
 
 const ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS =
@@ -55,7 +54,7 @@ export const AcceptConditions: FC = () => {
   });
   const [acceptInProgress, setAcceptInProgress] = useState<boolean>(false);
   const loginState = useAtomValue(loginAtom);
-  const loggedInLoginState = loginState.data as Avo.Auth.LoginResponseLoggedIn;
+  const loggedInLoginState = loginState.data as AvoAuthLoginResponseLoggedIn;
   const commonUser = useAtomValue(commonUserAtom);
   const acceptConditions = useSetAtom(acceptConditionsAtom);
   const isElementaryPupil =

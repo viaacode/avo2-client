@@ -1,12 +1,12 @@
-import { type Avo, PermissionName } from '@viaa/avo2-types'
+import { AvoUserCommonUser, PermissionName } from '@viaa/avo2-types'
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
 
 export const canViewAnAssignment = (
-  commonUser?: Avo.User.CommonUser | null,
+  commonUser?: AvoUserCommonUser | null,
 ): boolean => {
   if (!commonUser) {
-    return false
+    return false;
   }
   return (
     PermissionService.hasPerm(commonUser, PermissionName.VIEW_ASSIGNMENTS) ||
@@ -22,5 +22,5 @@ export const canViewAnAssignment = (
       commonUser,
       PermissionName.VIEW_OWN_ASSIGNMENT_RESPONSES,
     )
-  )
-}
+  );
+};

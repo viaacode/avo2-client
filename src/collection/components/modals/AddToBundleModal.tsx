@@ -14,10 +14,10 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { Avo } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { type FC, useCallback, useEffect, useState } from 'react'
+} from '@viaa/avo2-components';
+
+import { useAtomValue } from 'jotai';
+import { type FC, useCallback, useEffect, useState } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { CustomError } from '../../../shared/helpers/custom-error';
@@ -27,20 +27,18 @@ import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { CollectionService } from '../../collection.service';
-import {
-  CollectionOrBundle,
-  ContentTypeNumber,
-} from '../../collection.types';
+import { CollectionOrBundle, ContentTypeNumber } from '../../collection.types';
 import { canManageEditorial } from '../../helpers/can-manage-editorial';
 
-import './AddToBundleModal.scss'
+import './AddToBundleModal.scss';
+import { AvoAssignmentAssignment, AvoCollectionCollection, AvoCollectionFragment, AvoCoreBlockItemType, } from '@viaa/avo2-types';
 
 interface AddToBundleModalProps {
-  fragmentId: string
-  fragmentInfo: Avo.Collection.Collection | Avo.Assignment.Assignment
-  fragmentType: Avo.Core.BlockItemType
-  isOpen: boolean
-  onClose: () => void
+  fragmentId: string;
+  fragmentInfo: AvoCollectionCollection | AvoAssignmentAssignment;
+  fragmentType: AvoCoreBlockItemType;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export const AddToBundleModal: FC<AddToBundleModalProps> = ({
@@ -50,17 +48,17 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
-  const [isProcessing, setIsProcessing] = useState<boolean>(false)
-  const [createNewBundle, setCreateNewBundle] = useState<boolean>(false)
-  const [selectedBundleId, setSelectedBundleId] = useState<string>('')
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [createNewBundle, setCreateNewBundle] = useState<boolean>(false);
+  const [selectedBundleId, setSelectedBundleId] = useState<string>('');
   const [selectedBundle, setSelectedBundle] =
-    useState<Avo.Collection.Collection | null>(null)
-  const [newBundleTitle, setNewBundleTitle] = useState<string>('')
-  const [bundles, setBundles] = useState<Partial<Avo.Collection.Collection>[]>(
+    useState<AvoCollectionCollection | null>(null);
+  const [newBundleTitle, setNewBundleTitle] = useState<string>('');
+  const [bundles, setBundles] = useState<Partial<AvoCollectionCollection>[]>(
     [],
-  )
+  );
 
   const fetchBundles = useCallback(
     () =>
@@ -68,61 +66,61 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
         CollectionOrBundle.BUNDLE,
         commonUser,
       )
-        .then((bundleTitles: Partial<Avo.Collection.Collection>[]) => {
-          setBundles(bundleTitles)
+        .then((bundleTitles: Partial<AvoCollectionCollection>[]) => {
+          setBundles(bundleTitles);
           if (!bundleTitles.length) {
-            setCreateNewBundle(true)
+            setCreateNewBundle(true);
           }
         })
         .catch((err) => {
-          console.error(err)
+          console.error(err);
           ToastService.danger(
             tHtml(
               'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-bestaande-bundels-is-mislukt',
             ),
-          )
+          );
         }),
     [commonUser],
-  )
+  );
 
   useEffect(() => {
     fetchBundles().catch((err) => {
-      console.error('Failed to fetch bundles', err)
+      console.error('Failed to fetch bundles', err);
       ToastService.danger(
         tHtml(
           'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-bundels-is-mislukt',
         ),
-      )
-    })
-  }, [fetchBundles])
+      );
+    });
+  }, [fetchBundles]);
 
   useEffect(() => {
-    isOpen && fetchBundles()
-  }, [isOpen, fetchBundles])
+    isOpen && fetchBundles();
+  }, [isOpen, fetchBundles]);
 
   const setSelectedBundleIdAndGetBundleInfo = async (id: string) => {
     try {
-      setSelectedBundle(null)
-      setSelectedBundleId(id)
+      setSelectedBundle(null);
+      setSelectedBundleId(id);
       const collection =
         await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
           id,
           CollectionOrBundle.BUNDLE,
           undefined,
-        )
-      setSelectedBundle(collection)
+        );
+      setSelectedBundle(collection);
     } catch (err) {
       ToastService.danger(
         tHtml(
           'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-collectie-details-is-mislukt',
         ),
-      )
+      );
     }
-  }
+  };
 
   const getFragment = (
-    bundle: Partial<Avo.Collection.Collection>,
-  ): Partial<Avo.Collection.Fragment> => {
+    bundle: Partial<AvoCollectionCollection>,
+  ): Partial<AvoCollectionFragment> => {
     return {
       use_custom_fields: false,
       start_oc: null,
@@ -137,34 +135,34 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
         type_id: ContentTypeNumber.assignment,
       },
       type: fragmentType,
-    }
-  }
+    };
+  };
 
   const addCollectionOrAssignmentToExistingBundle = async (
-    bundle: Partial<Avo.Collection.Collection>,
+    bundle: Partial<AvoCollectionCollection>,
   ) => {
     // Disable apply button
-    setIsProcessing(true)
+    setIsProcessing(true);
 
     try {
       if (!bundle.id) {
-        throw new CustomError('Bundle id is undefined', null, bundle)
+        throw new CustomError('Bundle id is undefined', null, bundle);
       }
-      const fragment = getFragment(bundle)
-      delete fragment.item_meta
-      fragment.position = bundle.collection_fragments?.length || 0
-      await CollectionService.insertFragments(bundle.id, [fragment])
+      const fragment = getFragment(bundle);
+      delete fragment.item_meta;
+      fragment.position = bundle.collection_fragments?.length || 0;
+      await CollectionService.insertFragments(bundle.id, [fragment]);
 
       ToastService.success(
-        fragmentType === Avo.Core.BlockItemType.COLLECTION
+        fragmentType === AvoCoreBlockItemType.COLLECTION
           ? tHtml(
               'collection/components/modals/add-to-bundle-modal___de-collectie-is-toegevoegd-aan-de-bundel',
             )
           : tHtml(
               'collection/components/modals/add-to-bundle-modal___de-opdracht-is-toegevoegd-aan-de-bundel',
             ),
-      )
-      onClose()
+      );
+      onClose();
       trackEvents(
         {
           object: String(fragmentId),
@@ -172,29 +170,29 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
           action: 'add_to',
         },
         commonUser,
-      )
+      );
     } catch (err) {
-      console.error(err)
+      console.error(err);
       ToastService.danger(
-        fragmentType === Avo.Core.BlockItemType.COLLECTION
+        fragmentType === AvoCoreBlockItemType.COLLECTION
           ? tHtml(
               'collection/components/modals/add-to-bundle-modal___de-collectie-kon-niet-worden-toegevoegd-aan-de-bundel',
             )
           : tHtml(
               'collection/components/modals/add-to-bundle-modal___de-opdracht-kon-niet-worden-toegevoegd-aan-de-bundel',
             ),
-      )
+      );
     }
 
     // Re-enable apply button
-    setIsProcessing(false)
-  }
+    setIsProcessing(false);
+  };
 
   const addCollectionOrAssignmentToNewBundle = async () => {
     // Disable "Toepassen" button
-    setIsProcessing(true)
+    setIsProcessing(true);
 
-    let newBundle: Partial<Avo.Collection.Collection> | null = null
+    let newBundle: Partial<AvoCollectionCollection> | null = null;
     try {
       // Create new bundle with one fragment in it
       newBundle = {
@@ -203,30 +201,31 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
         is_public: false,
         owner_profile_id: commonUser?.profileId,
         type_id: ContentTypeNumber.bundle,
-      }
+      };
       try {
         newBundle.thumbnail_path =
           await VideoStillService.getThumbnailForSubject({
             thumbnail_path: undefined,
             collection_fragments: [
-              getFragment(newBundle) as Avo.Collection.Fragment,
+              getFragment(newBundle) as AvoCollectionFragment,
             ],
-          })
+          });
       } catch (err) {
         console.error('Failed to find cover image for new collection', err, {
           collectionFragments: [
-            getFragment(newBundle) as Avo.Collection.Fragment,
+            getFragment(newBundle) as AvoCollectionFragment,
           ],
-        })
+        });
       }
 
       // Enable is_managed by default when one of these user groups creates a collection/bundle
       // https://meemoo.atlassian.net/browse/AVO-1453
       if (commonUser && canManageEditorial(commonUser)) {
-        newBundle.is_managed = true
+        newBundle.is_managed = true;
       }
 
-      const insertedBundle = await CollectionService.insertCollection(newBundle)
+      const insertedBundle =
+        await CollectionService.insertCollection(newBundle);
 
       trackEvents(
         {
@@ -235,47 +234,47 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
           action: 'create',
         },
         commonUser,
-      )
+      );
 
       // Add collection to bundle
-      await addCollectionOrAssignmentToExistingBundle(insertedBundle)
-      await fetchBundles()
-      onClose()
+      await addCollectionOrAssignmentToExistingBundle(insertedBundle);
+      await fetchBundles();
+      onClose();
 
       // Re-enable apply button
-      setIsProcessing(false)
+      setIsProcessing(false);
     } catch (err) {
       console.error('Failed to create bundle', err, {
         variables: {
           bundle: newBundle,
         },
-      })
+      });
       ToastService.danger(
         tHtml(
           'collection/components/modals/add-to-bundle-modal___de-bundel-kon-niet-worden-aangemaakt',
         ),
-      )
+      );
 
       // Re-enable apply button
-      setIsProcessing(false)
+      setIsProcessing(false);
     }
-  }
+  };
 
   const onApply = createNewBundle
     ? addCollectionOrAssignmentToNewBundle
     : () =>
         addCollectionOrAssignmentToExistingBundle(
-          selectedBundle as Partial<Avo.Collection.Collection>,
-        )
+          selectedBundle as Partial<AvoCollectionCollection>,
+        );
 
   const handleBundleTitleChange = (title: string) => {
     // AVO-2827: add max title length
     if (title.length > 110) {
-      return
+      return;
     } else {
-      setNewBundleTitle(title)
+      setNewBundleTitle(title);
     }
-  }
+  };
 
   return (
     <Modal
@@ -310,7 +309,7 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
                         )}
                         options={[
                           ...bundles.map(
-                            (bundle: Partial<Avo.Collection.Collection>) => ({
+                            (bundle: Partial<AvoCollectionCollection>) => ({
                               label: bundle.title || '',
                               value: String(bundle.id),
                             }),
@@ -401,5 +400,5 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
         </Toolbar>
       </ModalFooterRight>
     </Modal>
-  )
-}
+  );
+};

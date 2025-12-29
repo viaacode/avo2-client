@@ -1,6 +1,10 @@
-import { Avo } from '@viaa/avo2-types';
+import {
+  AvoAssignmentBlock,
+  AvoCoreBlockItemBase,
+  AvoCoreBlockItemType,
+  AvoItemItem,
+} from '@viaa/avo2-types';
 import { useState } from 'react';
-
 import { ItemsService } from '../../admin/items/items.service';
 import { CollectionService } from '../../collection/collection.service';
 import { CollectionOrBundle } from '../../collection/collection.types';
@@ -34,8 +38,8 @@ import {
 } from '../modals/ConfirmSliceModal';
 
 export function useBlockListModals(
-  blocks: Avo.Core.BlockItemBase[],
-  setBlocks: (newBlocks: Avo.Core.BlockItemBase[]) => void,
+  blocks: AvoCoreBlockItemBase[],
+  setBlocks: (newBlocks: AvoCoreBlockItemBase[]) => void,
   isPupilCollection: boolean,
   config?: {
     confirmSliceConfig?: Partial<ConfirmSliceModalProps>;
@@ -45,10 +49,10 @@ export function useBlockListModals(
   },
 ): [
   JSX.Element,
-  SingleEntityModal<Pick<Avo.Assignment.Block, 'id'>>,
+  SingleEntityModal<Pick<AvoAssignmentBlock, 'id'>>,
   SingleEntityModal<number>,
 ] {
-  const slice = useSingleEntityModal<Pick<Avo.Assignment.Block, 'id'>>();
+  const slice = useSingleEntityModal<Pick<AvoAssignmentBlock, 'id'>>();
   const {
     isOpen: isConfirmSliceModalOpen,
     setOpen: setConfirmSliceModalOpen,
@@ -68,14 +72,14 @@ export function useBlockListModals(
     useState<boolean>(false);
   const [isTrimItemModalOpen, setIsTrimItemModalOpen] =
     useState<boolean>(false);
-  const [item, setItem] = useState<Avo.Item.Item | null>(null);
+  const [item, setItem] = useState<AvoItemItem | null>(null);
 
   const ui = (
     <>
       <ConfirmSliceModal
         {...config?.confirmSliceConfig}
         isOpen={!!isConfirmSliceModalOpen}
-        block={getConfirmSliceModalBlock as Avo.Assignment.Block}
+        block={getConfirmSliceModalBlock as AvoAssignmentBlock}
         isPupilCollection={isPupilCollection}
         onClose={() => setConfirmSliceModalOpen(false)}
         onConfirm={() => {
@@ -102,18 +106,18 @@ export function useBlockListModals(
               }
 
               switch (type) {
-                case Avo.Core.BlockItemType.COLLECTION: {
+                case AvoCoreBlockItemType.COLLECTION: {
                   setIsAddCollectionModalOpen(true);
                   break;
                 }
 
-                case Avo.Core.BlockItemType.ITEM: {
+                case AvoCoreBlockItemType.ITEM: {
                   setIsAddFragmentModalOpen(true);
                   break;
                 }
 
-                case Avo.Core.BlockItemType.TEXT:
-                case Avo.Core.BlockItemType.ZOEK: {
+                case AvoCoreBlockItemType.TEXT:
+                case AvoCoreBlockItemType.ZOEK: {
                   const assignmentBlock = {
                     id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
                     type,
@@ -125,7 +129,7 @@ export function useBlockListModals(
                     assignmentBlock,
                   );
 
-                  setBlocks(newBlocks as Avo.Core.BlockItemBase[]);
+                  setBlocks(newBlocks as AvoCoreBlockItemBase[]);
                   break;
                 }
 
@@ -161,11 +165,11 @@ export function useBlockListModals(
                 setIsTrimItemModalOpen(false);
               }}
               afterCutCallback={async (itemTrimInfo: ItemTrimInfo) => {
-                const assignmentBlock: Partial<Avo.Core.BlockItemBase> &
+                const assignmentBlock: Partial<AvoCoreBlockItemBase> &
                   Positioned = {
                   id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
                   item_meta: item,
-                  type: Avo.Core.BlockItemType.ITEM,
+                  type: AvoCoreBlockItemType.ITEM,
                   fragment_id: item.external_id,
                   position: blockPosition || 0,
                   start_oc: itemTrimInfo.hasCut
@@ -189,7 +193,7 @@ export function useBlockListModals(
                   assignmentBlock,
                 );
 
-                setBlocks(newBlocks as Avo.Core.BlockItemBase[]);
+                setBlocks(newBlocks as AvoCoreBlockItemBase[]);
 
                 // Finish by triggering any configured callback
                 const callback =
@@ -231,10 +235,10 @@ export function useBlockListModals(
 
               if (collection.collection_fragments) {
                 const mapped = collection.collection_fragments.map(
-                  (collectionItem, index): Partial<Avo.Core.BlockItemBase> => {
+                  (collectionItem, index): Partial<AvoCoreBlockItemBase> => {
                     // Note: logic almost identical as in AssignmentService.importCollectionToAssignment
                     // But with minor differences (id, item_meta, ..)
-                    const block: Partial<Avo.Core.BlockItemBase> = {
+                    const block: Partial<AvoCoreBlockItemBase> = {
                       id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${
                         new Date().valueOf() + index
                       }`,
@@ -252,13 +256,13 @@ export function useBlockListModals(
                       thumbnail_path: collectionItem.thumbnail_path,
                     };
 
-                    if (collectionItem.type === Avo.Core.BlockItemType.TEXT) {
+                    if (collectionItem.type === AvoCoreBlockItemType.TEXT) {
                       // text: original text null, custom text set
                       block.custom_title = collectionItem.custom_title;
                       block.custom_description =
                         collectionItem.custom_description;
                       block.use_custom_fields = true;
-                      block.type = Avo.Core.BlockItemType.TEXT;
+                      block.type = AvoCoreBlockItemType.TEXT;
                     } else {
                       // ITEM
                       // custom_title and custom_description remain null
@@ -268,7 +272,7 @@ export function useBlockListModals(
                       block.original_description =
                         collectionItem.custom_description;
                       block.use_custom_fields = !withDescription;
-                      block.type = Avo.Core.BlockItemType.ITEM;
+                      block.type = AvoCoreBlockItemType.ITEM;
                     }
 
                     return block;
@@ -280,7 +284,7 @@ export function useBlockListModals(
                   ...(mapped as Positioned[]),
                 );
 
-                setBlocks(newBlocks as Avo.Core.BlockItemBase[]);
+                setBlocks(newBlocks as AvoCoreBlockItemBase[]);
 
                 // Finish by triggering any configured callback
                 const callback =

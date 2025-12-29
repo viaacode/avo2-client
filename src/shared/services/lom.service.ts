@@ -1,45 +1,44 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
-import { type Avo } from '@viaa/avo2-types'
-
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
+import { AvoLomLomField } from '@viaa/avo2-types';
 import { CustomError } from '../helpers/custom-error';
 import { getEnv } from '../helpers/env';
 import { EducationLevelId } from '../helpers/lom';
 
 export class LomService {
-  public static async fetchSubjects(): Promise<Avo.Lom.LomField[]> {
+  public static async fetchSubjects(): Promise<AvoLomLomField[]> {
     try {
       return await fetchWithLogoutJson(
         `${getEnv('PROXY_URL')}/admin/lookup/subjects`,
-      )
+      );
     } catch (err) {
       throw new CustomError('Failed to get subjects from the database', err, {
         path: '/admin/lookup/subjects',
-      })
+      });
     }
   }
 
-  public static async fetchThemes(): Promise<Avo.Lom.LomField[]> {
+  public static async fetchThemes(): Promise<AvoLomLomField[]> {
     try {
       return await fetchWithLogoutJson(
         `${getEnv('PROXY_URL')}/admin/lookup/themes`,
-      )
+      );
     } catch (err) {
       throw new CustomError('Failed to get themas from the database', err, {
         path: '/admin/lookup/themes',
-      })
+      });
     }
   }
 
   public static async fetchEducationLevelsAndDegrees(): Promise<
-    Avo.Lom.LomField[]
+    AvoLomLomField[]
   > {
     try {
-      const educationLevels = await fetchWithLogoutJson<Avo.Lom.LomField[]>(
+      const educationLevels = await fetchWithLogoutJson<AvoLomLomField[]>(
         `${getEnv('PROXY_URL')}/admin/lookup/education-levels-and-degrees`,
-      )
+      );
       return educationLevels.filter(
         (level) => level.id !== EducationLevelId.andere,
-      )
+      );
     } catch (err) {
       throw new CustomError(
         'Failed to get education levels and degrees from the database',
@@ -47,7 +46,7 @@ export class LomService {
         {
           path: '/admin/lookup/education-levels-and-degrees',
         },
-      )
+      );
     }
   }
 }

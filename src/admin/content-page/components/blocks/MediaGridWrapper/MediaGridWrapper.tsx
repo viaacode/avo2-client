@@ -11,7 +11,14 @@ import {
   ModalBody,
   type RenderLinkFunction,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoCollectionCollection,
+  AvoContentTypeDutch,
+  AvoCoreContentPickerType,
+  AvoItemItem,
+  AvoOrganizationOrganization,
+} from '@viaa/avo2-types';
 import { compact, isNil } from 'es-toolkit';
 import { isEmpty } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
@@ -23,7 +30,6 @@ import {
   useEffect,
   useState,
 } from 'react';
-
 import placeholderImage from '../../../../../assets/images/assignment-placeholder.png';
 import { commonUserAtom } from '../../../../../authentication/authentication.store';
 import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../../../../collection/collection.types';
@@ -46,7 +52,6 @@ import { BookmarksViewsPlaysService } from '../../../../../shared/services/bookm
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../../../admin.const';
 import { ContentPageService } from '../../../services/content-page.service';
-
 import { BlockMediaGrid, type MediaListItem } from './BlockMediaGrid';
 import { type ResolvedItemOrCollectionOrAssignmentOrContentPage } from './MediaGridWrapper.types';
 
@@ -108,13 +113,13 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
   >(null);
 
   const [activeItem, setActiveItem] = useState<
-    (Avo.Item.Item & ResolvedItemOrCollectionOrAssignmentOrContentPage) | null
+    (AvoItemItem & ResolvedItemOrCollectionOrAssignmentOrContentPage) | null
   >(null);
   const [activeItemBookmarkStatus, setActiveItemBookmarkStatus] = useState<
     boolean | null
   >(null);
   const [activeCopyright, setActiveCopyright] =
-    useState<Avo.Organization.Organization | null>(null);
+    useState<AvoOrganizationOrganization | null>(null);
 
   const resolveMediaResults = useCallback(async () => {
     try {
@@ -281,38 +286,36 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
     }
     if (itemOrCollectionOrAssignment?.type?.label === 'opdracht') {
       return (
-        (itemOrCollectionOrAssignment as Avo.Assignment.Assignment)
+        (itemOrCollectionOrAssignment as AvoAssignmentAssignment)
           ?.thumbnail_path || placeholderImage
       );
     }
-    return (
-      (itemOrCollectionOrAssignment as Avo.Item.Item)?.thumbnail_path || ''
-    );
+    return (itemOrCollectionOrAssignment as AvoItemItem)?.thumbnail_path || '';
   };
 
   const getLabelFromItem = (
     itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignmentOrContentPage | null,
-  ): Avo.ContentType.Dutch => {
+  ): AvoContentTypeDutch => {
     if ((itemOrCollectionOrAssignment as any)?.type?.label) {
       return (itemOrCollectionOrAssignment as any)?.type?.label;
     }
 
     if ((itemOrCollectionOrAssignment as any)?.content_type) {
-      return Avo.ContentType.Dutch.CONTENTPAGINA;
+      return AvoContentTypeDutch.CONTENTPAGINA;
     }
 
-    return Avo.ContentType.Dutch.ITEM;
+    return AvoContentTypeDutch.ITEM;
   };
 
   const ITEM_LABEL_TO_TYPE: Partial<
-    Record<Avo.ContentType.Dutch, Avo.Core.ContentPickerType>
+    Record<AvoContentTypeDutch, AvoCoreContentPickerType>
   > = {
-    video: Avo.Core.ContentPickerType.ITEM,
-    audio: Avo.Core.ContentPickerType.ITEM,
-    collectie: Avo.Core.ContentPickerType.COLLECTION,
-    bundel: Avo.Core.ContentPickerType.BUNDLE,
-    opdracht: Avo.Core.ContentPickerType.ASSIGNMENT,
-    contentPagina: Avo.Core.ContentPickerType.CONTENT_PAGE,
+    video: AvoCoreContentPickerType.ITEM,
+    audio: AvoCoreContentPickerType.ITEM,
+    collectie: AvoCoreContentPickerType.COLLECTION,
+    bundel: AvoCoreContentPickerType.BUNDLE,
+    opdracht: AvoCoreContentPickerType.ASSIGNMENT,
+    contentPagina: AvoCoreContentPickerType.CONTENT_PAGE,
   };
 
   const getThumbnailMetadata = (
@@ -320,10 +323,10 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
   ): string | null => {
     const itemLabel = getLabelFromItem(itemOrCollectionOrAssignment);
     const itemDuration = String(
-      (itemOrCollectionOrAssignment as Avo.Item.Item)?.duration || 0,
+      (itemOrCollectionOrAssignment as AvoItemItem)?.duration || 0,
     );
     const collectionItems =
-      (itemOrCollectionOrAssignment as Avo.Collection.Collection)?.item_count ||
+      (itemOrCollectionOrAssignment as AvoCollectionCollection)?.item_count ||
       0;
 
     return (
@@ -353,7 +356,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
 
   const handleCopyrightClicked = (
     evt: MouseEvent<HTMLElement>,
-    orgInfo: Avo.Organization.Organization,
+    orgInfo: AvoOrganizationOrganization,
   ) => {
     evt.stopPropagation();
     evt.preventDefault();
@@ -378,9 +381,9 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
     const createdAt =
       (
         itemOrCollectionOrAssignmentOrPage as
-          | Avo.Item.Item
-          | Avo.Collection.Collection
-          | Avo.Assignment.Assignment
+          | AvoItemItem
+          | AvoCollectionCollection
+          | AvoAssignmentAssignment
       )?.created_at ||
       (itemOrCollectionOrAssignmentOrPage as DbContentPage)?.createdAt;
 
@@ -388,10 +391,10 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
       category: CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[itemLabel],
       subCategory: (itemOrCollectionOrAssignmentOrPage as any).content_type,
       metadata:
-        itemLabel === Avo.ContentType.Dutch.CONTENTPAGINA
+        itemLabel === AvoContentTypeDutch.CONTENTPAGINA
           ? []
           : [
-              ...(itemLabel !== Avo.ContentType.Dutch.OPDRACHT
+              ...(itemLabel !== AvoContentTypeDutch.OPDRACHT
                 ? [{ icon: IconName.eye, label: String(viewCount || 0) }]
                 : []),
               { label: formatDate(createdAt) },
@@ -403,12 +406,12 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
       itemAction:
         element.mediaItem ||
         ({
-          type: ITEM_LABEL_TO_TYPE[itemLabel as Avo.ContentType.Dutch],
+          type: ITEM_LABEL_TO_TYPE[itemLabel as AvoContentTypeDutch],
           value:
             (
               itemOrCollectionOrAssignmentOrPage as
-                | Avo.Item.Item
-                | Avo.Collection.Collection
+                | AvoItemItem
+                | AvoCollectionCollection
             )?.external_id ||
             (itemOrCollectionOrAssignmentOrPage as DbContentPage)?.path ||
             itemOrCollectionOrAssignmentOrPage?.id,
@@ -420,13 +423,12 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
         itemOrCollectionOrAssignmentOrPage?.title ||
         '',
       description: itemOrCollectionOrAssignmentOrPage?.description || '',
-      issued:
-        (itemOrCollectionOrAssignmentOrPage as Avo.Item.Item)?.issued || '',
+      issued: (itemOrCollectionOrAssignmentOrPage as AvoItemItem)?.issued || '',
       organisation:
         (
           itemOrCollectionOrAssignmentOrPage as
-            | Avo.Item.Item
-            | Avo.Collection.Collection
+            | AvoItemItem
+            | AvoCollectionCollection
         )?.organisation || '',
       thumbnail: {
         label: itemLabel,
@@ -440,7 +442,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
             onClick={(evt) =>
               handleCopyrightClicked(
                 evt as MouseEvent<HTMLElement>,
-                itemOrCollectionOrAssignmentOrPage.copyright_organisation as Avo.Organization.Organization,
+                itemOrCollectionOrAssignmentOrPage.copyright_organisation as AvoOrganizationOrganization,
               )
             }
             label={tText(
@@ -454,8 +456,8 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
       },
       src: itemOrCollectionOrAssignmentOrPage?.src,
       item_collaterals:
-        (itemOrCollectionOrAssignmentOrPage as Avo.Item.Item)
-          ?.item_collaterals || null,
+        (itemOrCollectionOrAssignmentOrPage as AvoItemItem)?.item_collaterals ||
+        null,
     } as any;
   };
 
@@ -479,7 +481,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
               (resolvedResults?.find(
                 (resultItem) => resultItem.src === item.src,
               ) || null) as
-                | (Avo.Item.Item &
+                | (AvoItemItem &
                     ResolvedItemOrCollectionOrAssignmentOrContentPage)
                 | null,
             )
@@ -564,8 +566,8 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
             {!!activeItem && !!activeItem.src && (
               <ItemVideoDescription
                 src={activeItem.src}
-                poster={(activeItem as Avo.Item.Item)?.thumbnail_path}
-                itemMetaData={activeItem as unknown as Avo.Item.Item}
+                poster={(activeItem as AvoItemItem)?.thumbnail_path}
+                itemMetaData={activeItem as unknown as AvoItemItem}
                 cuePointsVideo={activeItemCuePoints}
                 cuePointsLabel={activeItemCuePoints}
                 verticalLayout

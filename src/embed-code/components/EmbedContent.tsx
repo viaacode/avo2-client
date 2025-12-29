@@ -1,7 +1,4 @@
-import {
-  type RichTextEditorControl,
-  RichTextEditorWithInternalState,
-} from '@meemoo/react-components';
+import { type RichTextEditorControl, RichTextEditorWithInternalState, } from '@meemoo/react-components';
 import {
   Alert,
   Button,
@@ -20,17 +17,11 @@ import {
   ToolbarLeft,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+
 import { clsx } from 'clsx';
 import { debounce } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type LegacyRef,
-  type ReactNode,
-  useEffect,
-  useState,
-} from 'react';
+import { type FC, type LegacyRef, type ReactNode, useEffect, useState, } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { ItemVideoDescription } from '../../item/components/ItemVideoDescription';
@@ -46,17 +37,14 @@ import { useResizeObserver } from '../../shared/hooks/useResizeObserver';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { embedFlowAtom } from '../../shared/store/ui.store';
-import {
-  type EmbedCode,
-  EmbedCodeDescriptionType,
-  EmbedCodeExternalWebsite,
-} from '../embed-code.types';
+import { type EmbedCode, EmbedCodeDescriptionType, EmbedCodeExternalWebsite, } from '../embed-code.types';
 import { toEmbedCodeIFrame } from '../helpers/links';
 import { createResource } from '../helpers/resourceForTrackEvents';
 import { getValidationErrors } from '../helpers/validationRules';
 import { useCreateEmbedCode } from '../hooks/useCreateEmbedCode';
 
 import './EmbedContent.scss';
+import { AvoItemItem, AvoUserCommonUser } from '@viaa/avo2-types';
 
 type EmbedProps = {
   item: EmbedCode | null;
@@ -74,7 +62,7 @@ export const EmbedContent: FC<EmbedProps> = ({
   onResize,
 }) => {
   const fragmentDuration =
-    toSeconds((item?.content as Avo.Item.Item)?.duration) || 0;
+    toSeconds((item?.content as AvoItemItem)?.duration) || 0;
   const commonUser = useAtomValue(commonUserAtom);
   const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom);
 
@@ -144,7 +132,7 @@ export const EmbedContent: FC<EmbedProps> = ({
 
     return {
       ...item,
-      contentId: (item.content as Avo.Item.Item).external_id,
+      contentId: (item.content as AvoItemItem).external_id,
       title: title || '',
       start: fragmentStartTime,
       end: fragmentEndTime,
@@ -188,7 +176,7 @@ export const EmbedContent: FC<EmbedProps> = ({
           resource: {
             ...createResource(
               createdEmbedCode,
-              commonUser as Avo.User.CommonUser,
+              commonUser as AvoUserCommonUser,
             ),
             startedFlow: isSmartSchoolEmbedFlow ? 'SMART_SCHOOL' : 'AVO',
           },
@@ -240,7 +228,7 @@ export const EmbedContent: FC<EmbedProps> = ({
         object_type: 'embed_code',
         action: 'copy',
         resource: {
-          ...createResource(savedEmbedCode, commonUser as Avo.User.CommonUser),
+          ...createResource(savedEmbedCode, commonUser as AvoUserCommonUser),
           pageUrl: window.location.href,
         },
       },
@@ -508,7 +496,7 @@ export const EmbedContent: FC<EmbedProps> = ({
             <div className="u-spacer-bottom">
               <ItemVideoDescription
                 itemMetaData={{
-                  ...(item.content as Avo.Item.Item),
+                  ...(item.content as AvoItemItem),
                   thumbnail_path: item.thumbnailPath,
                 }}
                 showMetadata={false}

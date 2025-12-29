@@ -3,7 +3,11 @@ import {
   FilterTable,
   getFilters,
 } from '@meemoo/admin-core-ui/admin';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoSearchOrderDirection,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import {
@@ -66,7 +70,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);
 
   const [collections, setCollections] = useState<
-    Avo.Collection.Collection[] | null
+    AvoCollectionCollection[] | null
   >(null);
   const [collectionCount, setCollectionCount] = useState<number>(0);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
@@ -233,7 +237,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
           (tableState.page || 0) * ITEMS_PER_PAGE,
           ITEMS_PER_PAGE,
           (tableState.sort_column || 'updated_at') as CollectionSortProps,
-          tableState.sort_order || Avo.Search.OrderDirection.DESC,
+          tableState.sort_order || AvoSearchOrderDirection.DESC,
           getFilters(tableState),
           EditorialType.MARCOM,
           isCollection,
@@ -350,7 +354,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
           dataCount={collectionCount}
           renderCell={(collectionOrBundle: any, columnId: string) =>
             renderCollectionsOrBundlesMarcomCellReact(
-              collectionOrBundle as Partial<Avo.Collection.Collection>,
+              collectionOrBundle as Partial<AvoCollectionCollection>,
               columnId as CollectionOrBundleMarcomOverviewTableCols,
               {
                 isCollection,
@@ -422,7 +426,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
                 0,
                 0,
                 (tableState.sort_column || 'created_at') as CollectionSortProps,
-                tableState.sort_order || Avo.Search.OrderDirection.DESC,
+                tableState.sort_order || AvoSearchOrderDirection.DESC,
                 getFilters(tableState),
                 EditorialType.MARCOM,
                 isCollection,
@@ -436,7 +440,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
                 offset,
                 limit,
                 (tableState.sort_column || 'created_at') as CollectionSortProps,
-                tableState.sort_order || Avo.Search.OrderDirection.DESC,
+                tableState.sort_order || AvoSearchOrderDirection.DESC,
                 getFilters(tableState),
                 EditorialType.MARCOM,
                 isCollection,

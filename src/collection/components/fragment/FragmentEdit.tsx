@@ -15,7 +15,7 @@ import {
   ToolbarLeft,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+
 import { isEqual, isNil, isString } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import {
@@ -62,6 +62,14 @@ import {
 import { FragmentEditAction } from './FragmentEdit.types';
 
 import './FragmentEdit.scss';
+import {
+  AvoAssignmentAssignment,
+  AvoCollectionCollection,
+  AvoCollectionFragment,
+  AvoContentTypeEnglish,
+  AvoCoreBlockItemType,
+  AvoItemItem,
+} from '@viaa/avo2-types';
 import { tText } from '../../../shared/helpers/translate-text';
 
 interface FragmentEditProps {
@@ -77,7 +85,7 @@ interface FragmentEditProps {
    * false: parent is a bundle
    */
   isParentACollection: boolean;
-  fragment: Avo.Collection.Fragment;
+  fragment: AvoCollectionFragment;
   allowedToAddLinks: boolean;
   renderWarning?: () => ReactNode | null;
   onFocus?: () => void;
@@ -293,7 +301,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
 
       case FragmentEditAction.DETAIL: {
         const routeInfo =
-          fragment.type === Avo.Core.BlockItemType.COLLECTION
+          fragment.type === AvoCoreBlockItemType.COLLECTION
             ? APP_PATH.COLLECTION_DETAIL
             : APP_PATH.ASSIGNMENT_DETAIL;
         window.open(
@@ -362,7 +370,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
 
   const renderForm = () => {
     const disableVideoFields: boolean =
-      !useCustomFields && fragment.type !== Avo.Core.BlockItemType.TEXT;
+      !useCustomFields && fragment.type !== AvoCoreBlockItemType.TEXT;
 
     return (
       <Form className="c-fragment-edit__form">
@@ -400,7 +408,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
         </FormGroup>
         {!!fragment.item_meta && isParentACollection && (
           <ItemMetadata
-            item={fragment.item_meta as Avo.Item.Item}
+            item={fragment.item_meta as AvoItemItem}
             buildSeriesLink={(series) =>
               buildGlobalSearchLink({ filters: { serie: [series] } })
             }
@@ -463,7 +471,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
     if (fragment.type === 'COLLECTION' || fragment.type === 'ASSIGNMENT') {
       return (
         <Thumbnail
-          category={Avo.ContentType.English.COLLECTION}
+          category={AvoContentTypeEnglish.COLLECTION}
           src={itemMetaData.thumbnail_path}
         />
       );
@@ -472,9 +480,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
 
   const renderToolbar = () => {
     const fragmentIsPublished: boolean | undefined = (
-      fragment.item_meta as
-        | Avo.Collection.Collection
-        | Avo.Assignment.Assignment
+      fragment.item_meta as AvoCollectionCollection | AvoAssignmentAssignment
     )?.is_public;
     return (
       <Toolbar>
@@ -549,7 +555,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
         <div className="c-panel__header">{renderToolbar()}</div>
         {renderWarning()}
         <div className="c-panel__body">
-          {fragment.type !== Avo.Core.BlockItemType.TEXT && itemMetaData ? (
+          {fragment.type !== AvoCoreBlockItemType.TEXT && itemMetaData ? (
             <Grid>
               <Column size="3-6">{renderThumbnailOrVideo()}</Column>
               <Column size="3-6">{renderForm()}</Column>

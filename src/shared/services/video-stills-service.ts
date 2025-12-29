@@ -1,7 +1,13 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
-import { Avo } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoCollectionCollection,
+  AvoCoreContentType,
+  AvoItemItem,
+  AvoStillsStillInfo,
+  AvoStillsStillRequest,
+} from '@viaa/avo2-types';
 import { compact, isNil, uniq, without } from 'es-toolkit';
-
 import { ContentTypeNumber } from '../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../constants';
 import { CustomError } from '../helpers/custom-error';
@@ -14,8 +20,8 @@ export class VideoStillService {
    * @param stillRequests list of info objects containing the video id and their desired start time in seconds
    */
   public static async getVideoStills(
-    stillRequests: Avo.Stills.StillRequest[],
-  ): Promise<Avo.Stills.StillInfo[]> {
+    stillRequests: AvoStillsStillRequest[],
+  ): Promise<AvoStillsStillInfo[]> {
     try {
       if (!stillRequests || !stillRequests.length) {
         return [];
@@ -63,26 +69,26 @@ export class VideoStillService {
 
   public static async getThumbnailsForSubject(
     subject:
-      | Partial<Avo.Collection.Collection>
-      | Partial<Avo.Assignment.Assignment>,
+      | Partial<AvoCollectionCollection>
+      | Partial<AvoAssignmentAssignment>,
   ): Promise<string[]> {
     // Only request the thumbnail of one audio fragment since those thumbnails are all identical
     const mediaFragments = (
-      (subject as Avo.Collection.Collection).collection_fragments ||
-      (subject as Avo.Assignment.Assignment).blocks ||
+      (subject as AvoCollectionCollection).collection_fragments ||
+      (subject as AvoAssignmentAssignment).blocks ||
       []
     ).filter((block) => block.type === 'ITEM');
     const videoBlocks = mediaFragments.filter(
       (block) =>
         block.item_meta &&
-        (block.item_meta as Avo.Item.Item).type.label ===
-          Avo.Core.ContentType.VIDEO,
+        (block.item_meta as AvoItemItem).type.label ===
+          AvoCoreContentType.VIDEO,
     );
     const audioBlocks = mediaFragments.filter(
       (block) =>
         block.item_meta &&
-        (block.item_meta as Avo.Item.Item).type.label ===
-          Avo.Core.ContentType.AUDIO,
+        (block.item_meta as AvoItemItem).type.label ===
+          AvoCoreContentType.AUDIO,
     );
     const cutVideoBlocks = videoBlocks.filter(
       (block) =>
@@ -90,10 +96,10 @@ export class VideoStillService {
         (block.item_meta &&
           !isNil(block.end_oc) &&
           block.end_oc !==
-            toSeconds((block.item_meta as Avo.Item.Item).duration)),
+            toSeconds((block.item_meta as AvoItemItem).duration)),
     );
     const uncutVideoFragments = without(videoBlocks, ...cutVideoBlocks);
-    const cutVideoStillRequests: Avo.Stills.StillRequest[] = compact(
+    const cutVideoStillRequests: AvoStillsStillRequest[] = compact(
       cutVideoBlocks.map((block) => ({
         externalId: block.fragment_id || block.external_id,
         startTime: (block.start_oc || 0) * 1000,
@@ -123,8 +129,8 @@ export class VideoStillService {
 
   public static async getThumbnailForSubject(
     collection:
-      | Partial<Avo.Collection.Collection>
-      | Partial<Avo.Assignment.Assignment>,
+      | Partial<AvoCollectionCollection>
+      | Partial<AvoAssignmentAssignment>,
   ): Promise<string | null> {
     return (
       (await VideoStillService.getThumbnailsForSubject(collection))[0] || null

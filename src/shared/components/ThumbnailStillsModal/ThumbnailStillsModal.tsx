@@ -15,10 +15,13 @@ import {
   ToolbarItem,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+
+import {
+  AvoAssignmentAssignment,
+  AvoCollectionCollection,
+} from '@viaa/avo2-types';
 import { compact, uniq } from 'es-toolkit';
 import { type FC, useEffect, useState } from 'react';
-
 import { STILL_DIMENSIONS } from '../../constants';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
@@ -28,9 +31,9 @@ import { VideoStillService } from '../../services/video-stills-service';
 interface ThumbnailStillsModalProps {
   isOpen: boolean;
   onClose: (
-    collection: Avo.Collection.Collection | Avo.Assignment.Assignment,
+    collection: AvoCollectionCollection | AvoAssignmentAssignment,
   ) => void;
-  subject: Avo.Collection.Collection | Avo.Assignment.Assignment;
+  subject: AvoCollectionCollection | AvoAssignmentAssignment;
 }
 
 export const ThumbnailStillsModal: FC<ThumbnailStillsModalProps> = ({
@@ -54,11 +57,11 @@ export const ThumbnailStillsModal: FC<ThumbnailStillsModalProps> = ({
           uniq(
             compact([
               ...((
-                subject as Avo.Collection.Collection
+                subject as AvoCollectionCollection
               ).collection_fragments?.map(
                 (fragment) => fragment.thumbnail_path,
               ) || []),
-              ...((subject as Avo.Assignment.Assignment).blocks?.map(
+              ...((subject as AvoAssignmentAssignment).blocks?.map(
                 (block) =>
                   block.item_meta?.thumbnail_path || block.thumbnail_path,
               ) || []),

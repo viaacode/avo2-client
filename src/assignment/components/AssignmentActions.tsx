@@ -5,12 +5,17 @@ import {
   DropdownButton,
   DropdownContent,
   IconName,
-} from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { useAtomValue } from 'jotai'
-import { noop } from 'es-toolkit'
-import { type FC, useCallback, useMemo, useState } from 'react'
+} from '@viaa/avo2-components';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentContributor,
+  AvoUserUser,
+  PermissionName,
+} from '@viaa/avo2-types';
+import { clsx } from 'clsx';
+import { noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import { type FC, useCallback, useMemo, useState } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { APP_PATH } from '../../constants';
@@ -36,27 +41,27 @@ import {
 } from './DeleteAssignmentButton';
 
 interface ShareProps extends ShareWithPupilsProps {
-  contributors: Avo.Assignment.Contributor[]
-  onClickMobile: () => void
-  fetchContributors: () => void
+  contributors: AvoAssignmentContributor[];
+  onClickMobile: () => void;
+  fetchContributors: () => void;
   availableRights: {
-    [ContributorInfoRight.CONTRIBUTOR]: PermissionName
-    [ContributorInfoRight.VIEWER]: PermissionName
-  }
+    [ContributorInfoRight.CONTRIBUTOR]: PermissionName;
+    [ContributorInfoRight.VIEWER]: PermissionName;
+  };
 }
 
 interface AssignmentActionsProps {
-  isCreating?: boolean
-  view?: Partial<ButtonProps>
-  preview?: Partial<ButtonProps>
-  overflow?: Partial<ButtonProps>
-  shareWithColleaguesOrPupilsProps?: ShareProps
-  onDuplicate?: () => void
-  remove?: Partial<DeleteAssignmentButtonProps>
-  refetchAssignment?: () => void
-  publish?: Partial<ButtonProps>
-  route: string
-  assignment?: Partial<Avo.Assignment.Assignment>
+  isCreating?: boolean;
+  view?: Partial<ButtonProps>;
+  preview?: Partial<ButtonProps>;
+  overflow?: Partial<ButtonProps>;
+  shareWithColleaguesOrPupilsProps?: ShareProps;
+  onDuplicate?: () => void;
+  remove?: Partial<DeleteAssignmentButtonProps>;
+  refetchAssignment?: () => void;
+  publish?: Partial<ButtonProps>;
+  route: string;
+  assignment?: Partial<AvoAssignmentAssignment>;
 }
 
 export const AssignmentActions: FC<AssignmentActionsProps> = ({
@@ -72,9 +77,9 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
   shareWithColleaguesOrPupilsProps,
   view,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
   const [isOverflowDropdownOpen, setOverflowDropdownOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
   const renderViewButton = useCallback(
     (buttonProps?: Partial<ButtonProps>) =>
@@ -82,7 +87,7 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
         <Button type="secondary" {...buttonProps} {...view} />
       ) : null,
     [isCreating, view],
-  )
+  );
 
   const renderPreviewButton = useCallback(
     (buttonProps?: Partial<ButtonProps>) => (
@@ -100,7 +105,7 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
       />
     ),
     [preview],
-  )
+  );
 
   const renderOverflowButton = useCallback(
     (buttonProps?: Partial<ButtonProps>) => (
@@ -114,16 +119,16 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
       />
     ),
     [overflow],
-  )
+  );
 
   const renderPublishButton = useCallback(
     (buttonProps?: Partial<ButtonProps>) => {
       if (route !== APP_PATH.ASSIGNMENT_CREATE.route) {
-        return <Button type="secondary" {...buttonProps} />
+        return <Button type="secondary" {...buttonProps} />;
       }
     },
     [route],
-  )
+  );
 
   const renderShareButton = useCallback(
     (shareDropdownProps?: Partial<ShareDropdownProps>) => {
@@ -156,8 +161,8 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
               <ShareDropdown
                 contributors={transformContributorsToSimpleContributors(
                   shareWithColleaguesOrPupilsProps?.assignment
-                    ?.owner as Avo.User.User,
-                  shareWithColleaguesOrPupilsProps.contributors as Avo.Assignment.Contributor[],
+                    ?.owner as AvoUserUser,
+                  shareWithColleaguesOrPupilsProps.contributors as AvoAssignmentContributor[],
                 )}
                 onDeleteContributor={(info) =>
                   onDeleteContributor(
@@ -197,7 +202,7 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
               />
             </div>
           ),
-        })
+        });
       }
     },
     [
@@ -207,14 +212,14 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
       route,
       shareWithColleaguesOrPupilsProps,
     ],
-  )
+  );
 
   const renderDuplicateButton = useCallback(() => {
     if (!onDuplicate) {
-      return null
+      return null;
     }
     if (isCreating) {
-      return null
+      return null;
     }
     return (
       <Button
@@ -234,17 +239,17 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
         icon={IconName.copy}
         block={true}
         onClick={async () => {
-          onDuplicate?.()
-          setOverflowDropdownOpen(false)
+          onDuplicate?.();
+          setOverflowDropdownOpen(false);
         }}
       />
-    )
-  }, [isCreating, onDuplicate])
+    );
+  }, [isCreating, onDuplicate]);
 
   const renderDeleteButton = useCallback(
     (deleteAssignmentButtonProps?: Partial<DeleteAssignmentButtonProps>) => {
       if (isCreating) {
-        return null
+        return null;
       }
       return (
         <DeleteAssignmentButton
@@ -256,10 +261,10 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
             ...deleteAssignmentButtonProps?.button,
           }}
         />
-      )
+      );
     },
     [isCreating, remove],
-  )
+  );
 
   return useMemo(
     () => (
@@ -365,5 +370,5 @@ export const AssignmentActions: FC<AssignmentActionsProps> = ({
       renderDeleteButton,
       renderShareButton,
     ],
-  )
-}
+  );
+};

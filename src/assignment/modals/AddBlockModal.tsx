@@ -8,7 +8,7 @@ import {
   type ModalProps,
   Spacer,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+
 import { clsx } from 'clsx';
 import { type FC, type ReactNode, useMemo } from 'react';
 
@@ -19,12 +19,13 @@ import {
 import { tHtml } from '../../shared/helpers/translate-html';
 
 import './AddBlockModal.scss';
+import { AvoCoreBlockItemBase, AvoCoreBlockItemType } from '@viaa/avo2-types';
 
 type AddBlockModalType =
-  | Avo.Core.BlockItemType.ITEM
-  | Avo.Core.BlockItemType.COLLECTION
-  | Avo.Core.BlockItemType.ZOEK
-  | Avo.Core.BlockItemType.TEXT;
+  | AvoCoreBlockItemType.ITEM
+  | AvoCoreBlockItemType.COLLECTION
+  | AvoCoreBlockItemType.ZOEK
+  | AvoCoreBlockItemType.TEXT;
 
 interface AddBlockModalOption {
   type: AddBlockModalType;
@@ -36,7 +37,7 @@ interface AddBlockModalOption {
 
 export interface AddBlockModalProps
   extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-  blocks: Avo.Core.BlockItemBase[];
+  blocks: AvoCoreBlockItemBase[];
   onConfirm?: (type: AddBlockModalType) => void;
 }
 
@@ -48,13 +49,13 @@ export const AddBlockModal: FC<AddBlockModalProps> = ({
 }) => {
   const disableSearchBlock = !!blocks.find(
     (block) =>
-      block.type === Avo.Core.BlockItemType.ZOEK ||
-      block.type === Avo.Core.BlockItemType.BOUW,
+      block.type === AvoCoreBlockItemType.ZOEK ||
+      block.type === AvoCoreBlockItemType.BOUW,
   );
   const items: AddBlockModalOption[] = useMemo(
     () => [
       {
-        type: Avo.Core.BlockItemType.ITEM,
+        type: AvoCoreBlockItemType.ITEM,
         icon: BLOCK_TYPE_TO_ICON_NAME[BlockType.VIDEO],
         title: tHtml('assignment/modals/add-block___kijken-luisteren-fragment'),
         description: tHtml(
@@ -62,7 +63,7 @@ export const AddBlockModal: FC<AddBlockModalProps> = ({
         ),
       },
       {
-        type: Avo.Core.BlockItemType.COLLECTION,
+        type: AvoCoreBlockItemType.COLLECTION,
         icon: IconName.collection,
         title: tHtml(
           'assignment/modals/add-block___kijken-luisteren-collectie',
@@ -72,7 +73,7 @@ export const AddBlockModal: FC<AddBlockModalProps> = ({
         ),
       },
       {
-        type: Avo.Core.BlockItemType.ZOEK as AddBlockModalType,
+        type: AvoCoreBlockItemType.ZOEK as AddBlockModalType,
         icon: BLOCK_TYPE_TO_ICON_NAME[BlockType.ZOEK],
         title: tHtml('assignment/modals/add-block___zoeken-bouwen'),
         description: disableSearchBlock
@@ -85,7 +86,7 @@ export const AddBlockModal: FC<AddBlockModalProps> = ({
         disabled: disableSearchBlock,
       },
       {
-        type: Avo.Core.BlockItemType.TEXT,
+        type: AvoCoreBlockItemType.TEXT,
         icon: BLOCK_TYPE_TO_ICON_NAME[BlockType.TEXT],
         title: tHtml('assignment/modals/add-block___instructies-tekst'),
         description: tHtml(

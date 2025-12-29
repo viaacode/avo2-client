@@ -1,6 +1,11 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import { Container, Icon, IconName } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentResponse,
+  AvoCoreBlockItemBase,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -37,15 +42,16 @@ export const AssignmentPupilCollectionDetail: FC = () => {
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
   });
-  const [assignment, setAssignment] =
-    useState<Avo.Assignment.Assignment | null>(null);
+  const [assignment, setAssignment] = useState<AvoAssignmentAssignment | null>(
+    null,
+  );
   const [assignmentResponse, setAssignmentResponse] =
-    useState<Avo.Assignment.Response | null>();
+    useState<AvoAssignmentResponse | null>();
 
   const fetchAssignmentResponse = useCallback(
     async (
-      tempAssignment: Avo.Assignment.Assignment,
-    ): Promise<Avo.Assignment.Response | null> => {
+      tempAssignment: AvoAssignmentAssignment,
+    ): Promise<AvoAssignmentResponse | null> => {
       if (!assignmentResponseId) {
         return null;
       }
@@ -76,7 +82,7 @@ export const AssignmentPupilCollectionDetail: FC = () => {
       if (!assignmentId) {
         return;
       }
-      const tempAssignment: Avo.Assignment.Assignment =
+      const tempAssignment: AvoAssignmentAssignment =
         await AssignmentService.fetchAssignmentById(assignmentId);
 
       setAssignmentResponse(await fetchAssignmentResponse(tempAssignment));
@@ -144,7 +150,7 @@ export const AssignmentPupilCollectionDetail: FC = () => {
           info={
             assignment ? (
               <AssignmentMetadata
-                assignment={assignment as Avo.Assignment.Assignment}
+                assignment={assignment as AvoAssignmentAssignment}
                 assignmentResponse={assignmentResponse}
                 who={'pupil'}
               />
@@ -157,7 +163,7 @@ export const AssignmentPupilCollectionDetail: FC = () => {
             <BlockList
               blocks={
                 (assignmentResponse?.pupil_collection_blocks ||
-                  []) as Avo.Core.BlockItemBase[]
+                  []) as AvoCoreBlockItemBase[]
               }
               config={{
                 ITEM: {

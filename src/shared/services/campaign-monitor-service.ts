@@ -1,11 +1,10 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
-import { type Avo } from '@viaa/avo2-types';
+
+import { AvoUserCommonUser } from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import { stringifyUrl } from 'query-string';
-
 import { CustomError } from '../helpers/custom-error';
 import { getEnv } from '../helpers/env';
-
 import { type MinimalClientEvent, trackEvents } from './event-logging-service';
 
 export type EmailTemplateType = 'item' | 'collection' | 'bundle';
@@ -16,7 +15,7 @@ enum NewsletterPreferenceKey {
   ambassador = 'ambassador',
 }
 
-// TODO replace withAvo.Newsletter.Preferences when typings v2.49.5 is released together with proxy v1.26.0 (rondje 3)
+// TODO replace withAvoNewsletterPreferences when typings v2.49.5 is released together with proxy v1.26.0 (rondje 3)
 export type NewsletterPreferences = Record<NewsletterPreferenceKey, boolean>;
 
 export class CampaignMonitorService {
@@ -71,7 +70,7 @@ export class CampaignMonitorService {
   public static async triggerEventsForNewsletterPreferences(
     oldNewsletterPreferences: Partial<NewsletterPreferences>,
     newNewsletterPreferences: Partial<NewsletterPreferences>,
-    commonUser: Avo.User.CommonUser | undefined,
+    commonUser: AvoUserCommonUser | undefined,
     preferenceCenterKey: string | undefined | null,
   ) {
     if (!commonUser) {

@@ -7,21 +7,20 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { noop } from 'es-toolkit'
-import { type FC, useState } from 'react'
-
+} from '@viaa/avo2-components';
+import { AvoCoreContentPickerType } from '@viaa/avo2-types';
+import { noop } from 'es-toolkit';
+import { type FC, useState } from 'react';
 import { tHtml } from '../../../../shared/helpers/translate-html';
 import { tText } from '../../../../shared/helpers/translate-text';
 import { type PickerItem } from '../../types/content-picker';
 import { ContentPicker } from '../ContentPicker/ContentPicker';
-import { Avo } from '@viaa/avo2-types'
 
 interface ChangeAuthorModalProps {
-  initialAuthor?: PickerItem
-  isOpen: boolean
-  onClose?: () => void
-  callback: (authorProfileId: PickerItem) => void
+  initialAuthor?: PickerItem;
+  isOpen: boolean;
+  onClose?: () => void;
+  callback: (authorProfileId: PickerItem) => void;
 }
 
 export const ChangeAuthorModal: FC<ChangeAuthorModalProps> = ({
@@ -30,12 +29,12 @@ export const ChangeAuthorModal: FC<ChangeAuthorModalProps> = ({
   initialAuthor,
   callback,
 }) => {
-  const [author, setAuthor] = useState<PickerItem | undefined>(initialAuthor)
+  const [author, setAuthor] = useState<PickerItem | undefined>(initialAuthor);
 
   const handleClose = () => {
-    onClose()
-    setAuthor(initialAuthor)
-  }
+    onClose();
+    setAuthor(initialAuthor);
+  };
 
   return (
     <Modal
@@ -54,9 +53,9 @@ export const ChangeAuthorModal: FC<ChangeAuthorModalProps> = ({
           placeholder={tText(
             'admin/shared/components/change-author-modal/change-author-modal___selecteer-een-auteur',
           )}
-          allowedTypes={[Avo.Core.ContentPickerType.PROFILE]}
+          allowedTypes={[AvoCoreContentPickerType.PROFILE]}
           onSelect={(newAuthor: PickerItem | null) => {
-            setAuthor(newAuthor || undefined)
+            setAuthor(newAuthor || undefined);
           }}
           key={author ? author.value : author}
         />
@@ -80,9 +79,9 @@ export const ChangeAuthorModal: FC<ChangeAuthorModalProps> = ({
                   )}
                   onClick={() => {
                     if (author) {
-                      callback(author)
+                      callback(author);
                     }
-                    handleClose()
+                    handleClose();
                   }}
                 />
               </ButtonToolbar>
@@ -91,5 +90,5 @@ export const ChangeAuthorModal: FC<ChangeAuthorModalProps> = ({
         </Toolbar>
       </ModalFooterRight>
     </Modal>
-  )
-}
+  );
+};

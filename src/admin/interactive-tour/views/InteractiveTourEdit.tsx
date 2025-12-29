@@ -1,4 +1,4 @@
-import { SanitizePreset, sanitizeHtml } from '@meemoo/admin-core-ui/client';
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client';
 import {
   Box,
   Button,
@@ -14,24 +14,16 @@ import {
   Spacer,
   TextInput,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import { AvoCoreContentPickerType, AvoSearchOrderDirection, PermissionName, } from '@viaa/avo2-types';
 import { cloneDeep, compact, orderBy } from 'es-toolkit';
 import { isEmpty, map } from 'es-toolkit/compat';
-import {
-  type FC,
-  lazy,
-  type Reducer,
-  useCallback,
-  useEffect,
-  useReducer,
-  useState,
-} from 'react';
+import { type FC, lazy, type Reducer, useCallback, useEffect, useReducer, useState, } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import {
   LoadingErrorLoadedComponent,
@@ -51,22 +43,11 @@ import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import {
-  AdminLayoutBody,
-  AdminLayoutTopBarRight,
-} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { type PickerItem } from '../../shared/types/content-picker';
 import { InteractiveTourAdd } from '../components/InteractiveTourStepAdd';
-import {
-  INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
-  type InteractiveTourAction,
-  interactiveTourEditReducer,
-} from '../helpers/reducers';
-import {
-  getInitialInteractiveTour,
-  MAX_STEP_TEXT_LENGTH,
-  MAX_STEP_TITLE_LENGTH,
-} from '../interactive-tour.const';
+import { INTERACTIVE_TOUR_EDIT_INITIAL_STATE, type InteractiveTourAction, interactiveTourEditReducer, } from '../helpers/reducers';
+import { getInitialInteractiveTour, MAX_STEP_TEXT_LENGTH, MAX_STEP_TITLE_LENGTH, } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
 import {
   type EditableInteractiveTour,
@@ -132,7 +113,7 @@ export const InteractiveTourEdit: FC = () => {
         }),
       ),
       ['label'],
-      [Avo.Search.OrderDirection.ASC],
+      [AvoSearchOrderDirection.ASC],
     );
   }, []);
 
@@ -388,7 +369,7 @@ export const InteractiveTourEdit: FC = () => {
       return {
         value: interactiveTourState.currentInteractiveTour.page_id,
         label: interactiveTourState.currentInteractiveTour.page_id,
-        type: Avo.Core.ContentPickerType.CONTENT_PAGE,
+        type: AvoCoreContentPickerType.CONTENT_PAGE,
       };
     }
     return undefined;
@@ -497,7 +478,7 @@ export const InteractiveTourEdit: FC = () => {
                             initialValue={getContentPickerInitialValue()}
                             onSelect={handleContentPageSelect}
                             allowedTypes={[
-                              Avo.Core.ContentPickerType.CONTENT_PAGE,
+                              AvoCoreContentPickerType.CONTENT_PAGE,
                             ]}
                             hideTypeDropdown
                           />

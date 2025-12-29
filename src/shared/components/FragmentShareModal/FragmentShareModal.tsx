@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Button,
   Container,
@@ -12,26 +12,17 @@ import {
   ModalSubHeader,
   Spacer,
   Tabs,
-} from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { clsx } from 'clsx'
-import { useAtomValue } from 'jotai'
-import { isNil } from 'es-toolkit'
-import {
-  createRef,
-  type FC,
-  type ReactNode,
-  useEffect,
-  useState,
-} from 'react'
+} from '@viaa/avo2-components';
+import { AvoItemItem, AvoUserCommonUser, PermissionName, } from '@viaa/avo2-types';
+import { clsx } from 'clsx';
+import { isNil } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import { createRef, type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { EmbedContent } from '../../../embed-code/components/EmbedContent';
-import {
-  bookWidgetsLogo,
-  smartSchoolLogo,
-} from '../../../embed-code/embed-code.const';
+import { bookWidgetsLogo, smartSchoolLogo, } from '../../../embed-code/embed-code.const';
 import {
   type EmbedCode,
   EmbedCodeContentType,
@@ -50,14 +41,14 @@ import { QuickLaneTypeEnum } from '../QuickLaneContent/QuickLaneContent.types';
 import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
 import { ShareThroughEmailContent } from '../ShareThroughEmailContent/ShareThroughEmailContent';
 
-import './FragmentShareModal.scss'
+import './FragmentShareModal.scss';
 
 type FragmentShareModalProps = {
-  item: Avo.Item.Item | null
-  isOpen: boolean
-  onClose: () => void
-  showOnlyEmbedTab?: boolean
-}
+  item: AvoItemItem | null;
+  isOpen: boolean;
+  onClose: () => void;
+  showOnlyEmbedTab?: boolean;
+};
 
 export const FragmentShareModal: FC<FragmentShareModalProps> = ({
   item,
@@ -65,11 +56,11 @@ export const FragmentShareModal: FC<FragmentShareModalProps> = ({
   onClose,
   showOnlyEmbedTab,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
-  const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom)
-  showOnlyEmbedTab = isSmartSchoolEmbedFlow ? true : showOnlyEmbedTab
+  const commonUser = useAtomValue(commonUserAtom);
+  const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom);
+  showOnlyEmbedTab = isSmartSchoolEmbedFlow ? true : showOnlyEmbedTab;
 
-  const initialTab = ShareDropdownTabs.COLLEAGUES
+  const initialTab = ShareDropdownTabs.COLLEAGUES;
   const [tab, setActiveTab, tabs] = useTabs(
     [
       ...(!showOnlyEmbedTab
@@ -129,36 +120,37 @@ export const FragmentShareModal: FC<FragmentShareModalProps> = ({
         : []),
     ],
     initialTab,
-  )
-  const [isEmbedDropdownOpen, setIsEmbedDropdownOpen] = useState<boolean>(false)
+  );
+  const [isEmbedDropdownOpen, setIsEmbedDropdownOpen] =
+    useState<boolean>(false);
   const [embedDropdownSelection, setEmbedDropdownSelection] = useState<
     EmbedCodeExternalWebsite | ''
-  >('')
-  const [embedCode, setEmbedCode] = useState<EmbedCode | null>(null)
+  >('');
+  const [embedCode, setEmbedCode] = useState<EmbedCode | null>(null);
 
-  const modalRef = createRef<{ updateSize: () => void }>()
+  const modalRef = createRef<{ updateSize: () => void }>();
 
   const handleRightsButtonClicked = () => {
-    setIsEmbedDropdownOpen(!isEmbedDropdownOpen)
-  }
+    setIsEmbedDropdownOpen(!isEmbedDropdownOpen);
+  };
 
   useEffect(() => {
     if (!isSmartSchoolEmbedFlow) {
-      setEmbedDropdownSelection('')
+      setEmbedDropdownSelection('');
     }
-  }, [isSmartSchoolEmbedFlow, tab])
+  }, [isSmartSchoolEmbedFlow, tab]);
 
   useEffect(() => {
     if (!isOpen) {
-      return
+      return;
     }
 
     if (showOnlyEmbedTab) {
-      setActiveTab(ShareDropdownTabs.EMBED)
+      setActiveTab(ShareDropdownTabs.EMBED);
     }
 
     if (isSmartSchoolEmbedFlow) {
-      setEmbedDropdownSelection(EmbedCodeExternalWebsite.SMARTSCHOOL)
+      setEmbedDropdownSelection(EmbedCodeExternalWebsite.SMARTSCHOOL);
     }
   }, [
     isSmartSchoolEmbedFlow,
@@ -166,10 +158,10 @@ export const FragmentShareModal: FC<FragmentShareModalProps> = ({
     setEmbedDropdownSelection,
     isOpen,
     showOnlyEmbedTab,
-  ])
+  ]);
 
   useEffect(() => {
-    let newEmbedCode = null
+    let newEmbedCode = null;
 
     if (embedDropdownSelection !== '' && item) {
       newEmbedCode = {
@@ -190,7 +182,7 @@ export const FragmentShareModal: FC<FragmentShareModalProps> = ({
             : item.description,
         start: 0,
         end: toSeconds(item.duration),
-      } as EmbedCode
+      } as EmbedCode;
     }
 
     if (isNil(embedCode) && !isNil(newEmbedCode)) {
@@ -200,15 +192,15 @@ export const FragmentShareModal: FC<FragmentShareModalProps> = ({
           object_type: 'embed_code',
           action: 'activate',
           resource: {
-            ...createResource(newEmbedCode, commonUser as Avo.User.CommonUser),
+            ...createResource(newEmbedCode, commonUser as AvoUserCommonUser),
             startedFlow: isSmartSchoolEmbedFlow ? 'SMART_SCHOOL' : 'AVO',
           },
         },
         commonUser,
-      )
+      );
     }
-    setEmbedCode(newEmbedCode)
-  }, [embedDropdownSelection, setEmbedCode, item])
+    setEmbedCode(newEmbedCode);
+  }, [embedDropdownSelection, setEmbedCode, item]);
 
   const embedDropdownOptions: MenuItemInfo[] = [
     {
@@ -247,7 +239,7 @@ export const FragmentShareModal: FC<FragmentShareModalProps> = ({
       id: EmbedCodeExternalWebsite.BOOKWIDGETS,
       key: EmbedCodeExternalWebsite.BOOKWIDGETS,
     },
-  ]
+  ];
 
   const getEmbedDropdownLabel = () => {
     return (
@@ -256,18 +248,18 @@ export const FragmentShareModal: FC<FragmentShareModalProps> = ({
       tText(
         'shared/components/fragment-share-modal/fragment-share-modal___selecteer-een-platform',
       )
-    )
-  }
+    );
+  };
 
   const handleClose = () => {
-    onClose && onClose()
-    setActiveTab(initialTab)
-    setEmbedDropdownSelection('')
-  }
+    onClose && onClose();
+    setActiveTab(initialTab);
+    setEmbedDropdownSelection('');
+  };
 
   const renderPupilsContent = (): ReactNode => {
     if (!item) {
-      return null
+      return null;
     }
 
     return (
@@ -276,12 +268,12 @@ export const FragmentShareModal: FC<FragmentShareModalProps> = ({
         content_label={QuickLaneTypeEnum.ITEM}
         isOpen={isOpen}
       />
-    )
-  }
+    );
+  };
 
   const renderColleaguesContent = (): ReactNode => {
     if (!item) {
-      return null
+      return null;
     }
 
     return (
@@ -291,23 +283,23 @@ export const FragmentShareModal: FC<FragmentShareModalProps> = ({
         type="item"
         onSendMail={handleClose}
       />
-    )
-  }
+    );
+  };
 
   const renderEmbedContentDescription = (): string | ReactNode => {
     switch (embedDropdownSelection) {
       case EmbedCodeExternalWebsite.SMARTSCHOOL:
         return tHtml(
           'shared/components/fragment-share-modal/fragment-share-modal___bewerk-het-fragment-kopieer-de-link-en-plak-hem-bij-extra-inhoud-in-een-smartschoolfiche',
-        )
+        );
       case EmbedCodeExternalWebsite.BOOKWIDGETS:
         return tHtml(
           'shared/components/fragment-share-modal/fragment-share-modal___bewerk-het-fragment-kopieer-de-link-en-plak-hem-in-een-widget-in-bookwidgets',
-        )
+        );
       default:
-        return ''
+        return '';
     }
-  }
+  };
 
   const renderEmbedContent = (): ReactNode => {
     return (
@@ -337,8 +329,8 @@ export const FragmentShareModal: FC<FragmentShareModalProps> = ({
                 <MenuContent
                   menuItems={embedDropdownOptions}
                   onClick={(id) => {
-                    setEmbedDropdownSelection(id as EmbedCodeExternalWebsite)
-                    handleRightsButtonClicked()
+                    setEmbedDropdownSelection(id as EmbedCodeExternalWebsite);
+                    handleRightsButtonClicked();
                   }}
                 />
               </Dropdown>
@@ -352,21 +344,21 @@ export const FragmentShareModal: FC<FragmentShareModalProps> = ({
           onResize={() => modalRef?.current?.updateSize()}
         />
       </>
-    )
-  }
+    );
+  };
 
   const renderTabs = (): ReactNode => {
     switch (tab) {
       case ShareDropdownTabs.COLLEAGUES:
-        return renderColleaguesContent()
+        return renderColleaguesContent();
       case ShareDropdownTabs.PUPILS:
-        return renderPupilsContent()
+        return renderPupilsContent();
       case ShareDropdownTabs.EMBED:
-        return renderEmbedContent()
+        return renderEmbedContent();
       default:
-        return <></>
+        return <></>;
     }
-  }
+  };
 
   return (
     <Modal
@@ -409,5 +401,5 @@ export const FragmentShareModal: FC<FragmentShareModalProps> = ({
         </ModalFooterLeft>
       )}
     </Modal>
-  )
-}
+  );
+};

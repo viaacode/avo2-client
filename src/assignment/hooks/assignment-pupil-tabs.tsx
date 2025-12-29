@@ -1,19 +1,13 @@
-import {
-  IconName,
-  Pill,
-  PillVariants,
-  type TabProps,
-} from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { IconName, Pill, PillVariants, type TabProps, } from '@viaa/avo2-components';
+import { AvoAssignmentAssignment, AvoCoreBlockItemType, } from '@viaa/avo2-types';
 import { useCallback, useMemo, useState } from 'react';
-
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
 
 export function useAssignmentPupilTabs(
-  assignment: Avo.Assignment.Assignment | null,
+  assignment: AvoAssignmentAssignment | null,
   numOfPupilCollectionFragments: number,
   activeTab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
   setTab: (newTab: string) => void,
@@ -36,10 +30,10 @@ export function useAssignmentPupilTabs(
           icon: IconName.clipboard as IconName,
         },
         ...(assignment?.lom_learning_resource_type?.includes(
-          Avo.Core.BlockItemType.ZOEK,
+          AvoCoreBlockItemType.ZOEK,
         ) ||
         (assignment?.lom_learning_resource_type?.includes(
-          Avo.Core.BlockItemType.BOUW,
+          AvoCoreBlockItemType.BOUW,
         ) &&
           !pastDeadline)
           ? [
@@ -51,7 +45,7 @@ export function useAssignmentPupilTabs(
             ]
           : []),
         ...(assignment?.lom_learning_resource_type?.includes(
-          Avo.Core.BlockItemType.BOUW,
+          AvoCoreBlockItemType.BOUW,
         )
           ? [
               {

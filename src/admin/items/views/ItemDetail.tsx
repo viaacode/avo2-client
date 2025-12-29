@@ -17,7 +17,11 @@ import {
   Toolbar,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import {
+  AvoFileUploadAssetType,
+  AvoSearchOrderDirection,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { compact, noop } from 'es-toolkit';
 import { type FC, type ReactNode, useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -25,7 +29,7 @@ import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { EmbedCodeFilterTableCell } from '../../../embed-code/components/EmbedCodeFilterTableCell';
 import { type EmbedCode } from '../../../embed-code/embed-code.types';
@@ -463,7 +467,7 @@ export const ItemDetail: FC = () => {
                     <RichTextEditorWrapper
                       id="note"
                       controls={RICH_TEXT_EDITOR_OPTIONS_FULL}
-                      fileType="ITEM_NOTE_IMAGE"
+                      fileType={AvoFileUploadAssetType.ITEM_NOTE_IMAGE}
                       initialHtml={item?.note || undefined}
                       state={noteEditorState}
                       onChange={setNoteEditorState}
@@ -507,7 +511,7 @@ export const ItemDetail: FC = () => {
             renderCell={renderCell as any}
             sortColumn={queryParams.sortProp || undefined}
             sortOrder={
-              queryParams.sortDirection as Avo.Search.OrderDirection | undefined
+              queryParams.sortDirection as AvoSearchOrderDirection | undefined
             }
             variant="styled"
             rowKey="id"
@@ -532,7 +536,7 @@ export const ItemDetail: FC = () => {
           renderCell={renderCell as any}
           sortColumn={queryParams.sortProp || undefined}
           sortOrder={
-            queryParams.sortDirection as Avo.Search.OrderDirection | undefined
+            queryParams.sortDirection as AvoSearchOrderDirection | undefined
           }
           variant="styled"
           rowKey="id"
@@ -556,7 +560,7 @@ export const ItemDetail: FC = () => {
             renderCell={renderCell as any}
             sortColumn={queryParams.sortProp || undefined}
             sortOrder={
-              queryParams.sortDirection as Avo.Search.OrderDirection | undefined
+              queryParams.sortDirection as AvoSearchOrderDirection | undefined
             }
             variant="styled"
             rowKey="id"
@@ -581,7 +585,7 @@ export const ItemDetail: FC = () => {
             renderCell={renderCell as any}
             sortColumn={queryParams.sortProp || undefined}
             sortOrder={
-              queryParams.sortDirection as Avo.Search.OrderDirection | undefined
+              queryParams.sortDirection as AvoSearchOrderDirection | undefined
             }
             variant="styled"
             rowKey="id"

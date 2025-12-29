@@ -15,7 +15,7 @@ import {
   removePreferredLoginOption,
   setPreferredLoginOption,
 } from '../helpers/login-options-preferred-tab';
-import { redirectToClientPage } from '../helpers/redirects/redirect-to-client-page';
+import { redirectToClientPage } from '../helpers/redirects/redirects';
 
 import { LoginOptionsForPupil } from './LoginOptionsForPupil';
 import { LoginOptionsForTeacher } from './LoginOptionsForTeacher';

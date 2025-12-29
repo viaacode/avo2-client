@@ -3,10 +3,10 @@ import {
   type ButtonProps,
   type DefaultProps,
   IconName,
-} from '@viaa/avo2-components'
-import { type Avo, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { type FC, useState } from 'react'
+} from '@viaa/avo2-components';
+import { AvoAssignmentAssignment, PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
+import { type FC, useState } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -22,26 +22,26 @@ import {
 } from '../helpers/delete-assignment';
 
 export type DeleteAssignmentButtonProps = DefaultProps & {
-  assignment?: Avo.Assignment.Assignment
-  button?: Partial<ButtonProps>
-  modal?: Partial<ConfirmModalProps>
-}
+  assignment?: AvoAssignmentAssignment;
+  button?: Partial<ButtonProps>;
+  modal?: Partial<ConfirmModalProps>;
+};
 
 export const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
   assignment,
   button,
   modal,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
-  const [isOpen, setOpen] = useState<boolean>(false)
+  const [isOpen, setOpen] = useState<boolean>(false);
   const canDeleteAnyAssignments = PermissionService.hasPerm(
     commonUser,
     PermissionName.DELETE_ANY_ASSIGNMENTS,
-  )
+  );
   const isOwner =
     !!assignment?.owner_profile_id &&
-    assignment?.owner_profile_id === commonUser?.profileId
+    assignment?.owner_profile_id === commonUser?.profileId;
 
   const onConfirm = async () => {
     if (!commonUser?.profileId) {
@@ -49,15 +49,15 @@ export const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
         tText(
           'assignment/components/delete-assignment-button___je-moet-ingelogd-zijn-om-een-opdracht-te-verwijderen',
         ),
-      )
-      return
+      );
+      return;
     }
 
-    assignment && (await deleteAssignment(assignment, commonUser))
+    assignment && (await deleteAssignment(assignment, commonUser));
 
-    setOpen(false)
-    modal?.confirmCallback && modal.confirmCallback()
-  }
+    setOpen(false);
+    modal?.confirmCallback && modal.confirmCallback();
+  };
 
   return (
     <>
@@ -84,8 +84,8 @@ export const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
         type="borderless"
         {...button}
         onClick={(e) => {
-          setOpen(true)
-          button?.onClick && button.onClick(e)
+          setOpen(true);
+          button?.onClick && button.onClick(e);
         }}
       />
       <ConfirmModal
@@ -96,11 +96,11 @@ export const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
         {...modal}
         isOpen={isOpen}
         onClose={() => {
-          setOpen(false)
-          modal?.onClose && modal.onClose()
+          setOpen(false);
+          modal?.onClose && modal.onClose();
         }}
         confirmCallback={async () => await onConfirm()}
       />
     </>
-  )
-}
+  );
+};

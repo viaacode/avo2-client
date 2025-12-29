@@ -1,21 +1,19 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
-import { Button, Container, IconName } from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { type FC, type ReactNode } from 'react'
-
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import { Button, Container, IconName } from '@viaa/avo2-components';
+import { AvoAssignmentResponse, AvoCoreBlockItemBase } from '@viaa/avo2-types';
+import { type FC, type ReactNode } from 'react';
 import { AlertBar } from '../../shared/components/AlertBar/AlertBar';
 import { BlockList } from '../../shared/components/BlockList/BlockList';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
-
 import { AssignmentHeading } from './AssignmentHeading';
 
 type PupilCollectionForTeacherPreviewProps = {
-  onClose: () => void
-  assignmentResponse: Omit<Avo.Assignment.Response, 'assignment'>
-  metadata: ReactNode
-}
+  onClose: () => void;
+  assignmentResponse: Omit<AvoAssignmentResponse, 'assignment'>;
+  metadata: ReactNode;
+};
 
 export const PupilCollectionForTeacherPreview: FC<
   PupilCollectionForTeacherPreviewProps
@@ -36,12 +34,12 @@ export const PupilCollectionForTeacherPreview: FC<
       type="borderless-i"
       onClick={onClose}
     />
-  )
+  );
   const collectionTitle = (
     <BlockHeading type="h2">
       {assignmentResponse?.collection_title || ''}
     </BlockHeading>
-  )
+  );
   return (
     <div className="c-assignment-response-page c-assignment-response-page--edit">
       <AlertBar
@@ -56,7 +54,7 @@ export const PupilCollectionForTeacherPreview: FC<
         <BlockList
           blocks={
             (assignmentResponse?.pupil_collection_blocks ||
-              []) as Avo.Core.BlockItemBase[]
+              []) as AvoCoreBlockItemBase[]
           }
           config={{
             ITEM: {
@@ -66,5 +64,5 @@ export const PupilCollectionForTeacherPreview: FC<
         />
       </Container>
     </div>
-  )
-}
+  );
+};

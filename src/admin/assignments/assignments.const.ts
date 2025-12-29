@@ -1,21 +1,11 @@
-import {
-  type FilterableColumn,
-  TableFilterType,
-} from '@meemoo/admin-core-ui/admin';
-import {
-  type ButtonType,
-  IconName,
-  type SelectOption,
-} from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { type FilterableColumn, TableFilterType, } from '@meemoo/admin-core-ui/admin';
+import { type ButtonType, IconName, type SelectOption, } from '@viaa/avo2-components';
+import { AvoLomLomField, AvoUserCommonUser, PermissionName, } from '@viaa/avo2-types';
 
 import { type AssignmentTableColumns } from '../../assignment/assignment.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { type BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
-import {
-  type CheckboxDropdownModalProps,
-  type CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { type CheckboxDropdownModalProps, type CheckboxOption, } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { EducationLevelId } from '../../shared/helpers/lom';
 import { lomToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
@@ -33,7 +23,7 @@ export type AssignmentBulkActionOption = SelectOption<string> & {
 };
 
 export const GET_ASSIGNMENT_BULK_ACTIONS = (
-  commonUser: Avo.User.CommonUser | null | undefined,
+  commonUser: AvoUserCommonUser | null | undefined,
   areRowsSelected: boolean,
 ): AssignmentBulkActionOption[] => {
   if (!commonUser) {
@@ -171,7 +161,7 @@ function getAssignmentStatusColumn(): FilterableColumn<AssignmentTableColumns> {
 }
 
 function getAssignmentSubjectsColumn(
-  subjects: Avo.Lom.LomField[],
+  subjects: AvoLomLomField[],
 ): FilterableColumn<AssignmentTableColumns> {
   const NULL_FILTER_OPTION = {
     checked: false,
@@ -191,7 +181,7 @@ function getAssignmentSubjectsColumn(
 }
 
 function getAssignmentEducationLevelIdColumn(
-  educationLevelsAndDegrees: Avo.Lom.LomField[],
+  educationLevelsAndDegrees: AvoLomLomField[],
 ): FilterableColumn<AssignmentTableColumns> {
   const NULL_FILTER_OPTION = {
     checked: false,
@@ -221,7 +211,7 @@ function getAssignmentEducationLevelIdColumn(
 }
 
 function getAssignmentEducationLevelsColumn(
-  educationLevelsAndDegrees: Avo.Lom.LomField[],
+  educationLevelsAndDegrees: AvoLomLomField[],
 ): FilterableColumn<AssignmentTableColumns> {
   const NULL_FILTER_OPTION = {
     checked: false,
@@ -246,7 +236,7 @@ function getAssignmentEducationLevelsColumn(
 }
 
 function getAssignmentEducationDegreesColumn(
-  educationLevelsAndDegrees: Avo.Lom.LomField[],
+  educationLevelsAndDegrees: AvoLomLomField[],
 ): FilterableColumn<AssignmentTableColumns> {
   const NULL_FILTER_OPTION = {
     checked: false,
@@ -477,8 +467,8 @@ const getAssignmentOrganisationColumn = (
 export function GET_ASSIGNMENT_OVERVIEW_TABLE_COLS(
   userGroupOptions: CheckboxOption[],
   assignmentLabelOptions: CheckboxOption[],
-  subjects: Avo.Lom.LomField[],
-  educationLevelsAndDegrees: Avo.Lom.LomField[],
+  subjects: AvoLomLomField[],
+  educationLevelsAndDegrees: AvoLomLomField[],
 ): FilterableColumn<AssignmentTableColumns>[] {
   return [
     getAssignmentTitleColumn(),
@@ -510,8 +500,8 @@ export const GET_ASSIGNMENT_MARCOM_COLUMNS = (
   userGroupOptions: CheckboxOption[],
   collectionLabelOptions: CheckboxOption[],
   channelNameOptions: CheckboxOption[],
-  subjects: Avo.Lom.LomField[],
-  educationLevelsAndDegrees: Avo.Lom.LomField[],
+  subjects: AvoLomLomField[],
+  educationLevelsAndDegrees: AvoLomLomField[],
   organisations: CheckboxOption[],
   channelTypeOptions: CheckboxOption[],
 ): FilterableColumn<AssignmentTableColumns>[] => [

@@ -1,24 +1,10 @@
 // eslint-disable-next-line import/no-unresolved
 import AvoLogoSrc from '@assets/images/avo-logo-button.svg';
-import {
-  Alert,
-  Column,
-  Flex,
-  Grid,
-  Icon,
-  IconName,
-  Spinner,
-} from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { Alert, Column, Flex, Grid, Icon, IconName, Spinner, } from '@viaa/avo2-components';
+
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import {
-  type FC,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-} from 'react';
+import { type FC, type ReactNode, useCallback, useEffect, useMemo, } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
@@ -34,6 +20,7 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { EmbedErrorView } from './EmbedErrorView';
 
 import './Embed.scss';
+import { AvoItemItem, AvoUserCommonUser } from '@viaa/avo2-types';
 import { EmbedCodeContentType } from '../../embed-code/embed-code.types.ts';
 
 export interface EmbedProps {
@@ -57,10 +44,7 @@ export const Embed: FC<EmbedProps> = ({
     error: embedErrorEmbedCode,
   } = useGetEmbedCode(embedId, true);
 
-  const content = useMemo(
-    () => embedCode?.content as Avo.Item.Item,
-    [embedCode],
-  );
+  const content = useMemo(() => embedCode?.content as AvoItemItem, [embedCode]);
 
   const errorInfo = useMemo(() => {
     let errorMessage: ReactNode | string = '';
@@ -115,7 +99,7 @@ export const Embed: FC<EmbedProps> = ({
           object_type: 'embed_code',
           action: 'view',
           resource: {
-            ...createResource(embedCode, commonUser as Avo.User.CommonUser),
+            ...createResource(embedCode, commonUser as AvoUserCommonUser),
             parentPage,
           },
         },
@@ -140,7 +124,7 @@ export const Embed: FC<EmbedProps> = ({
         object_type: 'embed_code',
         action: 'play',
         resource: {
-          ...createResource(embedCode, commonUser as Avo.User.CommonUser),
+          ...createResource(embedCode, commonUser as AvoUserCommonUser),
           parentPage,
         },
       },
@@ -158,7 +142,7 @@ export const Embed: FC<EmbedProps> = ({
         object_type: 'embed_code',
         action: 'request',
         resource: {
-          ...createResource(embedCode, commonUser as Avo.User.CommonUser),
+          ...createResource(embedCode, commonUser as AvoUserCommonUser),
           parentPage,
         },
       },

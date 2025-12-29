@@ -5,10 +5,10 @@ import {
   TagList,
   type TagOption,
   Thumbnail,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { compact, isNil, trimStart } from 'es-toolkit'
-import { type FC } from 'react'
+} from '@viaa/avo2-components';
+
+import { compact, isNil, trimStart } from 'es-toolkit';
+import { type FC } from 'react';
 
 import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../collection/collection.types';
 import { SearchResult } from '../../shared/components/SearchResult/SearchResult';
@@ -16,7 +16,8 @@ import { formatDate } from '../../shared/helpers/formatters/date';
 import { tText } from '../../shared/helpers/translate-text';
 import { type SearchResultItemProps } from '../search.types';
 
-import './SearchResultItem.scss'
+import './SearchResultItem.scss';
+import { AvoSearchResultItem } from '@viaa/avo2-types';
 
 export const SearchResultItem: FC<SearchResultItemProps> = ({
   id,
@@ -30,12 +31,12 @@ export const SearchResultItem: FC<SearchResultItemProps> = ({
   renderSearchLink,
 }) => {
   const getTags = (
-    result: Avo.Search.ResultItem,
+    result: AvoSearchResultItem,
   ): { typeTags: TagOption[]; qualityTags: TagOption[] } => {
-    const qualityLabels = compact(result?.collection_labels || []) as string[]
+    const qualityLabels = compact(result?.collection_labels || []) as string[];
     const assignmentTypeLabels = compact(
       result?.lom_learning_resource_type || [],
-    ).sort()
+    ).sort();
 
     const TAG_TRANSLATIONS: Record<string, string> = {
       PARTNER: tText('search/components/search-result-item___partner'),
@@ -46,7 +47,7 @@ export const SearchResultItem: FC<SearchResultItemProps> = ({
       KIJK: tText('search/components/search-result-item___kijken-en-luisteren'),
       ZOEK: tText('search/components/search-result-item___zoeken'),
       BOUW: tText('search/components/search-result-item___zoek-en-bouw'),
-    }
+    };
 
     const TAG_LOGO: Record<string, IconName | undefined> = {
       PARTNER: undefined,
@@ -55,7 +56,7 @@ export const SearchResultItem: FC<SearchResultItemProps> = ({
       KIJK: IconName.viewAndListen,
       ZOEK: IconName.search2,
       BOUW: IconName.collection2,
-    }
+    };
 
     return {
       typeTags: compact(
@@ -74,28 +75,28 @@ export const SearchResultItem: FC<SearchResultItemProps> = ({
           className: 'c-search-result-item__quality-label-tag',
         })),
       ),
-    }
-  }
+    };
+  };
 
   const getMetaData = () => {
     if (
       result.administrative_type === 'video' ||
       result.administrative_type === 'audio'
     ) {
-      const duration = trimStart(result.duration_time, '0:')
+      const duration = trimStart(result.duration_time, '0:');
       if (duration.includes(':')) {
-        return duration
+        return duration;
       }
-      return `0:${duration}`
+      return `0:${duration}`;
     }
-    return '' // TODO wait for https://meemoo.atlassian.net/browse/AVO-1107
-  }
+    return ''; // TODO wait for https://meemoo.atlassian.net/browse/AVO-1107
+  };
 
   const stripMarkdownLinks = (description: string) => {
-    return description.replace(/\[([^\]]+)]\([^)]+\)/gi, '$1')
-  }
+    return description.replace(/\[([^\]]+)]\([^)]+\)/gi, '$1');
+  };
 
-  const renderThumbnail = (result: Avo.Search.ResultItem) => {
+  const renderThumbnail = (result: AvoSearchResultItem) => {
     return (
       <Thumbnail
         category={
@@ -105,23 +106,23 @@ export const SearchResultItem: FC<SearchResultItemProps> = ({
         label={result.administrative_type}
         meta={getMetaData()}
       />
-    )
-  }
-  const isItem = (result: Avo.Search.ResultItem): boolean => {
+    );
+  };
+  const isItem = (result: AvoSearchResultItem): boolean => {
     return !['collectie', 'bundel', 'opdracht'].includes(
       result.administrative_type,
-    )
-  }
+    );
+  };
 
   const renderAuthorOrOrganizationWithQualityTags = (
-    result: Avo.Search.ResultItem,
+    result: AvoSearchResultItem,
   ) => {
     if (!isItem(result)) {
-      const name = `${result.owner?.firstname || ''} ${result.owner?.lastname || ''}`
+      const name = `${result.owner?.firstname || ''} ${result.owner?.lastname || ''}`;
       const initials = `${result.owner?.firstname?.[0] || ''}${
         result.owner?.lastname?.[0] || ''
-      }`
-      const qualityTags = getTags(result).qualityTags
+      }`;
+      const qualityTags = getTags(result).qualityTags;
 
       return (
         <Flex spaced="wide">
@@ -143,7 +144,7 @@ export const SearchResultItem: FC<SearchResultItemProps> = ({
             selectable={false}
           />
         </Flex>
-      )
+      );
     }
 
     if (result.original_cp) {
@@ -151,22 +152,22 @@ export const SearchResultItem: FC<SearchResultItemProps> = ({
         result.original_cp,
         { filters: { provider: [result.original_cp] } },
         'c-body-2',
-      )
+      );
     }
 
-    return null
-  }
+    return null;
+  };
 
-  let date: string
-  let dateTooltip: string
+  let date: string;
+  let dateTooltip: string;
   if (!isItem(result)) {
-    date = result.updated_at
+    date = result.updated_at;
     dateTooltip = tText(
       'search/components/search-result-item___laatst-bijwerking',
-    )
+    );
   } else {
-    date = result.dcterms_issued
-    dateTooltip = tText('search/components/search-result-item___uitzend-datum')
+    date = result.dcterms_issued;
+    dateTooltip = tText('search/components/search-result-item___uitzend-datum');
   }
 
   return (
@@ -198,5 +199,5 @@ export const SearchResultItem: FC<SearchResultItemProps> = ({
         )}
       />
     </div>
-  )
-}
+  );
+};

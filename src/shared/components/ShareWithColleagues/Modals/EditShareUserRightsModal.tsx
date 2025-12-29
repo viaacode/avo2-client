@@ -13,23 +13,22 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { type Avo } from '@viaa/avo2-types'
-import { type FC, useEffect, useMemo, useState } from 'react'
-
+} from '@viaa/avo2-components';
+import { AvoAssignmentAssignment } from '@viaa/avo2-types';
+import { type FC, useEffect, useMemo, useState } from 'react';
 import { tHtml } from '../../../helpers/translate-html';
 import { tText } from '../../../helpers/translate-text';
 import { findRightByValue } from '../ShareWithColleagues.helpers';
 import { ContributorInfoRight } from '../ShareWithColleagues.types';
 
 type EditShareUserRightsModalProps = {
-  isOpen: boolean
-  handleClose: () => void
-  handleConfirm: (right: ContributorInfoRight) => void
-  toEditContributorRight: ContributorInfoRight
-  options: SelectOption<ContributorInfoRight>[]
-  assignment?: Partial<Avo.Assignment.Assignment>
-}
+  isOpen: boolean;
+  handleClose: () => void;
+  handleConfirm: (right: ContributorInfoRight) => void;
+  toEditContributorRight: ContributorInfoRight;
+  options: SelectOption<ContributorInfoRight>[];
+  assignment?: Partial<AvoAssignmentAssignment>;
+};
 
 export const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
   isOpen,
@@ -41,19 +40,19 @@ export const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 }) => {
   const [right, setRight] = useState<ContributorInfoRight>(
     toEditContributorRight,
-  )
+  );
 
   useEffect(() => {
     if (isOpen) {
-      setRight(toEditContributorRight)
+      setRight(toEditContributorRight);
     }
-  }, [toEditContributorRight, isOpen])
+  }, [toEditContributorRight, isOpen]);
 
   const handleOnConfirm = () => {
     if (right) {
-      handleConfirm(findRightByValue(right))
+      handleConfirm(findRightByValue(right));
     }
-  }
+  };
 
   /**
    * Boolean indicating whether the permission is being changed from viewer to contributor
@@ -63,7 +62,7 @@ export const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
       toEditContributorRight === ContributorInfoRight.VIEWER &&
       right === ContributorInfoRight.CONTRIBUTOR,
     [toEditContributorRight, right],
-  )
+  );
 
   return (
     <Modal
@@ -126,5 +125,5 @@ export const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
         </Toolbar>
       </ModalFooterRight>
     </Modal>
-  )
-}
+  );
+};
