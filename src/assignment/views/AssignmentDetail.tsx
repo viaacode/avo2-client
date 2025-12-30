@@ -29,7 +29,7 @@ import {
   AvoUserUser,
   PermissionName,
 } from '@viaa/avo2-types';
-import { compact, noop } from 'es-toolkit';
+import { compact, isNil, noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactText, useCallback, useEffect, useState, } from 'react';
 import { generatePath, useLoaderData, useNavigate, useParams, } from 'react-router';
@@ -350,7 +350,9 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 
       setAssignment(tempAssignment as any);
 
-      await getRelatedAssignments();
+      if (!isNil(tempAssignment?.is_public)) {
+        await getRelatedAssignments();
+      }
 
       try {
         const permissionObj = await getPermissions(commonUser, tempAssignment);
@@ -1248,6 +1250,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
     );
   };
 
+  console.log('rendering assignment detail with ', assignmentFromLoader);
   return (
     <>
       <SeoMetadata
