@@ -19,7 +19,7 @@ export type StamboekValidationStatus =
   | 'ALREADY_IN_USE'
   | 'SERVER_ERROR';
 
-export const STAMBOEK_LOCAL_STORAGE_KEY = 'Avostamboek';
+export const STAMBOEK_LOCAL_STORAGE_KEY = 'AVO.stamboek';
 
 export const RegisterStamboek: FC = () => {
   const location = useLocation();

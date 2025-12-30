@@ -1250,7 +1250,6 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
     );
   };
 
-  console.log('rendering assignment detail with ', assignmentFromLoader);
   return (
     <>
       <SeoMetadata

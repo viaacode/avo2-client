@@ -16,10 +16,7 @@ import { isEmpty } from 'es-toolkit/compat';
 import queryString, { stringifyUrl } from 'query-string';
 import { setBlockPositionToIndex } from '../assignment/assignment.helper';
 import { PermissionService } from '../authentication/helpers/permission-service';
-import {
-  type ContributorInfo,
-  type ContributorInfoRight,
-} from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { type ContributorInfo, type ContributorInfoRight, } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
   type DeleteCollectionFragmentByIdMutation,
   type DeleteCollectionFragmentByIdMutationVariables,

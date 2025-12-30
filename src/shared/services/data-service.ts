@@ -20,27 +20,27 @@ export const fetchData = <TData, TVariables>(
         query: query,
         variables,
       }),
-    })
+    });
 
     if (res.status === 401) {
-      goToLoginBecauseOfUnauthorizedError()
-      return
+      goToLoginBecauseOfUnauthorizedError();
+      return;
     }
 
-    const json = await res.json()
+    const json = await res.json();
 
     if (json?.errors || res.status >= 400) {
-      const { message } = json?.errors?.[0] || {}
-      throw new Error(message || res.statusText || 'Error')
+      const { message } = json?.errors?.[0] || {};
+      throw new Error(message || res.statusText || 'Error');
     }
 
-    return json.data
-  }
-}
+    return json.data;
+  };
+};
 
 export interface QueryInfo<TVariables> {
-  query: string
-  variables?: TVariables
+  query: string;
+  variables?: TVariables;
 }
 
 export class dataService {
@@ -50,10 +50,10 @@ export class dataService {
     return (await fetchData(
       queryInfo.query,
       queryInfo.variables,
-    )()) as TQueryResponse
+    )()) as TQueryResponse;
   }
 }
 
-export const NO_RIGHTS_ERROR_MESSAGE = 'You are not allowed to run this query'
+export const NO_RIGHTS_ERROR_MESSAGE = 'You are not allowed to run this query';
 
-export const COLLECTION_QUERY_KEYS = ['getCollectionsByOwner']
+export const COLLECTION_QUERY_KEYS = ['getCollectionsByOwner'];

@@ -33,8 +33,6 @@ export async function render(request: Request) {
     // 2. Create a static router for SSR
     let router = createStaticRouter(dataRoutes, context);
     const helmet = Helmet.renderStatic();
-    console.log('[SSR] Helmet title:', helmet.title.toString());
-    console.log('[SSR] Helmet meta tags:', helmet.meta.toString());
 
     // 3. Render everything with StaticRouterProvider
     let html = renderToString(

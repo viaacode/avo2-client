@@ -9,10 +9,7 @@ import { commonUserAtom } from '../../../authentication/authentication.store';
 import { TEAL_BRIGHT } from '../../constants';
 import { CustomError } from '../../helpers/custom-error';
 import { tText } from '../../helpers/translate-text';
-import {
-  InteractiveTourService,
-  type TourInfo,
-} from '../../services/interactive-tour.service';
+import { InteractiveTourService, type TourInfo, } from '../../services/interactive-tour.service';
 import { showNudgingModalAtom } from '../../store/ui.store';
 import { Html } from '../Html/Html';
 
@@ -22,7 +19,7 @@ import './InteractiveTour.scss';
 import { AvoInteractiveTourStep } from '@viaa/avo2-types';
 import { useLocation } from 'react-router';
 
-const TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY = 'Avotour_display_dates';
+const TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY = 'AVO.tour_display_dates';
 
 interface InteractiveTourProps {
   showButton: boolean;

@@ -75,7 +75,7 @@ export class ItemsService {
   ): Promise<{ items: AvoItemItem[]; total: number }> {
     try {
       const { fetchWithLogoutJson } = await import(
-        '@meemoo/admin-core-ui/admin'
+        '@meemoo/admin-core-ui/client'
       );
       return await fetchWithLogoutJson<{
         items: AvoItemItem[];

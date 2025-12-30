@@ -22,7 +22,6 @@ import { Sidebar } from './shared/components/Sidebar/Sidebar';
 
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import '@meemoo/admin-core-ui/admin.css';
-import '@meemoo/admin-core-ui/styles.css';
 import '../styles/main.scss';
 import './Admin.scss';
 

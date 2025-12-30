@@ -968,7 +968,6 @@ export const BundleDetail: FC<BundleDetailProps> = ({
     if (isLoadingBundle) {
       return <FullPageSpinner locationId="bundle-detail--loading" />;
     }
-    console.log('bundle from loader: ', bundleFromLoader);
     if (isErrorBundle) {
       return (
         <ErrorView

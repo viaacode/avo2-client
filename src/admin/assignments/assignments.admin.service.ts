@@ -1,8 +1,4 @@
-import {
-  AvoAssignmentAssignment,
-  AvoCollectionCollection,
-  AvoSearchOrderDirection,
-} from '@viaa/avo2-types';
+import { AvoAssignmentAssignment, AvoCollectionCollection, AvoSearchOrderDirection, } from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
@@ -20,7 +16,7 @@ export class AssignmentsAdminService {
   ): Promise<{ assignments: AvoCollectionCollection[]; total: number }> {
     try {
       const { fetchWithLogoutJson } = await import(
-        '@meemoo/admin-core-ui/admin'
+        '@meemoo/admin-core-ui/client'
       );
       return await fetchWithLogoutJson<{
         assignments: AvoCollectionCollection[];
@@ -65,7 +61,7 @@ export class AssignmentsAdminService {
   ): Promise<{ assignments: AvoAssignmentAssignment[]; total: number }> {
     try {
       const { fetchWithLogoutJson } = await import(
-        '@meemoo/admin-core-ui/admin'
+        '@meemoo/admin-core-ui/client'
       );
       return await fetchWithLogoutJson<{
         assignments: AvoAssignmentAssignment[];
@@ -101,7 +97,7 @@ export class AssignmentsAdminService {
   static async getAssignmentIds(filters: any): Promise<string[]> {
     try {
       const { fetchWithLogoutJson } = await import(
-        '@meemoo/admin-core-ui/admin'
+        '@meemoo/admin-core-ui/client'
       );
       const response = await fetchWithLogoutJson<{
         assignmentIds: string[];
@@ -128,7 +124,7 @@ export class AssignmentsAdminService {
   static async getAssignmentMarcomIds(filters: any): Promise<string[]> {
     try {
       const { fetchWithLogoutJson } = await import(
-        '@meemoo/admin-core-ui/admin'
+        '@meemoo/admin-core-ui/client'
       );
       const response = await fetchWithLogoutJson<{
         assignmentIds: string[];

@@ -20,10 +20,7 @@ import { CollectionService } from '../collection/collection.service';
 import { type AssignmentMarcomEntry } from '../collection/collection.types';
 import { canManageEditorial } from '../collection/helpers/can-manage-editorial';
 import { type ItemTrimInfo } from '../item/item.types';
-import {
-  type ContributorInfo,
-  type ContributorInfoRight,
-} from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { type ContributorInfo, type ContributorInfoRight, } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
   type GetAssignmentWithResponseQuery,
   type GetAssignmentWithResponseQueryVariables,
@@ -57,11 +54,7 @@ import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import { type TableColumnDataType } from '../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from './assignment.const';
-import {
-  type AssignmentTableColumns,
-  type FetchAssignmentsParams,
-  type PupilCollectionFragment,
-} from './assignment.types';
+import { type AssignmentTableColumns, type FetchAssignmentsParams, type PupilCollectionFragment, } from './assignment.types';
 import { cleanupTitleAndDescriptions } from './helpers/cleanup-title-and-descriptions';
 import { isItemWithMeta } from './helpers/is-item-with-meta';
 

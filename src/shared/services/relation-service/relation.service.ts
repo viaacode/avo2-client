@@ -1,10 +1,10 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 import {
-  AvoAssignmentAssignment,
-  AvoAssignmentRelationEntry,
-  AvoCollectionCollection,
-  AvoCollectionRelationEntry,
-  AvoItemItem,
+	AvoAssignmentAssignment,
+	AvoAssignmentRelationEntry,
+	AvoCollectionCollection,
+	AvoCollectionRelationEntry,
+	AvoItemItem,
 } from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 import { type Lookup_Enum_Relation_Types_Enum } from '../../generated/graphql-db-types';

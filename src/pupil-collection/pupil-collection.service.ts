@@ -1,9 +1,4 @@
-import {
-  AvoAssignmentResponse,
-  AvoCoreBlockItemBase,
-  AvoItemItem,
-  AvoSearchOrderDirection,
-} from '@viaa/avo2-types';
+import { AvoAssignmentResponse, AvoCoreBlockItemBase, AvoItemItem, AvoSearchOrderDirection, } from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 import { ITEMS_PER_PAGE } from '../admin/pupil-collection/pupil-collection.const';
 import { type ItemTrimInfo } from '../item/item.types';

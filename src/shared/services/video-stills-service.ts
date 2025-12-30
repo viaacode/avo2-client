@@ -1,11 +1,11 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 import {
-  AvoAssignmentAssignment,
-  AvoCollectionCollection,
-  AvoCoreContentType,
-  AvoItemItem,
-  AvoStillsStillInfo,
-  AvoStillsStillRequest,
+	AvoAssignmentAssignment,
+	AvoCollectionCollection,
+	AvoCoreContentType,
+	AvoItemItem,
+	AvoStillsStillInfo,
+	AvoStillsStillRequest,
 } from '@viaa/avo2-types';
 import { compact, isNil, uniq, without } from 'es-toolkit';
 import { ContentTypeNumber } from '../../collection/collection.types';

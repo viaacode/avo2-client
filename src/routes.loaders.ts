@@ -32,10 +32,15 @@ export async function initAppLoader() {
   }
 }
 
-export async function loadLoggedOutHomeContentPage() {
+export async function loadLoggedOutHomeContentPage(
+  args: LoaderFunctionArgs<any>,
+) {
   try {
     // Load content page for logged out homepage
-    return await getContentPageByPath('/');
+    return {
+      contentPage: await getContentPageByPath('/'),
+      url: args.request.url,
+    };
   } catch (err) {
     console.error(
       'Failed to load content page in react-router loader for route LoggedOutHome',
@@ -84,7 +89,6 @@ export async function fetchAssignmentLoader(args: LoaderFunctionArgs<any>) {
         id,
         undefined,
       );
-      console.log('assignment loader', assignment);
       return {
         assignment,
         url: args.request.url,

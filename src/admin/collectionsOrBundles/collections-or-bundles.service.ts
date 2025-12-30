@@ -1,7 +1,4 @@
-import {
-  AvoCollectionCollection,
-  AvoSearchOrderDirection,
-} from '@viaa/avo2-types';
+import { AvoCollectionCollection, AvoSearchOrderDirection, } from '@viaa/avo2-types';
 import { flatten } from 'es-toolkit';
 import { stringifyUrl } from 'query-string';
 import {
@@ -29,10 +26,7 @@ import {
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
 import { dataService } from '../../shared/services/data-service';
-import {
-  type CollectionSortProps,
-  type EditorialType,
-} from './collections-or-bundles.types';
+import { type CollectionSortProps, type EditorialType, } from './collections-or-bundles.types';
 
 export class CollectionsOrBundlesService {
   static async getCollections(
@@ -46,7 +40,7 @@ export class CollectionsOrBundlesService {
   ): Promise<{ collections: AvoCollectionCollection[]; total: number }> {
     try {
       const { fetchWithLogoutJson } = await import(
-        '@meemoo/admin-core-ui/admin'
+        '@meemoo/admin-core-ui/client'
       );
       return await fetchWithLogoutJson<{
         collections: AvoCollectionCollection[];
@@ -93,7 +87,7 @@ export class CollectionsOrBundlesService {
   ): Promise<{ collections: AvoCollectionCollection[]; total: number }> {
     try {
       const { fetchWithLogoutJson } = await import(
-        '@meemoo/admin-core-ui/admin'
+        '@meemoo/admin-core-ui/client'
       );
       return await fetchWithLogoutJson<{
         collections: AvoCollectionCollection[];
@@ -135,7 +129,7 @@ export class CollectionsOrBundlesService {
   ): Promise<string[]> {
     try {
       const { fetchWithLogoutJson } = await import(
-        '@meemoo/admin-core-ui/admin'
+        '@meemoo/admin-core-ui/client'
       );
       const response = await fetchWithLogoutJson<{
         collectionIds: string[];

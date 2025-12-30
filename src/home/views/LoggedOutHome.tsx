@@ -23,12 +23,15 @@ export const LoggedOutHome: FC = () => {
   const navigateFunc = useNavigate();
   const loginState = useAtomValue(loginAtom);
   const commonUser = useAtomValue(commonUserAtom);
-  const contentPageInfoFromRoute = useLoaderData() as ContentPageInfo | null;
+  const contentPageInfoFromRoute = useLoaderData<{
+    contentPage: ContentPageInfo | null;
+    url: string;
+  }>();
 
   const queryClient = useQueryClient();
   queryClient.setQueryData(
     [QUERY_KEYS.GET_CONTENT_PAGE_BY_PATH],
-    contentPageInfoFromRoute,
+    contentPageInfoFromRoute.contentPage,
   );
 
   const {
@@ -36,7 +39,7 @@ export const LoggedOutHome: FC = () => {
     error: contentPageError,
     isLoading: contentPageLoading,
   } = useGetContentPageByPath('/', {
-    initialData: contentPageInfoFromRoute,
+    initialData: contentPageInfoFromRoute.contentPage,
   });
 
   useEffect(() => {
@@ -51,6 +54,10 @@ export const LoggedOutHome: FC = () => {
     return <FullPageSpinner locationId="logged-out-home--loading" />;
   }
   if (contentPageError) {
+    console.error(
+      'Error loading content page for logged out home:',
+      contentPageError,
+    );
     return (
       <ErrorView
         locationId="logged-out-home--error"
@@ -72,6 +79,12 @@ export const LoggedOutHome: FC = () => {
         description={tText(
           'home/views/logged-out-home___uitgelogde-start-pagina-beschrijving',
         )}
+        image={contentPageInfoFromRoute.contentPage?.seo_image_path}
+        url={contentPageInfoFromRoute.url}
+        organisationName="meemoo"
+        updatedAt={contentPageInfoFromRoute.contentPage?.updatedAt}
+        createdAt={contentPageInfoFromRoute?.contentPage?.createdAt}
+        publishedAt={contentPageInfoFromRoute?.contentPage?.publishedAt}
       />
       {contentPageInfo && (
         <>

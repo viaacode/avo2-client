@@ -88,7 +88,7 @@ import { Workspace } from './workspace/views/Workspace.tsx';
 async function logRoutesMiddleware({
   request,
 }: Parameters<MiddlewareFunction>[0]) {
-  console.log(`${request.method} ${request.url}`);
+  console.info(`${request.method} ${request.url}`);
 }
 
 const APP_ROUTES: RouteObject[] = [

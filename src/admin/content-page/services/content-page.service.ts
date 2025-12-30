@@ -1,5 +1,5 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
-import { type ButtonAction } from '@viaa/avo2-components'
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
+import { type ButtonAction } from '@viaa/avo2-components';
 
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { getEnv } from '../../../shared/helpers/env';
@@ -11,23 +11,23 @@ export class ContentPageService {
     searchQueryLimit: number | undefined,
     mediaItems:
       | {
-          mediaItem: ButtonAction
+          mediaItem: ButtonAction;
         }[]
       | undefined,
   ): Promise<ResolvedItemOrCollectionOrAssignmentOrContentPage[]> {
-    let url: string | undefined = undefined
-    let body: any | undefined = undefined
+    let url: string | undefined = undefined;
+    let body: any | undefined = undefined;
     try {
-      url = (getEnv('PROXY_URL') as string) + '/content-pages/media'
+      url = (getEnv('PROXY_URL') as string) + '/content-pages/media';
       body = {
         searchQuery,
         searchQueryLimit,
         mediaItems,
-      }
+      };
       return fetchWithLogoutJson(url, {
         method: 'POST',
         body: JSON.stringify(body),
-      })
+      });
     } catch (err) {
       throw new CustomError(
         'Failed to resolve media items through proxy',
@@ -39,7 +39,7 @@ export class ContentPageService {
           url,
           body,
         },
-      )
+      );
     }
   }
 }
