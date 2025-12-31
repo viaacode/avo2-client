@@ -1104,24 +1104,26 @@ export class CollectionService {
    *
    * @param collectionId Unique id of the collection that must be fetched.
    * @param type Type of which items should be fetched.
-   * @param inviteToken
+   * @param inviteToken invite token to access private collections/bundles that have been shared to a contributor
+   * @param headers headers to pass along to the proxy when making the request (optional for client requests, only needed for ssr)
    * @returns Collection or bundle.
    */
   public static async fetchCollectionOrBundleByIdOrInviteToken(
     collectionId: string,
     type: CollectionOrBundle,
     inviteToken: string | undefined,
+    headers: Record<string, string> = {},
   ): Promise<AvoCollectionCollection | null> {
     try {
-      return await fetchWithLogoutJson(
-        `${getEnv('PROXY_URL')}/collections/fetch-with-items-by-id?${queryString.stringify(
-          {
-            type,
-            id: collectionId,
-            inviteToken,
-          },
-        )}`,
-      );
+      const url = stringifyUrl({
+        url: `${getEnv('PROXY_URL')}/collections/fetch-with-items-by-id`,
+        query: {
+          type,
+          id: collectionId,
+          inviteToken,
+        },
+      });
+      return await fetchWithLogoutJson(url, { headers });
     } catch (err) {
       if (JSON.stringify(err).includes('COLLECTION_NOT_FOUND')) {
         return null;

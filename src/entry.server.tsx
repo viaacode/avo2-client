@@ -31,7 +31,7 @@ export async function render(request: Request) {
   try {
     console.log('[SSR] requesting route: ' + new URL(request.url).pathname);
 
-    // 1. run actions/loaders to get the routing context with `query`
+    // Run actions/loaders to get the routing context with `query`
     let context = await query(request);
 
     // If `query` returns a Response, send it raw (a route probably a redirected)
@@ -39,14 +39,16 @@ export async function render(request: Request) {
       return context;
     }
 
-    // 2. Create a static router for SSR
+    // Create a static router for SSR
     let router = createStaticRouter(dataRoutes, context);
-    const helmet = Helmet.renderStatic();
 
-    // 3. Render everything with StaticRouterProvider
+    // Render everything with StaticRouterProvider
     let html = renderToString(
       <StaticRouterProvider router={router} context={context} />,
     );
+
+    // Render the meta tags and title tags
+    const helmet = Helmet.renderStatic();
 
     // Setup headers from action and loaders from deepest match
     let leaf = context.matches[context.matches.length - 1];

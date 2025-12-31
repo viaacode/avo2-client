@@ -546,7 +546,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
       }
 
       if ((err as CustomError)?.innerException?.statusCode === 403) {
-        // If forbidden to access, show no acces error
+        // If forbidden to access, show no access error
         setCollectionInfo({
           showNoAccessPopup: false,
           showLoginPopup: false,

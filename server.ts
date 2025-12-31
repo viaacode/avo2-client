@@ -1,15 +1,11 @@
-import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function createServer() {
   const app = express();
 
-  const clientDir = path.resolve("dist/client");
+  const clientDir = path.resolve('dist/client');
 
   // Create Vite server in middleware mode and configure the app type as
   // 'custom', disabling Vite's own HTML serving logic so parent server
@@ -29,11 +25,11 @@ async function createServer() {
 
   // Serve hashed assets (fast cache)
   app.use(
-      "/assets",
-      express.static(path.join(clientDir, "assets"), {
-        immutable: true,
-        maxAge: "1y",
-      }),
+    '/assets',
+    express.static(path.join(clientDir, 'assets'), {
+      immutable: true,
+      maxAge: '1y',
+    }),
   );
 
   // Serve other static assets (no cache)
@@ -44,35 +40,32 @@ async function createServer() {
     const url = `${process.env.CLIENT_URL}${req.originalUrl}`;
 
     try {
-      // 1. Read index.html
-      let template = fs.readFileSync(
-        path.resolve(__dirname, 'index.html'),
-        'utf-8',
-      );
-
-      // 2. Apply Vite HTML transforms. This injects the Vite HMR client,
-      //    and also applies HTML transforms from Vite plugins, e.g. global
-      //    preambles from @vitejs/plugin-react
-      template = await vite.transformIndexHtml(url, template);
-
-      // 3. Load the server entry. ssrLoadModule automatically transforms
-      //    ESM source code to be usable in Node.js! There is no bundling
-      //    required, and provides efficient invalidation similar to HMR.
+      // Load the server entry. ssrLoadModule automatically transforms
+      // ESM source code to be usable in Node.js! There is no bundling
+      // required, and provides efficient invalidation similar to HMR.
       const { render } = await vite.ssrLoadModule('./src/entry.server.tsx');
 
-      // 4. render the app HTML. This assumes entry-server.js's exported
-      //     `render` function calls appropriate framework SSR APIs,
-      //    e.g. ReactDOMServer.renderToString()
-      const response = await render(new Request(
-        url
-      ));
+      // Pass the headers from the client request to the ssr server request
+      // So logged-in users also produce requests to the proxy with credentials
+      const headers = new Headers();
+      for (const [k, v] of Object.entries(req.headers)) {
+        if (v == null) continue;
+        headers.set(k, Array.isArray(v) ? v.join(',') : v);
+      }
+
+      // render the app HTML
+      const response = await render(
+        new Request(url, {
+          method: req.method,
+          headers,
+        }),
+      );
       const html = await response.text();
 
-      // 6. Send the rendered HTML back.
+      // Send the rendered HTML back.
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
     } catch (err: any) {
-      // If an error is caught, let Vite fix the stack trace so it maps back
-      // to your actual source code.
+      // If an error is caught, let Vite fix the stack trace so it maps back to your actual source code.
       console.error('[SSR]: Error during render', err);
       vite.ssrFixStacktrace(err);
       next(err);

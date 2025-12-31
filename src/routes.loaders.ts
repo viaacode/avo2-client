@@ -61,8 +61,10 @@ export async function fetchCollectionLoader(args: LoaderFunctionArgs<any>) {
   const isCollection = args.request?.url.includes(
     `/${ROUTE_PARTS.collections}/`,
   );
+
   try {
     if (id) {
+      const cookieHeader = args.request.headers.get('cookie');
       const collection =
         await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
           id,
@@ -70,7 +72,9 @@ export async function fetchCollectionLoader(args: LoaderFunctionArgs<any>) {
             ? CollectionOrBundle.COLLECTION
             : CollectionOrBundle.BUNDLE,
           undefined,
+          cookieHeader ? { cookie: cookieHeader } : undefined,
         );
+      // console.log('Fetched collection/bundle in loader:', collection);
       return {
         collection,
         url: args.request.url,

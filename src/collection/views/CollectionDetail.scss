@@ -2,11 +2,6 @@
 @use "../../styles/settings/variables" as variables;
 
 .m-collection-detail {
-	&.hide-behind-login-popup {
-		opacity: 0;
-		max-height: 0;
-		overflow: hidden;
-
   &.hide-behind-login-popup {
 	opacity: 0;
 	max-height: 0;
