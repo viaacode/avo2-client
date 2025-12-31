@@ -1,11 +1,20 @@
 import path from 'node:path';
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function createServer() {
   const app = express();
 
-  const clientDir = path.resolve('dist/client');
+	let clientDir: string;
+	if (process.env.NODE_ENV === 'production') {
+		clientDir = path.resolve(__dirname, '../dist/client');
+	} else {
+		clientDir = path.resolve(__dirname, './');
+	}
 
   // Create Vite server in middleware mode and configure the app type as
   // 'custom', disabling Vite's own HTML serving logic so parent server

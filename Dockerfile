@@ -31,21 +31,18 @@ RUN alias npm='node --max_old_space_size=2048 /usr/bin/npm' >> ~/.bash_aliases &
 RUN npm run add-cookiebot-attribute
 
 ## final image with static serving with nginx
-FROM docker.io/nginxinc/nginx-unprivileged:latest
+FROM docker.io/library/node:24-alpine AS serve
+USER node
 ENV NODE_ENV $NODE_ENV
-USER root
-COPY default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /app/dist /usr/share/nginx/html
-WORKDIR /usr/share/nginx/html
+COPY --from=build dist ./
 COPY scripts/env.sh ./
 COPY scripts/robots-enable-indexing.txt ./
 COPY scripts/robots-disable-indexing.txt ./
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh && chown 101:101 /docker-entrypoint.sh
-RUN chgrp -R 101 /usr/share/nginx/html && chmod -R g+rwx /usr/share/nginx/html
 # Run script which initializes env vars to fs
 RUN chmod +x env.sh
-USER nginx
-ENTRYPOINT ["/docker-entrypoint.sh"]
+
+ENTRYPOINT ["node server.ts"]
 
 

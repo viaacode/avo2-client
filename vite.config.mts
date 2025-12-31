@@ -66,5 +66,17 @@ export default defineConfig((): UserConfig => {
 			},
 			dedupe
 		},
+		// By default, Vite doesn't include shims for Node.js
+		// But DraftJS/Braft RTE (used by the rich text editor) needs them to work
+		define: {
+			global: "globalThis",
+		},
+		optimizeDeps: {
+			esbuildOptions: {
+				define: {
+					global: "globalThis",
+				},
+			},
+		},
 	};
 });
