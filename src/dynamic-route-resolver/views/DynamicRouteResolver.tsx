@@ -1,6 +1,15 @@
-import { type ContentPageInfo, ContentPageRenderer, type DbContentPage, } from '@meemoo/admin-core-ui/client';
+import {
+  type ContentPageInfo,
+  ContentPageRenderer,
+  type DbContentPage,
+} from '@meemoo/admin-core-ui/client';
 import { IconName } from '@viaa/avo2-components';
-import { AvoAuthLoginResponseLoggedIn, AvoContentPagePage, AvoSearchOrderDirection, PermissionName, } from '@viaa/avo2-types';
+import {
+  AvoAuthLoginResponseLoggedIn,
+  AvoContentPagePage,
+  AvoSearchOrderDirection,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { decodeHTML } from 'entities';
 import { useAtom, useSetAtom } from 'jotai';
 import { stringifyUrl } from 'query-string';
@@ -35,7 +44,10 @@ import { generateSearchLinkString } from '../../shared/helpers/link';
 import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
-import { DynamicRouteType, GET_ERROR_MESSAGES, } from '../dynamic-route-resolver.const';
+import {
+  DynamicRouteType,
+  GET_ERROR_MESSAGES,
+} from '../dynamic-route-resolver.const';
 
 interface RouteInfo {
   type: DynamicRouteType;

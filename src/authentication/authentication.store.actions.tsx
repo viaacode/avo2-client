@@ -1,6 +1,9 @@
 import { Button, Spacer } from '@viaa/avo2-components';
 
-import { AvoAuthLoginResponse, AvoAuthLoginResponseLoggedIn, } from '@viaa/avo2-types';
+import {
+  AvoAuthLoginResponse,
+  AvoAuthLoginResponseLoggedIn,
+} from '@viaa/avo2-types';
 import { subMinutes } from 'date-fns';
 import { compact } from 'es-toolkit';
 import { atom } from 'jotai';
@@ -115,7 +118,9 @@ export async function getLoginResponse(
       },
     )}`;
 
-    const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
+    const { fetchWithLogoutJson } = await import(
+      '@meemoo/admin-core-ui/client'
+    );
     const loginStateResponse = await fetchWithLogoutJson<AvoAuthLoginResponse>(
       url,
       {

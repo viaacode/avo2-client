@@ -1,4 +1,4 @@
-import type { Schema, ValidationError } from 'yup'
+import type { Schema, ValidationError } from 'yup';
 
 /**
  * Validate form field values object against a joi schema
@@ -13,15 +13,15 @@ export async function validateForm(
     await formSchema.validate(formValues, {
       strict: true,
       abortEarly: false,
-    })
+    });
 
-    return null
+    return null;
   } catch (err) {
-    const validationError = err as ValidationError
+    const validationError = err as ValidationError;
     return Object.fromEntries(
       validationError.inner.map((error) => {
-        return [error.path, error.message]
+        return [error.path, error.message];
       }),
-    )
+    );
   }
 }

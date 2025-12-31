@@ -31,7 +31,13 @@ import { clsx } from 'clsx';
 import { compact, isNil, noop } from 'es-toolkit';
 import { isEmpty } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
-import { type FC, type ReactText, useCallback, useEffect, useState, } from 'react';
+import {
+  type FC,
+  type ReactText,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useLoaderData, useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -45,7 +51,10 @@ import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH } from '../../constants';
 import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
 import { ErrorView } from '../../error/views/ErrorView';
-import { ALL_SEARCH_FILTERS, type SearchFilter, } from '../../search/search.const';
+import {
+  ALL_SEARCH_FILTERS,
+  type SearchFilter,
+} from '../../search/search.const';
 import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EditButton } from '../../shared/components/EditButton/EditButton';
 import EducationLevelsTagList from '../../shared/components/EducationLevelsTagList/EducationLevelsTagList';
@@ -60,12 +69,18 @@ import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdo
 import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
-import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, } from '../../shared/constants';
+import {
+  EDIT_STATUS_REFETCH_TIME,
+  getMoreOptionsLabel,
+} from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render-bookmark-button';
-import { defaultGoToDetailLink, defaultRenderDetailLink, } from '../../shared/helpers/default-render-detail-link';
+import {
+  defaultGoToDetailLink,
+  defaultRenderDetailLink,
+} from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { generateContentLinkString, navigate } from '../../shared/helpers/link';
@@ -78,28 +93,54 @@ import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-view
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems, ObjectTypes, ObjectTypesAll, } from '../../shared/services/related-items-service';
+import {
+  getRelatedItems,
+  ObjectTypes,
+  ObjectTypesAll,
+} from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { renderRelatedItems } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
-import { CollectionCreateUpdateTab, CollectionMenuAction, CollectionOrBundle, type Relation, } from '../collection.types';
+import {
+  CollectionCreateUpdateTab,
+  CollectionMenuAction,
+  CollectionOrBundle,
+  type Relation,
+} from '../collection.types';
 import { FragmentList } from '../components/fragment/FragmentList';
 import { AddToBundleModal } from '../components/modals/AddToBundleModal';
 import { AutoplayCollectionModal } from '../components/modals/AutoplayCollectionModal';
 import { DeleteCollectionModal } from '../components/modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from '../components/modals/DeleteContributorFromCollectionModal';
 import { PublishCollectionModal } from '../components/modals/PublishCollectionModal';
-import { onAddContributor, onDeleteContributor, onEditContributor, } from '../helpers/collection-share-with-collegue-handlers';
-import { deleteCollection, deleteSelfFromCollection, } from '../helpers/delete-collection';
+import {
+  onAddContributor,
+  onDeleteContributor,
+  onEditContributor,
+} from '../helpers/collection-share-with-collegue-handlers';
+import {
+  deleteCollection,
+  deleteSelfFromCollection,
+} from '../helpers/delete-collection';
 import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
-import { BundleSortProp, useGetCollectionsOrBundlesContainingFragment, } from '../hooks/useGetCollectionsOrBundlesContainingFragment';
+import {
+  BundleSortProp,
+  useGetCollectionsOrBundlesContainingFragment,
+} from '../hooks/useGetCollectionsOrBundlesContainingFragment';
 import './CollectionDetail.scss';
 import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
 import { getFullName } from '../../shared/helpers/formatters/avatar.tsx';
 import { isServerSideRendering } from '../../shared/helpers/routing/is-server-side-rendering.ts';
-import { BooleanParam, StringParam, useQueryParams, } from '../../shared/helpers/routing/use-query-params-ssr.ts';
-import { QUERY_PARAM_INVITE_TOKEN, QUERY_PARAM_SHOW_PUBLISH_MODAL, } from './CollectionDetail.const.tsx';
+import {
+  BooleanParam,
+  StringParam,
+  useQueryParams,
+} from '../../shared/helpers/routing/use-query-params-ssr.ts';
+import {
+  QUERY_PARAM_INVITE_TOKEN,
+  QUERY_PARAM_SHOW_PUBLISH_MODAL,
+} from './CollectionDetail.const.tsx';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;

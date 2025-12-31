@@ -1,5 +1,13 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { Alert, Button, Checkbox, Container, Form, FormGroup, Spacer, } from '@viaa/avo2-components';
+import {
+  Alert,
+  Button,
+  Checkbox,
+  Container,
+  Form,
+  FormGroup,
+  Spacer,
+} from '@viaa/avo2-components';
 
 import { compact } from 'es-toolkit';
 import { useAtomValue, useSetAtom } from 'jotai';
@@ -21,7 +29,11 @@ import { useGetEmailPreferences } from '../hooks/useGetEmailPreferences';
 import { useUpdateEmailPreferences } from '../hooks/useUpdateEmailPreferences';
 import { SettingsService } from '../settings.service';
 import './Profile.scss';
-import { AvoEducationOrganizationOrganization, AvoLomLomField, AvoUserUpdateProfileValues, } from '@viaa/avo2-types';
+import {
+  AvoEducationOrganizationOrganization,
+  AvoLomLomField,
+  AvoUserUpdateProfileValues,
+} from '@viaa/avo2-types';
 import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';

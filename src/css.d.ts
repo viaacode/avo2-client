@@ -2,6 +2,6 @@
 declare module 'csstype' {
   interface Properties {
     // Add a CSS Custom Property
-    '--block-background'?: string
+    '--block-background'?: string;
   }
 }

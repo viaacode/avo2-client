@@ -1,10 +1,24 @@
 // eslint-disable-next-line import/no-unresolved
 
-import { Alert, Column, Flex, Grid, Icon, IconName, Spinner, } from '@viaa/avo2-components';
+import {
+  Alert,
+  Column,
+  Flex,
+  Grid,
+  Icon,
+  IconName,
+  Spinner,
+} from '@viaa/avo2-components';
 import { AvoItemItem, AvoUserCommonUser } from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type FC, type ReactNode, useCallback, useEffect, useMemo, } from 'react';
+import {
+  type FC,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
 import AvoLogoSrc from '../../assets/images/avo-logo-button.svg';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { EmbedCodeContentType } from '../../embed-code/embed-code.types.ts';

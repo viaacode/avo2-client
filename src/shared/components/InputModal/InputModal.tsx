@@ -9,26 +9,26 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { noop } from 'es-toolkit'
-import { type FC, type ReactNode, useEffect, useState } from 'react'
+} from '@viaa/avo2-components';
+import { noop } from 'es-toolkit';
+import { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import { ToastService } from '../../services/toast-service';
 
 interface InputModalProps {
-  title?: string | ReactNode
-  inputLabel?: string
-  cancelLabel?: string
-  confirmLabel?: string
-  inputValue?: string
-  inputPlaceholder?: string
-  maxLength?: number
-  isOpen: boolean
-  onClose?: () => void
-  inputCallback: (input: string) => void
-  emptyMessage?: string
+  title?: string | ReactNode;
+  inputLabel?: string;
+  cancelLabel?: string;
+  confirmLabel?: string;
+  inputValue?: string;
+  inputPlaceholder?: string;
+  maxLength?: number;
+  isOpen: boolean;
+  onClose?: () => void;
+  inputCallback: (input: string) => void;
+  emptyMessage?: string;
 }
 
 export const InputModal: FC<InputModalProps> = ({
@@ -44,19 +44,19 @@ export const InputModal: FC<InputModalProps> = ({
   onClose = noop,
   emptyMessage,
 }) => {
-  const [input, setInput] = useState<string>('')
+  const [input, setInput] = useState<string>('');
 
   useEffect(() => {
     if (isOpen) {
-      setInput(inputValue || '')
+      setInput(inputValue || '');
     }
-  }, [isOpen, inputValue])
+  }, [isOpen, inputValue]);
 
   // Listeners
   const onClickClose = () => {
-    onClose()
-    setInput(inputValue || '')
-  }
+    onClose();
+    setInput(inputValue || '');
+  };
 
   const onClickConfirm = () => {
     if (!input) {
@@ -65,17 +65,17 @@ export const InputModal: FC<InputModalProps> = ({
           tHtml(
             'shared/components/input-modal/input-modal___gelieve-een-waarde-in-te-vullen',
           ),
-      )
-      return null
+      );
+      return null;
     }
 
-    onClose()
-    inputCallback(input)
-  }
+    onClose();
+    inputCallback(input);
+  };
 
   const isInputTooLong = () => {
-    return input.length > (maxLength || Infinity)
-  }
+    return input.length > (maxLength || Infinity);
+  };
 
   // Render
   return (
@@ -139,5 +139,5 @@ export const InputModal: FC<InputModalProps> = ({
         </Toolbar>
       </ModalBody>
     </Modal>
-  )
-}
+  );
+};

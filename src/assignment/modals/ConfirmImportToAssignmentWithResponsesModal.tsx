@@ -6,21 +6,21 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { type FC, type ReactNode } from 'react'
+} from '@viaa/avo2-components';
+import { type FC, type ReactNode } from 'react';
 
 interface ConfirmImportToAssignmentWithResponsesModalProps {
-  isOpen: boolean
-  onClose?: () => void
-  confirmCallback: () => void
+  isOpen: boolean;
+  onClose?: () => void;
+  confirmCallback: () => void;
   translations: {
-    title: string | ReactNode
-    warningCallout: string
-    warningMessage: string
-    warningBody: string
-    primaryButton: string
-    secondaryButton: string
-  }
+    title: string | ReactNode;
+    warningCallout: string;
+    warningMessage: string;
+    warningBody: string;
+    primaryButton: string;
+    secondaryButton: string;
+  };
 }
 
 export const ConfirmImportToAssignmentWithResponsesModal: FC<
@@ -46,8 +46,8 @@ export const ConfirmImportToAssignmentWithResponsesModal: FC<
           </ToolbarItem>
         </ToolbarRight>
       </Toolbar>
-    )
-  }
+    );
+  };
 
   const renderModalBody = () => {
     return (
@@ -59,8 +59,8 @@ export const ConfirmImportToAssignmentWithResponsesModal: FC<
         <p>{translations.warningBody}</p>
         {renderConfirmButtons()}
       </>
-    )
-  }
+    );
+  };
 
   return (
     <Modal
@@ -73,5 +73,5 @@ export const ConfirmImportToAssignmentWithResponsesModal: FC<
     >
       <ModalBody>{renderModalBody()}</ModalBody>
     </Modal>
-  )
-}
+  );
+};

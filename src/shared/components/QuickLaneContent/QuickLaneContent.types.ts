@@ -1,4 +1,9 @@
-import { AvoAssignmentAssignment, AvoAssignmentContent, AvoCollectionCollection, AvoItemItem } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentContent,
+  AvoCollectionCollection,
+  AvoItemItem,
+} from '@viaa/avo2-types';
 import { type ReactNode } from 'react';
 
 export enum QuickLaneTypeEnum {

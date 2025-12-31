@@ -8,7 +8,10 @@ import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/Full
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import {
+  AdminLayoutBody,
+  AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { type UserGroupOverviewRef } from '../../shared/services/user-groups/user-groups.types';
 
 import './UserGroupOverviewPage.scss';

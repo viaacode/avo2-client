@@ -6,6 +6,6 @@
 describe('<Admin />', () => {
   it('Should render without crashing', () => {
     // shallow(<Admin />);
-    expect(true)
-  })
-})
+    expect(true);
+  });
+});

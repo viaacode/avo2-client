@@ -31,8 +31,19 @@ import {
 } from '@viaa/avo2-types';
 import { compact, isNil, noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type FC, type ReactText, useCallback, useEffect, useState, } from 'react';
-import { generatePath, useLoaderData, useNavigate, useParams, } from 'react-router';
+import {
+  type FC,
+  type ReactText,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
+import {
+  generatePath,
+  useLoaderData,
+  useNavigate,
+  useParams,
+} from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
@@ -45,11 +56,20 @@ import {
   BundleSortProp,
   useGetCollectionsOrBundlesContainingFragment,
 } from '../../collection/hooks/useGetCollectionsOrBundlesContainingFragment';
-import { QUERY_PARAM_INVITE_TOKEN, QUERY_PARAM_SHOW_PUBLISH_MODAL, } from '../../collection/views/CollectionDetail.const';
+import {
+  QUERY_PARAM_INVITE_TOKEN,
+  QUERY_PARAM_SHOW_PUBLISH_MODAL,
+} from '../../collection/views/CollectionDetail.const';
 import { APP_PATH } from '../../constants';
 import { ErrorNoAccess } from '../../error/components/ErrorNoAccess';
-import { ErrorView, type ErrorViewQueryParams, } from '../../error/views/ErrorView';
-import { ALL_SEARCH_FILTERS, type SearchFilter, } from '../../search/search.const';
+import {
+  ErrorView,
+  type ErrorViewQueryParams,
+} from '../../error/views/ErrorView';
+import {
+  ALL_SEARCH_FILTERS,
+  type SearchFilter,
+} from '../../search/search.const';
 import { BlockList } from '../../shared/components/BlockList/BlockList';
 import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EditButton } from '../../shared/components/EditButton/EditButton';
@@ -64,7 +84,10 @@ import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { type ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
-import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, } from '../../shared/constants';
+import {
+  EDIT_STATUS_REFETCH_TIME,
+  getMoreOptionsLabel,
+} from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { CustomError } from '../../shared/helpers/custom-error';
@@ -74,23 +97,41 @@ import { defaultRenderSearchLink } from '../../shared/helpers/default-render-sea
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { getFullName } from '../../shared/helpers/formatters/avatar.tsx';
 import { navigate } from '../../shared/helpers/link';
-import { type EducationLevelId, getGroupedLomsKeyValue, } from '../../shared/helpers/lom';
+import {
+  type EducationLevelId,
+  getGroupedLomsKeyValue,
+} from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import { BooleanParam, StringParam, useQueryParams, } from '../../shared/helpers/routing/use-query-params-ssr.ts';
+import {
+  BooleanParam,
+  StringParam,
+  useQueryParams,
+} from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems, ObjectTypes, ObjectTypesAll, } from '../../shared/services/related-items-service';
+import {
+  getRelatedItems,
+  ObjectTypes,
+  ObjectTypesAll,
+} from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { UrlUpdateType } from '../../shared/types/use-query-params.ts';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentAction } from '../assignment.types';
-import { onAddNewContributor, onDeleteContributor, onEditContributor, } from '../helpers/assignment-share-with-collegue-handlers';
-import { deleteAssignment, deleteSelfFromAssignment, } from '../helpers/delete-assignment';
+import {
+  onAddNewContributor,
+  onDeleteContributor,
+  onEditContributor,
+} from '../helpers/assignment-share-with-collegue-handlers';
+import {
+  deleteAssignment,
+  deleteSelfFromAssignment,
+} from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { toAssignmentDetail } from '../helpers/links';
 import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses';

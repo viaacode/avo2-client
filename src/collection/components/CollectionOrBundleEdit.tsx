@@ -23,11 +23,24 @@ import {
 import { cloneDeep, isNil, noop } from 'es-toolkit';
 import { isEmpty, set } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
-import { type FC, type ReactNode, type ReactText, type Reducer, useCallback, useEffect, useMemo, useReducer, useState, } from 'react';
+import {
+  type FC,
+  type ReactNode,
+  type ReactText,
+  type Reducer,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from 'react';
 import { matchPath, Navigate, useNavigate, useParams } from 'react-router';
 
 import { ItemsService } from '../../admin/items/items.service';
-import { reorderBlockPositions, setBlockPositionToIndex, } from '../../assignment/assignment.helper';
+import {
+  reorderBlockPositions,
+  setBlockPositionToIndex,
+} from '../../assignment/assignment.helper';
 import { AssignmentService } from '../../assignment/assignment.service';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -54,7 +67,10 @@ import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveB
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { ROUTE_PARTS } from '../../shared/constants/routes';
 import { buildLink } from '../../shared/helpers/build-link';
-import { getContributorType, transformContributorsToSimpleContributors, } from '../../shared/helpers/contributors';
+import {
+  getContributorType,
+  transformContributorsToSimpleContributors,
+} from '../../shared/helpers/contributors';
 import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
@@ -79,10 +95,23 @@ import {
   CollectionOrBundle,
   ContentTypeNumber,
 } from '../collection.types';
-import { onAddContributor, onDeleteContributor, onEditContributor, } from '../helpers/collection-share-with-collegue-handlers';
-import { deleteCollection, deleteSelfFromCollection, } from '../helpers/delete-collection';
-import { BundleSortProp, useGetCollectionsOrBundlesContainingFragment, } from '../hooks/useGetCollectionsOrBundlesContainingFragment';
-import { GET_REORDER_TYPE_TO_BUTTON_LABEL, REORDER_TYPE_TO_FRAGMENT_TYPE, } from './CollectionOrBundleEdit.consts';
+import {
+  onAddContributor,
+  onDeleteContributor,
+  onEditContributor,
+} from '../helpers/collection-share-with-collegue-handlers';
+import {
+  deleteCollection,
+  deleteSelfFromCollection,
+} from '../helpers/delete-collection';
+import {
+  BundleSortProp,
+  useGetCollectionsOrBundlesContainingFragment,
+} from '../hooks/useGetCollectionsOrBundlesContainingFragment';
+import {
+  GET_REORDER_TYPE_TO_BUTTON_LABEL,
+  REORDER_TYPE_TO_FRAGMENT_TYPE,
+} from './CollectionOrBundleEdit.consts';
 import {
   type CollectionAction,
   type CollectionOrBundleEditProps,

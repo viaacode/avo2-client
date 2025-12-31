@@ -1,5 +1,14 @@
-import { type AdminConfig, type FlowPlayerWrapperProps, type LinkInfo, type ToastInfo, UserBulkAction, } from '@meemoo/admin-core-ui/admin';
-import { ContentBlockType, ContentPageWidth, } from '@meemoo/admin-core-ui/client';
+import {
+  type AdminConfig,
+  type FlowPlayerWrapperProps,
+  type LinkInfo,
+  type ToastInfo,
+  UserBulkAction,
+} from '@meemoo/admin-core-ui/admin';
+import {
+  ContentBlockType,
+  ContentPageWidth,
+} from '@meemoo/admin-core-ui/client';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
 import { AvoCoreDatabaseType, AvoUserCommonUser } from '@viaa/avo2-types';
 import { compact, noop } from 'es-toolkit';
@@ -16,7 +25,10 @@ import { getEnv } from '../../../shared/helpers/env';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
-import { ToastService, ToastTypeToAvoToastType, } from '../../../shared/services/toast-service';
+import {
+  ToastService,
+  ToastTypeToAvoToastType,
+} from '../../../shared/services/toast-service';
 import { store } from '../../../shared/store/ui.store';
 import { Locale } from '../../../shared/translations/translations.types';
 import { ADMIN_PATH } from '../../admin.const';

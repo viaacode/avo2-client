@@ -15,8 +15,8 @@
 		grid-gap: variables.$g-spacer-unit * 4;
 
 		/**
-* Mobile
-*/
+		  * Mobile
+		  */
 		@media screen and (max-width: variables.$g-bp2) {
 			grid-template-columns: 1fr;
 			grid-template-rows: auto;
@@ -35,7 +35,7 @@
 				width: 83px;
 				transform: translate(0, 3px);
 
-				&[alt="Logo van de Vlaamse Overheid"] {
+				.flemish-government-logo {
 					margin-top: 6px;
 				}
 			}

@@ -13,27 +13,27 @@ export async function onDeleteContributor(
 ) {
   try {
     if (!collectionId) {
-      return
+      return;
     }
     await CollectionService.deleteContributor(
       collectionId,
       info.contributorId,
       info.profileId,
-    )
+    );
 
-    await fetchContributors()
+    await fetchContributors();
 
     ToastService.success(
       tText(
         'collection/components/collection-or-bundle-edit___gebruiker-is-verwijderd-van-de-collectie',
       ),
-    )
+    );
   } catch (err) {
     ToastService.danger(
       tText(
         'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-verwijderen-van-een-collega',
       ),
-    )
+    );
   }
 }
 
@@ -50,29 +50,29 @@ export async function onEditContributor(
         await CollectionService.transferCollectionOwnerShip(
           collectionId,
           user.profileId as string,
-        )
+        );
 
-        await fetchCollection()
+        await fetchCollection();
 
         ToastService.success(
           tText(
             'collection/components/collection-or-bundle-edit___eigenaarschap-succesvol-overgedragen',
           ),
-        )
+        );
       } else {
         await CollectionService.editContributorRights(
           collectionId,
           user.contributorId as string,
           newRights,
-        )
+        );
 
-        await fetchContributors()
+        await fetchContributors();
 
         ToastService.success(
           tText(
             'collection/components/collection-or-bundle-edit___rol-van-de-gebruiker-is-aangepast',
           ),
-        )
+        );
       }
     }
   } catch (err) {
@@ -80,7 +80,7 @@ export async function onEditContributor(
       tText(
         'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-aanpassen-van-de-collega-rol',
       ),
-    )
+    );
   }
 }
 
@@ -90,20 +90,20 @@ export async function onAddContributor(
   fetchContributors: () => void,
 ) {
   try {
-    await CollectionService.addContributor(collectionId, info)
+    await CollectionService.addContributor(collectionId, info);
 
-    await fetchContributors()
+    await fetchContributors();
 
     ToastService.success(
       tText(
         'collection/components/collection-or-bundle-edit___uitnodiging-tot-samenwerken-is-verstuurd',
       ),
-    )
+    );
   } catch (err) {
     ToastService.danger(
       tText(
         'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-uitnodigen-van-een-collega',
       ),
-    )
+    );
   }
 }

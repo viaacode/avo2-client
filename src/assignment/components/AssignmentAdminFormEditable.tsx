@@ -1,8 +1,24 @@
-import { Checkbox, Column, Container, Form, FormGroup, Grid, Spacer, type TagInfo, TagsInput, TextInput, } from '@viaa/avo2-components'
-import { AvoAssignmentAssignment, AvoAssignmentQualityLabel, AvoCoreContentPickerType, PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { isNil } from 'es-toolkit'
-import { type FC } from 'react'
+import {
+  Checkbox,
+  Column,
+  Container,
+  Form,
+  FormGroup,
+  Grid,
+  Spacer,
+  type TagInfo,
+  TagsInput,
+  TextInput,
+} from '@viaa/avo2-components';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentQualityLabel,
+  AvoCoreContentPickerType,
+  PermissionName,
+} from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
+import { isNil } from 'es-toolkit';
+import { type FC } from 'react';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../admin/shared/types/content-picker';

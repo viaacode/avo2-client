@@ -1,6 +1,6 @@
-import { type DefaultProps } from '@viaa/avo2-components'
-import { noop } from 'es-toolkit'
-import { type FC, type ReactNode } from 'react'
+import { type DefaultProps } from '@viaa/avo2-components';
+import { noop } from 'es-toolkit';
+import { type FC, type ReactNode } from 'react';
 
 import {
   ConfirmModal,
@@ -10,10 +10,10 @@ import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
 type AssignmentConfirmSaveProps = DefaultProps & {
-  hasBlocks?: boolean
-  hasResponses?: boolean
-  modal?: Partial<ConfirmModalProps>
-}
+  hasBlocks?: boolean;
+  hasResponses?: boolean;
+  modal?: Partial<ConfirmModalProps>;
+};
 
 export const AssignmentConfirmSave: FC<AssignmentConfirmSaveProps> = ({
   hasBlocks,
@@ -22,16 +22,16 @@ export const AssignmentConfirmSave: FC<AssignmentConfirmSaveProps> = ({
 }) => {
   let bodyHtml: ReactNode = tHtml(
     'assignment/components/assignment-confirm-save___weet-je-zeker-dat-je-de-wijzigingen-wil-opslaan',
-  )
+  );
 
   if (hasBlocks === true) {
     bodyHtml = tHtml(
       'assignment/views/assignment-edit___waarschuwing-leerlingencollecties-bestaan-reeds-verwijderen',
-    )
+    );
   } else if (hasResponses === true) {
     bodyHtml = tHtml(
       'assignment/views/assignment-edit___waarschuwing-leerlingen-reeds-bekeken',
-    )
+    );
   }
 
   return (
@@ -47,5 +47,5 @@ export const AssignmentConfirmSave: FC<AssignmentConfirmSaveProps> = ({
       )}
       confirmButtonType="primary"
     />
-  )
-}
+  );
+};

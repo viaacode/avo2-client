@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '../constants/query-keys';
 import {
@@ -8,16 +8,16 @@ import {
 
 export const useAllGetNavItems = (
   options: Partial<{
-    enabled: boolean
+    enabled: boolean;
   }> = {},
 ) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_NAV_ITEMS],
     queryFn: (): Promise<NavItemMap> => {
-      return getAllNavItems()
+      return getAllNavItems();
     },
     enabled: true,
     staleTime: Infinity,
     ...options,
-  })
-}
+  });
+};

@@ -1,6 +1,6 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 // eslint-disable-next-line import/no-unresolved
-import { type Requests } from 'node-zendesk'
+import { type Requests } from 'node-zendesk';
 
 import { getEnv } from '../helpers/env';
 
@@ -14,6 +14,6 @@ export class ZendeskService {
         method: 'POST',
         body: JSON.stringify(request),
       },
-    )
+    );
   }
 }

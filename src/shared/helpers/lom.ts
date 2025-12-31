@@ -1,4 +1,9 @@
-import { AvoLomLom, AvoLomLomField, AvoLomLomSchemeType, type AvoLomLomType, } from '@viaa/avo2-types';
+import {
+  AvoLomLom,
+  AvoLomLomField,
+  AvoLomLomSchemeType,
+  type AvoLomLomType,
+} from '@viaa/avo2-types';
 import { compact, groupBy } from 'es-toolkit';
 
 import { type LomFieldsByScheme } from '../types/lom';

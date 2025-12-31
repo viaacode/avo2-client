@@ -1,4 +1,7 @@
-import { type RichTextEditorControl, RichTextEditorWithInternalState, } from '@meemoo/react-components';
+import {
+  type RichTextEditorControl,
+  RichTextEditorWithInternalState,
+} from '@meemoo/react-components';
 import {
   Alert,
   Button,
@@ -21,7 +24,13 @@ import {
 import { clsx } from 'clsx';
 import { debounce } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type FC, type LegacyRef, type ReactNode, useEffect, useState, } from 'react';
+import {
+  type FC,
+  type LegacyRef,
+  type ReactNode,
+  useEffect,
+  useState,
+} from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { ItemVideoDescription } from '../../item/components/ItemVideoDescription';
@@ -37,7 +46,11 @@ import { useResizeObserver } from '../../shared/hooks/useResizeObserver';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { embedFlowAtom } from '../../shared/store/ui.store';
-import { type EmbedCode, EmbedCodeDescriptionType, EmbedCodeExternalWebsite, } from '../embed-code.types';
+import {
+  type EmbedCode,
+  EmbedCodeDescriptionType,
+  EmbedCodeExternalWebsite,
+} from '../embed-code.types';
 import { toEmbedCodeIFrame } from '../helpers/links';
 import { createResource } from '../helpers/resourceForTrackEvents';
 import { getValidationErrors } from '../helpers/validationRules';

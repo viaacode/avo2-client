@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from '@playwright/test';
 
 import { createCollection } from '../helpers/create-collection';
 import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies';
@@ -19,56 +19,56 @@ test('T47: Werkruimte - collecties: Detail collectie stel hoofdafbeelding in', a
     page,
     process.env.TEST_CLIENT_ENDPOINT as string,
     process.env.TEST_CLIENT_TITLE as string,
-  )
+  );
 
   await loginOnderwijsAvo(
     page,
     process.env.TEST_CLIENT_ENDPOINT as string,
     process.env.TEST_BASIS_GEBRUIKER_USER as string,
     process.env.TEST_BASIS_GEBRUIKER_PASS as string,
-  )
+  );
 
-  const collectionTitle = await createCollection(page)
+  const collectionTitle = await createCollection(page);
 
   // Click search button
-  await page.getByRole('link', { name: 'Zoeken', exact: true }).click()
+  await page.getByRole('link', { name: 'Zoeken', exact: true }).click();
 
   // Check Search page opens
   await expect(
     page.getByRole('heading', { name: 'Zoekresultaten' }),
-  ).toBeVisible()
+  ).toBeVisible();
 
   // Select video checkbox and search
-  await page.getByRole('button', { name: 'Type' }).click()
-  await page.locator('#video').check()
-  await page.getByRole('button', { name: 'Toepassen' }).click()
+  await page.getByRole('button', { name: 'Type' }).click();
+  await page.locator('#video').check();
+  await page.getByRole('button', { name: 'Toepassen' }).click();
 
   // Wait for items to load
-  await page.waitForLoadState('networkidle')
+  await page.waitForLoadState('networkidle');
 
   // Click second item
   await expect(
     page.getByRole('link', { name: 'KLAAR: phishing' }),
-  ).toBeVisible()
-  await page.getByRole('link', { name: 'KLAAR: phishing' }).click()
+  ).toBeVisible();
+  await page.getByRole('link', { name: 'KLAAR: phishing' }).click();
 
   // Add a second video to the same collection
-  await page.click("button[aria-label='Knip of voeg toe aan collectie']")
+  await page.click("button[aria-label='Knip of voeg toe aan collectie']");
 
   // Check modal opens
-  await page.waitForTimeout(1000)
+  await page.waitForTimeout(1000);
   await expect(
     page.getByRole('heading', { name: 'Voeg dit fragment toe aan een' }),
-  ).toContainText('Voeg dit fragment toe aan een collectie')
+  ).toContainText('Voeg dit fragment toe aan een collectie');
 
   // Open dropdown existing collections
-  await page.click('#existingCollection')
+  await page.click('#existingCollection');
 
   // Select existing collection created earlier in the test
-  await page.getByText(collectionTitle).click()
+  await page.getByText(collectionTitle).click();
 
   // Save
-  await page.getByRole('button', { name: 'Toepassen' }).click()
+  await page.getByRole('button', { name: 'Toepassen' }).click();
 
   // Check toast message was succesful
   await expect(
@@ -77,89 +77,89 @@ test('T47: Werkruimte - collecties: Detail collectie stel hoofdafbeelding in', a
     ),
   ).toContainText(
     'Het fragment is toegevoegd aan de collectie in je Werkruimte.',
-  )
+  );
 
-  await page.waitForTimeout(1000)
+  await page.waitForTimeout(1000);
 
   // *UNDER CONSTRUCTION*
   // Go to werkruimte
-  await page.getByRole('link', { name: 'Mijn werkruimte' }).click()
+  await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
 
   // Check new collection is shown
   // Slicing because title is cut off at 60 characters,
   // and last 3 characters are swapped with periods
-  const collectionTitleInOverview = collectionTitle.slice(0, 57) + '...'
+  const collectionTitleInOverview = collectionTitle.slice(0, 57) + '...';
 
   await expect(
     page.getByRole('link', { name: collectionTitleInOverview }),
-  ).toBeVisible()
+  ).toBeVisible();
 
   // Click on the above link
-  await page.getByRole('link', { name: collectionTitleInOverview }).click()
+  await page.getByRole('link', { name: collectionTitleInOverview }).click();
 
   // Edit collection
-  await page.getByRole('button', { name: 'Bewerken', exact: true }).click()
+  await page.getByRole('button', { name: 'Bewerken', exact: true }).click();
 
   // Click on publication details tab
   await page.click(
     'div.c-collection-or-bundle-edit > div.c-navbar.c-navbar--bordered-bottom.c-navbar--auto.c-navbar--bg-alt > div > nav > div:nth-child(2)',
-  )
+  );
 
   // Check if Onderwijs input is visible
-  await expect(page.locator('#educationId')).toBeVisible()
+  await expect(page.locator('#educationId')).toBeVisible();
   // Check if Thema's input is visible
-  await expect(page.locator('#themeId')).toBeVisible()
+  await expect(page.locator('#themeId')).toBeVisible();
   // Check if Vakken input is visible
-  await expect(page.locator('#subjectId')).toBeVisible()
+  await expect(page.locator('#subjectId')).toBeVisible();
   // Check if Korte beschrijving input is visible
-  await expect(page.locator('#shortDescriptionId')).toBeVisible()
+  await expect(page.locator('#shortDescriptionId')).toBeVisible();
   // Check if 'Persoonlijke notities' input is visible
-  await expect(page.locator('#personalRemarkId')).toBeVisible()
+  await expect(page.locator('#personalRemarkId')).toBeVisible();
 
   // Click on Stel een hoofdafbeelding in
   await page
     .getByRole('button', { name: 'Stel een hoofdafbeelding in', exact: true })
-    .click()
+    .click();
 
   // Select second still image
-  await page.locator('div.c-image-grid-selectable > div:nth-child(2)').click()
+  await page.locator('div.c-image-grid-selectable > div:nth-child(2)').click();
 
   // Get the background url to check later
   const stillImageStyle = await page
     .locator('div.c-image-grid-selectable > div:nth-child(2)')
-    .getAttribute('style')
+    .getAttribute('style');
 
   // Check second still image is selected
   await expect(
     page.locator(
       'div.c-image-grid-selectable > div:nth-child(2).c-image-grid__item-selected',
     ),
-  ).toBeVisible()
+  ).toBeVisible();
 
   // Save
-  await page.getByRole('button', { name: 'Opslaan', exact: true }).click()
+  await page.getByRole('button', { name: 'Opslaan', exact: true }).click();
 
   // Check if banner appeared
   await expect(page.locator('div.c-sticky-bar')).toContainText(
     'Wijzigingen opslaan?',
-  )
+  );
 
   // Wait for toast
-  await page.waitForTimeout(4000)
+  await page.waitForTimeout(4000);
 
   // Save changes
-  await page.getByRole('button', { name: 'Opslaan' }).click()
+  await page.getByRole('button', { name: 'Opslaan' }).click();
 
-  await page.waitForTimeout(3000)
+  await page.waitForTimeout(3000);
 
   // Check toast message was succesful
   await expect(
     page.locator(
       'div > div.Toastify__toast-body > div > div > div.c-alert__message',
     ),
-  ).toContainText('Collectie opgeslagen')
+  ).toContainText('Collectie opgeslagen');
 
-  await page.getByRole('link', { name: 'Mijn werkruimte' }).click()
+  await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
 
   // Get image from first row first column
   const stillImageStyleWerkruimte = await page
@@ -167,15 +167,15 @@ test('T47: Werkruimte - collecties: Detail collectie stel hoofdafbeelding in', a
       'tr:nth-child(1) > td:nth-child(1) > a > div > div.c-thumbnail-image',
     )
     .first()
-    .getAttribute('style')
+    .getAttribute('style');
 
   // Check if same thumbnail image is used in overview as was selected
   const containsBackgroundUrl =
     stillImageStyle &&
     stillImageStyleWerkruimte &&
-    stillImageStyle.includes(stillImageStyleWerkruimte)
+    stillImageStyle.includes(stillImageStyleWerkruimte);
 
-  expect(containsBackgroundUrl).toBeTruthy()
+  expect(containsBackgroundUrl).toBeTruthy();
 
   // CLEANUP
   //REMOVE COLLECTION
@@ -187,22 +187,22 @@ test('T47: Werkruimte - collecties: Detail collectie stel hoofdafbeelding in', a
     .locator(
       'tr:nth-child(1) > td:nth-child(6) > div > div.c-dropdown__trigger > button',
     )
-    .click()
+    .click();
 
   // Click 'Verwijderen'
   await page
     .locator(
       'tr:nth-child(1) > td:nth-child(6) > div > div.c-dropdown__content-open > div > div:nth-child(3)',
     )
-    .click()
+    .click();
 
   // Confirm remove modal
-  await page.getByRole('button', { name: 'Verwijder' }).click()
+  await page.getByRole('button', { name: 'Verwijder' }).click();
 
   // Check new collection is removed
   await expect(
     page.getByRole('link', { name: collectionTitleInOverview }),
-  ).not.toBeVisible()
+  ).not.toBeVisible();
   // // Wait for close to save the videos
   // await context.close();
-})
+});

@@ -5,15 +5,15 @@ import {
   Spacer,
   Toggle,
   type ToggleProps,
-} from '@viaa/avo2-components'
-import { type FC, type ReactNode } from 'react'
+} from '@viaa/avo2-components';
+import { type FC, type ReactNode } from 'react';
 
-import './AssignmentBlockToggle.scss'
+import './AssignmentBlockToggle.scss';
 
 type AssignmentBlockToggleProps = ToggleProps & {
-  heading?: string
-  description?: ReactNode
-}
+  heading?: string;
+  description?: ReactNode;
+};
 
 export const AssignmentBlockToggle: FC<AssignmentBlockToggleProps> = (
   props,
@@ -38,5 +38,5 @@ export const AssignmentBlockToggle: FC<AssignmentBlockToggleProps> = (
         </Flex>
       </FormGroup>
     </Spacer>
-  )
-}
+  );
+};

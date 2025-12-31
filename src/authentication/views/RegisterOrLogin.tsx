@@ -1,4 +1,10 @@
-import { Column, Container, Grid, Modal, ModalBody, } from '@viaa/avo2-components';
+import {
+  Column,
+  Container,
+  Grid,
+  Modal,
+  ModalBody,
+} from '@viaa/avo2-components';
 import { type FC } from 'react';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { LoginOptions } from '../components/LoginOptions';

@@ -1,14 +1,14 @@
-import { type FC } from 'react'
-import { useParams } from 'react-router'
+import { type FC } from 'react';
+import { useParams } from 'react-router';
 
 import { ItemDetail } from './ItemDetail';
 
-import './ItemDetail.scss'
+import './ItemDetail.scss';
 
 export const ItemDetailRoute: FC = () => {
-  const { id } = useParams<{ id: string }>()
+  const { id } = useParams<{ id: string }>();
 
-  return <ItemDetail key={'item-detail'} id={id} />
-}
+  return <ItemDetail key={'item-detail'} id={id} />;
+};
 
-export default ItemDetailRoute
+export default ItemDetailRoute;

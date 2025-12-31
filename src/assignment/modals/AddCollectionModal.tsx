@@ -31,13 +31,19 @@ import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { CollectionService } from '../../collection/collection.service';
-import { type Collection, ContentTypeNumber, } from '../../collection/collection.types';
+import {
+  type Collection,
+  ContentTypeNumber,
+} from '../../collection/collection.types';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../../shared/helpers/custom-error';
-import { formatDate, formatTimestamp, } from '../../shared/helpers/formatters/date';
+import {
+  formatDate,
+  formatTimestamp,
+} from '../../shared/helpers/formatters/date';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
@@ -47,7 +53,10 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { type AssignmentTableColumns } from '../assignment.types';
 
 import './AddItemsModals.scss';
-import { AvoCollectionCollection, AvoSearchOrderDirection, } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoSearchOrderDirection,
+} from '@viaa/avo2-types';
 import { tHtml } from '../../shared/helpers/translate-html';
 
 // Column definitions

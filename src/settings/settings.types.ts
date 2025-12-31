@@ -4,4 +4,4 @@ export type UsersInSameCompanyColumn =
   | 'is_blocked'
   | 'last_access_at'
   | 'user_group'
-  | 'temp_access'
+  | 'temp_access';

@@ -25,13 +25,26 @@ import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
-import { getDateRangeFilters, getQueryFilter, } from '../../shared/helpers/filters';
+import {
+  getDateRangeFilters,
+  getQueryFilter,
+} from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE, } from '../interactive-tour.const';
+import {
+  AdminLayoutBody,
+  AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import {
+  GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS,
+  ITEMS_PER_PAGE,
+} from '../interactive-tour.const';
 import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.routes.ts';
 import { InteractiveTourService } from '../interactive-tour.service';
-import { InteractiveTour, type InteractiveTourOverviewTableCols, type InteractiveTourTableState, } from '../interactive-tour.types';
+import {
+  InteractiveTour,
+  type InteractiveTourOverviewTableCols,
+  type InteractiveTourTableState,
+} from '../interactive-tour.types';
 
 export const InteractiveTourOverview: FC = () => {
   const navigateFunc = useNavigate();

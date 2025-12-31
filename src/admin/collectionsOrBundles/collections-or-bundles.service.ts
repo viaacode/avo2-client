@@ -1,4 +1,7 @@
-import { AvoCollectionCollection, AvoSearchOrderDirection, } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoSearchOrderDirection,
+} from '@viaa/avo2-types';
 import { flatten } from 'es-toolkit';
 import { stringifyUrl } from 'query-string';
 import {
@@ -26,7 +29,10 @@ import {
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
 import { dataService } from '../../shared/services/data-service';
-import { type CollectionSortProps, type EditorialType, } from './collections-or-bundles.types';
+import {
+  type CollectionSortProps,
+  type EditorialType,
+} from './collections-or-bundles.types';
 
 export class CollectionsOrBundlesService {
   static async getCollections(

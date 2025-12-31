@@ -1,4 +1,11 @@
-import { Avatar, Flex, Spacer, Tooltip, TooltipContent, TooltipTrigger, } from '@viaa/avo2-components';
+import {
+  Avatar,
+  Flex,
+  Spacer,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@viaa/avo2-components';
 
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactNode } from 'react';
@@ -10,7 +17,12 @@ import { tText } from '../../helpers/translate-text';
 import { ContributorInfoRight } from '../ShareWithColleagues/ShareWithColleagues.types';
 
 import './HeaderOwnerAndContributors.scss';
-import { AvoAssignmentAssignment, AvoAssignmentContributor, AvoCollectionCollection, AvoCollectionContributor, } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentContributor,
+  AvoCollectionCollection,
+  AvoCollectionContributor,
+} from '@viaa/avo2-types';
 
 type HeaderOwnerAndContributorsProps = {
   subject: Partial<AvoAssignmentAssignment> | AvoCollectionCollection;

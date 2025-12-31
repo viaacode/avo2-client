@@ -1,4 +1,4 @@
-import { type IconName } from '@viaa/avo2-components'
+import { type IconName } from '@viaa/avo2-components';
 
 export const createDropdownMenuItem = (
   menuId: string,
@@ -8,7 +8,7 @@ export const createDropdownMenuItem = (
   enabled: boolean,
 ) => {
   if (!enabled) {
-    return []
+    return [];
   }
   return [
     {
@@ -17,5 +17,5 @@ export const createDropdownMenuItem = (
       label,
       icon: icon as IconName,
     },
-  ]
-}
+  ];
+};

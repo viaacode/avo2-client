@@ -1,47 +1,47 @@
-import { SanitizePreset } from '@meemoo/admin-core-ui/client'
-import { setPlayingVideoSeekTime } from '@meemoo/react-components'
-import { type FC, useCallback, useEffect, useRef } from 'react'
+import { SanitizePreset } from '@meemoo/admin-core-ui/client';
+import { setPlayingVideoSeekTime } from '@meemoo/react-components';
+import { type FC, useCallback, useEffect, useRef } from 'react';
 
 import { textToHtmlWithTimestamps } from '../../helpers/formatters/text-to-html-with-timestamps';
 import { parseDuration } from '../../helpers/parsers/duration';
 import { Html } from '../Html/Html';
 
-import './TextWithTimestamps.scss'
+import './TextWithTimestamps.scss';
 
 interface TextWithTimestampsProps {
-  content: string
+  content: string;
 }
 
 export const TextWithTimestamps: FC<TextWithTimestampsProps> = ({
   content,
 }) => {
-  const textWrapperRef = useRef<HTMLDivElement>(null)
+  const textWrapperRef = useRef<HTMLDivElement>(null);
 
   const handleTimestampClicked = useCallback((e: MouseEvent) => {
     const isTimestamp = (e.target as HTMLElement).classList.contains(
       'c-timestamp',
-    )
-    const text = (e.target as HTMLElement).innerText
+    );
+    const text = (e.target as HTMLElement).innerText;
 
     if (isTimestamp) {
-      const parsed = parseDuration(text)
+      const parsed = parseDuration(text);
       if (!isNaN(parsed)) {
-        setPlayingVideoSeekTime(parsed)
+        setPlayingVideoSeekTime(parsed);
       }
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    textWrapperRef?.current?.addEventListener('click', handleTimestampClicked)
-    const textWrapperRefCurrent = textWrapperRef?.current
+    textWrapperRef?.current?.addEventListener('click', handleTimestampClicked);
+    const textWrapperRefCurrent = textWrapperRef?.current;
 
     return () => {
       textWrapperRefCurrent?.removeEventListener(
         'click',
         handleTimestampClicked,
-      )
-    }
-  }, [textWrapperRef, handleTimestampClicked])
+      );
+    };
+  }, [textWrapperRef, handleTimestampClicked]);
 
   return (
     <div className="c-text-with-timestamps" ref={textWrapperRef}>
@@ -52,5 +52,5 @@ export const TextWithTimestamps: FC<TextWithTimestampsProps> = ({
         content={textToHtmlWithTimestamps(content)}
       />
     </div>
-  )
-}
+  );
+};

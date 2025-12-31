@@ -1,4 +1,10 @@
-import { Button, Container, Icon, IconName, Spacer, } from '@viaa/avo2-components';
+import {
+  Button,
+  Container,
+  Icon,
+  IconName,
+  Spacer,
+} from '@viaa/avo2-components';
 import {
   AvoAssignmentAssignment,
   AvoAssignmentResponse,
@@ -10,7 +16,13 @@ import {
 import { clsx } from 'clsx';
 import { intersection } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type FC, type ReactNode, useCallback, useEffect, useState, } from 'react';
+import {
+  type FC,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
 import { commonUserAtom } from '../../../../authentication/authentication.store';
 import { PermissionService } from '../../../../authentication/helpers/permission-service';

@@ -1,5 +1,8 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
-import { AvoFileUploadAssetType, AvoFileUploadZendeskFileInfo, } from '@viaa/avo2-types';
+import {
+  AvoFileUploadAssetType,
+  AvoFileUploadZendeskFileInfo,
+} from '@viaa/avo2-types';
 
 import { CustomError } from '../helpers/custom-error';
 import { getEnv } from '../helpers/env';

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from '@playwright/test';
 
 import { createCollection } from '../helpers/create-collection';
 import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies';
@@ -19,53 +19,53 @@ test('T26: Fragment detail - Knip en voeg toe aan nieuwe collectie', async ({
     page,
     process.env.TEST_CLIENT_ENDPOINT as string,
     process.env.TEST_CLIENT_TITLE as string,
-  )
+  );
 
   await loginOnderwijsAvo(
     page,
     process.env.TEST_CLIENT_ENDPOINT as string,
     process.env.TEST_BASIS_GEBRUIKER_USER as string,
     process.env.TEST_BASIS_GEBRUIKER_PASS as string,
-  )
+  );
 
-  const collectionTitle = await createCollection(page)
+  const collectionTitle = await createCollection(page);
 
   // Go to werkruimte
-  await page.getByRole('link', { name: 'Mijn werkruimte' }).click()
+  await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
 
   // Check new collection is shown
   // Slicing because title is cut off at 60 characters,
   // and last 3 characters are swapped with periods
-  const collectionTitleInOverview = collectionTitle.slice(0, 57) + '...'
+  const collectionTitleInOverview = collectionTitle.slice(0, 57) + '...';
 
   await expect(
     page.getByRole('link', { name: collectionTitleInOverview }),
-  ).toBeVisible()
+  ).toBeVisible();
 
   // Open options of the newly created collection
   await page
     .locator(
       'tr:nth-child(1) > td:nth-child(6) > div > div.c-dropdown__trigger > button',
     )
-    .click()
+    .click();
 
   // Click 'Verwijderen'
   await page
     .locator(
       'tr:nth-child(1) > td:nth-child(6) > div > div.c-dropdown__content-open > div > div:nth-child(3)',
     )
-    .click()
+    .click();
 
   // Confirm remove modal
-  await page.getByRole('button', { name: 'Verwijder' }).click()
+  await page.getByRole('button', { name: 'Verwijder' }).click();
 
   // Check new collection is removed
   await expect(
     page.getByRole('link', { name: collectionTitleInOverview }),
-  ).not.toBeVisible()
+  ).not.toBeVisible();
 
-  await page.waitForTimeout(2000)
+  await page.waitForTimeout(2000);
 
   // // Wait for close to save the videos
   // await context.close();
-})
+});

@@ -1,5 +1,8 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
-import { AvoStamboekValidateResponse, AvoStamboekValidationStatuses } from '@viaa/avo2-types';
+import {
+  AvoStamboekValidateResponse,
+  AvoStamboekValidationStatuses,
+} from '@viaa/avo2-types';
 import queryString from 'query-string';
 import { getEnv } from '../shared/helpers/env';
 

@@ -1,5 +1,8 @@
 import { AvoAssignmentBlock } from '@viaa/avo2-types';
-import { GET_ASSIGNMENT_GREY, GET_ASSIGNMENT_WHITE, } from '../components/ColorSelect/ColorSelect.const';
+import {
+  GET_ASSIGNMENT_GREY,
+  GET_ASSIGNMENT_WHITE,
+} from '../components/ColorSelect/ColorSelect.const';
 
 export const getBlockColor = (block: AvoAssignmentBlock) => {
   const fallback = ['ZOEK', 'BOUW'].includes(block.type)

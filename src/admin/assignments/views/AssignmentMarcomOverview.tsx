@@ -1,12 +1,23 @@
-import { ExportAllToCsvModal, FilterTable, getFilters, } from '@meemoo/admin-core-ui/admin';
-import { AvoAssignmentAssignment, AvoSearchOrderDirection, PermissionName, } from '@viaa/avo2-types';
+import {
+  ExportAllToCsvModal,
+  FilterTable,
+  getFilters,
+} from '@meemoo/admin-core-ui/admin';
+import {
+  AvoAssignmentAssignment,
+  AvoSearchOrderDirection,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactNode, useEffect, useMemo, useState } from 'react';
 
 import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GET_MARCOM_CHANNEL_NAME_OPTIONS, GET_MARCOM_CHANNEL_TYPE_OPTIONS, } from '../../../collection/collection.const';
+import {
+  GET_MARCOM_CHANNEL_NAME_OPTIONS,
+  GET_MARCOM_CHANNEL_TYPE_OPTIONS,
+} from '../../../collection/collection.const';
 import { ErrorView } from '../../../error/views/ErrorView';
 
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
@@ -26,9 +37,19 @@ import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import { AssignmentsAdminService } from '../assignments.admin.service';
-import { GET_ASSIGNMENT_MARCOM_COLUMNS, ITEMS_PER_PAGE, } from '../assignments.const';
-import { type AssignmentMarcomTableState, AssignmentsBulkAction, type AssignmentSortProps, } from '../assignments.types';
-import { renderAssignmentMarcomCellReact, renderAssignmentsMarcomCellText, } from '../helpers/render-assignment-columns';
+import {
+  GET_ASSIGNMENT_MARCOM_COLUMNS,
+  ITEMS_PER_PAGE,
+} from '../assignments.const';
+import {
+  type AssignmentMarcomTableState,
+  AssignmentsBulkAction,
+  type AssignmentSortProps,
+} from '../assignments.types';
+import {
+  renderAssignmentMarcomCellReact,
+  renderAssignmentsMarcomCellText,
+} from '../helpers/render-assignment-columns';
 import { useGetAssignmentsWithMarcomForAdminOverview } from '../hooks/useGetAssignmentsWithMarcomForAdminOverview';
 
 export const AssignmentMarcomOverview: FC = () => {

@@ -1,6 +1,6 @@
-import './AssignmentHeading.scss'
+import './AssignmentHeading.scss';
 
-import { useWindowScroll } from '@uidotdev/usehooks'
+import { useWindowScroll } from '@uidotdev/usehooks';
 import {
   Container,
   Navbar,
@@ -8,19 +8,19 @@ import {
   ToolbarItem,
   ToolbarLeft,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { clsx } from 'clsx'
-import { type FC, type ReactNode, useEffect, useState } from 'react'
+} from '@viaa/avo2-components';
+import { clsx } from 'clsx';
+import { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 
 interface AssignmentHeadingProps {
-  actions?: ReactNode
-  back?: ReactNode
-  info?: ReactNode
-  tabs?: ReactNode
-  title: ReactNode
-  tour?: ReactNode | null
+  actions?: ReactNode;
+  back?: ReactNode;
+  info?: ReactNode;
+  tabs?: ReactNode;
+  title: ReactNode;
+  tour?: ReactNode | null;
 }
 
 export const AssignmentHeading: FC<AssignmentHeadingProps> = ({
@@ -31,24 +31,24 @@ export const AssignmentHeading: FC<AssignmentHeadingProps> = ({
   title,
   tour = <InteractiveTour showButton />,
 }) => {
-  const [{ y }] = useWindowScroll()
-  const [isScrolled, setIsScrolled] = useState(false)
+  const [{ y }] = useWindowScroll();
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     /**
      * Roughly the height of the "Mijn opdrachten" button + title at `$g-bp4`
      * @unit px
      */
-    const breakpoint = 120
-    const depth = y || 0
+    const breakpoint = 120;
+    const depth = y || 0;
 
     if (depth >= breakpoint && !isScrolled) {
-      setIsScrolled(true)
+      setIsScrolled(true);
     } else if (depth === 0) {
       // Only update at exact 0 to avoid page-locking repaints & pseudo-states
-      setIsScrolled(false)
+      setIsScrolled(false);
     }
-  }, [y, isScrolled, setIsScrolled])
+  }, [y, isScrolled, setIsScrolled]);
 
   return (
     <>
@@ -108,5 +108,5 @@ export const AssignmentHeading: FC<AssignmentHeadingProps> = ({
         )}
       </Navbar>
     </>
-  )
-}
+  );
+};

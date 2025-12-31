@@ -22,12 +22,25 @@ import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
-import { getDateRangeFilters, getQueryFilter, } from '../../shared/helpers/filters';
+import {
+  getDateRangeFilters,
+  getQueryFilter,
+} from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE, } from '../items.const';
+import {
+  AdminLayoutBody,
+  AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import {
+  GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS,
+  ITEMS_PER_PAGE,
+} from '../items.const';
 import { ItemsService } from '../items.service';
-import { type UnpublishedItem, type UnpublishedItemsOverviewTableCols, type UnpublishedItemsTableState, } from '../items.types';
+import {
+  type UnpublishedItem,
+  type UnpublishedItemsOverviewTableCols,
+  type UnpublishedItemsTableState,
+} from '../items.types';
 
 export const PublishItemsOverview: FC = () => {
   const navigateFunc = useNavigate();

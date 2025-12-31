@@ -1,23 +1,23 @@
-import { noop } from 'es-toolkit'
-import { type FC } from 'react'
+import { noop } from 'es-toolkit';
+import { type FC } from 'react';
 
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 
 interface DeleteMyselfFromCollectionContributorsConfirmModalProps {
-  isOpen: boolean
-  onClose?: () => void
-  deleteCallback: () => void | Promise<void>
+  isOpen: boolean;
+  onClose?: () => void;
+  deleteCallback: () => void | Promise<void>;
 }
 
 export const DeleteMyselfFromCollectionContributorsConfirmModal: FC<
   DeleteMyselfFromCollectionContributorsConfirmModalProps
 > = ({ isOpen, onClose = noop, deleteCallback }) => {
   const handleDelete = async () => {
-    deleteCallback()
-    onClose()
-  }
+    deleteCallback();
+    onClose();
+  };
 
   const renderDeleteMessage = () => {
     return (
@@ -30,8 +30,8 @@ export const DeleteMyselfFromCollectionContributorsConfirmModal: FC<
           'collection/components/modals/delete-collection-modal___deze-operatie-kan-niet-meer-ongedaan-gemaakt-worden',
         )}
       </p>
-    )
-  }
+    );
+  };
 
   return (
     <ConfirmModal
@@ -51,5 +51,5 @@ export const DeleteMyselfFromCollectionContributorsConfirmModal: FC<
       className="c-content"
       confirmCallback={handleDelete}
     />
-  )
-}
+  );
+};

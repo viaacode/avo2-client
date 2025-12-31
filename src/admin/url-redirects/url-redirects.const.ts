@@ -1,7 +1,7 @@
 import {
   type FilterableColumn,
   TableFilterType,
-} from '@meemoo/admin-core-ui/admin'
+} from '@meemoo/admin-core-ui/admin';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate-text';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -12,7 +12,7 @@ import {
   UrlRedirectPathPattern,
 } from './url-redirects.types';
 
-export const ITEMS_PER_PAGE = 10
+export const ITEMS_PER_PAGE = 10;
 
 export const GET_URL_REDIRECT_OVERVIEW_TABLE_COLS: () => FilterableColumn<UrlRedirectOverviewTableCols>[] =
   () => [
@@ -51,7 +51,7 @@ export const GET_URL_REDIRECT_OVERVIEW_TABLE_COLS: () => FilterableColumn<UrlRed
       tooltip: tText('admin/url-redirects/url-redirects___acties'),
       visibleByDefault: true,
     },
-  ]
+  ];
 
 export const URL_REDIRECT_PATTERN_OPTIONS = () => [
   {
@@ -64,7 +64,7 @@ export const URL_REDIRECT_PATTERN_OPTIONS = () => [
     value: UrlRedirectPathPattern.REGEX,
     label: tText('admin/url-redirects/url-redirects___reguliere-expressie'),
   },
-]
+];
 
 export const INITIAL_URL_REDIRECT = () =>
   ({
@@ -73,4 +73,4 @@ export const INITIAL_URL_REDIRECT = () =>
     oldPathPattern: UrlRedirectPathPattern.PLAIN_TEXT,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-  }) as UrlRedirect
+  }) as UrlRedirect;

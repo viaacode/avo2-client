@@ -1,7 +1,7 @@
-import { Button, Container, Spacer } from '@viaa/avo2-components'
-import { noop } from 'es-toolkit'
-import { type FC } from 'react'
-import { useNavigate } from 'react-router'
+import { Button, Container, Spacer } from '@viaa/avo2-components';
+import { noop } from 'es-toolkit';
+import { type FC } from 'react';
+import { useNavigate } from 'react-router';
 
 import { APP_PATH } from '../../constants';
 import { ROUTE_PARTS } from '../../shared/constants/routes';
@@ -10,13 +10,13 @@ import { tText } from '../../shared/helpers/translate-text';
 import { redirectToClientPage } from '../helpers/redirects/redirects';
 
 interface PupilOrTeacherDropdownProps {
-  closeDropdown?: () => void
+  closeDropdown?: () => void;
 }
 
 export const PupilOrTeacherDropdown: FC<PupilOrTeacherDropdownProps> = ({
   closeDropdown = noop,
 }) => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
   return (
     <Container
@@ -42,8 +42,8 @@ export const PupilOrTeacherDropdown: FC<PupilOrTeacherDropdownProps> = ({
               'authentication/components/pupil-or-teacher-dropdown___maak-je-gratis-account-aan',
             )}
             onClick={() => {
-              closeDropdown()
-              redirectToClientPage(APP_PATH.STAMBOEK.route, navigateFunc)
+              closeDropdown();
+              redirectToClientPage(APP_PATH.STAMBOEK.route, navigateFunc);
             }}
           />
         </Spacer>
@@ -66,13 +66,13 @@ export const PupilOrTeacherDropdown: FC<PupilOrTeacherDropdownProps> = ({
                 'authentication/components/pupil-or-teacher-dropdown___toegang-voor-leerlingen',
               )}
               onClick={() => {
-                closeDropdown()
-                redirectToClientPage(`/${ROUTE_PARTS.pupils}`, navigateFunc)
+                closeDropdown();
+                redirectToClientPage(`/${ROUTE_PARTS.pupils}`, navigateFunc);
               }}
             />
           </Spacer>
         </Spacer>
       </Container>
     </Container>
-  )
-}
+  );
+};

@@ -1,6 +1,11 @@
 import { type TableColumn } from '@viaa/avo2-components';
 
-import { AvoAssignmentBlock, AvoAssignmentResponse, AvoCoreBlockItemBase, AvoSearchOrderDirection, } from '@viaa/avo2-types';
+import {
+  AvoAssignmentBlock,
+  AvoAssignmentResponse,
+  AvoCoreBlockItemBase,
+  AvoSearchOrderDirection,
+} from '@viaa/avo2-types';
 import { type FilterState } from '../search/search.types';
 import { type Lookup_Enum_Colors_Enum } from '../shared/generated/graphql-db-types';
 import { type ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list';

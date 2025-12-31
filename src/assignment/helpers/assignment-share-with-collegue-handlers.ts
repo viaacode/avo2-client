@@ -1,5 +1,8 @@
 import { AvoUserCommonUser } from '@viaa/avo2-types';
-import { type ContributorInfo, ContributorInfoRight, } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import {
+  type ContributorInfo,
+  ContributorInfoRight,
+} from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { type ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils';
 import { tText } from '../../shared/helpers/translate-text';
 import { ToastService } from '../../shared/services/toast-service';

@@ -5,12 +5,12 @@
 import { CustomError } from '../custom-error';
 
 export function parseDuration(duration: string) {
-  const parts = duration.split(':')
+  const parts = duration.split(':');
   return (
     parseInt(parts[0], 10) * 3600 +
     parseInt(parts[1], 10) * 60 +
     parseInt(parts[2], 10)
-  )
+  );
 }
 
 /**
@@ -25,32 +25,32 @@ export function toSeconds(
   silent = false,
 ): number | null {
   if (!duration) {
-    return 0
+    return 0;
   }
   if (typeof duration === 'number') {
-    return duration
+    return duration;
   }
 
-  const durationParts = duration.split(':')
+  const durationParts = duration.split(':');
   try {
     if (durationParts.length !== 3) {
       throw new CustomError(
         `Kon het tijdsinterval niet analyseren: "${duration}". Verwacht formaat: uu:mm:ss`,
-      )
+      );
     }
     return (
       parseInt(durationParts[0], 10) * 3600 +
       parseInt(durationParts[1], 10) * 60 +
       parseFloat(durationParts[2])
-    )
+    );
   } catch (err) {
     if (silent) {
-      return null
+      return null;
     }
     throw new CustomError(
       `Kon het tijdsinterval niet analyseren: "${duration}". Verwacht formaat: uu:mm:ss`,
       err,
       { duration },
-    )
+    );
   }
 }

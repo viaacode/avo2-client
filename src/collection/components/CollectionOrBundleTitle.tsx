@@ -1,16 +1,16 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
-import { ContentInput, Flex, Icon, IconName } from '@viaa/avo2-components'
-import { type FC, useMemo, useState } from 'react'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import { ContentInput, Flex, Icon, IconName } from '@viaa/avo2-components';
+import { type FC, useMemo, useState } from 'react';
 
 import { tText } from '../../shared/helpers/translate-text';
 
 type CollectionOrBundleTitleProps = {
-  initialTitle: string | undefined
-  title: string | undefined
-  onChange: (title: string) => void
-  maxLength?: number
-  onFocus?: () => void
-}
+  initialTitle: string | undefined;
+  title: string | undefined;
+  onChange: (title: string) => void;
+  maxLength?: number;
+  onFocus?: () => void;
+};
 
 export const CollectionOrBundleTitle: FC<CollectionOrBundleTitleProps> = ({
   initialTitle,
@@ -19,16 +19,16 @@ export const CollectionOrBundleTitle: FC<CollectionOrBundleTitleProps> = ({
   maxLength,
   onFocus,
 }) => {
-  const [isActive, setIsActive] = useState<boolean>(false)
+  const [isActive, setIsActive] = useState<boolean>(false);
 
   const handleTitleChange = (title: string) => {
     // AVO-2827: add max title length
     if (maxLength && title.length > maxLength) {
-      return
+      return;
     } else {
-      onChange(title)
+      onChange(title);
     }
-  }
+  };
 
   return useMemo(
     () => (
@@ -56,5 +56,5 @@ export const CollectionOrBundleTitle: FC<CollectionOrBundleTitleProps> = ({
       </Flex>
     ),
     [title, onChange, isActive],
-  )
-}
+  );
+};

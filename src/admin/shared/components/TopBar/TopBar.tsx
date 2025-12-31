@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Button,
   Container,
@@ -11,18 +11,18 @@ import {
   ToolbarItem,
   ToolbarLeft,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { type FC, type ReactNode } from 'react'
+} from '@viaa/avo2-components';
+import { type FC, type ReactNode } from 'react';
 
-import './TopBar.scss'
+import './TopBar.scss';
 import { tText } from '../../../../shared/helpers/translate-text';
 
 interface TopbarProps {
-  onClickBackButton?: () => void
-  title?: string
-  center?: ReactNode
-  right?: ReactNode
-  size?: 'small' | 'medium' | 'large' | 'full-width'
+  onClickBackButton?: () => void;
+  title?: string;
+  center?: ReactNode;
+  right?: ReactNode;
+  size?: 'small' | 'medium' | 'large' | 'full-width';
 }
 
 export const TopBarComponent: FC<TopbarProps> = ({
@@ -66,7 +66,7 @@ export const TopBarComponent: FC<TopbarProps> = ({
         </Toolbar>
       </Container>
     </Navbar>
-  )
-}
+  );
+};
 
-export const TopBar = TopBarComponent as unknown as FC<TopbarProps>
+export const TopBar = TopBarComponent as unknown as FC<TopbarProps>;

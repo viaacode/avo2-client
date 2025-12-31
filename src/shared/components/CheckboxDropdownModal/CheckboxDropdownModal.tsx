@@ -21,45 +21,45 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { clsx } from 'clsx'
-import { clone, compact, take } from 'es-toolkit'
-import { type FC, type MouseEvent, useState } from 'react'
+} from '@viaa/avo2-components';
+import { clsx } from 'clsx';
+import { clone, compact, take } from 'es-toolkit';
+import { type FC, type MouseEvent, useState } from 'react';
 
 import { isMobileWidth } from '../../helpers/media-query';
 
-import './CheckboxDropdownModal.scss'
+import './CheckboxDropdownModal.scss';
 import { tText } from '../../helpers/translate-text';
 
 interface CheckedState {
-  [checkboxId: string]: boolean
+  [checkboxId: string]: boolean;
 }
 
 export interface Tag {
-  label: string
-  id: string
+  label: string;
+  id: string;
 }
 
 export interface CheckboxOption {
-  label: string
+  label: string;
   // Provide option count separately from the label
   // because the selected filters in the taglist do not contain the optionCount
-  optionCount?: number
-  id: string
-  checked: boolean
+  optionCount?: number;
+  id: string;
+  checked: boolean;
 }
 
 export interface CheckboxDropdownModalProps {
-  label: string
-  id: string
-  options: CheckboxOption[]
-  showMaxOptions?: number
-  disabled?: boolean
+  label: string;
+  id: string;
+  options: CheckboxOption[];
+  showMaxOptions?: number;
+  disabled?: boolean;
   // Show selected values when dropdown or modal are closed
-  showSelectedValuesOnCollapsed?: boolean
-  showSearch?: boolean
-  onChange: (checkedOptions: string[], id: string) => void
-  onSearch?: (aggId: string) => void
+  showSelectedValuesOnCollapsed?: boolean;
+  showSearch?: boolean;
+  onChange: (checkedOptions: string[], id: string) => void;
+  onSearch?: (aggId: string) => void;
 }
 
 export const CheckboxDropdownModal: FC<CheckboxDropdownModalProps> = ({
@@ -79,12 +79,12 @@ export const CheckboxDropdownModal: FC<CheckboxDropdownModalProps> = ({
       option.id,
       checked,
     ]),
-  )
+  );
 
   // State
-  const [checkedStates, setCheckedStates] = useState(optionsFromPairs)
-  const [isOpen, setIsOpen] = useState(false)
-  const [searchKeyword, setSearchKeyword] = useState<string>('')
+  const [checkedStates, setCheckedStates] = useState(optionsFromPairs);
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState<string>('');
 
   // Methods
   const getSelectedTags = (): Tag[] =>
@@ -92,28 +92,28 @@ export const CheckboxDropdownModal: FC<CheckboxDropdownModalProps> = ({
       options.map(({ checked, ...option }: CheckboxOption) => {
         // Only change when user clicks submit.
         if (!checked) {
-          return null
+          return null;
         }
 
-        return { label: option.label, id: option.id }
+        return { label: option.label, id: option.id };
       }),
-    )
+    );
 
   const getSelectedFilterIds = (currentCheckedStates: CheckedState) =>
     compact(
       Object.keys(currentCheckedStates).map((key) =>
         currentCheckedStates[key] ? key : null,
       ),
-    )
+    );
 
-  const resetInternalCheckboxStates = () => setCheckedStates(optionsFromPairs)
+  const resetInternalCheckboxStates = () => setCheckedStates(optionsFromPairs);
 
   // Listeners
   const applyFilter = async (): Promise<void> => {
-    onChange(getSelectedFilterIds(checkedStates), id)
-    onSearch?.(id)
-    await closeDropdownOrModal()
-  }
+    onChange(getSelectedFilterIds(checkedStates), id);
+    onSearch?.(id);
+    await closeDropdownOrModal();
+  };
 
   const handleCheckboxToggled = async (
     newCheckedState: boolean,
@@ -122,26 +122,26 @@ export const CheckboxDropdownModal: FC<CheckboxDropdownModalProps> = ({
     setCheckedStates({
       ...checkedStates,
       [toggledCheckboxId]: newCheckedState,
-    })
-  }
+    });
+  };
 
   const openDropdownOrModal = async () => {
-    await resetInternalCheckboxStates()
-    setIsOpen(true)
-  }
+    await resetInternalCheckboxStates();
+    setIsOpen(true);
+  };
 
   const closeDropdownOrModal = () => {
-    setIsOpen(false)
-    setSearchKeyword('')
-  }
+    setIsOpen(false);
+    setSearchKeyword('');
+  };
 
   const removeFilter = (tagId: string | number, evt: MouseEvent) => {
-    evt.stopPropagation()
-    const clonedCheckedStates = clone(checkedStates)
-    clonedCheckedStates[tagId] = false
-    setCheckedStates(clonedCheckedStates)
-    onChange(getSelectedFilterIds(clonedCheckedStates), id)
-  }
+    evt.stopPropagation();
+    const clonedCheckedStates = clone(checkedStates);
+    clonedCheckedStates[tagId] = false;
+    setCheckedStates(clonedCheckedStates);
+    onChange(getSelectedFilterIds(clonedCheckedStates), id);
+  };
 
   const renderCheckbox = ({
     id: optionId,
@@ -155,13 +155,13 @@ export const CheckboxDropdownModal: FC<CheckboxDropdownModalProps> = ({
       checked={checkedStates[optionId]}
       onChange={(checked: boolean) => handleCheckboxToggled(checked, optionId)}
     />
-  )
+  );
 
   const renderCheckboxGroup = (checkboxOptions: CheckboxOption[]) => (
     <FormGroup>
       <CheckboxGroup>{checkboxOptions.map(renderCheckbox)}</CheckboxGroup>
     </FormGroup>
-  )
+  );
 
   const renderDropdownControl = () => {
     return (
@@ -222,8 +222,8 @@ export const CheckboxDropdownModal: FC<CheckboxDropdownModalProps> = ({
           </Spacer>
         </DropdownContent>
       </Dropdown>
-    )
-  }
+    );
+  };
 
   const renderModalControl = () => {
     const filteredOptions = take(
@@ -234,11 +234,11 @@ export const CheckboxDropdownModal: FC<CheckboxDropdownModalProps> = ({
           .includes(searchKeyword.replace(/ /g, '').toLowerCase()),
       ),
       showMaxOptions || Number.POSITIVE_INFINITY, // Limit number of items so the modal doesn't scroll on desktop
-    )
-    const oneThird = Math.ceil(filteredOptions.length / 3)
-    const firstColumnOptions = filteredOptions.slice(0, oneThird)
-    const secondColumnOptions = filteredOptions.slice(oneThird, oneThird * 2)
-    const thirdColumnOptions = filteredOptions.slice(oneThird * 2)
+    );
+    const oneThird = Math.ceil(filteredOptions.length / 3);
+    const firstColumnOptions = filteredOptions.slice(0, oneThird);
+    const secondColumnOptions = filteredOptions.slice(oneThird, oneThird * 2);
+    const thirdColumnOptions = filteredOptions.slice(oneThird * 2);
 
     return (
       <>
@@ -271,7 +271,7 @@ export const CheckboxDropdownModal: FC<CheckboxDropdownModalProps> = ({
                   icon={IconName.search}
                   value={searchKeyword}
                   onChange={(value) => {
-                    setSearchKeyword(value)
+                    setSearchKeyword(value);
                   }}
                 />
                 {!!options.filter(
@@ -341,19 +341,19 @@ export const CheckboxDropdownModal: FC<CheckboxDropdownModalProps> = ({
           </ModalFooterRight>
         </Modal>
       </>
-    )
-  }
+    );
+  };
 
   if (disabled) {
     return (
       <div className={clsx({ 'u-opacity-50 u-disable-click': disabled })}>
         {options.length <= 7 ? renderDropdownControl() : renderModalControl()}
       </div>
-    )
+    );
   }
 
-  return options.length <= 7 ? renderDropdownControl() : renderModalControl()
-}
+  return options.length <= 7 ? renderDropdownControl() : renderModalControl();
+};
 
 export const renderDropdownButton = (
   label: string,
@@ -386,5 +386,5 @@ export const renderDropdownButton = (
         />
       </div>
     </Button>
-  )
-}
+  );
+};

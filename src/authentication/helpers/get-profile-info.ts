@@ -1,4 +1,8 @@
-import { AvoLomLomSchemeType, AvoUserCommonUser, AvoUserProfile, } from '@viaa/avo2-types';
+import {
+  AvoLomLomSchemeType,
+  AvoUserCommonUser,
+  AvoUserProfile,
+} from '@viaa/avo2-types';
 
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { CustomError } from '../../shared/helpers/custom-error';

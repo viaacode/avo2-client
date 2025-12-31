@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from '@playwright/test';
 
 import { goToAdminPage } from '../../helpers/go-to-admin';
 
@@ -11,34 +11,34 @@ import { goToAdminPage } from '../../helpers/go-to-admin';
  */
 
 test('T05: Beheer - Navigeer naar bewerkpagina', async ({ page }) => {
-  await goToAdminPage(page)
+  await goToAdminPage(page);
 
   // Click on users tab
-  await page.getByRole('link', { name: 'Gebruikers' }).click()
+  await page.getByRole('link', { name: 'Gebruikers' }).click();
   await expect(
     page.getByRole('heading', { name: 'Gebruikers', exact: true }),
-  ).toBeVisible()
+  ).toBeVisible();
 
-  await page.waitForTimeout(1000)
+  await page.waitForTimeout(1000);
 
   // Search user
   await page
     .locator(
       'input[placeholder="Zoek op naam, e-mail, organisatie, groep, stamboeknummer"]',
     )
-    .fill('admin')
-  await page.waitForTimeout(1000)
-  await page.getByRole('button', { name: 'Zoeken' }).click()
+    .fill('admin');
+  await page.waitForTimeout(1000);
+  await page.getByRole('button', { name: 'Zoeken' }).click();
 
-  await page.waitForTimeout(1000)
+  await page.waitForTimeout(1000);
 
   // Click on a user
-  await page.getByRole('link', { name: 'Meemoo admin Test' }).click()
+  await page.getByRole('link', { name: 'Meemoo admin Test' }).click();
 
   // Check we are on admin user detail page
   await expect(
     page.getByRole('heading', { name: 'Gebruiker - details', exact: true }),
-  ).toBeVisible()
+  ).toBeVisible();
 
-  await page.waitForTimeout(3000)
-})
+  await page.waitForTimeout(3000);
+});

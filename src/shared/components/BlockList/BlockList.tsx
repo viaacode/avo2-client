@@ -3,12 +3,25 @@ import { type FC } from 'react';
 import { getBlockColor } from '../../helpers/get-block-color';
 
 import { BlockIconWrapper } from './BlockIconWrapper/BlockIconWrapper';
-import { AssignmentBlockTypeSearch, type AssignmentBlockTypeSearchProps, } from './blocks/AssignmentBlockTypeSearch';
-import { CollectionFragmentTypeItem, type CollectionFragmentTypeItemProps, } from './blocks/CollectionFragmentTypeItem';
-import { CollectionFragmentTypeText, type CollectionFragmentTypeTextProps, } from './blocks/CollectionFragmentTypeText';
+import {
+  AssignmentBlockTypeSearch,
+  type AssignmentBlockTypeSearchProps,
+} from './blocks/AssignmentBlockTypeSearch';
+import {
+  CollectionFragmentTypeItem,
+  type CollectionFragmentTypeItemProps,
+} from './blocks/CollectionFragmentTypeItem';
+import {
+  CollectionFragmentTypeText,
+  type CollectionFragmentTypeTextProps,
+} from './blocks/CollectionFragmentTypeText';
 
 import './BlockList.scss';
-import { AvoAssignmentBlock, AvoCoreBlockItemBase, AvoCoreBlockItemType, } from '@viaa/avo2-types';
+import {
+  AvoAssignmentBlock,
+  AvoCoreBlockItemBase,
+  AvoCoreBlockItemType,
+} from '@viaa/avo2-types';
 
 export interface BlockListProps {
   blocks: AvoCoreBlockItemBase[];

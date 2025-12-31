@@ -1,4 +1,4 @@
-import { AvoAssignmentLabel, AvoAssignmentLabelType } from "@viaa/avo2-types";
+import { AvoAssignmentLabel, AvoAssignmentLabelType } from '@viaa/avo2-types';
 
 const addTypeToLabel = (
   item: { assignment_label: AvoAssignmentLabel },

@@ -1,5 +1,14 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { Button, Checkbox, CheckboxGroup, Container, Form, FormGroup, Spacer, Spinner, } from '@viaa/avo2-components';
+import {
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  Container,
+  Form,
+  FormGroup,
+  Spacer,
+  Spinner,
+} from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
 import { type FC, useEffect, useState } from 'react';
 
@@ -7,10 +16,16 @@ import { commonUserAtom } from '../../../authentication/authentication.store';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { CustomError } from '../../../shared/helpers/custom-error';
-import { StringParam, useQueryParams, } from '../../../shared/helpers/routing/use-query-params-ssr';
+import {
+  StringParam,
+  useQueryParams,
+} from '../../../shared/helpers/routing/use-query-params-ssr';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
-import { CampaignMonitorService, type NewsletterPreferences, } from '../../../shared/services/campaign-monitor-service';
+import {
+  CampaignMonitorService,
+  type NewsletterPreferences,
+} from '../../../shared/services/campaign-monitor-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { type NewsletterList } from '../../../shared/types';
 import { GET_NEWSLETTER_LABELS } from '../../settings.const';

@@ -13,7 +13,11 @@ import {
   Spacer,
   Tabs,
 } from '@viaa/avo2-components';
-import { AvoItemItem, AvoUserCommonUser, PermissionName, } from '@viaa/avo2-types';
+import {
+  AvoItemItem,
+  AvoUserCommonUser,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { isNil } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
@@ -22,7 +26,10 @@ import { createRef, type FC, type ReactNode, useEffect, useState } from 'react';
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { EmbedContent } from '../../../embed-code/components/EmbedContent';
-import { bookWidgetsLogo, smartSchoolLogo, } from '../../../embed-code/embed-code.const';
+import {
+  bookWidgetsLogo,
+  smartSchoolLogo,
+} from '../../../embed-code/embed-code.const';
 import {
   type EmbedCode,
   EmbedCodeContentType,

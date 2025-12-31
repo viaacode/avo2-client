@@ -1,4 +1,4 @@
-import { isServerSideRendering } from "./routing/is-server-side-rendering.ts";
+import { isServerSideRendering } from './routing/is-server-side-rendering.ts';
 
 /**
  * @deprecated Since this doesn't switch dynamically when the window width changes. Better to use css styles or the renderMobileDesktop({ mobile: ReactNode, desktop: ReactNode }) helper

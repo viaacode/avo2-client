@@ -1,6 +1,6 @@
-export type Translation = [string, string]
+export type Translation = [string, string];
 
 export interface TranslationsState {
-  name: string
-  value: any
+  name: string;
+  value: any;
 }

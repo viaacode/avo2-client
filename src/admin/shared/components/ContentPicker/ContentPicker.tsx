@@ -1,5 +1,16 @@
-import { Button, Flex, FlexItem, FormGroup, IconName, LinkTarget, TextInput, } from '@viaa/avo2-components';
-import { AvoCoreContentPickerType, AvoFileUploadAssetType } from '@viaa/avo2-types';
+import {
+  Button,
+  Flex,
+  FlexItem,
+  FormGroup,
+  IconName,
+  LinkTarget,
+  TextInput,
+} from '@viaa/avo2-components';
+import {
+  AvoCoreContentPickerType,
+  AvoFileUploadAssetType,
+} from '@viaa/avo2-types';
 import { isNull } from 'es-toolkit';
 import { type FC, useCallback, useEffect, useState } from 'react';
 import ReactSelect from 'react-select';
@@ -10,10 +21,21 @@ import { CustomError } from '../../../../shared/helpers/custom-error';
 import { tHtml } from '../../../../shared/helpers/translate-html';
 import { tText } from '../../../../shared/helpers/translate-text';
 import { ToastService } from '../../../../shared/services/toast-service';
-import { type PickerItem, type PickerTypeOption, } from '../../types/content-picker';
+import {
+  type PickerItem,
+  type PickerTypeOption,
+} from '../../types/content-picker';
 
-import { DEFAULT_ALLOWED_TYPES, GET_CONTENT_TYPES, REACT_SELECT_DEFAULT_OPTIONS, } from './ContentPicker.const';
-import { filterTypes, setInitialInput, setInitialItem, } from './ContentPicker.helpers';
+import {
+  DEFAULT_ALLOWED_TYPES,
+  GET_CONTENT_TYPES,
+  REACT_SELECT_DEFAULT_OPTIONS,
+} from './ContentPicker.const';
+import {
+  filterTypes,
+  setInitialInput,
+  setInitialItem,
+} from './ContentPicker.helpers';
 import './ContentPicker.scss';
 
 interface ContentPickerProps {

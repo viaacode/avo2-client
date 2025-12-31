@@ -1,15 +1,15 @@
-import { RadioButtonGroup, type RadioOption } from '@viaa/avo2-components'
-import { isNil, noop } from 'es-toolkit'
-import { type FC } from 'react'
+import { RadioButtonGroup, type RadioOption } from '@viaa/avo2-components';
+import { isNil, noop } from 'es-toolkit';
+import { type FC } from 'react';
 
 import { AssignmentHelper } from '../../../assignment/assignment.helper';
 import { AssignmentLayout } from '../../../assignment/assignment.types';
 
 interface LayoutOptionsProps {
-  item: { content_layout?: AssignmentLayout }
-  onChange: (value: string) => void
-  disabled?: boolean
-  options?: RadioOption[]
+  item: { content_layout?: AssignmentLayout };
+  onChange: (value: string) => void;
+  disabled?: boolean;
+  options?: RadioOption[];
 }
 
 export const LayoutOptions: FC<LayoutOptionsProps> = ({
@@ -18,14 +18,14 @@ export const LayoutOptions: FC<LayoutOptionsProps> = ({
   disabled,
   options,
 }) => {
-  const items = options || AssignmentHelper.getContentLayoutOptions()
+  const items = options || AssignmentHelper.getContentLayoutOptions();
 
   const mapOptions = (option: RadioOption) => {
     return {
       ...option,
       disabled,
-    }
-  }
+    };
+  };
 
   return (
     <RadioButtonGroup
@@ -36,5 +36,5 @@ export const LayoutOptions: FC<LayoutOptionsProps> = ({
       ).toString()}
       onChange={onChange}
     />
-  )
-}
+  );
+};

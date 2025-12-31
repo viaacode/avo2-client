@@ -1,5 +1,20 @@
-import { Box, Button, ButtonToolbar, Container, Form, FormGroup, TextArea, TextInput, } from '@viaa/avo2-components';
-import { AvoFileUploadAssetType, AvoLomLom, AvoLomLomField, AvoUserUpdateProfileValues, PermissionName, } from '@viaa/avo2-types';
+import {
+  Box,
+  Button,
+  ButtonToolbar,
+  Container,
+  Form,
+  FormGroup,
+  TextArea,
+  TextInput,
+} from '@viaa/avo2-components';
+import {
+  AvoFileUploadAssetType,
+  AvoLomLom,
+  AvoLomLomField,
+  AvoUserUpdateProfileValues,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import { type FC, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -18,7 +33,10 @@ import { navigate } from '../../../shared/helpers/link';
 import { tText } from '../../../shared/helpers/translate-text';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import {
+  AdminLayoutBody,
+  AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { useGetProfileById } from '../hooks/use-get-profile-by-id';
 import { USER_PATH } from '../user.routes.ts';
 

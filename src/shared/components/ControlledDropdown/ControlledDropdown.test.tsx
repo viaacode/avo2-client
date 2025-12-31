@@ -18,6 +18,6 @@ describe('<ControlledDropdown />', () => {
 
   it('should render', () => {
     // shallow(controlledDropdown);
-    expect(true)
-  })
-})
+    expect(true);
+  });
+});

@@ -5,10 +5,17 @@ import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers/build-link';
-import { type BlockItemComponent, ContentTypeNumber, } from '../collection.types';
+import {
+  type BlockItemComponent,
+  ContentTypeNumber,
+} from '../collection.types';
 
 import './CollectionFragmentTitle.scss';
-import { AvoAssignmentBlock, AvoCoreBlockItemType, AvoItemItem, } from '@viaa/avo2-types';
+import {
+  AvoAssignmentBlock,
+  AvoCoreBlockItemType,
+  AvoItemItem,
+} from '@viaa/avo2-types';
 
 export interface CollectionFragmentTitleProps extends BlockItemComponent {
   canClickHeading?: boolean;

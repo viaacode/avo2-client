@@ -1,8 +1,25 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { Column, convertToHtml, ExpandableContainer, Grid, Spacer, Toolbar, ToolbarLeft, ToolbarRight, } from '@viaa/avo2-components';
+import {
+  Column,
+  convertToHtml,
+  ExpandableContainer,
+  Grid,
+  Spacer,
+  Toolbar,
+  ToolbarLeft,
+  ToolbarRight,
+} from '@viaa/avo2-components';
 
 import { debounce } from 'es-toolkit';
-import { createRef, type FC, type ReactNode, type RefObject, useEffect, useRef, useState, } from 'react';
+import {
+  createRef,
+  type FC,
+  type ReactNode,
+  type RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { Link } from 'react-router-dom';
 

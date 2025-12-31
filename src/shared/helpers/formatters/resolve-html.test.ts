@@ -14,9 +14,9 @@ Some text 'with quotes?’.&nbsp;
 </strong>
 <strong>
 <em>
-test some text with Capitals`)
+test some text with Capitals`);
     expect(resolvedHtml).toEqual(
       "Some text 'with quotes?’. test some text with Capitals",
-    )
-  })
-})
+    );
+  });
+});

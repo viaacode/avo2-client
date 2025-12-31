@@ -4,18 +4,18 @@ import {
   IconName,
   Toolbar,
   ToolbarItem,
-} from '@viaa/avo2-components'
-import { type FC } from 'react'
+} from '@viaa/avo2-components';
+import { type FC } from 'react';
 
 import { tText } from '../../../shared/helpers/translate-text';
 import { NEW_FRAGMENT } from '../../collection.const';
 import { type CollectionAction } from '../CollectionOrBundleEdit.types';
 
 interface FragmentAddProps {
-  index: number
-  collectionId: string
-  numberOfFragments: number
-  changeCollectionState: (action: CollectionAction) => void
+  index: number;
+  collectionId: string;
+  numberOfFragments: number;
+  changeCollectionState: (action: CollectionAction) => void;
 }
 
 export const FragmentAdd: FC<FragmentAddProps> = ({
@@ -28,7 +28,7 @@ export const FragmentAdd: FC<FragmentAddProps> = ({
     ...NEW_FRAGMENT.text,
     id: -numberOfFragments,
     collection_uuid: collectionId,
-  }
+  };
 
   // Listeners
   const handleAddFragmentClick = () => {
@@ -36,15 +36,15 @@ export const FragmentAdd: FC<FragmentAddProps> = ({
       type: 'INSERT_FRAGMENT',
       index: index + 1,
       fragment: TEXT_BLOCK_FRAGMENT,
-    })
-  }
+    });
+  };
 
   // Render methods
   const renderDivider = () => (
     <ToolbarItem grow>
       <div className="c-hr" />
     </ToolbarItem>
-  )
+  );
 
   return (
     <Container>
@@ -66,5 +66,5 @@ export const FragmentAdd: FC<FragmentAddProps> = ({
         {renderDivider()}
       </Toolbar>
     </Container>
-  )
-}
+  );
+};

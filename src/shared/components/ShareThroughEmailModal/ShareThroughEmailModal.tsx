@@ -1,16 +1,16 @@
-import { Modal, ModalBody } from '@viaa/avo2-components'
-import { type FC, type ReactNode } from 'react'
+import { Modal, ModalBody } from '@viaa/avo2-components';
+import { type FC, type ReactNode } from 'react';
 
 import { type EmailTemplateType } from '../../services/campaign-monitor-service';
 import { ShareThroughEmailContent } from '../ShareThroughEmailContent/ShareThroughEmailContent';
 
 interface AddToCollectionModalProps {
-  modalTitle: string | ReactNode
-  type: EmailTemplateType
-  emailLinkHref: string
-  emailLinkTitle: string
-  isOpen: boolean
-  onClose: () => void
+  modalTitle: string | ReactNode;
+  type: EmailTemplateType;
+  emailLinkHref: string;
+  emailLinkTitle: string;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export const ShareThroughEmailModal: FC<AddToCollectionModalProps> = ({
@@ -39,5 +39,5 @@ export const ShareThroughEmailModal: FC<AddToCollectionModalProps> = ({
         />
       </ModalBody>
     </Modal>
-  )
-}
+  );
+};

@@ -1,9 +1,9 @@
-import { compact, isNil, without } from 'es-toolkit'
-import { set } from 'es-toolkit/compat'
+import { compact, isNil, without } from 'es-toolkit';
+import { set } from 'es-toolkit/compat';
 
 import { type EducationLevelType } from '../../../shared/helpers/lom';
 
-export const NULL_FILTER = 'null'
+export const NULL_FILTER = 'null';
 
 export function getQueryFilter(
   query: string | undefined,
@@ -14,9 +14,9 @@ export function getQueryFilter(
       {
         _or: getQueryFilterObj(`%${query}%`, query),
       },
-    ]
+    ];
   }
-  return []
+  return [];
 }
 
 export function getDateRangeFilters(
@@ -34,9 +34,9 @@ export function getDateRangeFilters(
           ...(value && value.gte ? { _gte: value.gte } : null),
           ...(value && value.lte ? { _lte: value.lte } : null),
         },
-      }
+      };
     },
-  )
+  );
 }
 
 export function getBooleanFilters(
@@ -49,25 +49,25 @@ export function getBooleanFilters(
     props,
     nestedProps || props,
     (prop: string, value: any) => {
-      const orFilters = []
+      const orFilters = [];
       if (!value || !value.length) {
-        return {}
+        return {};
       }
       if (value.includes(NULL_FILTER)) {
         orFilters.push({
           [prop]: { _is_null: true },
-        })
+        });
       }
       orFilters.push(
         ...without(value, NULL_FILTER).map((val) => ({
           [prop]: { _eq: val === 'true' },
         })),
-      )
+      );
       return {
         _or: orFilters,
-      }
+      };
     },
-  )
+  );
 }
 
 /**
@@ -93,11 +93,11 @@ export function getMultiOptionFilters(
             { [prop]: { _is_null: true } }, // Empty value
             { [prop]: { _in: without(value, NULL_FILTER) } }, // selected values
           ],
-        }
+        };
       }
-      return { [prop]: { _in: value } }
+      return { [prop]: { _in: value } };
     },
-  )
+  );
 }
 
 /**
@@ -117,11 +117,11 @@ export function getMultiOptionsFilters(
 ): any[] {
   return compact(
     props.map((prop: string, index: number) => {
-      const filterValues = (filters as any)[prop]
-      const nestedPathParts: string[] = nestedReferenceTables[index].split('.')
-      const referenceTable: string | null = nestedPathParts.pop() || null
-      const nestedPath: string = nestedPathParts.join('.')
-      const labelPath: string | null = labelPaths ? labelPaths[index] : null
+      const filterValues = (filters as any)[prop];
+      const nestedPathParts: string[] = nestedReferenceTables[index].split('.');
+      const referenceTable: string | null = nestedPathParts.pop() || null;
+      const nestedPath: string = nestedPathParts.join('.');
+      const labelPath: string | null = labelPaths ? labelPaths[index] : null;
 
       if (
         isNil(filterValues) ||
@@ -129,11 +129,11 @@ export function getMultiOptionsFilters(
         !filterValues.length ||
         !referenceTable
       ) {
-        return null
+        return null;
       }
 
       // Generate filter object
-      let filterObject: any
+      let filterObject: any;
 
       if (filterValues.includes(NULL_FILTER) && filterValues.length === 1) {
         // only empty filter
@@ -141,7 +141,7 @@ export function getMultiOptionsFilters(
           _not: {
             [referenceTable]: {}, // empty value => no reference table entries exist
           },
-        }
+        };
       } else if (filterValues.includes(NULL_FILTER)) {
         // empty filter with other values
         filterObject = {
@@ -160,58 +160,58 @@ export function getMultiOptionsFilters(
                     [referenceTable]: {
                       [labelPath]: { _in: value },
                     },
-                  }
+                  };
                 }
                 return {
                   [referenceTable]: { _in: value },
-                }
+                };
               }
               if (labelPath) {
                 return {
                   [referenceTable]: {
                     [labelPath]: { _has_keys_any: value },
                   },
-                }
+                };
               }
               return {
                 [referenceTable]: { _has_keys_any: value },
-              }
+              };
             }),
           ],
-        }
+        };
       } else {
         // only selected values without an empty filter
-        filterObject = {}
+        filterObject = {};
 
         if (keyIn) {
           if (labelPath) {
             filterObject[referenceTable] = {
               [labelPath]: { _in: filterValues },
-            }
+            };
           } else {
-            filterObject[referenceTable] = { _in: filterValues }
+            filterObject[referenceTable] = { _in: filterValues };
           }
         } else {
           if (labelPath) {
             filterObject[referenceTable] = {
               [labelPath]: { _has_keys_any: filterValues },
-            }
+            };
           }
 
-          filterObject[referenceTable] = { _has_keys_any: filterValues }
+          filterObject[referenceTable] = { _has_keys_any: filterValues };
         }
       }
 
       // Set filter query on main query object
       if (nestedPath) {
-        const response = {}
-        set(response, nestedPath, filterObject)
-        return response
+        const response = {};
+        set(response, nestedPath, filterObject);
+        return response;
       }
 
-      return filterObject
+      return filterObject;
     }),
-  )
+  );
 }
 
 /**
@@ -229,26 +229,26 @@ function setNestedValues(
 ): any[] {
   return compact(
     props.map((prop: string, index: number): any => {
-      const value = (filters as any)[prop]
+      const value = (filters as any)[prop];
       if (!isNil(value) && (!Array.isArray(value) || value.length)) {
-        const nestedProp = nestedProps ? nestedProps[index] : prop
+        const nestedProp = nestedProps ? nestedProps[index] : prop;
 
-        const lastProp = nestedProp.split('.').pop() as string
+        const lastProp = nestedProp.split('.').pop() as string;
         const path = nestedProp.substring(
           0,
           nestedProp.length - lastProp.length - 1,
-        )
+        );
 
         if (path) {
-          const response = {}
-          set(response, path, getValue(lastProp, value))
-          return response
+          const response = {};
+          set(response, path, getValue(lastProp, value));
+          return response;
         }
-        return getValue(lastProp, value)
+        return getValue(lastProp, value);
       }
-      return null
+      return null;
     }),
-  )
+  );
 }
 
 /**
@@ -283,7 +283,7 @@ export function generateLomFilter(
           },
         },
       ],
-    }
+    };
   } else {
     return {
       loms: {
@@ -291,7 +291,7 @@ export function generateLomFilter(
           _in: without(values, NULL_FILTER),
         },
       },
-    }
+    };
   }
 }
 
@@ -325,7 +325,7 @@ export function generateEducationLomFilter(
           },
         },
       ],
-    }
+    };
   } else {
     return {
       loms: {
@@ -333,7 +333,7 @@ export function generateEducationLomFilter(
           _in: without(values, NULL_FILTER),
         },
       },
-    }
+    };
   }
 }
 
@@ -350,7 +350,7 @@ export function generateEducationLevelFilter(
         _in: without(educationLevels, NULL_FILTER),
       },
     },
-  }
+  };
 
   if (educationLevels.includes(NULL_FILTER)) {
     return {
@@ -366,8 +366,8 @@ export function generateEducationLevelFilter(
           },
         },
       ],
-    }
+    };
   } else {
-    return match
+    return match;
   }
 }

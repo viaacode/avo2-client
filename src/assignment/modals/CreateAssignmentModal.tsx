@@ -10,21 +10,21 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { noop } from 'es-toolkit'
-import { type FC, type ReactNode, useState } from 'react'
+} from '@viaa/avo2-components';
+import { noop } from 'es-toolkit';
+import { type FC, type ReactNode, useState } from 'react';
 
 import { tHtml } from '../../shared/helpers/translate-html';
 
 interface CreateAssignmentModalProps {
-  isOpen: boolean
-  onClose?: () => void
-  createAssignmentCallback: (withDescription: boolean) => void
+  isOpen: boolean;
+  onClose?: () => void;
+  createAssignmentCallback: (withDescription: boolean) => void;
   translations: {
-    title: string | ReactNode
-    primaryButton: string
-    secondaryButton: string
-  }
+    title: string | ReactNode;
+    primaryButton: string;
+    secondaryButton: string;
+  };
 }
 
 export const CreateAssignmentModal: FC<CreateAssignmentModalProps> = ({
@@ -34,12 +34,12 @@ export const CreateAssignmentModal: FC<CreateAssignmentModalProps> = ({
   translations,
 }) => {
   const [createWithDescription, setCreateWithDescription] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
   const handleCreateAssignment = () => {
-    createAssignmentCallback(createWithDescription)
-    ;(onClose || noop)()
-  }
+    createAssignmentCallback(createWithDescription);
+    (onClose || noop)();
+  };
 
   const renderConfirmButtons = () => {
     return (
@@ -61,8 +61,8 @@ export const CreateAssignmentModal: FC<CreateAssignmentModalProps> = ({
           </ToolbarItem>
         </ToolbarRight>
       </Toolbar>
-    )
-  }
+    );
+  };
 
   const renderModalBody = () => {
     return (
@@ -81,8 +81,8 @@ export const CreateAssignmentModal: FC<CreateAssignmentModalProps> = ({
         </Flex>
         {renderConfirmButtons()}
       </>
-    )
-  }
+    );
+  };
 
   return (
     <Modal
@@ -95,5 +95,5 @@ export const CreateAssignmentModal: FC<CreateAssignmentModalProps> = ({
     >
       <ModalBody>{renderModalBody()}</ModalBody>
     </Modal>
-  )
-}
+  );
+};

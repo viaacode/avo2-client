@@ -1,37 +1,37 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client'
-import { stringifyUrl } from 'query-string'
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
+import { stringifyUrl } from 'query-string';
 
 import { CustomError } from '../helpers/custom-error';
 import { getEnv } from '../helpers/env';
 
 export interface KlascementPublishCollectionData {
-  collectionId: string
-  imageUrl: string
-  altText: string
-  sourceText: string
+  collectionId: string;
+  imageUrl: string;
+  altText: string;
+  sourceText: string;
 }
 
 export interface KlascementPublishCollectionResponse {
-  message: 'success'
-  createdCollectionId: number
+  message: 'success';
+  createdCollectionId: number;
 }
 
 export interface KlascementPublishAssignmentResponse {
-  message: 'success'
-  createdAssignmentId: number
+  message: 'success';
+  createdAssignmentId: number;
 }
 
 export interface KlascementCollectionPublishInfo {
-  id: string
-  alt_text: string
-  image_url: string
-  source_text: string
-  klascement_id: number | null
+  id: string;
+  alt_text: string;
+  image_url: string;
+  source_text: string;
+  klascement_id: number | null;
 }
 
 export interface KlascementAssignmentPublishInfo {
-  id: string
-  klascement_id: number | null
+  id: string;
+  klascement_id: number | null;
 }
 
 export class KlascementService {
@@ -42,8 +42,8 @@ export class KlascementService {
       const url = stringifyUrl({
         url: `${getEnv('PROXY_URL')}/klascement/collection`,
         query: { collectionId },
-      })
-      return await fetchWithLogoutJson(url)
+      });
+      return await fetchWithLogoutJson(url);
     } catch (err) {
       throw new CustomError(
         'Failed to get klascement publish information for collection',
@@ -51,30 +51,30 @@ export class KlascementService {
         {
           collectionId,
         },
-      )
+      );
     }
   }
 
   public static async publishCollection(
     data: KlascementPublishCollectionData,
   ): Promise<number> {
-    let url: string | undefined = undefined
+    let url: string | undefined = undefined;
 
     try {
-      url = `${getEnv('PROXY_URL')}/klascement/publish/collection`
+      url = `${getEnv('PROXY_URL')}/klascement/publish/collection`;
 
       const response =
         await fetchWithLogoutJson<KlascementPublishCollectionResponse>(url, {
           method: 'POST',
           body: JSON.stringify(data),
           forceLogout: false,
-        })
-      return response.createdCollectionId
+        });
+      return response.createdCollectionId;
     } catch (err) {
       throw new CustomError('Failed to publish collection to Klascement', err, {
         url,
         data,
-      })
+      });
     }
   }
 
@@ -85,8 +85,8 @@ export class KlascementService {
       const url = stringifyUrl({
         url: `${getEnv('PROXY_URL')}/klascement/assignment`,
         query: { assignmentId },
-      })
-      return await fetchWithLogoutJson(url)
+      });
+      return await fetchWithLogoutJson(url);
     } catch (err) {
       throw new CustomError(
         'Failed to get klascement publish information for assignment',
@@ -94,28 +94,28 @@ export class KlascementService {
         {
           assignmentId,
         },
-      )
+      );
     }
   }
 
   public static async publishAssignment(assignmentId: string): Promise<number> {
-    let url: string | undefined = undefined
+    let url: string | undefined = undefined;
 
     try {
-      url = `${getEnv('PROXY_URL')}/klascement/publish/assignment`
+      url = `${getEnv('PROXY_URL')}/klascement/publish/assignment`;
 
       const response =
         await fetchWithLogoutJson<KlascementPublishAssignmentResponse>(url, {
           method: 'POST',
           body: JSON.stringify({ assignmentId }),
           forceLogout: false,
-        })
-      return response.createdAssignmentId
+        });
+      return response.createdAssignmentId;
     } catch (err) {
       throw new CustomError('Failed to publish assignment to Klascement', err, {
         url,
         assignmentId,
-      })
+      });
     }
   }
 }

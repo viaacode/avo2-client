@@ -1,8 +1,24 @@
-import { ExportAllToCsvModal, type FilterableColumn, FilterTable, getFilters, } from '@meemoo/admin-core-ui/admin';
-import { AvoCollectionCollection, AvoSearchOrderDirection, PermissionName, } from '@viaa/avo2-types';
+import {
+  ExportAllToCsvModal,
+  type FilterableColumn,
+  FilterTable,
+  getFilters,
+} from '@meemoo/admin-core-ui/admin';
+import {
+  AvoCollectionCollection,
+  AvoSearchOrderDirection,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type FC, type ReactNode, useCallback, useEffect, useMemo, useState, } from 'react';
+import {
+  type FC,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
@@ -11,8 +27,8 @@ import { ErrorView } from '../../../error/views/ErrorView';
 
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import {
-    LoadingErrorLoadedComponent,
-    type LoadingInfo,
+  LoadingErrorLoadedComponent,
+  type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { CustomError } from '../../../shared/helpers/custom-error';
@@ -29,19 +45,22 @@ import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
-import { GET_COLLECTION_ACTUALISATION_COLUMNS, ITEMS_PER_PAGE, } from '../collections-or-bundles.const';
+import {
+  GET_COLLECTION_ACTUALISATION_COLUMNS,
+  ITEMS_PER_PAGE,
+} from '../collections-or-bundles.const';
 import { COLLECTIONS_OR_BUNDLES_PATH } from '../collections-or-bundles.routes.ts';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
-    CollectionBulkAction,
-    type CollectionOrBundleActualisationOverviewTableCols,
-    type CollectionOrBundleActualisationTableState,
-    type CollectionSortProps,
-    EditorialType,
+  CollectionBulkAction,
+  type CollectionOrBundleActualisationOverviewTableCols,
+  type CollectionOrBundleActualisationTableState,
+  type CollectionSortProps,
+  EditorialType,
 } from '../collections-or-bundles.types';
 import {
-    renderCollectionsOrBundleActualisationCellReact,
-    renderCollectionsOrBundleActualisationCellText,
+  renderCollectionsOrBundleActualisationCellReact,
+  renderCollectionsOrBundleActualisationCellText,
 } from '../helpers/render-collection-columns';
 
 export const CollectionOrBundleActualisationOverview: FC = () => {

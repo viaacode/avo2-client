@@ -1,8 +1,8 @@
-import { type FC } from 'react'
-import './OrderedList.scss'
+import { type FC } from 'react';
+import './OrderedList.scss';
 
 interface OrderedListProps {
-  listItems: string[]
+  listItems: string[];
 }
 
 export const OrderedList: FC<OrderedListProps> = ({ listItems }) => {
@@ -18,9 +18,9 @@ export const OrderedList: FC<OrderedListProps> = ({ listItems }) => {
               <div className="c-ordered-list__indicator">{index + 1}</div>
               {item}
             </li>
-          )
+          );
         })}
       </ol>
     </div>
-  )
-}
+  );
+};

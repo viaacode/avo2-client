@@ -1,7 +1,7 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query';
 
 import { type AssignmentMarcomEntry } from '../../collection/collection.types';
-import { UseMutationResult } from '../../shared/types/react-query.ts'
+import { UseMutationResult } from '../../shared/types/react-query.ts';
 import { AssignmentService } from '../assignment.service';
 
 export const useInsertAssignmentMarcomEntry = (): UseMutationResult<
@@ -12,5 +12,5 @@ export const useInsertAssignmentMarcomEntry = (): UseMutationResult<
   return useMutation({
     mutationFn: (marcomEntry: AssignmentMarcomEntry) =>
       AssignmentService.insertMarcomEntry(marcomEntry),
-  })
-}
+  });
+};

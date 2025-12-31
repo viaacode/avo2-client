@@ -4,16 +4,28 @@ import { clsx } from 'clsx';
 import { cloneDeep, omit, uniqBy } from 'es-toolkit';
 import { type FC, type ReactNode, useMemo } from 'react';
 
-import { CheckboxDropdownModal, type CheckboxOption, } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import {
+  CheckboxDropdownModal,
+  type CheckboxOption,
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { LANGUAGES } from '../../shared/constants';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { tText } from '../../shared/helpers/translate-text';
 import { SearchFilter } from '../search.const';
-import { type SearchFilterControlsProps, type SearchFilterMultiOptions, } from '../search.types';
+import {
+  type SearchFilterControlsProps,
+  type SearchFilterMultiOptions,
+} from '../search.types';
 
 import './SearchFilterControls.scss';
-import { AvoCoreContentType, AvoSearchDateRange, AvoSearchFilterProp, AvoSearchFilters, AvoSearchOptionProp, } from '@viaa/avo2-types';
+import {
+  AvoCoreContentType,
+  AvoSearchDateRange,
+  AvoSearchFilterProp,
+  AvoSearchFilters,
+  AvoSearchOptionProp,
+} from '@viaa/avo2-types';
 import { forEach } from 'es-toolkit/compat';
 
 const languageCodeToLabel = (code: string): string => {

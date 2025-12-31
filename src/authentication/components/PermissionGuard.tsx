@@ -1,5 +1,9 @@
 import { useSlot } from '@viaa/avo2-components';
-import { AvoAuthLoginResponseLoggedIn, AvoUserCommonUser, type PermissionName } from '@viaa/avo2-types';
+import {
+  AvoAuthLoginResponseLoggedIn,
+  AvoUserCommonUser,
+  type PermissionName,
+} from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { stringifyUrl } from 'query-string';
@@ -13,7 +17,10 @@ import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user
 import { loginAtom } from '../authentication.store';
 import { PermissionService } from '../helpers/permission-service';
 import { redirectToClientPage } from '../helpers/redirects/redirects';
-import { PermissionGuardFail, PermissionGuardPass, } from './PermissionGuard.slots';
+import {
+  PermissionGuardFail,
+  PermissionGuardPass,
+} from './PermissionGuard.slots';
 
 interface PermissionGuardProps {
   children: ReactNode;

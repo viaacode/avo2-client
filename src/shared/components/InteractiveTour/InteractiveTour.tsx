@@ -9,7 +9,10 @@ import { commonUserAtom } from '../../../authentication/authentication.store';
 import { TEAL_BRIGHT } from '../../constants';
 import { CustomError } from '../../helpers/custom-error';
 import { tText } from '../../helpers/translate-text';
-import { InteractiveTourService, type TourInfo, } from '../../services/interactive-tour.service';
+import {
+  InteractiveTourService,
+  type TourInfo,
+} from '../../services/interactive-tour.service';
 import { showNudgingModalAtom } from '../../store/ui.store';
 import { Html } from '../Html/Html';
 

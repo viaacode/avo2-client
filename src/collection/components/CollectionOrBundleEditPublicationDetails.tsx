@@ -1,6 +1,21 @@
 import { type RichEditorState } from '@meemoo/react-components';
-import { Button, Column, Container, Form, FormGroup, Grid, Image, Spacer, TextArea, } from '@viaa/avo2-components';
-import { AvoCollectionCollection, AvoFileUploadAssetType, AvoLomLom, AvoLomLomField, } from '@viaa/avo2-types';
+import {
+  Button,
+  Column,
+  Container,
+  Form,
+  FormGroup,
+  Grid,
+  Image,
+  Spacer,
+  TextArea,
+} from '@viaa/avo2-components';
+import {
+  AvoCollectionCollection,
+  AvoFileUploadAssetType,
+  AvoLomLom,
+  AvoLomLomField,
+} from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import { type FC, useState } from 'react';
 

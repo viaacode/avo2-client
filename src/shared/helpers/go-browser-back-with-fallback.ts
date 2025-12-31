@@ -1,4 +1,4 @@
-import { type NavigateFunction } from 'react-router'
+import { type NavigateFunction } from 'react-router';
 
 import { navigate } from './link';
 
@@ -12,8 +12,8 @@ export function goBrowserBackWithFallback(
   navigateFunc: NavigateFunction,
 ) {
   if (document.referrer.includes(window.location.origin)) {
-    navigateFunc(-1)
+    navigateFunc(-1);
   } else {
-    navigate(navigateFunc, fallbackPath)
+    navigate(navigateFunc, fallbackPath);
   }
 }

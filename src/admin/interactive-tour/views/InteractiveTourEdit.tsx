@@ -14,10 +14,22 @@ import {
   Spacer,
   TextInput,
 } from '@viaa/avo2-components';
-import { AvoCoreContentPickerType, AvoSearchOrderDirection, PermissionName, } from '@viaa/avo2-types';
+import {
+  AvoCoreContentPickerType,
+  AvoSearchOrderDirection,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { cloneDeep, compact, orderBy } from 'es-toolkit';
 import { isEmpty, map } from 'es-toolkit/compat';
-import { type FC, lazy, type Reducer, useCallback, useEffect, useReducer, useState, } from 'react';
+import {
+  type FC,
+  lazy,
+  type Reducer,
+  useCallback,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
@@ -42,11 +54,22 @@ import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import {
+  AdminLayoutBody,
+  AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { type PickerItem } from '../../shared/types/content-picker';
 import { InteractiveTourAdd } from '../components/InteractiveTourStepAdd';
-import { INTERACTIVE_TOUR_EDIT_INITIAL_STATE, type InteractiveTourAction, interactiveTourEditReducer, } from '../helpers/reducers';
-import { getInitialInteractiveTour, MAX_STEP_TEXT_LENGTH, MAX_STEP_TITLE_LENGTH, } from '../interactive-tour.const';
+import {
+  INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
+  type InteractiveTourAction,
+  interactiveTourEditReducer,
+} from '../helpers/reducers';
+import {
+  getInitialInteractiveTour,
+  MAX_STEP_TEXT_LENGTH,
+  MAX_STEP_TITLE_LENGTH,
+} from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
 import {
   type EditableInteractiveTour,

@@ -1,4 +1,7 @@
-import { AvoAuthLoginResponse, AvoAuthLoginResponseLoggedIn, } from '@viaa/avo2-types';
+import {
+  AvoAuthLoginResponse,
+  AvoAuthLoginResponseLoggedIn,
+} from '@viaa/avo2-types';
 import { atom } from 'jotai';
 import { selectAtom } from 'jotai/utils';
 import { type LoginState } from './authentication.types';

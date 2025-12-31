@@ -16,13 +16,13 @@ export class QualityLabelsService {
         GetQualityLabelsQueryVariables
       >({
         query: GetQualityLabelsDocument,
-      })
+      });
 
-      return response.lookup_enum_collection_labels as QualityLabel[]
+      return response.lookup_enum_collection_labels as QualityLabel[];
     } catch (err) {
       throw new CustomError('Failed to get quality labels', err, {
         query: 'GetQualityLabels',
-      })
+      });
     }
   }
 }

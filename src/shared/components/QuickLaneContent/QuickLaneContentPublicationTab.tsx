@@ -1,5 +1,10 @@
 import { Button, Spacer } from '@viaa/avo2-components';
-import { AvoCollectionCollection, AvoItemItem, AvoLomLom, AvoLomLomField, } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoItemItem,
+  AvoLomLom,
+  AvoLomLomField,
+} from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useEffect, useState } from 'react';
@@ -11,7 +16,10 @@ import { LomFieldsInput } from '../LomFieldsInput/LomFieldsInput';
 import { ShortDescriptionField } from '../ShortDescriptionField/ShortDescriptionField';
 import { SubjectsField } from '../SubjectsField/SubjectsField';
 import { isShareable } from './QuickLaneContent.helpers';
-import { type QuickLaneContentProps, QuickLaneTypeEnum, } from './QuickLaneContent.types';
+import {
+  type QuickLaneContentProps,
+  QuickLaneTypeEnum,
+} from './QuickLaneContent.types';
 
 interface QuickLaneContentPublicationTabProps {
   onComplete?: () => void;

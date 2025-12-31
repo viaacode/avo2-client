@@ -1,13 +1,21 @@
 import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
 import { PaginationBar } from '@meemoo/react-components';
-import { IconName, Spacer, Table, type TableColumn, } from '@viaa/avo2-components';
+import {
+  IconName,
+  Spacer,
+  Table,
+  type TableColumn,
+} from '@viaa/avo2-components';
 import { AvoSearchOrderDirection } from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { commonUserAtom } from '../../authentication/authentication.store';
-import { CollectionService, type OrganisationContentItem, } from '../../collection/collection.service';
+import {
+  CollectionService,
+  type OrganisationContentItem,
+} from '../../collection/collection.service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import {
@@ -15,7 +23,10 @@ import {
   type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink } from '../../shared/helpers/build-link';
-import { formatDate, formatTimestamp, } from '../../shared/helpers/formatters/date';
+import {
+  formatDate,
+  formatTimestamp,
+} from '../../shared/helpers/formatters/date';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';

@@ -6,16 +6,16 @@ import {
   IconName,
   Toolbar,
   ToolbarCenter,
-} from '@viaa/avo2-components'
-import { type FC, type ReactNode } from 'react'
+} from '@viaa/avo2-components';
+import { type FC, type ReactNode } from 'react';
 
-import './EmbedErrorView.scss'
+import './EmbedErrorView.scss';
 import { tText } from '../../shared/helpers/translate-text';
 
 export interface EmbedErrorViewProps {
-  message: string | ReactNode
-  icon?: IconName | null
-  onReload?: (() => void) | null
+  message: string | ReactNode;
+  icon?: IconName | null;
+  onReload?: (() => void) | null;
 }
 
 export const EmbedErrorView: FC<EmbedErrorViewProps> = ({
@@ -50,5 +50,5 @@ export const EmbedErrorView: FC<EmbedErrorViewProps> = ({
         </Blankslate>
       </Container>
     </Container>
-  )
-}
+  );
+};

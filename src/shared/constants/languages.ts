@@ -1,9 +1,9 @@
 interface Language {
-  [languageCode: string]: string
+  [languageCode: string]: string;
 }
 
 interface LanguagesByLanguage {
-  [languageCode: string]: Language
+  [languageCode: string]: Language;
 }
 
 export const LANGUAGES: LanguagesByLanguage = {
@@ -195,4 +195,4 @@ export const LANGUAGES: LanguagesByLanguage = {
     zh: 'Chinees',
     zu: 'Zoeloe',
   },
-}
+};

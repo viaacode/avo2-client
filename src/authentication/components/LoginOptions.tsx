@@ -1,8 +1,8 @@
-import { Button, IconName, Spacer, Tabs } from '@viaa/avo2-components'
-import { noop } from 'es-toolkit'
-import { type FC, useCallback, useEffect } from 'react'
-import { useNavigate } from 'react-router'
-import { Link } from 'react-router-dom'
+import { Button, IconName, Spacer, Tabs } from '@viaa/avo2-components';
+import { noop } from 'es-toolkit';
+import { type FC, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { tHtml } from '../../shared/helpers/translate-html';
@@ -19,16 +19,16 @@ import { redirectToClientPage } from '../helpers/redirects/redirects';
 
 import { LoginOptionsForPupil } from './LoginOptionsForPupil';
 import { LoginOptionsForTeacher } from './LoginOptionsForTeacher';
-import './LoginOptions.scss'
+import './LoginOptions.scss';
 
 interface LoginOptionsProps {
-  onOptionClicked?: () => void
+  onOptionClicked?: () => void;
 }
 
 export const LoginOptions: FC<LoginOptionsProps> = ({
   onOptionClicked = noop,
 }) => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
   const [tab, setActiveTab, tabs] = useTabs(
     [
@@ -44,35 +44,35 @@ export const LoginOptions: FC<LoginOptionsProps> = ({
       },
     ],
     getPreferredLoginOption(),
-  )
+  );
 
   // Whenever a user sees the LoginOptions, reset their nudging
   useEffect(() => {
-    removePreferredLoginOption()
-  }, [])
+    removePreferredLoginOption();
+  }, []);
 
   const handleOnLoginOptionClick = useCallback(() => {
     // Whenever a user clicks the option clicked, we assume the user has logged in, and thus we increase their login counter
-    setLoginCounter()
-    onOptionClicked?.()
-  }, [onOptionClicked])
+    setLoginCounter();
+    onOptionClicked?.();
+  }, [onOptionClicked]);
 
   const renderTitle = () => {
     switch (tab) {
       case LoginOptionsTabs.TEACHER:
         return tHtml(
           'authentication/components/login-options___log-in-als-lesgever',
-        )
+        );
 
       case LoginOptionsTabs.STUDENT:
         return tHtml(
           'authentication/components/login-options___log-in-als-leerling',
-        )
+        );
 
       default:
-        break
+        break;
     }
-  }
+  };
 
   const getButtons = () => {
     switch (tab) {
@@ -82,7 +82,7 @@ export const LoginOptions: FC<LoginOptionsProps> = ({
             onOptionClicked={handleOnLoginOptionClick}
             openInNewTab={false}
           />
-        )
+        );
 
       case LoginOptionsTabs.STUDENT:
         return (
@@ -90,12 +90,12 @@ export const LoginOptions: FC<LoginOptionsProps> = ({
             onOptionClicked={handleOnLoginOptionClick}
             openInNewTab={false}
           />
-        )
+        );
 
       default:
-        break
+        break;
     }
-  }
+  };
 
   const renderFallbackTitle = () => {
     switch (tab) {
@@ -106,12 +106,12 @@ export const LoginOptions: FC<LoginOptionsProps> = ({
               'authentication/components/login-options___nog-geen-account',
             )}
           </h3>
-        )
+        );
 
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   const renderFallbackButton = () => {
     switch (tab) {
@@ -124,11 +124,11 @@ export const LoginOptions: FC<LoginOptionsProps> = ({
             )}
             type="primary"
             onClick={() => {
-              onOptionClicked()
-              redirectToClientPage(APP_PATH.STAMBOEK.route, navigateFunc)
+              onOptionClicked();
+              redirectToClientPage(APP_PATH.STAMBOEK.route, navigateFunc);
             }}
           />
-        )
+        );
 
       case LoginOptionsTabs.STUDENT:
         return (
@@ -140,20 +140,20 @@ export const LoginOptions: FC<LoginOptionsProps> = ({
               'authentication/views/register-or-login___krijg-toegang-als-leerling',
             )}
           </Link>
-        )
+        );
 
       default:
-        break
+        break;
     }
-  }
+  };
 
   return (
     <div className="m-login-options">
       <Tabs
         tabs={tabs}
         onClick={(id) => {
-          setActiveTab(id)
-          setPreferredLoginOption(id)
+          setActiveTab(id);
+          setPreferredLoginOption(id);
         }}
       />
 
@@ -171,5 +171,5 @@ export const LoginOptions: FC<LoginOptionsProps> = ({
         <Spacer margin={['top-small']}>{renderFallbackButton()}</Spacer>
       </div>
     </div>
-  )
-}
+  );
+};

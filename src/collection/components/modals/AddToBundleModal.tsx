@@ -31,7 +31,12 @@ import { CollectionOrBundle, ContentTypeNumber } from '../../collection.types';
 import { canManageEditorial } from '../../helpers/can-manage-editorial';
 
 import './AddToBundleModal.scss';
-import { AvoAssignmentAssignment, AvoCollectionCollection, AvoCollectionFragment, AvoCoreBlockItemType, } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoCollectionCollection,
+  AvoCollectionFragment,
+  AvoCoreBlockItemType,
+} from '@viaa/avo2-types';
 
 interface AddToBundleModalProps {
   fragmentId: string;

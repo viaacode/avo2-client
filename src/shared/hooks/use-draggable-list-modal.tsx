@@ -1,6 +1,6 @@
-import { Button, type ButtonProps, IconName } from '@viaa/avo2-components'
-import { isNil } from 'es-toolkit'
-import { type ReactNode, useState } from 'react'
+import { Button, type ButtonProps, IconName } from '@viaa/avo2-components';
+import { isNil } from 'es-toolkit';
+import { type ReactNode, useState } from 'react';
 
 import { DraggableBlock } from '../components/DraggableBlock/DraggableBlock';
 import {
@@ -10,11 +10,11 @@ import {
 import { tText } from '../helpers/translate-text';
 
 export function useDraggableListModal(config?: {
-  button?: Partial<ButtonProps>
-  modal?: Partial<DraggableListModalProps>
-  setIsOpen?: (isOpen: boolean) => void // Optional, if not passed, the hook will keep track of the open state
+  button?: Partial<ButtonProps>;
+  modal?: Partial<DraggableListModalProps>;
+  setIsOpen?: (isOpen: boolean) => void; // Optional, if not passed, the hook will keep track of the open state
 }): [ReactNode, ReactNode] {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const button = (
     <Button
@@ -31,11 +31,11 @@ export function useDraggableListModal(config?: {
         'shared/hooks/use-draggable-list-modal___herorden-de-onderdelen-via-drag-and-drop',
       )}
       onClick={(e) => {
-        ;(config?.setIsOpen || setIsOpen)(true)
-        config?.button?.onClick?.(e)
+        (config?.setIsOpen || setIsOpen)(true);
+        config?.button?.onClick?.(e);
       }}
     />
-  )
+  );
 
   const modal = (
     <DraggableListModal
@@ -45,11 +45,11 @@ export function useDraggableListModal(config?: {
         isNil(config?.modal?.isOpen) ? isOpen : config?.modal?.isOpen || false
       } // Allow external config to open modal, if not provided, internal isOpen state will be used
       onClose={(update?: any[]) => {
-        ;(config?.setIsOpen || setIsOpen)(false)
-        config?.modal?.onClose?.(update)
+        (config?.setIsOpen || setIsOpen)(false);
+        config?.modal?.onClose?.(update);
       }}
     />
-  )
+  );
 
-  return [button, modal]
+  return [button, modal];
 }

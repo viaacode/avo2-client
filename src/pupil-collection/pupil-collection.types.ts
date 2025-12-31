@@ -9,4 +9,4 @@ export type PupilCollectionOverviewTableColumns =
   | 'updated_at'
   | 'deadline_at'
   | 'status'
-  | typeof ACTIONS_TABLE_COLUMN_ID
+  | typeof ACTIONS_TABLE_COLUMN_ID;

@@ -1,4 +1,8 @@
-import { type MiddlewareFunction, redirect, type RouteObject, } from 'react-router';
+import {
+  type MiddlewareFunction,
+  redirect,
+  type RouteObject,
+} from 'react-router';
 import App from './App.tsx';
 import AppClientLayout from './AppClientLayout.tsx';
 import { Admin } from './admin/Admin.tsx';
@@ -70,7 +74,12 @@ import { LoggedOutHome } from './home/views/LoggedOutHome.tsx';
 import { ItemDetail } from './item/views/ItemDetail.tsx';
 import { ItemDetailRoute } from './item/views/ItemDetailRoute.tsx';
 import { QuickLaneDetail } from './quick-lane/views/QuickLaneDetail.tsx';
-import { fetchAssignmentLoader, fetchCollectionLoader, fetchContentPageLoader, initAppLoader, } from './routes.loaders.ts';
+import {
+  fetchAssignmentLoader,
+  fetchCollectionLoader,
+  fetchContentPageLoader,
+  initAppLoader,
+} from './routes.loaders.ts';
 import { Search } from './search/views/Search.tsx';
 import { CompleteProfileStep } from './settings/components/CompleteProfileStep.tsx';
 import { Email } from './settings/components/Email/Email.tsx';

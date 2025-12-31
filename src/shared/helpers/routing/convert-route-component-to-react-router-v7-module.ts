@@ -4,11 +4,11 @@ export function reactRouterConvert(routingModule: any) {
     clientAction,
     default: Component,
     ...rest
-  } = routingModule
+  } = routingModule;
   return {
     ...rest,
     loader: clientLoader,
     action: clientAction,
     Component,
-  }
+  };
 }

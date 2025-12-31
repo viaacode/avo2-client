@@ -21,13 +21,27 @@ import { tText } from '../../../shared/helpers/translate-text';
 import { useDebounce } from '../../../shared/hooks/useDebounce';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { PROXY_PATH_SHORTCUT, replaceProxyUrlTemplateWithUrl, } from '../helpers/replace-proxy-url-template-with-url';
+import {
+  AdminLayoutBody,
+  AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import {
+  PROXY_PATH_SHORTCUT,
+  replaceProxyUrlTemplateWithUrl,
+} from '../helpers/replace-proxy-url-template-with-url';
 import { useDeleteUrlRedirect } from '../hooks/useDeleteUrlRedirect';
 import { useGetUrlRedirects } from '../hooks/useGetUrlRedirects';
-import { GET_URL_REDIRECT_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE, URL_REDIRECT_PATTERN_OPTIONS, } from '../url-redirects.const';
+import {
+  GET_URL_REDIRECT_OVERVIEW_TABLE_COLS,
+  ITEMS_PER_PAGE,
+  URL_REDIRECT_PATTERN_OPTIONS,
+} from '../url-redirects.const';
 import { URL_REDIRECT_PATH } from '../url-redirects.routes.ts';
-import { type UrlRedirect, type UrlRedirectOverviewFilterState, type UrlRedirectOverviewTableCols, } from '../url-redirects.types';
+import {
+  type UrlRedirect,
+  type UrlRedirectOverviewFilterState,
+  type UrlRedirectOverviewTableCols,
+} from '../url-redirects.types';
 
 export const UrlRedirectOverview: FC = () => {
   const navigateFunc = useNavigate();

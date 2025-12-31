@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { isServerSideRendering } from "../routing/is-server-side-rendering.ts";
+import { isServerSideRendering } from '../routing/is-server-side-rendering.ts';
 
 /**
  * Strips html tags and resolves any html entities

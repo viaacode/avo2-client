@@ -1,11 +1,25 @@
-import { type FilterableColumn, TableFilterType, } from '@meemoo/admin-core-ui/admin';
-import { type ButtonType, IconName, type SelectOption, } from '@viaa/avo2-components';
-import { AvoLomLomField, AvoUserCommonUser, PermissionName, } from '@viaa/avo2-types';
+import {
+  type FilterableColumn,
+  TableFilterType,
+} from '@meemoo/admin-core-ui/admin';
+import {
+  type ButtonType,
+  IconName,
+  type SelectOption,
+} from '@viaa/avo2-components';
+import {
+  AvoLomLomField,
+  AvoUserCommonUser,
+  PermissionName,
+} from '@viaa/avo2-types';
 
 import { type AssignmentTableColumns } from '../../assignment/assignment.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { type BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
-import { type CheckboxDropdownModalProps, type CheckboxOption, } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import {
+  type CheckboxDropdownModalProps,
+  type CheckboxOption,
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { EducationLevelId } from '../../shared/helpers/lom';
 import { lomToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';

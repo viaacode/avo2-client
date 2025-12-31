@@ -1,11 +1,11 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 import {
-	AvoSearchFilterOption,
-	AvoSearchFilterProp,
-	AvoSearchFilters,
-	AvoSearchOrderDirection,
-	AvoSearchOrderProperty,
-	AvoSearchSearch,
+  AvoSearchFilterOption,
+  AvoSearchFilterProp,
+  AvoSearchFilters,
+  AvoSearchOrderDirection,
+  AvoSearchOrderProperty,
+  AvoSearchSearch,
 } from '@viaa/avo2-types';
 import { set } from 'es-toolkit/compat';
 import { getEnv } from '../shared/helpers/env';

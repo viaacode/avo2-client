@@ -52,10 +52,16 @@ import {
 } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components/modals/PublishCollectionModal';
 import { useGetCollectionOrBundleByIdOrInviteToken } from '../../collection/hooks/useGetCollectionOrBundleByIdOrInviteToken';
-import { COLLECTION_COPY, COLLECTION_COPY_REGEX, } from '../../collection/views/CollectionDetail';
+import {
+  COLLECTION_COPY,
+  COLLECTION_COPY_REGEX,
+} from '../../collection/views/CollectionDetail';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
-import { ALL_SEARCH_FILTERS, type SearchFilter, } from '../../search/search.const';
+import {
+  ALL_SEARCH_FILTERS,
+  type SearchFilter,
+} from '../../search/search.const';
 import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { EditButton } from '../../shared/components/EditButton/EditButton';
@@ -68,10 +74,16 @@ import { getMoreOptionsLabel } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render-bookmark-button';
-import { defaultGoToDetailLink, defaultRenderDetailLink, } from '../../shared/helpers/default-render-detail-link';
+import {
+  defaultGoToDetailLink,
+  defaultRenderDetailLink,
+} from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { getFullName, renderAvatar, } from '../../shared/helpers/formatters/avatar';
+import {
+  getFullName,
+  renderAvatar,
+} from '../../shared/helpers/formatters/avatar';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
@@ -80,7 +92,11 @@ import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-view
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems, ObjectTypes, ObjectTypesAll, } from '../../shared/services/related-items-service';
+import {
+  getRelatedItems,
+  ObjectTypes,
+  ObjectTypesAll,
+} from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { BundleAction } from '../bundle.types';
 

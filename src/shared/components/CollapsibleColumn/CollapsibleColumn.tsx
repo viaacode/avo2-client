@@ -3,21 +3,21 @@ import {
   type ButtonProps,
   type DefaultProps,
   IconName,
-} from '@viaa/avo2-components'
-import { type FC, type ReactNode, useState } from 'react'
+} from '@viaa/avo2-components';
+import { type FC, type ReactNode, useState } from 'react';
 
 import { useResizeObserver } from '../../hooks/useResizeObserver';
 
-import './CollapsibleColumn.scss'
+import './CollapsibleColumn.scss';
 import { tText } from '../../helpers/translate-text';
 
 type CollapsibleColumnProps = DefaultProps & {
-  children?: ReactNode
+  children?: ReactNode;
   button?: Partial<Omit<ButtonProps, 'icon' | 'label'>> & {
-    icon?: (expanded: boolean) => IconName
-    label?: (expanded: boolean) => string
-  }
-}
+    icon?: (expanded: boolean) => IconName;
+    label?: (expanded: boolean) => string;
+  };
+};
 
 export const CollapsibleColumn: FC<CollapsibleColumnProps> = ({
   style,
@@ -25,36 +25,36 @@ export const CollapsibleColumn: FC<CollapsibleColumnProps> = ({
   children,
   button,
 }) => {
-  const [overflowing, setOverflowing] = useState(false)
-  const [expanded, setExpanded] = useState(false)
+  const [overflowing, setOverflowing] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const wrapperClassName = [
     'c-collapsible-column',
     ...(overflowing ? ['c-collapsible-column--overflowing'] : []),
     ...(expanded ? ['c-collapsible-column--expanded'] : []),
     className,
-  ].join(' ')
+  ].join(' ');
 
   const ref = useResizeObserver((el: HTMLDivElement) => {
     const isOverflowing =
-      (el.offsetHeight || 0) > (el.parentElement?.offsetHeight || 0)
+      (el.offsetHeight || 0) > (el.parentElement?.offsetHeight || 0);
 
     if (isOverflowing !== overflowing) {
-      setOverflowing(isOverflowing)
+      setOverflowing(isOverflowing);
     }
-  })
+  });
 
   const getButtonIcon = (): IconName => {
     if (button?.icon) {
-      return button.icon(expanded)
+      return button.icon(expanded);
     }
 
-    return expanded ? IconName.close : IconName.plus
-  }
+    return expanded ? IconName.close : IconName.plus;
+  };
 
   const getButtonLabel = () => {
     if (button?.label) {
-      return button.label(expanded)
+      return button.label(expanded);
     }
 
     return expanded
@@ -63,8 +63,8 @@ export const CollapsibleColumn: FC<CollapsibleColumnProps> = ({
         )
       : tText(
           'shared/components/collapsible-column/collapsible-column___toon-meer',
-        )
-  }
+        );
+  };
 
   return (
     <div className={wrapperClassName} style={style}>
@@ -80,14 +80,14 @@ export const CollapsibleColumn: FC<CollapsibleColumnProps> = ({
             icon={getButtonIcon()}
             label={getButtonLabel()}
             onClick={(e) => {
-              expanded && setOverflowing(true)
-              setExpanded(!expanded)
+              expanded && setOverflowing(true);
+              setExpanded(!expanded);
 
-              button?.onClick?.(e)
+              button?.onClick?.(e);
             }}
           />
         </div>
       )}
     </div>
-  )
-}
+  );
+};

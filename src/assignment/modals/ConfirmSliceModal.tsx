@@ -9,7 +9,11 @@ import {
   ToolbarItem,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import { AvoAssignmentBlock, AvoAssignmentResponse, AvoCoreBlockItemType, } from '@viaa/avo2-types';
+import {
+  AvoAssignmentBlock,
+  AvoAssignmentResponse,
+  AvoCoreBlockItemType,
+} from '@viaa/avo2-types';
 import { type FC } from 'react';
 import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.consts';
 import { tHtml } from '../../shared/helpers/translate-html';

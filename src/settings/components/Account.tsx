@@ -1,5 +1,15 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { Alert, Button, Column, Container, Form, FormGroup, Grid, IconName, Spacer, } from '@viaa/avo2-components';
+import {
+  Alert,
+  Button,
+  Column,
+  Container,
+  Form,
+  FormGroup,
+  Grid,
+  IconName,
+  Spacer,
+} from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
 import { type FC } from 'react';
 

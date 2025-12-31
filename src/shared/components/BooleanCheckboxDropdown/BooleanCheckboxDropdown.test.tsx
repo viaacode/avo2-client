@@ -13,8 +13,8 @@ describe('<BooleanCheckboxDropdown />', () => {
     // 		onChange={() => console.info('CheckboxDropdown changed')}
     // 	/>
     // );
-    expect(true)
-  })
+    expect(true);
+  });
 
   it('Should call `onChange` when toggling checkbox', () => {
     // const onChangeHandler = jest.fn();
@@ -52,6 +52,6 @@ describe('<BooleanCheckboxDropdown />', () => {
     // button.simulate('click');
 
     // expect(onChangeHandler).toBeCalledWith(null, 'is_deleted');
-    expect(true)
-  })
-})
+    expect(true);
+  });
+});

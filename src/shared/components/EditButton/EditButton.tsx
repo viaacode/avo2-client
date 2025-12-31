@@ -4,17 +4,17 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@viaa/avo2-components'
-import { type FC, type ReactNode } from 'react'
+} from '@viaa/avo2-components';
+import { type FC, type ReactNode } from 'react';
 
 type EditButtonProps = {
-  onClick: () => void
-  title: string
-  label: string
-  type?: string
-  disabled: boolean
-  toolTipContent: string | ReactNode
-}
+  onClick: () => void;
+  title: string;
+  label: string;
+  type?: string;
+  disabled: boolean;
+  toolTipContent: string | ReactNode;
+};
 
 export const EditButton: FC<EditButtonProps> = ({
   title,
@@ -33,7 +33,7 @@ export const EditButton: FC<EditButtonProps> = ({
       onClick={onClick}
       disabled={disabled}
     />
-  )
+  );
 
   if (disabled) {
     return (
@@ -43,7 +43,7 @@ export const EditButton: FC<EditButtonProps> = ({
           <p>{toolTipText}</p>
         </TooltipContent>
       </Tooltip>
-    )
+    );
   }
-  return button
-}
+  return button;
+};

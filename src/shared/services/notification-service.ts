@@ -16,8 +16,8 @@ import { CustomError } from '../helpers/custom-error';
 import { dataService } from './data-service';
 
 export interface NotificationInfo {
-  through_email: boolean
-  through_platform: boolean
+  through_email: boolean;
+  through_platform: boolean;
 }
 
 export class NotificationService {
@@ -35,16 +35,16 @@ export class NotificationService {
           key,
           profileId,
         },
-      })
+      });
 
       return (response.users_notifications[0] ??
-        null) as NotificationInfo | null
+        null) as NotificationInfo | null;
     } catch (err) {
       throw new CustomError('Failed to get user notification', err, {
         profileId,
         notificationKey: key,
         query: 'GET_NOTIFICATION',
-      })
+      });
     }
   }
 
@@ -56,12 +56,12 @@ export class NotificationService {
   ): Promise<void> {
     try {
       const notificationEntryExists =
-        !!(await NotificationService.getNotification(key, profileId))
+        !!(await NotificationService.getNotification(key, profileId));
       // If entry already exists => update existing entry
       // If no entry exists in the notifications table => insert a new entry
       const mutation = notificationEntryExists
         ? UpdateNotificationDocument
-        : InsertNotificationDocument
+        : InsertNotificationDocument;
       await dataService.query<
         UpdateNotificationMutation | InsertNotificationMutation,
         | UpdateNotificationMutationVariables
@@ -74,7 +74,7 @@ export class NotificationService {
           throughEmail,
           throughPlatform,
         },
-      })
+      });
     } catch (err) {
       throw new CustomError('Failed to set user notification', err, {
         profileId,
@@ -86,7 +86,7 @@ export class NotificationService {
           'UPDATE_NOTIFICATION',
           'INSERT_NOTIFICATION',
         ],
-      })
+      });
     }
   }
 }

@@ -11,26 +11,26 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { noop } from 'es-toolkit'
-import { type FC, type ReactNode, useEffect, useState } from 'react'
+} from '@viaa/avo2-components';
+import { noop } from 'es-toolkit';
+import { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { tHtml } from '../../helpers/translate-html';
 
 import { type ConfirmModalRememberKey } from './ConfirmModal.consts';
 
 export interface ConfirmModalProps {
-  title?: string | ReactNode
-  body?: string | ReactNode
-  cancelLabel?: string
-  confirmLabel?: string
-  confirmButtonType?: ButtonType
-  size?: ModalProps['size']
-  isOpen: boolean
-  onClose?: () => void
-  confirmCallback?: () => void
-  className?: string
-  rememberKey?: ConfirmModalRememberKey
+  title?: string | ReactNode;
+  body?: string | ReactNode;
+  cancelLabel?: string;
+  confirmLabel?: string;
+  confirmButtonType?: ButtonType;
+  size?: ModalProps['size'];
+  isOpen: boolean;
+  onClose?: () => void;
+  confirmCallback?: () => void;
+  className?: string;
+  rememberKey?: ConfirmModalRememberKey;
 }
 
 export const ConfirmModal: FC<ConfirmModalProps> = ({
@@ -46,21 +46,21 @@ export const ConfirmModal: FC<ConfirmModalProps> = ({
   className,
   rememberKey,
 }) => {
-  const [isRemembered, setIsRemembered] = useState(false)
+  const [isRemembered, setIsRemembered] = useState(false);
 
   useEffect(() => {
     if (rememberKey) {
-      setIsRemembered(localStorage.getItem(rememberKey) === 'true')
+      setIsRemembered(localStorage.getItem(rememberKey) === 'true');
     }
-  }, [rememberKey])
+  }, [rememberKey]);
 
   const handleSetRemembered = () => {
     if (rememberKey) {
-      const newValue = !isRemembered
-      setIsRemembered(newValue)
-      localStorage.setItem(rememberKey, String(newValue))
+      const newValue = !isRemembered;
+      setIsRemembered(newValue);
+      localStorage.setItem(rememberKey, String(newValue));
     }
-  }
+  };
 
   return (
     <Modal
@@ -111,5 +111,5 @@ export const ConfirmModal: FC<ConfirmModalProps> = ({
         </Toolbar>
       </ModalBody>
     </Modal>
-  )
-}
+  );
+};

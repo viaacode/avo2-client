@@ -1,4 +1,8 @@
-import { AvoAssignmentAssignment, AvoCollectionCollection, AvoSearchOrderDirection, } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoCollectionCollection,
+  AvoSearchOrderDirection,
+} from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';

@@ -28,7 +28,11 @@ import { ContentPicker } from '../../../shared/components/ContentPicker/ContentP
 import { ItemsService } from '../../items.service';
 
 import './DepublishItemModal.scss';
-import { AvoCollectionRelationEntry, AvoCoreContentPickerType, AvoItemItem, } from '@viaa/avo2-types';
+import {
+  AvoCollectionRelationEntry,
+  AvoCoreContentPickerType,
+  AvoItemItem,
+} from '@viaa/avo2-types';
 
 type DepublishType =
   | 'depublish'

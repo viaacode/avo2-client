@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import {
   Box,
   Button,
@@ -6,9 +6,9 @@ import {
   FlexItem,
   Spacer,
   TextInput,
-} from '@viaa/avo2-components'
-import { useAtomValue } from 'jotai'
-import { type FC, useState } from 'react'
+} from '@viaa/avo2-components';
+import { useAtomValue } from 'jotai';
+import { type FC, useState } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { copyToClipboard } from '../../helpers/clipboard';
@@ -20,13 +20,13 @@ import {
 } from '../../services/campaign-monitor-service';
 import { trackEvents } from '../../services/event-logging-service';
 import { ToastService } from '../../services/toast-service';
-import './ShareThroughEmailContent.scss'
+import './ShareThroughEmailContent.scss';
 
 interface AddToCollectionModalProps {
-  type: EmailTemplateType
-  emailLinkHref: string
-  emailLinkTitle: string
-  onSendMail: () => void
+  type: EmailTemplateType;
+  emailLinkHref: string;
+  emailLinkTitle: string;
+  onSendMail: () => void;
 }
 
 export const ShareThroughEmailContent: FC<AddToCollectionModalProps> = ({
@@ -35,13 +35,13 @@ export const ShareThroughEmailContent: FC<AddToCollectionModalProps> = ({
   emailLinkTitle,
   onSendMail,
 }) => {
-  const commonUser = useAtomValue(commonUserAtom)
+  const commonUser = useAtomValue(commonUserAtom);
 
-  const [emailAddress, setEmailAddress] = useState<string>('')
-  const [isProcessing, setIsProcessing] = useState<boolean>(false)
+  const [emailAddress, setEmailAddress] = useState<string>('');
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   const copyLink = () => {
-    copyToClipboard(emailLinkHref)
+    copyToClipboard(emailLinkHref);
 
     trackEvents(
       {
@@ -53,24 +53,24 @@ export const ShareThroughEmailContent: FC<AddToCollectionModalProps> = ({
         },
       },
       commonUser,
-    )
+    );
 
     ToastService.success(
       tHtml(
         'shared/components/share-through-email-modal/share-through-email-modal___de-url-is-naar-het-klembord-gekopieerd',
       ),
-    )
-  }
+    );
+  };
 
   const sendEmail = async () => {
     try {
-      setIsProcessing(true)
+      setIsProcessing(true);
       await CampaignMonitorService.shareThroughEmail(
         emailAddress,
         emailLinkTitle,
         emailLinkHref,
         type,
-      )
+      );
 
       trackEvents(
         {
@@ -82,27 +82,27 @@ export const ShareThroughEmailContent: FC<AddToCollectionModalProps> = ({
           },
         },
         commonUser,
-      )
+      );
 
       ToastService.success(
         tHtml(
           'shared/components/share-through-email-modal/share-through-email-modal___de-email-is-verstuurd',
         ),
-      )
+      );
 
       // close modal when email is sent
-      onSendMail()
+      onSendMail();
     } catch (err) {
       console.error('Failed to send email to share item', err, {
         emailAddress,
         emailLinkTitle,
         emailLinkHref,
         type,
-      })
-      ToastService.danger('Het versturen van de email is mislukt')
+      });
+      ToastService.danger('Het versturen van de email is mislukt');
     }
-    setIsProcessing(false)
-  }
+    setIsProcessing(false);
+  };
 
   return (
     <>
@@ -179,5 +179,5 @@ export const ShareThroughEmailContent: FC<AddToCollectionModalProps> = ({
         </Box>
       </Spacer>
     </>
-  )
-}
+  );
+};

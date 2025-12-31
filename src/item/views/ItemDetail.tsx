@@ -24,11 +24,24 @@ import {
   Table,
   Thumbnail,
 } from '@viaa/avo2-components';
-import { AvoContentTypeEnglish, AvoCoreContentType, AvoItemItem, AvoSearchResultItem, PermissionName, } from '@viaa/avo2-types';
+import {
+  AvoContentTypeEnglish,
+  AvoCoreContentType,
+  AvoItemItem,
+  AvoSearchResultItem,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { isNil, noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type FC, type ReactNode, type ReactText, useCallback, useEffect, useState, } from 'react';
+import {
+  type FC,
+  type ReactNode,
+  type ReactText,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -40,7 +53,10 @@ import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/mo
 import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN, ContentTypeNumber, } from '../../collection/collection.types';
+import {
+  CONTENT_TYPE_TRANSLATIONS_NL_TO_EN,
+  ContentTypeNumber,
+} from '../../collection/collection.types';
 import { APP_PATH } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { type FilterState } from '../../search/search.types';
@@ -52,11 +68,23 @@ import {
 import { LANGUAGES } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
-import { defaultRenderBookmarkButton, type renderBookmarkButtonProps, } from '../../shared/helpers/default-render-bookmark-button';
-import { defaultRenderBookmarkCount, type renderBookmarkCountProps, } from '../../shared/helpers/default-render-bookmark-count';
-import { defaultGoToDetailLink, defaultRenderDetailLink, } from '../../shared/helpers/default-render-detail-link';
+import {
+  defaultRenderBookmarkButton,
+  type renderBookmarkButtonProps,
+} from '../../shared/helpers/default-render-bookmark-button';
+import {
+  defaultRenderBookmarkCount,
+  type renderBookmarkCountProps,
+} from '../../shared/helpers/default-render-bookmark-count';
+import {
+  defaultGoToDetailLink,
+  defaultRenderDetailLink,
+} from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderInteractiveTour } from '../../shared/helpers/default-render-interactive-tour';
-import { defaultGoToSearchLink, defaultRenderSearchLink, } from '../../shared/helpers/default-render-search-link';
+import {
+  defaultGoToSearchLink,
+  defaultRenderSearchLink,
+} from '../../shared/helpers/default-render-search-link';
 import { reorderDate } from '../../shared/helpers/formatters/date';
 import { renderSearchLinks } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
@@ -67,7 +95,11 @@ import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-view
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems, ObjectTypes, ObjectTypesAll, } from '../../shared/services/related-items-service';
+import {
+  getRelatedItems,
+  ObjectTypes,
+  ObjectTypesAll,
+} from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { embedFlowAtom } from '../../shared/store/ui.store';
 import { type UnpublishableItem } from '../../shared/types';
@@ -81,7 +113,12 @@ import { type ItemTrimInfo } from '../item.types';
 import './ItemDetail.scss';
 import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
-import { JsonParam, StringParam, useQueryParam, useQueryParams, } from '../../shared/helpers/routing/use-query-params-ssr.ts';
+import {
+  JsonParam,
+  StringParam,
+  useQueryParam,
+  useQueryParams,
+} from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 

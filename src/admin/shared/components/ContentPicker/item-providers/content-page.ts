@@ -1,4 +1,7 @@
-import { type ContentPageInfo, type DbContentPage, } from '@meemoo/admin-core-ui/admin';
+import {
+  type ContentPageInfo,
+  type DbContentPage,
+} from '@meemoo/admin-core-ui/admin';
 import { AvoCoreContentPickerType } from '@viaa/avo2-types';
 import { CustomError } from '../../../../../shared/helpers/custom-error';
 import { type PickerItem } from '../../../types/content-picker';

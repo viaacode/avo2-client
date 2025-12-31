@@ -1,12 +1,12 @@
-import { Modal, ModalBody } from '@viaa/avo2-components'
-import { type FC } from 'react'
+import { Modal, ModalBody } from '@viaa/avo2-components';
+import { type FC } from 'react';
 
 import { QuickLaneContent } from '../QuickLaneContent/QuickLaneContent';
 
 import { type QuickLaneModalProps } from './QuickLaneModal.types';
 
 export const QuickLaneModal: FC<QuickLaneModalProps> = (props) => {
-  const { modalTitle, isOpen, onClose } = props
+  const { modalTitle, isOpen, onClose } = props;
 
   return (
     <Modal
@@ -21,5 +21,5 @@ export const QuickLaneModal: FC<QuickLaneModalProps> = (props) => {
         <QuickLaneContent {...props} />
       </ModalBody>
     </Modal>
-  )
-}
+  );
+};

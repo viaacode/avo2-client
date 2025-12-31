@@ -1,21 +1,21 @@
-import { Spacer } from '@viaa/avo2-components'
-import { type FC, type ReactNode } from 'react'
+import { Spacer } from '@viaa/avo2-components';
+import { type FC, type ReactNode } from 'react';
 
 import { type SearchFilter } from '../../../search/search.const';
 import { type FilterState } from '../../../search/search.types';
 import { renderSearchLinks } from '../../helpers/link';
 
 type LomInfoFieldProps = {
-  id: string
-  label: string
-  lomLabels: string[] | null
-  searchFilterType: SearchFilter
+  id: string;
+  label: string;
+  lomLabels: string[] | null;
+  searchFilterType: SearchFilter;
   renderSearchLink: (
     linkText: string | ReactNode,
     newFilters: FilterState,
     className?: string,
-  ) => ReactNode
-}
+  ) => ReactNode;
+};
 
 export const LomInfoField: FC<LomInfoFieldProps> = ({
   id,
@@ -41,5 +41,5 @@ export const LomInfoField: FC<LomInfoFieldProps> = ({
         )}
       </p>
     </Spacer>
-  )
-}
+  );
+};

@@ -6,15 +6,15 @@ import {
   Toolbar,
   ToolbarLeft,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { type FC, type ReactNode } from 'react'
+} from '@viaa/avo2-components';
+import { type FC, type ReactNode } from 'react';
 
-import './AlertBar.scss'
+import './AlertBar.scss';
 
 interface AlertBarProps {
-  icon?: IconName
-  textLeft: string | ReactNode
-  contentRight: ReactNode
+  icon?: IconName;
+  textLeft: string | ReactNode;
+  contentRight: ReactNode;
 }
 
 export const AlertBar: FC<AlertBarProps> = ({
@@ -34,5 +34,5 @@ export const AlertBar: FC<AlertBarProps> = ({
         </Toolbar>
       </Container>
     </div>
-  )
-}
+  );
+};

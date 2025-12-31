@@ -1,4 +1,11 @@
-import { Button, ButtonToolbar, Container, HeaderButtons, Spacer, Table, } from '@viaa/avo2-components';
+import {
+  Button,
+  ButtonToolbar,
+  Container,
+  HeaderButtons,
+  Spacer,
+  Table,
+} from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 
 import { type FC, useCallback, useEffect, useState } from 'react';
@@ -20,9 +27,16 @@ import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
-import { renderDateDetailRows, renderDetailRow, renderSimpleDetailRows, } from '../../shared/helpers/render-detail-fields';
+import {
+  renderDateDetailRows,
+  renderDetailRow,
+  renderSimpleDetailRows,
+} from '../../shared/helpers/render-detail-fields';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import {
+  AdminLayoutBody,
+  AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.routes';
 import { InteractiveTourService } from '../interactive-tour.service';
 import { InteractiveTour } from '../interactive-tour.types.ts';

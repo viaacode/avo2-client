@@ -10,5 +10,5 @@ export function isPupil(userGroupId: string | number | undefined): boolean {
     [SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]
       .map(String)
       .includes(String(userGroupId) as SpecialUserGroupId)
-  )
+  );
 }

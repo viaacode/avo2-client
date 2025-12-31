@@ -1,4 +1,11 @@
-import { Button, ButtonToolbar, Container, Icon, IconName, Spacer, } from '@viaa/avo2-components';
+import {
+  Button,
+  ButtonToolbar,
+  Container,
+  Icon,
+  IconName,
+  Spacer,
+} from '@viaa/avo2-components';
 import { type FC } from 'react';
 import { useNavigate } from 'react-router';
 

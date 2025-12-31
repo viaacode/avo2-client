@@ -5,5 +5,5 @@ export function getPageNotFoundError(loggedIn: boolean): string {
     ? tText('error/views/error-view___de-pagina-werd-niet-gevonden-ingelogd')
     : tText(
         'error/views/error-view___de-pagina-werd-niet-gevonden-niet-ingelogd',
-      )
+      );
 }

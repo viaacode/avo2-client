@@ -14,11 +14,21 @@ import {
   ToolbarLeft,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import { AvoCollectionCollection, AvoItemItem, PermissionName, } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoItemItem,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type FC, type ReactNode, useCallback, useEffect, useMemo, } from 'react';
+import {
+  type FC,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
 import { generatePath, useNavigate, useParams } from 'react-router';
 
 import { AssignmentLayout } from '../../assignment/assignment.types';

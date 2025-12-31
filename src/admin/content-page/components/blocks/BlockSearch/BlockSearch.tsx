@@ -15,7 +15,13 @@ import {
 
 import { isNil } from 'es-toolkit';
 import { useAtom } from 'jotai';
-import { type FC, type KeyboardEvent, useCallback, useEffect, useState, } from 'react';
+import {
+  type FC,
+  type KeyboardEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useNavigate } from 'react-router';
 
 import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../../../../collection/collection.types';
@@ -23,7 +29,10 @@ import { SearchFilter } from '../../../../../search/search.const';
 import { fetchSearchResults } from '../../../../../search/search.service';
 import { searchAtom } from '../../../../../search/search.store';
 import { type SearchState } from '../../../../../search/search.types';
-import { generateContentLinkString, generateSearchLinkString, } from '../../../../../shared/helpers/link';
+import {
+  generateContentLinkString,
+  generateSearchLinkString,
+} from '../../../../../shared/helpers/link';
 import { useDebounce } from '../../../../../shared/hooks/useDebounce';
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { KeyCode } from '../../../../../shared/types';

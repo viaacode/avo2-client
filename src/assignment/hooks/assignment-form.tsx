@@ -1,4 +1,9 @@
-import { AvoAssignmentBlock, AvoAssignmentLabel, AvoAssignmentType, AvoShareShareWithColleagueType, } from '@viaa/avo2-types';
+import {
+  AvoAssignmentBlock,
+  AvoAssignmentLabel,
+  AvoAssignmentType,
+  AvoShareShareWithColleagueType,
+} from '@viaa/avo2-types';
 import { type Dispatch, type SetStateAction, useState } from 'react';
 import { ASSIGNMENT_FORM_DEFAULT } from '../assignment.const';
 

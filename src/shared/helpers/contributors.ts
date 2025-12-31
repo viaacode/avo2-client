@@ -5,7 +5,10 @@ import {
   AvoCollectionContributor,
   AvoUserUser,
 } from '@viaa/avo2-types';
-import { type ContributorInfo, ContributorInfoRight, } from '../components/ShareWithColleagues/ShareWithColleagues.types';
+import {
+  type ContributorInfo,
+  ContributorInfoRight,
+} from '../components/ShareWithColleagues/ShareWithColleagues.types';
 
 export const transformContributorsToSimpleContributors = (
   owner: AvoUserUser | undefined,

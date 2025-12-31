@@ -1,6 +1,9 @@
 import './AssignmentOverview.scss';
 
-import { cleanupFilterTableState, toggleSortOrder, } from '@meemoo/admin-core-ui/admin';
+import {
+  cleanupFilterTableState,
+  toggleSortOrder,
+} from '@meemoo/admin-core-ui/admin';
 import { PaginationBar } from '@meemoo/react-components';
 import {
   Button,
@@ -31,12 +34,20 @@ import {
   AvoCoreBlockItemType,
   AvoSearchOrderDirection,
   AvoShareShareWithColleagueType,
-  PermissionName
+  PermissionName,
 } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { cloneDeep, compact, isNil, noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type FC, type KeyboardEvent, type ReactNode, useCallback, useEffect, useMemo, useState, } from 'react';
+import {
+  type FC,
+  type KeyboardEvent,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -46,10 +57,16 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
-import { CheckboxDropdownModal, type CheckboxOption, } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import {
+  CheckboxDropdownModal,
+  type CheckboxOption,
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
-import { ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS, getMoreOptionsLabel, } from '../../shared/constants';
+import {
+  ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
+  getMoreOptionsLabel,
+} from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { getContributorType } from '../../shared/helpers/contributors';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
@@ -82,9 +99,16 @@ import {
   GET_ASSIGNMENT_OVERVIEW_COLUMNS,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentAction, type AssignmentTableColumns, AssignmentView, } from '../assignment.types';
+import {
+  AssignmentAction,
+  type AssignmentTableColumns,
+  AssignmentView,
+} from '../assignment.types';
 import { AssignmentDeadline } from '../components/AssignmentDeadline';
-import { deleteAssignment, deleteSelfFromAssignment, } from '../helpers/delete-assignment';
+import {
+  deleteAssignment,
+  deleteSelfFromAssignment,
+} from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { useGetAssignments } from '../hooks/useGetAssignments';
 import { DeleteAssignmentModal } from '../modals/DeleteAssignmentModal';

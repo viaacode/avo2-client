@@ -1,5 +1,5 @@
-import { Button, type ButtonProps, IconName } from '@viaa/avo2-components'
-import { type ReactNode, useState } from 'react'
+import { Button, type ButtonProps, IconName } from '@viaa/avo2-components';
+import { type ReactNode, useState } from 'react';
 
 import {
   CutFragmentModal,
@@ -11,7 +11,7 @@ export function useCutModal(): [
   (props?: Partial<ButtonProps>) => ReactNode,
   (props?: Partial<CutFragmentModalProps>) => ReactNode,
 ] {
-  const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false)
+  const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 
   const renderButton = (props?: Partial<ButtonProps>) => {
     return (
@@ -24,12 +24,12 @@ export function useCutModal(): [
         type="secondary"
         {...props}
         onClick={(e) => {
-          props?.onClick && props.onClick(e)
-          setIsCutModalOpen(true)
+          props?.onClick && props.onClick(e);
+          setIsCutModalOpen(true);
         }}
       />
-    )
-  }
+    );
+  };
 
   const renderModal = (props?: Partial<CutFragmentModalProps>) => {
     return (
@@ -38,13 +38,13 @@ export function useCutModal(): [
           {...(props as CutFragmentModalProps)}
           isOpen={isCutModalOpen}
           onClose={() => {
-            props?.onClose && props.onClose()
-            setIsCutModalOpen(false)
+            props?.onClose && props.onClose();
+            setIsCutModalOpen(false);
           }}
         />
       )
-    )
-  }
+    );
+  };
 
-  return [renderButton, renderModal]
+  return [renderButton, renderModal];
 }

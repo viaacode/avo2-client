@@ -26,7 +26,14 @@ import {
 } from '@viaa/avo2-components';
 
 import clsx from 'clsx';
-import { createRef, type FC, type ReactNode, useEffect, useMemo, useState, } from 'react';
+import {
+  createRef,
+  type FC,
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import './BlockMediaGrid.scss';
 import { AvoContentPageType, AvoContentTypeEnglish } from '@viaa/avo2-types';

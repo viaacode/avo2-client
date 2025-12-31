@@ -18,7 +18,7 @@ import {
   AvoCollectionLabel,
   AvoCoreContentPickerType,
   AvoSearchOrderDirection,
-  PermissionName
+  PermissionName,
 } from '@viaa/avo2-types';
 import { noop, orderBy } from 'es-toolkit';
 import { get } from 'es-toolkit/compat';
@@ -29,7 +29,10 @@ import { type PickerItem } from '../../admin/shared/types/content-picker';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { ContainedInBundlesTable } from '../../bundle/components/ContainedInBundlesTable';
-import { AssociatedQuickLaneTable, AssociatedQuickLaneTableOrderBy, } from '../../quick-lane/components/AssociatedQuickLaneTable';
+import {
+  AssociatedQuickLaneTable,
+  AssociatedQuickLaneTableOrderBy,
+} from '../../quick-lane/components/AssociatedQuickLaneTable';
 import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getFullNameCommonUser } from '../../shared/helpers/formatters/avatar';

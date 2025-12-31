@@ -4,7 +4,13 @@ import {
   ContentPageService,
   convertDbContentPagesToContentPageInfos,
 } from '@meemoo/admin-core-ui/client';
-import { Button, Spacer, Spinner, Toolbar, ToolbarCenter, } from '@viaa/avo2-components';
+import {
+  Button,
+  Spacer,
+  Spinner,
+  Toolbar,
+  ToolbarCenter,
+} from '@viaa/avo2-components';
 
 import { AvoAuthLoginResponseLoggedIn } from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
@@ -25,7 +31,11 @@ import { tText } from '../../../shared/helpers/translate-text';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { Locale } from '../../../shared/translations/translations.types';
-import { acceptConditionsAtom, commonUserAtom, loginAtom, } from '../../authentication.store';
+import {
+  acceptConditionsAtom,
+  commonUserAtom,
+  loginAtom,
+} from '../../authentication.store';
 import { redirectToClientPage } from '../../helpers/redirects/redirects';
 import { AcceptElementaryPupilConditions } from './accept-elementary-pupil-conditions';
 

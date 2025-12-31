@@ -1,6 +1,9 @@
 import { IconName } from '@viaa/avo2-components';
 
-import { AvoAssignmentAssignment, AvoCoreBlockItemBase } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoCoreBlockItemBase,
+} from '@viaa/avo2-types';
 import { type FC, type ReactNode } from 'react';
 import { ErrorView } from '../../../../error/views/ErrorView';
 import { type FilterState } from '../../../../search/search.types';

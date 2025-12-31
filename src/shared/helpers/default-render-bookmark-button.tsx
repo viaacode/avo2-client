@@ -5,17 +5,17 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@viaa/avo2-components'
-import { type ReactNode } from 'react'
+} from '@viaa/avo2-components';
+import { type ReactNode } from 'react';
 
 export type renderBookmarkButtonProps = Pick<
   ToggleButtonProps,
   'active' | 'onClick' | 'ariaLabel' | 'title' | 'type'
->
+>;
 
 const getBookmarkButton = (props: renderBookmarkButtonProps): ReactNode => {
-  return <ToggleButton type="tertiary" icon={IconName.bookmark} {...props} />
-}
+  return <ToggleButton type="tertiary" icon={IconName.bookmark} {...props} />;
+};
 
 export const defaultRenderBookmarkButton = (
   props: renderBookmarkButtonProps,
@@ -30,8 +30,8 @@ export const defaultRenderBookmarkButton = (
           <span>{props.title}</span>
         </TooltipContent>
       </Tooltip>
-    )
+    );
   }
 
-  return getBookmarkButton(props)
-}
+  return getBookmarkButton(props);
+};

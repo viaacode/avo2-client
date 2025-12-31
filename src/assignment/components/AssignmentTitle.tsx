@@ -1,17 +1,17 @@
-import { BlockHeading } from '@meemoo/admin-core-ui/client'
-import { FormControl } from '@meemoo/react-components'
-import { ContentInput, Flex, Icon, IconName } from '@viaa/avo2-components'
-import { type FC, useState } from 'react'
+import { BlockHeading } from '@meemoo/admin-core-ui/client';
+import { FormControl } from '@meemoo/react-components';
+import { ContentInput, Flex, Icon, IconName } from '@viaa/avo2-components';
+import { type FC, useState } from 'react';
 
 import { tText } from '../../shared/helpers/translate-text';
 import { MAX_TITLE_LENGTH } from '../assignment.const';
 
 type AssignmentTitleProps = {
-  value: string
-  error: string | null
-  onChange: (newTitle: string) => void
-  onFocus?: () => void
-}
+  value: string;
+  error: string | null;
+  onChange: (newTitle: string) => void;
+  onFocus?: () => void;
+};
 
 export const AssignmentTitle: FC<AssignmentTitleProps> = ({
   error,
@@ -19,8 +19,8 @@ export const AssignmentTitle: FC<AssignmentTitleProps> = ({
   onChange,
   onFocus,
 }) => {
-  const [isActive, setIsActive] = useState<boolean>(false)
-  const [titleTemp, setTitleTemp] = useState(value)
+  const [isActive, setIsActive] = useState<boolean>(false);
+  const [titleTemp, setTitleTemp] = useState(value);
 
   return (
     <Flex center className="c-inline-title-edit">
@@ -35,18 +35,18 @@ export const AssignmentTitle: FC<AssignmentTitleProps> = ({
               nodeCancel={<Icon name={IconName.x} size="small" />}
               nodeSubmit={<Icon name={IconName.check} size="small" />}
               onChange={(newTitle) => {
-                setTitleTemp(newTitle)
+                setTitleTemp(newTitle);
               }}
               onConfirm={() => {
-                onChange(titleTemp)
+                onChange(titleTemp);
               }}
               onCancel={() => {
-                setIsActive(false)
-                setTitleTemp(value)
+                setIsActive(false);
+                setTitleTemp(value);
               }}
               onOpen={() => setIsActive(true)}
               onClose={() => {
-                setIsActive(false)
+                setIsActive(false);
               }}
               onFocus={onFocus}
               iconEnd={() =>
@@ -58,5 +58,5 @@ export const AssignmentTitle: FC<AssignmentTitleProps> = ({
         </FormControl>
       </BlockHeading>
     </Flex>
-  )
-}
+  );
+};

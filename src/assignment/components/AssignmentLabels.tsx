@@ -1,8 +1,22 @@
 import { type ColorOption } from '@meemoo/admin-core-ui/admin';
-import { Button, Flex, FlexItem, IconName, Spacer, TagList, type TagOption, } from '@viaa/avo2-components';
+import {
+  Button,
+  Flex,
+  FlexItem,
+  IconName,
+  Spacer,
+  TagList,
+  type TagOption,
+} from '@viaa/avo2-components';
 import { cloneDeep } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type FC, type MouseEvent, useCallback, useEffect, useState, } from 'react';
+import {
+  type FC,
+  type MouseEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { ColorSelect } from '../../shared/components/ColorSelect/ColorSelect';

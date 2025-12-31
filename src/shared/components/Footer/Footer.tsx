@@ -89,6 +89,7 @@ export const Footer: FC = () => {
               </span>
               <Spacer margin="left-small">
                 <img
+                  className="meemoo-logo"
                   src={meemooLogo}
                   alt={tText(
                     'shared/components/footer/footer___logo-van-meemoo',
@@ -112,6 +113,7 @@ export const Footer: FC = () => {
               </span>
               <Spacer margin="left-small">
                 <img
+                  className="flemish-government-logo"
                   src={vlaamseOverheidLogoSrc}
                   alt={tText(
                     'shared/components/footer/footer___logo-van-vlaamse-overheid',

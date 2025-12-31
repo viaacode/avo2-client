@@ -1,4 +1,4 @@
-import { type UseQueryResult, useQuery } from '@tanstack/react-query'
+import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '../../shared/constants/query-keys';
 import { tHtml } from '../../shared/helpers/translate-html';
@@ -16,7 +16,7 @@ export const useGetKlascementAssignmentPublishInfo = (
     queryFn: async () => {
       return KlascementService.getKlascementPublishInfoForAssignment(
         assignmentId,
-      )
+      );
     },
     enabled: true,
     meta: {
@@ -25,5 +25,5 @@ export const useGetKlascementAssignmentPublishInfo = (
       ),
     },
     ...options,
-  })
-}
+  });
+};

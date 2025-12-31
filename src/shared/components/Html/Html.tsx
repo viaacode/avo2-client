@@ -1,11 +1,11 @@
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client'
-import { type FC } from 'react'
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client';
+import { type FC } from 'react';
 
 export interface HtmlProps {
-  content: string
-  sanitizePreset?: SanitizePreset
-  type?: 'p' | 'div' | 'span'
-  className?: string
+  content: string;
+  sanitizePreset?: SanitizePreset;
+  type?: 'p' | 'div' | 'span';
+  className?: string;
 }
 
 export const Html: FC<HtmlProps> = ({
@@ -14,7 +14,7 @@ export const Html: FC<HtmlProps> = ({
   type = 'p',
   className,
 }) => {
-  const Type = type
+  const Type = type;
 
   return (
     <Type
@@ -23,5 +23,5 @@ export const Html: FC<HtmlProps> = ({
       }}
       className={className}
     />
-  )
-}
+  );
+};

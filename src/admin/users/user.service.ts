@@ -9,7 +9,10 @@ import {
   type UpdateUserTempAccessByIdMutation,
   type UpdateUserTempAccessByIdMutationVariables,
 } from '../../shared/generated/graphql-db-operations';
-import { GetProfileIdsDocument, UpdateUserTempAccessByIdDocument, } from '../../shared/generated/graphql-db-react-query';
+import {
+  GetProfileIdsDocument,
+  UpdateUserTempAccessByIdDocument,
+} from '../../shared/generated/graphql-db-react-query';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
 import { toIsoDate } from '../../shared/helpers/formatters/date';

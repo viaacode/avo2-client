@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '../../../../shared/constants/query-keys';
 import { CampaignMonitorService } from '../../../../shared/services/campaign-monitor-service';
@@ -6,7 +6,7 @@ import { CampaignMonitorService } from '../../../../shared/services/campaign-mon
 export const useGetEmailPreferences = (
   preferenceCenterKey: string,
   options: {
-    enabled?: boolean
+    enabled?: boolean;
   } = {},
 ) => {
   return useQuery({
@@ -14,10 +14,10 @@ export const useGetEmailPreferences = (
     queryFn: () => {
       return CampaignMonitorService.fetchNewsletterPreferences(
         preferenceCenterKey,
-      )
+      );
     },
     enabled: true,
     staleTime: 0,
     ...options,
-  })
-}
+  });
+};

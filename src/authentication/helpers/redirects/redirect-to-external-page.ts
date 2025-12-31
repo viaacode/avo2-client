@@ -3,8 +3,8 @@ export function redirectToExternalPage(
   target: '_blank' | string | null | undefined,
 ): void {
   if (target === '_blank') {
-    window.open(link, '_blank', 'noopener,noreferrer')
+    window.open(link, '_blank', 'noopener,noreferrer');
   } else {
-    window.location.href = link
+    window.location.href = link;
   }
 }

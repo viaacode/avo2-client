@@ -1,9 +1,9 @@
-import path from 'path'
+import path from 'path';
 
-import replace, { type ReplaceResult } from 'replace-in-file'
+import replace, { type ReplaceResult } from 'replace-in-file';
 
 const regex =
-  /<script([^>]*)src="(\/assets\/main-[^.]+\.js)"([^>]*)><\/script>/g
+  /<script([^>]*)src="(\/assets\/main-[^.]+\.js)"([^>]*)><\/script>/g;
 
 replace
   .replaceInFile({
@@ -16,15 +16,15 @@ replace
       // No replacements were made => throw error
       console.error(
         `Failed to add cookiebot ignore attributes. Regex not found: ${regex.source}`,
-      )
-      process.exit(1)
+      );
+      process.exit(1);
     } else {
       // Replacement was made
-      console.info('Successfully added cookiebot ignore attributes:', results)
-      process.exit(0)
+      console.info('Successfully added cookiebot ignore attributes:', results);
+      process.exit(0);
     }
   })
   .catch((error: any) => {
-    console.error('Failed to add cookiebot ignore attributes', error)
-    process.exit(1)
-  })
+    console.error('Failed to add cookiebot ignore attributes', error);
+    process.exit(1);
+  });

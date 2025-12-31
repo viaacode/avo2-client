@@ -1,4 +1,4 @@
-import { type FC } from 'react'
+import { type FC } from 'react';
 
 import { NULL_FILTER } from '../../../admin/shared/helpers/filters';
 import { tText } from '../../helpers/translate-text';
@@ -8,16 +8,16 @@ import {
 } from '../CheckboxDropdownModal/CheckboxDropdownModal';
 
 export interface BooleanCheckboxDropdownProps {
-  label: string
-  id: string
-  disabled?: boolean
-  value: string[]
-  trueLabel?: string
-  falseLabel?: string
-  trueValue?: string
-  falseValue?: string
-  includeEmpty?: boolean
-  onChange: (value: string[], id: string) => void
+  label: string;
+  id: string;
+  disabled?: boolean;
+  value: string[];
+  trueLabel?: string;
+  falseLabel?: string;
+  trueValue?: string;
+  falseValue?: string;
+  includeEmpty?: boolean;
+  onChange: (value: string[], id: string) => void;
 }
 
 export const BooleanCheckboxDropdown: FC<BooleanCheckboxDropdownProps> = ({
@@ -61,8 +61,8 @@ export const BooleanCheckboxDropdown: FC<BooleanCheckboxDropdownProps> = ({
             },
           ]
         : []),
-    ]
-  }
+    ];
+  };
 
   // Methods
   const handleCheckboxChange = (selectedCheckboxes: string[]) => {
@@ -70,11 +70,11 @@ export const BooleanCheckboxDropdown: FC<BooleanCheckboxDropdownProps> = ({
       selectedCheckboxes.length === 0 ||
       selectedCheckboxes.length === (includeEmpty ? 3 : 2)
     ) {
-      onChange([], id)
+      onChange([], id);
     } else {
-      onChange(selectedCheckboxes, id)
+      onChange(selectedCheckboxes, id);
     }
-  }
+  };
 
   return (
     <CheckboxDropdownModal
@@ -84,5 +84,5 @@ export const BooleanCheckboxDropdown: FC<BooleanCheckboxDropdownProps> = ({
       onChange={handleCheckboxChange}
       disabled={disabled}
     />
-  )
-}
+  );
+};

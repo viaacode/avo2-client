@@ -1,4 +1,13 @@
-import { Blankslate, Button, Flex, FlexItem, Icon, IconName, Spacer, Spinner, } from '@viaa/avo2-components';
+import {
+  Blankslate,
+  Button,
+  Flex,
+  FlexItem,
+  Icon,
+  IconName,
+  Spacer,
+  Spinner,
+} from '@viaa/avo2-components';
 import { AvoFileUploadAssetType } from '@viaa/avo2-types';
 import { compact, isString } from 'es-toolkit';
 import queryString from 'query-string';
@@ -13,7 +22,7 @@ import { ToastService } from '../../services/toast-service';
 import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
 
 import './FileUpload.scss';
-import { FileUploadImagePosition } from "./FileUpload.const.ts";
+import { FileUploadImagePosition } from './FileUpload.const.ts';
 
 interface FileUploadProps {
   icon?: IconName;

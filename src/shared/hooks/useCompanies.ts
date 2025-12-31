@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 import { CustomError } from '../helpers/custom-error';
 import { tHtml } from '../helpers/translate-html';
@@ -6,74 +6,74 @@ import { OrganisationService } from '../services/organizations-service';
 import { ToastService } from '../services/toast-service';
 
 export type BasicOrganisation = {
-  or_id: string
-  name: string
-}
+  or_id: string;
+  name: string;
+};
 
-type UseCompaniesTuple = [BasicOrganisation[], boolean]
+type UseCompaniesTuple = [BasicOrganisation[], boolean];
 
 export const useCompanies = (onlyWithItems: boolean): UseCompaniesTuple => {
-  const [companies, setCompanies] = useState<BasicOrganisation[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [companies, setCompanies] = useState<BasicOrganisation[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     OrganisationService.fetchOrganisations(onlyWithItems)
       .then((orgs) => {
         if (orgs) {
           setCompanies(
             orgs.filter((org) => org.name && org.or_id) as BasicOrganisation[],
-          )
+          );
         }
       })
       .catch((err) => {
         console.error(
           new CustomError('Failed to get organisations from database', err),
-        )
+        );
         ToastService.danger(
           tHtml(
             'settings/components/profile___het-ophalen-van-de-organisaties-is-mislukt',
           ),
-        )
+        );
       })
       .finally(() => {
-        setIsLoading(false)
-      })
-  }, [onlyWithItems])
+        setIsLoading(false);
+      });
+  }, [onlyWithItems]);
 
-  return [companies, isLoading]
-}
+  return [companies, isLoading];
+};
 
 export const useCompaniesWithUsers = (): UseCompaniesTuple => {
-  const [companies, setCompanies] = useState<BasicOrganisation[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [companies, setCompanies] = useState<BasicOrganisation[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     OrganisationService.fetchOrganisationsWithUsers()
       .then((orgs) => {
         if (orgs) {
           setCompanies(
             orgs.filter((org) => org.name && org.or_id) as BasicOrganisation[],
-          )
+          );
         }
       })
       .catch((err) => {
         console.error(
           new CustomError('Failed to get organisations from database', err),
-        )
+        );
         ToastService.danger(
           tHtml(
             'settings/components/profile___het-ophalen-van-de-organisaties-is-mislukt',
           ),
-        )
+        );
       })
       .finally(() => {
-        setIsLoading(false)
-      })
-  }, [])
+        setIsLoading(false);
+      });
+  }, []);
 
-  return [companies, isLoading]
-}
+  return [companies, isLoading];
+};

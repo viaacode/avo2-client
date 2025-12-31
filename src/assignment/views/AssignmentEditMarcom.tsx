@@ -30,7 +30,10 @@ import {
   GET_MARCOM_CHANNEL_TYPE_OPTIONS,
   GET_MARCOM_ENTRY_TABLE_COLUMNS,
 } from '../../collection/collection.const';
-import { type AssignmentMarcomEntry, CollectionCreateUpdateTab, } from '../../collection/collection.types';
+import {
+  type AssignmentMarcomEntry,
+  CollectionCreateUpdateTab,
+} from '../../collection/collection.types';
 import { type MarcomNoteInfo } from '../../collection/components/CollectionOrBundleEdit.types';
 import { APP_PATH } from '../../constants';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';

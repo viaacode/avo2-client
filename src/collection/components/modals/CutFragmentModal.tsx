@@ -1,4 +1,12 @@
-import { Button, ButtonToolbar, Modal, ModalBody, Toolbar, ToolbarItem, ToolbarRight, } from '@viaa/avo2-components';
+import {
+  Button,
+  ButtonToolbar,
+  Modal,
+  ModalBody,
+  Toolbar,
+  ToolbarItem,
+  ToolbarRight,
+} from '@viaa/avo2-components';
 
 import { noop, once } from 'es-toolkit';
 import { type FC, useState } from 'react';

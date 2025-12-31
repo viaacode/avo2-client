@@ -1,15 +1,25 @@
-import { Button, Checkbox, Icon, IconName, Modal, ModalBody, ModalFooterRight, Spacer, TagList, } from '@viaa/avo2-components'
+import {
+  Button,
+  Checkbox,
+  Icon,
+  IconName,
+  Modal,
+  ModalBody,
+  ModalFooterRight,
+  Spacer,
+  TagList,
+} from '@viaa/avo2-components';
 
-import { clsx } from 'clsx'
-import { type FC, type MouseEvent, useEffect, useState } from 'react'
+import { clsx } from 'clsx';
+import { type FC, type MouseEvent, useEffect, useState } from 'react';
 
 import { NULL_FILTER } from '../../../admin/shared/helpers/filters';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import { EducationalOrganisationsSelect } from '../EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 
-import './MultiEducationalOrganisationSelectModal.scss'
-import { AvoEducationOrganizationOrganization } from "@viaa/avo2-types";
+import './MultiEducationalOrganisationSelectModal.scss';
+import { AvoEducationOrganizationOrganization } from '@viaa/avo2-types';
 
 interface MultiEducationalOrganisationSelectModalProps {
   label: string;

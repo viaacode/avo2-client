@@ -1,5 +1,10 @@
 import { type DbContentPage } from '@meemoo/admin-core-ui/client';
-import { AvoAssignmentAssignment, AvoCollectionCollection, AvoItemItem, AvoOrganizationOrganization, } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoCollectionCollection,
+  AvoItemItem,
+  AvoOrganizationOrganization,
+} from '@viaa/avo2-types';
 
 export type ResolvedItemOrCollectionOrAssignmentOrContentPage = Partial<
   | AvoItemItem

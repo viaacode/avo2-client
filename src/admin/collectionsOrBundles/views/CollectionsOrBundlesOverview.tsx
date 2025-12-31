@@ -1,4 +1,8 @@
-import { ExportAllToCsvModal, FilterTable, getFilters, } from '@meemoo/admin-core-ui/admin';
+import {
+  ExportAllToCsvModal,
+  FilterTable,
+  getFilters,
+} from '@meemoo/admin-core-ui/admin';
 import { type TagInfo } from '@viaa/avo2-components';
 import {
   AvoCollectionCollection,
@@ -9,7 +13,14 @@ import {
 } from '@viaa/avo2-types';
 import { compact, noop, partition } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type FC, type ReactNode, useCallback, useEffect, useMemo, useState, } from 'react';
+import {
+  type FC,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
@@ -46,7 +57,11 @@ import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import type { PickerItem } from '../../shared/types/content-picker';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
-import { GET_COLLECTION_BULK_ACTIONS, GET_COLLECTIONS_COLUMNS, ITEMS_PER_PAGE, } from '../collections-or-bundles.const';
+import {
+  GET_COLLECTION_BULK_ACTIONS,
+  GET_COLLECTIONS_COLUMNS,
+  ITEMS_PER_PAGE,
+} from '../collections-or-bundles.const';
 import { COLLECTIONS_OR_BUNDLES_PATH } from '../collections-or-bundles.routes.ts';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {

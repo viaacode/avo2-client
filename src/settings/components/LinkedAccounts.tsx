@@ -1,12 +1,31 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { Button, Column, Container, Form, FormGroup, Grid, Icon, IconName, Spacer, } from '@viaa/avo2-components';
+import {
+  Button,
+  Column,
+  Container,
+  Form,
+  FormGroup,
+  Grid,
+  Icon,
+  IconName,
+  Spacer,
+} from '@viaa/avo2-components';
 
 import { useAtomValue } from 'jotai';
-import { type Dispatch, type FC, type ReactNode, type SetStateAction, useState, } from 'react';
+import {
+  type Dispatch,
+  type FC,
+  type ReactNode,
+  type SetStateAction,
+  useState,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
-import { redirectToServerLinkAccount, redirectToServerUnlinkAccount, } from '../../authentication/helpers/redirects/redirects';
+import {
+  redirectToServerLinkAccount,
+  redirectToServerUnlinkAccount,
+} from '../../authentication/helpers/redirects/redirects';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { isPupil } from '../../shared/helpers/is-pupil';
 

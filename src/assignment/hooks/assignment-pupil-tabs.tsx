@@ -1,5 +1,13 @@
-import { IconName, Pill, PillVariants, type TabProps, } from '@viaa/avo2-components';
-import { AvoAssignmentAssignment, AvoCoreBlockItemType, } from '@viaa/avo2-types';
+import {
+  IconName,
+  Pill,
+  PillVariants,
+  type TabProps,
+} from '@viaa/avo2-components';
+import {
+  AvoAssignmentAssignment,
+  AvoCoreBlockItemType,
+} from '@viaa/avo2-types';
 import { useCallback, useMemo, useState } from 'react';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';

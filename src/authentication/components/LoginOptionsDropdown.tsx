@@ -1,11 +1,11 @@
-import { noop } from 'es-toolkit'
-import { type FC } from 'react'
+import { noop } from 'es-toolkit';
+import { type FC } from 'react';
 
 import { LoginOptions } from './LoginOptions';
-import './LoginOptionsDropdown.scss'
+import './LoginOptionsDropdown.scss';
 
 interface LoginOptionsDropdownProps {
-  closeDropdown?: () => void
+  closeDropdown?: () => void;
 }
 
 export const LoginOptionsDropdown: FC<LoginOptionsDropdownProps> = ({
@@ -15,5 +15,5 @@ export const LoginOptionsDropdown: FC<LoginOptionsDropdownProps> = ({
     <div className="m-login-options-dropdown">
       <LoginOptions onOptionClicked={closeDropdown} />
     </div>
-  )
-}
+  );
+};

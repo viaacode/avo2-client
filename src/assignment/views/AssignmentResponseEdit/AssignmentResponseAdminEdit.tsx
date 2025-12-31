@@ -1,8 +1,20 @@
 import { IconName } from '@viaa/avo2-components';
-import { AvoAssignmentAssignment, AvoAssignmentResponse, PermissionName, } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentResponse,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type Dispatch, type FC, type ReactNode, type SetStateAction, useCallback, useEffect, useState, } from 'react';
+import {
+  type Dispatch,
+  type FC,
+  type ReactNode,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useParams } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
@@ -20,7 +32,7 @@ import { AssignmentResponseEdit } from './AssignmentResponseEdit';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { SeoMetadata } from "../../../shared/components/SeoMetadata/SeoMetadata.tsx";
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 
 export const AssignmentResponseAdminEdit: FC = () => {
   const { assignmentId, responseId: assignmentResponseId } = useParams<{

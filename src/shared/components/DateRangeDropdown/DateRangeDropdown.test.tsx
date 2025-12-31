@@ -13,8 +13,8 @@ describe('<Checkbox />', () => {
     // 		onChange={() => console.info('CheckboxDropdown changed')}
     // 	/>
     // );
-    expect(true)
-  })
+    expect(true);
+  });
 
   it('Should call `onChange` when changing a datetime', () => {
     // const onChangeHandler = jest.fn();
@@ -44,6 +44,6 @@ describe('<Checkbox />', () => {
     // 	},
     // 	'releaseDate'
     // );
-    expect(true)
-  })
-})
+    expect(true);
+  });
+});

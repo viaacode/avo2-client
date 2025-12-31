@@ -1,23 +1,23 @@
-import { noop } from 'es-toolkit'
-import { type FC, type ReactNode } from 'react'
+import { noop } from 'es-toolkit';
+import { type FC, type ReactNode } from 'react';
 
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 
 interface DeleteAssignmentModalProps {
-  isOpen: boolean
-  onClose?: () => void
-  deleteAssignmentCallback: () => void
-  deleteSelfFromAssignmentCallback: () => void
-  contributorCount: number
-  hasPupilResponses: boolean
-  hasPupilResponseCollections: boolean
+  isOpen: boolean;
+  onClose?: () => void;
+  deleteAssignmentCallback: () => void;
+  deleteSelfFromAssignmentCallback: () => void;
+  contributorCount: number;
+  hasPupilResponses: boolean;
+  hasPupilResponseCollections: boolean;
   /**
    * true: should delete the current user from the contributors of the assignment
    * false: should delete the assignment itself
    */
-  shouldDeleteSelfFromAssignment: boolean
+  shouldDeleteSelfFromAssignment: boolean;
 }
 
 export const DeleteAssignmentModal: FC<DeleteAssignmentModalProps> = ({
@@ -32,35 +32,35 @@ export const DeleteAssignmentModal: FC<DeleteAssignmentModalProps> = ({
 }) => {
   const handleDelete = async () => {
     if (shouldDeleteSelfFromAssignment) {
-      deleteSelfFromAssignmentCallback()
+      deleteSelfFromAssignmentCallback();
     } else {
-      deleteAssignmentCallback()
+      deleteAssignmentCallback();
     }
-    onClose()
-  }
+    onClose();
+  };
 
   const renderDeleteMessages = () => {
-    const messages: ReactNode[] = []
+    const messages: ReactNode[] = [];
     if (shouldDeleteSelfFromAssignment) {
       messages.push(
         tHtml(
           'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-jezelf-van-deze-collectie-wil-wissen',
         ),
-      )
+      );
     } else {
       if (contributorCount === 1) {
         messages.push(
           tHtml(
             'assignment/modals/delete-assignment-modal___deze-opdracht-is-met-1-andere-persoon-gedeeld-deze-verliezen-dan-toegang',
           ),
-        )
+        );
       } else if (contributorCount > 1) {
         messages.push(
           tHtml(
             'assignment/modals/delete-assignment-modal___deze-opdracht-is-met-count-andere-mensen-gedeeld-deze-verliezen-dan-toegang',
             { count: contributorCount },
           ),
-        )
+        );
       }
 
       if (hasPupilResponses) {
@@ -69,13 +69,13 @@ export const DeleteAssignmentModal: FC<DeleteAssignmentModalProps> = ({
             tHtml(
               'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden',
             ),
-          )
+          );
         } else {
           messages.push(
             tHtml(
               'assignment/views/assignment-overview___leerlingen-bekeken-deze-opdracht-reeds',
             ),
-          )
+          );
         }
       }
 
@@ -83,14 +83,14 @@ export const DeleteAssignmentModal: FC<DeleteAssignmentModalProps> = ({
         tHtml(
           'assignment/modals/delete-assignment-modal___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen',
         ),
-      )
+      );
     }
 
     messages.push(
       tHtml(
         'assignment/modals/delete-assignment-modal___opgelet-deze-actie-kan-niet-ongedaan-gemaakt-worden',
       ),
-    )
+    );
 
     return (
       <>
@@ -98,8 +98,8 @@ export const DeleteAssignmentModal: FC<DeleteAssignmentModalProps> = ({
           <p key={`assignment-delete-warning-${index}`}>{message}</p>
         ))}
       </>
-    )
-  }
+    );
+  };
 
   return (
     <ConfirmModal
@@ -125,5 +125,5 @@ export const DeleteAssignmentModal: FC<DeleteAssignmentModalProps> = ({
       className="c-content"
       confirmCallback={handleDelete}
     />
-  )
-}
+  );
+};

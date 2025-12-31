@@ -4,5 +4,5 @@
  * We cannot update the fragment states live in the parent component, because that would also rerender the video players
  * and that would cause the video players to lose their current time setting
  */
-export const FRAGMENT_EDIT_DELAY = 50
-export const COLLECTION_SAVE_DELAY = 100
+export const FRAGMENT_EDIT_DELAY = 50;
+export const COLLECTION_SAVE_DELAY = 100;

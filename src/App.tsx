@@ -1,7 +1,14 @@
 import { AdminConfig } from '@meemoo/admin-core-ui/admin';
 import { AdminConfigManager } from '@meemoo/admin-core-ui/client';
-import { keepPreviousData, QueryClient, QueryClientProvider, } from '@tanstack/react-query';
-import { AvoAuthIdpLinkedSuccessQueryParam, PermissionName, } from '@viaa/avo2-types';
+import {
+  keepPreviousData,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
+import {
+  AvoAuthIdpLinkedSuccessQueryParam,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { isEqual, noop, uniq } from 'es-toolkit';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';

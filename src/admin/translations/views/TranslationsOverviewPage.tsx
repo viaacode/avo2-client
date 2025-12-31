@@ -1,7 +1,19 @@
-import { Button, Modal, ModalBody, ModalFooterRight, } from '@viaa/avo2-components';
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalFooterRight,
+} from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { flatten, groupBy, isNil } from 'es-toolkit';
-import { type FC, lazy, type ReactNode, Suspense, useCallback, useState, } from 'react';
+import {
+  type FC,
+  lazy,
+  type ReactNode,
+  Suspense,
+  useCallback,
+  useState,
+} from 'react';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
@@ -9,9 +21,15 @@ import { CustomError } from '../../../shared/helpers/custom-error';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import {
+  AdminLayoutBody,
+  AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { fetchTranslations, updateTranslations } from '../translations.service';
-import { type Translation, type TranslationsState, } from '../translations.types';
+import {
+  type Translation,
+  type TranslationsState,
+} from '../translations.types';
 
 import './TranslationsOverviewPage.scss';
 import { map } from 'es-toolkit/compat';

@@ -1,4 +1,7 @@
-import { AvoCollectionCollection, AvoCollectionFragment, } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoCollectionFragment,
+} from '@viaa/avo2-types';
 import type { ValueOf } from '../../shared/types';
 import { type CollectionOrBundle } from '../collection.types';
 

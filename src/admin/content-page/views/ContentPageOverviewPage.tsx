@@ -9,7 +9,10 @@ import { PermissionGuard } from '../../../authentication/components/PermissionGu
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { tText } from '../../../shared/helpers/translate-text';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
-import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import {
+  AdminLayoutBody,
+  AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { CONTENT_PAGE_PATH } from '../content-page.routes.ts';
 
 import './ContentPage.scss';

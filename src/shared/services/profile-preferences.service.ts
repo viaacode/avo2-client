@@ -14,9 +14,9 @@ import { dataService } from './data-service';
 import { type ProfilePreferenceKey } from './profile-preferences.types';
 
 export interface ProfilePreference {
-  id: number
-  profile_id: string
-  key: 'DO_NOT_SHOW' | string
+  id: number;
+  profile_id: string;
+  key: 'DO_NOT_SHOW' | string;
 }
 
 export class ProfilePreferencesService {
@@ -31,9 +31,9 @@ export class ProfilePreferencesService {
       >({
         query: GetProfilePreferenceDocument,
         variables: { profileId, key },
-      })
+      });
 
-      return response.users_profile_preferences ?? []
+      return response.users_profile_preferences ?? [];
     } catch (err) {
       throw new CustomError(
         'Het ophalen van de profile preference is mislukt.',
@@ -42,7 +42,7 @@ export class ProfilePreferencesService {
           query: 'GET_PROFILE_PREFERENCE',
           variables: { profileId, key },
         },
-      )
+      );
     }
   }
 
@@ -54,16 +54,16 @@ export class ProfilePreferencesService {
       const variables: SetProfilePreferenceMutationVariables = {
         profileId,
         key,
-      }
+      };
       const response = await dataService.query<
         SetProfilePreferenceMutation,
         SetProfilePreferenceMutationVariables
       >({
         query: SetProfilePreferenceDocument,
         variables,
-      })
+      });
 
-      return response.insert_users_profile_preferences?.affected_rows || 0
+      return response.insert_users_profile_preferences?.affected_rows || 0;
     } catch (err) {
       throw new CustomError(
         'Het updaten van de profile preference is mislukt.',
@@ -72,7 +72,7 @@ export class ProfilePreferencesService {
           query: 'SET_PROFILE_PREFERENCE',
           variables: { profileId, key },
         },
-      )
+      );
     }
   }
 }

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from '@playwright/test';
 
 import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies';
 
@@ -15,113 +15,113 @@ test('T09: Nieuws - klikken op pills', async ({ page }) => {
     page,
     process.env.TEST_CLIENT_ENDPOINT as string,
     process.env.TEST_CLIENT_TITLE as string,
-  )
+  );
 
   // Click nieuws button
-  await page.getByRole('link', { name: 'Nieuws', exact: true }).click()
+  await page.getByRole('link', { name: 'Nieuws', exact: true }).click();
 
   //
   // CHECK PLATFORMUPDATES PILL
   //
-  const pillName = 'Platformupdates'
+  const pillName = 'Platformupdates';
 
   // Check pill is visible
   await expect(
     page.locator('li.c-tag').filter({ hasText: pillName }),
-  ).toBeVisible()
+  ).toBeVisible();
   // Check that pill is not active
   await expect(
     page.locator('li.c-tag__active').filter({ hasText: pillName }),
-  ).not.toBeVisible()
+  ).not.toBeVisible();
 
   // Click on non-active pill
-  await page.locator('li.c-tag').filter({ hasText: pillName }).click()
+  await page.locator('li.c-tag').filter({ hasText: pillName }).click();
   // Check pill is active
   await expect(
     page.locator('li.c-tag__active').filter({ hasText: pillName }),
-  ).toBeVisible()
+  ).toBeVisible();
 
   // wait for articles to be filtered
-  await page.waitForTimeout(1000)
+  await page.waitForTimeout(1000);
 
   // Check count all articles shown
-  const count = await page.locator('a.c-content-page__label').count()
-  await expect(page.locator('a.c-content-page__label')).toHaveCount(count)
+  const count = await page.locator('a.c-content-page__label').count();
+  await expect(page.locator('a.c-content-page__label')).toHaveCount(count);
 
   // Check count article labels with pillname
   // Should be the same
   await expect(
     page.locator('a.c-content-page__label').filter({ hasText: pillName }),
-  ).toHaveCount(count)
+  ).toHaveCount(count);
 
   //
   // CHECK AANBOD GETIPT PILL
   //
-  const pillName2 = 'Aanbod getipt'
+  const pillName2 = 'Aanbod getipt';
 
   // Check pill is visible
   await expect(
     page.locator('li.c-tag').filter({ hasText: pillName2 }),
-  ).toBeVisible()
+  ).toBeVisible();
   // Check that pill is not active
   await expect(
     page.locator('li.c-tag__active').filter({ hasText: pillName2 }),
-  ).not.toBeVisible()
+  ).not.toBeVisible();
 
   // Click on non-active pill
-  await page.locator('li.c-tag').filter({ hasText: pillName2 }).click()
+  await page.locator('li.c-tag').filter({ hasText: pillName2 }).click();
   // Check pill is active
   await expect(
     page.locator('li.c-tag__active').filter({ hasText: pillName2 }),
-  ).toBeVisible()
+  ).toBeVisible();
 
   // wait for articles to be filtered
-  await page.waitForTimeout(1000)
+  await page.waitForTimeout(1000);
 
   // Check count all articles shown
-  const count2 = await page.locator('a.c-content-page__label').count()
-  await expect(page.locator('a.c-content-page__label')).toHaveCount(count2)
+  const count2 = await page.locator('a.c-content-page__label').count();
+  await expect(page.locator('a.c-content-page__label')).toHaveCount(count2);
 
   // Check count article labels with pillname2
   // Should be the same
   await expect(
     page.locator('a.c-content-page__label').filter({ hasText: pillName2 }),
-  ).toHaveCount(count2)
+  ).toHaveCount(count2);
 
   //
   // CHECK Workshops & events
   //
-  const pillName3 = 'Workshops & events'
+  const pillName3 = 'Workshops & events';
 
   // Check pill is visible
   await expect(
     page.locator('li.c-tag').filter({ hasText: pillName3 }),
-  ).toBeVisible()
+  ).toBeVisible();
   // Check that pill is not active
   await expect(
     page.locator('li.c-tag__active').filter({ hasText: pillName3 }),
-  ).not.toBeVisible()
+  ).not.toBeVisible();
 
   // Click on non-active pill
-  await page.locator('li.c-tag').filter({ hasText: pillName3 }).click()
+  await page.locator('li.c-tag').filter({ hasText: pillName3 }).click();
   // Check pill is active
   await expect(
     page.locator('li.c-tag__active').filter({ hasText: pillName3 }),
-  ).toBeVisible()
+  ).toBeVisible();
 
   // wait for articles to be filtered
-  await page.waitForTimeout(1000)
+  await page.waitForTimeout(1000);
 
   // Check count all articles shown
-  const count3 = await page.locator('a.c-content-page__label').count()
-  await expect(page.locator('a.c-content-page__label')).toHaveCount(count3)
+  const count3 = await page.locator('a.c-content-page__label').count();
+  await expect(page.locator('a.c-content-page__label')).toHaveCount(count3);
 
   // Check count article labels with pillname3
   // Should be the same
   await expect(
     page.locator('a.c-content-page__label').filter({ hasText: pillName3 }),
-  ).toHaveCount(count3)
+  ).toHaveCount(count3);
 
   // // Wait for close to save the videos
   // await context.close();
-})
+});

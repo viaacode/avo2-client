@@ -24,7 +24,13 @@ import { PermissionName } from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import { isEmpty } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
-import { type FC, type ReactText, useCallback, useEffect, useState, } from 'react';
+import {
+  type FC,
+  type ReactText,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
@@ -57,7 +63,12 @@ import {
   QUICK_LANE_ID,
   WORKSPACE_TAB_ID_TO_COUNT_ID,
 } from '../workspace.const';
-import { type NavTab, type TabFilter, type TabView, type TabViewMap, } from '../workspace.types';
+import {
+  type NavTab,
+  type TabFilter,
+  type TabView,
+  type TabViewMap,
+} from '../workspace.types';
 
 import { BookmarksOverview } from './BookmarksOverview';
 import { OrganisationContentOverview } from './OrganisationContentOverview';

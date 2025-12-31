@@ -1,9 +1,24 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { Alert, Box, Container, Flex, Icon, IconName, Spacer, Tabs, } from '@viaa/avo2-components';
+import {
+  Alert,
+  Box,
+  Container,
+  Flex,
+  Icon,
+  IconName,
+  Spacer,
+  Tabs,
+} from '@viaa/avo2-components';
 
 import { clsx } from 'clsx';
 import { useAtomValue } from 'jotai';
-import { type Dispatch, type FC, type SetStateAction, useMemo, useState, } from 'react';
+import {
+  type Dispatch,
+  type FC,
+  type SetStateAction,
+  useMemo,
+  useState,
+} from 'react';
 import { Link } from 'react-router-dom';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
@@ -15,10 +30,16 @@ import { formatTimestamp } from '../../../shared/helpers/formatters/date';
 import { useAssignmentPastDeadline } from '../../../shared/hooks/useAssignmentPastDeadline';
 import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
 import { ToastService } from '../../../shared/services/toast-service';
-import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS, PUPIL_COLLECTION_FORM_SCHEMA, } from '../../assignment.const';
+import {
+  ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
+  PUPIL_COLLECTION_FORM_SCHEMA,
+} from '../../assignment.const';
 import { reorderBlockPositions } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
-import { type PupilCollectionFragment, type PupilSearchFilterState, } from '../../assignment.types';
+import {
+  type PupilCollectionFragment,
+  type PupilSearchFilterState,
+} from '../../assignment.types';
 import { AssignmentHeading } from '../../components/AssignmentHeading';
 import { AssignmentMetadata } from '../../components/AssignmentMetadata';
 import { buildAssignmentSearchLink } from '../../helpers/build-search-link';
@@ -32,9 +53,19 @@ import { AssignmentResponseSearchTab } from './tabs/AssignmentResponseSearchTab'
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { AvoAssignmentAssignment, AvoAssignmentResponse, AvoCoreBlockItemBase, AvoCoreBlockItemType, } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentResponse,
+  AvoCoreBlockItemBase,
+  AvoCoreBlockItemType,
+} from '@viaa/avo2-types';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
-import { JsonParam, NumberParam, StringParam, useQueryParams, } from '../../../shared/helpers/routing/use-query-params-ssr.ts';
+import {
+  JsonParam,
+  NumberParam,
+  StringParam,
+  useQueryParams,
+} from '../../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { validateForm } from '../../../shared/helpers/validate-form.ts';

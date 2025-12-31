@@ -1,13 +1,9 @@
-import { UseQueryResult, useQuery } from '@tanstack/react-query'
-import { compact, sortBy } from 'es-toolkit'
-import { reverse } from 'es-toolkit/compat'
-import { matchPath } from 'react-router'
-import { type PathMatch } from 'react-router-dom'
-import {
-  APP_PATH,
-  type RouteId,
-  type RouteInfo,
-} from '../../../../constants';
+import { UseQueryResult, useQuery } from '@tanstack/react-query';
+import { compact, sortBy } from 'es-toolkit';
+import { reverse } from 'es-toolkit/compat';
+import { matchPath } from 'react-router';
+import { type PathMatch } from 'react-router-dom';
+import { APP_PATH, type RouteId, type RouteInfo } from '../../../../constants';
 import { QUERY_KEYS } from '../../../constants/query-keys';
 import {
   InteractiveTourService,
@@ -23,62 +19,62 @@ async function getInteractiveTourForPage(
     return {
       tour: null,
       routeId: null,
-    }
+    };
   }
   // Resolve current page location to route id, so we know which interactive tour to show
   // We reverse the order of the routes, since more specific routes are always declared later in the list
   const interactiveRoutePairs = reverse(
     Object.entries(APP_PATH).filter((pair) => pair[1].showForInteractiveTour),
-  )
+  );
 
   const matchingRoutePairs: [string, RouteInfo, PathMatch][] = compact(
     interactiveRoutePairs.map((pair) => {
-      const route = pair[1].route
-      const match = matchPath(currentPath, route)
+      const route = pair[1].route;
+      const match = matchPath(currentPath, route);
       if (match) {
-        return [...pair, match]
+        return [...pair, match];
       } else {
-        return null
+        return null;
       }
     }),
-  )
+  );
 
   const matchingRoutePairsSorted = sortBy(matchingRoutePairs, [
     (pair) => {
       if (pair[2].pathname === pair[2].pathnameBase) {
         // Exact match always should be considered first
         // eg: /opdrachten/maak is better than /opdrachten/:id
-        return -1000
+        return -1000;
       } else {
         // A more specific path should be used first
         // eg: /opdrachten/:id/bewerk/:tabId is better than /opdrachten/:id
-        return -pair[2].pathname.length
+        return -pair[2].pathname.length;
       }
     },
-  ])
+  ]);
 
   // Prefer exact route matches over matches with a parameter
-  const matchingRoutePair = matchingRoutePairsSorted[0]
+  const matchingRoutePair = matchingRoutePairsSorted[0];
 
-  let routeId: RouteId | undefined
+  let routeId: RouteId | undefined;
   if (matchingRoutePair) {
     // static page
-    routeId = matchingRoutePair[0] as RouteId
+    routeId = matchingRoutePair[0] as RouteId;
   } else {
     // check content pages
-    routeId = location.pathname as RouteId
+    routeId = location.pathname as RouteId;
   }
 
   // Get all routes that have an interactive tour
   const routeIdsWithTour: string[] =
-    await InteractiveTourService.fetchInteractiveTourRouteIds()
+    await InteractiveTourService.fetchInteractiveTourRouteIds();
 
   if (!routeIdsWithTour.includes(routeId)) {
     // No tour available for this page
     return {
       tour: null,
       routeId: routeId,
-    }
+    };
   }
 
   // Fetch interactive tours for current user and their seen status
@@ -86,27 +82,27 @@ async function getInteractiveTourForPage(
     routeId,
     profileId,
     tourDisplayDates,
-  )
+  );
 
-  const firstStep = tourTemp?.steps[0]
+  const firstStep = tourTemp?.steps[0];
 
   if (document.querySelector(firstStep?.target)) {
     return {
       tour: tourTemp,
       routeId,
-    }
+    };
   } else {
     console.warn(
       `Could not find target for first step "${firstStep?.title}}"`,
       {
         target: firstStep?.target,
       },
-    )
+    );
 
     return {
       tour: null,
       routeId: null,
-    }
+    };
   }
 }
 
@@ -115,9 +111,9 @@ export const useGetInteractiveTourForPage = (
   tourDisplayDates: { [tourId: string]: string } | null,
   profileId: string | undefined,
   options?: {
-    enabled: boolean
-    refetchInterval?: number | false
-    refetchIntervalInBackground?: boolean
+    enabled: boolean;
+    refetchInterval?: number | false;
+    refetchIntervalInBackground?: boolean;
   },
 ): UseQueryResult<{ tour: TourInfo | null; routeId: RouteId | null }> => {
   return useQuery({
@@ -129,11 +125,15 @@ export const useGetInteractiveTourForPage = (
     ],
 
     queryFn: () => {
-      return getInteractiveTourForPage(currentPath, tourDisplayDates, profileId)
+      return getInteractiveTourForPage(
+        currentPath,
+        tourDisplayDates,
+        profileId,
+      );
     },
     enabled: true,
     refetchInterval: false,
     refetchIntervalInBackground: false,
     ...options,
-  })
-}
+  });
+};

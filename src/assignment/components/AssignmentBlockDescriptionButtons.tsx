@@ -1,10 +1,10 @@
-import { Button, ButtonGroup, Select } from '@viaa/avo2-components'
-import { type FC } from 'react'
+import { Button, ButtonGroup, Select } from '@viaa/avo2-components';
+import { type FC } from 'react';
 
 import { tText } from '../../shared/helpers/translate-text';
 import { type EditableAssignmentBlock } from '../assignment.types';
 
-import './AssignmentBlockDescriptionButtons.scss'
+import './AssignmentBlockDescriptionButtons.scss';
 
 export enum AssignmentBlockItemDescriptionType {
   original = 'original',
@@ -25,7 +25,7 @@ const getButtonLabels = (): Record<
   [AssignmentBlockItemDescriptionType.none]: tText(
     'assignment/views/assignment-edit___geen-beschrijving',
   ),
-})
+});
 
 const getButtonTooltips = (): Record<
   AssignmentBlockItemDescriptionType,
@@ -38,12 +38,12 @@ const getButtonTooltips = (): Record<
     'assignment/components/assignment-block-description-buttons___zoals-in-collectie',
   ),
   [AssignmentBlockItemDescriptionType.none]: undefined,
-})
+});
 
 interface AssignmentBlockDescriptionButtonsProps {
-  block: EditableAssignmentBlock
-  setBlock: (updatedBlock: EditableAssignmentBlock) => void
-  types?: AssignmentBlockItemDescriptionType[]
+  block: EditableAssignmentBlock;
+  setBlock: (updatedBlock: EditableAssignmentBlock) => void;
+  types?: AssignmentBlockItemDescriptionType[];
 }
 
 export const AssignmentBlockDescriptionButtons: FC<
@@ -57,11 +57,11 @@ export const AssignmentBlockDescriptionButtons: FC<
     AssignmentBlockItemDescriptionType.none,
   ],
 }) => {
-  const BUTTON_LABELS = getButtonLabels()
-  const BUTTON_TOOLTIPS = getButtonTooltips()
+  const BUTTON_LABELS = getButtonLabels();
+  const BUTTON_TOOLTIPS = getButtonTooltips();
 
   const onBlockClicked = (editMode: AssignmentBlockItemDescriptionType) => {
-    let updated = { ...block, editMode }
+    let updated = { ...block, editMode };
 
     if (editMode === AssignmentBlockItemDescriptionType.custom) {
       updated = {
@@ -72,18 +72,18 @@ export const AssignmentBlockDescriptionButtons: FC<
         ownDescription:
           block.ownDescription ??
           (block.custom_description || block.original_description || undefined),
-      }
+      };
     } else if (editMode === AssignmentBlockItemDescriptionType.none) {
       updated = {
         ...updated,
         noTitle:
           block.noTitle ??
           (block.custom_title || block.original_title || undefined),
-      }
+      };
     }
 
-    setBlock(updated)
-  }
+    setBlock(updated);
+  };
 
   const renderButtons = () => {
     return (
@@ -98,11 +98,11 @@ export const AssignmentBlockDescriptionButtons: FC<
               onClick={() => onBlockClicked(type)}
               key={'customise-item-form__button--' + block.id + '--' + type}
             />
-          )
+          );
         })}
       </ButtonGroup>
-    )
-  }
+    );
+  };
 
   const renderDropdown = () => {
     return (
@@ -114,19 +114,19 @@ export const AssignmentBlockDescriptionButtons: FC<
           return {
             label: BUTTON_LABELS[type],
             value: type,
-          }
+          };
         })}
         onChange={(value) =>
           onBlockClicked(value as AssignmentBlockItemDescriptionType)
         }
       />
-    )
-  }
+    );
+  };
 
   return (
     <>
       {renderButtons()}
       {renderDropdown()}
     </>
-  )
-}
+  );
+};

@@ -1,5 +1,14 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { Column, Grid, MediaCard, MediaCardMetaData, MediaCardThumbnail, MetaData, MetaDataItem, Thumbnail, } from '@viaa/avo2-components';
+import {
+  Column,
+  Grid,
+  MediaCard,
+  MediaCardMetaData,
+  MediaCardThumbnail,
+  MetaData,
+  MetaDataItem,
+  Thumbnail,
+} from '@viaa/avo2-components';
 import {
   AvoAssignmentAssignment,
   AvoCollectionCollection,
@@ -18,9 +27,15 @@ import { tHtml } from '../shared/helpers/translate-html';
 import { tText } from '../shared/helpers/translate-text';
 import { type Positioned } from '../shared/types';
 
-import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH, } from './collection.const';
+import {
+  MAX_LONG_DESCRIPTION_LENGTH,
+  MAX_SEARCH_DESCRIPTION_LENGTH,
+} from './collection.const';
 import { CollectionService } from './collection.service';
-import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN, ContentTypeNumber, } from './collection.types';
+import {
+  CONTENT_TYPE_TRANSLATIONS_NL_TO_EN,
+  ContentTypeNumber,
+} from './collection.types';
 
 export const getValidationFeedbackForDescription = (
   description: string | null,

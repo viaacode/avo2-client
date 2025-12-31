@@ -1,6 +1,11 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import { Container, Icon, IconName } from '@viaa/avo2-components';
-import { AvoAssignmentAssignment, AvoAssignmentResponse, AvoCoreBlockItemBase, PermissionName, } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoAssignmentResponse,
+  AvoCoreBlockItemBase,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';

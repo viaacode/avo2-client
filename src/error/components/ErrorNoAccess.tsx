@@ -1,24 +1,24 @@
-import { Blankslate, Button, Container, IconName } from '@viaa/avo2-components'
-import { type FC, type ReactNode } from 'react'
-import { useNavigate } from 'react-router'
+import { Blankslate, Button, Container, IconName } from '@viaa/avo2-components';
+import { type FC, type ReactNode } from 'react';
+import { useNavigate } from 'react-router';
 
 import { APP_PATH } from '../../constants';
 import { OrderedList } from '../../shared/components/OrderedList/OrderedList';
 
-import './ErrorNoAccess.scss'
+import './ErrorNoAccess.scss';
 import { tText } from '../../shared/helpers/translate-text';
 
 interface ErrorNoAccessProps {
-  title: string | ReactNode
-  message: string | ReactNode
+  title: string | ReactNode;
+  message: string | ReactNode;
 }
 
 export const ErrorNoAccess: FC<ErrorNoAccessProps> = ({ title, message }) => {
-  const navigateFunc = useNavigate()
+  const navigateFunc = useNavigate();
 
   const goToWorkspace = () => {
-    navigateFunc(APP_PATH.WORKSPACE.route)
-  }
+    navigateFunc(APP_PATH.WORKSPACE.route);
+  };
 
   return (
     <div className="c-error-no-access">
@@ -47,5 +47,5 @@ export const ErrorNoAccess: FC<ErrorNoAccessProps> = ({ title, message }) => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

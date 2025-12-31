@@ -1,4 +1,4 @@
-import { AvoUserCommonUser, PermissionName } from '@viaa/avo2-types'
+import { AvoUserCommonUser, PermissionName } from '@viaa/avo2-types';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
 

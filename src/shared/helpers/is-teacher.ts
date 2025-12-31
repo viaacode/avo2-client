@@ -12,5 +12,5 @@ export function isTeacher(userGroupId: number | string | undefined): boolean {
       SpecialUserGroupId.TeacherElementary,
       SpecialUserGroupId.TeacherSecondary,
     ].includes(String(userGroupId) as SpecialUserGroupId)
-  )
+  );
 }

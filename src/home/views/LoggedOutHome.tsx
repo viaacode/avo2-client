@@ -7,7 +7,10 @@ import { type FC, useEffect } from 'react';
 import { useLoaderData, useNavigate, useSearchParams } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { useGetContentPageByPath } from '../../admin/content-page/hooks/use-get-content-page-by-path';
-import { commonUserAtom, loginAtom, } from '../../authentication/authentication.store';
+import {
+  commonUserAtom,
+  loginAtom,
+} from '../../authentication/authentication.store';
 import { ErrorView } from '../../error/views/ErrorView';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';

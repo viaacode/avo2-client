@@ -1,8 +1,8 @@
-import { Dropdown, type DropdownProps } from '@viaa/avo2-components'
-import { useState } from 'react'
+import { Dropdown, type DropdownProps } from '@viaa/avo2-components';
+import { useState } from 'react';
 
 export const ControlledDropdown = (props: DropdownProps) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
     <Dropdown
@@ -11,5 +11,5 @@ export const ControlledDropdown = (props: DropdownProps) => {
       onClose={() => setIsOpen(false)}
       onOpen={() => setIsOpen(true)}
     />
-  )
-}
+  );
+};

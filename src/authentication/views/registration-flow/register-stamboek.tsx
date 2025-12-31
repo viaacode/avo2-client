@@ -1,5 +1,11 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { Alert, Button, Container, FormGroup, Spacer, } from '@viaa/avo2-components';
+import {
+  Alert,
+  Button,
+  Container,
+  FormGroup,
+  Spacer,
+} from '@viaa/avo2-components';
 import { type FC, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 

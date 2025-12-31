@@ -1,8 +1,25 @@
-import { ExportAllToCsvModal, type FilterableColumn, FilterTable, getFilters, } from '@meemoo/admin-core-ui/admin';
-import { AvoAssignmentAssignment, AvoSearchOrderDirection, AvoShareEditStatus, PermissionName, } from '@viaa/avo2-types';
+import {
+  ExportAllToCsvModal,
+  type FilterableColumn,
+  FilterTable,
+  getFilters,
+} from '@meemoo/admin-core-ui/admin';
+import {
+  AvoAssignmentAssignment,
+  AvoSearchOrderDirection,
+  AvoShareEditStatus,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { compact, noop, partition } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type FC, type ReactNode, useCallback, useEffect, useMemo, useState, } from 'react';
+import {
+  type FC,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { AssignmentService } from '../../../assignment/assignment.service';
 import { type AssignmentTableColumns } from '../../../assignment/assignment.types';
@@ -15,8 +32,8 @@ import { ErrorView } from '../../../error/views/ErrorView';
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import {
-    LoadingErrorLoadedComponent,
-    type LoadingInfo,
+  LoadingErrorLoadedComponent,
+  type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
@@ -37,9 +54,19 @@ import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.sl
 import { type PickerItem } from '../../shared/types/content-picker';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import { AssignmentsAdminService } from '../assignments.admin.service';
-import { GET_ASSIGNMENT_BULK_ACTIONS, GET_ASSIGNMENT_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE, } from '../assignments.const';
-import { AssignmentsBulkAction, type AssignmentsOverviewTableState, } from '../assignments.types';
-import { renderAssignmentOverviewCellReact, renderAssignmentsMarcomCellText, } from '../helpers/render-assignment-columns';
+import {
+  GET_ASSIGNMENT_BULK_ACTIONS,
+  GET_ASSIGNMENT_OVERVIEW_TABLE_COLS,
+  ITEMS_PER_PAGE,
+} from '../assignments.const';
+import {
+  AssignmentsBulkAction,
+  type AssignmentsOverviewTableState,
+} from '../assignments.types';
+import {
+  renderAssignmentOverviewCellReact,
+  renderAssignmentsMarcomCellText,
+} from '../helpers/render-assignment-columns';
 
 import './AssignmentOverviewAdmin.scss';
 import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';

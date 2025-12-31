@@ -1,13 +1,29 @@
-import { Dropdown, DropdownButton, DropdownContent, } from '@meemoo/react-components';
-import { Button, type ButtonProps, type DropdownProps, IconName, Tabs, } from '@viaa/avo2-components';
+import {
+  Dropdown,
+  DropdownButton,
+  DropdownContent,
+} from '@meemoo/react-components';
+import {
+  Button,
+  type ButtonProps,
+  type DropdownProps,
+  IconName,
+  Tabs,
+} from '@viaa/avo2-components';
 import { AvoAssignmentAssignment, type PermissionName } from '@viaa/avo2-types';
 import { type FC, useState } from 'react';
 
 import { tText } from '../../helpers/translate-text';
 import { useTabs } from '../../hooks/useTabs';
 import { ShareWithColleagues } from '../ShareWithColleagues/ShareWithColleagues';
-import { type ContributorInfo, type ContributorInfoRight, } from '../ShareWithColleagues/ShareWithColleagues.types';
-import { ShareWithPupil, type ShareWithPupilsProps, } from '../ShareWithPupils/ShareWithPupils';
+import {
+  type ContributorInfo,
+  type ContributorInfoRight,
+} from '../ShareWithColleagues/ShareWithColleagues.types';
+import {
+  ShareWithPupil,
+  type ShareWithPupilsProps,
+} from '../ShareWithPupils/ShareWithPupils';
 
 import { ShareDropdownTabs } from './ShareDropdown.types';
 

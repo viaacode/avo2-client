@@ -18,10 +18,21 @@ import {
   TextArea,
   TextInput,
 } from '@viaa/avo2-components';
-import { AvoCollectionCollection, AvoFileUploadAssetType, PermissionName, } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoFileUploadAssetType,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { compact, isNil, uniq } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type FC, type ReactNode, useCallback, useEffect, useMemo, useState, } from 'react';
+import {
+  type FC,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Link } from 'react-router-dom';
 
 import { AssignmentService } from '../../assignment/assignment.service';
@@ -40,13 +51,24 @@ import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { ToastService } from '../../shared/services/toast-service';
-import { GET_MARCOM_CHANNEL_NAME_OPTIONS, GET_MARCOM_CHANNEL_TYPE_OPTIONS, GET_MARCOM_ENTRY_TABLE_COLUMNS, } from '../collection.const';
+import {
+  GET_MARCOM_CHANNEL_NAME_OPTIONS,
+  GET_MARCOM_CHANNEL_TYPE_OPTIONS,
+  GET_MARCOM_ENTRY_TABLE_COLUMNS,
+} from '../collection.const';
 import { CollectionService } from '../collection.service';
-import { CollectionCreateUpdateTab, type CollectionMarcomEntry, ContentTypeNumber, } from '../collection.types';
+import {
+  CollectionCreateUpdateTab,
+  type CollectionMarcomEntry,
+  ContentTypeNumber,
+} from '../collection.types';
 import { useGetKlascementPublishInfo } from '../hooks/useGetKlascementPublishInfo';
 import { usePublishCollectionToKlascement } from '../hooks/usePublishCollectionToKlascement';
 
-import { type CollectionAction, type MarcomNoteInfo, } from './CollectionOrBundleEdit.types';
+import {
+  type CollectionAction,
+  type MarcomNoteInfo,
+} from './CollectionOrBundleEdit.types';
 
 interface CollectionOrBundleEditMarcomProps {
   collection: AvoCollectionCollection & { marcom_note?: MarcomNoteInfo };

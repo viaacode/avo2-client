@@ -4,11 +4,11 @@ import {
   PillVariants,
   type TabProps,
   Tabs,
-} from '@viaa/avo2-components'
-import { PermissionName } from '@viaa/avo2-types'
-import { useAtomValue } from 'jotai'
-import { type FC, useMemo } from 'react'
-import { useLocation } from 'react-router-dom'
+} from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
+import { type FC, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -17,10 +17,10 @@ import { tText } from '../../shared/helpers/translate-text';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 
 interface AssignmentTeacherTabsProps {
-  activeTab: ASSIGNMENT_CREATE_UPDATE_TABS | null
-  onTabChange: (newActiveTab: ASSIGNMENT_CREATE_UPDATE_TABS) => void
-  clicksCount: number
-  isManaged: boolean
+  activeTab: ASSIGNMENT_CREATE_UPDATE_TABS | null;
+  onTabChange: (newActiveTab: ASSIGNMENT_CREATE_UPDATE_TABS) => void;
+  clicksCount: number;
+  isManaged: boolean;
 }
 
 export const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps> = ({
@@ -29,8 +29,8 @@ export const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps> = ({
   clicksCount,
   isManaged,
 }) => {
-  const location = useLocation()
-  const commonUser = useAtomValue(commonUserAtom)
+  const location = useLocation();
+  const commonUser = useAtomValue(commonUserAtom);
 
   const showAdminTab: boolean = PermissionService.hasAtLeastOnePerm(
     commonUser,
@@ -39,7 +39,7 @@ export const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps> = ({
       PermissionName.EDIT_ASSIGNMENT_AUTHOR,
       PermissionName.EDIT_ASSIGNMENT_EDITORIAL_STATUS,
     ],
-  )
+  );
 
   const tabs: TabProps[] = useMemo(
     () =>
@@ -110,7 +110,7 @@ export const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps> = ({
         active: item.id === activeTab,
       })),
     [location.pathname, activeTab, clicksCount, showAdminTab, isManaged],
-  )
+  );
 
   return (
     <Tabs
@@ -119,5 +119,5 @@ export const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps> = ({
         onTabChange(tabId as ASSIGNMENT_CREATE_UPDATE_TABS)
       }
     />
-  )
-}
+  );
+};

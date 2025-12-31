@@ -21,8 +21,8 @@ describe('<DraggableList />', () => {
     // 		generateKey={(item: any) => item.id}
     // 	/>
     // );
-    expect(true)
-  })
+    expect(true);
+  });
 
   it('Should set the correct className', () => {
     // const draggableListComponent = shallow(
@@ -35,8 +35,8 @@ describe('<DraggableList />', () => {
     // );
 
     // expect(draggableListComponent.hasClass('c-table-view')).toEqual(true);
-    expect(true)
-  })
+    expect(true);
+  });
 
   it('Should correctly pass children', () => {
     // const draggableListComponent = mount(
@@ -51,8 +51,8 @@ describe('<DraggableList />', () => {
     // const draggableListItems = draggableListComponent.find('.c-table-view__item');
 
     // expect(draggableListItems).toHaveLength(mockItems.length);
-    expect(true)
-  })
+    expect(true);
+  });
 
   // TODO expose internal state for tests using onDragStart and onDragEnd handlers
   // it('Should initialize with null as currentlyBeingDragged state', () => {
@@ -113,4 +113,4 @@ describe('<DraggableList />', () => {
   //
   // 	expect(draggableListComponent.state('currentlyBeingDragged')).toEqual(null);
   // });
-})
+});

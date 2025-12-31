@@ -1,9 +1,9 @@
 import {
-    AvoSearchFilterOption,
-    AvoSearchFilters,
-    AvoSearchOrderDirection,
-    AvoSearchOrderProperty,
-    AvoSearchResultItem,
+  AvoSearchFilterOption,
+  AvoSearchFilters,
+  AvoSearchOrderDirection,
+  AvoSearchOrderProperty,
+  AvoSearchResultItem,
 } from '@viaa/avo2-types';
 import { atom } from 'jotai';
 import { type LoginState } from '../authentication/authentication.types';

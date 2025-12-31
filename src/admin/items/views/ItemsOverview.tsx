@@ -1,5 +1,10 @@
 import { ExportAllToCsvModal, FilterTable } from '@meemoo/admin-core-ui/admin';
-import { AvoItemItem, AvoOrganizationOrganization, AvoSearchOrderDirection, PermissionName, } from '@viaa/avo2-types';
+import {
+  AvoItemItem,
+  AvoOrganizationOrganization,
+  AvoSearchOrderDirection,
+  PermissionName,
+} from '@viaa/avo2-types';
 
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -18,11 +23,17 @@ import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
 import { AdminLayoutBody } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
-import { renderItemsOverviewTableCell, renderItemsOverviewTableCellText, } from '../helpers/render-item-overview-table-cell';
+import {
+  renderItemsOverviewTableCell,
+  renderItemsOverviewTableCellText,
+} from '../helpers/render-item-overview-table-cell';
 import { useGetItemsWithFilters } from '../hooks/useGetItemsWithFilters';
 import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
-import { type ItemsOverviewTableCols, type ItemsTableState, } from '../items.types';
+import {
+  type ItemsOverviewTableCols,
+  type ItemsTableState,
+} from '../items.types';
 import { ItemBulkAction } from './ItemsOverview.types';
 
 export const ItemsOverview: FC = () => {

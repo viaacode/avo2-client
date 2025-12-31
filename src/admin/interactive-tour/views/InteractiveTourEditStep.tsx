@@ -26,7 +26,10 @@ import { stripHtml } from '../../../shared/helpers/formatters/strip-html';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { type InteractiveTourAction } from '../helpers/reducers';
-import { type EditableStep, InteractiveTourEditActionType, } from '../interactive-tour.types';
+import {
+  type EditableStep,
+  InteractiveTourEditActionType,
+} from '../interactive-tour.types';
 
 import './InteractiveTourEdit.scss';
 import { AvoFileUploadAssetType } from '@viaa/avo2-types';

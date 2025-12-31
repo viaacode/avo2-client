@@ -12,22 +12,22 @@ import {
   Toolbar,
   ToolbarItem,
   ToolbarRight,
-} from '@viaa/avo2-components'
-import { noop } from 'es-toolkit'
-import { type FC, type ReactNode, useState } from 'react'
+} from '@viaa/avo2-components';
+import { noop } from 'es-toolkit';
+import { type FC, type ReactNode, useState } from 'react';
 
 import { tText } from '../../../../shared/helpers/translate-text';
 
-export type AddOrRemove = 'add' | 'remove'
+export type AddOrRemove = 'add' | 'remove';
 
 interface AddOrRemoveLinkedElementsProps {
-  title: string | ReactNode // eg: change subjects
-  addOrRemoveLabel: string // eg: add or remove subjects
-  contentLabel: string // eg: subjects
-  isOpen: boolean
-  labels: TagInfo[]
-  onClose?: () => void
-  callback: (addOrRemove: AddOrRemove, selectedLabels: TagInfo[]) => void
+  title: string | ReactNode; // eg: change subjects
+  addOrRemoveLabel: string; // eg: add or remove subjects
+  contentLabel: string; // eg: subjects
+  isOpen: boolean;
+  labels: TagInfo[];
+  onClose?: () => void;
+  callback: (addOrRemove: AddOrRemove, selectedLabels: TagInfo[]) => void;
 }
 
 export const AddOrRemoveLinkedElementsModal: FC<
@@ -43,14 +43,14 @@ export const AddOrRemoveLinkedElementsModal: FC<
 }) => {
   const [selectedLabels, setSelectedLabels] = useState<TagInfo[] | undefined>(
     undefined,
-  )
-  const [addOrRemove, setAddOrRemove] = useState<AddOrRemove>('add')
+  );
+  const [addOrRemove, setAddOrRemove] = useState<AddOrRemove>('add');
 
   const handleClose = () => {
-    setSelectedLabels(undefined)
-    setAddOrRemove('add')
-    onClose()
-  }
+    setSelectedLabels(undefined);
+    setAddOrRemove('add');
+    onClose();
+  };
 
   return (
     <Modal isOpen={isOpen} title={title} size="small" onClose={handleClose}>
@@ -109,8 +109,8 @@ export const AddOrRemoveLinkedElementsModal: FC<
                         )
                   }
                   onClick={() => {
-                    callback(addOrRemove, selectedLabels || [])
-                    handleClose()
+                    callback(addOrRemove, selectedLabels || []);
+                    handleClose();
                   }}
                 />
               </ButtonToolbar>
@@ -119,5 +119,5 @@ export const AddOrRemoveLinkedElementsModal: FC<
         </Toolbar>
       </ModalFooterRight>
     </Modal>
-  )
-}
+  );
+};

@@ -6,7 +6,10 @@ import {
   CollectionFragmentFlowPlayer,
   type CollectionFragmentFlowPlayerProps,
 } from '../../../../collection/components/CollectionFragmentFlowPlayer';
-import { CollectionFragmentTitle, type CollectionFragmentTitleProps, } from '../../../../collection/components/CollectionFragmentTitle';
+import {
+  CollectionFragmentTitle,
+  type CollectionFragmentTitleProps,
+} from '../../../../collection/components/CollectionFragmentTitle';
 import { tHtml } from '../../../helpers/translate-html';
 import { tText } from '../../../helpers/translate-text';
 import { ItemMetadata } from '../../BlockItemMetadata/ItemMetadata';
@@ -14,7 +17,12 @@ import { CollapsibleColumn } from '../../CollapsibleColumn/CollapsibleColumn';
 import { TextWithTimestamps } from '../../TextWithTimestamp/TextWithTimestamps';
 
 import './CollectionFragmentTypeItem.scss';
-import { AvoAssignmentBlock, AvoCoreBlockItemBase, AvoCoreBlockItemType, AvoItemItem } from "@viaa/avo2-types";
+import {
+  AvoAssignmentBlock,
+  AvoCoreBlockItemBase,
+  AvoCoreBlockItemType,
+  AvoItemItem,
+} from '@viaa/avo2-types';
 
 export interface CollectionFragmentTypeItemProps extends DefaultProps {
   block: AvoCoreBlockItemBase;

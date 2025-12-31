@@ -1,6 +1,16 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { Alert, Container, Icon, IconName, Spacer, } from '@viaa/avo2-components';
-import { AvoCollectionCollection, AvoCollectionFragment, PermissionName, } from '@viaa/avo2-types';
+import {
+  Alert,
+  Container,
+  Icon,
+  IconName,
+  Spacer,
+} from '@viaa/avo2-components';
+import {
+  AvoCollectionCollection,
+  AvoCollectionFragment,
+  PermissionName,
+} from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactNode, useEffect, useState } from 'react';

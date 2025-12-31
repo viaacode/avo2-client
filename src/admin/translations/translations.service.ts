@@ -19,19 +19,19 @@ export const fetchTranslations = async (): Promise<any> => {
       GetTranslationsQueryVariables
     >({
       query: GetTranslationsDocument,
-    })
+    });
 
-    return response?.app_site_variables || null
+    return response?.app_site_variables || null;
   } catch (err) {
     const error = new CustomError('Failed to fetch translations', err, {
       query: 'GET_TRANSLATIONS',
-    })
+    });
 
-    console.error(error)
+    console.error(error);
 
-    throw error
+    throw error;
   }
-}
+};
 
 export const updateTranslations = async (name: string, translations: any) => {
   try {
@@ -45,7 +45,7 @@ export const updateTranslations = async (name: string, translations: any) => {
         name,
         translations,
       },
-    })
+    });
   } catch (err) {
     const error = new CustomError('Failed to update translations', err, {
       query: 'UPDATE_TRANSLATIONS',
@@ -53,10 +53,10 @@ export const updateTranslations = async (name: string, translations: any) => {
         name,
         translations,
       },
-    })
+    });
 
-    console.error(error)
+    console.error(error);
 
-    throw error
+    throw error;
   }
-}
+};

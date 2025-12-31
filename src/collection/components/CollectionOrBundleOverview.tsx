@@ -25,7 +25,14 @@ import {
 } from '@viaa/avo2-types';
 import { cloneDeep, compact, isNil, noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type FC, type ReactNode, type ReactText, useCallback, useEffect, useState, } from 'react';
+import {
+  type FC,
+  type ReactNode,
+  type ReactText,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -37,7 +44,10 @@ import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
-import { CheckboxDropdownModal, type CheckboxOption, } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import {
+  CheckboxDropdownModal,
+  type CheckboxOption,
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
@@ -48,7 +58,10 @@ import { QuickLaneModal } from '../../shared/components/QuickLaneModal/QuickLane
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { formatDate, formatTimestamp, } from '../../shared/helpers/formatters/date';
+import {
+  formatDate,
+  formatTimestamp,
+} from '../../shared/helpers/formatters/date';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
@@ -71,14 +84,22 @@ import {
   CollectionShareType,
   ContentTypeNumber,
 } from '../collection.types';
-import { deleteCollection, deleteSelfFromCollection, } from '../helpers/delete-collection';
+import {
+  deleteCollection,
+  deleteSelfFromCollection,
+} from '../helpers/delete-collection';
 
 import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './CollectionOrBundleOverview.consts';
 import { DeleteCollectionModal } from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 
 import './CollectionOrBundleOverview.scss';
-import { ArrayParam, NumberParam, StringParam, useQueryParams, } from '../../shared/helpers/routing/use-query-params-ssr.ts';
+import {
+  ArrayParam,
+  NumberParam,
+  StringParam,
+  useQueryParams,
+} from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { useGetWorkspaceCounts } from '../../workspace/hooks/useGetWorkspaceCounts.ts';
 import { useDeleteCollectionOrBundleByUuid } from '../hooks/useDeleteCollectionOrBundleByUuid.tsx';
 

@@ -1,23 +1,23 @@
-import { isNil } from 'es-toolkit'
+import { isNil } from 'es-toolkit';
 
 export function okNokToBoolean(value: 'OK' | 'NOK' | null): boolean | null {
   if (value === 'OK') {
-    return true
+    return true;
   }
   if (value === 'NOK') {
-    return false
+    return false;
   }
-  return null
+  return null;
 }
 
 export function booleanToOkNok(
   value: boolean | undefined | null,
 ): 'OK' | 'NOK' | null {
   if (value) {
-    return 'OK'
+    return 'OK';
   }
   if (isNil(value)) {
-    return null
+    return null;
   }
-  return 'NOK'
+  return 'NOK';
 }

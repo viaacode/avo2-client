@@ -1,18 +1,18 @@
-import { noop } from 'es-toolkit'
-import { type FC } from 'react'
+import { noop } from 'es-toolkit';
+import { type FC } from 'react';
 
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 
 interface DeleteCollectionModalProps {
-  isOpen: boolean
-  onClose?: () => void
-  deleteCallback: () => void
-  contributorCount: number
+  isOpen: boolean;
+  onClose?: () => void;
+  deleteCallback: () => void;
+  contributorCount: number;
 
   // true: collection, false: bundle
-  isCollection: boolean
+  isCollection: boolean;
 }
 
 export const DeleteCollectionModal: FC<DeleteCollectionModalProps> = ({
@@ -23,23 +23,23 @@ export const DeleteCollectionModal: FC<DeleteCollectionModalProps> = ({
   isCollection,
 }) => {
   const handleDelete = async () => {
-    deleteCallback()
-    onClose()
-  }
+    deleteCallback();
+    onClose();
+  };
 
   const renderDeleteMessageParagraph = () => {
-    let warning = null
+    let warning = null;
     if (contributorCount === 1) {
       // Will never happen for bundels since they cannot be shared
       warning = tHtml(
         'collection/components/modals/delete-collection-modal___deze-opdracht-is-met-1-andere-persoon-gedeeld-deze-verliest-dan-toegang',
-      )
+      );
     } else if (contributorCount > 1) {
       // Will never happen for bundels since they cannot be shared
       warning = tHtml(
         'collection/components/modals/delete-collection-modal___deze-opdracht-is-met-count-andere-mensen-gedeeld-deze-verliezen-dan-toegang',
         { count: contributorCount },
-      )
+      );
     }
 
     return (
@@ -54,8 +54,8 @@ export const DeleteCollectionModal: FC<DeleteCollectionModalProps> = ({
               'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-deze-bundel-wil-verwijderen',
             )}
       </>
-    )
-  }
+    );
+  };
 
   const renderDeleteMessage = () => {
     return (
@@ -70,8 +70,8 @@ export const DeleteCollectionModal: FC<DeleteCollectionModalProps> = ({
               'collection/components/modals/delete-collection-modal___deze-operatie-kan-niet-meer-ongedaan-gemaakt-worden-bundel',
             )}
       </p>
-    )
-  }
+    );
+  };
 
   return (
     <ConfirmModal
@@ -97,5 +97,5 @@ export const DeleteCollectionModal: FC<DeleteCollectionModalProps> = ({
       className="c-content"
       confirmCallback={handleDelete}
     />
-  )
-}
+  );
+};
