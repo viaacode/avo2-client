@@ -7,7 +7,6 @@ import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
@@ -449,15 +448,15 @@ export const CollectionOrBundleActualisationOverview: FC = () => {
       >
         <AdminLayoutBody>
           <SeoMetadata
-            title={GENERATE_SITE_TITLE(
+            title={
               isCollection
                 ? tText(
                     'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___collectie-actualisation-beheer-overview-pagina-titel',
                   )
                 : tText(
                     'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___bundel-actualisation-beheer-overview-pagina-titel',
-                  ),
-            )}
+                  )
+            }
             description={
               isCollection
                 ? tText(

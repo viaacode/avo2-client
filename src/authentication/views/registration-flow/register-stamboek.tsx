@@ -3,7 +3,7 @@ import { Alert, Button, Container, FormGroup, Spacer, } from '@viaa/avo2-compone
 import { type FC, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { APP_PATH } from '../../../constants';
 import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
@@ -34,10 +34,8 @@ export const RegisterStamboek: FC = () => {
     <Container className="c-register-stamboek-view" mode="vertical">
       <Container mode="horizontal" size="medium">
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
-            tText(
-              'authentication/views/registration-flow/r-3-stamboek___stamboek-pagina-titel',
-            ),
+          title={tText(
+            'authentication/views/registration-flow/r-3-stamboek___stamboek-pagina-titel',
           )}
           description={tText(
             'authentication/views/registration-flow/r-3-stamboek___stamboek-pagina-beschrijving',

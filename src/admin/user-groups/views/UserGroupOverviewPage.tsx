@@ -4,7 +4,6 @@ import { PermissionName } from '@viaa/avo2-types';
 import { type FC, lazy, Suspense, useRef, useState } from 'react';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
@@ -13,7 +12,7 @@ import { AdminLayoutBody, AdminLayoutTopBarRight, } from '../../shared/layouts/A
 import { type UserGroupOverviewRef } from '../../shared/services/user-groups/user-groups.types';
 
 import './UserGroupOverviewPage.scss';
-import { SeoMetadata } from "../../../shared/components/SeoMetadata/SeoMetadata.tsx";
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 
 const UserGroupOverview = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -112,10 +111,8 @@ export const UserGroupOverviewPage: FC = () => {
         </AdminLayoutTopBarRight>
         <AdminLayoutBody>
           <SeoMetadata
-            title={GENERATE_SITE_TITLE(
-              tText(
-                'admin/user-groups/views/user-group-overview___gebruikersgroepen-beheer-overzicht-pagina-titel',
-              ),
+            title={tText(
+              'admin/user-groups/views/user-group-overview___gebruikersgroepen-beheer-overzicht-pagina-titel',
             )}
             description={tText(
               'admin/user-groups/views/user-group-overview___gebruikersgroepen-beheer-overzicht-pagina-beschrijving',

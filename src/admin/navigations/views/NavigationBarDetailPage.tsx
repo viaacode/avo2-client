@@ -3,14 +3,13 @@ import { type FC, lazy, Suspense } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { tText } from '../../../shared/helpers/translate-text';
 import { ADMIN_PATH } from '../../admin.const';
 
 import './NavigationBarDetailPage.scss';
-import { SeoMetadata } from "../../../shared/components/SeoMetadata/SeoMetadata.tsx";
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 
 const NavigationDetail = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -26,12 +25,12 @@ export const NavigationBarDetailPage: FC = () => {
     <PermissionGuard permissions={[PermissionName.EDIT_NAVIGATION_BARS]}>
       <div className="c-admin__navigation-detail">
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
-            navigationBarId,
+          title={
+            navigationBarId ||
             tText(
               'admin/menu/views/menu-detail___menu-beheer-detail-pagina-titel',
-            ),
-          )}
+            )
+          }
           description={tText(
             'admin/menu/views/menu-detail___menu-beheer-detail-pagina-beschrijving',
           )}

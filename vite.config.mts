@@ -1,9 +1,18 @@
 import path from 'path';
 
-import {defineConfig, UserConfig} from 'vite';
+import { defineConfig, UserConfig } from 'vite';
 import svgrPlugin from 'vite-plugin-svgr';
-import viteTsconfigPaths from 'vite-tsconfig-paths';
 import react from "@vitejs/plugin-react";
+
+import pkg from './package.json';
+
+const dependencies: string[] = Object.keys(pkg.dependencies);
+
+const dedupe = [
+	...dependencies,
+	'react/jsx-runtime',
+	'react/jsx-dev-runtime',
+];
 
 const ASSETS_WITHOUT_A_HASH = [
 	// Avoid hashes in the audio still path, since it gets saved in the database
@@ -17,6 +26,8 @@ export default defineConfig((): UserConfig => {
 		build: {
 			outDir: 'dist',
 			sourcemap: true,
+			cssCodeSplit: false,
+			manifest: true, // Generate manifest, so ssr code can find the correct main-<hash>.css file
 			rollupOptions: {
 				input: {
 					main: path.resolve(__dirname, 'index.html'),
@@ -35,7 +46,6 @@ export default defineConfig((): UserConfig => {
 			port: 8080,
 		},
 		plugins: [
-			viteTsconfigPaths(),
 			svgrPlugin()
 		],
 		ssr: {
@@ -54,63 +64,7 @@ export default defineConfig((): UserConfig => {
 			alias: {
 				'~': path.resolve(__dirname, 'public'),
 			},
-			dedupe: [
-				'@flowplayer/player',
-				'@hookform/resolvers',
-				'@meemoo/admin-core-ui',
-				'@meemoo/react-components',
-				'@popperjs/core',
-				'@studiohyperdrive/pagination',
-				'@tanstack/react-query',
-				'@viaa/avo2-components',
-				'@viaa/avo2-types',
-				'autosize',
-				'caniuse-lite',
-				'capture-stack-trace',
-				'clsx',
-				'copy-to-clipboard',
-				'date-fns',
-				'date-fns-tz',
-				'es-toolkit',
-				'file-saver',
-				'history',
-				'i18next',
-				'i18next-http-backend',
-				'immer',
-				'isomorphic-dompurify',
-				'lodash-es',
-				'marked',
-				'node-fetch',
-				'query-string',
-				'raf',
-				'react',
-				'react-colorful',
-				'react-copy-to-clipboard',
-				'react-datepicker',
-				'react-dom',
-				'react-helmet',
-				'react-hook-form',
-				'react-i18next',
-				'react-idle-timer',
-				'react-joyride',
-				'react-modal',
-				'react-resizable-panels',
-				'react-perfect-scrollbar',
-				'react-popper',
-				'react-range',
-				'react-router',
-				'react-router-dom',
-				'react-scrollbars-custom',
-				'react-select',
-				'react-table',
-				'react-to-string',
-				'react-toastify',
-				'react-zendesk',
-				'source-map-explorer',
-				'ts-retry-promise',
-				'use-query-params',
-				'yup',
-			],
+			dedupe
 		},
 	};
 });

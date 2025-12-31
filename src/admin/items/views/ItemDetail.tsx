@@ -25,7 +25,7 @@ import { Link } from 'react-router-dom';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { APP_PATH } from '../../../constants';
 import { EmbedCodeFilterTableCell } from '../../../embed-code/components/EmbedCodeFilterTableCell';
 import { type EmbedCode } from '../../../embed-code/embed-code.types';
 import { toEmbedCodeDetail } from '../../../embed-code/helpers/links';
@@ -731,12 +731,12 @@ export const ItemDetail: FC = () => {
     <>
       <PermissionGuard permissions={[PermissionName.VIEW_ITEMS_OVERVIEW]}>
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
-            item?.title,
+          title={
+            (item?.title,
             tText(
               'admin/items/views/item-detail___item-beheer-detail-pagina-titel',
-            ),
-          )}
+            ))
+          }
           description={item?.description || ''}
         />
         {renderItemDetailPage()}

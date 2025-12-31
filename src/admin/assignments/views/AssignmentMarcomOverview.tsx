@@ -7,7 +7,6 @@ import { type AssignmentTableColumns } from '../../../assignment/assignment.type
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { GET_MARCOM_CHANNEL_NAME_OPTIONS, GET_MARCOM_CHANNEL_TYPE_OPTIONS, } from '../../../collection/collection.const';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
@@ -372,10 +371,8 @@ export const AssignmentMarcomOverview: FC = () => {
       >
         <AdminLayoutBody>
           <SeoMetadata
-            title={GENERATE_SITE_TITLE(
-              tText(
-                'admin/assignments/views/assignments-marcom-overview___collectie-marcom-beheer-overview-pagina-titel',
-              ),
+            title={tText(
+              'admin/assignments/views/assignments-marcom-overview___collectie-marcom-beheer-overview-pagina-titel',
             )}
             description={tText(
               'admin/assignments/views/assignments-marcom-overview___collectie-marcom-beheer-overview-pagina-beschrijving',

@@ -4,7 +4,7 @@ import { AvoItemItem, AvoOrganizationOrganization, AvoSearchOrderDirection, Perm
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { APP_PATH } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
@@ -229,10 +229,8 @@ export const ItemsOverview: FC = () => {
       >
         <AdminLayoutBody>
           <SeoMetadata
-            title={GENERATE_SITE_TITLE(
-              tText(
-                'admin/items/views/items-overview___item-beheer-overview-pagina-titel',
-              ),
+            title={tText(
+              'admin/items/views/items-overview___item-beheer-overview-pagina-titel',
             )}
             description={tText(
               'admin/items/views/items-overview___item-beheer-overview-pagina-beschrijving',

@@ -15,8 +15,10 @@ export async function initAppLoader() {
   try {
     // Set admin-core config with dummy navigate function during SSR
     // The config will be set again in the client after hydration
-    const config: AdminConfig = getAdminCoreConfig(noop);
-    AdminConfigManager.setConfig(config);
+    if (!AdminConfigManager.isConfigSet()) {
+      const config: AdminConfig = getAdminCoreConfig(noop);
+      AdminConfigManager.setConfig(config);
+    }
 
     await Promise.all([
       // Fetch login state
@@ -32,21 +34,25 @@ export async function initAppLoader() {
   }
 }
 
-export async function loadLoggedOutHomeContentPage(
-  args: LoaderFunctionArgs<any>,
-) {
+export async function fetchContentPageLoader(args: LoaderFunctionArgs<any>) {
   try {
-    // Load content page for logged out homepage
+    // Load content page for the requested path
+    const path = new URL(args.request.url).pathname;
+    const contentPage = await getContentPageByPath(path);
     return {
-      contentPage: await getContentPageByPath('/'),
+      contentPage,
       url: args.request.url,
     };
   } catch (err) {
     console.error(
       'Failed to load content page in react-router loader for route LoggedOutHome',
       err,
-      { path: '/' },
+      { url: args.request.url },
     );
+    return {
+      contentPage: null,
+      url: args.request.url,
+    };
   }
 }
 
@@ -78,6 +84,10 @@ export async function fetchCollectionLoader(args: LoaderFunctionArgs<any>) {
       err,
       { id },
     );
+    return {
+      collection: null,
+      url: args.request.url,
+    };
   }
 }
 
@@ -102,5 +112,9 @@ export async function fetchAssignmentLoader(args: LoaderFunctionArgs<any>) {
       err,
       { id },
     );
+    return {
+      assignment: null,
+      url: args.request.url,
+    };
   }
 }

@@ -6,7 +6,6 @@ import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { SettingsService } from '../../../settings/settings.service';
 import { FileUpload } from '../../../shared/components/FileUpload/FileUpload';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
@@ -228,10 +227,10 @@ export const UserEditPage: FC = () => {
     <>
       <PermissionGuard permissions={[PermissionName.VIEW_USERS]}>
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
-            profile?.fullName,
-            tText('admin/users/views/user-detail___item-detail-pagina-titel'),
-          )}
+          title={
+            profile?.fullName ||
+            tText('admin/users/views/user-detail___item-detail-pagina-titel')
+          }
           description={tText(
             'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving',
           )}

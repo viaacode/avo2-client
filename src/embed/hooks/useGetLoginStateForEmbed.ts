@@ -7,11 +7,20 @@ import { EmbedCodeService } from '../../embed-code/embed-code-service';
 import { QUERY_KEYS } from '../../shared/constants/query-keys';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
+import { isServerSideRendering } from '../../shared/helpers/routing/is-server-side-rendering.ts';
 import { store } from '../../shared/store/ui.store.ts';
 import { LTI_JWT_TOKEN_HEADER } from '../embed.types';
 
 export async function checkLoginState() {
   try {
+    if (isServerSideRendering()) {
+      // During server side rendering the user is always logged out
+      const loginResponse = {
+        message: LoginMessage.LOGGED_OUT,
+      } as AvoAuthLoginResponse;
+      store.set(loginAtom, loginResponse as any);
+      return loginResponse;
+    }
     const loginStateValue = store.get(loginAtom);
 
     const loginState = loginStateValue?.data;

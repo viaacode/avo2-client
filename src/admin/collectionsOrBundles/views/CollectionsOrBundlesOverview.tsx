@@ -16,7 +16,7 @@ import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { CollectionService } from '../../../collection/collection.service';
 import { useGetCollectionsEditStatuses } from '../../../collection/hooks/useGetCollectionsEditStatuses';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { APP_PATH } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import {
@@ -787,15 +787,15 @@ export const CollectionsOrBundlesOverview: FC = () => {
       >
         <AdminLayoutBody>
           <SeoMetadata
-            title={GENERATE_SITE_TITLE(
+            title={
               isCollection
                 ? tText(
                     'admin/collections-or-bundles/views/collections-or-bundles-overview___collectie-beheer-overview-pagina-titel',
                   )
                 : tText(
                     'admin/collections-or-bundles/views/collections-or-bundles-overview___bundel-beheer-overview-pagina-titel',
-                  ),
-            )}
+                  )
+            }
             description={
               isCollection
                 ? tText(

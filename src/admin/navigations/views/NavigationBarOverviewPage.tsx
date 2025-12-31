@@ -2,7 +2,6 @@ import { PermissionName } from '@viaa/avo2-types';
 import { type FC, lazy, Suspense } from 'react';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { tText } from '../../../shared/helpers/translate-text';
@@ -25,10 +24,8 @@ export const NavigationBarOverviewPage: FC = () => {
       <AdminLayout pageTitle={title} size="full-width">
         <AdminLayoutBody>
           <SeoMetadata
-            title={GENERATE_SITE_TITLE(
-              tText(
-                'admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-titel',
-              ),
+            title={tText(
+              'admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-titel',
             )}
             description={tText(
               'admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-beschrijving',

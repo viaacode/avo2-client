@@ -4,7 +4,6 @@ import { flatten, groupBy, isNil } from 'es-toolkit';
 import { type FC, lazy, type ReactNode, Suspense, useCallback, useState, } from 'react';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tHtml } from '../../../shared/helpers/translate-html';
@@ -212,10 +211,8 @@ export const TranslationsOverviewPage: FC = () => {
         </AdminLayoutTopBarRight>
         <AdminLayoutBody>
           <SeoMetadata
-            title={GENERATE_SITE_TITLE(
-              tText(
-                'admin/translations/views/translations-overview___vertalingen-beheer-pagina-titel',
-              ),
+            title={tText(
+              'admin/translations/views/translations-overview___vertalingen-beheer-pagina-titel',
             )}
             description={tText(
               'admin/translations/views/translations-overview___vertalingen-beheer-pagina-beschrijving',

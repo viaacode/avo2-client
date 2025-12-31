@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { tText } from '../../../shared/helpers/translate-text';
 import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
@@ -77,10 +76,8 @@ export const ContentPageOverviewPage: FC = () => {
         </AdminLayoutTopBarRight>
         <AdminLayoutBody>
           <SeoMetadata
-            title={GENERATE_SITE_TITLE(
-              tText(
-                'admin/content-page/views/content-page-overview-page___contentpaginas-beheer',
-              ),
+            title={tText(
+              'admin/content-page/views/content-page-overview-page___contentpaginas-beheer',
             )}
             description={tText(
               'admin/content-page/views/content-page-overview-page___contentbeheer-beheer-content-paginas-via-dit-overzicht',

@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
-import { APP_PATH, GENERATE_SITE_TITLE, RouteId } from '../../../constants';
+import { APP_PATH, RouteId } from '../../../constants';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import {
   LoadingErrorLoadedComponent,
@@ -241,12 +241,12 @@ export const InteractiveTourDetail: FC = () => {
     <>
       <PermissionGuard permissions={[PermissionName.EDIT_INTERACTIVE_TOURS]}>
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
-            interactiveTour?.name,
+          title={
+            interactiveTour?.name ||
             tText(
               'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-titel',
-            ),
-          )}
+            )
+          }
           description={tText(
             'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-beschrijving',
           )}

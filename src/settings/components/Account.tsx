@@ -5,7 +5,6 @@ import { type FC } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { redirectToExternalPage } from '../../authentication/helpers/redirects/redirect-to-external-page';
-import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
@@ -14,7 +13,7 @@ import { getEnv } from '../../shared/helpers/env';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
+import { tText } from '../../shared/helpers/translate-text'; // const ssumAccountEditPage = getEnv('SSUM_ACCOUNT_EDIT_URL') as string;
 
 // const ssumAccountEditPage = getEnv('SSUM_ACCOUNT_EDIT_URL') as string;
 const ssumPasswordEditPage = getEnv('SSUM_PASSWORD_EDIT_URL') as string;
@@ -45,10 +44,8 @@ export const Account: FC = () => {
   return (
     <>
       <SeoMetadata
-        title={GENERATE_SITE_TITLE(
-          tText(
-            'settings/components/account___account-instellingen-pagina-titel',
-          ),
+        title={tText(
+          'settings/components/account___account-instellingen-pagina-titel',
         )}
         description={tText(
           'settings/components/account___account-pagina-beschrijving',

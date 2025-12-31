@@ -7,7 +7,6 @@ import { type FC, type ReactText, useCallback, useEffect, useMemo, useState, } f
 import { AssignmentService } from '../../../assignment/assignment.service';
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
 import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types';
@@ -460,10 +459,8 @@ export const PupilCollectionsOverview: FC = () => {
       >
         <AdminLayoutBody>
           <SeoMetadata
-            title={GENERATE_SITE_TITLE(
-              tText(
-                'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-titel',
-              ),
+            title={tText(
+              'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-titel',
             )}
             description={tText(
               'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-beschrijving',

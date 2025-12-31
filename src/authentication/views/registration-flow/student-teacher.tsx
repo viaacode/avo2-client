@@ -2,8 +2,6 @@ import { BlockHeading } from '@meemoo/admin-core-ui/client';
 import { Button, Container, IconName, Spacer } from '@viaa/avo2-components';
 import { type FC } from 'react';
 import { useNavigate } from 'react-router';
-
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
@@ -15,10 +13,8 @@ export const StudentTeacher: FC = () => {
     <Container className="c-register-stamboek-view" mode="vertical">
       <Container mode="horizontal" size="large">
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
-            tText(
-              'authentication/views/registration-flow/r-10-student-teacher___student-lesgever-pagina-titel',
-            ),
+          title={tText(
+            'authentication/views/registration-flow/r-10-student-teacher___student-lesgever-pagina-titel',
           )}
           description={tText(
             'authentication/views/registration-flow/r-10-student-teacher___student-lesgever-pagina-beschrijving',

@@ -1,5 +1,3 @@
-// eslint-disable-next-line import/no-unresolved
-import AvoLogoSrc from '@assets/images/avo-logo-i.svg';
 import { ContentPagePreviewUserRoleSelector } from '@meemoo/admin-core-ui/admin';
 import {
   Avatar,
@@ -14,25 +12,19 @@ import {
   ToolbarLeft,
   ToolbarRight,
 } from '@viaa/avo2-components';
-
 import { last } from 'es-toolkit';
 import { useAtom, useSetAtom } from 'jotai';
 import { type FC, type ReactText, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import AvoLogoSrc from '../../../assets/images/avo-logo-i.svg';
 
 import { loginAtom } from '../../../authentication/authentication.store';
 import { getLoginStateAtom } from '../../../authentication/authentication.store.actions';
-import {
-  getProfileAvatar,
-  getProfileInitials,
-} from '../../../authentication/helpers/get-profile-info';
+import { getProfileAvatar, getProfileInitials, } from '../../../authentication/helpers/get-profile-info';
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects/redirect-to-external-page';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
 import { APP_PATH } from '../../../constants';
-import {
-  getLocation,
-  mapNavElementsToNavigationItems,
-} from '../../helpers/navigation';
+import { getLocation, mapNavElementsToNavigationItems, } from '../../helpers/navigation';
 import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
 import { useHideZendeskWidget } from '../../hooks/useHideZendeskWidget';
 import { ToastService } from '../../services/toast-service';

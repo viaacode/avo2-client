@@ -34,7 +34,7 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
 import { CollectionOrBundle } from '../../collection/collection.types';
 import { CollectionOrBundleOverview } from '../../collection/components/CollectionOrBundleOverview';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH } from '../../constants';
 import { EmbedCodeOverview } from '../../embed-code/components/EmbedCodeOverview';
 import { ControlledDropdown } from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
@@ -500,8 +500,8 @@ export const Workspace: FC = () => {
   return (
     <>
       <SeoMetadata
-        title={GENERATE_SITE_TITLE(
-          tText('workspace/views/workspace___mijn-werkruimte-pagina-titel'),
+        title={tText(
+          'workspace/views/workspace___mijn-werkruimte-pagina-titel',
         )}
         description={tText(
           'workspace/views/workspace___mijn-werkruimte-pagina-beschrijving',

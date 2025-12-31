@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH } from '../../constants';
 import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { DOC_TYPES } from '../../shared/helpers/files';
@@ -295,10 +295,8 @@ export const EducationalAuthorItemRequestForm: FC = () => {
     <Container className="p-item-request-form" mode="vertical">
       <Container mode="horizontal" size="large">
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
-            tText(
-              'user-item-request-form/views/educational-author-item-request-form___gebruikersaanvraag-pagina-titel',
-            ),
+          title={tText(
+            'user-item-request-form/views/educational-author-item-request-form___gebruikersaanvraag-pagina-titel',
           )}
           description={tText(
             'user-item-request-form/views/educational-author-item-request-form___gebruikersaanvraag-pagina-beschrijving',

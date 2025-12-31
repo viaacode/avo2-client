@@ -1,8 +1,6 @@
 import { Button, Container, Spacer } from '@viaa/avo2-components';
 import { type FC } from 'react';
 import { useNavigate } from 'react-router';
-
-import { GENERATE_SITE_TITLE } from '../../constants';
 import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
@@ -14,10 +12,8 @@ export const EducationalAuthorItemRequestFormConfirm: FC = () => {
     <Container className="c-register-stamboek-view" mode="vertical">
       <Container mode="horizontal" size="large">
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
-            tText(
-              'user-item-request-form/views/educational-author-item-request-form-confirm___gebruikersaanvraag-pagina-titel',
-            ),
+          title={tText(
+            'user-item-request-form/views/educational-author-item-request-form-confirm___gebruikersaanvraag-pagina-titel',
           )}
           description={tText(
             'user-item-request-form/views/educational-author-item-request-form-confirm___gebruikersaanvraag-pagina-beschrijving',

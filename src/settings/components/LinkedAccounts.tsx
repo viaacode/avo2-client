@@ -7,7 +7,6 @@ import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { redirectToServerLinkAccount, redirectToServerUnlinkAccount, } from '../../authentication/helpers/redirects/redirects';
-import { GENERATE_SITE_TITLE } from '../../constants';
 import { ConfirmModal } from '../../shared/components/ConfirmModal/ConfirmModal';
 import { isPupil } from '../../shared/helpers/is-pupil';
 
@@ -206,10 +205,8 @@ export const LinkedAccounts: FC = () => {
   return (
     <>
       <SeoMetadata
-        title={GENERATE_SITE_TITLE(
-          tText(
-            'settings/components/linked-accounts___koppelingen-pagina-titel',
-          ),
+        title={tText(
+          'settings/components/linked-accounts___koppelingen-pagina-titel',
         )}
         description={tText(
           'settings/components/linked-accounts___koppelingen-pagina-beschrijving',

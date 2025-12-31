@@ -1,12 +1,13 @@
 // eslint-disable-next-line import/no-unresolved
-import AvoLogoSrc from '@assets/images/avo-logo-button.svg';
-import { Alert, Column, Flex, Grid, Icon, IconName, Spinner, } from '@viaa/avo2-components';
 
+import { Alert, Column, Flex, Grid, Icon, IconName, Spinner, } from '@viaa/avo2-components';
+import { AvoItemItem, AvoUserCommonUser } from '@viaa/avo2-types';
 import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactNode, useCallback, useEffect, useMemo, } from 'react';
-
+import AvoLogoSrc from '../../assets/images/avo-logo-button.svg';
 import { commonUserAtom } from '../../authentication/authentication.store';
+import { EmbedCodeContentType } from '../../embed-code/embed-code.types.ts';
 import { toEmbedCodeDetail } from '../../embed-code/helpers/links';
 import { createResource } from '../../embed-code/helpers/resourceForTrackEvents';
 import { useGetEmbedCode } from '../../embed-code/hooks/useGetEmbedCode';
@@ -16,12 +17,8 @@ import { reorderDate } from '../../shared/helpers/formatters/date';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { trackEvents } from '../../shared/services/event-logging-service';
-
 import { EmbedErrorView } from './EmbedErrorView';
-
 import './Embed.scss';
-import { AvoItemItem, AvoUserCommonUser } from '@viaa/avo2-types';
-import { EmbedCodeContentType } from '../../embed-code/embed-code.types.ts';
 
 export interface EmbedProps {
   embedId: string | null;

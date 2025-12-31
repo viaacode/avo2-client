@@ -2,7 +2,7 @@ import { Button, ButtonToolbar, Container, Icon, IconName, Spacer, } from '@viaa
 import { type FC } from 'react';
 import { useNavigate } from 'react-router';
 
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH } from '../../constants';
 import { navigate } from '../../shared/helpers/link';
 
 import './LinkYourAccount.scss';
@@ -17,8 +17,8 @@ export const LinkYourAccount: FC = () => {
     <Container mode="horizontal" size="medium">
       <Container mode="vertical">
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
-            tText('authentication/views/link-your-account___link-uw-account'),
+          title={tText(
+            'authentication/views/link-your-account___link-uw-account',
           )}
           description={tText(
             'authentication/views/link-your-account___link-uw-account-paginabeschrijving',

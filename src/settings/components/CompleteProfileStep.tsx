@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH } from '../../constants';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
@@ -303,10 +303,8 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
   ) : (
     <>
       <SeoMetadata
-        title={GENERATE_SITE_TITLE(
-          tText(
-            'settings/components/profile___profiel-instellingen-pagina-titel',
-          ),
+        title={tText(
+          'settings/components/profile___profiel-instellingen-pagina-titel',
         )}
         description={tText(
           'settings/components/profile___profiel-instellingen-pagina-beschrijving',

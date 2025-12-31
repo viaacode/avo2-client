@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-
+// Smaller alternative to he package to decode HTML entities
 import { decodeHTML } from 'entities';
 import { isNil } from 'es-toolkit';
 

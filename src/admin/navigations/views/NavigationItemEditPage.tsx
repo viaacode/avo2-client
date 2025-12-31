@@ -2,7 +2,6 @@ import { type FC, lazy, Suspense } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
@@ -12,7 +11,7 @@ import { ADMIN_PATH } from '../../admin.const';
 import './NavigationItemEdit.scss';
 
 import { PermissionName } from '@viaa/avo2-types';
-import { SeoMetadata } from "../../../shared/components/SeoMetadata/SeoMetadata.tsx";
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 
 const NavigationEdit = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -32,18 +31,17 @@ export const NavigationItemEditPage: FC = () => {
     <PermissionGuard permissions={[PermissionName.EDIT_NAVIGATION_BARS]}>
       <div className="c-admin__navigation-edit">
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
+          title={
             tText(
               'admin/navigations/views/navigation-item-edit___navigation-item-edit-page-title',
-            ),
-            navigationItemId
+            ) || navigationItemId
               ? tText(
                   'admin/menu/views/menu-edit___menu-item-beheer-bewerk-pagina-titel',
                 )
               : tText(
                   'admin/menu/views/menu-edit___menu-item-beheer-aanmaak-pagina-titel',
-                ),
-          )}
+                )
+          }
           description={tText(
             'admin/navigations/views/navigation-item-edit___navigation-item-edit-page-description',
           )}

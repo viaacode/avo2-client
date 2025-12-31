@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
-import { APP_PATH, GENERATE_SITE_TITLE, RouteId } from '../../../constants';
+import { APP_PATH, RouteId } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import {
@@ -340,10 +340,8 @@ export const InteractiveTourOverview: FC = () => {
         </AdminLayoutTopBarRight>
         <AdminLayoutBody>
           <SeoMetadata
-            title={GENERATE_SITE_TITLE(
-              tText(
-                'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-titel',
-              ),
+            title={tText(
+              'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-titel',
             )}
             description={tText(
               'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-beschrijving',

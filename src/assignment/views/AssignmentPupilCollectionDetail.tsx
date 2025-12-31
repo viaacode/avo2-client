@@ -9,7 +9,6 @@ import { Link } from 'react-router-dom';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { BlockList } from '../../shared/components/BlockList/BlockList';
 import {
@@ -191,12 +190,12 @@ export const AssignmentPupilCollectionDetail: FC = () => {
   return (
     <>
       <SeoMetadata
-        title={GENERATE_SITE_TITLE(
+        title={
           assignmentResponse?.collection_title ||
-            tText(
-              'assignment/views/assignment-pupil-collection-detail___leerlingencollectie-detail',
-            ),
-        )}
+          tText(
+            'assignment/views/assignment-pupil-collection-detail___leerlingencollectie-detail',
+          )
+        }
         description={assignment?.description || ''}
       />
       <LoadingErrorLoadedComponent

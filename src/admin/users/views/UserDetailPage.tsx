@@ -5,7 +5,6 @@ import { useNavigate, useParams } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { ADMIN_PATH } from '../../admin.const';
@@ -32,10 +31,10 @@ export const UserDetailPage: FC = () => {
     <>
       <PermissionGuard permissions={[PermissionName.VIEW_USERS]}>
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
-            user?.fullName,
-            tText('admin/users/views/user-detail___item-detail-pagina-titel'),
-          )}
+          title={
+            user?.fullName ||
+            tText('admin/users/views/user-detail___item-detail-pagina-titel')
+          }
           description={tText(
             'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving',
           )}

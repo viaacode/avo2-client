@@ -7,7 +7,6 @@ import { useParams } from 'react-router';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { tHtml } from '../../../shared/helpers/translate-html';
@@ -217,10 +216,8 @@ export const AssignmentResponseAdminEdit: FC = () => {
   return (
     <>
       <SeoMetadata
-        title={GENERATE_SITE_TITLE(
-          tText(
-            'assignment/views/assignment-response-edit___maak-opdracht-antwoord-pagina-titel',
-          ),
+        title={tText(
+          'assignment/views/assignment-response-edit___maak-opdracht-antwoord-pagina-titel',
         )}
         description={tText(
           'assignment/views/assignment-response-edit___maak-opdracht-antwoord-pagina-beschrijving',

@@ -1,16 +1,18 @@
 // eslint-disable-next-line import/no-unresolved
-import AvoLogoSrc from '@assets/images/avo-logo-centered.svg'
-import { Column, Grid, IconName, Spacer, Tabs } from '@viaa/avo2-components'
-import { type FC } from 'react'
+
+import { Column, Grid, IconName, Spacer, Tabs } from '@viaa/avo2-components';
+import { type FC } from 'react';
+import AvoLogoSrc from '../../assets/images/avo-logo-centered.svg';
 
 import { LoginOptionsForPupil } from '../../authentication/components/LoginOptionsForPupil';
-import './RegisterOrLogin.scss'
 import { LoginOptionsForTeacher } from '../../authentication/components/LoginOptionsForTeacher';
 import { LoginOptionsTabs } from '../../authentication/helpers/login-options-preferred-tab';
 import { getEnv } from '../../shared/helpers/env';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { useTabs } from '../../shared/hooks/useTabs';
+
+import './RegisterOrLogin.scss';
 
 export const RegisterOrLogin: FC = () => {
   const [tab, setActiveTab, tabs] = useTabs(
@@ -27,37 +29,37 @@ export const RegisterOrLogin: FC = () => {
       },
     ],
     LoginOptionsTabs.STUDENT,
-  )
+  );
 
   const renderTitle = () => {
     switch (tab) {
       case LoginOptionsTabs.TEACHER:
         return tHtml(
           'authentication/components/login-options___log-in-als-lesgever',
-        )
+        );
 
       case LoginOptionsTabs.STUDENT:
         return tHtml(
           'authentication/components/login-options___log-in-als-leerling',
-        )
+        );
 
       default:
-        break
+        break;
     }
-  }
+  };
 
   const getButtons = () => {
     switch (tab) {
       case LoginOptionsTabs.TEACHER:
-        return <LoginOptionsForTeacher openInNewTab={true} />
+        return <LoginOptionsForTeacher openInNewTab={true} />;
 
       case LoginOptionsTabs.STUDENT:
-        return <LoginOptionsForPupil openInNewTab={true} />
+        return <LoginOptionsForPupil openInNewTab={true} />;
 
       default:
-        break
+        break;
     }
-  }
+  };
 
   return (
     <div className="c-register-login-view">
@@ -104,5 +106,5 @@ export const RegisterOrLogin: FC = () => {
         </Column>
       </Grid>
     </div>
-  )
-}
+  );
+};

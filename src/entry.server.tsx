@@ -13,10 +13,27 @@ let { query, dataRoutes } = createStaticHandler(APP_ROUTES);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const indexHtml = fs.readFileSync(
-  path.resolve(__dirname, '../index.html'),
-  'utf8',
-);
+
+const clientDir = path.resolve(__dirname, '../dist/client');
+const indexHtml = fs.readFileSync(path.join(clientDir, 'index.html'), 'utf8');
+const manifest = JSON.parse(
+  fs.readFileSync(path.join(clientDir, '.vite', 'manifest.json'), 'utf8'),
+) as Record<string, ManifestEntry>;
+
+interface ManifestEntry {
+  file: string;
+  src: string;
+}
+
+function getGlobalCssLinks() {
+  // With a single entry app, the entry chunk is the one with isEntry: true
+  const cssEntries = Object.values(manifest).filter((manifestEntry) => {
+    return manifestEntry.file.endsWith('.css');
+  });
+  return cssEntries
+    .map((cssEntry) => `<link rel="stylesheet" href="/${cssEntry.file}">`)
+    .join('\n\t');
+}
 
 export async function render(request: Request) {
   try {
@@ -52,7 +69,15 @@ export async function render(request: Request) {
 
     headers.set('Content-Type', 'text/html; charset=utf-8');
 
+    // Inject global css styles into the <head> of the index.html
+    const globalCssLinks = getGlobalCssLinks();
     let mergedHtml = indexHtml.replace(
+      '</head>',
+      `\t${globalCssLinks}\n</head>`,
+    );
+
+    // Insert the rendered html into the index.html file
+    mergedHtml = mergedHtml.replace(
       '<div id="root"></div>',
       `<div id="root">${html}</div>`,
     );

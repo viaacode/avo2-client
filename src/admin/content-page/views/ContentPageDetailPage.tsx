@@ -5,7 +5,6 @@ import { type FC, lazy, Suspense, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
@@ -29,12 +28,12 @@ export const ContentPageDetailPage: FC = () => {
     <>
       {item && (
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
-            item.title,
+          title={
+            (item.title,
             tText(
               'admin/content-page/views/content-page-detail-page___contentpagina-detail',
-            ),
-          )}
+            ))
+          }
           description={item.seoDescription || ''}
         />
       )}

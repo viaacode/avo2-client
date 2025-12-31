@@ -2,7 +2,6 @@ import { PermissionName } from '@viaa/avo2-types';
 import { type FC, lazy, Suspense } from 'react';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata';
 import { tText } from '../../../shared/helpers/translate-text';
@@ -24,10 +23,8 @@ export const UserOverviewPage: FC = () => {
       >
         <AdminLayoutBody>
           <SeoMetadata
-            title={GENERATE_SITE_TITLE(
-              tText(
-                'admin/users/views/user-overview___gebruikersbeheer-overzicht-pagina-titel',
-              ),
+            title={tText(
+              'admin/users/views/user-overview___gebruikersbeheer-overzicht-pagina-titel',
             )}
             description={tText(
               'admin/users/views/user-overview___gebruikersbeheer-overzicht-pagina-beschrijving',

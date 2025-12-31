@@ -1,4 +1,3 @@
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
@@ -13,10 +12,8 @@ export const Dashboard = () => {
     >
       <AdminLayoutBody>
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
-            tText(
-              'admin/dashboard/views/dashboard___beheer-dashboard-pagina-titel',
-            ),
+          title={tText(
+            'admin/dashboard/views/dashboard___beheer-dashboard-pagina-titel',
           )}
           description={tText(
             'admin/dashboard/views/dashboard___beheer-dashboard-pagina-beschrijving',

@@ -13,7 +13,6 @@ import { type FC, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { SpecialUserGroupId } from '../../../admin/user-groups/user-group.const';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
@@ -195,10 +194,8 @@ export const AcceptConditions: FC = () => {
   return (
     <>
       <SeoMetadata
-        title={GENERATE_SITE_TITLE(
-          tText(
-            'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-titel',
-          ),
+        title={tText(
+          'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-titel',
         )}
         description={tText(
           'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-beschrijving',

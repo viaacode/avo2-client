@@ -1,21 +1,16 @@
-// eslint-disable-next-line import/no-unresolved
-import meemooLogo from '@assets/images/meemoo-logo.png';
-// eslint-disable-next-line import/no-unresolved
-import vlaamseOverheidLogoSrc from '@assets/images/vlaanderen-logo.svg';
 import { Container, Spacer } from '@viaa/avo2-components';
-
+import { AvoSearchOrderDirection } from '@viaa/avo2-types';
 import { orderBy } from 'es-toolkit';
 import { type FC, useState } from 'react';
-
+import meemooLogo from '../../../assets/images/meemoo-logo.png';
+import vlaamseOverheidLogoSrc from '../../../assets/images/vlaanderen-logo.svg';
 import { type BooleanDictionary } from '../../helpers/navigation';
 import { tText } from '../../helpers/translate-text';
 import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
 import { type AppContentNavElement } from '../../services/navigation-items-service';
 import { NavigationBarId } from '../Navigation/Navigation.const';
 import { NavigationItem } from '../Navigation/NavigationItem';
-
 import './Footer.scss';
-import { AvoSearchOrderDirection } from "@viaa/avo2-types";
 
 export const Footer: FC = () => {
   const [areDropdownsOpen, setDropdownsOpen] = useState<BooleanDictionary>({});

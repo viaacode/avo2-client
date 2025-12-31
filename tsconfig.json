@@ -22,11 +22,6 @@
     "jsx": "react-jsx",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
-    "paths": {
-      "@assets/*": [
-        "./src/assets/*"
-      ]
-    }
   },
   "include": [
     "src/**/*.ts",

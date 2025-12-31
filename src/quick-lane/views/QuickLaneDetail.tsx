@@ -25,7 +25,7 @@ import { AssignmentLayout } from '../../assignment/assignment.types';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { FragmentList } from '../../collection/components/fragment/FragmentList';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { ItemVideoDescription } from '../../item/components/ItemVideoDescription';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
@@ -364,12 +364,12 @@ export const QuickLaneDetail: FC = () => {
   return (
     <>
       <SeoMetadata
-        title={GENERATE_SITE_TITLE(
+        title={
           quickLane?.title ||
-            tText(
-              'quick-lane/views/quick-lane-detail___gedeelde-link-detail-pagina-titel-fallback',
-            ),
-        )}
+          tText(
+            'quick-lane/views/quick-lane-detail___gedeelde-link-detail-pagina-titel-fallback',
+          )
+        }
         description={quickLane?.content?.description || ''}
       />
       {renderPageContent()}

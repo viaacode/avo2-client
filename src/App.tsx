@@ -1,4 +1,7 @@
-import { AvoAuthIdpLinkedSuccessQueryParam, PermissionName } from '@viaa/avo2-types';
+import { AdminConfig } from '@meemoo/admin-core-ui/admin';
+import { AdminConfigManager } from '@meemoo/admin-core-ui/client';
+import { keepPreviousData, QueryClient, QueryClientProvider, } from '@tanstack/react-query';
+import { AvoAuthIdpLinkedSuccessQueryParam, PermissionName, } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { isEqual, noop, uniq } from 'es-toolkit';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
@@ -6,9 +9,8 @@ import { type FC, useCallback, useEffect, useState } from 'react';
 import { MetaDescriptor, Outlet, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
-
 import pkg from '../package.json' with { type: 'json' };
-
+import { getAdminCoreConfig } from './admin/shared/helpers/get-admin-core-config.tsx';
 import { SpecialUserGroupId } from './admin/user-groups/user-group.const';
 import { commonUserAtom } from './authentication/authentication.store';
 import { getLoginStateAtom } from './authentication/authentication.store.actions';
@@ -24,14 +26,6 @@ import { useHideZendeskWidget } from './shared/hooks/useHideZendeskWidget';
 import { usePageLoaded } from './shared/hooks/usePageLoaded';
 import { ToastService } from './shared/services/toast-service';
 import { embedFlowAtom, historyLocationsAtom } from './shared/store/ui.store';
-
-import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
-import './App.scss';
-import './styles/main.scss';
-import { AdminConfig } from '@meemoo/admin-core-ui/admin';
-import { AdminConfigManager } from '@meemoo/admin-core-ui/client';
-import { keepPreviousData, QueryClient, QueryClientProvider, } from '@tanstack/react-query';
-import { getAdminCoreConfig } from './admin/shared/helpers/get-admin-core-config.tsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -74,7 +68,9 @@ export const App: FC = () => {
 
   const consoleLogClientAndServerVersions = useCallback(async () => {
     console.info(`%c client version: ${pkg.version}`, 'color: #bada55');
-    const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
+    const { fetchWithLogoutJson } = await import(
+      '@meemoo/admin-core-ui/client'
+    );
     const proxyUrl = getEnv('PROXY_URL');
     if (!proxyUrl) {
       console.warn('PROXY_URL is not defined, cannot fetch server version');

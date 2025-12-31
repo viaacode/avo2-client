@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
@@ -271,10 +270,8 @@ export const UrlRedirectOverview: FC = () => {
         </AdminLayoutTopBarRight>
         <AdminLayoutBody>
           <SeoMetadata
-            title={GENERATE_SITE_TITLE(
-              tText(
-                'admin/url-redirects/views/url-redirect-overview___url-redirect-beheer-overview-pagina-titel',
-              ),
+            title={tText(
+              'admin/url-redirects/views/url-redirect-overview___url-redirect-beheer-overview-pagina-titel',
             )}
             description={tText(
               'admin/url-redirects/views/url-redirect-overview___url-redirect-beheer-overview-pagina-beschrijving',

@@ -1,18 +1,12 @@
-import {
-  type ContentPageInfo,
-  ContentPageRenderer,
-  ContentPageService,
-  convertDbContentPageToContentPageInfo,
-  type DbContentPage,
-} from '@meemoo/admin-core-ui/client';
+import { type ContentPageInfo, ContentPageRenderer, type DbContentPage, } from '@meemoo/admin-core-ui/client';
 import { IconName } from '@viaa/avo2-components';
-import { AvoAuthLoginResponseLoggedIn, AvoSearchOrderDirection, PermissionName, } from '@viaa/avo2-types';
+import { AvoAuthLoginResponseLoggedIn, AvoContentPagePage, AvoSearchOrderDirection, PermissionName, } from '@viaa/avo2-types';
+import { decodeHTML } from 'entities';
 import { useAtom, useSetAtom } from 'jotai';
 import { stringifyUrl } from 'query-string';
 import { type FC, useCallback, useEffect, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router';
+import { Navigate, useLoaderData, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
-
 import { ItemsService } from '../../admin/items/items.service';
 import { UrlRedirectsService } from '../../admin/url-redirects/url-redirects.service';
 import { loginAtom } from '../../authentication/authentication.store';
@@ -21,7 +15,7 @@ import { SpecialPermissionGroups } from '../../authentication/authentication.typ
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page';
 import { CollectionService } from '../../collection/collection.service';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { SearchFilter } from '../../search/search.const';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
@@ -34,13 +28,13 @@ import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
-import { stripHtml } from '../../shared/helpers/formatters/strip-html';
+import { getFullName } from '../../shared/helpers/formatters/avatar.tsx';
+import { stripHtml } from '../../shared/helpers/formatters/strip-html.ts';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { generateSearchLinkString } from '../../shared/helpers/link';
 import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user-role-error';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
-import { Locale } from '../../shared/translations/translations.types';
 import { DynamicRouteType, GET_ERROR_MESSAGES, } from '../dynamic-route-resolver.const';
 
 interface RouteInfo {
@@ -62,6 +56,10 @@ export const DynamicRouteResolver: FC = () => {
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
   });
+  const contentPageInfoFromRoute = useLoaderData<{
+    contentPage: AvoContentPagePage | null;
+    url: string;
+  }>();
 
   const analyseRoute = useCallback(async () => {
     try {
@@ -159,16 +157,13 @@ export const DynamicRouteResolver: FC = () => {
 
       // Check if path points to a content page
       try {
-        const contentPage: DbContentPage | null =
-          await ContentPageService.getContentPageByLanguageAndPath(
-            Locale.Nl as any,
-            pathname,
-          );
+        const contentPage: AvoContentPagePage | null =
+          contentPageInfoFromRoute.contentPage;
         if (contentPage) {
           // Path is indeed a content page url
           setRouteInfo({
             type: DynamicRouteType.CONTENT_PAGE,
-            data: convertDbContentPageToContentPageInfo(contentPage),
+            data: contentPage,
           });
         }
       } catch (err) {
@@ -293,29 +288,8 @@ export const DynamicRouteResolver: FC = () => {
         return <Navigate to={APP_PATH.REGISTER_OR_LOGIN.route} />;
       }
 
-      const description =
-        routeInfo.data?.seo_description ||
-        routeInfo.data?.description ||
-        (routeInfo.data?.description_html
-          ? stripHtml(routeInfo.data?.description_html)
-          : null) ||
-        '';
       return (
         <>
-          <SeoMetadata
-            title={GENERATE_SITE_TITLE(routeInfo.data?.title)}
-            description={description}
-          />
-          {/*<JsonLd*/}
-          {/*  url={window.location.href}*/}
-          {/*  title={routeInfo.data?.title || ''}*/}
-          {/*  description={description}*/}
-          {/*  image={routeInfo.data?.thumbnail_path}*/}
-          {/*  isOrganisation={!!routeInfo.data?.profile?.organisation}*/}
-          {/*  author={getFullName(routeInfo.data?.profile, true, false)}*/}
-          {/*  publishedAt={getPublishedDate(routeInfo.data)}*/}
-          {/*  updatedAt={routeInfo.data?.updated_at}*/}
-          {/*/>*/}
           {routeInfo.data && (
             <>
               <InteractiveTour showButton={false} />
@@ -401,12 +375,34 @@ export const DynamicRouteResolver: FC = () => {
   };
 
   return (
-    <LoadingErrorLoadedComponent
-      loadingInfo={loadingInfo}
-      dataObject={routeInfo}
-      render={renderRouteComponent}
-      locationId="dynamic-route-resolver"
-    />
+    <>
+      <SeoMetadata
+        title={contentPageInfoFromRoute?.contentPage?.title}
+        description={
+          contentPageInfoFromRoute?.contentPage?.seo_description ||
+          decodeHTML(
+            stripHtml(contentPageInfoFromRoute?.contentPage?.description),
+          )
+        }
+        image={contentPageInfoFromRoute.contentPage?.seo_image_path}
+        url={contentPageInfoFromRoute.url}
+        organisationName="meemoo"
+        author={getFullName(
+          contentPageInfoFromRoute.contentPage?.profile,
+          false,
+          false,
+        )}
+        updatedAt={contentPageInfoFromRoute.contentPage?.updated_at}
+        createdAt={contentPageInfoFromRoute?.contentPage?.created_at}
+        publishedAt={contentPageInfoFromRoute?.contentPage?.published_at}
+      />
+      <LoadingErrorLoadedComponent
+        loadingInfo={loadingInfo}
+        dataObject={routeInfo}
+        render={renderRouteComponent}
+        locationId="dynamic-route-resolver"
+      />
+    </>
   );
 };
 

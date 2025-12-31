@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { APP_PATH } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import {
   LoadingErrorLoadedComponent,
@@ -387,10 +387,8 @@ export const PublishItemsOverview: FC = () => {
         </AdminLayoutTopBarRight>
         <AdminLayoutBody>
           <SeoMetadata
-            title={GENERATE_SITE_TITLE(
-              tText(
-                'admin/items/views/publish-items-overview___publiceer-items-beheer-overview-pagina-titel',
-              ),
+            title={tText(
+              'admin/items/views/publish-items-overview___publiceer-items-beheer-overview-pagina-titel',
             )}
             description={tText(
               'admin/items/views/publish-items-overview___unpublished-item-beheer-overview-pagina-beschrijving',

@@ -5,7 +5,6 @@ import { useNavigate, useParams } from 'react-router';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
@@ -274,15 +273,15 @@ export const UrlRedirectEdit: FC = () => {
     <>
       <PermissionGuard permissions={[PermissionName.EDIT_REDIRECTS]}>
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
+          title={
             isCreatePage
               ? tText(
                   'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-aanmaak-pagina-titel',
                 )
               : tText(
                   'admin/url-redirects/views/url-redirect-edit___url-redirect-beheer-bewerk-pagina-titel',
-                ),
-          )}
+                )
+          }
           description={
             isCreatePage
               ? tText(

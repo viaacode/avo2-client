@@ -9,6 +9,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 async function createServer() {
   const app = express();
 
+  const clientDir = path.resolve("dist/client");
+
   // Create Vite server in middleware mode and configure the app type as
   // 'custom', disabling Vite's own HTML serving logic so parent server
   // can take control
@@ -25,6 +27,19 @@ async function createServer() {
   // middlewares). The following is valid even after restarts.
   app.use(vite.middlewares);
 
+  // Serve hashed assets (fast cache)
+  app.use(
+      "/assets",
+      express.static(path.join(clientDir, "assets"), {
+        immutable: true,
+        maxAge: "1y",
+      }),
+  );
+
+  // Serve other static assets (no cache)
+  app.use(express.static(clientDir, { index: false }));
+
+  // SSR the other requests
   app.use('*all', async (req, res, next) => {
     const url = `${process.env.CLIENT_URL}${req.originalUrl}`;
 

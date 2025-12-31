@@ -23,7 +23,7 @@ import { useLocation } from 'react-router-dom';
 
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects/redirects';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { APP_PATH } from '../../../constants';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
@@ -545,16 +545,16 @@ export const InteractiveTourEdit: FC = () => {
     <>
       <PermissionGuard permissions={[PermissionName.EDIT_INTERACTIVE_TOURS]}>
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
-            interactiveTourState?.currentInteractiveTour?.name,
+          title={
+            (interactiveTourState?.currentInteractiveTour?.name,
             isCreatePage
               ? tText(
                   'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-aanmaak-pagina-titel',
                 )
               : tText(
                   'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-bewerk-pagina-titel',
-                ),
-          )}
+                ))
+          }
           description={
             isCreatePage
               ? tText(

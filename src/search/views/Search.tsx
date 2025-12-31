@@ -20,7 +20,6 @@ import { buildGlobalSearchLink } from '../../assignment/helpers/build-search-lin
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionGuard } from '../../authentication/components/PermissionGuard';
 import { PermissionGuardFail, PermissionGuardPass, } from '../../authentication/components/PermissionGuard.slots';
-import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { getMoreOptionsLabel } from '../../shared/constants';
@@ -109,9 +108,7 @@ export const Search: FC = () => {
   return (
     <>
       <SeoMetadata
-        title={GENERATE_SITE_TITLE(
-          tText('search/views/search___zoeken-pagina-titel'),
-        )}
+        title={tText('search/views/search___zoeken-pagina-titel')}
         description={tText('search/views/search___zoeken-pagina-beschrijving')}
       />
       <PermissionGuard permissions={[PermissionName.SEARCH]}>

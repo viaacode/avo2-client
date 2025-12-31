@@ -70,7 +70,7 @@ import { LoggedOutHome } from './home/views/LoggedOutHome.tsx';
 import { ItemDetail } from './item/views/ItemDetail.tsx';
 import { ItemDetailRoute } from './item/views/ItemDetailRoute.tsx';
 import { QuickLaneDetail } from './quick-lane/views/QuickLaneDetail.tsx';
-import { fetchAssignmentLoader, fetchCollectionLoader, initAppLoader, loadLoggedOutHomeContentPage, } from './routes.loaders.ts';
+import { fetchAssignmentLoader, fetchCollectionLoader, fetchContentPageLoader, initAppLoader, } from './routes.loaders.ts';
 import { Search } from './search/views/Search.tsx';
 import { CompleteProfileStep } from './settings/components/CompleteProfileStep.tsx';
 import { Email } from './settings/components/Email/Email.tsx';
@@ -145,8 +145,10 @@ const APP_ROUTES: RouteObject[] = [
           ////////////////////////////////////////////////////////////////////////////////////////
           // This route needs to be the last one, since it handles all remaining routes
           {
-            Component: DynamicRouteResolver,
+            id: 'catch-all-route-for-content-pages',
             path: APP_PATH.ALL_ROUTES.route,
+            loader: fetchContentPageLoader,
+            Component: DynamicRouteResolver,
           },
         ],
       },
@@ -162,7 +164,7 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
     {
       id: 'LoggedOutHome',
       index: true,
-      loader: loadLoggedOutHomeContentPage,
+      loader: fetchContentPageLoader,
       Component: LoggedOutHome,
       ErrorBoundary: () => ErrorBoundary('LoggedOutHome--route'),
       hasErrorBoundary: true,

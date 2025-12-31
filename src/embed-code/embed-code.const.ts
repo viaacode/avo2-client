@@ -1,16 +1,14 @@
-// eslint-disable-next-line import/no-unresolved
-import bookwidgetsLogoInternal from '@assets/images/bookwidget_logo.png'
-// eslint-disable-next-line import/no-unresolved
-import smartschoolLogoInternal from '@assets/images/smartschool_logo.png'
-import type { FilterableColumn } from '@meemoo/admin-core-ui/admin'
+import type { FilterableColumn } from '@meemoo/admin-core-ui/admin';
+import bookwidgetsLogoInternal from '../assets/images/bookwidget_logo.png';
+import smartschoolLogoInternal from '../assets/images/smartschool_logo.png';
 
 import { isMobileWidth } from '../shared/helpers/media-query';
 import { tText } from '../shared/helpers/translate-text';
 
 import type { EmbedCodeOverviewTableColumns } from './embed-code.types';
 
-export const bookWidgetsLogo = bookwidgetsLogoInternal
-export const smartSchoolLogo = smartschoolLogoInternal
+export const bookWidgetsLogo = bookwidgetsLogoInternal;
+export const smartSchoolLogo = smartschoolLogoInternal;
 
 export const OVERVIEW_COLUMNS =
   (): FilterableColumn<EmbedCodeOverviewTableColumns>[] => [
@@ -62,4 +60,4 @@ export const OVERVIEW_COLUMNS =
       sortable: false,
       visibleByDefault: true,
     },
-  ]
+  ];

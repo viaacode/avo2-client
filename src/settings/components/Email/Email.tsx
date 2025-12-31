@@ -4,7 +4,6 @@ import { useAtomValue } from 'jotai';
 import { type FC, useEffect, useState } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
-import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { CustomError } from '../../../shared/helpers/custom-error';
@@ -137,10 +136,8 @@ export const Email: FC = () => {
     <Container mode="horizontal">
       <Container mode="vertical">
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
-            tText(
-              'settings/components/email___nieuwsbrief-voorkeuren-pagina-titel',
-            ),
+          title={tText(
+            'settings/components/email___nieuwsbrief-voorkeuren-pagina-titel',
           )}
           description={tText(
             'settings/components/email___nieuwsbrief-voorkeuren-pagina-beschrijving',

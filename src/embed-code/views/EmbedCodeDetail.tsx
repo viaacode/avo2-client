@@ -25,7 +25,7 @@ import { generatePath, useNavigate, useParams } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { ItemVideoDescription } from '../../item/components/ItemVideoDescription';
 import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
@@ -301,12 +301,12 @@ export const EmbedCodeDetail: FC = () => {
   return (
     <>
       <SeoMetadata
-        title={GENERATE_SITE_TITLE(
+        title={
           embedCode?.title ||
-            tText(
-              'embed-code/views/embed-code-detail___ingesloten-fragment-detail-pagina-titel-fallback',
-            ),
-        )}
+          tText(
+            'embed-code/views/embed-code-detail___ingesloten-fragment-detail-pagina-titel-fallback',
+          )
+        }
         description={embedCode?.description || ''}
       />
       {renderPageContent()}

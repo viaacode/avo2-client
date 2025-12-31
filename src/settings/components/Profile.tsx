@@ -33,7 +33,6 @@ import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { SERVER_LOGOUT_PAGE } from '../../authentication/authentication.const';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
-import { GENERATE_SITE_TITLE } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
 import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
@@ -730,10 +729,8 @@ export const Profile: FC = () => {
   return (
     <>
       <SeoMetadata
-        title={GENERATE_SITE_TITLE(
-          tText(
-            'settings/components/profile___profiel-instellingen-pagina-titel',
-          ),
+        title={tText(
+          'settings/components/profile___profiel-instellingen-pagina-titel',
         )}
         description={tText(
           'settings/components/profile___profiel-instellingen-pagina-beschrijving',

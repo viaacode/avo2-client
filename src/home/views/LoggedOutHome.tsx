@@ -8,7 +8,6 @@ import { useLoaderData, useNavigate, useSearchParams } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { useGetContentPageByPath } from '../../admin/content-page/hooks/use-get-content-page-by-path';
 import { commonUserAtom, loginAtom, } from '../../authentication/authentication.store';
-import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
@@ -73,8 +72,8 @@ export const LoggedOutHome: FC = () => {
   return (
     <>
       <SeoMetadata
-        title={GENERATE_SITE_TITLE(
-          tText('home/views/logged-out-home___uitgelogde-start-pagina-titel'),
+        title={tText(
+          'home/views/logged-out-home___uitgelogde-start-pagina-titel',
         )}
         description={tText(
           'home/views/logged-out-home___uitgelogde-start-pagina-beschrijving',

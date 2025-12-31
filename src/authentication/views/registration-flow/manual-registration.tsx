@@ -22,7 +22,7 @@ import type { Requests } from 'node-zendesk';
 import { type FC, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { APP_PATH } from '../../../constants';
 import { ROUTE_PARTS } from '../../../shared/constants/routes';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
@@ -363,10 +363,8 @@ export const ManualRegistration: FC = () => {
     <Container className="c-register-stamboek-view" mode="vertical">
       <Container mode="horizontal" size="medium">
         <SeoMetadata
-          title={GENERATE_SITE_TITLE(
-            tText(
-              'authentication/views/registration-flow/r-4-manual-registration___manuele-account-aanvraag-pagina-titel',
-            ),
+          title={tText(
+            'authentication/views/registration-flow/r-4-manual-registration___manuele-account-aanvraag-pagina-titel',
           )}
           description={tText(
             'authentication/views/registration-flow/r-4-manual-registration___manuele-account-aanvraag-pagina-beschrijving',

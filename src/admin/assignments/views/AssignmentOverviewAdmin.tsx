@@ -9,14 +9,14 @@ import { type AssignmentTableColumns } from '../../../assignment/assignment.type
 import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetAssignmentsEditStatuses';
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { APP_PATH } from '../../../constants';
 import { ErrorView } from '../../../error/views/ErrorView';
 
 import { type CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
 import {
-  LoadingErrorLoadedComponent,
-  type LoadingInfo,
+    LoadingErrorLoadedComponent,
+    type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
@@ -609,10 +609,8 @@ export const AssignmentOverviewAdmin: FC = () => {
       >
         <AdminLayoutBody>
           <SeoMetadata
-            title={GENERATE_SITE_TITLE(
-              tText(
-                'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-titel',
-              ),
+            title={tText(
+              'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-titel',
             )}
             description={tText(
               'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-beschrijving',
