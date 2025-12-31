@@ -18,7 +18,13 @@ let { query, dataRoutes } = createStaticHandler(APP_ROUTES);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const clientDir = path.resolve(__dirname, '../dist/client');
+let clientDir: string;
+if (process.env.NODE_ENV === 'production') {
+  clientDir = path.resolve(__dirname, '../dist/client');
+} else {
+  clientDir = path.resolve(__dirname, '../');
+}
+
 const indexHtml = fs.readFileSync(path.join(clientDir, 'index.html'), 'utf8');
 
 export async function render(request: Request) {

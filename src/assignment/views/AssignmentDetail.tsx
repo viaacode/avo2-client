@@ -1166,7 +1166,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
     }
     return (
       <>
-        <div className="c-sticky-bar__wrapper">
+        <div className="c-sticky-bar__wrapper m-assignment-detail">
           <div>{renderPageContent()}</div>
 
           {!assignmentError && (
