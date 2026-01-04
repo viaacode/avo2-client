@@ -163,97 +163,95 @@ pipeline {
 		}
 
 
-
-		stage('e2e-prepare') {
-			when {
-			    expression { false }
+//
+// 		stage('e2e-prepare') {
+// 			when {
 // 			    disable e2e tests for now, since they take forever to run
 // 				anyOf {
 // 					changeRequest target: 'develop'//'master'
 // 					changeRequest target: 'development' // do not build on master prs
 // 					branch 'develop'; branch 'development'
 // 				}
-			}
-			steps {
-				container('hasura-cli') {
-					script {
-					withCredentials([string(credentialsId: 'admin_secret', variable: 'ADMIN_SECRET')]) {
-						git branch: 'develop',
-						credentialsId: 'meemoo-ci',
-						url: 'https://github.com/viaacode/hasura-graphql.git'
-						sh """#!/bin/bash
-						# hasura-cli seed apply --endpoint=https://hasura-graphql-int-Avoprivatecloud.meemoo.be --admin-secret=${ADMIN_SECRET} || echo failed
-						# hasura-cli seed apply --endpoint=https://hasura-graphql-int-Avoprivatecloud.meemoo.be --admin-secret=${ADMIN_SECRET} --file ../seeds_INT/000___users_idp_map.sql || echo failed
-						exit 0
-						"""
-					}
-					}
-				}
-			}
-		}//end stage
-		stage('e2e') {
-			when {
-			    expression { false }
+// 			}
+// 			steps {
+// 				container('hasura-cli') {
+// 					script {
+// 					withCredentials([string(credentialsId: 'admin_secret', variable: 'ADMIN_SECRET')]) {
+// 						git branch: 'develop',
+// 						credentialsId: 'meemoo-ci',
+// 						url: 'https://github.com/viaacode/hasura-graphql.git'
+// 						sh """#!/bin/bash
+// 						# hasura-cli seed apply --endpoint=https://hasura-graphql-int-Avoprivatecloud.meemoo.be --admin-secret=${ADMIN_SECRET} || echo failed
+// 						# hasura-cli seed apply --endpoint=https://hasura-graphql-int-Avoprivatecloud.meemoo.be --admin-secret=${ADMIN_SECRET} --file ../seeds_INT/000___users_idp_map.sql || echo failed
+// 						exit 0
+// 						"""
+// 					}
+// 					}
+// 				}
+// 			}
+// 		}//end stage
+// 		stage('e2e') {
+// 			when {
 // 			    disable e2e tests for now, since they take forever to run
 // 				anyOf {
 // 					changeRequest target: 'develop'//'master'
 // 					changeRequest target: 'development' // do not build on master prs
 // 					branch 'develop'; branch 'development'
 // 				}
-			}
-
-            options { skipDefaultCheckout(true) }
-
-            steps {
-                script {
-					configFileProvider([configFile(fileId: 'end2end_env', variable: 'end2end_env')]) {
-						sh ('cat $end2end_env > .env')
-						loadEnvironmentVariablesFromFile('.env')
-					}
-                }
-
-
-                container('jnlp') {
-                    git branch: 'develop',
-                        credentialsId: 'meemoo-ci',
-                        url: 'https://github.com/viaacode/avo2-client.git'
-                }
-
-                container('playwright') {
-                    withEnv([
-                      "TEST_CLIENT_ENDPOINT=${env.TEST_CLIENT_ENDPOINT}",
-                      "TEST_PROXY_ENDPOINT=${env.TEST_PROXY_ENDPOINT}",
-                      "TEST_OBJECT_DETAIL_PAGE_VRT=${env.TEST_OBJECT_DETAIL_PAGE_VRT}",
-                      "TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT=${env.TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT}",
-                      "TEST_VISITOR_ACCOUNT_USERNAME=${env.TEST_VISITOR_ACCOUNT_USERNAME}",
-                      "TEST_VISITOR_ACCOUNT_PASSWORD=${env.TEST_VISITOR_ACCOUNT_PASSWORD}",
-                      "TEST_CP_ADMIN_ACCOUNT_USERNAME=${env.TEST_CP_ADMIN_ACCOUNT_USERNAME}",
-                      "TEST_CP_ADMIN_ACCOUNT_PASSWORD=${env.TEST_CP_ADMIN_ACCOUNT_PASSWORD}",
-                      "TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME=${env.TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME}",
-                      "TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD=${env.TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD}",
-                      "TEST_ACM_DASHBOARD=${env.TEST_ACM_DASHBOARD}",
-                      "TEST_ACM_DASHBOARD_USERNAME=${env.TEST_ACM_DASHBOARD_USERNAME}",
-                      "TEST_ACM_DASHBOARD_PASSWORD=${env.TEST_ACM_DASHBOARD_PASSWORD}",
-                    ]) {
-                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                            sh '''
-                                cd tests
-                                export NODE_ENV=dev
-                                npm install --force
-                                npm install junit-report-builder --save --force
-                                npm install @playwright/test --force
-                                npx playwright install
-                                npx playwright install-deps
-                                npx playwright install chrome
-                                PLAYWRIGHT_JUNIT_OUTPUT_NAME=tests/e2e_test_results.xml npx playwright test --reporter=junit || echo failed
-                            '''
-                        }
-                    }
-                }
-
-                junit 'tests/e2e_test_results.xml'
-            }
-	    }
+// 			}
+//
+//             options { skipDefaultCheckout(true) }
+//
+//             steps {
+//                 script {
+// 					configFileProvider([configFile(fileId: 'end2end_env', variable: 'end2end_env')]) {
+// 						sh ('cat $end2end_env > .env')
+// 						loadEnvironmentVariablesFromFile('.env')
+// 					}
+//                 }
+//
+//
+//                 container('jnlp') {
+//                     git branch: 'develop',
+//                         credentialsId: 'meemoo-ci',
+//                         url: 'https://github.com/viaacode/avo2-client.git'
+//                 }
+//
+//                 container('playwright') {
+//                     withEnv([
+//                       "TEST_CLIENT_ENDPOINT=${env.TEST_CLIENT_ENDPOINT}",
+//                       "TEST_PROXY_ENDPOINT=${env.TEST_PROXY_ENDPOINT}",
+//                       "TEST_OBJECT_DETAIL_PAGE_VRT=${env.TEST_OBJECT_DETAIL_PAGE_VRT}",
+//                       "TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT=${env.TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT}",
+//                       "TEST_VISITOR_ACCOUNT_USERNAME=${env.TEST_VISITOR_ACCOUNT_USERNAME}",
+//                       "TEST_VISITOR_ACCOUNT_PASSWORD=${env.TEST_VISITOR_ACCOUNT_PASSWORD}",
+//                       "TEST_CP_ADMIN_ACCOUNT_USERNAME=${env.TEST_CP_ADMIN_ACCOUNT_USERNAME}",
+//                       "TEST_CP_ADMIN_ACCOUNT_PASSWORD=${env.TEST_CP_ADMIN_ACCOUNT_PASSWORD}",
+//                       "TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME=${env.TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME}",
+//                       "TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD=${env.TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD}",
+//                       "TEST_ACM_DASHBOARD=${env.TEST_ACM_DASHBOARD}",
+//                       "TEST_ACM_DASHBOARD_USERNAME=${env.TEST_ACM_DASHBOARD_USERNAME}",
+//                       "TEST_ACM_DASHBOARD_PASSWORD=${env.TEST_ACM_DASHBOARD_PASSWORD}",
+//                     ]) {
+//                         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+//                             sh '''
+//                                 cd tests
+//                                 export NODE_ENV=dev
+//                                 npm install --force
+//                                 npm install junit-report-builder --save --force
+//                                 npm install @playwright/test --force
+//                                 npx playwright install
+//                                 npx playwright install-deps
+//                                 npx playwright install chrome
+//                                 PLAYWRIGHT_JUNIT_OUTPUT_NAME=tests/e2e_test_results.xml npx playwright test --reporter=junit || echo failed
+//                             '''
+//                         }
+//                     }
+//                 }
+//
+//                 junit 'tests/e2e_test_results.xml'
+//             }
+// 	    }
 		stage('Deploy TST') {
 			when {
 				anyOf { branch 'develop'; branch 'development' }
