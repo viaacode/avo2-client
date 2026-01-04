@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
-
-import { EmbedCodeService } from '../embed-code-service';
 import { type EmbedCode } from '../embed-code.types';
+import { EmbedCodeService } from '../embed-code-service';
 
 export const useCreateEmbedCode = () => {
-	return useMutation(
-		(embedCode: EmbedCode): Promise<EmbedCode> => EmbedCodeService.createEmbedCode(embedCode)
-	);
+  return useMutation({
+    mutationFn: (embedCode: EmbedCode): Promise<EmbedCode> =>
+      EmbedCodeService.createEmbedCode(embedCode),
+  });
 };

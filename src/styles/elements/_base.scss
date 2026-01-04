@@ -1,3 +1,6 @@
+@use "../../styles/settings/colors" as colors;
+@use "../../styles/settings/variables" as variables;
+
 /* ==========================================================================
    Elements: Base
    ---
@@ -7,7 +10,7 @@
 $base-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !default;
 $base-font-size: 1.6rem !default;
 $base-line-height: 1.5 !default;
-$base-color: $color-gray-700 !default;
+$base-color: colors.$color-gray-700 !default;
 $g-base-background: #fff !default;
 
 /* Elements
@@ -27,25 +30,25 @@ html {
 html {
 	font-size: 54.16%; // 13px
 
-	@media (min-width: $g-bp3) {
+	@media (min-width: variables.$g-bp3) {
 		font-size: 58.33%; // 14px
 	}
-	@media (min-width: $g-bp4) {
+	@media (min-width: variables.$g-bp4) {
 		font-size: 62.5%; // Base 10
 	}
 }
 
 body {
 	position: relative;
-	font-family: $g-base-font-family;
-	font-size: $g-base-font-size;
+	font-family: variables.$g-base-font-family;
+	font-size: variables.$g-base-font-size;
 	line-height: $base-line-height;
 	color: $base-color;
-	background-color: $g-base-background;
+	background-color: variables.$g-base-background;
 }
 
 body.c-body-compensate-header {
-	margin: $g-bar-size-regular 0 0;
+	margin: variables.$g-bar-size-regular 0 0;
 }
 
 img,
@@ -62,7 +65,7 @@ select {
 }
 
 a {
-	color: $color-primary;
+	color: colors.$color-primary;
 }
 
 em,
@@ -72,7 +75,7 @@ i {
 
 strong,
 b {
-	font-weight: $g-headings-font-weight;
+	font-weight: variables.$g-headings-font-weight;
 }
 
 /* Required fields

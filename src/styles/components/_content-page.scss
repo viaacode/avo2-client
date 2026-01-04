@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Component: Content
    ---
@@ -13,14 +16,14 @@
 	font-size: 4.8rem;
 	margin: 2.4rem 0;
 	line-height: 1.25;
-	font-family: $g-headings-font-family;
-	font-weight: $g-headings-font-weight;
+	font-family: variables.$g-headings-font-family;
+	font-weight: variables.$g-headings-font-weight;
 }
 
 .c-h1,
 .c-content h1 {
-	font-family: $g-headings-font-family;
-	font-weight: $g-headings-font-weight;
+	font-family: variables.$g-headings-font-family;
+	font-weight: variables.$g-headings-font-weight;
 	font-size: 3.2rem;
 	margin: 3.2rem 0;
 	line-height: 1.25;
@@ -28,8 +31,8 @@
 
 .c-h2,
 .c-content h2 {
-	font-family: $g-headings-font-family;
-	font-weight: $g-headings-font-weight;
+	font-family: variables.$g-headings-font-family;
+	font-weight: variables.$g-headings-font-weight;
 	font-size: 2.4rem;
 	margin: 2.4rem 0;
 	line-height: 1.25;
@@ -37,8 +40,8 @@
 
 .c-h3,
 .c-content h3 {
-	font-family: $g-headings-font-family;
-	font-weight: $g-headings-font-weight;
+	font-family: variables.$g-headings-font-family;
+	font-weight: variables.$g-headings-font-weight;
 	font-size: 2.1rem;
 	margin: 2.1rem 0 1.2rem;
 	line-height: 1.25;
@@ -46,9 +49,9 @@
 
 .c-h4,
 .c-content h4 {
-	font-family: $g-base-font-family;
-	font-size: $g-base-font-size;
-	font-weight: $g-headings-font-weight;
+	font-family: variables.$g-base-font-family;
+	font-size: variables.$g-base-font-size;
+	font-weight: variables.$g-headings-font-weight;
 	margin: 1.5rem 0;
 }
 
@@ -56,7 +59,7 @@
 .c-h2.u-clickable,
 .c-h3.u-clickable,
 .c-h4.u-clickable {
-	color: $color-teal-bright;
+	color: colors.$color-teal-bright;
 
 	&:hover {
 		text-decoration: underline;
@@ -64,7 +67,7 @@
 }
 
 .c-body-1 {
-	font-size: $g-base-font-size;
+	font-size: variables.$g-base-font-size;
 	margin: 1.5rem 0;
 }
 
@@ -82,7 +85,7 @@
 }
 
 .c-overline {
-	font-weight: $g-headings-font-weight;
+	font-weight: variables.$g-headings-font-weight;
 	font-size: 1.4rem;
 	line-height: 1;
 	text-transform: uppercase;
@@ -131,7 +134,7 @@
 	}
 
 	dl {
-		border: 1px solid $color-gray-100;
+		border: 1px solid colors.$color-gray-100;
 		border-radius: 0.3rem;
 		overflow: hidden;
 		padding: 1.2rem;
@@ -141,7 +144,7 @@
 			float: left;
 			width: 30%;
 			clear: left;
-			font-weight: $g-headings-font-weight;
+			font-weight: variables.$g-headings-font-weight;
 		}
 
 		dd {
@@ -181,7 +184,7 @@
 	}
 
 	blockquote {
-		border-left: 0.4rem solid $color-night-blue;
+		border-left: 0.4rem solid colors.$color-night-blue;
 		margin: 0 0 10px 0;
 		padding: 15px 20px;
 		background-color: #f1f2f3;
@@ -201,13 +204,13 @@
 	}
 
 	table th {
-		border-bottom: 0.2rem solid $color-gray-200;
-		font-weight: $g-headings-font-weight;
+		border-bottom: 0.2rem solid colors.$color-gray-200;
+		font-weight: variables.$g-headings-font-weight;
 		text-align: left;
 	}
 
 	table td {
-		border-bottom: 1px solid $color-gray-100;
+		border-bottom: 1px solid colors.$color-gray-100;
 	}
 
 	strong {
@@ -223,7 +226,7 @@
 	}
 
 	pre {
-		background-color: $color-gray-50;
+		background-color: colors.$color-gray-50;
 		max-width: 100%;
 		max-height: 100%;
 		margin: 10px 0;
@@ -241,7 +244,7 @@
 
 	pre,
 	code {
-		font-family: $g-code-font-family;
+		font-family: variables.$g-code-font-family;
 	}
 
 	pre pre {
@@ -251,10 +254,10 @@
 
 	code {
 		font-size: 85%;
-		background-color: $color-gray-50;
+		background-color: colors.$color-gray-50;
 		padding: 0.2rem;
 		border-radius: 0.2rem;
-		color: $color-error;
+		color: colors.$color-error;
 	}
 
 	/**
@@ -281,5 +284,5 @@
 }
 
 .c-content--inverse {
-	color: $color-gray-100;
+	color: colors.$color-gray-100;
 }

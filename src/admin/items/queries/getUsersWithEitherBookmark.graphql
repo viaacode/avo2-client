@@ -1,10 +1,14 @@
 query getUserWithEitherBookmark($oldItemUid: uuid!, $newItemUid: uuid!) {
-	users_profiles(where: { item_bookmarks: { item_id: { _in: [$oldItemUid, $newItemUid] } } }) {
-		id
-		item_bookmarks_aggregate(where: { item_id: { _in: [$oldItemUid, $newItemUid] } }) {
-			aggregate {
-				count
-			}
-		}
-	}
+  users_profiles(
+    where: { item_bookmarks: { item_id: { _in: [$oldItemUid, $newItemUid] } } }
+  ) {
+    id
+    item_bookmarks_aggregate(
+      where: { item_id: { _in: [$oldItemUid, $newItemUid] } }
+    ) {
+      aggregate {
+        count
+      }
+    }
+  }
 }

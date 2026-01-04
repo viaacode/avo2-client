@@ -1,10 +1,10 @@
 query getInteractiveTourById($id: Int!) {
-	app_interactive_tour(where: { id: { _eq: $id } }) {
-		name
-		id
-		page_id: page
-		created_at
-		updated_at
-		steps
-	}
+  app_interactive_tour(where: { id: { _eq: $id } }) {
+    name
+    id
+    page_id: page
+    created_at
+    updated_at
+    steps
+  }
 }

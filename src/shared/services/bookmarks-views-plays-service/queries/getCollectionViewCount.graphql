@@ -1,7 +1,7 @@
 query getCollectionViewCount($collectionUuid: uuid!) {
-	app_collections(where: { id: { _eq: $collectionUuid } }) {
-		view_count {
-			count
-		}
-	}
+  app_collections(where: { id: { _eq: $collectionUuid } }) {
+    view_count {
+      count
+    }
+  }
 }

@@ -1,4 +1,4 @@
-@import "../../../styles/settings/colors";
+@use "../../../styles/settings/colors" as colors;
 
 .c-pagination-bar {
 	display: flex;
@@ -7,11 +7,11 @@
 	justify-content: space-between;
 
 	.c-pagination-bar__back-to-top {
-		background-color: $white;
+		background-color: colors.$white;
 		border: 0;
 
 		&:hover {
-			background-color: $color-gray-100;
+			background-color: colors.$color-gray-100;
 		}
 	}
 }
@@ -24,13 +24,13 @@
 	gap: 0.8rem;
 
 	.c-button {
-		background-color: $white;
+		background-color: colors.$white;
 		border: 0;
 		width: 3.6rem;
 		height: 3.6rem;
 
 		&:hover {
-			background-color: $color-gray-100;
+			background-color: colors.$color-gray-100;
 		}
 
 		&.c-pagination__page-button--active {
@@ -39,7 +39,7 @@
 
 		&.c-button--disabled:not(.c-pagination__page-button--active) {
 			background-color: transparent !important;
-			color: $color-gray-200 !important;
+			color: colors.$color-gray-200 !important;
 			border: 0 !important;
 		}
 	}

@@ -2,27 +2,26 @@
  * @jest-environment jsdom
  */
 
-import defaultAudioStillPath from '../../assets/images/audio-still.svg';
+import defaultAudioStillPathSrc from '../../assets/images/audio-still.svg';
 import { tText } from '../helpers/translate-text';
 
 export { LANGUAGES } from './languages';
-export { ROUTE_PARTS } from './routes';
 
-export const DEFAULT_AUDIO_STILL = defaultAudioStillPath;
+export const DEFAULT_AUDIO_STILL = defaultAudioStillPathSrc;
 
 export const STILL_DIMENSIONS = {
-	width: 177,
-	height: 100,
+  width: 177,
+  height: 100,
 };
 
 export const NOT_NOW_LOCAL_STORAGE_KEY = 'AVO.nudging_not_now';
 export const NOT_NOW_VAL = 'Yes';
 
 export const ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS =
-	'AVO.assignment_overview_back_button_filters';
+  'AVO.assignment_overview_back_button_filters';
 
 export function getMoreOptionsLabel(): string {
-	return tText('shared/constants/index___meer-opties');
+  return tText('shared/constants/index___meer-opties');
 }
 
 // Refetch interval of 15 seconds

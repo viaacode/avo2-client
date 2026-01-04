@@ -1,18 +1,16 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/variables" as variables;
 
-$component: "c-assignment-block-description-buttons";
-
-.#{$component} {
+.c-assignment-block-description-buttons {
 	&--default {
 		display: none;
 
-		@media screen and (min-width: $g-bp2) {
+		@media screen and (min-width: variables.$g-bp2) {
 			display: block;
 		}
 	}
 
 	&--select {
-		@media screen and (min-width: $g-bp2) {
+		@media screen and (min-width: variables.$g-bp2) {
 			display: none;
 		}
 	}

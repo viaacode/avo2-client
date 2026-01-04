@@ -1,182 +1,201 @@
 import { type ColorOption } from '@meemoo/admin-core-ui/admin';
 import {
-	Button,
-	Flex,
-	FlexItem,
-	IconName,
-	Spacer,
-	TagList,
-	type TagOption,
+  Button,
+  Flex,
+  FlexItem,
+  IconName,
+  Spacer,
+  TagList,
+  type TagOption,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { cloneDeep, get } from 'lodash-es';
-import React, { type FC, type MouseEvent, useCallback, useEffect, useState } from 'react';
+import { cloneDeep } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import {
+  type FC,
+  type MouseEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { ColorSelect } from '../../shared/components/ColorSelect/ColorSelect';
 import { type Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
-import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import useTranslation from '../../shared/hooks/useTranslation';
-import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
+import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service';
 import { ToastService } from '../../shared/services/toast-service';
 
-import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
+import { ManageAssignmentLabels } from './modals/ManageAssignmentLabels';
 
 import './AssignmentLabels.scss';
+import { AvoAssignmentLabel, AvoAssignmentLabelType } from '@viaa/avo2-types';
 
 type AssignmentLabelsProps = {
-	labels: { assignment_label: Avo.Assignment.Label }[];
-	id?: string;
-	onChange: (changed: { assignment_label: Avo.Assignment.Label }[]) => void;
-	dictionary?: {
-		placeholder: string;
-		empty: string;
-	};
-	type?: Avo.Assignment.LabelType;
+  labels: { assignment_label: AvoAssignmentLabel }[];
+  id?: string;
+  onChange: (changed: { assignment_label: AvoAssignmentLabel }[]) => void;
+  dictionary?: {
+    placeholder: string;
+    empty: string;
+  };
+  type?: AvoAssignmentLabelType;
 };
 
-const AssignmentLabels: FC<AssignmentLabelsProps & UserProps> = ({
-	id,
-	labels,
-	commonUser,
-	onChange,
-	type = 'LABEL',
-	...props
+export const AssignmentLabels: FC<AssignmentLabelsProps> = ({
+  id,
+  labels,
+  onChange,
+  type = AvoAssignmentLabelType.LABEL,
+  ...props
 }) => {
-	const { tText, tHtml } = useTranslation();
-	const dictionary = {
-		placeholder: tText('assignment/views/assignment-edit___voeg-een-vak-of-project-toe'),
-		empty: tText('assignment/views/assignment-edit___geen-vakken-of-projecten-beschikbaar'),
-		...(props.dictionary ? props.dictionary : {}),
-	};
+  const commonUser = useAtomValue(commonUserAtom);
 
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
-	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
+  const dictionary = {
+    placeholder: tText(
+      'assignment/views/assignment-edit___voeg-een-vak-of-project-toe',
+    ),
+    empty: tText(
+      'assignment/views/assignment-edit___geen-vakken-of-projecten-beschikbaar',
+    ),
+    ...(props.dictionary ? props.dictionary : {}),
+  };
 
-	const fetchAssignmentLabels = useCallback(async () => {
-		if (commonUser?.profileId) {
-			// Fetch labels every time the manage labels modal closes and once at startup
-			const labels = await AssignmentLabelsService.getLabelsForProfile(commonUser.profileId);
-			setAllAssignmentLabels(labels);
-		}
-	}, [commonUser?.profileId, setAllAssignmentLabels]);
+  const [allAssignmentLabels, setAllAssignmentLabels] = useState<
+    AvoAssignmentLabel[]
+  >([]);
+  const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] =
+    useState<boolean>(false);
 
-	useEffect(() => {
-		fetchAssignmentLabels();
-	}, [fetchAssignmentLabels]);
+  const fetchAssignmentLabels = useCallback(async () => {
+    if (commonUser?.profileId) {
+      // Fetch labels every time the manage labels modal closes and once at startup
+      const labels = await AssignmentLabelsService.getLabelsForProfile(
+        commonUser.profileId,
+      );
+      setAllAssignmentLabels(labels);
+    }
+  }, [commonUser?.profileId, setAllAssignmentLabels]);
 
-	const getAssignmentLabelOptions = (labels: Avo.Assignment.Label[]): TagOption[] => {
-		return labels.map((labelObj) => ({
-			label: labelObj.label || '',
-			id: labelObj.id,
-			// labelObj.enum_color.label contains hex code (graphql enum quirk)
-			// The value of the enum has to be uppercase text, so the value contains the color name
-			color: labelObj.color_override || get(labelObj, 'enum_color.label'),
-		}));
-	};
+  useEffect(() => {
+    fetchAssignmentLabels();
+  }, [fetchAssignmentLabels]);
 
-	const handleManageAssignmentLabelsModalClosed = () => {
-		fetchAssignmentLabels();
-		setIsManageLabelsModalOpen(false);
-	};
+  const getAssignmentLabelOptions = (
+    labels: AvoAssignmentLabel[],
+  ): TagOption[] => {
+    return labels.map((labelObj) => ({
+      label: labelObj.label || '',
+      id: labelObj.id,
+      // labelObj.enum_color.label contains hex code (graphql enum quirk)
+      // The value of the enum has to be uppercase text, so the value contains the color name
+      color: labelObj.color_override || labelObj?.enum_color?.label,
+    }));
+  };
 
-	const getColorOptions = (labels: Avo.Assignment.Label[]): ColorOption[] => {
-		return labels
-			.filter((item) => !type || item.type === type)
-			.map((labelObj) => ({
-				label: labelObj.label || '',
-				value: String(labelObj.id) as Lookup_Enum_Colors_Enum,
-				// labelObj.enum_color.label contains hex code (graphql enum quirk)
-				// The value of the enum has to be uppercase text, so the value contains the color name
-				color: labelObj.color_override || get(labelObj, 'enum_color.label'),
-			}));
-	};
+  const handleManageAssignmentLabelsModalClosed = () => {
+    fetchAssignmentLabels();
+    setIsManageLabelsModalOpen(false);
+  };
 
-	const addAssignmentLabel = (labelOption?: unknown) => {
-		if (!labelOption) {
-			ToastService.danger(
-				tHtml(
-					'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
-				)
-			);
-			return;
-		}
+  const getColorOptions = (labels: AvoAssignmentLabel[]): ColorOption[] => {
+    return labels
+      .filter((item) => !type || item.type === type)
+      .map((labelObj) => ({
+        label: labelObj.label || '',
+        value: String(labelObj.id) as Lookup_Enum_Colors_Enum,
+        // labelObj.enum_color.label contains hex code (graphql enum quirk)
+        // The value of the enum has to be uppercase text, so the value contains the color name
+        color: labelObj.color_override || labelObj?.enum_color?.label,
+      }));
+  };
 
-		const assignmentLabel = allAssignmentLabels.find(
-			(labelObj) => String(labelObj.id) === (labelOption as ColorOption).value
-		);
+  const addAssignmentLabel = (labelOption?: unknown) => {
+    if (!labelOption) {
+      ToastService.danger(
+        tHtml(
+          'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht',
+        ),
+      );
+      return;
+    }
 
-		if (!assignmentLabel) {
-			ToastService.danger(
-				tHtml(
-					'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
-				)
-			);
-			return;
-		}
+    const assignmentLabel = allAssignmentLabels.find(
+      (labelObj) => String(labelObj.id) === (labelOption as ColorOption).value,
+    );
 
-		onChange([
-			...labels,
-			{
-				assignment_label: assignmentLabel,
-			},
-		]);
-	};
+    if (!assignmentLabel) {
+      ToastService.danger(
+        tHtml(
+          'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht',
+        ),
+      );
+      return;
+    }
 
-	const deleteAssignmentLabel = (labelId: string | number, evt: MouseEvent) => {
-		evt.stopPropagation();
-		onChange(labels.filter((item) => item.assignment_label.id !== labelId));
-	};
+    onChange([
+      ...labels,
+      {
+        assignment_label: assignmentLabel,
+      },
+    ]);
+  };
 
-	const assignmentLabelIds = labels.map((item) => item.assignment_label.id);
-	const unselectedLabels = cloneDeep(
-		allAssignmentLabels.filter((item) => !assignmentLabelIds.includes(item.id))
-	);
+  const deleteAssignmentLabel = (labelId: string | number, evt: MouseEvent) => {
+    evt.stopPropagation();
+    onChange(labels.filter((item) => item.assignment_label.id !== labelId));
+  };
 
-	const tooltip =
-		type === 'LABEL'
-			? tText('assignment/components/assignment-labels___beheer-je-labels')
-			: tText('assignment/components/assignment-labels___beheer-je-klassen');
-	return (
-		<>
-			<TagList
-				tags={getAssignmentLabelOptions(labels.map((item) => item.assignment_label))}
-				onTagClosed={deleteAssignmentLabel}
-				closable
-			/>
+  const assignmentLabelIds = labels.map((item) => item.assignment_label.id);
+  const unselectedLabels = cloneDeep(
+    allAssignmentLabels.filter((item) => !assignmentLabelIds.includes(item.id)),
+  );
 
-			<Flex>
-				<FlexItem>
-					<Spacer margin="right-small">
-						<ColorSelect
-							id={id}
-							options={getColorOptions(unselectedLabels)}
-							value={null}
-							onChange={addAssignmentLabel}
-							placeholder={dictionary.placeholder}
-							noOptionsMessage={() => dictionary.empty}
-						/>
-					</Spacer>
-				</FlexItem>
-				<FlexItem shrink>
-					<Button
-						icon={IconName.settings}
-						title={tooltip}
-						ariaLabel={tooltip}
-						type="borderless"
-						size="large"
-						className="c-button__labels"
-						onClick={() => setIsManageLabelsModalOpen(true)}
-					/>
-				</FlexItem>
-			</Flex>
+  const tooltip =
+    type === AvoAssignmentLabelType.LABEL
+      ? tText('assignment/components/assignment-labels___beheer-je-labels')
+      : tText('assignment/components/assignment-labels___beheer-je-klassen');
+  return (
+    <>
+      <TagList
+        tags={getAssignmentLabelOptions(
+          labels.map((item) => item.assignment_label),
+        )}
+        onTagClosed={deleteAssignmentLabel}
+        closable
+      />
 
-			<ManageAssignmentLabels
-				onClose={handleManageAssignmentLabelsModalClosed}
-				isOpen={isManageLabelsModalOpen}
-				type={type}
-			/>
-		</>
-	);
+      <Flex>
+        <FlexItem>
+          <Spacer margin="right-small">
+            <ColorSelect
+              id={id}
+              options={getColorOptions(unselectedLabels)}
+              value={null}
+              onChange={addAssignmentLabel}
+              placeholder={dictionary.placeholder}
+              noOptionsMessage={() => dictionary.empty}
+            />
+          </Spacer>
+        </FlexItem>
+        <FlexItem shrink>
+          <Button
+            icon={IconName.settings}
+            title={tooltip}
+            ariaLabel={tooltip}
+            type="borderless"
+            size="large"
+            className="c-button__labels"
+            onClick={() => setIsManageLabelsModalOpen(true)}
+          />
+        </FlexItem>
+      </Flex>
+
+      <ManageAssignmentLabels
+        onClose={handleManageAssignmentLabelsModalClosed}
+        isOpen={isManageLabelsModalOpen}
+        type={type}
+      />
+    </>
+  );
 };
-
-export default withUser(AssignmentLabels) as FC<AssignmentLabelsProps>;

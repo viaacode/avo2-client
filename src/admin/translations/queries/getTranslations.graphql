@@ -1,6 +1,6 @@
 query getTranslations {
-	app_site_variables(where: { name: { _ilike: "translations-%" } }) {
-		name
-		value
-	}
+  app_site_variables(where: { name: { _ilike: "translations-%" } }) {
+    name
+    value
+  }
 }

@@ -1,4 +1,5 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/colors" as colors;
+@use "../../styles/settings/variables" as variables;
 
 .c-quick-lane-detail {
 	.c-navbar {
@@ -31,7 +32,7 @@
 	}
 
 	.c-collection-list__item {
-		padding: $g-spacer-unit * 4 0;
-		border-bottom: 1px solid $color-gray-100;
+		padding: variables.$g-spacer-unit * 4 0;
+		border-bottom: 1px solid colors.$color-gray-100;
 	}
 }

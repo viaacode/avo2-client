@@ -1,4 +1,5 @@
-@import "../../../styles/settings/colors";
+@use "sass:color";
+@use "../../../styles/settings/colors" as colors;
 
 .c-nav {
 	ul {
@@ -15,14 +16,14 @@
 .c-nav__item {
 	display: block;
 	padding: 0.8rem 1.6rem;
-	color: $color-gray-600;
+	color: colors.$color-gray-600;
 	text-decoration: none;
 	border-radius: 0.3rem;
 
 	&:hover,
 	&:focus {
-		background-color: $color-gray-50;
-		color: $color-gray-700;
+		background-color: colors.$color-gray-50;
+		color: colors.$color-gray-700;
 	}
 
 	.o-svg-icon {
@@ -40,28 +41,28 @@
 
 	&:hover,
 	&:focus {
-		background-color: lighten($color-night-blue, 5%);
+	    background-color: color.adjust(colors.$color-night-blue, $lightness: 5%);
 		color: #fff;
 	}
 }
 
 .c-nav__item--active {
-	background-color: $color-gray-50;
-	color: $color-gray-700;
+	background-color: colors.$color-gray-50;
+	color: colors.$color-gray-700;
 
 	&:hover,
 	&:focus {
-		background-color: $color-gray-100;
+		background-color: colors.$color-gray-100;
 	}
 }
 
 .c-nav__item--i.c-nav__item--active {
-	background-color: darken($color-night-blue, 10%);
+  	background-color: color.adjust(colors.$color-night-blue, $lightness: -10%);
 	color: #fff;
 
 	&:hover,
 	&:focus {
-		background-color: darken($color-night-blue, 30%);
+	    background-color: color.adjust(colors.$color-night-blue, $lightness: -30%);
 	}
 }
 
@@ -70,22 +71,22 @@
 
 .c-nav-mobile {
 	.c-nav__item--i {
-		color: $color-gray-700;
+		color: colors.$color-gray-700;
 
 		&:hover,
 		&:focus {
-			background-color: $color-gray-100;
+			background-color: colors.$color-gray-100;
 		}
 	}
 }
 
 .c-nav-mobile__item {
-	color: $color-gray-500;
+	color: colors.$color-gray-500;
 	display: flex;
 	justify-content: space-between;
 	text-decoration: none;
 	padding: 1.2rem 0.8rem;
-	border-top: 0.1rem solid $color-gray-100;
+	border-top: 0.1rem solid colors.$color-gray-100;
 
 	> .c-nav__item {
 		width: 100%;
@@ -95,7 +96,7 @@
 	}
 
 	&:hover {
-		background-color: $color-gray-100;
+		background-color: colors.$color-gray-100;
 	}
 
 	.o-svg-icon {
@@ -107,7 +108,7 @@
 
 .c-nav-mobile__item--active {
 	font-weight: 500;
-	color: $color-gray-700;
+	color: colors.$color-gray-700;
 }
 
 .c-mobile-menu {

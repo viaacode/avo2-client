@@ -1,605 +1,596 @@
 import {
-	Button,
-	Container,
-	Flex,
-	Form,
-	FormGroup,
-	IconName,
-	Navbar,
-	Select,
-	Spacer,
-	Spinner,
-	TextInput,
-	Toolbar,
-	ToolbarItem,
-	ToolbarLeft,
-	ToolbarRight,
-	useKeyPress,
+  Button,
+  Container,
+  Form,
+  FormGroup,
+  IconName,
+  Navbar,
+  Select,
+  Spacer,
+  TextInput,
+  Toolbar,
+  ToolbarItem,
+  ToolbarLeft,
+  ToolbarRight,
+  useKeyPress,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import {
-	cloneDeep,
-	every,
-	intersection,
-	isArray,
-	isEmpty,
-	isEqual,
-	isNil,
-	isPlainObject,
-	omit,
-	pickBy,
-	set,
-} from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { compose, type Dispatch } from 'redux';
-import { type UrlUpdateType } from 'use-query-params';
+  AvoCoreContentType,
+  AvoSearchFilterProp,
+  AvoSearchOrderDirection,
+  AvoSearchOrderProperty,
+  AvoSearchResultItem,
+  PermissionName,
+} from '@viaa/avo2-types';
+import {
+  cloneDeep,
+  intersection,
+  isEqual,
+  isNil,
+  isPlainObject,
+  omit,
+  pickBy,
+} from 'es-toolkit';
+import { every, isEmpty, set } from 'es-toolkit/compat';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { type FC, useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 
+import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import withUser from '../../shared/hocs/withUser';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { useQualityLabels } from '../../shared/hooks/useQualityLabels';
-import useTranslation from '../../shared/hooks/useTranslation';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import {
-	BookmarksViewsPlaysService,
-	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
-	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED,
-} from '../../shared/services/bookmarks-views-plays-service';
+  CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
+  CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED,
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import {
-	type BookmarkRequestInfo,
-	type BookmarkStatusLookup,
+  type BookmarkRequestInfo,
+  type BookmarkStatusLookup,
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../shared/services/toast-service';
-import { type AppState } from '../../store';
+import { UrlUpdateType } from '../../shared/types/use-query-params.ts';
 import { isEducationalUser } from '../../user-item-request-form/helpers/is-educational-user';
 import {
-	DEFAULT_FILTER_STATE,
-	DEFAULT_SORT_ORDER,
-	GET_SEARCH_ORDER_OPTIONS,
-	ITEMS_PER_PAGE,
-	OrderDirection,
-	SearchFilter,
-	type SearchOrderProperty,
+  DEFAULT_FILTER_STATE,
+  DEFAULT_SORT_ORDER,
+  GET_SEARCH_ORDER_OPTIONS,
+  ITEMS_PER_PAGE,
+  SearchFilter,
+  type SearchOrderProperty,
 } from '../search.const';
+import { getSearchResultsAtom, searchAtom } from '../search.store';
 import {
-	type FilterState,
-	type SearchFilterFieldValues,
-	type SearchFilterMultiOptions,
-	type SearchFiltersAndResultsProps,
-	type SearchFiltersAndResultsPropsManual,
+  type FilterState,
+  type SearchFilterFieldValues,
+  type SearchFilterMultiOptions,
+  type SearchFiltersAndResultsProps,
+  type SearchState,
 } from '../search.types';
-import { getSearchResults } from '../store/actions';
-import { selectSearchError, selectSearchLoading, selectSearchResults } from '../store/selectors';
+import { SearchFilterControls } from './SearchFilterControls';
+import { SearchResults } from './SearchResults';
 
-import SearchFilterControls from './SearchFilterControls';
-import SearchResults from './SearchResults';
-
-const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
-	// Manual props
-	enabledFilters,
-	enabledTypeOptions,
-	enabledOrderProperties,
-	bookmarks,
-	filterState,
-	setFilterState,
-	renderDetailLink,
-	renderSearchLink,
-
-	// Automatically injected props
-	searchResults,
-	searchResultsLoading,
-	searchResultsError,
-	search,
-	history,
-	commonUser,
+export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
+  enabledFilters,
+  enabledTypeOptions,
+  enabledOrderProperties,
+  bookmarks,
+  filterState,
+  setFilterState,
+  renderDetailLink,
+  renderSearchLink,
 }) => {
-	const { tText, tHtml } = useTranslation();
-	const resultsCount = searchResults?.count ?? 0;
+  const navigateFunc = useNavigate();
 
-	const urlUpdateType: UrlUpdateType = 'push';
+  const searchState: SearchState = useAtomValue(searchAtom);
+  const searchResults = searchState.data;
+  const commonUser = useAtomValue(commonUserAtom);
+  const search = useSetAtom(getSearchResultsAtom);
+  const searchResultsLoading = searchState.loading;
+  const searchResultsError = searchState.error;
+  const resultsCount = searchResults?.count ?? 0;
 
-	const [searchTerms, setSearchTerms] = useState('');
-	const [bookmarkStatuses, setBookmarkStatuses] = useState<BookmarkStatusLookup | null>(null);
+  const urlUpdateType: UrlUpdateType = UrlUpdateType.PUSH;
 
-	const { data: allQualityLabels } = useQualityLabels(
-		!enabledFilters || enabledFilters?.includes('collectionLabel')
-	);
+  const [searchTerms, setSearchTerms] = useState('');
+  const [bookmarkStatuses, setBookmarkStatuses] =
+    useState<BookmarkStatusLookup | null>(null);
 
-	const navigateToItemRequestForm = () => {
-		if (isEducationalUser(commonUser)) {
-			navigate(history, APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM.route);
-		} else {
-			navigate(history, APP_PATH.USER_ITEM_REQUEST_FORM.route);
-		}
+  const { data: allQualityLabels } = useQualityLabels(
+    !enabledFilters || enabledFilters?.includes('collectionLabel'),
+  );
 
-		window.scrollTo(0, 0);
-	};
+  const navigateToItemRequestForm = () => {
+    if (isEducationalUser(commonUser)) {
+      navigate(navigateFunc, APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM.route);
+    } else {
+      navigate(navigateFunc, APP_PATH.USER_ITEM_REQUEST_FORM.route);
+    }
 
-	const defaultOrder = `${filterState.orderProperty || 'relevance'}_${
-		filterState.orderDirection || OrderDirection.desc
-	}`;
-	const hasFilters = !isEqual(filterState.filters, DEFAULT_FILTER_STATE);
-	const resultStart = (filterState.page || 0) * ITEMS_PER_PAGE + 1;
-	const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE - 1, resultsCount);
+    window.scrollTo(0, 0);
+  };
 
-	const [multiOptions, setMultiOptions] = useState({} as SearchFilterMultiOptions);
+  const defaultOrder = `${filterState.orderProperty || 'relevance'}_${
+    filterState.orderDirection || AvoSearchOrderDirection.DESC
+  }`;
+  const hasFilters = !isEqual(filterState.filters, DEFAULT_FILTER_STATE);
+  const resultStart = (filterState.page || 0) * ITEMS_PER_PAGE + 1;
+  const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE - 1, resultsCount);
 
-	useEffect(() => {
-		setSearchTerms(filterState?.filters?.query ?? '');
-	}, [filterState?.filters?.query]);
+  const [multiOptions, setMultiOptions] = useState(
+    {} as SearchFilterMultiOptions,
+  );
 
-	/**
-	 * Update the filter values and scroll to the top
-	 */
-	useEffect(() => {
-		if (searchResults) {
-			// Update the checkbox items and counts
-			if (enabledTypeOptions) {
-				// Limit the type options
-				searchResults.aggregations['type'] = searchResults.aggregations['type'].filter(
-					(typeOption) =>
-						enabledTypeOptions.includes(typeOption.option_name as Avo.Core.ContentType)
-				);
-				setMultiOptions(searchResults.aggregations);
-			} else {
-				// Show all type options
-				setMultiOptions(searchResults.aggregations);
-			}
+  useEffect(() => {
+    setSearchTerms(filterState?.filters?.query ?? '');
+  }, [filterState?.filters?.query]);
 
-			//  Scroll to the first search result
-			window.scrollTo(0, 0);
-		}
-	}, [enabledTypeOptions, searchResults]);
+  /**
+   * Update the filter values and scroll to the top
+   */
+  useEffect(() => {
+    if (searchResults) {
+      // Update the checkbox items and counts
+      if (enabledTypeOptions) {
+        // Limit the type options
+        searchResults.aggregations['type'] = searchResults.aggregations[
+          'type'
+        ].filter((typeOption) =>
+          enabledTypeOptions.includes(
+            typeOption.option_name as AvoCoreContentType,
+          ),
+        );
+        setMultiOptions(searchResults.aggregations);
+      } else {
+        // Show all type options
+        setMultiOptions(searchResults.aggregations);
+      }
 
-	/**
-	 * Update the search results when the filterState or the currentPage changes
-	 */
-	const onFilterStateChanged = useCallback(() => {
-		const orderProperty: Avo.Search.OrderProperty =
-			(filterState.orderProperty as Avo.Search.OrderProperty | undefined) ||
-			DEFAULT_SORT_ORDER.orderProperty;
+      //  Scroll to the first search result
+      window.scrollTo(0, 0);
+    }
+  }, [enabledTypeOptions, searchResults]);
 
-		const orderDirection: Avo.Search.OrderDirection =
-			(filterState.orderDirection as Avo.Search.OrderDirection | undefined) ||
-			DEFAULT_SORT_ORDER.orderDirection;
+  /**
+   * Update the search results when the filterState or the currentPage changes
+   */
+  const onFilterStateChanged = useCallback(() => {
+    const orderProperty: AvoSearchOrderProperty =
+      (filterState.orderProperty as AvoSearchOrderProperty | undefined) ||
+      DEFAULT_SORT_ORDER.orderProperty;
 
-		// Limit media types in query
-		const copiedFilterState = cloneDeep(filterState);
-		if (enabledTypeOptions) {
-			if (!copiedFilterState.filters?.type) {
-				copiedFilterState.filters = copiedFilterState.filters || {};
-				copiedFilterState.filters.type = enabledTypeOptions;
-			} else {
-				copiedFilterState.filters.type = intersection(
-					copiedFilterState.filters?.type,
-					enabledTypeOptions
-				);
-			}
-		}
+    const orderDirection: AvoSearchOrderDirection =
+      (filterState.orderDirection as AvoSearchOrderDirection | undefined) ||
+      DEFAULT_SORT_ORDER.orderDirection;
 
-		search(
-			orderProperty,
-			orderDirection,
-			(filterState.page || 0) * ITEMS_PER_PAGE,
-			ITEMS_PER_PAGE,
-			cleanupFilterState(copiedFilterState).filters,
-			{}
-		);
-	}, [enabledTypeOptions, filterState, search]);
+    // Limit media types in query
+    const copiedFilterState = cloneDeep(filterState);
+    if (enabledTypeOptions) {
+      if (!copiedFilterState.filters?.type) {
+        copiedFilterState.filters = copiedFilterState.filters || {};
+        copiedFilterState.filters.type = enabledTypeOptions;
+      } else {
+        copiedFilterState.filters.type = intersection(
+          copiedFilterState.filters?.type,
+          enabledTypeOptions,
+        );
+      }
+    }
 
-	const updateSearchTerms = useCallback(() => {
-		const query = filterState?.filters?.query ?? '';
-		if (query) {
-			setSearchTerms(query);
-		}
-	}, [setSearchTerms, filterState]);
+    search(
+      orderProperty,
+      orderDirection,
+      (filterState.page || 0) * ITEMS_PER_PAGE,
+      ITEMS_PER_PAGE,
+      cleanupFilterState(copiedFilterState).filters,
+      {},
+    );
+  }, [enabledTypeOptions, filterState, search]);
 
-	useEffect(() => {
-		onFilterStateChanged();
-		updateSearchTerms();
-	}, [onFilterStateChanged, updateSearchTerms, commonUser]);
+  const updateSearchTerms = useCallback(() => {
+    const query = filterState?.filters?.query ?? '';
+    if (query) {
+      setSearchTerms(query);
+    }
+  }, [setSearchTerms, filterState]);
 
-	const getBookmarkStatuses = useCallback(async () => {
-		try {
-			const results = searchResults?.results;
-			const profileId = commonUser?.profileId;
+  useEffect(() => {
+    onFilterStateChanged();
+    updateSearchTerms();
+  }, [onFilterStateChanged, updateSearchTerms, commonUser]);
 
-			if (!results || !profileId) {
-				// search results or user hasn't been loaded yet
-				return;
-			}
+  const getBookmarkStatuses = useCallback(async () => {
+    try {
+      const results = searchResults?.results;
+      const profileId = commonUser?.profileId;
 
-			const objectInfos = results.map(
-				(result: Avo.Search.ResultItem): BookmarkRequestInfo => {
-					const type =
-						CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED[result.administrative_type];
-					return {
-						type,
-						uuid: result.uid,
-					};
-				}
-			);
-			setBookmarkStatuses(
-				await BookmarksViewsPlaysService.getBookmarkStatuses(profileId, objectInfos)
-			);
-		} catch (err) {
-			console.error(
-				new CustomError('Failed to get bookmark statuses', err, {
-					searchResults,
-					commonUser,
-				})
-			);
-			ToastService.danger(
-				tHtml('search/views/search___het-ophalen-van-de-bladwijzer-statusen-is-mislukt')
-			);
-		}
-	}, [tHtml, setBookmarkStatuses, searchResults, commonUser]);
+      if (!results || !profileId) {
+        // search results or user hasn't been loaded yet
+        return;
+      }
 
-	useEffect(() => {
-		if (PermissionService.hasPerm(commonUser, PermissionName.CREATE_BOOKMARKS)) {
-			getBookmarkStatuses();
-		}
-	}, [getBookmarkStatuses, commonUser]);
+      const objectInfos = results.map(
+        (result: AvoSearchResultItem): BookmarkRequestInfo => {
+          const type =
+            CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED[
+              result.administrative_type
+            ];
+          return {
+            type,
+            uuid: result.uid,
+          };
+        },
+      );
+      setBookmarkStatuses(
+        await BookmarksViewsPlaysService.getBookmarkStatuses(
+          profileId,
+          objectInfos,
+        ),
+      );
+    } catch (err) {
+      console.error(
+        new CustomError('Failed to get bookmark statuses', err, {
+          searchResults,
+          commonUser,
+        }),
+      );
+      ToastService.danger(
+        tHtml(
+          'search/views/search___het-ophalen-van-de-bladwijzer-statusen-is-mislukt',
+        ),
+      );
+    }
+  }, [setBookmarkStatuses, searchResults, commonUser]);
 
-	const handleOrderChanged = async (value = 'relevance_desc') => {
-		const valueParts: [SearchOrderProperty, SearchOrderDirection] = value.split('_') as [
-			SearchOrderProperty,
-			SearchOrderDirection,
-		];
-		setFilterState(
-			{
-				...filterState,
-				orderProperty: valueParts[0] as SearchOrderProperty,
-				orderDirection: valueParts[1] as Avo.Search.OrderDirection,
-				page: 0,
-			},
-			urlUpdateType
-		);
-	};
+  useEffect(() => {
+    if (
+      PermissionService.hasPerm(commonUser, PermissionName.CREATE_BOOKMARKS)
+    ) {
+      getBookmarkStatuses();
+    }
+  }, [getBookmarkStatuses, commonUser]);
 
-	const cleanupFilterState = (filterState: FilterState): FilterState => {
-		return {
-			...filterState,
-			filters: pickBy(filterState.filters, (value: string) => {
-				const isEmptyString: boolean = value === '';
-				const isUndefinedOrNull: boolean = isNil(value);
-				const isEmptyObjectOrArray: boolean =
-					(isPlainObject(value) || isArray(value)) && isEmpty(value);
-				const isArrayWithEmptyValues: boolean =
-					isArray(value) && every(value, (arrayValue) => arrayValue === '');
-				const isEmptyRangeObject: boolean =
-					isPlainObject(value) && !(value as any).gte && !(value as any).lte;
+  const handleOrderChanged = async (value = 'relevance_desc') => {
+    const valueParts: [SearchOrderProperty, AvoSearchOrderDirection] =
+      value.split('_') as [SearchOrderProperty, AvoSearchOrderDirection];
+    setFilterState(
+      {
+        ...filterState,
+        orderProperty: valueParts[0] as SearchOrderProperty,
+        orderDirection: valueParts[1] as AvoSearchOrderDirection,
+        page: 0,
+      },
+      urlUpdateType,
+    );
+  };
 
-				return (
-					!isEmptyString &&
-					!isUndefinedOrNull &&
-					!isEmptyObjectOrArray &&
-					!isArrayWithEmptyValues &&
-					!isEmptyRangeObject
-				);
-			}),
-		};
-	};
+  const cleanupFilterState = (filterState: FilterState): FilterState => {
+    return {
+      ...filterState,
+      filters: pickBy(filterState.filters || {}, (value) => {
+        const isEmptyString: boolean = value === '';
+        const isUndefinedOrNull: boolean = isNil(value);
+        const isEmptyObjectOrArray: boolean =
+          (isPlainObject(value) || Array.isArray(value)) && isEmpty(value);
+        const isArrayWithEmptyValues: boolean =
+          Array.isArray(value) &&
+          every(value, (arrayValue) => arrayValue === '');
+        const isEmptyRangeObject: boolean =
+          isPlainObject(value) && !(value as any).gte && !(value as any).lte;
 
-	const handleFilterFieldChange = async (
-		value: SearchFilterFieldValues,
-		id: Avo.Search.FilterProp
-	) => {
-		let newFilterState: any;
-		if (value) {
-			newFilterState = {
-				...filterState,
-				filters: {
-					...filterState.filters,
-					[id]: value,
-					query: searchTerms,
-				},
-				page: 0,
-			};
-		} else {
-			newFilterState = {
-				...filterState,
-				filters: {
-					...filterState.filters,
-					[id]: DEFAULT_FILTER_STATE[id],
-					query: searchTerms,
-				},
-				page: 0,
-			};
-		}
-		setFilterState(cleanupFilterState(newFilterState), urlUpdateType);
-	};
+        return (
+          !isEmptyString &&
+          !isUndefinedOrNull &&
+          !isEmptyObjectOrArray &&
+          !isArrayWithEmptyValues &&
+          !isEmptyRangeObject
+        );
+      }),
+    };
+  };
 
-	const handleTagClicked = (tagId: string) => {
-		if (
-			(allQualityLabels || []).find(
-				(label) => label.value.toLowerCase() === tagId.toLowerCase()
-			)
-		) {
-			setFilterState(
-				{
-					...filterState,
-					filters: {
-						...DEFAULT_FILTER_STATE,
-						collectionLabel: [tagId],
-					},
-					page: 0,
-				},
-				urlUpdateType
-			);
-		}
-	};
+  const handleFilterFieldChange = async (
+    value: SearchFilterFieldValues,
+    id: AvoSearchFilterProp,
+  ) => {
+    let newFilterState: any;
+    if (value) {
+      newFilterState = {
+        ...filterState,
+        filters: {
+          ...filterState.filters,
+          [id]: value,
+          query: searchTerms,
+        },
+        page: 0,
+      };
+    } else {
+      newFilterState = {
+        ...filterState,
+        filters: {
+          ...filterState.filters,
+          [id]: DEFAULT_FILTER_STATE[id],
+          query: searchTerms,
+        },
+        page: 0,
+      };
+    }
+    setFilterState(cleanupFilterState(newFilterState), urlUpdateType);
+  };
 
-	const deleteAllFilters = () => {
-		const copiedFilterState = cloneDeep(filterState);
+  const handleTagClicked = (tagId: string) => {
+    if (
+      (allQualityLabels || []).find(
+        (label) => label.value.toLowerCase() === tagId.toLowerCase(),
+      )
+    ) {
+      setFilterState(
+        {
+          ...filterState,
+          filters: {
+            ...DEFAULT_FILTER_STATE,
+            collectionLabel: [tagId],
+          },
+          page: 0,
+        },
+        urlUpdateType,
+      );
+    }
+  };
 
-		// Only remove filters that are user-editable
-		if (enabledFilters) {
-			copiedFilterState.filters = omit(copiedFilterState.filters || {}, enabledFilters);
-		} else {
-			copiedFilterState.filters = {};
-		}
-		if (copiedFilterState.filters) {
-			delete copiedFilterState.filters.query;
-		}
+  const deleteAllFilters = () => {
+    const copiedFilterState = cloneDeep(filterState);
 
-		setSearchTerms('');
-		setFilterState(copiedFilterState, urlUpdateType);
-	};
+    // Only remove filters that are user-editable
+    if (enabledFilters) {
+      copiedFilterState.filters = omit(
+        copiedFilterState.filters || {},
+        enabledFilters,
+      );
+    } else {
+      copiedFilterState.filters = {};
+    }
+    if (copiedFilterState.filters) {
+      delete copiedFilterState.filters.query;
+    }
 
-	const handleBookmarkToggle = async (uuid: string, active: boolean) => {
-		try {
-			if (!commonUser) {
-				console.error('User is not logged in');
-				ToastService.danger(
-					tHtml(
-						'search/components/search-filters-and-results___je-moet-aangemald-zijn-om-een-bookmark-aan-te-maken'
-					)
-				);
-				return;
-			}
-			const results = searchResults?.results ?? [];
-			const resultItem: Avo.Search.ResultItem | undefined = results.find(
-				(result) => result.uid === uuid
-			);
-			if (!resultItem) {
-				throw new CustomError('Failed to find search result by id');
-			}
-			const type = CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[resultItem.administrative_type];
-			await BookmarksViewsPlaysService.toggleBookmark(uuid, commonUser, type, !active);
+    setSearchTerms('');
+    setFilterState(copiedFilterState, urlUpdateType);
+  };
 
-			// Update the local cache of bookmark statuses
-			const bookmarkStatusesTemp = cloneDeep(bookmarkStatuses) || {
-				item: {},
-				collection: {},
-				assignment: {},
-				quick_lane: {},
-			};
-			set(bookmarkStatusesTemp, `[${type}][${uuid}]`, active);
-			setBookmarkStatuses(bookmarkStatusesTemp);
-			ToastService.success(
-				active
-					? tHtml('search/views/search___de-bladwijzer-is-aangemaakt')
-					: tHtml('search/views/search___de-bladwijzer-is-verwijderd')
-			);
-		} catch (err) {
-			console.error(
-				new CustomError('Failed to toggle bookmark', err, {
-					uuid,
-					commonUser,
-					searchResults,
-					isBookmarked: !active,
-				})
-			);
-			ToastService.danger(
-				active
-					? tHtml('search/views/search___het-aanmaken-van-de-bladwijzer-is-mislukt')
-					: tHtml('search/views/search___het-verwijderen-van-de-bladwijzer-is-mislukt')
-			);
-		}
-	};
+  const handleBookmarkToggle = async (uuid: string, active: boolean) => {
+    try {
+      if (!commonUser) {
+        console.error('User is not logged in');
+        ToastService.danger(
+          tHtml(
+            'search/components/search-filters-and-results___je-moet-aangemald-zijn-om-een-bookmark-aan-te-maken',
+          ),
+        );
+        return;
+      }
+      const results = searchResults?.results ?? [];
+      const resultItem: AvoSearchResultItem | undefined = results.find(
+        (result: AvoSearchResultItem | undefined) => result?.uid === uuid,
+      );
+      if (!resultItem) {
+        throw new CustomError('Failed to find search result by id');
+      }
+      const type =
+        CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[resultItem.administrative_type];
+      await BookmarksViewsPlaysService.toggleBookmark(
+        uuid,
+        commonUser,
+        type,
+        !active,
+      );
 
-	/**
-	 * Only copy search terms when the user clicks the search button or when enter is pressed
-	 * Otherwise we would trigger a search for every letter that is typed
-	 */
-	const copySearchTermsToFormState = async () => {
-		setFilterState(
-			{
-				...filterState,
-				filters: {
-					...filterState.filters,
-					query: searchTerms,
-				},
-				page: 0,
-			},
-			urlUpdateType
-		);
-	};
-	useKeyPress('Enter', copySearchTermsToFormState);
+      // Update the local cache of bookmark statuses
+      const bookmarkStatusesTemp = cloneDeep(bookmarkStatuses) || {
+        item: {},
+        collection: {},
+        assignment: {},
+        quick_lane: {},
+      };
+      set(bookmarkStatusesTemp, `[${type}][${uuid}]`, active);
+      setBookmarkStatuses(bookmarkStatusesTemp);
+      ToastService.success(
+        active
+          ? tHtml('search/views/search___de-bladwijzer-is-aangemaakt')
+          : tHtml('search/views/search___de-bladwijzer-is-verwijderd'),
+      );
+    } catch (err) {
+      console.error(
+        new CustomError('Failed to toggle bookmark', err, {
+          uuid,
+          commonUser,
+          searchResults,
+          isBookmarked: !active,
+        }),
+      );
+      ToastService.danger(
+        active
+          ? tHtml(
+              'search/views/search___het-aanmaken-van-de-bladwijzer-is-mislukt',
+            )
+          : tHtml(
+              'search/views/search___het-verwijderen-van-de-bladwijzer-is-mislukt',
+            ),
+      );
+    }
+  };
 
-	const renderSearchResults = () => {
-		if (searchResultsLoading) {
-			return (
-				<Spacer margin="top-extra-large">
-					<Flex orientation="horizontal" center>
-						<Spinner size="large" />
-					</Flex>
-				</Spacer>
-			);
-		}
-		if (searchResultsError) {
-			return (
-				<ErrorView
-					message={tHtml('search/views/search___fout-tijdens-ophalen-zoek-resultaten')}
-					actionButtons={['home']}
-				/>
-			);
-		}
-		return (
-			<SearchResults
-				currentItemIndex={(filterState.page || 0) * ITEMS_PER_PAGE}
-				// elasticsearch can only handle 10000 results efficiently
-				totalItemCount={resultsCount}
-				setCurrentItemIndex={(newCurrentItemIndex: number) =>
-					setFilterState({
-						...filterState,
-						page: Math.floor(newCurrentItemIndex / ITEMS_PER_PAGE),
-					})
-				}
-				data={searchResults}
-				handleBookmarkToggle={handleBookmarkToggle}
-				handleTagClicked={
-					!enabledFilters || enabledFilters.includes(SearchFilter.keyword)
-						? handleTagClicked
-						: undefined
-				}
-				loading={searchResultsLoading}
-				bookmarkStatuses={bookmarkStatuses}
-				qualityLabels={allQualityLabels || []}
-				navigateUserRequestForm={navigateToItemRequestForm}
-				bookmarkButtons={bookmarks}
-				renderDetailLink={renderDetailLink}
-				renderSearchLink={renderSearchLink}
-			/>
-		);
-	};
+  /**
+   * Only copy search terms when the user clicks the search button or when enter is pressed
+   * Otherwise we would trigger a search for every letter that is typed
+   */
+  const copySearchTermsToFormState = async () => {
+    setFilterState(
+      {
+        ...filterState,
+        filters: {
+          ...filterState.filters,
+          query: searchTerms,
+        },
+        page: 0,
+      },
+      urlUpdateType,
+    );
+  };
+  useKeyPress('Enter', copySearchTermsToFormState);
 
-	const renderSearchPage = () => (
-		<div className="c-search-view">
-			<Navbar autoHeight>
-				<Container mode="horizontal">
-					<Spacer margin="top-large">
-						<Spacer margin="bottom-large">
-							<div className="u-limit-width-bp3">
-								<Form type="inline">
-									<FormGroup inlineMode="grow">
-										<TextInput
-											id="query"
-											placeholder={tText(
-												'search/views/search___vul-uw-zoekterm-in'
-											)}
-											value={searchTerms}
-											className="c-search-term-input-field"
-											icon={IconName.search}
-											onChange={setSearchTerms}
-										/>
-									</FormGroup>
-									<FormGroup inlineMode="shrink">
-										<Button
-											label={tText('search/views/search___zoeken')}
-											type="primary"
-											className="c-search-button"
-											onClick={copySearchTermsToFormState}
-										/>
-									</FormGroup>
-									{hasFilters && (
-										<FormGroup inlineMode="shrink">
-											<Button
-												label={
-													isMobileWidth()
-														? ''
-														: tText(
-																'search/views/search___verwijder-alle-filters'
-														  )
-												}
-												ariaLabel={tText(
-													'search/views/search___verwijder-alle-filters'
-												)}
-												icon={isMobileWidth() ? IconName.delete : undefined}
-												type={isMobileWidth() ? 'borderless' : 'link'}
-												onClick={deleteAllFilters}
-											/>
-										</FormGroup>
-									)}
-								</Form>
-							</div>
-						</Spacer>
-						<SearchFilterControls
-							filterState={filterState.filters || DEFAULT_FILTER_STATE}
-							handleFilterFieldChange={handleFilterFieldChange}
-							multiOptions={multiOptions}
-							enabledFilters={enabledFilters}
-							collectionLabels={allQualityLabels || []}
-						/>
-					</Spacer>
-				</Container>
-			</Navbar>
-			<Container mode="horizontal" className="c-search-view__sort-and-count">
-				<Toolbar>
-					<ToolbarLeft>
-						<ToolbarItem>
-							<span className="u-text-muted">
-								{resultStart}-{resultEnd} van {resultsCount} resultaten
-							</span>
-						</ToolbarItem>
-					</ToolbarLeft>
-					<ToolbarRight>
-						<Form type="inline">
-							<FormGroup
-								label={tText('search/views/search___sorteer-op')}
-								labelFor="sortBy"
-							>
-								<Select
-									className="c-search-view__sort-select"
-									id="sortBy"
-									options={GET_SEARCH_ORDER_OPTIONS().filter(
-										(option) =>
-											!enabledOrderProperties ||
-											enabledOrderProperties.includes(option.value)
-									)}
-									value={defaultOrder}
-									onChange={(value) => handleOrderChanged(value)}
-								/>
-							</FormGroup>
-						</Form>
-					</ToolbarRight>
-				</Toolbar>
-			</Container>
-			{renderSearchResults()}
-		</div>
-	);
+  const renderSearchResults = () => {
+    if (searchResultsLoading || (!searchResultsError && !searchResults)) {
+      return (
+        <FullPageSpinner locationId="search-filters-and-results--loading" />
+      );
+    }
+    if (searchResultsError) {
+      return (
+        <ErrorView
+          locationId="search-filters-and-results--error"
+          message={tHtml(
+            'search/views/search___fout-tijdens-ophalen-zoek-resultaten',
+          )}
+          actionButtons={['home']}
+        />
+      );
+    }
+    return (
+      <SearchResults
+        currentItemIndex={(filterState.page || 0) * ITEMS_PER_PAGE}
+        // elasticsearch can only handle 10000 results efficiently
+        totalItemCount={resultsCount}
+        setCurrentItemIndex={(newCurrentItemIndex: number) =>
+          setFilterState({
+            ...filterState,
+            page: Math.floor(newCurrentItemIndex / ITEMS_PER_PAGE),
+          })
+        }
+        data={searchResults}
+        handleBookmarkToggle={handleBookmarkToggle}
+        handleTagClicked={
+          !enabledFilters || enabledFilters.includes(SearchFilter.keyword)
+            ? handleTagClicked
+            : undefined
+        }
+        loading={searchResultsLoading}
+        bookmarkStatuses={bookmarkStatuses}
+        qualityLabels={allQualityLabels || []}
+        navigateUserRequestForm={navigateToItemRequestForm}
+        bookmarkButtons={bookmarks}
+        renderDetailLink={renderDetailLink}
+        renderSearchLink={renderSearchLink}
+      />
+    );
+  };
 
-	return renderSearchPage();
+  const renderSearchInputField = () => {
+    return (
+      <Form type="inline">
+        <FormGroup inlineMode="grow">
+          <TextInput
+            id="query"
+            placeholder={tText('search/views/search___vul-uw-zoekterm-in')}
+            value={searchTerms}
+            className="c-search-term-input-field"
+            icon={IconName.search}
+            onChange={setSearchTerms}
+          />
+        </FormGroup>
+        <FormGroup inlineMode="shrink">
+          <Button
+            label={tText('search/views/search___zoeken')}
+            type="primary"
+            className="c-search-button"
+            onClick={copySearchTermsToFormState}
+          />
+        </FormGroup>
+        {hasFilters && (
+          <FormGroup inlineMode="shrink">
+            <Button
+              label={
+                isMobileWidth()
+                  ? ''
+                  : tText('search/views/search___verwijder-alle-filters')
+              }
+              ariaLabel={tText('search/views/search___verwijder-alle-filters')}
+              icon={isMobileWidth() ? IconName.delete : undefined}
+              type={isMobileWidth() ? 'borderless' : 'link'}
+              onClick={deleteAllFilters}
+            />
+          </FormGroup>
+        )}
+      </Form>
+    );
+  };
+
+  const renderSortControl = () => {
+    return (
+      <Form type="inline">
+        <FormGroup
+          label={tText('search/views/search___sorteer-op')}
+          labelFor="sortBy"
+        >
+          <Select
+            className="c-search-view__sort-select"
+            id="sortBy"
+            options={GET_SEARCH_ORDER_OPTIONS().filter(
+              (option) =>
+                !enabledOrderProperties ||
+                enabledOrderProperties.includes(option.value),
+            )}
+            value={defaultOrder}
+            onChange={(value) => handleOrderChanged(value)}
+          />
+        </FormGroup>
+      </Form>
+    );
+  };
+
+  const renderSearchPage = () => (
+    <div className="c-search-view">
+      <Navbar autoHeight>
+        <Container mode="horizontal">
+          <Spacer margin="top-large">
+            <Spacer margin="bottom-large">
+              <div className="u-limit-width-bp3">
+                {renderSearchInputField()}
+              </div>
+            </Spacer>
+            <SearchFilterControls
+              filterState={filterState.filters || DEFAULT_FILTER_STATE}
+              handleFilterFieldChange={handleFilterFieldChange}
+              multiOptions={multiOptions}
+              enabledFilters={enabledFilters}
+              collectionLabels={allQualityLabels || []}
+            />
+          </Spacer>
+        </Container>
+      </Navbar>
+      <Container mode="horizontal" className="c-search-view__sort-and-count">
+        <Toolbar>
+          <ToolbarLeft>
+            <ToolbarItem>
+              <span className="u-text-muted">
+                {resultStart}-{resultEnd} van {resultsCount} resultaten
+              </span>
+            </ToolbarItem>
+          </ToolbarLeft>
+          <ToolbarRight>{renderSortControl()}</ToolbarRight>
+        </Toolbar>
+      </Container>
+      {renderSearchResults()}
+    </div>
+  );
+
+  return renderSearchPage();
 };
-
-const mapStateToProps = (state: AppState) => ({
-	searchResults: selectSearchResults(state),
-	searchResultsLoading: selectSearchLoading(state),
-	searchResultsError: selectSearchError(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		search: (
-			orderProperty: Avo.Search.OrderProperty,
-			orderDirection: Avo.Search.OrderDirection,
-			from: number,
-			size: number,
-			filters?: Partial<Avo.Search.Filters>,
-			filterOptionSearch?: Partial<Avo.Search.FilterOption>
-		) =>
-			dispatch(
-				getSearchResults(
-					orderProperty,
-					orderDirection,
-					from,
-					size,
-					filters,
-					filterOptionSearch
-				) as any
-			),
-	};
-};
-
-export default compose(
-	withRouter,
-	withUser,
-	connect(mapStateToProps, mapDispatchToProps)
-)(SearchFiltersAndResults) as FC<SearchFiltersAndResultsPropsManual>;

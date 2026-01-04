@@ -1,8 +1,8 @@
 mutation incrementCollectionViews($collectionUuid: uuid!) {
-	update_app_collection_views(
-		where: { collection_uuid: { _eq: $collectionUuid } }
-		_inc: { count: 1 }
-	) {
-		affected_rows
-	}
+  update_app_collection_views(
+    where: { collection_uuid: { _eq: $collectionUuid } }
+    _inc: { count: 1 }
+  ) {
+    affected_rows
+  }
 }

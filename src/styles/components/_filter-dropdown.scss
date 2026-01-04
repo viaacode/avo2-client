@@ -1,3 +1,5 @@
+@use "../settings/colors" as colors;
+
 /* ==========================================================================
    Component: Filter dropdown
    ========================================================================== */
@@ -15,7 +17,7 @@
 .c-filter-dropdown__options {
 	display: block;
 	position: relative;
-	color: $color-gray-700;
+	color: colors.$color-gray-700;
 	border-radius: 0.3rem;
 
 	.o-svg-icon {

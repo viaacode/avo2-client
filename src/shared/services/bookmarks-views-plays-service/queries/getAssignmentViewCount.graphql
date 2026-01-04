@@ -1,7 +1,7 @@
 query getAssignmentViewCount($assignmentUuid: uuid!) {
-	app_assignments_v2(where: { id: { _eq: $assignmentUuid } }) {
-		view_count {
-			count
-		}
-	}
+  app_assignments_v2(where: { id: { _eq: $assignmentUuid } }) {
+    view_count {
+      count
+    }
+  }
 }

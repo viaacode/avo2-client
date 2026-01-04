@@ -1,24 +1,23 @@
-@import "../../../styles/settings/variables";
-
-$component: "c-list-sorter";
+@use "../../../styles/settings/colors" as colors;
+@use "../../../styles/settings/variables" as variables;
 
 // Sizes
 $block-editor-border-radius: 0.4rem;
-$block-editor-gap: $g-spacer-unit * 5; // 40px
+$block-editor-gap: variables.$g-spacer-unit * 5; // 40px
 $block-editor-header-height: 5.1rem;
 
 // Colors
-$block-editor-background-color: $color-platinum;
-$block-editor-border-color: $color-gray-100;
-$block-editor-divider-color: $color-silver;
-$block-editor-heading-color: $color-gray-700;
-$block-editor-navy: $color-gray-600;
-$block-editor-thumbnail-background-color: $color-gray-50;
+$block-editor-background-color: colors.$color-platinum;
+$block-editor-border-color: colors.$color-gray-100;
+$block-editor-divider-color: colors.$color-silver;
+$block-editor-heading-color: colors.$color-gray-700;
+$block-editor-navy: colors.$color-gray-600;
+$block-editor-thumbnail-background-color: colors.$color-gray-50;
 
 // Shorthands
 $block-editor-border: 0.1rem solid $block-editor-border-color;
 
-.#{$component} {
+.c-list-sorter {
 	&__item,
 	&__divider {
 		margin-bottom: $block-editor-gap;
@@ -54,7 +53,7 @@ $block-editor-border: 0.1rem solid $block-editor-border-color;
 		}
 
 		&__heading {
-			padding: $g-spacer-unit * 2;
+			padding: variables.$g-spacer-unit * 2;
 			color: $block-editor-heading-color;
 		}
 
@@ -63,7 +62,7 @@ $block-editor-border: 0.1rem solid $block-editor-border-color;
 
 			& > button,
 			& > div {
-				margin-right: $g-spacer-unit;
+				margin-right: variables.$g-spacer-unit;
 			}
 
 			.c-color-select {
@@ -85,7 +84,7 @@ $block-editor-border: 0.1rem solid $block-editor-border-color;
 	&__divider {
 		display: grid;
 		grid-template-columns: 1fr auto 1fr;
-		gap: $g-spacer-unit * 3;
+		gap: variables.$g-spacer-unit * 3;
 		align-items: center;
 
 		hr {

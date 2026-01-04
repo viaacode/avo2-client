@@ -1,15 +1,19 @@
-import { type Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
+import {
+  AvoCollectionCollection,
+  AvoCollectionFragment,
+  AvoCollectionRelationEntry,
+  AvoItemItem,
+} from '@viaa/avo2-types';
 
 export const getFragmentProperty = (
-	itemMetaData: Avo.Item.Item | Avo.Collection.Collection | undefined,
-	fragment: Avo.Collection.Fragment,
-	useCustomFields: boolean,
-	prop: 'title' | 'description'
+  itemMetaData: AvoItemItem | AvoCollectionCollection | undefined,
+  fragment: AvoCollectionFragment,
+  useCustomFields: boolean,
+  prop: 'title' | 'description',
 ) => {
-	return useCustomFields || !itemMetaData
-		? get(fragment, `custom_${prop}`, '')
-		: get(itemMetaData, prop, '');
+  return useCustomFields || !itemMetaData
+    ? fragment?.[`custom_${prop}`] || ''
+    : itemMetaData?.[prop] || '';
 };
 
 /**
@@ -22,20 +26,21 @@ export const getFragmentProperty = (
  * @param profileId
  */
 export const showReplacementWarning = (
-	collection: Avo.Collection.Collection,
-	collectionFragment: Avo.Collection.Fragment,
-	profileId?: string
+  collection: AvoCollectionCollection,
+  collectionFragment: AvoCollectionFragment,
+  profileId?: string,
 ): boolean => {
-	const item = collectionFragment.item_meta as Avo.Item.Item;
-	const replacedRelation: Avo.Collection.RelationEntry<Avo.Item.Item> | undefined =
-		item?.relations?.[0];
-	const ownsCollection: boolean = collection.owner_profile_id === profileId;
+  const item = collectionFragment.item_meta as AvoItemItem;
+  const replacedRelation: AvoCollectionRelationEntry<AvoItemItem> | undefined =
+    item?.relations?.[0];
+  const ownsCollection: boolean = collection.owner_profile_id === profileId;
 
-	return (
-		!!profileId &&
-		ownsCollection &&
-		!!replacedRelation &&
-		new Date(replacedRelation.created_at) > new Date(collection.updated_at) &&
-		new Date(replacedRelation.created_at) > new Date(collectionFragment.created_at)
-	);
+  return (
+    !!profileId &&
+    ownsCollection &&
+    !!replacedRelation &&
+    new Date(replacedRelation.created_at) > new Date(collection.updated_at) &&
+    new Date(replacedRelation.created_at) >
+      new Date(collectionFragment.created_at)
+  );
 };

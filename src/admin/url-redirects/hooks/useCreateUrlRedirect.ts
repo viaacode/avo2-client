@@ -4,8 +4,8 @@ import { UrlRedirectsService } from '../url-redirects.service';
 import { type UrlRedirect } from '../url-redirects.types';
 
 export const useCreateUrlRedirect = () => {
-	return useMutation(
-		(urlRedirect: UrlRedirect): Promise<UrlRedirect> =>
-			UrlRedirectsService.insertUrlRedirect(urlRedirect)
-	);
+  return useMutation({
+    mutationFn: (urlRedirect: UrlRedirect): Promise<UrlRedirect> =>
+      UrlRedirectsService.insertUrlRedirect(urlRedirect),
+  });
 };

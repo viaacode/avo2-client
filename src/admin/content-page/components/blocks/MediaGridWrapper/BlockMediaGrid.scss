@@ -1,4 +1,4 @@
-@import "../../../../../styles/settings/colors";
+@use "../../../../../styles/settings/colors" as colors;
 
 .c-media-card__cta {
 	.c-thumbnail {
@@ -47,7 +47,7 @@
 		}
 
 		.c-thumbnail {
-			background-color: $color-gray-50;
+			background-color: colors.$color-gray-50;
 			background-size: cover;
 			background-position: center;
 			background-repeat: no-repeat;

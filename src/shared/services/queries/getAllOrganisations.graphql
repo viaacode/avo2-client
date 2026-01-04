@@ -1,7 +1,7 @@
 query getAllOrganisations {
-	shared_organisations(order_by: { name: asc }) {
-		or_id
-		name
-		logo_url
-	}
+  shared_organisations(order_by: { name: asc }) {
+    or_id
+    name
+    logo_url
+  }
 }

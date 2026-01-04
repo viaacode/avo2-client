@@ -1,58 +1,47 @@
 import { Button, Container, Spacer } from '@viaa/avo2-components';
-import React, { type FC } from 'react';
-import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router';
+import { type FC } from 'react';
+import { useNavigate } from 'react-router';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 
-import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { GENERATE_SITE_TITLE } from '../../constants';
-import useTranslation from '../../shared/hooks/useTranslation';
+export const EducationalAuthorItemRequestFormConfirm: FC = () => {
+  const navigateFunc = useNavigate();
 
-type UserItemRequestFormProps = DefaultSecureRouteProps;
-
-const UserItemRequestFormConfirm: FC<UserItemRequestFormProps> = ({ history }) => {
-	const { tText, tHtml } = useTranslation();
-
-	return (
-		<Container className="c-register-stamboek-view" mode="vertical">
-			<Container mode="horizontal" size="large">
-				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							tText(
-								'user-item-request-form/views/educational-author-item-request-form-confirm___gebruikersaanvraag-pagina-titel'
-							)
-						)}
-					</title>
-					<meta
-						name="description"
-						content={tText(
-							'user-item-request-form/views/educational-author-item-request-form-confirm___gebruikersaanvraag-pagina-beschrijving'
-						)}
-					/>
-				</Helmet>
-				<div className="c-content">
-					{tHtml(
-						'user-item-request-form/views/educational-author-item-request-form-confirm___bevestiging'
-					)}
-					<Spacer margin="top-large">
-						<Button
-							type="primary"
-							onClick={history.goBack}
-							label={tText(
-								'user-item-request-form/views/educational-author-item-request-form-confirm___doe-nog-een-aanvraag'
-							)}
-							title={tText(
-								'user-item-request-form/views/educational-author-item-request-form-confirm___doe-nog-een-aanvraag'
-							)}
-							ariaLabel={tText(
-								'user-item-request-form/views/educational-author-item-request-form-confirm___de-nog-een-aanvraag'
-							)}
-						/>
-					</Spacer>
-				</div>
-			</Container>
-		</Container>
-	);
+  return (
+    <Container className="c-register-stamboek-view" mode="vertical">
+      <Container mode="horizontal" size="large">
+        <SeoMetadata
+          title={tText(
+            'user-item-request-form/views/educational-author-item-request-form-confirm___gebruikersaanvraag-pagina-titel',
+          )}
+          description={tText(
+            'user-item-request-form/views/educational-author-item-request-form-confirm___gebruikersaanvraag-pagina-beschrijving',
+          )}
+        />
+        <div className="c-content">
+          {tHtml(
+            'user-item-request-form/views/educational-author-item-request-form-confirm___bevestiging',
+          )}
+          <Spacer margin="top-large">
+            <Button
+              type="primary"
+              onClick={() => navigateFunc(-1)}
+              label={tText(
+                'user-item-request-form/views/educational-author-item-request-form-confirm___doe-nog-een-aanvraag',
+              )}
+              title={tText(
+                'user-item-request-form/views/educational-author-item-request-form-confirm___doe-nog-een-aanvraag',
+              )}
+              ariaLabel={tText(
+                'user-item-request-form/views/educational-author-item-request-form-confirm___de-nog-een-aanvraag',
+              )}
+            />
+          </Spacer>
+        </div>
+      </Container>
+    </Container>
+  );
 };
 
-export default withRouter(UserItemRequestFormConfirm);
+export default EducationalAuthorItemRequestFormConfirm;

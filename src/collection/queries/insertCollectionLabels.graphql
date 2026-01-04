@@ -1,5 +1,7 @@
-mutation insertCollectionLabels($objects: [app_collection_labels_insert_input!]!) {
-	insert_app_collection_labels(objects: $objects) {
-		affected_rows
-	}
+mutation insertCollectionLabels(
+  $objects: [app_collection_labels_insert_input!]!
+) {
+  insert_app_collection_labels(objects: $objects) {
+    affected_rows
+  }
 }

@@ -1,5 +1,7 @@
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import InteractiveTour from '../components/InteractiveTour/InteractiveTour';
+import { InteractiveTour } from '../components/InteractiveTour/InteractiveTour';
 
-export const defaultRenderInteractiveTour = (): ReactNode => <InteractiveTour showButton />;
+export const defaultRenderInteractiveTour = (): ReactNode => (
+  <InteractiveTour showButton />
+);

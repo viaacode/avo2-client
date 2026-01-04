@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Component: Tri
    ---
@@ -5,7 +8,7 @@
    ========================================================================== */
 
 .c-tri {
-	background-color: $color-night-blue;
+	background-color: colors.$color-night-blue;
 	width: 100%;
 	height: 100%;
 	position: relative;

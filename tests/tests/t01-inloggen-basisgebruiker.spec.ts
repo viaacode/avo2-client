@@ -12,19 +12,19 @@ import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
  */
 
 test('T01: Inloggen basisgebruiker', async ({ page }) => {
-	await goToPageAndAcceptCookies(
-		page,
-		process.env.TEST_CLIENT_ENDPOINT as string,
-		process.env.TEST_CLIENT_TITLE as string
-	);
+  await goToPageAndAcceptCookies(
+    page,
+    process.env.TEST_CLIENT_ENDPOINT as string,
+    process.env.TEST_CLIENT_TITLE as string,
+  );
 
-	await loginOnderwijsAvo(
-		page,
-		process.env.TEST_CLIENT_ENDPOINT as string,
-		process.env.TEST_BASIS_GEBRUIKER_USER as string,
-		process.env.TEST_BASIS_GEBRUIKER_PASS as string
-	);
+  await loginOnderwijsAvo(
+    page,
+    process.env.TEST_CLIENT_ENDPOINT as string,
+    process.env.TEST_BASIS_GEBRUIKER_USER as string,
+    process.env.TEST_BASIS_GEBRUIKER_PASS as string,
+  );
 
-	// // Wait for close to save the videos
-	// await context.close();
+  // // Wait for close to save the videos
+  // await context.close();
 });

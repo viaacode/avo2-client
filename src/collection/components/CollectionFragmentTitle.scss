@@ -1,9 +1,9 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/variables" as variables;
 
 .c-collection-fragment-title.c-heading {
-	margin: 0 0 $g-spacer-unit 0;
+	margin: 0 0 variables.$g-spacer-unit 0;
 
-	@media screen and (min-width: $g-bp2) {
-		margin: 0 0 ($g-spacer-unit * 2) 0;
+	@media screen and (min-width: variables.$g-bp2) {
+		margin: 0 0 (variables.$g-spacer-unit * 2) 0;
 	}
 }

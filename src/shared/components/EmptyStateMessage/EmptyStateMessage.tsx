@@ -1,32 +1,31 @@
 import { Container, Flex, Spacer } from '@viaa/avo2-components';
-import React, { type FC, type ReactNode } from 'react';
+import { type FC, type ReactNode } from 'react';
 
-import { ReactComponent as TeacherSvg } from '../../../assets/images/leerkracht.svg';
+// eslint-disable-next-line import/no-unresolved
+import TeacherSvg from '../../../assets/images/leerkracht.svg?react';
 
 import './EmptyStateMessage.scss';
 
 interface EmptyStateMessageProps {
-	img?: ReactNode;
-	title: string;
-	message: ReactNode;
+  img?: ReactNode;
+  title: string;
+  message: ReactNode;
 }
 
-const EmptyStateMessage: FC<EmptyStateMessageProps> = ({
-	img = <TeacherSvg />,
-	title,
-	message,
+export const EmptyStateMessage: FC<EmptyStateMessageProps> = ({
+  img = <TeacherSvg />,
+  title,
+  message,
 }) => {
-	return (
-		<Container mode="vertical" className="c-empty-collection-placeholder">
-			<Flex orientation="vertical" center>
-				{img}
-				<Spacer margin={['top-large', 'bottom']}>
-					<h2>{title}</h2>
-				</Spacer>
-				<p>{message}</p>
-			</Flex>
-		</Container>
-	);
+  return (
+    <Container mode="vertical" className="c-empty-collection-placeholder">
+      <Flex orientation="vertical" center>
+        {img}
+        <Spacer margin={['top-large', 'bottom']}>
+          <h2>{title}</h2>
+        </Spacer>
+        <p>{message}</p>
+      </Flex>
+    </Container>
+  );
 };
-
-export default EmptyStateMessage;

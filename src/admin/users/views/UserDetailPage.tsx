@@ -1,66 +1,66 @@
-import { Flex, Spinner } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import React, { type FC, lazy, Suspense, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { type RouteChildrenProps, useParams } from 'react-router';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
+import { type FC, lazy, Suspense, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
 
-import { GENERATE_SITE_TITLE } from '../../../constants';
+import { commonUserAtom } from '../../../authentication/authentication.store';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
 import { ADMIN_PATH } from '../../admin.const';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { UserService } from '../user.service';
 
 import './UserDetailPage.scss';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
+import { tText } from '../../../shared/helpers/translate-text';
 
 const UserDetail = lazy(() =>
-	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
-		default: adminCoreModule.UserDetail,
-	}))
+  import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
+    default: adminCoreModule.UserDetail,
+  })),
 );
 
-const UserDetailPage: FC<UserProps & RouteChildrenProps> = ({ commonUser, history }) => {
-	const { tText } = useTranslation();
-	const [user, setUser] = useState<{ fullName?: string } | undefined>();
-	const { id } = useParams<{ id: string }>();
+export const UserDetailPage: FC = () => {
+  const navigateFunc = useNavigate();
+  const commonUser = useAtomValue(commonUserAtom);
 
-	return (
-		<>
-			<Helmet>
-				<title>
-					{GENERATE_SITE_TITLE(
-						user?.fullName,
-						tText('admin/users/views/user-detail___item-detail-pagina-titel')
-					)}
-				</title>
-				<meta
-					name="description"
-					content={tText(
-						'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving'
-					)}
-				/>
-			</Helmet>
+  const [user, setUser] = useState<{ fullName?: string } | undefined>();
+  const { id } = useParams<{ id: string }>();
 
-			<Suspense
-				fallback={
-					<Flex orientation="horizontal" center>
-						<Spinner size="large" />
-					</Flex>
-				}
-			>
-				<UserDetail
-					id={id}
-					onSetTempAccess={UserService.updateTempAccessByUserId}
-					onLoaded={setUser}
-					onGoBack={() => goBrowserBackWithFallback(ADMIN_PATH.USER_OVERVIEW, history)}
-					commonUser={commonUser as Avo.User.CommonUser}
-				/>
-			</Suspense>
-		</>
-	);
+  return (
+    <>
+      <PermissionGuard permissions={[PermissionName.VIEW_USERS]}>
+        <SeoMetadata
+          title={
+            user?.fullName ||
+            tText('admin/users/views/user-detail___item-detail-pagina-titel')
+          }
+          description={tText(
+            'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving',
+          )}
+        />
+
+        <Suspense
+          fallback={<FullPageSpinner locationId="user-detail-page--loading" />}
+        >
+          {!!id && (
+            <UserDetail
+              id={id}
+              onSetTempAccess={UserService.updateTempAccessByProfileId}
+              onLoaded={setUser}
+              onGoBack={() =>
+                goBrowserBackWithFallback(
+                  ADMIN_PATH.USER_OVERVIEW,
+                  navigateFunc,
+                )
+              }
+              commonUser={commonUser}
+            />
+          )}
+        </Suspense>
+      </PermissionGuard>
+    </>
+  );
 };
 
-export default compose(withAdminCoreConfig, withUser, withRouter)(UserDetailPage) as FC;
+export default UserDetailPage;

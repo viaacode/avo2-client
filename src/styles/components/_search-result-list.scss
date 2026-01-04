@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Component: Search result list
    ========================================================================== */
@@ -7,9 +10,9 @@
 		margin-bottom: 3.2rem;
 
 		&__title {
-			margin-bottom: $g-spacer-unit;
+			margin-bottom: variables.$g-spacer-unit;
 
-			@media screen and (min-width: $g-bp2) {
+			@media screen and (min-width: variables.$g-bp2) {
 				margin-bottom: 0;
 			}
 		}

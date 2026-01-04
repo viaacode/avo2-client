@@ -1,7 +1,8 @@
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/colors" as colors;
+@use "../../../styles/settings/variables" as variables;
 
 .c-contributors {
-	color: $color-teal-bright;
+	color: colors.$color-teal-bright;
 }
 
 .c-tooltip {

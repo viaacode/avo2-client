@@ -1,22 +1,23 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/colors" as colors;
+@use "../../styles/settings/variables" as variables;
 
 .m-login-options {
 	&__wrapper {
-		padding: $g-spacer-unit * 4;
+		padding: variables.$g-spacer-unit * 4;
 	}
 
 	hr {
-		border-color: $color-gray-100;
+		border-color: colors.$color-gray-100;
 		border-style: solid;
-		margin: $g-spacer-unit * 3 0;
+		margin: variables.$g-spacer-unit * 3 0;
 	}
 
 	.c-tabs {
-		border-bottom: 1px solid $c-register-login-view-modal-border-color;
+		border-bottom: 1px solid variables.$c-register-login-view-modal-border-color;
 	}
 
 	.c-tab-item {
-		background-color: $c-register-login-view-modal-background-color;
+		background-color: variables.$c-register-login-view-modal-background-color;
 		flex-grow: 1;
 		justify-content: center;
 
@@ -26,7 +27,7 @@
 		}
 
 		&:not(:first-of-type) {
-			border-left: 1px solid $c-register-login-view-modal-border-color;
+			border-left: 1px solid variables.$c-register-login-view-modal-border-color;
 		}
 	}
 }

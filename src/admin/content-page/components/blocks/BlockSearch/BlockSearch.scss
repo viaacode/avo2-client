@@ -1,4 +1,4 @@
-@import "../../../../../styles/settings/colors";
+@use "../../../../../styles/settings/colors" as colors;
 
 .c-content-block__search {
 	z-index: 2 !important;
@@ -21,7 +21,7 @@
 			max-width: 100%;
 
 			.c-menu__item {
-				border-bottom: 0.1rem solid $color-gray-100;
+				border-bottom: 0.1rem solid colors.$color-gray-100;
 			}
 		}
 

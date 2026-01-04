@@ -1,8 +1,15 @@
-mutation updateUserTempAccessById($profile_id: uuid!, $from: date, $until: date!) {
-	insert_shared_user_temp_access_v2_one(
-		object: { profile_id: $profile_id, from: $from, until: $until }
-		on_conflict: { constraint: user_temp_access_v2_pkey, update_columns: [from, until] }
-	) {
-		profile_id
-	}
+mutation updateUserTempAccessById(
+  $profile_id: uuid!
+  $from: date
+  $until: date!
+) {
+  insert_shared_user_temp_access_v2_one(
+    object: { profile_id: $profile_id, from: $from, until: $until }
+    on_conflict: {
+      constraint: user_temp_access_v2_pkey
+      update_columns: [from, until]
+    }
+  ) {
+    profile_id
+  }
 }

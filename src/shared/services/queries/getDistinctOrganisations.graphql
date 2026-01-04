@@ -1,11 +1,11 @@
 query getDistinctOrganisations {
-	app_item_meta(distinct_on: org_id, where: { organisation: {} }) {
-		organisation {
-			or_id
-			name
-			logo_url
-		}
-		is_published
-		is_deleted
-	}
+  app_item_meta(distinct_on: org_id, where: { organisation: {} }) {
+    organisation {
+      or_id
+      name
+      logo_url
+    }
+    is_published
+    is_deleted
+  }
 }

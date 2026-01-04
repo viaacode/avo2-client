@@ -182,8 +182,8 @@ pipeline {
 						credentialsId: 'meemoo-ci',
 						url: 'https://github.com/viaacode/hasura-graphql.git'
 						sh """#!/bin/bash
-						# hasura-cli seed apply --endpoint=https://hasura-graphql-int-avo.private.cloud.meemoo.be --admin-secret=${ADMIN_SECRET} || echo failed
-						# hasura-cli seed apply --endpoint=https://hasura-graphql-int-avo.private.cloud.meemoo.be --admin-secret=${ADMIN_SECRET} --file ../seeds_INT/000___users_idp_map.sql || echo failed
+						# hasura-cli seed apply --endpoint=https://hasura-graphql-int-Avoprivatecloud.meemoo.be --admin-secret=${ADMIN_SECRET} || echo failed
+						# hasura-cli seed apply --endpoint=https://hasura-graphql-int-Avoprivatecloud.meemoo.be --admin-secret=${ADMIN_SECRET} --file ../seeds_INT/000___users_idp_map.sql || echo failed
 						exit 0
 						"""
 					}

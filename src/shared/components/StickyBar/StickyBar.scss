@@ -1,8 +1,8 @@
 @use "sass:math";
 
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/variables" as variables;
 
-$sticky-bar-spacing-horizontal: $g-spacer-unit * 4;
+$sticky-bar-spacing-horizontal: variables.$g-spacer-unit * 4;
 $sticky-bar-width: 800px;
 
 $sticky-bar-threshold: $sticky-bar-width + (math.div($sticky-bar-spacing-horizontal * 2, 1rem) * 10px);
@@ -29,12 +29,12 @@ $sticky-bar-threshold: $sticky-bar-width + (math.div($sticky-bar-spacing-horizon
 			width: $sticky-bar-width;
 		}
 
-		@media screen and (min-width: $g-bp3) {
+		@media screen and (min-width: variables.$g-bp3) {
 			justify-content: space-between;
 			align-items: center;
 		}
 
-		@media screen and (max-width: ($g-bp3 - 1px)) {
+		@media screen and (max-width: (variables.$g-bp3 - 1px)) {
 			flex-wrap: wrap;
 
 			&__cta {
@@ -50,7 +50,7 @@ $sticky-bar-threshold: $sticky-bar-width + (math.div($sticky-bar-spacing-horizon
 
 		&__cta {
 			flex-grow: 1;
-			padding-right: $g-spacer-unit * 2;
+			padding-right: variables.$g-spacer-unit * 2;
 		}
 	}
 }

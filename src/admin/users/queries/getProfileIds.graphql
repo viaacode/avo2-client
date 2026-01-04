@@ -1,5 +1,5 @@
 query getProfileIds($where: users_summary_view_bool_exp!) {
-	users_summary_view(where: $where) {
-		profile_id
-	}
+  users_summary_view(where: $where) {
+    profile_id
+  }
 }

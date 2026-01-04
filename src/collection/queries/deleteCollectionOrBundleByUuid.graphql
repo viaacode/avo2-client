@@ -1,19 +1,24 @@
 mutation deleteCollectionOrBundleByUuid(
-	$collectionOrBundleUuid: uuid!
-	$collectionOrBundleUuidAsText: bpchar!
+  $collectionOrBundleUuid: uuid!
+  $collectionOrBundleUuidAsText: bpchar!
 ) {
-	update_app_collections(
-		where: { id: { _eq: $collectionOrBundleUuid } }
-		_set: { is_deleted: true }
-	) {
-		affected_rows
-	}
-	delete_app_collection_fragments(
-		where: { type: { _eq: "COLLECTION" }, external_id: { _eq: $collectionOrBundleUuidAsText } }
-	) {
-		affected_rows
-	}
-	delete_app_collection_bookmarks(where: { collection_uuid: { _eq: $collectionOrBundleUuid } }) {
-		affected_rows
-	}
+  update_app_collections(
+    where: { id: { _eq: $collectionOrBundleUuid } }
+    _set: { is_deleted: true }
+  ) {
+    affected_rows
+  }
+  delete_app_collection_fragments(
+    where: {
+      type: { _eq: "COLLECTION" }
+      external_id: { _eq: $collectionOrBundleUuidAsText }
+    }
+  ) {
+    affected_rows
+  }
+  delete_app_collection_bookmarks(
+    where: { collection_uuid: { _eq: $collectionOrBundleUuid } }
+  ) {
+    affected_rows
+  }
 }

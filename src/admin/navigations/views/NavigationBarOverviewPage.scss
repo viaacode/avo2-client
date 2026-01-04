@@ -1,0 +1,21 @@
+@use "../../../styles/settings/colors" as colors;
+@use "../../../styles/settings/variables" as variables;
+
+.c-admin__header {
+	border-bottom: 0.1rem solid colors.$color-gray-100;
+	background-color: colors.$color-gray-50;
+	display: flex;
+	padding: 2rem 4rem;
+
+	.c-admin__page-title {
+		font-size: 2.4rem;
+		font-family: variables.$g-headings-font-family;
+		font-weight: 500;
+	}
+}
+
+.c-admin__navigation-overview {
+	.c-admin__content {
+		margin: 4rem;
+	}
+}

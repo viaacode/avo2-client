@@ -1,22 +1,26 @@
-query getPublicItemsByTitleOrExternalId($title: String!, $externalId: bpchar!, $limit: Int!) {
-	itemsByTitle: app_item_meta(
-		order_by: { title: asc }
-		limit: $limit
-		where: { title: { _ilike: $title }, is_published: { _eq: true } }
-	) {
-		external_id
-		title
-		is_published
-		is_deleted
-	}
-	itemsByExternalId: app_item_meta(
-		order_by: { title: asc }
-		limit: $limit
-		where: { external_id: { _eq: $externalId }, is_published: { _eq: true } }
-	) {
-		external_id
-		title
-		is_published
-		is_deleted
-	}
+query getPublicItemsByTitleOrExternalId(
+  $title: String!
+  $externalId: bpchar!
+  $limit: Int!
+) {
+  itemsByTitle: app_item_meta(
+    order_by: { title: asc }
+    limit: $limit
+    where: { title: { _ilike: $title }, is_published: { _eq: true } }
+  ) {
+    external_id
+    title
+    is_published
+    is_deleted
+  }
+  itemsByExternalId: app_item_meta(
+    order_by: { title: asc }
+    limit: $limit
+    where: { external_id: { _eq: $externalId }, is_published: { _eq: true } }
+  ) {
+    external_id
+    title
+    is_published
+    is_deleted
+  }
 }

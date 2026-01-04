@@ -1,6 +1,6 @@
 @use "sass:math";
-@import "../../settings/colors";
-@import "../../settings/variables";
+@use "../../settings/colors" as colors;
+@use "../../settings/variables" as variables;
 
 /* ==========================================================================
    Component: Buttons
@@ -57,15 +57,15 @@ $c-button-icon-spacing-small: 0.2rem !default;
 
 	&--disabled {
 		cursor: default;
-		background: $color-gray-100 !important;
-		color: $color-gray-200 !important;
-		border: 1px solid $color-gray-100 !important;
+		background: colors.$color-gray-100 !important;
+		color: colors.$color-gray-200 !important;
+		border: 1px solid colors.$color-gray-100 !important;
 	}
 
 	&--neutral {
-		border: 1px solid $color-gray-200;
-		background-color: $color-gray-50;
-		color: $color-gray-700;
+		border: 1px solid colors.$color-gray-200;
+		background-color: colors.$color-gray-50;
+		color: colors.$color-gray-700;
 
 		&:hover,
 		&:active,
@@ -77,9 +77,9 @@ $c-button-icon-spacing-small: 0.2rem !default;
 	}
 
 	&--copy-to-clipboard {
-		border: 1px solid $color-gray-200;
-		background-color: $color-gray-50;
-		color: $color-gray-700;
+		border: 1px solid colors.$color-gray-200;
+		background-color: colors.$color-gray-50;
+		color: colors.$color-gray-700;
 	}
 
 	.c-button__icon {
@@ -194,7 +194,7 @@ a.c-button {
 	&.c-button--active {
 		.o-svg-icon--action-active {
 			display: block;
-			color: $color-teal-bright;
+			color: colors.$color-teal-bright;
 		}
 
 		.o-svg-icon--action-inactive {
@@ -208,7 +208,7 @@ a.c-button {
 
 .c-button-toolbar {
 	* + .c-button {
-		margin-left: $g-spacer-unit;
+		margin-left: variables.$g-spacer-unit;
 	}
 
 	.c-button-group {

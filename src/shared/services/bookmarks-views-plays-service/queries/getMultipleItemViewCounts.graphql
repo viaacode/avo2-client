@@ -1,6 +1,6 @@
 query getMultipleItemViewCounts($uuids: [uuid!]) {
-	items: app_item_views(where: { item_id: { _in: $uuids } }) {
-		count
-		id: item_id
-	}
+  items: app_item_views(where: { item_id: { _in: $uuids } }) {
+    count
+    id: item_id
+  }
 }

@@ -1,5 +1,6 @@
-@import "../../../styles/settings/variables";
-@import "../../../styles/components/input";
+@use "../../../styles/settings/colors" as colors;
+@use "../../../styles/settings/variables" as variables;
+@use "../../../styles/components/input" as input;
 
 .p-admin__user-group-overview {
 	margin: 0 auto;
@@ -11,14 +12,14 @@
 		position: relative;
 
 		.c-input__field {
-			@include textfield-transition;
-			@include textfield-focus;
-			border-radius: $c-input-border-radius;
-			background-color: $c-input-bg-color;
-			border: 1px solid $c-input-border-color;
+			@include input.textfield-transition;
+			@include input.textfield-focus;
+			border-radius: variables.$c-input-border-radius;
+			background-color: variables.$c-input-bg-color;
+			border: 1px solid variables.$c-input-border-color;
 			font-size: inherit;
 			height: 3.6rem;
-			padding: $c-input-padding;
+			padding: variables.$c-input-padding;
 			width: 100%;
 			appearance: none;
 		}
@@ -50,10 +51,9 @@
 	.c-table {
 		width: 100%;
 		border-collapse: separate;
-		margin-bottom: $g-spacer-unit * 4;
+		margin-bottom: variables.$g-spacer-unit * 4;
 
 		thead {
-			position: -webkit-sticky; /* Safari */
 			position: sticky;
 			top: 0;
 			background-color: white;
@@ -61,7 +61,7 @@
 			z-index: 2;
 
 			th {
-				border-bottom: 1px solid $color-gray-100;
+				border-bottom: 1px solid colors.$color-gray-100;
 			}
 		}
 
@@ -76,11 +76,11 @@
 		}
 
 		tr:nth-child(even) {
-			background-color: $color-gray-25;
+			background-color: colors.$color-gray-25;
 		}
 
 		tbody tr:hover {
-			background-color: $color-gray-50;
+			background-color: colors.$color-gray-50;
 		}
 
 		th:first-child,

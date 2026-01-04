@@ -1,5 +1,5 @@
 mutation deleteCollectionFragmentById($id: Int!) {
-	delete_app_collection_fragments(where: { id: { _eq: $id } }) {
-		affected_rows
-	}
+  delete_app_collection_fragments(where: { id: { _eq: $id } }) {
+    affected_rows
+  }
 }

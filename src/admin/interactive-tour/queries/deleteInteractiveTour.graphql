@@ -1,5 +1,5 @@
 mutation deleteInteractiveTour($interactiveTourId: Int!) {
-	delete_app_interactive_tour(where: { id: { _eq: $interactiveTourId } }) {
-		affected_rows
-	}
+  delete_app_interactive_tour(where: { id: { _eq: $interactiveTourId } }) {
+    affected_rows
+  }
 }

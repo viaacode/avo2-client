@@ -1,39 +1,38 @@
 import {
-	Button,
-	ButtonToolbar,
-	Column,
-	Container,
-	Form,
-	Grid,
-	Modal,
-	ModalBody,
-	Spacer,
-	Toolbar,
-	ToolbarItem,
-	ToolbarRight,
+  Button,
+  ButtonToolbar,
+  Column,
+  Container,
+  Form,
+  Grid,
+  Modal,
+  ModalBody,
+  Spacer,
+  Toolbar,
+  ToolbarItem,
+  ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import React, { type FC, useEffect, useState } from 'react';
-import { type RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
 
-import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
+import { type FC, useEffect, useState } from 'react';
+
+import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
-import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { type ItemTrimInfo } from '../../item.types';
-import ItemVideoDescription from '../ItemVideoDescription';
+import { ItemVideoDescription } from '../ItemVideoDescription';
 
 import './CutFragmentModal.scss';
+import { AvoItemItem } from '@viaa/avo2-types';
 
 interface CutFragmentForAssignmentModalProps {
-	itemMetaData: Avo.Item.Item;
-	isOpen: boolean;
-	onClose: () => void;
-	afterCutCallback: (trimInfo: ItemTrimInfo) => void;
+  itemMetaData: AvoItemItem;
+  isOpen: boolean;
+  onClose: () => void;
+  afterCutCallback: (trimInfo: ItemTrimInfo) => void;
 }
 
 /**
@@ -46,133 +45,127 @@ interface CutFragmentForAssignmentModalProps {
  * @param afterCutCallback
  * @constructor
  */
-const CutFragmentForAssignmentModal: FC<
-	CutFragmentForAssignmentModalProps & RouteComponentProps & UserProps
+export const CutFragmentForAssignmentModal: FC<
+  CutFragmentForAssignmentModalProps
 > = ({ itemMetaData, isOpen, onClose, afterCutCallback }) => {
-	const { tText, tHtml } = useTranslation();
+  const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
+  const [fragmentEndTime, setFragmentEndTime] = useState<number>(
+    toSeconds(itemMetaData.duration) || 0,
+  );
 
-	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
-	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
-		toSeconds(itemMetaData.duration) || 0
-	);
+  useEffect(() => {
+    if (isOpen) {
+      // Reset the state
+      setFragmentStartTime(0);
+      setFragmentEndTime(toSeconds(itemMetaData.duration) || 0);
+    }
+  }, [isOpen, itemMetaData.duration]);
 
-	useEffect(() => {
-		if (isOpen) {
-			// Reset the state
-			setFragmentStartTime(0);
-			setFragmentEndTime(toSeconds(itemMetaData.duration) || 0);
-		}
-	}, [isOpen, itemMetaData.duration]);
+  const onApply = () => {
+    const hasCut =
+      fragmentEndTime !== toSeconds(itemMetaData.duration) ||
+      fragmentStartTime !== 0;
+    return afterCutCallback({ hasCut, fragmentStartTime, fragmentEndTime });
+  };
 
-	const onApply = () => {
-		const hasCut =
-			fragmentEndTime !== toSeconds(itemMetaData.duration) || fragmentStartTime !== 0;
-		return afterCutCallback({ hasCut, fragmentStartTime, fragmentEndTime });
-	};
+  const renderCutFragmentModal = () => {
+    const fragmentDuration = toSeconds(itemMetaData.duration) || 0;
+    const [start, end] = getValidStartAndEnd(
+      fragmentStartTime,
+      fragmentEndTime,
+      fragmentDuration,
+    );
 
-	const renderCutFragmentModal = () => {
-		const fragmentDuration = toSeconds(itemMetaData.duration) || 0;
-		const [start, end] = getValidStartAndEnd(
-			fragmentStartTime,
-			fragmentEndTime,
-			fragmentDuration
-		);
+    return (
+      <Modal
+        title={tHtml(
+          'item/components/modals/add-to-assignment-modal___knip-fragment-optioneel',
+        )}
+        size="extra-large"
+        isOpen={isOpen}
+        onClose={onClose}
+        scrollable
+      >
+        <ModalBody>
+          <div className="c-modal__body-add-fragment">
+            <Spacer>
+              <Form>
+                {
+                  <ItemVideoDescription
+                    itemMetaData={itemMetaData}
+                    showTitle
+                    showMetadata={false}
+                    enableMetadataLink={false}
+                    showDescription
+                    canPlay={isOpen}
+                    cuePointsLabel={{ start, end }}
+                    verticalLayout={isMobileWidth()}
+                    trackPlayEvent={false}
+                  />
+                }
+                <Grid>
+                  <Column
+                    size="2-7"
+                    className="u-spacer-top-l u-spacer-bottom-l"
+                  >
+                    <TimeCropControls
+                      startTime={fragmentStartTime}
+                      endTime={fragmentEndTime}
+                      minTime={0}
+                      maxTime={fragmentDuration}
+                      onChange={(newStartTime: number, newEndTime: number) => {
+                        if (newStartTime !== fragmentStartTime) {
+                          setModalVideoSeekTime(newStartTime);
+                        } else if (newEndTime !== fragmentEndTime) {
+                          setModalVideoSeekTime(newEndTime);
+                        }
+                        setFragmentStartTime(newStartTime);
+                        setFragmentEndTime(newEndTime);
+                      }}
+                    />
+                  </Column>
+                  <Column size="2-5">
+                    <Container mode="vertical" className="m-time-crop-controls">
+                      <Toolbar alignTop>
+                        <ToolbarRight>
+                          <ToolbarItem>
+                            <ButtonToolbar>
+                              <Button
+                                label={tText(
+                                  'item/components/modals/add-to-assignment-modal___overslaan',
+                                )}
+                                type="secondary"
+                                block
+                                onClick={() =>
+                                  afterCutCallback({
+                                    hasCut: false,
+                                    fragmentStartTime: 0,
+                                    fragmentEndTime: 0,
+                                  })
+                                }
+                              />
+                              <Button
+                                label={tText(
+                                  'item/components/modals/add-to-assignment-modal___knip',
+                                )}
+                                type="primary"
+                                block
+                                onClick={onApply}
+                              />
+                            </ButtonToolbar>
+                          </ToolbarItem>
+                        </ToolbarRight>
+                      </Toolbar>
+                    </Container>
+                  </Column>
+                </Grid>
+              </Form>
+            </Spacer>
+          </div>
+        </ModalBody>
+      </Modal>
+    );
+  };
 
-		return (
-			<Modal
-				title={tHtml(
-					'item/components/modals/add-to-assignment-modal___knip-fragment-optioneel'
-				)}
-				size="extra-large"
-				isOpen={isOpen}
-				onClose={onClose}
-				scrollable
-			>
-				<ModalBody>
-					<div className="c-modal__body-add-fragment">
-						<Spacer>
-							<Form>
-								{
-									<ItemVideoDescription
-										itemMetaData={itemMetaData}
-										showTitle
-										showMetadata={false}
-										enableMetadataLink={false}
-										showDescription
-										canPlay={isOpen}
-										cuePointsLabel={{ start, end }}
-										verticalLayout={isMobileWidth()}
-										trackPlayEvent={false}
-									/>
-								}
-								<Grid>
-									<Column size="2-7" className="u-spacer-top-l u-spacer-bottom-l">
-										<TimeCropControls
-											startTime={fragmentStartTime}
-											endTime={fragmentEndTime}
-											minTime={0}
-											maxTime={fragmentDuration}
-											onChange={(
-												newStartTime: number,
-												newEndTime: number
-											) => {
-												if (newStartTime !== fragmentStartTime) {
-													setModalVideoSeekTime(newStartTime);
-												} else if (newEndTime !== fragmentEndTime) {
-													setModalVideoSeekTime(newEndTime);
-												}
-												setFragmentStartTime(newStartTime);
-												setFragmentEndTime(newEndTime);
-											}}
-										/>
-									</Column>
-									<Column size="2-5">
-										<Container mode="vertical" className="m-time-crop-controls">
-											<Toolbar alignTop>
-												<ToolbarRight>
-													<ToolbarItem>
-														<ButtonToolbar>
-															<Button
-																label={tText(
-																	'item/components/modals/add-to-assignment-modal___overslaan'
-																)}
-																type="secondary"
-																block
-																onClick={() =>
-																	afterCutCallback({
-																		hasCut: false,
-																		fragmentStartTime: 0,
-																		fragmentEndTime: 0,
-																	})
-																}
-															/>
-															<Button
-																label={tText(
-																	'item/components/modals/add-to-assignment-modal___knip'
-																)}
-																type="primary"
-																block
-																onClick={onApply}
-															/>
-														</ButtonToolbar>
-													</ToolbarItem>
-												</ToolbarRight>
-											</Toolbar>
-										</Container>
-									</Column>
-								</Grid>
-							</Form>
-						</Spacer>
-					</div>
-				</ModalBody>
-			</Modal>
-		);
-	};
-
-	return renderCutFragmentModal();
+  return renderCutFragmentModal();
 };
-
-export default compose(
-	withRouter,
-	withUser
-)(CutFragmentForAssignmentModal) as FC<CutFragmentForAssignmentModalProps>;

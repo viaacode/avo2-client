@@ -1,8 +1,7 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/colors" as colors;
+@use "../../styles/settings/variables" as variables;
 
-$component: "c-add-block";
-
-.c-modal .#{$component} {
+.c-modal .c-add-block {
 	&__list {
 		list-style: none;
 		margin: 0;
@@ -10,7 +9,7 @@ $component: "c-add-block";
 		&-item {
 			cursor: pointer;
 			border-radius: 4px;
-			border: 1px solid $color-gray-300;
+			border: 1px solid colors.$color-gray-300;
 			display: grid;
 			grid-template-columns: min-content auto min-content;
 			overflow: hidden;
@@ -24,7 +23,7 @@ $component: "c-add-block";
 
 		li {
 			&:not(:first-child) {
-				margin-top: $g-spacer-unit * 3;
+				margin-top: variables.$g-spacer-unit * 3;
 			}
 		}
 	}
@@ -36,14 +35,14 @@ $component: "c-add-block";
 	}
 
 	&__icon {
-		background: $color-gray-100;
-		border-right: 1px solid $color-gray-300;
-		color: $color-dark-night-blue;
-		padding: $g-spacer-unit * 2;
+		background: colors.$color-gray-100;
+		border-right: 1px solid colors.$color-gray-300;
+		color: colors.$color-dark-night-blue;
+		padding: variables.$g-spacer-unit * 2;
 	}
 
 	&__content {
-		padding: $g-spacer-unit * 2;
+		padding: variables.$g-spacer-unit * 2;
 
 		.c-heading {
 			margin-top: 0;
@@ -51,12 +50,12 @@ $component: "c-add-block";
 	}
 
 	&__description {
-		color: $color-gray-300;
+		color: colors.$color-gray-300;
 		margin-bottom: 0;
-		margin-top: $g-spacer-unit;
+		margin-top: variables.$g-spacer-unit;
 	}
 
 	&__actions button {
-		margin-right: $g-spacer-unit * 4;
+		margin-right: variables.$g-spacer-unit * 4;
 	}
 }

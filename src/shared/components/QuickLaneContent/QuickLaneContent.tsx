@@ -1,236 +1,258 @@
 import { Alert, Spacer, Tabs } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { noop } from 'lodash-es';
-import React, { type FC, useEffect, useState } from 'react';
+import {
+  AvoAssignmentAssignment,
+  AvoCollectionCollection,
+  AvoItemItem,
+  AvoUserCommonUser,
+  PermissionName,
+} from '@viaa/avo2-types';
+import { noop } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
+import { type FC, useEffect, useState } from 'react';
 
+import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
-import useTranslation from '../../../shared/hooks/useTranslation';
-import withUser, { type UserProps } from '../../hocs/withUser';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import { useTabs } from '../../hooks/useTabs';
 import { ToastService } from '../../services/toast-service';
 
 import { isShareable } from './QuickLaneContent.helpers';
-import { type QuickLaneContentProps, QuickLaneTypeEnum } from './QuickLaneContent.types';
-import QuickLaneContentPublicationTab from './QuickLaneContentPublicationTab';
-import QuickLaneContentSharingTab from './QuickLaneContentSharingTab';
+import {
+  type QuickLaneContentProps,
+  QuickLaneTypeEnum,
+} from './QuickLaneContent.types';
+import { QuickLaneContentPublicationTab } from './QuickLaneContentPublicationTab';
+import { QuickLaneContentSharingTab } from './QuickLaneContentSharingTab';
 import './QuickLaneContent.scss';
 
 // State
 
 enum QuickLaneContentTabs {
-	publication = 'publication',
-	sharing = 'sharing',
+  publication = 'publication',
+  sharing = 'sharing',
 }
 
 // Helpers
 
-const needsToPublish = async (commonUser: Avo.User.CommonUser) => {
-	return await PermissionService.hasPermissions(
-		[PermissionName.REQUIRED_PUBLICATION_DETAILS_ON_QUICK_LANE],
-		commonUser
-	);
+const needsToPublish = async (commonUser: AvoUserCommonUser) => {
+  return await PermissionService.hasPermissions(
+    [PermissionName.REQUIRED_PUBLICATION_DETAILS_ON_QUICK_LANE],
+    commonUser,
+  );
 };
 
 const isAllowedToPublish = async (
-	commonUser: Avo.User.CommonUser,
-	collection?: Avo.Collection.Collection
+  commonUser: AvoUserCommonUser,
+  collection?: AvoCollectionCollection,
 ) => {
-	return (
-		// Is the author && can publish his own collections
-		(collection?.owner_profile_id === commonUser?.profileId &&
-			(await PermissionService.hasPermissions(
-				[PermissionName.PUBLISH_OWN_COLLECTIONS],
-				commonUser
-			))) ||
-		// Is not the author but can publish any collections
-		(await PermissionService.hasPermissions(
-			[PermissionName.PUBLISH_ANY_COLLECTIONS],
-			commonUser
-		))
-	);
+  return (
+    // Is the author && can publish his own collections
+    (collection?.owner_profile_id === commonUser?.profileId &&
+      (await PermissionService.hasPermissions(
+        [PermissionName.PUBLISH_OWN_COLLECTIONS],
+        commonUser,
+      ))) ||
+    // Is not the author but can publish any collections
+    (await PermissionService.hasPermissions(
+      [PermissionName.PUBLISH_ANY_COLLECTIONS],
+      commonUser,
+    ))
+  );
 };
 
 // Component
 
-const QuickLaneContent: FC<QuickLaneContentProps & UserProps> = (props) => {
-	const { content_label, commonUser } = props;
-	const isCollection = content_label === QuickLaneTypeEnum.COLLECTION;
+export const QuickLaneContent: FC<QuickLaneContentProps> = (props) => {
+  const isCollection = props.content_label === QuickLaneTypeEnum.COLLECTION;
+  const commonUser = useAtomValue(commonUserAtom);
 
-	const [content, setContent] = useState<
-		Avo.Assignment.Assignment | Avo.Collection.Collection | Avo.Item.Item | undefined
-	>(props.content);
+  const [content, setContent] = useState<
+    AvoAssignmentAssignment | AvoCollectionCollection | AvoItemItem | undefined
+  >(props.content);
 
-	const { tText, tHtml } = useTranslation();
+  const [isPublishRequired, setIsPublishRequired] = useState(false);
+  const [canPublish, setCanPublish] = useState(false);
 
-	const [isPublishRequired, setIsPublishRequired] = useState(false);
-	const [canPublish, setCanPublish] = useState(false);
+  const [tab, setActiveTab, tabs] = useTabs(
+    [
+      {
+        id: QuickLaneContentTabs.publication,
+        label: tText(
+          'shared/components/quick-lane-modal/quick-lane-modal___publicatiedetails',
+        ),
+      },
+      {
+        id: QuickLaneContentTabs.sharing,
+        label: tText(
+          'shared/components/quick-lane-modal/quick-lane-modal___snel-delen',
+        ),
+      },
+    ],
+    QuickLaneContentTabs.publication,
+  );
 
-	const [tab, setActiveTab, tabs] = useTabs(
-		[
-			{
-				id: QuickLaneContentTabs.publication,
-				label: tText(
-					'shared/components/quick-lane-modal/quick-lane-modal___publicatiedetails'
-				),
-			},
-			{
-				id: QuickLaneContentTabs.sharing,
-				label: tText('shared/components/quick-lane-modal/quick-lane-modal___snel-delen'),
-			},
-		],
-		QuickLaneContentTabs.publication
-	);
+  // Sync prop with state
+  useEffect(() => {
+    setContent(props.content);
+  }, [props.content, setContent]);
 
-	// Sync prop with state
-	useEffect(() => {
-		setContent(props.content);
-	}, [props.content, setContent]);
+  // Check permissions
+  useEffect(() => {
+    async function checkPermissions() {
+      if (isCollection && commonUser) {
+        setIsPublishRequired(await needsToPublish(commonUser));
+        setCanPublish(
+          await isAllowedToPublish(
+            commonUser,
+            content as AvoCollectionCollection,
+          ),
+        );
+      }
+    }
 
-	// Check permissions
-	useEffect(() => {
-		async function checkPermissions() {
-			if (isCollection && commonUser) {
-				setIsPublishRequired(await needsToPublish(commonUser));
-				setCanPublish(
-					await isAllowedToPublish(commonUser, content as Avo.Collection.Collection)
-				);
-			}
-		}
+    checkPermissions().then(noop);
+  }, [commonUser, content, isCollection, props.content_label]);
 
-		checkPermissions().then(noop);
-	}, [commonUser, content, content_label]);
+  useEffect(() => {
+    const shouldBePublishedFirst =
+      isCollection &&
+      isPublishRequired &&
+      content &&
+      !(content as AvoCollectionCollection).is_public; // AVO-1880
 
-	useEffect(() => {
-		const shouldBePublishedFirst =
-			isCollection &&
-			isPublishRequired &&
-			content &&
-			!(content as Avo.Collection.Collection).is_public; // AVO-1880
+    setActiveTab(
+      canPublish && shouldBePublishedFirst
+        ? QuickLaneContentTabs.publication
+        : QuickLaneContentTabs.sharing,
+    );
+  }, [
+    setActiveTab,
+    isPublishRequired,
+    props.content_label,
+    content,
+    canPublish,
+    isCollection,
+  ]);
 
-		setActiveTab(
-			canPublish && shouldBePublishedFirst
-				? QuickLaneContentTabs.publication
-				: QuickLaneContentTabs.sharing
-		);
-	}, [setActiveTab, isPublishRequired, content_label, content, canPublish]);
+  const getTabs = () => {
+    // AVO-1880
+    if ((content as AvoCollectionCollection).is_public) {
+      return [];
+    }
 
-	const getTabs = () => {
-		// AVO-1880
-		if ((content as Avo.Collection.Collection).is_public) {
-			return [];
-		}
+    return tabs.filter((tab) => {
+      switch (tab.id) {
+        case QuickLaneContentTabs.publication:
+          return isCollection && canPublish;
 
-		return tabs.filter((tab) => {
-			switch (tab.id) {
-				case QuickLaneContentTabs.publication:
-					return isCollection && canPublish;
+        default:
+          return true;
+      }
+    });
+  };
 
-				default:
-					return true;
-			}
-		});
-	};
+  const renderContentNotShareableWarning = (): string => {
+    switch (props.content_label) {
+      case QuickLaneTypeEnum.ITEM:
+        return tText(
+          'shared/components/quick-lane-modal/quick-lane-modal___item-is-niet-gepubliceerd',
+        );
 
-	const renderContentNotShareableWarning = (): string => {
-		switch (content_label) {
-			case QuickLaneTypeEnum.ITEM:
-				return tText(
-					'shared/components/quick-lane-modal/quick-lane-modal___item-is-niet-gepubliceerd'
-				);
+      case QuickLaneTypeEnum.COLLECTION:
+        return tab === QuickLaneContentTabs.publication
+          ? tText(
+              'shared/components/quick-lane-modal/quick-lane-modal___collectie-is-niet-publiek',
+            )
+          : tText(
+              'shared/components/quick-lane-modal/quick-lane-modal___collectie-is-niet-publiek--niet-auteur',
+            );
 
-			case QuickLaneTypeEnum.COLLECTION:
-				return tab === QuickLaneContentTabs.publication
-					? tText(
-							'shared/components/quick-lane-modal/quick-lane-modal___collectie-is-niet-publiek'
-					  )
-					: tText(
-							'shared/components/quick-lane-modal/quick-lane-modal___collectie-is-niet-publiek--niet-auteur'
-					  );
+      default:
+        return '';
+    }
+  };
 
-			default:
-				return '';
-		}
-	};
+  const renderTab = () => {
+    switch (tab) {
+      case QuickLaneContentTabs.publication:
+        return (
+          <QuickLaneContentPublicationTab
+            {...props}
+            content={content}
+            onUpdate={setContent}
+            onComplete={() => setActiveTab(QuickLaneContentTabs.sharing)}
+          />
+        );
+      case QuickLaneContentTabs.sharing:
+        return (
+          <QuickLaneContentSharingTab
+            {...props}
+            content={content}
+            onUpdate={setContent}
+          />
+        );
 
-	const renderTab = () => {
-		switch (tab) {
-			case QuickLaneContentTabs.publication:
-				return (
-					<QuickLaneContentPublicationTab
-						{...props}
-						content={content}
-						onUpdate={setContent}
-						onComplete={() => setActiveTab(QuickLaneContentTabs.sharing)}
-					/>
-				);
-			case QuickLaneContentTabs.sharing:
-				return (
-					<QuickLaneContentSharingTab
-						{...props}
-						content={content}
-						onUpdate={setContent}
-					/>
-				);
+      default:
+        return undefined;
+    }
+  };
 
-			default:
-				return undefined;
-		}
-	};
+  return (
+    <>
+      {commonUser && content && props.content_label ? (
+        <>
+          {getTabs().length > 1 && (
+            <Spacer
+              className="m-quick-lane-content__tabs-wrapper"
+              margin={'bottom'}
+            >
+              <Tabs
+                tabs={getTabs()}
+                onClick={(tab) => {
+                  switch (tab.toString() as keyof typeof QuickLaneContentTabs) {
+                    case QuickLaneContentTabs.publication:
+                      setActiveTab(tab);
+                      break;
 
-	return (
-		<>
-			{commonUser && content && content_label ? (
-				<>
-					{getTabs().length > 1 && (
-						<Spacer className="m-quick-lane-content__tabs-wrapper" margin={'bottom'}>
-							<Tabs
-								tabs={getTabs()}
-								onClick={(tab) => {
-									switch (tab.toString() as keyof typeof QuickLaneContentTabs) {
-										case QuickLaneContentTabs.publication:
-											setActiveTab(tab);
-											break;
+                    case QuickLaneContentTabs.sharing:
+                      if (!isPublishRequired || isShareable(content)) {
+                        setActiveTab(tab);
+                      } else {
+                        ToastService.danger(
+                          tHtml(
+                            'shared/components/quick-lane-modal/quick-lane-modal___dit-item-kan-nog-niet-gedeeld-worden',
+                          ),
+                        );
+                      }
+                      break;
 
-										case QuickLaneContentTabs.sharing:
-											if (!isPublishRequired || isShareable(content)) {
-												setActiveTab(tab);
-											} else {
-												ToastService.danger(
-													tHtml(
-														'shared/components/quick-lane-modal/quick-lane-modal___dit-item-kan-nog-niet-gedeeld-worden'
-													)
-												);
-											}
-											break;
+                    default:
+                      break;
+                  }
+                }}
+              />
+            </Spacer>
+          )}
 
-										default:
-											break;
-									}
-								}}
-							/>
-						</Spacer>
-					)}
+          {!isShareable(content) && isCollection && (
+            <Spacer margin={['bottom']}>
+              <Alert type={isCollection ? 'info' : 'danger'}>
+                <p>{renderContentNotShareableWarning()}</p>
+              </Alert>
+            </Spacer>
+          )}
 
-					{!isShareable(content) && isCollection && (
-						<Spacer margin={['bottom']}>
-							<Alert type={isCollection ? 'info' : 'danger'}>
-								<p>{renderContentNotShareableWarning()}</p>
-							</Alert>
-						</Spacer>
-					)}
-
-					{renderTab()}
-				</>
-			) : (
-				<Spacer margin={['bottom-small']}>
-					{props.error ||
-						tText(
-							'shared/components/quick-lane-modal/quick-lane-modal___er-ging-iets-mis'
-						)}
-				</Spacer>
-			)}
-		</>
-	);
+          {renderTab()}
+        </>
+      ) : (
+        <Spacer margin={['bottom-small']}>
+          {props.error ||
+            tText(
+              'shared/components/quick-lane-modal/quick-lane-modal___er-ging-iets-mis',
+            )}
+        </Spacer>
+      )}
+    </>
+  );
 };
-
-export default withUser(QuickLaneContent) as FC<QuickLaneContentProps>;

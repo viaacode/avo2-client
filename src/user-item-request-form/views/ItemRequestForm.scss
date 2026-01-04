@@ -1,12 +1,12 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/variables" as variables;
 
 .p-item-request-form {
 	.o-form-group {
-		margin-bottom: $g-spacer-unit * 2;
+		margin-bottom: variables.$g-spacer-unit * 2;
 	}
 
 	.o-form-group__label {
 		display: block;
-		margin-bottom: $g-spacer-unit;
+		margin-bottom: variables.$g-spacer-unit;
 	}
 }

@@ -1,13 +1,13 @@
 mutation updateNotification(
-	$key: String!
-	$profileId: uuid!
-	$throughEmail: Boolean!
-	$throughPlatform: Boolean!
+  $key: String!
+  $profileId: uuid!
+  $throughEmail: Boolean!
+  $throughPlatform: Boolean!
 ) {
-	update_users_notifications(
-		where: { profile_id: { _eq: $profileId }, key: { _eq: $key } }
-		_set: { through_email: $throughEmail, through_platform: $throughPlatform }
-	) {
-		affected_rows
-	}
+  update_users_notifications(
+    where: { profile_id: { _eq: $profileId }, key: { _eq: $key } }
+    _set: { through_email: $throughEmail, through_platform: $throughPlatform }
+  ) {
+    affected_rows
+  }
 }

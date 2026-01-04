@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Component: Content type
    ========================================================================== */
@@ -9,7 +12,7 @@
 
 	p {
 		font-size: 1.3rem;
-		color: $color-gray-500;
+		color: colors.$color-gray-500;
 		text-transform: uppercase;
 	}
 
@@ -21,21 +24,21 @@
 }
 
 .c-content-type--collection .o-svg-icon {
-	color: $color-ocean-green;
+	color: colors.$color-ocean-green;
 }
 
 .c-content-type--audio .o-svg-icon {
-	color: $color-teal-bright;
+	color: colors.$color-teal-bright;
 }
 
 .c-content-type--video .o-svg-icon {
-	color: $color-yellow;
+	color: colors.$color-yellow;
 }
 
 .c-content-type--bundle .o-svg-icon {
-	color: $color-tapestry;
+	color: colors.$color-tapestry;
 }
 
 .c-content-type--assignment .o-svg-icon {
-	color: $color-french-rose;
+	color: colors.$color-french-rose;
 }

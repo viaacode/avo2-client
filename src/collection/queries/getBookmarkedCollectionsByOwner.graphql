@@ -1,64 +1,68 @@
 query getBookmarkedCollectionsByOwner(
-	$owner_profile_id: uuid
-	$offset: Int = 0
-	$limit: Int
-	$order: [app_collection_bookmarks_order_by!] = { updated_at: desc }
-	$where: [app_collection_bookmarks_bool_exp!] = []
+  $owner_profile_id: uuid
+  $offset: Int = 0
+  $limit: Int
+  $order: [app_collection_bookmarks_order_by!] = { updated_at: desc }
+  $where: [app_collection_bookmarks_bool_exp!] = []
 ) {
-	app_collection_bookmarks(
-		where: { profile_id: { _eq: $owner_profile_id }, bookmarkedCollection: {}, _and: $where }
-		offset: $offset
-		limit: $limit
-		order_by: $order
-	) {
-		bookmarkedCollection {
-			id
-			updated_at
-			type_id
-			type {
-				label
-				id
-			}
-			title
-			publish_at
-			owner_profile_id
-			profile {
-				id
-				alias
-				title
-				alternative_email
-				avatar
-				organisation {
-					logo_url
-					name
-					or_id
-				}
-				created_at
-				stamboek
-				updated_at
-				user_id
-				user: usersByuserId {
-					id
-					first_name
-					last_name
-					profile {
-						profile_user_group {
-							group {
-								label
-								id
-							}
-						}
-					}
-				}
-			}
-			is_public
-			external_id
-			depublish_at
-			created_at
-			thumbnail_path
-			view_count {
-				count
-			}
-		}
-	}
+  app_collection_bookmarks(
+    where: {
+      profile_id: { _eq: $owner_profile_id }
+      bookmarkedCollection: {}
+      _and: $where
+    }
+    offset: $offset
+    limit: $limit
+    order_by: $order
+  ) {
+    bookmarkedCollection {
+      id
+      updated_at
+      type_id
+      type {
+        label
+        id
+      }
+      title
+      publish_at
+      owner_profile_id
+      profile {
+        id
+        alias
+        title
+        alternative_email
+        avatar
+        organisation {
+          logo_url
+          name
+          or_id
+        }
+        created_at
+        stamboek
+        updated_at
+        user_id
+        user: usersByuserId {
+          id
+          first_name
+          last_name
+          profile {
+            profile_user_group {
+              group {
+                label
+                id
+              }
+            }
+          }
+        }
+      }
+      is_public
+      external_id
+      depublish_at
+      created_at
+      thumbnail_path
+      view_count {
+        count
+      }
+    }
+  }
 }

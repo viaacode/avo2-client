@@ -1,24 +1,24 @@
 query getContributorsByCollectionUuid($id: uuid!) {
-	app_collections_contributors(where: { collection_id: { _eq: $id } }) {
-		collection_id
-		invite_email
-		invite_token
-		rights
-		profile_id
-		id
-		profile {
-			avatar
-			organisation {
-				name
-				logo_url
-				or_id
-			}
-			user {
-				first_name
-				full_name
-				last_name
-				mail
-			}
-		}
-	}
+  app_collections_contributors(where: { collection_id: { _eq: $id } }) {
+    collection_id
+    invite_email
+    invite_token
+    rights
+    profile_id
+    id
+    profile {
+      avatar
+      organisation {
+        name
+        logo_url
+        or_id
+      }
+      user {
+        first_name
+        full_name
+        last_name
+        mail
+      }
+    }
+  }
 }

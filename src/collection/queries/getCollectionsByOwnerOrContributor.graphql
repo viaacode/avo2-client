@@ -1,96 +1,96 @@
 query getCollectionsByOwnerOrContributor(
-	$collaborator_profile_id: uuid
-	$type_id: Int
-	$offset: Int = 0
-	$limit: Int
-	$order: [app_collections_overview_order_by!] = { updated_at: desc }
-	$where: [app_collections_overview_bool_exp!] = []
+  $collaborator_profile_id: uuid
+  $type_id: Int
+  $offset: Int = 0
+  $limit: Int
+  $order: [app_collections_overview_order_by!] = { updated_at: desc }
+  $where: [app_collections_overview_bool_exp!] = []
 ) {
-	app_collections_overview(
-		where: {
-			type_id: { _eq: $type_id }
-			collaborator_profile_id: { _eq: $collaborator_profile_id }
-			is_deleted: { _eq: false }
-			_and: $where
-		}
-		offset: $offset
-		limit: $limit
-		order_by: $order
-	) {
-		id
-		updated_at
-		type_id
-		type {
-			label
-			id
-		}
-		title
-		published_at
-		owner_profile_id
-		collaborator_profile_id
-		profile {
-			id
-			alias
-			title
-			alternative_email
-			avatar
-			organisation {
-				logo_url
-				name
-				or_id
-			}
-			created_at
-			stamboek
-			updated_at
-			user_id
-			user: usersByuserId {
-				id
-				first_name
-				last_name
-				profile {
-					profile_user_group {
-						group {
-							label
-							id
-						}
-					}
-				}
-			}
-		}
-		is_public
-		external_id
-		depublish_at
-		created_at
-		thumbnail_path
-		view_count {
-			count
-		}
-		share_type
-		contributors {
-			profile_id
-			rights
-			enum_right_type {
-				value
-			}
-			profile {
-				user {
-					full_name
-					first_name
-					last_name
-					uid
-				}
-				organisation {
-					name
-					logo_url
-					or_id
-				}
-				loms {
-					lom_id
-				}
-			}
-			collection {
-				id
-			}
-		}
-	}
+  app_collections_overview(
+    where: {
+      type_id: { _eq: $type_id }
+      collaborator_profile_id: { _eq: $collaborator_profile_id }
+      is_deleted: { _eq: false }
+      _and: $where
+    }
+    offset: $offset
+    limit: $limit
+    order_by: $order
+  ) {
+    id
+    updated_at
+    type_id
+    type {
+      label
+      id
+    }
+    title
+    published_at
+    owner_profile_id
+    collaborator_profile_id
+    profile {
+      id
+      alias
+      title
+      alternative_email
+      avatar
+      organisation {
+        logo_url
+        name
+        or_id
+      }
+      created_at
+      stamboek
+      updated_at
+      user_id
+      user: usersByuserId {
+        id
+        first_name
+        last_name
+        profile {
+          profile_user_group {
+            group {
+              label
+              id
+            }
+          }
+        }
+      }
+    }
+    is_public
+    external_id
+    depublish_at
+    created_at
+    thumbnail_path
+    view_count {
+      count
+    }
+    share_type
+    contributors {
+      profile_id
+      rights
+      enum_right_type {
+        value
+      }
+      profile {
+        user {
+          full_name
+          first_name
+          last_name
+          uid
+        }
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+        loms {
+          lom_id
+        }
+      }
+      collection {
+        id
+      }
+    }
+  }
 }

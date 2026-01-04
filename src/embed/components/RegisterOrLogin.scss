@@ -1,7 +1,7 @@
 @use "sass:math";
 
-@import "../../styles/settings/colors";
-@import "../../styles/settings/variables";
+@use "../../styles/settings/colors" as colors;
+@use "../../styles/settings/variables" as variables;
 
 $pupil-teacher-tabs-height: 4.4rem;
 $column-spacing: 2.2rem;
@@ -13,7 +13,7 @@ $column-spacing: 2.2rem;
 	flex-direction: column;
 
 	hr {
-		border-color: $color-gray-100;
+		border-color: colors.$color-gray-100;
 		border-style: solid;
 	}
 
@@ -38,7 +38,7 @@ $column-spacing: 2.2rem;
 			flex-direction: column;
 			justify-content: center;
 
-			border-right: 1px solid $c-register-login-view-modal-border-color;
+			border-right: 1px solid variables.$c-register-login-view-modal-border-color;
 		}
 
 		.account-creation {
@@ -72,8 +72,8 @@ $column-spacing: 2.2rem;
 
 .m-register-login__tabs-wrapper {
 	// Equate to avo2-components/src/components/Modal/Modal.scss without importing
-	padding: 0 ($g-spacer-unit * 1.5); // ensure text is aligned, 12 + 12
-	background-color: $color-gray-50;
+	padding: 0 (variables.$g-spacer-unit * 1.5); // ensure text is aligned, 12 + 12
+	background-color: colors.$color-gray-50;
 
 	.c-tab-item.c-tab-item__active {
 		padding: 1.5rem 0;

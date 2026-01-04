@@ -1,6 +1,7 @@
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 
-import EmbedApp from './EmbedApp';
+import { EmbedRoot } from './EmbedApp';
 
-createRoot(document.getElementById('embed-root') as HTMLDivElement).render(<EmbedApp />);
+createRoot(document.getElementById('embed-root') as HTMLDivElement).render(
+  <EmbedRoot />,
+);

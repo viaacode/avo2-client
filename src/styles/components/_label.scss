@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Component: Labels
    ========================================================================== */
@@ -30,7 +33,7 @@
 ========================================================================== */
 
 .c-label-filter {
-	border: 1px solid $color-gray-100;
+	border: 1px solid colors.$color-gray-100;
 	padding: 0.2rem 1rem 0.2rem 1.2rem;
 	border-radius: 0.3rem;
 	height: 3.6rem;
@@ -40,7 +43,7 @@
 
 .c-label-options {
 	.o-svg-icon svg {
-		color: $color-gray-700;
+		color: colors.$color-gray-700;
 	}
 }
 
@@ -85,41 +88,41 @@
 ========================================================================== */
 
 .c-label-swatch--color-1 {
-	background-color: $color-wine-red;
+	background-color: colors.$color-wine-red;
 }
 
 .c-label-swatch--color-2 {
-	background-color: $color-ocean-green;
+	background-color: colors.$color-ocean-green;
 }
 
 .c-label-swatch--color-3 {
-	background-color: $color-tapestry;
+	background-color: colors.$color-tapestry;
 }
 
 .c-label-swatch--color-4 {
-	background-color: $color-green;
+	background-color: colors.$color-green;
 }
 
 .c-label-swatch--color-5 {
-	background-color: $color-yellow;
+	background-color: colors.$color-yellow;
 }
 
 .c-label-swatch--color-6 {
-	background-color: $color-dark-orange;
+	background-color: colors.$color-dark-orange;
 }
 
 .c-label-swatch--color-7 {
-	background-color: $color-silver;
+	background-color: colors.$color-silver;
 }
 
 .c-label-swatch--color-8 {
-	background-color: $color-night-blue;
+	background-color: colors.$color-night-blue;
 }
 
 .c-label-swatch--color-9 {
-	background-color: $color-soft-blue;
+	background-color: colors.$color-soft-blue;
 }
 
 .c-label-swatch--color-10 {
-	background-color: $color-french-rose;
+	background-color: colors.$color-french-rose;
 }

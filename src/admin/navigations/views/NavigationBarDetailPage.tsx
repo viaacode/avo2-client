@@ -1,0 +1,60 @@
+import { PermissionName } from '@viaa/avo2-types';
+import { type FC, lazy, Suspense } from 'react';
+import { useNavigate, useParams } from 'react-router';
+
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
+import { tText } from '../../../shared/helpers/translate-text';
+import { ADMIN_PATH } from '../../admin.const';
+
+import './NavigationBarDetailPage.scss';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
+
+const NavigationDetail = lazy(() =>
+  import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
+    default: adminCoreModule.NavigationBarDetail,
+  })),
+);
+
+export const NavigationBarDetailPage: FC = () => {
+  const navigateFunc = useNavigate();
+  const { navigationBarId } = useParams<{ navigationBarId: string }>();
+
+  return (
+    <PermissionGuard permissions={[PermissionName.EDIT_NAVIGATION_BARS]}>
+      <div className="c-admin__navigation-detail">
+        <SeoMetadata
+          title={
+            navigationBarId ||
+            tText(
+              'admin/menu/views/menu-detail___menu-beheer-detail-pagina-titel',
+            )
+          }
+          description={tText(
+            'admin/menu/views/menu-detail___menu-beheer-detail-pagina-beschrijving',
+          )}
+        />
+        <Suspense
+          fallback={
+            <FullPageSpinner locationId="navigation-bar-detail-page--loading" />
+          }
+        >
+          {!!navigationBarId && (
+            <NavigationDetail
+              navigationBarId={navigationBarId}
+              onGoBack={() =>
+                goBrowserBackWithFallback(
+                  ADMIN_PATH.NAVIGATIONS_OVERVIEW,
+                  navigateFunc,
+                )
+              }
+            />
+          )}
+        </Suspense>
+      </div>
+    </PermissionGuard>
+  );
+};
+
+export default NavigationBarDetailPage;

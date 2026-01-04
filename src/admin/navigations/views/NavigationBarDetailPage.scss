@@ -1,0 +1,54 @@
+@use "../../../styles/settings/colors" as colors;
+@use "../../../styles/settings/variables" as variables;
+
+// Elements
+.c-navigation-detail__table {
+	tr {
+		transition: background 500ms ease-in-out;
+
+		&.c-navigation-detail__table-row--active {
+			background-color: colors.$color-gray-100;
+		}
+	}
+
+	td {
+		padding: 2rem 1.6rem;
+
+		&.o-table-col-1 {
+			width: 10rem;
+		}
+	}
+}
+
+.c-navigation-detail__nav-edit {
+	li {
+		align-items: center;
+	}
+}
+
+.c-navigation-detail__nav-label {
+	margin: 0 auto 0 (variables.$g-spacer-unit * 3);
+}
+
+.c-admin__header {
+	border-bottom: 0.1rem solid colors.$color-gray-100;
+	background-color: colors.$color-gray-50;
+	display: flex;
+	padding: 2rem 4rem;
+
+	.c-admin__page-title {
+		font-size: 2.4rem;
+		font-family: variables.$g-headings-font-family;
+		font-weight: 500;
+	}
+}
+
+.c-admin__navigation-detail .c-admin__content {
+	margin: 4rem;
+
+	.c-navigation-detail__table .c-table {
+		border: 1px solid colors.$color-gray-100;
+		border-radius: 0.3rem;
+		border-collapse: initial;
+	}
+}

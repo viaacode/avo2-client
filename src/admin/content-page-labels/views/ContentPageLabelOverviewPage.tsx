@@ -1,28 +1,27 @@
-import { Flex, Spinner } from '@viaa/avo2-components';
-import React, { type FC, lazy, Suspense } from 'react';
-import { compose } from 'redux';
+import { PermissionName } from '@viaa/avo2-types';
+import { type FC, lazy, Suspense } from 'react';
 
-import withUser from '../../../shared/hocs/withUser';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 
 const ContentPageLabelOverview = lazy(() =>
-	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
-		default: adminCoreModule.ContentPageLabelOverview,
-	}))
+  import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
+    default: adminCoreModule.ContentPageLabelOverview,
+  })),
 );
 
-const ContentPageLabelOverviewPage: FC = () => {
-	return (
-		<Suspense
-			fallback={
-				<Flex orientation="horizontal" center>
-					<Spinner size="large" />
-				</Flex>
-			}
-		>
-			<ContentPageLabelOverview className="c-admin-core c-admin__content-page-label-overview" />
-		</Suspense>
-	);
+export const ContentPageLabelOverviewPage: FC = () => {
+  return (
+    <Suspense
+      fallback={
+        <FullPageSpinner locationId="content-page-label-overview-page--loading" />
+      }
+    >
+      <PermissionGuard permissions={[PermissionName.EDIT_CONTENT_PAGE_LABELS]}>
+        <ContentPageLabelOverview className="c-admin-core c-admin__content-page-label-overview" />
+      </PermissionGuard>
+    </Suspense>
+  );
 };
 
-export default compose(withAdminCoreConfig, withUser)(ContentPageLabelOverviewPage) as FC;
+export default ContentPageLabelOverviewPage;

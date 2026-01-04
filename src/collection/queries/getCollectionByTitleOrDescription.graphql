@@ -1,31 +1,31 @@
 query getCollectionByTitleOrDescription(
-	$title: String!
-	$description: String!
-	$collectionId: uuid!
-	$typeId: Int
+  $title: String!
+  $description: String!
+  $collectionId: uuid!
+  $typeId: Int
 ) {
-	collectionByTitle: app_collections(
-		where: {
-			title: { _eq: $title }
-			is_deleted: { _eq: false }
-			is_public: { _eq: true }
-			id: { _neq: $collectionId }
-			type_id: { _eq: $typeId }
-		}
-		limit: 1
-	) {
-		id
-	}
-	collectionByDescription: app_collections(
-		where: {
-			description: { _eq: $description }
-			is_deleted: { _eq: false }
-			is_public: { _eq: true }
-			id: { _neq: $collectionId }
-			type_id: { _eq: $typeId }
-		}
-		limit: 1
-	) {
-		id
-	}
+  collectionByTitle: app_collections(
+    where: {
+      title: { _eq: $title }
+      is_deleted: { _eq: false }
+      is_public: { _eq: true }
+      id: { _neq: $collectionId }
+      type_id: { _eq: $typeId }
+    }
+    limit: 1
+  ) {
+    id
+  }
+  collectionByDescription: app_collections(
+    where: {
+      description: { _eq: $description }
+      is_deleted: { _eq: false }
+      is_public: { _eq: true }
+      id: { _neq: $collectionId }
+      type_id: { _eq: $typeId }
+    }
+    limit: 1
+  ) {
+    id
+  }
 }

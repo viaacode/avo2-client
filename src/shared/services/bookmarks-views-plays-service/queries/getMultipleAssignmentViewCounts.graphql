@@ -1,6 +1,6 @@
 query getMultipleAssignmentViewCounts($uuids: [uuid!]) {
-	items: app_assignment_v2_views(where: { assignment_uuid: { _in: $uuids } }) {
-		count
-		id: assignment_uuid
-	}
+  items: app_assignment_v2_views(where: { assignment_uuid: { _in: $uuids } }) {
+    count
+    id: assignment_uuid
+  }
 }

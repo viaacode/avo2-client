@@ -1,6 +1,5 @@
-@import "../../styles/settings/index";
-@import "../../styles/utilities";
-@import "../../styles/settings/variables";
+@use "../../styles/utilities/toolbar" as toolbar;
+@use "../../styles/settings/variables" as variables;
 
 .p-my-workspace__action-placeholder {
 	display: inline-block;
@@ -8,11 +7,11 @@
 }
 
 .m-workspace {
-	padding-bottom: $g-spacer-unit * 10;
+	padding-bottom: variables.$g-spacer-unit * 10;
 
-	@media screen and (max-width: ($g-bp2 - 1)) {
+	@media screen and (max-width: (variables.$g-bp2 - 1)) {
 		.c-navbar .c-toolbar {
-			@include blockifyToolbar();
+			@include toolbar.blockifyToolbar();
 		}
 	}
 
@@ -28,7 +27,7 @@
 	.c-select__single-value,
 	.c-select__option {
 		display: grid;
-		gap: $g-spacer-unit;
+		gap: variables.$g-spacer-unit;
 		grid-template-columns: auto auto;
 
 		.c-pill {

@@ -1,22 +1,23 @@
-@import "../../../styles/settings/colors";
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/colors" as colors;
+@use "../../../styles/settings/variables" as variables;
+@use "../../../styles/components/input" as input;
 
 .c-content table td {
-	border: 0.1rem solid $color-gray-100;
+	border: 0.1rem solid colors.$color-gray-100;
 }
 
 .c-rich-text-editor {
-	border: 0.1rem solid $color-gray-150;
+	border: 0.1rem solid colors.$color-gray-150;
 	border-radius: 0.3rem;
 	background-color: #fff;
-	@include textfield-transition;
+	@include input.textfield-transition;
 
 	&.disabled {
 		.bf-controlbar {
 			pointer-events: none;
 		}
 
-		background-color: $color-gray-100;
+		background-color: colors.$color-gray-100;
 	}
 
 	ul,
@@ -30,7 +31,7 @@
 	}
 
 	.bf-controlbar {
-		background-color: $color-gray-50;
+		background-color: colors.$color-gray-50;
 	}
 
 	.bf-content {

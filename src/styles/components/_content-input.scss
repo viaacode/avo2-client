@@ -1,7 +1,6 @@
 @use "sass:math";
-@import "../settings/variables";
-
-$component: "c-content-input";
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
 
 @mixin hide-without-interaction-loss {
 	position: absolute;
@@ -12,7 +11,7 @@ $component: "c-content-input";
 	overflow: hidden;
 }
 
-.#{$component} {
+.c-content-input {
 	display: flex;
 	flex-flow: row nowrap;
 
@@ -46,27 +45,27 @@ $component: "c-content-input";
 	&__cancel {
 		flex-grow: 0;
 		flex-shrink: 0;
-		margin-left: $g-spacer-unit;
+		margin-left: variables.$g-spacer-unit;
 	}
 
 	&__icon {
 		&--start {
-			margin-right: math.div($g-spacer-unit, 2);
+			margin-right: math.div(variables.$g-spacer-unit, 2);
 		}
 
 		&--end {
 			.c-button {
-				margin-left: $g-spacer-unit;
+				margin-left: variables.$g-spacer-unit;
 
-				@media (min-width: $g-bp2) {
-					margin-left: $g-spacer-unit * 2;
+				@media (min-width: variables.$g-bp2) {
+					margin-left: variables.$g-spacer-unit * 2;
 				}
 			}
 		}
 	}
 
 	&--open {
-		.#{$component} {
+		.c-content-input {
 			&__value {
 				@include hide-without-interaction-loss;
 			}
@@ -74,7 +73,7 @@ $component: "c-content-input";
 	}
 
 	&--closed {
-		.#{$component} {
+		.c-content-input {
 			&__field {
 				@include hide-without-interaction-loss;
 			}

@@ -1,50 +1,45 @@
-import { isArray } from 'lodash-es';
+import { AvoSearchOrderDirection } from '@viaa/avo2-types';
+import type { QueryParamConfig } from 'use-query-params';
+import {
+  decodeString,
+  encodeString,
+} from '../../../shared/helpers/routing/use-query-params-ssr.ts';
 
-import { type DateRange } from '../../../shared/components/DateRangeDropdown/DateRangeDropdown';
+const QUERY_PARAM_SORT_DIRECTIONS = [
+  AvoSearchOrderDirection.ASC,
+  AvoSearchOrderDirection.DESC,
+] as const;
 
-export const DateRangeParam = {
-	encode: (value: DateRange | undefined) => {
-		if (!value) {
-			return;
-		}
-		return JSON.stringify(value);
-	},
-	decode: (value: string | (string | null)[] | null | undefined): DateRange | undefined => {
-		try {
-			if (Array.isArray(value)) {
-				if (value.length) {
-					return JSON.parse(value[0] as string);
-				}
-				return;
-			}
-			if (!value) {
-				return;
-			}
-			return JSON.parse(value);
-		} catch (err) {
-			return;
-		}
-	},
-};
+export function isSortDirection(
+  value: string,
+): value is AvoSearchOrderDirection {
+  return QUERY_PARAM_SORT_DIRECTIONS.includes(value as AvoSearchOrderDirection);
+}
 
-export const CheckboxListParam = {
-	encode: (value: string[] | undefined) => {
-		if (!value) {
-			return;
-		}
-		return value.join('~');
-	},
-	decode: (value: string | (string | null)[] | null | undefined): string[] | undefined => {
-		try {
-			if (!value) {
-				return [];
-			}
-			if (isArray(value)) {
-				return value as string[];
-			}
-			return value.split('~');
-		} catch (err) {
-			return;
-		}
-	},
+// Define a query parameter config for `use-query-params` to enforce "asc" & "desc" values
+export const SortDirectionParam: QueryParamConfig<
+  AvoSearchOrderDirection,
+  string | undefined
+> = {
+  encode: (input: string): AvoSearchOrderDirection | null | undefined => {
+    if (isSortDirection(input)) {
+      return encodeString(input) as AvoSearchOrderDirection;
+    }
+
+    return undefined;
+  },
+
+  decode: (
+    input: string | (string | null)[] | null | undefined,
+  ): AvoSearchOrderDirection | undefined => {
+    if (typeof input === 'string' && isSortDirection(input)) {
+      const decoded = decodeString(input);
+
+      if (decoded) {
+        return decoded as AvoSearchOrderDirection;
+      }
+    }
+
+    return undefined;
+  },
 };

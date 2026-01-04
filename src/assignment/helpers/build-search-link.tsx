@@ -1,11 +1,10 @@
 import { Button } from '@viaa/avo2-components';
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Link, type LinkProps } from 'react-router-dom';
-import { type UrlUpdateType } from 'use-query-params';
-
 import { APP_PATH } from '../../constants';
 import { type FilterState } from '../../search/search.types';
 import { buildLink } from '../../shared/helpers/build-link';
+import { UrlUpdateType } from '../../shared/types/use-query-params.ts';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
 import { type PupilSearchFilterState } from '../assignment.types';
 
@@ -16,28 +15,24 @@ import { type PupilSearchFilterState } from '../assignment.types';
  * @param children
  */
 export const buildGlobalSearchLink = (
-	state: Partial<FilterState>,
-	props?: Partial<Omit<LinkProps, 'to'>>,
-	children?: ReactNode
+  state: Partial<FilterState>,
+  props?: Partial<Omit<LinkProps, 'to'>>,
+  children?: ReactNode,
 ): ReactNode => {
-	const { page, ...rest } = state;
+  const { page, ...rest } = state;
 
-	return (
-		<Link
-			{...props}
-			to={buildLink(
-				APP_PATH.SEARCH.route,
-				{},
-				{
-					...rest,
-					filters: JSON.stringify(state.filters),
-					...(page ? { page: String(page) } : {}),
-				}
-			)}
-		>
-			{children || state.filters?.serie?.[0]}
-		</Link>
-	);
+  return (
+    <Link
+      {...props}
+      to={buildLink(APP_PATH.SEARCH.route, {}, {
+        ...rest,
+        filters: JSON.stringify(state.filters),
+        ...(page ? { page: String(page) } : {}),
+      } as { [paramName: string]: string })}
+    >
+      {children || state.filters?.serie?.[0]}
+    </Link>
+  );
 };
 
 /**
@@ -45,20 +40,25 @@ export const buildGlobalSearchLink = (
  * @param setFilterState
  */
 export const buildAssignmentSearchLink =
-	(setFilterState: (state: PupilSearchFilterState, urlPushType?: UrlUpdateType) => void) =>
-	// eslint-disable-next-line react/display-name
-	(filterState: Partial<FilterState>): ReactNode => {
-		return (
-			<Button
-				type="inline-link"
-				label={filterState.filters?.serie?.[0]}
-				onClick={() => {
-					setFilterState({
-						filters: filterState.filters,
-						tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH,
-						selectedSearchResultId: undefined,
-					});
-				}}
-			/>
-		);
-	};
+  (
+    setFilterState: (
+      state: PupilSearchFilterState,
+      urlPushType?: UrlUpdateType,
+    ) => void,
+  ) =>
+  // eslint-disable-next-line react/display-name
+  (filterState: Partial<FilterState>): ReactNode => {
+    return (
+      <Button
+        type="inline-link"
+        label={filterState.filters?.serie?.[0]}
+        onClick={() => {
+          setFilterState({
+            filters: filterState.filters,
+            tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH,
+            selectedSearchResultId: undefined,
+          });
+        }}
+      />
+    );
+  };

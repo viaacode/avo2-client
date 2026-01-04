@@ -1,6 +1,6 @@
 query getMultipleCollectionViewCounts($uuids: [uuid!]) {
-	items: app_collection_views(where: { collection_uuid: { _in: $uuids } }) {
-		count
-		id: collection_uuid
-	}
+  items: app_collection_views(where: { collection_uuid: { _in: $uuids } }) {
+    count
+    id: collection_uuid
+  }
 }

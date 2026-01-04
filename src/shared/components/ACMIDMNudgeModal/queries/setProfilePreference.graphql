@@ -1,5 +1,10 @@
-mutation setProfilePreference($profileId: uuid!, $key: lookup_enum_profile_preferences_keys_enum!) {
-	insert_users_profile_preferences(objects: { key: $key, profile_id: $profileId }) {
-		affected_rows
-	}
+mutation setProfilePreference(
+  $profileId: uuid!
+  $key: lookup_enum_profile_preferences_keys_enum!
+) {
+  insert_users_profile_preferences(
+    objects: { key: $key, profile_id: $profileId }
+  ) {
+    affected_rows
+  }
 }

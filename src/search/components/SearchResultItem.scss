@@ -1,8 +1,8 @@
-@import "../../styles/settings/colors";
+@use "../../styles/settings/colors" as colors;
 
 .c-search-result-list .c-search-result__title {
 	> button {
-		color: $color-teal-bright;
+		color: colors.$color-teal-bright;
 		cursor: pointer;
 
 		:hover {

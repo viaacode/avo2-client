@@ -1,7 +1,7 @@
 mutation deleteItemBookmark($itemUuid: uuid!, $profileId: uuid) {
-	delete_app_item_bookmarks(
-		where: { item_id: { _eq: $itemUuid }, profile_id: { _eq: $profileId } }
-	) {
-		affected_rows
-	}
+  delete_app_item_bookmarks(
+    where: { item_id: { _eq: $itemUuid }, profile_id: { _eq: $profileId } }
+  ) {
+    affected_rows
+  }
 }

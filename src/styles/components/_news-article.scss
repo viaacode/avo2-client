@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Component: News article
    ========================================================================== */
@@ -19,12 +22,12 @@
 .c-news-article__content header,
 .c-article header {
 	p {
-		color: $color-gray-300;
+		color: colors.$color-gray-300;
 		margin: 0 0 0.4rem;
 
 		a {
-			color: $color-gray-300;
-			border-bottom: 1px solid $color-gray-150;
+			color: colors.$color-gray-300;
+			border-bottom: 1px solid colors.$color-gray-150;
 		}
 	}
 }

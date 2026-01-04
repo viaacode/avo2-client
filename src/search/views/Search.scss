@@ -1,11 +1,12 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/colors" as colors;
+@use "../../styles/settings/variables" as variables;
 
 .c-search-view {
 	.c-search-view__sort-select {
 		min-width: 24rem;
 	}
 
-	@media (max-width: $g-bp2) {
+	@media (max-width: variables.$g-bp2) {
 		.c-navbar {
 			min-height: 13rem;
 
@@ -22,7 +23,7 @@
 	}
 
 	// Desktop-first to avoid overwrite hell
-	@media screen and (max-width: ($g-bp2 - 1px)) {
+	@media screen and (max-width: (variables.$g-bp2 - 1px)) {
 		.c-search-view__sort-and-count {
 			.c-toolbar {
 				flex-flow: column-reverse;
@@ -31,12 +32,12 @@
 				&__left,
 				&__right {
 					width: 100%;
-					padding-top: $g-spacer-unit * 1.5;
+					padding-top: variables.$g-spacer-unit * 1.5;
 				}
 
 				&__right {
 					justify-content: normal;
-					padding-bottom: $g-spacer-unit * 1.5; // Reverse order so right needs bottom spacing
+					padding-bottom: variables.$g-spacer-unit * 1.5; // Reverse order so right needs bottom spacing
 					border-bottom: 1px solid transparent; // Provide space for psuedo
 					position: relative;
 
@@ -46,7 +47,7 @@
 						}
 
 						&__label {
-							margin-right: $g-spacer-unit * 1.5;
+							margin-right: variables.$g-spacer-unit * 1.5;
 						}
 
 						&__controls {
@@ -59,7 +60,7 @@
 						display: block;
 						position: absolute;
 						inset: 100% 0 -1px 0;
-						border-bottom: 1px solid $color-gray-100;
+						border-bottom: 1px solid colors.$color-gray-100;
 						transform: scaleX(2);
 					}
 				}
@@ -68,7 +69,7 @@
 
 		// Search results container
 		.c-search-view__sort-and-count + .o-container-vertical {
-			padding-top: $g-spacer-unit * 2;
+			padding-top: variables.$g-spacer-unit * 2;
 		}
 	}
 

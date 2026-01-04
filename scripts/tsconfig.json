@@ -1,9 +1,10 @@
 {
-	"extends": "../tsconfig.json",
+  "extends": "../tsconfig.json",
 
-	"compilerOptions": {
-		"module": "CommonJS"
-	},
-	"files": [],
-        "memoryLimit": 2048
+  "compilerOptions": {
+    "module": "CommonJS",
+    "noEmit": true
+  },
+  "files": [],
+  "memoryLimit": 2048
 }

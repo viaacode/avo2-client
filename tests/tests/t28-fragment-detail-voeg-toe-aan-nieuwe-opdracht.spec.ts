@@ -12,57 +12,65 @@ import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
  *
  */
 
-test('T28: Fragment detail - Voeg toe aan nieuwe opdracht', async ({ page }) => {
-	await goToPageAndAcceptCookies(
-		page,
-		process.env.TEST_CLIENT_ENDPOINT as string,
-		process.env.TEST_CLIENT_TITLE as string
-	);
+test('T28: Fragment detail - Voeg toe aan nieuwe opdracht', async ({
+  page,
+}) => {
+  await goToPageAndAcceptCookies(
+    page,
+    process.env.TEST_CLIENT_ENDPOINT as string,
+    process.env.TEST_CLIENT_TITLE as string,
+  );
 
-	await loginOnderwijsAvo(
-		page,
-		process.env.TEST_CLIENT_ENDPOINT as string,
-		process.env.TEST_BASIS_GEBRUIKER_USER as string,
-		process.env.TEST_BASIS_GEBRUIKER_PASS as string
-	);
+  await loginOnderwijsAvo(
+    page,
+    process.env.TEST_CLIENT_ENDPOINT as string,
+    process.env.TEST_BASIS_GEBRUIKER_USER as string,
+    process.env.TEST_BASIS_GEBRUIKER_PASS as string,
+  );
 
-	// Go to video detail page
-	await goToVideoDetailPage(page);
+  // Go to video detail page
+  await goToVideoDetailPage(page);
 
-	// Click add to assignment button
-	await page.getByRole('button', { name: 'Voeg toe aan opdracht' }).click();
-	await page.waitForTimeout(1000);
-	await page.getByRole('button', { name: 'Nieuwe opdracht' }).click();
+  // Click add to assignment button
+  await page.getByRole('button', { name: 'Voeg toe aan opdracht' }).click();
+  await page.waitForTimeout(1000);
+  await page.getByRole('button', { name: 'Nieuwe opdracht' }).click();
 
-	// Check cut fragment modal opens
-	await expect(page.getByRole('heading', { name: 'Knip fragment' })).toBeVisible();
+  // Check cut fragment modal opens
+  await expect(
+    page.getByRole('heading', { name: 'Knip fragment' }),
+  ).toBeVisible();
 
-	// Confirm
-	await page.getByRole('button', { name: 'Toepassen' }).click();
+  // Confirm
+  await page.getByRole('button', { name: 'Toepassen' }).click();
 
-	// Check assignment page is opened
-	await expect(page.getByRole('heading', { name: 'Over deze opdracht' })).toBeVisible();
+  // Check assignment page is opened
+  await expect(
+    page.getByRole('heading', { name: 'Over deze opdracht' }),
+  ).toBeVisible();
 
-	// Open options of the newly created assignment
-	await page.click("button[aria-label='Meer opties']");
+  // Open options of the newly created assignment
+  await page.click("button[aria-label='Meer opties']");
 
-	// Click 'Verwijderen'
-	await page
-		.locator(
-			'#root > div > div.c-sticky-bar__wrapper > div > div.c-header.o-container-vertical.o-container-vertical--bg-alt > div > div:nth-child(2) > div.c-toolbar__right > div > div > div.c-dropdown__content-open > div > div:nth-child(2)'
-		)
-		.click();
+  // Click 'Verwijderen'
+  await page
+    .locator(
+      '#root > div > div.c-sticky-bar__wrapper > div > div.c-header.o-container-vertical.o-container-vertical--bg-alt > div > div:nth-child(2) > div.c-toolbar__right > div > div > div.c-dropdown__content-open > div > div:nth-child(2)',
+    )
+    .click();
 
-	// Confirm remove modal
-	await page.getByRole('button', { name: 'Verwijder' }).click();
+  // Confirm remove modal
+  await page.getByRole('button', { name: 'Verwijder' }).click();
 
-	// Check toast message was succesful
-	await expect(
-		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
-	).toContainText('De opdracht werd verwijderd.');
+  // Check toast message was succesful
+  await expect(
+    page.locator(
+      'div > div.Toastify__toast-body > div > div > div.c-alert__message',
+    ),
+  ).toContainText('De opdracht werd verwijderd.');
 
-	await page.waitForTimeout(2000);
+  await page.waitForTimeout(2000);
 
-	// // Wait for close to save the videos
-	// await context.close();
+  // // Wait for close to save the videos
+  // await context.close();
 });

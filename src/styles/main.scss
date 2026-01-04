@@ -10,48 +10,43 @@
 /* Settings: preprocessor variables, colors, global settings
    ========================================================================== */
 
-@import "./settings/index";
+@use "./settings/index" as settings;
 
 /* Generic: CSS reset, box-sizing, global CSS tweaks
    ========================================================================== */
 
-@import "./generic/reset";
-@import "./generic/global";
+@use "./generic/reset" as reset;
+@use "./generic/global" as global;
 
 /* Elements: element selectors, CMS-generated content
    ========================================================================== */
 
-@import "./elements/base";
+@use "./elements/base" as base;
 
 /* Objects: layout-related CSS, grid, SVG icons frame, flexbox classes
    ========================================================================== */
 
-@import "./objects/app";
+@use "./objects/app" as app;
 
 /* Components: separately styled components (buttons, form inputs, toolbars...)
    ========================================================================== */
 
-@import "./components/index";
+@use "./components/index" as components;
 
 /* Vendor
    3rd party code
    ========================================================================== */
 
-@import "react-toastify/dist/ReactToastify.minimal.css";
-// We only include the minimal styling from react-toastify
-// this way we don't have to override all unwanted styles
-// Below we only include the parts we need
-@import "react-toastify/scss/variables";
-@import "react-toastify/scss/animations/slide";
+@use "react-toastify/dist/ReactToastify.css";
 
 /* Utilities: specific helper classes, overrides
    ========================================================================== */
 
-@import "./utilities/index";
+@use "./utilities/index" as utilities;
 
 /* Trumps
    ========================================================================== */
 
-@import "./trumps/mq-debug";
+@use "./trumps/mq-debug";
 
-@import "./admin-core";
+@use "./admin-core";

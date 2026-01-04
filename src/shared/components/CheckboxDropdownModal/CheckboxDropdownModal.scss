@@ -1,4 +1,4 @@
-@import "../../../styles/settings/colors";
+@use "../../../styles/settings/colors" as colors;
 
 .c-button.c-checkbox-dropdown-modal__trigger {
 	padding: 0 1.6rem;
@@ -24,7 +24,7 @@
 
 		align-items: center;
 		padding: 8px 0;
-		border-bottom: 1px solid $color-gray-100;
+		border-bottom: 1px solid colors.$color-gray-100;
 
 		&__label {
 			margin-left: 8px;

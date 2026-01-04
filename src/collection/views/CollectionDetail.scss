@@ -1,34 +1,35 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/colors" as colors;
+@use "../../styles/settings/variables" as variables;
 
 .m-collection-detail {
-	&.hide-behind-login-popup {
-		opacity: 0;
-		max-height: 0;
-		overflow: hidden;
+  &.hide-behind-login-popup {
+	opacity: 0;
+	max-height: 0;
+	overflow: hidden;
+  }
+
+  .c-button-toolbar {
+	flex-wrap: wrap;
+	justify-content: end;
+	row-gap: variables.$g-spacer-unit;
+  }
+
+  .c-collection-list__item {
+	padding: variables.$g-spacer-unit * 4 0;
+	border-bottom: 1px solid colors.$color-gray-100;
+  }
+
+  .c-header .o-container {
+	&:first-child {
+	  .c-toolbar {
+		align-items: end;
+	  }
 	}
 
-	.c-button-toolbar {
-		flex-wrap: wrap;
-		justify-content: end;
-		row-gap: $g-spacer-unit;
+	&:not(:first-child) {
+	  .c-toolbar {
+		min-height: 0;
+	  }
 	}
-
-	.c-collection-list__item {
-		padding: $g-spacer-unit * 4 0;
-		border-bottom: 1px solid $color-gray-100;
-	}
-
-	.c-header .o-container {
-		&:first-child {
-			.c-toolbar {
-				align-items: end;
-			}
-		}
-
-		&:not(:first-child) {
-			.c-toolbar {
-				min-height: 0;
-			}
-		}
-	}
+  }
 }

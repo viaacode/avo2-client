@@ -1,5 +1,8 @@
 mutation updateItemDepublishReason($itemUuid: uuid!, $reason: String) {
-	update_app_item_meta(where: { uid: { _eq: $itemUuid } }, _set: { depublish_reason: $reason }) {
-		affected_rows
-	}
+  update_app_item_meta(
+    where: { uid: { _eq: $itemUuid } }
+    _set: { depublish_reason: $reason }
+  ) {
+    affected_rows
+  }
 }

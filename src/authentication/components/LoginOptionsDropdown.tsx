@@ -1,19 +1,19 @@
-import { noop } from 'lodash-es';
-import React, { type FC } from 'react';
+import { noop } from 'es-toolkit';
+import { type FC } from 'react';
 
-import LoginOptions from './LoginOptions';
+import { LoginOptions } from './LoginOptions';
 import './LoginOptionsDropdown.scss';
 
 interface LoginOptionsDropdownProps {
-	closeDropdown?: () => void;
+  closeDropdown?: () => void;
 }
 
-const LoginOptionsDropdown: FC<LoginOptionsDropdownProps> = ({ closeDropdown = noop }) => {
-	return (
-		<div className="m-login-options-dropdown">
-			<LoginOptions onOptionClicked={closeDropdown} />
-		</div>
-	);
+export const LoginOptionsDropdown: FC<LoginOptionsDropdownProps> = ({
+  closeDropdown = noop,
+}) => {
+  return (
+    <div className="m-login-options-dropdown">
+      <LoginOptions onOptionClicked={closeDropdown} />
+    </div>
+  );
 };
-
-export default LoginOptionsDropdown;

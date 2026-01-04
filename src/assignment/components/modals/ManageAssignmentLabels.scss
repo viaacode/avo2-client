@@ -1,4 +1,5 @@
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/colors" as colors;
+@use "../../../styles/settings/variables" as variables;
 
 .m-manage-assignment-labels {
 	.c-modal__body {
@@ -13,7 +14,7 @@
 		z-index: 99;
 
 		&--invalid {
-			color: $color-error;
+			color: colors.$color-error;
 		}
 	}
 }

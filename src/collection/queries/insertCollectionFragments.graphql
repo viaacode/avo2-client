@@ -1,8 +1,10 @@
-mutation insertCollectionFragments($fragments: [app_collection_fragments_insert_input!]!) {
-	insert_app_collection_fragments(objects: $fragments) {
-		affected_rows
-		returning {
-			id
-		}
-	}
+mutation insertCollectionFragments(
+  $fragments: [app_collection_fragments_insert_input!]!
+) {
+  insert_app_collection_fragments(objects: $fragments) {
+    affected_rows
+    returning {
+      id
+    }
+  }
 }

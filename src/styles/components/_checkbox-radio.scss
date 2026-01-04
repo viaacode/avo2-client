@@ -1,4 +1,6 @@
 @use "sass:math";
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
 
 /* ==========================================================================
    Component: Checkbox and Radio
@@ -9,7 +11,7 @@
 /* Variables
    ========================================================================== */
 
-$c-checkbox-input-border-color: $color-gray-400 !default;
+$c-checkbox-input-border-color: colors.$color-gray-400 !default;
 
 $c-checkbox-input-border: 0.1rem solid $c-checkbox-input-border-color !default;
 $c-radio-input-border: 0.1rem solid $c-checkbox-input-border-color !default;
@@ -32,8 +34,8 @@ $c-radio-spacing: 0.8rem !default;
 $c-checkbox-spacing-inline: 0.8rem !default;
 $c-radio-spacing-inline: 0.8rem !default;
 
-$c-checkbox-checked-color: $color-primary !default;
-$c-radio-checked-color: $color-primary !default;
+$c-checkbox-checked-color: colors.$color-primary !default;
+$c-radio-checked-color: colors.$color-primary !default;
 
 /* Spacing/Grouping
    ========================================================================== */
@@ -238,13 +240,13 @@ $c-radio-checked-color: $color-primary !default;
 }
 
 .c-checkbox--checked.c-checkbox--disabled input {
-	background-color: $color-gray-200 !important;
-	border-color: $color-gray-300 !important;
+	background-color: colors.$color-gray-200 !important;
+	border-color: colors.$color-gray-300 !important;
 }
 
 :not(.c-checkbox--checked).c-checkbox--disabled input {
-	background-color: $color-gray-100 !important;
-	border-color: $color-gray-300 !important;
+	background-color: colors.$color-gray-100 !important;
+	border-color: colors.$color-gray-300 !important;
 
 	&::before {
 		display: none !important;

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { ROUTE_PARTS } from '../constants';
+import { ROUTE_PARTS } from '../constants/routes';
 
 import { buildLink } from './build-link';
 
@@ -15,16 +15,18 @@ const linkWithParam = routeWithParam.replace(':id', params.id.toString());
 const searchQuery = 'query={"serie":"["KLAAR"]"}';
 
 describe('Link - buildLink', () => {
-	it('Should build a link when correct params are passed', () => {
-		expect(buildLink(routeWithParam, params)).toEqual(linkWithParam);
-	});
+  it('Should build a link when correct params are passed', () => {
+    expect(buildLink(routeWithParam, params)).toEqual(linkWithParam);
+  });
 
-	it('Should return an empty string when wrong params are given', () => {
-		expect(buildLink(routeWithParam)).toEqual('');
-		expect(buildLink(routeWithParam, { uuid: 123 })).toEqual('');
-	});
+  it('Should return an empty string when wrong params are given', () => {
+    expect(buildLink(routeWithParam)).toEqual('');
+    expect(buildLink(routeWithParam, { uuid: 123 })).toEqual('');
+  });
 
-	it('Should build a link when search is passed', () => {
-		expect(buildLink(route, {}, searchQuery)).toEqual(`${route}?${searchQuery}`);
-	});
+  it('Should build a link when search is passed', () => {
+    expect(buildLink(route, {}, searchQuery)).toEqual(
+      `${route}?${searchQuery}`,
+    );
+  });
 });

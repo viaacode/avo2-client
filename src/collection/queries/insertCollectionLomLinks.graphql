@@ -1,5 +1,7 @@
-mutation insertCollectionLomLinks($lomObjects: [app_collections_lom_links_insert_input!]!) {
-	insert_app_collections_lom_links(objects: $lomObjects) {
-		affected_rows
-	}
+mutation insertCollectionLomLinks(
+  $lomObjects: [app_collections_lom_links_insert_input!]!
+) {
+  insert_app_collections_lom_links(objects: $lomObjects) {
+    affected_rows
+  }
 }

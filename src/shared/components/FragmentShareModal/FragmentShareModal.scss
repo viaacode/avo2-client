@@ -1,12 +1,12 @@
-@import "../../../styles/settings/colors";
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/colors" as colors;
+@use "../../../styles/settings/variables" as variables;
 
 $c-modal-padding-horizontal: 2.4rem !default;
 
 div.embed-selection.o-container-vertical {
 	padding: 0 $c-modal-padding-horizontal;
-	margin-left: -$c-modal-padding-horizontal;
-	margin-right: -$c-modal-padding-horizontal;
+	margin-left: $c-modal-padding-horizontal;
+	margin-right: $c-modal-padding-horizontal;
 
 	.prepend-logo {
 		margin-right: 1rem;
@@ -24,9 +24,9 @@ div.embed-selection.o-container-vertical {
 
 .m-fragment-share-modal__tabs-wrapper {
 	// Equate to avo2-components/src/components/Modal/Modal.scss without importing
-	margin: 0 - ($g-spacer-unit * 3);
-	padding: 0 ($g-spacer-unit * 1.5); // ensure text is aligned, 12 + 12
-	background-color: $color-gray-50;
+	margin: 0 - (variables.$g-spacer-unit * 3);
+	padding: 0 (variables.$g-spacer-unit * 1.5); // ensure text is aligned, 12 + 12
+	background-color: colors.$color-gray-50;
 
 	.c-tab-item.c-tab-item__active {
 		padding: 1.5rem 0;

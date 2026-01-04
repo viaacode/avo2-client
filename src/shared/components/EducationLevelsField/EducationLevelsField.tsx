@@ -1,42 +1,42 @@
 import { FormGroup, type TagInfo, TagsInput } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { compact } from 'lodash-es';
-import React, { type FC } from 'react';
-
-import useTranslation from '../../../shared/hooks/useTranslation';
+import { AvoLomLomField } from '@viaa/avo2-types';
+import { compact } from 'es-toolkit';
+import { type FC } from 'react';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
+import { tText } from '../../helpers/translate-text';
 import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 
 interface EducationLevelsFieldProps {
-	onChange?: (values: TagInfo[]) => void;
-	value: string[] | null; // id of lom field (collections, assignments, profiles) or string label (videos and audio)
+  onChange?: (values: TagInfo[]) => void;
+  value: string[] | null; // id of lom field (collections, assignments, profiles) or string label (videos and audio)
 }
 
-const EducationLevelsField: FC<EducationLevelsFieldProps> = ({ onChange, value }) => {
-	const { tText } = useTranslation();
+export const EducationLevelsField: FC<EducationLevelsFieldProps> = ({
+  onChange,
+  value,
+}) => {
+  const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 
-	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
-
-	return (
-		<FormGroup
-			label={tText('collection/views/collection-edit-meta-data___onderwijsniveau')}
-			labelFor="classificationId"
-		>
-			<TagsInput
-				options={(educationLevelsAndDegrees || []).map(lomToTagInfo)}
-				value={compact(
-					(value || []).map((stringValue): Avo.Lom.LomField | undefined =>
-						(educationLevelsAndDegrees || []).find(
-							(educationLevel) =>
-								educationLevel.label.toLowerCase() === stringValue ||
-								educationLevel.id === stringValue
-						)
-					)
-				).map(lomToTagInfo)}
-				onChange={onChange}
-			/>
-		</FormGroup>
-	);
+  return (
+    <FormGroup
+      label={tText(
+        'collection/views/collection-edit-meta-data___onderwijsniveau',
+      )}
+      labelFor="classificationId"
+    >
+      <TagsInput
+        options={(educationLevelsAndDegrees || []).map(lomToTagInfo)}
+        value={compact(
+          (value || []).map((stringValue): AvoLomLomField | undefined =>
+            (educationLevelsAndDegrees || []).find(
+              (educationLevel) =>
+                educationLevel.label.toLowerCase() === stringValue ||
+                educationLevel.id === stringValue,
+            ),
+          ),
+        ).map(lomToTagInfo)}
+        onChange={onChange}
+      />
+    </FormGroup>
+  );
 };
-
-export default EducationLevelsField;

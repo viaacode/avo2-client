@@ -5,20 +5,20 @@ import { CustomError } from '../helpers/custom-error';
 import { getEnv } from '../helpers/env';
 
 export interface AppContentNavElement {
-	content_path: string | null;
-	content_type: any;
-	link_target: string;
-	placement: string;
-	position: number;
-	id: number;
-	icon_name: IconName;
-	user_group_ids: number[];
-	label: string;
-	updated_at: string;
-	description: string;
-	created_at: string;
-	content_id: any;
-	tooltip: string;
+  content_path: string | null;
+  content_type: any;
+  link_target: string;
+  placement: string;
+  position: number;
+  id: number;
+  icon_name: IconName;
+  user_group_ids: number[];
+  label: string;
+  updated_at: string;
+  description: string;
+  created_at: string;
+  content_id: any;
+  tooltip: string;
 }
 
 export type NavItemMap = { [navBarName: string]: AppContentNavElement[] };
@@ -31,9 +31,11 @@ export type NavItemMap = { [navBarName: string]: AppContentNavElement[] };
  *        since you can have a user that isn't a member of any userGroups
  */
 export async function getAllNavItems(): Promise<NavItemMap> {
-	try {
-		return fetchWithLogoutJson<NavItemMap>(`${getEnv('PROXY_URL')}/navigation/items`);
-	} catch (err) {
-		throw new CustomError('Failed to get all user groups', err);
-	}
+  try {
+    return fetchWithLogoutJson<NavItemMap>(
+      `${getEnv('PROXY_URL')}/navigation/items`,
+    );
+  } catch (err) {
+    throw new CustomError('Failed to get all user groups', err);
+  }
 }

@@ -1,11 +1,11 @@
 mutation updateInteractiveTour(
-	$interactiveTour: app_interactive_tour_set_input!
-	$interactiveTourId: Int!
+  $interactiveTour: app_interactive_tour_set_input!
+  $interactiveTourId: Int!
 ) {
-	update_app_interactive_tour(
-		where: { id: { _eq: $interactiveTourId } }
-		_set: $interactiveTour
-	) {
-		affected_rows
-	}
+  update_app_interactive_tour(
+    where: { id: { _eq: $interactiveTourId } }
+    _set: $interactiveTour
+  ) {
+    affected_rows
+  }
 }

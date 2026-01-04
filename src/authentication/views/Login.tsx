@@ -1,118 +1,104 @@
-import { Button, Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import React, { type FC, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { type RouteComponentProps, withRouter } from 'react-router';
-import { type Dispatch } from 'redux';
+import { Button, IconName } from '@viaa/avo2-components';
+import { useAtom, useSetAtom } from 'jotai';
+import { type FC, useEffect } from 'react';
+import { useNavigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views';
+import { ErrorView } from '../../error/views/ErrorView';
+import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { isPupil } from '../../shared/helpers/is-pupil';
-import useTranslation from '../../shared/hooks/useTranslation';
-import { type AppState } from '../../store';
+import { tText } from '../../shared/helpers/translate-text';
+import { loginAtom } from '../authentication.store';
+import { getLoginStateAtom } from '../authentication.store.actions';
 import { LoginMessage } from '../authentication.types';
-import { redirectToServerLoginPage } from '../helpers/redirects';
-import { getLoginStateAction } from '../store/actions';
-import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
-
-interface LoginProps extends RouteComponentProps {
-	loginState: Avo.Auth.LoginResponse | null;
-	loginStateLoading: boolean;
-	loginStateError: boolean;
-	getLoginState: () => Dispatch;
-}
+import { redirectToServerLoginPage } from '../helpers/redirects/redirects';
 
 const LOGIN_ATTEMPT_KEY = 'AVO_LOGIN_ATTEMPT';
 
-const Login: FC<LoginProps> = ({
-	history,
-	location,
-	loginState,
-	loginStateLoading,
-	loginStateError,
-	getLoginState,
-}) => {
-	const { tText } = useTranslation();
+export const Login: FC = () => {
+  const location = useLocation();
+  const navigateFunc = useNavigate();
 
-	useEffect(() => {
-		if (!loginState && !loginStateLoading && !loginStateError) {
-			getLoginState();
-			return;
-		}
+  const [loginAtomValue] = useAtom(loginAtom);
+  const loginState = loginAtomValue.data;
+  const loginStateLoading = loginAtomValue.loading;
+  const loginStateError = loginAtomValue.error;
+  const getLoginState = useSetAtom(getLoginStateAtom);
 
-		// Redirect to previous requested path or the default page for that user group (LOGGED_IN_HOME or WORKSPACE_ASSIGNMENTS)
-		if (loginState && loginState.message === LoginMessage.LOGGED_IN && !loginStateLoading) {
-			let path: string | undefined = (location?.state as any)?.from?.pathname;
+  useEffect(() => {
+    if (!loginState && !loginStateLoading && !loginStateError) {
+      getLoginState(false);
+      return;
+    }
 
-			if (!path) {
-				if (isPupil(loginState?.commonUserInfo?.userGroup?.id)) {
-					path = APP_PATH.WORKSPACE_ASSIGNMENTS.route;
-				} else {
-					path = APP_PATH.LOGGED_IN_HOME.route;
-				}
-			}
+    // Redirect to previous requested path or the default page for that user group (LOGGED_IN_HOME or WORKSPACE_ASSIGNMENTS)
+    if (
+      loginState &&
+      loginState.message === LoginMessage.LOGGED_IN &&
+      !loginStateLoading
+    ) {
+      let path: string | undefined = (location?.state as any)?.from?.pathname;
 
-			history.push(path);
+      if (!path) {
+        if (isPupil(loginState?.commonUserInfo?.userGroup?.id)) {
+          path = APP_PATH.WORKSPACE_ASSIGNMENTS.route;
+        } else {
+          path = APP_PATH.LOGGED_IN_HOME.route;
+        }
+      }
 
-			return;
-		}
+      navigateFunc(path);
 
-		if (
-			loginState &&
-			loginState.message === LoginMessage.LOGGED_OUT &&
-			!loginStateLoading &&
-			!loginStateError
-		) {
-			redirectToServerLoginPage(location);
-		}
-	}, [getLoginState, loginState, loginStateLoading, loginStateError, history, location]);
+      return;
+    }
 
-	const tryLoginAgainManually = () => {
-		if (localStorage) {
-			localStorage.removeItem(LOGIN_ATTEMPT_KEY);
-		}
-		getLoginState();
-	};
+    if (
+      loginState &&
+      loginState.message === LoginMessage.LOGGED_OUT &&
+      !loginStateLoading &&
+      !loginStateError
+    ) {
+      redirectToServerLoginPage(location);
+    }
+  }, [
+    getLoginState,
+    loginState,
+    loginStateLoading,
+    loginStateError,
+    navigateFunc,
+    location,
+  ]);
 
-	if (loginStateError) {
-		return (
-			<ErrorView
-				message={tText('authentication/views/login___het-inloggen-is-mislukt')}
-				icon={IconName.lock}
-			>
-				<Button
-					type="link"
-					onClick={tryLoginAgainManually}
-					label={tText('authentication/views/login___probeer-opnieuw')}
-				/>
-			</ErrorView>
-		);
-	}
+  const tryLoginAgainManually = () => {
+    if (localStorage) {
+      localStorage.removeItem(LOGIN_ATTEMPT_KEY);
+    }
+    getLoginState(false);
+  };
 
-	if (!loginState || loginStateLoading) {
-		// Wait for login check
-		return (
-			<Spacer margin={['top-large', 'bottom-large']}>
-				<Flex center>
-					<Spinner size="large" />
-				</Flex>
-			</Spacer>
-		);
-	}
+  if (loginStateError) {
+    return (
+      <ErrorView
+        locationId="login--error"
+        message={tText('authentication/views/login___het-inloggen-is-mislukt')}
+        icon={IconName.lock}
+      >
+        <Button
+          type="link"
+          onClick={tryLoginAgainManually}
+          label={tText('authentication/views/login___probeer-opnieuw')}
+        />
+      </ErrorView>
+    );
+  }
 
-	return null;
+  if (!loginState || loginStateLoading) {
+    // Wait for login check
+    return <FullPageSpinner locationId="login--loading" />;
+  }
+
+  return null;
 };
 
-const mapStateToProps = (state: AppState) => ({
-	loginState: selectLogin(state),
-	loginStateLoading: selectLoginLoading(state),
-	loginStateError: selectLoginError(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		getLoginState: () => dispatch(getLoginStateAction() as any),
-	};
-};
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));
+export default Login;

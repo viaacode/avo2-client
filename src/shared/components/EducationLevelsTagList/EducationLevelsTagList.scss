@@ -1,5 +1,5 @@
-@import "../../../styles/settings/colors";
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/colors" as colors;
+@use "../../../styles/settings/variables" as variables;
 
 .c-education-levels-tag {
 	border-width: 2px;
@@ -15,26 +15,26 @@
 	}
 
 	&__kleuteronderwijs {
-		border-color: $color-ocean-green;
+		border-color: colors.$color-ocean-green;
 	}
 
 	&__lageronderwijs {
-		border-color: $color-teal-bright;
+		border-color: colors.$color-teal-bright;
 	}
 
 	&__secundaironderwijs {
-		border-color: $color-dark-orange;
+		border-color: colors.$color-dark-orange;
 	}
 
 	&__deeltijdskunstonderwijs {
-		border-color: $color-tapestry;
+		border-color: colors.$color-tapestry;
 	}
 
 	&__hogeronderwijs {
-		border-color: $color-green;
+		border-color: colors.$color-green;
 	}
 
 	&__volwassenenonderwijs {
-		border-color: $color-yellow;
+		border-color: colors.$color-yellow;
 	}
 }

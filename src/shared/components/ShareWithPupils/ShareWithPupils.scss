@@ -1,4 +1,4 @@
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/variables" as variables;
 
 .c-share-with-pupil {
 	width: 100%;
@@ -26,11 +26,11 @@
 		font-size: 1.4rem;
 	}
 
-	@media screen and (min-width: $g-bp3) {
+	@media screen and (min-width: variables.$g-bp3) {
 		width: 45rem;
 	}
 
-	@media screen and (min-width: $g-bp3) {
+	@media screen and (min-width: variables.$g-bp3) {
 		width: 50rem;
 	}
 }

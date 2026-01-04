@@ -1,19 +1,33 @@
-query getCollectionBookmarkViewPlayCounts($collectionUuid: uuid!, $profileId: uuid) {
-	app_collection_views(where: { collection_uuid: { _eq: $collectionUuid } }, limit: 1) {
-		count
-	}
-	app_collection_plays(where: { collection_uuid: { _eq: $collectionUuid } }, limit: 1) {
-		count
-	}
-	app_collection_bookmarks_aggregate(where: { collection_uuid: { _eq: $collectionUuid } }) {
-		aggregate {
-			count
-		}
-	}
-	app_collection_bookmarks(
-		where: { profile_id: { _eq: $profileId }, collection_uuid: { _eq: $collectionUuid } }
-		limit: 1
-	) {
-		id
-	}
+query getCollectionBookmarkViewPlayCounts(
+  $collectionUuid: uuid!
+  $profileId: uuid
+) {
+  app_collection_views(
+    where: { collection_uuid: { _eq: $collectionUuid } }
+    limit: 1
+  ) {
+    count
+  }
+  app_collection_plays(
+    where: { collection_uuid: { _eq: $collectionUuid } }
+    limit: 1
+  ) {
+    count
+  }
+  app_collection_bookmarks_aggregate(
+    where: { collection_uuid: { _eq: $collectionUuid } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  app_collection_bookmarks(
+    where: {
+      profile_id: { _eq: $profileId }
+      collection_uuid: { _eq: $collectionUuid }
+    }
+    limit: 1
+  ) {
+    id
+  }
 }

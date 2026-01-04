@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Component: Project list
    ========================================================================== */
@@ -16,7 +19,7 @@
 		text-decoration: none;
 
 		&:hover {
-			border-bottom: 1px solid $color-primary;
+			border-bottom: 1px solid colors.$color-primary;
 		}
 	}
 }

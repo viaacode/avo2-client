@@ -1,3 +1,6 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 // Note: swapped file to px to avoid inconsistencies in rem
 
 .c-button {
@@ -30,16 +33,16 @@
 	&.c-button-smartschool:hover,
 	&.c-button-smartschool:active,
 	&.c-button-smartschool:visited {
-		background-color: $color-smartschool !important;
-		border: 1px solid $color-smartschool !important;
+		background-color: colors.$color-smartschool !important;
+		border: 1px solid colors.$color-smartschool !important;
 	}
 
 	&.c-button-klascement,
 	&.c-button-klascement:hover,
 	&.c-button-klascement:active,
 	&.c-button-klascement:visited {
-		background-color: $color-klascement !important;
-		border: 1px solid $color-klascement !important;
+		background-color: colors.$color-klascement !important;
+		border: 1px solid colors.$color-klascement !important;
 	}
 
 	&.c-button-smartschool,

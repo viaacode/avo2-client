@@ -24050,11 +24050,11 @@ export enum Lookup_Enum_Profile_Flags_Constraint {
 export enum Lookup_Enum_Profile_Flags_Enum {
   /** Flag user for review bij verschil tussen bronnen, voorbeeld wanneer Vlaamse overheid zegt dat een gebruiker geen leerkracht is, maar volgens AVO wel. */
   LeerkrachtConflict = 'LEERKRACHT_CONFLICT',
-  /** Flag user for review bij verschil tussen bronnen, voorbeeld wanneer Vlaamse overheid een ander stamboeknummer doorgeeft dan wat geregistreerd is in AVO. */
+  /** Flag user for review bij verschil tussen bronnen, voorbeeld wanneer Vlaamse overheid een ander stamboeknummer doorgeeft dan wat geregistreerd is in Avo */
   StamboekConflict = 'STAMBOEK_CONFLICT'
 }
 
-/** Boolean expression to compare columns of type "lookup_enum_profile_flags_enum". All fields are combined with logical 'AND'. */
+/** Boolean expression to compare columns of type "lookup_enum_profile_flags_enum" All fields are combined with logical 'AND'. */
 export type Lookup_Enum_Profile_Flags_Enum_Comparison_Exp = {
   _eq?: InputMaybe<Lookup_Enum_Profile_Flags_Enum>;
   _in?: InputMaybe<Array<Lookup_Enum_Profile_Flags_Enum>>;
@@ -37568,7 +37568,7 @@ export type Reporting_Assignment_Blocks = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
-  item_id?: Maybe<Scalars['bpchar']>;
+  item_id?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -37603,7 +37603,7 @@ export type Reporting_Assignment_Blocks_Bool_Exp = {
   content_type?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  item_id?: InputMaybe<Bpchar_Comparison_Exp>;
+  item_id?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
 
@@ -37613,7 +37613,7 @@ export type Reporting_Assignment_Blocks_Insert_Input = {
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  item_id?: InputMaybe<Scalars['bpchar']>;
+  item_id?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -37624,7 +37624,7 @@ export type Reporting_Assignment_Blocks_Max_Fields = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
-  item_id?: Maybe<Scalars['bpchar']>;
+  item_id?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -37635,7 +37635,7 @@ export type Reporting_Assignment_Blocks_Min_Fields = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
-  item_id?: Maybe<Scalars['bpchar']>;
+  item_id?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -37680,7 +37680,7 @@ export type Reporting_Assignment_Blocks_Set_Input = {
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  item_id?: InputMaybe<Scalars['bpchar']>;
+  item_id?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -37698,7 +37698,7 @@ export type Reporting_Assignment_Blocks_Stream_Cursor_Value_Input = {
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  item_id?: InputMaybe<Scalars['bpchar']>;
+  item_id?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -38054,7 +38054,7 @@ export type Reporting_Assignment_Response_Blocks = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
-  item_id?: Maybe<Scalars['bpchar']>;
+  item_id?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -38089,7 +38089,7 @@ export type Reporting_Assignment_Response_Blocks_Bool_Exp = {
   content_type?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  item_id?: InputMaybe<Bpchar_Comparison_Exp>;
+  item_id?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
 
@@ -38099,7 +38099,7 @@ export type Reporting_Assignment_Response_Blocks_Insert_Input = {
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  item_id?: InputMaybe<Scalars['bpchar']>;
+  item_id?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -38110,7 +38110,7 @@ export type Reporting_Assignment_Response_Blocks_Max_Fields = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
-  item_id?: Maybe<Scalars['bpchar']>;
+  item_id?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -38121,7 +38121,7 @@ export type Reporting_Assignment_Response_Blocks_Min_Fields = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
-  item_id?: Maybe<Scalars['bpchar']>;
+  item_id?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -38166,7 +38166,7 @@ export type Reporting_Assignment_Response_Blocks_Set_Input = {
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  item_id?: InputMaybe<Scalars['bpchar']>;
+  item_id?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -38184,7 +38184,7 @@ export type Reporting_Assignment_Response_Blocks_Stream_Cursor_Value_Input = {
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  item_id?: InputMaybe<Scalars['bpchar']>;
+  item_id?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -38681,7 +38681,7 @@ export type Reporting_Assignments_Stream_Cursor_Value_Input = {
 export type Reporting_Bundle_Blocks = {
   __typename?: 'reporting_bundle_blocks';
   bundle_id?: Maybe<Scalars['uuid']>;
-  content_id?: Maybe<Scalars['bpchar']>;
+  content_id?: Maybe<Scalars['String']>;
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
@@ -38730,7 +38730,7 @@ export type Reporting_Bundle_Blocks_Bool_Exp = {
   _not?: InputMaybe<Reporting_Bundle_Blocks_Bool_Exp>;
   _or?: InputMaybe<Array<Reporting_Bundle_Blocks_Bool_Exp>>;
   bundle_id?: InputMaybe<Uuid_Comparison_Exp>;
-  content_id?: InputMaybe<Bpchar_Comparison_Exp>;
+  content_id?: InputMaybe<String_Comparison_Exp>;
   content_type?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
@@ -38741,7 +38741,7 @@ export type Reporting_Bundle_Blocks_Bool_Exp = {
 export type Reporting_Bundle_Blocks_Max_Fields = {
   __typename?: 'reporting_bundle_blocks_max_fields';
   bundle_id?: Maybe<Scalars['uuid']>;
-  content_id?: Maybe<Scalars['bpchar']>;
+  content_id?: Maybe<Scalars['String']>;
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
@@ -38752,7 +38752,7 @@ export type Reporting_Bundle_Blocks_Max_Fields = {
 export type Reporting_Bundle_Blocks_Min_Fields = {
   __typename?: 'reporting_bundle_blocks_min_fields';
   bundle_id?: Maybe<Scalars['uuid']>;
-  content_id?: Maybe<Scalars['bpchar']>;
+  content_id?: Maybe<Scalars['String']>;
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
@@ -38814,7 +38814,7 @@ export type Reporting_Bundle_Blocks_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Reporting_Bundle_Blocks_Stream_Cursor_Value_Input = {
   bundle_id?: InputMaybe<Scalars['uuid']>;
-  content_id?: InputMaybe<Scalars['bpchar']>;
+  content_id?: InputMaybe<Scalars['String']>;
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
@@ -39376,7 +39376,7 @@ export type Reporting_Collection_Blocks = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
-  item_id?: Maybe<Scalars['bpchar']>;
+  item_id?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -39425,7 +39425,7 @@ export type Reporting_Collection_Blocks_Bool_Exp = {
   content_type?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
-  item_id?: InputMaybe<Bpchar_Comparison_Exp>;
+  item_id?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
 
@@ -39436,7 +39436,7 @@ export type Reporting_Collection_Blocks_Max_Fields = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
-  item_id?: Maybe<Scalars['bpchar']>;
+  item_id?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -39447,7 +39447,7 @@ export type Reporting_Collection_Blocks_Min_Fields = {
   content_type?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
-  item_id?: Maybe<Scalars['bpchar']>;
+  item_id?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -39509,7 +39509,7 @@ export type Reporting_Collection_Blocks_Stream_Cursor_Value_Input = {
   content_type?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
-  item_id?: InputMaybe<Scalars['bpchar']>;
+  item_id?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -52125,7 +52125,6 @@ export type Users_Audit_Log_Variance_Order_By = {
 export type Users_Common_Users = {
   __typename?: 'users_common_users';
   alias?: Maybe<Scalars['String']>;
-  alternative_email?: Maybe<Scalars['String']>;
   /** An array relationship */
   assignment_labels: Array<App_Assignment_Labels_V2>;
   /** An aggregate relationship */
@@ -52160,13 +52159,11 @@ export type Users_Common_Users = {
   /** An aggregate relationship */
   email_preferences_aggregate: Users_Email_Preferences_Aggregate;
   email_preferences_center_access_key?: Maybe<Scalars['uuid']>;
-  expires_at?: Maybe<Scalars['timestamptz']>;
   first_name?: Maybe<Scalars['String']>;
-  full_name?: Maybe<Scalars['String']>;
   /** An array relationship */
-  idpmaps: Array<Users_Idp_Map_V2>;
+  idpmaps: Array<Users_Idp_Map>;
   /** An aggregate relationship */
-  idpmaps_aggregate: Users_Idp_Map_V2_Aggregate;
+  idpmaps_aggregate: Users_Idp_Map_Aggregate;
   is_blocked?: Maybe<Scalars['Boolean']>;
   is_deleted?: Maybe<Scalars['Boolean']>;
   is_exception?: Maybe<Scalars['Boolean']>;
@@ -52194,8 +52191,6 @@ export type Users_Common_Users = {
   notifications_aggregate: Users_Notifications_Aggregate;
   /** An object relationship */
   organisation?: Maybe<Shared_Organisations>;
-  /** An object relationship */
-  profile?: Maybe<Users_Profiles>;
   /** An array relationship */
   profile_educational_organizations: Array<Users_Profile_Educational_Organizations>;
   /** An aggregate relationship */
@@ -52211,11 +52206,9 @@ export type Users_Common_Users = {
   profile_preferences_aggregate: Users_Profile_Preferences_Aggregate;
   stamboek?: Maybe<Scalars['String']>;
   /** An object relationship */
-  temp_access?: Maybe<Shared_User_Temp_Access_V2>;
+  temp_access?: Maybe<Shared_User_Temp_Access>;
   title?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
-  /** An object relationship */
-  user?: Maybe<Shared_Users>;
   /** An object relationship */
   user_group?: Maybe<Users_Profile_User_Groups>;
   user_id?: Maybe<Scalars['uuid']>;
@@ -52364,21 +52357,21 @@ export type Users_Common_UsersEmail_Preferences_AggregateArgs = {
 
 /** columns and relationships of "users.common_users" */
 export type Users_Common_UsersIdpmapsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
-  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
 };
 
 
 /** columns and relationships of "users.common_users" */
 export type Users_Common_UsersIdpmaps_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
-  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_Bool_Exp>;
 };
 
 
@@ -52529,7 +52522,6 @@ export type Users_Common_Users_Bool_Exp = {
   _not?: InputMaybe<Users_Common_Users_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Common_Users_Bool_Exp>>;
   alias?: InputMaybe<String_Comparison_Exp>;
-  alternative_email?: InputMaybe<String_Comparison_Exp>;
   assignment_labels?: InputMaybe<App_Assignment_Labels_V2_Bool_Exp>;
   assignment_labels_aggregate?: InputMaybe<App_Assignment_Labels_V2_Aggregate_Bool_Exp>;
   assignments_v2?: InputMaybe<App_Assignments_V2_Bool_Exp>;
@@ -52550,11 +52542,9 @@ export type Users_Common_Users_Bool_Exp = {
   email_preferences?: InputMaybe<Users_Email_Preferences_Bool_Exp>;
   email_preferences_aggregate?: InputMaybe<Users_Email_Preferences_Aggregate_Bool_Exp>;
   email_preferences_center_access_key?: InputMaybe<Uuid_Comparison_Exp>;
-  expires_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   first_name?: InputMaybe<String_Comparison_Exp>;
-  full_name?: InputMaybe<String_Comparison_Exp>;
-  idpmaps?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
-  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_V2_Aggregate_Bool_Exp>;
+  idpmaps?: InputMaybe<Users_Idp_Map_Bool_Exp>;
+  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_Aggregate_Bool_Exp>;
   is_blocked?: InputMaybe<Boolean_Comparison_Exp>;
   is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
   is_exception?: InputMaybe<Boolean_Comparison_Exp>;
@@ -52572,7 +52562,6 @@ export type Users_Common_Users_Bool_Exp = {
   notifications?: InputMaybe<Users_Notifications_Bool_Exp>;
   notifications_aggregate?: InputMaybe<Users_Notifications_Aggregate_Bool_Exp>;
   organisation?: InputMaybe<Shared_Organisations_Bool_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
   profile_educational_organizations?: InputMaybe<Users_Profile_Educational_Organizations_Bool_Exp>;
   profile_educational_organizations_aggregate?: InputMaybe<Users_Profile_Educational_Organizations_Aggregate_Bool_Exp>;
   profile_flags?: InputMaybe<Users_Profile_Flags_Bool_Exp>;
@@ -52581,77 +52570,24 @@ export type Users_Common_Users_Bool_Exp = {
   profile_preferences?: InputMaybe<Users_Profile_Preferences_Bool_Exp>;
   profile_preferences_aggregate?: InputMaybe<Users_Profile_Preferences_Aggregate_Bool_Exp>;
   stamboek?: InputMaybe<String_Comparison_Exp>;
-  temp_access?: InputMaybe<Shared_User_Temp_Access_V2_Bool_Exp>;
+  temp_access?: InputMaybe<Shared_User_Temp_Access_Bool_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  user?: InputMaybe<Shared_Users_Bool_Exp>;
   user_group?: InputMaybe<Users_Profile_User_Groups_Bool_Exp>;
   user_id?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** input type for inserting data into table "users.common_users" */
-export type Users_Common_Users_Insert_Input = {
-  alias?: InputMaybe<Scalars['String']>;
-  alternative_email?: InputMaybe<Scalars['String']>;
-  assignment_labels?: InputMaybe<App_Assignment_Labels_V2_Arr_Rel_Insert_Input>;
-  assignments_v2?: InputMaybe<App_Assignments_V2_Arr_Rel_Insert_Input>;
-  audit?: InputMaybe<Users_Audit_Log_Arr_Rel_Insert_Input>;
-  avatar?: InputMaybe<Scalars['String']>;
-  bio?: InputMaybe<Scalars['String']>;
-  bookmark_searches?: InputMaybe<App_Search_Bookmarks_Arr_Rel_Insert_Input>;
-  business_category?: InputMaybe<Scalars['String']>;
-  collection_bookmarks?: InputMaybe<App_Collection_Bookmarks_Arr_Rel_Insert_Input>;
-  collections?: InputMaybe<App_Collections_Arr_Rel_Insert_Input>;
-  company_id?: InputMaybe<Scalars['String']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  email_preferences?: InputMaybe<Users_Email_Preferences_Arr_Rel_Insert_Input>;
-  email_preferences_center_access_key?: InputMaybe<Scalars['uuid']>;
-  expires_at?: InputMaybe<Scalars['timestamptz']>;
-  first_name?: InputMaybe<Scalars['String']>;
-  full_name?: InputMaybe<Scalars['String']>;
-  idpmaps?: InputMaybe<Users_Idp_Map_V2_Arr_Rel_Insert_Input>;
-  is_blocked?: InputMaybe<Scalars['Boolean']>;
-  is_deleted?: InputMaybe<Scalars['Boolean']>;
-  is_exception?: InputMaybe<Scalars['Boolean']>;
-  item_bookmarks?: InputMaybe<App_Item_Bookmarks_Arr_Rel_Insert_Input>;
-  klascement_user_id_info?: InputMaybe<Users_Profile_Klascement_User_Ids_Obj_Rel_Insert_Input>;
-  language?: InputMaybe<Scalars['String']>;
-  last_access_at?: InputMaybe<Scalars['timestamptz']>;
-  last_block?: InputMaybe<Shared_User_Last_Blocked_Obj_Rel_Insert_Input>;
-  last_name?: InputMaybe<Scalars['String']>;
-  last_unblock?: InputMaybe<Shared_User_Last_Unblocked_Obj_Rel_Insert_Input>;
-  loms?: InputMaybe<Users_Profiles_Lom_Links_Arr_Rel_Insert_Input>;
-  mail?: InputMaybe<Scalars['String']>;
-  notifications?: InputMaybe<Users_Notifications_Arr_Rel_Insert_Input>;
-  organisation?: InputMaybe<Shared_Organisations_Obj_Rel_Insert_Input>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
-  profile_educational_organizations?: InputMaybe<Users_Profile_Educational_Organizations_Arr_Rel_Insert_Input>;
-  profile_flags?: InputMaybe<Users_Profile_Flags_Arr_Rel_Insert_Input>;
-  profile_id?: InputMaybe<Scalars['uuid']>;
-  profile_preferences?: InputMaybe<Users_Profile_Preferences_Arr_Rel_Insert_Input>;
-  stamboek?: InputMaybe<Scalars['String']>;
-  temp_access?: InputMaybe<Shared_User_Temp_Access_V2_Obj_Rel_Insert_Input>;
-  title?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-  user?: InputMaybe<Shared_Users_Obj_Rel_Insert_Input>;
-  user_group?: InputMaybe<Users_Profile_User_Groups_Obj_Rel_Insert_Input>;
-  user_id?: InputMaybe<Scalars['uuid']>;
 };
 
 /** aggregate max on columns */
 export type Users_Common_Users_Max_Fields = {
   __typename?: 'users_common_users_max_fields';
   alias?: Maybe<Scalars['String']>;
-  alternative_email?: Maybe<Scalars['String']>;
   avatar?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
   business_category?: Maybe<Scalars['String']>;
   company_id?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   email_preferences_center_access_key?: Maybe<Scalars['uuid']>;
-  expires_at?: Maybe<Scalars['timestamptz']>;
   first_name?: Maybe<Scalars['String']>;
-  full_name?: Maybe<Scalars['String']>;
   language?: Maybe<Scalars['String']>;
   last_access_at?: Maybe<Scalars['timestamptz']>;
   last_name?: Maybe<Scalars['String']>;
@@ -52667,16 +52603,13 @@ export type Users_Common_Users_Max_Fields = {
 export type Users_Common_Users_Min_Fields = {
   __typename?: 'users_common_users_min_fields';
   alias?: Maybe<Scalars['String']>;
-  alternative_email?: Maybe<Scalars['String']>;
   avatar?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
   business_category?: Maybe<Scalars['String']>;
   company_id?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   email_preferences_center_access_key?: Maybe<Scalars['uuid']>;
-  expires_at?: Maybe<Scalars['timestamptz']>;
   first_name?: Maybe<Scalars['String']>;
-  full_name?: Maybe<Scalars['String']>;
   language?: Maybe<Scalars['String']>;
   last_access_at?: Maybe<Scalars['timestamptz']>;
   last_name?: Maybe<Scalars['String']>;
@@ -52688,15 +52621,9 @@ export type Users_Common_Users_Min_Fields = {
   user_id?: Maybe<Scalars['uuid']>;
 };
 
-/** input type for inserting object relation for remote table "users.common_users" */
-export type Users_Common_Users_Obj_Rel_Insert_Input = {
-  data: Users_Common_Users_Insert_Input;
-};
-
 /** Ordering options when selecting data from "users.common_users". */
 export type Users_Common_Users_Order_By = {
   alias?: InputMaybe<Order_By>;
-  alternative_email?: InputMaybe<Order_By>;
   assignment_labels_aggregate?: InputMaybe<App_Assignment_Labels_V2_Aggregate_Order_By>;
   assignments_v2_aggregate?: InputMaybe<App_Assignments_V2_Aggregate_Order_By>;
   audit_aggregate?: InputMaybe<Users_Audit_Log_Aggregate_Order_By>;
@@ -52710,10 +52637,8 @@ export type Users_Common_Users_Order_By = {
   created_at?: InputMaybe<Order_By>;
   email_preferences_aggregate?: InputMaybe<Users_Email_Preferences_Aggregate_Order_By>;
   email_preferences_center_access_key?: InputMaybe<Order_By>;
-  expires_at?: InputMaybe<Order_By>;
   first_name?: InputMaybe<Order_By>;
-  full_name?: InputMaybe<Order_By>;
-  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_V2_Aggregate_Order_By>;
+  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_Aggregate_Order_By>;
   is_blocked?: InputMaybe<Order_By>;
   is_deleted?: InputMaybe<Order_By>;
   is_exception?: InputMaybe<Order_By>;
@@ -52728,16 +52653,14 @@ export type Users_Common_Users_Order_By = {
   mail?: InputMaybe<Order_By>;
   notifications_aggregate?: InputMaybe<Users_Notifications_Aggregate_Order_By>;
   organisation?: InputMaybe<Shared_Organisations_Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
   profile_educational_organizations_aggregate?: InputMaybe<Users_Profile_Educational_Organizations_Aggregate_Order_By>;
   profile_flags_aggregate?: InputMaybe<Users_Profile_Flags_Aggregate_Order_By>;
   profile_id?: InputMaybe<Order_By>;
   profile_preferences_aggregate?: InputMaybe<Users_Profile_Preferences_Aggregate_Order_By>;
   stamboek?: InputMaybe<Order_By>;
-  temp_access?: InputMaybe<Shared_User_Temp_Access_V2_Order_By>;
+  temp_access?: InputMaybe<Shared_User_Temp_Access_Order_By>;
   title?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
-  user?: InputMaybe<Shared_Users_Order_By>;
   user_group?: InputMaybe<Users_Profile_User_Groups_Order_By>;
   user_id?: InputMaybe<Order_By>;
 };
@@ -52746,8 +52669,6 @@ export type Users_Common_Users_Order_By = {
 export enum Users_Common_Users_Select_Column {
   /** column name */
   Alias = 'alias',
-  /** column name */
-  AlternativeEmail = 'alternative_email',
   /** column name */
   Avatar = 'avatar',
   /** column name */
@@ -52761,11 +52682,7 @@ export enum Users_Common_Users_Select_Column {
   /** column name */
   EmailPreferencesCenterAccessKey = 'email_preferences_center_access_key',
   /** column name */
-  ExpiresAt = 'expires_at',
-  /** column name */
   FirstName = 'first_name',
-  /** column name */
-  FullName = 'full_name',
   /** column name */
   IsBlocked = 'is_blocked',
   /** column name */
@@ -52803,16 +52720,13 @@ export type Users_Common_Users_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Users_Common_Users_Stream_Cursor_Value_Input = {
   alias?: InputMaybe<Scalars['String']>;
-  alternative_email?: InputMaybe<Scalars['String']>;
   avatar?: InputMaybe<Scalars['String']>;
   bio?: InputMaybe<Scalars['String']>;
   business_category?: InputMaybe<Scalars['String']>;
   company_id?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   email_preferences_center_access_key?: InputMaybe<Scalars['uuid']>;
-  expires_at?: InputMaybe<Scalars['timestamptz']>;
   first_name?: InputMaybe<Scalars['String']>;
-  full_name?: InputMaybe<Scalars['String']>;
   is_blocked?: InputMaybe<Scalars['Boolean']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   is_exception?: InputMaybe<Scalars['Boolean']>;

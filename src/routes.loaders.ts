@@ -1,0 +1,124 @@
+import { type AdminConfig } from '@meemoo/admin-core-ui/admin';
+import { AdminConfigManager } from '@meemoo/admin-core-ui/client';
+import { noop } from 'es-toolkit';
+import { LoaderFunctionArgs } from 'react-router';
+import { getContentPageByPath } from './admin/content-page/hooks/use-get-content-page-by-path.ts';
+import { getAdminCoreConfig } from './admin/shared/helpers/get-admin-core-config.tsx';
+import { AssignmentService } from './assignment/assignment.service.ts';
+import { CollectionService } from './collection/collection.service.ts';
+import { CollectionOrBundle } from './collection/collection.types.ts';
+import { checkLoginState } from './embed/hooks/useGetLoginStateForEmbed.ts';
+import { ROUTE_PARTS } from './shared/constants/routes.ts';
+import { loadTranslations } from './shared/translations/i18n.ts';
+
+export async function initAppLoader() {
+  try {
+    // Set admin-core config with dummy navigate function during SSR
+    // The config will be set again in the client after hydration
+    if (!AdminConfigManager.isConfigSet()) {
+      const config: AdminConfig = getAdminCoreConfig(noop);
+      AdminConfigManager.setConfig(config);
+    }
+
+    await Promise.all([
+      // Fetch login state
+      checkLoginState(),
+      // Wait for translations to load
+      await loadTranslations(),
+    ]);
+  } catch (err) {
+    console.error(
+      'Failed to load admin-core-config or translations in react-router loader for App route',
+      err,
+    );
+  }
+}
+
+export async function fetchContentPageLoader(args: LoaderFunctionArgs<any>) {
+  try {
+    // Load content page for the requested path
+    const path = new URL(args.request.url).pathname;
+    const contentPage = await getContentPageByPath(path);
+    return {
+      contentPage,
+      url: args.request.url,
+    };
+  } catch (err) {
+    console.error(
+      'Failed to load content page in react-router loader for route LoggedOutHome',
+      err,
+      { url: args.request.url },
+    );
+    return {
+      contentPage: null,
+      url: args.request.url,
+    };
+  }
+}
+
+export async function fetchCollectionLoader(args: LoaderFunctionArgs<any>) {
+  const id = args?.params?.id;
+  const isCollection = args.request?.url.includes(
+    `/${ROUTE_PARTS.collections}/`,
+  );
+
+  try {
+    if (id) {
+      const cookieHeader = args.request.headers.get('cookie');
+      const collection =
+        await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
+          id,
+          isCollection
+            ? CollectionOrBundle.COLLECTION
+            : CollectionOrBundle.BUNDLE,
+          undefined,
+          cookieHeader ? { cookie: cookieHeader } : undefined,
+        );
+      // console.log('Fetched collection/bundle in loader:', collection);
+      return {
+        collection,
+        url: args.request.url,
+      };
+    } else {
+      throw new Error('No collection UUID provided in route params');
+    }
+  } catch (err) {
+    console.error(
+      'Failed to load collection in react-router loader for route Collection or Bundle detail',
+      err,
+      { id },
+    );
+    return {
+      collection: null,
+      url: args.request.url,
+    };
+  }
+}
+
+export async function fetchAssignmentLoader(args: LoaderFunctionArgs<any>) {
+  const id = args?.params?.id;
+  try {
+    if (id) {
+      const assignment = await AssignmentService.fetchAssignmentById(
+        id,
+        undefined,
+      );
+      return {
+        assignment,
+        url: args.request.url,
+      };
+    } else {
+      throw new Error('No assignment UUID provided in route params');
+    }
+  } catch (err) {
+    console.error(
+      'Failed to load assignment in react-router loader for route Assignment detail',
+      err,
+      { id },
+    );
+    return {
+      assignment: null,
+      url: args.request.url,
+    };
+  }
+}

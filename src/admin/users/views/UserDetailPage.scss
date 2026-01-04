@@ -1,4 +1,4 @@
-@import "../../../styles/settings/colors";
+@use "../../../styles/settings/colors" as colors;
 
 .c-admin .c-admin__content .c-table_detail-page {
 	th {
@@ -8,7 +8,7 @@
 	}
 
 	tr:nth-child(even) {
-		background-color: $color-gray-25;
+		background-color: colors.$color-gray-25;
 	}
 }
 

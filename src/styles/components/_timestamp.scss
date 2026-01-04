@@ -1,7 +1,7 @@
-@import "../../styles/settings/variables";
-@import "../../styles/settings/colors";
+@use "../../styles/settings/variables" as variables;
+@use "../../styles/settings/colors" as colors;
 
 .c-timestamp {
-	color: $color-teal-bright;
+	color: colors.$color-teal-bright;
 	cursor: pointer;
 }

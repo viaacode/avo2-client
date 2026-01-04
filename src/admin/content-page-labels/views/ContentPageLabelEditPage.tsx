@@ -1,46 +1,54 @@
-import { Flex, Spinner } from '@viaa/avo2-components';
-import React, { type FC, lazy, Suspense } from 'react';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { PermissionName } from '@viaa/avo2-types';
+import { type FC, lazy, Suspense } from 'react';
+import { useMatch, useNavigate } from 'react-router';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
+import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { ADMIN_PATH } from '../../admin.const';
-import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
+import { CONTENT_PAGE_LABEL_PATH } from '../content-page-label.routes.ts';
 
 const ContentPageLabelEdit = lazy(() =>
-	import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
-		default: adminCoreModule.ContentPageLabelEdit,
-	}))
+  import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
+    default: adminCoreModule.ContentPageLabelEdit,
+  })),
 );
 
-const ContentPageLabelEditPage: FC<DefaultSecureRouteProps<{ id: string }>> = ({
-	match,
-	history,
-}) => {
-	return (
-		<Suspense
-			fallback={
-				<Flex orientation="horizontal" center>
-					<Spinner size="large" />
-				</Flex>
-			}
-		>
-			<ContentPageLabelEdit
-				className="c-admin-core c-admin__content-page-label-edit"
-				contentPageLabelId={match.params.id}
-				onGoBack={() =>
-					goBrowserBackWithFallback(
-						buildLink(ADMIN_PATH.CONTENT_PAGE_DETAIL, { id: match.params.id }),
-						history
-					)
-				}
-			/>
-		</Suspense>
-	);
+export const ContentPageLabelEditPage: FC = () => {
+  const navigateFunc = useNavigate();
+  const matchContentPageLabelCreate = useMatch<'id', string>(
+    CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_CREATE,
+  );
+  const matchContentPageLabelEdit = useMatch<'id', string>(
+    CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_EDIT,
+  );
+  const match = matchContentPageLabelCreate || matchContentPageLabelEdit;
+
+  const contentPageLabelId = match?.params.id;
+
+  return (
+    <Suspense
+      fallback={
+        <FullPageSpinner locationId="content-page-label-edit--loading" />
+      }
+    >
+      <PermissionGuard permissions={[PermissionName.EDIT_CONTENT_PAGE_LABELS]}>
+        <ContentPageLabelEdit
+          className="c-admin-core c-admin__content-page-label-edit"
+          contentPageLabelId={contentPageLabelId}
+          onGoBack={() =>
+            goBrowserBackWithFallback(
+              buildLink(ADMIN_PATH.CONTENT_PAGE_DETAIL, {
+                id: contentPageLabelId,
+              }),
+              navigateFunc,
+            )
+          }
+        />
+      </PermissionGuard>
+    </Suspense>
+  );
 };
 
-export default compose(withAdminCoreConfig, withRouter)(ContentPageLabelEditPage as FC<any>) as FC<
-	DefaultSecureRouteProps<{ id: string }>
->;
+export default ContentPageLabelEditPage;

@@ -1,4 +1,4 @@
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/variables" as variables;
 
 /**
  * This class makes the anchor elements in the content page move up by 64px
@@ -9,5 +9,5 @@
 	visibility: hidden;
 	position: relative;
 	display: block;
-	top: -$main-header-height;
+	top: - variables.$main-header-height;
 }

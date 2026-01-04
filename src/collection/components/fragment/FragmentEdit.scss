@@ -1,9 +1,9 @@
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/variables" as variables;
 
 .c-fragment-edit {
-	margin-bottom: $g-spacer-unit * 2;
+	margin-bottom: variables.$g-spacer-unit * 2;
 
 	.c-toolbar__item {
-		margin-left: $g-spacer-unit;
+		margin-left: variables.$g-spacer-unit;
 	}
 }

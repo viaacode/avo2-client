@@ -1,5 +1,7 @@
-mutation bulkAddLabelsToCollections($labels: [app_collection_labels_insert_input!]!) {
-	insert_app_collection_labels(objects: $labels) {
-		affected_rows
-	}
+mutation bulkAddLabelsToCollections(
+  $labels: [app_collection_labels_insert_input!]!
+) {
+  insert_app_collection_labels(objects: $labels) {
+    affected_rows
+  }
 }

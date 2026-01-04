@@ -1,6 +1,7 @@
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/colors" as colors;
+@use "../../../styles/settings/variables" as variables;
 
-$border: 0.1rem solid $color-gray-200;
+$border: 0.1rem solid colors.$color-gray-200;
 
 .c-assignment-heading__actions .c-dropdown__content-open {
 	padding-top: 0 !important;
@@ -9,22 +10,22 @@ $border: 0.1rem solid $color-gray-200;
 .c-share-dropdown__container {
 	border: $border;
 	border-radius: 0.5rem;
-	background-color: $g-base-background;
+	background-color: variables.$g-base-background;
 	margin-top: 1rem;
 	width: 54rem;
-	filter: drop-shadow(0 0.25rem 0.25rem rgba($color-navy, 0.25));
+	filter: drop-shadow(0 0.25rem 0.25rem rgba(colors.$color-navy, 0.25));
 
 	.c-tabs {
 		width: 100%;
 		display: flex;
-		background-color: $color-grey-blue;
+		background-color: colors.$color-grey-blue;
 
 		.c-tab-item {
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			width: 50%;
-			background-color: $color-grey-blue;
+			background-color: colors.$color-grey-blue;
 			border-bottom: $border;
 			padding: 1.5rem 0;
 			margin-bottom: 0;
@@ -37,8 +38,8 @@ $border: 0.1rem solid $color-gray-200;
 			}
 
 			&__active {
-				color: $color-gray-1000;
-				background-color: $g-base-background;
+				color: colors.$color-gray-1000;
+				background-color: variables.$g-base-background;
 				border-bottom: none;
 			}
 		}

@@ -1,90 +1,124 @@
 import { Flex, IconName } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import React, { type FC, useEffect, useState } from 'react';
-import { HorizontalPageSplit } from 'react-page-split';
-
+import { PermissionName } from '@viaa/avo2-types';
+import { useAtomValue } from 'jotai';
+import { type FC, useEffect, useState } from 'react';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import { Outlet } from 'react-router';
+import { commonUserAtom } from '../authentication/authentication.store';
+import { PermissionGuard } from '../authentication/components/PermissionGuard';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import {
-	LoadingErrorLoadedComponent,
-	type LoadingInfo,
+  LoadingErrorLoadedComponent,
+  type LoadingInfo,
 } from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../shared/helpers/custom-error';
-import withUser from '../shared/hocs/withUser';
-import useTranslation from '../shared/hooks/useTranslation';
+import { ReactRouter7Adapter } from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
+import { QueryParamProvider } from '../shared/helpers/routing/use-query-params-ssr.ts';
+import { tHtml } from '../shared/helpers/translate-html';
 import { ToastService } from '../shared/services/toast-service';
 import { type NavigationItemInfo } from '../shared/types';
-
 import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
-import { renderAdminRoutes } from './admin.routes';
-import { Sidebar } from './shared/components';
+import { Sidebar } from './shared/components/Sidebar/Sidebar';
 
-const Admin: FC<{ commonUser: Avo.User.CommonUser }> = ({ commonUser }) => {
-	const { tText, tHtml } = useTranslation();
+import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
+import '@meemoo/admin-core-ui/admin.css';
+import '../styles/main.scss';
+import './Admin.scss';
 
-	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [userPermissions, setUserPermissions] = useState<PermissionName[] | null>(null);
-	const [navigationItems, setNavigationItems] = useState<NavigationItemInfo[] | null>(null);
+export const Admin: FC = () => {
+  const commonUser = useAtomValue(commonUserAtom);
 
-	useEffect(() => {
-		if (!commonUser) {
-			return;
-		}
-		if (PermissionService.hasPerm(commonUser, PermissionName.VIEW_ADMIN_DASHBOARD)) {
-			const tempUserPermissions = commonUser?.permissions || [];
-			setUserPermissions(tempUserPermissions);
-			GET_NAV_ITEMS(tempUserPermissions)
-				.then((navItems) => {
-					setNavigationItems(navItems);
-				})
-				.catch((err: any) => {
-					console.error(new CustomError('Failed to get nav items', err));
-					ToastService.danger(
-						tHtml('admin/admin___het-ophalen-van-de-navigatie-items-is-mislukt')
-					);
-				});
-		} else {
-			setLoadingInfo({
-				state: 'error',
-				icon: IconName.lock,
-				message: tHtml(
-					'admin/admin___je-hebt-geen-rechten-om-het-beheer-dashboard-te-bekijken-view-admin-dashboard'
-				),
-				actionButtons: ['home', 'helpdesk'],
-			});
-		}
-	}, [commonUser, setLoadingInfo, tText, tHtml]);
+  const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
+    state: 'loading',
+  });
+  const [userPermissions, setUserPermissions] = useState<
+    PermissionName[] | null
+  >(null);
+  const [navigationItems, setNavigationItems] = useState<
+    NavigationItemInfo[] | null
+  >(null);
 
-	useEffect(() => {
-		if (userPermissions && navigationItems) {
-			setLoadingInfo({ state: 'loaded' });
-		}
-	}, [userPermissions, navigationItems, setLoadingInfo]);
+  useEffect(() => {
+    if (!commonUser) {
+      return;
+    }
+    if (
+      PermissionService.hasPerm(commonUser, PermissionName.VIEW_ADMIN_DASHBOARD)
+    ) {
+      const tempUserPermissions = commonUser?.permissions || [];
+      setUserPermissions(tempUserPermissions);
+      GET_NAV_ITEMS(tempUserPermissions)
+        .then((navItems) => {
+          setNavigationItems(navItems);
+        })
+        .catch((err: any) => {
+          console.error(new CustomError('Failed to get nav items', err));
+          ToastService.danger(
+            tHtml(
+              'admin/admin___het-ophalen-van-de-navigatie-items-is-mislukt',
+            ),
+          );
+        });
+    } else {
+      setLoadingInfo({
+        state: 'error',
+        icon: IconName.lock,
+        message: tHtml(
+          'admin/admin___je-hebt-geen-rechten-om-het-beheer-dashboard-te-bekijken-view-admin-dashboard',
+        ),
+        actionButtons: ['home', 'helpdesk'],
+      });
+    }
+  }, [commonUser, setLoadingInfo]);
 
-	const renderAdminPage = () => {
-		if (!navigationItems || !userPermissions) {
-			return null;
-		}
-		return (
-			<HorizontalPageSplit className="m-resizable-panels" widths={['300px', '*']}>
-				<Sidebar
-					headerLink={ADMIN_PATH.DASHBOARD}
-					navItems={navigationItems}
-					className="o-app--admin__sidebar"
-				/>
-				<Flex className="o-app--admin__main u-flex-auto u-scroll" orientation="vertical">
-					{renderAdminRoutes(userPermissions)}
-				</Flex>
-			</HorizontalPageSplit>
-		);
-	};
+  useEffect(() => {
+    if (userPermissions && navigationItems) {
+      setLoadingInfo({ state: 'loaded' });
+    }
+  }, [userPermissions, navigationItems, setLoadingInfo]);
 
-	return (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={{}}
-			render={renderAdminPage}
-		/>
-	);
+  const renderAdminPage = () => {
+    if (!navigationItems || !userPermissions) {
+      return null;
+    }
+    return (
+      <PanelGroup
+        autoSaveId="admin-dashboard"
+        direction="horizontal"
+        className="m-resizable-panels"
+      >
+        <Panel defaultSize={15}>
+          <Sidebar
+            headerLink={ADMIN_PATH.DASHBOARD}
+            navItems={navigationItems}
+            className="o-app--admin__sidebar"
+          />
+        </Panel>
+        <PanelResizeHandle />
+        <Panel>
+          <Flex
+            className="o-app--admin__main u-flex-auto u-scroll"
+            orientation="vertical"
+          >
+            <Outlet />
+          </Flex>
+        </Panel>
+      </PanelGroup>
+    );
+  };
+
+  return (
+    <QueryParamProvider adapter={ReactRouter7Adapter}>
+      <PermissionGuard permissions={[PermissionName.VIEW_ADMIN_DASHBOARD]}>
+        <LoadingErrorLoadedComponent
+          loadingInfo={loadingInfo}
+          dataObject={{}}
+          render={renderAdminPage}
+          locationId="admin"
+        />
+      </PermissionGuard>
+    </QueryParamProvider>
+  );
 };
 
-export default withUser(Admin) as FC;
+export default Admin;

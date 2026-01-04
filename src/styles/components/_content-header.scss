@@ -1,10 +1,13 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
 /* ==========================================================================
    Component: Content header
    ========================================================================== */
 
 .c-content-header__header {
 	font-size: 1.8rem;
-	font-weight: $g-headings-font-weight;
+	font-weight: variables.$g-headings-font-weight;
 	margin: 0 0 0.6rem;
 
 	a {
@@ -23,16 +26,16 @@
 .c-content-header__meta {
 	display: flex;
 	align-items: center;
-	color: $color-gray-300;
+	color: colors.$color-gray-300;
 
 	& > *:not(:last-child) {
 		padding-right: 0.8rem;
 		margin-right: 0.8rem;
-		border-right: 1px solid $color-gray-100;
+		border-right: 1px solid colors.$color-gray-100;
 	}
 
 	a {
-		color: $color-gray-400;
+		color: colors.$color-gray-400;
 		text-decoration: underline;
 		margin: 0 0.2rem; // Whitespace control fix
 	}

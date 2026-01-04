@@ -1,18 +1,18 @@
 mutation deleteMarcomEntriesByParentCollectionId(
-	$parentCollectionId: uuid
-	$channelName: String
-	$channelType: String
-	$publishDateGte: timestamptz
-	$publishDateLte: timestamptz
+  $parentCollectionId: uuid
+  $channelName: String
+  $channelType: String
+  $publishDateGte: timestamptz
+  $publishDateLte: timestamptz
 ) {
-	delete_app_collection_marcom_log(
-		where: {
-			parent_collection_id: { _eq: $parentCollectionId }
-			publish_date: { _gte: $publishDateGte, _lte: $publishDateLte }
-			channel_name: { _eq: $channelName }
-			channel_type: { _eq: $channelType }
-		}
-	) {
-		affected_rows
-	}
+  delete_app_collection_marcom_log(
+    where: {
+      parent_collection_id: { _eq: $parentCollectionId }
+      publish_date: { _gte: $publishDateGte, _lte: $publishDateLte }
+      channel_name: { _eq: $channelName }
+      channel_type: { _eq: $channelType }
+    }
+  ) {
+    affected_rows
+  }
 }

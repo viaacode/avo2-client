@@ -1,35 +1,36 @@
-@import "../../../../styles/settings/variables";
+@use "../../../../styles/settings/colors" as colors;
+@use "../../../../styles/settings/variables" as variables;
 
 .c-icon-bar {
 	display: grid;
 	grid-template-columns: auto 1fr;
-	gap: $g-spacer-unit * 2;
+	gap: variables.$g-spacer-unit * 2;
 
-	@media screen and (min-width: $g-bp2) {
-		gap: $g-spacer-unit * 4;
+	@media screen and (min-width: variables.$g-bp2) {
+		gap: variables.$g-spacer-unit * 4;
 	}
 
 	&__sidebar {
-		padding-right: $g-spacer-unit;
-		border-right: 1px solid $color-gray-100;
-		color: $color-gray-600;
+		padding-right: variables.$g-spacer-unit;
+		border-right: 1px solid colors.$color-gray-100;
+		color: colors.$color-gray-600;
 
-		@media screen and (min-width: $g-bp2) {
-			padding-right: $g-spacer-unit * 4;
+		@media screen and (min-width: variables.$g-bp2) {
+			padding-right: variables.$g-spacer-unit * 4;
 		}
 
 		.o-svg-icon {
 			width: 2rem;
 			height: 2rem;
 
-			@media screen and (min-width: $g-bp2) {
+			@media screen and (min-width: variables.$g-bp2) {
 				width: 4rem;
 				height: 4rem;
 			}
 		}
 	}
 
-	@media screen and (max-width: ($g-bp2 - 1px)) {
+	@media screen and (max-width: (variables.$g-bp2 - 1px)) {
 		&__content {
 			.c-video-player {
 				max-width: none;

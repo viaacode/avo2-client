@@ -1,19 +1,19 @@
-import { type RouteComponentProps } from 'react-router';
+import { type NavigateFunction } from 'react-router';
 
 import { navigate } from './link';
 
 /**
  * Go back in browser history, or navigate to a fallback path if the previous page is not from the same domain
  * @param fallbackPath
- * @param history
+ * @param navigateFunc NavigateFunction from react-router
  */
 export function goBrowserBackWithFallback(
-	fallbackPath: string,
-	history: RouteComponentProps['history']
+  fallbackPath: string,
+  navigateFunc: NavigateFunction,
 ) {
-	if (document.referrer.includes(window.location.origin)) {
-		history.goBack();
-	} else {
-		navigate(history, fallbackPath);
-	}
+  if (document.referrer.includes(window.location.origin)) {
+    navigateFunc(-1);
+  } else {
+    navigate(navigateFunc, fallbackPath);
+  }
 }

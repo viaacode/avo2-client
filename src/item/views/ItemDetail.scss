@@ -1,4 +1,4 @@
-@import "../../styles/settings/variables";
+@use "../../styles/settings/variables" as variables;
 
 .c-item-detail {
 	&__header {
@@ -18,7 +18,7 @@
 	&__action-buttons {
 		display: grid;
 		grid-template-columns: auto auto;
-		gap: $g-spacer-unit;
+		gap: variables.$g-spacer-unit;
 
 		&--left,
 		&--right {
@@ -61,7 +61,7 @@
 		}
 	}
 
-	@media (max-width: $g-bp2) {
+	@media (max-width: variables.$g-bp2) {
 		&.o-container-vertical {
 			padding-top: 0;
 		}

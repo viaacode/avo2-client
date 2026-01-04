@@ -1,12 +1,12 @@
 mutation insertCollection($collection: app_collections_insert_input!) {
-	insert_app_collections(objects: [$collection]) {
-		affected_rows
-		returning {
-			id
-			title
-			collection_fragments(order_by: { position: asc }) {
-				id
-			}
-		}
-	}
+  insert_app_collections(objects: [$collection]) {
+    affected_rows
+    returning {
+      id
+      title
+      collection_fragments(order_by: { position: asc }) {
+        id
+      }
+    }
+  }
 }

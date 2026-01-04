@@ -1,5 +1,7 @@
 mutation deleteCollectionLomLinks($collectionId: uuid!) {
-	delete_app_collections_lom_links(where: { collection_id: { _eq: $collectionId } }) {
-		affected_rows
-	}
+  delete_app_collections_lom_links(
+    where: { collection_id: { _eq: $collectionId } }
+  ) {
+    affected_rows
+  }
 }

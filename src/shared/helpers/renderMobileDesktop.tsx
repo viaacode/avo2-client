@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import './renderMobileDesktop.scss';
 
@@ -10,13 +10,13 @@ import './renderMobileDesktop.scss';
  * https://meemoo.atlassian.net/browse/AVO-3206
  */
 export function renderMobileDesktop(children: {
-	mobile: ReactNode;
-	desktop: ReactNode;
+  mobile: ReactNode;
+  desktop: ReactNode;
 }): ReactNode {
-	return (
-		<>
-			<div className="u-hide-gte-bp2">{children.mobile}</div>
-			<div className="u-hide-lt-bp2">{children.desktop}</div>
-		</>
-	);
+  return (
+    <>
+      <div className="u-hide-gte-bp2">{children.mobile}</div>
+      <div className="u-hide-lt-bp2">{children.desktop}</div>
+    </>
+  );
 }

@@ -1,19 +1,19 @@
 query getItemBookmarkViewPlayCounts($itemUuid: uuid!, $profileId: uuid) {
-	app_item_plays(where: { item_id: { _eq: $itemUuid } }, limit: 1) {
-		count
-	}
-	app_item_views(where: { item_id: { _eq: $itemUuid } }, limit: 1) {
-		count
-	}
-	app_item_bookmarks_aggregate(where: { item_id: { _eq: $itemUuid } }) {
-		aggregate {
-			count
-		}
-	}
-	app_item_bookmarks(
-		where: { profile_id: { _eq: $profileId }, item_id: { _eq: $itemUuid } }
-		limit: 1
-	) {
-		id
-	}
+  app_item_plays(where: { item_id: { _eq: $itemUuid } }, limit: 1) {
+    count
+  }
+  app_item_views(where: { item_id: { _eq: $itemUuid } }, limit: 1) {
+    count
+  }
+  app_item_bookmarks_aggregate(where: { item_id: { _eq: $itemUuid } }) {
+    aggregate {
+      count
+    }
+  }
+  app_item_bookmarks(
+    where: { profile_id: { _eq: $profileId }, item_id: { _eq: $itemUuid } }
+    limit: 1
+  ) {
+    id
+  }
 }

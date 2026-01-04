@@ -1,8 +1,7 @@
-@import "../../../styles/settings/variables";
+@use "../../../styles/settings/variables" as variables;
 
-$component: "c-collapsible-column";
 
-.#{$component} {
+.c-collapsible-column {
 	overflow: hidden;
 	position: relative;
 
@@ -12,7 +11,7 @@ $component: "c-collapsible-column";
 
 	&__toggle {
 		background: var(--block-background);
-		margin: 0 (0 - ($g-spacer-unit * 2));
+		margin: 0 (0 - (variables.$g-spacer-unit * 2));
 
 		&:before {
 			background: rgb(255, 255, 255);
@@ -30,8 +29,8 @@ $component: "c-collapsible-column";
 		max-height: none !important;
 	}
 
-	&--overflowing:not(.#{$component}--expanded) {
-		.#{$component} {
+	&--overflowing:not(.c-collapsible-column--expanded) {
+		.c-collapsible-column {
 			&__toggle {
 				inset: auto 0 0 0;
 				position: absolute;

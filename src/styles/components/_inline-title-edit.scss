@@ -1,4 +1,6 @@
 @use "sass:math";
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
 
 .c-inline-title-edit {
 	max-width: 100%;
@@ -30,10 +32,10 @@
 			&:before {
 				background: #fff;
 				border-radius: 4px;
-				border: 1px solid $color-gray-200;
+				border: 1px solid colors.$color-gray-200;
 				content: "";
 				display: block;
-				inset: math.div($g-spacer-unit, -2);
+				inset: math.div(variables.$g-spacer-unit, -2);
 				pointer-events: none;
 				position: absolute;
 				transform: translateY(-2px); // Account for visual centering
@@ -54,16 +56,16 @@
 		}
 
 		&__submit {
-			color: $color-teal-bright;
+			color: colors.$color-teal-bright;
 		}
 
 		&__cancel {
-			margin-right: math.div($g-spacer-unit, 2);
+			margin-right: math.div(variables.$g-spacer-unit, 2);
 		}
 	}
 
 	&__error {
-		margin-top: $g-spacer-unit;
-		font-size: $g-base-font-size;
+		margin-top: variables.$g-spacer-unit;
+		font-size: variables.$g-base-font-size;
 	}
 }

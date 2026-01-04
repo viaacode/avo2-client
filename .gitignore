@@ -222,7 +222,7 @@ jspm_packages
 # Project-specific
 # --------------------------------------------------------------------------- /
 
-# Create React App
+# Create React Root
 # ---
 
 # dependencies
@@ -249,7 +249,7 @@ node_modules
 .env.production.local
 
 
-# App specific
+# Root specific
 env-config.js
 tests/cypress/videos
 tests/cypress/screenshots
@@ -266,5 +266,5 @@ scripts/client-whitelist.json
 .graphqlconfig
 schema.graphql
 /tracing_output_folder
-
 graphql.config.yml
+/.react-router

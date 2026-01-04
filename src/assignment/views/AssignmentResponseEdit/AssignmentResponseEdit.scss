@@ -1,5 +1,6 @@
-@import "../../../styles/settings/variables";
-@import "../../../styles/settings/colors";
+@use "sass:color";
+@use "../../../styles/settings/variables" as variables;
+@use "../../../styles/settings/colors" as colors;
 
 .c-assignment-response-page {
 	.o-container--full-width {
@@ -62,10 +63,10 @@
 		}
 
 		.c-pill.animated {
-			background-color: $color-yellow;
+			background-color: colors.$color-yellow;
 			color: white;
 			border-color: transparent;
-			box-shadow: 0 0 10px 2px darken($color-yellow, 10%);
+		    box-shadow: 0 0 10px 2px color.adjust(colors.$color-yellow, $lightness: -10%);
 			animation-name: flash-pill;
 			animation-duration: 0.3s;
 			animation-iteration-count: 8;
@@ -76,17 +77,17 @@
 
 	// Limit the description with more/less buttons
 	.c-collapsible-column {
-		@media screen and (min-width: $g-item-fragment-column-bp) {
+		@media screen and (min-width: variables.$g-item-fragment-column-bp) {
 			max-height: 390px;
 		}
 	}
 }
 
 body:not(.c-interactive-tour--in-progress) .c-assignment-response-page .c-assignment-heading {
-	@media screen and (min-width: $g-bp2) {
+	@media screen and (min-width: variables.$g-bp2) {
 		position: sticky;
-		top: $g-bar-size-regular;
-		z-index: $g-c-local-toolbar-z;
+		top: variables.$g-bar-size-regular;
+		z-index: variables.$g-c-local-toolbar-z;
 
 		// Avoid text in the scrollable to be visible above the sticky header
 		// https://meemoo.atlassian.net/issues/AVO-3324
