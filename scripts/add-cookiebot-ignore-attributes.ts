@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 
 replace
   .replaceInFile({
-    files: path.join(__dirname, '../dist/index.html'),
+    files: path.join(__dirname, '../dist/client/index.html'),
     from: regex,
     to: '<script$1src="$2"$3 data-cookieconsent="ignore"></script>',
   })
