@@ -1,7 +1,7 @@
 import { FilterTable } from '@meemoo/admin-core-ui/admin';
 import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
-import { isEqual, isNil } from 'es-toolkit';
+import { isNil } from 'es-toolkit';
 import { type FC, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -240,10 +240,7 @@ export const UrlRedirectOverview: FC = () => {
           )}
           renderNoResults={renderNoResults}
           onTableStateChanged={(state) => {
-            // NOTE: prevents recursion loop but hits theoretical performance
-            if (!isEqual(filters, state)) {
-              setFilters(state as UrlRedirectOverviewFilterState);
-            }
+            setFilters(state as UrlRedirectOverviewFilterState);
           }}
           itemsPerPage={ITEMS_PER_PAGE}
           noContentMatchingFiltersMessage={tText(

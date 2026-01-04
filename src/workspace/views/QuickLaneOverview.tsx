@@ -8,7 +8,6 @@ import {
   type MenuItemInfo,
   MoreOptionsDropdown,
 } from '@viaa/avo2-components';
-import { isEqual } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useState } from 'react';
 
@@ -363,10 +362,7 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
             : ''
         }
         onTableStateChanged={(state: { [id: string]: any }) => {
-          // NOTE: prevents recursion loop but hits theoretical performance
-          if (!isEqual(filters, state)) {
-            setFilters(state as QuickLaneOverviewFilterState);
-          }
+          setFilters(state as QuickLaneOverviewFilterState);
         }}
         renderCell={renderCell as any}
         renderNoResults={() => <h1>NoResults</h1>}

@@ -10,7 +10,6 @@ import {
   AvoSearchOrderDirection,
   AvoUserCommonUser,
 } from '@viaa/avo2-types';
-import { isEqual } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -363,10 +362,7 @@ export const EmbedCodeOverview: FC<EmbedCodeOverviewProps> = ({ onUpdate }) => {
             : ''
         }
         onTableStateChanged={(state) => {
-          // NOTE: prevents recursion loop but hits theoretical performance
-          if (!isEqual(filters, state)) {
-            setFilters(state as EmbedCodeOverviewFilterState);
-          }
+          setFilters(state as EmbedCodeOverviewFilterState);
         }}
         renderCell={renderCell as any}
         renderNoResults={() => <h1>NoResults</h1>}
