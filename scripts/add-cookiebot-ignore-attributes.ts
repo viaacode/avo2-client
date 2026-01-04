@@ -1,9 +1,12 @@
+import { fileURLToPath } from 'node:url';
 import path from 'path';
-
 import replace, { type ReplaceResult } from 'replace-in-file';
 
 const regex =
   /<script([^>]*)src="(\/assets\/main-[^.]+\.js)"([^>]*)><\/script>/g;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 replace
   .replaceInFile({
