@@ -25,8 +25,7 @@ RUN chmod -R g+s /app
 RUN chmod -R g+w /app
 
 # copy source code
-# exclude docker entry, since it is only used in the final image => better docker layer caching
-COPY --exclude=./docker-entry.sh --chown=node:node . .
+COPY --chown=node:node . .
 RUN chmod -R g+sw /app
 
 # install node dependencies
