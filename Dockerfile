@@ -65,7 +65,7 @@ COPY --from=build --chown=101:101 /app/dist ./dist
 COPY --from=build --chown=101:101 /app/node_modules ./node_modules
 
 # copy files
-COPY --from=build --chown=101:101 /app/scripts/env.sh ./
+COPY --from=build --chown=101:101 /app/scripts/env.js ./
 COPY --from=build --chown=101:101 /app/scripts/robots-enable-indexing.txt ./
 COPY --from=build --chown=101:101 /app/scripts/robots-disable-indexing.txt ./
 COPY --from=build --chown=101:101 /app/package*.json ./
