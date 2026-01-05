@@ -268,3 +268,6 @@ schema.graphql
 /tracing_output_folder
 graphql.config.yml
 /.react-router
+
+# do not ignore the env-config.js placeholder file in the public folder
+!/public/env-config.js

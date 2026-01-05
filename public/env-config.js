@@ -1,0 +1,10 @@
+window._ENV_ = {
+	FLOW_PLAYER_ID: '',
+	FLOW_PLAYER_TOKEN: '',
+	PORT: '',
+	CLIENT_URL: '',
+	PROXY_URL: '',
+	ZENDESK_KEY: '',
+	KLASCEMENT_URL: '',
+	LDAP_DASHBOARD_PEOPLE_URL: '',
+};
