@@ -44,10 +44,6 @@ ENV NODE_ENV $NODE_ENV
 ENV NODE_OPTIONS="--max_old_space_size=2048"
 WORKDIR /app
 # Build the app
-RUN echo "listing files in app folder"
-RUN ls -la /app
-RUN echo "listing files in app/public folder"
-RUN ls -la /app/public
 # try alias to keep --max_old_space_size=2048 in subprocesses
 RUN alias npm='node --max_old_space_size=2048 /usr/bin/npm' >> ~/.bash_aliases && . ~/.bash_aliases && npm run build
 # Add cookiebot attribute to script in index.html. Fails if no replacements were made.
@@ -69,21 +65,18 @@ COPY --from=build --chown=node:node /app/dist ./dist
 COPY --from=build --chown=node:node /app/node_modules ./node_modules
 
 # copy files
-COPY --from=build --chown=node:node /app/scripts/env.js ./
-COPY --from=build --chown=node:node /app/scripts/robots-enable-indexing.txt ./
-COPY --from=build --chown=node:node /app/scripts/robots-disable-indexing.txt ./
+COPY --from=build --chown=node:node /app/scripts/env.js ./scripts/env.js
+COPY --from=build --chown=node:node /app/scripts/copy-robots-txt-file.js ./scripts/copy-robots-txt-file.js
+COPY --from=build --chown=node:node /app/scripts/robots-enable-indexing.txt ./scripts/robots-enable-indexing.txt
+COPY --from=build --chown=node:node /app/scripts/robots-disable-indexing.txt ./scripts/robots-disable-indexing.txt
 COPY --from=build --chown=node:node /app/package*.json ./
 
-# copy from host, since we excluded docker-entrypoint.sh in the compile stage
-COPY --chown=node:node ./docker-entrypoint.sh ./
+RUN ls -l /app/scripts
 
 USER root
 # Ensure vite can write cache to /app/dist/server/.vite
 RUN mkdir -p /app/dist/server/.vite && chown -R node:node /app/dist
-# Entry script that copies the env vars and sets the robots.txt for the environment
-RUN chmod +x /app/docker-entrypoint.sh
 USER node
 
-ENTRYPOINT ["/app/docker-entrypoint.sh"]
-
-
+# Run npm run start script
+CMD ["npm", "run", "start"]

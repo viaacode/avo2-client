@@ -51,4 +51,4 @@ Object.keys(envVariables).forEach((envName) => {
 
 outputString += '};';
 
-fs.writeFileSync('./env-config.js', outputString);
+fs.writeFileSync('./dist/client/env-config.js', outputString);

@@ -61,10 +61,8 @@ export default defineConfig((): UserConfig => {
 			]
 		},
 		resolve: {
-			alias: {
-				'~': path.resolve(__dirname, 'public'),
-			},
-			dedupe
+			// Avoid issues with multiple versions of react being loaded
+			dedupe,
 		},
 		// By default, Vite doesn't include shims for Node.js
 		// But DraftJS/Braft RTE (used by the rich text editor) needs them to work
