@@ -69,11 +69,14 @@ COPY --from=build --chown=101:101 /app/node_modules ./node_modules
 COPY --from=build --chown=101:101 /app/scripts/env.sh ./
 COPY --from=build --chown=101:101 /app/scripts/robots-enable-indexing.txt ./
 COPY --from=build --chown=101:101 /app/scripts/robots-disable-indexing.txt ./
+COPY --from=build --chown=101:101 /app/package*.json ./
 
 # copy from host, since we excluded docker-entrypoint.sh in the compile stage
 COPY --chown=101:101 ./docker-entrypoint.sh ./
 
 USER root
+# Ensure vite can write cache to /app/dist/server/.vite
+RUN mkdir -p /app/dist/server/.vite && chown -R node:node /app/dist
 # Entry script that copies the env vars and sets the robots.txt for the environment
 RUN chmod +x /app/docker-entrypoint.sh
 # Run script which initializes env vars to fs

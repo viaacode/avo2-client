@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "__prepare": "husky install",
-    "prestart": "npm run env",
-    "start": "node ./dist/server/server.js",
+    "start": "NODE_ENV=production node ./dist/server/server.js",
     "start-with-env": "dotenv -e .env.qas cross-env NODE_ENV=production node ./dist/server/server.js",
     "dev": "dotenv -e .env.qas node server.ts",
     "dev:embed": "dotenv -e .env.qas vite --config vite-embed.config.mts",
