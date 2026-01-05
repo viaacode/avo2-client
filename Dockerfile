@@ -44,6 +44,8 @@ ENV NODE_ENV $NODE_ENV
 ENV NODE_OPTIONS="--max_old_space_size=2048"
 WORKDIR /app
 # Build the app
+RUN echo "listing files in app folder"
+RUN ls -la /app
 # try alias to keep --max_old_space_size=2048 in subprocesses
 RUN alias npm='node --max_old_space_size=2048 /usr/bin/npm' >> ~/.bash_aliases && . ~/.bash_aliases && npm run build
 # Add cookiebot attribute to script in index.html. Fails if no replacements were made.
