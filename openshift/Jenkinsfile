@@ -102,8 +102,8 @@ pipeline {
 				not {
 					buildingTag()
 				}
-			  not {
-					branch 'develop'
+				anyOf {
+					branch 'develop';
 				}
 			}
 			steps {
@@ -250,31 +250,31 @@ pipeline {
 //                 junit 'tests/e2e_test_results.xml'
 //             }
 // 	    }
-		stage('Deploy TST') {
-			when {
-				anyOf {
-				    branch 'develop';
-				}
-			}
-			steps {
-				container('oc') {
-                    // tagNewImage('tst') custom buimd with debug tools
-                    script {
-                        sh """#!/bin/bash
-                        oc project $OC_PROJECT
-                        oc start-build --follow=true -e DEBUG_TOOLS=true --build-arg DEBUG_TOOLS=true client-tst
-                        """
-                    }
-				}
-			}
-// 			post {
-// 				always {
-// 					catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-// 				        jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'tst', environmentName: 'tst', environmentType: 'staging'
-// 				    }
+// 		stage('Deploy TST') {
+// 			when {
+// 				anyOf {
+// 				    branch 'develop';
 // 				}
 // 			}
-		}
+// 			steps {
+// 				container('oc') {
+//                     // tagNewImage('tst') custom buimd with debug tools
+//                     script {
+//                         sh """#!/bin/bash
+//                         oc project $OC_PROJECT
+//                         oc start-build --follow=true -e DEBUG_TOOLS=true --build-arg DEBUG_TOOLS=true client-tst
+//                         """
+//                     }
+// 				}
+// 			}
+// // 			post {
+// // 				always {
+// // 					catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+// // 				        jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'tst', environmentName: 'tst', environmentType: 'staging'
+// // 				    }
+// // 				}
+// // 			}
+// 		}
 		stage('Deploy QAS') {
 			when {
 				anyOf { branch 'master'; branch 'main' }
