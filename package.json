@@ -137,7 +137,6 @@
     "@types/history": "4.7.11",
     "@types/i18next-xhr-backend": "1.4.2",
     "@types/jest": "^29.5.5",
-    "@types/jest-expect-message": "1.1.0",
     "@types/node": "20.4.10",
     "@types/node-fetch": "2.6.5",
     "@types/node-zendesk": "1.4.0",
