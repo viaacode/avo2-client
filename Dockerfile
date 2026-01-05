@@ -1,3 +1,6 @@
+###################################################################
+## Compile image
+###################################################################
 FROM docker.io/library/node:24-alpine AS compile
 # set our node environment, defaults to production
 ARG NODE_ENV=ci
@@ -7,15 +10,32 @@ ENV NODE_ENV $NODE_ENV
 ENV CI $CI
 ENV TZ=Europe/Brussels
 WORKDIR /app
-RUN mkdir ./dist/ && mkdir ./dist-embed &&chown -R node:node /app && chmod -R  g+s /app && chmod -R  g+w /app
-COPY  --chown=node:node . .
-RUN chown -R node:node /app && chmod -R  g+sw /app
-RUN apk update
-RUN apk add --no-cache --virtual python2 make g++ tzdata && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-USER node
-RUN npm ci --include=dev --legacy-peer-deps
 
+# update timezone for image
+RUN apk update
+RUN apk add --no-cache tzdata
+RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime
+RUN echo $TZ > /etc/timezone
+
+# prep folders to copy source code
+RUN mkdir ./dist
+RUN mkdir ./dist-embed
+RUN chown -R node:node /app
+RUN chmod -R g+s /app
+RUN chmod -R g+w /app
+
+# copy source code
+# exclude docker entry, since it is only used in the final image => better docker layer caching
+COPY --exclude=./docker-entry.sh --chown=node:node . .
+RUN chmod -R g+sw /app
+
+# install node dependencies
+USER node
+RUN npm ci --include=dev
+
+###################################################################
 ## Builder image
+###################################################################
 FROM docker.io/library/node:24-alpine AS build
 USER node
 COPY --from=compile /app /app
@@ -30,19 +50,36 @@ RUN alias npm='node --max_old_space_size=2048 /usr/bin/npm' >> ~/.bash_aliases &
 # Add cookiebot attribute to script in index.html. Fails if no replacements were made.
 RUN npm run add-cookiebot-attribute
 
-## final image with static serving with nginx
+# Remove the dev dependencies that were only needed during the build stage
+RUN npm prune --omit=dev
+
+###################################################################
+## Servce client using a node server for server side rendering
+###################################################################
 FROM docker.io/library/node:24-alpine AS serve
 USER node
 ENV NODE_ENV $NODE_ENV
-COPY --from=build dist ./
-COPY scripts/env.sh ./
-COPY scripts/robots-enable-indexing.txt ./
-COPY scripts/robots-disable-indexing.txt ./
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh && chown 101:101 /docker-entrypoint.sh
-# Run script which initializes env vars to fs
-RUN chmod +x env.sh
+WORKDIR /app
 
-ENTRYPOINT ["node server.ts"]
+# copy folders
+COPY --from=build --chown=101:101 /app/dist ./dist
+COPY --from=build --chown=101:101 /app/node_modules ./node_modules
+
+# copy files
+COPY --from=build --chown=101:101 /app/scripts/env.sh ./
+COPY --from=build --chown=101:101 /app/scripts/robots-enable-indexing.txt ./
+COPY --from=build --chown=101:101 /app/scripts/robots-disable-indexing.txt ./
+
+# copy from host, since we excluded docker-entrypoint.sh in the compile stage
+COPY --chown=101:101 ./docker-entrypoint.sh ./
+
+USER root
+# Entry script that copies the env vars and sets the robots.txt for the environment
+RUN chmod +x /app/docker-entrypoint.sh
+# Run script which initializes env vars to fs
+RUN chmod +x /app/env.sh
+USER node
+
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
 

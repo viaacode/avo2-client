@@ -1,7 +1,5 @@
-#!/bin/bash
-WD=/usr/share/nginx/html
-cd $WD
-
+#!/bin/sh
+WD=/app
 
 echo "setting env"
 sh ./env.sh
@@ -21,5 +19,6 @@ rm $WD/robots-disable-indexing.txt
 
 if  [[ "$1" == "bash" ]]; then
     bash
-else nginx -g 'daemon off;'
+else
+    exec node $WD/dist/server/server.js
 fi

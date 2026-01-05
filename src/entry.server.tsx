@@ -1,6 +1,3 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 // React is required to be imported for SSR even if it is not directly used in this file. This import must be identical between server and client entry files
 // @ts-ignore
 import * as React from 'react';
@@ -15,19 +12,10 @@ import APP_ROUTES from './routes.ts';
 
 let { query, dataRoutes } = createStaticHandler(APP_ROUTES);
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-let clientDir: string;
-if (process.env.NODE_ENV === 'production') {
-  clientDir = path.resolve(__dirname, '../dist/client');
-} else {
-  clientDir = path.resolve(__dirname, '../');
-}
-
-const indexHtml = fs.readFileSync(path.join(clientDir, 'index.html'), 'utf8');
-
-export async function render(request: Request) {
+export async function render(
+  request: Request,
+  indexHtml: string,
+): Promise<Response> {
   try {
     console.log('[SSR] requesting route: ' + new URL(request.url).pathname);
 
@@ -50,7 +38,7 @@ export async function render(request: Request) {
     // Render the meta tags and title tags
     const helmet = Helmet.renderStatic();
 
-    // Setup headers from action and loaders from deepest match
+    // Setup headers from action and loaders from the deepest match
     let leaf = context.matches[context.matches.length - 1];
     let actionHeaders = context.actionHeaders[leaf.route.id];
     let loaderHeaders = context.loaderHeaders[leaf.route.id];

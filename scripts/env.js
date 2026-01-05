@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from "fs";
 
 const CI_ENV_VARIABLES = {
 	ENV: process.env.NODE_ENV,

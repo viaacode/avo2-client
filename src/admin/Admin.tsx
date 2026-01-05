@@ -20,11 +20,6 @@ import { type NavigationItemInfo } from '../shared/types';
 import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
 import { Sidebar } from './shared/components/Sidebar/Sidebar';
 
-import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
-import '@meemoo/admin-core-ui/admin.css';
-import '../styles/main.scss';
-import './Admin.scss';
-
 export const Admin: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);
 
