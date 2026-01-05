@@ -78,8 +78,6 @@ USER root
 RUN mkdir -p /app/dist/server/.vite && chown -R node:node /app/dist
 # Entry script that copies the env vars and sets the robots.txt for the environment
 RUN chmod +x /app/docker-entrypoint.sh
-# Run script which initializes env vars to fs
-RUN chmod +x /app/env.sh
 USER node
 
 ENTRYPOINT ["/app/docker-entrypoint.sh"]

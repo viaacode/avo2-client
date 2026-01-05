@@ -19,7 +19,7 @@ import { Embed } from './components/Embed';
 import { EmbedErrorView } from './components/EmbedErrorView';
 import { RegisterOrLogin } from './components/RegisterOrLogin';
 import { useGetLoginStateForEmbed } from './hooks/useGetLoginStateForEmbed';
-import '@meemoo/admin-core-ui/styles.css';
+import '@meemoo/admin-core-ui/admin.css';
 import '../App.scss';
 import '../styles/main.scss';
 

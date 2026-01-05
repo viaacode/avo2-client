@@ -1,12 +1,6 @@
 #!/bin/sh
 WD=/app
 
-echo "setting env"
-sh ./env.sh
-mkdir $WD/dist/client/public
-cp ./env-config.js $WD/dist/client/public/env-config.js
-
-
 # Copy the scripts/robots-enable-indexing.txt file or the scripts/robots-enable-indexing.txt file to public/robots.txt based on the ENABLE_GOOGLE_INDEXING environment variable
 echo "copy robots.txt file"
 if  [[ "$ENABLE_GOOGLE_INDEXING" == "true" ]]; then

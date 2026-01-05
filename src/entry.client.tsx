@@ -13,9 +13,9 @@ import { createBrowserRouter } from 'react-router-dom';
 import ALL_APP_ROUTES from './routes.ts'; // Set moment language to Dutch
 
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
+import '@meemoo/admin-core-ui/admin.css';
 import './App.scss';
 import './styles/main.scss';
-import '@meemoo/admin-core-ui/styles.css';
 
 // Set moment language to Dutch
 setDefaultOptions({
