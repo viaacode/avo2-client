@@ -61,17 +61,17 @@ ENV NODE_ENV $NODE_ENV
 WORKDIR /app
 
 # copy folders
-COPY --from=build --chown=101:101 /app/dist ./dist
-COPY --from=build --chown=101:101 /app/node_modules ./node_modules
+COPY --from=build --chown=node:node /app/dist ./dist
+COPY --from=build --chown=node:node /app/node_modules ./node_modules
 
 # copy files
-COPY --from=build --chown=101:101 /app/scripts/env.js ./
-COPY --from=build --chown=101:101 /app/scripts/robots-enable-indexing.txt ./
-COPY --from=build --chown=101:101 /app/scripts/robots-disable-indexing.txt ./
-COPY --from=build --chown=101:101 /app/package*.json ./
+COPY --from=build --chown=node:node /app/scripts/env.js ./
+COPY --from=build --chown=node:node /app/scripts/robots-enable-indexing.txt ./
+COPY --from=build --chown=node:node /app/scripts/robots-disable-indexing.txt ./
+COPY --from=build --chown=node:node /app/package*.json ./
 
 # copy from host, since we excluded docker-entrypoint.sh in the compile stage
-COPY --chown=101:101 ./docker-entrypoint.sh ./
+COPY --chown=node:node ./docker-entrypoint.sh ./
 
 USER root
 # Ensure vite can write cache to /app/dist/server/.vite
