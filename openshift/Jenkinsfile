@@ -50,18 +50,18 @@ pipeline {
             - cat
             tty: true
             imagePullPolicy: Always
-          - name: hasura-cli
-            image: hasura/graphql-engine:v2.16.1.cli-migrations-v2
-            command:
-            - cat
-            tty: true
-            imagePullPolicy: Always
-          - name: playwright
-            image: mcr.microsoft.com/playwright:v1.44.0-focal
-            command:
-            - cat
-            tty: true
-            imagePullPolicy: Always
+#- name: hasura-cli
+#  image: hasura/graphql-engine:v2.16.1.cli-migrations-v2
+#  command:
+#  - cat
+#  tty: true
+#  imagePullPolicy: Always
+#- name: playwright
+#  image: mcr.microsoft.com/playwright:v1.44.0-focal
+#  command:
+#  - cat
+#  tty: true
+#  imagePullPolicy: Always
         """.stripIndent()
 		}
 	}
