@@ -271,3 +271,5 @@ graphql.config.yml
 
 # do not ignore the env-config.js placeholder file in the public folder
 !/public/env-config.js
+!/scripts/env.js
+!/scripts/copy-robots-txt-file.js
