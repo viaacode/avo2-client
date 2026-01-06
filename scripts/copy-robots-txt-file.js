@@ -12,7 +12,8 @@ const srcFile = enableGoogleIndexing
 const destFile = path.join(WD, 'dist', 'client', 'robots.txt');
 
 // Copy correct robots.txt file
-fs.copyFileSync(srcFile, destFile);
+fs.writeFileSync(destFile, fs.readFileSync(srcFile, 'utf8'));
+fs.chmodSync(destFile, 0o644);
 
 // Remove both source files
 fs.rmSync(path.join(WD, 'scripts', 'robots-enable-indexing.txt'), {
