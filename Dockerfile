@@ -76,6 +76,9 @@ RUN ls -l /app/scripts
 USER root
 # Ensure vite can write cache to /app/dist/server/.vite
 RUN mkdir -p /app/dist/server/.vite && chown -R node:node /app/dist
+# Ensure node can write to app/dist for adding the robots.txt and env-config.js file
+RUN chown -R node:node /app/dist/client
+RUN chmod -R u+rwX /app/dist/client
 USER node
 
 # Run npm run start script
