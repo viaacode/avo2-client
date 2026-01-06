@@ -78,7 +78,7 @@ USER root
 # Ensure node can write to app/dist for adding the robots.txt and env-config.js file
 RUN mkdir -p /app/dist/client /app/dist/server/.vite \
   && chgrp -R 0 /app \
-  && chmod -R g=u /app \
+  && chmod -R g=u /app
 
 USER node
 # Run npm run start script
