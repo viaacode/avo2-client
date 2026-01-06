@@ -68,7 +68,6 @@ export const LoggedInHome: FC = () => {
             <InteractiveTour showButton={false} />
             <ContentPageRenderer
               contentPageInfo={contentPageInfo}
-              commonUser={commonUser}
               renderNoAccessError={renderWrongUserRoleError}
             />
           </>

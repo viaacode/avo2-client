@@ -1,5 +1,5 @@
 import { Button, IconName } from '@viaa/avo2-components';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { type FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
@@ -20,7 +20,7 @@ export const Login: FC = () => {
   const location = useLocation();
   const navigateFunc = useNavigate();
 
-  const [loginAtomValue] = useAtom(loginAtom);
+  const loginAtomValue = useAtomValue(loginAtom);
   const loginState = loginAtomValue.data;
   const loginStateLoading = loginAtomValue.loading;
   const loginStateError = loginAtomValue.error;

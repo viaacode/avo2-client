@@ -23,13 +23,7 @@ The React AVO Client app will provide the following:
 * Implementation of the React @viaa/components in screens for the end user
 * Coupling with the NodeJS proxy for authentication & search
 
-## Server
-
-|          | QAS  | PRD  |
-|----------|:----:|:----:|
-| **host** | TODO | TODO |
-
-## Stack
+## Development
 
 #### Backend
 
@@ -40,13 +34,34 @@ NodeJS proxy w/Typescript and Express.js
 * Client app: React
     * https://github.com/viaacode/avo2-client
 * Admin app: React
-    * https://github.com/viaacode/avo2-admin
+    * https://github.com/viaacode/react-admin-core-module
+
+run locally for development:
+```shell
+npm run dev
+```
+
+run production ssr build locally:
+```shell
+npm run start-with-env
+```
+
+run in docker locally like on cloud:
+```shell
+docker compose -f ./docker-compose.yml -p avo2-client up -d --build app
+```
+
+in the cloud the docker file is used with npm run start since the env vars are set by openshift
+```shell
+npm run start
+```
+
 
 ## Logging and monitoring
 
 #### Backend
 
-// TODO
+https://github.com/viaacode/avo2-proxy
 
 ## Deployment/Installation
 
@@ -66,19 +81,11 @@ See postman collection (TODO add link)
 
 ## Deploy to QAS
 
-Steps to deploy:
-
-* Update package.json version to match release branch version
-* Do `npm install` or update the version of the package-lock.json file version
-* Extract translations
-*
-* Merge release branch into master
-* This deploys to `qas` if the integration tests succeed
+https://docs.google.com/document/d/16jZSM71yOikHB1kgtfKYaasz-gQkIVdG/edit
 
 ### Deploy to PROD
 
-* Add tag on master + push the tag (format: v1.1.1)
-* Wait for build to succeed (eta 20min)
+https://docs.google.com/document/d/1Nhj90tl0IbqTUSGvtPMO8ThhqWiXkm4N/edit
 
 ### Troubleshoot deploy
 

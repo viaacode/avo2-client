@@ -1302,7 +1302,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         }
         description={assignmentFromLoader?.description}
         image={assignmentFromLoader?.seo_image_path}
-        url={loaderData?.url}
+        url={loaderData.url}
         updatedAt={assignmentFromLoader?.updated_at}
         publishedAt={assignmentFromLoader?.published_at}
         createdAt={assignmentFromLoader?.created_at}

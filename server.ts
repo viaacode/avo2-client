@@ -54,7 +54,6 @@ async function startDevServer() {
         fs.readFileSync(indexHtmlPath, 'utf-8'),
       );
 
-      console.log('starting dev server with /src/entry.server.tsx');
       const { render } = await vite.ssrLoadModule('/src/entry.server.tsx');
       const origin = 'http://localhost';
       const request = new Request(new URL(req.originalUrl, origin), {

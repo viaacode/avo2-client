@@ -164,7 +164,6 @@ export const AcceptConditions: FC = () => {
           {!!pages[0] && (
             <ContentPageRenderer
               contentPageInfo={pages[0] as ContentPageInfo}
-              commonUser={commonUser}
               renderNoAccessError={renderWrongUserRoleError}
             />
           )}
@@ -172,7 +171,6 @@ export const AcceptConditions: FC = () => {
           {!!pages[1] && (
             <ContentPageRenderer
               contentPageInfo={pages[1] as ContentPageInfo}
-              commonUser={commonUser}
               renderNoAccessError={renderWrongUserRoleError}
             />
           )}

@@ -97,9 +97,16 @@ export class AssignmentService {
     }
   }
 
+  /**
+   * Get assignment by id
+   * @param assignmentId
+   * @param inviteToken
+   * @param headers headers to pass along to the proxy when making the request (optional for client requests, only needed for ssr)
+   */
   static async fetchAssignmentById(
     assignmentId: string,
     inviteToken?: string,
+    headers: Record<string, string> = {},
   ): Promise<AvoAssignmentAssignment> {
     try {
       const url = stringifyUrl({
@@ -115,6 +122,7 @@ export class AssignmentService {
         url,
         {
           method: 'GET',
+          headers,
         },
       );
 

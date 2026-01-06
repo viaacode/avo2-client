@@ -93,7 +93,6 @@ export const LoggedOutHome: FC = () => {
           <InteractiveTour showButton={false} />
           <ContentPageRenderer
             contentPageInfo={contentPageInfo}
-            commonUser={commonUser}
             renderNoAccessError={renderWrongUserRoleError}
             userGroupId={searchParams.get('userGroupId')}
           />

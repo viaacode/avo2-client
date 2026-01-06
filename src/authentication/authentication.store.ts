@@ -12,19 +12,9 @@ export const loginAtom = atom<LoginState>({
   error: false,
 });
 
-export const commonUserAtom = selectAtom(
-  loginAtom,
-  (loginState) =>
-    (loginState.data as AvoAuthLoginResponseLoggedIn)?.commonUserInfo,
-);
-
-/**
- * @deprecated please use commonUserAtom instead
- */
-export const userAtom = selectAtom(
-  loginAtom,
-  (loginState) => (loginState.data as AvoAuthLoginResponseLoggedIn)?.userInfo,
-);
+export const commonUserAtom = selectAtom(loginAtom, (loginState) => {
+  return (loginState.data as AvoAuthLoginResponseLoggedIn)?.commonUserInfo;
+});
 
 export const acceptConditionsAtom = atom<boolean | null, [], void>(
   null,

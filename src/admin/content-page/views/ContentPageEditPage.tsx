@@ -1,9 +1,7 @@
 import { PermissionName } from '@viaa/avo2-types';
-import { useAtomValue } from 'jotai';
 import { type FC, lazy, Suspense, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useLoaderData, useNavigate, useParams } from 'react-router';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
 import { PermissionGuard } from '../../../authentication/components/PermissionGuard';
 import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
@@ -19,10 +17,9 @@ const ContentPageEdit = lazy(() =>
 );
 
 export const ContentPageEditPage: FC = () => {
+  const loaderData = useLoaderData<{ url: string }>();
   const navigateFunc = useNavigate();
   const { id: contentPageId } = useParams<{ id: string }>();
-
-  const commonUser = useAtomValue(commonUserAtom);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
 
   useWarningBeforeUnload({
@@ -44,7 +41,6 @@ export const ContentPageEditPage: FC = () => {
         <ContentPageEdit
           className="c-admin-core c-admin__content-page-edit"
           id={contentPageId}
-          commonUser={commonUser}
           onHasUnsavedChangesChanged={(state) => {
             setHasUnsavedChanges(state);
           }}
@@ -54,6 +50,7 @@ export const ContentPageEditPage: FC = () => {
               navigateFunc,
             )
           }
+          url={loaderData.url}
         />
         <BeforeUnloadPrompt when={hasUnsavedChanges} />
       </PermissionGuard>

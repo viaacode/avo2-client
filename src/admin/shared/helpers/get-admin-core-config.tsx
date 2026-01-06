@@ -16,7 +16,6 @@ import { type FC } from 'react';
 import { type NavigateFunction } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
 import { APP_PATH, type RouteId } from '../../../constants';
 import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
@@ -29,7 +28,6 @@ import {
   ToastService,
   ToastTypeToAvoToastType,
 } from '../../../shared/services/toast-service';
-import { store } from '../../../shared/store/ui.store';
 import { Locale } from '../../../shared/translations/translations.types';
 import { ADMIN_PATH } from '../../admin.const';
 import { BlockSearch } from '../../content-page/components/blocks/BlockSearch/BlockSearch';
@@ -83,6 +81,7 @@ const ALERT_ICON_LIST_CONFIG = (): {
 
 export function getAdminCoreConfig(
   navigateFunc: NavigateFunction,
+  commonUser: AvoUserCommonUser | null,
 ): AdminConfig {
   const InternalLink = (linkInfo: LinkInfo) => {
     return <Link {...linkInfo} to={linkInfo.to || ''} />;
@@ -289,7 +288,7 @@ export function getAdminCoreConfig(
       },
       router: {
         Link: InternalLink as FC<LinkInfo>,
-        navigateFunc,
+        navigateFunc: navigateFunc as any,
       },
       queryCache: {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -352,7 +351,7 @@ export function getAdminCoreConfig(
         UserBulkAction.EXPORT_ALL,
       ],
       getCommonUser: (): AvoUserCommonUser | null => {
-        return store.get(commonUserAtom);
+        return commonUser || null;
       },
     },
     locale: Locale.Nl as any,

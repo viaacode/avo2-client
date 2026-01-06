@@ -1,4 +1,5 @@
 import {
+  AdminConfigManager,
   type ContentPageInfo,
   ContentPageRenderer,
   type DbContentPage,
@@ -7,11 +8,12 @@ import { IconName } from '@viaa/avo2-components';
 import {
   AvoAuthLoginResponseLoggedIn,
   AvoContentPagePage,
+  AvoContentPageType,
   AvoSearchOrderDirection,
   PermissionName,
 } from '@viaa/avo2-types';
 import { decodeHTML } from 'entities';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { stringifyUrl } from 'query-string';
 import { type FC, useCallback, useEffect, useState } from 'react';
 import { Navigate, useLoaderData, useNavigate } from 'react-router';
@@ -59,7 +61,7 @@ export const DynamicRouteResolver: FC = () => {
   const location = useLocation();
 
   // State
-  const [loginAtomValue] = useAtom(loginAtom);
+  const loginAtomValue = useAtomValue(loginAtom);
   const loginState = loginAtomValue.data;
   const loginStateLoading = loginAtomValue.loading;
   const loginStateError = loginAtomValue.error;
@@ -307,11 +309,9 @@ export const DynamicRouteResolver: FC = () => {
               <InteractiveTour showButton={false} />
               <ContentPageRenderer
                 contentPageInfo={routeInfo.data as ContentPageInfo}
-                commonUser={
-                  (loginState as AvoAuthLoginResponseLoggedIn).commonUserInfo
-                }
                 renderFakeTitle={
-                  (routeInfo.data as ContentPageInfo).contentType === 'FAQ_ITEM'
+                  (routeInfo.data as ContentPageInfo).contentType ===
+                  AvoContentPageType.FAQ_ITEM
                 }
                 renderNoAccessError={renderWrongUserRoleError}
               />

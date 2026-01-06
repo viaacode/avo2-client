@@ -19,12 +19,17 @@ import { Slide, ToastContainer } from 'react-toastify';
 import pkg from '../package.json' with { type: 'json' };
 import { getAdminCoreConfig } from './admin/shared/helpers/get-admin-core-config.tsx';
 import { SpecialUserGroupId } from './admin/user-groups/user-group.const';
-import { commonUserAtom } from './authentication/authentication.store';
+import {
+  commonUserAtom,
+  loginAtom,
+} from './authentication/authentication.store';
 import { getLoginStateAtom } from './authentication/authentication.store.actions';
 import { PermissionService } from './authentication/helpers/permission-service';
 import { ConfirmModal } from './shared/components/ConfirmModal/ConfirmModal';
+import FullPageSpinner from './shared/components/FullPageSpinner/FullPageSpinner.tsx';
 import { ROUTE_PARTS } from './shared/constants/routes';
 import { getEnv } from './shared/helpers/env';
+import { isServerSideRendering } from './shared/helpers/routing/is-server-side-rendering.ts';
 import { ReactRouter7Adapter } from './shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
 import { QueryParamProvider } from './shared/helpers/routing/use-query-params-ssr';
 import { tHtml } from './shared/helpers/translate-html';
@@ -49,6 +54,7 @@ export const App: FC = () => {
   const location = useLocation();
   const navigateFunc = useNavigate();
   const getLoginState = useSetAtom(getLoginStateAtom);
+  const loginState = useAtomValue(loginAtom);
 
   const commonUser = useAtomValue(commonUserAtom);
   const [historyLocations, setHistoryLocations] = useAtom(historyLocationsAtom);
@@ -68,10 +74,6 @@ export const App: FC = () => {
     .includes(String(commonUser?.userGroup?.id));
   const query = new URLSearchParams(location?.search || '');
   const isPreviewRoute = query.get('preview') === 'true';
-
-  // const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
-  //   state: 'loading',
-  // });
 
   const consoleLogClientAndServerVersions = useCallback(async () => {
     console.info(`%c client version: ${pkg.version}`, 'color: #bada55');
@@ -109,9 +111,14 @@ export const App: FC = () => {
    * Since during route loading we only set the config, but we don't have access to navigateFunc yet
    */
   useEffect(() => {
-    const config: AdminConfig = getAdminCoreConfig(navigateFunc);
+    const config: AdminConfig = getAdminCoreConfig(navigateFunc, commonUser);
+    console.log('setting admin-core config, ', {
+      config,
+      commonUser: commonUser,
+      navigateFunc: navigateFunc,
+    });
     AdminConfigManager.setConfig(config);
-  }, [navigateFunc]);
+  }, [navigateFunc, loginState]);
 
   /**
    * Load login status as soon as possible
@@ -195,6 +202,10 @@ export const App: FC = () => {
 
   // Render
   const renderApp = () => {
+    console.log('rendering app with ', { loginState });
+    if (!loginState?.data && !isServerSideRendering()) {
+      return <FullPageSpinner locationId="App.tsx wait for login state" />;
+    }
     return (
       <div
         className={clsx('o-app', {
@@ -243,12 +254,6 @@ export const App: FC = () => {
   return (
     <QueryParamProvider adapter={ReactRouter7Adapter}>
       <QueryClientProvider client={queryClient}>
-        {/*<LoadingErrorLoadedComponent*/}
-        {/*  loadingInfo={loadingInfo}*/}
-        {/*  dataObject={{}}*/}
-        {/*  render={}*/}
-        {/*  locationId="app"*/}
-        {/*/>*/}
         {renderApp()}
       </QueryClientProvider>
     </QueryParamProvider>

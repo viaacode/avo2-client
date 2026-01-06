@@ -16,7 +16,7 @@ export async function initAppLoader() {
     // Set admin-core config with dummy navigate function during SSR
     // The config will be set again in the client after hydration
     if (!AdminConfigManager.isConfigSet()) {
-      const config: AdminConfig = getAdminCoreConfig(noop);
+      const config: AdminConfig = getAdminCoreConfig(noop, null);
       AdminConfigManager.setConfig(config);
     }
 
@@ -38,14 +38,18 @@ export async function fetchContentPageLoader(args: LoaderFunctionArgs<any>) {
   try {
     // Load content page for the requested path
     const path = new URL(args.request.url).pathname;
-    const contentPage = await getContentPageByPath(path);
+    const cookieHeader = args.request.headers.get('cookie');
+    const contentPage = await getContentPageByPath(
+      path,
+      cookieHeader ? { cookie: cookieHeader } : undefined,
+    );
     return {
       contentPage,
       url: args.request.url,
     };
   } catch (err) {
     console.error(
-      'Failed to load content page in react-router loader for route LoggedOutHome',
+      'Failed to load content page in react-router loader for route',
       err,
       { url: args.request.url },
     );
@@ -74,7 +78,6 @@ export async function fetchCollectionLoader(args: LoaderFunctionArgs<any>) {
           undefined,
           cookieHeader ? { cookie: cookieHeader } : undefined,
         );
-      // console.log('Fetched collection/bundle in loader:', collection);
       return {
         collection,
         url: args.request.url,
@@ -99,9 +102,11 @@ export async function fetchAssignmentLoader(args: LoaderFunctionArgs<any>) {
   const id = args?.params?.id;
   try {
     if (id) {
+      const cookieHeader = args.request.headers.get('cookie');
       const assignment = await AssignmentService.fetchAssignmentById(
         id,
         undefined,
+        cookieHeader ? { cookie: cookieHeader } : undefined,
       );
       return {
         assignment,
@@ -121,4 +126,10 @@ export async function fetchAssignmentLoader(args: LoaderFunctionArgs<any>) {
       url: args.request.url,
     };
   }
+}
+
+export async function passUrlLoader(args: LoaderFunctionArgs<any>) {
+  return {
+    url: args.request.url,
+  };
 }

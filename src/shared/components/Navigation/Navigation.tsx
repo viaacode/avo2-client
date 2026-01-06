@@ -13,7 +13,7 @@ import {
   ToolbarRight,
 } from '@viaa/avo2-components';
 import { last } from 'es-toolkit';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { type FC, type ReactText, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AvoLogoSrc from '../../../assets/images/avo-logo-i.svg';
@@ -46,15 +46,16 @@ import { tText } from '../../helpers/translate-text';
 
 type NavigationParams = {
   isPreviewRoute: boolean;
+  url: string;
 };
 
 /**
  * Main navigation bar component
  */
-export const Navigation: FC<NavigationParams> = ({ isPreviewRoute }) => {
+export const Navigation: FC<NavigationParams> = ({ isPreviewRoute, url }) => {
   const navigateFunc = useNavigate();
 
-  const [loginAtomValue] = useAtom(loginAtom);
+  const loginAtomValue = useAtomValue(loginAtom);
   const loginState = loginAtomValue.data;
   const loginStateLoading = loginAtomValue.loading;
   const loginStateError = loginAtomValue.error;
@@ -241,12 +242,12 @@ export const Navigation: FC<NavigationParams> = ({ isPreviewRoute }) => {
         autoHeight={true}
       >
         {isPreviewRoute && (
-          <Container background="white">
+          <Container background={'white'}>
             <Container mode="horizontal" className="u-d-flex">
               <ContentPagePreviewUserRoleSelector
                 className="c-content-page-preview-selector"
-                commonUser={commonUser}
                 onToggleMenu={setIsUserGroupSelectorOpen}
+                url={url}
               />
             </Container>
           </Container>

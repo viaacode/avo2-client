@@ -33,7 +33,7 @@ export const ContentPageOverviewPage: FC = () => {
   const hasPerm = useCallback(
     (permission: PermissionName) =>
       commonUser?.permissions?.includes(permission),
-    [commonUser],
+    [commonUser?.permissions],
   );
 
   const renderPageContent = () => {
@@ -43,7 +43,7 @@ export const ContentPageOverviewPage: FC = () => {
           <FullPageSpinner locationId="content-page-overview-page--loading" />
         }
       >
-        <ContentPageOverview commonUser={commonUser} />
+        <ContentPageOverview />
       </Suspense>
     );
   };
