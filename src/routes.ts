@@ -107,6 +107,7 @@ const APP_ROUTES: RouteObject[] = [
     path: '/',
     middleware: [logRoutesMiddleware],
     loader: initAppLoader,
+    shouldRevalidate: () => false,
     Component: App,
     // hydrateFallbackElement: <FullPageSpinner/>,
     children: [

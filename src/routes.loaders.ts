@@ -24,7 +24,7 @@ export async function initAppLoader() {
       // Fetch login state
       checkLoginState(),
       // Wait for translations to load
-      await loadTranslations(),
+      loadTranslations(),
     ]);
   } catch (err) {
     console.error(

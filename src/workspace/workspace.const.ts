@@ -17,42 +17,44 @@ export const ORGANISATION_CONTENT_ID = ROUTE_PARTS.organisationContent;
 export const QUICK_LANE_ID = ROUTE_PARTS.quickLane;
 export const EMBEDS_ID = ROUTE_PARTS.embeds;
 
-export const GET_TABS: () => WorkspaceTab[] = () => [
-  {
-    label: tText('workspace/workspace___collecties'),
-    icon: IconName.collection,
-    id: COLLECTIONS_ID,
-  },
-  {
-    label: tText('workspace/workspace___opdrachten'),
-    icon: IconName.clipboard,
-    id: ASSIGNMENTS_ID,
-  },
-  {
-    label: tText('workspace/workspace___bundels'),
-    icon: IconName.folder,
-    id: BUNDLES_ID,
-  },
-  {
-    label: tText('workspace/workspace___gedeelde-links'),
-    icon: IconName.link2,
-    id: QUICK_LANE_ID,
-  },
-  {
-    label: tText('workspace/workspace___bladwijzers'),
-    icon: IconName.bookmark,
-    id: BOOKMARKS_ID,
-  },
-  {
-    label: tText('workspace/workspace___organisatie-content'),
-    id: ORGANISATION_CONTENT_ID,
-  },
-  {
-    label: tText('workspace/workspace___ingesloten-fragmenten'),
-    icon: IconName.code,
-    id: EMBEDS_ID,
-  },
-];
+export const GET_TABS: () => WorkspaceTab[] = () => {
+  return [
+    {
+      label: tText('workspace/workspace___collecties'),
+      icon: IconName.collection,
+      id: COLLECTIONS_ID,
+    },
+    {
+      label: tText('workspace/workspace___opdrachten'),
+      icon: IconName.clipboard,
+      id: ASSIGNMENTS_ID,
+    },
+    {
+      label: tText('workspace/workspace___bundels'),
+      icon: IconName.folder,
+      id: BUNDLES_ID,
+    },
+    {
+      label: tText('workspace/workspace___gedeelde-links'),
+      icon: IconName.link2,
+      id: QUICK_LANE_ID,
+    },
+    {
+      label: tText('workspace/workspace___bladwijzers'),
+      icon: IconName.bookmark,
+      id: BOOKMARKS_ID,
+    },
+    {
+      label: tText('workspace/workspace___organisatie-content'),
+      id: ORGANISATION_CONTENT_ID,
+    },
+    {
+      label: tText('workspace/workspace___ingesloten-fragmenten'),
+      icon: IconName.code,
+      id: EMBEDS_ID,
+    },
+  ];
+};
 
 export const ITEMS_PER_PAGE = 20;
 

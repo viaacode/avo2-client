@@ -9,11 +9,6 @@ import { initReactI18next } from 'react-i18next';
 
 import { getEnv } from '../helpers/env';
 
-// let resolveTranslations: (value?: unknown) => void | undefined;
-// export const waitForTranslations = new Promise((resolve) => {
-//   resolveTranslations = resolve;
-// });
-
 export async function loadTranslations() {
   await I18n.use(i18nHttpFetch)
     .use(initReactI18next) // passes i18n down to react-i18next
@@ -21,9 +16,6 @@ export async function loadTranslations() {
       backend: {
         loadPath: `${getEnv('PROXY_URL')}/admin/translations/nl.json`,
         parse: (data: any) => {
-          // setTimeout(() => {
-          //   resolveTranslations();
-          // }, 0);
           return JSON.parse(data);
         },
       },

@@ -17,7 +17,7 @@ export async function render(
   indexHtml: string,
 ): Promise<Response> {
   try {
-    console.log('[SSR] requesting route: ' + new URL(request.url).pathname);
+    console.info('[SSR] requesting route: ' + new URL(request.url).pathname);
 
     // Run actions/loaders to get the routing context with `query`
     let context = await query(request);
