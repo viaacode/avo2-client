@@ -37,7 +37,10 @@
 				margin-bottom: variables.$g-spacer-unit;
 			}
 
-			.ps__rail-x,
+			.ps__rail-x {
+				display: none !important;
+			}
+
 			.ps__rail-y {
 				opacity: 1 !important;
 				display: block !important;
