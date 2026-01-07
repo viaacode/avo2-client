@@ -2,7 +2,7 @@ import { AvoAssignmentAssignment } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
 import { ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS } from '../../shared/constants';
-import { buildLink, RouteParams } from '../../shared/helpers/build-link';
+import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error.ts';
 import { isServerSideRendering } from '../../shared/helpers/routing/is-server-side-rendering.ts';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';

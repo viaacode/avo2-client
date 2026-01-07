@@ -8,7 +8,9 @@
       "scripts/**",
       "!src/shared/generated",
       "server.ts",
-      "biome.json"
+      "biome.json",
+      "vite.config.mts",
+      "vite-embed.config.mts"
     ]
   },
   "formatter": {

@@ -11,7 +11,7 @@ const dependencies: string[] = Object.keys(pkg.dependencies);
 const dedupe = [
 	...dependencies,
 	'react/jsx-runtime',
-	'react/jsx-dev-runtime',
+	'react/jsx-dev-runtime'
 ];
 
 const ASSETS_WITHOUT_A_HASH = [
@@ -51,8 +51,8 @@ export default defineConfig((): UserConfig => {
 		ssr: {
 			noExternal: [
 				// Ensures vite chooses the ESM build (module) of packages and not the common js build (main)
-				"@viaa/avo2-types",
-				"@viaa/avo2-components",
+				'@viaa/avo2-types',
+				'@viaa/avo2-components'
 			],
 			external: [
 				'use-query-params',
@@ -67,12 +67,12 @@ export default defineConfig((): UserConfig => {
 		// By default, Vite doesn't include shims for Node.js
 		// But DraftJS/Braft RTE (used by the rich text editor) needs them to work
 		define: {
-			global: "globalThis",
+			global: 'globalThis',
 		},
 		optimizeDeps: {
 			esbuildOptions: {
 				define: {
-					global: "globalThis",
+					global: 'globalThis',
 				},
 			},
 		},
