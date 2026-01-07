@@ -112,11 +112,6 @@ export const App: FC = () => {
    */
   useEffect(() => {
     const config: AdminConfig = getAdminCoreConfig(navigateFunc, commonUser);
-    console.log('setting admin-core config, ', {
-      config,
-      commonUser: commonUser,
-      navigateFunc: navigateFunc,
-    });
     AdminConfigManager.setConfig(config);
   }, [navigateFunc, loginState]);
 
@@ -202,7 +197,6 @@ export const App: FC = () => {
 
   // Render
   const renderApp = () => {
-    console.log('rendering app with ', { loginState });
     if (!loginState?.data && !isServerSideRendering()) {
       return <FullPageSpinner locationId="App.tsx wait for login state" />;
     }
