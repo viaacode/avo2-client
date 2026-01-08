@@ -11,7 +11,6 @@ export type EmailTemplateType = 'item' | 'collection' | 'bundle';
 
 enum NewsletterPreferenceKey {
   newsletter = 'newsletter',
-  workshop = 'workshop',
   ambassador = 'ambassador',
 }
 

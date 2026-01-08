@@ -18,9 +18,6 @@ export const GET_NEWSLETTER_LABELS = () => ({
   newsletter: tText(
     'settings/settings___ik-ontvang-graag-tips-en-inspiratie-voor-mijn-lessen-en-nieuws-van-partners',
   ),
-  workshop: tText(
-    'settings/settings___ik-wil-berichten-over-workshops-en-events-ontvangen',
-  ),
   ambassador: tText(
     'settings/settings___ik-krijg-graag-berichten-om-actief-mee-te-werken-aan-het-archief-voor-onderwijs',
   ),

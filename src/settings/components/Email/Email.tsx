@@ -33,7 +33,6 @@ import { useGetEmailPreferences } from './hooks/getEmailPreferences';
 
 const INITIAL_NEWSLETTER_PREFERENCES_STATE = (): NewsletterPreferences => ({
   newsletter: false,
-  workshop: false,
   ambassador: false,
 });
 

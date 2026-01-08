@@ -88,39 +88,39 @@ test('T09: Nieuws - klikken op pills', async ({ page }) => {
     page.locator('a.c-content-page__label').filter({ hasText: pillName2 }),
   ).toHaveCount(count2);
 
+  // //
+  // // CHECK Workshops & events
+  // //
+  // const pillName3 = 'Workshops & events';
   //
-  // CHECK Workshops & events
+  // // Check pill is visible
+  // await expect(
+  //   page.locator('li.c-tag').filter({ hasText: pillName3 }),
+  // ).toBeVisible();
+  // // Check that pill is not active
+  // await expect(
+  //   page.locator('li.c-tag__active').filter({ hasText: pillName3 }),
+  // ).not.toBeVisible();
   //
-  const pillName3 = 'Workshops & events';
-
-  // Check pill is visible
-  await expect(
-    page.locator('li.c-tag').filter({ hasText: pillName3 }),
-  ).toBeVisible();
-  // Check that pill is not active
-  await expect(
-    page.locator('li.c-tag__active').filter({ hasText: pillName3 }),
-  ).not.toBeVisible();
-
-  // Click on non-active pill
-  await page.locator('li.c-tag').filter({ hasText: pillName3 }).click();
-  // Check pill is active
-  await expect(
-    page.locator('li.c-tag__active').filter({ hasText: pillName3 }),
-  ).toBeVisible();
-
-  // wait for articles to be filtered
-  await page.waitForTimeout(1000);
-
-  // Check count all articles shown
-  const count3 = await page.locator('a.c-content-page__label').count();
-  await expect(page.locator('a.c-content-page__label')).toHaveCount(count3);
-
-  // Check count article labels with pillname3
-  // Should be the same
-  await expect(
-    page.locator('a.c-content-page__label').filter({ hasText: pillName3 }),
-  ).toHaveCount(count3);
+  // // Click on non-active pill
+  // await page.locator('li.c-tag').filter({ hasText: pillName3 }).click();
+  // // Check pill is active
+  // await expect(
+  //   page.locator('li.c-tag__active').filter({ hasText: pillName3 }),
+  // ).toBeVisible();
+  //
+  // // wait for articles to be filtered
+  // await page.waitForTimeout(1000);
+  //
+  // // Check count all articles shown
+  // const count3 = await page.locator('a.c-content-page__label').count();
+  // await expect(page.locator('a.c-content-page__label')).toHaveCount(count3);
+  //
+  // // Check count article labels with pillname3
+  // // Should be the same
+  // await expect(
+  //   page.locator('a.c-content-page__label').filter({ hasText: pillName3 }),
+  // ).toHaveCount(count3);
 
   // // Wait for close to save the videos
   // await context.close();
