@@ -1002,7 +1002,10 @@ export const BundleDetail: FC<BundleDetailProps> = ({
   return (
     <>
       <SeoMetadata
-        title={bundleFromLoader?.title || tText('bundel-detail-titel-fallback')}
+        title={
+          bundleFromLoader?.title ||
+          tText('bundle/views/bundle-detail___bundel-detail-titel-fallback')
+        }
         description={bundleFromLoader?.description}
         image={bundleFromLoader?.seo_image_path}
         url={loaderData.url}

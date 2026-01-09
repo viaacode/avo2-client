@@ -264,11 +264,15 @@ export const CollectionOrBundleEditPublicationDetails: FC<
                   </FormGroup>
                   {showOgImageUpload && (
                     <FormGroup
-                      label={tText('OG afbeelding (1200 x 630 px)')}
+                      label={tText(
+                        'collection/components/collection-or-bundle-edit-publication-details___og-afbeelding-1200-x-630-px',
+                      )}
                       labelFor="ogImageId"
                     >
                       <FileUpload
-                        label={tText('Upload een OG afbeelding')}
+                        label={tText(
+                          'collection/components/collection-or-bundle-edit-publication-details___upload-een-og-afbeelding',
+                        )}
                         urls={
                           collection.seo_image_path
                             ? [collection.seo_image_path]
