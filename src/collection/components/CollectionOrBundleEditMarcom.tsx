@@ -23,7 +23,7 @@ import {
   AvoFileUploadAssetType,
   PermissionName,
 } from '@viaa/avo2-types';
-import { compact, isNil, uniq } from 'es-toolkit';
+import { compact, uniq } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import {
   type FC,
@@ -55,6 +55,8 @@ import {
   GET_MARCOM_CHANNEL_NAME_OPTIONS,
   GET_MARCOM_CHANNEL_TYPE_OPTIONS,
   GET_MARCOM_ENTRY_TABLE_COLUMNS,
+  MarcomChannelName,
+  MarcomChannelType,
 } from '../collection.const';
 import { CollectionService } from '../collection.service';
 import {
@@ -98,8 +100,6 @@ export const CollectionOrBundleEditMarcom: FC<
   const [klascementSourceText, setKlascementSourceText] = useState<
     string | undefined
   >();
-  const [klascementId, setKlascementId] = useState<number | undefined>();
-
   const [klascementImageUrlError, setKlascementImageUrlError] = useState<
     string | null
   >(null);
@@ -124,8 +124,11 @@ export const CollectionOrBundleEditMarcom: FC<
     });
 
   const isPublishedToKlascement = useMemo(
-    () => !isNil(klascementId),
-    [klascementId],
+    () =>
+      !!(marcomEntries || [])?.find(
+        (entry) => entry.channel_name === MarcomChannelName.KLASCEMENT,
+      ),
+    [marcomEntries],
   );
 
   const fetchMarcomEntries = useCallback(async () => {
@@ -195,7 +198,6 @@ export const CollectionOrBundleEditMarcom: FC<
         `${getEnv('KLASCEMENT_URL')}/video/${klascementIdTemp}/aanpassen/uitgebreid`,
         '_blank',
       );
-      setKlascementId(klascementIdTemp);
       await refetchPublishInfo();
       await fetchMarcomEntries();
       ToastService.success(
@@ -221,7 +223,6 @@ export const CollectionOrBundleEditMarcom: FC<
     setKlascementAltText(publishInfo?.alt_text);
     setKlascementSourceText(publishInfo?.source_text);
     setKlascementImageUrl(publishInfo?.image_url);
-    setKlascementId(publishInfo?.klascement_id ?? undefined);
   }, [publishInfo]);
 
   const renderMarcomTableCell = (
@@ -279,9 +280,9 @@ export const CollectionOrBundleEditMarcom: FC<
           <ButtonToolbar>
             <Button
               icon={IconName.delete}
-              onClick={() => {
+              onClick={async () => {
                 if (rowData.id) {
-                  deleteMarcomEntry(rowData);
+                  await deleteMarcomEntry(rowData);
                 }
               }}
               size="small"
@@ -343,8 +344,8 @@ export const CollectionOrBundleEditMarcom: FC<
           assignmentIds,
           {
             assignment_id: '',
-            channel_name: marcomEntry.channel_name,
-            channel_type: marcomEntry.channel_type,
+            channel_name: marcomEntry.channel_name as MarcomChannelName,
+            channel_type: marcomEntry.channel_type as MarcomChannelType,
             external_link: marcomEntry.external_link,
             publish_date: marcomEntry.publish_date,
           },

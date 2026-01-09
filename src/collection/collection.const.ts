@@ -22,39 +22,76 @@ export const NEW_FRAGMENT = {
   },
 };
 
+export enum MarcomChannelType {
+  NIEUWSBERICHT = 'NIEUWSBERICHT',
+  NIEUWSBRIEF = 'NIEUWSBRIEF',
+  SOCIAL = 'SOCIAL',
+  WEBPAGINA = 'WEBPAGINA',
+  OVERIGE = 'OVERIGE',
+}
 export const GET_MARCOM_CHANNEL_TYPE_OPTIONS: () => SelectOption<string>[] =
   () => [
     {
       label: tText('collection/collection___nieuwsbericht'),
-      value: 'NIEUWSBERICHT',
+      value: MarcomChannelType.NIEUWSBERICHT,
     },
     {
       label: tText('collection/collection___nieuwsbrief'),
-      value: 'NIEUWSBRIEF',
+      value: MarcomChannelType.NIEUWSBRIEF,
     },
-    { label: tText('collection/collection___social'), value: 'SOCIAL' },
-    { label: tText('collection/collection___webpagina'), value: 'WEBPAGINA' },
-    { label: tText('collection/collection___overige'), value: 'OVERIGE' },
+    {
+      label: tText('collection/collection___social'),
+      value: MarcomChannelType.SOCIAL,
+    },
+    {
+      label: tText('collection/collection___webpagina'),
+      value: MarcomChannelType.WEBPAGINA,
+    },
+    {
+      label: tText('collection/collection___overige'),
+      value: MarcomChannelType.OVERIGE,
+    },
   ];
 
+export enum MarcomChannelName {
+  FACEBOOK = 'FACEBOOK',
+  TWITTER = 'TWITTER',
+  NIEUWSBERICHT_AVO = 'NIEUWSBERICHT_AVO',
+  NIEUWSBRIEF_AVO = 'NIEUWSBRIEF_AVO',
+  KLASCEMENT = 'KLASCEMENT',
+  ZILL = 'ZILL',
+  OVERIGE = 'OVERIGE',
+}
 export const GET_MARCOM_CHANNEL_NAME_OPTIONS: () => SelectOption<string>[] =
   () => [
-    { label: tText('collection/collection___facebook'), value: 'FACEBOOK' },
-    { label: tText('collection/collection___twitter'), value: 'TWITTER' },
+    {
+      label: tText('collection/collection___facebook'),
+      value: MarcomChannelName.FACEBOOK,
+    },
+    {
+      label: tText('collection/collection___twitter'),
+      value: MarcomChannelName.TWITTER,
+    },
     {
       label: tText('collection/collection___nieuwsbericht-av-o'),
-      value: 'NIEUWSBERICHT_AVO',
+      value: MarcomChannelName.NIEUWSBERICHT_AVO,
     },
     {
       label: tText('collection/collection___nieuwsbrief-avo'),
-      value: 'NIEUWSBRIEF_AVO',
+      value: MarcomChannelName.NIEUWSBRIEF_AVO,
     },
     {
       label: tText('collection/collection___klas-cement'),
-      value: 'KLASCEMENT',
+      value: MarcomChannelName.KLASCEMENT,
     },
-    { label: tText('collection/collection___zill'), value: 'ZILL' },
-    { label: tText('collection/collection___overige'), value: 'OVERIGE' },
+    {
+      label: tText('collection/collection___zill'),
+      value: MarcomChannelName.ZILL,
+    },
+    {
+      label: tText('collection/collection___overige'),
+      value: MarcomChannelName.OVERIGE,
+    },
   ];
 
 export const GET_MARCOM_ENTRY_TABLE_COLUMNS: (

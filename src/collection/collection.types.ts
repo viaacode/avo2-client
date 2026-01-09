@@ -8,6 +8,7 @@ import {
   type GetPublicCollectionsByIdQuery,
   type GetPublicCollectionsByTitleQuery,
 } from '../shared/generated/graphql-db-operations';
+import { MarcomChannelName, MarcomChannelType } from './collection.const.ts';
 
 export type Collection = (
   | GetPublicCollectionsByIdQuery
@@ -92,8 +93,8 @@ export enum CollectionCreateUpdateTab {
 }
 
 export interface MarcomEntryBase {
-  channel_name?: string | null;
-  channel_type?: string | null;
+  channel_name?: MarcomChannelName | null;
+  channel_type?: MarcomChannelType | null;
   external_link?: string | null;
   publish_date?: string | null;
   parent_collection?: { id: any; title: string } | null;
