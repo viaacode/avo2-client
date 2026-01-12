@@ -1,5 +1,4 @@
 import {
-  AdminConfigManager,
   type ContentPageInfo,
   ContentPageRenderer,
   type DbContentPage,
@@ -179,6 +178,7 @@ export const DynamicRouteResolver: FC = () => {
             type: DynamicRouteType.CONTENT_PAGE,
             data: contentPage,
           });
+          return;
         }
       } catch (err) {
         console.error({
@@ -237,6 +237,7 @@ export const DynamicRouteResolver: FC = () => {
         }
       }
 
+      setRouteInfo({ type: DynamicRouteType.NOT_FOUND, data: null });
       return;
     } catch (err) {
       console.error(

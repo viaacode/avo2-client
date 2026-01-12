@@ -2,7 +2,7 @@ import { type AdminConfig } from '@meemoo/admin-core-ui/admin';
 import { AdminConfigManager } from '@meemoo/admin-core-ui/client';
 import { noop } from 'es-toolkit';
 import { LoaderFunctionArgs } from 'react-router';
-import { getContentPageByPath } from './admin/content-page/hooks/use-get-content-page-by-path.ts';
+import { ContentPageService } from './admin/content-page/services/content-page.service.ts';
 import { ItemsService } from './admin/items/items.service.ts';
 import { getAdminCoreConfig } from './admin/shared/helpers/get-admin-core-config.tsx';
 import { AssignmentService } from './assignment/assignment.service.ts';
@@ -40,10 +40,11 @@ export async function fetchContentPageLoader(args: LoaderFunctionArgs<any>) {
     // Load content page for the requested path
     const path = new URL(args.request.url).pathname;
     const cookieHeader = args.request.headers.get('cookie');
-    const contentPage = await getContentPageByPath(
-      path,
-      cookieHeader ? { cookie: cookieHeader } : undefined,
-    );
+    const contentPage =
+      await ContentPageService.getContentPageByLanguageAndPath(
+        path,
+        cookieHeader ? { cookie: cookieHeader } : undefined,
+      );
     return {
       contentPage,
       url: args.request.url,
@@ -70,7 +71,6 @@ export async function fetchItemLoader(args: LoaderFunctionArgs<any>) {
         id,
         cookieHeader ? { cookie: cookieHeader } : undefined,
       );
-      console.log('loader fetched item:', item);
       return {
         item,
         url: args.request.url,

@@ -1,11 +1,43 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
+import {
+  convertDbContentPageToContentPageInfo,
+  DbContentPage,
+  fetchWithLogoutJson,
+} from '@meemoo/admin-core-ui/client';
 import { type ButtonAction } from '@viaa/avo2-components';
-
+import { stringifyUrl } from 'query-string';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { getEnv } from '../../../shared/helpers/env';
 import { type ResolvedItemOrCollectionOrAssignmentOrContentPage } from '../components/blocks/MediaGridWrapper/MediaGridWrapper.types';
 
 export class ContentPageService {
+  public static async getContentPageByLanguageAndPath(
+    path: string,
+    headers: Record<string, string> | undefined = undefined,
+  ) {
+    let url: string | undefined = undefined;
+    try {
+      url = stringifyUrl({
+        url: `${getEnv('PROXY_URL')}/content-pages`,
+        query: {
+          path,
+        },
+      });
+      const dbContentPage = await fetchWithLogoutJson<DbContentPage>(url, {
+        headers,
+      });
+      return convertDbContentPageToContentPageInfo(dbContentPage);
+    } catch (err) {
+      throw new CustomError(
+        'Failed to resolve media items through proxy',
+        err,
+        {
+          url,
+          path,
+        },
+      );
+    }
+  }
+
   public static async resolveMediaItems(
     searchQuery: string | null,
     searchQueryLimit: number | undefined,
