@@ -168,11 +168,15 @@ export const AssignmentMetaDataFormEditable: FC<
                     PermissionName.EDIT_OG_IMAGE_ASSIGNMENT,
                   ) && (
                     <FormGroup
-                      label={tText('OG afbeelding (1200x630px)')}
+                      label={tText(
+                        'assignment/components/assignment-meta-data-form-editable___og-afbeelding-1200-x-630-px',
+                      )}
                       labelFor="ogImageId"
                     >
                       <FileUpload
-                        label={tText('Upload een OG afbeelding')}
+                        label={tText(
+                          'assignment/components/assignment-meta-data-form-editable___upload-een-og-afbeelding',
+                        )}
                         urls={
                           assignment.seo_image_path
                             ? [assignment.seo_image_path]

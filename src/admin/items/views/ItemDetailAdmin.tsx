@@ -262,7 +262,9 @@ export const ItemDetailAdmin: FC = () => {
         note,
         itemSeoImagePath || null,
       );
-      ToastService.success(tHtml('Opgeslagen'));
+      ToastService.success(
+        tHtml('admin/items/views/item-detail-admin___opgeslagen'),
+      );
     } catch (err) {
       console.error(
         new CustomError('Failed to save item note/seo image url', err, {
@@ -270,7 +272,9 @@ export const ItemDetailAdmin: FC = () => {
         }),
       );
       ToastService.danger(
-        tHtml('Het opslaan van de opmerkingen/seo afbeelding is mislukt'),
+        tHtml(
+          'admin/items/views/item-detail-admin___het-opslaan-van-de-opmerkingen-seo-afbeelding-is-mislukt',
+        ),
       );
     }
   };
@@ -502,7 +506,9 @@ export const ItemDetailAdmin: FC = () => {
         </FormGroup>
         {!!item && (
           <FormGroup
-            label={tText('Afbeelding voor SEO/FB')}
+            label={tText(
+              'admin/items/views/item-detail-admin___afbeelding-voor-seo-fb',
+            )}
             labelFor="ogImageId"
           >
             <FileUpload
@@ -519,7 +525,10 @@ export const ItemDetailAdmin: FC = () => {
         )}
         <Toolbar>
           <ToolbarRight>
-            <Button label={tText('Opslaan')} onClick={saveItemFields} />
+            <Button
+              label={tText('admin/items/views/item-detail-admin___opslaan')}
+              onClick={saveItemFields}
+            />
           </ToolbarRight>
         </Toolbar>
       </div>
