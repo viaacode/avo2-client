@@ -1,8 +1,7 @@
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 import { AvoItemItem, AvoSearchOrderDirection } from '@viaa/avo2-types';
-
 import { compact } from 'es-toolkit';
 import queryString, { stringifyUrl } from 'query-string';
-
 import type {
   DeleteItemFromCollectionBookmarksAndAssignmentsMutation,
   DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables,
@@ -10,8 +9,6 @@ import type {
   GetDistinctSeriesQueryVariables,
   GetItemDepublishReasonByExternalIdQuery,
   GetItemDepublishReasonByExternalIdQueryVariables,
-  GetItemsByExternalIdQuery,
-  GetItemsByExternalIdQueryVariables,
   GetPublicItemsByTitleOrExternalIdQuery,
   GetPublicItemsByTitleOrExternalIdQueryVariables,
   GetPublicItemsQuery,
@@ -28,8 +25,6 @@ import type {
   SetSharedItemsStatusMutationVariables,
   UpdateItemDepublishReasonMutation,
   UpdateItemDepublishReasonMutationVariables,
-  UpdateItemNotesMutation,
-  UpdateItemNotesMutationVariables,
   UpdateItemPublishedStateMutation,
   UpdateItemPublishedStateMutationVariables,
 } from '../../shared/generated/graphql-db-operations';
@@ -37,7 +32,6 @@ import {
   DeleteItemFromCollectionBookmarksAndAssignmentsDocument,
   GetDistinctSeriesDocument,
   GetItemDepublishReasonByExternalIdDocument,
-  GetItemsByExternalIdDocument,
   GetPublicItemsByTitleOrExternalIdDocument,
   GetPublicItemsDocument,
   GetUnpublishedItemPidsDocument,
@@ -46,7 +40,6 @@ import {
   ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
   SetSharedItemsStatusDocument,
   UpdateItemDepublishReasonDocument,
-  UpdateItemNotesDocument,
   UpdateItemPublishedStateDocument,
 } from '../../shared/generated/graphql-db-react-query';
 import { Lookup_Enum_Relation_Types_Enum } from '../../shared/generated/graphql-db-types';
@@ -56,7 +49,6 @@ import { getEnv } from '../../shared/helpers/env';
 import { dataService } from '../../shared/services/data-service';
 import { RelationService } from '../../shared/services/relation-service/relation.service';
 import { type UnpublishableItem } from '../../shared/types';
-
 import { ITEMS_PER_PAGE } from './items.const';
 import {
   type ItemsOverviewTableCols,
@@ -233,30 +225,24 @@ export class ItemsService {
     }
   }
 
-  static async setItemNotes(
+  static async updateItemByUuid(
     itemUuid: string,
     note: string | null,
+    seoImagePath: string | null,
   ): Promise<void> {
-    let variables: UpdateItemNotesMutationVariables | null = null;
     try {
-      variables = {
-        itemUuid,
-        note,
-      };
-      await dataService.query<
-        UpdateItemNotesMutation,
-        UpdateItemNotesMutationVariables
-      >({
-        variables,
-        query: UpdateItemNotesDocument,
+      await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/items/${itemUuid}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ note, seoImagePath }),
       });
     } catch (err) {
       throw new CustomError(
-        'Failed to update note field for item in the database',
+        'Failed to update note/seo image url field for item in the database',
         err,
         {
-          variables,
-          query: 'UPDATE_ITEM_NOTES',
+          itemUuid,
+          note,
+          seoImagePath,
         },
       );
     }
@@ -296,29 +282,31 @@ export class ItemsService {
 
   public static async fetchItemByExternalId(
     externalId: string,
+    headers: Record<string, string> | undefined = undefined,
   ): Promise<UnpublishableItem> {
-    return (await this.fetchItemsByExternalIds([externalId]))[0] || null;
+    return (
+      (await this.fetchItemsByExternalIds([externalId], headers))[0] || null
+    );
   }
 
   public static async fetchItemsByExternalIds(
     externalIds: string[],
+    headers: Record<string, string> | undefined = undefined,
   ): Promise<Array<UnpublishableItem>> {
     if (externalIds.length < 1) {
       return [];
     }
 
     try {
-      const response = await dataService.query<
-        GetItemsByExternalIdQuery,
-        GetItemsByExternalIdQueryVariables
-      >({
-        query: GetItemsByExternalIdDocument,
-        variables: {
+      const url = stringifyUrl({
+        url: `${getEnv('PROXY_URL')}/items`,
+        query: {
           externalIds,
         },
       });
-
-      const items = response.app_item_meta ?? [];
+      const items = await fetchWithLogoutJson<AvoItemItem[]>(url, {
+        headers,
+      });
 
       return Promise.all(
         externalIds.map((externalId) => {

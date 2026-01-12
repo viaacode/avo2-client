@@ -3,6 +3,7 @@ import { AdminConfigManager } from '@meemoo/admin-core-ui/client';
 import { noop } from 'es-toolkit';
 import { LoaderFunctionArgs } from 'react-router';
 import { getContentPageByPath } from './admin/content-page/hooks/use-get-content-page-by-path.ts';
+import { ItemsService } from './admin/items/items.service.ts';
 import { getAdminCoreConfig } from './admin/shared/helpers/get-admin-core-config.tsx';
 import { AssignmentService } from './assignment/assignment.service.ts';
 import { CollectionService } from './collection/collection.service.ts';
@@ -55,6 +56,34 @@ export async function fetchContentPageLoader(args: LoaderFunctionArgs<any>) {
     );
     return {
       contentPage: null,
+      url: args.request.url,
+    };
+  }
+}
+
+export async function fetchItemLoader(args: LoaderFunctionArgs<any>) {
+  const id = args?.params?.id;
+  try {
+    if (id) {
+      const cookieHeader = args.request.headers.get('cookie');
+      const item = await ItemsService.fetchItemByExternalId(
+        id,
+        cookieHeader ? { cookie: cookieHeader } : undefined,
+      );
+      console.log('loader fetched item:', item);
+      return {
+        item,
+        url: args.request.url,
+      };
+    }
+  } catch (err) {
+    console.error(
+      'Failed to load item in react-router loader for route item detail',
+      err,
+      { id },
+    );
+    return {
+      item: null,
       url: args.request.url,
     };
   }

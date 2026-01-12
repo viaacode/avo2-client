@@ -42,7 +42,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useLoaderData, useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { ITEMS_ADMIN_PATH } from '../../admin/items/items.routes';
@@ -172,6 +172,10 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   const itemId = id || idFromUrl;
   const commonUser = useAtomValue(commonUserAtom);
   const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom);
+  const loaderData = useLoaderData<{
+    item: AvoItemItem;
+    url: string;
+  }>();
 
   goToDetailLink = goToDetailLink || defaultGoToDetailLink(navigateFunc);
   goToSearchLink = goToSearchLink || defaultGoToSearchLink(navigateFunc);
@@ -179,7 +183,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   const [cuePoint] = useQueryParam('t', StringParam);
   const [cutButton, cutModal] = useCutModal();
 
-  const [item, setItem] = useState<AvoItemItem | null>(null);
+  const [item, setItem] = useState<AvoItemItem | null>(loaderData.item);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
   });
@@ -347,8 +351,6 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           ),
         );
       }
-
-      setItem(itemObj);
     } catch (err) {
       console.error(
         new CustomError(
@@ -1201,6 +1203,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           tText('item/views/item-detail___item-detail-pagina-titel-fallback')
         }
         description={item?.description || ''}
+        image={item?.seo_image_path}
       />
       <LoadingErrorLoadedComponent
         loadingInfo={loadingInfo}

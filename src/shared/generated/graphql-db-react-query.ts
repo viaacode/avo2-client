@@ -285,73 +285,6 @@ export const useGetItemDepublishReasonByExternalIdQuery = <
       fetchData<GetItemDepublishReasonByExternalIdQuery, GetItemDepublishReasonByExternalIdQueryVariables>(GetItemDepublishReasonByExternalIdDocument, variables),
       options
     );
-export const GetItemsByExternalIdDocument = `
-    query getItemsByExternalId($externalIds: [bpchar!] = []) {
-  app_item_meta(
-    where: {external_id: {_in: $externalIds}, is_deleted: {_eq: false}, is_published: {_eq: true}}
-  ) {
-    created_at
-    depublish_at
-    description
-    duration
-    expiry_date
-    external_id
-    id
-    uid
-    is_deleted
-    is_orphaned
-    is_published
-    issued
-    issued_edtf
-    lom_classification
-    lom_thema
-    lom_context
-    lom_intendedenduserrole
-    lom_keywords
-    lom_languages
-    lom_typical_age_range: lom_typicalagerange
-    org_id
-    organisation {
-      or_id
-      name
-      logo_url
-      overlay
-    }
-    publish_at
-    published_at
-    series
-    thumbnail_path
-    title
-    type {
-      id
-      label
-    }
-    type_id
-    updated_at
-    note
-    item_collaterals(where: {description: {_eq: "subtitle"}}) {
-      path
-      description
-      external_id
-    }
-    view_count {
-      count
-    }
-  }
-}
-    `;
-export const useGetItemsByExternalIdQuery = <
-      TData = GetItemsByExternalIdQuery,
-      TError = unknown
-    >(
-      variables?: GetItemsByExternalIdQueryVariables,
-      options?: UseQueryOptions<GetItemsByExternalIdQuery, TError, TData>
-    ) =>
-    useQuery<GetItemsByExternalIdQuery, TError, TData>(
-      variables === undefined ? ['getItemsByExternalId'] : ['getItemsByExternalId', variables],
-      fetchData<GetItemsByExternalIdQuery, GetItemsByExternalIdQueryVariables>(GetItemsByExternalIdDocument, variables),
-      options
-    );
 export const GetPublicItemsDocument = `
     query getPublicItems($limit: Int!) {
   app_item_meta(
@@ -569,22 +502,6 @@ export const useUpdateItemDepublishReasonMutation = <
     useMutation<UpdateItemDepublishReasonMutation, TError, UpdateItemDepublishReasonMutationVariables, TContext>(
       ['updateItemDepublishReason'],
       (variables?: UpdateItemDepublishReasonMutationVariables) => fetchData<UpdateItemDepublishReasonMutation, UpdateItemDepublishReasonMutationVariables>(UpdateItemDepublishReasonDocument, variables)(),
-      options
-    );
-export const UpdateItemNotesDocument = `
-    mutation updateItemNotes($itemUuid: uuid!, $note: String) {
-  update_app_item_meta(where: {uid: {_eq: $itemUuid}}, _set: {note: $note}) {
-    affected_rows
-  }
-}
-    `;
-export const useUpdateItemNotesMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateItemNotesMutation, TError, UpdateItemNotesMutationVariables, TContext>) =>
-    useMutation<UpdateItemNotesMutation, TError, UpdateItemNotesMutationVariables, TContext>(
-      ['updateItemNotes'],
-      (variables?: UpdateItemNotesMutationVariables) => fetchData<UpdateItemNotesMutation, UpdateItemNotesMutationVariables>(UpdateItemNotesDocument, variables)(),
       options
     );
 export const UpdateItemPublishedStateDocument = `

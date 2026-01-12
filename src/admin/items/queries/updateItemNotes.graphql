@@ -1,8 +1,0 @@
-mutation updateItemNotes($itemUuid: uuid!, $note: String) {
-  update_app_item_meta(
-    where: { uid: { _eq: $itemUuid } }
-    _set: { note: $note }
-  ) {
-    affected_rows
-  }
-}

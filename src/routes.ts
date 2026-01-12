@@ -78,6 +78,7 @@ import {
   fetchAssignmentLoader,
   fetchCollectionLoader,
   fetchContentPageLoader,
+  fetchItemLoader,
   initAppLoader,
   passUrlLoader,
 } from './routes.loaders.ts';
@@ -284,6 +285,7 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
       id: 'ItemDetailRoute',
       path: APP_PATH.ITEM_DETAIL.route,
       Component: ItemDetailPage,
+      loader: fetchItemLoader,
       ErrorBoundary: () => ErrorBoundary('ItemDetailRoute--route'),
       hasErrorBoundary: true,
     },

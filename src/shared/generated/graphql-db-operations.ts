@@ -111,13 +111,6 @@ export type GetItemDepublishReasonByExternalIdQueryVariables = Exact<{
 
 export type GetItemDepublishReasonByExternalIdQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', depublish_reason?: string | null, is_published?: boolean | null, is_deleted?: boolean | null }> };
 
-export type GetItemsByExternalIdQueryVariables = Exact<{
-  externalIds?: InputMaybe<Array<Scalars['bpchar']> | Scalars['bpchar']>;
-}>;
-
-
-export type GetItemsByExternalIdQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', created_at?: any | null, depublish_at?: any | null, description?: string | null, duration?: any | null, expiry_date?: any | null, external_id: any, id: number, uid: any, is_deleted?: boolean | null, is_orphaned?: boolean | null, is_published?: boolean | null, issued?: any | null, issued_edtf?: string | null, lom_classification?: any | null, lom_thema?: any | null, lom_context?: any | null, lom_intendedenduserrole?: any | null, lom_keywords?: any | null, lom_languages?: any | null, org_id?: any | null, publish_at?: any | null, published_at: any, series?: string | null, thumbnail_path: string, title: string, type_id: number, updated_at?: any | null, note?: string | null, lom_typical_age_range?: any | null, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string, logo_url?: string | null, overlay: boolean } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null, item_collaterals: Array<{ __typename?: 'app_item_collateral', path?: string | null, description?: string | null, external_id: string }>, view_count?: { __typename?: 'app_item_views', count?: number | null } | null }> };
-
 export type GetPublicItemsQueryVariables = Exact<{
   limit: Scalars['Int'];
 }>;
@@ -185,14 +178,6 @@ export type UpdateItemDepublishReasonMutationVariables = Exact<{
 
 
 export type UpdateItemDepublishReasonMutation = { __typename?: 'mutation_root', update_app_item_meta?: { __typename?: 'app_item_meta_mutation_response', affected_rows: number } | null };
-
-export type UpdateItemNotesMutationVariables = Exact<{
-  itemUuid: Scalars['uuid'];
-  note?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type UpdateItemNotesMutation = { __typename?: 'mutation_root', update_app_item_meta?: { __typename?: 'app_item_meta_mutation_response', affected_rows: number } | null };
 
 export type UpdateItemPublishedStateMutationVariables = Exact<{
   itemUuid: Scalars['uuid'];

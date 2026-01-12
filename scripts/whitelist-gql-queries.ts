@@ -4,10 +4,14 @@
  */
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { snakeCase } from 'es-toolkit';
 import glob from 'glob';
 
 const extractNameRegex = /(query|mutation) ([^\s(]+)(.*)/gm;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function extractQueriesFromCode(globPattern: string, outputFileName: string) {
   const options = {

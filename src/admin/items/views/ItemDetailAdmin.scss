@@ -1,0 +1,10 @@
+@use '../../../styles/settings/variables' as variables;
+
+.m-item-detail-admin__general-info {
+	.o-form-group__label {
+		font-weight: 500;
+		display: block;
+		margin-top: variables.$g-spacer-unit * 4;
+		margin-bottom: variables.$g-spacer-unit;
+	}
+}

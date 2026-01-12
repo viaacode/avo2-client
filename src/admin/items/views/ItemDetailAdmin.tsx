@@ -6,11 +6,11 @@ import {
   ButtonToolbar,
   Container,
   Flex,
+  FormGroup,
   Icon,
   IconName,
   Pill,
   PillVariants,
-  Spacer,
   Spinner,
   Table,
   Tabs,
@@ -23,7 +23,13 @@ import {
   PermissionName,
 } from '@viaa/avo2-types';
 import { compact, noop } from 'es-toolkit';
-import { type FC, type ReactNode, useCallback, useState } from 'react';
+import {
+  type FC,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -34,6 +40,7 @@ import { EmbedCodeFilterTableCell } from '../../../embed-code/components/EmbedCo
 import { type EmbedCode } from '../../../embed-code/embed-code.types';
 import { toEmbedCodeDetail } from '../../../embed-code/helpers/links';
 import { ConfirmModal } from '../../../shared/components/ConfirmModal/ConfirmModal';
+import { FileUpload } from '../../../shared/components/FileUpload/FileUpload.tsx';
 import { QuickLaneFilterTableCell } from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
@@ -84,6 +91,8 @@ import {
 import { ItemsService } from '../items.service';
 import { type ItemUsedByColumnId, type ItemUsedByEntry } from '../items.types';
 
+import './ItemDetailAdmin.scss';
+
 export const ItemDetailAdmin: FC = () => {
   const navigateFunc = useNavigate();
 
@@ -113,12 +122,22 @@ export const ItemDetailAdmin: FC = () => {
   const [isDepublishItemModalOpen, setDepublishItemModalOpen] =
     useState<boolean>(false);
 
+  const [itemSeoImagePath, setItemSeoImagePath] = useState<string | null>();
   const [noteEditorState, setNoteEditorState] = useState<RichEditorState>();
 
   const [activeTab, setActiveTab, tabs] = useTabs(
     GET_TABS(),
     ITEMS_TABS.GENERAL,
   );
+
+  /**
+   * Set editable SEO image path when item is loaded
+   */
+  useEffect(() => {
+    if (item) {
+      setItemSeoImagePath(item.seo_image_path || null);
+    }
+  }, [item]);
 
   const getTabCount = (tab: string | number) => {
     switch (tab) {
@@ -227,30 +246,31 @@ export const ItemDetailAdmin: FC = () => {
     });
   };
 
-  const saveNotes = async () => {
+  const saveItemFields = async () => {
     try {
       if (!item) {
         return;
       }
-      await ItemsService.setItemNotes(
-        item.uid,
+      const note =
         sanitizeHtml(
           (noteEditorState ? noteEditorState.toHTML() : (item as any).note) ||
             '',
           SanitizePreset.link,
-        ) || null,
+        ) || null;
+      await ItemsService.updateItemByUuid(
+        item.uid,
+        note,
+        itemSeoImagePath || null,
       );
-      ToastService.success(
-        tHtml('admin/items/views/item-detail___opmerkingen-opgeslagen'),
-      );
+      ToastService.success(tHtml('Opgeslagen'));
     } catch (err) {
       console.error(
-        new CustomError('Failed to save item notes', err, { item }),
+        new CustomError('Failed to save item note/seo image url', err, {
+          item,
+        }),
       );
       ToastService.danger(
-        tHtml(
-          'admin/items/views/item-detail___het-opslaan-van-de-opmerkingen-is-mislukt',
-        ),
+        tHtml('Het opslaan van de opmerkingen/seo afbeelding is mislukt'),
       );
     }
   };
@@ -394,102 +414,115 @@ export const ItemDetailAdmin: FC = () => {
     const subtitles = getSubtitles(item);
 
     return (
-      <Table horizontal variant="invisible" className="c-table_detail-page">
-        <tbody>
-          {renderSimpleDetailRows(item, [
-            ['uid', tText('admin/items/views/item-detail___av-o-uuid')],
-            ['external_id', tText('admin/items/views/item-detail___pid')],
-            ['is_published', tText('admin/items/views/item-detail___pubiek')],
-            ['is_deleted', tText('admin/items/views/item-detail___verwijderd')],
-          ])}
-          {renderDateDetailRows(item, [
-            [
-              'created_at',
-              tText('admin/items/views/item-detail___aangemaakt-op'),
-            ],
-            [
-              'updated_at',
-              tText('admin/items/views/item-detail___aangepast-op'),
-            ],
-            ['issued', tText('admin/items/views/item-detail___uitgegeven-op')],
-            [
-              'published_at',
-              tText('admin/items/views/item-detail___gepubliceert-op'),
-            ],
-            [
-              'publish_at',
-              tText('admin/items/views/item-detail___te-publiceren-op'),
-            ],
-            [
-              'depublish_at',
-              tText('admin/items/views/item-detail___te-depubliceren-op'),
-            ],
-          ])}
-          {renderSimpleDetailRows(item, [
-            [
-              'depublish_reason',
-              tText('admin/items/views/item-detail___reden-tot-depubliceren'),
-            ],
-          ])}
-          {renderDetailRow(
-            replacementUuid ? (
-              <Link
-                to={buildLink(ADMIN_PATH.ITEM_DETAIL, {
-                  id: replacementUuid,
-                })}
-              >{`${replacementTitle} (${replacementExternalId})`}</Link>
-            ) : (
-              '-'
-            ),
-            tText('admin/items/views/item-detail___vervangen-door'),
-          )}
-          {renderSimpleDetailRows(item, [
-            [
-              'view_count.count',
-              tText('admin/items/views/item-detail___views'),
-            ],
-          ])}
-          {renderDetailRow(
-            subtitles
-              ? subtitles.map((subtitle) => (
-                  <a key={subtitle.id} href={subtitle.src}>
-                    {subtitle.label}
-                  </a>
-                ))
-              : '-',
-            tText('admin/items/views/item-detail___ondertitels'),
-          )}
-          {renderDetailRow(
-            <>
-              <Spacer margin="right-small">
-                <Spacer margin={['top']}>
-                  <div style={{ backgroundColor: '#ffffff' }}>
-                    <RichTextEditorWrapper
-                      id="note"
-                      controls={RICH_TEXT_EDITOR_OPTIONS_FULL}
-                      fileType={AvoFileUploadAssetType.ITEM_NOTE_IMAGE}
-                      initialHtml={item?.note || undefined}
-                      state={noteEditorState}
-                      onChange={setNoteEditorState}
-                    />
-                  </div>
-                </Spacer>
-                <Toolbar>
-                  <ToolbarRight>
-                    <Button
-                      label={tText(
-                        'admin/items/views/item-detail___opmerkingen-opslaan',
-                      )}
-                      onClick={saveNotes}
-                    />
-                  </ToolbarRight>
-                </Toolbar>
-              </Spacer>
-            </>,
-            tText('admin/items/views/item-detail___opmerkingen'),
-          )}
-        </tbody>
-      </Table>
+      <div className="m-item-detail-admin__general-info">
+        <Table horizontal variant="invisible" className="c-table_detail-page">
+          <tbody>
+            {renderSimpleDetailRows(item, [
+              ['uid', tText('admin/items/views/item-detail___av-o-uuid')],
+              ['external_id', tText('admin/items/views/item-detail___pid')],
+              ['is_published', tText('admin/items/views/item-detail___pubiek')],
+              [
+                'is_deleted',
+                tText('admin/items/views/item-detail___verwijderd'),
+              ],
+            ])}
+            {renderDateDetailRows(item, [
+              [
+                'created_at',
+                tText('admin/items/views/item-detail___aangemaakt-op'),
+              ],
+              [
+                'updated_at',
+                tText('admin/items/views/item-detail___aangepast-op'),
+              ],
+              [
+                'issued',
+                tText('admin/items/views/item-detail___uitgegeven-op'),
+              ],
+              [
+                'published_at',
+                tText('admin/items/views/item-detail___gepubliceert-op'),
+              ],
+              [
+                'publish_at',
+                tText('admin/items/views/item-detail___te-publiceren-op'),
+              ],
+              [
+                'depublish_at',
+                tText('admin/items/views/item-detail___te-depubliceren-op'),
+              ],
+            ])}
+            {renderSimpleDetailRows(item, [
+              [
+                'depublish_reason',
+                tText('admin/items/views/item-detail___reden-tot-depubliceren'),
+              ],
+            ])}
+            {renderDetailRow(
+              replacementUuid ? (
+                <Link
+                  to={buildLink(ADMIN_PATH.ITEM_DETAIL, {
+                    id: replacementUuid,
+                  })}
+                >{`${replacementTitle} (${replacementExternalId})`}</Link>
+              ) : (
+                '-'
+              ),
+              tText('admin/items/views/item-detail___vervangen-door'),
+            )}
+            {renderSimpleDetailRows(item, [
+              [
+                'view_count.count',
+                tText('admin/items/views/item-detail___views'),
+              ],
+            ])}
+            {renderDetailRow(
+              subtitles
+                ? subtitles.map((subtitle) => (
+                    <a key={subtitle.id} href={subtitle.src}>
+                      {subtitle.label}
+                    </a>
+                  ))
+                : '-',
+              tText('admin/items/views/item-detail___ondertitels'),
+            )}
+          </tbody>
+        </Table>
+        <FormGroup label={tText('admin/items/views/item-detail___opmerkingen')}>
+          <div style={{ backgroundColor: '#ffffff' }}>
+            <RichTextEditorWrapper
+              id="note"
+              controls={RICH_TEXT_EDITOR_OPTIONS_FULL}
+              fileType={AvoFileUploadAssetType.ITEM_NOTE_IMAGE}
+              initialHtml={item?.note || undefined}
+              state={noteEditorState}
+              onChange={setNoteEditorState}
+            />
+          </div>
+        </FormGroup>
+        {!!item && (
+          <FormGroup
+            label={tText('Afbeelding voor SEO/FB')}
+            labelFor="ogImageId"
+          >
+            <FileUpload
+              label={tText(
+                'collection/components/collection-or-bundle-edit-publication-details___upload-een-og-afbeelding',
+              )}
+              urls={compact([itemSeoImagePath])}
+              allowMulti={false}
+              assetType={AvoFileUploadAssetType.ITEM_OG_IMAGE}
+              ownerId={item?.external_id}
+              onChange={(urls) => setItemSeoImagePath(urls[0] || null)}
+            />
+          </FormGroup>
+        )}
+        <Toolbar>
+          <ToolbarRight>
+            <Button label={tText('Opslaan')} onClick={saveItemFields} />
+          </ToolbarRight>
+        </Toolbar>
+      </div>
     );
   };
 
