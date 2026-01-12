@@ -1479,6 +1479,7 @@ export type App_Assignments_V2 = {
   responses: Array<App_Assignment_Responses_V2>;
   /** An aggregate relationship */
   responses_aggregate: App_Assignment_Responses_V2_Aggregate;
+  seo_image_path?: Maybe<Scalars['String']>;
   thumbnail_path?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** An object relationship */
@@ -2376,6 +2377,7 @@ export type App_Assignments_V2_Bool_Exp = {
   relations_aggregate?: InputMaybe<App_Assignments_V2_Relations_View_Aggregate_Bool_Exp>;
   responses?: InputMaybe<App_Assignment_Responses_V2_Bool_Exp>;
   responses_aggregate?: InputMaybe<App_Assignment_Responses_V2_Aggregate_Bool_Exp>;
+  seo_image_path?: InputMaybe<String_Comparison_Exp>;
   thumbnail_path?: InputMaybe<String_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
   type?: InputMaybe<Shared_Types_Bool_Exp>;
@@ -3044,6 +3046,7 @@ export type App_Assignments_V2_Insert_Input = {
   quality_labels?: InputMaybe<App_Assignments_V2_Quality_Labels_Arr_Rel_Insert_Input>;
   relations?: InputMaybe<App_Assignments_V2_Relations_View_Arr_Rel_Insert_Input>;
   responses?: InputMaybe<App_Assignment_Responses_V2_Arr_Rel_Insert_Input>;
+  seo_image_path?: InputMaybe<Scalars['String']>;
   thumbnail_path?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
   type?: InputMaybe<Shared_Types_Obj_Rel_Insert_Input>;
@@ -4341,6 +4344,7 @@ export type App_Assignments_V2_Max_Fields = {
   note?: Maybe<Scalars['String']>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   published_at?: Maybe<Scalars['timestamptz']>;
+  seo_image_path?: Maybe<Scalars['String']>;
   thumbnail_path?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   type_id?: Maybe<Scalars['Int']>;
@@ -4364,6 +4368,7 @@ export type App_Assignments_V2_Max_Order_By = {
   note?: InputMaybe<Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   published_at?: InputMaybe<Order_By>;
+  seo_image_path?: InputMaybe<Order_By>;
   thumbnail_path?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
@@ -4388,6 +4393,7 @@ export type App_Assignments_V2_Min_Fields = {
   note?: Maybe<Scalars['String']>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   published_at?: Maybe<Scalars['timestamptz']>;
+  seo_image_path?: Maybe<Scalars['String']>;
   thumbnail_path?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   type_id?: Maybe<Scalars['Int']>;
@@ -4411,6 +4417,7 @@ export type App_Assignments_V2_Min_Order_By = {
   note?: InputMaybe<Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   published_at?: InputMaybe<Order_By>;
+  seo_image_path?: InputMaybe<Order_By>;
   thumbnail_path?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
@@ -4480,6 +4487,7 @@ export type App_Assignments_V2_Order_By = {
   quality_labels_aggregate?: InputMaybe<App_Assignments_V2_Quality_Labels_Aggregate_Order_By>;
   relations_aggregate?: InputMaybe<App_Assignments_V2_Relations_View_Aggregate_Order_By>;
   responses_aggregate?: InputMaybe<App_Assignment_Responses_V2_Aggregate_Order_By>;
+  seo_image_path?: InputMaybe<Order_By>;
   thumbnail_path?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
   type?: InputMaybe<Shared_Types_Order_By>;
@@ -5560,6 +5568,8 @@ export enum App_Assignments_V2_Select_Column {
   /** column name */
   PublishedAt = 'published_at',
   /** column name */
+  SeoImagePath = 'seo_image_path',
+  /** column name */
   ThumbnailPath = 'thumbnail_path',
   /** column name */
   Title = 'title',
@@ -5615,6 +5625,7 @@ export type App_Assignments_V2_Set_Input = {
   note?: InputMaybe<Scalars['String']>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   published_at?: InputMaybe<Scalars['timestamptz']>;
+  seo_image_path?: InputMaybe<Scalars['String']>;
   thumbnail_path?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
   type_id?: InputMaybe<Scalars['Int']>;
@@ -5684,6 +5695,7 @@ export type App_Assignments_V2_Stream_Cursor_Value_Input = {
   note?: InputMaybe<Scalars['String']>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   published_at?: InputMaybe<Scalars['timestamptz']>;
+  seo_image_path?: InputMaybe<Scalars['String']>;
   thumbnail_path?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
   type_id?: InputMaybe<Scalars['Int']>;
@@ -5740,6 +5752,8 @@ export enum App_Assignments_V2_Update_Column {
   OwnerProfileId = 'owner_profile_id',
   /** column name */
   PublishedAt = 'published_at',
+  /** column name */
+  SeoImagePath = 'seo_image_path',
   /** column name */
   ThumbnailPath = 'thumbnail_path',
   /** column name */

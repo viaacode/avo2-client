@@ -128,6 +128,7 @@ export async function fetchCollectionLoader(args: LoaderFunctionArgs<any>) {
 }
 
 export async function fetchAssignmentLoader(args: LoaderFunctionArgs<any>) {
+  const url = args?.request?.url;
   const id = args?.params?.id;
   try {
     if (id) {
@@ -139,7 +140,7 @@ export async function fetchAssignmentLoader(args: LoaderFunctionArgs<any>) {
       );
       return {
         assignment,
-        url: args.request.url,
+        url,
       };
     } else {
       throw new Error('No assignment UUID provided in route params');
@@ -148,11 +149,11 @@ export async function fetchAssignmentLoader(args: LoaderFunctionArgs<any>) {
     console.error(
       'Failed to load assignment in react-router loader for route Assignment detail',
       err,
-      { id },
+      { id, url },
     );
     return {
       assignment: null,
-      url: args.request.url,
+      url,
     };
   }
 }

@@ -10,9 +10,14 @@ import {
   Spacer,
   TextArea,
 } from '@viaa/avo2-components';
-import { AvoAssignmentAssignment, AvoLomLomField } from '@viaa/avo2-types';
+import {
+  AvoAssignmentAssignment,
+  AvoFileUploadAssetType,
+  AvoLomLomField,
+} from '@viaa/avo2-types';
 import { intersection } from 'es-toolkit';
 import { type FC, useState } from 'react';
+import { FileUpload } from '../../shared/components/FileUpload/FileUpload.tsx';
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { ShortDescriptionField } from '../../shared/components/ShortDescriptionField/ShortDescriptionField';
 import { ThumbnailStillsModal } from '../../shared/components/ThumbnailStillsModal/ThumbnailStillsModal';
@@ -154,6 +159,28 @@ export const AssignmentMetaDataFormEditable: FC<
                         src={assignment.thumbnail_path}
                       />
                     )}
+                  </FormGroup>
+                  <FormGroup
+                    label={tText('OG afbeelding (1200x630px)')}
+                    labelFor="ogImageId"
+                  >
+                    <FileUpload
+                      label={tText('Upload een OG afbeelding')}
+                      urls={
+                        assignment.seo_image_path
+                          ? [assignment.seo_image_path]
+                          : []
+                      }
+                      allowMulti={false}
+                      assetType={AvoFileUploadAssetType.ASSIGNMENT_OG_IMAGE}
+                      ownerId={assignment.id}
+                      onChange={(urls) =>
+                        setAssignment({
+                          ...assignment,
+                          seo_image_path: urls[0] || null,
+                        })
+                      }
+                    />
                   </FormGroup>
                 </Column>
               </Grid>

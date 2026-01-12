@@ -36,6 +36,7 @@ import { formatDurationHoursMinutesSeconds } from '../../helpers/formatters/dura
 import { getSubtitles } from '../../helpers/get-subtitles';
 import { isMobileWidth } from '../../helpers/media-query';
 import { toSeconds } from '../../helpers/parsers/duration';
+import { isServerSideRendering } from '../../helpers/routing/is-server-side-rendering.ts';
 import { useQueryParam } from '../../helpers/routing/use-query-params-ssr';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
@@ -299,10 +300,9 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
     toSeconds(item?.duration),
   );
 
-  const trackingId: string =
-    window.ga && typeof window.ga.getAll === 'function' && window.ga.getAll()[0]
-      ? window.ga.getAll()[0].get('trackingId')
-      : undefined;
+  const trackingId: string = isServerSideRendering()
+    ? undefined
+    : window.ga?.getAll?.()?.[0]?.get('trackingId');
 
   const renderCutOverlay = () => {
     return (
