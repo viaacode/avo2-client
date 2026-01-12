@@ -1,5 +1,5 @@
 import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client';
+import { SanitizePreset, sanitizeHtml } from '@meemoo/admin-core-ui/client';
 import { type RichEditorState } from '@meemoo/react-components';
 import {
   Button,
@@ -84,7 +84,7 @@ import {
 import { ItemsService } from '../items.service';
 import { type ItemUsedByColumnId, type ItemUsedByEntry } from '../items.types';
 
-export const ItemDetail: FC = () => {
+export const ItemDetailAdmin: FC = () => {
   const navigateFunc = useNavigate();
 
   const { id: itemUuid } = useParams<{ id: string }>();
@@ -763,4 +763,4 @@ export const ItemDetail: FC = () => {
   );
 };
 
-export default ItemDetail;
+export default ItemDetailAdmin;

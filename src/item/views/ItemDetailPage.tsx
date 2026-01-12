@@ -5,10 +5,10 @@ import { ItemDetail } from './ItemDetail';
 
 import './ItemDetail.scss';
 
-export const ItemDetailRoute: FC = () => {
+export const ItemDetailPage: FC = () => {
   const { id } = useParams<{ id: string }>();
 
   return <ItemDetail key={'item-detail'} id={id} />;
 };
 
-export default ItemDetailRoute;
+export default ItemDetailPage;

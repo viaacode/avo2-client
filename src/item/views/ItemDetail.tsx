@@ -45,7 +45,7 @@ import {
 import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { ITEMS_PATH } from '../../admin/items/items.routes';
+import { ITEMS_ADMIN_PATH } from '../../admin/items/items.routes';
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { AssignmentService } from '../../assignment/assignment.service';
@@ -905,7 +905,9 @@ export const ItemDetail: FC<ItemDetailProps> = ({
             commonUser,
             PermissionName.VIEW_ITEMS_OVERVIEW,
           ) && (
-            <Link to={buildLink(ITEMS_PATH.ITEM_DETAIL, { id: item?.uid })}>
+            <Link
+              to={buildLink(ITEMS_ADMIN_PATH.ITEM_DETAIL, { id: item?.uid })}
+            >
               <Button
                 className="c-button-link"
                 type="tertiary"

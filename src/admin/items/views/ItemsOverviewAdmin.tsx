@@ -34,9 +34,9 @@ import {
   type ItemsOverviewTableCols,
   type ItemsTableState,
 } from '../items.types';
-import { ItemBulkAction } from './ItemsOverview.types';
+import { ItemBulkAction } from './ItemsOverviewAdmin.types.ts';
 
-export const ItemsOverview: FC = () => {
+export const ItemsOverviewAdmin: FC = () => {
   const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
   const {
     data: itemsWithFilters,
@@ -254,4 +254,4 @@ export const ItemsOverview: FC = () => {
   );
 };
 
-export default ItemsOverview;
+export default ItemsOverviewAdmin;

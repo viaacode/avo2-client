@@ -13,7 +13,7 @@ import { CONTENT_PAGE_PATH } from './content-page/content-page.routes.ts';
 import { CONTENT_PAGE_LABEL_PATH } from './content-page-labels/content-page-label.routes.ts';
 import { DASHBOARD_PATH } from './dashboard/dashboard.routes.ts';
 import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.routes';
-import { ITEMS_PATH } from './items/items.routes';
+import { ITEMS_ADMIN_PATH } from './items/items.routes';
 import { NAVIGATIONS_PATH } from './navigations/navigations.routes.ts';
 import { PUPIL_COLLECTIONS_PATH } from './pupil-collection/pupil-collection.routes';
 import { TRANSLATIONS_PATH } from './translations/translations.routes.ts';
@@ -32,7 +32,7 @@ export const ADMIN_PATH = Object.freeze({
   ...COLLECTIONS_OR_BUNDLES_PATH,
   ...ASSIGNMENTS_PATH,
   ...PUPIL_COLLECTIONS_PATH,
-  ...ITEMS_PATH,
+  ...ITEMS_ADMIN_PATH,
   ...INTERACTIVE_TOUR_PATH,
   ...URL_REDIRECT_PATH,
 });

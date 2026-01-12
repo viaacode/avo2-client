@@ -27,9 +27,10 @@ import { INTERACTIVE_TOUR_PATH } from './admin/interactive-tour/interactive-tour
 import { InteractiveTourDetail } from './admin/interactive-tour/views/InteractiveTourDetail.tsx';
 import { InteractiveTourEdit } from './admin/interactive-tour/views/InteractiveTourEdit.tsx';
 import { InteractiveTourOverview } from './admin/interactive-tour/views/InteractiveTourOverview.tsx';
-import { ITEMS_PATH } from './admin/items/items.routes';
-import { ItemsOverview } from './admin/items/views/ItemsOverview.tsx';
-import { PublishItemsOverview } from './admin/items/views/PublishItemsOverview.tsx';
+import { ITEMS_ADMIN_PATH } from './admin/items/items.routes';
+import ItemDetailAdmin from './admin/items/views/ItemDetailAdmin.tsx';
+import { ItemsOverviewAdmin } from './admin/items/views/ItemsOverviewAdmin.tsx';
+import { PublishItemsOverviewAdmin } from './admin/items/views/PublishItemsOverviewAdmin.tsx';
 import { MaintenanceAlertsOverviewPage } from './admin/maintenance-alerts-overview/MaintenanceAlertsOverviewPage.tsx';
 import { NAVIGATIONS_PATH } from './admin/navigations/navigations.routes.ts';
 import { NavigationBarDetailPage } from './admin/navigations/views/NavigationBarDetailPage.tsx';
@@ -71,8 +72,7 @@ import { EmbedCodeDetail } from './embed-code/views/EmbedCodeDetail.tsx';
 import ErrorViewPage from './error/views/ErrorViewPage.tsx';
 import { LoggedInHome } from './home/views/LoggedInHome.tsx';
 import { LoggedOutHome } from './home/views/LoggedOutHome.tsx';
-import { ItemDetail } from './item/views/ItemDetail.tsx';
-import { ItemDetailRoute } from './item/views/ItemDetailRoute.tsx';
+import { ItemDetailPage } from './item/views/ItemDetailPage.tsx';
 import { QuickLaneDetail } from './quick-lane/views/QuickLaneDetail.tsx';
 import {
   fetchAssignmentLoader,
@@ -283,7 +283,7 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
     {
       id: 'ItemDetailRoute',
       path: APP_PATH.ITEM_DETAIL.route,
-      Component: ItemDetailRoute,
+      Component: ItemDetailPage,
       ErrorBoundary: () => ErrorBoundary('ItemDetailRoute--route'),
       hasErrorBoundary: true,
     },
@@ -661,22 +661,22 @@ function getAdminRoutes(): RouteObject[] {
     },
     {
       id: 'ItemsOverview',
-      path: ITEMS_PATH.ITEMS_OVERVIEW,
-      Component: ItemsOverview,
+      path: ITEMS_ADMIN_PATH.ITEMS_OVERVIEW,
+      Component: ItemsOverviewAdmin,
       ErrorBoundary: () => ErrorBoundary('ItemsOverview--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'ItemDetail',
-      path: ITEMS_PATH.ITEM_DETAIL,
-      Component: ItemDetail,
+      path: ITEMS_ADMIN_PATH.ITEM_DETAIL,
+      Component: ItemDetailAdmin,
       ErrorBoundary: () => ErrorBoundary('ItemDetail--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'PublishItemsOverview',
-      path: ITEMS_PATH.PUBLISH_ITEMS_OVERVIEW,
-      Component: PublishItemsOverview,
+      path: ITEMS_ADMIN_PATH.PUBLISH_ITEMS_OVERVIEW,
+      Component: PublishItemsOverviewAdmin,
       ErrorBoundary: () => ErrorBoundary('PublishItemsOverview--route'),
       hasErrorBoundary: true,
     },

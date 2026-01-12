@@ -42,7 +42,7 @@ import {
   type UnpublishedItemsTableState,
 } from '../items.types';
 
-export const PublishItemsOverview: FC = () => {
+export const PublishItemsOverviewAdmin: FC = () => {
   const navigateFunc = useNavigate();
 
   const [items, setItems] = useState<UnpublishedItem[] | null>(null);
@@ -419,4 +419,4 @@ export const PublishItemsOverview: FC = () => {
   );
 };
 
-export default PublishItemsOverview;
+export default PublishItemsOverviewAdmin;
