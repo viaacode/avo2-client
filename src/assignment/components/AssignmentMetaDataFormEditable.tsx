@@ -14,9 +14,12 @@ import {
   AvoAssignmentAssignment,
   AvoFileUploadAssetType,
   AvoLomLomField,
+  PermissionName,
 } from '@viaa/avo2-types';
 import { intersection } from 'es-toolkit';
+import { useAtomValue } from 'jotai';
 import { type FC, useState } from 'react';
+import { commonUserAtom } from '../../authentication/authentication.store.ts';
 import { FileUpload } from '../../shared/components/FileUpload/FileUpload.tsx';
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { ShortDescriptionField } from '../../shared/components/ShortDescriptionField/ShortDescriptionField';
@@ -35,6 +38,7 @@ type AssignmentMetaDataFormEditableProps = {
 export const AssignmentMetaDataFormEditable: FC<
   AssignmentMetaDataFormEditableProps
 > = ({ assignment, setAssignment, onFocus }) => {
+  const commonUser = useAtomValue(commonUserAtom);
   const [isAssignmentStillsModalOpen, setIsAssignmentStillsModalOpen] =
     useState<boolean>(false);
 
@@ -160,28 +164,32 @@ export const AssignmentMetaDataFormEditable: FC<
                       />
                     )}
                   </FormGroup>
-                  <FormGroup
-                    label={tText('OG afbeelding (1200x630px)')}
-                    labelFor="ogImageId"
-                  >
-                    <FileUpload
-                      label={tText('Upload een OG afbeelding')}
-                      urls={
-                        assignment.seo_image_path
-                          ? [assignment.seo_image_path]
-                          : []
-                      }
-                      allowMulti={false}
-                      assetType={AvoFileUploadAssetType.ASSIGNMENT_OG_IMAGE}
-                      ownerId={assignment.id}
-                      onChange={(urls) =>
-                        setAssignment({
-                          ...assignment,
-                          seo_image_path: urls[0] || null,
-                        })
-                      }
-                    />
-                  </FormGroup>
+                  {commonUser?.permissions?.includes(
+                    PermissionName.EDIT_OG_IMAGE_ASSIGNMENT,
+                  ) && (
+                    <FormGroup
+                      label={tText('OG afbeelding (1200x630px)')}
+                      labelFor="ogImageId"
+                    >
+                      <FileUpload
+                        label={tText('Upload een OG afbeelding')}
+                        urls={
+                          assignment.seo_image_path
+                            ? [assignment.seo_image_path]
+                            : []
+                        }
+                        allowMulti={false}
+                        assetType={AvoFileUploadAssetType.ASSIGNMENT_OG_IMAGE}
+                        ownerId={assignment.id}
+                        onChange={(urls) =>
+                          setAssignment({
+                            ...assignment,
+                            seo_image_path: urls[0] || null,
+                          })
+                        }
+                      />
+                    </FormGroup>
+                  )}
                 </Column>
               </Grid>
             </Spacer>
