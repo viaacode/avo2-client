@@ -1,0 +1,20 @@
+@use "../settings/colors" as colors;
+@use "../settings/variables" as variables;
+
+.c-input {
+	border-radius: variables.$c-input-border-radius;
+	background-color: variables.$c-input-bg-color;
+	border: 1px solid variables.$c-input-border-color;
+	font-size: inherit;
+	height: 3.6rem;
+	padding: variables.$c-input-padding;
+	width: 100%;
+	appearance: none;
+
+	@include textfield-transition;
+	@include textfield-focus;
+
+	&[disabled] {
+		background-color: colors.$color-gray-100;
+	}
+}
