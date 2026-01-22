@@ -52,7 +52,7 @@ export const QuickLaneFilterTableCell: FC<QuickLaneFilterTableCellProps> = ({
       return <span>{getItemTypeLabel(data)}</span>;
 
     case 'author':
-      return <span>{data.owner?.user.full_name || '-'}</span>;
+      return <span>{data.owner?.user?.full_name || '-'}</span>;
 
     case 'created_at':
     case 'updated_at':
