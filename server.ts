@@ -45,18 +45,25 @@ async function startDevServer() {
 
   app.use('*all', async (req, res, next) => {
     try {
-      const url = `${process.env.CLIENT_URL}${req.originalUrl}`;
+      const url = new URL(`${req.protocol}://${req.host}${req.originalUrl}`);
+
+      // Only HTML page navigations
+      // Images and other assets can be loaded directly from the file system
+      const accept = req.headers.accept ?? '';
+      if (!accept.includes('text/html')) {
+        return next();
+      }
 
       // rendered html from dev server
       const indexHtmlPath = path.resolve(__dirname, 'index.html');
       const indexHtml = await vite.transformIndexHtml(
-        url,
+        url.toString(),
         fs.readFileSync(indexHtmlPath, 'utf-8'),
       );
 
       const { render } = await vite.ssrLoadModule('/src/entry.server.tsx');
-      const origin = 'http://localhost';
-      const request = new Request(new URL(req.originalUrl, origin), {
+
+      const request = new Request(new URL(url), {
         method: req.method,
         headers: req.headers as any,
       });
@@ -105,9 +112,16 @@ async function startPrdServer() {
 
   // SSR the other requests
   app.use('*all', async (req, res, next) => {
-    const url = `${process.env.CLIENT_URL}${req.originalUrl}`;
+    const url = new URL(`${req.protocol}://${req.host}${req.originalUrl}`);
 
     try {
+      // Only HTML page navigations
+      // Images and other assets can be loaded directly from the file system
+      const accept = req.headers.accept ?? '';
+      if (!accept.includes('text/html')) {
+        return next();
+      }
+
       // Pass the headers from the client request to the ssr server request
       // So logged-in users also produce requests to the proxy with credentials
       const headers = new Headers();
