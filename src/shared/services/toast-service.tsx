@@ -2,7 +2,7 @@ import { ToastType } from '@meemoo/admin-core-ui/client';
 import { Alert, type AlertProps, Spacer } from '@viaa/avo2-components';
 import { isNil } from 'es-toolkit';
 import { type FC, type ReactNode } from 'react';
-import { type Id, toast, type ToastOptions } from 'react-toastify';
+import { type Id, type ToastOptions, toast } from 'react-toastify';
 import { ROUTE_PARTS } from '../constants/routes';
 import { isServerSideRendering } from '../helpers/routing/is-server-side-rendering.ts';
 
@@ -40,7 +40,6 @@ const Toast: FC<ToastProps> = (toastProps: ToastProps) => {
       dark={dark}
       message={toastProps.data.message}
       type={toastProps.data.type}
-      className="u-spacer-top"
       onClose={toastProps.closeToast}
     />
   );
