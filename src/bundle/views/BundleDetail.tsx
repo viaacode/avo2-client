@@ -1012,12 +1012,6 @@ export const BundleDetail: FC<BundleDetailProps> = ({
         updatedAt={bundleFromLoader?.updated_at}
         publishedAt={bundleFromLoader?.published_at}
         createdAt={bundleFromLoader?.created_at}
-        author={
-          !!bundleFromLoader?.profile
-            ? getFullName(bundleFromLoader?.profile, false, false)
-            : null
-        }
-        organisationName={bundleFromLoader?.profile?.organisation?.name}
         keywords={compact(
           (bundleFromLoader?.loms || []).map((lom) => lom.lom?.label),
         )}

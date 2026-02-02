@@ -399,12 +399,6 @@ export const DynamicRouteResolver: FC = () => {
         }
         image={contentPageInfoFromRoute.contentPage?.seo_image_path}
         url={contentPageInfoFromRoute.url}
-        organisationName="meemoo"
-        author={getFullName(
-          contentPageInfoFromRoute.contentPage?.profile,
-          false,
-          false,
-        )}
         updatedAt={contentPageInfoFromRoute.contentPage?.updated_at}
         createdAt={contentPageInfoFromRoute?.contentPage?.created_at}
         publishedAt={contentPageInfoFromRoute?.contentPage?.published_at}

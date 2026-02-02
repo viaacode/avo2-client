@@ -1734,12 +1734,6 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
             updatedAt={collectionFromLoader?.updated_at}
             publishedAt={collectionFromLoader?.published_at}
             createdAt={collectionFromLoader?.created_at}
-            author={
-              !!collectionFromLoader?.profile
-                ? getFullName(collectionFromLoader?.profile, false, false)
-                : null
-            }
-            organisationName={collectionFromLoader?.profile?.organisation?.name}
             keywords={compact(
               (collectionFromLoader?.loms || []).map((lom) => lom.lom?.label),
             )}

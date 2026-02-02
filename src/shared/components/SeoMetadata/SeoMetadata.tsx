@@ -13,8 +13,6 @@ interface SeoMetadataProps {
   keywords?: string[] | null;
   publishedAt?: string | null;
   createdAt?: string | null;
-  author?: string | null;
-  organisationName?: string | null;
 }
 
 export const SeoMetadata: FC<SeoMetadataProps> = ({
@@ -26,8 +24,6 @@ export const SeoMetadata: FC<SeoMetadataProps> = ({
   keywords,
   publishedAt,
   createdAt,
-  author,
-  organisationName,
 }) => {
   return (
     <Helmet>
@@ -41,14 +37,11 @@ export const SeoMetadata: FC<SeoMetadataProps> = ({
         <meta property="article:published_time" content={publishedAt} />
       )}
       {!!createdAt && <meta property="og:created_time" content={createdAt} />}
-      {!!author && <meta property="author" content={author} />}
-      {!!organisationName && (
-        <meta property="publisher" content={organisationName} />
-      )}
+      {<meta property="publisher" content="Het Archief voor Onderwijs" />}
       {!!keywords && keywords.length > 0 && (
         <meta name="keywords" content={keywords.join(', ')} />
       )}
-      <meta property="og:site_name" content="Archief voor Onderwijs" />
+      <meta property="og:site_name" content="Het Archief voor Onderwijs" />
       <meta name="language" content="NL" />
     </Helmet>
   );

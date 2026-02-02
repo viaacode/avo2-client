@@ -27,14 +27,10 @@ export class ContentPageService {
       });
       return convertDbContentPageToContentPageInfo(dbContentPage);
     } catch (err) {
-      throw new CustomError(
-        'Failed to resolve media items through proxy',
-        err,
-        {
-          url,
-          path,
-        },
-      );
+      throw new CustomError('Failed to resolve content pages', err, {
+        url,
+        path,
+      });
     }
   }
 
@@ -62,7 +58,7 @@ export class ContentPageService {
       });
     } catch (err) {
       throw new CustomError(
-        'Failed to resolve media items through proxy',
+        'Failed to resolve media items for content page',
         err,
         {
           searchQuery,
