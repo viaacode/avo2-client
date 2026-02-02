@@ -1607,7 +1607,8 @@ export class CollectionService {
         variables,
       });
 
-      return response.app_collection_marcom_log || [];
+      return (response.app_collection_marcom_log ||
+        []) as CollectionMarcomEntry[];
     } catch (err) {
       throw new CustomError(
         'Fetch collections marcom entries from the database failed',

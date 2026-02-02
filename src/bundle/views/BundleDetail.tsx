@@ -80,10 +80,7 @@ import {
 } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import {
-  getFullName,
-  renderAvatar,
-} from '../../shared/helpers/formatters/avatar';
+import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';

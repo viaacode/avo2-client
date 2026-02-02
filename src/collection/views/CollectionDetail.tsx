@@ -130,7 +130,6 @@ import {
 import './CollectionDetail.scss';
 import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
-import { getFullName } from '../../shared/helpers/formatters/avatar.tsx';
 import { isServerSideRendering } from '../../shared/helpers/routing/is-server-side-rendering.ts';
 import {
   BooleanParam,
