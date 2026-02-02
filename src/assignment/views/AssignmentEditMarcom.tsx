@@ -29,6 +29,8 @@ import {
   GET_MARCOM_CHANNEL_NAME_OPTIONS,
   GET_MARCOM_CHANNEL_TYPE_OPTIONS,
   GET_MARCOM_ENTRY_TABLE_COLUMNS,
+  MarcomChannelName,
+  MarcomChannelType,
 } from '../../collection/collection.const';
 import {
   type AssignmentMarcomEntry,
@@ -68,8 +70,10 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
   const commonUser = useAtomValue(commonUserAtom);
 
   const [marcomDate, setMarcomDate] = useState<Date | null>(new Date());
-  const [marcomChannelType, setMarcomChannelType] = useState<string | null>();
-  const [marcomChannelName, setMarcomChannelName] = useState<string | null>();
+  const [marcomChannelType, setMarcomChannelType] =
+    useState<MarcomChannelType | null>();
+  const [marcomChannelName, setMarcomChannelName] =
+    useState<MarcomChannelName | null>();
   const [marcomLink, setMarcomLink] = useState<string>('');
 
   const { data: marcomEntries, refetch: refetchMarcomEntries } =
@@ -283,7 +287,11 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
               <Select
                 options={GET_MARCOM_CHANNEL_TYPE_OPTIONS()}
                 placeholder={'-'}
-                onChange={setMarcomChannelType}
+                onChange={(newMarcomChannelType) =>
+                  setMarcomChannelType(
+                    newMarcomChannelType as MarcomChannelType,
+                  )
+                }
                 value={marcomChannelType}
                 clearable
               />
@@ -298,7 +306,11 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
               <Select
                 options={GET_MARCOM_CHANNEL_NAME_OPTIONS()}
                 placeholder={'-'}
-                onChange={setMarcomChannelName}
+                onChange={(newMarcomChannelName) =>
+                  setMarcomChannelName(
+                    newMarcomChannelName as MarcomChannelName,
+                  )
+                }
                 value={marcomChannelName}
                 clearable
               />

@@ -58,7 +58,6 @@ export const LoggedInHome: FC = () => {
           )}
           image={contentPageInfoFromRoute?.contentPage?.seo_image_path}
           url={contentPageInfoFromRoute?.url}
-          organisationName="meemoo"
           updatedAt={contentPageInfoFromRoute?.contentPage?.updatedAt}
           createdAt={contentPageInfoFromRoute?.contentPage?.createdAt}
           publishedAt={contentPageInfoFromRoute?.contentPage?.publishedAt}

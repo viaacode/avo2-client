@@ -1306,12 +1306,6 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         updatedAt={assignmentFromLoader?.updated_at}
         publishedAt={assignmentFromLoader?.published_at}
         createdAt={assignmentFromLoader?.created_at}
-        author={
-          !!assignmentFromLoader?.profile
-            ? getFullName(assignmentFromLoader?.profile, false, false)
-            : null
-        }
-        organisationName={assignmentFromLoader?.profile?.organisation?.name}
         keywords={compact(
           (assignmentFromLoader?.loms || []).map((lom) => lom.lom?.label),
         )}
