@@ -76,18 +76,25 @@ export const App: FC = () => {
   const isPreviewRoute = query.get('preview') === 'true';
 
   const consoleLogClientAndServerVersions = useCallback(async () => {
-    console.info(`%c client version: ${pkg.version}`, 'color: #bada55');
-    const { fetchWithLogoutJson } = await import(
-      '@meemoo/admin-core-ui/client'
-    );
-    const proxyUrl = getEnv('PROXY_URL');
-    if (!proxyUrl) {
-      console.warn('PROXY_URL is not defined, cannot fetch server version');
+    if (isServerSideRendering()) {
       return;
     }
-    const response = await fetchWithLogoutJson<{ version: string }>(proxyUrl);
+    try {
+      console.info(`%c client version: ${pkg.version}`, 'color: #bada55');
+      const { fetchWithLogoutJson } = await import(
+        '@meemoo/admin-core-ui/client'
+      );
+      const proxyUrl = getEnv('PROXY_URL');
+      if (!proxyUrl) {
+        console.warn('PROXY_URL is not defined, cannot fetch server version');
+        return;
+      }
+      const response = await fetchWithLogoutJson<{ version: string }>(proxyUrl);
 
-    console.info(`%c server version: ${response.version}`, 'color: #bada55');
+      console.info(`%c server version: ${response.version}`, 'color: #bada55');
+    } catch (err) {
+      console.error('Error fetching client and server version:', err);
+    }
   }, []);
 
   /**
