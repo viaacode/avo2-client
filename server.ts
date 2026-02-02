@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
+import packageJson from './package.json' with { type: 'json' };
 import { CustomError } from './src/shared/helpers/custom-error.ts';
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -42,6 +43,14 @@ async function startDevServer() {
   // reference (with a new internal stack of Vite and plugin-injected
   // middlewares). The following is valid even after restarts.
   app.use(vite.middlewares);
+
+  app.get('/status', async (_req, res) => {
+    res.json({
+      success: true,
+      version: packageJson.version,
+      date: new Date().toISOString(),
+    });
+  });
 
   app.use('*all', async (req, res, next) => {
     try {
@@ -109,6 +118,14 @@ async function startPrdServer() {
 
   // Serve other static assets (no cache)
   app.use(express.static(clientDistFolder, { index: false }));
+
+  app.get('/status', async (_req, res) => {
+    res.json({
+      success: true,
+      version: packageJson.version,
+      date: new Date().toISOString(),
+    });
+  });
 
   // SSR the other requests
   app.use('*all', async (req, res, next) => {

@@ -38,7 +38,6 @@ import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
 import { getEnv } from '../../shared/helpers/env';
-import { getFullName } from '../../shared/helpers/formatters/avatar.tsx';
 import { stripHtml } from '../../shared/helpers/formatters/strip-html.ts';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { generateSearchLinkString } from '../../shared/helpers/link';
