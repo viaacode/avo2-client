@@ -195,7 +195,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
     showLoginPopup: !commonUser,
     showNoAccessPopup: false,
   });
-  const collection = collectionFromLoader;
+  const collection = collectionInfo.collection;
   const isContributor = !!(collection?.contributors || []).find(
     (contributor) =>
       !!contributor.profile_id &&
