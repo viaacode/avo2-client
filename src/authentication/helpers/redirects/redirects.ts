@@ -8,9 +8,9 @@ import { APP_PATH } from '../../../constants';
 import { EmbedCodeService } from '../../../embed-code/embed-code-service';
 import { ROUTE_PARTS } from '../../../shared/constants/routes';
 import { getEnv } from '../../../shared/helpers/env';
+import { isServerSideRendering } from '../../../shared/helpers/routing/is-server-side-rendering.ts';
 import { SERVER_LOGOUT_PAGE } from '../../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../../views/registration-flow/register-stamboek.tsx';
-
 import { getBaseUrl } from '../get-base-url';
 
 export function redirectToClientPage(
@@ -44,6 +44,10 @@ export function redirectToServerLoginPage(
   location: Location,
   openInNewTab = false,
 ): void {
+  if (isServerSideRendering()) {
+    // Window object not available on server side
+    return;
+  }
   // Redirect to login form
   // Url to return to after authentication is completed and server stored auth object in session
   const returnToUrl = getRedirectUrl(location, openInNewTab);
@@ -68,6 +72,10 @@ export function redirectToServerLeerIDLogin(
   location: Location,
   openInNewTab = false,
 ): void {
+  if (isServerSideRendering()) {
+    // Window object not available on server side
+    return;
+  }
   const returnToUrl = getRedirectUrl(location, openInNewTab);
   const fullUrl = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify(
     {
@@ -87,6 +95,10 @@ export function redirectToServerACMIDMLogin(
   location: Location,
   openInNewTab = false,
 ): void {
+  if (isServerSideRendering()) {
+    // Window object not available on server side
+    return;
+  }
   const returnToUrl = getRedirectUrl(location, openInNewTab);
   const fullUrl = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify(
     {
@@ -105,6 +117,10 @@ export function redirectToServerSmartschoolLogin(
   location: Location,
   openInNewTab = false,
 ): void {
+  if (isServerSideRendering()) {
+    // Window object not available on server side
+    return;
+  }
   // Redirect to smartschool login form
   // Url to return to after authentication is completed and server stored auth object in session
   const returnToUrl = getRedirectUrl(location, openInNewTab);
@@ -125,6 +141,10 @@ export function redirectToServerKlascementLogin(
   location: Location,
   openInNewTab = false,
 ): void {
+  if (isServerSideRendering()) {
+    // Window object not available on server side
+    return;
+  }
   // Redirect to klascement login form
   // Url to return to after authentication is completed and server stored auth object in session
   const returnToUrl = getRedirectUrl(location, openInNewTab);
@@ -146,6 +166,10 @@ export function redirectToServerArchiefRegistrationIdp(
   stamboekNumber: string,
   openInNewTab = false,
 ): void {
+  if (isServerSideRendering()) {
+    // Window object not available on server side
+    return;
+  }
   const returnToUrl = getBaseUrl(location) + APP_PATH.LOGIN.route;
   const fullUrl = `${getEnv('PROXY_URL')}/auth/hetarchief/register?${queryString.stringify(
     {
@@ -165,6 +189,10 @@ export function redirectToServerLogoutPage(
   location: Location,
   routeAfterLogout: string,
 ): void {
+  if (isServerSideRendering()) {
+    // Window object not available on server side
+    return;
+  }
   // Url to return to after logout is completed
   const returnToUrl = `${getBaseUrl(location)}${routeAfterLogout}`;
   window.location.href = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify(
@@ -175,6 +203,10 @@ export function redirectToServerLogoutPage(
 }
 
 export function logoutAndRedirectToLogin(location?: Location): void {
+  if (isServerSideRendering()) {
+    // Window object not available on server side
+    return;
+  }
   // Url to return to after logout is completed
   let returnToUrl = window.location.origin + APP_PATH.REGISTER_OR_LOGIN.route;
 
@@ -203,6 +235,10 @@ export function redirectToServerLinkAccount(
   idpType: AvoAuthIdpType,
   idpParameters?: string,
 ): void {
+  if (isServerSideRendering()) {
+    // Window object not available on server side
+    return;
+  }
   const returnToUrl = getBaseUrl(location) + location.pathname;
   window.location.href = `${getEnv('PROXY_URL')}/auth/link-account?${queryString.stringify(
     {
@@ -217,6 +253,10 @@ export function redirectToServerUnlinkAccount(
   location: Location,
   idpType: AvoAuthIdpType,
 ): void {
+  if (isServerSideRendering()) {
+    // Window object not available on server side
+    return;
+  }
   const returnToUrl = getBaseUrl(location) + location.pathname;
   window.location.href = `${getEnv('PROXY_URL')}/auth/unlink-account?${queryString.stringify(
     {
