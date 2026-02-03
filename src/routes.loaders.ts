@@ -69,6 +69,7 @@ export async function fetchItemLoader(args: LoaderFunctionArgs<any>) {
   try {
     if (id) {
       const cookieHeader = args.request.headers.get('cookie');
+      console.log('cookie header: ', cookieHeader);
       const item = await ItemsService.fetchItemByExternalId(
         id,
         cookieHeader ? { cookie: cookieHeader } : undefined,

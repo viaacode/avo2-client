@@ -165,8 +165,8 @@ async function startPrdServer() {
         );
         outputHtml = await renderedResponse.text();
       } catch (err) {
-        // An error occured in the server side rendering
-        // Return the index html, so the client side javascript can still render the application in the browser
+        // An error occurred in the server side rendering
+        // Return the index HTML, so the client side JavaScript can still render the application in the browser
         outputHtml = indexHtml;
       }
 
