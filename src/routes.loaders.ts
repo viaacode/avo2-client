@@ -39,12 +39,8 @@ export async function fetchContentPageLoader(args: LoaderFunctionArgs<any>) {
   try {
     // Load content page for the requested path
     const path = new URL(args.request.url).pathname;
-    const cookieHeader = args.request.headers.get('cookie');
     const contentPage =
-      await ContentPageService.getContentPageByLanguageAndPath(
-        path,
-        cookieHeader ? { cookie: cookieHeader } : undefined,
-      );
+      await ContentPageService.getContentPageByLanguageAndPath(path);
     return {
       contentPage,
       url: args.request.url,
@@ -68,12 +64,7 @@ export async function fetchItemLoader(args: LoaderFunctionArgs<any>) {
   const id = args?.params?.id;
   try {
     if (id) {
-      const cookieHeader = args.request.headers.get('cookie');
-      console.log('cookie header: ', cookieHeader);
-      const item = await ItemsService.fetchItemByExternalId(
-        id,
-        cookieHeader ? { cookie: cookieHeader } : undefined,
-      );
+      const item = await ItemsService.fetchItemByExternalId(id);
       return {
         item,
         url: args.request.url,
@@ -102,7 +93,6 @@ export async function fetchCollectionLoader(args: LoaderFunctionArgs<any>) {
 
   try {
     if (id) {
-      const cookieHeader = args.request.headers.get('cookie');
       const collection =
         await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
           id,
@@ -110,7 +100,6 @@ export async function fetchCollectionLoader(args: LoaderFunctionArgs<any>) {
             ? CollectionOrBundle.COLLECTION
             : CollectionOrBundle.BUNDLE,
           undefined,
-          cookieHeader ? { cookie: cookieHeader } : undefined,
         );
       return {
         collection,
@@ -141,11 +130,9 @@ export async function fetchAssignmentLoader(args: LoaderFunctionArgs<any>) {
   const id = args?.params?.id;
   try {
     if (id) {
-      const cookieHeader = args.request.headers.get('cookie');
       const assignment = await AssignmentService.fetchAssignmentById(
         id,
         undefined,
-        cookieHeader ? { cookie: cookieHeader } : undefined,
       );
       return {
         assignment,

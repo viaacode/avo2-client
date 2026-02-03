@@ -467,13 +467,26 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
       const showNoAccessPopup = false;
 
       if (!commonUser) {
-        // Set collection with metadata only when not logged in
+        // Not logged in
+        // If thr collection is public, we should still load the metadata
+        let collectionObj: AvoCollectionCollection | null = null;
+        try {
+          collectionObj =
+            await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
+              uuid,
+              CollectionOrBundle.COLLECTION,
+              undefined,
+            );
+        } catch (err) {
+          // Ignore errors when fetching collections when user is not logged in
+        }
 
         setCollectionInfo({
           ...collectionInfo,
           showNoAccessPopup: false,
           showLoginPopup: true,
           permissions: permissionObj,
+          collection: collectionObj,
         });
         setLoadingInfo({
           state: 'loaded',

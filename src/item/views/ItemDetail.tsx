@@ -333,6 +333,8 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 
       retrieveRelatedItems(itemId, RELATED_ITEMS_AMOUNT);
 
+      setItem(itemObj);
+
       try {
         const counts = await BookmarksViewsPlaysService.getItemCounts(
           (itemObj as any).uid,

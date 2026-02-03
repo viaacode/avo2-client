@@ -95,7 +95,6 @@ import { defaultRenderBookmarkButton } from '../../shared/helpers/default-render
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { getFullName } from '../../shared/helpers/formatters/avatar.tsx';
 import { navigate } from '../../shared/helpers/link';
 import {
   type EducationLevelId,
