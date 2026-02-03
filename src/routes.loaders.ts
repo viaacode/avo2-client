@@ -49,12 +49,14 @@ export async function fetchContentPageLoader(args: LoaderFunctionArgs<any>) {
       contentPage,
       url: args.request.url,
     };
-  } catch (err) {
-    console.error(
-      'Failed to load content page in react-router loader for route',
-      err,
-      { url: args.request.url },
-    );
+  } catch (err: any) {
+    if (err?.innerException?.additionalInfo?.statusCode !== 404) {
+      console.error(
+        'Failed to load content page in react-router loader for route',
+        err,
+        { url: args.request.url },
+      );
+    }
     return {
       contentPage: null,
       url: args.request.url,
@@ -76,12 +78,14 @@ export async function fetchItemLoader(args: LoaderFunctionArgs<any>) {
         url: args.request.url,
       };
     }
-  } catch (err) {
-    console.error(
-      'Failed to load item in react-router loader for route item detail',
-      err,
-      { id },
-    );
+  } catch (err: any) {
+    if (err?.innerException?.additionalInfo?.statusCode !== 404) {
+      console.error(
+        'Failed to load item in react-router loader for route item detail',
+        err,
+        { id },
+      );
+    }
     return {
       item: null,
       url: args.request.url,
@@ -114,12 +118,16 @@ export async function fetchCollectionLoader(args: LoaderFunctionArgs<any>) {
     } else {
       throw new Error('No collection UUID provided in route params');
     }
-  } catch (err) {
-    console.error(
-      'Failed to load collection in react-router loader for route Collection or Bundle detail',
-      err,
-      { id },
-    );
+  } catch (err: any) {
+    if (err?.innerException?.additionalInfo?.statusCode !== 404) {
+      // Log errors except 404s
+      console.error(
+        'Failed to load collection in react-router loader for route Collection or Bundle detail',
+        err,
+        { id },
+      );
+    }
+
     return {
       collection: null,
       url: args.request.url,
@@ -145,12 +153,14 @@ export async function fetchAssignmentLoader(args: LoaderFunctionArgs<any>) {
     } else {
       throw new Error('No assignment UUID provided in route params');
     }
-  } catch (err) {
-    console.error(
-      'Failed to load assignment in react-router loader for route Assignment detail',
-      err,
-      { id, url },
-    );
+  } catch (err: any) {
+    if (err?.innerException?.additionalInfo?.statusCode !== 404) {
+      console.error(
+        'Failed to load assignment in react-router loader for route Assignment detail',
+        err,
+        { id, url },
+      );
+    }
     return {
       assignment: null,
       url,
