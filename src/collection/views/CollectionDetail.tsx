@@ -539,6 +539,9 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         permissions: permissionObj,
         collection: collectionObj || null,
       });
+      setLoadingInfo({
+        state: 'loaded',
+      });
     } catch (err) {
       if (
         (err as CustomError)?.innerException?.statusCode === 404 &&
