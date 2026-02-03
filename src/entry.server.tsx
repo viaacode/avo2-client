@@ -9,6 +9,7 @@ import {
   StaticRouterProvider,
 } from 'react-router';
 import APP_ROUTES from './routes.ts';
+import { CustomError } from './shared/helpers/custom-error.ts';
 
 let { query, dataRoutes } = createStaticHandler(APP_ROUTES);
 
@@ -71,10 +72,23 @@ export async function render(
       headers,
     });
   } catch (err) {
-    console.error('Error during SSR rendering:', err);
+    console.error(
+      new CustomError('Error during SSR rendering (entry.server.tsx)', err, {
+        url: request.url,
+      }),
+    );
 
-    return new Response(`<pre>${String(err)}</pre>`, {
-      status: 500,
-    });
+    if (process.env.NODE_ENV === 'production') {
+      let headers = new Headers();
+      headers.set('Content-Type', 'text/html; charset=utf-8');
+      return new Response(indexHtml, {
+        status: 200,
+        headers,
+      });
+    } else {
+      return new Response(`<pre>${String(err)}</pre>`, {
+        status: 500,
+      });
+    }
   }
 }

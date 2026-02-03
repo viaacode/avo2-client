@@ -84,9 +84,10 @@ async function startDevServer() {
         .status(renderedResponse.status || 200)
         .set(renderedHeaders)
         .end(await renderedResponse.text());
-    } catch (e: any) {
-      vite.ssrFixStacktrace(e);
-      next(e);
+    } catch (err: any) {
+      vite.ssrFixStacktrace(err);
+      console.error('[DEV][SSR] failed, serving CSR fallback:', err);
+      next(err);
     }
   });
 
@@ -147,32 +148,55 @@ async function startPrdServer() {
         headers.set(k, Array.isArray(v) ? v.join(',') : v);
       }
 
-      // Load the server entry. ssrLoadModule automatically transforms
-      // ESM source code to be usable in Node.js! There is no bundling
-      // required, and provides efficient invalidation similar to HMR.
-      let render = (await import('./src/entry.server.tsx')).render;
+      let outputHtml: string;
+      try {
+        // Load the server entry. ssrLoadModule automatically transforms
+        // ESM source code to be usable in Node.js! There is no bundling
+        // required, and provides efficient invalidation similar to HMR.
+        let render = (await import('./src/entry.server.tsx')).render;
 
-      // render the app HTML
-      const renderedResponse = await render(
-        new Request(url, {
-          method: req.method,
-          headers,
-        }),
-        indexHtml,
-      );
-      const html = await renderedResponse.text();
+        // render the app HTML
+        const renderedResponse = await render(
+          new Request(url, {
+            method: req.method,
+            headers,
+          }),
+          indexHtml,
+        );
+        outputHtml = await renderedResponse.text();
+      } catch (err) {
+        // An error occured in the server side rendering
+        // Return the index html, so the client side javascript can still render the application in the browser
+        outputHtml = indexHtml;
+      }
 
       // Send the rendered HTML back.
-      res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
+      res.status(200).set({ 'Content-Type': 'text/html' }).end(outputHtml);
     } catch (err: any) {
       // If an error is caught, let Vite fix the stack trace so it maps back to your actual source code.
       const error = new CustomError('[SSR]: Error during render', err, {
         url: req.originalUrl,
       });
       console.error(error);
-      next(error);
+      res
+        .status(200)
+        .set({ 'Content-Type': 'text/html; charset=utf-8' })
+        .end(indexHtml);
     }
   });
+
+  app.use(
+    (
+      err: any,
+      _req: express.Request,
+      res: express.Response,
+      _next: express.NextFunction,
+    ) => {
+      console.error('[EXPRESS] unhandled error:', err);
+      if (res.headersSent) return;
+      res.status(500).json({ ok: false });
+    },
+  );
 
   app.listen(process.env.PORT);
   console.info(`Client is listening on port ${process.env.PORT}`);

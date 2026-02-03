@@ -28,7 +28,9 @@ export class VideoStillService {
       }
       return fetchWithLogoutJson(`${getEnv('PROXY_URL')}/video-stills`, {
         method: 'POST',
-        body: JSON.stringify(stillRequests),
+        body: JSON.stringify({
+          requests: stillRequests,
+        }),
       });
     } catch (err) {
       throw new CustomError('Failed to get video stills', err, {
