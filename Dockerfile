@@ -92,4 +92,4 @@ RUN mkdir -p /tmp/.npm/_logs \
 
 USER node
 # Run npm run start script
-CMD ["npm", "run", "start"]
+CMD ["node", "./dist/server/server.js"]
