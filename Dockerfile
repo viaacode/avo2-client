@@ -57,7 +57,7 @@ RUN npm prune --omit=dev
 ###################################################################
 FROM docker.io/library/node:24-alpine AS serve
 USER node
-ENV NODE_ENV $NODE_ENV
+ENV NODE_ENV production
 WORKDIR /app
 
 # copy folders
