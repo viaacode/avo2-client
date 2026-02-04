@@ -80,14 +80,15 @@ RUN mkdir -p /app/dist/client /app/dist/server/.vite \
   && chgrp -R 0 /app \
   && chmod -R g=u /app
 
-# write npm logs to tmp folder
+# Write npm logs to tmp folder
 # Make npm write logs/cache somewhere writable
 ENV NPM_CONFIG_CACHE=/tmp/.npm \
     npm_config_cache=/tmp/.npm
 
 RUN mkdir -p /tmp/.npm/_logs \
-  && chown -R node:node /tmp/.npm \
-  && chmod -R u+rwX,g+rwX /tmp/.npm
+  && chgrp -R 0 /tmp/.npm \
+  && chmod -R g=u /tmp/.npm \
+  && chmod -R 0777 /tmp/.npm
 
 USER node
 # Run npm run start script
