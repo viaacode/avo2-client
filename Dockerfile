@@ -91,5 +91,6 @@ RUN mkdir -p /tmp/.npm/_logs \
   && chmod -R 0777 /tmp/.npm
 
 USER node
-# Run npm run start script
-CMD ["node", "./dist/server/server.js"]
+# Write env variables to js file, copy robots.txt file and start server
+CMD ["sh", "-c", "node ./scripts/env.js && node ./scripts/copy-robots-txt-file.js && node ./dist/server/server.js"]
+

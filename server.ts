@@ -199,7 +199,9 @@ async function startPrdServer() {
   );
 
   app.listen(process.env.PORT);
-  console.info(`Client is listening on port ${process.env.PORT}`);
+  console.info(
+    `Client is listening on port ${process.env.PORT} with NODE_ENV = ${process.env.NODE_ENV}`,
+  );
 }
 
 createServer().catch((err) => {

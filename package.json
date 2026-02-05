@@ -5,8 +5,6 @@
   "type": "module",
   "scripts": {
     "--prepare": "husky install",
-    "prestart": "node ./scripts/env.js && node ./scripts/copy-robots-txt-file.js",
-    "start": "NODE_ENV=production node ./dist/server/server.js",
     "start-with-env": "npm run build && dotenv -e .env.qas node ./scripts/env.js && dotenv -e .env.qas cross-env NODE_ENV=production node ./dist/server/server.js",
     "predev": "dotenv -e .env.qas node ./scripts/env.js && cp env-config.js ./public",
     "dev": "dotenv -e .env.qas node server.ts",
