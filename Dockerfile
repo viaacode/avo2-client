@@ -80,16 +80,6 @@ RUN mkdir -p /app/dist/client /app/dist/server/.vite \
   && chgrp -R 0 /app \
   && chmod -R g=u /app
 
-# Write npm logs to tmp folder
-# Make npm write logs/cache somewhere writable
-ENV NPM_CONFIG_CACHE=/tmp/.npm \
-    npm_config_cache=/tmp/.npm
-
-RUN mkdir -p /tmp/.npm/_logs \
-  && chgrp -R 0 /tmp/.npm \
-  && chmod -R g=u /tmp/.npm \
-  && chmod -R 0777 /tmp/.npm
-
 USER node
 # Write env variables to js file, copy robots.txt file and start server
 CMD ["sh", "-c", "node ./scripts/env.js && node ./scripts/copy-robots-txt-file.js && node ./dist/server/server.js"]

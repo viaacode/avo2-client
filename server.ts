@@ -53,9 +53,9 @@ async function startDevServer() {
   });
 
   app.use('*all', async (req, res, next) => {
-    try {
-      const url = new URL(`${req.protocol}://${req.host}${req.originalUrl}`);
+    const url = new URL(`${req.protocol}://${req.host}${req.originalUrl}`);
 
+    try {
       // Only HTML page navigations
       // Images and other assets can be loaded directly from the file system
       const accept = req.headers.accept ?? '';
@@ -79,6 +79,19 @@ async function startDevServer() {
       const renderedResponse: Response = await render(request, indexHtml);
       const renderedHeaders =
         Object.fromEntries(renderedResponse.headers.entries()) || {};
+
+      // If SSR decided to redirect, don't send HTML, just end the response
+      const redirectLocation = renderedResponse.headers.get('Location');
+      const isRedirect =
+        renderedResponse.status >= 300 &&
+        renderedResponse.status < 400 &&
+        !!renderedResponse.headers.get('Location');
+
+      if (isRedirect) {
+        res.status(renderedResponse.status || 200).set(renderedHeaders);
+        res.end();
+        return;
+      }
 
       res
         .status(renderedResponse.status || 200)
@@ -163,6 +176,26 @@ async function startPrdServer() {
           }),
           indexHtml,
         );
+
+        // Handle client side redirect request
+        const renderedHeaders = Object.fromEntries(
+          renderedResponse.headers.entries(),
+        );
+
+        // If SSR decided to redirect, don't send HTML, just end the response
+        const redirectLocation = renderedResponse.headers.get('Location');
+        const isRedirect =
+          renderedResponse.status >= 300 &&
+          renderedResponse.status < 400 &&
+          !!redirectLocation;
+
+        if (isRedirect) {
+          res.status(renderedResponse.status || 200).set(renderedHeaders);
+          res.end();
+          return;
+        }
+
+        res.status(renderedResponse.status || 200).set(renderedHeaders);
         outputHtml = await renderedResponse.text();
       } catch (err) {
         // An error occurred in the server side rendering
