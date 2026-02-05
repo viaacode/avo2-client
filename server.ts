@@ -1,10 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
+import { AvoAuthLoginResponse } from '@viaa/avo2-types';
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import packageJson from './package.json' with { type: 'json' };
 import { CustomError } from './src/shared/helpers/custom-error.ts';
+import { getEnv } from './src/shared/helpers/env';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -19,6 +22,16 @@ async function createServer() {
     // DEV: Vite middleware + load SSR from source
     await startDevServer();
   }
+}
+
+async function isLoggedIn(request: express.Request): Promise<boolean> {
+  const url = `${getEnv('PROXY_URL')}/auth/check-login`;
+  const loginResponse = await fetchWithLogoutJson<AvoAuthLoginResponse>(url, {
+    headers: {
+      cookie: request.headers.cookie || '',
+    },
+  });
+  return loginResponse.message === 'LOGGED_IN';
 }
 
 /**
@@ -85,7 +98,7 @@ async function startDevServer() {
       const isRedirect =
         renderedResponse.status >= 300 &&
         renderedResponse.status < 400 &&
-        !!renderedResponse.headers.get('Location');
+        !!redirectLocation;
 
       if (isRedirect) {
         res.status(renderedResponse.status || 200).set(renderedHeaders);
@@ -146,11 +159,22 @@ async function startPrdServer() {
     const url = new URL(`${req.protocol}://${req.host}${req.originalUrl}`);
 
     try {
+      console.log('----- ssr request: ' + url.toString());
       // Only HTML page navigations
       // Images and other assets can be loaded directly from the file system
       const accept = req.headers.accept ?? '';
       if (!accept.includes('text/html')) {
         return next();
+      }
+
+      const isUserLoggedIn = await isLoggedIn(req);
+      const returnToUrl = url.searchParams.get('returnToUrl');
+      console.log('isUserLoggedIn: ' + isUserLoggedIn);
+      console.log('returnToUrl: ' + returnToUrl);
+      if (returnToUrl && isUserLoggedIn) {
+        // If the user is logged in and a returnToUrl is set, redirect to that URL
+        res.redirect(returnToUrl);
+        return;
       }
 
       // Pass the headers from the client request to the ssr server request
@@ -190,11 +214,13 @@ async function startPrdServer() {
           !!redirectLocation;
 
         if (isRedirect) {
+          console.log('redirecting: ' + redirectLocation);
           res.status(renderedResponse.status || 200).set(renderedHeaders);
           res.end();
           return;
         }
 
+        console.log('regular ssr render: ' + url.toString());
         res.status(renderedResponse.status || 200).set(renderedHeaders);
         outputHtml = await renderedResponse.text();
       } catch (err) {
