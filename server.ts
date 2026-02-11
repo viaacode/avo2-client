@@ -65,6 +65,10 @@ async function startDevServer() {
     });
   });
 
+  app.get('/healthz', (_req: express.Request, res: express.Response) => {
+    res.status(200).send('OK');
+  });
+
   app.use(
     '*all',
     async (
@@ -159,6 +163,10 @@ async function startPrdServer() {
       version: packageJson.version,
       date: new Date().toISOString(),
     });
+  });
+
+  app.get('/healthz', (_req: express.Request, res: express.Response) => {
+    res.status(200).send('OK');
   });
 
   // SSR the other requests
