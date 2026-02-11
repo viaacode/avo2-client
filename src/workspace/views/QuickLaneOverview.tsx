@@ -29,7 +29,6 @@ import {
   isOrganisational,
   isPersonal,
 } from '../../shared/helpers/quick-lane';
-import { useDebounce } from '../../shared/hooks/useDebounce';
 import {
   QuickLaneFilterService,
   type QuickLaneFilters,
@@ -83,11 +82,12 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
     sort_column: StringParam,
   });
 
-  const [filters, setFilters] = useState<
-    QuickLaneOverviewFilterState | undefined
-  >(undefined);
-  const debouncedFilters: QuickLaneOverviewFilterState | undefined =
-    useDebounce(filters, 250);
+  const [filters, setFilters] = useState<QuickLaneOverviewFilterState>({
+    author: [],
+    columns: [],
+    content_label: [],
+    page: 0,
+  });
 
   // Configuration
 
@@ -163,28 +163,28 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
     setLoadingInfo({ state: 'loading' });
 
     try {
-      if (!commonUser?.profileId || debouncedFilters === undefined) {
-        setLoadingInfo({
-          state: 'error',
-          message: tHtml(
-            'workspace/views/quick-lane-overview___er-is-onvoldoende-informatie-beschikbaar-om-gedeelde-links-op-te-halen',
-          ),
-        });
+      if (!commonUser?.profileId || filters === undefined) {
+        // setLoadingInfo({
+        //   state: 'error',
+        //   message: tHtml(
+        //     'workspace/views/quick-lane-overview___er-is-onvoldoende-informatie-beschikbaar-om-gedeelde-links-op-te-halen',
+        //   ),
+        // });
         return;
       }
 
       let params: QuickLaneFilters = {
-        filterString: debouncedFilters.query,
-        createdAt: debouncedFilters.created_at,
-        updatedAt: debouncedFilters.updated_at,
-        contentLabels: debouncedFilters.content_label,
-        sortOrder: debouncedFilters.sort_order,
-        sortColumn: debouncedFilters.sort_column,
+        filterString: filters.query,
+        createdAt: filters.created_at,
+        updatedAt: filters.updated_at,
+        contentLabels: filters.content_label,
+        sortOrder: filters.sort_order,
+        sortColumn: filters.sort_column,
         sortType: columns.find((column) => {
-          return column.id === debouncedFilters.sort_column;
+          return column.id === filters.sort_column;
         })?.dataType as TableColumnDataType,
         limit: ITEMS_PER_PAGE,
-        offset: debouncedFilters.page * ITEMS_PER_PAGE,
+        offset: filters.page * ITEMS_PER_PAGE,
       };
 
       if (isOrganisational(commonUser)) {
@@ -202,7 +202,7 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
         params = {
           ...params,
           companyIds: [commonUser.companyId],
-          profileIds: debouncedFilters.author,
+          profileIds: filters.author,
         };
       } else if (isPersonal(commonUser)) {
         if (!commonUser.profileId) {
@@ -243,7 +243,7 @@ export const QuickLaneOverview: FC<QuickLaneOverviewProps> = () => {
         ),
       });
     }
-  }, [commonUser, setQuickLanes, setLoadingInfo, debouncedFilters]); // eslint-disable-line
+  }, [commonUser, setQuickLanes, setLoadingInfo, filters]); // eslint-disable-line
 
   const removeQuickLane = (id: QuickLaneUrlObject['id']) => {
     if (!commonUser?.profileId) {
