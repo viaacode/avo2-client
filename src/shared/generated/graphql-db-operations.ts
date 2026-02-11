@@ -486,7 +486,7 @@ export type UpdateCollectionByIdMutationVariables = Exact<{
 }>;
 
 
-export type UpdateCollectionByIdMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_collections', id: any, title: string, collection_labels: Array<{ __typename?: 'app_collection_labels', label: string, id: number }> }> } | null };
+export type UpdateCollectionByIdMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_collections', id: any, title: string, labels: Array<{ __typename?: 'app_collection_labels', label: string, id: number }> }> } | null };
 
 export type UpdateCollectionFragmentByIdMutationVariables = Exact<{
   id: Scalars['Int'];

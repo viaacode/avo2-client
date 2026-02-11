@@ -1709,7 +1709,7 @@ export const UpdateCollectionByIdDocument = `
     returning {
       id
       title
-      collection_labels: labels {
+      labels {
         label
         id
       }
