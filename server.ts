@@ -180,7 +180,6 @@ async function startPrdServer() {
       const url = new URL(`${req.protocol}://${req.host}${req.originalUrl}`);
 
       try {
-        console.log('----- ssr request: ' + url.toString());
         // Only HTML page navigations
         // Images and other assets can be loaded directly from the file system
         const accept = req.headers.accept ?? '';
@@ -190,8 +189,6 @@ async function startPrdServer() {
 
         const isUserLoggedIn = await isLoggedIn(req);
         const returnToUrl = url.searchParams.get('returnToUrl');
-        console.log('isUserLoggedIn: ' + isUserLoggedIn);
-        console.log('returnToUrl: ' + returnToUrl);
         if (returnToUrl && isUserLoggedIn) {
           // If the user is logged in and a returnToUrl is set, redirect to that URL
           res.redirect(returnToUrl);
@@ -235,13 +232,11 @@ async function startPrdServer() {
             !!redirectLocation;
 
           if (isRedirect) {
-            console.log('redirecting: ' + redirectLocation);
             res.status(renderedResponse.status || 200).set(renderedHeaders);
             res.end();
             return;
           }
 
-          console.log('regular ssr render: ' + url.toString());
           res.status(renderedResponse.status || 200).set(renderedHeaders);
           outputHtml = await renderedResponse.text();
         } catch (err) {
