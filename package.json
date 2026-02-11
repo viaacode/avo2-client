@@ -1,6 +1,6 @@
 {
   "name": "avo2-client",
-  "version": "1.33.35",
+  "version": "1.33.36",
   "private": true,
   "type": "module",
   "scripts": {
