@@ -76,8 +76,8 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CollectionService } from '../collection.service';
 import {
-  type Collection,
   COLLECTION_OR_BUNDLE_TO_CONTENT_TYPE_ENGLISH,
+  type Collection,
   CollectionCreateUpdateTab,
   CollectionMenuAction,
   CollectionOrBundle,
@@ -149,6 +149,7 @@ export const CollectionOrBundleOverview: FC<
       | 'QUICK_LANE'
       | 'CREATE_ASSIGNMENT';
   } | null>(null);
+  const isCollection = type === 'collection';
 
   const [query, setQuery] = useQueryParams({
     selectedShareTypeLabelIds: ArrayParam,
@@ -157,7 +158,9 @@ export const CollectionOrBundleOverview: FC<
     sortOrder: StringParam,
   });
   const { data: workspaceCounts } = useGetWorkspaceCounts();
-  const numberOfItems = workspaceCounts?.collections || 0;
+  const numberOfItems = isCollection
+    ? workspaceCounts?.collections || 0
+    : workspaceCounts?.bundles || 0;
 
   const isContributor =
     selectedCollection?.share_type ===
@@ -176,8 +179,6 @@ export const CollectionOrBundleOverview: FC<
   // Mutations
   const { mutateAsync: triggerCollectionOrBundleDelete } =
     useDeleteCollectionOrBundleByUuid();
-
-  const isCollection = type === 'collection';
 
   const getColumnsMobile = (): TableColumn[] => {
     return [
