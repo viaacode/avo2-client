@@ -1,6 +1,6 @@
 {
   "name": "avo2-client",
-  "version": "1.33.38",
+  "version": "1.33.39",
   "private": true,
   "type": "module",
   "scripts": {
@@ -43,8 +43,8 @@
   "dependencies": {
     "@flowplayer/player": "3.32.1",
     "@hookform/resolvers": "2.9.11",
-    "@meemoo/admin-core-ui": "5.2.30",
-    "@meemoo/react-components": "5.1.7",
+    "@meemoo/admin-core-ui": "5.2.32",
+    "@meemoo/react-components": "5.1.13",
     "@emotion/react": "11.11.1",
     "@popperjs/core": "2.11.6",
     "@react-router/node": "^7.9.6",
@@ -52,7 +52,7 @@
     "@studiohyperdrive/pagination": "1.0.0",
     "@tanstack/react-query": "5.90.7",
     "@uidotdev/usehooks": "^2.4.1",
-    "@viaa/avo2-components": "6.2.5",
+    "@viaa/avo2-components": "6.2.6",
     "@viaa/avo2-types": "5.0.10",
     "autosize": "6.0.1",
     "blend-promise-utils": "1.29.2",
