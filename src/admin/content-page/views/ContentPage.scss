@@ -62,7 +62,7 @@ $c-admin-core-add-content-block-height: 7rem;
 }
 
 .c-admin-core.c-admin.c-admin__content-page-edit,
-.c-admin-core.c-admin.p-content-page-detail{
+.c-admin-core.c-admin.p-content-page-detail {
   overflow-y: hidden;
 
   > .c-admin__content {
@@ -74,13 +74,29 @@ $c-admin-core-add-content-block-height: 7rem;
 
 	.m-edit-content-blocks {
 	  overflow-y: hidden;
-	  height: calc(100% - 4.9rem);
+	  height: calc(100vh - 4.9rem);
 	}
 
-	> .o-container-vertical,
-	> .c-content-page-preview {
-	  height: calc(100% - 4.9rem);
+	> .o-container-vertical {
+	  height: calc(100vh - 4.9rem);
 	  overflow-y: auto;
 	}
   }
+}
+
+.c-admin-core.c-admin.c-admin__content-page-edit {
+	.m-edit-content-blocks {
+		overflow-y: hidden;
+		height: calc(100vh - 4.9rem);
+
+		[role="separator"] + [data-panel] {
+			height: calc(100vh - 10.8rem);
+		}
+	}
+}
+
+.c-admin-core.c-admin.p-content-page-detail {
+	.c-content-page-preview {
+		height: calc(100vh - 9.4rem);
+	}
 }
