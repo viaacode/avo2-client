@@ -12,6 +12,7 @@ import { store } from '../../shared/store/ui.store.ts';
 import { LTI_JWT_TOKEN_HEADER } from '../embed.types';
 
 export async function checkLoginState() {
+  let url: string | null = null;
   try {
     if (isServerSideRendering()) {
       // During server side rendering the user is always logged out
@@ -29,7 +30,8 @@ export async function checkLoginState() {
       return loginState;
     }
 
-    const response = await fetch(`${getEnv('PROXY_URL')}/auth/check-login`, {
+    url = `${getEnv('PROXY_URL')}/auth/check-login`;
+    const response = await fetch(url, {
       method: 'GET',
       credentials: 'include',
       cache: 'no-store',
@@ -46,7 +48,9 @@ export async function checkLoginState() {
     return loginResponse as AvoAuthLoginResponse;
   } catch (err) {
     console.error('Error fetching login state for embed:', err);
-    throw new CustomError('Failed to fetch login state for embed', err);
+    throw new CustomError('Failed to fetch login state for embed', err, {
+      url,
+    });
   }
 }
 

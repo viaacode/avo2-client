@@ -51,12 +51,13 @@ async function startDevServer() {
   const app = express();
 
   // Proxy /api routes to PROXY_URL_DIRECT
-  // TODO replace this with a meemoo gateway redirect for improved performance
   app.use(
     '/api',
     createProxyMiddleware({
       target: process.env.PROXY_URL_DIRECT,
       changeOrigin: true,
+      pathRewrite: { '^/api': '' },
+      cookieDomainRewrite: { '*': '' },
     }),
   );
 
@@ -175,6 +176,8 @@ async function startPrdServer() {
     createProxyMiddleware({
       target: process.env.PROXY_URL_DIRECT,
       changeOrigin: true,
+      pathRewrite: { '^/api': '' },
+      cookieDomainRewrite: { '*': '' },
     }),
   );
 
