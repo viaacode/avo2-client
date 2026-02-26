@@ -101,6 +101,7 @@ export const ShareDropdown: FC<ShareDropdownProps> = ({
 
   return (
     <Dropdown
+      id="share-dropdown"
       isOpen={isShareDropdownOpen}
       onClose={handleOnClose}
       className="c-share-dropdown"
