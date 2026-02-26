@@ -41,6 +41,10 @@ export async function fetchContentPageLoader(args: LoaderFunctionArgs<any>) {
     // Load content page for the requested path
     const path = new URL(args.request.url).pathname;
     const cookieHeader = args.request.headers.get('cookie');
+    console.log('Fetching content page:', {
+      path,
+      cookieHeader,
+    });
     const contentPage =
       await ContentPageService.getContentPageByLanguageAndPath(
         path,
