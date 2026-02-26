@@ -1848,9 +1848,7 @@ export class CollectionService {
     try {
       return await fetchWithLogoutJson(
         stringifyUrl({
-          url: `${getEnv(
-            'PROXY_URL',
-          )}/collections/${collectionId}/share/change-contributor-rights`,
+          url: `${getEnv('PROXY_URL')}/collections/${collectionId}/share/change-contributor-rights`,
           query: {
             contributorId,
             rights,
@@ -1879,9 +1877,7 @@ export class CollectionService {
     try {
       return await fetchWithLogoutJson(
         stringifyUrl({
-          url: `${getEnv(
-            'PROXY_URL',
-          )}/collections/${collectionId}/share/delete-contributor`,
+          url: `${getEnv('PROXY_URL')}/collections/${collectionId}/share/delete-contributor`,
           query: { contributorId, profileId },
         }),
         { method: 'DELETE' },
@@ -1945,9 +1941,7 @@ export class CollectionService {
   ): Promise<void> {
     try {
       await fetchWithLogoutJson(
-        `${getEnv(
-          'PROXY_URL',
-        )}/collections/${collectionId}/share/transfer-owner?newOwnerId=${newOwnerProfileId}`,
+        `${getEnv('PROXY_URL')}/collections/${collectionId}/share/transfer-owner?newOwnerId=${newOwnerProfileId}`,
         { method: 'PATCH' },
       );
     } catch (err) {
@@ -2021,9 +2015,7 @@ export class CollectionService {
     try {
       await fetchWithLogoutJson(
         stringifyUrl({
-          url: `${getEnv(
-            'PROXY_URL',
-          )}/collections/${collectionId}/share/request-edit-status`,
+          url: `${getEnv('PROXY_URL')}/collections/${collectionId}/share/request-edit-status`,
         }),
         { method: 'PATCH' },
       );
@@ -2060,9 +2052,7 @@ export class CollectionService {
     try {
       return await fetchWithLogoutJson(
         stringifyUrl({
-          url: `${getEnv(
-            'PROXY_URL',
-          )}/collections/${collectionId}/share/release-edit-status`,
+          url: `${getEnv('PROXY_URL')}/collections/${collectionId}/share/release-edit-status`,
         }),
         { method: 'PATCH' },
       );
@@ -2079,9 +2069,7 @@ export class CollectionService {
     try {
       await fetchWithLogoutJson(
         stringifyUrl({
-          url: `${getEnv(
-            'PROXY_URL',
-          )}/collections/${collectionId}/increment-added-to-assignment-count`,
+          url: `${getEnv('PROXY_URL')}/collections/${collectionId}/increment-added-to-assignment-count`,
         }),
         { method: 'POST' },
       );

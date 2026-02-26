@@ -1408,9 +1408,7 @@ export class AssignmentService {
       );
       await fetchWithLogoutJson(
         stringifyUrl({
-          url: `${getEnv(
-            'PROXY_URL',
-          )}/assignments/${assignmentId}/share/delete-contributor`,
+          url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/delete-contributor`,
           query: {
             contributorId,
             profileId,
@@ -1485,9 +1483,7 @@ export class AssignmentService {
         '@meemoo/admin-core-ui/client'
       );
       await fetchWithLogoutJson(
-        `${getEnv(
-          'PROXY_URL',
-        )}/assignments/${assignmentId}/share/transfer-owner?newOwnerProfileId=${contributorProfileId}`,
+        `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/transfer-owner?newOwnerProfileId=${contributorProfileId}`,
         { method: 'PATCH' },
       );
     } catch (err) {
@@ -1504,9 +1500,7 @@ export class AssignmentService {
       );
       await fetchWithLogoutJson(
         stringifyUrl({
-          url: `${getEnv(
-            'PROXY_URL',
-          )}/assignments/${assignmentId}/share/request-edit-status`,
+          url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/request-edit-status`,
         }),
         { method: 'PATCH' },
       );
@@ -1551,9 +1545,7 @@ export class AssignmentService {
       );
       return await fetchWithLogoutJson(
         stringifyUrl({
-          url: `${getEnv(
-            'PROXY_URL',
-          )}/assignments/${assignmentId}/share/release-edit-status`,
+          url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/release-edit-status`,
         }),
         { method: 'PATCH' },
       );

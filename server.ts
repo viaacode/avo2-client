@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 import type { AvoAuthLoginResponse } from '@viaa/avo2-types';
 import express from 'express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import { createServer as createViteServer } from 'vite';
 import packageJson from './package.json' with { type: 'json' };
 import { CustomError } from './src/shared/helpers/custom-error.ts';
@@ -48,6 +49,16 @@ async function startDevServer() {
   });
 
   const app = express();
+
+  // Proxy /api routes to PROXY_URL_DIRECT
+  // TODO replace this with a meemoo gateway redirect for improved performance
+  app.use(
+    '/api',
+    createProxyMiddleware({
+      target: process.env.PROXY_URL_DIRECT,
+      changeOrigin: true,
+    }),
+  );
 
   // Use vite's connect instance as middleware. If you use your own
   // express router (express.Router()), you should use router.use
@@ -156,6 +167,16 @@ async function startPrdServer() {
 
   // Serve other static assets (no cache)
   app.use(express.static(clientDistFolder, { index: false }));
+
+  // Proxy /api routes to PROXY_URL_DIRECT
+  // TODO replace this with a meemoo gateway redirect for improved performance
+  app.use(
+    '/api',
+    createProxyMiddleware({
+      target: process.env.PROXY_URL_DIRECT,
+      changeOrigin: true,
+    }),
+  );
 
   app.get('/status', async (_req: express.Request, res: express.Response) => {
     res.json({

@@ -1,7 +1,6 @@
 import fs from 'fs';
-import path from 'path';
-
 import fetch from 'node-fetch';
+import path from 'path';
 
 async function updateSitemap(): Promise<void> {
   if (!process.env.PROXY_URL) {

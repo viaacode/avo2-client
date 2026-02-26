@@ -22,12 +22,12 @@ export class EducationOrganisationService {
   ): Promise<AvoEducationOrganizationOrganization[]> {
     let url: string | undefined = undefined;
     try {
-      url = `${getEnv(
-        'PROXY_URL',
-      )}/education-organisations/organisations?${queryString.stringify({
-        city,
-        zipCode,
-      })}`;
+      url = `${getEnv('PROXY_URL')}/education-organisations/organisations?${queryString.stringify(
+        {
+          city,
+          zipCode,
+        },
+      )}`;
 
       return fetchWithLogoutJson<AvoEducationOrganizationOrganization[]>(url);
     } catch (err) {
@@ -43,12 +43,12 @@ export class EducationOrganisationService {
   ): Promise<string | null> {
     let url: string | undefined = undefined;
     try {
-      url = `${getEnv(
-        'PROXY_URL',
-      )}/education-organisations/organisation-name?${queryString.stringify({
-        organisationId,
-        unitId,
-      })}`;
+      url = `${getEnv('PROXY_URL')}/education-organisations/organisation-name?${queryString.stringify(
+        {
+          organisationId,
+          unitId,
+        },
+      )}`;
 
       const response = await fetchWithLogoutJson<{ name: string } | null>(url);
 
