@@ -224,6 +224,9 @@ export const EducationalAuthorItemRequestForm: FC = () => {
             <TextInput
               className="c-input-react-components"
               id="organisation"
+              ariaLabel={tText(
+                'user-item-request-form/views/educational-author-item-request-form___organisatie',
+              )}
               value={formValues.organisation}
               onChange={(evt) =>
                 setFormValues({
@@ -244,6 +247,9 @@ export const EducationalAuthorItemRequestForm: FC = () => {
             <TextInput
               className="c-input-react-components"
               id="method"
+              ariaLabel={tText(
+                'user-item-request-form/views/educational-author-item-request-form___naam-methode',
+              )}
               value={formValues.method}
               onChange={(evt) =>
                 setFormValues({
