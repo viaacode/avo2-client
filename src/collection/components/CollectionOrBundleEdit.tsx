@@ -12,6 +12,7 @@ import {
   Tabs,
 } from '@viaa/avo2-components';
 import {
+  AvoAssignmentAssignment,
   AvoCollectionCollection,
   AvoCollectionContributor,
   AvoCollectionFragment,
@@ -131,6 +132,7 @@ import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/Del
 import { PublishCollectionModal } from './modals/PublishCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
+import { AssignmentRetrieveError } from '../../assignment/assignment.types.ts';
 import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { isServerSideRendering } from '../../shared/helpers/routing/is-server-side-rendering.ts';
 
@@ -1262,10 +1264,17 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
   const handleAddAssignmentById = async (id: string) => {
     try {
       // We're adding an assignment to the collection
-      const assignment = await AssignmentService.fetchAssignmentById(id);
-      if (!assignment) {
+      const assignmentOrError = await AssignmentService.fetchAssignmentById(id);
+      if (!assignmentOrError) {
         throw new CustomError('Response does not contain an item', null, {
-          assignment,
+          assignmentOrError,
+        });
+      }
+      const error = (assignmentOrError as { error: AssignmentRetrieveError })
+        ?.error;
+      if (error) {
+        throw new CustomError('Assignment could not be fetched', error, {
+          id,
         });
       }
       const bundleId = collectionState?.currentCollection?.id;
@@ -1284,7 +1293,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         custom_title: null,
         custom_description: null,
         item_meta: {
-          ...assignment,
+          ...(assignmentOrError as AvoAssignmentAssignment),
           type_id: ContentTypeNumber.assignment,
         },
         collection_uuid: bundleId,

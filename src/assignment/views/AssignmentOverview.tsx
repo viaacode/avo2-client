@@ -98,9 +98,11 @@ import {
   ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
   GET_ASSIGNMENT_OVERVIEW_COLUMNS,
 } from '../assignment.const';
+import { getAssignmentErrorObj } from '../assignment.helper.tsx';
 import { AssignmentService } from '../assignment.service';
 import {
   AssignmentAction,
+  AssignmentRetrieveError,
   type AssignmentTableColumns,
   AssignmentView,
 } from '../assignment.types';
@@ -370,12 +372,24 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
             );
             return;
           }
-          const latest: AvoAssignmentAssignment =
+          const assignmentOrError:
+            | AvoAssignmentAssignment
+            | { error: AssignmentRetrieveError } =
             await AssignmentService.fetchAssignmentById(
               assignmentRow.id as unknown as string,
             );
 
-          await duplicateAssignment(latest, commonUser);
+          const error = (
+            assignmentOrError as { error: AssignmentRetrieveError }
+          )?.error;
+          if (error) {
+            ToastService.danger(getAssignmentErrorObj(error).message);
+          }
+
+          await duplicateAssignment(
+            assignmentOrError as AvoAssignmentAssignment,
+            commonUser,
+          );
           await updateAndReset();
         } catch (err) {
           console.error('Failed to duplicate assignment', err, {

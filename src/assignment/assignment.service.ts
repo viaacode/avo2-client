@@ -25,8 +25,6 @@ import {
   type ContributorInfoRight,
 } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
-  type GetAssignmentWithResponseQuery,
-  type GetAssignmentWithResponseQueryVariables,
   type GetContributorsByAssignmentUuidQuery,
   type GetContributorsByAssignmentUuidQueryVariables,
   type InsertAssignmentBlocksMutation,
@@ -35,7 +33,6 @@ import {
   type InsertAssignmentResponseMutationVariables,
 } from '../shared/generated/graphql-db-operations';
 import {
-  GetAssignmentWithResponseDocument,
   GetContributorsByAssignmentUuidDocument,
   InsertAssignmentBlocksDocument,
   InsertAssignmentResponseDocument,
@@ -58,6 +55,7 @@ import { VideoStillService } from '../shared/services/video-stills-service';
 import { type TableColumnDataType } from '../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from './assignment.const';
 import {
+  AssignmentRetrieveError,
   type AssignmentTableColumns,
   type FetchAssignmentsParams,
   type PupilCollectionFragment,
@@ -101,18 +99,21 @@ export class AssignmentService {
    * Get assignment by id
    * @param assignmentId
    * @param inviteToken
+   * @param includeItemMetadata
    * @param headers headers to pass along to the proxy when making the request (optional for client requests, only needed for ssr)
    */
   static async fetchAssignmentById(
     assignmentId: string,
     inviteToken?: string,
+    includeItemMetadata: boolean = false,
     headers: Record<string, string> = {},
-  ): Promise<AvoAssignmentAssignment> {
+  ): Promise<AvoAssignmentAssignment | { error: AssignmentRetrieveError }> {
     try {
       const url = stringifyUrl({
         url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}`,
         query: {
           inviteToken: inviteToken || undefined,
+          includeItemMetadata,
         },
       });
       const { fetchWithLogoutJson } = await import(
@@ -132,12 +133,7 @@ export class AssignmentService {
         });
       }
 
-      return {
-        ...assignment,
-        blocks: (await this.enrichBlocksWithMeta(
-          assignment.blocks,
-        )) as AvoAssignmentBlock[],
-      };
+      return assignment;
     } catch (err) {
       throw new CustomError(
         'Failed to get assignment by id from database',
@@ -463,37 +459,23 @@ export class AssignmentService {
   static async fetchAssignmentAndContent(
     pupilProfileId: string,
     assignmentId: string,
-  ): Promise<AvoAssignmentAssignment> {
+  ): Promise<AvoAssignmentAssignment | { error: AssignmentRetrieveError }> {
     try {
       // Load assignment
-      const variables: GetAssignmentWithResponseQueryVariables = {
-        assignmentId,
-        pupilUuid: pupilProfileId,
-      };
-      const response = await dataService.query<
-        GetAssignmentWithResponseQuery,
-        GetAssignmentWithResponseQueryVariables
-      >({
-        query: GetAssignmentWithResponseDocument,
-        variables,
+      const url = stringifyUrl({
+        url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}`,
+        query: {
+          includeItemMetadata: true,
+        },
       });
-
-      const tempAssignment = response.app_assignments_v2[0];
+      const tempAssignment =
+        await fetchWithLogoutJson<AvoAssignmentAssignment>(url);
 
       if (!tempAssignment) {
         throw new CustomError('Failed to find assignment by id');
       }
 
-      // Load content (collection, item or search query) according to assignment
-      const initialAssignmentBlocks: AvoAssignmentBlock[] =
-        await AssignmentService.fetchAssignmentBlocks(assignmentId);
-
-      const blocks = await this.enrichBlocksWithMeta(initialAssignmentBlocks);
-
-      return {
-        ...tempAssignment,
-        blocks,
-      } as unknown as AvoAssignmentAssignment;
+      return tempAssignment;
     } catch (err: any) {
       const graphqlError = err?.graphQLErrors?.[0]?.message;
 

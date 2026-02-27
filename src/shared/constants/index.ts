@@ -2,12 +2,11 @@
  * @jest-environment jsdom
  */
 
-import defaultAudioStillPathSrc from '../../assets/images/audio-still.svg';
 import { tText } from '../helpers/translate-text';
 
 export { LANGUAGES } from './languages';
 
-export const DEFAULT_AUDIO_STILL = defaultAudioStillPathSrc;
+export const DEFAULT_AUDIO_STILL = 'assets/audio-still.svg';
 
 export const STILL_DIMENSIONS = {
   width: 177,

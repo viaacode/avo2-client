@@ -93,12 +93,14 @@ import {
   GET_EDUCATION_LEVEL_TOOLTIP_DICT,
 } from '../assignment.const';
 import {
+  getAssignmentErrorObj,
   getValidationErrorsForPublishAssignment,
   isUserAssignmentContributor,
   isUserAssignmentOwner,
   setBlockPositionToIndex,
 } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
+import { AssignmentRetrieveError } from '../assignment.types.ts';
 import { AssignmentActions } from '../components/AssignmentActions';
 import { AssignmentAdminFormEditable } from '../components/AssignmentAdminFormEditable';
 import { AssignmentConfirmSave } from '../components/AssignmentConfirmSave';
@@ -329,7 +331,10 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
       }
       setIsAssignmentLoading(true);
       setAssignmentError(null);
-      let tempAssignment: AvoAssignmentAssignment | null = null;
+      let assignmentOrError:
+        | AvoAssignmentAssignment
+        | { error: AssignmentRetrieveError }
+        | null = null;
 
       if (
         !commonUser?.permissions?.includes(
@@ -348,7 +353,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
       }
 
       try {
-        tempAssignment =
+        assignmentOrError =
           await AssignmentService.fetchAssignmentById(assignmentId);
       } catch (err) {
         if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
@@ -373,7 +378,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         return;
       }
 
-      if (!tempAssignment) {
+      if (!assignmentOrError) {
         setAssignmentError({
           message: tHtml(
             'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt',
@@ -384,6 +389,20 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         setIsAssignmentLoading(false);
         return;
       }
+
+      const error = (assignmentOrError as { error: AssignmentRetrieveError })
+        ?.error;
+      if (error) {
+        const errorInfo = getAssignmentErrorObj(error);
+        setAssignmentError({
+          message: errorInfo.message,
+          icon: errorInfo.icon,
+        });
+        setIsAssignmentLoading(false);
+        return;
+      }
+
+      const tempAssignment = assignmentOrError as AvoAssignmentAssignment;
 
       const checkedPermissions = await PermissionService.checkPermissions(
         {

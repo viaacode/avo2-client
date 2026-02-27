@@ -24,7 +24,9 @@ import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx
 import { CustomError } from '../../shared/helpers/custom-error';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
+import { getAssignmentErrorObj } from '../assignment.helper.tsx';
 import { AssignmentService } from '../assignment.service';
+import { AssignmentRetrieveError } from '../assignment.types.ts';
 import { AssignmentHeading } from '../components/AssignmentHeading';
 import { AssignmentMetadata } from '../components/AssignmentMetadata';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
@@ -81,8 +83,24 @@ export const AssignmentPupilCollectionDetail: FC = () => {
       if (!assignmentId) {
         return;
       }
-      const tempAssignment: AvoAssignmentAssignment =
+      const assignmentOrError:
+        | AvoAssignmentAssignment
+        | { error: AssignmentRetrieveError } =
         await AssignmentService.fetchAssignmentById(assignmentId);
+
+      const error = (assignmentOrError as { error: AssignmentRetrieveError })
+        ?.error;
+      if (error) {
+        const errorInfo = getAssignmentErrorObj(error);
+        setLoadingInfo({
+          message: errorInfo.message,
+          icon: errorInfo.icon,
+          state: 'error',
+        });
+        return;
+      }
+
+      const tempAssignment = assignmentOrError as AvoAssignmentAssignment;
 
       setAssignmentResponse(await fetchAssignmentResponse(tempAssignment));
 

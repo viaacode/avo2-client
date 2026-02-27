@@ -173,6 +173,7 @@ export async function fetchAssignmentLoader(args: LoaderFunctionArgs<any>) {
       const assignment = await AssignmentService.fetchAssignmentById(
         id,
         undefined,
+        true,
         cookieHeader ? { cookie: cookieHeader } : undefined,
       );
       return {
