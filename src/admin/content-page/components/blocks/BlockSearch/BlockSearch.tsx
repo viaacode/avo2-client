@@ -14,21 +14,11 @@ import {
 } from '@viaa/avo2-components';
 
 import { isNil } from 'es-toolkit';
-import { useAtom } from 'jotai';
-import {
-  type FC,
-  type KeyboardEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { type FC, type KeyboardEvent, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../../../../collection/collection.types';
 import { SearchFilter } from '../../../../../search/search.const';
-import { fetchSearchResults } from '../../../../../search/search.service';
-import { searchAtom } from '../../../../../search/search.store';
-import { type SearchState } from '../../../../../search/search.types';
 import {
   generateContentLinkString,
   generateSearchLinkString,
@@ -37,50 +27,25 @@ import { useDebounce } from '../../../../../shared/hooks/useDebounce';
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { KeyCode } from '../../../../../shared/types';
 import './BlockSearch.scss';
-import { AvoSearchOrderDirection, AvoSearchResultItem } from '@viaa/avo2-types';
+import { AvoSearchResultItem } from '@viaa/avo2-types';
+import { useSearchAutocomplete } from './hooks/use-search-autocomplete';
 import { tHtml } from '../../../../../shared/helpers/translate-html';
 import { tText } from '../../../../../shared/helpers/translate-text';
-
-const ITEMS_IN_AUTOCOMPLETE = 5;
 
 export const BlockSearch: FC = () => {
   const navigateFunc = useNavigate();
 
-  const [searchState, setSearchState] = useAtom<SearchState>(searchAtom);
   const [searchTerms, setSearchTerms] = useState<string>('');
   const [isAutocompleteSearchOpen, setAutocompleteSearchOpen] =
     useState<boolean>(false);
   const debouncedSearchTerms = useDebounce(searchTerms, 200);
 
-  const refetchSearchResults = useCallback(async () => {
-    // Only do initial search after query params have been analysed and have been added to the state
-    const filters = { query: debouncedSearchTerms || '' };
-    const searchResults = await fetchSearchResults(
-      'relevance',
-      AvoSearchOrderDirection.DESC,
-      0,
-      ITEMS_IN_AUTOCOMPLETE,
-      filters,
-      {},
-    );
-    setSearchState({
-      ...searchState,
-      data: searchResults,
-    });
-  }, [debouncedSearchTerms, searchState, setSearchState]);
-
-  /**
-   * Trigger a new call to the backend for getting new search results when the searchTerms change
-   */
-  useEffect(() => {
-    if (debouncedSearchTerms.trim().length > 0) {
-      refetchSearchResults();
-    }
-  }, [refetchSearchResults]);
+  const { data: searchResults, isLoading } =
+    useSearchAutocomplete(debouncedSearchTerms);
 
   // Computed
   const autocompleteMenuItems = (
-    (searchState?.data?.results || []) as AvoSearchResultItem[]
+    (searchResults?.results || []) as AvoSearchResultItem[]
   ).map(
     (searchResult: AvoSearchResultItem): MenuSearchResultItemInfo => ({
       label: searchResult.dc_title,
@@ -105,7 +70,7 @@ export const BlockSearch: FC = () => {
     if (!isNil(searchResultId)) {
       // Collection ids are numbers and item ids are strings
       const searchResultItem: AvoSearchResultItem | undefined = (
-        searchState?.data?.results || []
+        searchResults?.results || []
       ).find(
         (searchResult) =>
           searchResult.id === (searchResultId as string).toString(),
@@ -168,7 +133,9 @@ export const BlockSearch: FC = () => {
               </DropdownButton>
               <DropdownContent>
                 <div className="c-dropdown-results">
-                  {!searchState.data?.results ? (
+                  {isLoading ? (
+                    <Spinner size="large" />
+                  ) : (
                     <MenuSearchResultContent
                       menuItems={autocompleteMenuItems}
                       noResultsLabel={tText(
@@ -176,8 +143,6 @@ export const BlockSearch: FC = () => {
                       )}
                       onClick={(id) => goToSearchResult(id.toString())}
                     />
-                  ) : (
-                    <Spinner size="large" />
                   )}
                 </div>
                 <div className="c-menu__footer">
