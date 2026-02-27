@@ -9,6 +9,7 @@ import { type FC, type ReactNode, useState } from 'react';
 import { useResizeObserver } from '../../hooks/useResizeObserver';
 
 import './CollapsibleColumn.scss';
+import { isServerSideRendering } from '../../helpers/routing/is-server-side-rendering.ts';
 import { tText } from '../../helpers/translate-text';
 
 type CollapsibleColumnProps = DefaultProps & {
@@ -35,14 +36,16 @@ export const CollapsibleColumn: FC<CollapsibleColumnProps> = ({
     className,
   ].join(' ');
 
-  const ref = useResizeObserver((el: HTMLDivElement) => {
-    const isOverflowing =
-      (el.offsetHeight || 0) > (el.parentElement?.offsetHeight || 0);
+  const ref = isServerSideRendering()
+    ? null
+    : useResizeObserver((el: HTMLDivElement) => {
+        const isOverflowing =
+          (el.offsetHeight || 0) > (el.parentElement?.offsetHeight || 0);
 
-    if (isOverflowing !== overflowing) {
-      setOverflowing(isOverflowing);
-    }
-  });
+        if (isOverflowing !== overflowing) {
+          setOverflowing(isOverflowing);
+        }
+      });
 
   const getButtonIcon = (): IconName => {
     if (button?.icon) {

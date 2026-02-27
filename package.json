@@ -42,6 +42,7 @@
   ],
   "dependencies": {
     "@emotion/react": "11.11.1",
+    "@floating-ui/react": "^0.27.18",
     "@flowplayer/player": "3.32.1",
     "@hookform/resolvers": "2.9.11",
     "@meemoo/admin-core-ui": "5.2.34",
