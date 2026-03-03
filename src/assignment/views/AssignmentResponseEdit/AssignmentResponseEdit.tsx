@@ -16,6 +16,7 @@ import {
   type Dispatch,
   type FC,
   type SetStateAction,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -60,6 +61,7 @@ import {
   AvoCoreBlockItemType,
 } from '@viaa/avo2-types';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { EducationLevelId } from '../../../shared/helpers/lom.ts';
 import {
   JsonParam,
   NumberParam,
@@ -165,6 +167,21 @@ export const AssignmentResponseEdit: FC<AssignmentResponseEditProps> = ({
     );
 
   const pastDeadline = useAssignmentPastDeadline(assignment);
+
+  useEffect(() => {
+    // Is the assignment intended for elementary?
+    if (assignment?.education_level_id === EducationLevelId.lagerOnderwijs) {
+      if (filterState.filters?.elementary !== true) {
+        setFilterState({
+          ...filterState,
+          filters: {
+            ...filterState.filters,
+            elementary: true,
+          },
+        });
+      }
+    }
+  }, [assignment, filterState, setFilterState]);
 
   const resetForm = () => {
     setCollectionTitle('');

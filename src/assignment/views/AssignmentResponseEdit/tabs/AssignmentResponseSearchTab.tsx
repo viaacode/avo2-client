@@ -89,21 +89,6 @@ export const AssignmentResponseSearchTab: FC<
     }, 100);
   }, [filterState.focus, searchResults]);
 
-  useEffect(() => {
-    // Is the assignment intended for elementary
-    if (assignment?.education_level_id === EducationLevelId.lagerOnderwijs) {
-      if (filterState.filters?.elementary !== true) {
-        setFilterState({
-          ...filterState,
-          filters: {
-            ...filterState.filters,
-            elementary: true,
-          },
-        });
-      }
-    }
-  }, [assignment, filterState, setFilterState]);
-
   // Events
   const goToDetailLink = (id: string): void => {
     setFilterState({
