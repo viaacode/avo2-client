@@ -1,9 +1,4 @@
 import {
-  Dropdown,
-  DropdownButton,
-  DropdownContent,
-} from '@meemoo/react-components';
-import {
   Button,
   type ButtonProps,
   type DropdownProps,
@@ -12,7 +7,6 @@ import {
 } from '@viaa/avo2-components';
 import { AvoAssignmentAssignment, type PermissionName } from '@viaa/avo2-types';
 import { type FC, useState } from 'react';
-
 import { tText } from '../../helpers/translate-text';
 import { useTabs } from '../../hooks/useTabs';
 import { ShareWithColleagues } from '../ShareWithColleagues/ShareWithColleagues';
@@ -28,6 +22,11 @@ import {
 import { ShareDropdownTabs } from './ShareDropdown.types';
 
 import './ShareDropdown.scss';
+import {
+  Dropdown,
+  DropdownButton,
+  DropdownContent,
+} from '@meemoo/react-components';
 
 export type ShareDropdownProps = {
   contributors?: ContributorInfo[];
@@ -105,7 +104,7 @@ export const ShareDropdown: FC<ShareDropdownProps> = ({
       isOpen={isShareDropdownOpen}
       onClose={handleOnClose}
       className="c-share-dropdown"
-      placement="bottom-end"
+      placement={'bottom-end' as any}
       {...dropdownProps}
     >
       <DropdownButton>
