@@ -53,6 +53,7 @@ import { AssignmentDetailSwitcher } from './assignment/views/AssignmentDetailSwi
 import { AssignmentEdit } from './assignment/views/AssignmentEdit.tsx';
 import { AssignmentPupilCollectionDetail } from './assignment/views/AssignmentPupilCollectionDetail.tsx';
 import { AssignmentResponseAdminEdit } from './assignment/views/AssignmentResponseEdit/AssignmentResponseAdminEdit.tsx';
+import EnsureUserLoggedIn from './authentication/components/EnsureUserLoggedIn.tsx';
 import { LinkYourAccount } from './authentication/views/LinkYourAccount.tsx';
 import { Login } from './authentication/views/Login.tsx';
 import { Logout } from './authentication/views/Logout.tsx';
@@ -138,6 +139,13 @@ const APP_ROUTES: RouteObject[] = [
         Component: Login,
       },
       {
+        id: 'RegisterOrLogin',
+        path: APP_PATH.REGISTER_OR_LOGIN.route,
+        Component: RegisterOrLogin,
+        ErrorBoundary: () => ErrorBoundary('RegisterOrLogin--route'),
+        hasErrorBoundary: true,
+      },
+      {
         id: 'app-client-layout',
         loader: passUrlLoader,
         Component: AppClientLayout,
@@ -151,6 +159,7 @@ const APP_ROUTES: RouteObject[] = [
           ////////////////////////////////////////////////////////////////////////////////////////
           {
             id: 'authenticated-client-routes',
+            Component: EnsureUserLoggedIn,
             children: getAuthenticatedClientRoutes(),
           },
           ////////////////////////////////////////////////////////////////////////////////////////
@@ -208,13 +217,6 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
       path: APP_PATH.STUDENT_TEACHER.route,
       Component: StudentTeacher,
       ErrorBoundary: () => ErrorBoundary('StudentTeacher--route'),
-      hasErrorBoundary: true,
-    },
-    {
-      id: 'RegisterOrLogin',
-      path: APP_PATH.REGISTER_OR_LOGIN.route,
-      Component: RegisterOrLogin,
-      ErrorBoundary: () => ErrorBoundary('RegisterOrLogin--route'),
       hasErrorBoundary: true,
     },
     {

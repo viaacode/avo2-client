@@ -4,7 +4,7 @@ import {
   AvoAssignmentResponse,
   PermissionName,
 } from '@viaa/avo2-types';
-import { isString, noop } from 'es-toolkit';
+import { noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import {
   type FC,
@@ -107,36 +107,43 @@ export const AssignmentResponseEditPage: FC = () => {
         return;
       }
 
-      const assignmentOrError: AvoAssignmentAssignment =
+      const assignmentOrError:
+        | AvoAssignmentAssignment
+        | { error: AssignmentRetrieveError } =
         await AssignmentService.fetchAssignmentAndContent(
           commonUser.profileId,
           assignmentId,
         );
 
-      if (isString(assignmentOrError)) {
+      const assignmentFetchError = (
+        assignmentOrError as { error: AssignmentRetrieveError }
+      ).error;
+      if (assignmentFetchError) {
         // error
-        setAssignmentError(
-          getAssignmentErrorObj(assignmentOrError as AssignmentRetrieveError),
-        );
+        setAssignmentError(getAssignmentErrorObj(assignmentFetchError));
         setAssignmentLoading(false);
         return;
       }
 
+      const tempAssignment = assignmentOrError as AvoAssignmentAssignment;
+
       // Assignment is loaded but if there is no deadline set, show 'Not yet available' error to the student
-      if (assignmentOrError.deadline_at === null) {
+      if (tempAssignment.deadline_at === null) {
         // error
         setAssignmentError(
-          getAssignmentErrorObj(AssignmentRetrieveError.NOT_YET_AVAILABLE),
+          getAssignmentErrorObj(
+            AssignmentRetrieveError.ASSIGNMENT_NOT_YET_AVAILABLE,
+          ),
         );
         setAssignmentLoading(false);
         return;
       }
 
       // Track assignment view
-      AssignmentService.increaseViewCount(assignmentOrError.id).then(noop); // Not waiting for view events increment
+      AssignmentService.increaseViewCount(tempAssignment.id).then(noop); // Not waiting for view events increment
       trackEvents(
         {
-          object: assignmentOrError.id,
+          object: tempAssignment.id,
           object_type: 'assignment',
           action: 'view',
           resource: {
@@ -149,7 +156,7 @@ export const AssignmentResponseEditPage: FC = () => {
       // Create an assignment response if needed
       const newOrExistingAssignmentResponse =
         await AssignmentService.createOrFetchAssignmentResponseObject(
-          assignmentOrError,
+          tempAssignment,
           commonUser,
         );
       setAssignmentResponse(
@@ -159,7 +166,7 @@ export const AssignmentResponseEditPage: FC = () => {
         >,
       );
 
-      setAssignment(assignmentOrError);
+      setAssignment(tempAssignment);
     } catch (err) {
       setAssignmentError({
         message: tHtml(

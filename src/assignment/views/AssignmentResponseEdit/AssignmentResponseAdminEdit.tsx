@@ -33,6 +33,8 @@ import { AssignmentResponseEdit } from './AssignmentResponseEdit';
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
+import { getAssignmentErrorObj } from '../../assignment.helper.tsx';
+import { AssignmentRetrieveError } from '../../assignment.types.ts';
 
 export const AssignmentResponseAdminEdit: FC = () => {
   const { assignmentId, responseId: assignmentResponseId } = useParams<{
@@ -94,10 +96,23 @@ export const AssignmentResponseAdminEdit: FC = () => {
         return;
       }
 
-      const assignment = await AssignmentService.fetchAssignmentAndContent(
-        commonUser?.profileId,
-        assignmentId,
-      );
+      const assignmentOrError =
+        await AssignmentService.fetchAssignmentAndContent(
+          commonUser?.profileId,
+          assignmentId,
+        );
+
+      const error = (assignmentOrError as { error: AssignmentRetrieveError })
+        ?.error;
+      if (error) {
+        const errorInfo = getAssignmentErrorObj(error);
+        setAssignmentError({
+          message: errorInfo.message,
+          icon: errorInfo.icon,
+        });
+        setAssignmentLoading(false);
+        return;
+      }
 
       // Create an assignment response if needed
       const response =

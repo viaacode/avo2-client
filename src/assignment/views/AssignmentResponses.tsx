@@ -63,6 +63,7 @@ import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
   type AssignmentResponseTableColumns,
+  AssignmentRetrieveError,
   type AssignmentTableColumns,
   type PupilCollectionFragment,
 } from '../assignment.types';
@@ -78,6 +79,7 @@ import {
 } from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
+import { getAssignmentErrorObj } from '../assignment.helper.tsx';
 
 interface AssignmentResponsesProps {
   onUpdate: () => void | Promise<void>;
@@ -242,10 +244,22 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
         });
       }
 
-      const assignment =
+      const assignmentOrError =
         await AssignmentService.fetchAssignmentById(assignmentId);
 
-      setAssignment(assignment);
+      const error = (assignmentOrError as { error: AssignmentRetrieveError })
+        ?.error;
+      if (error) {
+        const errorInfo = getAssignmentErrorObj(error);
+        setLoadingInfo({
+          state: 'error',
+          message: errorInfo.message,
+          icon: errorInfo.icon,
+        });
+        return;
+      }
+
+      setAssignment(assignmentOrError as AvoAssignmentAssignment);
     } catch (err) {
       if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
         setLoadingInfo({

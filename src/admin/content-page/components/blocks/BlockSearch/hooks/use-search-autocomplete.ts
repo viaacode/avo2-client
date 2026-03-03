@@ -1,12 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
-import { AvoSearchOrderDirection, AvoSearchResults } from '@viaa/avo2-types';
-import { QUERY_KEYS } from '../../../../../../shared/constants/query-keys';
+import { UseQueryResult, useQuery } from '@tanstack/react-query';
+import { AvoSearchOrderDirection, AvoSearchSearch } from '@viaa/avo2-types';
 import { fetchSearchResults } from '../../../../../../search/search.service';
+import { QUERY_KEYS } from '../../../../../../shared/constants/query-keys';
 
 async function getSearchAutocomplete(
   query: string,
   limit: number,
-): Promise<AvoSearchResults | null> {
+): Promise<AvoSearchSearch | null> {
   const filters = { query };
   return fetchSearchResults(
     'relevance',
@@ -22,8 +22,8 @@ export const useSearchAutocomplete = (
   query: string,
   limit = 5,
   options: { enabled?: boolean } = {},
-) => {
-  return useQuery<AvoSearchResults | null>({
+): UseQueryResult<AvoSearchSearch | null> => {
+  return useQuery<AvoSearchSearch | null>({
     queryKey: [QUERY_KEYS.SEARCH_AUTOCOMPLETE, query, limit],
     queryFn: () => getSearchAutocomplete(query, limit),
     enabled: options.enabled ?? true,

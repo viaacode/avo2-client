@@ -85,7 +85,7 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
   icon: IconName;
 } {
   switch (errorType) {
-    case AssignmentRetrieveError.DELETED:
+    case AssignmentRetrieveError.ASSIGNMENT_WAS_DELETED:
       return {
         message: tHtml(
           'assignment/views/assignment-detail___de-opdracht-werd-verwijderd',
@@ -93,7 +93,7 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
         icon: IconName.delete,
       };
 
-    case AssignmentRetrieveError.NOT_YET_AVAILABLE:
+    case AssignmentRetrieveError.ASSIGNMENT_NOT_YET_AVAILABLE:
       return {
         message: tHtml(
           'assignment/views/assignment-detail___de-opdracht-is-nog-niet-beschikbaar',

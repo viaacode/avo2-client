@@ -121,7 +121,7 @@ import { ToastService } from '../../shared/services/toast-service';
 import { UrlUpdateType } from '../../shared/types/use-query-params.ts';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentAction } from '../assignment.types';
+import { AssignmentAction, AssignmentRetrieveError } from '../assignment.types';
 import {
   onAddNewContributor,
   onDeleteContributor,
@@ -347,12 +347,16 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         });
       }
 
-      let tempAssignment: AvoAssignmentAssignment | null = null;
+      let assignmentOrError:
+        | AvoAssignmentAssignment
+        | { error: AssignmentRetrieveError }
+        | null = null;
 
       try {
-        tempAssignment = await AssignmentService.fetchAssignmentById(
+        assignmentOrError = await AssignmentService.fetchAssignmentById(
           assignmentId,
           inviteToken || undefined,
+          true,
         );
       } catch (err: any) {
         if (err.innerException.additionalInfo?.statusCode === 403) {
@@ -376,7 +380,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         return;
       }
 
-      if (!tempAssignment) {
+      if (!assignmentOrError) {
         setAssignmentError({
           message: tHtml(
             'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt',
@@ -387,6 +391,30 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         setAssignmentLoading(false);
         return;
       }
+
+      const error = (assignmentOrError as { error: AssignmentRetrieveError })
+        .error;
+      if (error) {
+        if (error === AssignmentRetrieveError.ASSIGNMENT_WAS_DELETED) {
+          setAssignmentError({
+            message: tHtml('De opdracht was verwijderd'),
+            icon: IconName.trash2,
+            actionButtons: ['home'],
+          });
+        } else {
+          setAssignmentError({
+            message: tHtml(
+              'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt',
+            ),
+            icon: IconName.alertTriangle,
+            actionButtons: ['home'],
+          });
+        }
+        setAssignmentLoading(false);
+        return;
+      }
+
+      const tempAssignment = assignmentOrError as AvoAssignmentAssignment;
 
       setAssignment(tempAssignment as any);
 
@@ -419,13 +447,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
     }
 
     setAssignmentLoading(false);
-  }, [
-    commonUser,
-    getRelatedAssignments,
-    assignmentId,
-    inviteToken,
-    getPermissions,
-  ]);
+  }, [commonUser, getRelatedAssignments, assignmentId, getPermissions]);
 
   const fetchContributors = useCallback(async () => {
     if (!assignmentId || !assignment) {

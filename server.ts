@@ -38,6 +38,8 @@ async function isLoggedIn(request: express.Request): Promise<boolean> {
  * DEV: Vite middleware + load SSR from source
  */
 async function startDevServer() {
+  const projectFolder = path.resolve(__dirname);
+
   // Create Vite server in middleware mode and configure the app type as
   // 'custom', disabling Vite's own HTML serving logic so parent server
   // can take control
@@ -48,6 +50,16 @@ async function startDevServer() {
   });
 
   const app = express();
+
+  // Serve assets: images / fonts
+  app.use('/assets', (req, res, next) => {
+    console.log('req.url: ', req.url);
+    express.static(path.resolve(projectFolder, 'src/assets'), {
+      immutable: true,
+      maxAge: '1y',
+      fallthrough: false,
+    })(req, res, next);
+  });
 
   // Use vite's connect instance as middleware. If you use your own
   // express router (express.Router()), you should use router.use

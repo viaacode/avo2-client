@@ -91,8 +91,8 @@ export enum AssignmentLayout {
 }
 
 export enum AssignmentRetrieveError {
-  DELETED = 'DELETED',
-  NOT_YET_AVAILABLE = 'NOT_YET_AVAILABLE',
+  ASSIGNMENT_WAS_DELETED = 'ASSIGNMENT_WAS_DELETED',
+  ASSIGNMENT_NOT_YET_AVAILABLE = 'ASSIGNMENT_NOT_YET_AVAILABLE',
 }
 
 export interface AssignmentLabelColor {
