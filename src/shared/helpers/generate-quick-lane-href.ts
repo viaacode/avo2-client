@@ -2,7 +2,7 @@ import { generatePath } from 'react-router';
 
 import { APP_PATH } from '../../constants';
 import { ToastService } from '../services/toast-service';
-
+import { getEnv } from './env.ts';
 import { tHtml } from './translate-html';
 
 export const generateQuickLaneHref = (id: string): string => {
@@ -11,7 +11,7 @@ export const generateQuickLaneHref = (id: string): string => {
 
 export const copyQuickLaneToClipboard = (id: string): void => {
   navigator.clipboard
-    .writeText(`${window.location.origin}${generateQuickLaneHref(id)}`)
+    .writeText(`${getEnv('CLIENT_URL')}${generateQuickLaneHref(id)}`)
     .then(() => {
       ToastService.success(
         tHtml(

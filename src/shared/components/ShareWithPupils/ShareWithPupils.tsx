@@ -20,6 +20,7 @@ import { ToastService } from '../../services/toast-service';
 
 import './ShareWithPupils.scss';
 import { AvoAssignmentAssignment } from '@viaa/avo2-types';
+import { getEnv } from '../../helpers/env.ts';
 
 export type ShareWithPupilsProps = {
   assignment?: AvoAssignmentAssignment;
@@ -36,7 +37,7 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 
   // Computed
   const assignmentShareLink: string = assignment
-    ? window.location.origin +
+    ? getEnv('CLIENT_URL') +
       buildLink(APP_PATH.ASSIGNMENT_RESPONSE_DETAIL.route, {
         id: assignment.id,
       })

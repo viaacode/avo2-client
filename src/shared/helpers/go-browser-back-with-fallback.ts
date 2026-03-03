@@ -1,5 +1,5 @@
 import { type NavigateFunction } from 'react-router';
-
+import { getEnv } from './env.ts';
 import { navigate } from './link';
 
 /**
@@ -11,7 +11,7 @@ export function goBrowserBackWithFallback(
   fallbackPath: string,
   navigateFunc: NavigateFunction,
 ) {
-  if (document.referrer.includes(window.location.origin)) {
+  if (document.referrer.includes(getEnv('CLIENT_URL') as string)) {
     navigateFunc(-1);
   } else {
     navigate(navigateFunc, fallbackPath);

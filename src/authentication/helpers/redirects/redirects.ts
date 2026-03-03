@@ -13,10 +13,17 @@ import { SERVER_LOGOUT_PAGE } from '../../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../../views/registration-flow/register-stamboek.tsx';
 import { getBaseUrl } from '../get-base-url';
 
+function logIfRedirectLoggingEnabled(newUrl: string): void {
+  if (getEnv('ENABLE_LOG_CLIENT_REDIRECTS')) {
+    console.log('REDIRECT: ' + window.location.href + ' => ' + newUrl);
+  }
+}
+
 export function redirectToClientPage(
   path: string,
   navigate: NavigateFunction,
 ): void {
+  logIfRedirectLoggingEnabled(path);
   navigate(path);
 }
 
@@ -30,9 +37,11 @@ function getRedirectUrl(
   location: Location,
   closeTabAfterLogin: boolean,
 ): string {
-  return closeTabAfterLogin
+  const newUrl = closeTabAfterLogin
     ? getBaseUrl(location) + '/embed/close-browser'
     : getRedirectAfterLogin(location);
+  logIfRedirectLoggingEnabled(newUrl);
+  return newUrl;
 }
 
 /**
@@ -61,6 +70,7 @@ export function redirectToServerLoginPage(
       ltiJwtToken: EmbedCodeService.getJwtToken(),
     },
   });
+  logIfRedirectLoggingEnabled(fullUrl);
   if (openInNewTab) {
     window.open(fullUrl, '_blank');
   } else {
@@ -84,6 +94,7 @@ export function redirectToServerLeerIDLogin(
       ltiJwtToken: EmbedCodeService.getJwtToken(),
     },
   )}`;
+  logIfRedirectLoggingEnabled(fullUrl);
   if (openInNewTab) {
     window.open(fullUrl, '_blank');
   } else {
@@ -106,6 +117,7 @@ export function redirectToServerACMIDMLogin(
       ltiJwtToken: EmbedCodeService.getJwtToken(),
     },
   )}`;
+  logIfRedirectLoggingEnabled(fullUrl);
   if (openInNewTab) {
     window.open(fullUrl, '_blank');
   } else {
@@ -130,6 +142,7 @@ export function redirectToServerSmartschoolLogin(
       ltiJwtToken: EmbedCodeService.getJwtToken(),
     },
   )}`;
+  logIfRedirectLoggingEnabled(fullUrl);
   if (openInNewTab) {
     window.open(fullUrl, '_blank');
   } else {
@@ -154,6 +167,7 @@ export function redirectToServerKlascementLogin(
       ltiJwtToken: EmbedCodeService.getJwtToken(),
     },
   )}`;
+  logIfRedirectLoggingEnabled(fullUrl);
   if (openInNewTab) {
     window.open(fullUrl, '_blank');
   } else {
@@ -178,6 +192,7 @@ export function redirectToServerArchiefRegistrationIdp(
       ltiJwtToken: EmbedCodeService.getJwtToken(),
     },
   )}`;
+  logIfRedirectLoggingEnabled(fullUrl);
   if (openInNewTab) {
     window.open(fullUrl, '_blank');
   } else {
@@ -195,11 +210,13 @@ export function redirectToServerLogoutPage(
   }
   // Url to return to after logout is completed
   const returnToUrl = `${getBaseUrl(location)}${routeAfterLogout}`;
-  window.location.href = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify(
+  const newUrl = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify(
     {
       returnToUrl,
     },
   )}`;
+  logIfRedirectLoggingEnabled(newUrl);
+  window.location.href = newUrl;
 }
 
 export function logoutAndRedirectToLogin(location?: Location): void {
@@ -208,7 +225,7 @@ export function logoutAndRedirectToLogin(location?: Location): void {
     return;
   }
   // Url to return to after logout is completed
-  let returnToUrl = window.location.origin + APP_PATH.REGISTER_OR_LOGIN.route;
+  let returnToUrl = getEnv('CLIENT_URL') + APP_PATH.REGISTER_OR_LOGIN.route;
 
   if (location) {
     returnToUrl = `${returnToUrl}?${queryString.stringify({
@@ -217,11 +234,13 @@ export function logoutAndRedirectToLogin(location?: Location): void {
     })}`;
   }
 
-  window.location.href = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify(
+  const newUrl = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify(
     {
       returnToUrl,
     },
   )}`;
+  logIfRedirectLoggingEnabled(newUrl);
+  window.location.href = newUrl;
 }
 
 /**
@@ -240,13 +259,15 @@ export function redirectToServerLinkAccount(
     return;
   }
   const returnToUrl = getBaseUrl(location) + location.pathname;
-  window.location.href = `${getEnv('PROXY_URL')}/auth/link-account?${queryString.stringify(
+  const newUrl = `${getEnv('PROXY_URL')}/auth/link-account?${queryString.stringify(
     {
       returnToUrl,
       idpType,
       idpParameters,
     },
   )}`;
+  logIfRedirectLoggingEnabled(newUrl);
+  window.location.href = newUrl;
 }
 
 export function redirectToServerUnlinkAccount(
@@ -258,12 +279,14 @@ export function redirectToServerUnlinkAccount(
     return;
   }
   const returnToUrl = getBaseUrl(location) + location.pathname;
-  window.location.href = `${getEnv('PROXY_URL')}/auth/unlink-account?${queryString.stringify(
+  const newUrl = `${getEnv('PROXY_URL')}/auth/unlink-account?${queryString.stringify(
     {
       returnToUrl,
       idpType,
     },
   )}`;
+  logIfRedirectLoggingEnabled(newUrl);
+  window.location.href = newUrl;
 }
 
 /**

@@ -16,6 +16,7 @@ interface Window {
     ENV: 'local' | 'qas' | 'production';
     KLASCEMENT_URL: string;
     REGISTER_URL: string;
+    ENABLE_LOG_CLIENT_REDIRECTS: 'true' | 'false';
   };
   // Application version info
   APP_INFO: {

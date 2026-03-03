@@ -4,6 +4,7 @@ import { type FC } from 'react';
 import { generateQuickLaneHref } from '../../helpers/generate-quick-lane-href';
 
 import './QuickLaneLink.scss';
+import { getEnv } from '../../helpers/env.ts';
 
 interface QuickLaneLinkProps {
   id: string;
@@ -12,7 +13,7 @@ interface QuickLaneLinkProps {
 }
 
 const defaultLabel = (id: string) => {
-  return `${window.location.origin}${generateQuickLaneHref(id)}`;
+  return `${getEnv('CLIENT_URL')}${generateQuickLaneHref(id)}`;
 };
 
 export const QuickLaneLink: FC<QuickLaneLinkProps> = ({ id, label, short }) => {

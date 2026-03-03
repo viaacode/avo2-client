@@ -7,4 +7,5 @@ window._ENV_ = {
 	ZENDESK_KEY: '6bfc8294-ce0c-4e40-92de-35b855c49a84',
 	KLASCEMENT_URL: 'https://www.klascement.net',
 	LDAP_DASHBOARD_PEOPLE_URL: 'https://acm-int-iam.private.cloud.meemoo.be/people',
+	ENABLE_LOG_CLIENT_REDIRECTS: 'true'
 };

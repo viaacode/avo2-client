@@ -38,7 +38,7 @@ export function trackEvents(
         const eventHistory = store.get(historyLocationsAtom) || [];
         return {
           occurred_at: new Date().toISOString(),
-          source_url: window.location.origin + window.location.pathname, // url when the event was triggered
+          source_url: getEnv('CLIENT_URL') + window.location.pathname, // url when the event was triggered
           subject:
             (user as AvoUserUser)?.profile?.id ??
             (user as AvoUserCommonUser)?.profileId ??
