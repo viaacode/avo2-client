@@ -7,9 +7,9 @@ import { ContentPageService } from './admin/content-page/services/content-page.s
 import { ItemsService } from './admin/items/items.service.ts';
 import { getAdminCoreConfig } from './admin/shared/helpers/get-admin-core-config.tsx';
 import { AssignmentService } from './assignment/assignment.service.ts';
+import { getLoginResponse } from './authentication/authentication.store.actions.tsx';
 import { CollectionService } from './collection/collection.service.ts';
 import { CollectionOrBundle } from './collection/collection.types.ts';
-import { checkLoginState } from './embed/hooks/useGetLoginStateForEmbed.ts';
 import { ROUTE_PARTS } from './shared/constants/routes.ts';
 import { loadTranslations } from './shared/translations/i18n.ts';
 
@@ -24,7 +24,7 @@ export async function initAppLoader() {
 
     await Promise.all([
       // Fetch login state
-      checkLoginState(),
+      getLoginResponse(false, []),
       // Wait for translations to load
       loadTranslations(),
     ]);

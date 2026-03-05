@@ -240,13 +240,8 @@ node_modules
 
 # misc
 .DS_Store
-.env
-.env.local
-.env.dev
-.env.qas
-.env.development.local
-.env.test.local
-.env.production.local
+.env*
+!.env.template
 
 
 # Root specific

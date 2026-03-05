@@ -9,6 +9,7 @@
       "!src/shared/generated",
       "server.ts",
       "biome.json",
+      "package.json",
       "vite.config.mts",
       "vite-embed.config.mts"
     ]

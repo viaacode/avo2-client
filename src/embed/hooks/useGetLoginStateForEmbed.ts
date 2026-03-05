@@ -11,7 +11,7 @@ import { isServerSideRendering } from '../../shared/helpers/routing/is-server-si
 import { store } from '../../shared/store/ui.store.ts';
 import { LTI_JWT_TOKEN_HEADER } from '../embed.types';
 
-export async function checkLoginState() {
+export async function checkLoginStateForEmbed() {
   try {
     if (isServerSideRendering()) {
       // During server side rendering the user is always logged out
@@ -53,7 +53,7 @@ export async function checkLoginState() {
 export const useGetLoginStateForEmbed = () => {
   return useQuery<AvoAuthLoginResponse>({
     queryKey: [QUERY_KEYS.GET_LOGIN_STATE_EMBED],
-    queryFn: async () => checkLoginState(),
+    queryFn: async () => checkLoginStateForEmbed(),
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     refetchOnMount: true,

@@ -34,7 +34,6 @@ import { PupilCollectionService } from '../../../../pupil-collection/pupil-colle
 import { SearchFiltersAndResults } from '../../../../search/components/SearchFiltersAndResults';
 import { searchAtom } from '../../../../search/search.store';
 import { type FilterState } from '../../../../search/search.types';
-import { EducationLevelId } from '../../../../shared/helpers/lom';
 import { tHtml } from '../../../../shared/helpers/translate-html';
 import { tText } from '../../../../shared/helpers/translate-text';
 import { trackEvents } from '../../../../shared/services/event-logging-service';
