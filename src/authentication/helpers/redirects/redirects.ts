@@ -15,7 +15,7 @@ import { getBaseUrl } from '../get-base-url';
 
 function logIfRedirectLoggingEnabled(newUrl: string): void {
   if (getEnv('ENABLE_LOG_CLIENT_REDIRECTS')) {
-    console.log('REDIRECT: ' + window.location.href + ' => ' + newUrl);
+    console.info('REDIRECT: ' + window.location.href + ' => ' + newUrl);
   }
 }
 
