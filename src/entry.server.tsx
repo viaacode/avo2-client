@@ -8,10 +8,10 @@ import {
   createStaticRouter,
   StaticRouterProvider,
 } from 'react-router';
-import APP_ROUTES from './routes.ts';
+import ALL_APP_ROUTES from './routes.ts';
 import { CustomError } from './shared/helpers/custom-error.ts';
 
-let { query, dataRoutes } = createStaticHandler(APP_ROUTES);
+let { query, dataRoutes } = createStaticHandler(ALL_APP_ROUTES);
 
 export async function render(
   request: Request,
@@ -33,8 +33,18 @@ export async function render(
 
     // Render everything with StaticRouterProvider
     let html = renderToString(
-      <StaticRouterProvider router={router} context={context} />,
+      <StaticRouterProvider
+        router={router}
+        context={context}
+        hydrate={false}
+      />,
     );
+
+    const hydrationDataScript = `
+	  <script>
+		window.__staticRouterHydrationData = ${JSON.stringify(context)};
+	  </script>
+	`;
 
     // Render the meta tags and title tags
     const helmet = Helmet.renderStatic();
@@ -52,8 +62,14 @@ export async function render(
 
     headers.set('Content-Type', 'text/html; charset=utf-8');
 
-    // Insert the rendered html into the index.html file
+    // Insert the hydration data script into the index.html file
     let mergedHtml = indexHtml.replace(
+      '<div id="root"></div>',
+      `<div id="root"></div>\n\t${hydrationDataScript}`,
+    );
+
+    // Insert the rendered html into the index.html file
+    mergedHtml = mergedHtml.replace(
       '<div id="root"></div>',
       `<div id="root">${html}</div>`,
     );
