@@ -27,6 +27,8 @@ interface Window {
   zE: (...args) => unknown;
   // React router ssr
   __staticRouterHydrationData?: any;
+  // i18n translations injected from SSR
+  __i18nResources?: Record<string, Record<string, Record<string, string>>>;
   // Google Analytics
   ga?: Ga;
 }

@@ -10,6 +10,7 @@ import {
 } from 'react-router';
 import ALL_APP_ROUTES from './routes.ts';
 import { CustomError } from './shared/helpers/custom-error.ts';
+import I18n from './shared/translations/i18n.ts';
 
 let { query, dataRoutes } = createStaticHandler(ALL_APP_ROUTES);
 
@@ -52,6 +53,14 @@ export async function render(
 		</script>
 	`;
 
+    // Inject i18n translations for client hydration
+    const i18nResources = I18n.store?.data || {};
+    const i18nScript = `
+		<script>
+		  window.__i18nResources = ${JSON.stringify(i18nResources).replace(/</g, '\\u003c')};
+		</script>
+	`;
+
     // Render the meta tags and title tags
     const helmet = Helmet.renderStatic();
 
@@ -68,10 +77,10 @@ export async function render(
 
     headers.set('Content-Type', 'text/html; charset=utf-8');
 
-    // Insert the hydration data script into the index.html file
+    // Insert the hydration data script and i18n resources into the index.html file
     let mergedHtml = indexHtml.replace(
       '<div id="root"></div>',
-      `<div id="root"></div>\n\t${hydrationDataScript}`,
+      `<div id="root"></div>\n\t${hydrationDataScript}\n\t${i18nScript}`,
     );
 
     // Insert the rendered html into the index.html file
