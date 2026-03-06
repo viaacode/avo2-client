@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import defaultAudioStillUrl from '../../assets/images/audio-still.svg?url';
+import defaultAudioStillUrl from '../../assets/audio-still.svg?url';
 import { tText } from '../helpers/translate-text';
 
 export { LANGUAGES } from './languages';
