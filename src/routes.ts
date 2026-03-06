@@ -111,7 +111,7 @@ const APP_ROUTES: RouteObject[] = [
     loader: initAppLoader,
     shouldRevalidate: () => false,
     Component: App,
-    // hydrateFallbackElement: <FullPageSpinner/>,
+    hydrateFallbackElement: null, // Explicitly set to null to prevent React Router from creating new DOM during hydration
     children: [
       ////////////////////////////////////////////////////////////////////////////////////////
       // ADMIN ROUTES
@@ -148,6 +148,7 @@ const APP_ROUTES: RouteObject[] = [
       {
         id: 'app-client-layout',
         loader: passUrlLoader,
+        shouldRevalidate: () => false,
         Component: AppClientLayout,
         children: [
           ////////////////////////////////////////////////////////////////////////////////////////
@@ -187,6 +188,7 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
       id: 'LoggedOutHome',
       index: true,
       loader: fetchContentPageLoader,
+      shouldRevalidate: () => false,
       Component: LoggedOutHome,
       ErrorBoundary: () => ErrorBoundary('LoggedOutHome--route'),
       hasErrorBoundary: true,

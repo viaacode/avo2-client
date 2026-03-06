@@ -39,11 +39,17 @@ export async function render(
         hydrate={false}
       />,
     );
+    // let html = renderToString(<div className="o-app">test</div>);
 
+    const hydrationData = {
+      loaderData: context.loaderData,
+      actionData: context.actionData,
+      errors: context.errors,
+    };
     const hydrationDataScript = `
-	  <script>
-		window.__staticRouterHydrationData = ${JSON.stringify(context)};
-	  </script>
+		<script>
+		  window.__staticRouterHydrationData = ${JSON.stringify(hydrationData).replace(/</g, '\\u003c')};
+		</script>
 	`;
 
     // Render the meta tags and title tags

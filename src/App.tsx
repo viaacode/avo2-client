@@ -26,7 +26,6 @@ import {
 import { getLoginStateAtom } from './authentication/authentication.store.actions';
 import { PermissionService } from './authentication/helpers/permission-service';
 import { ConfirmModal } from './shared/components/ConfirmModal/ConfirmModal';
-import FullPageSpinner from './shared/components/FullPageSpinner/FullPageSpinner.tsx';
 import { ROUTE_PARTS } from './shared/constants/routes';
 import { getEnv } from './shared/helpers/env';
 import { isServerSideRendering } from './shared/helpers/routing/is-server-side-rendering.ts';
@@ -204,9 +203,6 @@ export const App: FC = () => {
 
   // Render
   const renderApp = () => {
-    if (!loginState?.data && !isServerSideRendering()) {
-      return <FullPageSpinner locationId="App.tsx wait for login state" />;
-    }
     return (
       <div
         className={clsx('o-app', {

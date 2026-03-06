@@ -34,6 +34,8 @@ export async function initAppLoader() {
       err,
     );
   }
+  // Must return something for React Router to include in hydrationData
+  return null;
 }
 
 export async function fetchContentPageLoader(args: LoaderFunctionArgs<any>) {
