@@ -189,7 +189,7 @@ export const ReportItemModal: FC<ReportItemModalProps> = ({
             <ToolbarRight>
               <ToolbarItem>
                 <ButtonToolbar>
-                  {isProcessing && <Spinner />}
+                  {isProcessing && <Spinner locationId="ReportItemModal" />}
                   <Button
                     label={tText(
                       'item/components/modals/add-to-collection-modal___annuleren',

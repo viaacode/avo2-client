@@ -359,7 +359,9 @@ export const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps> = ({
           <ToolbarRight>
             <ToolbarItem>
               <ButtonToolbar>
-                {isProcessing && <Spinner />}
+                {isProcessing && (
+                  <Spinner locationId="ManageAssignmentLabels" />
+                )}
                 <Button
                   label={tText(
                     'assignment/components/modals/manage-assignment-labels___annuleren',

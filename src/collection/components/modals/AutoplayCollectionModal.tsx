@@ -81,7 +81,7 @@ export const AutoplayCollectionModal: FC<AutoplayCollectionModalProps> = ({
     if (!sourceList) {
       return (
         <Flex orientation="horizontal" center>
-          <Spinner size="large" />
+          <Spinner size="large" locationId="AutoplayCollectionModal" />
         </Flex>
       );
     }

@@ -499,7 +499,9 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
             <ToolbarRight>
               <ToolbarItem>
                 <ButtonToolbar>
-                  {isProcessing && <Spinner />}
+                  {isProcessing && (
+                    <Spinner locationId="AddToCollectionModal" />
+                  )}
                   <Button
                     label={tText(
                       'item/components/modals/add-to-collection-modal___annuleren',

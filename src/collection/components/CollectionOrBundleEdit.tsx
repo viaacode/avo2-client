@@ -43,6 +43,7 @@ import {
   setBlockPositionToIndex,
 } from '../../assignment/assignment.helper';
 import { AssignmentService } from '../../assignment/assignment.service';
+import { AssignmentRetrieveError } from '../../assignment/assignment.types.ts';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
@@ -61,6 +62,7 @@ import {
   type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown';
 import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
@@ -130,17 +132,13 @@ import { CollectionOrBundleTitle } from './CollectionOrBundleTitle';
 import { DeleteCollectionModal } from './modals/DeleteCollectionModal';
 import { DeleteMyselfFromCollectionContributorsConfirmModal } from './modals/DeleteContributorFromCollectionModal';
 import { PublishCollectionModal } from './modals/PublishCollectionModal';
-
 import './CollectionOrBundleEdit.scss';
-import { AssignmentRetrieveError } from '../../assignment/assignment.types.ts';
-import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
-import { isServerSideRendering } from '../../shared/helpers/routing/is-server-side-rendering.ts';
 
 export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
   type,
 }) => {
   const navigateFunc = useNavigate();
-
+  const [mounted, setMounted] = useState(false); // ssr
   const { id: collectionId, tabId } = useParams<{
     id: string;
     tabId: CollectionCreateUpdateTab;
@@ -206,6 +204,11 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
       }) as LoadingInfo,
     [isCollection, tText],
   );
+
+  // Set mounted to try using useEffect to avoid certain components to render during initial render in server side rendering
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const releaseCollectionEditStatus = useCallback(async () => {
     try {
@@ -1363,6 +1366,64 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
     );
   };
 
+  const handleCloseReorderFragmentsModal = (
+    reorderedFragments?: AvoCollectionFragment[],
+  ) => {
+    setDraggableListType(null);
+    if (reorderedFragments) {
+      const blocks = setBlockPositionToIndex(reorderedFragments);
+
+      switch (draggableListType) {
+        case 'COLLECTION_FRAGMENTS':
+          changeCollectionState({
+            type: 'UPDATE_COLLECTION_PROP',
+            updateInitialCollection: false,
+            collectionProp: 'collection_fragments',
+            collectionPropValue: blocks as AvoCollectionFragment[],
+          });
+          break;
+
+        case 'BUNDLE_COLLECTION_FRAGMENTS': {
+          const fragmentCollections = blocks as AvoCollectionFragment[];
+          const fragmentAssignments = getFragmentsFromCollection(
+            collectionState.currentCollection,
+            AvoCoreBlockItemType.ASSIGNMENT,
+          );
+          const newFragments = setBlockPositionToIndex([
+            ...fragmentCollections,
+            ...fragmentAssignments,
+          ]) as AvoCollectionFragment[];
+          changeCollectionState({
+            type: 'UPDATE_COLLECTION_PROP',
+            updateInitialCollection: false,
+            collectionProp: 'collection_fragments', // Collection fragments and assignment fragments are stored in the same array
+            collectionPropValue: newFragments,
+          });
+          break;
+        }
+
+        case 'BUNDLE_ASSIGNMENT_FRAGMENTS': {
+          const fragmentCollections = getFragmentsFromCollection(
+            collectionState.currentCollection,
+            AvoCoreBlockItemType.COLLECTION,
+          );
+          const fragmentAssignments = blocks as AvoCollectionFragment[];
+          const newFragments = setBlockPositionToIndex([
+            ...fragmentCollections,
+            ...fragmentAssignments,
+          ]) as AvoCollectionFragment[];
+          changeCollectionState({
+            type: 'UPDATE_COLLECTION_PROP',
+            updateInitialCollection: false,
+            collectionProp: 'collection_fragments', // Collection fragments and assignment fragments are stored in the same array
+            collectionPropValue: newFragments,
+          });
+          break;
+        }
+      }
+    }
+  };
+
   const renderTab = () => {
     if (collectionState.currentCollection) {
       switch (currentTab) {
@@ -1733,6 +1794,41 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
     );
   };
 
+  const renderInActivityWarningModal = () => {
+    if (!isCollection || !mounted) {
+      return null;
+    }
+    return (
+      <InActivityWarningModal
+        onActivity={updateCollectionEditor}
+        onExit={releaseCollectionEditStatus}
+        warningMessage={tHtml(
+          'collection/components/collection-or-bundle-edit___door-inactiviteit-zal-de-collectie-zichzelf-sluiten',
+        )}
+        currentPath={location.pathname}
+        editPath={APP_PATH.COLLECTION_EDIT_TAB.route}
+        onForcedExit={onForcedExitPage}
+      />
+    );
+  };
+
+  const renderReorderFragmentsModal = () => {
+    if (!draggableListType || !mounted) {
+      return null;
+    }
+    return (
+      <DraggableListModal
+        items={getFragmentsFromCollection(
+          collectionState.currentCollection,
+          REORDER_TYPE_TO_FRAGMENT_TYPE[draggableListType],
+        )}
+        renderItem={(item) => <DraggableBlock block={item} />}
+        isOpen={!!draggableListType}
+        onClose={handleCloseReorderFragmentsModal}
+      />
+    );
+  };
+
   const renderCollectionOrBundleEdit = () => {
     if (loadingInfo.state === 'forbidden') {
       return (
@@ -1936,95 +2032,15 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
           inputCallback={handleAddAssignmentById}
         />
 
-        {isCollection && !isServerSideRendering() && (
-          <InActivityWarningModal
-            onActivity={updateCollectionEditor}
-            onExit={releaseCollectionEditStatus}
-            warningMessage={tHtml(
-              'collection/components/collection-or-bundle-edit___door-inactiviteit-zal-de-collectie-zichzelf-sluiten',
-            )}
-            currentPath={location.pathname}
-            editPath={APP_PATH.COLLECTION_EDIT_TAB.route}
-            onForcedExit={onForcedExitPage}
-          />
-        )}
+        {renderInActivityWarningModal()}
+        {renderReorderFragmentsModal()}
 
-        {draggableListType && !isServerSideRendering() && (
-          <DraggableListModal
-            items={getFragmentsFromCollection(
-              collectionState.currentCollection,
-              REORDER_TYPE_TO_FRAGMENT_TYPE[draggableListType],
-            )}
-            renderItem={(item) => <DraggableBlock block={item} />}
-            isOpen={!!draggableListType}
-            onClose={(reorderedFragments?: AvoCollectionFragment[]) => {
-              setDraggableListType(null);
-              if (reorderedFragments) {
-                const blocks = setBlockPositionToIndex(reorderedFragments);
-
-                switch (draggableListType) {
-                  case 'COLLECTION_FRAGMENTS':
-                    changeCollectionState({
-                      type: 'UPDATE_COLLECTION_PROP',
-                      updateInitialCollection: false,
-                      collectionProp: 'collection_fragments',
-                      collectionPropValue: blocks as AvoCollectionFragment[],
-                    });
-                    break;
-
-                  case 'BUNDLE_COLLECTION_FRAGMENTS': {
-                    const fragmentCollections =
-                      blocks as AvoCollectionFragment[];
-                    const fragmentAssignments = getFragmentsFromCollection(
-                      collectionState.currentCollection,
-                      AvoCoreBlockItemType.ASSIGNMENT,
-                    );
-                    const newFragments = setBlockPositionToIndex([
-                      ...fragmentCollections,
-                      ...fragmentAssignments,
-                    ]) as AvoCollectionFragment[];
-                    changeCollectionState({
-                      type: 'UPDATE_COLLECTION_PROP',
-                      updateInitialCollection: false,
-                      collectionProp: 'collection_fragments', // Collection fragments and assignment fragments are stored in the same array
-                      collectionPropValue: newFragments,
-                    });
-                    break;
-                  }
-
-                  case 'BUNDLE_ASSIGNMENT_FRAGMENTS': {
-                    const fragmentCollections = getFragmentsFromCollection(
-                      collectionState.currentCollection,
-                      AvoCoreBlockItemType.COLLECTION,
-                    );
-                    const fragmentAssignments =
-                      blocks as AvoCollectionFragment[];
-                    const newFragments = setBlockPositionToIndex([
-                      ...fragmentCollections,
-                      ...fragmentAssignments,
-                    ]) as AvoCollectionFragment[];
-                    changeCollectionState({
-                      type: 'UPDATE_COLLECTION_PROP',
-                      updateInitialCollection: false,
-                      collectionProp: 'collection_fragments', // Collection fragments and assignment fragments are stored in the same array
-                      collectionPropValue: newFragments,
-                    });
-                    break;
-                  }
-                }
-              }
-            }}
-          />
-        )}
         <BeforeUnloadPrompt when={unsavedChanges && !isForcedExit} />
       </div>
     );
   };
 
-  if (
-    !isServerSideRendering() &&
-    matchPath(location.pathname, APP_PATH.BUNDLE_EDIT.route)
-  ) {
+  if (mounted && matchPath(location.pathname, APP_PATH.BUNDLE_EDIT.route)) {
     return (
       <Navigate
         to={buildLink(APP_PATH.BUNDLE_EDIT_TAB.route, {
@@ -2035,10 +2051,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
     );
   }
 
-  if (
-    !isServerSideRendering() &&
-    matchPath(location.pathname, APP_PATH.COLLECTION_EDIT.route)
-  ) {
+  if (mounted && matchPath(location.pathname, APP_PATH.COLLECTION_EDIT.route)) {
     return (
       <Navigate
         to={buildLink(APP_PATH.COLLECTION_EDIT_TAB.route, {

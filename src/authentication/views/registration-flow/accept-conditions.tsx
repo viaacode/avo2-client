@@ -179,7 +179,7 @@ export const AcceptConditions: FC = () => {
           <Toolbar>
             <ToolbarCenter>
               {acceptInProgress ? (
-                <Spinner size={'large'} />
+                <Spinner size="large" locationId="accept-conditions" />
               ) : (
                 <Button
                   label={tText(

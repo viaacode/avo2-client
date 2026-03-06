@@ -712,7 +712,7 @@ export const ItemDetailAdmin: FC = () => {
       return (
         <Container mode="vertical">
           <Flex orientation="horizontal" center>
-            <Spinner size="large" />
+            <Spinner size="large" locationId="item-detail-admin" />
           </Flex>
         </Container>
       );

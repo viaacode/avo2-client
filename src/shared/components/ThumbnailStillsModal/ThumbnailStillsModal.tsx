@@ -107,7 +107,7 @@ export const ThumbnailStillsModal: FC<ThumbnailStillsModalProps> = ({
           <Form>
             {!videoStills ? (
               <Flex center orientation="horizontal">
-                <Spinner size="large" />
+                <Spinner size="large" locationId="ThumbnailStillsModal" />
               </Flex>
             ) : !videoStills.length ? (
               <Blankslate

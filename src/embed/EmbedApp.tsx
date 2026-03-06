@@ -170,7 +170,7 @@ const EmbedApp: FC = () => {
       // Wait for login check
       return (
         <Flex center style={{ height: '100%' }}>
-          <Spinner size="large" />
+          <Spinner size="large" locationId="EmbedApp" />
         </Flex>
       );
     }

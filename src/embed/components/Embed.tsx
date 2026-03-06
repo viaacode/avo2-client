@@ -174,7 +174,7 @@ export const Embed: FC<EmbedProps> = ({
   if (isLoadingEmbedCode || !embedCode) {
     return (
       <Flex center style={{ height: '100%' }}>
-        <Spinner size="large" />
+        <Spinner size="large" locationId="Embed" />
       </Flex>
     );
   }

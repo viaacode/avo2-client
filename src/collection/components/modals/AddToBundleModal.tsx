@@ -365,7 +365,7 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
           <ToolbarRight>
             <ToolbarItem>
               <ButtonToolbar>
-                {isProcessing && <Spinner />}
+                {isProcessing && <Spinner locationId="AddToBundleModal" />}
                 <Button
                   label={tText(
                     'item/components/modals/add-to-collection-modal___annuleren',

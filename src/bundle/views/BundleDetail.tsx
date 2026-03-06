@@ -69,6 +69,7 @@ import EducationLevelsTagList from '../../shared/components/EducationLevelsTagLi
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { Html } from '../../shared/components/Html/Html';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
+import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { ShareThroughEmailModal } from '../../shared/components/ShareThroughEmailModal/ShareThroughEmailModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers/build-link';
@@ -85,6 +86,8 @@ import { formatDate } from '../../shared/helpers/formatters/date';
 import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
 import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
@@ -96,12 +99,7 @@ import {
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { BundleAction } from '../bundle.types';
-
 import './BundleDetail.scss';
-import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
-import { isServerSideRendering } from '../../shared/helpers/routing/is-server-side-rendering.ts';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
 
 type BundleDetailProps = {
   id?: string;
@@ -112,6 +110,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
   id,
   enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
+  const [mounted, setMounted] = useState(false); // ssr
   const navigateFunc = useNavigate();
   const loaderData = useLoaderData<{
     collection: AvoCollectionCollection;
@@ -332,6 +331,11 @@ export const BundleDetail: FC<BundleDetailProps> = ({
       checkPermissions();
     }
   }, [bundleObj, checkPermissions]);
+
+  // Set mounted to true when the client side component is mounted, to avoid rendering certain components during service side rendering
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (bundleObj) {
@@ -769,6 +773,41 @@ export const BundleDetail: FC<BundleDetailProps> = ({
     );
   };
 
+  const renderDeleteBundleConfirmModal = () => {
+    if (!showLoginPopup || !mounted) {
+      return null;
+    }
+    return (
+      <ConfirmModal
+        title={tText(
+          'bundle/views/bundle-detail___ben-je-zeker-dat-je-deze-bundel-wil-verwijderen',
+        )}
+        body={tText(
+          'bundle/views/bundle-detail___deze-actie-kan-niet-ongedaan-gemaakt-worden',
+        )}
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        confirmCallback={onDeleteBundle}
+      />
+    );
+  };
+
+  const renderShareThroughEmailModal = () => {
+    if (!showLoginPopup || !mounted) {
+      return null;
+    }
+    return (
+      <ShareThroughEmailModal
+        modalTitle={tText('bundle/views/bundle-detail___deel-deze-bundel')}
+        type="bundle"
+        emailLinkHref={window.location.href}
+        emailLinkTitle={(bundleObj as AvoCollectionCollection).title}
+        isOpen={isShareThroughEmailModalOpen}
+        onClose={() => setIsShareThroughEmailModalOpen(false)}
+      />
+    );
+  };
+
   const renderBundle = () => {
     if (!bundleObj && showLoginPopup) {
       return <RegisterOrLogin />;
@@ -947,31 +986,8 @@ export const BundleDetail: FC<BundleDetailProps> = ({
             )}
           </Container>
         </div>
-        {!showLoginPopup && !isServerSideRendering() && (
-          <>
-            <ConfirmModal
-              title={tText(
-                'bundle/views/bundle-detail___ben-je-zeker-dat-je-deze-bundel-wil-verwijderen',
-              )}
-              body={tText(
-                'bundle/views/bundle-detail___deze-actie-kan-niet-ongedaan-gemaakt-worden',
-              )}
-              isOpen={isDeleteModalOpen}
-              onClose={() => setIsDeleteModalOpen(false)}
-              confirmCallback={onDeleteBundle}
-            />
-            <ShareThroughEmailModal
-              modalTitle={tText(
-                'bundle/views/bundle-detail___deel-deze-bundel',
-              )}
-              type="bundle"
-              emailLinkHref={window.location.href}
-              emailLinkTitle={(bundleObj as AvoCollectionCollection).title}
-              isOpen={isShareThroughEmailModalOpen}
-              onClose={() => setIsShareThroughEmailModalOpen(false)}
-            />
-          </>
-        )}
+        {renderDeleteBundleConfirmModal()}
+        {renderShareThroughEmailModal()}
         {showLoginPopup && <RegisterOrLogin />}
       </>
     );

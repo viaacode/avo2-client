@@ -1,10 +1,9 @@
 import { ToastType } from '@meemoo/admin-core-ui/client';
 import { Alert, type AlertProps, Spacer } from '@viaa/avo2-components';
 import { isNil } from 'es-toolkit';
-import { type FC, type ReactNode } from 'react';
+import { type FC, type ReactNode, useEffect, useState } from 'react';
 import { type Id, type ToastOptions, toast } from 'react-toastify';
 import { ROUTE_PARTS } from '../constants/routes';
-import { isServerSideRendering } from '../helpers/routing/is-server-side-rendering.ts';
 
 export enum AvoToastType {
   DANGER = 'danger',
@@ -31,7 +30,14 @@ interface ToastProps extends AlertProps {
 }
 
 const Toast: FC<ToastProps> = (toastProps: ToastProps) => {
-  if (isServerSideRendering()) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    // Avoid rendering toasts during server side rendering
     return null;
   }
   const dark = !window.location.href.includes(`/${ROUTE_PARTS.admin}/`);

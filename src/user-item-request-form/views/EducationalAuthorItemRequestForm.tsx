@@ -285,7 +285,10 @@ export const EducationalAuthorItemRequestForm: FC = () => {
           <Spacer margin={['top', 'bottom-extra-large']}>
             <FormGroup>
               {isLoading ? (
-                <Spinner size="large" />
+                <Spinner
+                  size="large"
+                  locationId="EducationalAuthorItemRequestForm"
+                />
               ) : (
                 <Button
                   type="primary"

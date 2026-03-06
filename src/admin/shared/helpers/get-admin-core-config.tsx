@@ -183,7 +183,10 @@ export function getAdminCoreConfig(
     },
     components: {
       loader: {
-        component: () => <Spinner size="large" />,
+        component: (props) => {
+          console.log('admin-core loader: ', props);
+          return <Spinner size="large" locationId="admin-core-ui" {...props} />;
+        },
       },
       defaultAudioStill: DEFAULT_AUDIO_STILL,
       enableMultiLanguage: false,

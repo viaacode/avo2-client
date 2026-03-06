@@ -287,7 +287,7 @@ export const EmbedCodeDetail: FC = () => {
       return (
         <Container mode="vertical">
           <Flex orientation="horizontal" center>
-            <Spinner size="large" />
+            <Spinner size="large" locationId="EmbedCodeDetail" />
           </Flex>
         </Container>
       );

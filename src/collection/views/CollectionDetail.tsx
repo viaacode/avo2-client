@@ -130,7 +130,6 @@ import {
 import './CollectionDetail.scss';
 import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
-import { isServerSideRendering } from '../../shared/helpers/routing/is-server-side-rendering.ts';
 import {
   BooleanParam,
   StringParam,
@@ -167,7 +166,7 @@ type CollectionInfo = {
 };
 
 type CollectionDetailProps = {
-  id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
+  id?: string; // Item id when the component needs to be used inside another component and the id cannot come from the url (match.params.id)
   enabledMetaData?: SearchFilter[];
 };
 
@@ -175,6 +174,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   id,
   enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
+  const [mounted, setMounted] = useState(false);
   const navigateFunc = useNavigate();
   const loaderData = useLoaderData<{
     collection: AvoCollectionCollection;
@@ -378,6 +378,11 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
     }
   }, [collectionId, commonUser, showLoginPopup]);
 
+  // Set mounted to true only on the client, so certain components don't render during server side rendering
+  useEffect(() => {
+    setMounted(true); // ssr
+  }, []);
+
   useEffect(() => {
     setCollectionId(id || collectionIdFromUrl);
   }, [id, collectionIdFromUrl]);
@@ -499,7 +504,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         !permissionObj.canViewAnyPublishedCollections &&
         (!permissionObj.canViewQuickLanes ||
           (permissionObj.canViewQuickLanes &&
-            !isServerSideRendering() &&
+            mounted &&
             !window.location.href.includes(ROUTE_PARTS.quickLane)))
       ) {
         setCollectionInfo({

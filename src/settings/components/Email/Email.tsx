@@ -195,7 +195,7 @@ export const Email: FC = () => {
         </Spacer>
         <Spacer margin="top">
           {isLoadingGetPreferences || isLoadingUpdatePreferences ? (
-            <Spinner />
+            <Spinner locationId="Email" />
           ) : (
             <Button
               label="Opslaan"

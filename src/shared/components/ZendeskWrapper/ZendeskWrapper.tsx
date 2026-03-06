@@ -1,16 +1,21 @@
-import { type FC } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import Zendesk from 'react-zendesk';
 import { APP_PATH } from '../../../constants.ts';
 import { getEnv } from '../../helpers/env';
-import { isServerSideRendering } from '../../helpers/routing/is-server-side-rendering.ts';
 
 declare const ResizeObserver: any;
 
 const FOOTER_HEIGHT = 373;
 
 export const ZendeskWrapper: FC = () => {
+  const [mounted, setMounted] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   /**
    * Change the bottom margin of the zendesk widget so it doesn't overlap with the footer
    */
@@ -18,11 +23,13 @@ export const ZendeskWrapper: FC = () => {
     let widget: HTMLIFrameElement | null;
     let footerHeight = FOOTER_HEIGHT;
     const zendeskMarginBottom = -27;
+
     const updateFooterHeight = () => {
       footerHeight =
         document.querySelector('.c-global-footer')?.clientHeight ||
         FOOTER_HEIGHT;
     };
+
     const updateMargin = () => {
       if (widget) {
         if (location.pathname === APP_PATH.REGISTER_OR_LOGIN.route) {
@@ -76,7 +83,7 @@ export const ZendeskWrapper: FC = () => {
     getZendeskWidget();
   };
 
-  if (isServerSideRendering()) {
+  if (!mounted) {
     // Don't render zendesk widget during server-side rendering
     return null;
   }

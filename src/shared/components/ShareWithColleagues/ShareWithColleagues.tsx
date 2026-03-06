@@ -540,7 +540,7 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
       {isLoading && (
         <Spacer margin={'small'}>
           <Flex>
-            <Spinner />
+            <Spinner locationId="ShareWithColleagues" />
           </Flex>
         </Spacer>
       )}

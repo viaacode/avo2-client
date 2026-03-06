@@ -4,7 +4,7 @@ import {
   type DefaultProps,
   IconName,
 } from '@viaa/avo2-components';
-import { type FC, type ReactNode, useState } from 'react';
+import { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { useResizeObserver } from '../../hooks/useResizeObserver';
 
@@ -26,6 +26,7 @@ export const CollapsibleColumn: FC<CollapsibleColumnProps> = ({
   children,
   button,
 }) => {
+  const [mounted, setMounted] = useState(false); // ssr
   const [overflowing, setOverflowing] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
@@ -46,6 +47,10 @@ export const CollapsibleColumn: FC<CollapsibleColumnProps> = ({
           setOverflowing(isOverflowing);
         }
       });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const getButtonIcon = (): IconName => {
     if (button?.icon) {
@@ -69,6 +74,10 @@ export const CollapsibleColumn: FC<CollapsibleColumnProps> = ({
         );
   };
 
+  if (!mounted) {
+    // Do not render this component during server side rendering
+    return null;
+  }
   return (
     <div className={wrapperClassName} style={style}>
       <div className="c-collapsible-column__content" ref={ref}>

@@ -132,7 +132,10 @@ export const AcceptElementaryPupilConditions: FC = () => {
               <Toolbar>
                 <ToolbarCenter>
                   {loading ? (
-                    <Spinner size={'large'} />
+                    <Spinner
+                      size="large"
+                      locationId="accept-elementary-pupil-conditions"
+                    />
                   ) : (
                     <Button
                       disabled={!finished}

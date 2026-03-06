@@ -323,7 +323,7 @@ export const FileUpload: FC<FileUploadProps> = ({
             </FlexItem>
           </Flex>
         ) : (
-          <Spinner size="large" />
+          <Spinner size="large" locationId="FileUpload" />
         ))}
       {imagePosition === FileUploadImagePosition.BELOW_BUTTON &&
         renderFilesPreview()}

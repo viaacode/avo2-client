@@ -215,7 +215,7 @@ export const UserItemRequestForm: FC = () => {
           <Spacer margin={['top', 'bottom-extra-large']}>
             <FormGroup>
               {isLoading ? (
-                <Spinner size="large" />
+                <Spinner size="large" locationId="UserItemRequestForm" />
               ) : (
                 <Button
                   type="primary"

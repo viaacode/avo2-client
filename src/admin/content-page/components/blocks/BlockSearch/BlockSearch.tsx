@@ -28,9 +28,9 @@ import { ToastService } from '../../../../../shared/services/toast-service';
 import { KeyCode } from '../../../../../shared/types';
 import './BlockSearch.scss';
 import { AvoSearchResultItem } from '@viaa/avo2-types';
-import { useSearchAutocomplete } from './hooks/use-search-autocomplete';
 import { tHtml } from '../../../../../shared/helpers/translate-html';
 import { tText } from '../../../../../shared/helpers/translate-text';
+import { useSearchAutocomplete } from './hooks/use-search-autocomplete';
 
 export const BlockSearch: FC = () => {
   const navigateFunc = useNavigate();
@@ -134,7 +134,7 @@ export const BlockSearch: FC = () => {
               <DropdownContent>
                 <div className="c-dropdown-results">
                   {isLoading ? (
-                    <Spinner size="large" />
+                    <Spinner size="large" locationId="BlockSearch" />
                   ) : (
                     <MenuSearchResultContent
                       menuItems={autocompleteMenuItems}
