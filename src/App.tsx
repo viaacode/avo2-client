@@ -12,7 +12,7 @@ import {
 import { clsx } from 'clsx';
 import { isEqual, noop, uniq } from 'es-toolkit';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { type FC, useCallback, useEffect, useState } from 'react';
+import { type FC, useCallback, useEffect, useRef, useState } from 'react';
 import { MetaDescriptor, Outlet, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
@@ -61,6 +61,21 @@ export const App: FC = () => {
 
   const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] =
     useState(false);
+
+  // Track the last config state to avoid unnecessary updates
+  const lastConfigRef = useRef<{ navigateFunc: typeof navigateFunc; commonUser: typeof commonUser } | null>(null);
+
+  // Set admin core config synchronously (not in useEffect) so it's available during SSR
+  // This ensures components rendered during SSR have access to the config
+  if (
+    !lastConfigRef.current ||
+    lastConfigRef.current.navigateFunc !== navigateFunc ||
+    lastConfigRef.current.commonUser !== commonUser
+  ) {
+    const config: AdminConfig = getAdminCoreConfig(navigateFunc, commonUser);
+    AdminConfigManager.setConfig(config);
+    lastConfigRef.current = { navigateFunc, commonUser };
+  }
 
   const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(
     location.pathname,
@@ -111,15 +126,6 @@ export const App: FC = () => {
     }
   }, []);
   usePageLoaded(handlePageLoaded, !!location.hash);
-
-  /**
-   * Set admin core config once navigateFunc is available
-   * Since during route loading we only set the config, but we don't have access to navigateFunc yet
-   */
-  useEffect(() => {
-    const config: AdminConfig = getAdminCoreConfig(navigateFunc, commonUser);
-    AdminConfigManager.setConfig(config);
-  }, [navigateFunc, loginState]);
 
   /**
    * Load login status as soon as possible

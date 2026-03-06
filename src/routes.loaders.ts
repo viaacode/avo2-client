@@ -15,8 +15,8 @@ import { loadTranslations } from './shared/translations/i18n.ts';
 
 export async function initAppLoader() {
   try {
-    // Set admin-core config with dummy navigate function during SSR
-    // The config will be set again in the client after hydration
+    // Set admin-core config with dummy navigate function initially
+    // App.tsx will update it synchronously with the real navigateFunc during render
     if (!AdminConfigManager.isConfigSet()) {
       const config: AdminConfig = getAdminCoreConfig(noop, null);
       AdminConfigManager.setConfig(config);
