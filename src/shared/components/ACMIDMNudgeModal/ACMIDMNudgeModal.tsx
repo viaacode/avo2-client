@@ -7,7 +7,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { useAtom, useAtomValue } from 'jotai';
-import { type FC, useCallback, useEffect } from 'react';
+import { type FC, useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
@@ -32,6 +32,9 @@ import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 
 export const ACMIDMNudgeModal: FC = () => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const location = useLocation();
 
   const commonUser = useAtomValue(commonUserAtom);
@@ -232,6 +235,8 @@ export const ACMIDMNudgeModal: FC = () => {
       </>
     );
   };
+
+  if (!mounted) return null;
 
   return (
     <Modal

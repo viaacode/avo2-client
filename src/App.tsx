@@ -59,6 +59,7 @@ export const App: FC = () => {
   const [historyLocations, setHistoryLocations] = useAtom(historyLocationsAtom);
   const setEmbedFlow = useSetAtom(embedFlowAtom);
 
+  const [mounted, setMounted] = useState(false);
   const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] =
     useState(false);
 
@@ -126,6 +127,8 @@ export const App: FC = () => {
     }
   }, []);
   usePageLoaded(handlePageLoaded, !!location.hash);
+
+  useEffect(() => setMounted(true), []);
 
   /**
    * Load login status as soon as possible
@@ -229,27 +232,29 @@ export const App: FC = () => {
           pauseOnHover={true}
         />
         <Outlet />
-        <ConfirmModal
-          className="c-modal__unsaved-changes"
-          isOpen={isUnsavedChangesModalOpen}
-          confirmCallback={() => {
-            setIsUnsavedChangesModalOpen(false);
-            (confirmUnsavedChangesCallback || noop)(true);
-            confirmUnsavedChangesCallback = null;
-          }}
-          onClose={() => {
-            setIsUnsavedChangesModalOpen(false);
-            (confirmUnsavedChangesCallback || noop)(false);
-            confirmUnsavedChangesCallback = null;
-          }}
-          cancelLabel={tText('app___blijven')}
-          confirmLabel={tText('app___verlaten')}
-          title={tHtml('app___wijzigingen-opslaan')}
-          body={tHtml(
-            'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten',
-          )}
-          confirmButtonType="primary"
-        />
+        {mounted && (
+          <ConfirmModal
+            className="c-modal__unsaved-changes"
+            isOpen={isUnsavedChangesModalOpen}
+            confirmCallback={() => {
+              setIsUnsavedChangesModalOpen(false);
+              (confirmUnsavedChangesCallback || noop)(true);
+              confirmUnsavedChangesCallback = null;
+            }}
+            onClose={() => {
+              setIsUnsavedChangesModalOpen(false);
+              (confirmUnsavedChangesCallback || noop)(false);
+              confirmUnsavedChangesCallback = null;
+            }}
+            cancelLabel={tText('app___blijven')}
+            confirmLabel={tText('app___verlaten')}
+            title={tHtml('app___wijzigingen-opslaan')}
+            body={tHtml(
+              'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten',
+            )}
+            confirmButtonType="primary"
+          />
+        )}
       </div>
     );
   };
