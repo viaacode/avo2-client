@@ -219,26 +219,36 @@ export function redirectToServerLogoutPage(
   window.location.href = newUrl;
 }
 
-export function logoutAndRedirectToLogin(location?: Location): void {
-  if (isServerSideRendering()) {
-    // Window object not available on server side
-    return;
-  }
+export function getLogoutAndRedirectToLoginUrl(
+  location: Location | null,
+): string {
   // Url to return to after logout is completed
   let returnToUrl = getEnv('CLIENT_URL') + APP_PATH.REGISTER_OR_LOGIN.route;
 
   if (location) {
-    returnToUrl = `${returnToUrl}?${queryString.stringify({
-      // Url to redirect to after logging back in
-      returnToUrl: getRedirectAfterLogin(location),
-    })}`;
+    returnToUrl = stringifyUrl({
+      url: returnToUrl,
+      query: {
+        // Url to redirect to after logging back in
+        returnToUrl: getRedirectAfterLogin(location),
+      },
+    });
   }
 
-  const newUrl = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify(
-    {
+  return stringifyUrl({
+    url: `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}`,
+    query: {
       returnToUrl,
     },
-  )}`;
+  });
+}
+
+export function logoutAndRedirectToLogin(location: Location | null): void {
+  if (isServerSideRendering()) {
+    // Window object not available on server side
+    return;
+  }
+  const newUrl = getLogoutAndRedirectToLoginUrl(location);
   logIfRedirectLoggingEnabled(newUrl);
   window.location.href = newUrl;
 }

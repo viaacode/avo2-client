@@ -1,25 +1,20 @@
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { type FC, useEffect } from 'react';
 import { Outlet } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import FullPageSpinner from '../../shared/components/FullPageSpinner/FullPageSpinner.tsx';
-import { getLoginStateAtom } from '../authentication.store.actions.tsx';
 import { loginAtom } from '../authentication.store.ts';
 import { logoutAndRedirectToLogin } from '../helpers/redirects/redirects.ts';
 
 export const EnsureUserLoggedIn: FC = () => {
   const loginState = useAtomValue(loginAtom);
-  const getLoginState = useSetAtom(getLoginStateAtom);
-
-  useEffect(() => {
-    getLoginState(false);
-  }, []);
+  const location = useLocation();
 
   useEffect(() => {
     if (loginState?.data?.message === 'LOGGED_OUT') {
-      console.log('User is not logged in, redirecting to login page');
-      logoutAndRedirectToLogin();
+      logoutAndRedirectToLogin(location);
     }
-  }, [loginState]);
+  }, [loginState?.data?.message]);
 
   if (!loginState || loginState.loading) {
     return <FullPageSpinner locationId="EnsureUserLoggedIn" />;
@@ -27,6 +22,9 @@ export const EnsureUserLoggedIn: FC = () => {
   if (loginState.data?.message === 'LOGGED_IN') {
     return <Outlet />;
   }
+
+  // Still loading/determining state - show spinner
+  return <FullPageSpinner locationId="EnsureUserLoggedIn-pending" />;
 };
 
 export default EnsureUserLoggedIn;

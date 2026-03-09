@@ -88,7 +88,6 @@ export const getLoginStateAtom = atom<LoginState | null, [boolean], void>(
       );
 
       set(loginAtom, {
-        ...get(loginAtom),
         loading: false,
         error: false,
         data: loginStateResponse,

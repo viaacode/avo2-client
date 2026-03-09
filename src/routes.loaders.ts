@@ -2,15 +2,18 @@ import { type AdminConfig } from '@meemoo/admin-core-ui/admin';
 import { AdminConfigManager } from '@meemoo/admin-core-ui/client';
 import { noop } from 'es-toolkit';
 import { stringifyUrl } from 'query-string';
-import { LoaderFunctionArgs, redirect } from 'react-router';
+import { LoaderFunctionArgs, type Location, redirect } from 'react-router';
 import { ContentPageService } from './admin/content-page/services/content-page.service.ts';
 import { ItemsService } from './admin/items/items.service.ts';
 import { getAdminCoreConfig } from './admin/shared/helpers/get-admin-core-config.tsx';
 import { AssignmentService } from './assignment/assignment.service.ts';
 import { getLoginResponse } from './authentication/authentication.store.actions.tsx';
+import { loginAtom } from './authentication/authentication.store.ts';
+import { getLogoutAndRedirectToLoginUrl } from './authentication/helpers/redirects/redirects.ts';
 import { CollectionService } from './collection/collection.service.ts';
 import { CollectionOrBundle } from './collection/collection.types.ts';
 import { ROUTE_PARTS } from './shared/constants/routes.ts';
+import { store } from './shared/store/ui.store.ts';
 import { loadTranslations } from './shared/translations/i18n.ts';
 
 export async function initAppLoader() {
@@ -22,12 +25,17 @@ export async function initAppLoader() {
       AdminConfigManager.setConfig(config);
     }
 
-    await Promise.all([
+    const [loginResponse] = await Promise.all([
       // Fetch login state
       getLoginResponse(false, []),
       // Wait for translations to load
       loadTranslations(),
     ]);
+    store.set(loginAtom, {
+      loading: false,
+      error: false,
+      data: loginResponse,
+    });
   } catch (err) {
     console.error(
       'Failed to load admin-core-config or translations in react-router loader for App route',
@@ -77,7 +85,14 @@ export async function fetchContentPageLoader(args: LoaderFunctionArgs<any>) {
         ' => ',
         redirectUrl,
       );
-      throw redirect(redirectUrl);
+      const parsedUrl = new URL(args.request.url);
+      throw redirect(
+        getLogoutAndRedirectToLoginUrl({
+          pathname: parsedUrl.pathname,
+          search: parsedUrl.search,
+          hash: '',
+        } as Location<any>),
+      );
     }
     console.error(
       'Failed to load content page in react-router loader for route',

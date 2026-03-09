@@ -11,7 +11,7 @@ import {
 } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { isEqual, noop, uniq } from 'es-toolkit';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { Provider, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { type FC, useCallback, useEffect, useRef, useState } from 'react';
 import { MetaDescriptor, Outlet, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
@@ -36,7 +36,7 @@ import { tText } from './shared/helpers/translate-text';
 import { useHideZendeskWidget } from './shared/hooks/useHideZendeskWidget';
 import { usePageLoaded } from './shared/hooks/usePageLoaded';
 import { ToastService } from './shared/services/toast-service';
-import { embedFlowAtom, historyLocationsAtom } from './shared/store/ui.store';
+import { embedFlowAtom, historyLocationsAtom, store } from './shared/store/ui.store';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -260,11 +260,13 @@ export const App: FC = () => {
   };
 
   return (
-    <QueryParamProvider adapter={ReactRouter7Adapter}>
-      <QueryClientProvider client={queryClient}>
-        {renderApp()}
-      </QueryClientProvider>
-    </QueryParamProvider>
+    <Provider store={store}>
+      <QueryParamProvider adapter={ReactRouter7Adapter}>
+        <QueryClientProvider client={queryClient}>
+          {renderApp()}
+        </QueryClientProvider>
+      </QueryParamProvider>
+    </Provider>
   );
 };
 
