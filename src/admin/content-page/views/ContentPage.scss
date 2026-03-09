@@ -78,7 +78,7 @@ $c-admin-core-add-content-block-height: 7rem;
 	}
 
 	> .o-container-vertical {
-	  height: calc(100vh - 4.9rem);
+	  height: calc(100vh - #{variables.$c-admin-core-header} - #{$c-admin-core-content-metadata-bar});
 	  overflow-y: auto;
 	}
   }
@@ -90,7 +90,7 @@ $c-admin-core-add-content-block-height: 7rem;
 		height: calc(100vh - 4.9rem);
 
 		[role="separator"] + [data-panel] {
-			height: calc(100vh - 10.8rem);
+			height: calc(100vh - #{variables.$c-admin-core-header} - #{$c-admin-core-content-metadata-bar});
 		}
 	}
 }
