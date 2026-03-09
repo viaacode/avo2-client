@@ -5,12 +5,17 @@ import {
   Modal,
   ModalBody,
 } from '@viaa/avo2-components';
-import { type FC } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { LoginOptions } from '../components/LoginOptions';
 import './RegisterOrLogin.scss';
 
 export const RegisterOrLogin: FC = () => {
+  // Delay rendering Modal until mounted to avoid SSR hydration mismatch
+  // (Modal uses createPortal to document.body which doesn't exist during SSR)
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
     <Container className="c-register-login-view" mode="horizontal">
       <Container mode="vertical">
@@ -30,7 +35,8 @@ export const RegisterOrLogin: FC = () => {
         {/*  />*/}
         {/*</Helmet>*/}
 
-        <Modal className="c-register-login-view__modal" isOpen size="medium">
+        {mounted && (
+          <Modal className="c-register-login-view__modal" isOpen size="medium">
           <ModalBody>
             <Grid className="u-bg-gray-100">
               <Column size="3-6">
@@ -52,6 +58,7 @@ export const RegisterOrLogin: FC = () => {
             </Grid>
           </ModalBody>
         </Modal>
+        )}
       </Container>
     </Container>
   );
