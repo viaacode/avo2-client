@@ -39,11 +39,12 @@ async function hydrate() {
       <RouterProvider router={router} />
     </Provider>,
     {
-    onRecoverableError(error, errorInfo) {
-      console.error('Hydration recoverable error:', error);
-      console.error('Component stack:', errorInfo.componentStack);
+      onRecoverableError(error, errorInfo) {
+        console.error('Hydration recoverable error:', error);
+        console.error('Component stack:', errorInfo.componentStack);
+      },
     },
-  });
+  );
 
   // Refresh translations in the background after hydration
   refreshTranslations();

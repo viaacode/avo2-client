@@ -397,7 +397,9 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
       if (error) {
         if (error === AssignmentRetrieveError.ASSIGNMENT_WAS_DELETED) {
           setAssignmentError({
-            message: tHtml('De opdracht was verwijderd'),
+            message: tHtml(
+              'assignment/views/assignment-detail___de-opdracht-was-verwijderd',
+            ),
             icon: IconName.trash2,
             actionButtons: ['home'],
           });

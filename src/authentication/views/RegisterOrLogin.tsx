@@ -37,27 +37,27 @@ export const RegisterOrLogin: FC = () => {
 
         {mounted && (
           <Modal className="c-register-login-view__modal" isOpen size="medium">
-          <ModalBody>
-            <Grid className="u-bg-gray-100">
-              <Column size="3-6">
-                <h2 className="c-h2 u-m-0">
-                  {tHtml(
-                    'authentication/views/register-or-login___welkom-op-het-archief-voor-onderwijs',
-                  )}
-                </h2>
+            <ModalBody>
+              <Grid className="u-bg-gray-100">
+                <Column size="3-6">
+                  <h2 className="c-h2 u-m-0">
+                    {tHtml(
+                      'authentication/views/register-or-login___welkom-op-het-archief-voor-onderwijs',
+                    )}
+                  </h2>
 
-                <p>
-                  {tHtml(
-                    'authentication/views/register-or-login___maak-een-gratis-account-aan-en-verrijk-je-lessen-met-beeld-en-geluid-op-maat-van-de-klas',
-                  )}
-                </p>
-              </Column>
-              <Column size="3-6" className="u-bg-white">
-                <LoginOptions />
-              </Column>
-            </Grid>
-          </ModalBody>
-        </Modal>
+                  <p>
+                    {tHtml(
+                      'authentication/views/register-or-login___maak-een-gratis-account-aan-en-verrijk-je-lessen-met-beeld-en-geluid-op-maat-van-de-klas',
+                    )}
+                  </p>
+                </Column>
+                <Column size="3-6" className="u-bg-white">
+                  <LoginOptions />
+                </Column>
+              </Grid>
+            </ModalBody>
+          </Modal>
         )}
       </Container>
     </Container>

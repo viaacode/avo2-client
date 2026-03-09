@@ -64,7 +64,10 @@ export const App: FC = () => {
     useState(false);
 
   // Track the last config state to avoid unnecessary updates
-  const lastConfigRef = useRef<{ navigateFunc: typeof navigateFunc; commonUser: typeof commonUser } | null>(null);
+  const lastConfigRef = useRef<{
+    navigateFunc: typeof navigateFunc;
+    commonUser: typeof commonUser;
+  } | null>(null);
 
   // Set admin core config synchronously (not in useEffect) so it's available during SSR
   // This ensures components rendered during SSR have access to the config
