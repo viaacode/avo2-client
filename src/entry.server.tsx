@@ -3,12 +3,14 @@
 import * as React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Helmet } from 'react-helmet';
+import { Provider } from 'jotai';
 import {
   createStaticHandler,
   createStaticRouter,
   StaticRouterProvider,
 } from 'react-router';
 import ALL_APP_ROUTES from './routes.ts';
+import { store } from './shared/store/ui.store.ts';
 import { CustomError } from './shared/helpers/custom-error.ts';
 import I18n from './shared/translations/i18n.ts';
 
@@ -34,11 +36,13 @@ export async function render(
 
     // Render everything with StaticRouterProvider
     let html = renderToString(
-      <StaticRouterProvider
-        router={router}
-        context={context}
-        hydrate={false}
-      />,
+      <Provider store={store}>
+        <StaticRouterProvider
+          router={router}
+          context={context}
+          hydrate={false}
+        />
+      </Provider>,
     );
     // let html = renderToString(<div className="o-app">test</div>);
 

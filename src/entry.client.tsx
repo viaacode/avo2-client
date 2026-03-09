@@ -1,8 +1,10 @@
 import { setDefaultOptions } from 'date-fns';
 import { nlBE } from 'date-fns/locale';
+import { Provider } from 'jotai';
 import { hydrateRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import ALL_APP_ROUTES from './routes.ts';
+import { store } from './shared/store/ui.store.ts';
 import {
   loadTranslations,
   refreshTranslations,
@@ -31,7 +33,12 @@ async function hydrate() {
 
   const container = document.getElementById('root') as HTMLElement;
 
-  hydrateRoot(container, <RouterProvider router={router} />, {
+  hydrateRoot(
+    container,
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>,
+    {
     onRecoverableError(error, errorInfo) {
       console.error('Hydration recoverable error:', error);
       console.error('Component stack:', errorInfo.componentStack);
