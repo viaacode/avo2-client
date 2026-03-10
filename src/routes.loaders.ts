@@ -176,8 +176,8 @@ export async function fetchAssignmentLoader(args: LoaderFunctionArgs<any>) {
       const cookieHeader = args.request.headers.get('cookie');
       const assignment = await AssignmentService.fetchAssignmentById(
         id,
-        undefined,
         true,
+        undefined,
         cookieHeader ? { cookie: cookieHeader } : undefined,
       );
       return {

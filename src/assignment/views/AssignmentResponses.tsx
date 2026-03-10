@@ -244,8 +244,10 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
         });
       }
 
-      const assignmentOrError =
-        await AssignmentService.fetchAssignmentById(assignmentId);
+      const assignmentOrError = await AssignmentService.fetchAssignmentById(
+        assignmentId,
+        true,
+      );
 
       const error = (assignmentOrError as { error: AssignmentRetrieveError })
         ?.error;

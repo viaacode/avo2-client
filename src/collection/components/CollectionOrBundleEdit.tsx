@@ -1267,7 +1267,10 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
   const handleAddAssignmentById = async (id: string) => {
     try {
       // We're adding an assignment to the collection
-      const assignmentOrError = await AssignmentService.fetchAssignmentById(id);
+      const assignmentOrError = await AssignmentService.fetchAssignmentById(
+        id,
+        false,
+      );
       if (!assignmentOrError) {
         throw new CustomError('Response does not contain an item', null, {
           assignmentOrError,

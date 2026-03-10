@@ -86,7 +86,7 @@ export const AssignmentPupilCollectionDetail: FC = () => {
       const assignmentOrError:
         | AvoAssignmentAssignment
         | { error: AssignmentRetrieveError } =
-        await AssignmentService.fetchAssignmentById(assignmentId);
+        await AssignmentService.fetchAssignmentById(assignmentId, true);
 
       const error = (assignmentOrError as { error: AssignmentRetrieveError })
         ?.error;

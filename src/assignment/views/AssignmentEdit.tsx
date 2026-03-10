@@ -353,8 +353,10 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
       }
 
       try {
-        assignmentOrError =
-          await AssignmentService.fetchAssignmentById(assignmentId);
+        assignmentOrError = await AssignmentService.fetchAssignmentById(
+          assignmentId,
+          true,
+        );
       } catch (err) {
         if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
           setAssignmentError({

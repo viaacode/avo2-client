@@ -204,7 +204,7 @@ export class PermissionService {
       case PermissionName.PUBLISH_OWN_ASSIGNMENTS: {
         try {
           const assignment = isString(obj)
-            ? await AssignmentService.fetchAssignmentById(obj)
+            ? await AssignmentService.fetchAssignmentById(obj, false)
             : obj;
 
           return PermissionService.isOwnerOrContributor(

@@ -355,8 +355,8 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
       try {
         assignmentOrError = await AssignmentService.fetchAssignmentById(
           assignmentId,
-          inviteToken || undefined,
           true,
+          inviteToken || undefined,
         );
       } catch (err: any) {
         if (err.innerException.additionalInfo?.statusCode === 403) {

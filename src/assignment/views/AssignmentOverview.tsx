@@ -377,6 +377,7 @@ export const AssignmentOverview: FC<AssignmentOverviewProps> = ({
             | { error: AssignmentRetrieveError } =
             await AssignmentService.fetchAssignmentById(
               assignmentRow.id as unknown as string,
+              false,
             );
 
           const error = (

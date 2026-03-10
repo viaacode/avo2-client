@@ -104,8 +104,8 @@ export class AssignmentService {
    */
   static async fetchAssignmentById(
     assignmentId: string,
+    includeItemMetadata: boolean,
     inviteToken?: string,
-    includeItemMetadata: boolean = false,
     headers: Record<string, string> = {},
   ): Promise<AvoAssignmentAssignment | { error: AssignmentRetrieveError }> {
     try {
