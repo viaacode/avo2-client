@@ -6,7 +6,6 @@ import {
 import { IconName } from '@viaa/avo2-components';
 import {
   AvoAuthLoginResponseLoggedIn,
-  AvoContentPagePage,
   AvoContentPageType,
   AvoSearchOrderDirection,
   PermissionName,
@@ -17,8 +16,10 @@ import { stringifyUrl } from 'query-string';
 import { type FC, useCallback, useEffect, useState } from 'react';
 import { Navigate, useLoaderData, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
+import { ContentPageService } from '../../admin/content-page/services/content-page.service';
 import { ItemsService } from '../../admin/items/items.service';
 import { UrlRedirectsService } from '../../admin/url-redirects/url-redirects.service';
+import { logoutAndRedirectToLogin } from '../../authentication/helpers/redirects/redirects';
 import { loginAtom } from '../../authentication/authentication.store';
 import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
@@ -69,9 +70,13 @@ export const DynamicRouteResolver: FC = () => {
     state: 'loading',
   });
   const contentPageInfoFromRoute = useLoaderData<{
-    contentPage: AvoContentPagePage | null;
+    contentPage: ContentPageInfo | null;
     url: string;
+    requiresAuth?: boolean;
   }>();
+  const [clientFetchedContentPage, setClientFetchedContentPage] =
+    useState<ContentPageInfo | null>(null);
+  const [isClientFetching, setIsClientFetching] = useState(false);
 
   const analyseRoute = useCallback(async () => {
     try {
@@ -169,8 +174,9 @@ export const DynamicRouteResolver: FC = () => {
 
       // Check if path points to a content page
       try {
-        const contentPage: AvoContentPagePage | null =
-          contentPageInfoFromRoute.contentPage;
+        // Use client-fetched content page if available (for pages that required auth during SSR)
+        const contentPage: ContentPageInfo | null =
+          clientFetchedContentPage || contentPageInfoFromRoute.contentPage;
         if (contentPage) {
           // Path is indeed a content page url
           setRouteInfo({
@@ -250,7 +256,7 @@ export const DynamicRouteResolver: FC = () => {
         icon: IconName.search,
       });
     }
-  }, [loginState, location.pathname, location.hash, navigateFunc]);
+  }, [loginState, location.pathname, location.hash, navigateFunc, clientFetchedContentPage, contentPageInfoFromRoute.contentPage]);
 
   // Check if current user is logged in
   useEffect(() => {
@@ -281,6 +287,53 @@ export const DynamicRouteResolver: FC = () => {
       analyseRoute();
     }
   }, [loginState, location.pathname, analyseRoute]);
+
+  // Handle client-side re-fetch for pages that required auth during SSR
+  // During SSR, cookies are on the proxy domain and not sent to the client domain
+  // After hydration, the browser has the cookies and can authenticate properly
+  useEffect(() => {
+    if (
+      contentPageInfoFromRoute?.requiresAuth &&
+      !clientFetchedContentPage &&
+      !isClientFetching &&
+      loginState
+    ) {
+      const fetchContentPageOnClient = async () => {
+        setIsClientFetching(true);
+        try {
+          const pathname = location.pathname;
+          const contentPage =
+            await ContentPageService.getContentPageByLanguageAndPath(pathname);
+          if (contentPage) {
+            setClientFetchedContentPage(contentPage);
+          } else if (loginState.message !== 'LOGGED_IN') {
+            // Content page not found and user is not logged in
+            // Redirect to login
+            logoutAndRedirectToLogin(location);
+          }
+        } catch (err: any) {
+          console.error('Failed to fetch content page on client side', err);
+          const statusCode = err?.innerException?.additionalInfo?.statusCode;
+          if (
+            (statusCode === 401 || statusCode === 403) &&
+            loginState.message !== 'LOGGED_IN'
+          ) {
+            // User is not logged in, redirect to login
+            logoutAndRedirectToLogin(location);
+          }
+        } finally {
+          setIsClientFetching(false);
+        }
+      };
+      fetchContentPageOnClient();
+    }
+  }, [
+    contentPageInfoFromRoute?.requiresAuth,
+    clientFetchedContentPage,
+    isClientFetching,
+    loginState,
+    location,
+  ]);
 
   useEffect(() => {
     if (routeInfo) {
@@ -391,16 +444,16 @@ export const DynamicRouteResolver: FC = () => {
       <SeoMetadata
         title={contentPageInfoFromRoute?.contentPage?.title}
         description={
-          contentPageInfoFromRoute?.contentPage?.seo_description ||
+          contentPageInfoFromRoute?.contentPage?.seoDescription ||
           decodeHTML(
             stripHtml(contentPageInfoFromRoute?.contentPage?.description),
           )
         }
         image={contentPageInfoFromRoute.contentPage?.seo_image_path}
         url={contentPageInfoFromRoute.url}
-        updatedAt={contentPageInfoFromRoute.contentPage?.updated_at}
-        createdAt={contentPageInfoFromRoute?.contentPage?.created_at}
-        publishedAt={contentPageInfoFromRoute?.contentPage?.published_at}
+        updatedAt={contentPageInfoFromRoute.contentPage?.updatedAt}
+        createdAt={contentPageInfoFromRoute?.contentPage?.createdAt}
+        publishedAt={contentPageInfoFromRoute?.contentPage?.publishedAt}
       />
       <LoadingErrorLoadedComponent
         loadingInfo={loadingInfo}

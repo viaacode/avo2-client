@@ -1,15 +1,13 @@
 import { type AdminConfig } from '@meemoo/admin-core-ui/admin';
 import { AdminConfigManager } from '@meemoo/admin-core-ui/client';
 import { noop } from 'es-toolkit';
-import { stringifyUrl } from 'query-string';
-import { LoaderFunctionArgs, type Location, redirect } from 'react-router';
+import { LoaderFunctionArgs } from 'react-router';
 import { ContentPageService } from './admin/content-page/services/content-page.service.ts';
 import { ItemsService } from './admin/items/items.service.ts';
 import { getAdminCoreConfig } from './admin/shared/helpers/get-admin-core-config.tsx';
 import { AssignmentService } from './assignment/assignment.service.ts';
 import { getLoginResponse } from './authentication/authentication.store.actions.tsx';
 import { loginAtom } from './authentication/authentication.store.ts';
-import { getLogoutAndRedirectToLoginUrl } from './authentication/helpers/redirects/redirects.ts';
 import { CollectionService } from './collection/collection.service.ts';
 import { CollectionOrBundle } from './collection/collection.types.ts';
 import { ROUTE_PARTS } from './shared/constants/routes.ts';
@@ -73,26 +71,19 @@ export async function fetchContentPageLoader(args: LoaderFunctionArgs<any>) {
     }
     if (statusCode === 401 || statusCode === 403) {
       // Don't log 403s as errors, as they can be expected for protected content pages when the user is not logged in or doesn't have access
-      const redirectUrl = stringifyUrl({
-        url: '/registreer-of-login',
-        query: {
-          returnToUrl: new URL(args.request.url).pathname || '/',
-        },
-      });
-      console.error(
-        'Content page not accessible for user (403) for url:',
+      // During SSR, cookies are on the proxy domain (different from client domain), so we can't authenticate
+      // Return null and let the client-side handle authentication after hydration
+      // This prevents logging out a user who just logged in
+      // cookies exist on proxy but are not sent to the client domain
+      console.info(
+        'Content page not accessible during SSR (401/403). Retry client-side after hydration',
         args.request.url,
-        ' => ',
-        redirectUrl,
       );
-      const parsedUrl = new URL(args.request.url);
-      throw redirect(
-        getLogoutAndRedirectToLoginUrl({
-          pathname: parsedUrl.pathname,
-          search: parsedUrl.search,
-          hash: '',
-        } as Location<any>),
-      );
+      return {
+        contentPage: null,
+        url: args.request.url,
+        requiresAuth: true, // Content page requires authentication
+      };
     }
     console.error(
       'Failed to load content page in react-router loader for route',
