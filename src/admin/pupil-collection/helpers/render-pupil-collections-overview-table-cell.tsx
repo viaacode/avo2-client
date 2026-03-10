@@ -23,7 +23,7 @@ export function renderPupilCollectionTableCellReact(
       return (
         <Link
           to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route, {
-            assignmentId: assignment_id,
+            id: assignment_id,
             responseId: id,
           })}
         >
@@ -76,7 +76,7 @@ export function renderPupilCollectionTableCellReact(
           to={buildLink(
             APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT.route,
             {
-              assignmentId: assignment?.id,
+              id: assignment?.id,
               responseId: id,
             },
             { tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION },

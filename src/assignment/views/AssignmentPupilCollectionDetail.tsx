@@ -35,8 +35,8 @@ import { toAssignmentResponsesOverview } from '../helpers/links';
 export const AssignmentPupilCollectionDetail: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);
 
-  const { assignmentId, responseId: assignmentResponseId } = useParams<{
-    assignmentId: string;
+  const { id: assignmentId, responseId: assignmentResponseId } = useParams<{
+    id: string;
     responseId: string;
   }>();
 

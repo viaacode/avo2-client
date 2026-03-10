@@ -37,8 +37,8 @@ import { getAssignmentErrorObj } from '../../assignment.helper.tsx';
 import { AssignmentRetrieveError } from '../../assignment.types.ts';
 
 export const AssignmentResponseAdminEdit: FC = () => {
-  const { assignmentId, responseId: assignmentResponseId } = useParams<{
-    assignmentId: string;
+  const { id: assignmentId, responseId: assignmentResponseId } = useParams<{
+    id: string;
     responseId: string;
   }>();
 

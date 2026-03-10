@@ -28,7 +28,7 @@ export function contributorsToString(
       if (!contributor.profile) {
         return null;
       }
-      const fullName = contributor.profile?.user?.full_name;
+      const fullName = contributor.profile?.full_name;
       const orgName = contributor.profile?.organisation?.name
         ? `(${contributor.profile?.organisation?.name})`
         : undefined;

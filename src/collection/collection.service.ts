@@ -1911,7 +1911,7 @@ export class CollectionService {
       );
     } catch (err) {
       throw new CustomError('Failed to accept to share collection', err, {
-        assignmentId: collectionId,
+        collectionId,
         inviteToken,
       });
     }
@@ -1933,7 +1933,7 @@ export class CollectionService {
       );
     } catch (err) {
       throw new CustomError('Failed to decline to share collection', err, {
-        assignmentId: collectionId,
+        collectionId,
         inviteToken,
       });
     }
@@ -2068,7 +2068,7 @@ export class CollectionService {
       );
     } catch (err) {
       throw new CustomError('Failed to release collection edit status', err, {
-        assignmentId: collectionId,
+        collectionId,
       });
     }
   }
@@ -2090,7 +2090,7 @@ export class CollectionService {
         'Failed to increment collection added to assignment count',
         err,
         {
-          assignmentId: collectionId,
+          collectionId,
         },
       );
     }

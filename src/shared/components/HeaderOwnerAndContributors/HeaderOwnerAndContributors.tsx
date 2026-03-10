@@ -60,7 +60,7 @@ export const HeaderOwnerAndContributors: FC<
         return (
           <span>
             {couplingWord}
-            {getFullName(nonPendingContributors[0].profile, false, false)}
+            {nonPendingContributors[0].profile?.full_name}
           </span>
         );
       }
@@ -83,7 +83,7 @@ export const HeaderOwnerAndContributors: FC<
             <p>
               {nonPendingContributors
                 .map((contributor) => {
-                  return getFullName(contributor.profile, false, false);
+                  return contributor.profile?.full_name;
                 })
                 .join(', ')}
             </p>

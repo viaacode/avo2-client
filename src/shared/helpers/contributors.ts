@@ -29,19 +29,14 @@ export const transformContributorsToSimpleContributors = (
   if (contributors) {
     const mappedContributors = contributors.map((contributor) => {
       return {
-        email:
-          contributor.profile?.user?.mail || contributor.profile?.user?.mail,
+        email: contributor.profile?.mail || contributor.invite_email,
         inviteEmail: contributor.invite_email,
         rights:
           ContributorInfoRight[
             contributor.rights as keyof typeof ContributorInfoRight
           ],
-        firstName:
-          contributor.profile?.user?.first_name ||
-          contributor.profile?.user?.first_name,
-        lastName:
-          contributor.profile?.user?.last_name ||
-          contributor.profile?.user?.last_name,
+        firstName: contributor.profile?.first_name,
+        lastName: contributor.profile?.last_name,
         profileImage:
           contributor?.profile?.organisation?.logo_url ||
           contributor.profile?.avatar,
@@ -67,7 +62,6 @@ export const getContributorType = (
   }
 
   return contributors.find(
-    (contributor) =>
-      (contributor.profile_id || contributor?.profile?.id) === userProfileId,
+    (contributor) => contributor.profile_id === userProfileId,
   )?.rights as ContributorInfoRight;
 };

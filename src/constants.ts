@@ -234,12 +234,12 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
     showForInteractiveTour: true,
   },
   ASSIGNMENT_PUPIL_COLLECTION_DETAIL: {
-    route: `/${ROUTE_PARTS.assignments}/:assignmentId/${ROUTE_PARTS.responses}/:responseId`,
+    route: `/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.responses}/:responseId`,
     showInContentPicker: false,
     showForInteractiveTour: false,
   },
   ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT: {
-    route: `/${ROUTE_PARTS.assignments}/:assignmentId/${ROUTE_PARTS.responses}/:responseId/${ROUTE_PARTS.edit}`,
+    route: `/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.responses}/:responseId/${ROUTE_PARTS.edit}`,
     showInContentPicker: false,
     showForInteractiveTour: false,
   },
