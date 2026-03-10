@@ -19,12 +19,12 @@ import { useLocation } from 'react-router-dom';
 import { ContentPageService } from '../../admin/content-page/services/content-page.service';
 import { ItemsService } from '../../admin/items/items.service';
 import { UrlRedirectsService } from '../../admin/url-redirects/url-redirects.service';
-import { logoutAndRedirectToLogin } from '../../authentication/helpers/redirects/redirects';
 import { loginAtom } from '../../authentication/authentication.store';
 import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page';
+import { logoutAndRedirectToLogin } from '../../authentication/helpers/redirects/redirects.ts';
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
@@ -74,9 +74,6 @@ export const DynamicRouteResolver: FC = () => {
     url: string;
     requiresAuth?: boolean;
   }>();
-  const [clientFetchedContentPage, setClientFetchedContentPage] =
-    useState<ContentPageInfo | null>(null);
-  const [isClientFetching, setIsClientFetching] = useState(false);
 
   const analyseRoute = useCallback(async () => {
     try {
@@ -175,13 +172,13 @@ export const DynamicRouteResolver: FC = () => {
       // Check if path points to a content page
       try {
         // Use client-fetched content page if available (for pages that required auth during SSR)
-        const contentPage: ContentPageInfo | null =
-          clientFetchedContentPage || contentPageInfoFromRoute.contentPage;
-        if (contentPage) {
+        const contentPageTemp: ContentPageInfo | null =
+          await ContentPageService.getContentPageByLanguageAndPath(pathname);
+        if (contentPageTemp) {
           // Path is indeed a content page url
           setRouteInfo({
             type: DynamicRouteType.CONTENT_PAGE,
-            data: contentPage,
+            data: contentPageTemp,
           });
           return;
         }
@@ -198,6 +195,7 @@ export const DynamicRouteResolver: FC = () => {
             type: DynamicRouteType.DEPUBLISHED_CONTENT_PAGE,
             data: { type },
           });
+          return;
         } else if (
           commonUserInfo &&
           JSON.stringify(err).includes('CONTENT_PAGE_WRONG_USER_GROUP')
@@ -222,23 +220,44 @@ export const DynamicRouteResolver: FC = () => {
               type: DynamicRouteType.PUPIL_ONLY_PAGE,
               data: null,
             });
+            return;
           } else if (
             contentPageUserGroups.every((userGroup) => !isPupil(userGroup)) &&
             isPupil(commonUserInfo.userGroup?.id)
           ) {
-            // THe page was not for pupils and the current user is a pupil
+            // The page was not for pupils and the current user is a pupil
             setRouteInfo({
               type: DynamicRouteType.NOT_FOR_PUPIL_PAGE,
               data: null,
             });
+            return;
           } else {
+            // Some other mismatch between the content-page required user groups and the current user's user group
             setRouteInfo({
               type: DynamicRouteType.WRONG_USER_GROUP_PAGE,
               data: null,
             });
+            return;
+          }
+        } else if (
+          (err as any)?.innerException?.additionalInfo?.statusCode === 403
+        ) {
+          // User doesn't have access to this page
+          if (loginState.message === 'LOGGED_OUT') {
+            // Ask user to login
+            logoutAndRedirectToLogin(location);
+            return;
+          } else {
+            // User already logged in => user doesn't have access
+            setRouteInfo({
+              type: DynamicRouteType.WRONG_USER_GROUP_PAGE,
+              data: null,
+            });
+            return;
           }
         } else {
           setRouteInfo({ type: DynamicRouteType.NOT_FOUND, data: null });
+          return;
         }
       }
 
@@ -256,7 +275,7 @@ export const DynamicRouteResolver: FC = () => {
         icon: IconName.search,
       });
     }
-  }, [loginState, location.pathname, location.hash, navigateFunc, clientFetchedContentPage, contentPageInfoFromRoute.contentPage]);
+  }, [loginState, location.pathname, location.hash, navigateFunc]);
 
   // Check if current user is logged in
   useEffect(() => {
@@ -287,53 +306,6 @@ export const DynamicRouteResolver: FC = () => {
       analyseRoute();
     }
   }, [loginState, location.pathname, analyseRoute]);
-
-  // Handle client-side re-fetch for pages that required auth during SSR
-  // During SSR, cookies are on the proxy domain and not sent to the client domain
-  // After hydration, the browser has the cookies and can authenticate properly
-  useEffect(() => {
-    if (
-      contentPageInfoFromRoute?.requiresAuth &&
-      !clientFetchedContentPage &&
-      !isClientFetching &&
-      loginState
-    ) {
-      const fetchContentPageOnClient = async () => {
-        setIsClientFetching(true);
-        try {
-          const pathname = location.pathname;
-          const contentPage =
-            await ContentPageService.getContentPageByLanguageAndPath(pathname);
-          if (contentPage) {
-            setClientFetchedContentPage(contentPage);
-          } else if (loginState.message !== 'LOGGED_IN') {
-            // Content page not found and user is not logged in
-            // Redirect to login
-            logoutAndRedirectToLogin(location);
-          }
-        } catch (err: any) {
-          console.error('Failed to fetch content page on client side', err);
-          const statusCode = err?.innerException?.additionalInfo?.statusCode;
-          if (
-            (statusCode === 401 || statusCode === 403) &&
-            loginState.message !== 'LOGGED_IN'
-          ) {
-            // User is not logged in, redirect to login
-            logoutAndRedirectToLogin(location);
-          }
-        } finally {
-          setIsClientFetching(false);
-        }
-      };
-      fetchContentPageOnClient();
-    }
-  }, [
-    contentPageInfoFromRoute?.requiresAuth,
-    clientFetchedContentPage,
-    isClientFetching,
-    loginState,
-    location,
-  ]);
 
   useEffect(() => {
     if (routeInfo) {
