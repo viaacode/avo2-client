@@ -564,9 +564,6 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
 
   const saveAssignment = async () => {
     try {
-      if (!assignmentId) {
-        return;
-      }
       setIsSaving(true);
       if (isCreatingAssignment) {
         // Create assignment
@@ -579,10 +576,6 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           setIsSaving(false);
           return;
         }
-
-        const marcomNote = ((assignment as any).marcom_note || '') as string;
-        delete (assignment as any).marcom_note;
-        AssignmentService.insertOrUpdateMarcomNote(assignmentId, marcomNote); // Do not wait for note to be updated
 
         const created = await AssignmentService.insertAssignment(
           {
@@ -629,7 +622,12 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         }
       } else {
         // Update assignment
-        if (!commonUser?.profileId || !originalAssignment || !assignment) {
+        if (
+          !commonUser?.profileId ||
+          !assignmentId ||
+          !originalAssignment ||
+          !assignment
+        ) {
           setIsSaving(false);
           return;
         }
@@ -643,6 +641,10 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
             return;
           }
         }
+
+        const marcomNote = ((assignment as any).marcom_note || '') as string;
+        delete (assignment as any).marcom_note;
+        AssignmentService.insertOrUpdateMarcomNote(assignmentId, marcomNote); // Do not wait for note to be updated
 
         // Deal with the owner changing
         if (
