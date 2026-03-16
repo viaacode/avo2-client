@@ -40,4 +40,10 @@
 		max-width: 19rem;
 		width: max-content;
 	}
+
+	.c-table {
+		td:last-child {
+			white-space: nowrap
+		}
+	}
 }
