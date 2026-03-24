@@ -338,7 +338,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
   const triggerEvents = useCallback(async () => {
     // Do not trigger events when a search engine loads this page
-    if (collectionId && commonUser && !showLoginPopup) {
+    if (collectionId && isUuid(collectionId) && commonUser && !showLoginPopup) {
       BookmarksViewsPlaysService.action(
         'view',
         'collection',
