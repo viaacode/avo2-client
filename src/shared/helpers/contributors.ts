@@ -29,7 +29,13 @@ export const transformContributorsToSimpleContributors = (
   if (contributors) {
     const mappedContributors = contributors.map((contributor) => {
       return {
-        email: contributor.profile?.mail || contributor.invite_email,
+        email:
+          // Legacy for queries that happen on the client
+          contributor.profile?.user?.mail ||
+          // More standard way for contributors that have already accepted and assignments that are loaded through the proxy
+          contributor.profile?.mail ||
+          // For contributors that have not yet accepted the invite
+          contributor.invite_email,
         inviteEmail: contributor.invite_email,
         rights:
           ContributorInfoRight[

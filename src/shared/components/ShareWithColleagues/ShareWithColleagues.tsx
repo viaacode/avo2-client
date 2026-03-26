@@ -21,7 +21,7 @@ import {
 import { AvoAssignmentAssignment, type PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
 import { isNil } from 'es-toolkit';
-import { isEmpty } from 'es-toolkit/compat';
+import { isEmpty, truncate } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
 import { type FC, useMemo, useState } from 'react';
 
@@ -248,6 +248,19 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
               // The current user is an admin and this contributor is not the owner
               (isAdmin && !contributorIsOwner);
 
+            const inviteEmailTruncated = truncate(contributor.inviteEmail, {
+              length: 32,
+              omission: '...',
+            });
+            const contributorEmailTruncated = truncate(contributor.email, {
+              length: 32,
+              omission: '...',
+            });
+            const contributorWithPendingState = contributorIsPending
+              ? `${inviteEmailTruncated} (${tText(
+                  'shared/components/share-with-colleagues/share-with-colleagues___pending',
+                )})`
+              : contributorEmailTruncated;
             return (
               <li key={index} className="c-colleague-info-row">
                 <div className="c-colleague-info-row__avatar">
@@ -272,12 +285,11 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
                     <p>{`${contributor.firstName} ${contributor.lastName}`}</p>
                   )}
 
-                  <p className="c-colleague-info-row__info__email">
-                    {!contributorIsPending
-                      ? contributor.email?.slice(0, 32)
-                      : `${contributor.inviteEmail} (${tText(
-                          'shared/components/share-with-colleagues/share-with-colleagues___pending',
-                        )})`}
+                  <p
+                    className="c-colleague-info-row__info__email"
+                    title={contributor.inviteEmail || contributor.email}
+                  >
+                    {contributorWithPendingState}
                   </p>
                 </div>
 
