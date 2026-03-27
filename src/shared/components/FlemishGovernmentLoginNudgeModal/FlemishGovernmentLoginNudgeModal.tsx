@@ -25,13 +25,13 @@ import { ProfilePreferencesService } from '../../services/profile-preferences.se
 import { ProfilePreferenceKey } from '../../services/profile-preferences.types';
 import { showNudgingModalAtom } from '../../store/ui.store';
 
-import './ACMIDMNudgeModal.scss';
+import './FlemishGovernmentLoginNudgeModal.scss';
 import { AvoAuthIdpType } from '@viaa/avo2-types';
 import { ROUTE_PARTS } from '../../constants/routes.ts';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 
-export const ACMIDMNudgeModal: FC = () => {
+export const FlemishGovernmentLoginNudgeModal: FC = () => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 

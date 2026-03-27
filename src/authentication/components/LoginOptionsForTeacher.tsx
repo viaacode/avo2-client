@@ -12,7 +12,7 @@ import { type FC } from 'react';
 
 import { tHtml } from '../../shared/helpers/translate-html';
 import {
-  redirectToServerACMIDMLogin,
+  redirectToServerFlemishGovernmentLogin,
   redirectToServerKlascementLogin,
   redirectToServerLoginPage,
   redirectToServerSmartschoolLogin,
@@ -90,7 +90,7 @@ export const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
         )}
         onClick={() => {
           onOptionClicked();
-          redirectToServerACMIDMLogin(location, openInNewTab);
+          redirectToServerFlemishGovernmentLogin(location, openInNewTab);
         }}
       />,
 

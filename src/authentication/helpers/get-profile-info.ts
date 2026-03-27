@@ -66,7 +66,10 @@ export function isProfileComplete(
   // Only teachers have to fill in their profile for now
   const userGroupId = commonUser.userGroup?.id;
 
-  if (userGroupId === SpecialUserGroupId.TeacherSecondary) {
+  if (
+    userGroupId === SpecialUserGroupId.TeacherSecondary ||
+    userGroupId === SpecialUserGroupId.TeacherElementary
+  ) {
     return (
       !!commonUser &&
       !!commonUser.educationalOrganisations?.length &&

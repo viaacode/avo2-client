@@ -20,7 +20,7 @@ import pkg from '../package.json' with { type: 'json' };
 import { getAdminCoreConfig } from './admin/shared/helpers/get-admin-core-config.tsx';
 import { SpecialUserGroupId } from './admin/user-groups/user-group.const';
 import { commonUserAtom } from './authentication/authentication.store';
-import { getLoginStateAtom } from './authentication/authentication.store.actions';
+import { fetchLoginStateAtom } from './authentication/authentication.store.actions';
 import { PermissionService } from './authentication/helpers/permission-service';
 import { ConfirmModal } from './shared/components/ConfirmModal/ConfirmModal';
 import { ROUTE_PARTS } from './shared/constants/routes';
@@ -49,7 +49,7 @@ const queryClient = new QueryClient({
 export const App: FC = () => {
   const location = useLocation();
   const navigateFunc = useNavigate();
-  const getLoginState = useSetAtom(getLoginStateAtom);
+  const getLoginState = useSetAtom(fetchLoginStateAtom);
 
   const commonUser = useAtomValue(commonUserAtom);
   const [historyLocations, setHistoryLocations] = useAtom(historyLocationsAtom);

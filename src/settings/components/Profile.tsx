@@ -32,7 +32,7 @@ import { type FC, type ReactNode, useEffect, useState } from 'react';
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { SERVER_LOGOUT_PAGE } from '../../authentication/authentication.const';
 import { commonUserAtom } from '../../authentication/authentication.store';
-import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
+import { fetchLoginStateAtom } from '../../authentication/authentication.store.actions';
 import { SearchFilter } from '../../search/search.const';
 import { CommonMetadata } from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
@@ -77,7 +77,7 @@ interface FieldPermissions {
 
 export const Profile: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);
-  const getLoginState = useSetAtom(getLoginStateAtom);
+  const getLoginState = useSetAtom(fetchLoginStateAtom);
   const [selectedOrganisations, setSelectedOrganisations] = useState<
     AvoEducationOrganizationOrganization[]
   >(commonUser?.educationalOrganisations || []);

@@ -53,7 +53,7 @@ import { AssignmentDetailSwitcher } from './assignment/views/AssignmentDetailSwi
 import { AssignmentEdit } from './assignment/views/AssignmentEdit.tsx';
 import { AssignmentPupilCollectionDetail } from './assignment/views/AssignmentPupilCollectionDetail.tsx';
 import { AssignmentResponseAdminEdit } from './assignment/views/AssignmentResponseEdit/AssignmentResponseAdminEdit.tsx';
-import EnsureUserLoggedIn from './authentication/components/EnsureUserLoggedIn.tsx';
+import EnsureUserLoggedInAndProfileComplete from './authentication/components/EnsureUserLoggedInAndProfileComplete.tsx';
 import { LinkYourAccount } from './authentication/views/LinkYourAccount.tsx';
 import { Login } from './authentication/views/Login.tsx';
 import { Logout } from './authentication/views/Logout.tsx';
@@ -160,7 +160,7 @@ const APP_ROUTES: RouteObject[] = [
           ////////////////////////////////////////////////////////////////////////////////////////
           {
             id: 'authenticated-client-routes',
-            Component: EnsureUserLoggedIn,
+            Component: EnsureUserLoggedInAndProfileComplete,
             children: getAuthenticatedClientRoutes(),
           },
           ////////////////////////////////////////////////////////////////////////////////////////

@@ -15,7 +15,7 @@ import { type FC, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
-import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
+import { fetchLoginStateAtom } from '../../authentication/authentication.store.actions';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
 import { APP_PATH } from '../../constants';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
@@ -48,7 +48,7 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
   const navigateFunc = useNavigate();
 
   const commonUser = useAtomValue(commonUserAtom);
-  const getLoginState = useSetAtom(getLoginStateAtom);
+  const refetchLoginState = useSetAtom(fetchLoginStateAtom);
 
   const [selectedOrganisations, setSelectedOrganisations] = useState<
     AvoEducationOrganizationOrganization[]
@@ -204,7 +204,7 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
 
       // Refetch user permissions since education level can change user group
       // Refresh the login state, so the profile info will be up-to-date
-      getLoginState(false);
+      refetchLoginState(true);
       saveNewsletterPreferences();
 
       // Wait for login response to be set into the store before redirecting

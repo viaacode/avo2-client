@@ -10,7 +10,7 @@ import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPag
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { tText } from '../../shared/helpers/translate-text';
 import { loginAtom } from '../authentication.store';
-import { getLoginStateAtom } from '../authentication.store.actions';
+import { fetchLoginStateAtom } from '../authentication.store.actions';
 import { LoginMessage } from '../authentication.types';
 import { redirectToServerLoginPage } from '../helpers/redirects/redirects';
 
@@ -24,7 +24,7 @@ export const Login: FC = () => {
   const loginState = loginAtomValue.data;
   const loginStateLoading = loginAtomValue.loading;
   const loginStateError = loginAtomValue.error;
-  const getLoginState = useSetAtom(getLoginStateAtom);
+  const getLoginState = useSetAtom(fetchLoginStateAtom);
 
   useEffect(() => {
     if (!loginState && !loginStateLoading && !loginStateError) {

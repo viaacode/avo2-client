@@ -102,7 +102,7 @@ export function redirectToServerLeerIDLogin(
   }
 }
 
-export function redirectToServerACMIDMLogin(
+export function redirectToServerFlemishGovernmentLogin(
   location: Location,
   openInNewTab = false,
 ): void {

@@ -60,7 +60,7 @@ function checkIfSessionExpires(expiresAt: string) {
   }
 }
 
-export const getLoginStateAtom = atom<LoginState | null, [boolean], void>(
+export const fetchLoginStateAtom = atom<LoginState | null, [boolean], void>(
   null,
   async (get, set, forceRefetch) => {
     const loginState: LoginState = get(loginAtom);

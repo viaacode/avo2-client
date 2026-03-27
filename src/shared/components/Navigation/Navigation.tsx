@@ -19,7 +19,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import AvoLogoSrc from '../../../assets/images/avo-logo-i.svg';
 
 import { loginAtom } from '../../../authentication/authentication.store';
-import { getLoginStateAtom } from '../../../authentication/authentication.store.actions';
+import { fetchLoginStateAtom } from '../../../authentication/authentication.store.actions';
 import {
   getProfileAvatar,
   getProfileInitials,
@@ -59,7 +59,7 @@ export const Navigation: FC<NavigationParams> = ({ isPreviewRoute, url }) => {
   const loginState = loginAtomValue.data;
   const loginStateLoading = loginAtomValue.loading;
   const loginStateError = loginAtomValue.error;
-  const getLoginState = useSetAtom(getLoginStateAtom);
+  const getLoginState = useSetAtom(fetchLoginStateAtom);
 
   const [areDropdownsOpen, setDropdownsOpen] = useState<{
     [key: string]: boolean;

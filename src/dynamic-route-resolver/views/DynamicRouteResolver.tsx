@@ -20,7 +20,7 @@ import { ContentPageService } from '../../admin/content-page/services/content-pa
 import { ItemsService } from '../../admin/items/items.service';
 import { UrlRedirectsService } from '../../admin/url-redirects/url-redirects.service';
 import { loginAtom } from '../../authentication/authentication.store';
-import { getLoginStateAtom } from '../../authentication/authentication.store.actions';
+import { fetchLoginStateAtom } from '../../authentication/authentication.store.actions';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToErrorPage } from '../../authentication/helpers/redirects/redirect-to-error-page';
@@ -64,7 +64,7 @@ export const DynamicRouteResolver: FC = () => {
   const loginState = loginAtomValue.data;
   const loginStateLoading = loginAtomValue.loading;
   const loginStateError = loginAtomValue.error;
-  const getLoginState = useSetAtom(getLoginStateAtom);
+  const getLoginState = useSetAtom(fetchLoginStateAtom);
   const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
