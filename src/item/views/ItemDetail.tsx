@@ -183,7 +183,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   const [cuePoint] = useQueryParam('t', StringParam);
   const [cutButton, cutModal] = useCutModal();
 
-  const [item, setItem] = useState<AvoItemItem | null>(loaderData.item);
+  const [item, setItem] = useState<AvoItemItem | null>(loaderData?.item);
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
   });
