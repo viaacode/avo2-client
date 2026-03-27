@@ -105,14 +105,7 @@ export const Search: FC = () => {
     id: string,
     type: AvoCoreContentType,
   ) => {
-    return (
-      <Link
-        to={generateContentLinkString(type, id)}
-        onClick={() => scrollTo({ top: 0 })}
-      >
-        {linkText}
-      </Link>
-    );
+    return <Link to={generateContentLinkString(type, id)}>{linkText}</Link>;
   };
 
   const renderSearchLink = (

@@ -114,8 +114,6 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
     } else {
       navigate(navigateFunc, APP_PATH.USER_ITEM_REQUEST_FORM.route);
     }
-
-    window.scrollTo(0, 0);
   };
 
   const defaultOrder = `${filterState.orderProperty || 'relevance'}_${

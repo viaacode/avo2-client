@@ -4,6 +4,7 @@ import { type FC } from 'react';
 import { generateQuickLaneHref } from '../../helpers/generate-quick-lane-href';
 
 import './QuickLaneLink.scss';
+import { Link } from 'react-router-dom';
 import { getEnv } from '../../helpers/env.ts';
 
 interface QuickLaneLinkProps {
@@ -25,14 +26,14 @@ export const QuickLaneLink: FC<QuickLaneLinkProps> = ({ id, label, short }) => {
   const href = generateQuickLaneHref(id);
 
   return (
-    <a
+    <Link
       className={className}
-      href={href}
+      to={href}
       rel="noopener noreferrer"
       target="_blank"
       title={id}
     >
       {label ? label : defaultLabel(id)}
-    </a>
+    </Link>
   );
 };

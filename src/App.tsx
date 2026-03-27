@@ -23,6 +23,7 @@ import { commonUserAtom } from './authentication/authentication.store';
 import { fetchLoginStateAtom } from './authentication/authentication.store.actions';
 import { PermissionService } from './authentication/helpers/permission-service';
 import { ConfirmModal } from './shared/components/ConfirmModal/ConfirmModal';
+import { ScrollToTopOnPathChange } from './shared/components/ScrollToTopOnPathChange/ScrollToTopOnPathChange.tsx';
 import { ROUTE_PARTS } from './shared/constants/routes';
 import { getEnv } from './shared/helpers/env';
 import { isServerSideRendering } from './shared/helpers/routing/is-server-side-rendering.ts';
@@ -230,6 +231,7 @@ export const App: FC = () => {
           pauseOnFocusLoss={true}
           pauseOnHover={true}
         />
+        <ScrollToTopOnPathChange />
         <Outlet />
         {mounted && (
           <ConfirmModal
