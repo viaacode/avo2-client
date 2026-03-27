@@ -1,0 +1,54 @@
+@use "sass:math";
+@use "../../../styles/settings/variables" as variables;
+@use "../../../styles/settings/colors" as colors;
+
+
+.c-content-page-preview-user-role-selector {
+	.content-page-usergroup-selector {
+		margin-top: 0.6rem;
+
+		.c-button {
+			min-width: 35rem;
+
+			.c-button__content {
+				justify-content: left;
+			}
+		}
+	}
+
+	.c-dropdown.c-menu-content {
+		border-radius: 4px !important;
+
+		.c-radio-group {
+			.c-radio {
+				padding: 0;
+
+				label {
+					display: block;
+					padding: 1rem 1.5rem;
+					cursor: pointer;
+
+					&:hover {
+						background-color: colors.$color-light-blue;
+					}
+
+					input:before {
+						top: 3px;
+						left: 2px;
+						width: 10px;
+						height: 9px;
+					}
+				}
+			}
+		}
+	}
+}
+
+.c-content-page-edit__copy-page-button {
+	margin-left: math.div(variables.$g-spacer-unit, 2);
+	margin-top: 0.6rem;
+
+	&.c-button--small.c-button--icon {
+		padding: 0.7rem 0.8rem;
+	}
+}
