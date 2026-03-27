@@ -1,7 +1,7 @@
 @use "../../../styles/settings/colors" as colors;
 @use "../../../styles/settings/variables" as variables;
 
-.c-education-levels-tag {
+.c-tag.c-education-levels-tag {
 	border-width: 2px;
 	width: 10em;
 	display: inline-flex;
