@@ -39,7 +39,7 @@ import {
   useState,
 } from 'react';
 import { useLoaderData, useNavigate, useParams } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { AssignmentService } from '../../assignment/assignment.service';
 import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
@@ -176,6 +176,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 }) => {
   const [mounted, setMounted] = useState(false);
   const navigateFunc = useNavigate();
+  const location = useLocation();
   const loaderData = useLoaderData<{
     collection: AvoCollectionCollection;
     url: string;
@@ -188,6 +189,9 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   const commonUser = useAtomValue(commonUserAtom);
   // State
   const [collectionId, setCollectionId] = useState(id || collectionIdFromUrl);
+  const [triggeredForUrl, setTriggeredForUrl] = useState<
+    Record<string, boolean>
+  >({});
 
   const [collectionInfo, setCollectionInfo] = useState<CollectionInfo>({
     collection: collectionFromLoader || null,
@@ -612,9 +616,25 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   useEffect(() => {
     if (collectionInfo?.collection && !showLoginPopup) {
       getRelatedCollections();
+    }
+  }, [getRelatedCollections]);
+
+  /**
+   * Trigger view event one time
+   */
+  useEffect(() => {
+    if (
+      collectionInfo?.collection &&
+      !showLoginPopup &&
+      !triggeredForUrl[location.pathname]
+    ) {
+      setTriggeredForUrl({
+        ...triggeredForUrl,
+        [location.pathname]: true,
+      });
       triggerEvents();
     }
-  }, [collectionInfo, getRelatedCollections]);
+  }, [collectionInfo, location.pathname, triggeredForUrl, setTriggeredForUrl]);
 
   useEffect(() => {
     if (!isEmpty(permissions) && collection && !isNil(showLoginPopup)) {
