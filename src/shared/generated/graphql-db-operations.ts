@@ -261,14 +261,6 @@ export type DeleteCollectionFragmentByIdMutationVariables = Exact<{
 
 export type DeleteCollectionFragmentByIdMutation = { __typename?: 'mutation_root', delete_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number } | null };
 
-export type DeleteCollectionLabelsMutationVariables = Exact<{
-  labels: Array<Scalars['String']> | Scalars['String'];
-  collectionId: Scalars['uuid'];
-}>;
-
-
-export type DeleteCollectionLabelsMutation = { __typename?: 'mutation_root', delete_app_collection_labels?: { __typename?: 'app_collection_labels_mutation_response', affected_rows: number } | null };
-
 export type DeleteCollectionLomLinksMutationVariables = Exact<{
   collectionId: Scalars['uuid'];
 }>;
@@ -419,13 +411,6 @@ export type InsertCollectionFragmentsMutationVariables = Exact<{
 
 
 export type InsertCollectionFragmentsMutation = { __typename?: 'mutation_root', insert_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_collection_fragments', id: number }> } | null };
-
-export type InsertCollectionLabelsMutationVariables = Exact<{
-  objects: Array<App_Collection_Labels_Insert_Input> | App_Collection_Labels_Insert_Input;
-}>;
-
-
-export type InsertCollectionLabelsMutation = { __typename?: 'mutation_root', insert_app_collection_labels?: { __typename?: 'app_collection_labels_mutation_response', affected_rows: number } | null };
 
 export type InsertCollectionLomLinksMutationVariables = Exact<{
   lomObjects: Array<App_Collections_Lom_Links_Insert_Input> | App_Collections_Lom_Links_Insert_Input;

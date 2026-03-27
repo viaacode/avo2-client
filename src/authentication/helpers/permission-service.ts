@@ -28,7 +28,7 @@ export class PermissionService {
   }
 
   public static hasAtLeastOnePerm(
-    commonUser: AvoUserCommonUser | undefined,
+    commonUser: AvoUserCommonUser | undefined | null,
     permNames: PermissionName[],
   ): boolean {
     return permNames.some((permName) =>

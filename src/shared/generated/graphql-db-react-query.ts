@@ -768,24 +768,6 @@ export const useDeleteCollectionFragmentByIdMutation = <
       (variables?: DeleteCollectionFragmentByIdMutationVariables) => fetchData<DeleteCollectionFragmentByIdMutation, DeleteCollectionFragmentByIdMutationVariables>(DeleteCollectionFragmentByIdDocument, variables)(),
       options
     );
-export const DeleteCollectionLabelsDocument = `
-    mutation deleteCollectionLabels($labels: [String!]!, $collectionId: uuid!) {
-  delete_app_collection_labels(
-    where: {label: {_in: $labels}, collection_uuid: {_eq: $collectionId}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteCollectionLabelsMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteCollectionLabelsMutation, TError, DeleteCollectionLabelsMutationVariables, TContext>) =>
-    useMutation<DeleteCollectionLabelsMutation, TError, DeleteCollectionLabelsMutationVariables, TContext>(
-      ['deleteCollectionLabels'],
-      (variables?: DeleteCollectionLabelsMutationVariables) => fetchData<DeleteCollectionLabelsMutation, DeleteCollectionLabelsMutationVariables>(DeleteCollectionLabelsDocument, variables)(),
-      options
-    );
 export const DeleteCollectionLomLinksDocument = `
     mutation deleteCollectionLomLinks($collectionId: uuid!) {
   delete_app_collections_lom_links(where: {collection_id: {_eq: $collectionId}}) {
@@ -1442,22 +1424,6 @@ export const useInsertCollectionFragmentsMutation = <
     useMutation<InsertCollectionFragmentsMutation, TError, InsertCollectionFragmentsMutationVariables, TContext>(
       ['insertCollectionFragments'],
       (variables?: InsertCollectionFragmentsMutationVariables) => fetchData<InsertCollectionFragmentsMutation, InsertCollectionFragmentsMutationVariables>(InsertCollectionFragmentsDocument, variables)(),
-      options
-    );
-export const InsertCollectionLabelsDocument = `
-    mutation insertCollectionLabels($objects: [app_collection_labels_insert_input!]!) {
-  insert_app_collection_labels(objects: $objects) {
-    affected_rows
-  }
-}
-    `;
-export const useInsertCollectionLabelsMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<InsertCollectionLabelsMutation, TError, InsertCollectionLabelsMutationVariables, TContext>) =>
-    useMutation<InsertCollectionLabelsMutation, TError, InsertCollectionLabelsMutationVariables, TContext>(
-      ['insertCollectionLabels'],
-      (variables?: InsertCollectionLabelsMutationVariables) => fetchData<InsertCollectionLabelsMutation, InsertCollectionLabelsMutationVariables>(InsertCollectionLabelsDocument, variables)(),
       options
     );
 export const InsertCollectionLomLinksDocument = `

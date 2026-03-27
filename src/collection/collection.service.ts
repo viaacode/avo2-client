@@ -23,8 +23,6 @@ import {
 import {
   type DeleteCollectionFragmentByIdMutation,
   type DeleteCollectionFragmentByIdMutationVariables,
-  type DeleteCollectionLabelsMutation,
-  type DeleteCollectionLabelsMutationVariables,
   type DeleteCollectionLomLinksMutation,
   type DeleteCollectionLomLinksMutationVariables,
   type DeleteCollectionOrBundleByUuidMutation,
@@ -61,8 +59,6 @@ import {
   type GetPublicCollectionsQueryVariables,
   type InsertCollectionFragmentsMutation,
   type InsertCollectionFragmentsMutationVariables,
-  type InsertCollectionLabelsMutation,
-  type InsertCollectionLabelsMutationVariables,
   type InsertCollectionLomLinksMutation,
   type InsertCollectionLomLinksMutationVariables,
   type InsertCollectionManagementEntryMutation,
@@ -86,7 +82,6 @@ import {
 } from '../shared/generated/graphql-db-operations';
 import {
   DeleteCollectionFragmentByIdDocument,
-  DeleteCollectionLabelsDocument,
   DeleteCollectionLomLinksDocument,
   DeleteCollectionOrBundleByUuidDocument,
   DeleteManagementEntryByCollectionIdDocument,
@@ -106,7 +101,6 @@ import {
   GetPublicCollectionsDocument,
   InsertCollectionDocument,
   InsertCollectionFragmentsDocument,
-  InsertCollectionLabelsDocument,
   InsertCollectionLomLinksDocument,
   InsertCollectionManagementEntryDocument,
   InsertCollectionManagementQualityCheckEntryDocument,
@@ -419,46 +413,28 @@ export class CollectionService {
         cleanedCollection.loms = [];
       }
 
-      const savedCollection = await this.updateCollectionProperties(
+      await this.updateCollectionProperties(
         newCollection.id as string,
         cleanedCollection,
       );
 
       // Update collection labels
       if (
-        PermissionService.hasPerm(
-          commonUser,
+        PermissionService.hasAtLeastOnePerm(commonUser, [
           PermissionName.EDIT_COLLECTION_QUALITY_LABELS,
-        ) ||
-        PermissionService.hasPerm(
-          commonUser,
           PermissionName.EDIT_BUNDLE_QUALITY_LABELS,
-        )
+        ])
       ) {
         // Update collection labels, use the labels of the updated collection when we have them
         // https://meemoo.atlassian.net/browse/AVO-3823
-        const initialLabels: string[] = this.getLabels(
-          savedCollection || initialCollection,
-        ).map((labelObj: any) => labelObj.label);
         const updatedLabels: string[] = this.getLabels(newCollection).map(
           (labelObj: any) => labelObj.label,
         );
 
-        const addedLabels: string[] = without(updatedLabels, ...initialLabels);
-        const deletedLabels: string[] = without(
-          initialLabels,
-          ...updatedLabels,
+        await CollectionService.replaceQualityLabelsInCollection(
+          newCollection.id as string,
+          updatedLabels,
         );
-        await Promise.all([
-          CollectionService.addLabelsToCollection(
-            newCollection.id as string,
-            addedLabels,
-          ),
-          CollectionService.deleteLabelsFromCollection(
-            newCollection.id as string,
-            deletedLabels,
-          ),
-        ]);
       }
 
       // Update collection management
@@ -1303,63 +1279,28 @@ export class CollectionService {
     return candidateTitle;
   };
 
-  static async addLabelsToCollection(
+  static async replaceQualityLabelsInCollection(
     collectionId: string,
     labels: string[],
   ): Promise<void> {
-    let variables: InsertCollectionLabelsMutationVariables | undefined =
-      undefined;
+    let url: string | null = null;
     try {
-      variables = {
-        objects: labels.map((label) => ({
-          label,
-          collection_uuid: collectionId,
-        })),
-      };
-      await dataService.query<
-        InsertCollectionLabelsMutation,
-        InsertCollectionLabelsMutationVariables
-      >({
-        query: InsertCollectionLabelsDocument,
-        variables,
-      });
-    } catch (err) {
-      throw new CustomError(
-        'Failed to insert collection labels in the database',
-        err,
-        {
-          variables,
-          query: 'INSERT_COLLECTION_LABELS',
-        },
+      url = `${getEnv('PROXY_URL')}/collections/${collectionId}/labels`;
+      await fetchWithLogoutJson(
+        stringifyUrl({
+          url,
+          query: { labels },
+        }),
+        { method: 'PATCH' },
       );
-    }
-  }
-
-  static async deleteLabelsFromCollection(
-    collectionId: string,
-    labels: string[],
-  ): Promise<void> {
-    let variables: DeleteCollectionLabelsMutationVariables | undefined =
-      undefined;
-    try {
-      variables = {
-        collectionId,
-        labels,
-      };
-      await dataService.query<
-        DeleteCollectionLabelsMutation,
-        DeleteCollectionLabelsMutationVariables
-      >({
-        query: DeleteCollectionLabelsDocument,
-        variables,
-      });
     } catch (err) {
       throw new CustomError(
-        'Failed to delete collection labels from the database',
+        'Failed to replace collection labels in the database',
         err,
         {
-          variables,
-          query: 'DELETE_COLLECTION_LABELS',
+          collectionId,
+          labels,
+          endpoint: `${getEnv('PROXY_URL')}/collections/${collectionId}/labels`,
         },
       );
     }
