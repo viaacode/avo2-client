@@ -11,5 +11,6 @@ export function insertMultipleAtPosition(
 
   sortedList.splice(items[0].position, 0, ...items);
 
-  return setBlockPositionToIndex(sortedList);
+  const newBlocks = setBlockPositionToIndex(sortedList);
+  return newBlocks;
 }

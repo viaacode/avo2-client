@@ -1,6 +1,7 @@
 import { AvoCoreBlockItemBase } from '@viaa/avo2-types';
 import { cloneDeep } from 'es-toolkit';
 import { useCallback } from 'react';
+import { setBlockPositionToIndex } from '../assignment.helper.tsx';
 
 export function useAssignmentBlockChangeHandler(
   blocks: AvoCoreBlockItemBase[],
@@ -16,7 +17,9 @@ export function useAssignmentBlockChangeHandler(
 
       updatedBlocks[existingBlockIndex] = block;
 
-      setBlocks(updatedBlocks);
+      setBlocks(
+        setBlockPositionToIndex(updatedBlocks) as AvoCoreBlockItemBase[],
+      );
     },
     [blocks, setBlocks],
   );

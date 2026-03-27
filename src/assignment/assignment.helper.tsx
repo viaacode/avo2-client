@@ -54,7 +54,7 @@ export class AssignmentHelper {
 // Zoek & bouw
 
 /**
- * Reset positions so blocks that were added with the same position, now correctly get their position set based on their position and created_at order and no duplicate positions exist
+ * Reset positions so blocks that were added with the same position, now correctly get their position set based on their position and created_at order and no duplicate positions remain
  * @param items items to reset positions for
  */
 export function reorderBlockPositions(items: Positioned[]): Positioned[] {
