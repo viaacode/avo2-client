@@ -360,7 +360,7 @@ export const ManualRegistration: FC = () => {
     );
 
   return (
-    <Container className="c-register-stamboek-view" mode="vertical">
+    <Container className="c-manual-registration-view" mode="vertical">
       <Container mode="horizontal" size="medium">
         <SeoMetadata
           title={tText(

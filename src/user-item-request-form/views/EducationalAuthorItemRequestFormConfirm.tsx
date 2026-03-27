@@ -9,7 +9,10 @@ export const EducationalAuthorItemRequestFormConfirm: FC = () => {
   const navigateFunc = useNavigate();
 
   return (
-    <Container className="c-register-stamboek-view" mode="vertical">
+    <Container
+      className="c-educational-author-item-request-form-confirm-view"
+      mode="vertical"
+    >
       <Container mode="horizontal" size="large">
         <SeoMetadata
           title={tText(

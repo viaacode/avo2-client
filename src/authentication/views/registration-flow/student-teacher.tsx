@@ -10,7 +10,7 @@ export const StudentTeacher: FC = () => {
   const navigateFunc = useNavigate();
 
   return (
-    <Container className="c-register-stamboek-view" mode="vertical">
+    <Container className="c-student-teacher-view" mode="vertical">
       <Container mode="horizontal" size="large">
         <SeoMetadata
           title={tText(
