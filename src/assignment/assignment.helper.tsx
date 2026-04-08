@@ -101,6 +101,12 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
         icon: IconName.clock,
       };
 
+    case AssignmentRetrieveError.ASSIGNMENT_DEADLINE_EXPIRED:
+      return {
+        message: tHtml('De opdracht deadline is reeds verlopen'),
+        icon: IconName.clock,
+      };
+
     default:
       return {
         message: tHtml(

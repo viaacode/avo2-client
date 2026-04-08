@@ -93,6 +93,7 @@ export enum AssignmentLayout {
 export enum AssignmentRetrieveError {
   ASSIGNMENT_WAS_DELETED = 'ASSIGNMENT_WAS_DELETED',
   ASSIGNMENT_NOT_YET_AVAILABLE = 'ASSIGNMENT_NOT_YET_AVAILABLE',
+  ASSIGNMENT_DEADLINE_EXPIRED = 'ASSIGNMENT_DEADLINE_EXPIRED',
 }
 
 export interface AssignmentLabelColor {
