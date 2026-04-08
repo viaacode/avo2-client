@@ -192,7 +192,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 
   // Errors
   const [isForbidden, setIsForbidden] = useState<boolean>(false);
-  const [assignmentLoading, setAssignmentLoading] = useState(false);
+  const [assignmentLoading, setAssignmentLoading] = useState(true);
   const [assignmentError, setAssignmentError] =
     useState<Partial<ErrorViewQueryParams> | null>(null);
 
@@ -333,6 +333,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
       setAssignmentError(null);
 
       if (
+        !!commonUser &&
         !commonUser?.permissions?.includes(
           PermissionName.VIEW_ANY_PUBLISHED_ASSIGNMENTS,
         ) &&
@@ -1288,17 +1289,28 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
   };
 
   const renderPage = () => {
-    if (!assignment && !assignmentLoading && !assignmentError && isForbidden) {
+    if (loginState.loading || assignmentLoading) {
       return (
-        <ErrorNoAccess
-          title={tHtml(
-            'assignment/views/assignment-detail___je-hebt-geen-toegang',
-          )}
-          message={tHtml(
-            'assignment/views/assignment-detail___je-hebt-geen-toegang-om-deze-opdracht-te-bekijken',
-          )}
+        <FullPageSpinner
+          locationId={`assignment-detail-render-page--loading`}
         />
       );
+    }
+    if (!assignment && !assignmentLoading && !assignmentError && isForbidden) {
+      if (!commonUser) {
+        return <RegisterOrLogin />;
+      } else {
+        return (
+          <ErrorNoAccess
+            title={tHtml(
+              'assignment/views/assignment-detail___je-hebt-geen-toegang',
+            )}
+            message={tHtml(
+              'assignment/views/assignment-detail___je-hebt-geen-toegang-om-deze-opdracht-te-bekijken',
+            )}
+          />
+        );
+      }
     }
     return (
       <>
