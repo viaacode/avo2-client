@@ -87,7 +87,9 @@ export function getAssignmentErrorObj(error: any): {
   const errorJson = JSON.stringify(error);
   if (errorJson.includes(AssignmentRetrieveError.ASSIGNMENT_DEADLINE_EXPIRED)) {
     return {
-      message: tHtml('De opdracht deadline is reeds verlopen'),
+      message: tHtml(
+        'assignment/assignment___de-opdracht-deadline-is-reeds-verlopen',
+      ),
       icon: IconName.clock,
     };
   } else if (

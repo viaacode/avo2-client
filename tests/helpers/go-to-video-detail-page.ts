@@ -25,7 +25,7 @@ export async function goToVideoDetailPage(page: Page): Promise<void> {
   await page.locator('h2.c-search-result__title > a').first().click();
 
   // Check title contains test
-  await expect(page.locator('h2.c-item-detail__header')).toContainText(
+  await expect(page.locator('h2.p-item-detail__header')).toContainText(
     'dag van de',
   );
 }

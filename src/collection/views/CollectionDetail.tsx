@@ -45,7 +45,10 @@ import { AssignmentService } from '../../assignment/assignment.service';
 import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
 import { CreateAssignmentModal } from '../../assignment/modals/CreateAssignmentModal';
 import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal';
-import { commonUserAtom } from '../../authentication/authentication.store';
+import {
+  commonUserAtom,
+  loginAtom,
+} from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH } from '../../constants';
@@ -161,7 +164,6 @@ type CollectionDetailPermissions = Partial<{
 type CollectionInfo = {
   collection: AvoCollectionCollection | null;
   permissions: CollectionDetailPermissions;
-  showLoginPopup: boolean;
   showNoAccessPopup: boolean;
 };
 
@@ -196,7 +198,6 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   const [collectionInfo, setCollectionInfo] = useState<CollectionInfo>({
     collection: collectionFromLoader || null,
     permissions: {},
-    showLoginPopup: !commonUser,
     showNoAccessPopup: false,
   });
   const collection = collectionInfo.collection;
@@ -208,7 +209,11 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   const permissions = collectionInfo?.permissions;
   const shouldDeleteSelfFromCollection =
     isContributor && !permissions?.canDeleteCollections;
-  const showLoginPopup = collectionInfo?.showLoginPopup;
+  const loginState = useAtomValue(loginAtom);
+  const showLoginPopup =
+    !collectionInfo.collection?.collection_fragments &&
+    !commonUser &&
+    !loginState.loading;
   const showNoAccessPopup = collectionInfo?.showNoAccessPopup;
   const isEditContributor = !!(collection?.contributors || []).find(
     (contributor) =>
@@ -493,7 +498,6 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         setCollectionInfo({
           ...collectionInfo,
           showNoAccessPopup: false,
-          showLoginPopup: true,
           permissions: permissionObj,
           collection: collectionObj,
         });
@@ -513,7 +517,6 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
       ) {
         setCollectionInfo({
           showNoAccessPopup: true,
-          showLoginPopup: false,
           permissions: permissionObj,
           collection: null,
         });
@@ -544,7 +547,6 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
       setCollectionInfo({
         showNoAccessPopup: showNoAccessPopup,
-        showLoginPopup: false,
         permissions: permissionObj,
         collection: collectionObj || null,
       });
@@ -559,7 +561,6 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         // If not logged in and the collection is not found => the collection might be private and the user might need to login to see it
         setCollectionInfo({
           showNoAccessPopup: false,
-          showLoginPopup: true,
           permissions: {},
           collection: null,
         });
@@ -573,7 +574,6 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         // If forbidden to access, show no access error
         setCollectionInfo({
           showNoAccessPopup: false,
-          showLoginPopup: false,
           permissions: {},
           collection: null,
         });
@@ -1478,7 +1478,6 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
               if (newCollection) {
                 setCollectionInfo((oldCollectionInfo) => ({
-                  showLoginPopup: oldCollectionInfo?.showLoginPopup || false,
                   showNoAccessPopup:
                     oldCollectionInfo?.showNoAccessPopup || false,
                   permissions: oldCollectionInfo?.permissions || {},
@@ -1537,7 +1536,6 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
                 (collection as AvoCollectionCollection).collection_fragments
               ) {
                 setCollectionInfo((oldCollectionInfo) => ({
-                  showLoginPopup: oldCollectionInfo?.showLoginPopup || false,
                   showNoAccessPopup:
                     oldCollectionInfo?.showNoAccessPopup || false,
                   permissions: oldCollectionInfo?.permissions || {},
@@ -1751,7 +1749,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         )}
 
         {collection && renderCollectionBody()}
-        {!showLoginPopup && renderModals()}
+        {!showLoginPopup && mounted && renderModals()}
         {showLoginPopup && <RegisterOrLogin />}
       </div>
     );

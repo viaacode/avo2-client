@@ -29,7 +29,7 @@ import {
   AvoUserUser,
   PermissionName,
 } from '@viaa/avo2-types';
-import { compact, isNil, noop } from 'es-toolkit';
+import { isNil, noop } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import {
   type FC,
@@ -38,17 +38,16 @@ import {
   useEffect,
   useState,
 } from 'react';
-import {
-  generatePath,
-  useLoaderData,
-  useNavigate,
-  useParams,
-} from 'react-router';
+import { generatePath, useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
+import {
+  commonUserAtom,
+  loginAtom,
+} from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
+import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { type Relation } from '../../collection/collection.types';
 import { AddToBundleModal } from '../../collection/components/modals/AddToBundleModal';
@@ -78,7 +77,6 @@ import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPag
 import { HeaderOwnerAndContributors } from '../../shared/components/HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 import { InteractiveTour } from '../../shared/components/InteractiveTour/InteractiveTour';
 import { MoreOptionsDropdownWrapper } from '../../shared/components/MoreOptionsDropdownWrapper/MoreOptionsDropdownWrapper';
-import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { ShareDropdown } from '../../shared/components/ShareDropdown/ShareDropdown';
 import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
@@ -148,24 +146,22 @@ type AssignmentDetailPermissions = Partial<{
 type AssignmentDetailProps = {
   id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
   enabledMetaData: SearchFilter[];
+  initialAssignment: AvoAssignmentAssignment | null;
 };
 
 export const AssignmentDetail: FC<AssignmentDetailProps> = ({
   enabledMetaData = ALL_SEARCH_FILTERS,
+  initialAssignment,
 }) => {
+  const [mounted, setMounted] = useState(false);
   const navigateFunc = useNavigate();
   const commonUser = useAtomValue(commonUserAtom);
+  const loginState = useAtomValue(loginAtom);
   const { id: assignmentId } = useParams<{ id: string }>();
 
   // Data
-  const loaderData = useLoaderData<{
-    assignment: AvoAssignmentAssignment;
-    url: string;
-  }>();
-  const assignmentFromLoader =
-    loaderData?.assignment as AvoAssignmentAssignment | null;
   const [assignment, setAssignment] = useState<AvoAssignmentAssignment | null>(
-    assignmentFromLoader,
+    initialAssignment,
   );
 
   const [permissions, setPermissions] =
@@ -236,6 +232,13 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
     false;
   const shouldDeleteSelfFromAssignment =
     isContributor && !hasDeleteRightsForAllAssignments;
+
+  const loginStateResolved = !!loginState.data || loginState.error;
+  const showLoginPopup =
+    loginStateResolved &&
+    !assignment?.blocks &&
+    !commonUser &&
+    !loginState.loading;
 
   const isBeingEdited =
     !!editStatuses &&
@@ -462,7 +465,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
       ...assignment,
       contributors: (response || []) as AvoAssignmentContributor[],
     });
-  }, [assignment, assignmentId]);
+  }, [assignment]);
 
   const triggerEvents = useCallback(async () => {
     // Do not trigger events when a search engine loads this page
@@ -518,6 +521,9 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
       }
     }
   }, [assignment, commonUser]);
+
+  // Set mounted to true only on the client, so certain components don't render during server side rendering
+  useEffect(() => setMounted(true), []);
 
   // Fetch initial data
   useEffect(() => {
@@ -1155,66 +1161,9 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
     }
   };
 
-  const renderPageContent = () => {
-    if (assignmentLoading) {
-      return <FullPageSpinner locationId="assignment-detail--loading" />;
-    }
-    if (assignmentError) {
-      return (
-        <ErrorView locationId="assignment-detail--error" {...assignmentError} />
-      );
-    }
-
+  const renderModals = () => {
     return (
       <>
-        {renderHeader()}
-        {renderAssignmentBlocks()}
-        {renderMetadata()}
-      </>
-    );
-  };
-
-  const renderPage = () => {
-    if (!assignment && !assignmentLoading && !assignmentError && isForbidden) {
-      return (
-        <ErrorNoAccess
-          title={tHtml(
-            'assignment/views/assignment-detail___je-hebt-geen-toegang',
-          )}
-          message={tHtml(
-            'assignment/views/assignment-detail___je-hebt-geen-toegang-om-deze-opdracht-te-bekijken',
-          )}
-        />
-      );
-    }
-    return (
-      <>
-        <div className="c-sticky-bar__wrapper m-assignment-detail">
-          <div>{renderPageContent()}</div>
-
-          {!assignmentError && (
-            <StickyBar
-              title={tHtml(
-                'assignment/views/assignment-detail___wil-je-de-opdracht-title-toevoegen-aan-je-werkruimte',
-                {
-                  title: assignment?.title || '',
-                },
-              )}
-              isVisible={!!inviteToken}
-              actionButtonProps={{
-                label: tText('assignment/views/assignment-detail___toevoegen'),
-                onClick: onAcceptShareAssignment,
-                type: 'tertiary',
-              }}
-              cancelButtonProps={{
-                label: tText('assignment/views/assignment-detail___weigeren'),
-                onClick: onDeclineShareAssignment,
-                type: 'tertiary',
-              }}
-            />
-          )}
-        </div>
-
         {!!assignment && !!commonUser && (
           <PublishAssignmentModal
             onClose={(newAssignment: AvoAssignmentAssignment | undefined) => {
@@ -1314,26 +1263,78 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
     );
   };
 
-  return (
-    <>
-      <SeoMetadata
-        title={
-          assignmentFromLoader?.title ||
-          tText(
-            'assignment/views/assignment-detail___opdracht-detail-pagina-titel',
-          )
-        }
-        description={assignmentFromLoader?.description}
-        image={assignmentFromLoader?.seo_image_path}
-        url={loaderData.url}
-        updatedAt={assignmentFromLoader?.updated_at}
-        publishedAt={assignmentFromLoader?.published_at}
-        createdAt={assignmentFromLoader?.created_at}
-        keywords={compact(
-          (assignmentFromLoader?.loms || []).map((lom) => lom.lom?.label),
-        )}
-      />
-      {renderPage()}
-    </>
-  );
+  const renderPageContent = () => {
+    if (!mounted) {
+      // SSR + hydration: render nothing until the client has mounted.
+      // This ensures server and client produce identical HTML during hydration.
+      return null;
+    }
+    if (assignmentLoading) {
+      return <FullPageSpinner locationId="assignment-detail--loading" />;
+    }
+    if (assignmentError) {
+      return (
+        <ErrorView locationId="assignment-detail--error" {...assignmentError} />
+      );
+    }
+
+    return (
+      <>
+        {renderHeader()}
+        {renderAssignmentBlocks()}
+        {renderMetadata()}
+      </>
+    );
+  };
+
+  const renderPage = () => {
+    if (!assignment && !assignmentLoading && !assignmentError && isForbidden) {
+      return (
+        <ErrorNoAccess
+          title={tHtml(
+            'assignment/views/assignment-detail___je-hebt-geen-toegang',
+          )}
+          message={tHtml(
+            'assignment/views/assignment-detail___je-hebt-geen-toegang-om-deze-opdracht-te-bekijken',
+          )}
+        />
+      );
+    }
+    return (
+      <>
+        <div className="c-sticky-bar__wrapper m-assignment-detail">
+          <div>{renderPageContent()}</div>
+
+          {!assignmentError && (
+            <StickyBar
+              title={tHtml(
+                'assignment/views/assignment-detail___wil-je-de-opdracht-title-toevoegen-aan-je-werkruimte',
+                {
+                  title: assignment?.title || '',
+                },
+              )}
+              isVisible={!!inviteToken}
+              actionButtonProps={{
+                label: tText('assignment/views/assignment-detail___toevoegen'),
+                onClick: onAcceptShareAssignment,
+                type: 'tertiary',
+              }}
+              cancelButtonProps={{
+                label: tText('assignment/views/assignment-detail___weigeren'),
+                onClick: onDeclineShareAssignment,
+                type: 'tertiary',
+              }}
+            />
+          )}
+        </div>
+        {!showLoginPopup && mounted && renderModals()}
+        {showLoginPopup &&
+          mounted &&
+          !assignmentError &&
+          !assignmentLoading && <RegisterOrLogin />}
+      </>
+    );
+  };
+
+  return renderPage();
 };

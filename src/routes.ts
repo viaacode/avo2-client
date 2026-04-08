@@ -155,6 +155,7 @@ const APP_ROUTES: RouteObject[] = [
           // UNAUTHENTICATED
           ////////////////////////////////////////////////////////////////////////////////////////
           ...getUnauthenticatedClientRoutes(),
+
           ////////////////////////////////////////////////////////////////////////////////////////
           // AUTHENTICATED ROUTES
           ////////////////////////////////////////////////////////////////////////////////////////
@@ -163,6 +164,7 @@ const APP_ROUTES: RouteObject[] = [
             Component: EnsureUserLoggedInAndProfileComplete,
             children: getAuthenticatedClientRoutes(),
           },
+
           ////////////////////////////////////////////////////////////////////////////////////////
           // DYNAMIC ROUTES (CONTENT PAGES) AND 404 HANDLING
           ////////////////////////////////////////////////////////////////////////////////////////
@@ -198,6 +200,64 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
       path: APP_PATH.LOGOUT.route,
       Component: Logout,
       ErrorBoundary: () => ErrorBoundary('Logout--route'),
+      hasErrorBoundary: true,
+    },
+    {
+      // Include item detail route in unauthenticated routes, since we need to render the page behind a login screen so the seo info is available
+      // Only the SEO info will be loaded from the backend
+      // https://meemoo.atlassian.net/browse/AVO-1723
+      id: 'ItemDetail',
+      path: APP_PATH.ITEM_DETAIL.route,
+      Component: ItemDetailPage,
+      loader: fetchItemLoader,
+      ErrorBoundary: () => ErrorBoundary('ItemDetailRoute--route'),
+      hasErrorBoundary: true,
+    },
+    {
+      // Include collection detail route in unauthenticated routes, since we need to render the page behind a login screen so the seo info is available
+      // Only the SEO info will be loaded from the backend
+      // https://meemoo.atlassian.net/browse/AVO-1723
+      id: 'CollectionDetail',
+      path: APP_PATH.COLLECTION_DETAIL.route,
+      loader: fetchCollectionLoader,
+      Component: CollectionDetail,
+      ErrorBoundary: () => ErrorBoundary('CollectionDetail--route'),
+      hasErrorBoundary: true,
+    },
+    {
+      // Include bundle detail route in unauthenticated routes, since we need to render the page behind a login screen so the seo info is available
+      // Only the SEO info will be loaded from the backend
+      // https://meemoo.atlassian.net/browse/AVO-1723
+      id: 'AssignmentDetailSwitcher',
+      path: APP_PATH.ASSIGNMENT_DETAIL.route,
+      // Switches between the pupil and teacher view of an assignment
+      // Pupil can view the assignment and build a pupil collection response for the assignment
+      // Teacher can view the assignment details and manage responses and edit the assignment through an edit button
+      Component: AssignmentDetailSwitcher,
+      loader: fetchAssignmentLoader,
+      ErrorBoundary: () => ErrorBoundary('AssignmentDetailSwitcher--route'),
+      hasErrorBoundary: true,
+    },
+    {
+      id: 'WorkspaceAssignmentRedirect',
+      path: `${APP_PATH.WORKSPACE.route}${APP_PATH.ASSIGNMENT_DETAIL.route}`,
+      loader: (props) =>
+        redirect(
+          `/${ROUTE_PARTS.assignments}/${props.params?.assignmentId}${location.search}`,
+        ),
+      Component: FullPageSpinnerPage,
+      ErrorBoundary: () => ErrorBoundary('WorkspaceAssignmentRedirect--route'),
+      hasErrorBoundary: true,
+    },
+    {
+      // Include bundle detail route in unauthenticated routes, since we need to render the page behind a login screen so the seo info is available
+      // Only the SEO info will be loaded from the backend
+      // https://meemoo.atlassian.net/browse/AVO-1723
+      id: 'BundleDetail',
+      path: APP_PATH.BUNDLE_DETAIL.route,
+      Component: BundleDetail,
+      loader: fetchCollectionLoader,
+      ErrorBoundary: () => ErrorBoundary('BundleDetail--route'),
       hasErrorBoundary: true,
     },
     {
@@ -286,22 +346,6 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
       hasErrorBoundary: true,
     },
     {
-      id: 'ItemDetailRoute',
-      path: APP_PATH.ITEM_DETAIL.route,
-      Component: ItemDetailPage,
-      loader: fetchItemLoader,
-      ErrorBoundary: () => ErrorBoundary('ItemDetailRoute--route'),
-      hasErrorBoundary: true,
-    },
-    {
-      id: 'CollectionDetail',
-      path: APP_PATH.COLLECTION_DETAIL.route,
-      loader: fetchCollectionLoader,
-      Component: CollectionDetail,
-      ErrorBoundary: () => ErrorBoundary('CollectionDetail--route'),
-      hasErrorBoundary: true,
-    },
-    {
       id: 'CollectionEdit-tab',
       path: APP_PATH.COLLECTION_EDIT_TAB.route,
       Component: CollectionEdit,
@@ -313,14 +357,6 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
       path: APP_PATH.COLLECTION_EDIT.route,
       Component: CollectionEdit,
       ErrorBoundary: () => ErrorBoundary('CollectionEdit--route'),
-      hasErrorBoundary: true,
-    },
-    {
-      id: 'BundleDetail',
-      path: APP_PATH.BUNDLE_DETAIL.route,
-      Component: BundleDetail,
-      loader: fetchCollectionLoader,
-      ErrorBoundary: () => ErrorBoundary('BundleDetail--route'),
       hasErrorBoundary: true,
     },
     {
@@ -342,17 +378,6 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
       path: APP_PATH.ASSIGNMENT_CREATE.route,
       Component: AssignmentEdit,
       ErrorBoundary: () => ErrorBoundary('AssignmentEdit-create--route'),
-      hasErrorBoundary: true,
-    },
-    {
-      id: 'AssignmentDetailSwitcher',
-      path: APP_PATH.ASSIGNMENT_DETAIL.route,
-      // Switches between the pupil and teacher view of an assignment
-      // Pupil can view the assignment and build a pupil collection response for the assignment
-      // Teacher can view the assignment details and manage responses and edit the assignment through an edit button
-      Component: AssignmentDetailSwitcher,
-      loader: fetchAssignmentLoader,
-      ErrorBoundary: () => ErrorBoundary('AssignmentDetailSwitcher--route'),
       hasErrorBoundary: true,
     },
     {
@@ -414,17 +439,6 @@ function getAuthenticatedClientRoutes(): RouteObject[] {
       path: APP_PATH.WORKSPACE.route,
       Component: Workspace,
       ErrorBoundary: () => ErrorBoundary('Workspace--route'),
-      hasErrorBoundary: true,
-    },
-    {
-      id: 'WorkspaceAssignmentRedirect',
-      path: `${APP_PATH.WORKSPACE.route}${APP_PATH.ASSIGNMENT_DETAIL.route}`,
-      loader: (props) =>
-        redirect(
-          `/${ROUTE_PARTS.assignments}/${props.params?.assignmentId}${location.search}`,
-        ),
-      Component: FullPageSpinnerPage,
-      ErrorBoundary: () => ErrorBoundary('WorkspaceAssignmentRedirect--route'),
       hasErrorBoundary: true,
     },
     {
@@ -666,14 +680,14 @@ function getAdminRoutes(): RouteObject[] {
       hasErrorBoundary: true,
     },
     {
-      id: 'ItemsOverview',
+      id: 'ItemsOverviewAdmin',
       path: ITEMS_ADMIN_PATH.ITEMS_OVERVIEW,
       Component: ItemsOverviewAdmin,
       ErrorBoundary: () => ErrorBoundary('ItemsOverview--route'),
       hasErrorBoundary: true,
     },
     {
-      id: 'ItemDetail',
+      id: 'ItemDetailAdmin',
       path: ITEMS_ADMIN_PATH.ITEM_DETAIL,
       Component: ItemDetailAdmin,
       ErrorBoundary: () => ErrorBoundary('ItemDetail--route'),
