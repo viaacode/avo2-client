@@ -55,7 +55,6 @@ import { isMobileWidth } from '../../shared/helpers/media-query';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks/useTableSort';
-import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
@@ -263,21 +262,9 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 
       setAssignment(assignmentOrError as AvoAssignmentAssignment);
     } catch (err) {
-      if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
-        setLoadingInfo({
-          message: tHtml(
-            'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken',
-          ),
-          icon: IconName.lock,
-          state: 'error',
-        });
-        return;
-      }
       setLoadingInfo({
         state: 'error',
-        message: tHtml(
-          'assignment/views/assignment-responses___het-ophalen-van-de-opdracht-is-mislukt',
-        ),
+        ...getAssignmentErrorObj(err),
       });
     }
   }, [assignmentId, commonUser]);

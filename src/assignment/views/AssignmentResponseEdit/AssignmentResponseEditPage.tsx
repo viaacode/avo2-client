@@ -168,12 +168,7 @@ export const AssignmentResponseEditPage: FC = () => {
 
       setAssignment(tempAssignment);
     } catch (err) {
-      setAssignmentError({
-        message: tHtml(
-          'assignment/views/assignment-response-edit/assignment-response-edit-page___het-ophalen-van-de-opdracht-is-mislukt',
-        ),
-        icon: IconName.userStudent,
-      });
+      setAssignmentError(getAssignmentErrorObj(err));
     }
     setAssignmentLoading(false);
   }, [assignment?.education_level_id, assignmentId, commonUser]);
