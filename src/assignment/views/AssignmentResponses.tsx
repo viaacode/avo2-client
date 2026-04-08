@@ -464,15 +464,8 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 
     switch (colKey) {
       case 'pupil': {
-        const renderAuthor = () => (
-          <Flex>
-            <div className="c-content-header c-content-header--small">
-              <h3 className="c-content-header__header u-m-0">
-                {truncateTableValue(assignmentResponse?.owner?.full_name || '')}
-              </h3>
-            </div>
-          </Flex>
-        );
+        const renderAuthor = () =>
+          truncateTableValue(assignmentResponse?.owner?.full_name || '');
 
         return isMobileWidth() ? (
           <Spacer margin="bottom-small">{renderAuthor()}</Spacer>
@@ -505,7 +498,7 @@ export const AssignmentResponses: FC<AssignmentResponsesProps> = ({
         return renderDataCell(
           <Link
             to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route, {
-              assignmentId,
+              id: assignmentId,
               responseId: assignmentResponse.id,
             })}
           >
