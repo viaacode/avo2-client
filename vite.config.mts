@@ -24,7 +24,7 @@ export default defineConfig((): UserConfig => {
       sourcemap: true,
       cssCodeSplit: false,
       manifest: true, // Generate manifest, so ssr code can find the correct main-<hash>.css file
-      rollupOptions: {
+      rolldownOptions: {
         input: {
           main: path.resolve(__dirname, 'index.html'),
         },
@@ -60,9 +60,11 @@ export default defineConfig((): UserConfig => {
       global: 'globalThis',
     },
     optimizeDeps: {
-      esbuildOptions: {
-        define: {
-          global: 'globalThis',
+      rolldownOptions: {
+        transform: {
+          define: {
+            global: 'globalThis',
+          },
         },
       },
     },
