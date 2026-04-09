@@ -109,6 +109,7 @@ export class AssignmentService {
     headers: Record<string, string> = {},
   ): Promise<AvoAssignmentAssignment | { error: AssignmentRetrieveError }> {
     try {
+      console.log('fetching assignment');
       const url = stringifyUrl({
         url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}`,
         query: {

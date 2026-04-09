@@ -1,12 +1,18 @@
 @use "../../styles/settings/variables" as variables;
 
-.c-item-detail {
+.p-item-detail {
+	&.hide-behind-login-popup {
+		opacity: 0;
+		max-height: 0;
+		overflow: hidden;
+	}
+
 	&__header {
 		.c-meta-data__item p {
 			margin: 0.36rem 0;
 		}
 
-		&.c-item-detail__header-mobile {
+		&.p-item-detail__header-mobile {
 			.o-flex .c-meta-data {
 				display: flex;
 				align-items: flex-start;

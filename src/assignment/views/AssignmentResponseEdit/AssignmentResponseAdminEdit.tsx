@@ -105,11 +105,7 @@ export const AssignmentResponseAdminEdit: FC = () => {
       const error = (assignmentOrError as { error: AssignmentRetrieveError })
         ?.error;
       if (error) {
-        const errorInfo = getAssignmentErrorObj(error);
-        setAssignmentError({
-          message: errorInfo.message,
-          icon: errorInfo.icon,
-        });
+        setAssignmentError(getAssignmentErrorObj(error));
         setAssignmentLoading(false);
         return;
       }
@@ -160,15 +156,16 @@ export const AssignmentResponseAdminEdit: FC = () => {
       );
     }
     if (assignmentError) {
+      const errorInfo = getAssignmentErrorObj(assignmentError);
       return (
         <ErrorView
           message={
-            assignmentError.message ||
+            errorInfo.message ||
             tHtml(
               'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt',
             )
           }
-          icon={assignmentError.icon || IconName.alertTriangle}
+          icon={errorInfo.icon || IconName.alertTriangle}
           locationId="assignment-response-admin-edit--error"
         />
       );

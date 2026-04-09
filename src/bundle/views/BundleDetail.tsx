@@ -38,7 +38,10 @@ import { type FC, useCallback, useEffect, useState } from 'react';
 import { useLoaderData, useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { commonUserAtom } from '../../authentication/authentication.store';
+import {
+  commonUserAtom,
+  loginAtom,
+} from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects/redirects';
 import { RegisterOrLogin } from '../../authentication/views/RegisterOrLogin';
@@ -85,7 +88,6 @@ import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
@@ -122,6 +124,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
   const { id: bundleIdFromUrl } = useParams<{ id: string }>();
 
   const commonUser = useAtomValue(commonUserAtom);
+  const loginState = useAtomValue(loginAtom);
   // State
   const [bundleId, setBundleId] = useState(id || bundleIdFromUrl);
   const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -150,11 +153,11 @@ export const BundleDetail: FC<BundleDetailProps> = ({
   }>({});
   const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] =
     useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS);
-  const [showLoginPopup, setShowLoginPopup] = useState<boolean | null>(null);
   const {
     data: bundleObj,
     isError: isErrorBundle,
     isLoading: isLoadingBundle,
+    isFetching: isFetchingBundle,
     refetch: refetchBundle,
   } = useGetCollectionOrBundleByIdOrInviteToken(
     bundleId as string,
@@ -164,6 +167,8 @@ export const BundleDetail: FC<BundleDetailProps> = ({
   );
 
   // Computed
+  const showLoginPopup =
+    !bundleObj?.collection_fragments && !commonUser && !loginState.loading;
   const isOwner =
     !!bundleObj?.owner_profile_id &&
     bundleObj?.owner_profile_id === commonUser?.profileId;
@@ -203,7 +208,6 @@ export const BundleDetail: FC<BundleDetailProps> = ({
     if (!bundleId || !bundleObj) {
       return;
     }
-    let showPopup = false;
     const permissionObj = await PermissionService.checkPermissions(
       {
         canViewBundle: [
@@ -237,37 +241,8 @@ export const BundleDetail: FC<BundleDetailProps> = ({
       commonUser,
     );
 
-    if (!commonUser) {
-      showPopup = true;
-    } else {
-      if (
-        !permissionObj.canViewBundle &&
-        !permissionObj.canViewPublishedBundles &&
-        !permissionObj.canViewUnpublishedBundles
-      ) {
-        showPopup = true;
-      }
-    }
-
-    if (!commonUser) {
-      setShowLoginPopup(showPopup);
-      return;
-    }
-
-    if (
-      permissionObj &&
-      ((!permissionObj.canViewBundle &&
-        bundleObj.is_public &&
-        !permissionObj.canViewPublishedBundles) ||
-        (!permissionObj.canViewBundle &&
-          !bundleObj.is_public &&
-          !permissionObj.canViewUnpublishedBundles))
-    ) {
-      showPopup = true;
-    }
-
     // Do not trigger events when a search engine loads this page
-    if (!showPopup) {
+    if (!showLoginPopup) {
       BookmarksViewsPlaysService.action(
         'view',
         'bundle',
@@ -322,7 +297,6 @@ export const BundleDetail: FC<BundleDetailProps> = ({
         });
     }
 
-    setShowLoginPopup(showPopup);
     setPermissions(permissionObj || {});
   }, [bundleId, bundleObj, commonUser]);
 
@@ -729,7 +703,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
             onClick={() => executeAction(BundleAction.share)}
           />
         )}
-        {renderActionDropdown()}
+        {mounted && renderActionDropdown()}
         {permissions.canEditBundle && (
           <EditButton
             type="primary"
@@ -752,15 +726,19 @@ export const BundleDetail: FC<BundleDetailProps> = ({
     return (
       <Container mode="vertical">
         <Container mode="horizontal">
-          <BlockHeading type="h3">
-            {tText('bundle/views/bundle-detail___over-deze-bundel')}
-          </BlockHeading>
+          {mounted && (
+            <BlockHeading type="h3">
+              {tText('bundle/views/bundle-detail___over-deze-bundel')}
+            </BlockHeading>
+          )}
           <Grid>
-            <CommonMetadata
-              subject={bundleObj}
-              enabledMetaData={enabledMetaData}
-              renderSearchLink={defaultRenderSearchLink}
-            />
+            {mounted && (
+              <CommonMetadata
+                subject={bundleObj}
+                enabledMetaData={enabledMetaData}
+                renderSearchLink={defaultRenderSearchLink}
+              />
+            )}
           </Grid>
           {(relatedItems?.length || 0) > 0 && (
             <>
@@ -809,74 +787,98 @@ export const BundleDetail: FC<BundleDetailProps> = ({
   };
 
   const renderBundle = () => {
-    if (!bundleObj && showLoginPopup) {
-      return <RegisterOrLogin />;
-    }
-
-    const { is_public, thumbnail_path, title, description_long } =
-      bundleObj as AvoCollectionCollection;
+    const { is_public, thumbnail_path, title, description_long } = (bundleObj ||
+      {}) as AvoCollectionCollection;
 
     if (!isFirstRender) {
       setIsFirstRender(true);
     }
 
-    const collectionFragments = (bundleObj?.collection_fragments || []).filter(
-      (f: AvoCollectionFragment) => f.type === AvoCoreBlockItemType.COLLECTION,
-    );
-    const assignmentFragments = (bundleObj?.collection_fragments || []).filter(
-      (f) => f.type === AvoCoreBlockItemType.ASSIGNMENT,
-    );
-    const groupedLomsLabels = getGroupedLomsKeyValue(
-      bundleObj?.loms || [],
-      'label',
-    );
+    const renderCollectionsAndAssignments = () => {
+      const collectionFragments = (
+        bundleObj?.collection_fragments || []
+      ).filter(
+        (f: AvoCollectionFragment) =>
+          f.type === AvoCoreBlockItemType.COLLECTION,
+      );
+      const assignmentFragments = (
+        bundleObj?.collection_fragments || []
+      ).filter((f) => f.type === AvoCoreBlockItemType.ASSIGNMENT);
 
-    return (
-      <>
-        <div
-          className={clsx(
-            'm-bundle-detail',
-            showLoginPopup ? 'hide-behind-login-popup' : '',
-          )}
-        >
-          <Container
-            mode="vertical"
-            background="alt"
-            className="m-bundle-detail-header"
-          >
-            <Container mode="horizontal">
-              <Grid>
-                <Column size="3-2">
-                  {renderMobileDesktop({
-                    mobile: (
-                      <Thumbnail
-                        className="u-spacer"
-                        category={AvoContentTypeEnglish.BUNDLE}
-                        src={thumbnail_path || undefined}
+      return (
+        <Container mode="vertical" background="white">
+          <Container mode="horizontal">
+            {collectionFragments.length > 0 && (
+              <>
+                {assignmentFragments.length > 0 && (
+                  <BlockHeading type="h3" className="u-spacer-bottom-l">
+                    {mounted && (
+                      <Icon
+                        name={IconName.collection}
+                        className="u-spacer-right-s u-spacer-bottom-xs u-color-ocean-green"
                       />
-                    ),
-                    desktop: (
-                      <Thumbnail
-                        className="u-spacer-right-l"
-                        category={AvoContentTypeEnglish.BUNDLE}
-                        src={thumbnail_path || undefined}
+                    )}
+                    {tText(
+                      'bundle/views/bundle-detail___collecties-in-deze-bundel',
+                    )}
+                  </BlockHeading>
+                )}
+                <div className="c-media-card-list u-spacer-bottom-l">
+                  <Grid>{renderChildFragments(collectionFragments)}</Grid>
+                </div>
+              </>
+            )}
+            {assignmentFragments.length > 0 && (
+              <>
+                {collectionFragments.length > 0 && (
+                  <BlockHeading type="h3" className="u-spacer-bottom-l">
+                    {mounted && (
+                      <Icon
+                        name={IconName.clipboard}
+                        className="u-spacer-right-s u-spacer-bottom-xs u-color-french-rose"
                       />
-                    ),
-                  })}
-                </Column>
-                <Column size="3-10">
-                  <Toolbar
-                    autoHeight
-                    className={
-                      isMobileWidth() ? 'c-bundle-toolbar__mobile' : ''
-                    }
-                  >
-                    <ToolbarLeft>
-                      <ToolbarItem>
-                        <MetaData
-                          spaced={true}
-                          category={AvoContentTypeEnglish.BUNDLE}
-                        >
+                    )}
+                    {tText(
+                      'bundle/views/bundle-detail___opdrachten-in-deze-bundel',
+                    )}
+                  </BlockHeading>
+                )}
+                <div className="c-media-card-list">
+                  <Grid>{renderChildFragments(assignmentFragments)}</Grid>
+                </div>
+              </>
+            )}
+          </Container>
+        </Container>
+      );
+    };
+
+    const renderHeader = () => {
+      return (
+        <Container mode="horizontal">
+          <Grid>
+            <Column size="3-2">
+              {mounted && (
+                <Thumbnail
+                  className={isMobileWidth() ? 'u-spacer' : 'u-spacer-right-l'}
+                  category={AvoContentTypeEnglish.BUNDLE}
+                  src={thumbnail_path || undefined}
+                />
+              )}
+            </Column>
+            <Column size="3-10">
+              {mounted && (
+                <Toolbar
+                  autoHeight
+                  className={isMobileWidth() ? 'c-bundle-toolbar__mobile' : ''}
+                >
+                  <ToolbarLeft>
+                    <ToolbarItem>
+                      <MetaData
+                        spaced={true}
+                        category={AvoContentTypeEnglish.BUNDLE}
+                      >
+                        {mounted && (
                           <MetaDataItem>
                             <HeaderContentType
                               category={AvoContentTypeEnglish.BUNDLE}
@@ -891,109 +893,111 @@ export const BundleDetail: FC<BundleDetailProps> = ({
                               }
                             />
                           </MetaDataItem>
-                          <MetaDataItem
-                            icon={IconName.eye}
-                            label={String(
-                              bookmarkViewPlayCounts.viewCount || 0,
-                            )}
-                          />
-                          <MetaDataItem
-                            icon={IconName.bookmark}
-                            label={String(
-                              bookmarkViewPlayCounts.bookmarkCount || 0,
-                            )}
-                          />
-                          <EducationLevelsTagList
-                            loms={groupedLomsLabels.educationLevel}
-                          />
-                        </MetaData>
-                        <Spacer margin="top-small">
-                          <BlockHeading type="h1">{title}</BlockHeading>
-                        </Spacer>
-                      </ToolbarItem>
-                    </ToolbarLeft>
-                    {!showLoginPopup && (
-                      <ToolbarRight>
-                        <ToolbarItem>{renderActions()}</ToolbarItem>
-                      </ToolbarRight>
-                    )}
-                  </Toolbar>
-                  <Html
-                    className="c-body-1 c-content"
-                    content={description_long || ''}
-                  />
-                  <div className="c-avatar-and-text u-spacer-bottom-l u-spacer-top-l">
-                    {!!bundleObj &&
-                      !!bundleObj.profile &&
-                      renderAvatar(bundleObj.profile, { dark: true })}
-                  </div>
-                </Column>
-              </Grid>
-            </Container>
-            <Container mode="vertical" background="white">
-              <Container mode="horizontal">
-                {collectionFragments.length > 0 && (
-                  <>
-                    {assignmentFragments.length > 0 && (
-                      <BlockHeading type="h3" className="u-spacer-bottom-l">
-                        <Icon
-                          name={IconName.collection}
-                          className="u-spacer-right-s u-spacer-bottom-xs u-color-ocean-green"
-                        />
-                        {tText(
-                          'bundle/views/bundle-detail___collecties-in-deze-bundel',
                         )}
-                      </BlockHeading>
-                    )}
-                    <div className="c-media-card-list u-spacer-bottom-l">
-                      <Grid>{renderChildFragments(collectionFragments)}</Grid>
-                    </div>
-                  </>
-                )}
-                {assignmentFragments.length > 0 && (
-                  <>
-                    {collectionFragments.length > 0 && (
-                      <BlockHeading type="h3" className="u-spacer-bottom-l">
-                        <Icon
-                          name={IconName.clipboard}
-                          className="u-spacer-right-s u-spacer-bottom-xs u-color-french-rose"
+                        <MetaDataItem
+                          icon={IconName.eye}
+                          label={String(bookmarkViewPlayCounts.viewCount || 0)}
                         />
-                        {tText(
-                          'bundle/views/bundle-detail___opdrachten-in-deze-bundel',
-                        )}
-                      </BlockHeading>
-                    )}
-                    <div className="c-media-card-list">
-                      <Grid>{renderChildFragments(assignmentFragments)}</Grid>
-                    </div>
-                  </>
-                )}
-              </Container>
-            </Container>
-            {renderMetaDataAndRelated()}
-            {!!bundleObj && !!commonUser && (
-              <PublishCollectionModal
-                collection={bundleObj}
-                parentBundles={[]}
-                isOpen={isPublishModalOpen}
-                onClose={(newBundle: AvoCollectionCollection | undefined) => {
-                  setIsPublishModalOpen(false);
-                  if (newBundle) {
-                    refetchBundle();
-                  }
-                }}
-              />
+                        <MetaDataItem
+                          icon={IconName.bookmark}
+                          label={String(
+                            bookmarkViewPlayCounts.bookmarkCount || 0,
+                          )}
+                        />
+                        <EducationLevelsTagList
+                          loms={groupedLomsLabels.educationLevel}
+                        />
+                      </MetaData>
+                      <Spacer margin="top-small">
+                        <BlockHeading type="h1">{title}</BlockHeading>
+                      </Spacer>
+                    </ToolbarItem>
+                  </ToolbarLeft>
+                  {mounted && (
+                    <ToolbarRight>
+                      <ToolbarItem>{renderActions()}</ToolbarItem>
+                    </ToolbarRight>
+                  )}
+                </Toolbar>
+              )}
+              {mounted && (
+                <Html
+                  className="c-body-1 c-content"
+                  content={description_long || ''}
+                />
+              )}
+              <div className="c-avatar-and-text u-spacer-bottom-l u-spacer-top-l">
+                {!!bundleObj &&
+                  !!bundleObj.profile &&
+                  renderAvatar(bundleObj.profile, { dark: true })}
+              </div>
+            </Column>
+          </Grid>
+        </Container>
+      );
+    };
+
+    const renderModals = () => {
+      return (
+        <>
+          {!!bundleObj && !!commonUser && (
+            <PublishCollectionModal
+              collection={bundleObj}
+              parentBundles={[]}
+              isOpen={isPublishModalOpen}
+              onClose={(newBundle: AvoCollectionCollection | undefined) => {
+                setIsPublishModalOpen(false);
+                if (newBundle) {
+                  refetchBundle();
+                }
+              }}
+            />
+          )}
+          {renderDeleteBundleConfirmModal()}
+          {renderShareThroughEmailModal()}
+        </>
+      );
+    };
+
+    const groupedLomsLabels = getGroupedLomsKeyValue(
+      bundleObj?.loms || [],
+      'label',
+    );
+
+    return (
+      <>
+        {mounted && !!bundleObj && (
+          <div
+            className={clsx(
+              'm-bundle-detail',
+              showLoginPopup ? 'hide-behind-login-popup' : '',
             )}
-          </Container>
-        </div>
-        {renderDeleteBundleConfirmModal()}
-        {renderShareThroughEmailModal()}
-        {showLoginPopup && <RegisterOrLogin />}
+          >
+            <Container
+              mode="vertical"
+              background="alt"
+              className="m-bundle-detail-header"
+            >
+              {renderHeader()}
+              {renderCollectionsAndAssignments()}
+              {renderMetaDataAndRelated()}
+            </Container>
+          </div>
+        )}
+        {!showLoginPopup && mounted && renderModals()}
+        {showLoginPopup && mounted && !isErrorBundle && !isFetchingBundle && (
+          <RegisterOrLogin />
+        )}
       </>
     );
   };
 
   const renderPageContent = () => {
+    if (!mounted) {
+      // SSR + hydration: render nothing until the client has mounted.
+      // This ensures server and client produce identical HTML during hydration.
+      return null;
+    }
     if (isLoadingBundle) {
       return <FullPageSpinner locationId="bundle-detail--loading" />;
     }

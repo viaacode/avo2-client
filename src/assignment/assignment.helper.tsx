@@ -80,34 +80,52 @@ export function setBlockPositionToIndex(items: Positioned[]): Positioned[] {
   return items;
 }
 
-export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
+export function getAssignmentErrorObj(error: any): {
   message: string | ReactNode;
   icon: IconName;
 } {
-  switch (errorType) {
-    case AssignmentRetrieveError.ASSIGNMENT_WAS_DELETED:
-      return {
-        message: tHtml(
-          'assignment/views/assignment-detail___de-opdracht-werd-verwijderd',
-        ),
-        icon: IconName.delete,
-      };
-
-    case AssignmentRetrieveError.ASSIGNMENT_NOT_YET_AVAILABLE:
-      return {
-        message: tHtml(
-          'assignment/views/assignment-detail___de-opdracht-is-nog-niet-beschikbaar',
-        ),
-        icon: IconName.clock,
-      };
-
-    default:
-      return {
-        message: tHtml(
-          'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt',
-        ),
-        icon: IconName.alertTriangle,
-      };
+  const errorJson = JSON.stringify(error);
+  if (errorJson.includes(AssignmentRetrieveError.ASSIGNMENT_DEADLINE_EXPIRED)) {
+    return {
+      message: tHtml(
+        'assignment/assignment___de-opdracht-deadline-is-reeds-verlopen',
+      ),
+      icon: IconName.clock,
+    };
+  } else if (
+    errorJson.includes(AssignmentRetrieveError.ASSIGNMENT_NOT_YET_AVAILABLE)
+  ) {
+    return {
+      message: tHtml(
+        'assignment/views/assignment-detail___de-opdracht-is-nog-niet-beschikbaar',
+      ),
+      icon: IconName.clock,
+    };
+  } else if (
+    errorJson.includes(AssignmentRetrieveError.ASSIGNMENT_WAS_DELETED)
+  ) {
+    return {
+      message: tHtml(
+        'assignment/views/assignment-detail___de-opdracht-werd-verwijderd',
+      ),
+      icon: IconName.delete,
+    };
+  } else if (
+    errorJson.includes(AssignmentRetrieveError.NO_RIGHTS_ERROR_MESSAGE)
+  ) {
+    return {
+      message: tHtml(
+        'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken',
+      ),
+      icon: IconName.lock,
+    };
+  } else {
+    return {
+      message: tHtml(
+        'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt',
+      ),
+      icon: IconName.alertTriangle,
+    };
   }
 }
 

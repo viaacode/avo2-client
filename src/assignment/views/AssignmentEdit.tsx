@@ -395,11 +395,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
       const error = (assignmentOrError as { error: AssignmentRetrieveError })
         ?.error;
       if (error) {
-        const errorInfo = getAssignmentErrorObj(error);
-        setAssignmentError({
-          message: errorInfo.message,
-          icon: errorInfo.icon,
-        });
+        setAssignmentError(getAssignmentErrorObj(error));
         setIsAssignmentLoading(false);
         return;
       }

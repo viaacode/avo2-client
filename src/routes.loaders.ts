@@ -106,6 +106,7 @@ export async function fetchItemLoader(args: LoaderFunctionArgs<any>) {
         id,
         cookieHeader ? { cookie: cookieHeader } : undefined,
       );
+      console.log('item ssr: ', item);
       return {
         item,
         url: args.request.url,

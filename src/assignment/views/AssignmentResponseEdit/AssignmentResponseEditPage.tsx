@@ -15,10 +15,16 @@ import {
 } from 'react';
 import { useParams } from 'react-router';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
+import {
+  commonUserAtom,
+  loginAtom,
+} from '../../../authentication/authentication.store';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../error/views/ErrorView';
 import { FullPageSpinner } from '../../../shared/components/FullPageSpinner/FullPageSpinner';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { getAssignmentErrorObj } from '../../assignment.helper';
@@ -27,24 +33,21 @@ import { AssignmentRetrieveError } from '../../assignment.types';
 import { AssignmentMetadata } from '../../components/AssignmentMetadata';
 import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
 import { canViewAnAssignment } from '../../helpers/can-view-an-assignment';
-
 import { AssignmentResponseEdit } from './AssignmentResponseEdit';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
 
 export const AssignmentResponseEditPage: FC = () => {
   const { id: assignmentId } = useParams<{ id: string }>();
 
   const commonUser = useAtomValue(commonUserAtom);
+  const loginState = useAtomValue(loginAtom);
   // Data
   const [assignment, setAssignment] = useState<AvoAssignmentAssignment | null>(
     null,
   );
-  const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
+  const [assignmentLoading, setAssignmentLoading] = useState<boolean>(true);
   const [assignmentError, setAssignmentError] = useState<{
     message: string | ReactNode;
     icon: IconName;
@@ -168,12 +171,7 @@ export const AssignmentResponseEditPage: FC = () => {
 
       setAssignment(tempAssignment);
     } catch (err) {
-      setAssignmentError({
-        message: tHtml(
-          'assignment/views/assignment-response-edit/assignment-response-edit-page___het-ophalen-van-de-opdracht-is-mislukt',
-        ),
-        icon: IconName.userStudent,
-      });
+      setAssignmentError(getAssignmentErrorObj(err));
     }
     setAssignmentLoading(false);
   }, [assignment?.education_level_id, assignmentId, commonUser]);
@@ -189,7 +187,7 @@ export const AssignmentResponseEditPage: FC = () => {
   // Render
 
   const renderPageContent = () => {
-    if (assignmentLoading) {
+    if (assignmentLoading || loginState.loading) {
       return (
         <FullPageSpinner locationId="assignment-response-edit-page--loading" />
       );

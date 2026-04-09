@@ -42,7 +42,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { useLoaderData, useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { ITEMS_ADMIN_PATH } from '../../admin/items/items.routes';
@@ -51,7 +51,10 @@ import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { AssignmentService } from '../../assignment/assignment.service';
 import { ConfirmImportToAssignmentWithResponsesModal } from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
 import { ImportToAssignmentModal } from '../../assignment/modals/ImportToAssignmentModal';
-import { commonUserAtom } from '../../authentication/authentication.store';
+import {
+  commonUserAtom,
+  loginAtom,
+} from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import {
   CONTENT_TYPE_TRANSLATIONS_NL_TO_EN,
@@ -66,6 +69,7 @@ import {
   type LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { LANGUAGES } from '../../shared/constants';
+import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
 import { buildLink } from '../../shared/helpers/build-link';
 import { CustomError } from '../../shared/helpers/custom-error';
 import {
@@ -88,8 +92,16 @@ import {
 import { reorderDate } from '../../shared/helpers/formatters/date';
 import { renderSearchLinks } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
+import {
+  JsonParam,
+  StringParam,
+  useQueryParam,
+  useQueryParams,
+} from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
+import { tHtml } from '../../shared/helpers/translate-html';
+import { tText } from '../../shared/helpers/translate-text';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
@@ -109,18 +121,8 @@ import { CutFragmentForAssignmentModal } from '../components/modals/CutFragmentF
 import { ReportItemModal } from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { type ItemTrimInfo } from '../item.types';
-
 import './ItemDetail.scss';
-import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
-import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
-import {
-  JsonParam,
-  StringParam,
-  useQueryParam,
-  useQueryParams,
-} from '../../shared/helpers/routing/use-query-params-ssr.ts';
-import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text';
+import RegisterOrLogin from '../../authentication/views/RegisterOrLogin.tsx';
 
 interface ItemDetailProps {
   id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (itemId)
@@ -147,6 +149,7 @@ interface ItemDetailProps {
   renderBookmarkButton?: (props: renderBookmarkButtonProps) => ReactNode;
   renderBookmarkCount?: (props: renderBookmarkCountProps) => ReactNode;
   renderInteractiveTour?: () => ReactNode;
+  initialItem?: AvoItemItem;
 }
 
 const ITEM_ACTIONS = {
@@ -166,16 +169,13 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   renderBookmarkButton = defaultRenderBookmarkButton,
   renderBookmarkCount = defaultRenderBookmarkCount,
   renderInteractiveTour = defaultRenderInteractiveTour,
+  initialItem,
 }) => {
   const navigateFunc = useNavigate();
   const { id: idFromUrl } = useParams<{ id: string }>();
   const itemId = id || idFromUrl;
   const commonUser = useAtomValue(commonUserAtom);
   const isSmartSchoolEmbedFlow = useAtomValue(embedFlowAtom);
-  const loaderData = useLoaderData<{
-    item: AvoItemItem;
-    url: string;
-  }>();
 
   goToDetailLink = goToDetailLink || defaultGoToDetailLink(navigateFunc);
   goToSearchLink = goToSearchLink || defaultGoToSearchLink(navigateFunc);
@@ -183,7 +183,10 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   const [cuePoint] = useQueryParam('t', StringParam);
   const [cutButton, cutModal] = useCutModal();
 
-  const [item, setItem] = useState<AvoItemItem | null>(loaderData?.item);
+  const loginState = useAtomValue(loginAtom);
+  const [item, setItem] = useState<AvoItemItem | null>(initialItem || null);
+  const showLoginPopup =
+    !loginState.loading && !commonUser && !item?.browse_path; // If user is not logged in, show login modal on top of the item so we can render seo below
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
   });
@@ -271,7 +274,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
             ),
             icon: IconName.lock,
           });
-        } else {
+        } else if (commonUser) {
           setLoadingInfo({
             state: 'error',
             message: tHtml(
@@ -279,6 +282,14 @@ export const ItemDetail: FC<ItemDetailProps> = ({
             ),
             icon: IconName.lock,
           });
+        } else {
+          // Logged out => show login page on top of item page with seo info
+          // Only the SEO info will be loaded from the backend
+          // https://meemoo.atlassian.net/browse/AVO-1723
+          setLoadingInfo({
+            state: 'loaded',
+          });
+          // showLoginModal will be true
         }
         return;
       }
@@ -848,8 +859,8 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 
   const defaultRenderActionButtons = () => {
     return (
-      <div className="c-item-detail__action-buttons">
-        <div className="c-item-detail__action-buttons--left">
+      <div className="p-item-detail__action-buttons">
+        <div className="p-item-detail__action-buttons--left">
           {PermissionService.hasPerm(
             commonUser,
             PermissionName.CREATE_COLLECTIONS,
@@ -924,7 +935,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           )}
         </div>
 
-        <div className="c-item-detail__action-buttons--right">
+        <div className="p-item-detail__action-buttons--right">
           {PermissionService.hasPerm(
             commonUser,
             PermissionName.CREATE_BOOKMARKS,
@@ -950,147 +961,12 @@ export const ItemDetail: FC<ItemDetailProps> = ({
     );
   };
 
-  const renderItem = () => {
+  const renderModals = () => {
     if (!item) {
       return null;
     }
-    const englishContentType: AvoContentTypeEnglish =
-      CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[item?.type?.label || 'video'];
-
     return (
       <>
-        <Header
-          title={item.title}
-          category={englishContentType}
-          showMetaData={true}
-          className={clsx('c-item-detail__header', {
-            'c-item-detail__header-mobile': isMobileWidth(),
-          })}
-        >
-          <HeaderContentType
-            category={englishContentType}
-            label={item?.type?.label}
-          >
-            <Spacer margin="bottom">
-              <div className="c-content-type c-content-type--video">
-                <Icon
-                  name={
-                    (item?.type?.id === ContentTypeNumber.audio
-                      ? 'headphone'
-                      : item?.type?.label) as IconName
-                  }
-                />
-                <p>{item?.type?.label}</p>
-              </div>
-            </Spacer>
-          </HeaderContentType>
-          <HeaderMiddleRowRight>
-            <ButtonToolbar>
-              <MetaData category={englishContentType}>
-                <MetaDataItem
-                  label={String(bookmarkViewPlayCounts.viewCount || 0)}
-                  icon={IconName.eye}
-                />
-                {renderBookmarkCount &&
-                  renderBookmarkCount({
-                    label: String(bookmarkViewPlayCounts.bookmarkCount || 0),
-                  })}
-              </MetaData>
-            </ButtonToolbar>
-          </HeaderMiddleRowRight>
-          <HeaderBottomRowLeft>
-            <MetaData category={englishContentType}>
-              {!!item?.organisation?.name && (
-                <MetaDataItem>
-                  <p className="c-body-2 u-text-muted">
-                    {renderSearchLink(item.organisation.name, {
-                      filters: { provider: [item.organisation.name] },
-                    })}
-                  </p>
-                </MetaDataItem>
-              )}
-              {!!item.issued && (
-                <MetaDataItem>
-                  <p className="c-body-2 u-text-muted">
-                    {`${tText(
-                      'item/views/item-detail___uitgezonden-op',
-                    )} ${reorderDate(item.issued || null, '/')}`}
-                  </p>
-                </MetaDataItem>
-              )}
-              {!!item.series && (
-                <MetaDataItem>
-                  <p className="c-body-2 u-text-muted">
-                    <span>{`${tText('item/views/item-detail___reeks')} `}</span>
-                    {renderSearchLink(item.series, {
-                      filters: { serie: [item.series] },
-                    })}
-                  </p>
-                </MetaDataItem>
-              )}
-            </MetaData>
-          </HeaderBottomRowLeft>
-          <HeaderBottomRowRight>
-            {renderInteractiveTour?.()}
-          </HeaderBottomRowRight>
-        </Header>
-        <Container className="c-item-view__main" mode="vertical">
-          <Container mode="horizontal">
-            <ItemVideoDescription
-              itemMetaData={item}
-              showMetadata={false}
-              enableMetadataLink={false}
-              canPlay={!isAddToCollectionModalOpen && !isReportItemModalOpen}
-              verticalLayout={isMobileWidth()}
-              cuePointsVideo={{
-                start: cuePoint ? parseInt(cuePoint.split(',')[0], 10) : null,
-                end: cuePoint ? parseInt(cuePoint.split(',')[1], 10) : null,
-              }}
-              cuePointsLabel={{
-                start: cuePoint ? parseInt(cuePoint.split(',')[0], 10) : null,
-                end: cuePoint ? parseInt(cuePoint.split(',')[1], 10) : null,
-              }}
-              trackPlayEvent={true}
-            />
-            <Grid>
-              <Column size="2-7">
-                <Spacer margin="top-small">
-                  {(renderActionButtons || defaultRenderActionButtons)(item)}
-                </Spacer>
-              </Column>
-              <Column size="2-5">
-                <></>
-              </Column>
-            </Grid>
-            <Grid>
-              <Column size="2-7">
-                <Container mode="vertical" size="small">
-                  <BlockHeading type="h3">
-                    {tText('item/views/item___metadata')}
-                  </BlockHeading>
-                  {renderGeneralMetaData(item)}
-                  {(!!renderEducationLevels(item) ||
-                    renderEducationDegrees(item) ||
-                    renderSubjects(item)) && <div className="c-hr" />}
-                  {renderEducationLevels(item)}
-                  {renderEducationDegrees(item)}
-                  {renderSubjects(item)}
-                  {renderThemas(item)}
-                  {!!renderKeywords(item) && <div className="c-hr" />}
-                  {renderKeywords(item)}
-                </Container>
-              </Column>
-              <Column size="2-5">
-                <Container size="small" mode="vertical">
-                  <BlockHeading type="h3">
-                    {tText('item/views/item___bekijk-ook')}
-                  </BlockHeading>
-                  <ul className="c-media-card-list">{renderRelatedItems()}</ul>
-                </Container>
-              </Column>
-            </Grid>
-          </Container>
-        </Container>
         {!isNil(itemId) &&
           isAddToCollectionModalOpen &&
           PermissionService.hasPerm(
@@ -1197,23 +1073,195 @@ export const ItemDetail: FC<ItemDetailProps> = ({
     );
   };
 
+  const renderHeader = () => {
+    if (!item) {
+      return null;
+    }
+    const englishContentType: AvoContentTypeEnglish =
+      CONTENT_TYPE_TRANSLATIONS_NL_TO_EN[item?.type?.label || 'video'];
+    return (
+      <Header
+        title={item.title}
+        category={englishContentType}
+        showMetaData={true}
+        className={clsx('p-item-detail__header', {
+          'p-item-detail__header-mobile': isMobileWidth(),
+        })}
+      >
+        <HeaderContentType
+          category={englishContentType}
+          label={item?.type?.label}
+        >
+          <Spacer margin="bottom">
+            <div className="c-content-type c-content-type--video">
+              <Icon
+                name={
+                  (item?.type?.id === ContentTypeNumber.audio
+                    ? 'headphone'
+                    : item?.type?.label) as IconName
+                }
+              />
+              <p>{item?.type?.label}</p>
+            </div>
+          </Spacer>
+        </HeaderContentType>
+        <HeaderMiddleRowRight>
+          <ButtonToolbar>
+            <MetaData category={englishContentType}>
+              <MetaDataItem
+                label={String(bookmarkViewPlayCounts.viewCount || 0)}
+                icon={IconName.eye}
+              />
+              {renderBookmarkCount &&
+                renderBookmarkCount({
+                  label: String(bookmarkViewPlayCounts.bookmarkCount || 0),
+                })}
+            </MetaData>
+          </ButtonToolbar>
+        </HeaderMiddleRowRight>
+        <HeaderBottomRowLeft>
+          <MetaData category={englishContentType}>
+            {!!item?.organisation?.name && (
+              <MetaDataItem>
+                <p className="c-body-2 u-text-muted">
+                  {renderSearchLink(item.organisation.name, {
+                    filters: { provider: [item.organisation.name] },
+                  })}
+                </p>
+              </MetaDataItem>
+            )}
+            {!!item.issued && (
+              <MetaDataItem>
+                <p className="c-body-2 u-text-muted">
+                  {`${tText(
+                    'item/views/item-detail___uitgezonden-op',
+                  )} ${reorderDate(item.issued || null, '/')}`}
+                </p>
+              </MetaDataItem>
+            )}
+            {!!item.series && (
+              <MetaDataItem>
+                <p className="c-body-2 u-text-muted">
+                  <span>{`${tText('item/views/item-detail___reeks')} `}</span>
+                  {renderSearchLink(item.series, {
+                    filters: { serie: [item.series] },
+                  })}
+                </p>
+              </MetaDataItem>
+            )}
+          </MetaData>
+        </HeaderBottomRowLeft>
+        <HeaderBottomRowRight>{renderInteractiveTour?.()}</HeaderBottomRowRight>
+      </Header>
+    );
+  };
+
+  const renderMetadata = () => {
+    if (!item) {
+      return null;
+    }
+    return (
+      <Grid>
+        <Column size="2-7">
+          <Container mode="vertical" size="small">
+            <BlockHeading type="h3">
+              {tText('item/views/item___metadata')}
+            </BlockHeading>
+            {renderGeneralMetaData(item)}
+            {(!!renderEducationLevels(item) ||
+              renderEducationDegrees(item) ||
+              renderSubjects(item)) && <div className="c-hr" />}
+            {renderEducationLevels(item)}
+            {renderEducationDegrees(item)}
+            {renderSubjects(item)}
+            {renderThemas(item)}
+            {!!renderKeywords(item) && <div className="c-hr" />}
+            {renderKeywords(item)}
+          </Container>
+        </Column>
+        <Column size="2-5">
+          <Container size="small" mode="vertical">
+            <BlockHeading type="h3">
+              {tText('item/views/item___bekijk-ook')}
+            </BlockHeading>
+            <ul className="c-media-card-list">{renderRelatedItems()}</ul>
+          </Container>
+        </Column>
+      </Grid>
+    );
+  };
+
+  const renderVideoAndDescription = () => {
+    if (!item) {
+      return null;
+    }
+    return (
+      <ItemVideoDescription
+        itemMetaData={item}
+        showMetadata={false}
+        enableMetadataLink={false}
+        canPlay={!isAddToCollectionModalOpen && !isReportItemModalOpen}
+        verticalLayout={isMobileWidth()}
+        cuePointsVideo={{
+          start: cuePoint ? parseInt(cuePoint.split(',')[0], 10) : null,
+          end: cuePoint ? parseInt(cuePoint.split(',')[1], 10) : null,
+        }}
+        cuePointsLabel={{
+          start: cuePoint ? parseInt(cuePoint.split(',')[0], 10) : null,
+          end: cuePoint ? parseInt(cuePoint.split(',')[1], 10) : null,
+        }}
+        trackPlayEvent={true}
+      />
+    );
+  };
+
+  const renderActionButtonBar = () => {
+    if (!item) {
+      return null;
+    }
+    return (
+      <Grid>
+        <Column size="2-7">
+          <Spacer margin="top-small">
+            {(renderActionButtons || defaultRenderActionButtons)(item)}
+          </Spacer>
+        </Column>
+        <Column size="2-5">
+          <></>
+        </Column>
+      </Grid>
+    );
+  };
+
+  const renderItem = () => {
+    return (
+      <div
+        className={clsx(
+          'p-item-detail',
+          showLoginPopup && 'hide-behind-login-popup',
+        )}
+      >
+        {renderHeader()}
+        <Container className="c-item-view__main" mode="vertical">
+          <Container mode="horizontal">
+            {renderVideoAndDescription()}
+            {renderActionButtonBar()}
+            {renderMetadata()}
+          </Container>
+        </Container>
+        {!!item && !showLoginPopup && renderModals()}
+        {showLoginPopup && <RegisterOrLogin />}
+      </div>
+    );
+  };
+
   return (
-    <>
-      <SeoMetadata
-        title={
-          item?.title ||
-          tText('item/views/item-detail___item-detail-pagina-titel-fallback')
-        }
-        description={item?.description || ''}
-        image={item?.seo_image_path}
-      />
-      <LoadingErrorLoadedComponent
-        loadingInfo={loadingInfo}
-        dataObject={item}
-        render={renderItem}
-        notFoundError={tText('item/views/item___dit-item-werd-niet-gevonden')}
-        locationId="item-detail"
-      />
-    </>
+    <LoadingErrorLoadedComponent
+      loadingInfo={loadingInfo}
+      dataObject={item}
+      render={renderItem}
+      notFoundError={tText('item/views/item___dit-item-werd-niet-gevonden')}
+      locationId="item-detail"
+    />
   );
 };

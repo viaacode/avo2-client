@@ -49,7 +49,7 @@ test('T12: Zoeken - zoeken op keyword', async ({ page }) => {
   await page.locator('.c-thumbnail-meta--img-is-loaded').first().click();
 
   // Check title and body contains test
-  await expect(page.locator('h2.c-item-detail__header')).toContainText('Test');
+  await expect(page.locator('h2.p-item-detail__header')).toContainText('Test');
   await expect(page.locator('.c-content').first()).toContainText('test');
 
   // // Wait for close to save the videos
