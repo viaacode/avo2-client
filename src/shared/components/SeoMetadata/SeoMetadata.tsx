@@ -1,7 +1,7 @@
 import { type FC } from 'react';
 
 import './SeoMetadata.scss';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { GENERATE_SITE_TITLE } from '../../../constants.ts';
 
 interface SeoMetadataProps {
