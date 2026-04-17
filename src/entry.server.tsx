@@ -2,8 +2,7 @@
 // @ts-ignore
 import * as React from 'react';
 import { renderToString } from 'react-dom/server';
-import { HelmetProvider } from 'react-helmet-async';
-import type { FilledContext } from 'react-helmet-async';
+import { HelmetProvider, type HelmetServerState } from 'react-helmet-async';
 import { Provider } from 'jotai';
 import {
   createStaticHandler,
@@ -36,7 +35,7 @@ export async function render(
     let router = createStaticRouter(dataRoutes, context);
 
     // Render everything with StaticRouterProvider
-    const helmetContext = {} as FilledContext;
+    const helmetContext: { helmet?: HelmetServerState } = {};
     let html = renderToString(
       <HelmetProvider context={helmetContext}>
         <Provider store={store}>

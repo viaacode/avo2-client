@@ -21,15 +21,14 @@ export const DeleteMyselfFromCollectionContributorsConfirmModal: FC<
 
   const renderDeleteMessage = () => {
     return (
-      <p>
+      <div>
         {tHtml(
           'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-jezelf-van-deze-collectie-wil-wissen',
         )}
-        <br />
         {tHtml(
           'collection/components/modals/delete-collection-modal___deze-operatie-kan-niet-meer-ongedaan-gemaakt-worden',
         )}
-      </p>
+      </div>
     );
   };
 

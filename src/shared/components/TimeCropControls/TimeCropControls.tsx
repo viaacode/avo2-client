@@ -1,4 +1,5 @@
-import { Container, MultiRange, TextInput } from '@viaa/avo2-components';
+import { Container, TextInput } from '@viaa/avo2-components';
+import { MultiRange } from '@meemoo/react-components';
 import { clsx } from 'clsx';
 import { clamp } from 'es-toolkit';
 import { type FC, useEffect, useState } from 'react';
@@ -144,6 +145,9 @@ export const TimeCropControls: FC<TimeCropControlsPops> = ({
           min={minTime}
           max={Math.max(maxTime, minTime + 1)} // Avoid issues with min === 0 and max === 0 with Range library
           step={1}
+          trackColor="rgb(196, 196, 196)"
+          highlightColor="hsl(190, 80%, 40%)"
+          numberInputAriaLabel=""
         />
       </div>
       <TextInput

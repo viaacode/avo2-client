@@ -251,7 +251,6 @@ export const CollectionOrBundleEditContent: FC<
     <Container mode="vertical" className="m-collection-or-bundle-edit-content">
       <Container
         mode="horizontal"
-        key={fragments.map(getFragmentKey).join('_')}
       >
         {renderFragmentEditors()}
       </Container>
