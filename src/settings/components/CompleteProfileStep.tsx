@@ -54,7 +54,7 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
     AvoEducationOrganizationOrganization[]
   >(commonUser?.educationalOrganisations || []);
   const [selectedLoms, setSelectedLoms] = useState<AvoLomLomField[]>(
-    compact(commonUser?.loms.map((lomLink) => lomLink.lom)),
+    compact((commonUser?.loms || []).map((lomLink) => lomLink.lom)),
   );
   const groupedLoms = groupLoms(selectedLoms);
   const firstName = commonUser?.firstName || '';
