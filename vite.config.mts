@@ -45,7 +45,6 @@ export default defineConfig((): UserConfig => {
 		svgrPlugin(),
 		{
 			name: 'transform-env-config',
-			apply: 'build',
 			transformIndexHtml(_) {
 				return [
 					{
