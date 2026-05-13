@@ -16,11 +16,29 @@ export const EnsureUserLoggedInAndProfileComplete: FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  /**
+   * Logout & redirect to the login page when we're logged out on the server
+   */
   useEffect(() => {
     if (loginState?.data?.message === 'LOGGED_OUT') {
       logoutAndRedirectToLogin(location);
     }
   }, [loginState?.data?.message]);
+
+  /**
+   * Redirect to complete profile page
+   */
+  useEffect(() => {
+    if (
+      loginState?.data?.message === 'LOGGED_IN' &&
+      !(
+        isProfileComplete(loginState.data?.commonUserInfo) ||
+        location.pathname === APP_PATH.COMPLETE_PROFILE.route
+      )
+    ) {
+      redirectToClientPage(APP_PATH.COMPLETE_PROFILE.route, navigate);
+    }
+  }, [loginState?.data, location.pathname]);
 
   if (!loginState || loginState.loading) {
     return (
@@ -34,7 +52,6 @@ export const EnsureUserLoggedInAndProfileComplete: FC = () => {
     ) {
       return <Outlet />;
     } else {
-      redirectToClientPage(APP_PATH.COMPLETE_PROFILE.route, navigate);
       return (
         <FullPageSpinner locationId="EnsureUserLoggedInAndProfileComplete-redirecting" />
       );
