@@ -66,32 +66,48 @@ export function isProfileComplete(
   // Only teachers have to fill in their profile for now
   const userGroupId = commonUser.userGroup?.id;
 
-  if (
-    userGroupId === SpecialUserGroupId.TeacherSecondary ||
-    userGroupId === SpecialUserGroupId.TeacherElementary
-  ) {
-    return (
-      !!commonUser &&
-      !!commonUser.educationalOrganisations?.length &&
-      !!commonUser.loms?.find(
-        (lom) => lom.lom?.scheme === AvoLomLomSchemeType.structure,
-      ) &&
-      !!commonUser.loms?.find(
-        (lom) => lom.lom?.scheme === AvoLomLomSchemeType.subject,
-      )
-    );
+  const hasSchool = !!commonUser?.educationalOrganisations?.length;
+  const educationLevels = commonUser.loms?.filter(
+    (lom) => lom.lom?.scheme === AvoLomLomSchemeType.structure,
+  );
+  const hasEducationLevel = !!educationLevels?.length;
+  const hasSubject = !!commonUser.loms?.find(
+    (lom) => lom.lom?.scheme === AvoLomLomSchemeType.subject,
+  );
+  const hasTheme = !!commonUser.loms?.find(
+    (lom) => lom.lom?.scheme === AvoLomLomSchemeType.theme,
+  );
+
+  // Logic is described here:
+  // https://meemoo.atlassian.net/wiki/spaces/AVO2/pages/5379227735#profiel-volledigheid
+  if (userGroupId === SpecialUserGroupId.TeacherSecondary) {
+    return hasSchool && hasEducationLevel && hasSubject;
   }
+  if (userGroupId === SpecialUserGroupId.TeacherElementary) {
+    return hasSchool && hasEducationLevel && hasTheme;
+  }
+
   if (userGroupId === SpecialUserGroupId.Teacher) {
-    return (
-      !!commonUser &&
-      !!commonUser.educationalOrganisations?.length &&
-      !!commonUser.loms?.find(
-        (lom) => lom.lom?.scheme === AvoLomLomSchemeType.structure,
-      ) &&
-      !!commonUser.loms?.find(
-        (lom) => lom.lom?.scheme === AvoLomLomSchemeType.theme,
-      )
-    );
+    if (hasSchool && hasEducationLevel) {
+      const hasElementaryEducationLevel = educationLevels.some(
+        (level) =>
+          level.lom?.id ===
+          'https://w3id.org/onderwijs-vlaanderen/id/structuur/lager-onderwijs',
+      );
+      const hasSecondaryEducationLevel = educationLevels.some(
+        (level) =>
+          level.lom?.id ===
+          'https://w3id.org/onderwijs-vlaanderen/id/structuur/secundair-onderwijs',
+      );
+      if (hasElementaryEducationLevel || hasSecondaryEducationLevel) {
+        // Elementary or secondary has additional required fields
+        return false;
+      } else {
+        // Other education levels do not require additional fields
+        return true;
+      }
+    }
+    return false;
   }
 
   return true;
