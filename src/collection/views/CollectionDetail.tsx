@@ -482,14 +482,14 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
       if (!commonUser) {
         // Not logged in
-        // If thr collection is public, we should still load the metadata
+        // If the collection is public, we should still load the metadata
         let collectionObj: AvoCollectionCollection | null = null;
         try {
           collectionObj =
             await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
               uuid,
               CollectionOrBundle.COLLECTION,
-              undefined,
+              inviteToken || undefined,
             );
         } catch (err) {
           // Ignore errors when fetching collections when user is not logged in
