@@ -203,7 +203,7 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
       }
 
       // Refetch user permissions since education level can change user group
-      // Refresh the login state, so the profile info will be up-to-date
+      // Refresh the login state, so the profile info will be up to date
       await refetchLoginState(true);
       saveNewsletterPreferences();
 
