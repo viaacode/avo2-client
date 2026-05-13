@@ -949,7 +949,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         {bookmarks && (
           <MetaDataItem icon={IconName.bookmark} label={bookmarks} />
         )}
-        <Tooltip position="top">
+        <Tooltip position="top" id="assignment-edit-tooltip-education-level">
           <TooltipTrigger>
             <MetaDataItem icon={IconName.userStudent}>
               <Icon name={IconName.userStudent} />

@@ -203,7 +203,7 @@ export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
               }}
               className="c-text-input__selector"
             />
-            <Tooltip position="top">
+            <Tooltip position="top" id="tooltip-how-copy-css-selector">
               <TooltipTrigger>
                 <span>
                   <Icon

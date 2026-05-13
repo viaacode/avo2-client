@@ -3,16 +3,21 @@ import {
   AvoAssignmentAssignment,
   AvoCollectionCollection,
   AvoCoreContentType,
+  AvoCoreContentTypeId,
   AvoItemItem,
   AvoStillsStillInfo,
   AvoStillsStillRequest,
 } from '@viaa/avo2-types';
 import { compact, isNil, uniq, without } from 'es-toolkit';
-import { ContentTypeNumber } from '../../collection/collection.types';
+
 import { DEFAULT_AUDIO_STILL } from '../constants';
 import { CustomError } from '../helpers/custom-error';
 import { getEnv } from '../helpers/env';
 import { toSeconds } from '../helpers/parsers/duration';
+import {
+  VideoStillRequestBodyDto,
+  VideoStillRequestDto,
+} from './video-stills-service.types.ts';
 
 export class VideoStillService {
   /**
@@ -20,17 +25,18 @@ export class VideoStillService {
    * @param stillRequests list of info objects containing the video id and their desired start time in seconds
    */
   public static async getVideoStills(
-    stillRequests: AvoStillsStillRequest[],
+    stillRequests: VideoStillRequestDto[],
   ): Promise<AvoStillsStillInfo[]> {
     try {
       if (!stillRequests || !stillRequests.length) {
         return [];
       }
-      return fetchWithLogoutJson(`${getEnv('PROXY_URL')}/video-stills`, {
+      const body: VideoStillRequestBodyDto = {
+        requests: stillRequests,
+      };
+      return fetchWithLogoutJson(`${getEnv('PROXY_URL')}/admin/video-stills`, {
         method: 'POST',
-        body: JSON.stringify({
-          requests: stillRequests,
-        }),
+        body: JSON.stringify(body),
       });
     } catch (err) {
       throw new CustomError('Failed to get video stills', err, {
@@ -48,11 +54,11 @@ export class VideoStillService {
    */
   public static async getVideoStill(
     externalId: string,
-    contentType: ContentTypeNumber,
+    contentType: AvoCoreContentTypeId,
     startTime: number,
   ): Promise<string> {
     try {
-      if (contentType === ContentTypeNumber.audio) {
+      if (contentType === AvoCoreContentTypeId.AUDIO) {
         return DEFAULT_AUDIO_STILL;
       }
       const stills = await VideoStillService.getVideoStills([

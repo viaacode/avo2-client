@@ -24,10 +24,7 @@ import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { CollectionService } from '../../../collection/collection.service';
-import {
-  CollectionOrBundle,
-  ContentTypeNumber,
-} from '../../../collection/collection.types';
+import { CollectionOrBundle } from '../../../collection/collection.types';
 import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
 import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
@@ -47,6 +44,7 @@ import {
   AvoCollectionCollection,
   AvoCollectionFragment,
   AvoCoreBlockItemType,
+  AvoCoreContentTypeId,
   AvoItemItem,
   AvoSearchOrderDirection,
 } from '@viaa/avo2-types';
@@ -88,7 +86,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
         0,
         500,
         { created_at: AvoSearchOrderDirection.DESC },
-        ContentTypeNumber.collection,
+        AvoCoreContentTypeId.COLLECTION,
         undefined,
         undefined,
         [
@@ -208,7 +206,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
 
     try {
       const fragment = await getFragment(collection);
-      if (fragment.item_meta?.type_id === ContentTypeNumber.audio) {
+      if (fragment.item_meta?.type_id === AvoCoreContentTypeId.AUDIO) {
         fragment.thumbnail_path = DEFAULT_AUDIO_STILL;
       }
       delete fragment.item_meta;
@@ -255,7 +253,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
         thumbnail_path: null,
         is_public: false,
         owner_profile_id: commonUser?.profileId,
-        type_id: ContentTypeNumber.collection,
+        type_id: AvoCoreContentTypeId.COLLECTION,
       };
       try {
         newCollection.thumbnail_path =

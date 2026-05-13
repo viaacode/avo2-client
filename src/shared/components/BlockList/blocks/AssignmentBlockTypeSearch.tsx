@@ -65,7 +65,10 @@ export const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
             </BlockHeading>
 
             {educationLevelId && (
-              <Tooltip position="bottom">
+              <Tooltip
+                position="bottom"
+                id="assignment-block-type-search--education-level"
+              >
                 <TooltipTrigger>
                   <Pill>
                     <Icon name={IconName.userStudent} />

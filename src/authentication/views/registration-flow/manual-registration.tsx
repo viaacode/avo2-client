@@ -256,7 +256,11 @@ export const ManualRegistration: FC = () => {
               labelFor="email"
             >
               <TextInput id="email *" value={email} onChange={setEmail} />
-              <Tooltip position="bottom" contentClassName="m-email-tooltip">
+              <Tooltip
+                position="bottom"
+                contentClassName="m-email-tooltip"
+                id="tooltip-professional-email-address"
+              >
                 <TooltipTrigger>
                   <span>
                     <Icon

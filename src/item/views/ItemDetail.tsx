@@ -27,6 +27,7 @@ import {
 import {
   AvoContentTypeEnglish,
   AvoCoreContentType,
+  AvoCoreContentTypeId,
   AvoItemItem,
   AvoSearchResultItem,
   PermissionName,
@@ -56,10 +57,7 @@ import {
   loginAtom,
 } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import {
-  CONTENT_TYPE_TRANSLATIONS_NL_TO_EN,
-  ContentTypeNumber,
-} from '../../collection/collection.types';
+import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../collection/collection.types';
 import { APP_PATH } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { type FilterState } from '../../search/search.types';
@@ -1095,7 +1093,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
             <div className="c-content-type c-content-type--video">
               <Icon
                 name={
-                  (item?.type?.id === ContentTypeNumber.audio
+                  (item?.type?.id === AvoCoreContentTypeId.AUDIO
                     ? 'headphone'
                     : item?.type?.label) as IconName
                 }

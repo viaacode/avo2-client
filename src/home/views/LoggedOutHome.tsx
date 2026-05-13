@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { IconName } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
 import { type FC, useEffect } from 'react';
-import { useLoaderData, useNavigate, useSearchParams } from 'react-router';
+import { useLoaderData, useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { useGetContentPageByPath } from '../../admin/content-page/hooks/use-get-content-page-by-path';
 import {
@@ -20,7 +20,6 @@ import { renderWrongUserRoleError } from '../../shared/helpers/render-wrong-user
 import { tText } from '../../shared/helpers/translate-text';
 
 export const LoggedOutHome: FC = () => {
-  const [searchParams] = useSearchParams();
   const location = useLocation();
   const navigateFunc = useNavigate();
   const loginState = useAtomValue(loginAtom);
@@ -93,7 +92,6 @@ export const LoggedOutHome: FC = () => {
           <ContentPageRenderer
             contentPageInfo={contentPageInfo}
             renderNoAccessError={renderWrongUserRoleError}
-            userGroupId={searchParams.get('userGroupId')}
           />
         </>
       )}

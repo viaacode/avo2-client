@@ -15,10 +15,15 @@ import {
   ToolbarItem,
   ToolbarRight,
 } from '@viaa/avo2-components';
-
+import {
+  AvoAssignmentAssignment,
+  AvoCollectionCollection,
+  AvoCollectionFragment,
+  AvoCoreBlockItemType,
+  AvoCoreContentTypeId,
+} from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useState } from 'react';
-
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { tHtml } from '../../../shared/helpers/translate-html';
@@ -27,16 +32,9 @@ import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { CollectionService } from '../../collection.service';
-import { CollectionOrBundle, ContentTypeNumber } from '../../collection.types';
+import { CollectionOrBundle } from '../../collection.types';
 import { canManageEditorial } from '../../helpers/can-manage-editorial';
-
 import './AddToBundleModal.scss';
-import {
-  AvoAssignmentAssignment,
-  AvoCollectionCollection,
-  AvoCollectionFragment,
-  AvoCoreBlockItemType,
-} from '@viaa/avo2-types';
 
 interface AddToBundleModalProps {
   fragmentId: string;
@@ -137,7 +135,6 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
       collection_uuid: bundle.id,
       item_meta: {
         ...fragmentInfo,
-        type_id: ContentTypeNumber.assignment,
       },
       type: fragmentType,
     };
@@ -205,7 +202,7 @@ export const AddToBundleModal: FC<AddToBundleModalProps> = ({
         thumbnail_path: null,
         is_public: false,
         owner_profile_id: commonUser?.profileId,
-        type_id: ContentTypeNumber.bundle,
+        type_id: AvoCoreContentTypeId.BUNDLE,
       };
       try {
         newBundle.thumbnail_path =

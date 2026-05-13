@@ -17,6 +17,7 @@ import {
   AvoCollectionContributor,
   AvoCollectionFragment,
   AvoCoreBlockItemType,
+  AvoCoreContentTypeId,
   AvoSearchOrderDirection,
   AvoUserUser,
   PermissionName,
@@ -96,7 +97,6 @@ import {
   CollectionCreateUpdateTab,
   CollectionMenuAction,
   CollectionOrBundle,
-  ContentTypeNumber,
 } from '../collection.types';
 import {
   onAddContributor,
@@ -345,7 +345,10 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
 
       const newCollection = action.newCollection;
 
-      if (newCollection && newCollection.type_id === ContentTypeNumber.bundle) {
+      if (
+        newCollection &&
+        newCollection.type_id === AvoCoreContentTypeId.BUNDLE
+      ) {
         // Ensure collection fragments come first and then the assignment fragments inside the bundle fragments list
         const orderedBlocks = reorderBlockPositions(
           newCollection?.collection_fragments || [],
@@ -372,7 +375,10 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
       const newCollection = collectionState.initialCollection;
       setUnsavedChanges(false);
 
-      if (newCollection && newCollection.type_id === ContentTypeNumber.bundle) {
+      if (
+        newCollection &&
+        newCollection.type_id === AvoCoreContentTypeId.BUNDLE
+      ) {
         // Ensure collection fragments come first and then the assignment fragments inside the bundle fragments list
         const orderedBlocks = reorderBlockPositions(
           newCollection?.collection_fragments || [],
@@ -1300,7 +1306,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         custom_description: null,
         item_meta: {
           ...(assignmentOrError as AvoAssignmentAssignment),
-          type_id: ContentTypeNumber.assignment,
+          type_id: AvoCoreContentTypeId.ASSIGNMENT,
         },
         collection_uuid: bundleId,
         type: AvoCoreBlockItemType.ASSIGNMENT,

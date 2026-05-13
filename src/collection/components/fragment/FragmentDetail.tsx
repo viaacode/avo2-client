@@ -7,11 +7,14 @@ import { ItemVideoDescription } from '../../../item/components/ItemVideoDescript
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
-import { ContentTypeNumber } from '../../collection.types';
 import { getFragmentProperty } from '../../helpers/fragment';
 
 import './FragmentDetail.scss';
-import { AvoCollectionFragment, AvoItemItem } from '@viaa/avo2-types';
+import {
+  AvoCollectionFragment,
+  AvoCoreContentTypeId,
+  AvoItemItem,
+} from '@viaa/avo2-types';
 
 interface FragmentDetailProps {
   collectionFragment: AvoCollectionFragment;
@@ -42,7 +45,7 @@ export const FragmentDetail: FC<FragmentDetailProps> = ({
     if (
       linkToItems &&
       collectionFragment.item_meta &&
-      [ContentTypeNumber.video, ContentTypeNumber.audio].includes(
+      [AvoCoreContentTypeId.VIDEO, AvoCoreContentTypeId.AUDIO].includes(
         collectionFragment.item_meta.type_id,
       )
     ) {

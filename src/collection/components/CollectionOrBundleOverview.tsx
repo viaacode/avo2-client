@@ -19,6 +19,7 @@ import {
 import {
   AvoCollectionCollection,
   AvoCollectionContributor,
+  AvoCoreContentTypeId,
   AvoSearchOrderDirection,
   AvoShareShareWithColleagueType,
   PermissionName,
@@ -82,7 +83,6 @@ import {
   CollectionMenuAction,
   CollectionOrBundle,
   CollectionShareType,
-  ContentTypeNumber,
 } from '../collection.types';
 import {
   deleteCollection,
@@ -291,8 +291,8 @@ export const CollectionOrBundleOverview: FC<
             COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
           ),
           isCollection
-            ? ContentTypeNumber.collection
-            : ContentTypeNumber.bundle,
+            ? AvoCoreContentTypeId.COLLECTION
+            : AvoCoreContentTypeId.BUNDLE,
           undefined,
           query.selectedShareTypeLabelIds as string[],
         );

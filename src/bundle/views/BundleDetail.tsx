@@ -28,6 +28,7 @@ import {
   AvoContentTypeEnglish,
   AvoCoreBlockItemType,
   AvoCoreContentType,
+  AvoCoreContentTypeId,
   AvoSearchResultItem,
   PermissionName,
 } from '@viaa/avo2-types';
@@ -51,7 +52,6 @@ import {
   BLOCK_TYPE_TO_CONTENT_TYPE,
   CollectionCreateUpdateTab,
   CollectionOrBundle,
-  ContentTypeNumber,
 } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components/modals/PublishCollectionModal';
 import { useGetCollectionOrBundleByIdOrInviteToken } from '../../collection/hooks/useGetCollectionOrBundleByIdOrInviteToken';
@@ -397,7 +397,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 
       defaultGoToDetailLink(navigateFunc)(
         duplicateBundle.id,
-        AvoCoreContentType.BUNDEL,
+        AvoCoreContentType.BUNDLE,
       );
       setBundleId(duplicateBundle.id);
       ToastService.success(
@@ -512,11 +512,11 @@ export const BundleDetail: FC<BundleDetailProps> = ({
         return null;
       }
       const category: AvoContentTypeEnglish =
-        collectionOrAssignment.type_id === ContentTypeNumber.collection
+        collectionOrAssignment.type_id === AvoCoreContentTypeId.COLLECTION
           ? AvoContentTypeEnglish.COLLECTION
           : AvoContentTypeEnglish.ASSIGNMENT;
       const detailRoute =
-        collectionOrAssignment.type_id === ContentTypeNumber.collection
+        collectionOrAssignment.type_id === AvoCoreContentTypeId.COLLECTION
           ? APP_PATH.COLLECTION_DETAIL.route
           : APP_PATH.ASSIGNMENT_DETAIL.route;
       return (
@@ -544,7 +544,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
                   meta={`${collectionOrAssignment?.item_count || 0} items`}
                   label={
                     collectionOrAssignment.type_id ===
-                    ContentTypeNumber.collection
+                    AvoCoreContentTypeId.COLLECTION
                       ? tText('admin/shared/constants/index___collectie')
                       : tText('admin/shared/constants/index___opdracht')
                   }

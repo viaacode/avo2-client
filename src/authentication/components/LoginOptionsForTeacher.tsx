@@ -60,7 +60,10 @@ export const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
           {tText(
             'authentication/components/login-options-for-teacher___is-jouw-account-al-gekoppeld',
           )}
-          <Tooltip position="bottom">
+          <Tooltip
+            position="bottom"
+            id="login-options-for-teacher__account-tooltip"
+          >
             <TooltipTrigger>
               <Icon className="a-info-icon" name={IconName.info} size="small" />
             </TooltipTrigger>

@@ -472,7 +472,10 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
         // Redirect to new url that uses the collection uuid instead of the collection avo1 id
         // and continue loading the collection
-        defaultGoToDetailLink(navigateFunc)(uuid, AvoCoreContentType.COLLECTIE);
+        defaultGoToDetailLink(navigateFunc)(
+          uuid,
+          AvoCoreContentType.COLLECTION,
+        );
         return;
       }
 
@@ -647,7 +650,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   // Listeners
   const onEditCollection = () => {
     navigateFunc(
-      `${generateContentLinkString(AvoCoreContentType.COLLECTIE, `${collectionId}`)}/${
+      `${generateContentLinkString(AvoCoreContentType.COLLECTION, `${collectionId}`)}/${
         ROUTE_PARTS.edit
       }/${CollectionCreateUpdateTab.CONTENT}`,
     );
@@ -694,7 +697,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
           defaultGoToDetailLink(navigateFunc)(
             duplicateCollection.id,
-            AvoCoreContentType.COLLECTIE,
+            AvoCoreContentType.COLLECTION,
           );
           setCollectionId(duplicateCollection.id);
           ToastService.success(

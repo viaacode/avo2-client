@@ -108,7 +108,7 @@ export const SearchResult: FC<SearchResultProps> = ({
         <Spacer margin="bottom-small">
           <Flex justify="between" wrap align="baseline">
             <MetaData category={type}>
-              <Tooltip position="right">
+              <Tooltip position="right" id="search-result--date-tooltip">
                 <TooltipTrigger>
                   <MetaDataItem label={date} />
                 </TooltipTrigger>

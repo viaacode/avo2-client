@@ -79,11 +79,11 @@ export const AssignmentBlockEditItem: FC<
     update: Pick<AvoCollectionFragment, 'start_oc' | 'end_oc'>,
   ) => {
     let thumbnail: string | null = null;
-    if (editableBlock.item_meta?.type_id) {
+    if (editableBlock.item_meta?.type?.id) {
       thumbnail = update.start_oc
         ? await VideoStillService.getVideoStill(
             editableBlock.fragment_id,
-            editableBlock.item_meta.type_id,
+            editableBlock.item_meta.type.id,
             (update?.start_oc || 0) * 1000,
           )
         : null;
@@ -160,6 +160,7 @@ export const AssignmentBlockEditItem: FC<
                 thumbnail_path: block.thumbnail_path ?? null,
                 external_id: editableBlock.fragment_id,
               },
+              index: block.position,
               onConfirm: handleVideoCut,
             })}
           </>

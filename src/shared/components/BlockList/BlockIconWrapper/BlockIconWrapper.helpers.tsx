@@ -1,13 +1,13 @@
-import { AvoCoreBlockItemType } from '@viaa/avo2-types';
-import { ContentTypeNumber } from '../../../../collection/collection.types';
+import { AvoCoreBlockItemType, AvoCoreContentTypeId } from '@viaa/avo2-types';
+
 import { BlockType } from './BlockIconWrapper.consts';
 
 export function getBlockType(
   type: AvoCoreBlockItemType,
-  typeId?: ContentTypeNumber,
+  typeId?: AvoCoreContentTypeId,
 ): BlockType {
   if (type === AvoCoreBlockItemType.ITEM) {
-    if (typeId === ContentTypeNumber.audio) {
+    if (typeId === AvoCoreContentTypeId.AUDIO) {
       return BlockType.AUDIO;
     }
     return BlockType.VIDEO;

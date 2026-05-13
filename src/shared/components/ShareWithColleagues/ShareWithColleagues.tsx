@@ -304,7 +304,10 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
 
                 <div className="c-colleague-info-row__action">
                   {showConflictIcon && assignment?.education_level_id && (
-                    <Tooltip position="top">
+                    <Tooltip
+                      position="top"
+                      id="share-with-colleague__education-level-difference-tooltip"
+                    >
                       <TooltipTrigger>
                         <button className="c-icon-button u-text-muted">
                           <Icon name={IconName.info} />

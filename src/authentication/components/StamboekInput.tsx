@@ -151,7 +151,11 @@ export const StamboekInput: FC<StamboekInputProps> = ({
         value={rawStamboekNumber}
         onChange={setStamboekNumber}
       />
-      <Tooltip position="bottom" contentClassName="m-stamboek-tooltip">
+      <Tooltip
+        position="bottom"
+        contentClassName="m-stamboek-tooltip"
+        id="stamboek-input__stamboek-number-location-tooltip"
+      >
         <TooltipTrigger>
           <span>
             <Icon className="a-info-icon" name={IconName.info} size="small" />

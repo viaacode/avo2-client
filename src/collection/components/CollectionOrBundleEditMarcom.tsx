@@ -20,6 +20,7 @@ import {
 } from '@viaa/avo2-components';
 import {
   AvoCollectionCollection,
+  AvoCoreContentTypeId,
   AvoFileUploadAssetType,
   PermissionName,
 } from '@viaa/avo2-types';
@@ -62,7 +63,6 @@ import { CollectionService } from '../collection.service';
 import {
   CollectionCreateUpdateTab,
   type CollectionMarcomEntry,
-  ContentTypeNumber,
 } from '../collection.types';
 import { useGetKlascementPublishInfo } from '../hooks/useGetKlascementPublishInfo';
 import { usePublishCollectionToKlascement } from '../hooks/usePublishCollectionToKlascement';
@@ -83,7 +83,7 @@ export const CollectionOrBundleEditMarcom: FC<
 > = ({ collection, changeCollectionState, onFocus }) => {
   const commonUser = useAtomValue(commonUserAtom);
 
-  const isCollection = collection.type_id === ContentTypeNumber.collection;
+  const isCollection = collection.type_id === AvoCoreContentTypeId.COLLECTION;
 
   const [marcomDate, setMarcomDate] = useState<Date | null>(new Date());
   const [marcomChannelType, setMarcomChannelType] = useState<string | null>();

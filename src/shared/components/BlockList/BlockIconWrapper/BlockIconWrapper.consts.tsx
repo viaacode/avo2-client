@@ -1,6 +1,5 @@
 import { IconName } from '@viaa/avo2-components';
-import { AvoCoreBlockItemBase } from '@viaa/avo2-types';
-import { ContentTypeNumber } from '../../../../collection/collection.types';
+import { AvoCoreBlockItemBase, AvoCoreContentTypeId } from '@viaa/avo2-types';
 
 export enum BlockType {
   AUDIO = 'AUDIO',
@@ -24,7 +23,7 @@ export const BLOCK_TYPE_TO_ICON_NAME: Record<BlockType, IconName> = {
 
 export function GET_BLOCK_ICON(block: AvoCoreBlockItemBase): IconName {
   if (block.type === 'ITEM') {
-    if (block.item_meta?.type_id === ContentTypeNumber.audio) {
+    if (block.item_meta?.type_id === AvoCoreContentTypeId.AUDIO) {
       return IconName.headphone;
     }
     return IconName.video;
