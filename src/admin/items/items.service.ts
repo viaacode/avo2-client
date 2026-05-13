@@ -325,7 +325,7 @@ export class ItemsService {
     } catch (err) {
       throw new CustomError('Failed to get items by external id', err, {
         externalIds,
-        query: 'GET_ITEMS_BY_EXTERNAL_ID',
+        query: 'GetItemsByExternalIds',
       });
     }
   }

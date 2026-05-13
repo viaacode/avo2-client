@@ -64,10 +64,7 @@ import { APP_PATH } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { type FilterState } from '../../search/search.types';
 import { FragmentShareModal } from '../../shared/components/FragmentShareModal/FragmentShareModal';
-import {
-  LoadingErrorLoadedComponent,
-  type LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { LANGUAGES } from '../../shared/constants';
 import { ROUTE_PARTS } from '../../shared/constants/routes.ts';
 import { buildLink } from '../../shared/helpers/build-link';
@@ -123,6 +120,8 @@ import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { type ItemTrimInfo } from '../item.types';
 import './ItemDetail.scss';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin.tsx';
+import ErrorView from '../../error/views/ErrorView.tsx';
+import FullPageSpinner from '../../shared/components/FullPageSpinner/FullPageSpinner.tsx';
 
 interface ItemDetailProps {
   id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (itemId)
@@ -1234,6 +1233,31 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   };
 
   const renderItem = () => {
+    if (loadingInfo.state === 'loading') {
+      return <FullPageSpinner locationId="item-detail--loading" />;
+    }
+    if (loadingInfo.state === 'error' || loadingInfo.state === 'forbidden') {
+      return (
+        <ErrorView
+          locationId="item-detail--error"
+          message={
+            loadingInfo.message ||
+            tHtml(
+              'shared/components/loading-error-loaded-component/loading-error-loaded-component___er-is-iets-mis-gegaan-bij-het-laden-van-de-gegevens',
+            )
+          }
+          icon={loadingInfo.icon || IconName.alertTriangle}
+          actionButtons={loadingInfo.actionButtons || ['home']}
+        />
+      );
+    }
+    if (loadingInfo.state === 'loaded' && !item && !showLoginPopup) {
+      // Wait for login popup to become true
+      return (
+        <FullPageSpinner locationId="item-detail--loaded-without-object" />
+      );
+    }
+
     return (
       <div
         className={clsx(
@@ -1255,13 +1279,5 @@ export const ItemDetail: FC<ItemDetailProps> = ({
     );
   };
 
-  return (
-    <LoadingErrorLoadedComponent
-      loadingInfo={loadingInfo}
-      dataObject={item}
-      render={renderItem}
-      notFoundError={tText('item/views/item___dit-item-werd-niet-gevonden')}
-      locationId="item-detail"
-    />
-  );
+  return renderItem();
 };
