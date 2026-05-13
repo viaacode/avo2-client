@@ -12,12 +12,12 @@ import {
   ToolbarLeft,
   ToolbarRight,
 } from '@viaa/avo2-components';
+import { AvoAuthLoginResponseLoggedIn } from '@viaa/avo2-types';
 import { last } from 'es-toolkit';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { type FC, type ReactText, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AvoLogoSrc from '../../../assets/images/avo-logo-i.svg';
-
 import { loginAtom } from '../../../authentication/authentication.store';
 import { fetchLoginStateAtom } from '../../../authentication/authentication.store.actions';
 import {
@@ -31,18 +31,15 @@ import {
   getLocation,
   mapNavElementsToNavigationItems,
 } from '../../helpers/navigation';
+import { tHtml } from '../../helpers/translate-html';
+import { tText } from '../../helpers/translate-text';
 import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
 import { useHideZendeskWidget } from '../../hooks/useHideZendeskWidget';
 import { ToastService } from '../../services/toast-service';
 import { type NavigationItemInfo } from '../../types';
-
 import { NavigationBarId } from './Navigation.const';
 import { NavigationItem } from './NavigationItem';
-
 import './Navigation.scss';
-import { AvoAuthLoginResponseLoggedIn } from '@viaa/avo2-types';
-import { tHtml } from '../../helpers/translate-html';
-import { tText } from '../../helpers/translate-text';
 
 type NavigationParams = {
   isPreviewRoute: boolean;
