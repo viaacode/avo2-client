@@ -51,7 +51,7 @@ export const AssignmentDetailSwitcher: FC = () => {
       />
       <AssignmentDetail
         enabledMetaData={ALL_SEARCH_FILTERS}
-        initialAssignment={loaderData?.assignment}
+        initialAssignment={loaderData?.assignment || null}
       />
     </>
   );

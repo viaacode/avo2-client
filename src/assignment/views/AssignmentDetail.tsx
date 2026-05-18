@@ -192,7 +192,9 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 
   // Errors
   const [isForbidden, setIsForbidden] = useState<boolean>(false);
-  const [assignmentLoading, setAssignmentLoading] = useState(true);
+  const [assignmentLoading, setAssignmentLoading] = useState(
+    !initialAssignment,
+  );
   const [assignmentError, setAssignmentError] =
     useState<Partial<ErrorViewQueryParams> | null>(null);
 
@@ -1265,11 +1267,6 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
   };
 
   const renderPageContent = () => {
-    if (!mounted) {
-      // SSR + hydration: render nothing until the client has mounted.
-      // This ensures server and client produce identical HTML during hydration.
-      return null;
-    }
     if (assignmentLoading) {
       return <FullPageSpinner locationId="assignment-detail--loading" />;
     }
