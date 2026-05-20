@@ -1544,15 +1544,18 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         IconName.plus,
         canAddItemToCollectionOrBundle,
       ),
-      ...createDropdownMenuItem(
-        collectionId,
-        CollectionMenuAction.addAssignmentById,
-        tText(
-          'collection/components/collection-or-bundle-edit___voeg-opdracht-toe',
-        ),
-        IconName.plus,
-        canAddAssignmentToBundle,
-      ),
+      // Only show "add assignment by id" option for bundles
+      ...(!isCollection
+        ? createDropdownMenuItem(
+            collectionId,
+            CollectionMenuAction.addAssignmentById,
+            tText(
+              'collection/components/collection-or-bundle-edit___voeg-opdracht-toe',
+            ),
+            IconName.plus,
+            canAddAssignmentToBundle,
+          )
+        : []),
     ];
 
     const isPublic =
