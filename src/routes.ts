@@ -111,7 +111,7 @@ const APP_ROUTES: RouteObject[] = [
     loader: initAppLoader,
     shouldRevalidate: () => false,
     Component: App,
-    hydrateFallbackElement: null, // Explicitly set to null to prevent React Router from creating new DOM during hydration
+    HydrateFallback: FullPageSpinnerPage,
     children: [
       ////////////////////////////////////////////////////////////////////////////////////////
       // ADMIN ROUTES
@@ -150,6 +150,7 @@ const APP_ROUTES: RouteObject[] = [
         loader: passUrlLoader,
         shouldRevalidate: () => false,
         Component: AppClientLayout,
+        HydrateFallback: FullPageSpinnerPage,
         children: [
           ////////////////////////////////////////////////////////////////////////////////////////
           // UNAUTHENTICATED
@@ -172,6 +173,7 @@ const APP_ROUTES: RouteObject[] = [
           {
             id: 'catch-all-route-for-content-pages',
             path: APP_PATH.ALL_ROUTES.route,
+            HydrateFallback: FullPageSpinnerPage,
             loader: fetchContentPageLoader,
             Component: DynamicRouteResolver,
           },
@@ -192,6 +194,7 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
       loader: fetchContentPageLoader,
       shouldRevalidate: () => false,
       Component: LoggedOutHome,
+      HydrateFallback: FullPageSpinnerPage,
       ErrorBoundary: () => ErrorBoundary('LoggedOutHome--route'),
       hasErrorBoundary: true,
     },
@@ -210,6 +213,7 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
       path: APP_PATH.ITEM_DETAIL.route,
       Component: ItemDetailPage,
       loader: fetchItemLoader,
+      HydrateFallback: FullPageSpinnerPage,
       ErrorBoundary: () => ErrorBoundary('ItemDetailRoute--route'),
       hasErrorBoundary: true,
     },
@@ -219,8 +223,9 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
       // https://meemoo.atlassian.net/browse/AVO-1723
       id: 'CollectionDetail',
       path: APP_PATH.COLLECTION_DETAIL.route,
-      loader: fetchCollectionLoader,
       Component: CollectionDetail,
+      loader: fetchCollectionLoader,
+      HydrateFallback: FullPageSpinnerPage,
       ErrorBoundary: () => ErrorBoundary('CollectionDetail--route'),
       hasErrorBoundary: true,
     },
@@ -235,17 +240,19 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
       // Teacher can view the assignment details and manage responses and edit the assignment through an edit button
       Component: AssignmentDetailSwitcher,
       loader: fetchAssignmentLoader,
+      HydrateFallback: FullPageSpinnerPage,
       ErrorBoundary: () => ErrorBoundary('AssignmentDetailSwitcher--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'WorkspaceAssignmentRedirect',
       path: `${APP_PATH.WORKSPACE.route}${APP_PATH.ASSIGNMENT_DETAIL.route}`,
+      Component: FullPageSpinnerPage,
       loader: (props) =>
         redirect(
           `/${ROUTE_PARTS.assignments}/${props.params?.assignmentId}${location.search}`,
         ),
-      Component: FullPageSpinnerPage,
+      HydrateFallback: FullPageSpinnerPage,
       ErrorBoundary: () => ErrorBoundary('WorkspaceAssignmentRedirect--route'),
       hasErrorBoundary: true,
     },
@@ -257,6 +264,7 @@ function getUnauthenticatedClientRoutes(): RouteObject[] {
       path: APP_PATH.BUNDLE_DETAIL.route,
       Component: BundleDetail,
       loader: fetchCollectionLoader,
+      HydrateFallback: FullPageSpinnerPage,
       ErrorBoundary: () => ErrorBoundary('BundleDetail--route'),
       hasErrorBoundary: true,
     },
@@ -601,16 +609,18 @@ function getAdminRoutes(): RouteObject[] {
     {
       id: 'ContentPageEditPage-create',
       path: CONTENT_PAGE_PATH.CONTENT_PAGE_CREATE,
-      loader: passUrlLoader,
       Component: ContentPageEditPage,
+      loader: passUrlLoader,
+      HydrateFallback: FullPageSpinnerPage,
       ErrorBoundary: () => ErrorBoundary('ContentPageEditPage-create--route'),
       hasErrorBoundary: true,
     },
     {
       id: 'ContentPageEditPage-edit',
       path: CONTENT_PAGE_PATH.CONTENT_PAGE_EDIT,
-      loader: passUrlLoader,
       Component: ContentPageEditPage,
+      loader: passUrlLoader,
+      HydrateFallback: FullPageSpinnerPage,
       ErrorBoundary: () => ErrorBoundary('ContentPageEditPage-edit--route'),
       hasErrorBoundary: true,
     },
