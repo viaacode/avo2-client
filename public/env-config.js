@@ -6,6 +6,12 @@ window._ENV_ = {
 	PROXY_URL: 'http://localhost:3000',
 	ZENDESK_KEY: '6bfc8294-ce0c-4e40-92de-35b855c49a84',
 	KLASCEMENT_URL: 'https://www.klascement.net',
-	LDAP_DASHBOARD_PEOPLE_URL: 'https://acm-int-iam.private.cloud.meemoo.be/people',
-	ENABLE_LOG_CLIENT_REDIRECTS: 'true'
+	ENABLE_LOG_CLIENT_REDIRECTS: 'true',
+	SSUM_ACCOUNT_EDIT_URL: 'https://account-qas.hetarchief.be/account/wijzig',
+	SSUM_PASSWORD_EDIT_URL: 'https://account-qas.hetarchief.be/users/password/new?redirect_to\\=https://onderwijs.hetarchief.be/start',
+	LDAP_DASHBOARD_PEOPLE_URL: 'https://acm-qas-iam.private.cloud.meemoo.be/people',
+	GOOGLE_ANALYTICS_ID: 'GTM-5PGQKPF',
+	KEYCLOAK_ACCOUNT_EDIT_URL:'',
+	KEYCLOAK_PASSWORD_EDIT_URL:'',
+	USE_KEYCLOAK_INSTEAD_OF_SSUM:'true',
 };

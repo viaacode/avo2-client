@@ -19,14 +19,13 @@ import { ErrorView } from '../../error/views/ErrorView';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { Users_Idps_Enum } from '../../shared/generated/graphql-db-types';
-import { getEnv } from '../../shared/helpers/env';
+import { getKeycloackEnv} from '../../shared/helpers/env';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { isPupil } from '../../shared/helpers/is-pupil';
 import { tHtml } from '../../shared/helpers/translate-html';
-import { tText } from '../../shared/helpers/translate-text'; // const ssumAccountEditPage = getEnv('SSUM_ACCOUNT_EDIT_URL') as string;
+import { tText } from '../../shared/helpers/translate-text';
 
-// const ssumAccountEditPage = getEnv('SSUM_ACCOUNT_EDIT_URL') as string;
-const ssumPasswordEditPage = getEnv('SSUM_PASSWORD_EDIT_URL') as string;
+const passwordEditPage = getKeycloackEnv('KEYCLOAK_PASSWORD_EDIT_URL', 'SSUM_PASSWORD_EDIT_URL') as string;
 
 export const Account: FC = () => {
   const commonUser = useAtomValue(commonUserAtom);
@@ -84,7 +83,7 @@ export const Account: FC = () => {
                         type="secondary"
                         onClick={() =>
                           redirectToExternalPage(
-                            `${ssumPasswordEditPage}&email=${commonUser?.email}`,
+                            `${passwordEditPage}&email=${commonUser?.email}`,
                             null,
                           )
                         }
