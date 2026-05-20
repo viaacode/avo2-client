@@ -103,7 +103,7 @@ export const SearchResult: FC<SearchResultProps> = ({
           )}
         </Flex>
         <p className="c-search-result__description">
-          {description.slice(0, maxDescriptionLength)}
+          {description.slice(0, maxDescriptionLength) + '...'}
         </p>
         <Spacer margin="bottom-small">
           <Flex justify="between" wrap align="baseline">
