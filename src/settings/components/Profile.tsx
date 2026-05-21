@@ -40,7 +40,7 @@ import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { CustomError } from '../../shared/helpers/custom-error';
-import { getEnv } from '../../shared/helpers/env';
+import { getEnv, getKeycloackEnv } from '../../shared/helpers/env';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { groupLomLinks, groupLoms } from '../../shared/helpers/lom';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
@@ -504,7 +504,7 @@ export const Profile: FC = () => {
 
   const generateEditProfileInfoLink = () => {
     return stringifyUrl({
-      url: getEnv('SSUM_ACCOUNT_EDIT_URL') || '',
+      url: getKeycloackEnv('KEYCLOAK_ACCOUNT_EDIT_URL', 'SSUM_ACCOUNT_EDIT_URL') || '',
       query: {
         redirect_to: stringifyUrl({
           url: getEnv('PROXY_URL') + '/' + SERVER_LOGOUT_PAGE,
