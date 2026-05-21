@@ -91,14 +91,6 @@ export type UpdateInteractiveTourMutationVariables = Exact<{
 
 export type UpdateInteractiveTourMutation = { __typename?: 'mutation_root', update_app_interactive_tour?: { __typename?: 'app_interactive_tour_mutation_response', affected_rows: number } | null };
 
-export type DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables = Exact<{
-  itemExternalId: Scalars['bpchar'];
-  itemUid: Scalars['uuid'];
-}>;
-
-
-export type DeleteItemFromCollectionBookmarksAndAssignmentsMutation = { __typename?: 'mutation_root', delete_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number } | null, delete_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null };
-
 export type GetDistinctSeriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -144,25 +136,6 @@ export type GetUnpublishedItemsWithFiltersQueryVariables = Exact<{
 
 export type GetUnpublishedItemsWithFiltersQuery = { __typename?: 'query_root', shared_items: Array<{ __typename?: 'shared_items', id: number, pid: string, updated_at: any, title?: string | null, status?: any | null, item_meta?: { __typename?: 'app_item_meta', id: number, external_id: any, uid: any, is_published?: boolean | null, is_deleted?: boolean | null } | null }>, shared_items_aggregate: { __typename?: 'shared_items_aggregate', aggregate?: { __typename?: 'shared_items_aggregate_fields', count: number } | null } };
 
-export type GetUserWithEitherBookmarkQueryVariables = Exact<{
-  oldItemUid: Scalars['uuid'];
-  newItemUid: Scalars['uuid'];
-}>;
-
-
-export type GetUserWithEitherBookmarkQuery = { __typename?: 'query_root', users_profiles: Array<{ __typename?: 'users_profiles', id: any, item_bookmarks_aggregate: { __typename?: 'app_item_bookmarks_aggregate', aggregate?: { __typename?: 'app_item_bookmarks_aggregate_fields', count: number } | null } }> };
-
-export type ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables = Exact<{
-  oldItemUid: Scalars['uuid'];
-  oldItemExternalId: Scalars['bpchar'];
-  newItemUid: Scalars['uuid'];
-  newItemExternalId: Scalars['bpchar'];
-  usersWithBothBookmarks: Array<Scalars['uuid']> | Scalars['uuid'];
-}>;
-
-
-export type ReplaceItemInCollectionsBookmarksAndAssignmentsMutation = { __typename?: 'mutation_root', update_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number } | null, update_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null, delete_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null, update_app_assignment_blocks_v2?: { __typename?: 'app_assignment_blocks_v2_mutation_response', affected_rows: number } | null, update_app_pupil_collection_blocks?: { __typename?: 'app_pupil_collection_blocks_mutation_response', affected_rows: number } | null };
-
 export type SetSharedItemsStatusMutationVariables = Exact<{
   pids: Array<Scalars['String']> | Scalars['String'];
   status?: InputMaybe<Scalars['item_publishing_status']>;
@@ -170,22 +143,6 @@ export type SetSharedItemsStatusMutationVariables = Exact<{
 
 
 export type SetSharedItemsStatusMutation = { __typename?: 'mutation_root', update_shared_items?: { __typename?: 'shared_items_mutation_response', affected_rows: number } | null };
-
-export type UpdateItemDepublishReasonMutationVariables = Exact<{
-  itemUuid: Scalars['uuid'];
-  reason?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type UpdateItemDepublishReasonMutation = { __typename?: 'mutation_root', update_app_item_meta?: { __typename?: 'app_item_meta_mutation_response', affected_rows: number } | null };
-
-export type UpdateItemPublishedStateMutationVariables = Exact<{
-  itemUuid: Scalars['uuid'];
-  isPublished: Scalars['Boolean'];
-}>;
-
-
-export type UpdateItemPublishedStateMutation = { __typename?: 'mutation_root', update_app_item_meta?: { __typename?: 'app_item_meta_mutation_response', affected_rows: number } | null };
 
 export type GetTranslationsQueryVariables = Exact<{ [key: string]: never; }>;
 

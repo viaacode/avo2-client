@@ -109,3 +109,9 @@ export interface ItemUsedByResponse {
 }
 
 export type ItemUsedByColumnId = keyof ItemUsedByEntry;
+
+export enum DepublishType {
+  DEPUBLISH = 'depublish',
+  DEPUBLISH_WITH_REASON = 'depublish_with_reason',
+  DEPUBLISH_WITH_REPLACEMENT = 'depublish_with_replacement',
+}
