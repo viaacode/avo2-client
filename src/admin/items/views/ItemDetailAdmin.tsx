@@ -107,7 +107,9 @@ export const ItemDetailAdmin: FC = () => {
     data: item,
     isLoading: itemIsLoading,
     refetch: refetchItem,
-  } = useGetItemWithRelations(itemUuid as string, { enabled: !!itemUuid });
+  } = useGetItemWithRelations(itemUuid as string, true, false, {
+    enabled: !!itemUuid,
+  });
   const { data: itemUsedBy, isError: itemUsedByIsError } = useGetItemUsedBy(
     {
       itemUuid: itemUuid as string,

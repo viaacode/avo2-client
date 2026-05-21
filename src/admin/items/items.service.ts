@@ -147,6 +147,7 @@ export class ItemsService {
   public static async fetchItemByUuid(
     uuid: string,
     withRelations: boolean,
+    censorUnpublishedItems: boolean = true,
   ): Promise<AvoItemItem> {
     let url: string | null = null;
     try {
@@ -157,6 +158,7 @@ export class ItemsService {
         url: `${getEnv('PROXY_URL')}/items/${uuid}`,
         query: {
           withRelations,
+          censorUnpublishedItems,
         },
       });
       return await fetchWithLogoutJson<AvoItemItem>(url);
@@ -350,6 +352,7 @@ export class ItemsService {
         const replacementItem = await ItemsService.fetchItemByUuid(
           replacedByItemUid,
           false,
+          true,
         );
         return { ...replacementItem, replacement_for: externalId };
       }
