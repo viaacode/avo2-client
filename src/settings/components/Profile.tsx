@@ -88,7 +88,6 @@ export const Profile: FC = () => {
   const firstName = commonUser?.firstName || '';
   const lastName = commonUser?.lastName || '';
   const email = commonUser?.email || '';
-  const [alias, setAlias] = useState<string>(commonUser?.alias ?? '');
   const [avatar, setAvatar] = useState<string | null>(
     commonUser?.avatar || null,
   );
@@ -104,9 +103,6 @@ export const Profile: FC = () => {
   const [uiPermissions, setUiPermissions] = useState<FieldPermissions | null>(
     null,
   );
-  const [profileErrors, setProfileErrors] = useState<
-    Partial<{ [prop in keyof AvoUserUpdateProfileValues]: string }>
-  >({});
   const [usersInSameCompany, setUsersInSameCompany] = useState<
     Partial<AvoUserProfile>[]
   >([]);
@@ -315,7 +311,6 @@ export const Profile: FC = () => {
       const newProfileInfo: Partial<AvoUserUpdateProfileValues> = {
         firstName,
         lastName,
-        alias,
         title,
         bio,
         userId: commonUser.userId,
@@ -339,19 +334,6 @@ export const Profile: FC = () => {
         await SettingsService.updateProfileInfo(newProfileInfo);
       } catch (err) {
         setIsSaving(false);
-        if (JSON.stringify(err).includes('DUPLICATE_ALIAS')) {
-          ToastService.danger(
-            tText(
-              'settings/components/profile___deze-schermnaam-is-reeds-in-gebruik',
-            ),
-          );
-          setProfileErrors({
-            alias: tText(
-              'settings/components/profile___schermnaam-is-reeds-in-gebruik',
-            ),
-          });
-          return;
-        }
         throw err;
       }
 
@@ -504,7 +486,9 @@ export const Profile: FC = () => {
 
   const generateEditProfileInfoLink = () => {
     return stringifyUrl({
-      url: getKeycloackEnv('KEYCLOAK_ACCOUNT_EDIT_URL', 'SSUM_ACCOUNT_EDIT_URL') || '',
+      url:
+        getKeycloackEnv('KEYCLOAK_ACCOUNT_EDIT_URL', 'SSUM_ACCOUNT_EDIT_URL') ||
+        '',
       query: {
         redirect_to: stringifyUrl({
           url: getEnv('PROXY_URL') + '/' + SERVER_LOGOUT_PAGE,
@@ -553,20 +537,6 @@ export const Profile: FC = () => {
                         labelFor="email"
                       >
                         {email}
-                      </FormGroup>
-                      <FormGroup
-                        label={tText('settings/components/profile___nickname')}
-                        labelFor="alias"
-                        error={profileErrors?.alias}
-                      >
-                        <TextInput
-                          id="alias"
-                          placeholder={tText(
-                            'settings/components/profile___een-unieke-gebruikersnaam',
-                          )}
-                          value={alias || ''}
-                          onChange={setAlias}
-                        />
                       </FormGroup>
                       <FormGroup
                         label={tText('settings/components/profile___functie')}
@@ -740,5 +710,3 @@ export const Profile: FC = () => {
     </>
   );
 };
-
-export default Profile;

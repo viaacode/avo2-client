@@ -743,9 +743,7 @@ export const GetBookmarkedCollectionsByOwnerDocument = `
       owner_profile_id
       profile {
         id
-        alias
         title
-        alternative_email
         avatar
         organisation {
           logo_url
@@ -955,9 +953,7 @@ export const GetCollectionsByOwnerOrContributorDocument = `
     collaborator_profile_id
     profile {
       id
-      alias
       title
-      alternative_email
       avatar
       organisation {
         logo_url
