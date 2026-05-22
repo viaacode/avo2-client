@@ -1364,7 +1364,8 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   };
 
   const renderCollectionBody = () => {
-    const { collection_fragments } = collection as AvoCollectionCollection;
+    const collection_fragments =
+      (collection as AvoCollectionCollection)?.collection_fragments || [];
     const hasCopies = (collection?.relations || []).length > 0;
     const hasParentBundles = !!bundlesContainingCollection?.length;
 
@@ -1464,7 +1465,8 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   };
 
   const renderModals = () => {
-    const { collection_fragments } = collection as AvoCollectionCollection;
+    const collection_fragments =
+      (collection as AvoCollectionCollection)?.collection_fragments || [];
 
     return (
       <>
@@ -1535,9 +1537,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
               setIsQuickLaneModalOpen(false);
             }}
             onUpdate={(newCollection) => {
-              if (
-                (collection as AvoCollectionCollection).collection_fragments
-              ) {
+              if (collection_fragments) {
                 setCollectionInfo((oldCollectionInfo) => ({
                   showNoAccessPopup:
                     oldCollectionInfo?.showNoAccessPopup || false,

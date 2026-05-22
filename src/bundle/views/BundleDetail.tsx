@@ -127,6 +127,10 @@ export const BundleDetail: FC<BundleDetailProps> = ({
   const loginState = useAtomValue(loginAtom);
   // State
   const [bundleId, setBundleId] = useState(id || bundleIdFromUrl);
+
+  useEffect(() => {
+    setBundleId(id || bundleIdFromUrl);
+  }, [id, bundleIdFromUrl]);
   const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
@@ -740,12 +744,8 @@ export const BundleDetail: FC<BundleDetailProps> = ({
               />
             )}
           </Grid>
-          {(relatedItems?.length || 0) > 0 && (
-            <>
-              <hr className="c-hr" />
-              {renderRelatedItems(relatedItems, defaultRenderDetailLink)}
-            </>
-          )}
+          {(relatedItems?.length || 0) > 0 &&
+            renderRelatedItems(relatedItems, defaultRenderDetailLink)}
         </Container>
       </Container>
     );
