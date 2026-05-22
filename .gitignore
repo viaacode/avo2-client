@@ -270,3 +270,5 @@ graphql.config.yml
 !/scripts/copy-robots-txt-file.js
 
 .claude/
+
+public/env-config.js
