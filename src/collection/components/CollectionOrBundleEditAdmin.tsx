@@ -70,7 +70,7 @@ export const CollectionOrBundleEditAdmin: FC<
     useState<AvoSearchOrderDirection>(AvoSearchOrderDirection.ASC);
 
   // Computed
-  const isCollection: boolean = collection.type_id === 3;
+  const isCollection: boolean = collection.type?.id === 3;
 
   const fetchQualityLabels = useCallback(async () => {
     try {

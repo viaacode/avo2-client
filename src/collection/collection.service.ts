@@ -391,7 +391,7 @@ export class CollectionService {
         ...(updatePromises as Promise<any>[]),
       ]);
 
-      if (newCollection.type_id === AvoCoreContentTypeId.COLLECTION) {
+      if (newCollection.type?.id === AvoCoreContentTypeId.COLLECTION) {
         // determine new thumbnail path since videos could have changed order / been deleted
         newCollection.thumbnail_path =
           await this.getThumbnailPathForCollection(newCollection);

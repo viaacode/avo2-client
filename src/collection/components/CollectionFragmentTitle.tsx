@@ -36,9 +36,9 @@ export const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({
     canClickHeading &&
     block &&
     block.type === AvoCoreBlockItemType.ITEM &&
-    block.item_meta?.type_id &&
+    block.item_meta?.type?.id &&
     [AvoCoreContentTypeId.VIDEO, AvoCoreContentTypeId.AUDIO].includes(
-      block.item_meta?.type_id,
+      block.item_meta?.type?.id,
     )
   ) {
     const link = buildLink(APP_PATH.ITEM_DETAIL.route, {

@@ -83,7 +83,7 @@ export const CollectionOrBundleEditMarcom: FC<
 > = ({ collection, changeCollectionState, onFocus }) => {
   const commonUser = useAtomValue(commonUserAtom);
 
-  const isCollection = collection.type_id === AvoCoreContentTypeId.COLLECTION;
+  const isCollection = collection.type?.id === AvoCoreContentTypeId.COLLECTION;
 
   const [marcomDate, setMarcomDate] = useState<Date | null>(new Date());
   const [marcomChannelType, setMarcomChannelType] = useState<string | null>();

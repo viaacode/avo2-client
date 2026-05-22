@@ -18,7 +18,6 @@ query getBookmarkedCollectionsByOwner(
     bookmarkedCollection {
       id
       updated_at
-      type_id
       type {
         label
         id

@@ -23,7 +23,7 @@ export const BLOCK_TYPE_TO_ICON_NAME: Record<BlockType, IconName> = {
 
 export function GET_BLOCK_ICON(block: AvoCoreBlockItemBase): IconName {
   if (block.type === 'ITEM') {
-    if (block.item_meta?.type_id === AvoCoreContentTypeId.AUDIO) {
+    if (block.item_meta?.type?.id === AvoCoreContentTypeId.AUDIO) {
       return IconName.headphone;
     }
     return IconName.video;

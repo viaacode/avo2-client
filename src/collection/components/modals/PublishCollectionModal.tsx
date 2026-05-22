@@ -11,7 +11,10 @@ import {
   ToolbarItem,
   ToolbarRight,
 } from '@viaa/avo2-components';
-import { AvoCollectionCollection } from '@viaa/avo2-types';
+import {
+  AvoCollectionCollection,
+  AvoCoreContentTypeId,
+} from '@viaa/avo2-types';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactNode, useEffect, useState } from 'react';
 import { commonUserAtom } from '../../../authentication/authentication.store';
@@ -49,7 +52,7 @@ export const PublishCollectionModal: FC<PublishCollectionModalProps> = ({
   );
 
   const isCollection = () => {
-    return collection.type_id === 3;
+    return collection.type?.id === AvoCoreContentTypeId.COLLECTION;
   };
 
   useEffect(() => {

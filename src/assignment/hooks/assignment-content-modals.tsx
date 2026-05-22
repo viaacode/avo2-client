@@ -179,10 +179,10 @@ export function useBlockListModals(
                     ? itemTrimInfo.fragmentEndTime
                     : null,
                   thumbnail_path:
-                    itemTrimInfo.hasCut && item?.type_id
+                    itemTrimInfo.hasCut && item?.type?.id
                       ? await VideoStillService.getVideoStill(
                           item.external_id,
-                          item.type_id,
+                          item.type.id,
                           itemTrimInfo.fragmentStartTime * 1000,
                         )
                       : null,

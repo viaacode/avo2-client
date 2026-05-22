@@ -733,7 +733,6 @@ export const GetBookmarkedCollectionsByOwnerDocument = `
     bookmarkedCollection {
       id
       updated_at
-      type_id
       type {
         label
         id
@@ -942,7 +941,6 @@ export const GetCollectionsByOwnerOrContributorDocument = `
   ) {
     id
     updated_at
-    type_id
     type {
       label
       id
@@ -2202,7 +2200,6 @@ export const GetItemBookmarksForUserDocument = `
           }
           is_deleted
           is_published
-          type_id
           type {
             id
             label

@@ -16,7 +16,7 @@ export function getFlowPlayerPoster(
   thumbnail: string | null | undefined,
   itemMeta: AvoItemItem | AvoCollectionCollection | undefined,
 ): string | undefined {
-  if (itemMeta?.type_id === AvoCoreContentTypeId.AUDIO) {
+  if (itemMeta?.type?.id === AvoCoreContentTypeId.AUDIO) {
     return DEFAULT_AUDIO_STILL;
   }
   return thumbnail || itemMeta?.thumbnail_path || undefined;

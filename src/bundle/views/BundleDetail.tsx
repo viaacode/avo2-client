@@ -511,16 +511,16 @@ export const BundleDetail: FC<BundleDetailProps> = ({
     return bundleFragments.map((fragment: AvoCollectionFragment) => {
       const collectionOrAssignment = fragment.item_meta as
         | AvoCollectionCollection
-        | (AvoAssignmentAssignment & { type_id: number });
+        | (AvoAssignmentAssignment & { type: { id: number } });
       if (!collectionOrAssignment) {
         return null;
       }
       const category: AvoContentTypeEnglish =
-        collectionOrAssignment.type_id === AvoCoreContentTypeId.COLLECTION
+        collectionOrAssignment.type?.id === AvoCoreContentTypeId.COLLECTION
           ? AvoContentTypeEnglish.COLLECTION
           : AvoContentTypeEnglish.ASSIGNMENT;
       const detailRoute =
-        collectionOrAssignment.type_id === AvoCoreContentTypeId.COLLECTION
+        collectionOrAssignment.type?.id === AvoCoreContentTypeId.COLLECTION
           ? APP_PATH.COLLECTION_DETAIL.route
           : APP_PATH.ASSIGNMENT_DETAIL.route;
       return (
@@ -547,7 +547,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
                   src={collectionOrAssignment.thumbnail_path || undefined}
                   meta={`${collectionOrAssignment?.item_count || 0} items`}
                   label={
-                    collectionOrAssignment.type_id ===
+                    collectionOrAssignment.type?.id ===
                     AvoCoreContentTypeId.COLLECTION
                       ? tText('admin/shared/constants/index___collectie')
                       : tText('admin/shared/constants/index___opdracht')

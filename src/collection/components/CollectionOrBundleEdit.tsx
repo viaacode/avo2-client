@@ -347,7 +347,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
 
       if (
         newCollection &&
-        newCollection.type_id === AvoCoreContentTypeId.BUNDLE
+        newCollection.type?.id === AvoCoreContentTypeId.BUNDLE
       ) {
         // Ensure collection fragments come first and then the assignment fragments inside the bundle fragments list
         const orderedBlocks = reorderBlockPositions(
@@ -377,7 +377,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
 
       if (
         newCollection &&
-        newCollection.type_id === AvoCoreContentTypeId.BUNDLE
+        newCollection.type?.id === AvoCoreContentTypeId.BUNDLE
       ) {
         // Ensure collection fragments come first and then the assignment fragments inside the bundle fragments list
         const orderedBlocks = reorderBlockPositions(

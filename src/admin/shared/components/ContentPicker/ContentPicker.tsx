@@ -11,8 +11,8 @@ import {
   AvoCoreContentPickerType,
   AvoFileUploadAssetType,
 } from '@viaa/avo2-types';
-import { isNull } from 'es-toolkit';
-import { type FC, useCallback, useEffect, useState } from 'react';
+import { debounce, isNull, noop } from 'es-toolkit';
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import ReactSelect from 'react-select';
 import AsyncSelect from 'react-select/async';
 
@@ -136,11 +136,33 @@ export const ContentPicker: FC<ContentPickerProps> = ({
     },
     [selectedType, hasAppliedInitialItem, initialValue],
   );
+  const fetchPickerOptionsDebounced = useMemo(
+    () =>
+      debounce(
+        async (keyword: string, callback: (options: PickerItem[]) => void) => {
+          const options = await fetchPickerOptions(keyword);
+          callback(options);
+        },
+        600,
+      ),
+    [fetchPickerOptions],
+  );
 
-  // when selecting a type, reset `selectedItem` and retrieve new item options
+  /**
+   * Cleanup the debounce handlers when the component unloads
+   */
   useEffect(() => {
-    fetchPickerOptions(null);
-  }, [fetchPickerOptions]);
+    return () => {
+      fetchPickerOptionsDebounced.cancel?.();
+    };
+  }, [fetchPickerOptionsDebounced]);
+
+  /**
+   * When selecting a type, reset `selectedItem` and retrieve new item options
+   */
+  useEffect(() => {
+    fetchPickerOptionsDebounced('', noop);
+  }, [fetchPickerOptionsDebounced]);
 
   // during the first update of `itemOptions`, set the initial value of the item picker
   useEffect(() => {
@@ -172,24 +194,11 @@ export const ContentPicker: FC<ContentPickerProps> = ({
 
     const value = (selectedItem as PickerItem)?.value || null;
 
-    // if value of selected item is `null`, throw error
+    // if value of selected item is `null`, reset `selectedItem`
+    // This happens when you click the cross-icon in the react-select
     if (!value) {
       propertyChanged('value', null);
       setSelectedItem(null);
-      console.error(
-        new CustomError(
-          '[Content Picker] - Selected item has no value.',
-          null,
-          {
-            selectedItem,
-          },
-        ),
-      );
-      ToastService.danger(
-        tHtml(
-          'admin/shared/components/content-picker/content-picker___voor-deze-content-pagina-is-geen-pad-geconfigureerd',
-        ),
-      );
       return null;
     }
 
@@ -325,14 +334,14 @@ export const ContentPicker: FC<ContentPickerProps> = ({
           'admin/shared/components/content-picker/content-picker___selecteer-een-item',
         )
       }
-      loadOptions={fetchPickerOptions}
+      loadOptions={fetchPickerOptionsDebounced}
       onChange={(newSelectedOption: unknown) =>
         onSelectItem(newSelectedOption as PickerItem)
       }
-      onFocus={() => fetchPickerOptions(null)}
       value={selectedItem}
       defaultOptions={itemOptions as any} // TODO: type
       isClearable
+      cacheOptions
       noOptionsMessage={() =>
         tText(
           'admin/shared/components/content-picker/content-picker___geen-resultaten',

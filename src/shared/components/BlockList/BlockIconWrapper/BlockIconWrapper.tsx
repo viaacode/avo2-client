@@ -9,14 +9,14 @@ interface BlockIconWrapperProps {
   backgroundColor?: string;
   key: string | number; // Needs to be defined where you use the component
   type: AvoCoreBlockItemType;
-  type_id?: AvoCoreContentTypeId;
+  typeId?: AvoCoreContentTypeId;
   children: ReactNode;
 }
 
 export const BlockIconWrapper: FC<BlockIconWrapperProps> = ({
   backgroundColor = '#fff',
   type,
-  type_id,
+  typeId,
   children,
 }) => {
   return (
@@ -29,7 +29,7 @@ export const BlockIconWrapper: FC<BlockIconWrapperProps> = ({
           <div className="c-icon-bar">
             <div className="c-icon-bar__sidebar">
               <Icon
-                name={BLOCK_TYPE_TO_ICON_NAME[getBlockType(type, type_id)]}
+                name={BLOCK_TYPE_TO_ICON_NAME[getBlockType(type, typeId)]}
               />
             </div>
             <div className="c-icon-bar__content">{children}</div>

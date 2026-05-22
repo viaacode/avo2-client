@@ -191,7 +191,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
       thumbnail_path: fragmentStartTime
         ? await VideoStillService.getVideoStill(
             externalId,
-            itemMetaData.type_id,
+            itemMetaData.type?.id,
             fragmentStartTime * 1000,
           )
         : null,
@@ -206,7 +206,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
 
     try {
       const fragment = await getFragment(collection);
-      if (fragment.item_meta?.type_id === AvoCoreContentTypeId.AUDIO) {
+      if (fragment.item_meta?.type?.id === AvoCoreContentTypeId.AUDIO) {
         fragment.thumbnail_path = DEFAULT_AUDIO_STILL;
       }
       delete fragment.item_meta;
