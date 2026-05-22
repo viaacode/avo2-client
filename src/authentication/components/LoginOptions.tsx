@@ -39,7 +39,7 @@ export const LoginOptions: FC<LoginOptionsProps> = ({
       },
       {
         label: tText('authentication/components/login-options___leerling'),
-        id: LoginOptionsTabs.STUDENT,
+        id: LoginOptionsTabs.PUPIL,
         icon: IconName.userStudent,
       },
     ],
@@ -64,7 +64,7 @@ export const LoginOptions: FC<LoginOptionsProps> = ({
           'authentication/components/login-options___log-in-als-lesgever',
         );
 
-      case LoginOptionsTabs.STUDENT:
+      case LoginOptionsTabs.PUPIL:
         return tHtml(
           'authentication/components/login-options___log-in-als-leerling',
         );
@@ -84,7 +84,7 @@ export const LoginOptions: FC<LoginOptionsProps> = ({
           />
         );
 
-      case LoginOptionsTabs.STUDENT:
+      case LoginOptionsTabs.PUPIL:
         return (
           <LoginOptionsForPupil
             onOptionClicked={handleOnLoginOptionClick}
@@ -130,7 +130,7 @@ export const LoginOptions: FC<LoginOptionsProps> = ({
           />
         );
 
-      case LoginOptionsTabs.STUDENT:
+      case LoginOptionsTabs.PUPIL:
         return (
           <Link
             to="/faq-leerling?label=Toegang%20als%20leerling"
