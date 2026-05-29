@@ -325,10 +325,8 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
 
     // Assignments can have an education level
     // If this level doesn't match with the contributor's education level, we show a conflict icon, and the contributor's rights cannot be changed
-    const contributorIsConflicting = !hasEducationLevel(
-      contributor,
-      assignment,
-    );
+    const contributorIsConflicting =
+      !!assignment && !hasEducationLevel(contributor, assignment);
 
     const showConflictIcon =
       !contributorIsPending && contributorIsConflicting && !contributorIsOwner;
