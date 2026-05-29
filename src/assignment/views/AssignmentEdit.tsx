@@ -224,9 +224,6 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
   );
 
   const resetForm = useCallback(() => {
-    if (!originalAssignment) {
-      return;
-    }
     setFormErrors({});
     setAssignmentFormValues(originalAssignment as any);
     setHasUnsavedChanges(false);
@@ -713,7 +710,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
   };
 
   const reset = useCallback(() => {
-    originalAssignment && setAssignmentFormValues(originalAssignment as any);
+    setAssignmentFormValues(originalAssignment as any);
     resetForm();
   }, [resetForm, setAssignmentFormValues, originalAssignment]);
 
