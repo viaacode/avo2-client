@@ -1,9 +1,9 @@
-import { AvoCoreContentPickerType } from '@viaa/avo2-types';
-import { CollectionService } from '../../../../../collection/collection.service';
 import {
-  type Collection,
-  ContentTypeNumber,
-} from '../../../../../collection/collection.types';
+  AvoCoreContentPickerType,
+  AvoCoreContentTypeId,
+} from '@viaa/avo2-types';
+import { CollectionService } from '../../../../../collection/collection.service';
+import { type Collection } from '../../../../../collection/collection.types';
 import { type PickerItem } from '../../../types/content-picker';
 import { parsePickerItem } from '../helpers/parse-picker';
 
@@ -18,7 +18,7 @@ export const retrieveCollections = async (
     ? await CollectionService.fetchCollectionsByTitleOrId(titleOrId, limit)
     : await CollectionService.fetchCollectionsOrBundles(
         limit,
-        ContentTypeNumber.collection,
+        AvoCoreContentTypeId.COLLECTION,
       );
 
   return parseCollections(
@@ -36,7 +36,7 @@ export const retrieveBundles = async (
     ? await CollectionService.fetchBundlesByTitleOrId(titleOrId, limit)
     : await CollectionService.fetchCollectionsOrBundles(
         limit,
-        ContentTypeNumber.bundle,
+        AvoCoreContentTypeId.BUNDLE,
       );
 
   return parseCollections(AvoCoreContentPickerType.BUNDLE, bundles || []);

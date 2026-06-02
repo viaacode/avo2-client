@@ -60,9 +60,13 @@ function checkIfSessionExpires(expiresAt: string) {
   }
 }
 
-export const fetchLoginStateAtom = atom<LoginState | null, [boolean], void>(
+export const fetchLoginStateAtom = atom<
+  AvoAuthLoginResponse | null,
+  [boolean],
+  Promise<AvoAuthLoginResponse | null>
+>(
   null,
-  async (get, set, forceRefetch) => {
+  async (get, set, forceRefetch): Promise<AvoAuthLoginResponse | null> => {
     const loginState: LoginState = get(loginAtom);
 
     // Don't fetch login state if we already logged in
@@ -92,6 +96,7 @@ export const fetchLoginStateAtom = atom<LoginState | null, [boolean], void>(
         error: false,
         data: loginStateResponse,
       });
+      return loginStateResponse;
     } catch (err) {
       console.error(
         new CustomError('failed to check login state', err, { forceRefetch }),
@@ -101,6 +106,7 @@ export const fetchLoginStateAtom = atom<LoginState | null, [boolean], void>(
         loading: false,
         error: true,
       });
+      return null;
     }
   },
 );

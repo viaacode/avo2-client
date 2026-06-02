@@ -37,7 +37,7 @@ export const EditButton: FC<EditButtonProps> = ({
 
   if (disabled) {
     return (
-      <Tooltip position="bottom">
+      <Tooltip position="bottom" id="edit-button--tooltip">
         <TooltipTrigger>{button}</TooltipTrigger>
         <TooltipContent>
           <p>{toolTipText}</p>

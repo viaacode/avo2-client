@@ -48,16 +48,11 @@ export const UserEditPage: FC = () => {
   // Hooks
   const { data: profile, isLoading } = useGetProfileById(profileId);
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [profileErrors, setProfileErrors] = useState<
-    Partial<{ [prop in keyof AvoUserUpdateProfileValues]: string }>
-  >({});
-
   const [firstName, setFirstName] = useState<string | undefined>();
   const [lastName, setLastName] = useState<string | undefined>();
   const [avatar, setAvatar] = useState<string | undefined>();
   const [title, setTitle] = useState<string | undefined>();
   const [bio, setBio] = useState<string | undefined>();
-  const [alias, setAlias] = useState<string | undefined>();
   const [companyId, setCompanyId] = useState<string | undefined>();
   const [loms, setLoms] = useState<AvoLomLomField[]>([]);
 
@@ -68,7 +63,6 @@ export const UserEditPage: FC = () => {
       setAvatar(profile.avatar);
       setTitle(profile.title || '');
       setBio(profile.bio || '');
-      setAlias(profile.alias || '');
       setCompanyId(profile.organisation?.or_id || '');
 
       // Only educationDegrees are shown and education levels that don't have any degrees
@@ -94,7 +88,6 @@ export const UserEditPage: FC = () => {
       const newProfileInfo = {
         firstName,
         lastName,
-        alias,
         title,
         bio,
         userId: profile.userId,
@@ -112,21 +105,6 @@ export const UserEditPage: FC = () => {
         );
       } catch (err) {
         setIsSaving(false);
-
-        if (JSON.stringify(err).includes('DUPLICATE_ALIAS')) {
-          ToastService.danger(
-            tText(
-              'settings/components/profile___deze-schermnaam-is-reeds-in-gebruik',
-            ),
-          );
-          setProfileErrors({
-            alias: tText(
-              'settings/components/profile___schermnaam-is-reeds-in-gebruik',
-            ),
-          });
-          return;
-        }
-
         throw err;
       }
 
@@ -198,12 +176,6 @@ export const UserEditPage: FC = () => {
               <FormGroup label={tText('admin/users/views/user-detail___bio')}>
                 <TextArea value={bio} onChange={setBio} />
               </FormGroup>
-              <FormGroup
-                label={tText('admin/users/views/user-detail___gebruikersnaam')}
-                error={profileErrors.alias}
-              >
-                <TextInput value={alias} onChange={setAlias} />
-              </FormGroup>
               <LomFieldsInput loms={loms} onChange={setLoms} />
             </Form>
           </Box>
@@ -259,5 +231,3 @@ export const UserEditPage: FC = () => {
     </>
   );
 };
-
-export default UserEditPage;

@@ -472,7 +472,10 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
         // Redirect to new url that uses the collection uuid instead of the collection avo1 id
         // and continue loading the collection
-        defaultGoToDetailLink(navigateFunc)(uuid, AvoCoreContentType.COLLECTIE);
+        defaultGoToDetailLink(navigateFunc)(
+          uuid,
+          AvoCoreContentType.COLLECTION,
+        );
         return;
       }
 
@@ -482,14 +485,14 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
       if (!commonUser) {
         // Not logged in
-        // If thr collection is public, we should still load the metadata
+        // If the collection is public, we should still load the metadata
         let collectionObj: AvoCollectionCollection | null = null;
         try {
           collectionObj =
             await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
               uuid,
               CollectionOrBundle.COLLECTION,
-              undefined,
+              inviteToken || undefined,
             );
         } catch (err) {
           // Ignore errors when fetching collections when user is not logged in
@@ -647,7 +650,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   // Listeners
   const onEditCollection = () => {
     navigateFunc(
-      `${generateContentLinkString(AvoCoreContentType.COLLECTIE, `${collectionId}`)}/${
+      `${generateContentLinkString(AvoCoreContentType.COLLECTION, `${collectionId}`)}/${
         ROUTE_PARTS.edit
       }/${CollectionCreateUpdateTab.CONTENT}`,
     );
@@ -694,7 +697,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
 
           defaultGoToDetailLink(navigateFunc)(
             duplicateCollection.id,
-            AvoCoreContentType.COLLECTIE,
+            AvoCoreContentType.COLLECTION,
           );
           setCollectionId(duplicateCollection.id);
           ToastService.success(
@@ -1361,7 +1364,8 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   };
 
   const renderCollectionBody = () => {
-    const { collection_fragments } = collection as AvoCollectionCollection;
+    const collection_fragments =
+      (collection as AvoCollectionCollection)?.collection_fragments || [];
     const hasCopies = (collection?.relations || []).length > 0;
     const hasParentBundles = !!bundlesContainingCollection?.length;
 
@@ -1461,7 +1465,8 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   };
 
   const renderModals = () => {
-    const { collection_fragments } = collection as AvoCollectionCollection;
+    const collection_fragments =
+      (collection as AvoCollectionCollection)?.collection_fragments || [];
 
     return (
       <>
@@ -1532,9 +1537,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
               setIsQuickLaneModalOpen(false);
             }}
             onUpdate={(newCollection) => {
-              if (
-                (collection as AvoCollectionCollection).collection_fragments
-              ) {
+              if (collection_fragments) {
                 setCollectionInfo((oldCollectionInfo) => ({
                   showNoAccessPopup:
                     oldCollectionInfo?.showNoAccessPopup || false,

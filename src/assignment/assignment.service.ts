@@ -1069,7 +1069,7 @@ export class AssignmentService {
     const thumbnailPath = trimInfo.hasCut
       ? await VideoStillService.getVideoStill(
           item.external_id,
-          item.type_id,
+          item.type.id,
           trimInfo.fragmentStartTime * 1000,
         )
       : null;

@@ -45,7 +45,6 @@ import { QuickLaneFilterTableCell } from '../../../shared/components/QuickLaneFi
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
-import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import {
@@ -63,7 +62,6 @@ import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTabs } from '../../../shared/hooks/useTabs';
-import { RelationService } from '../../../shared/services/relation-service/relation.service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import {
@@ -107,7 +105,9 @@ export const ItemDetailAdmin: FC = () => {
     data: item,
     isLoading: itemIsLoading,
     refetch: refetchItem,
-  } = useGetItemWithRelations(itemUuid as string, { enabled: !!itemUuid });
+  } = useGetItemWithRelations(itemUuid as string, true, false, {
+    enabled: !!itemUuid,
+  });
   const { data: itemUsedBy, isError: itemUsedByIsError } = useGetItemUsedBy(
     {
       itemUuid: itemUuid as string,
@@ -187,13 +187,7 @@ export const ItemDetailAdmin: FC = () => {
         });
       }
       if (!item.is_published) {
-        await ItemsService.setItemPublishedState(item.uid, !item.is_published);
-        await RelationService.deleteRelationsBySubject(
-          'item',
-          item.uid,
-          Lookup_Enum_Relation_Types_Enum.IsReplacedBy,
-        );
-        await ItemsService.setItemDepublishReason(item.uid, null);
+        await ItemsService.publishItem(item.uid);
 
         await refetchItem();
         ToastService.success(

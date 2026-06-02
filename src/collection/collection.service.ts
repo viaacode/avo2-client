@@ -5,6 +5,7 @@ import {
   AvoCollectionFragment,
   AvoCollectionLabel,
   AvoCollectionManagement,
+  AvoCoreContentTypeId,
   AvoSearchOrderDirection,
   AvoShareEditStatusResponse,
   AvoUserCommonUser,
@@ -139,7 +140,6 @@ import {
   type Collection,
   type CollectionMarcomEntry,
   CollectionOrBundle,
-  ContentTypeNumber,
   type ParentBundle,
   type QualityLabel,
 } from './collection.types';
@@ -391,7 +391,7 @@ export class CollectionService {
         ...(updatePromises as Promise<any>[]),
       ]);
 
-      if (newCollection.type_id === ContentTypeNumber.collection) {
+      if (newCollection.type?.id === AvoCoreContentTypeId.COLLECTION) {
         // determine new thumbnail path since videos could have changed order / been deleted
         newCollection.thumbnail_path =
           await this.getThumbnailPathForCollection(newCollection);
@@ -892,7 +892,7 @@ export class CollectionService {
    */
   static async fetchCollectionsOrBundles(
     limit: number,
-    typeId: ContentTypeNumber,
+    typeId: AvoCoreContentTypeId,
   ): Promise<GetPublicCollectionsQuery['app_collections_overview']> {
     try {
       // retrieve collections
@@ -956,8 +956,8 @@ export class CollectionService {
         | GetPublicCollectionsByTitleQueryVariables = {
         limit,
         typeId: isCollection
-          ? ContentTypeNumber.collection
-          : ContentTypeNumber.bundle,
+          ? AvoCoreContentTypeId.COLLECTION
+          : AvoCoreContentTypeId.BUNDLE,
       } as
         | GetPublicCollectionsByIdQueryVariables
         | GetPublicCollectionsByTitleQueryVariables;
@@ -1338,7 +1338,7 @@ export class CollectionService {
     title: string,
     description: string | null,
     collectionId: string,
-    typeId: ContentTypeNumber,
+    typeId: AvoCoreContentTypeId,
   ): Promise<{
     byTitle: boolean;
     byDescription: boolean;
@@ -1410,7 +1410,9 @@ export class CollectionService {
     order:
       | Record<string, AvoSearchOrderDirection>
       | Record<string, AvoSearchOrderDirection>[],
-    contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
+    contentTypeId:
+      | AvoCoreContentTypeId.COLLECTION
+      | AvoCoreContentTypeId.BUNDLE,
     filterString: string | undefined,
     shareTypeIds: string[] | undefined,
     where: any[] = [],

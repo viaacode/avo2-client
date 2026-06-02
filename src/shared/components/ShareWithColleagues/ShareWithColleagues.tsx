@@ -88,7 +88,9 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
     } as ContributorInfo);
   const [isRightsDropdownOpen, setIsRightsDropdownOpen] =
     useState<boolean>(false);
-  const [contributor, setNewContributor] = useState<Partial<ContributorInfo>>({
+  const [newContributor, setNewContributor] = useState<
+    Partial<ContributorInfo>
+  >({
     email: undefined,
     rights: undefined,
   });
@@ -117,13 +119,13 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
     setError(null); // Clear errors
     setIsShareWarningModalOpen(false);
 
-    if (!contributor.email) {
+    if (!newContributor.email) {
       setError(
         tText(
           'shared/components/share-with-colleagues/share-with-colleagues___email-is-verplicht',
         ),
       );
-    } else if (!validateEmailAddress(contributor.email)) {
+    } else if (!validateEmailAddress(newContributor.email)) {
       setError(
         tText(
           'shared/components/share-with-colleagues/share-with-colleagues___email-is-geen-geldig-emailadres',
@@ -132,8 +134,8 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
     } else {
       setIsLoading(true);
       await onAddNewContributor({
-        ...contributor,
-        rights: findRightByValue(contributor.rights as ContributorInfoRight),
+        ...newContributor,
+        rights: findRightByValue(newContributor.rights as ContributorInfoRight),
       });
       setNewContributor({ email: undefined, rights: undefined });
       setError(null);
@@ -147,7 +149,7 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
     if (
       !isAssignment ||
       isShareWarningModalRemembered ||
-      contributor.rights === ContributorInfoRight.VIEWER
+      newContributor.rights === ContributorInfoRight.VIEWER
     ) {
       addNewContributor();
     } else {
@@ -198,147 +200,187 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
 
   const updateNewContributor = (value: Record<string, string>) => {
     setNewContributor({
-      ...contributor,
+      ...newContributor,
       ...value,
     });
+  };
+
+  const renderAvatar = (
+    contributor: ContributorInfo,
+    contributorIsPending: boolean,
+  ) => {
+    return (
+      <div className="c-colleague-info-row__avatar">
+        {!contributorIsPending ? (
+          <Avatar
+            initials={
+              contributor.firstName && contributor.lastName
+                ? (
+                    contributor.firstName[0] + contributor.lastName[0]
+                  ).toLocaleUpperCase()
+                : contributor.email?.slice(0, 2).toUpperCase()
+            }
+            image={contributor.profileImage}
+          />
+        ) : (
+          <div className="c-colleague-info-row__avatar--pending" />
+        )}
+      </div>
+    );
+  };
+
+  const renderNameAndEmail = (
+    contributor: ContributorInfo,
+    contributorWithPendingState: string,
+  ) => {
+    return (
+      <div className="c-colleague-info-row__info">
+        {(contributor.firstName || contributor.lastName) && (
+          <p>{`${contributor.firstName} ${contributor.lastName}`}</p>
+        )}
+
+        <p
+          className="c-colleague-info-row__info__email"
+          title={contributor.inviteEmail || contributor.email}
+        >
+          {contributorWithPendingState}
+        </p>
+      </div>
+    );
+  };
+
+  const renderRights = (
+    contributor: ContributorInfo,
+    showConflictIcon: boolean,
+  ) => {
+    return (
+      <div
+        className={clsx({
+          'c-colleague-info-row__rights': true,
+          'u-text-muted': showConflictIcon,
+        })}
+      >
+        <span>{getContributorRightLabel(contributor.rights)}</span>
+      </div>
+    );
+  };
+
+  const renderActionButtons = (
+    contributor: ContributorInfo,
+    canEdit: boolean,
+    canDelete: boolean,
+    showConflictIcon: boolean,
+  ) => {
+    return (
+      <div className="c-colleague-info-row__action">
+        {showConflictIcon && assignment?.education_level_id && (
+          <Tooltip
+            position="top"
+            id="share-with-colleague__education-level-difference-tooltip"
+          >
+            <TooltipTrigger>
+              <button className="c-icon-button u-text-muted">
+                <Icon name={IconName.info} />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {
+                GET_EDUCATION_LEVEL_DIFFERENCE_DICT()[
+                  assignment.education_level_id
+                ]
+              }
+            </TooltipContent>
+          </Tooltip>
+        )}
+        {canEdit && (
+          <button
+            className="c-icon-button"
+            onClick={() => handleEditContributorRights(contributor)}
+          >
+            <Icon name={IconName.edit4} />
+          </button>
+        )}
+        {canDelete && (
+          <button
+            className="c-icon-button"
+            onClick={() => handleDeleteContributor(contributor)}
+          >
+            <Icon name={IconName.trash} />
+          </button>
+        )}
+      </div>
+    );
+  };
+
+  const renderContributor = (contributor: ContributorInfo, index: number) => {
+    const currentUserIsOwner =
+      currentUser.rights === ContributorInfoRight.OWNER;
+    const currentUserIsContributor =
+      currentUser.rights === ContributorInfoRight.CONTRIBUTOR;
+
+    const contributorIsOwner =
+      contributor.rights === ContributorInfoRight.OWNER;
+    const contributorIsCurrentUser = contributor.email === currentUser.email;
+    const contributorIsPending = isNil(contributor.profileId);
+
+    // Assignments can have an education level
+    // If this level doesn't match with the contributor's education level, we show a conflict icon, and the contributor's rights cannot be changed
+    const contributorIsConflicting =
+      !!assignment && !hasEducationLevel(contributor, assignment);
+
+    const showConflictIcon =
+      !contributorIsPending && contributorIsConflicting && !contributorIsOwner;
+
+    const canEdit =
+      !showConflictIcon &&
+      ((!contributorIsCurrentUser && !contributorIsOwner) ||
+        (!currentUserIsOwner && contributorIsCurrentUser) ||
+        (currentUserIsContributor && !contributorIsOwner) ||
+        (isAdmin && !contributorIsOwner));
+
+    // The owner cannot delete himself but can delete everyone else
+    // Contributors can delete themselves and every other contributor and viewer
+    // Viewers can only delete themselves, but they do not have access to this dialog
+    const canDelete =
+      // This contributor is not the current user and not the owner
+      (!contributorIsCurrentUser && !contributorIsOwner) ||
+      // This contributor is the current user and is not the owner
+      (!currentUserIsOwner && contributorIsCurrentUser) ||
+      // The current user is a contributor and this contributor is not the owner
+      (currentUserIsContributor && !contributorIsOwner) ||
+      // The current user is an admin and this contributor is not the owner
+      (isAdmin && !contributorIsOwner);
+
+    const inviteEmailTruncated = truncate(contributor.inviteEmail, {
+      length: 32,
+      omission: '...',
+    });
+    const contributorEmailTruncated = truncate(contributor.email, {
+      length: 32,
+      omission: '...',
+    });
+    const contributorWithPendingState: string = contributorIsPending
+      ? `${inviteEmailTruncated} (${tText(
+          'shared/components/share-with-colleagues/share-with-colleagues___pending',
+        )})`
+      : contributorEmailTruncated;
+    return (
+      <li key={index} className="c-colleague-info-row">
+        {renderAvatar(contributor, contributorIsPending)}
+        {renderNameAndEmail(contributor, contributorWithPendingState)}
+        {renderRights(contributor, showConflictIcon)}
+        {renderActionButtons(contributor, canEdit, canDelete, showConflictIcon)}
+      </li>
+    );
   };
 
   const renderColleaguesInfoList = () => {
     if (contributors.length > 0) {
       return (
         <ul className="c-colleagues-info-list">
-          {sortContributors(contributors).map((contributor, index) => {
-            const currentUserIsOwner =
-              currentUser.rights === ContributorInfoRight.OWNER;
-            const currentUserIsContributor =
-              currentUser.rights === ContributorInfoRight.CONTRIBUTOR;
-
-            const contributorIsOwner =
-              contributor.rights === ContributorInfoRight.OWNER;
-            const contributorIsCurrentUser =
-              contributor.email === currentUser.email;
-            const contributorIsPending = isNil(contributor.profileId);
-            const contributorIsConflicting = !hasEducationLevel(
-              contributor,
-              assignment,
-            );
-
-            const showConflictIcon =
-              !contributorIsPending &&
-              contributorIsConflicting &&
-              !contributorIsOwner;
-
-            const canEdit =
-              !showConflictIcon &&
-              ((!contributorIsCurrentUser && !contributorIsOwner) ||
-                (!currentUserIsOwner && contributorIsCurrentUser) ||
-                (currentUserIsContributor && !contributorIsOwner) ||
-                (isAdmin && !contributorIsOwner));
-
-            // The owner cannot delete himself but can delete everyone else
-            // Contributors can delete themselves and every other contributor and viewer
-            // Viewers can only delete themselves, but they do not have access to this dialog
-            const canDelete =
-              // This contributor is not the current user and not the owner
-              (!contributorIsCurrentUser && !contributorIsOwner) ||
-              // This contributor is the current user and is not the owner
-              (!currentUserIsOwner && contributorIsCurrentUser) ||
-              // The current user is a contributor and this contributor is not the owner
-              (currentUserIsContributor && !contributorIsOwner) ||
-              // The current user is an admin and this contributor is not the owner
-              (isAdmin && !contributorIsOwner);
-
-            const inviteEmailTruncated = truncate(contributor.inviteEmail, {
-              length: 32,
-              omission: '...',
-            });
-            const contributorEmailTruncated = truncate(contributor.email, {
-              length: 32,
-              omission: '...',
-            });
-            const contributorWithPendingState = contributorIsPending
-              ? `${inviteEmailTruncated} (${tText(
-                  'shared/components/share-with-colleagues/share-with-colleagues___pending',
-                )})`
-              : contributorEmailTruncated;
-            return (
-              <li key={index} className="c-colleague-info-row">
-                <div className="c-colleague-info-row__avatar">
-                  {!contributorIsPending ? (
-                    <Avatar
-                      initials={
-                        contributor.firstName && contributor.lastName
-                          ? (
-                              contributor.firstName[0] + contributor.lastName[0]
-                            ).toLocaleUpperCase()
-                          : contributor.email?.slice(0, 2).toUpperCase()
-                      }
-                      image={contributor.profileImage}
-                    />
-                  ) : (
-                    <div className="c-colleague-info-row__avatar--pending" />
-                  )}
-                </div>
-
-                <div className="c-colleague-info-row__info">
-                  {(contributor.firstName || contributor.lastName) && (
-                    <p>{`${contributor.firstName} ${contributor.lastName}`}</p>
-                  )}
-
-                  <p
-                    className="c-colleague-info-row__info__email"
-                    title={contributor.inviteEmail || contributor.email}
-                  >
-                    {contributorWithPendingState}
-                  </p>
-                </div>
-
-                <div
-                  className={clsx({
-                    'c-colleague-info-row__rights': true,
-                    'u-text-muted': showConflictIcon,
-                  })}
-                >
-                  <span>{getContributorRightLabel(contributor.rights)}</span>
-                </div>
-
-                <div className="c-colleague-info-row__action">
-                  {showConflictIcon && assignment?.education_level_id && (
-                    <Tooltip position="top">
-                      <TooltipTrigger>
-                        <button className="c-icon-button u-text-muted">
-                          <Icon name={IconName.info} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        {
-                          GET_EDUCATION_LEVEL_DIFFERENCE_DICT()[
-                            assignment.education_level_id
-                          ]
-                        }
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
-                  {canEdit && (
-                    <button
-                      className="c-icon-button"
-                      onClick={() => handleEditContributorRights(contributor)}
-                    >
-                      <Icon name={IconName.edit4} />
-                    </button>
-                  )}
-                  {canDelete && (
-                    <button
-                      className="c-icon-button"
-                      onClick={() => handleDeleteContributor(contributor)}
-                    >
-                      <Icon name={IconName.trash} />
-                    </button>
-                  )}
-                </div>
-              </li>
-            );
-          })}
+          {sortContributors(contributors).map((contributor, index) =>
+            renderContributor(contributor, index),
+          )}
         </ul>
       );
     }
@@ -416,7 +458,7 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
                 placeholder={tText(
                   'shared/components/share-with-colleagues/share-with-colleagues___emailadres',
                 )}
-                value={contributor.email}
+                value={newContributor.email}
                 onChange={(value) => updateNewContributor({ email: value })}
               />
 
@@ -431,8 +473,8 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
                     iconPosition="right"
                     onClick={handleRightsButtonClicked}
                     label={
-                      contributor.rights
-                        ? getContributorRightLabel(contributor.rights)
+                      newContributor.rights
+                        ? getContributorRightLabel(newContributor.rights)
                         : tText(
                             'shared/components/share-with-colleagues/share-with-colleagues___rol',
                           )
@@ -459,7 +501,9 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
                 )}
                 className="c-add-colleague__button"
                 onClick={handleAddNewContributor}
-                disabled={isEmpty(contributor.email) || !contributor.rights}
+                disabled={
+                  isEmpty(newContributor.email) || !newContributor.rights
+                }
                 type="secondary"
               />
             </div>

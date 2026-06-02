@@ -21,11 +21,14 @@ import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-s
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
-import { ContentTypeNumber } from '../../collection.types';
 import { type CollectionAction } from '../CollectionOrBundleEdit.types';
 
 import './CutFragmentModal.scss';
-import { AvoCollectionFragment, AvoItemItem } from '@viaa/avo2-types';
+import {
+  AvoCollectionFragment,
+  AvoCoreContentTypeId,
+  AvoItemItem,
+} from '@viaa/avo2-types';
 import { tText } from '../../../shared/helpers/translate-text';
 
 export interface CutFragmentModalProps {
@@ -83,38 +86,38 @@ export const CutFragmentModal: FC<CutFragmentModalProps> = ({
       return;
     }
 
-    const hasNoCut =
-      fragmentStartTime === 0 && fragmentEndTime === fragmentDuration;
+    const hasCut =
+      fragmentStartTime !== 0 || fragmentEndTime !== fragmentDuration;
 
     changeCollectionState({
       index,
       type: 'UPDATE_FRAGMENT_PROP',
       fragmentProp: 'start_oc',
-      fragmentPropValue: hasNoCut ? null : fragmentStartTime,
+      fragmentPropValue: hasCut ? fragmentStartTime : null,
     });
 
     changeCollectionState({
       index,
       type: 'UPDATE_FRAGMENT_PROP',
       fragmentProp: 'end_oc',
-      fragmentPropValue: hasNoCut ? null : fragmentEndTime,
+      fragmentPropValue: hasCut ? fragmentEndTime : null,
     });
 
     try {
-      if (fragment.item_meta?.type_id) {
+      if (fragment.item_meta?.type?.id) {
         let videoStill: string | null;
-        if (hasNoCut) {
-          if (fragment.item_meta.type_id === ContentTypeNumber.audio) {
+        if (hasCut) {
+          videoStill = await VideoStillService.getVideoStill(
+            fragment.external_id,
+            fragment.item_meta.type?.id,
+            (fragmentStartTime || 0) * 1000,
+          );
+        } else {
+          if (fragment.item_meta.type?.id === AvoCoreContentTypeId.AUDIO) {
             videoStill = DEFAULT_AUDIO_STILL;
           } else {
             videoStill = fragment.item_meta.thumbnail_path;
           }
-        } else {
-          videoStill = await VideoStillService.getVideoStill(
-            fragment.external_id,
-            fragment.item_meta.type_id,
-            (fragmentStartTime || 0) * 1000,
-          );
         }
 
         if (videoStill) {
@@ -146,8 +149,8 @@ export const CutFragmentModal: FC<CutFragmentModalProps> = ({
 
     onConfirm &&
       onConfirm({
-        start_oc: hasNoCut ? null : fragmentStartTime,
-        end_oc: hasNoCut ? null : fragmentEndTime,
+        start_oc: hasCut ? fragmentStartTime : null,
+        end_oc: hasCut ? fragmentEndTime : null,
       });
 
     onClose();

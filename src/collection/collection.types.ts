@@ -15,14 +15,6 @@ export type Collection = (
   | GetPublicCollectionsByTitleQuery
 )['app_collections_overview'][0];
 
-export enum ContentTypeNumber {
-  audio = 1,
-  video = 2,
-  collection = 3,
-  bundle = 4,
-  assignment = 5,
-}
-
 export enum CollectionOrBundle {
   COLLECTION = 'collection',
   BUNDLE = 'bundle',

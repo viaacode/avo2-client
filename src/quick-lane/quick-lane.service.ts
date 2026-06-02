@@ -75,7 +75,7 @@ const checkForItemReplacements = async (
   })[0];
 
   if (replacement) {
-    return ItemsService.fetchItemByUuid(replacement.object, false);
+    return ItemsService.fetchItemByUuid(replacement.object, false, true);
   }
 
   return Promise.resolve(item);
@@ -164,7 +164,11 @@ export class QuickLaneService {
       switch (url.content_label) {
         case QuickLaneTypeEnum.ITEM:
           url.content = await checkForItemReplacements(
-            await ItemsService.fetchItemByUuid(url.content_id || '', false),
+            await ItemsService.fetchItemByUuid(
+              url.content_id || '',
+              false,
+              true,
+            ),
           );
           break;
 

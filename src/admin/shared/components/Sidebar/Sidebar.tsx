@@ -111,7 +111,7 @@ export const Sidebar: FC<SidebarProps> = ({
           </Link>
           <Link
             className="u-remove-link-styling u-color-white o-sidebar__avo__header__side-link"
-            to={APP_PATH.HOME.route}
+            to={APP_PATH.LOGGED_IN_HOME.route}
           >
             <span
               title={tText(

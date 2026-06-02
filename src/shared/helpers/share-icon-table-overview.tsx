@@ -110,7 +110,7 @@ export function createShareIconTableOverview(
   return renderMobileDesktop({
     mobile: null,
     desktop: (
-      <Tooltip position="top">
+      <Tooltip position="top" id="tooltip-share-icon-table-overview">
         <TooltipTrigger>
           <div className={triggerClassName} title={shareTypeTitle || ''}>
             <Icon name={shareTypeIcon} />

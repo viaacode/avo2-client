@@ -2,7 +2,7 @@ import { setDefaultOptions } from 'date-fns';
 import { nlBE } from 'date-fns/locale';
 import { Provider } from 'jotai';
 import { HelmetProvider } from 'react-helmet-async';
-import { hydrateRoot } from 'react-dom/client';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import ALL_APP_ROUTES from './routes.ts';
 import { store } from './shared/store/ui.store.ts';
@@ -28,26 +28,37 @@ async function hydrate() {
   // Load translations before hydration (uses SSR-injected resources if available)
   await loadTranslations();
 
+  const hasHydrationData = window.__staticRouterHydrationData?.loaderData != null;
+  const hasSSRContent = document.getElementById('root')?.children.length ?? 0 > 0;
+
   const router = createBrowserRouter(ALL_APP_ROUTES, {
-    hydrationData: window.__staticRouterHydrationData,
+    hydrationData: hasHydrationData
+      ? window.__staticRouterHydrationData
+      : undefined,
   });
 
   const container = document.getElementById('root') as HTMLElement;
 
-  hydrateRoot(
-    container,
+  const app = (
     <HelmetProvider>
       <Provider store={store}>
         <RouterProvider router={router} />
       </Provider>
-    </HelmetProvider>,
-    {
+    </HelmetProvider>
+  );
+
+  if (hasHydrationData && hasSSRContent) {
+    // SSR succeeded: hydrate the server-rendered HTML
+    hydrateRoot(container, app, {
       onRecoverableError(error, errorInfo) {
         console.error('Hydration recoverable error:', error);
         console.error('Component stack:', errorInfo.componentStack);
       },
-    },
-  );
+    });
+  } else {
+    // SSR failed or no hydration data: do a clean client-side render
+    createRoot(container).render(app);
+  }
 
   // Refresh translations in the background after hydration
   refreshTranslations();

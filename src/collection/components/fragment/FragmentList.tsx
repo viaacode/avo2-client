@@ -61,12 +61,6 @@ export const FragmentList: FC<FragmentListProps> = ({
                 </Alert>
               </Spacer>
             )}
-            {/* Disable icons because it takes too much space: https://meemoo.atlassian.net/browse/AVO-3343?focusedCommentId=54020 */}
-            {/*<BlockIconWrapper*/}
-            {/*	key={collectionFragment.id}*/}
-            {/*	type={collectionFragment.type}*/}
-            {/*	type_id={collectionFragment.item_meta?.type_id}*/}
-            {/*>*/}
             <FragmentDetail
               collectionFragment={collectionFragment}
               showDescription={showDescription}

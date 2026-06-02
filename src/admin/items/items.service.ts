@@ -3,8 +3,6 @@ import { AvoItemItem, AvoSearchOrderDirection } from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import queryString, { stringifyUrl } from 'query-string';
 import type {
-  DeleteItemFromCollectionBookmarksAndAssignmentsMutation,
-  DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables,
   GetDistinctSeriesQuery,
   GetDistinctSeriesQueryVariables,
   GetItemDepublishReasonByExternalIdQuery,
@@ -17,30 +15,17 @@ import type {
   GetUnpublishedItemPidsQueryVariables,
   GetUnpublishedItemsWithFiltersQuery,
   GetUnpublishedItemsWithFiltersQueryVariables,
-  GetUserWithEitherBookmarkQuery,
-  GetUserWithEitherBookmarkQueryVariables,
-  ReplaceItemInCollectionsBookmarksAndAssignmentsMutation,
-  ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables,
   SetSharedItemsStatusMutation,
   SetSharedItemsStatusMutationVariables,
-  UpdateItemDepublishReasonMutation,
-  UpdateItemDepublishReasonMutationVariables,
-  UpdateItemPublishedStateMutation,
-  UpdateItemPublishedStateMutationVariables,
 } from '../../shared/generated/graphql-db-operations';
 import {
-  DeleteItemFromCollectionBookmarksAndAssignmentsDocument,
   GetDistinctSeriesDocument,
   GetItemDepublishReasonByExternalIdDocument,
   GetPublicItemsByTitleOrExternalIdDocument,
   GetPublicItemsDocument,
   GetUnpublishedItemPidsDocument,
   GetUnpublishedItemsWithFiltersDocument,
-  GetUserWithEitherBookmarkDocument,
-  ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
   SetSharedItemsStatusDocument,
-  UpdateItemDepublishReasonDocument,
-  UpdateItemPublishedStateDocument,
 } from '../../shared/generated/graphql-db-react-query';
 import { Lookup_Enum_Relation_Types_Enum } from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers/custom-error';
@@ -51,6 +36,7 @@ import { RelationService } from '../../shared/services/relation-service/relation
 import { type UnpublishableItem } from '../../shared/types';
 import { ITEMS_PER_PAGE } from './items.const';
 import {
+  DepublishType,
   type ItemsOverviewTableCols,
   type ItemUsedByResponse,
   type UnpublishedItem,
@@ -147,6 +133,7 @@ export class ItemsService {
   public static async fetchItemByUuid(
     uuid: string,
     withRelations: boolean,
+    censorUnpublishedItems: boolean = true,
   ): Promise<AvoItemItem> {
     let url: string | null = null;
     try {
@@ -157,6 +144,7 @@ export class ItemsService {
         url: `${getEnv('PROXY_URL')}/items/${uuid}`,
         query: {
           withRelations,
+          censorUnpublishedItems,
         },
       });
       return await fetchWithLogoutJson<AvoItemItem>(url);
@@ -164,64 +152,6 @@ export class ItemsService {
       throw new CustomError('Failed to get the item from the database', err, {
         uuid,
       });
-    }
-  }
-
-  static async setItemPublishedState(
-    itemUuid: string,
-    isPublished: boolean,
-  ): Promise<void> {
-    let variables: UpdateItemPublishedStateMutationVariables | null = null;
-    try {
-      variables = {
-        itemUuid,
-        isPublished,
-      };
-      await dataService.query<
-        UpdateItemPublishedStateMutation,
-        UpdateItemPublishedStateMutationVariables
-      >({
-        query: UpdateItemPublishedStateDocument,
-        variables,
-      });
-    } catch (err) {
-      throw new CustomError(
-        'Failed to update is_published field for item in the database',
-        err,
-        {
-          variables,
-          query: 'UPDATE_ITEM_PUBLISH_STATE',
-        },
-      );
-    }
-  }
-
-  static async setItemDepublishReason(
-    itemUuid: string,
-    reason: null | string,
-  ): Promise<void> {
-    let variables: UpdateItemDepublishReasonMutationVariables | null = null;
-    try {
-      variables = {
-        itemUuid,
-        reason,
-      };
-      await dataService.query<
-        UpdateItemDepublishReasonMutation,
-        UpdateItemDepublishReasonMutationVariables
-      >({
-        variables,
-        query: UpdateItemDepublishReasonDocument,
-      });
-    } catch (err) {
-      throw new CustomError(
-        'Failed to update depublish_reason field for item in the database',
-        err,
-        {
-          variables,
-          query: 'UPDATE_ITEM_DEPUBLISH_REASON',
-        },
-      );
     }
   }
 
@@ -325,7 +255,7 @@ export class ItemsService {
     } catch (err) {
       throw new CustomError('Failed to get items by external id', err, {
         externalIds,
-        query: 'GET_ITEMS_BY_EXTERNAL_ID',
+        query: 'GetItemsByExternalIds',
       });
     }
   }
@@ -350,6 +280,7 @@ export class ItemsService {
         const replacementItem = await ItemsService.fetchItemByUuid(
           replacedByItemUid,
           false,
+          true,
         );
         return { ...replacementItem, replacement_for: externalId };
       }
@@ -486,85 +417,6 @@ export class ItemsService {
     }
   }
 
-  public static async deleteItemFromCollectionsAndBookmarks(
-    itemUid: string,
-    itemExternalId: string,
-  ): Promise<void> {
-    try {
-      await dataService.query<
-        DeleteItemFromCollectionBookmarksAndAssignmentsMutation,
-        DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables
-      >({
-        query: DeleteItemFromCollectionBookmarksAndAssignmentsDocument,
-        variables: {
-          itemUid,
-          itemExternalId,
-        },
-      });
-    } catch (err) {
-      throw new CustomError(
-        'Failed to delete item from collections and bookmarks in the database',
-        err,
-        {
-          query: 'DELETE_ITEM_FROM_COLLECTIONS_BOOKMARKS',
-        },
-      );
-    }
-  }
-
-  public static async replaceItemInCollectionsAndBookmarks(
-    oldItemUid: string,
-    oldItemExternalId: string,
-    newItemUid: string,
-    newItemExternalId: string,
-  ): Promise<void> {
-    try {
-      const variables: GetUserWithEitherBookmarkQueryVariables = {
-        oldItemUid,
-        newItemUid,
-      };
-
-      const response = await dataService.query<
-        GetUserWithEitherBookmarkQuery,
-        GetUserWithEitherBookmarkQueryVariables
-      >({
-        query: GetUserWithEitherBookmarkDocument,
-        variables,
-      });
-
-      const usersWithBothBookmarks = response.users_profiles
-        .filter(
-          (result) =>
-            (result.item_bookmarks_aggregate.aggregate?.count || 0) >= 2,
-        )
-        .map((profile) => profile.id);
-
-      const variablesReplace: ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables =
-        {
-          oldItemUid,
-          oldItemExternalId,
-          newItemUid,
-          newItemExternalId,
-          usersWithBothBookmarks,
-        };
-      await dataService.query<
-        ReplaceItemInCollectionsBookmarksAndAssignmentsMutation,
-        ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables
-      >({
-        query: ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
-        variables: variablesReplace,
-      });
-    } catch (err) {
-      throw new CustomError(
-        'Failed to replace item in collections, bookmarks and assignments in the database',
-        err,
-        {
-          query: 'REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS',
-        },
-      );
-    }
-  }
-
   public static async setSharedItemsStatus(
     pids: string[],
     status: string,
@@ -592,7 +444,7 @@ export class ItemsService {
   }
 
   /**
-   * Returns result of request of MAM sync
+   * Triggers a mam sync, returns the result of the sync request
    * either:
    * - started
    * - running
@@ -673,6 +525,55 @@ export class ItemsService {
           itemUuid,
         },
       );
+    }
+  }
+
+  public static async depublishItem(
+    item: AvoItemItem,
+    depublishType: DepublishType,
+    depublishReason: string | null,
+    replacementExternalId: string | null,
+  ): Promise<void> {
+    let url: string | null = null;
+    try {
+      const { fetchWithLogoutJson } = await import(
+        '@meemoo/admin-core-ui/client'
+      );
+      url = stringifyUrl({
+        url: `${getEnv('PROXY_URL')}/items/${item.uid}/depublish`,
+        query: {
+          depublishType,
+          depublishReason,
+          replacementExternalId,
+        },
+      });
+      await fetchWithLogoutJson<ItemUsedByResponse>(url, {
+        method: 'PATCH',
+      });
+    } catch (err) {
+      throw new CustomError('Failed to depublish item', err, {
+        item,
+        depublishType,
+        depublishReason,
+        replacementExternalId,
+      });
+    }
+  }
+
+  public static async publishItem(itemUuid: string) {
+    let url: string | null = null;
+    try {
+      const { fetchWithLogoutJson } = await import(
+        '@meemoo/admin-core-ui/client'
+      );
+      url = `${getEnv('PROXY_URL')}/items/${itemUuid}/publish`;
+      await fetchWithLogoutJson<ItemUsedByResponse>(url, {
+        method: 'PATCH',
+      });
+    } catch (err) {
+      throw new CustomError('Failed to publish item', err, {
+        itemUuid,
+      });
     }
   }
 }

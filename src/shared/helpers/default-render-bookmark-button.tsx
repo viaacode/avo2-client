@@ -22,7 +22,7 @@ export const defaultRenderBookmarkButton = (
 ): ReactNode => {
   if (props.title) {
     return (
-      <Tooltip position="bottom">
+      <Tooltip position="bottom" id="bookmarks-button-tooltip">
         <TooltipTrigger>
           {getBookmarkButton({ ...props, title: '' })}
         </TooltipTrigger>

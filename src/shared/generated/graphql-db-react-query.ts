@@ -222,25 +222,6 @@ export const useUpdateInteractiveTourMutation = <
       (variables?: UpdateInteractiveTourMutationVariables) => fetchData<UpdateInteractiveTourMutation, UpdateInteractiveTourMutationVariables>(UpdateInteractiveTourDocument, variables)(),
       options
     );
-export const DeleteItemFromCollectionBookmarksAndAssignmentsDocument = `
-    mutation deleteItemFromCollectionBookmarksAndAssignments($itemExternalId: bpchar!, $itemUid: uuid!) {
-  delete_app_collection_fragments(where: {external_id: {_eq: $itemExternalId}}) {
-    affected_rows
-  }
-  delete_app_item_bookmarks(where: {item_id: {_eq: $itemUid}}) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteItemFromCollectionBookmarksAndAssignmentsMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteItemFromCollectionBookmarksAndAssignmentsMutation, TError, DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables, TContext>) =>
-    useMutation<DeleteItemFromCollectionBookmarksAndAssignmentsMutation, TError, DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables, TContext>(
-      ['deleteItemFromCollectionBookmarksAndAssignments'],
-      (variables?: DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables) => fetchData<DeleteItemFromCollectionBookmarksAndAssignmentsMutation, DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables>(DeleteItemFromCollectionBookmarksAndAssignmentsDocument, variables)(),
-      options
-    );
 export const GetDistinctSeriesDocument = `
     query getDistinctSeries {
   app_item_meta(distinct_on: series, where: {series: {_is_null: false}}) {
@@ -401,74 +382,6 @@ export const useGetUnpublishedItemsWithFiltersQuery = <
       fetchData<GetUnpublishedItemsWithFiltersQuery, GetUnpublishedItemsWithFiltersQueryVariables>(GetUnpublishedItemsWithFiltersDocument, variables),
       options
     );
-export const GetUserWithEitherBookmarkDocument = `
-    query getUserWithEitherBookmark($oldItemUid: uuid!, $newItemUid: uuid!) {
-  users_profiles(
-    where: {item_bookmarks: {item_id: {_in: [$oldItemUid, $newItemUid]}}}
-  ) {
-    id
-    item_bookmarks_aggregate(where: {item_id: {_in: [$oldItemUid, $newItemUid]}}) {
-      aggregate {
-        count
-      }
-    }
-  }
-}
-    `;
-export const useGetUserWithEitherBookmarkQuery = <
-      TData = GetUserWithEitherBookmarkQuery,
-      TError = unknown
-    >(
-      variables: GetUserWithEitherBookmarkQueryVariables,
-      options?: UseQueryOptions<GetUserWithEitherBookmarkQuery, TError, TData>
-    ) =>
-    useQuery<GetUserWithEitherBookmarkQuery, TError, TData>(
-      ['getUserWithEitherBookmark', variables],
-      fetchData<GetUserWithEitherBookmarkQuery, GetUserWithEitherBookmarkQueryVariables>(GetUserWithEitherBookmarkDocument, variables),
-      options
-    );
-export const ReplaceItemInCollectionsBookmarksAndAssignmentsDocument = `
-    mutation replaceItemInCollectionsBookmarksAndAssignments($oldItemUid: uuid!, $oldItemExternalId: bpchar!, $newItemUid: uuid!, $newItemExternalId: bpchar!, $usersWithBothBookmarks: [uuid!]!) {
-  update_app_collection_fragments(
-    where: {external_id: {_eq: $oldItemExternalId}}
-    _set: {external_id: $newItemExternalId, start_oc: null, end_oc: null}
-  ) {
-    affected_rows
-  }
-  update_app_item_bookmarks(
-    where: {item_id: {_eq: $oldItemUid}, _not: {profile_id: {_in: $usersWithBothBookmarks}}}
-    _set: {item_id: $newItemUid}
-  ) {
-    affected_rows
-  }
-  delete_app_item_bookmarks(
-    where: {item_id: {_eq: $oldItemUid}, profile_id: {_in: $usersWithBothBookmarks}}
-  ) {
-    affected_rows
-  }
-  update_app_assignment_blocks_v2(
-    where: {fragment_id: {_eq: $oldItemExternalId}, type: {_eq: "ITEM"}}
-    _set: {fragment_id: $newItemExternalId}
-  ) {
-    affected_rows
-  }
-  update_app_pupil_collection_blocks(
-    where: {fragment_id: {_eq: $oldItemExternalId}, type: {_eq: "ITEM"}}
-    _set: {fragment_id: $newItemExternalId}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useReplaceItemInCollectionsBookmarksAndAssignmentsMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<ReplaceItemInCollectionsBookmarksAndAssignmentsMutation, TError, ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables, TContext>) =>
-    useMutation<ReplaceItemInCollectionsBookmarksAndAssignmentsMutation, TError, ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables, TContext>(
-      ['replaceItemInCollectionsBookmarksAndAssignments'],
-      (variables?: ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables) => fetchData<ReplaceItemInCollectionsBookmarksAndAssignmentsMutation, ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables>(ReplaceItemInCollectionsBookmarksAndAssignmentsDocument, variables)(),
-      options
-    );
 export const SetSharedItemsStatusDocument = `
     mutation setSharedItemsStatus($pids: [String!]!, $status: item_publishing_status) {
   update_shared_items(where: {pid: {_in: $pids}}, _set: {status: $status}) {
@@ -483,44 +396,6 @@ export const useSetSharedItemsStatusMutation = <
     useMutation<SetSharedItemsStatusMutation, TError, SetSharedItemsStatusMutationVariables, TContext>(
       ['setSharedItemsStatus'],
       (variables?: SetSharedItemsStatusMutationVariables) => fetchData<SetSharedItemsStatusMutation, SetSharedItemsStatusMutationVariables>(SetSharedItemsStatusDocument, variables)(),
-      options
-    );
-export const UpdateItemDepublishReasonDocument = `
-    mutation updateItemDepublishReason($itemUuid: uuid!, $reason: String) {
-  update_app_item_meta(
-    where: {uid: {_eq: $itemUuid}}
-    _set: {depublish_reason: $reason}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useUpdateItemDepublishReasonMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateItemDepublishReasonMutation, TError, UpdateItemDepublishReasonMutationVariables, TContext>) =>
-    useMutation<UpdateItemDepublishReasonMutation, TError, UpdateItemDepublishReasonMutationVariables, TContext>(
-      ['updateItemDepublishReason'],
-      (variables?: UpdateItemDepublishReasonMutationVariables) => fetchData<UpdateItemDepublishReasonMutation, UpdateItemDepublishReasonMutationVariables>(UpdateItemDepublishReasonDocument, variables)(),
-      options
-    );
-export const UpdateItemPublishedStateDocument = `
-    mutation updateItemPublishedState($itemUuid: uuid!, $isPublished: Boolean!) {
-  update_app_item_meta(
-    where: {uid: {_eq: $itemUuid}}
-    _set: {is_published: $isPublished}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useUpdateItemPublishedStateMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateItemPublishedStateMutation, TError, UpdateItemPublishedStateMutationVariables, TContext>) =>
-    useMutation<UpdateItemPublishedStateMutation, TError, UpdateItemPublishedStateMutationVariables, TContext>(
-      ['updateItemPublishedState'],
-      (variables?: UpdateItemPublishedStateMutationVariables) => fetchData<UpdateItemPublishedStateMutation, UpdateItemPublishedStateMutationVariables>(UpdateItemPublishedStateDocument, variables)(),
       options
     );
 export const GetTranslationsDocument = `
@@ -858,7 +733,6 @@ export const GetBookmarkedCollectionsByOwnerDocument = `
     bookmarkedCollection {
       id
       updated_at
-      type_id
       type {
         label
         id
@@ -868,9 +742,7 @@ export const GetBookmarkedCollectionsByOwnerDocument = `
       owner_profile_id
       profile {
         id
-        alias
         title
-        alternative_email
         avatar
         organisation {
           logo_url
@@ -1069,7 +941,6 @@ export const GetCollectionsByOwnerOrContributorDocument = `
   ) {
     id
     updated_at
-    type_id
     type {
       label
       id
@@ -1080,9 +951,7 @@ export const GetCollectionsByOwnerOrContributorDocument = `
     collaborator_profile_id
     profile {
       id
-      alias
       title
-      alternative_email
       avatar
       organisation {
         logo_url
@@ -2331,7 +2200,6 @@ export const GetItemBookmarksForUserDocument = `
           }
           is_deleted
           is_published
-          type_id
           type {
             id
             label

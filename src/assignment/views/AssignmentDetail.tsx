@@ -192,7 +192,9 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
 
   // Errors
   const [isForbidden, setIsForbidden] = useState<boolean>(false);
-  const [assignmentLoading, setAssignmentLoading] = useState(true);
+  const [assignmentLoading, setAssignmentLoading] = useState(
+    !initialAssignment,
+  );
   const [assignmentError, setAssignmentError] =
     useState<Partial<ErrorViewQueryParams> | null>(null);
 
@@ -363,18 +365,14 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           inviteToken || undefined,
         );
       } catch (err: any) {
-        if (err.innerException.additionalInfo?.statusCode === 403) {
+        const statusCode = err.innerException.additionalInfo?.statusCode;
+        if (statusCode === 403 || statusCode === 404) {
           setIsForbidden(true);
         } else {
           setAssignmentError({
-            message:
-              err.innerException.additionalInfo?.statusCode === 403
-                ? tHtml(
-                    'assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-pagina-te',
-                  )
-                : tHtml(
-                    'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt',
-                  ),
+            message: tHtml(
+              'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt',
+            ),
             icon: IconName.alertTriangle,
             actionButtons: ['home'],
           });
@@ -1265,11 +1263,6 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
   };
 
   const renderPageContent = () => {
-    if (!mounted) {
-      // SSR + hydration: render nothing until the client has mounted.
-      // This ensures server and client produce identical HTML during hydration.
-      return null;
-    }
     if (assignmentLoading) {
       return <FullPageSpinner locationId="assignment-detail--loading" />;
     }

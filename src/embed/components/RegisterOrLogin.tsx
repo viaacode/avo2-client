@@ -24,11 +24,11 @@ export const RegisterOrLogin: FC = () => {
       },
       {
         label: tText('authentication/components/login-options___leerling'),
-        id: LoginOptionsTabs.STUDENT,
+        id: LoginOptionsTabs.PUPIL,
         icon: IconName.userStudent,
       },
     ],
-    LoginOptionsTabs.STUDENT,
+    LoginOptionsTabs.PUPIL,
   );
 
   const renderTitle = () => {
@@ -38,7 +38,7 @@ export const RegisterOrLogin: FC = () => {
           'authentication/components/login-options___log-in-als-lesgever',
         );
 
-      case LoginOptionsTabs.STUDENT:
+      case LoginOptionsTabs.PUPIL:
         return tHtml(
           'authentication/components/login-options___log-in-als-leerling',
         );
@@ -53,7 +53,7 @@ export const RegisterOrLogin: FC = () => {
       case LoginOptionsTabs.TEACHER:
         return <LoginOptionsForTeacher openInNewTab={true} />;
 
-      case LoginOptionsTabs.STUDENT:
+      case LoginOptionsTabs.PUPIL:
         return <LoginOptionsForPupil openInNewTab={true} />;
 
       default:

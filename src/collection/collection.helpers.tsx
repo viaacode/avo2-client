@@ -15,6 +15,7 @@ import {
   AvoCollectionFragment,
   AvoCoreBlockItemType,
   AvoCoreContentType,
+  AvoCoreContentTypeId,
   AvoLomLomSchemeType,
   AvoSearchResultItem,
 } from '@viaa/avo2-types';
@@ -32,10 +33,7 @@ import {
   MAX_SEARCH_DESCRIPTION_LENGTH,
 } from './collection.const';
 import { CollectionService } from './collection.service';
-import {
-  CONTENT_TYPE_TRANSLATIONS_NL_TO_EN,
-  ContentTypeNumber,
-} from './collection.types';
+import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from './collection.types';
 
 export const getValidationFeedbackForDescription = (
   description: string | null,
@@ -65,7 +63,7 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 >[] = () => [
   {
     error: (collection) =>
-      collection.type_id === ContentTypeNumber.collection
+      collection.type?.id === AvoCoreContentTypeId.COLLECTION
         ? tText('collection/collection___de-collectie-beschrijving-is-te-lang')
         : tText('collection/collection___de-bundel-beschrijving-is-te-lang'),
     isValid: (collection: Partial<AvoCollectionCollection>) =>
@@ -74,7 +72,7 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
   },
   {
     error: (collection) =>
-      collection.type_id === ContentTypeNumber.collection
+      collection.type?.id === AvoCoreContentTypeId.COLLECTION
         ? tText(
             'collection/collection___de-lange-beschrijving-van-deze-collectie-is-te-lang',
           )
@@ -93,7 +91,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 >[] => [
   {
     error: (collection) =>
-      collection.type_id === ContentTypeNumber.collection
+      collection.type?.id === AvoCoreContentTypeId.COLLECTION
         ? tText(
             'collection/collection___de-collectie-heeft-geen-hoofdafbeelding',
           )
@@ -103,7 +101,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
   },
   {
     error: (collection) =>
-      collection.type_id === ContentTypeNumber.collection
+      collection.type?.id === AvoCoreContentTypeId.COLLECTION
         ? tText('collection/collection___de-collectie-heeft-geen-titel')
         : tText('collection/collection___de-bundel-heeft-geen-titel'),
     isValid: (collection: Partial<AvoCollectionCollection>) =>
@@ -111,7 +109,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
   },
   {
     error: (collection) =>
-      collection.type_id === ContentTypeNumber.collection
+      collection.type?.id === AvoCoreContentTypeId.COLLECTION
         ? tText('collection/collection___de-collectie-heeft-geen-beschrijving')
         : tText('collection/collection___de-bundel-heeft-geen-beschrijving'),
     isValid: (collection: Partial<AvoCollectionCollection>) =>
@@ -119,7 +117,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
   },
   {
     error: (collection) =>
-      collection.type_id === ContentTypeNumber.collection
+      collection.type?.id === AvoCoreContentTypeId.COLLECTION
         ? tText(
             'collection/collection___de-collectie-heeft-geen-onderwijsniveaus',
           )
@@ -133,7 +131,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
   },
   {
     error: (collection) =>
-      collection.type_id === ContentTypeNumber.collection
+      collection.type?.id === AvoCoreContentTypeId.COLLECTION
         ? tText('collection/collection___de-collectie-heeft-geen-themas')
         : tText('collection/collection___de-bundel-heeft-geen-themas'),
     isValid: (collection: Partial<AvoCollectionCollection>) =>
@@ -143,7 +141,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
   },
   {
     error: (collection) =>
-      collection.type_id === ContentTypeNumber.collection
+      collection.type?.id === AvoCoreContentTypeId.COLLECTION
         ? tText('collection/collection___de-collectie-heeft-geen-vakken')
         : tText('collection/collection___de-bundel-heeft-geen-vakken'),
     isValid: (collection: Partial<AvoCollectionCollection>) =>
@@ -153,7 +151,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
   },
   {
     error: (collection) =>
-      collection.type_id === ContentTypeNumber.collection
+      collection.type?.id === AvoCoreContentTypeId.COLLECTION
         ? tText('collection/collection___de-collectie-heeft-geen-items')
         : tText('collection/collection___de-bundel-heeft-geen-collecties'),
     isValid: (collection: Partial<AvoCollectionCollection>) =>
@@ -161,7 +159,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
   },
   {
     error: (collection) =>
-      collection.type_id === ContentTypeNumber.collection
+      collection.type?.id === AvoCoreContentTypeId.COLLECTION
         ? tText(
             'collection/collection___de-video-items-moeten-een-titel-en-beschrijving-bevatten',
           )
@@ -172,7 +170,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
       !collection.collection_fragments ||
       validateFragments(
         collection.collection_fragments,
-        collection.type_id === ContentTypeNumber.collection
+        collection.type?.id === AvoCoreContentTypeId.COLLECTION
           ? AvoCoreBlockItemType.ITEM
           : AvoCoreBlockItemType.COLLECTION,
       ),
@@ -183,7 +181,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
     ),
     isValid: (collection: Partial<AvoCollectionCollection>) => {
       return (
-        collection.type_id === ContentTypeNumber.bundle ||
+        collection.type?.id === AvoCoreContentTypeId.BUNDLE ||
         !collection.collection_fragments ||
         validateFragments(
           collection.collection_fragments,
@@ -197,7 +195,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
       'collection/collection___de-bundel-heeft-collecties-of-opdrachten-die-verwijderd-zijn',
     ),
     isValid: (bundle: Partial<AvoCollectionCollection>) => {
-      if (bundle.type_id === ContentTypeNumber.collection) {
+      if (bundle.type?.id === AvoCoreContentTypeId.COLLECTION) {
         return true; // Only applies to bundles
       }
       if (!bundle.collection_fragments?.length) {
@@ -217,7 +215,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
       'collection/collection___de-bundel-heeft-niet-publieke-collecties-of-opdrachten',
     ),
     isValid: (bundle: Partial<AvoCollectionCollection>) => {
-      if (bundle.type_id === ContentTypeNumber.collection) {
+      if (bundle.type?.id === AvoCoreContentTypeId.COLLECTION) {
         return true; // Only applies to bundles
       }
       if (!bundle.collection_fragments?.length) {
@@ -345,14 +343,14 @@ const getDuplicateTitleOrDescriptionErrors = async (
     collection.title || '',
     collection.description || '',
     collection.id as string,
-    collection.type_id as ContentTypeNumber,
+    collection.type?.id as AvoCoreContentTypeId,
   );
 
   const errors = [];
 
   if (duplicates.byTitle) {
     errors.push(
-      collection.type_id === ContentTypeNumber.collection
+      collection.type?.id === AvoCoreContentTypeId.COLLECTION
         ? tText(
             'collection/components/modals/share-collection-modal___een-publieke-collectie-met-deze-titel-bestaat-reeds',
           )
@@ -364,7 +362,7 @@ const getDuplicateTitleOrDescriptionErrors = async (
 
   if (duplicates.byDescription) {
     errors.push(
-      collection.type_id === ContentTypeNumber.collection
+      collection.type?.id === AvoCoreContentTypeId.COLLECTION
         ? tText(
             'collection/components/modals/share-collection-modal___een-publieke-collectie-met-deze-beschrijving-bestaat-reeds',
           )

@@ -189,7 +189,8 @@ export async function fetchAssignmentLoader(args: LoaderFunctionArgs<any>) {
       throw new Error('No assignment UUID provided in route params');
     }
   } catch (err: any) {
-    if (err?.innerException?.additionalInfo?.statusCode !== 404) {
+    const statusCode = err?.innerException?.additionalInfo?.statusCode;
+    if (statusCode !== 404 && statusCode !== 403) {
       console.error(
         'Failed to load assignment in react-router loader for route Assignment detail',
         err,

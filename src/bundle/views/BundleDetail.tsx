@@ -28,6 +28,7 @@ import {
   AvoContentTypeEnglish,
   AvoCoreBlockItemType,
   AvoCoreContentType,
+  AvoCoreContentTypeId,
   AvoSearchResultItem,
   PermissionName,
 } from '@viaa/avo2-types';
@@ -51,7 +52,6 @@ import {
   BLOCK_TYPE_TO_CONTENT_TYPE,
   CollectionCreateUpdateTab,
   CollectionOrBundle,
-  ContentTypeNumber,
 } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components/modals/PublishCollectionModal';
 import { useGetCollectionOrBundleByIdOrInviteToken } from '../../collection/hooks/useGetCollectionOrBundleByIdOrInviteToken';
@@ -127,6 +127,10 @@ export const BundleDetail: FC<BundleDetailProps> = ({
   const loginState = useAtomValue(loginAtom);
   // State
   const [bundleId, setBundleId] = useState(id || bundleIdFromUrl);
+
+  useEffect(() => {
+    setBundleId(id || bundleIdFromUrl);
+  }, [id, bundleIdFromUrl]);
   const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
@@ -397,7 +401,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
 
       defaultGoToDetailLink(navigateFunc)(
         duplicateBundle.id,
-        AvoCoreContentType.BUNDEL,
+        AvoCoreContentType.BUNDLE,
       );
       setBundleId(duplicateBundle.id);
       ToastService.success(
@@ -507,16 +511,16 @@ export const BundleDetail: FC<BundleDetailProps> = ({
     return bundleFragments.map((fragment: AvoCollectionFragment) => {
       const collectionOrAssignment = fragment.item_meta as
         | AvoCollectionCollection
-        | (AvoAssignmentAssignment & { type_id: number });
+        | (AvoAssignmentAssignment & { type: { id: number } });
       if (!collectionOrAssignment) {
         return null;
       }
       const category: AvoContentTypeEnglish =
-        collectionOrAssignment.type_id === ContentTypeNumber.collection
+        collectionOrAssignment.type?.id === AvoCoreContentTypeId.COLLECTION
           ? AvoContentTypeEnglish.COLLECTION
           : AvoContentTypeEnglish.ASSIGNMENT;
       const detailRoute =
-        collectionOrAssignment.type_id === ContentTypeNumber.collection
+        collectionOrAssignment.type?.id === AvoCoreContentTypeId.COLLECTION
           ? APP_PATH.COLLECTION_DETAIL.route
           : APP_PATH.ASSIGNMENT_DETAIL.route;
       return (
@@ -543,8 +547,8 @@ export const BundleDetail: FC<BundleDetailProps> = ({
                   src={collectionOrAssignment.thumbnail_path || undefined}
                   meta={`${collectionOrAssignment?.item_count || 0} items`}
                   label={
-                    collectionOrAssignment.type_id ===
-                    ContentTypeNumber.collection
+                    collectionOrAssignment.type?.id ===
+                    AvoCoreContentTypeId.COLLECTION
                       ? tText('admin/shared/constants/index___collectie')
                       : tText('admin/shared/constants/index___opdracht')
                   }
@@ -740,12 +744,8 @@ export const BundleDetail: FC<BundleDetailProps> = ({
               />
             )}
           </Grid>
-          {(relatedItems?.length || 0) > 0 && (
-            <>
-              <hr className="c-hr" />
-              {renderRelatedItems(relatedItems, defaultRenderDetailLink)}
-            </>
-          )}
+          {(relatedItems?.length || 0) > 0 &&
+            renderRelatedItems(relatedItems, defaultRenderDetailLink)}
         </Container>
       </Container>
     );

@@ -58,7 +58,7 @@ export const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
             type={block.type}
             key={block.id}
             backgroundColor={backgroundColor}
-            type_id={block.item_meta?.type_id}
+            typeId={block.item_meta?.type_id}
           >
             <CollectionFragmentTypeItem
               {...config?.ITEM}

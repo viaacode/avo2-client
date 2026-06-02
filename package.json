@@ -1,12 +1,12 @@
 {
   "name": "avo2-client",
-  "version": "1.33.47",
+  "version": "1.33.54",
   "private": true,
   "type": "module",
   "scripts": {
     "--prepare": "husky install",
     "start-with-env": "npm run build && dotenv -e .env.qas node ./scripts/env.js && dotenv -e .env.qas cross-env NODE_ENV=production node ./dist/server/server.js",
-    "predev": "dotenv -e .env.qas node ./scripts/env.js && cp env-config.js ./public",
+    "predev": "dotenv -e .env.qas node ./scripts/env.js && cp dist/client/env-config.js ./public",
     "dev": "dotenv -e .env.qas node server.ts",
     "dev:embed": "dotenv -e .env.qas vite --config vite-embed.config.mts",
     "build:clean": "shx rm -rf ./dist && shx rm -rf ./dist-embed",
@@ -44,16 +44,16 @@
     "@floating-ui/react": "^0.27.18",
     "@flowplayer/player": "3.32.1",
     "@hookform/resolvers": "2.9.11",
-    "@meemoo/admin-core-ui": "5.2.57",
-    "@meemoo/react-components": "5.1.26",
+    "@meemoo/admin-core-ui": "5.2.75",
+    "@meemoo/react-components": "5.1.35",
     "@emotion/react": "11.11.1",
     "@react-router/node": "^7.9.6",
     "@react-router/serve": "^7.9.1",
     "@studiohyperdrive/pagination": "1.0.0",
     "@tanstack/react-query": "5.90.7",
     "@uidotdev/usehooks": "^2.4.1",
-    "@viaa/avo2-components": "6.2.11",
-    "@viaa/avo2-types": "5.0.13",
+    "@viaa/avo2-components": "6.2.15",
+    "@viaa/avo2-types": "5.0.16",
     "autosize": "6.0.1",
     "blend-promise-utils": "1.29.2",
     "braft-editor": "^2.3.9",
@@ -177,11 +177,7 @@
     "@esbuild/win32-x64": "^0.20.1"
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
+    "production": [">0.2%", "not dead", "not op_mini all"],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",

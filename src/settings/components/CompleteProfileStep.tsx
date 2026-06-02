@@ -54,7 +54,7 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
     AvoEducationOrganizationOrganization[]
   >(commonUser?.educationalOrganisations || []);
   const [selectedLoms, setSelectedLoms] = useState<AvoLomLomField[]>(
-    compact(commonUser?.loms.map((lomLink) => lomLink.lom)),
+    compact((commonUser?.loms || []).map((lomLink) => lomLink.lom)),
   );
   const groupedLoms = groupLoms(selectedLoms);
   const firstName = commonUser?.firstName || '';
@@ -203,8 +203,8 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
       }
 
       // Refetch user permissions since education level can change user group
-      // Refresh the login state, so the profile info will be up-to-date
-      refetchLoginState(true);
+      // Refresh the login state, so the profile info will be up to date
+      await refetchLoginState(true);
       saveNewsletterPreferences();
 
       // Wait for login response to be set into the store before redirecting

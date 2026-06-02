@@ -224,9 +224,6 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
   );
 
   const resetForm = useCallback(() => {
-    if (!originalAssignment) {
-      return;
-    }
     setFormErrors({});
     setAssignmentFormValues(originalAssignment as any);
     setHasUnsavedChanges(false);
@@ -713,7 +710,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
   };
 
   const reset = useCallback(() => {
-    originalAssignment && setAssignmentFormValues(originalAssignment as any);
+    setAssignmentFormValues(originalAssignment as any);
     resetForm();
   }, [resetForm, setAssignmentFormValues, originalAssignment]);
 
@@ -949,7 +946,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         {bookmarks && (
           <MetaDataItem icon={IconName.bookmark} label={bookmarks} />
         )}
-        <Tooltip position="top">
+        <Tooltip position="top" id="assignment-edit-tooltip-education-level">
           <TooltipTrigger>
             <MetaDataItem icon={IconName.userStudent}>
               <Icon name={IconName.userStudent} />

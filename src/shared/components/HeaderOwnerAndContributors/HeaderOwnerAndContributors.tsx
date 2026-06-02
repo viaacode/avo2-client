@@ -66,7 +66,10 @@ export const HeaderOwnerAndContributors: FC<
       }
 
       return (
-        <Tooltip position="right">
+        <Tooltip
+          position="right"
+          id="header-owner-and-contributors__count-others-tooltip"
+        >
           <TooltipTrigger>
             <p>
               {couplingWord}

@@ -18,7 +18,6 @@ query getBookmarkedCollectionsByOwner(
     bookmarkedCollection {
       id
       updated_at
-      type_id
       type {
         label
         id
@@ -28,9 +27,7 @@ query getBookmarkedCollectionsByOwner(
       owner_profile_id
       profile {
         id
-        alias
         title
-        alternative_email
         avatar
         organisation {
           logo_url

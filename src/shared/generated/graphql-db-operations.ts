@@ -91,14 +91,6 @@ export type UpdateInteractiveTourMutationVariables = Exact<{
 
 export type UpdateInteractiveTourMutation = { __typename?: 'mutation_root', update_app_interactive_tour?: { __typename?: 'app_interactive_tour_mutation_response', affected_rows: number } | null };
 
-export type DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables = Exact<{
-  itemExternalId: Scalars['bpchar'];
-  itemUid: Scalars['uuid'];
-}>;
-
-
-export type DeleteItemFromCollectionBookmarksAndAssignmentsMutation = { __typename?: 'mutation_root', delete_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number } | null, delete_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null };
-
 export type GetDistinctSeriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -144,25 +136,6 @@ export type GetUnpublishedItemsWithFiltersQueryVariables = Exact<{
 
 export type GetUnpublishedItemsWithFiltersQuery = { __typename?: 'query_root', shared_items: Array<{ __typename?: 'shared_items', id: number, pid: string, updated_at: any, title?: string | null, status?: any | null, item_meta?: { __typename?: 'app_item_meta', id: number, external_id: any, uid: any, is_published?: boolean | null, is_deleted?: boolean | null } | null }>, shared_items_aggregate: { __typename?: 'shared_items_aggregate', aggregate?: { __typename?: 'shared_items_aggregate_fields', count: number } | null } };
 
-export type GetUserWithEitherBookmarkQueryVariables = Exact<{
-  oldItemUid: Scalars['uuid'];
-  newItemUid: Scalars['uuid'];
-}>;
-
-
-export type GetUserWithEitherBookmarkQuery = { __typename?: 'query_root', users_profiles: Array<{ __typename?: 'users_profiles', id: any, item_bookmarks_aggregate: { __typename?: 'app_item_bookmarks_aggregate', aggregate?: { __typename?: 'app_item_bookmarks_aggregate_fields', count: number } | null } }> };
-
-export type ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables = Exact<{
-  oldItemUid: Scalars['uuid'];
-  oldItemExternalId: Scalars['bpchar'];
-  newItemUid: Scalars['uuid'];
-  newItemExternalId: Scalars['bpchar'];
-  usersWithBothBookmarks: Array<Scalars['uuid']> | Scalars['uuid'];
-}>;
-
-
-export type ReplaceItemInCollectionsBookmarksAndAssignmentsMutation = { __typename?: 'mutation_root', update_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number } | null, update_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null, delete_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null, update_app_assignment_blocks_v2?: { __typename?: 'app_assignment_blocks_v2_mutation_response', affected_rows: number } | null, update_app_pupil_collection_blocks?: { __typename?: 'app_pupil_collection_blocks_mutation_response', affected_rows: number } | null };
-
 export type SetSharedItemsStatusMutationVariables = Exact<{
   pids: Array<Scalars['String']> | Scalars['String'];
   status?: InputMaybe<Scalars['item_publishing_status']>;
@@ -170,22 +143,6 @@ export type SetSharedItemsStatusMutationVariables = Exact<{
 
 
 export type SetSharedItemsStatusMutation = { __typename?: 'mutation_root', update_shared_items?: { __typename?: 'shared_items_mutation_response', affected_rows: number } | null };
-
-export type UpdateItemDepublishReasonMutationVariables = Exact<{
-  itemUuid: Scalars['uuid'];
-  reason?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type UpdateItemDepublishReasonMutation = { __typename?: 'mutation_root', update_app_item_meta?: { __typename?: 'app_item_meta_mutation_response', affected_rows: number } | null };
-
-export type UpdateItemPublishedStateMutationVariables = Exact<{
-  itemUuid: Scalars['uuid'];
-  isPublished: Scalars['Boolean'];
-}>;
-
-
-export type UpdateItemPublishedStateMutation = { __typename?: 'mutation_root', update_app_item_meta?: { __typename?: 'app_item_meta_mutation_response', affected_rows: number } | null };
 
 export type GetTranslationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -303,7 +260,7 @@ export type GetBookmarkedCollectionsByOwnerQueryVariables = Exact<{
 }>;
 
 
-export type GetBookmarkedCollectionsByOwnerQuery = { __typename?: 'query_root', app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', bookmarkedCollection?: { __typename?: 'app_collections', id: any, updated_at: any, type_id: number, title: string, publish_at?: any | null, owner_profile_id?: any | null, is_public: boolean, external_id?: string | null, depublish_at?: any | null, created_at: any, thumbnail_path?: string | null, type: { __typename?: 'shared_types', label: string, id: number }, profile?: { __typename?: 'users_profiles', id: any, alias?: string | null, title?: string | null, alternative_email?: string | null, avatar?: string | null, created_at: any, stamboek?: string | null, updated_at: any, user_id?: any | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null } | null, view_count?: { __typename?: 'app_collection_views', count?: number | null } | null } | null }> };
+export type GetBookmarkedCollectionsByOwnerQuery = { __typename?: 'query_root', app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', bookmarkedCollection?: { __typename?: 'app_collections', id: any, updated_at: any, title: string, publish_at?: any | null, owner_profile_id?: any | null, is_public: boolean, external_id?: string | null, depublish_at?: any | null, created_at: any, thumbnail_path?: string | null, type: { __typename?: 'shared_types', label: string, id: number }, profile?: { __typename?: 'users_profiles', id: any, title?: string | null, avatar?: string | null, created_at: any, stamboek?: string | null, updated_at: any, user_id?: any | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null } | null, view_count?: { __typename?: 'app_collection_views', count?: number | null } | null } | null }> };
 
 export type GetBundleTitlesByOwnerQueryVariables = Exact<{
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
@@ -353,7 +310,7 @@ export type GetCollectionsByOwnerOrContributorQueryVariables = Exact<{
 }>;
 
 
-export type GetCollectionsByOwnerOrContributorQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, updated_at?: any | null, type_id?: number | null, title?: string | null, published_at?: any | null, owner_profile_id?: any | null, collaborator_profile_id?: any | null, is_public?: boolean | null, external_id?: string | null, depublish_at?: any | null, created_at?: any | null, thumbnail_path?: string | null, share_type?: string | null, type?: { __typename?: 'shared_types', label: string, id: number } | null, profile?: { __typename?: 'users_profiles', id: any, alias?: string | null, title?: string | null, alternative_email?: string | null, avatar?: string | null, created_at: any, stamboek?: string | null, updated_at: any, user_id?: any | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null } | null, view_count?: { __typename?: 'app_collection_views', count?: number | null } | null, contributors: Array<{ __typename?: 'app_collections_contributors', profile_id?: any | null, rights: Lookup_Enum_Right_Types_Enum, enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_common_users', user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null, uid: any } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null, loms: Array<{ __typename?: 'users_profiles_lom_links', lom_id: string }> } | null, collection: { __typename?: 'app_collections', id: any } }> }> };
+export type GetCollectionsByOwnerOrContributorQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, updated_at?: any | null, title?: string | null, published_at?: any | null, owner_profile_id?: any | null, collaborator_profile_id?: any | null, is_public?: boolean | null, external_id?: string | null, depublish_at?: any | null, created_at?: any | null, thumbnail_path?: string | null, share_type?: string | null, type?: { __typename?: 'shared_types', label: string, id: number } | null, profile?: { __typename?: 'users_profiles', id: any, title?: string | null, avatar?: string | null, created_at: any, stamboek?: string | null, updated_at: any, user_id?: any | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null } | null, view_count?: { __typename?: 'app_collection_views', count?: number | null } | null, contributors: Array<{ __typename?: 'app_collections_contributors', profile_id?: any | null, rights: Lookup_Enum_Right_Types_Enum, enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_common_users', user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null, uid: any } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null, loms: Array<{ __typename?: 'users_profiles_lom_links', lom_id: string }> } | null, collection: { __typename?: 'app_collections', id: any } }> }> };
 
 export type GetContributorsByCollectionUuidQueryVariables = Exact<{
   id: Scalars['uuid'];
@@ -700,7 +657,7 @@ export type GetItemBookmarksForUserQueryVariables = Exact<{
 }>;
 
 
-export type GetItemBookmarksForUserQuery = { __typename?: 'query_root', app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', item_id: any, created_at: any, bookmarkedItem?: { __typename?: 'app_item_meta', title: string, thumbnail_path: string, duration?: any | null, issued?: any | null, item?: { __typename?: 'shared_items', external_id: string, item_meta?: { __typename?: 'app_item_meta', is_deleted?: boolean | null, is_published?: boolean | null, type_id: number, organisation?: { __typename?: 'shared_organisations', name: string } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null } | null } | null, view_count?: { __typename?: 'app_item_views', count?: number | null } | null } | null }> };
+export type GetItemBookmarksForUserQuery = { __typename?: 'query_root', app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', item_id: any, created_at: any, bookmarkedItem?: { __typename?: 'app_item_meta', title: string, thumbnail_path: string, duration?: any | null, issued?: any | null, item?: { __typename?: 'shared_items', external_id: string, item_meta?: { __typename?: 'app_item_meta', is_deleted?: boolean | null, is_published?: boolean | null, organisation?: { __typename?: 'shared_organisations', name: string } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null } | null } | null, view_count?: { __typename?: 'app_item_views', count?: number | null } | null } | null }> };
 
 export type GetItemPlayCountQueryVariables = Exact<{
   itemUuid: Scalars['uuid'];

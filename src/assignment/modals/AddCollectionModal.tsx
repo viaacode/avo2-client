@@ -31,10 +31,7 @@ import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { CollectionService } from '../../collection/collection.service';
-import {
-  type Collection,
-  ContentTypeNumber,
-} from '../../collection/collection.types';
+import { type Collection } from '../../collection/collection.types';
 import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
@@ -55,6 +52,7 @@ import { type AssignmentTableColumns } from '../assignment.types';
 import './AddItemsModals.scss';
 import {
   AvoCollectionCollection,
+  AvoCoreContentTypeId,
   AvoSearchOrderDirection,
 } from '@viaa/avo2-types';
 import { tHtml } from '../../shared/helpers/translate-html';
@@ -182,7 +180,7 @@ export const AddCollectionModal: FC<AddCollectionModalProps> = ({
               columnDataType,
               OWN_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
             ),
-            ContentTypeNumber.collection,
+            AvoCoreContentTypeId.COLLECTION,
             filterString,
             undefined,
           );

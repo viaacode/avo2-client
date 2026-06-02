@@ -1,26 +1,22 @@
 import { Container, Icon } from '@viaa/avo2-components';
-
+import { AvoCoreBlockItemType, AvoCoreContentTypeId } from '@viaa/avo2-types';
 import { type FC, type ReactNode } from 'react';
-
-import { type ContentTypeNumber } from '../../../../collection/collection.types';
-
-import './BlockIconWrapper.scss';
-import { AvoCoreBlockItemType } from '@viaa/avo2-types';
 import { BLOCK_TYPE_TO_ICON_NAME } from './BlockIconWrapper.consts';
 import { getBlockType } from './BlockIconWrapper.helpers';
+import './BlockIconWrapper.scss';
 
 interface BlockIconWrapperProps {
   backgroundColor?: string;
   key: string | number; // Needs to be defined where you use the component
   type: AvoCoreBlockItemType;
-  type_id?: ContentTypeNumber;
+  typeId?: AvoCoreContentTypeId;
   children: ReactNode;
 }
 
 export const BlockIconWrapper: FC<BlockIconWrapperProps> = ({
   backgroundColor = '#fff',
   type,
-  type_id,
+  typeId,
   children,
 }) => {
   return (
@@ -33,7 +29,7 @@ export const BlockIconWrapper: FC<BlockIconWrapperProps> = ({
           <div className="c-icon-bar">
             <div className="c-icon-bar__sidebar">
               <Icon
-                name={BLOCK_TYPE_TO_ICON_NAME[getBlockType(type, type_id)]}
+                name={BLOCK_TYPE_TO_ICON_NAME[getBlockType(type, typeId)]}
               />
             </div>
             <div className="c-icon-bar__content">{children}</div>

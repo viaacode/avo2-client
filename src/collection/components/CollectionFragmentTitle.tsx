@@ -5,15 +5,13 @@ import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers/build-link';
-import {
-  type BlockItemComponent,
-  ContentTypeNumber,
-} from '../collection.types';
+import { type BlockItemComponent } from '../collection.types';
 
 import './CollectionFragmentTitle.scss';
 import {
   AvoAssignmentBlock,
   AvoCoreBlockItemType,
+  AvoCoreContentTypeId,
   AvoItemItem,
 } from '@viaa/avo2-types';
 
@@ -38,9 +36,9 @@ export const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({
     canClickHeading &&
     block &&
     block.type === AvoCoreBlockItemType.ITEM &&
-    block.item_meta?.type_id &&
-    [ContentTypeNumber.video, ContentTypeNumber.audio].includes(
-      block.item_meta?.type_id,
+    block.item_meta?.type?.id &&
+    [AvoCoreContentTypeId.VIDEO, AvoCoreContentTypeId.AUDIO].includes(
+      block.item_meta?.type?.id,
     )
   ) {
     const link = buildLink(APP_PATH.ITEM_DETAIL.route, {
