@@ -72,12 +72,6 @@ Temporary Items
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
 
-
-
-
-
-
-
 # IDE
 # --------------------------------------------------------------------------- /
 
@@ -265,8 +259,10 @@ graphql.config.yml
 /.react-router
 
 # do not ignore the env-config.js placeholder file in the public folder
-!/public/env-config.js
 !/scripts/env.js
 !/scripts/copy-robots-txt-file.js
 
 .claude/
+
+# copied from dist/client/env-config.js to public at server
+public/env-config.js
