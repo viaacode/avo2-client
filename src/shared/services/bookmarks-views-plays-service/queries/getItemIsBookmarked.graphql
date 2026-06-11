@@ -1,8 +1,0 @@
-query getItemIsBookmarked($itemUuid: uuid!, $profileId: uuid) {
-  app_item_bookmarks(
-    where: { profile_id: { _eq: $profileId }, item_id: { _eq: $itemUuid } }
-    limit: 1
-  ) {
-    id
-  }
-}

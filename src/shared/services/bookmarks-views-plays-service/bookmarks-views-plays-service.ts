@@ -10,22 +10,10 @@ import {
   type DeleteCollectionBookmarksForUserMutationVariables,
   type DeleteItemBookmarkMutation,
   type DeleteItemBookmarkMutationVariables,
-  type GetAssignmentBookmarkViewCountsQuery,
-  type GetAssignmentBookmarkViewCountsQueryVariables,
-  GetAssignmentIsBookmarkedQuery,
-  GetAssignmentIsBookmarkedQueryVariables,
   type GetBookmarkStatusesQuery,
   type GetBookmarkStatusesQueryVariables,
-  type GetCollectionBookmarkViewPlayCountsQuery,
-  type GetCollectionBookmarkViewPlayCountsQueryVariables,
-  GetCollectionIsBookmarkedQuery,
-  GetCollectionIsBookmarkedQueryVariables,
   type GetItemBookmarksForUserQuery,
   type GetItemBookmarksForUserQueryVariables,
-  type GetItemBookmarkViewPlayCountsQuery,
-  type GetItemBookmarkViewPlayCountsQueryVariables,
-  GetItemIsBookmarkedQuery,
-  GetItemIsBookmarkedQueryVariables,
   type GetMultipleAssignmentViewCountsQuery,
   type GetMultipleAssignmentViewCountsQueryVariables,
   type GetMultipleCollectionViewCountsQuery,
@@ -48,19 +36,14 @@ import {
   type InsertItemBookmarkMutationVariables,
 } from '../../generated/graphql-db-operations';
 import {
-  GetAssignmentBookmarkViewCountsDocument,
-  GetAssignmentIsBookmarkedDocument,
   GetBookmarkStatusesDocument,
-  GetCollectionBookmarkViewPlayCountsDocument,
-  GetCollectionIsBookmarkedDocument,
   GetItemBookmarksForUserDocument,
-  GetItemBookmarkViewPlayCountsDocument,
-  GetItemIsBookmarkedDocument,
   GetMultipleAssignmentViewCountsDocument,
   GetMultipleCollectionViewCountsDocument,
   GetMultipleItemViewCountsDocument,
 } from '../../generated/graphql-db-react-query';
 import { CustomError } from '../../helpers/custom-error';
+import { getEnv } from '../../helpers/env';
 import { normalizeTimestamp } from '../../helpers/formatters/date';
 import { dataService } from '../data-service';
 import { trackEvents } from '../event-logging-service';
@@ -144,114 +127,115 @@ export class BookmarksViewsPlaysService {
   public static async getItemCounts(
     itemUuid: string,
   ): Promise<BookmarkViewPlayCounts> {
-    const response = await dataService.query<
-      GetItemBookmarkViewPlayCountsQuery,
-      GetItemBookmarkViewPlayCountsQueryVariables
-    >({
-      query: GetItemBookmarkViewPlayCountsDocument,
-      variables: { itemUuid },
-    });
-    const bookmarkCount =
-      response.app_item_bookmarks_aggregate.aggregate?.count ?? 0;
-    const viewCount = response.app_item_views[0]?.count ?? 0;
-    const playCount = response.app_item_plays[0]?.count ?? 0;
-    return {
-      bookmarkCount,
-      viewCount,
-      playCount,
-    };
+    try {
+      const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
+      return await fetchWithLogoutJson(
+        `${getEnv('PROXY_URL')}/items/${itemUuid}/counts`,
+        { method: 'GET' },
+      );
+    } catch (err) {
+      const error = new CustomError('Failed to fetch item counts', err, { itemUuid });
+      console.error(error);
+      throw error;
+    }
   }
 
   public static async getItemIsBookmarked(
     itemUuid: string,
     commonUser?: AvoUserCommonUser | null,
   ): Promise<boolean> {
-    const response = await dataService.query<
-      GetItemIsBookmarkedQuery,
-      GetItemIsBookmarkedQueryVariables
-    >({
-      query: GetItemIsBookmarkedDocument,
-      variables: { itemUuid, profileId: commonUser?.profileId || null },
-    });
-
-    return !!response.app_item_bookmarks[0];
+    try {
+      const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
+      return await fetchWithLogoutJson(
+        `${getEnv('PROXY_URL')}/items/${itemUuid}/bookmarked`,
+        { method: 'GET' },
+      );
+    } catch (err) {
+      const error = new CustomError('Failed to fetch item bookmark status', err, {
+        itemUuid,
+        commonUser,
+      });
+      console.error(error);
+      throw error;
+    }
   }
 
   public static async getCollectionCounts(
     collectionUuid: string,
   ): Promise<BookmarkViewPlayCounts> {
-    const response = await dataService.query<
-      GetCollectionBookmarkViewPlayCountsQuery,
-      GetCollectionBookmarkViewPlayCountsQueryVariables
-    >({
-      query: GetCollectionBookmarkViewPlayCountsDocument,
-      variables: { collectionUuid },
-    });
-    const bookmarkCount =
-      response.app_collection_bookmarks_aggregate.aggregate?.count || 0;
-    const viewCount = response.app_collection_views[0]?.count ?? 0;
-    const playCount = response.app_collection_plays[0]?.count ?? 0;
-    return {
-      bookmarkCount,
-      viewCount,
-      playCount,
-    };
+    try {
+      const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
+      return await fetchWithLogoutJson(
+        `${getEnv('PROXY_URL')}/collections/${collectionUuid}/counts`,
+        { method: 'GET' },
+      );
+    } catch (err) {
+      const error = new CustomError('Failed to fetch collection counts', err, {
+        collectionUuid,
+      });
+      console.error(error);
+      throw error;
+    }
   }
 
   public static async getIsCollectionBookmarked(
     collectionUuid: string,
     commonUser: AvoUserCommonUser | undefined | null,
   ): Promise<boolean> {
-    const response = await dataService.query<
-      GetCollectionIsBookmarkedQuery,
-      GetCollectionIsBookmarkedQueryVariables
-    >({
-      query: GetCollectionIsBookmarkedDocument,
-      variables: { collectionUuid, profileId: commonUser?.profileId || null },
-    });
-
-    return !!response.app_collection_bookmarks[0];
+    try {
+      const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
+      return await fetchWithLogoutJson(
+        `${getEnv('PROXY_URL')}/collections/${collectionUuid}/bookmarked`,
+        { method: 'GET' },
+      );
+    } catch (err) {
+      const error = new CustomError(
+        'Failed to fetch collection bookmark status',
+        err,
+        { collectionUuid, commonUser },
+      );
+      console.error(error);
+      throw error;
+    }
   }
 
-  public static async getAssignmentCounts(assignmentUuid: string) {
-    const response = await dataService.query<
-      GetAssignmentBookmarkViewCountsQuery,
-      GetAssignmentBookmarkViewCountsQueryVariables
-    >({
-      query: GetAssignmentBookmarkViewCountsDocument,
-      variables: {
+  public static async getAssignmentCounts(
+    assignmentUuid: string,
+  ): Promise<BookmarkViewPlayCounts> {
+    try {
+      const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
+      return await fetchWithLogoutJson(
+        `${getEnv('PROXY_URL')}/assignments/${assignmentUuid}/counts`,
+        { method: 'GET' },
+      );
+    } catch (err) {
+      const error = new CustomError('Failed to fetch assignment counts', err, {
         assignmentUuid,
-      },
-    });
-
-    const bookmarkCount =
-      response.app_assignments_v2_bookmarks_aggregate.aggregate?.count || 0;
-    const viewCount = response.app_assignment_v2_views[0]?.count ?? 0;
-    const playCount = 0;
-
-    return {
-      bookmarkCount,
-      viewCount,
-      playCount,
-    };
+      });
+      console.error(error);
+      throw error;
+    }
   }
 
   public static async getAssignmentIsBookmarked(
     assignmentUuid: string,
     commonUser: AvoUserCommonUser | null | undefined,
-  ) {
-    const response = await dataService.query<
-      GetAssignmentIsBookmarkedQuery,
-      GetAssignmentIsBookmarkedQueryVariables
-    >({
-      query: GetAssignmentIsBookmarkedDocument,
-      variables: {
-        assignmentUuid,
-        profileId: commonUser?.profileId || null,
-      },
-    });
-
-    return !!response.app_assignments_v2_bookmarks[0];
+  ): Promise<boolean> {
+    try {
+      const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
+      return await fetchWithLogoutJson(
+        `${getEnv('PROXY_URL')}/assignments/${assignmentUuid}/bookmarked`,
+        { method: 'GET' },
+      );
+    } catch (err) {
+      const error = new CustomError(
+        'Failed to fetch assignment bookmark status',
+        err,
+        { assignmentUuid, commonUser },
+      );
+      console.error(error);
+      throw error;
+    }
   }
 
   /**
