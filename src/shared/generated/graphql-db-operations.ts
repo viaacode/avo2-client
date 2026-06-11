@@ -595,21 +595,6 @@ export type DeleteItemBookmarkMutationVariables = Exact<{
 
 export type DeleteItemBookmarkMutation = { __typename?: 'mutation_root', delete_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null };
 
-export type GetAssignmentBookmarkViewCountsQueryVariables = Exact<{
-  assignmentUuid: Scalars['uuid'];
-}>;
-
-
-export type GetAssignmentBookmarkViewCountsQuery = { __typename?: 'query_root', app_assignments_v2_bookmarks_aggregate: { __typename?: 'app_assignments_v2_bookmarks_aggregate', aggregate?: { __typename?: 'app_assignments_v2_bookmarks_aggregate_fields', count: number } | null }, app_assignment_v2_views: Array<{ __typename?: 'app_assignment_v2_views', count: number }> };
-
-export type GetAssignmentIsBookmarkedQueryVariables = Exact<{
-  assignmentUuid: Scalars['uuid'];
-  profileId: Scalars['uuid'];
-}>;
-
-
-export type GetAssignmentIsBookmarkedQuery = { __typename?: 'query_root', app_assignments_v2_bookmarks: Array<{ __typename?: 'app_assignments_v2_bookmarks', id: any }> };
-
 export type GetAssignmentViewCountQueryVariables = Exact<{
   assignmentUuid: Scalars['uuid'];
 }>;
@@ -627,21 +612,6 @@ export type GetBookmarkStatusesQueryVariables = Exact<{
 
 export type GetBookmarkStatusesQuery = { __typename?: 'query_root', app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', collection_uuid: any }>, app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', item_id: any }>, app_assignments_v2_bookmarks: Array<{ __typename?: 'app_assignments_v2_bookmarks', assignment_id: any }> };
 
-export type GetCollectionBookmarkViewPlayCountsQueryVariables = Exact<{
-  collectionUuid: Scalars['uuid'];
-}>;
-
-
-export type GetCollectionBookmarkViewPlayCountsQuery = { __typename?: 'query_root', app_collection_views: Array<{ __typename?: 'app_collection_views', count?: number | null }>, app_collection_plays: Array<{ __typename?: 'app_collection_plays', count?: number | null }>, app_collection_bookmarks_aggregate: { __typename?: 'app_collection_bookmarks_aggregate', aggregate?: { __typename?: 'app_collection_bookmarks_aggregate_fields', count: number } | null } };
-
-export type GetCollectionIsBookmarkedQueryVariables = Exact<{
-  collectionUuid: Scalars['uuid'];
-  profileId?: InputMaybe<Scalars['uuid']>;
-}>;
-
-
-export type GetCollectionIsBookmarkedQuery = { __typename?: 'query_root', app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', id: number }> };
-
 export type GetCollectionPlayCountQueryVariables = Exact<{
   collectionUuid: Scalars['uuid'];
 }>;
@@ -656,13 +626,6 @@ export type GetCollectionViewCountQueryVariables = Exact<{
 
 export type GetCollectionViewCountQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', view_count?: { __typename?: 'app_collection_views', count?: number | null } | null }> };
 
-export type GetItemBookmarkViewPlayCountsQueryVariables = Exact<{
-  itemUuid: Scalars['uuid'];
-}>;
-
-
-export type GetItemBookmarkViewPlayCountsQuery = { __typename?: 'query_root', app_item_plays: Array<{ __typename?: 'app_item_plays', count?: number | null }>, app_item_views: Array<{ __typename?: 'app_item_views', count?: number | null }>, app_item_bookmarks_aggregate: { __typename?: 'app_item_bookmarks_aggregate', aggregate?: { __typename?: 'app_item_bookmarks_aggregate_fields', count: number } | null } };
-
 export type GetItemBookmarksForUserQueryVariables = Exact<{
   profileId: Scalars['uuid'];
   filter?: InputMaybe<Array<App_Item_Bookmarks_Bool_Exp> | App_Item_Bookmarks_Bool_Exp>;
@@ -671,14 +634,6 @@ export type GetItemBookmarksForUserQueryVariables = Exact<{
 
 
 export type GetItemBookmarksForUserQuery = { __typename?: 'query_root', app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', item_id: any, created_at: any, bookmarkedItem?: { __typename?: 'app_item_meta', title: string, thumbnail_path: string, duration?: any | null, issued?: any | null, item?: { __typename?: 'shared_items', external_id: string, item_meta?: { __typename?: 'app_item_meta', is_deleted?: boolean | null, is_published?: boolean | null, organisation?: { __typename?: 'shared_organisations', name: string } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null } | null } | null, view_count?: { __typename?: 'app_item_views', count?: number | null } | null } | null }> };
-
-export type GetItemIsBookmarkedQueryVariables = Exact<{
-  itemUuid: Scalars['uuid'];
-  profileId?: InputMaybe<Scalars['uuid']>;
-}>;
-
-
-export type GetItemIsBookmarkedQuery = { __typename?: 'query_root', app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', id: number }> };
 
 export type GetItemPlayCountQueryVariables = Exact<{
   itemUuid: Scalars['uuid'];
@@ -749,27 +704,6 @@ export type IncrementItemViewsMutationVariables = Exact<{
 
 
 export type IncrementItemViewsMutation = { __typename?: 'mutation_root', update_app_item_views?: { __typename?: 'app_item_views_mutation_response', affected_rows: number } | null };
-
-export type InsertAssignmentBookmarkMutationVariables = Exact<{
-  bookmarkAssignment: App_Assignments_V2_Bookmarks_Insert_Input;
-}>;
-
-
-export type InsertAssignmentBookmarkMutation = { __typename?: 'mutation_root', insert_app_assignments_v2_bookmarks_one?: { __typename?: 'app_assignments_v2_bookmarks', id: any } | null };
-
-export type InsertCollectionBookmarkMutationVariables = Exact<{
-  bookmarkItem: App_Collection_Bookmarks_Insert_Input;
-}>;
-
-
-export type InsertCollectionBookmarkMutation = { __typename?: 'mutation_root', insert_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
-
-export type InsertItemBookmarkMutationVariables = Exact<{
-  bookmarkItem: App_Item_Bookmarks_Insert_Input;
-}>;
-
-
-export type InsertItemBookmarkMutation = { __typename?: 'mutation_root', insert_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null };
 
 export type GetAllOrganisationsQueryVariables = Exact<{ [key: string]: never; }>;
 

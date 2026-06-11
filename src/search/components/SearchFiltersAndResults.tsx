@@ -386,9 +386,9 @@ export const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
         CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[resultItem.administrative_type];
       await BookmarksViewsPlaysService.toggleBookmark(
         uuid,
-        commonUser,
-        type,
         !active,
+        type,
+        commonUser,
       );
 
       // Update the local cache of bookmark statuses

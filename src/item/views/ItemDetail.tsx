@@ -383,11 +383,9 @@ export const ItemDetail: FC<ItemDetailProps> = ({
 
   const toggleBookmark = async () => {
     try {
-      await BookmarksViewsPlaysService.toggleBookmark(
+      await BookmarksViewsPlaysService.toggleItemBookmark(
         (item as any).uid,
-        commonUser,
-        'item',
-        isBookmarked,
+        !isBookmarked,
       );
 
       setIsBookmarked(!isBookmarked);

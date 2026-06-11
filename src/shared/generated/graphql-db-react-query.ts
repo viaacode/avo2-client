@@ -1988,53 +1988,6 @@ export const useDeleteItemBookmarkMutation = <
       (variables?: DeleteItemBookmarkMutationVariables) => fetchData<DeleteItemBookmarkMutation, DeleteItemBookmarkMutationVariables>(DeleteItemBookmarkDocument, variables)(),
       options
     );
-export const GetAssignmentBookmarkViewCountsDocument = `
-    query getAssignmentBookmarkViewCounts($assignmentUuid: uuid!) {
-  app_assignments_v2_bookmarks_aggregate(
-    where: {assignment_id: {_eq: $assignmentUuid}}
-  ) {
-    aggregate {
-      count
-    }
-  }
-  app_assignment_v2_views(where: {assignment_uuid: {_eq: $assignmentUuid}}) {
-    count
-  }
-}
-    `;
-export const useGetAssignmentBookmarkViewCountsQuery = <
-      TData = GetAssignmentBookmarkViewCountsQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentBookmarkViewCountsQueryVariables,
-      options?: UseQueryOptions<GetAssignmentBookmarkViewCountsQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentBookmarkViewCountsQuery, TError, TData>(
-      ['getAssignmentBookmarkViewCounts', variables],
-      fetchData<GetAssignmentBookmarkViewCountsQuery, GetAssignmentBookmarkViewCountsQueryVariables>(GetAssignmentBookmarkViewCountsDocument, variables),
-      options
-    );
-export const GetAssignmentIsBookmarkedDocument = `
-    query getAssignmentIsBookmarked($assignmentUuid: uuid!, $profileId: uuid!) {
-  app_assignments_v2_bookmarks(
-    where: {assignment_id: {_eq: $assignmentUuid}, profile_id: {_eq: $profileId}}
-  ) {
-    id
-  }
-}
-    `;
-export const useGetAssignmentIsBookmarkedQuery = <
-      TData = GetAssignmentIsBookmarkedQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentIsBookmarkedQueryVariables,
-      options?: UseQueryOptions<GetAssignmentIsBookmarkedQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentIsBookmarkedQuery, TError, TData>(
-      ['getAssignmentIsBookmarked', variables],
-      fetchData<GetAssignmentIsBookmarkedQuery, GetAssignmentIsBookmarkedQueryVariables>(GetAssignmentIsBookmarkedDocument, variables),
-      options
-    );
 export const GetAssignmentViewCountDocument = `
     query getAssignmentViewCount($assignmentUuid: uuid!) {
   app_assignments_v2(where: {id: {_eq: $assignmentUuid}}) {
@@ -2087,57 +2040,6 @@ export const useGetBookmarkStatusesQuery = <
       fetchData<GetBookmarkStatusesQuery, GetBookmarkStatusesQueryVariables>(GetBookmarkStatusesDocument, variables),
       options
     );
-export const GetCollectionBookmarkViewPlayCountsDocument = `
-    query getCollectionBookmarkViewPlayCounts($collectionUuid: uuid!) {
-  app_collection_views(where: {collection_uuid: {_eq: $collectionUuid}}, limit: 1) {
-    count
-  }
-  app_collection_plays(where: {collection_uuid: {_eq: $collectionUuid}}, limit: 1) {
-    count
-  }
-  app_collection_bookmarks_aggregate(
-    where: {collection_uuid: {_eq: $collectionUuid}}
-  ) {
-    aggregate {
-      count
-    }
-  }
-}
-    `;
-export const useGetCollectionBookmarkViewPlayCountsQuery = <
-      TData = GetCollectionBookmarkViewPlayCountsQuery,
-      TError = unknown
-    >(
-      variables: GetCollectionBookmarkViewPlayCountsQueryVariables,
-      options?: UseQueryOptions<GetCollectionBookmarkViewPlayCountsQuery, TError, TData>
-    ) =>
-    useQuery<GetCollectionBookmarkViewPlayCountsQuery, TError, TData>(
-      ['getCollectionBookmarkViewPlayCounts', variables],
-      fetchData<GetCollectionBookmarkViewPlayCountsQuery, GetCollectionBookmarkViewPlayCountsQueryVariables>(GetCollectionBookmarkViewPlayCountsDocument, variables),
-      options
-    );
-export const GetCollectionIsBookmarkedDocument = `
-    query getCollectionIsBookmarked($collectionUuid: uuid!, $profileId: uuid) {
-  app_collection_bookmarks(
-    where: {profile_id: {_eq: $profileId}, collection_uuid: {_eq: $collectionUuid}}
-    limit: 1
-  ) {
-    id
-  }
-}
-    `;
-export const useGetCollectionIsBookmarkedQuery = <
-      TData = GetCollectionIsBookmarkedQuery,
-      TError = unknown
-    >(
-      variables: GetCollectionIsBookmarkedQueryVariables,
-      options?: UseQueryOptions<GetCollectionIsBookmarkedQuery, TError, TData>
-    ) =>
-    useQuery<GetCollectionIsBookmarkedQuery, TError, TData>(
-      ['getCollectionIsBookmarked', variables],
-      fetchData<GetCollectionIsBookmarkedQuery, GetCollectionIsBookmarkedQueryVariables>(GetCollectionIsBookmarkedDocument, variables),
-      options
-    );
 export const GetCollectionPlayCountDocument = `
     query getCollectionPlayCount($collectionUuid: uuid!) {
   app_collections(where: {id: {_eq: $collectionUuid}}) {
@@ -2178,33 +2080,6 @@ export const useGetCollectionViewCountQuery = <
     useQuery<GetCollectionViewCountQuery, TError, TData>(
       ['getCollectionViewCount', variables],
       fetchData<GetCollectionViewCountQuery, GetCollectionViewCountQueryVariables>(GetCollectionViewCountDocument, variables),
-      options
-    );
-export const GetItemBookmarkViewPlayCountsDocument = `
-    query getItemBookmarkViewPlayCounts($itemUuid: uuid!) {
-  app_item_plays(where: {item_id: {_eq: $itemUuid}}, limit: 1) {
-    count
-  }
-  app_item_views(where: {item_id: {_eq: $itemUuid}}, limit: 1) {
-    count
-  }
-  app_item_bookmarks_aggregate(where: {item_id: {_eq: $itemUuid}}) {
-    aggregate {
-      count
-    }
-  }
-}
-    `;
-export const useGetItemBookmarkViewPlayCountsQuery = <
-      TData = GetItemBookmarkViewPlayCountsQuery,
-      TError = unknown
-    >(
-      variables: GetItemBookmarkViewPlayCountsQueryVariables,
-      options?: UseQueryOptions<GetItemBookmarkViewPlayCountsQuery, TError, TData>
-    ) =>
-    useQuery<GetItemBookmarkViewPlayCountsQuery, TError, TData>(
-      ['getItemBookmarkViewPlayCounts', variables],
-      fetchData<GetItemBookmarkViewPlayCountsQuery, GetItemBookmarkViewPlayCountsQueryVariables>(GetItemBookmarkViewPlayCountsDocument, variables),
       options
     );
 export const GetItemBookmarksForUserDocument = `
@@ -2251,28 +2126,6 @@ export const useGetItemBookmarksForUserQuery = <
     useQuery<GetItemBookmarksForUserQuery, TError, TData>(
       ['getItemBookmarksForUser', variables],
       fetchData<GetItemBookmarksForUserQuery, GetItemBookmarksForUserQueryVariables>(GetItemBookmarksForUserDocument, variables),
-      options
-    );
-export const GetItemIsBookmarkedDocument = `
-    query getItemIsBookmarked($itemUuid: uuid!, $profileId: uuid) {
-  app_item_bookmarks(
-    where: {profile_id: {_eq: $profileId}, item_id: {_eq: $itemUuid}}
-    limit: 1
-  ) {
-    id
-  }
-}
-    `;
-export const useGetItemIsBookmarkedQuery = <
-      TData = GetItemIsBookmarkedQuery,
-      TError = unknown
-    >(
-      variables: GetItemIsBookmarkedQueryVariables,
-      options?: UseQueryOptions<GetItemIsBookmarkedQuery, TError, TData>
-    ) =>
-    useQuery<GetItemIsBookmarkedQuery, TError, TData>(
-      ['getItemIsBookmarked', variables],
-      fetchData<GetItemIsBookmarkedQuery, GetItemIsBookmarkedQueryVariables>(GetItemIsBookmarkedDocument, variables),
       options
     );
 export const GetItemPlayCountDocument = `
@@ -2468,54 +2321,6 @@ export const useIncrementItemViewsMutation = <
     useMutation<IncrementItemViewsMutation, TError, IncrementItemViewsMutationVariables, TContext>(
       ['incrementItemViews'],
       (variables?: IncrementItemViewsMutationVariables) => fetchData<IncrementItemViewsMutation, IncrementItemViewsMutationVariables>(IncrementItemViewsDocument, variables)(),
-      options
-    );
-export const InsertAssignmentBookmarkDocument = `
-    mutation insertAssignmentBookmark($bookmarkAssignment: app_assignments_v2_bookmarks_insert_input!) {
-  insert_app_assignments_v2_bookmarks_one(object: $bookmarkAssignment) {
-    id
-  }
-}
-    `;
-export const useInsertAssignmentBookmarkMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<InsertAssignmentBookmarkMutation, TError, InsertAssignmentBookmarkMutationVariables, TContext>) =>
-    useMutation<InsertAssignmentBookmarkMutation, TError, InsertAssignmentBookmarkMutationVariables, TContext>(
-      ['insertAssignmentBookmark'],
-      (variables?: InsertAssignmentBookmarkMutationVariables) => fetchData<InsertAssignmentBookmarkMutation, InsertAssignmentBookmarkMutationVariables>(InsertAssignmentBookmarkDocument, variables)(),
-      options
-    );
-export const InsertCollectionBookmarkDocument = `
-    mutation insertCollectionBookmark($bookmarkItem: app_collection_bookmarks_insert_input!) {
-  insert_app_collection_bookmarks(objects: [$bookmarkItem]) {
-    affected_rows
-  }
-}
-    `;
-export const useInsertCollectionBookmarkMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<InsertCollectionBookmarkMutation, TError, InsertCollectionBookmarkMutationVariables, TContext>) =>
-    useMutation<InsertCollectionBookmarkMutation, TError, InsertCollectionBookmarkMutationVariables, TContext>(
-      ['insertCollectionBookmark'],
-      (variables?: InsertCollectionBookmarkMutationVariables) => fetchData<InsertCollectionBookmarkMutation, InsertCollectionBookmarkMutationVariables>(InsertCollectionBookmarkDocument, variables)(),
-      options
-    );
-export const InsertItemBookmarkDocument = `
-    mutation insertItemBookmark($bookmarkItem: app_item_bookmarks_insert_input!) {
-  insert_app_item_bookmarks(objects: [$bookmarkItem]) {
-    affected_rows
-  }
-}
-    `;
-export const useInsertItemBookmarkMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<InsertItemBookmarkMutation, TError, InsertItemBookmarkMutationVariables, TContext>) =>
-    useMutation<InsertItemBookmarkMutation, TError, InsertItemBookmarkMutationVariables, TContext>(
-      ['insertItemBookmark'],
-      (variables?: InsertItemBookmarkMutationVariables) => fetchData<InsertItemBookmarkMutation, InsertItemBookmarkMutationVariables>(InsertItemBookmarkDocument, variables)(),
       options
     );
 export const GetAllOrganisationsDocument = `

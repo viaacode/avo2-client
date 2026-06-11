@@ -229,7 +229,7 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
       ],
     );
     setActiveItemBookmarkStatus(statuses['item'][activeItem.uid]);
-  }, [activeItem?.external_id]);
+  }, [commonUser, activeItem]);
 
   useEffect(() => {
     fetchActiveItemBookmarkStatus();
@@ -240,11 +240,9 @@ export const MediaGridWrapper: FC<MediaGridWrapperProps> = ({
       return;
     }
     try {
-      await BookmarksViewsPlaysService.toggleBookmark(
+      await BookmarksViewsPlaysService.toggleItemBookmark(
         activeItem.uid,
-        commonUser,
-        'item',
-        activeItemBookmarkStatus as boolean,
+        !activeItemBookmarkStatus as boolean,
       );
 
       setActiveItemBookmarkStatus(!activeItemBookmarkStatus);

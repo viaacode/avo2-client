@@ -527,12 +527,11 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         return;
       }
 
-      await BookmarksViewsPlaysService.toggleBookmark(
+      await BookmarksViewsPlaysService.toggleAssignmentBookmark(
         assignment?.id as string,
-        commonUser,
-        'assignment',
-        isBookmarked,
+        !isBookmarked,
       );
+
       setIsBookmarked(!isBookmarked);
       ToastService.success(
         isBookmarked

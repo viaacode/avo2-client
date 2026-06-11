@@ -1,19 +1,12 @@
 import { AvoUserCommonUser } from '@viaa/avo2-types';
 import {
-  type DeleteAssignmentBookmarksForUserMutationVariables,
-  type DeleteCollectionBookmarksForUserMutationVariables,
-  type DeleteItemBookmarkMutationVariables,
   type GetAssignmentViewCountQuery,
   type GetCollectionPlayCountQuery,
   type GetCollectionViewCountQuery,
   type GetItemPlayCountQuery,
   type GetItemViewCountQuery,
-  type InsertAssignmentBookmarkMutationVariables,
 } from '../../generated/graphql-db-operations';
 import {
-  DeleteAssignmentBookmarksForUserDocument,
-  DeleteCollectionBookmarksForUserDocument,
-  DeleteItemBookmarkDocument,
   GetAssignmentViewCountDocument,
   GetCollectionPlayCountDocument,
   GetCollectionViewCountDocument,
@@ -24,23 +17,12 @@ import {
   IncrementCollectionViewsDocument,
   IncrementItemPlaysDocument,
   IncrementItemViewsDocument,
-  InsertAssignmentBookmarkDocument,
-  InsertCollectionBookmarkDocument,
-  InsertItemBookmarkDocument,
 } from '../../generated/graphql-db-react-query';
 import {
-  type BookmarkViewPlayCounts,
   type EventAction,
   type EventContentType,
   type EventContentTypeSimplified,
 } from './bookmarks-views-plays-service.types';
-
-export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
-  bookmarkCount: 0,
-  viewCount: 0,
-  playCount: 0,
-  isBookmarked: false,
-};
 
 interface QueryDefinition {
   query?: string;
@@ -57,81 +39,6 @@ export const GET_EVENT_QUERIES: () => {
     /* eslint-enable @typescript-eslint/no-unused-vars */
   };
 } = () => ({
-  bookmark: {
-    item: {
-      query: InsertItemBookmarkDocument,
-      variables: (itemUuid: string, commonUser: AvoUserCommonUser | null) => ({
-        bookmarkItem: {
-          item_id: itemUuid,
-          profile_id: commonUser?.profileId || null,
-        },
-      }),
-    },
-    collection: {
-      query: InsertCollectionBookmarkDocument,
-      variables: (
-        collectionUuid: string,
-        commonUser: AvoUserCommonUser | null,
-      ) => ({
-        bookmarkItem: {
-          collection_uuid: collectionUuid,
-          profile_id: commonUser?.profileId || null,
-        },
-      }),
-    },
-    assignment: {
-      query: InsertAssignmentBookmarkDocument,
-      variables: (
-        assignmentUuid: string,
-        commonUser: AvoUserCommonUser | null,
-      ): InsertAssignmentBookmarkMutationVariables => ({
-        bookmarkAssignment: {
-          assignment_id: assignmentUuid,
-          profile_id: commonUser?.profileId || null,
-        },
-      }),
-    },
-    quick_lane: {
-      // We can't bookmark quick lanes
-      variables: () => ({}),
-    },
-  },
-  unbookmark: {
-    item: {
-      query: DeleteItemBookmarkDocument,
-      variables: (
-        itemUuid: string,
-        commonUser: AvoUserCommonUser | null,
-      ): DeleteItemBookmarkMutationVariables => ({
-        itemUuid,
-        profileId: commonUser?.profileId || null,
-      }),
-    },
-    collection: {
-      query: DeleteCollectionBookmarksForUserDocument,
-      variables: (
-        collectionUuid: string,
-        commonUser: AvoUserCommonUser | null,
-      ): DeleteCollectionBookmarksForUserMutationVariables => ({
-        collectionUuid: collectionUuid,
-        profileId: commonUser?.profileId || null,
-      }),
-    },
-    assignment: {
-      query: DeleteAssignmentBookmarksForUserDocument,
-      variables: (
-        assignmentUuid: string,
-        commonUser: AvoUserCommonUser | null,
-      ): DeleteAssignmentBookmarksForUserMutationVariables => ({
-        assignmentUuid,
-        profileId: commonUser?.profileId || null,
-      }),
-    },
-    quick_lane: {
-      // We can't unbookmark quick lanes
-      variables: () => ({}),
-    },
-  },
   view: {
     item: {
       get: GetItemViewCountDocument,

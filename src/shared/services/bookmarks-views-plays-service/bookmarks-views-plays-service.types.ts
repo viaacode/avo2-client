@@ -58,7 +58,7 @@ export interface AppItemBookmark {
   created_at: string;
 }
 
-export type EventAction = 'bookmark' | 'unbookmark' | 'view' | 'play';
+export type EventAction = 'view' | 'play';
 export type QueryType = 'query' | 'get' | 'increment';
 export type EventContentTypeSimplified =
   | 'item'

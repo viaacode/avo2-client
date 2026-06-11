@@ -447,11 +447,9 @@ export const BundleDetail: FC<BundleDetailProps> = ({
       return;
     }
     try {
-      await BookmarksViewsPlaysService.toggleBookmark(
+      await BookmarksViewsPlaysService.toggleCollectionBookmark(
         bundleId,
-        commonUser,
-        'collection',
-        isBookmarked,
+        !isBookmarked,
       );
       setIsBookmarked(!isBookmarked);
       ToastService.success(
@@ -1014,5 +1012,3 @@ export const BundleDetail: FC<BundleDetailProps> = ({
     </>
   );
 };
-
-export default BundleDetail;

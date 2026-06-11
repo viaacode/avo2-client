@@ -30,10 +30,6 @@ import {
   type IncrementItemPlaysMutationVariables,
   type IncrementItemViewsMutation,
   type IncrementItemViewsMutationVariables,
-  type InsertCollectionBookmarkMutation,
-  type InsertCollectionBookmarkMutationVariables,
-  type InsertItemBookmarkMutation,
-  type InsertItemBookmarkMutationVariables,
 } from '../../generated/graphql-db-operations';
 import {
   GetBookmarkStatusesDocument,
@@ -89,12 +85,7 @@ export class BookmarksViewsPlaysService {
         );
 
         await dataService.query<
-          | InsertItemBookmarkMutation
-          | InsertCollectionBookmarkMutation
-          | DeleteItemBookmarkMutation
-          | DeleteCollectionBookmarksForUserMutation,
-          | InsertItemBookmarkMutationVariables
-          | InsertCollectionBookmarkMutationVariables
+          DeleteItemBookmarkMutation | DeleteCollectionBookmarksForUserMutation,
           | DeleteItemBookmarkMutationVariables
           | DeleteCollectionBookmarksForUserMutationVariables
           | DeleteAssignmentBookmarksForUserMutationVariables
@@ -128,13 +119,17 @@ export class BookmarksViewsPlaysService {
     itemUuid: string,
   ): Promise<BookmarkViewPlayCounts> {
     try {
-      const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
+      const { fetchWithLogoutJson } = await import(
+        '@meemoo/admin-core-ui/client'
+      );
       return await fetchWithLogoutJson(
         `${getEnv('PROXY_URL')}/items/${itemUuid}/counts`,
         { method: 'GET' },
       );
     } catch (err) {
-      const error = new CustomError('Failed to fetch item counts', err, { itemUuid });
+      const error = new CustomError('Failed to fetch item counts', err, {
+        itemUuid,
+      });
       console.error(error);
       throw error;
     }
@@ -145,16 +140,22 @@ export class BookmarksViewsPlaysService {
     commonUser?: AvoUserCommonUser | null,
   ): Promise<boolean> {
     try {
-      const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
+      const { fetchWithLogoutJson } = await import(
+        '@meemoo/admin-core-ui/client'
+      );
       return await fetchWithLogoutJson(
         `${getEnv('PROXY_URL')}/items/${itemUuid}/bookmarked`,
         { method: 'GET' },
       );
     } catch (err) {
-      const error = new CustomError('Failed to fetch item bookmark status', err, {
-        itemUuid,
-        commonUser,
-      });
+      const error = new CustomError(
+        'Failed to fetch item bookmark status',
+        err,
+        {
+          itemUuid,
+          commonUser,
+        },
+      );
       console.error(error);
       throw error;
     }
@@ -164,7 +165,9 @@ export class BookmarksViewsPlaysService {
     collectionUuid: string,
   ): Promise<BookmarkViewPlayCounts> {
     try {
-      const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
+      const { fetchWithLogoutJson } = await import(
+        '@meemoo/admin-core-ui/client'
+      );
       return await fetchWithLogoutJson(
         `${getEnv('PROXY_URL')}/collections/${collectionUuid}/counts`,
         { method: 'GET' },
@@ -183,7 +186,9 @@ export class BookmarksViewsPlaysService {
     commonUser: AvoUserCommonUser | undefined | null,
   ): Promise<boolean> {
     try {
-      const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
+      const { fetchWithLogoutJson } = await import(
+        '@meemoo/admin-core-ui/client'
+      );
       return await fetchWithLogoutJson(
         `${getEnv('PROXY_URL')}/collections/${collectionUuid}/bookmarked`,
         { method: 'GET' },
@@ -203,7 +208,9 @@ export class BookmarksViewsPlaysService {
     assignmentUuid: string,
   ): Promise<BookmarkViewPlayCounts> {
     try {
-      const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
+      const { fetchWithLogoutJson } = await import(
+        '@meemoo/admin-core-ui/client'
+      );
       return await fetchWithLogoutJson(
         `${getEnv('PROXY_URL')}/assignments/${assignmentUuid}/counts`,
         { method: 'GET' },
@@ -222,7 +229,9 @@ export class BookmarksViewsPlaysService {
     commonUser: AvoUserCommonUser | null | undefined,
   ): Promise<boolean> {
     try {
-      const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/client');
+      const { fetchWithLogoutJson } = await import(
+        '@meemoo/admin-core-ui/client'
+      );
       return await fetchWithLogoutJson(
         `${getEnv('PROXY_URL')}/assignments/${assignmentUuid}/bookmarked`,
         { method: 'GET' },
@@ -241,17 +250,17 @@ export class BookmarksViewsPlaysService {
   /**
    * Toggles the bookmark for the provided item or collection or bundle
    * @param contentId
-   * @param commonUser
+   * @param shouldBeBookmarked the new state of the bookmark
    * @param type
-   * @param isBookmarked current state of the bookmark toggle before the desired action is executed
+   * @param commonUser
    * @return {boolean} returns true of the operation was successful, otherwise false
    */
   public static async toggleBookmark(
     contentId: string,
-    commonUser: AvoUserCommonUser | null | undefined,
+    shouldBeBookmarked: boolean,
     type: EventContentType,
-    isBookmarked: boolean,
-  ): Promise<void> {
+    commonUser: AvoUserCommonUser,
+  ): Promise<boolean> {
     try {
       if (!contentId) {
         throw new CustomError(
@@ -260,15 +269,22 @@ export class BookmarksViewsPlaysService {
           { contentId },
         );
       }
-      await BookmarksViewsPlaysService.action(
-        isBookmarked ? 'unbookmark' : 'bookmark',
-        type,
-        contentId,
-        commonUser,
-        false,
-      );
+      switch (type) {
+        case 'item':
+          await this.toggleItemBookmark(contentId, shouldBeBookmarked);
+          break;
 
-      if (!isBookmarked) {
+        case 'collection':
+        case 'bundle':
+          await this.toggleCollectionBookmark(contentId, shouldBeBookmarked);
+          break;
+
+        case 'assignment':
+          await this.toggleAssignmentBookmark(contentId, shouldBeBookmarked);
+          break;
+      }
+
+      if (shouldBeBookmarked) {
         trackEvents(
           {
             object: contentId,
@@ -278,6 +294,7 @@ export class BookmarksViewsPlaysService {
           commonUser,
         );
       }
+      return true;
     } catch (err) {
       throw new CustomError('Failed to bookmark/unbookmark the item', err, {
         contentId,
@@ -578,6 +595,89 @@ export class BookmarksViewsPlaysService {
         objectInfos,
         query: 'GET_BOOKMARK_STATUSES',
       });
+    }
+  }
+
+  public static async toggleItemBookmark(
+    itemUuid: string,
+    bookmarked: boolean,
+  ): Promise<void> {
+    try {
+      const { fetchWithLogoutJson } = await import(
+        '@meemoo/admin-core-ui/client'
+      );
+      await fetchWithLogoutJson(
+        `${getEnv('PROXY_URL')}/items/${itemUuid}/bookmark`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({ bookmarked }),
+        },
+      );
+    } catch (err) {
+      const error = new CustomError('Failed to toggle item bookmark', err, {
+        itemUuid,
+        bookmarked,
+      });
+      console.error(error);
+      throw error;
+    }
+  }
+
+  public static async toggleCollectionBookmark(
+    collectionUuid: string,
+    bookmarked: boolean,
+  ): Promise<void> {
+    try {
+      const { fetchWithLogoutJson } = await import(
+        '@meemoo/admin-core-ui/client'
+      );
+      await fetchWithLogoutJson(
+        `${getEnv('PROXY_URL')}/collections/${collectionUuid}/bookmark`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({ bookmarked }),
+        },
+      );
+    } catch (err) {
+      const error = new CustomError(
+        'Failed to toggle collection bookmark',
+        err,
+        {
+          collectionUuid,
+          bookmarked,
+        },
+      );
+      console.error(error);
+      throw error;
+    }
+  }
+
+  public static async toggleAssignmentBookmark(
+    assignmentUuid: string,
+    bookmarked: boolean,
+  ): Promise<void> {
+    try {
+      const { fetchWithLogoutJson } = await import(
+        '@meemoo/admin-core-ui/client'
+      );
+      await fetchWithLogoutJson(
+        `${getEnv('PROXY_URL')}/assignments/${assignmentUuid}/bookmark`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({ bookmarked }),
+        },
+      );
+    } catch (err) {
+      const error = new CustomError(
+        'Failed to toggle assignment bookmark',
+        err,
+        {
+          assignmentUuid,
+          bookmarked,
+        },
+      );
+      console.error(error);
+      throw error;
     }
   }
 }

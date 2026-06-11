@@ -92,6 +92,7 @@ import { isMobileWidth } from '../../shared/helpers/media-query';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { isUuid } from '../../shared/helpers/uuid';
+import { useGetCollectionCounts } from '../../shared/hooks/useGetCollectionCounts';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
@@ -124,7 +125,6 @@ import {
   deleteSelfFromCollection,
 } from '../helpers/delete-collection';
 import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
-import { useGetCollectionCounts } from '../../shared/hooks/useGetCollectionCounts';
 import {
   BundleSortProp,
   useGetCollectionsOrBundlesContainingFragment,
@@ -258,7 +258,13 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   });
   const { data: bookmarkViewPlayCounts } = useGetCollectionCounts(
     collectionId as string | undefined,
-    { enabled: !!collectionId && isUuid(collectionId) && !!commonUser && !showLoginPopup },
+    {
+      enabled:
+        !!collectionId &&
+        isUuid(collectionId) &&
+        !!commonUser &&
+        !showLoginPopup,
+    },
   );
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
 
@@ -786,11 +792,9 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
       if (!collectionId) {
         return;
       }
-      await BookmarksViewsPlaysService.toggleBookmark(
+      await BookmarksViewsPlaysService.toggleCollectionBookmark(
         collectionId,
-        commonUser,
-        'collection',
-        isBookmarked,
+        !isBookmarked,
       );
       setIsBookmarked(!isBookmarked);
       ToastService.success(
@@ -1270,9 +1274,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         isBookmarked
           ? tText('collection/views/collection-detail___verwijder-bladwijzer')
           : tText('collection/views/collection-detail___maak-bladwijzer'),
-        isBookmarked
-          ? IconName.bookmarkFilled
-          : IconName.bookmark,
+        isBookmarked ? IconName.bookmarkFilled : IconName.bookmark,
         !isOwner && !isContributor,
       ),
       ...createDropdownMenuItem(
