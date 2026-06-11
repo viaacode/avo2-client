@@ -343,7 +343,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         contributors: response as AvoCollectionContributor[],
       },
     } as CollectionInfo);
-  }, [collectionId, collectionInfo, showLoginPopup]);
+  }, [collectionId, collectionInfo]);
 
   const triggerEvents = useCallback(async () => {
     // Do not trigger events when a search engine loads this page
@@ -365,27 +365,42 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         },
         commonUser,
       );
-      try {
+    }
+  }, [collectionId, commonUser, collection?.is_public]);
+
+  const fetchViewAndBookmarkCounts = useCallback(async () => {
+    try {
+      if (
+        collectionId &&
+        isUuid(collectionId) &&
+        commonUser &&
+        !showLoginPopup
+      ) {
         setBookmarkViewPlayCounts(
           await BookmarksViewsPlaysService.getCollectionCounts(
             collectionId,
             commonUser || null,
           ),
         );
-      } catch (err) {
-        console.error(
-          new CustomError('Failed to get getCollectionCounts', err, {
-            uuid: collectionId,
-          }),
-        );
-        ToastService.danger(
-          tHtml(
-            'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt',
-          ),
-        );
       }
+    } catch (err) {
+      console.error(
+        new CustomError('Failed to get getCollectionCounts', err, {
+          uuid: collectionId,
+        }),
+      );
+      ToastService.danger(
+        tHtml(
+          'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt',
+        ),
+      );
     }
-  }, [collectionId, commonUser, showLoginPopup]);
+  }, [collectionId, commonUser]);
+
+  // Fetch bookmark counts and view counts
+  useEffect(() => {
+    fetchViewAndBookmarkCounts();
+  }, []);
 
   // Set mounted to true only on the client, so certain components don't render during server side rendering
   useEffect(() => {

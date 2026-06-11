@@ -1,0 +1,10 @@
+query getAssignmentIsBookmarked($assignmentUuid: uuid!, $profileId: uuid!) {
+  app_assignments_v2_bookmarks(
+    where: {
+      assignment_id: { _eq: $assignmentUuid }
+      profile_id: { _eq: $profileId }
+    }
+  ) {
+    id
+  }
+}

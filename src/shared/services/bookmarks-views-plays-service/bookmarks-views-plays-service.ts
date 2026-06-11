@@ -12,14 +12,20 @@ import {
   type DeleteItemBookmarkMutationVariables,
   type GetAssignmentBookmarkViewCountsQuery,
   type GetAssignmentBookmarkViewCountsQueryVariables,
+  GetAssignmentIsBookmarkedQuery,
+  GetAssignmentIsBookmarkedQueryVariables,
   type GetBookmarkStatusesQuery,
   type GetBookmarkStatusesQueryVariables,
   type GetCollectionBookmarkViewPlayCountsQuery,
   type GetCollectionBookmarkViewPlayCountsQueryVariables,
+  GetCollectionIsBookmarkedQuery,
+  GetCollectionIsBookmarkedQueryVariables,
   type GetItemBookmarksForUserQuery,
   type GetItemBookmarksForUserQueryVariables,
   type GetItemBookmarkViewPlayCountsQuery,
   type GetItemBookmarkViewPlayCountsQueryVariables,
+  GetItemIsBookmarkedQuery,
+  GetItemIsBookmarkedQueryVariables,
   type GetMultipleAssignmentViewCountsQuery,
   type GetMultipleAssignmentViewCountsQueryVariables,
   type GetMultipleCollectionViewCountsQuery,
@@ -43,10 +49,13 @@ import {
 } from '../../generated/graphql-db-operations';
 import {
   GetAssignmentBookmarkViewCountsDocument,
+  GetAssignmentIsBookmarkedDocument,
   GetBookmarkStatusesDocument,
   GetCollectionBookmarkViewPlayCountsDocument,
+  GetCollectionIsBookmarkedDocument,
   GetItemBookmarksForUserDocument,
   GetItemBookmarkViewPlayCountsDocument,
+  GetItemIsBookmarkedDocument,
   GetMultipleAssignmentViewCountsDocument,
   GetMultipleCollectionViewCountsDocument,
   GetMultipleItemViewCountsDocument,
@@ -134,16 +143,14 @@ export class BookmarksViewsPlaysService {
 
   public static async getItemCounts(
     itemUuid: string,
-    commonUser?: AvoUserCommonUser | null,
   ): Promise<BookmarkViewPlayCounts> {
     const response = await dataService.query<
       GetItemBookmarkViewPlayCountsQuery,
       GetItemBookmarkViewPlayCountsQueryVariables
     >({
       query: GetItemBookmarkViewPlayCountsDocument,
-      variables: { itemUuid, profileId: commonUser?.profileId || null },
+      variables: { itemUuid },
     });
-    const isBookmarked = !!response.app_item_bookmarks[0];
     const bookmarkCount =
       response.app_item_bookmarks_aggregate.aggregate?.count ?? 0;
     const viewCount = response.app_item_views[0]?.count ?? 0;
@@ -152,22 +159,34 @@ export class BookmarksViewsPlaysService {
       bookmarkCount,
       viewCount,
       playCount,
-      isBookmarked,
     };
+  }
+
+  public static async getItemIsBookmarked(
+    itemUuid: string,
+    commonUser?: AvoUserCommonUser | null,
+  ): Promise<boolean> {
+    const response = await dataService.query<
+      GetItemIsBookmarkedQuery,
+      GetItemIsBookmarkedQueryVariables
+    >({
+      query: GetItemIsBookmarkedDocument,
+      variables: { itemUuid, profileId: commonUser?.profileId || null },
+    });
+
+    return !!response.app_item_bookmarks[0];
   }
 
   public static async getCollectionCounts(
     collectionUuid: string,
-    commonUser: AvoUserCommonUser | undefined | null,
   ): Promise<BookmarkViewPlayCounts> {
     const response = await dataService.query<
       GetCollectionBookmarkViewPlayCountsQuery,
       GetCollectionBookmarkViewPlayCountsQueryVariables
     >({
       query: GetCollectionBookmarkViewPlayCountsDocument,
-      variables: { collectionUuid, profileId: commonUser?.profileId || null },
+      variables: { collectionUuid },
     });
-    const isBookmarked = !!response.app_collection_bookmarks[0];
     const bookmarkCount =
       response.app_collection_bookmarks_aggregate.aggregate?.count || 0;
     const viewCount = response.app_collection_views[0]?.count ?? 0;
@@ -176,14 +195,25 @@ export class BookmarksViewsPlaysService {
       bookmarkCount,
       viewCount,
       playCount,
-      isBookmarked,
     };
   }
 
-  public static async getAssignmentCounts(
-    assignmentUuid: string,
-    commonUser: AvoUserCommonUser | null | undefined,
-  ) {
+  public static async getIsCollectionBookmarked(
+    collectionUuid: string,
+    commonUser: AvoUserCommonUser | undefined | null,
+  ): Promise<boolean> {
+    const response = await dataService.query<
+      GetCollectionIsBookmarkedQuery,
+      GetCollectionIsBookmarkedQueryVariables
+    >({
+      query: GetCollectionIsBookmarkedDocument,
+      variables: { collectionUuid, profileId: commonUser?.profileId || null },
+    });
+
+    return !!response.app_collection_bookmarks[0];
+  }
+
+  public static async getAssignmentCounts(assignmentUuid: string) {
     const response = await dataService.query<
       GetAssignmentBookmarkViewCountsQuery,
       GetAssignmentBookmarkViewCountsQueryVariables
@@ -191,11 +221,9 @@ export class BookmarksViewsPlaysService {
       query: GetAssignmentBookmarkViewCountsDocument,
       variables: {
         assignmentUuid,
-        profileId: commonUser?.profileId || null,
       },
     });
 
-    const isBookmarked = !!response.app_assignments_v2_bookmarks[0];
     const bookmarkCount =
       response.app_assignments_v2_bookmarks_aggregate.aggregate?.count || 0;
     const viewCount = response.app_assignment_v2_views[0]?.count ?? 0;
@@ -204,9 +232,26 @@ export class BookmarksViewsPlaysService {
     return {
       bookmarkCount,
       viewCount,
-      isBookmarked,
       playCount,
     };
+  }
+
+  public static async getAssignmentIsBookmarked(
+    assignmentUuid: string,
+    commonUser: AvoUserCommonUser | null | undefined,
+  ) {
+    const response = await dataService.query<
+      GetAssignmentIsBookmarkedQuery,
+      GetAssignmentIsBookmarkedQueryVariables
+    >({
+      query: GetAssignmentIsBookmarkedDocument,
+      variables: {
+        assignmentUuid,
+        profileId: commonUser?.profileId || null,
+      },
+    });
+
+    return !!response.app_assignments_v2_bookmarks[0];
   }
 
   /**

@@ -29,7 +29,6 @@ export interface BookmarkViewPlayCounts {
   bookmarkCount: number;
   viewCount: number;
   playCount: number;
-  isBookmarked: boolean;
 }
 
 export interface AppItemBookmark {

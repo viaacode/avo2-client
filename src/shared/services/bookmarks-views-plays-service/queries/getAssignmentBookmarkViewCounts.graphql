@@ -1,7 +1,4 @@
-query getAssignmentBookmarkViewCounts(
-  $assignmentUuid: uuid!
-  $profileId: uuid!
-) {
+query getAssignmentBookmarkViewCounts($assignmentUuid: uuid!) {
   app_assignments_v2_bookmarks_aggregate(
     where: { assignment_id: { _eq: $assignmentUuid } }
   ) {
@@ -13,13 +10,5 @@ query getAssignmentBookmarkViewCounts(
     where: { assignment_uuid: { _eq: $assignmentUuid } }
   ) {
     count
-  }
-  app_assignments_v2_bookmarks(
-    where: {
-      assignment_id: { _eq: $assignmentUuid }
-      profile_id: { _eq: $profileId }
-    }
-  ) {
-    id
   }
 }

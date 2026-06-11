@@ -1,4 +1,4 @@
-query getItemBookmarkViewPlayCounts($itemUuid: uuid!, $profileId: uuid) {
+query getItemBookmarkViewPlayCounts($itemUuid: uuid!) {
   app_item_plays(where: { item_id: { _eq: $itemUuid } }, limit: 1) {
     count
   }
@@ -9,11 +9,5 @@ query getItemBookmarkViewPlayCounts($itemUuid: uuid!, $profileId: uuid) {
     aggregate {
       count
     }
-  }
-  app_item_bookmarks(
-    where: { profile_id: { _eq: $profileId }, item_id: { _eq: $itemUuid } }
-    limit: 1
-  ) {
-    id
   }
 }

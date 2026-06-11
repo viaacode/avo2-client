@@ -1,7 +1,4 @@
-query getCollectionBookmarkViewPlayCounts(
-  $collectionUuid: uuid!
-  $profileId: uuid
-) {
+query getCollectionBookmarkViewPlayCounts($collectionUuid: uuid!) {
   app_collection_views(
     where: { collection_uuid: { _eq: $collectionUuid } }
     limit: 1
@@ -20,14 +17,5 @@ query getCollectionBookmarkViewPlayCounts(
     aggregate {
       count
     }
-  }
-  app_collection_bookmarks(
-    where: {
-      profile_id: { _eq: $profileId }
-      collection_uuid: { _eq: $collectionUuid }
-    }
-    limit: 1
-  ) {
-    id
   }
 }
