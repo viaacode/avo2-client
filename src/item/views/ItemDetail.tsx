@@ -99,6 +99,7 @@ import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
 import { useGetItemCounts } from '../../shared/hooks/useGetItemCounts';
+import { useGetIsItemBookmarked } from '../../shared/hooks/useGetIsItemBookmarked';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
@@ -199,7 +200,9 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   const { data: bookmarkViewPlayCounts } = useGetItemCounts(
     (item as any)?.uid as string | undefined,
   );
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+  const { data: isBookmarked = false } = useGetIsItemBookmarked(
+    (item as any)?.uid as string | undefined,
+  );
   const [isCreateAssignmentDropdownOpen, setIsCreateAssignmentDropdownOpen] =
     useState<boolean>(false);
   const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] =
@@ -388,7 +391,6 @@ export const ItemDetail: FC<ItemDetailProps> = ({
         !isBookmarked,
       );
 
-      setIsBookmarked(!isBookmarked);
       ToastService.success(
         isBookmarked
           ? tHtml(

@@ -91,6 +91,7 @@ import { isMobileWidth } from '../../shared/helpers/media-query';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { useGetCollectionCounts } from '../../shared/hooks/useGetCollectionCounts';
+import { useGetIsCollectionBookmarked } from '../../shared/hooks/useGetIsCollectionBookmarked';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
@@ -157,7 +158,9 @@ export const BundleDetail: FC<BundleDetailProps> = ({
   const { data: bookmarkViewPlayCounts } = useGetCollectionCounts(
     bundleId as string | undefined,
   );
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+  const { data: isBookmarked = false } = useGetIsCollectionBookmarked(
+    bundleId as string | undefined,
+  );
   const {
     data: bundleObj,
     isError: isErrorBundle,
@@ -451,7 +454,6 @@ export const BundleDetail: FC<BundleDetailProps> = ({
         bundleId,
         !isBookmarked,
       );
-      setIsBookmarked(!isBookmarked);
       ToastService.success(
         isBookmarked
           ? tHtml('bundle/views/bundle-detail___de-beladwijzer-is-verwijderd')

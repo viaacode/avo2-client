@@ -93,6 +93,7 @@ import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { isUuid } from '../../shared/helpers/uuid';
 import { useGetCollectionCounts } from '../../shared/hooks/useGetCollectionCounts';
+import { useGetIsCollectionBookmarked } from '../../shared/hooks/useGetIsCollectionBookmarked';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
@@ -266,7 +267,16 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         !showLoginPopup,
     },
   );
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+  const { data: isBookmarked = false } = useGetIsCollectionBookmarked(
+    collectionId as string | undefined,
+    {
+      enabled:
+        !!collectionId &&
+        isUuid(collectionId) &&
+        !!commonUser &&
+        !showLoginPopup,
+    },
+  );
 
   const [assignmentId, setAssignmentId] = useState<string>();
   const [importWithDescription, setImportWithDescription] =
@@ -796,7 +806,6 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         collectionId,
         !isBookmarked,
       );
-      setIsBookmarked(!isBookmarked);
       ToastService.success(
         isBookmarked
           ? tHtml(

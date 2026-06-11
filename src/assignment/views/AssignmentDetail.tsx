@@ -107,6 +107,7 @@ import {
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { useGetAssignmentCounts } from '../../shared/hooks/useGetAssignmentCounts';
+import { useGetIsAssignmentBookmarked } from '../../shared/hooks/useGetIsAssignmentBookmarked';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
@@ -171,7 +172,9 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
   const { data: bookmarkViewCounts } = useGetAssignmentCounts(
     assignment?.id as string | undefined,
   );
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+  const { data: isBookmarked = false } = useGetIsAssignmentBookmarked(
+    assignment?.id as string | undefined,
+  );
   const { data: editStatuses } = useGetAssignmentsEditStatuses(
     [assignmentId as string],
     {
@@ -532,7 +535,6 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         !isBookmarked,
       );
 
-      setIsBookmarked(!isBookmarked);
       ToastService.success(
         isBookmarked
           ? tHtml(

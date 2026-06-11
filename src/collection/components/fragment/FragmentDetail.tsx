@@ -46,7 +46,7 @@ export const FragmentDetail: FC<FragmentDetailProps> = ({
       linkToItems &&
       collectionFragment.item_meta &&
       [AvoCoreContentTypeId.VIDEO, AvoCoreContentTypeId.AUDIO].includes(
-        collectionFragment.item_meta.type?.id,
+        collectionFragment.item_meta.type?.id as AvoCoreContentTypeId,
       )
     ) {
       return buildLink(APP_PATH.ITEM_DETAIL.route, {

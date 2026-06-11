@@ -38,8 +38,10 @@ import {
   GetMultipleCollectionViewCountsDocument,
   GetMultipleItemViewCountsDocument,
 } from '../../generated/graphql-db-react-query';
+import { QUERY_KEYS } from '../../constants/query-keys';
 import { CustomError } from '../../helpers/custom-error';
 import { getEnv } from '../../helpers/env';
+import { queryClient } from '../../helpers/query-client';
 import { normalizeTimestamp } from '../../helpers/formatters/date';
 import { dataService } from '../data-service';
 import { trackEvents } from '../event-logging-service';
@@ -613,6 +615,12 @@ export class BookmarksViewsPlaysService {
           body: JSON.stringify({ bookmarked }),
         },
       );
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_IS_ITEM_BOOKMARKED, itemUuid],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_ITEM_COUNTS, itemUuid],
+      });
     } catch (err) {
       const error = new CustomError('Failed to toggle item bookmark', err, {
         itemUuid,
@@ -638,6 +646,12 @@ export class BookmarksViewsPlaysService {
           body: JSON.stringify({ bookmarked }),
         },
       );
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_IS_COLLECTION_BOOKMARKED, collectionUuid],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_COLLECTION_COUNTS, collectionUuid],
+      });
     } catch (err) {
       const error = new CustomError(
         'Failed to toggle collection bookmark',
@@ -667,6 +681,12 @@ export class BookmarksViewsPlaysService {
           body: JSON.stringify({ bookmarked }),
         },
       );
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_IS_ASSIGNMENT_BOOKMARKED, assignmentUuid],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_ASSIGNMENT_COUNTS, assignmentUuid],
+      });
     } catch (err) {
       const error = new CustomError(
         'Failed to toggle assignment bookmark',

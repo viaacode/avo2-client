@@ -1,10 +1,12 @@
 import {
-  IconName,
-  ToggleButton,
-  type ToggleButtonProps,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
+} from '@meemoo/react-components';
+import {
+  IconName,
+  ToggleButton,
+  type ToggleButtonProps,
 } from '@viaa/avo2-components';
 import { type ReactNode } from 'react';
 
@@ -22,7 +24,7 @@ export const defaultRenderBookmarkButton = (
 ): ReactNode => {
   if (props.title) {
     return (
-      <Tooltip position="bottom" id="bookmarks-button-tooltip">
+      <Tooltip position="top">
         <TooltipTrigger>
           {getBookmarkButton({ ...props, title: '' })}
         </TooltipTrigger>
