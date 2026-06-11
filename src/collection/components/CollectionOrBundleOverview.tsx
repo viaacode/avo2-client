@@ -45,6 +45,7 @@ import { commonUserAtom } from '../../authentication/authentication.store';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views/ErrorView';
+import { queryClient } from '../../query-client.ts';
 import {
   CheckboxDropdownModal,
   type CheckboxOption,
@@ -475,7 +476,6 @@ export const CollectionOrBundleOverview: FC<
           },
           {
             onSuccess: async () => {
-              const queryClient = new QueryClient();
               await queryClient.invalidateQueries({
                 queryKey: COLLECTION_QUERY_KEYS,
               });

@@ -6,7 +6,7 @@
   "scripts": {
     "--prepare": "husky install",
     "start-with-env": "npm run build && dotenv -e .env.qas node ./scripts/env.js && dotenv -e .env.qas cross-env NODE_ENV=production node ./dist/server/server.js",
-    "predev": "dotenv -e .env.qas node ./scripts/env.js && cp dist/client/env-config.js ./public",
+    "predev": "dotenv -e .env.qas node ./scripts/env.js && cp ./dist/client/env-config.js ./public",
     "dev": "dotenv -e .env.qas node server.ts",
     "dev:embed": "dotenv -e .env.qas vite --config vite-embed.config.mts",
     "build:clean": "shx rm -rf ./dist && shx rm -rf ./dist-embed",
@@ -193,11 +193,7 @@
     "@emotion/react": "11.11.1"
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
+    "production": [">0.2%", "not dead", "not op_mini all"],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",

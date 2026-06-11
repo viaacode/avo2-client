@@ -1,10 +1,6 @@
 import { AdminConfig } from '@meemoo/admin-core-ui/admin';
 import { AdminConfigManager } from '@meemoo/admin-core-ui/client';
-import {
-  keepPreviousData,
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import {
   AvoAuthIdpLinkedSuccessQueryParam,
   PermissionName,
@@ -22,6 +18,7 @@ import { SpecialUserGroupId } from './admin/user-groups/user-group.const';
 import { commonUserAtom } from './authentication/authentication.store';
 import { fetchLoginStateAtom } from './authentication/authentication.store.actions';
 import { PermissionService } from './authentication/helpers/permission-service';
+import { queryClient } from './query-client.ts';
 import { ConfirmModal } from './shared/components/ConfirmModal/ConfirmModal';
 import { ScrollToTopOnPathChange } from './shared/components/ScrollToTopOnPathChange/ScrollToTopOnPathChange.tsx';
 import { ROUTE_PARTS } from './shared/constants/routes';
@@ -35,17 +32,6 @@ import { useHideZendeskWidget } from './shared/hooks/useHideZendeskWidget';
 import { usePageLoaded } from './shared/hooks/usePageLoaded';
 import { ToastService } from './shared/services/toast-service';
 import { embedFlowAtom, historyLocationsAtom } from './shared/store/ui.store';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      placeholderData: keepPreviousData,
-      retry: false,
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
-    },
-  },
-});
 
 export const App: FC = () => {
   const location = useLocation();

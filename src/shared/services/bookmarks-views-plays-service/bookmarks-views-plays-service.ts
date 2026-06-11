@@ -1,9 +1,10 @@
 import { AvoContentTypeEnglish, AvoUserCommonUser } from '@viaa/avo2-types';
 
 import { compact, groupBy, noop } from 'es-toolkit';
-
+import { queryClient } from '../../../query-client.ts';
 import { WorkspaceService } from '../../../workspace/workspace.service';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
+import { QUERY_KEYS } from '../../constants/query-keys';
 import {
   type DeleteAssignmentBookmarksForUserMutationVariables,
   type DeleteCollectionBookmarksForUserMutation,
@@ -38,14 +39,11 @@ import {
   GetMultipleCollectionViewCountsDocument,
   GetMultipleItemViewCountsDocument,
 } from '../../generated/graphql-db-react-query';
-import { QUERY_KEYS } from '../../constants/query-keys';
 import { CustomError } from '../../helpers/custom-error';
 import { getEnv } from '../../helpers/env';
-import { queryClient } from '../../helpers/query-client';
 import { normalizeTimestamp } from '../../helpers/formatters/date';
 import { dataService } from '../data-service';
 import { trackEvents } from '../event-logging-service';
-
 import { GET_EVENT_QUERIES } from './bookmarks-views-plays-service.const';
 import {
   type AppItemBookmark,

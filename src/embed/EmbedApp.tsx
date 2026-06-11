@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import queryString from 'query-string';
 import { type FC, useCallback, useEffect, useState } from 'react';
@@ -9,6 +9,7 @@ import { LoginMessage } from '../authentication/authentication.types';
 import { EmbedCodeService } from '../embed-code/embed-code-service';
 import { toEmbedCodeDetail } from '../embed-code/helpers/links';
 import { ErrorView } from '../error/views/ErrorView';
+import { queryClient } from '../query-client.ts';
 import { CustomError } from '../shared/helpers/custom-error';
 import { isUuid } from '../shared/helpers/isUuid';
 import { ReactRouter7Adapter } from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
@@ -218,8 +219,6 @@ const EmbedApp: FC = () => {
 };
 
 const EmbedAppWithRouter = EmbedApp;
-
-const queryClient = new QueryClient();
 
 export const EmbedRoot: FC = () => {
   return (
