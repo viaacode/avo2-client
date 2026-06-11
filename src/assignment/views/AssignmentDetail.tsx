@@ -106,9 +106,8 @@ import {
 } from '../../shared/helpers/routing/use-query-params-ssr.ts';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
+import { useGetAssignmentCounts } from '../../shared/hooks/useGetAssignmentCounts';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
   getRelatedItems,
@@ -169,8 +168,10 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
   const [relatedAssignments, setRelatedAssignments] = useState<
     AvoSearchResultItem[] | null
   >(null);
-  const [bookmarkViewCounts, setBookmarkViewCounts] =
-    useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS);
+  const { data: bookmarkViewCounts } = useGetAssignmentCounts(
+    assignment?.id as string | undefined,
+  );
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const { data: editStatuses } = useGetAssignmentsEditStatuses(
     [assignmentId as string],
     {
@@ -490,35 +491,6 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
       },
       commonUser,
     );
-
-    if (
-      PermissionService.hasAtLeastOnePerm(commonUser, [
-        PermissionName.VIEW_ANY_PUBLISHED_ASSIGNMENTS,
-        PermissionName.VIEW_ANY_UNPUBLISHED_ASSIGNMENTS,
-        PermissionName.EDIT_OWN_ASSIGNMENTS,
-        PermissionName.EDIT_ANY_ASSIGNMENTS,
-      ])
-    ) {
-      try {
-        setBookmarkViewCounts(
-          await BookmarksViewsPlaysService.getAssignmentCounts(
-            assignment?.id,
-            commonUser,
-          ),
-        );
-      } catch (err) {
-        console.error(
-          new CustomError('Failed to get getAssignmentCounts', err, {
-            uuid: assignment?.id,
-          }),
-        );
-        ToastService.danger(
-          tHtml(
-            'assignment/views/assignment-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt',
-          ),
-        );
-      }
-    }
   }, [assignment, commonUser]);
 
   // Set mounted to true only on the client, so certain components don't render during server side rendering
@@ -559,14 +531,11 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
         assignment?.id as string,
         commonUser,
         'assignment',
-        bookmarkViewCounts.isBookmarked,
+        isBookmarked,
       );
-      setBookmarkViewCounts({
-        ...bookmarkViewCounts,
-        isBookmarked: !bookmarkViewCounts.isBookmarked,
-      });
+      setIsBookmarked(!isBookmarked);
       ToastService.success(
-        bookmarkViewCounts.isBookmarked
+        isBookmarked
           ? tHtml(
               'assignment/views/assignment-detail___de-bladwijzer-is-verwijderd',
             )
@@ -580,11 +549,11 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           assignment,
           commonUser,
           type: 'collection',
-          isBookmarked: bookmarkViewCounts.isBookmarked,
+          isBookmarked,
         }),
       );
       ToastService.danger(
-        bookmarkViewCounts.isBookmarked
+        isBookmarked
           ? tHtml(
               'assignment/views/assignment-detail___het-verwijderen-van-de-bladwijzer-is-mislukt',
             )
@@ -818,7 +787,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           !isContributor &&
           !inviteToken &&
           defaultRenderBookmarkButton({
-            active: bookmarkViewCounts.isBookmarked,
+            active: isBookmarked,
             ariaLabel: tText('assignment/views/assignment-detail___bladwijzer'),
             title: tText('assignment/views/assignment-detail___bladwijzer'),
             onClick: () => executeAction(AssignmentAction.toggleBookmark),
@@ -946,8 +915,8 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           title={assignment.title || ''}
           category={AvoContentTypeEnglish.ASSIGNMENT}
           showMetaData={true}
-          bookmarks={String(bookmarkViewCounts.bookmarkCount || 0)}
-          views={String(bookmarkViewCounts.viewCount || 0)}
+          bookmarks={String(bookmarkViewCounts?.bookmarkCount || 0)}
+          views={String(bookmarkViewCounts?.viewCount || 0)}
         >
           <HeaderTopRowLeft>{renderHeaderEducationLevel()}</HeaderTopRowLeft>
           <HeaderMiddleRowRight>

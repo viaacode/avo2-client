@@ -90,9 +90,8 @@ import { getGroupedLomsKeyValue } from '../../shared/helpers/lom';
 import { isMobileWidth } from '../../shared/helpers/media-query';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
+import { useGetCollectionCounts } from '../../shared/hooks/useGetCollectionCounts';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
   getRelatedItems,
@@ -155,8 +154,10 @@ export const BundleDetail: FC<BundleDetailProps> = ({
   const [viewCountsById, setViewCountsById] = useState<{
     [id: string]: number;
   }>({});
-  const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] =
-    useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS);
+  const { data: bookmarkViewPlayCounts } = useGetCollectionCounts(
+    bundleId as string | undefined,
+  );
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const {
     data: bundleObj,
     isError: isErrorBundle,
@@ -261,27 +262,6 @@ export const BundleDetail: FC<BundleDetailProps> = ({
         },
         commonUser,
       );
-
-      try {
-        commonUser &&
-          setBookmarkViewPlayCounts(
-            await BookmarksViewsPlaysService.getCollectionCounts(
-              bundleId,
-              commonUser,
-            ),
-          );
-      } catch (err) {
-        console.error(
-          new CustomError('Failed to get getCollectionCounts for bundle', err, {
-            uuid: bundleId,
-          }),
-        );
-        ToastService.danger(
-          tHtml(
-            'bundle/views/bundle-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt',
-          ),
-        );
-      }
 
       getRelatedItems(bundleId, ObjectTypes.bundles, ObjectTypesAll.all, 4)
         .then((relatedItems) => {
@@ -471,14 +451,11 @@ export const BundleDetail: FC<BundleDetailProps> = ({
         bundleId,
         commonUser,
         'collection',
-        bookmarkViewPlayCounts.isBookmarked,
+        isBookmarked,
       );
-      setBookmarkViewPlayCounts({
-        ...bookmarkViewPlayCounts,
-        isBookmarked: !bookmarkViewPlayCounts.isBookmarked,
-      });
+      setIsBookmarked(!isBookmarked);
       ToastService.success(
-        bookmarkViewPlayCounts.isBookmarked
+        isBookmarked
           ? tHtml('bundle/views/bundle-detail___de-beladwijzer-is-verwijderd')
           : tHtml('bundle/views/bundle-detail___de-bladwijzer-is-aangemaakt'),
       );
@@ -488,11 +465,11 @@ export const BundleDetail: FC<BundleDetailProps> = ({
           bundleId,
           commonUser,
           type: 'bundle',
-          isBookmarked: bookmarkViewPlayCounts.isBookmarked,
+          isBookmarked: isBookmarked,
         }),
       );
       ToastService.danger(
-        bookmarkViewPlayCounts.isBookmarked
+        isBookmarked
           ? tHtml(
               'bundle/views/bundle-detail___het-verwijderen-van-de-bladwijzer-is-mislukt',
             )
@@ -628,10 +605,10 @@ export const BundleDetail: FC<BundleDetailProps> = ({
         ...createDropdownMenuItem(
           bundleId,
           BundleAction.toggleBookmark,
-          bookmarkViewPlayCounts.isBookmarked
+          isBookmarked
             ? tText('bundle/views/bundle-detail___verwijder-bladwijzer')
             : tText('bundle/views/bundle-detail___maak-bladwijzer'),
-          bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark',
+          isBookmarked ? 'bookmark-filled' : 'bookmark',
           !isOwner,
         ),
         ...createDropdownMenuItem(
@@ -692,7 +669,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
           />
         )}
         {defaultRenderBookmarkButton({
-          active: bookmarkViewPlayCounts.isBookmarked,
+          active: isBookmarked,
           ariaLabel: tText('collection/views/collection-detail___bladwijzer'),
           title: tText('collection/views/collection-detail___bladwijzer'),
           onClick: () => executeAction(BundleAction.toggleBookmark),
@@ -896,12 +873,12 @@ export const BundleDetail: FC<BundleDetailProps> = ({
                         )}
                         <MetaDataItem
                           icon={IconName.eye}
-                          label={String(bookmarkViewPlayCounts.viewCount || 0)}
+                          label={String(bookmarkViewPlayCounts?.viewCount || 0)}
                         />
                         <MetaDataItem
                           icon={IconName.bookmark}
                           label={String(
-                            bookmarkViewPlayCounts.bookmarkCount || 0,
+                            bookmarkViewPlayCounts?.bookmarkCount || 0,
                           )}
                         />
                         <EducationLevelsTagList

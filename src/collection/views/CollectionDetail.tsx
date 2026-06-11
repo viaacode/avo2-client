@@ -93,8 +93,6 @@ import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { isUuid } from '../../shared/helpers/uuid';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
   getRelatedItems,
@@ -126,6 +124,7 @@ import {
   deleteSelfFromCollection,
 } from '../helpers/delete-collection';
 import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
+import { useGetCollectionCounts } from '../../shared/hooks/useGetCollectionCounts';
 import {
   BundleSortProp,
   useGetCollectionsOrBundlesContainingFragment,
@@ -257,8 +256,11 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
   });
-  const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] =
-    useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS);
+  const { data: bookmarkViewPlayCounts } = useGetCollectionCounts(
+    collectionId as string | undefined,
+    { enabled: !!collectionId && isUuid(collectionId) && !!commonUser && !showLoginPopup },
+  );
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
 
   const [assignmentId, setAssignmentId] = useState<string>();
   const [importWithDescription, setImportWithDescription] =
@@ -367,40 +369,6 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
       );
     }
   }, [collectionId, commonUser, collection?.is_public]);
-
-  const fetchViewAndBookmarkCounts = useCallback(async () => {
-    try {
-      if (
-        collectionId &&
-        isUuid(collectionId) &&
-        commonUser &&
-        !showLoginPopup
-      ) {
-        setBookmarkViewPlayCounts(
-          await BookmarksViewsPlaysService.getCollectionCounts(
-            collectionId,
-            commonUser || null,
-          ),
-        );
-      }
-    } catch (err) {
-      console.error(
-        new CustomError('Failed to get getCollectionCounts', err, {
-          uuid: collectionId,
-        }),
-      );
-      ToastService.danger(
-        tHtml(
-          'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt',
-        ),
-      );
-    }
-  }, [collectionId, commonUser]);
-
-  // Fetch bookmark counts and view counts
-  useEffect(() => {
-    fetchViewAndBookmarkCounts();
-  }, []);
 
   // Set mounted to true only on the client, so certain components don't render during server side rendering
   useEffect(() => {
@@ -822,14 +790,11 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         collectionId,
         commonUser,
         'collection',
-        bookmarkViewPlayCounts.isBookmarked,
+        isBookmarked,
       );
-      setBookmarkViewPlayCounts({
-        ...bookmarkViewPlayCounts,
-        isBookmarked: !bookmarkViewPlayCounts.isBookmarked,
-      });
+      setIsBookmarked(!isBookmarked);
       ToastService.success(
-        bookmarkViewPlayCounts.isBookmarked
+        isBookmarked
           ? tHtml(
               'collection/views/collection-detail___de-bladwijzer-is-verwijderd',
             )
@@ -843,11 +808,11 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           collectionId,
           commonUser,
           type: 'collection',
-          isBookmarked: bookmarkViewPlayCounts.isBookmarked,
+          isBookmarked,
         }),
       );
       ToastService.danger(
-        bookmarkViewPlayCounts.isBookmarked
+        isBookmarked
           ? tHtml(
               'collection/views/collection-detail___het-verwijderen-van-de-bladwijzer-is-mislukt',
             )
@@ -1223,7 +1188,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           !isContributor &&
           !inviteToken &&
           defaultRenderBookmarkButton({
-            active: bookmarkViewPlayCounts.isBookmarked,
+            active: isBookmarked,
             ariaLabel: tText('collection/views/collection-detail___bladwijzer'),
             title: tText('collection/views/collection-detail___bladwijzer'),
             onClick: () => executeAction(CollectionMenuAction.toggleBookmark),
@@ -1302,10 +1267,10 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
       ...createDropdownMenuItem(
         collectionId,
         CollectionMenuAction.toggleBookmark,
-        bookmarkViewPlayCounts.isBookmarked
+        isBookmarked
           ? tText('collection/views/collection-detail___verwijder-bladwijzer')
           : tText('collection/views/collection-detail___maak-bladwijzer'),
-        bookmarkViewPlayCounts.isBookmarked
+        isBookmarked
           ? IconName.bookmarkFilled
           : IconName.bookmark,
         !isOwner && !isContributor,
@@ -1741,8 +1706,8 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
             title={collection.title}
             category={AvoContentTypeEnglish.COLLECTION}
             showMetaData={true}
-            bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
-            views={String(bookmarkViewPlayCounts.viewCount || 0)}
+            bookmarks={String(bookmarkViewPlayCounts?.bookmarkCount || 0)}
+            views={String(bookmarkViewPlayCounts?.viewCount || 0)}
           >
             <HeaderTopRowLeft>{renderHeaderEducationLevel()}</HeaderTopRowLeft>
             {!showLoginPopup && (

@@ -78,11 +78,9 @@ import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { useBlocksList } from '../../shared/hooks/use-blocks-list';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
+import { useGetAssignmentCounts } from '../../shared/hooks/useGetAssignmentCounts';
 import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -166,8 +164,9 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
 
   const [contributors, setContributors] =
     useState<AvoAssignmentContributor[]>();
-  const [bookmarkViewCounts, setBookmarkViewCounts] =
-    useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS);
+  const { data: bookmarkViewCounts } = useGetAssignmentCounts(
+    assignmentId as string | undefined,
+  );
 
   const assignment =
     assignmentFormValues as unknown as AvoAssignmentAssignment & {
@@ -450,25 +449,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
       }
 
       if (checkedPermissions?.canFetchBookmarkAndViewCounts && !!assignment) {
-        try {
-          setBookmarkViewCounts(
-            await BookmarksViewsPlaysService.getAssignmentCounts(
-              assignmentId,
-              commonUser,
-            ),
-          );
-        } catch (err) {
-          console.error(
-            new CustomError('Failed to get getAssignmentCounts', err, {
-              uuid: assignmentId,
-            }),
-          );
-          ToastService.danger(
-            tHtml(
-              'assignment/views/assignment-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt',
-            ),
-          );
-        }
+        // Counts are now fetched via useGetAssignmentCounts hook
       }
 
       setOriginalAssignment(tempAssignment);
@@ -923,8 +904,8 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
   }, [assignment, isCreatingAssignment]);
 
   const renderMeta = useMemo(() => {
-    const bookmarks = String(bookmarkViewCounts.bookmarkCount || 0);
-    const views = String(bookmarkViewCounts.viewCount || 0);
+    const bookmarks = String(bookmarkViewCounts?.bookmarkCount || 0);
+    const views = String(bookmarkViewCounts?.viewCount || 0);
     const label =
       GET_EDUCATION_LEVEL_DICT()[
         assignment?.education_level_id as EducationLevelId

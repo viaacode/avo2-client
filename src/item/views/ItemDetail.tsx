@@ -98,9 +98,8 @@ import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-par
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
+import { useGetItemCounts } from '../../shared/hooks/useGetItemCounts';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
   getRelatedItems,
@@ -197,8 +196,10 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   const [relatedItems, setRelatedItems] = useState<
     AvoSearchResultItem[] | null
   >(null);
-  const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] =
-    useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS);
+  const { data: bookmarkViewPlayCounts } = useGetItemCounts(
+    (item as any)?.uid as string | undefined,
+  );
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [isCreateAssignmentDropdownOpen, setIsCreateAssignmentDropdownOpen] =
     useState<boolean>(false);
   const [isImportToAssignmentModalOpen, setIsImportToAssignmentModalOpen] =
@@ -342,25 +343,6 @@ export const ItemDetail: FC<ItemDetailProps> = ({
       retrieveRelatedItems(itemId, RELATED_ITEMS_AMOUNT);
 
       setItem(itemObj);
-
-      try {
-        const counts = await BookmarksViewsPlaysService.getItemCounts(
-          (itemObj as any).uid,
-          commonUser,
-        );
-        setBookmarkViewPlayCounts(counts);
-      } catch (err) {
-        console.error(
-          new CustomError('Failed to get getItemCounts', err, {
-            uuid: (itemObj as any).uid,
-          }),
-        );
-        ToastService.danger(
-          tHtml(
-            'item/views/item-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt',
-          ),
-        );
-      }
     } catch (err) {
       console.error(
         new CustomError(
@@ -405,15 +387,12 @@ export const ItemDetail: FC<ItemDetailProps> = ({
         (item as any).uid,
         commonUser,
         'item',
-        bookmarkViewPlayCounts.isBookmarked,
+        isBookmarked,
       );
 
-      setBookmarkViewPlayCounts({
-        ...bookmarkViewPlayCounts,
-        isBookmarked: !bookmarkViewPlayCounts.isBookmarked,
-      });
+      setIsBookmarked(!isBookmarked);
       ToastService.success(
-        bookmarkViewPlayCounts.isBookmarked
+        isBookmarked
           ? tHtml(
               'collection/views/collection-detail___de-bladwijzer-is-verwijderd',
             )
@@ -427,11 +406,11 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           commonUser,
           itemId: (item as any).uid,
           type: 'item',
-          isBookmarked: bookmarkViewPlayCounts.isBookmarked,
+          isBookmarked,
         }),
       );
       ToastService.danger(
-        bookmarkViewPlayCounts.isBookmarked
+        isBookmarked
           ? tHtml(
               'item/views/item-detail___het-verwijderen-van-de-bladwijzer-is-mislukt',
             )
@@ -939,7 +918,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           ) &&
             renderBookmarkButton &&
             renderBookmarkButton({
-              active: bookmarkViewPlayCounts.isBookmarked,
+              active: isBookmarked,
               ariaLabel: tText('item/views/item___toggle-bladwijzer'),
               title: tText('item/views/item___toggle-bladwijzer'),
               onClick: toggleBookmark,
@@ -1106,12 +1085,12 @@ export const ItemDetail: FC<ItemDetailProps> = ({
           <ButtonToolbar>
             <MetaData category={englishContentType}>
               <MetaDataItem
-                label={String(bookmarkViewPlayCounts.viewCount || 0)}
+                label={String(bookmarkViewPlayCounts?.viewCount || 0)}
                 icon={IconName.eye}
               />
               {renderBookmarkCount &&
                 renderBookmarkCount({
-                  label: String(bookmarkViewPlayCounts.bookmarkCount || 0),
+                  label: String(bookmarkViewPlayCounts?.bookmarkCount || 0),
                 })}
             </MetaData>
           </ButtonToolbar>

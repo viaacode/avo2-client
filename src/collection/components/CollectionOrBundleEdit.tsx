@@ -83,10 +83,8 @@ import { isMobileWidth } from '../../shared/helpers/media-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
+import { useGetCollectionCounts } from '../../shared/hooks/useGetCollectionCounts';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.const';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
@@ -172,8 +170,9 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
       canPublish: boolean;
     }>
   >({});
-  const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] =
-    useState<BookmarkViewPlayCounts>(DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS);
+  const { data: bookmarkViewPlayCounts } = useGetCollectionCounts(
+    collectionId as string | undefined,
+  );
   const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
   useWarningBeforeUnload({
     when: unsavedChanges,
@@ -652,26 +651,6 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
             setLoadingInfo(noRightsError);
             return;
           }
-        }
-
-        try {
-          setBookmarkViewPlayCounts(
-            await BookmarksViewsPlaysService.getCollectionCounts(
-              collectionObj.id,
-              commonUser,
-            ),
-          );
-        } catch (err) {
-          console.error(
-            new CustomError('Failed to get getCollectionCounts', err, {
-              uuid: collectionObj.id,
-            }),
-          );
-          ToastService.danger(
-            tHtml(
-              'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt',
-            ),
-          );
         }
 
         // check quality check approved_at date
@@ -1876,8 +1855,8 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
           }
           category={COLLECTION_OR_BUNDLE_TO_CONTENT_TYPE_ENGLISH[type]}
           showMetaData={true}
-          bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
-          views={String(bookmarkViewPlayCounts.viewCount || 0)}
+          bookmarks={String(bookmarkViewPlayCounts?.bookmarkCount || 0)}
+          views={String(bookmarkViewPlayCounts?.viewCount || 0)}
         >
           <HeaderMiddleRowRight>
             {isMobileWidth() && (
