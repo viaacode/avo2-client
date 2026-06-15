@@ -144,7 +144,7 @@ export class BookmarksViewsPlaysService {
         '@meemoo/admin-core-ui/client'
       );
       return await fetchWithLogoutJson(
-        `${getEnv('PROXY_URL')}/items/${itemUuid}/bookmarked`,
+        `${getEnv('PROXY_URL')}/items/${itemUuid}/bookmark`,
         { method: 'GET' },
       );
     } catch (err) {
@@ -190,7 +190,7 @@ export class BookmarksViewsPlaysService {
         '@meemoo/admin-core-ui/client'
       );
       return await fetchWithLogoutJson(
-        `${getEnv('PROXY_URL')}/collections/${collectionUuid}/bookmarked`,
+        `${getEnv('PROXY_URL')}/collections/${collectionUuid}/bookmark`,
         { method: 'GET' },
       );
     } catch (err) {
@@ -233,7 +233,7 @@ export class BookmarksViewsPlaysService {
         '@meemoo/admin-core-ui/client'
       );
       return await fetchWithLogoutJson(
-        `${getEnv('PROXY_URL')}/assignments/${assignmentUuid}/bookmarked`,
+        `${getEnv('PROXY_URL')}/assignments/${assignmentUuid}/bookmark`,
         { method: 'GET' },
       );
     } catch (err) {
