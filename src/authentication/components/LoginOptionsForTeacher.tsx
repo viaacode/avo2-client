@@ -1,14 +1,8 @@
-import {
-  Button,
-  Icon,
-  IconName,
-  Spacer,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@viaa/avo2-components';
+import { TooltipContent, TooltipTrigger } from '@meemoo/react-components';
+import { Button, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import { noop } from 'es-toolkit';
 import { type FC } from 'react';
+import { Tooltip } from '../../shared/components/Tooltip/Tooltip.tsx';
 
 import { tHtml } from '../../shared/helpers/translate-html';
 import {
@@ -60,10 +54,7 @@ export const LoginOptionsForTeacher: FC<LoginOptionsForTeacherProps> = ({
           {tText(
             'authentication/components/login-options-for-teacher___is-jouw-account-al-gekoppeld',
           )}
-          <Tooltip
-            position="bottom"
-            id="login-options-for-teacher__account-tooltip"
-          >
+          <Tooltip position="top" style={{ maxWidth: '360px' }}>
             <TooltipTrigger>
               <Icon className="a-info-icon" name={IconName.info} size="small" />
             </TooltipTrigger>

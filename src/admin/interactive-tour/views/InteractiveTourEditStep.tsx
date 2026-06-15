@@ -13,15 +13,15 @@ import {
   ToolbarItem,
   ToolbarLeft,
   ToolbarRight,
-  Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@viaa/avo2-components';
+import { AvoFileUploadAssetType } from '@viaa/avo2-types';
 import { isEqual } from 'es-toolkit';
 import { type FC, memo } from 'react';
-
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
+import { Tooltip } from '../../../shared/components/Tooltip/Tooltip.tsx';
 import { stripHtml } from '../../../shared/helpers/formatters/strip-html';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
@@ -30,9 +30,6 @@ import {
   type EditableStep,
   InteractiveTourEditActionType,
 } from '../interactive-tour.types';
-
-import './InteractiveTourEdit.scss';
-import { AvoFileUploadAssetType } from '@viaa/avo2-types';
 
 interface InteractiveTourEditStepProps {
   step: EditableStep;
@@ -203,7 +200,7 @@ export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
               }}
               className="c-text-input__selector"
             />
-            <Tooltip position="top" id="tooltip-how-copy-css-selector">
+            <Tooltip position="top">
               <TooltipTrigger>
                 <span>
                   <Icon

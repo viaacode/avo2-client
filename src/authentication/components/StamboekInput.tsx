@@ -1,3 +1,4 @@
+import { TooltipContent, TooltipTrigger } from '@meemoo/react-components';
 import {
   Alert,
   Button,
@@ -5,16 +6,12 @@ import {
   IconName,
   Spacer,
   TextInput,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
 } from '@viaa/avo2-components';
-
 import { type FC, type ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
-
 import teacherCardAppImage from '../../../src/assets/images/lerarenkaart-app.jpg';
 import { APP_PATH } from '../../constants';
+import { Tooltip } from '../../shared/components/Tooltip/Tooltip.tsx';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { AvoToastType } from '../../shared/services/toast-service';
@@ -151,11 +148,7 @@ export const StamboekInput: FC<StamboekInputProps> = ({
         value={rawStamboekNumber}
         onChange={setStamboekNumber}
       />
-      <Tooltip
-        position="bottom"
-        contentClassName="m-stamboek-tooltip"
-        id="stamboek-input__stamboek-number-location-tooltip"
-      >
+      <Tooltip position="bottom" contentClassName="m-stamboek-tooltip">
         <TooltipTrigger>
           <span>
             <Icon className="a-info-icon" name={IconName.info} size="small" />

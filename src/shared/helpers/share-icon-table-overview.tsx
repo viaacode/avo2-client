@@ -1,10 +1,5 @@
-import {
-  Icon,
-  IconName,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@viaa/avo2-components';
+import { TooltipContent, TooltipTrigger } from '@meemoo/react-components';
+import { Icon, IconName } from '@viaa/avo2-components';
 import {
   AvoAssignmentContributor,
   AvoCollectionContributor,
@@ -12,6 +7,7 @@ import {
 } from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import { type ReactNode } from 'react';
+import { Tooltip } from '../components/Tooltip/Tooltip.tsx';
 import { renderMobileDesktop } from './renderMobileDesktop';
 import { tHtml } from './translate-html';
 import { tText } from './translate-text';
@@ -110,7 +106,7 @@ export function createShareIconTableOverview(
   return renderMobileDesktop({
     mobile: null,
     desktop: (
-      <Tooltip position="top" id="tooltip-share-icon-table-overview">
+      <Tooltip position="top">
         <TooltipTrigger>
           <div className={triggerClassName} title={shareTypeTitle || ''}>
             <Icon name={shareTypeIcon} />
