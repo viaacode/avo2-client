@@ -1,7 +1,10 @@
-import { TooltipContent, TooltipTrigger } from '@meemoo/react-components';
 import { Button, IconName } from '@viaa/avo2-components';
 import { type FC, type ReactNode } from 'react';
-import { Tooltip } from '../Tooltip/Tooltip.tsx';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../Tooltip/Tooltip.tsx';
 
 type EditButtonProps = {
   onClick: () => void;

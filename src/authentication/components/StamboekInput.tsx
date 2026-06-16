@@ -1,4 +1,3 @@
-import { TooltipContent, TooltipTrigger } from '@meemoo/react-components';
 import {
   Alert,
   Button,
@@ -7,11 +6,16 @@ import {
   Spacer,
   TextInput,
 } from '@viaa/avo2-components';
+import { AvoStamboekValidationStatuses } from '@viaa/avo2-types';
 import { type FC, type ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 import teacherCardAppImage from '../../../src/assets/images/lerarenkaart-app.jpg';
 import { APP_PATH } from '../../constants';
-import { Tooltip } from '../../shared/components/Tooltip/Tooltip.tsx';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../../shared/components/Tooltip/Tooltip.tsx';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { AvoToastType } from '../../shared/services/toast-service';
@@ -19,7 +23,6 @@ import { verifyStamboekNumber } from '../authentication.service';
 import { type StamboekValidationStatus } from '../views/registration-flow/register-stamboek.tsx';
 
 import './StamboekInput.scss';
-import { AvoStamboekValidationStatuses } from '@viaa/avo2-types';
 
 interface StamboekInputProps {
   value?: string;

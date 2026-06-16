@@ -1,5 +1,4 @@
 import './ShareWithColleagues.scss';
-import { TooltipContent, TooltipTrigger } from '@meemoo/react-components';
 import { useLocalStorage } from '@uidotdev/usehooks';
 import {
   Avatar,
@@ -28,7 +27,11 @@ import { tText } from '../../helpers/translate-text';
 import { validateEmailAddress } from '../../helpers/validation/email';
 import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
 import { ConfirmModalRememberKey } from '../ConfirmModal/ConfirmModal.consts';
-import { Tooltip } from '../Tooltip/Tooltip.tsx';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../Tooltip/Tooltip.tsx';
 
 import { EditShareUserRightsModal } from './Modals/EditShareUserRightsModal';
 import { GET_EDUCATION_LEVEL_DIFFERENCE_DICT } from './ShareWithColleagues.const';

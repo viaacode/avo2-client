@@ -27,8 +27,10 @@ async function hydrate() {
   // Load translations before hydration (uses SSR-injected resources if available)
   await loadTranslations();
 
-  const hasHydrationData = window.__staticRouterHydrationData?.loaderData != null;
-  const hasSSRContent = document.getElementById('root')?.children.length ?? 0 > 0;
+  const hasHydrationData =
+    window.__staticRouterHydrationData?.loaderData != null;
+  const hasSSRContent =
+    document.getElementById('root')?.children.length ?? 0 > 0;
 
   const router = createBrowserRouter(ALL_APP_ROUTES, {
     hydrationData: hasHydrationData

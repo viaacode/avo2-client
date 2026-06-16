@@ -1,8 +1,11 @@
-import { TooltipContent, TooltipTrigger } from '@meemoo/react-components';
 import { Button, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import { noop } from 'es-toolkit';
 import { type FC } from 'react';
-import { Tooltip } from '../../shared/components/Tooltip/Tooltip.tsx';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../../shared/components/Tooltip/Tooltip.tsx';
 
 import { tHtml } from '../../shared/helpers/translate-html';
 import {

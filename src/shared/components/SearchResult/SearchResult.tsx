@@ -1,4 +1,3 @@
-import { TooltipContent, TooltipTrigger } from '@meemoo/react-components';
 import {
   type DefaultProps,
   Flex,
@@ -16,7 +15,11 @@ import { type FC, type ReactNode, type ReactText } from 'react';
 import { defaultRenderBookmarkButton } from '../../helpers/default-render-bookmark-button';
 import { tText } from '../../helpers/translate-text';
 import EducationLevelsTagList from '../EducationLevelsTagList/EducationLevelsTagList';
-import { Tooltip } from '../Tooltip/Tooltip.tsx';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../Tooltip/Tooltip.tsx';
 
 import './SearchResult.scss';
 import { AvoContentTypeEnglish } from '@viaa/avo2-types';

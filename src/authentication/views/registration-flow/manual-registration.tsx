@@ -1,5 +1,4 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { TooltipContent, TooltipTrigger } from '@meemoo/react-components';
 import {
   Button,
   Checkbox,
@@ -19,7 +18,11 @@ import type { Requests } from 'node-zendesk';
 import { type FC, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { APP_PATH } from '../../../constants';
-import { Tooltip } from '../../../shared/components/Tooltip/Tooltip.tsx';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../../../shared/components/Tooltip/Tooltip.tsx';
 import { ROUTE_PARTS } from '../../../shared/constants/routes';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';

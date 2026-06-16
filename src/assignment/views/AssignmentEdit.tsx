@@ -12,8 +12,6 @@ import {
   MetaData,
   MetaDataItem,
   Spacer,
-  TooltipContent,
-  TooltipTrigger,
 } from '@viaa/avo2-components';
 import {
   AvoAssignmentAssignment,
@@ -63,7 +61,11 @@ import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx
 import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { Tooltip } from '../../shared/components/Tooltip/Tooltip.tsx';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../../shared/components/Tooltip/Tooltip.tsx';
 import { buildLink } from '../../shared/helpers/build-link';
 import {
   getContributorType,

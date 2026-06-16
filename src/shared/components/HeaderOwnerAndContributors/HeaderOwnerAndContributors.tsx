@@ -1,4 +1,3 @@
-import { TooltipContent, TooltipTrigger } from '@meemoo/react-components';
 import { Avatar, Flex, Spacer } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactNode } from 'react';
@@ -7,7 +6,11 @@ import { getFullName } from '../../helpers/formatters/avatar';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import { ContributorInfoRight } from '../ShareWithColleagues/ShareWithColleagues.types';
-import { Tooltip } from '../Tooltip/Tooltip.tsx';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../Tooltip/Tooltip.tsx';
 
 import './HeaderOwnerAndContributors.scss';
 import {

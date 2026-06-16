@@ -9,9 +9,9 @@ interface Window {
     LDAP_DASHBOARD_PEOPLE_URL: string;
     SSUM_ACCOUNT_EDIT_URL: string;
     SSUM_PASSWORD_EDIT_URL: string;
-	KEYCLOAK_ACCOUNT_EDIT_URL: string;
-	KEYCLOAK_PASSWORD_EDIT_URL: string;
-	USE_KEYCLOAK_INSTEAD_OF_SSUM: 'true' | 'false';
+    KEYCLOAK_ACCOUNT_EDIT_URL: string;
+    KEYCLOAK_PASSWORD_EDIT_URL: string;
+    USE_KEYCLOAK_INSTEAD_OF_SSUM: 'true' | 'false';
     GOOGLE_ANALYTICS_ID: string;
     MOUSEFLOW_ANALYTICS_ID: string;
     PORT: string;

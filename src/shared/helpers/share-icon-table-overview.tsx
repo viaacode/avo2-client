@@ -1,4 +1,3 @@
-import { TooltipContent, TooltipTrigger } from '@meemoo/react-components';
 import { Icon, IconName } from '@viaa/avo2-components';
 import {
   AvoAssignmentContributor,
@@ -7,7 +6,11 @@ import {
 } from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import { type ReactNode } from 'react';
-import { Tooltip } from '../components/Tooltip/Tooltip.tsx';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../components/Tooltip/Tooltip.tsx';
 import { renderMobileDesktop } from './renderMobileDesktop';
 import { tHtml } from './translate-html';
 import { tText } from './translate-text';

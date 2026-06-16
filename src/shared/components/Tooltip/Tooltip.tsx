@@ -10,6 +10,8 @@ import { CSSProperties, type FC, type ReactNode } from 'react';
 
 import './Tooltip.scss';
 
+export { TooltipContent, TooltipTrigger } from '@meemoo/react-components';
+
 export interface TooltipProps {
   children: ReactNode;
   position?: Placement;

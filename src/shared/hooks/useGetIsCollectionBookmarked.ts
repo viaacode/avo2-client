@@ -10,7 +10,10 @@ export const useGetIsCollectionBookmarked = (
   return useQuery({
     queryKey: [QUERY_KEYS.GET_IS_COLLECTION_BOOKMARKED, collectionUuid],
     queryFn: () =>
-      BookmarksViewsPlaysService.getIsCollectionBookmarked(collectionUuid as string, undefined),
+      BookmarksViewsPlaysService.getIsCollectionBookmarked(
+        collectionUuid as string,
+        undefined,
+      ),
     enabled: !!collectionUuid && (options.enabled ?? true),
   });
 };

@@ -9,7 +9,8 @@ export const useGetIsItemBookmarked = (
 ): UseQueryResult<boolean> => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_IS_ITEM_BOOKMARKED, itemUuid],
-    queryFn: () => BookmarksViewsPlaysService.getItemIsBookmarked(itemUuid as string),
+    queryFn: () =>
+      BookmarksViewsPlaysService.getItemIsBookmarked(itemUuid as string),
     enabled: !!itemUuid && (options.enabled ?? true),
   });
 };

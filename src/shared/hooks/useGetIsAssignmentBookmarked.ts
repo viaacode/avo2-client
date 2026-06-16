@@ -10,7 +10,10 @@ export const useGetIsAssignmentBookmarked = (
   return useQuery({
     queryKey: [QUERY_KEYS.GET_IS_ASSIGNMENT_BOOKMARKED, assignmentUuid],
     queryFn: () =>
-      BookmarksViewsPlaysService.getAssignmentIsBookmarked(assignmentUuid as string, undefined),
+      BookmarksViewsPlaysService.getAssignmentIsBookmarked(
+        assignmentUuid as string,
+        undefined,
+      ),
     enabled: !!assignmentUuid && (options.enabled ?? true),
   });
 };

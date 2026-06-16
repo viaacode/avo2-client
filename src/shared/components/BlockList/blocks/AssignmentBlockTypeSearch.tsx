@@ -1,7 +1,6 @@
 import './AssignmentBlockTypeSearch.scss';
 
 import { BlockHeading } from '@meemoo/admin-core-ui/client';
-import { TooltipContent, TooltipTrigger } from '@meemoo/react-components';
 import {
   Button,
   convertToHtml,
@@ -23,7 +22,11 @@ import { CollectionFragmentRichText } from '../../../../collection/components/Co
 import { type EducationLevelId } from '../../../helpers/lom';
 import { tHtml } from '../../../helpers/translate-html';
 import { tText } from '../../../helpers/translate-text';
-import { Tooltip } from '../../Tooltip/Tooltip.tsx';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../../Tooltip/Tooltip.tsx';
 import {
   GET_EDUCATION_LEVEL_DICT,
   GET_EDUCATION_LEVEL_TOOLTIP_DICT,
