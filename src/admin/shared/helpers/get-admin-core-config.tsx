@@ -184,7 +184,6 @@ export function getAdminCoreConfig(
     components: {
       loader: {
         component: (props) => {
-          console.log('admin-core loader: ', props);
           return <Spinner size="large" locationId="admin-core-ui" {...props} />;
         },
       },
