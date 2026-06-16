@@ -260,21 +260,13 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   const { data: bookmarkViewPlayCounts } = useGetCollectionCounts(
     collectionId as string | undefined,
     {
-      enabled:
-        !!collectionId &&
-        isUuid(collectionId) &&
-        !!commonUser &&
-        !showLoginPopup,
+      enabled: !!commonUser && !showLoginPopup,
     },
   );
   const { data: isBookmarked = false } = useGetIsCollectionBookmarked(
     collectionId as string | undefined,
     {
-      enabled:
-        !!collectionId &&
-        isUuid(collectionId) &&
-        !!commonUser &&
-        !showLoginPopup,
+      enabled: isUuid(collectionId) && !!commonUser && !showLoginPopup,
     },
   );
 
@@ -361,7 +353,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         contributors: response as AvoCollectionContributor[],
       },
     } as CollectionInfo);
-  }, [collectionId, collectionInfo]);
+  }, [collectionId, collectionInfo, showLoginPopup]);
 
   const triggerEvents = useCallback(async () => {
     // Do not trigger events when a search engine loads this page
@@ -384,7 +376,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         commonUser,
       );
     }
-  }, [collectionId, commonUser, collection?.is_public]);
+  }, [collectionId, commonUser, collection?.is_public, showLoginPopup]);
 
   // Set mounted to true only on the client, so certain components don't render during server side rendering
   useEffect(() => {

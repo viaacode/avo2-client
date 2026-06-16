@@ -11,7 +11,6 @@ import { toEmbedCodeDetail } from '../embed-code/helpers/links';
 import { ErrorView } from '../error/views/ErrorView';
 import { queryClient } from '../query-client.ts';
 import { CustomError } from '../shared/helpers/custom-error';
-import { isUuid } from '../shared/helpers/isUuid';
 import { ReactRouter7Adapter } from '../shared/helpers/routing/react-router-v7-adapter-for-use-query-params';
 import { QueryParamProvider } from '../shared/helpers/routing/use-query-params-ssr';
 import { tText } from '../shared/helpers/translate-text';
@@ -26,6 +25,7 @@ import '@meemoo/admin-core-ui/admin.css';
 import '@meemoo/admin-core-ui/client.css';
 import '../App.scss';
 import '../styles/main.scss';
+import { isUuid } from '../shared/helpers/uuid.ts';
 
 const EmbedApp: FC = () => {
   const location = useLocation();

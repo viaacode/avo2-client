@@ -1,6 +1,7 @@
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '../constants/query-keys';
+import { isUuid } from '../helpers/uuid.ts';
 import { BookmarksViewsPlaysService } from '../services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { type BookmarkViewPlayCounts } from '../services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
@@ -15,6 +16,7 @@ export const useGetAssignmentCounts = (
         assignmentUuid as string,
       );
     },
-    enabled: !!assignmentUuid && (options.enabled ?? true),
+    enabled:
+      !!assignmentUuid && isUuid(assignmentUuid) && (options.enabled ?? true),
   });
 };
