@@ -1,11 +1,10 @@
+import { Button, IconName } from '@viaa/avo2-components';
+import { type FC, type ReactNode } from 'react';
 import {
-  Button,
-  IconName,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@viaa/avo2-components';
-import { type FC, type ReactNode } from 'react';
+} from '../Tooltip/Tooltip.tsx';
 
 type EditButtonProps = {
   onClick: () => void;
@@ -37,7 +36,7 @@ export const EditButton: FC<EditButtonProps> = ({
 
   if (disabled) {
     return (
-      <Tooltip position="bottom" id="edit-button--tooltip">
+      <Tooltip position="bottom">
         <TooltipTrigger>{button}</TooltipTrigger>
         <TooltipContent>
           <p>{toolTipText}</p>

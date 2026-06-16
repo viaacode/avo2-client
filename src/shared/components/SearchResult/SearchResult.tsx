@@ -8,18 +8,18 @@ import {
   Spacer,
   TagList,
   type TagOption,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
 } from '@viaa/avo2-components';
-
 import { clsx } from 'clsx';
 import { isNil, noop } from 'es-toolkit';
 import { type FC, type ReactNode, type ReactText } from 'react';
-
 import { defaultRenderBookmarkButton } from '../../helpers/default-render-bookmark-button';
 import { tText } from '../../helpers/translate-text';
 import EducationLevelsTagList from '../EducationLevelsTagList/EducationLevelsTagList';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../Tooltip/Tooltip.tsx';
 
 import './SearchResult.scss';
 import { AvoContentTypeEnglish } from '@viaa/avo2-types';
@@ -108,7 +108,7 @@ export const SearchResult: FC<SearchResultProps> = ({
         <Spacer margin="bottom-small">
           <Flex justify="between" wrap align="baseline">
             <MetaData category={type}>
-              <Tooltip position="right" id="search-result--date-tooltip">
+              <Tooltip position="right">
                 <TooltipTrigger>
                   <MetaDataItem label={date} />
                 </TooltipTrigger>

@@ -1,0 +1,16 @@
+@use "../../../styles/settings/colors" as colors;
+
+.c-react-components-tooltip {
+	&.c-tooltip-component {
+		background-color: colors.$color-gray-50;
+		border: 1px solid colors.$color-gray-400;
+		border-radius: 0.3rem;
+		padding: 0.8rem;
+		color: black;
+		font-size: 1.2rem;
+		line-height: 1.428; // 20px equivalent
+		user-select: none;
+		pointer-events: none;
+		margin: 0 !important;
+	}
+}

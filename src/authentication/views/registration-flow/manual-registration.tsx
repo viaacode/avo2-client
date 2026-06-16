@@ -13,16 +13,16 @@ import {
   TagsInput,
   TextArea,
   TextInput,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
 } from '@viaa/avo2-components';
-
 import type { Requests } from 'node-zendesk';
 import { type FC, useState } from 'react';
 import { useNavigate } from 'react-router';
-
 import { APP_PATH } from '../../../constants';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../../../shared/components/Tooltip/Tooltip.tsx';
 import { ROUTE_PARTS } from '../../../shared/constants/routes';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
@@ -256,11 +256,7 @@ export const ManualRegistration: FC = () => {
               labelFor="email"
             >
               <TextInput id="email *" value={email} onChange={setEmail} />
-              <Tooltip
-                position="bottom"
-                contentClassName="m-email-tooltip"
-                id="tooltip-professional-email-address"
-              >
+              <Tooltip position="bottom" contentClassName="m-email-tooltip">
                 <TooltipTrigger>
                   <span>
                     <Icon

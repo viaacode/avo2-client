@@ -1,4 +1,4 @@
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/client';
+import { SanitizePreset, sanitizeHtml } from '@meemoo/admin-core-ui/client';
 import {
   Box,
   Button,
@@ -40,6 +40,7 @@ import {
   LoadingErrorLoadedComponent,
   type LoadingInfo,
 } from '../../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
 import { ROUTE_PARTS } from '../../../shared/constants/routes';
 import {
   type GetInteractiveTourByIdQuery,
@@ -49,6 +50,8 @@ import { GetInteractiveTourByIdDocument } from '../../../shared/generated/graphq
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { navigate } from '../../../shared/helpers/link';
+import { tHtml } from '../../../shared/helpers/translate-html';
+import { tText } from '../../../shared/helpers/translate-text';
 import { dataService } from '../../../shared/services/data-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
@@ -70,6 +73,7 @@ import {
   MAX_STEP_TEXT_LENGTH,
   MAX_STEP_TITLE_LENGTH,
 } from '../interactive-tour.const';
+import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.routes.ts';
 import { InteractiveTourService } from '../interactive-tour.service';
 import {
   type EditableInteractiveTour,
@@ -80,14 +84,7 @@ import {
   type InteractiveTourState,
   type InteractiveTourStep,
 } from '../interactive-tour.types';
-
 import { InteractiveTourEditStep } from './InteractiveTourEditStep';
-
-import './InteractiveTourEdit.scss';
-import { SeoMetadata } from '../../../shared/components/SeoMetadata/SeoMetadata.tsx';
-import { tHtml } from '../../../shared/helpers/translate-html';
-import { tText } from '../../../shared/helpers/translate-text';
-import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.routes.ts';
 
 const BlockHeading = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({

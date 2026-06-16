@@ -12,9 +12,6 @@ import {
   Spacer,
   Toolbar,
   ToolbarLeft,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
 } from '@viaa/avo2-components';
 import { AvoCoreBlockItemBase } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
@@ -25,6 +22,11 @@ import { CollectionFragmentRichText } from '../../../../collection/components/Co
 import { type EducationLevelId } from '../../../helpers/lom';
 import { tHtml } from '../../../helpers/translate-html';
 import { tText } from '../../../helpers/translate-text';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../../Tooltip/Tooltip.tsx';
 import {
   GET_EDUCATION_LEVEL_DICT,
   GET_EDUCATION_LEVEL_TOOLTIP_DICT,
@@ -65,10 +67,7 @@ export const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
             </BlockHeading>
 
             {educationLevelId && (
-              <Tooltip
-                position="bottom"
-                id="assignment-block-type-search--education-level"
-              >
+              <Tooltip position="bottom">
                 <TooltipTrigger>
                   <Pill>
                     <Icon name={IconName.userStudent} />

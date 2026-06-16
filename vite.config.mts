@@ -42,23 +42,23 @@ export default defineConfig((): UserConfig => {
       port: 8080,
     },
     plugins: [
-		svgrPlugin(),
-		{
-			name: 'transform-env-config',
-			transformIndexHtml(_) {
-				return [
-					{
-						tag: 'script',
-						injectTo: 'head-prepend',
-						attrs: {
-							src: `/env-config.js?build=${Date.now()}`,
-							'data-cookieconsent': 'ignore'
-						}
-					}
-				]
-			}
-		}
-	],
+      svgrPlugin(),
+      {
+        name: 'transform-env-config',
+        transformIndexHtml(_) {
+          return [
+            {
+              tag: 'script',
+              injectTo: 'head-prepend',
+              attrs: {
+                src: `/env-config.js?build=${Date.now()}`,
+                'data-cookieconsent': 'ignore',
+              },
+            },
+          ];
+        },
+      },
+    ],
     ssr: {
       noExternal: [
         // Ensures vite chooses the ESM build (module) of packages and not the common js build (main)

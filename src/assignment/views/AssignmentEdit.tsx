@@ -12,9 +12,6 @@ import {
   MetaData,
   MetaDataItem,
   Spacer,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
 } from '@viaa/avo2-components';
 import {
   AvoAssignmentAssignment,
@@ -64,6 +61,11 @@ import { SeoMetadata } from '../../shared/components/SeoMetadata/SeoMetadata.tsx
 import { ShareModal } from '../../shared/components/ShareModal/ShareModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../../shared/components/Tooltip/Tooltip.tsx';
 import { buildLink } from '../../shared/helpers/build-link';
 import {
   getContributorType,
@@ -78,8 +80,8 @@ import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { useBlocksList } from '../../shared/hooks/use-blocks-list';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
-import { useGetAssignmentCounts } from '../../shared/hooks/useGetAssignmentCounts';
 import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
+import { useGetAssignmentCounts } from '../../shared/hooks/useGetAssignmentCounts';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -927,7 +929,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
         {bookmarks && (
           <MetaDataItem icon={IconName.bookmark} label={bookmarks} />
         )}
-        <Tooltip position="top" id="assignment-edit-tooltip-education-level">
+        <Tooltip position="top">
           <TooltipTrigger>
             <MetaDataItem icon={IconName.userStudent}>
               <Icon name={IconName.userStudent} />

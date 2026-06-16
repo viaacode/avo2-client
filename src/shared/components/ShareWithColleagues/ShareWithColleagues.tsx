@@ -14,9 +14,6 @@ import {
   Spacer,
   Spinner,
   TextInput,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
 } from '@viaa/avo2-components';
 import { AvoAssignmentAssignment, type PermissionName } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
@@ -24,13 +21,17 @@ import { isNil } from 'es-toolkit';
 import { isEmpty, truncate } from 'es-toolkit/compat';
 import { useAtomValue } from 'jotai';
 import { type FC, useMemo, useState } from 'react';
-
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import { validateEmailAddress } from '../../helpers/validation/email';
 import { ConfirmModal } from '../ConfirmModal/ConfirmModal';
 import { ConfirmModalRememberKey } from '../ConfirmModal/ConfirmModal.consts';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../Tooltip/Tooltip.tsx';
 
 import { EditShareUserRightsModal } from './Modals/EditShareUserRightsModal';
 import { GET_EDUCATION_LEVEL_DIFFERENCE_DICT } from './ShareWithColleagues.const';
@@ -274,10 +275,7 @@ export const ShareWithColleagues: FC<ShareWithColleaguesProps> = ({
     return (
       <div className="c-colleague-info-row__action">
         {showConflictIcon && assignment?.education_level_id && (
-          <Tooltip
-            position="top"
-            id="share-with-colleague__education-level-difference-tooltip"
-          >
+          <Tooltip position="top">
             <TooltipTrigger>
               <button className="c-icon-button u-text-muted">
                 <Icon name={IconName.info} />

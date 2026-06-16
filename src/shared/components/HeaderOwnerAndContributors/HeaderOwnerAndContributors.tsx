@@ -1,20 +1,16 @@
-import {
-  Avatar,
-  Flex,
-  Spacer,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@viaa/avo2-components';
-
+import { Avatar, Flex, Spacer } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactNode } from 'react';
-
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { getFullName } from '../../helpers/formatters/avatar';
 import { tHtml } from '../../helpers/translate-html';
 import { tText } from '../../helpers/translate-text';
 import { ContributorInfoRight } from '../ShareWithColleagues/ShareWithColleagues.types';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../Tooltip/Tooltip.tsx';
 
 import './HeaderOwnerAndContributors.scss';
 import {
@@ -66,10 +62,7 @@ export const HeaderOwnerAndContributors: FC<
       }
 
       return (
-        <Tooltip
-          position="right"
-          id="header-owner-and-contributors__count-others-tooltip"
-        >
+        <Tooltip position="right">
           <TooltipTrigger>
             <p>
               {couplingWord}
