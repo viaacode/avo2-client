@@ -277,13 +277,7 @@ export const InteractiveTourEdit: FC = () => {
   ): Promise<EditableInteractiveTour> => {
     const clonedTour = cloneDeep(tour);
     clonedTour.steps.forEach((step: EditableStep) => {
-      if (step.contentState) {
-        step.content = sanitizeHtml(
-          step.contentState.toHTML(),
-          SanitizePreset.link,
-        );
-        delete step.contentState;
-      }
+      step.content = sanitizeHtml(step.content || '', SanitizePreset.link);
     });
     return clonedTour;
   };

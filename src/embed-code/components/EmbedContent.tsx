@@ -1,6 +1,6 @@
 import {
   type RichTextEditorControl,
-  RichTextEditorWithInternalState,
+  RichTextEditor,
 } from '@meemoo/react-components';
 import {
   Alert,
@@ -314,7 +314,7 @@ export const EmbedContent: FC<EmbedProps> = ({
         'fullscreen',
       ];
       return (
-        <RichTextEditorWithInternalState
+        <RichTextEditor
           controls={controls}
           enabledHeadings={['h3', 'h4', 'normal']}
           value={customDescription || ''}

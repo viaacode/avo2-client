@@ -34,7 +34,6 @@ export const InteractiveTourAdd: FC<InteractiveTourAddProps> = ({
     steps.splice(index, 0, {
       title: '',
       content: '',
-      contentState: undefined,
       target: '',
       id: generateRandomId(),
     });
