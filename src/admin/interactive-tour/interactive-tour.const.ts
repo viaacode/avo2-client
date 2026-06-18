@@ -68,7 +68,6 @@ export function getInitialInteractiveTour(): Omit<
         target: '',
         title: '',
         content: '',
-        contentState: undefined,
         id: generateRandomId(),
       },
     ],

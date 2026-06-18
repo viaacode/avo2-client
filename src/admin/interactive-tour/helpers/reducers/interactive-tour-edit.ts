@@ -1,5 +1,3 @@
-import { type RichEditorState } from '@meemoo/react-components';
-
 import { AvoInteractiveTourStep } from '@viaa/avo2-types';
 import { cloneDeep } from 'es-toolkit';
 import { type Draft, produce } from 'immer';
@@ -16,8 +14,8 @@ import {
 type StepPropUpdateAction = {
   type: InteractiveTourEditActionType.UPDATE_STEP_PROP;
   stepIndex: number;
-  stepProp: keyof AvoInteractiveTourStep | 'contentState';
-  stepPropValue: ValueOf<AvoInteractiveTourStep> | RichEditorState;
+  stepProp: keyof AvoInteractiveTourStep;
+  stepPropValue: ValueOf<AvoInteractiveTourStep>;
 };
 
 type StepSwapAction = {
