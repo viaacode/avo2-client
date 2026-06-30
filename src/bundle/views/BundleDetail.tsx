@@ -33,7 +33,7 @@ import {
   PermissionName,
 } from '@viaa/avo2-types';
 import { clsx } from 'clsx';
-import { compact, noop } from 'es-toolkit';
+import { compact } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useState } from 'react';
 import { useLoaderData, useNavigate, useParams } from 'react-router';
@@ -155,7 +155,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
   const [viewCountsById, setViewCountsById] = useState<{
     [id: string]: number;
   }>({});
-  const { data: bookmarkViewPlayCounts } = useGetCollectionCounts(
+  const { data: bookmarkViewPlayCounts, refetch: reloadBookmarkViewPlayCounts } = useGetCollectionCounts(
     bundleId as string | undefined,
   );
   const { data: isBookmarked = false } = useGetIsCollectionBookmarked(
@@ -256,7 +256,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
         'bundle',
         bundleId,
         commonUser,
-      ).then(noop);
+      ).then(() =>reloadBookmarkViewPlayCounts());
       trackEvents(
         {
           object: bundleId,

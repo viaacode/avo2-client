@@ -169,7 +169,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
   const [relatedAssignments, setRelatedAssignments] = useState<
     AvoSearchResultItem[] | null
   >(null);
-  const { data: bookmarkViewCounts } = useGetAssignmentCounts(
+  const { data: bookmarkViewCounts, refetch: reloadBookmarkViewCounts } = useGetAssignmentCounts(
     assignment?.id as string | undefined,
   );
   const { data: isBookmarked = false } = useGetIsAssignmentBookmarked(
@@ -481,7 +481,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
       'assignment',
       assignment.id,
       commonUser,
-    ).then(noop);
+    ).then(() => reloadBookmarkViewCounts());
     trackEvents(
       {
         object: assignment?.id,

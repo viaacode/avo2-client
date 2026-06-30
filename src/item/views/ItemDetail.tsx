@@ -197,7 +197,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   const [relatedItems, setRelatedItems] = useState<
     AvoSearchResultItem[] | null
   >(null);
-  const { data: bookmarkViewPlayCounts } = useGetItemCounts(
+  const { data: bookmarkViewPlayCounts, refetch: reloadBookmarkViewPlayCounts } = useGetItemCounts(
     (item as any)?.uid as string | undefined,
   );
   const { data: isBookmarked = false } = useGetIsItemBookmarked(
@@ -333,7 +333,8 @@ export const ItemDetail: FC<ItemDetailProps> = ({
         'item',
         itemObj.uid,
         commonUser,
-      ).then(noop);
+      ).then(() => reloadBookmarkViewPlayCounts());
+
       trackEvents(
         {
           object: itemId,
