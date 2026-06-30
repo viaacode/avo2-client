@@ -257,7 +257,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
   });
-  const { data: bookmarkViewPlayCounts } = useGetCollectionCounts(
+  const { data: bookmarkViewPlayCounts, refetch: reloadBookmarkViewPlayCounts } = useGetCollectionCounts(
     collectionId as string | undefined,
     {
       enabled: !!commonUser && !showLoginPopup,
@@ -363,7 +363,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
         'collection',
         collectionId,
         commonUser,
-      ).then(noop);
+      ).then(() => reloadBookmarkViewPlayCounts());
       trackEvents(
         {
           object: collectionId,
