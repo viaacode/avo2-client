@@ -195,7 +195,13 @@ async function startPrdServer() {
         // Only HTML page navigations
         // Images and other assets can be loaded directly from the file system
         const accept = req.headers.accept ?? '';
-        if (!accept.includes('text/html')) {
+
+        const isHtml =
+          accept.includes('text/html') ||
+          accept.includes('application/xhtml+xml') ||
+          accept.includes('*/*');
+
+        if (!isHtml) {
           return next();
         }
 
