@@ -1597,7 +1597,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
           </>
         )}
 
-        {!!collectionId && !!collection && isMobileWidth() && (
+        {mounted && !!collectionId && !!collection && isMobileWidth() && (
           <ShareModal
             title={tText(
               'collection/views/collection-detail___deel-deze-collectie-met-collegas',
@@ -1713,7 +1713,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
             views={String(bookmarkViewPlayCounts?.viewCount || 0)}
           >
             <HeaderTopRowLeft>{renderHeaderEducationLevel()}</HeaderTopRowLeft>
-            {!showLoginPopup && (
+            {mounted && !showLoginPopup && (
               <HeaderMiddleRowRight>
                 {isMobileWidth()
                   ? renderHeaderButtonsMobile()
@@ -1772,7 +1772,7 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
               title: collection?.title || '',
             },
           )}
-          isVisible={!!inviteToken && !!collection}
+          isVisible={mounted && !!inviteToken && !!collection}
           actionButtonProps={{
             label: tText('collection/views/collection-detail___toevoegen'),
             onClick: onAcceptShareCollection,

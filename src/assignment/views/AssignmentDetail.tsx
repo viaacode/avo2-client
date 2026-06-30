@@ -920,11 +920,13 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           views={String(bookmarkViewCounts?.viewCount || 0)}
         >
           <HeaderTopRowLeft>{renderHeaderEducationLevel()}</HeaderTopRowLeft>
-          <HeaderMiddleRowRight>
-            {isMobileWidth()
-              ? renderHeaderButtonsMobile()
-              : renderHeaderButtons()}
-          </HeaderMiddleRowRight>
+          {mounted && (
+            <HeaderMiddleRowRight>
+              {isMobileWidth()
+                ? renderHeaderButtonsMobile()
+                : renderHeaderButtons()}
+            </HeaderMiddleRowRight>
+          )}
           <HeaderBottomRowLeft>
             <HeaderOwnerAndContributors subject={assignment} />
           </HeaderBottomRowLeft>
@@ -1150,7 +1152,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
           />
         )}
 
-        {assignment && isMobileWidth() && (
+        {mounted && assignment && isMobileWidth() && (
           <ShareModal
             title={tText(
               'assignment/views/assignment-detail___deel-deze-opdracht-met-collegas',
@@ -1288,7 +1290,7 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
                   title: assignment?.title || '',
                 },
               )}
-              isVisible={!!inviteToken}
+              isVisible={mounted && !!inviteToken}
               actionButtonProps={{
                 label: tText('assignment/views/assignment-detail___toevoegen'),
                 onClick: onAcceptShareAssignment,
