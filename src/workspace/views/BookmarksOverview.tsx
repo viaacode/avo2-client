@@ -164,7 +164,7 @@ export const BookmarksOverview: FC<BookmarksOverviewProps> = ({
       }
       await BookmarksViewsPlaysService.toggleBookmark(
         bookmarkToDelete.contentId,
-        true,
+        false,
         CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[bookmarkToDelete.contentType],
         commonUser as AvoUserCommonUser,
       );
