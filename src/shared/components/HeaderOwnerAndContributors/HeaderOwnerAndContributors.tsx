@@ -1,6 +1,6 @@
 import { Avatar, Flex, Spacer } from '@viaa/avo2-components';
 import { useAtomValue } from 'jotai';
-import { type FC, type ReactNode } from 'react';
+import { type FC, type ReactNode, useEffect, useState } from 'react';
 import { commonUserAtom } from '../../../authentication/authentication.store';
 import { getFullName } from '../../helpers/formatters/avatar';
 import { tHtml } from '../../helpers/translate-html';
@@ -27,6 +27,8 @@ type HeaderOwnerAndContributorsProps = {
 export const HeaderOwnerAndContributors: FC<
   HeaderOwnerAndContributorsProps
 > = ({ subject }) => {
+  const [mounted, setMounted] = useState(false);
+
   const commonUser = useAtomValue(commonUserAtom);
   const { contributors, profile: owner } = subject;
   const isOwner = owner?.id === commonUser?.profileId;
@@ -38,6 +40,11 @@ export const HeaderOwnerAndContributors: FC<
     (contrib) =>
       !!contrib.profile_id && !(contrib.rights === ContributorInfoRight.VIEWER),
   );
+
+  // Set mounted to true only on the client, so certain components don't render during server side rendering
+  useEffect(() => {
+    setMounted(true); // ssr
+  }, []);
 
   const renderOwner = () => {
     const organisation = owner?.organisation?.name
@@ -52,7 +59,7 @@ export const HeaderOwnerAndContributors: FC<
       const couplingWord = ` ${tText(
         'shared/components/header-owner-and-contributors/header-owner-and-contributors___en',
       )} `;
-      if (nonPendingContributors.length === 1) {
+      if (nonPendingContributors.length === 1 || !mounted) {
         return (
           <span>
             {couplingWord}
@@ -79,7 +86,10 @@ export const HeaderOwnerAndContributors: FC<
             <p>
               {nonPendingContributors
                 .map((contributor) => {
-                  return contributor.profile?.full_name;
+                  return (
+                    contributor.profile?.full_name ||
+                    contributor.profile?.user?.full_name
+                  );
                 })
                 .join(', ')}
             </p>
