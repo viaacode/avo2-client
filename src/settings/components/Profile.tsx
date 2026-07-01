@@ -26,11 +26,9 @@ import {
 } from '@viaa/avo2-types';
 import { compact, isNil } from 'es-toolkit';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { stringifyUrl } from 'query-string';
 import { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
-import { SERVER_LOGOUT_PAGE } from '../../authentication/authentication.const';
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { fetchLoginStateAtom } from '../../authentication/authentication.store.actions';
 import { SearchFilter } from '../../search/search.const';
@@ -40,7 +38,6 @@ import { FileUpload } from '../../shared/components/FileUpload/FileUpload';
 import { FullPageSpinner } from '../../shared/components/FullPageSpinner/FullPageSpinner';
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { CustomError } from '../../shared/helpers/custom-error';
-import { getEnv, getKeycloackEnv } from '../../shared/helpers/env';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { groupLomLinks, groupLoms } from '../../shared/helpers/lom';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
@@ -484,22 +481,6 @@ export const Profile: FC = () => {
     }
   };
 
-  const generateEditProfileInfoLink = () => {
-    return stringifyUrl({
-      url:
-        getKeycloackEnv('KEYCLOAK_ACCOUNT_EDIT_URL', 'SSUM_ACCOUNT_EDIT_URL') ||
-        '',
-      query: {
-        redirect_to: stringifyUrl({
-          url: getEnv('PROXY_URL') + '/' + SERVER_LOGOUT_PAGE,
-          query: {
-            returnToUrl: window.location.href,
-          },
-        }),
-      },
-    });
-  };
-
   const renderProfilePage = () => {
     return (
       <Container mode="vertical" className="p-profile-page">
@@ -507,131 +488,119 @@ export const Profile: FC = () => {
           <Grid>
             <Column size="3-7">
               <Form type="standard">
-                <>
-                  <div className="profile-actions">
+                <FormGroup
+                  label={tText('settings/components/account___voornaam')}
+                  labelFor="first_name"
+                >
+                  {firstName}
+                </FormGroup>
+                <FormGroup
+                  label={tText('settings/components/account___achternaam')}
+                  labelFor="last_name"
+                >
+                  {lastName}
+                </FormGroup>
+                {!isPupil && (
+                  <>
                     <FormGroup
-                      label={tText('settings/components/account___voornaam')}
-                      labelFor="first_name"
+                      label={tText('settings/components/account___email')}
+                      labelFor="email"
                     >
-                      {firstName}
+                      {email}
                     </FormGroup>
-                    <a href={generateEditProfileInfoLink()}>
-                      <Button
-                        type="secondary"
+                    <FormGroup
+                      label={tText('settings/components/profile___functie')}
+                      labelFor="title"
+                    >
+                      <TextInput
+                        id="title"
+                        placeholder={tText(
+                          'settings/components/profile___bv-leerkracht-basis-onderwijs',
+                        )}
+                        value={title || ''}
+                        onChange={setTitle}
+                      />
+                    </FormGroup>
+                    {!commonUser?.organisation && commonUser?.profileId && (
+                      <FormGroup
                         label={tText(
-                          'settings/components/account___wijzig-gegevens',
+                          'settings/components/profile___profielfoto',
                         )}
-                      />
-                    </a>
-                  </div>
-                  <FormGroup
-                    label={tText('settings/components/account___achternaam')}
-                    labelFor="last_name"
-                  >
-                    {lastName}
-                  </FormGroup>
-                  {!isPupil && (
-                    <>
-                      <FormGroup
-                        label={tText('settings/components/account___email')}
-                        labelFor="email"
+                        labelFor="profilePicture"
                       >
-                        {email}
-                      </FormGroup>
-                      <FormGroup
-                        label={tText('settings/components/profile___functie')}
-                        labelFor="title"
-                      >
-                        <TextInput
-                          id="title"
-                          placeholder={tText(
-                            'settings/components/profile___bv-leerkracht-basis-onderwijs',
-                          )}
-                          value={title || ''}
-                          onChange={setTitle}
-                        />
-                      </FormGroup>
-                      {!commonUser?.organisation && commonUser?.profileId && (
-                        <FormGroup
+                        <FileUpload
                           label={tText(
-                            'settings/components/profile___profielfoto',
+                            'settings/components/profile___upload-een-profiel-foto',
                           )}
-                          labelFor="profilePicture"
-                        >
-                          <FileUpload
-                            label={tText(
-                              'settings/components/profile___upload-een-profiel-foto',
-                            )}
-                            urls={compact([avatar])}
-                            allowMulti={false}
-                            assetType={AvoFileUploadAssetType.PROFILE_AVATAR}
-                            ownerId={commonUser?.profileId}
-                            onChange={(urls) => setAvatar(urls[0])}
-                          />
-                        </FormGroup>
-                      )}
-                      {!!commonUser?.organisation?.logo_url && (
-                        <div
-                          className="c-logo-preview"
-                          style={{
-                            backgroundImage: `url(${commonUser?.organisation?.logo_url})`,
-                          }}
-                        />
-                      )}
-                      <FormGroup
-                        label={tText('settings/components/profile___bio')}
-                        labelFor="bio"
-                      >
-                        <TextArea
-                          name="bio"
-                          id="bio"
-                          height="medium"
-                          placeholder={tText(
-                            'settings/components/profile___een-korte-beschrijving-van-jezelf',
-                          )}
-                          value={bio || ''}
-                          onChange={setBio}
+                          urls={compact([avatar])}
+                          allowMulti={false}
+                          assetType={AvoFileUploadAssetType.PROFILE_AVATAR}
+                          ownerId={commonUser?.profileId}
+                          onChange={(urls) => setAvatar(urls[0])}
                         />
                       </FormGroup>
-
-                      {/* Show readonly education on profile page */}
-                      <CommonMetadata
-                        enabledMetaData={
-                          uiPermissions?.EDUCATION_LEVEL?.VIEW
-                            ? [SearchFilter.educationLevel]
-                            : []
-                        }
-                        subject={{
-                          loms: selectedLoms.map(
-                            (lomField) =>
-                              ({
-                                lom: lomField,
-                              }) as AvoLomLom,
-                          ),
-                          id: commonUser.profileId,
+                    )}
+                    {!!commonUser?.organisation?.logo_url && (
+                      <div
+                        className="c-logo-preview"
+                        style={{
+                          backgroundImage: `url(${commonUser?.organisation?.logo_url})`,
                         }}
-                        renderSearchLink={(content) => content}
                       />
-                      <LomFieldsInput
-                        loms={selectedLoms || []}
-                        onChange={(newLoms) => setSelectedLoms(newLoms)}
-                        subjectsPlaceholder={tText(
-                          'settings/components/profile___selecteer-de-vakken-die-je-geeft',
+                    )}
+                    <FormGroup
+                      label={tText('settings/components/profile___bio')}
+                      labelFor="bio"
+                    >
+                      <TextArea
+                        name="bio"
+                        id="bio"
+                        height="medium"
+                        placeholder={tText(
+                          'settings/components/profile___een-korte-beschrijving-van-jezelf',
                         )}
-                        themesPlaceholder={tText(
-                          'settings/components/profile___selecteer-je-themas',
-                        )}
-                        showEducation={false}
-                        showEducationDegrees={
-                          uiPermissions?.EDUCATION_LEVEL?.VIEW
-                        }
-                        isThemesRequired={uiPermissions?.THEME?.REQUIRED}
-                        isSubjectsRequired={uiPermissions?.SUBJECTS?.REQUIRED}
-                        limitDegreesByAlreadySelectedLevels
+                        value={bio || ''}
+                        onChange={setBio}
                       />
-                    </>
-                  )}
-                </>
+                    </FormGroup>
+
+                    {/* Show readonly education on profile page */}
+                    <CommonMetadata
+                      enabledMetaData={
+                        uiPermissions?.EDUCATION_LEVEL?.VIEW
+                          ? [SearchFilter.educationLevel]
+                          : []
+                      }
+                      subject={{
+                        loms: selectedLoms.map(
+                          (lomField) =>
+                            ({
+                              lom: lomField,
+                            }) as AvoLomLom,
+                        ),
+                        id: commonUser.profileId,
+                      }}
+                      renderSearchLink={(content) => content}
+                    />
+                    <LomFieldsInput
+                      loms={selectedLoms || []}
+                      onChange={(newLoms) => setSelectedLoms(newLoms)}
+                      subjectsPlaceholder={tText(
+                        'settings/components/profile___selecteer-de-vakken-die-je-geeft',
+                      )}
+                      themesPlaceholder={tText(
+                        'settings/components/profile___selecteer-je-themas',
+                      )}
+                      showEducation={false}
+                      showEducationDegrees={
+                        uiPermissions?.EDUCATION_LEVEL?.VIEW
+                      }
+                      isThemesRequired={uiPermissions?.THEME?.REQUIRED}
+                      isSubjectsRequired={uiPermissions?.SUBJECTS?.REQUIRED}
+                      limitDegreesByAlreadySelectedLevels
+                    />
+                  </>
+                )}
 
                 {renderFieldVisibleOrRequired(
                   'EDUCATIONAL_ORGANISATION',
