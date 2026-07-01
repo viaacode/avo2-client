@@ -10,7 +10,18 @@ export const LoginOptionsTabs = {
 };
 
 export function getPreferredLoginOption() {
-  if (window.location.href.includes('/' + ROUTE_PARTS.assignments + '/')) {
+  const urlParams = new URLSearchParams(window.location.search);
+  const returnToUrl = urlParams.get('returnToUrl') || ''; // When redirected to /registreer-of-login
+
+  const includesAssignments = `/${ROUTE_PARTS.assignments}/`;
+  const includesQuicklane = `/${ROUTE_PARTS.quickLane}/`;
+
+  if (
+    window.location.href.includes(includesAssignments) ||
+    window.location.href.includes(includesQuicklane) ||
+    returnToUrl.includes(includesAssignments) ||
+    returnToUrl.includes(includesQuicklane)
+  ) {
     return (
       localStorage?.getItem(LOGIN_OPTIONS_PREFERRED_TAB_LOCAL_STORAGE_KEY) ||
       LoginOptionsTabs.PUPIL
