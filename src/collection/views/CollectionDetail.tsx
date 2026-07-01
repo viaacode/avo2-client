@@ -257,12 +257,12 @@ export const CollectionDetail: FC<CollectionDetailProps> = ({
   const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({
     state: 'loading',
   });
-  const { data: bookmarkViewPlayCounts, refetch: reloadBookmarkViewPlayCounts } = useGetCollectionCounts(
-    collectionId as string | undefined,
-    {
-      enabled: !!commonUser && !showLoginPopup,
-    },
-  );
+  const {
+    data: bookmarkViewPlayCounts,
+    refetch: reloadBookmarkViewPlayCounts,
+  } = useGetCollectionCounts(collectionId as string | undefined, {
+    enabled: !!commonUser && !showLoginPopup,
+  });
   const { data: isBookmarked = false } = useGetIsCollectionBookmarked(
     collectionId as string | undefined,
     {

@@ -197,9 +197,10 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   const [relatedItems, setRelatedItems] = useState<
     AvoSearchResultItem[] | null
   >(null);
-  const { data: bookmarkViewPlayCounts, refetch: reloadBookmarkViewPlayCounts } = useGetItemCounts(
-    (item as any)?.uid as string | undefined,
-  );
+  const {
+    data: bookmarkViewPlayCounts,
+    refetch: reloadBookmarkViewPlayCounts,
+  } = useGetItemCounts((item as any)?.uid as string | undefined);
   const { data: isBookmarked = false } = useGetIsItemBookmarked(
     (item as any)?.uid as string | undefined,
   );

@@ -169,9 +169,8 @@ export const AssignmentDetail: FC<AssignmentDetailProps> = ({
   const [relatedAssignments, setRelatedAssignments] = useState<
     AvoSearchResultItem[] | null
   >(null);
-  const { data: bookmarkViewCounts, refetch: reloadBookmarkViewCounts } = useGetAssignmentCounts(
-    assignment?.id as string | undefined,
-  );
+  const { data: bookmarkViewCounts, refetch: reloadBookmarkViewCounts } =
+    useGetAssignmentCounts(assignment?.id as string | undefined);
   const { data: isBookmarked = false } = useGetIsAssignmentBookmarked(
     assignment?.id as string | undefined,
   );

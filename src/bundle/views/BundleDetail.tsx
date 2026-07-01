@@ -155,9 +155,10 @@ export const BundleDetail: FC<BundleDetailProps> = ({
   const [viewCountsById, setViewCountsById] = useState<{
     [id: string]: number;
   }>({});
-  const { data: bookmarkViewPlayCounts, refetch: reloadBookmarkViewPlayCounts } = useGetCollectionCounts(
-    bundleId as string | undefined,
-  );
+  const {
+    data: bookmarkViewPlayCounts,
+    refetch: reloadBookmarkViewPlayCounts,
+  } = useGetCollectionCounts(bundleId as string | undefined);
   const { data: isBookmarked = false } = useGetIsCollectionBookmarked(
     bundleId as string | undefined,
   );
@@ -256,7 +257,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
         'bundle',
         bundleId,
         commonUser,
-      ).then(() =>reloadBookmarkViewPlayCounts());
+      ).then(() => reloadBookmarkViewPlayCounts());
       trackEvents(
         {
           object: bundleId,
