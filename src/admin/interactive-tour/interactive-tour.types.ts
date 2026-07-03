@@ -1,5 +1,4 @@
 import { type FilterableTableState } from '@meemoo/admin-core-ui/admin';
-import { type RichEditorState } from '@meemoo/react-components';
 import type { GetInteractiveToursQuery } from '../../shared/generated/graphql-db-operations.ts';
 import { App_Interactive_Tour } from '../../shared/generated/graphql-db-types.ts';
 import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
@@ -51,9 +50,7 @@ export type InteractiveTourStep = Exclude<
   null | undefined
 >;
 
-export type EditableStep = InteractiveTourStep & {
-  contentState: RichEditorState | undefined;
-};
+export type EditableStep = InteractiveTourStep;
 
 export interface InteractiveTourState {
   currentInteractiveTour: EditableInteractiveTour | null;

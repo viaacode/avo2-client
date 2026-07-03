@@ -204,7 +204,7 @@ export const AssignmentBlockEditItem: FC<
               label: tText(
                 'assignment/views/assignment-edit___beschrijving-fragment',
               ),
-              initialHtml: convertToHtml(description),
+              value: convertToHtml(description),
               controls: RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
               enabledHeadings: ['h3', 'h4', 'normal'],
               disabled:
@@ -213,7 +213,7 @@ export const AssignmentBlockEditItem: FC<
               onChange: (value) =>
                 setBlock({
                   ...editableBlock,
-                  ownDescription: value.toHTML(),
+                  ownDescription: value,
                 }),
             }
           : undefined

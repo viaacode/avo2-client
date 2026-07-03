@@ -1,4 +1,3 @@
-import { type RichEditorState } from '@meemoo/react-components';
 import {
   Button,
   Column,
@@ -57,7 +56,7 @@ export const CollectionOrBundleEditPublicationDetails: FC<
   const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] =
     useState<boolean>(false);
   const [descriptionLongEditorState, setDescriptionLongEditorState] = useState<
-    RichEditorState | undefined
+    string | undefined
   >(undefined);
 
   const isCollection = type === 'collection';
@@ -78,9 +77,7 @@ export const CollectionOrBundleEditPublicationDetails: FC<
       type: 'UPDATE_COLLECTION_PROP',
       collectionProp: 'description_long',
       collectionPropValue: sanitizeHtml(
-        descriptionLongEditorState
-          ? descriptionLongEditorState.toHTML()
-          : collection.description_long || '',
+        descriptionLongEditorState ?? collection.description_long ?? '',
         SanitizePreset.link,
       ),
     });
@@ -130,9 +127,9 @@ export const CollectionOrBundleEditPublicationDetails: FC<
                       labelFor="longDescriptionId"
                       error={getValidationFeedbackForDescription(
                         stripHtml(
-                          descriptionLongEditorState
-                            ? descriptionLongEditorState.toHTML()
-                            : collection.description_long || '',
+                          descriptionLongEditorState ??
+                            collection.description_long ??
+                            '',
                         ),
                         MAX_LONG_DESCRIPTION_LENGTH,
                         (count) => {
@@ -153,17 +150,16 @@ export const CollectionOrBundleEditPublicationDetails: FC<
                             ? RICH_TEXT_EDITOR_OPTIONS_DEFAULT_NO_TITLES
                             : RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION
                         }
-                        initialHtml={collection.description_long || ''}
-                        state={descriptionLongEditorState}
+                        value={descriptionLongEditorState ?? collection.description_long ?? ''}
                         onChange={setDescriptionLongEditorState}
                         onBlur={handleBlurRichTextEditor}
                       />
                       <label>
                         {getValidationFeedbackForDescription(
                           stripHtml(
-                            descriptionLongEditorState
-                              ? descriptionLongEditorState.toHTML()
-                              : collection.description_long || '',
+                            descriptionLongEditorState ??
+                              collection.description_long ??
+                              '',
                           ),
                           MAX_LONG_DESCRIPTION_LENGTH,
                           (count) =>

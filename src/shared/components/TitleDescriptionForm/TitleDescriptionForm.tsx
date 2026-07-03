@@ -1,4 +1,3 @@
-import { type RichEditorState } from '@meemoo/react-components';
 import {
   type DefaultProps,
   Form,
@@ -37,14 +36,14 @@ export const TitleDescriptionForm: FC<TitleDescriptionFormProps> = (props) => {
   const { id, style, className } = props;
 
   const titleValue = props.title?.value;
-  const descriptionInitialHtml = props.description?.initialHtml;
+  const descriptionValue = props.description?.value;
 
   const wrapperClasses = [
     'c-title-description-form',
     ...(className ? [className] : []),
   ];
 
-  const [description, setDescription] = useState<RichEditorState | undefined>();
+  const [description, setDescription] = useState<string | undefined>();
   const [title, setTitle] = useState<string | undefined>();
 
   const getId = (key: string | number) => `${id}--${key}`;
@@ -54,10 +53,9 @@ export const TitleDescriptionForm: FC<TitleDescriptionFormProps> = (props) => {
     setTitle(titleValue);
   }, [titleValue]);
 
-  // See RichTextEditorInternal.tsx:162
   useEffect(() => {
     setDescription(undefined);
-  }, [descriptionInitialHtml]);
+  }, [descriptionValue]);
 
   return (
     <Form className={wrapperClasses.join(' ')} style={style}>
@@ -83,11 +81,9 @@ export const TitleDescriptionForm: FC<TitleDescriptionFormProps> = (props) => {
         >
           <RichTextEditorWrapper
             {...props.description}
-            state={description}
+            value={description ?? (props.description.value ?? '')}
             onChange={setDescription}
-            onBlur={() =>
-              props.description?.onChange?.(description as RichEditorState)
-            }
+            onBlur={() => props.description?.onChange?.(description || '')}
             id={getId(TitleDescriptionFormIds.description)}
           />
         </FormGroup>

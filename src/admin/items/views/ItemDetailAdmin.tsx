@@ -1,6 +1,5 @@
 import { toggleSortOrder } from '@meemoo/admin-core-ui/admin';
 import { SanitizePreset, sanitizeHtml } from '@meemoo/admin-core-ui/client';
-import { type RichEditorState } from '@meemoo/react-components';
 import {
   Button,
   ButtonToolbar,
@@ -123,7 +122,7 @@ export const ItemDetailAdmin: FC = () => {
     useState<boolean>(false);
 
   const [itemSeoImagePath, setItemSeoImagePath] = useState<string | null>();
-  const [noteEditorState, setNoteEditorState] = useState<RichEditorState>();
+  const [noteEditorState, setNoteEditorState] = useState<string>();
 
   const [activeTab, setActiveTab, tabs] = useTabs(
     GET_TABS(),
@@ -247,8 +246,7 @@ export const ItemDetailAdmin: FC = () => {
       }
       const note =
         sanitizeHtml(
-          (noteEditorState ? noteEditorState.toHTML() : (item as any).note) ||
-            '',
+          (noteEditorState || (item as any).note) || '',
           SanitizePreset.link,
         ) || null;
       await ItemsService.updateItemByUuid(
@@ -492,8 +490,7 @@ export const ItemDetailAdmin: FC = () => {
               id="note"
               controls={RICH_TEXT_EDITOR_OPTIONS_FULL}
               fileType={AvoFileUploadAssetType.ITEM_NOTE_IMAGE}
-              initialHtml={item?.note || undefined}
-              state={noteEditorState}
+              value={noteEditorState ?? (item?.note || undefined)}
               onChange={setNoteEditorState}
             />
           </div>

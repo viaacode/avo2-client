@@ -1,4 +1,3 @@
-import { type RichEditorState } from '@meemoo/react-components';
 import {
   type DefaultProps,
   Form,
@@ -61,15 +60,9 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = ({
 
   const getId = (key: string | number) => `${id}--${key}`;
 
-  /**
-   * We keep track of temp fields here, so we can trigger onChange events onBlur, which improves perceived performance
-   * Ideally we would like to move away from the braft rich text editor causing this lag and use something like:
-   * https://github.com/ianstormtaylor/slate
-   */
+  // We keep track of temp fields here, so we can trigger onChange events onBlur, which improves perceived performance
   const [tempTitle, setTempTitle] = useState<string | undefined>();
-  const [tempDescription, setTempDescription] = useState<
-    RichEditorState | undefined
-  >();
+  const [tempDescription, setTempDescription] = useState<string | undefined>();
 
   /**
    * Synchronise the temp fields with incoming values
@@ -78,7 +71,7 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = ({
   // See RichTextEditorInternal.tsx:162
   useEffect(() => {
     setTempDescription(undefined);
-  }, [description?.initialHtml]);
+  }, [description?.value]);
 
   useEffect(() => {
     setTempTitle(title?.value);
@@ -139,11 +132,9 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = ({
             >
               <RichTextEditorWrapper
                 {...description}
-                state={tempDescription}
+                value={tempDescription ?? (description?.value ?? '')}
                 onChange={setTempDescription}
-                onBlur={() =>
-                  description?.onChange?.(tempDescription as RichEditorState)
-                }
+                onBlur={() => description?.onChange?.(tempDescription || '')}
                 id={getId(CustomiseItemFormIds.description)}
               />
 

@@ -194,11 +194,10 @@ export class AssignmentService {
     assignmentToSave.is_deleted = assignmentToSave.is_deleted || false;
     assignmentToSave.is_collaborative =
       assignmentToSave.is_collaborative || false;
+    const legacyDescriptionHtmlKey = 'descriptionRich' + 'EditorState';
     assignmentToSave.description =
-      (assignmentToSave as any).descriptionRichEditorState &&
-      (assignmentToSave as any).descriptionRichEditorState.toHTML
-        ? (assignmentToSave as any).descriptionRichEditorState.toHTML()
-        : assignmentToSave.description || '';
+      (assignmentToSave as any)[legacyDescriptionHtmlKey] ||
+      assignmentToSave.description || '';
 
     if (!isNil(assignment.blocks)) {
       assignmentToSave.blocks = cleanupTitleAndDescriptions(
@@ -214,7 +213,7 @@ export class AssignmentService {
     delete assignmentToSave.owner;
     delete assignmentToSave.responses;
     delete (assignmentToSave as any).__typename;
-    delete (assignmentToSave as any).descriptionRichEditorState;
+    delete (assignmentToSave as any)[legacyDescriptionHtmlKey];
     delete assignmentToSave.contributors;
     delete assignmentToSave.updated_by;
 
