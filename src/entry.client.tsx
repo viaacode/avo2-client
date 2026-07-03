@@ -1,6 +1,7 @@
 import { setDefaultOptions } from 'date-fns';
 import { nlBE } from 'date-fns/locale';
 import { Provider } from 'jotai';
+import { HelmetProvider } from 'react-helmet-async';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import ALL_APP_ROUTES from './routes.ts';
@@ -41,9 +42,11 @@ async function hydrate() {
   const container = document.getElementById('root') as HTMLElement;
 
   const app = (
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
+    <HelmetProvider>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
+    </HelmetProvider>
   );
 
   if (hasHydrationData && hasSSRContent) {

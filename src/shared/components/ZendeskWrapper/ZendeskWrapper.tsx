@@ -1,8 +1,12 @@
 import { type FC, useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
-import Zendesk from 'react-zendesk';
+import ZendeskImport from 'react-zendesk';
 import { APP_PATH } from '../../../constants.ts';
 import { getEnv } from '../../helpers/env';
+
+// react-zendesk is a CJS module; Vite bundles it as `export default require_lib()`
+// which wraps the exports object, so the actual component is at .default
+const Zendesk = (ZendeskImport as any).default ?? ZendeskImport;
 
 declare const ResizeObserver: any;
 

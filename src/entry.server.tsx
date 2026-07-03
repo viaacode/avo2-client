@@ -2,7 +2,7 @@
 // @ts-ignore
 import * as React from 'react';
 import { renderToString } from 'react-dom/server';
-import { Helmet } from 'react-helmet';
+import { HelmetProvider, type HelmetServerState } from 'react-helmet-async';
 import { Provider } from 'jotai';
 import {
   createStaticHandler,
@@ -35,14 +35,17 @@ export async function render(
     let router = createStaticRouter(dataRoutes, context);
 
     // Render everything with StaticRouterProvider
+    const helmetContext: { helmet?: HelmetServerState } = {};
     let html = renderToString(
-      <Provider store={store}>
-        <StaticRouterProvider
-          router={router}
-          context={context}
-          hydrate={false}
-        />
-      </Provider>,
+      <HelmetProvider context={helmetContext}>
+        <Provider store={store}>
+          <StaticRouterProvider
+            router={router}
+            context={context}
+            hydrate={false}
+          />
+        </Provider>
+      </HelmetProvider>,
     );
     // let html = renderToString(<div className="o-app">test</div>);
 
@@ -66,7 +69,7 @@ export async function render(
 	`;
 
     // Render the meta tags and title tags
-    const helmet = Helmet.renderStatic();
+    const { helmet } = helmetContext;
 
     // Setup headers from action and loaders from the deepest match
     let leaf = context.matches[context.matches.length - 1];
