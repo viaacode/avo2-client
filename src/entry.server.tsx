@@ -1,17 +1,17 @@
+import { Provider } from 'jotai';
 // React is required to be imported for SSR even if it is not directly used in this file. This import must be identical between server and client entry files
 // @ts-ignore
 import * as React from 'react';
 import { renderToString } from 'react-dom/server';
 import { HelmetProvider, type HelmetServerState } from 'react-helmet-async';
-import { Provider } from 'jotai';
 import {
   createStaticHandler,
   createStaticRouter,
   StaticRouterProvider,
 } from 'react-router';
 import ALL_APP_ROUTES from './routes.ts';
-import { store } from './shared/store/ui.store.ts';
 import { CustomError } from './shared/helpers/custom-error.ts';
+import { store } from './shared/store/ui.store.ts';
 import I18n from './shared/translations/i18n.ts';
 
 let { query, dataRoutes } = createStaticHandler(ALL_APP_ROUTES);
@@ -97,8 +97,9 @@ export async function render(
     );
 
     // Render title and meta tags from the Helmet component during server side rendering
-    const title = helmet?.title.toString();
-    const metaTags = helmet?.meta.toString().replace(/<meta/g, '\n\t<meta');
+    const title = helmet?.title.toString() || '';
+    const metaTags =
+      helmet?.meta.toString().replace(/<meta/g, '\n\t<meta') || '';
     mergedHtml = mergedHtml.replace(
       '<!-- HELMET_TAGS_REPLACEMENT_MARKER -->',
       `${title}${metaTags}`.replace(/ data-react-helmet="true"/g, ''),
