@@ -83,7 +83,10 @@ export const SearchResultItem: FC<SearchResultItemProps> = ({
       result.administrative_type === 'video' ||
       result.administrative_type === 'audio'
     ) {
-      const duration = trimStart(result.duration_time, '0:');
+      const duration = result.duration_time
+        .replace(/^0(?=\d):/, '')
+        .replace(/^00:/, '');
+
       if (duration.includes(':')) {
         return duration;
       }
