@@ -7,7 +7,8 @@ import {
   Thumbnail,
 } from '@viaa/avo2-components';
 
-import { compact, isNil, trimStart } from 'es-toolkit';
+import { compact, isNil } from 'es-toolkit';
+import { trimStart } from 'es-toolkit/compat';
 import { type FC } from 'react';
 
 import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../collection/collection.types';
@@ -83,10 +84,7 @@ export const SearchResultItem: FC<SearchResultItemProps> = ({
       result.administrative_type === 'video' ||
       result.administrative_type === 'audio'
     ) {
-      const duration = result.duration_time
-        .replace(/^0(?=\d):/, '')
-        .replace(/^00:/, '');
-
+      const duration = trimStart(result.duration_time, '0:');
       if (duration.includes(':')) {
         return duration;
       }
