@@ -46,7 +46,7 @@
     "@flowplayer/player": "3.32.1",
     "@hookform/resolvers": "2.9.11",
     "@meemoo/admin-core-ui": "6.0.0",
-    "@meemoo/react-components": "6.0.0",
+    "@meemoo/react-components": "6.0.3",
     "@react-router/node": "8.1.0",
     "@react-router/serve": "8.1.0",
     "@studiohyperdrive/pagination": "1.0.0",
@@ -174,11 +174,21 @@
     "@esbuild/win32-x64": "^0.20.1"
   },
   "browserslist": {
-    "production": [">0.2%", "not dead", "not op_mini all"],
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "allowScripts": {
+    "@parcel/watcher@2.5.6": true,
+    "es5-ext@0.10.64": true,
+    "esbuild@0.28.1": true,
+    "fsevents@2.3.3": true
   }
 }
