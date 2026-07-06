@@ -15,20 +15,3 @@ $multiRangeInputWidth: 87px;
 		display: none !important;
 	}
 }
-
-.m-time-crop-controls {
-	.c-input {
-		width: $multiRangeInputWidth;
-		display: inline-block;
-	}
-
-	.m-multi-range-wrapper {
-		width: calc(100% - #{$multiRangeInputWidth} - #{$multiRangeInputWidth} - #{$multiRangeMargin} - #{$multiRangeMargin});
-		display: inline-block;
-		margin: 0 $multiRangeMargin;
-	}
-
-	.c-multi-range {
-		display: inline-block;
-	}
-}

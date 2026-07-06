@@ -15,7 +15,7 @@ import {
 
 import { type FC, useEffect, useState } from 'react';
 
-import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
+import { TimeCropControlsWrapper } from '../../../shared/components/TimeCropControls/TimeCropControlsWrapper.tsx';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
@@ -108,7 +108,7 @@ export const CutFragmentForAssignmentModal: FC<
                     size="2-7"
                     className="u-spacer-top-l u-spacer-bottom-l"
                   >
-                    <TimeCropControls
+                    <TimeCropControlsWrapper
                       startTime={fragmentStartTime}
                       endTime={fragmentEndTime}
                       minTime={0}

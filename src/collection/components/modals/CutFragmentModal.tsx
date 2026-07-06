@@ -12,7 +12,7 @@ import { noop, once } from 'es-toolkit';
 import { type FC, useState } from 'react';
 
 import { ItemVideoDescription } from '../../../item/components/ItemVideoDescription';
-import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
+import { TimeCropControlsWrapper } from '../../../shared/components/TimeCropControls/TimeCropControlsWrapper.tsx';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
@@ -197,7 +197,7 @@ export const CutFragmentModal: FC<CutFragmentModalProps> = ({
           onPlay={startStartTimeOnce}
           trackPlayEvent={false}
         />
-        <TimeCropControls
+        <TimeCropControlsWrapper
           className="u-spacer-top-l u-spacer-bottom-l"
           startTime={fragmentStartTime}
           endTime={fragmentEndTime}

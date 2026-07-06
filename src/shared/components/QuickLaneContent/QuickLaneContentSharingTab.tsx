@@ -28,7 +28,7 @@ import { type QuickLaneUrlObject } from '../../types';
 import { ContentLink } from '../ContentLink/ContentLink';
 import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
 import { QuickLaneLink } from '../QuickLaneLink/QuickLaneLink';
-import { TimeCropControls } from '../TimeCropControls/TimeCropControls';
+import { TimeCropControlsWrapper } from '../TimeCropControls/TimeCropControlsWrapper.tsx';
 import {
   defaultQuickLaneState,
   getContentUuid,
@@ -268,7 +268,7 @@ export const QuickLaneContentSharingTab: FC<QuickLaneContentProps> = ({
                   trackPlayEvent={false}
                 />
               </div>
-              <TimeCropControls
+              <TimeCropControlsWrapper
                 startTime={fragmentStartTime}
                 endTime={fragmentEndTime}
                 minTime={0}

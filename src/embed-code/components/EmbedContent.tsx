@@ -1,6 +1,6 @@
 import {
-  type RichTextEditorControl,
   RichTextEditor,
+  type RichTextEditorControl,
 } from '@meemoo/react-components';
 import {
   Alert,
@@ -35,7 +35,7 @@ import {
 import { commonUserAtom } from '../../authentication/authentication.store';
 import { ItemVideoDescription } from '../../item/components/ItemVideoDescription';
 import { TextWithTimestamps } from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
-import { TimeCropControls } from '../../shared/components/TimeCropControls/TimeCropControls';
+import { TimeCropControlsWrapper } from '../../shared/components/TimeCropControls/TimeCropControlsWrapper.tsx';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { textToHtmlWithTimestamps } from '../../shared/helpers/formatters/text-to-html-with-timestamps';
@@ -522,7 +522,7 @@ export const EmbedContent: FC<EmbedProps> = ({
                 trackPlayEvent={false}
               />
             </div>
-            <TimeCropControls
+            <TimeCropControlsWrapper
               startTime={fragmentStartTime}
               endTime={fragmentEndTime}
               minTime={0}

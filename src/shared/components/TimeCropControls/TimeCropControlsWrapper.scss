@@ -1,0 +1,62 @@
+@use "../../../styles/settings/colors" as colors;
+
+$multiRangeMargin: 15px;
+$multiRangeInputWidth: 87px;
+$multi-range-thumb-size: 2rem;
+
+.c-time-crop-controls {
+	.c-input {
+		width: $multiRangeInputWidth;
+		display: inline-block;
+		padding: 0;
+
+		&__field {
+			width: 100%;
+			height: 100%;
+			padding: .8rem;
+			border: none;
+		}
+	}
+
+	.c-multi-range {
+		display: inline-block;
+	}
+
+	.m-multi-range-wrapper {
+		width: calc(100% - #{$multiRangeInputWidth} - #{$multiRangeInputWidth} - #{$multiRangeMargin} - #{$multiRangeMargin});
+		display: inline-block;
+		margin: 0 $multiRangeMargin;
+
+		.c-input-range {
+			display: flex;
+			align-items: center;
+
+			.c-input-range__track{
+				height: 3.6rem;
+				display: flex;
+				width: 100%;
+				flex-grow: 1;
+				margin-right: 0;
+				position: relative;
+			}
+
+			.c-input-range__track-highlight{
+				height: .8rem;
+				width: 100%;
+				align-self: center;
+				border-radius: 0.4rem;
+			}
+
+			.c-input-range__thumb {
+				height: calc($multi-range-thumb-size * 2);
+				width: calc($multi-range-thumb-size * 2);
+				background: none;
+			}
+
+			.c-input-range__disabled {
+				pointer-events: none;
+				opacity: 0.5;
+			}
+		}
+	}
+}
