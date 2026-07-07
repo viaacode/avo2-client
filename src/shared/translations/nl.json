@@ -1714,6 +1714,8 @@
   "item/components/modals/add-to-collection-modal___collectie": "Collectie",
   "item/components/modals/add-to-collection-modal___collectie-titel": "Collectietitel",
   "item/components/modals/add-to-collection-modal___de-collectie-kon-niet-worden-aangemaakt": "De collectie kon niet worden aangemaakt. Contacteer ons via de Feedback-knop mocht dit probleem zich blijven voordoen.",
+  "item/components/modals/add-to-collection-modal___de-ingevulde-eidntijd-heeft-niet-het-correcte-formaat-uu-mm-ss": "De ingevulde eindtijd heeft niet het correcte formaat (uu:mm:ss).",
+  "item/components/modals/add-to-collection-modal___de-ingevulde-starttijd-heeft-niet-het-correcte-formaat-uu-mm-ss": "De ingevulde starttijd heeft niet het correcte formaat (uu:mm:ss).",
   "item/components/modals/add-to-collection-modal___het-fragment-is-toegevoegd-aan-de-collectie": "Het fragment is toegevoegd aan de collectie in je Werkruimte.",
   "item/components/modals/add-to-collection-modal___het-fragment-kon-niet-worden-toegevoegd-aan-de-collectie": "Het fragment kon niet worden toegevoegd aan de collectie.",
   "item/components/modals/add-to-collection-modal___het-ophalen-van-de-bestaande-collections-is-mislukt": "Het ophalen van de bestaande collecties is mislukt. Contacteer ons via de Feedback-knop mocht dit probleem zich blijven voordoen.",
