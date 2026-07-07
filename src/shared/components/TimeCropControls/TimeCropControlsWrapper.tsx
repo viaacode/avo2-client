@@ -1,10 +1,14 @@
-import { TimeCropControls } from '@meemoo/react-components';
+import {
+  TimeCropControls,
+  TimeCropControlsErrors,
+} from '@meemoo/react-components';
 import { clsx } from 'clsx';
-import { noop } from 'es-toolkit';
 import { type FC } from 'react';
 
 import './TimeCropControlsWrapper.scss';
+import { tHtml } from '../../helpers/translate-html.tsx';
 import { tText } from '../../helpers/translate-text.ts';
+import { ToastService } from '../../services/toast-service.tsx';
 
 interface TimeCropControlsPops {
   startTime: number;
@@ -25,6 +29,22 @@ export const TimeCropControlsWrapper: FC<TimeCropControlsPops> = ({
   onChange,
   className,
 }) => {
+  const onError = (error: TimeCropControlsErrors) => {
+    if (error === TimeCropControlsErrors.WRONG_FORMAT_START_DATE) {
+      ToastService.danger(
+        tHtml(
+          'item/components/modals/add-to-collection-modal___de-ingevulde-starttijd-heeft-niet-het-correcte-formaat-uu-mm-ss',
+        ),
+      );
+    } else if (error === TimeCropControlsErrors.WRONG_FORMAT_END_DATE) {
+      ToastService.danger(
+        tHtml(
+          'item/components/modals/add-to-collection-modal___de-ingevulde-eidntijd-heeft-niet-het-correcte-formaat-uu-mm-ss',
+        ),
+      );
+    }
+  };
+
   return (
     <TimeCropControls
       id="material-request_for-reuse-blade__time-crop-controls"
@@ -35,22 +55,25 @@ export const TimeCropControlsWrapper: FC<TimeCropControlsPops> = ({
       maxTime={maxTime}
       trackColor="#C4C4C4"
       highlightColor="#25a4cf"
-      correctWrongTimeInput={true}
+      correctWrongTimeInput={false}
       allowStartAndEndToBeTheSame={true}
       disabled={disabled}
-      onChange={(startTime, endTime) => onChange(startTime, endTime)}
-      onError={noop}
+      onChange={(startTime, endTime) => {
+        console.log(startTime, endTime);
+        onChange(startTime, endTime);
+      }}
+      onError={onError}
       startInputAriaLabel={tText(
-        'start-tijd-van-de-video-audio-selectie-input-aria-label',
+        'shared/components/time-crop-controls/time-crop-controls-wrapper___start-tijd-van-de-video-audio-selectie-input-aria-label',
       )}
       endInputAriaLabel={tText(
-        'eind-tijd-van-de-video-audio-selectie-input-aria-label',
+        'shared/components/time-crop-controls/time-crop-controls-wrapper___eind-tijd-van-de-video-audio-selectie-input-aria-label',
       )}
       startSliderAriaLabel={tText(
-        'start-tijd-van-de-video-audio-selectie-input-aria-label',
+        'shared/components/time-crop-controls/time-crop-controls-wrapper___start-tijd-van-de-video-audio-selectie-input-aria-label',
       )}
       endSliderAriaLabel={tText(
-        'eind-tijd-van-de-video-audio-selectie-input-aria-label',
+        'shared/components/time-crop-controls/time-crop-controls-wrapper___eind-tijd-van-de-video-audio-selectie-input-aria-label',
       )}
       startSliderId="time-crop-controls__start-slider-id"
       endSliderId="time-crop-controls__end-slider-id"
