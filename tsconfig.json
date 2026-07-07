@@ -12,7 +12,6 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "downlevelIteration": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,

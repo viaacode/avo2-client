@@ -26,7 +26,7 @@ import { commonUserAtom } from '../../../authentication/authentication.store';
 import { CollectionService } from '../../../collection/collection.service';
 import { CollectionOrBundle } from '../../../collection/collection.types';
 import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
-import { TimeCropControls } from '../../../shared/components/TimeCropControls/TimeCropControls';
+import { TimeCropControlsWrapper } from '../../../shared/components/TimeCropControls/TimeCropControlsWrapper.tsx';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { isMobileWidth } from '../../../shared/helpers/media-query';
@@ -390,7 +390,7 @@ export const AddToCollectionModal: FC<AddToCollectionModalProps> = ({
                     size="2-7"
                     className="u-spacer-top-l u-spacer-bottom-l"
                   >
-                    <TimeCropControls
+                    <TimeCropControlsWrapper
                       startTime={fragmentStartTime}
                       endTime={fragmentEndTime}
                       minTime={0}

@@ -5,7 +5,6 @@ import {
   type RichTextEditorUploadInfo,
 } from '@meemoo/react-components';
 
-import { isEqual } from 'es-toolkit';
 import { type FC } from 'react';
 
 import { CustomError } from '../../helpers/custom-error';
@@ -33,7 +32,7 @@ export type RichTextEditorWrapperProps = RichTextEditorProps & {
 export const RichTextEditorWrapper: FC<RichTextEditorWrapperProps> = (
   props,
 ) => {
-  const { controls, fileType, ownerId, state, onChange, ...rest } = props;
+  const { controls, fileType, ownerId, onChange, ...rest } = props;
 
   if ((controls || []).includes('media') && !fileType) {
     console.error(
@@ -89,12 +88,7 @@ export const RichTextEditorWrapper: FC<RichTextEditorWrapperProps> = (
       {...rest}
       controls={controls || RICH_TEXT_EDITOR_OPTIONS_DEFAULT}
       media={media}
-      state={state}
-      onChange={(newState) => {
-        if (!!onChange && !isEqual(newState, state)) {
-          onChange(newState);
-        }
-      }}
+      onChange={onChange}
     />
   );
 };

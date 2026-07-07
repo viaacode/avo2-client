@@ -1,4 +1,3 @@
-import { type RichEditorState } from '@meemoo/react-components';
 import {
   Button,
   ButtonToolbar,
@@ -40,7 +39,7 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
   const [depublishType, setDepublishType] = useState<DepublishType>(
     DepublishType.DEPUBLISH,
   );
-  const [reason, setReason] = useState<RichEditorState | null>(null);
+  const [reason, setReason] = useState<string | null>(null);
   const [replacementExternalId, setReplacementExternalId] = useState<
     string | null
   >(null);
@@ -54,7 +53,7 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
 
   const depublishItem = async () => {
     try {
-      const reasonHtml = reason ? reason.toHTML() : '';
+      const reasonHtml = reason || '';
       if (
         depublishType === DepublishType.DEPUBLISH_WITH_REASON &&
         (!reasonHtml || !stripHtml(reasonHtml).trim())
@@ -159,7 +158,7 @@ export const DepublishItemModal: FC<DepublishItemModalProps> = ({
                 placeholder={tText(
                   'admin/items/components/depublish-item-modal/depublish-item-modal___geef-een-reden-waarom-dit-item-gedepubliceerd-wordt',
                 )}
-                state={reason || undefined}
+                value={reason || undefined}
                 onChange={setReason}
               />
             </FormGroup>

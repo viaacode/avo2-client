@@ -15,7 +15,6 @@ import {
   ToolbarRight,
 } from '@viaa/avo2-components';
 import { AvoFileUploadAssetType } from '@viaa/avo2-types';
-import { isEqual } from 'es-toolkit';
 import { type FC, memo } from 'react';
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { RichTextEditorWrapper } from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
@@ -155,18 +154,15 @@ export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
             error={stepErrors?.content}
           >
             <RichTextEditorWrapper
-              initialHtml={(step.content || '').toString()}
-              state={step.contentState}
-              onChange={(newContentState) => {
-                if (!isEqual(newContentState, step.contentState)) {
-                  changeInteractiveTourState({
-                    type: InteractiveTourEditActionType.UPDATE_STEP_PROP,
-                    stepIndex: index,
-                    stepProp: 'contentState',
-                    stepPropValue: newContentState,
-                  });
-                }
-              }}
+              value={step.content || ''}
+              onChange={(newContent: string) =>
+                changeInteractiveTourState({
+                  type: InteractiveTourEditActionType.UPDATE_STEP_PROP,
+                  stepIndex: index,
+                  stepProp: 'content',
+                  stepPropValue: newContent,
+                })
+              }
               controls={RICH_TEXT_EDITOR_OPTIONS_FULL}
               fileType={AvoFileUploadAssetType.INTERACTIVE_TOUR_IMAGE}
               id={`content_editor_${index}`}
@@ -175,13 +171,7 @@ export const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
               )}
             />
             <Spacer margin="top-small">
-              {
-                (step.contentState
-                  ? stripHtml(step.contentState.toHTML())
-                  : step.content || ''
-                ).length
-              }{' '}
-              / 200
+              {stripHtml(step.content || '').length} / 200
             </Spacer>
           </FormGroup>
 

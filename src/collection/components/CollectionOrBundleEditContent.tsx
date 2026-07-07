@@ -249,12 +249,7 @@ export const CollectionOrBundleEditContent: FC<
 
   return (
     <Container mode="vertical" className="m-collection-or-bundle-edit-content">
-      <Container
-        mode="horizontal"
-        key={fragments.map(getFragmentKey).join('_')}
-      >
-        {renderFragmentEditors()}
-      </Container>
+      <Container mode="horizontal">{renderFragmentEditors()}</Container>
     </Container>
   );
 };

@@ -11,12 +11,9 @@ export function convertRteToString(
   }
   const clonedCollection = cloneDeep(collection);
   getFragmentsFromCollection(clonedCollection).forEach((fragment) => {
-    if (
-      fragment.custom_description &&
-      (fragment.custom_description as any).toHTML
-    ) {
+    if (fragment.custom_description) {
       fragment.custom_description = sanitizeHtml(
-        (fragment.custom_description as any).toHTML(),
+        String(fragment.custom_description),
         SanitizePreset.link,
       );
     }

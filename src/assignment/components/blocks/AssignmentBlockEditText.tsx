@@ -40,13 +40,13 @@ export const AssignmentBlockEditText: FC<EditBlockProps> = ({
           : tText(
               'assignment/views/assignment-edit___beschrijf-je-instructies-of-geef-een-omschrijving-mee',
             ),
-        initialHtml: convertToHtml(block.custom_description),
+        value: convertToHtml(block.custom_description),
         controls: RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
         enabledHeadings: ['h3', 'h4', 'normal'],
         onChange: (value) =>
           setBlock({
             ...block,
-            custom_description: value.toHTML(),
+            custom_description: value,
           }),
         onFocus,
       }}

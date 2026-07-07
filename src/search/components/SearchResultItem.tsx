@@ -7,7 +7,8 @@ import {
   Thumbnail,
 } from '@viaa/avo2-components';
 
-import { compact, isNil, trimStart } from 'es-toolkit';
+import { compact, isNil } from 'es-toolkit';
+import { trimStart } from 'es-toolkit/compat';
 import { type FC } from 'react';
 
 import { CONTENT_TYPE_TRANSLATIONS_NL_TO_EN } from '../../collection/collection.types';

@@ -1,4 +1,4 @@
-import { RichTextEditorWithInternalState } from '@meemoo/react-components';
+import { RichTextEditor } from '@meemoo/react-components';
 import {
   Button,
   Column,
@@ -422,7 +422,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
             labelFor={`description___${fragment.id}`}
           >
             {!isNil(allowedToAddLinks) && (
-              <RichTextEditorWithInternalState
+              <RichTextEditor
                 id={`description___${fragment.id}`}
                 controls={
                   allowedToAddLinks
