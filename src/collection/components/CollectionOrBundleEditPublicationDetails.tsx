@@ -150,7 +150,11 @@ export const CollectionOrBundleEditPublicationDetails: FC<
                             ? RICH_TEXT_EDITOR_OPTIONS_DEFAULT_NO_TITLES
                             : RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION
                         }
-                        value={descriptionLongEditorState ?? collection.description_long ?? ''}
+                        value={
+                          descriptionLongEditorState ??
+                          collection.description_long ??
+                          ''
+                        }
                         onChange={setDescriptionLongEditorState}
                         onBlur={handleBlurRichTextEditor}
                       />

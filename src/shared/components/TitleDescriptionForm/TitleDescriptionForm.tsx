@@ -81,7 +81,7 @@ export const TitleDescriptionForm: FC<TitleDescriptionFormProps> = (props) => {
         >
           <RichTextEditorWrapper
             {...props.description}
-            value={description ?? (props.description.value ?? '')}
+            value={description ?? props.description.value ?? ''}
             onChange={setDescription}
             onBlur={() => props.description?.onChange?.(description || '')}
             id={getId(TitleDescriptionFormIds.description)}

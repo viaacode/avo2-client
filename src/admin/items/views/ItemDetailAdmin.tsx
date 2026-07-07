@@ -246,7 +246,7 @@ export const ItemDetailAdmin: FC = () => {
       }
       const note =
         sanitizeHtml(
-          (noteEditorState || (item as any).note) || '',
+          noteEditorState || (item as any).note || '',
           SanitizePreset.link,
         ) || null;
       await ItemsService.updateItemByUuid(

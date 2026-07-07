@@ -132,7 +132,7 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = ({
             >
               <RichTextEditorWrapper
                 {...description}
-                value={tempDescription ?? (description?.value ?? '')}
+                value={tempDescription ?? description?.value ?? ''}
                 onChange={setTempDescription}
                 onBlur={() => description?.onChange?.(tempDescription || '')}
                 id={getId(CustomiseItemFormIds.description)}

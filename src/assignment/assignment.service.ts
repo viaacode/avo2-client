@@ -197,7 +197,8 @@ export class AssignmentService {
     const legacyDescriptionHtmlKey = 'descriptionRich' + 'EditorState';
     assignmentToSave.description =
       (assignmentToSave as any)[legacyDescriptionHtmlKey] ||
-      assignmentToSave.description || '';
+      assignmentToSave.description ||
+      '';
 
     if (!isNil(assignment.blocks)) {
       assignmentToSave.blocks = cleanupTitleAndDescriptions(
