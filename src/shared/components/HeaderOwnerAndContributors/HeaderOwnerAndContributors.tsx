@@ -104,6 +104,7 @@ export const HeaderOwnerAndContributors: FC<
       <Flex center>
         {owner && (
           <Avatar
+            className="c-owner-avatar"
             dark
             image={owner.organisation?.logo_url || owner.avatar || undefined}
             initials={`${owner?.user?.first_name?.[0] || ''} ${

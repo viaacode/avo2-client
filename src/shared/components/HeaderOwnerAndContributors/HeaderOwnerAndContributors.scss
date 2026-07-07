@@ -8,3 +8,13 @@
 .c-tooltip {
 	max-width: 30rem;
 }
+
+.c-owner-avatar.c-avatar {
+	width: 4.5rem;
+	height: 4.5rem;
+
+	img {
+		width: 100%;
+		height: 100%;
+	}
+}
