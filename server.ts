@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/client';
 import type { AvoAuthLoginResponse } from '@viaa/avo2-types';
 import express from 'express';
+import fetch from 'node-fetch';
 import { createServer as createViteServer } from 'vite';
 import packageJson from './package.json' with { type: 'json' };
 import { CustomError } from './src/shared/helpers/custom-error.ts';
@@ -81,6 +82,26 @@ async function startDevServer() {
     res.status(200).send('OK');
   });
 
+  app.get(
+    '/sitemap.xml',
+    async (_req: express.Request, res: express.Response) => {
+      if (!process.env.PROXY_URL) {
+        console.error('Required environment variable is not set: PROXY_URL');
+        res.status(500).json({ ok: false });
+      }
+      const response = await fetch(`${process.env.PROXY_URL}/sitemap.xml`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const sitemapXml = await response.text();
+      res.type('application/xml');
+      res.send(sitemapXml);
+    },
+  );
+
   app.use(
     '*all',
     async (
@@ -94,7 +115,12 @@ async function startDevServer() {
         // Only HTML page navigations
         // Images and other assets can be loaded directly from the file system
         const accept = req.headers.accept ?? '';
-        if (!accept.includes('text/html')) {
+        const isHtml =
+          accept.includes('text/html') ||
+          accept.includes('application/xhtml+xml') ||
+          accept.includes('*/*');
+
+        if (!isHtml) {
           return next();
         }
 
@@ -180,6 +206,26 @@ async function startPrdServer() {
   app.get('/healthz', (_req: express.Request, res: express.Response) => {
     res.status(200).send('OK');
   });
+
+  app.get(
+    '/sitemap.xml',
+    async (_req: express.Request, res: express.Response) => {
+      if (!process.env.PROXY_URL) {
+        console.error('Required environment variable is not set: PROXY_URL');
+        res.status(500).json({ ok: false });
+      }
+      const response = await fetch(`${process.env.PROXY_URL}/sitemap.xml`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const sitemapXml = await response.text();
+      res.type('application/xml');
+      res.send(sitemapXml);
+    },
+  );
 
   // SSR the other requests
   app.use(
