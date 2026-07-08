@@ -250,7 +250,6 @@ scripts/*.js
 scripts/*.js.map
 src/shared/translations/poeditor
 licenses.csv
-public/sitemap.xml
 scripts/client-whitelist.json
 .graphqlconfig
 schema.graphql
