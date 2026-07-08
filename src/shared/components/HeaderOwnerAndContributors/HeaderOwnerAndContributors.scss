@@ -1,5 +1,6 @@
 @use "../../../styles/settings/colors" as colors;
 @use "../../../styles/settings/variables" as variables;
+@use "../../../styles/utilities/display" as display;
 
 .c-contributors {
 	color: colors.$color-teal-bright;
@@ -10,11 +11,5 @@
 }
 
 .c-owner-avatar.c-avatar {
-	width: 4.5rem;
-	height: 4.5rem;
-
-	img {
-		width: 100%;
-		height: 100%;
-	}
+	@include display.enlargeLogo;
 }

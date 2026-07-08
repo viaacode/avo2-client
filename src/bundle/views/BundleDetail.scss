@@ -1,5 +1,6 @@
 @use "../../styles/settings/colors" as colors;
 @use "../../styles/settings/variables" as variables;
+@use "../../styles/utilities/display" as display;
 
 .m-bundle-detail {
 	&.hide-behind-login-popup {
@@ -44,12 +45,6 @@
 	}
 
 	.c-avatar {
-		width: 4.5rem;
-		height: 4.5rem;
-
-		img {
-			width: 100%;
-			height: 100%;
-		}
+		@include display.enlargeLogo;
 	}
 }
