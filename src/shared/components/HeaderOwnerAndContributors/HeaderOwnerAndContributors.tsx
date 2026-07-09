@@ -36,10 +36,17 @@ export const HeaderOwnerAndContributors: FC<
     (contributors || []) as
       | Omit<AvoAssignmentContributor, 'assignment_id'>[]
       | Omit<AvoCollectionContributor, 'collection_id'>[]
-  ).filter(
-    (contrib) =>
-      !!contrib.profile_id && !(contrib.rights === ContributorInfoRight.VIEWER),
-  );
+  )
+    .filter(
+      (contrib) =>
+        !!contrib.profile_id &&
+        !(contrib.rights === ContributorInfoRight.VIEWER),
+    )
+    .map((contributor) => {
+      return (
+        contributor.profile?.full_name || contributor.profile?.user?.full_name
+      );
+    });
 
   // Set mounted to true only on the client, so certain components don't render during server side rendering
   useEffect(() => {
@@ -63,7 +70,7 @@ export const HeaderOwnerAndContributors: FC<
         return (
           <span>
             {couplingWord}
-            {nonPendingContributors[0].profile?.full_name}
+            {nonPendingContributors[0]}
           </span>
         );
       }
@@ -83,16 +90,7 @@ export const HeaderOwnerAndContributors: FC<
           </TooltipTrigger>
 
           <TooltipContent>
-            <p>
-              {nonPendingContributors
-                .map((contributor) => {
-                  return (
-                    contributor.profile?.full_name ||
-                    contributor.profile?.user?.full_name
-                  );
-                })
-                .join(', ')}
-            </p>
+            <p>{nonPendingContributors.join(', ')}</p>
           </TooltipContent>
         </Tooltip>
       );
