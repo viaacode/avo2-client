@@ -1,58 +1,59 @@
 @use "../../../styles/settings/colors" as colors;
 @use "../../../styles/settings/variables" as variables;
 @use "../../../styles/components/input" as input;
+@use "../../../styles/utilities/form" as form;
 
-.c-content table td {
+.c-rich-text-editor__content table td {
 	border: 0.1rem solid colors.$color-gray-100;
 }
 
 .c-rich-text-editor {
-	border: 0.1rem solid colors.$color-gray-150;
-	border-radius: 0.3rem;
-	background-color: #fff;
-	@include input.textfield-transition;
+	.c-rich-text-editor__headings-popup .c-rich-text-editor__headings-option--h1 {
+		display: none; // Hide h1 option in headings dropdown
+	}
 
-	&.disabled {
-		.bf-controlbar {
-			pointer-events: none;
+	.c-rich-text-editor__toolbar {
+		background-color: colors.$color-gray-50;
+		border-radius: 0.3rem 0.3rem 0 0;
+		gap: 0;
+		padding: 0;
+
+
+		button,
+		.c-rich-text-editor__custom-button {
+			border: none;
+			margin-left: 0;
+
+			@include form.focus-outline();
+
+			height: 3.6rem;
+			padding: 0 9px;
+
+			> :first-child {
+				min-width: 1.8rem;
+				height: 1.8rem;
+			}
 		}
 
-		background-color: colors.$color-gray-100;
+		.c-rich-text-editor__separator {
+			background-color: colors.$color-gray-150;
+		}
 	}
 
-	ul,
-	ol {
-		margin: 0;
-		padding: 0.5rem;
-	}
+	.c-rich-text-editor__content {
+		font-family: variables.$g-base-font-family;
+		font-size: variables.$g-base-font-size;
+		border-radius: 0 0  .8rem .8rem;
+		padding: 0.9rem 1.5rem 0;
 
-	.bf-table-dropdown-control .button {
-		width: auto;
-	}
+		a {
+			color: colors.$color-teal;
+		}
 
-	.bf-controlbar {
-		background-color: colors.$color-gray-50;
-	}
-
-	.bf-content {
-		font-size: 1.5rem;
-	}
-
-	.bf-controlbar .separator-line {
-		margin: 0 0.5rem;
-		height: 3.5rem;
-	}
-
-	.bf-controlbar .control-item {
-		margin: 0 0 0 0.3rem;
-	}
-
-	.public-DraftEditor-content {
-		word-break: normal;
-
-		// The same as: .c-content p
-		> div > div {
-			margin: 1.5rem 0;
+		pre,
+		textarea {
+			border: 1px solid colors.$color-gray-150 !important;
 		}
 	}
 }
+

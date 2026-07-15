@@ -5,13 +5,13 @@
 		height: auto;
 
 		h2,
-		.c-content > p {
+		.c-rich-text-editor__content > p {
 			max-width: 800px;
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
 
-		.c-content > p {
+		.c-rich-text-editor__content > p {
 			max-width: 100%;
 		}
 	}
