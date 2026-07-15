@@ -57045,6 +57045,10 @@ export type Users_Profiles = {
   email_preferences_center_access_key: Scalars['uuid'];
   /** Een gebruiker kan een of meer profielen hebben */
   id: Scalars['uuid'];
+  /** An array relationship */
+  idpmaps: Array<Users_Idp_Map_V2>;
+  /** An aggregate relationship */
+  idpmaps_aggregate: Users_Idp_Map_V2_Aggregate;
   is_deleted: Scalars['Boolean'];
   is_exception: Scalars['Boolean'];
   /** An array relationship */
@@ -57218,6 +57222,26 @@ export type Users_ProfilesEmail_Preferences_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Users_Email_Preferences_Order_By>>;
   where?: InputMaybe<Users_Email_Preferences_Bool_Exp>;
+};
+
+
+/** Een gebruiker kan een of meer profielen hebben. Een profiel bevat de profielgebonden informatie zoals displayName,  LOM, etc. */
+export type Users_ProfilesIdpmapsArgs = {
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+};
+
+
+/** Een gebruiker kan een of meer profielen hebben. Een profiel bevat de profielgebonden informatie zoals displayName,  LOM, etc. */
+export type Users_ProfilesIdpmaps_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Idp_Map_V2_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Idp_Map_V2_Order_By>>;
+  where?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
 };
 
 
@@ -57489,6 +57513,8 @@ export type Users_Profiles_Bool_Exp = {
   email_preferences_aggregate?: InputMaybe<Users_Email_Preferences_Aggregate_Bool_Exp>;
   email_preferences_center_access_key?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  idpmaps?: InputMaybe<Users_Idp_Map_V2_Bool_Exp>;
+  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_V2_Aggregate_Bool_Exp>;
   is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
   is_exception?: InputMaybe<Boolean_Comparison_Exp>;
   item_bookmarks?: InputMaybe<App_Item_Bookmarks_Bool_Exp>;
@@ -57553,6 +57579,7 @@ export type Users_Profiles_Insert_Input = {
   email_preferences_center_access_key?: InputMaybe<Scalars['uuid']>;
   /** Een gebruiker kan een of meer profielen hebben */
   id?: InputMaybe<Scalars['uuid']>;
+  idpmaps?: InputMaybe<Users_Idp_Map_V2_Arr_Rel_Insert_Input>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   is_exception?: InputMaybe<Scalars['Boolean']>;
   item_bookmarks?: InputMaybe<App_Item_Bookmarks_Arr_Rel_Insert_Input>;
@@ -57894,6 +57921,7 @@ export type Users_Profiles_Order_By = {
   email_preferences_aggregate?: InputMaybe<Users_Email_Preferences_Aggregate_Order_By>;
   email_preferences_center_access_key?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  idpmaps_aggregate?: InputMaybe<Users_Idp_Map_V2_Aggregate_Order_By>;
   is_deleted?: InputMaybe<Order_By>;
   is_exception?: InputMaybe<Order_By>;
   item_bookmarks_aggregate?: InputMaybe<App_Item_Bookmarks_Aggregate_Order_By>;
