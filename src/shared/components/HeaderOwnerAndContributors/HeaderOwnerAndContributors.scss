@@ -1,5 +1,6 @@
 @use "../../../styles/settings/colors" as colors;
 @use "../../../styles/settings/variables" as variables;
+@use "../../../styles/utilities/display" as display;
 
 .c-contributors {
 	color: colors.$color-teal-bright;
@@ -7,4 +8,8 @@
 
 .c-tooltip {
 	max-width: 30rem;
+}
+
+.c-owner-avatar.c-avatar {
+	@include display.enlargeLogo;
 }
