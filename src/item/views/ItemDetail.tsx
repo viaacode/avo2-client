@@ -592,9 +592,14 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   };
 
   const renderEducationDegrees = (item: AvoItemItem) => {
+    // The database column is lom_typicalagerange (app_item_meta) and the proxy returns it as is,
+    // while avo2-types declares it as lom_typical_age_range
+    const educationDegrees = (
+      item as unknown as { lom_typicalagerange?: string[] | null }
+    ).lom_typicalagerange;
     if (
       !item.external_id ||
-      !item.lom_typical_age_range ||
+      !educationDegrees?.length ||
       !enabledMetaData.includes(SearchFilter.educationDegree)
     ) {
       return null;
@@ -617,7 +622,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
                 renderSearchLink,
                 item.external_id,
                 SearchFilter.educationDegree,
-                item.lom_typical_age_range,
+                educationDegrees,
               )}
             </td>
           </tr>
