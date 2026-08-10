@@ -98,8 +98,8 @@ import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-par
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
-import { useGetItemCounts } from '../../shared/hooks/useGetItemCounts';
 import { useGetIsItemBookmarked } from '../../shared/hooks/useGetIsItemBookmarked';
+import { useGetItemCounts } from '../../shared/hooks/useGetItemCounts';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
@@ -592,14 +592,9 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   };
 
   const renderEducationDegrees = (item: AvoItemItem) => {
-    // The database column is lom_typicalagerange (app_item_meta) and the proxy returns it as is,
-    // while avo2-types declares it as lom_typical_age_range
-    const educationDegrees = (
-      item as unknown as { lom_typicalagerange?: string[] | null }
-    ).lom_typicalagerange;
     if (
       !item.external_id ||
-      !educationDegrees?.length ||
+      !item.lom_typicalagerange?.length ||
       !enabledMetaData.includes(SearchFilter.educationDegree)
     ) {
       return null;
@@ -622,7 +617,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
                 renderSearchLink,
                 item.external_id,
                 SearchFilter.educationDegree,
-                educationDegrees,
+                item.lom_typicalagerange,
               )}
             </td>
           </tr>

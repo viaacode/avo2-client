@@ -454,7 +454,7 @@ export const cleanCollectionBeforeSave = (
     'owner',
     'updated_by',
     'collection_labels',
-    'lom_typical_age_range',
+    'lom_typicalagerange',
     'lom_context',
     'lom_classification',
     'relations',
@@ -463,7 +463,10 @@ export const cleanCollectionBeforeSave = (
     'contributors',
     ...COLLECTION_MANAGEMENT_PROPS,
   ];
-  return omit(collection, propertiesToDelete);
+  return omit(
+    collection,
+    propertiesToDelete as (keyof AvoCollectionCollection)[],
+  );
 };
 
 /**
@@ -492,7 +495,10 @@ export const keepCoreCollectionProperties = (
     ...COLLECTION_MANAGEMENT_PROPS,
   ];
 
-  return omit(collection, propertiesToDelete);
+  return omit(
+    collection,
+    propertiesToDelete as (keyof AvoCollectionCollection)[],
+  );
 };
 
 export const getFragmentIdsFromCollection = (
