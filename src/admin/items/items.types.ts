@@ -22,7 +22,7 @@ export type ItemsOverviewTableCols =
   | 'lom_intendedenduserrole'
   | 'lom_keywords'
   | 'lom_languages'
-  | 'lom_typical_age_range'
+  | 'lom_typicalagerange'
   | 'organisation'
   | 'publish_at'
   | 'published_at'
@@ -60,7 +60,7 @@ export interface ItemsTableState extends FilterableTableState {
   lom_intendedenduserrole: string[];
   lom_keywords: string[];
   lom_languages: string[];
-  lom_typical_age_range: string[];
+  lom_typicalagerange: string[];
   organisation: string;
   publish_at: string;
   published_at: string;

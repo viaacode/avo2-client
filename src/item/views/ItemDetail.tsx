@@ -98,8 +98,8 @@ import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-par
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
-import { useGetItemCounts } from '../../shared/hooks/useGetItemCounts';
 import { useGetIsItemBookmarked } from '../../shared/hooks/useGetIsItemBookmarked';
+import { useGetItemCounts } from '../../shared/hooks/useGetItemCounts';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
@@ -594,7 +594,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
   const renderEducationDegrees = (item: AvoItemItem) => {
     if (
       !item.external_id ||
-      !item.lom_typical_age_range ||
+      !item.lom_typicalagerange?.length ||
       !enabledMetaData.includes(SearchFilter.educationDegree)
     ) {
       return null;
@@ -617,7 +617,7 @@ export const ItemDetail: FC<ItemDetailProps> = ({
                 renderSearchLink,
                 item.external_id,
                 SearchFilter.educationDegree,
-                item.lom_typical_age_range,
+                item.lom_typicalagerange,
               )}
             </td>
           </tr>
