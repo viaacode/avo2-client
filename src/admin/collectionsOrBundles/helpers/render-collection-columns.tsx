@@ -627,16 +627,7 @@ export function renderCollectionCellReact(
       return lomsToTagList(groupedLoms.theme) || '-';
     }
 
-    case 'actualisation_status':
-      return (
-        getDisplayTextForManagementStatus(
-          collection?.management?.current_status as
-            | ManagementStatus
-            | undefined
-            | null,
-        ) || '-'
-      );
-    case 'mgmt_current_status': // TODO replace db view with actualisation_approved_at columns
+    case 'mgmt_current_status':
       return (
         getDisplayTextForManagementStatus(
           (collection as any)?.mgmt_current_status as
@@ -646,22 +637,10 @@ export function renderCollectionCellReact(
         ) || ''
       );
 
-    case 'actualisation_last_actualised_at':
-      return formatDate(collection?.management?.updated_at) || '-';
-    case 'mgmt_updated_at': // TODO replace db view with actualisation_approved_at columns
+    case 'mgmt_updated_at':
       return formatDate((collection as any)?.mgmt_updated_at) || '-';
 
-    case 'actualisation_status_valid_until': {
-      const validDate = collection?.management?.status_valid_until;
-      const isValid = !validDate || !isBefore(new Date(validDate), new Date());
-      return (
-        <span className={isValid ? '' : 'a-table-cell__invalid'}>
-          {formatDate(validDate) || '-'}
-        </span>
-      );
-    }
     case 'mgmt_status_expires_at': {
-      // TODO replace db view with actualisation_approved_at columns
       const validDate = (collection as any)?.mgmt_status_expires_at;
       const isValid = !validDate || !isBefore(new Date(validDate), new Date());
       return (
@@ -671,37 +650,19 @@ export function renderCollectionCellReact(
       );
     }
 
-    case 'actualisation_approved_at':
-      return (
-        formatDate(collection?.management_final_check?.[0]?.created_at) || '-'
-      );
-    case 'mgmt_last_eindcheck_date': // TODO replace db view with actualisation_approved_at columns
+    case 'mgmt_last_eindcheck_date':
       return formatDate((collection as any)?.mgmt_last_eindcheck_date) || '-';
 
     case 'actualisation_manager':
       return collection?.manager?.fullName || '-';
 
-    case 'quality_check_language_check':
-      return (
-        booleanToOkNok(collection.management_language_check?.[0]?.qc_status) ||
-        '-'
-      );
-    case 'mgmt_language_check': // TODO replace db view with actualisation_approved_at columns
+    case 'mgmt_language_check':
       return booleanToOkNok((collection as any).mgmt_language_check) || '-';
 
-    case 'quality_check_quality_check':
-      return (
-        booleanToOkNok(collection.management_quality_check?.[0]?.qc_status) ||
-        '-'
-      );
-    case 'mgmt_quality_check': // TODO replace db view with actualisation_approved_at columns
+    case 'mgmt_quality_check':
       return booleanToOkNok((collection as any).mgmt_quality_check) || '-';
 
-    case 'quality_check_approved_at':
-      return (
-        formatDate(collection?.management_quality_check?.[0].created_at) || '-'
-      );
-    case 'mgmt_eind_check_date': // TODO replace db view with actualisation_approved_at columns
+    case 'mgmt_eind_check_date':
       return formatDate((collection as any)?.mgmt_eind_check_date) || '-';
 
     case 'marcom_last_communication_channel_type': {
@@ -852,16 +813,7 @@ export function renderCollectionCellText(
       return groupedLoms.theme?.map((item) => item.label).join(', ') || '';
     }
 
-    case 'actualisation_status':
-      return (
-        getDisplayTextForManagementStatus(
-          collection?.management?.current_status as
-            | ManagementStatus
-            | undefined
-            | null,
-        ) || ''
-      );
-    case 'mgmt_current_status': // TODO replace db view with actualisation_approved_at columns
+    case 'mgmt_current_status':
       return (
         getDisplayTextForManagementStatus(
           (collection as any)?.mgmt_current_status as
@@ -871,52 +823,27 @@ export function renderCollectionCellText(
         ) || ''
       );
 
-    case 'actualisation_last_actualised_at':
-      return formatDate(collection?.management?.updated_at) || '-';
-    case 'mgmt_updated_at': // TODO replace db view with actualisation_approved_at columns
+    case 'mgmt_updated_at':
       return formatDate((collection as any)?.mgmt_updated_at) || '-';
 
-    case 'actualisation_status_valid_until': {
-      const validDate = collection?.management?.status_valid_until;
-      return formatDate(validDate) || '';
-    }
     case 'mgmt_status_expires_at': {
-      // TODO replace db view with actualisation_approved_at columns
       const validDate = (collection as any)?.mgmt_status_expires_at;
       return formatDate(validDate) || '';
     }
 
-    case 'actualisation_approved_at':
-      return (
-        formatDate(collection?.management_final_check?.[0]?.created_at) || '-'
-      );
-    case 'mgmt_last_eindcheck_date': // TODO replace db view with actualisation_approved_at columns
+    case 'mgmt_last_eindcheck_date':
       return formatDate((collection as any)?.mgmt_last_eindcheck_date) || '-';
 
     case 'actualisation_manager':
       return collection?.manager?.fullName || '';
 
-    case 'quality_check_language_check':
-      return (
-        booleanToOkNok(collection.management_language_check?.[0]?.qc_status) ||
-        '-'
-      );
-    case 'mgmt_language_check': // TODO replace db view with actualisation_approved_at columns
+    case 'mgmt_language_check':
       return booleanToOkNok((collection as any).mgmt_language_check) || '-';
 
-    case 'quality_check_quality_check':
-      return (
-        booleanToOkNok(collection.management_quality_check?.[0]?.qc_status) ||
-        '-'
-      );
-    case 'mgmt_quality_check': // TODO replace db view with actualisation_approved_at columns
+    case 'mgmt_quality_check':
       return booleanToOkNok((collection as any).mgmt_quality_check) || '-';
 
-    case 'quality_check_approved_at':
-      return (
-        formatDate(collection?.management_quality_check?.[0].created_at) || '-'
-      );
-    case 'mgmt_eind_check_date': // TODO replace db view with actualisation_approved_at columns
+    case 'mgmt_eind_check_date':
       return formatDate((collection as any)?.mgmt_eind_check_date) || '-';
 
     case 'marcom_last_communication_channel_type': {

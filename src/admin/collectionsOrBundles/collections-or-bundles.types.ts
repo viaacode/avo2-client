@@ -1,6 +1,7 @@
 import { type FilterableTableState } from '@meemoo/admin-core-ui/admin';
 
 import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
+import { type NULL_FILTER } from '../shared/helpers/filters';
 
 export enum CollectionBulkAction {
   PUBLISH = 'PUBLISH',
@@ -29,14 +30,14 @@ export type CollectionSortProps =
   | 'contributors'
   | 'share_type'
   | 'share_type_order'
-  | 'actualisation_status'
-  | 'actualisation_last_actualised_at'
-  | 'actualisation_status_valid_until'
-  | 'actualisation_approved_at'
+  | 'mgmt_current_status'
+  | 'mgmt_updated_at'
+  | 'mgmt_status_expires_at'
+  | 'mgmt_last_eindcheck_date'
   | 'actualisation_manager'
-  | 'quality_check_language_check'
-  | 'quality_check_quality_check'
-  | 'quality_check_approved_at'
+  | 'mgmt_language_check'
+  | 'mgmt_quality_check'
+  | 'mgmt_eind_check_date'
   | 'marcom_last_communication_channel_type'
   | 'marcom_last_communication_channel_name'
   | 'marcom_last_communication_at'
@@ -72,42 +73,25 @@ export type CollectionsOrBundlesOverviewTableCols =
   | 'share_type'
   | 'share_type_order';
 
+// A column id is also the url query param and the key the filter value is sent to the proxy under,
+// so these have to match the keys of CollectionFilters in the proxy exactly. For the editorial
+// overviews they are named after the columns of the db view the rows are selected from. Do not list
+// alternative spellings here: two names for one column is what let the proxy and the client drift
+// apart before (AVO-3477), which silently disabled the filters.
 export type CollectionOrBundleActualisationOverviewTableCols =
   | CollectionsOrBundlesOverviewTableColsBase
-
-  // Some views in the db use mgmt_current_status, the tables use actualisation_status
   | 'mgmt_current_status'
-  | 'actualisation_status'
-
-  // Some views in the db use mgmt_updated_at, the tables use actualisation_last_actualised_at
   | 'mgmt_updated_at'
-  | 'actualisation_last_actualised_at'
-
-  // Some views in the db use mgmt_status_expires_at, the tables use actualisation_status_valid_until
   | 'mgmt_status_expires_at'
-  | 'actualisation_status_valid_until'
-
-  // Some views in the db use mgmt_last_eindcheck_date, the tables use actualisation_approved_at
   | 'mgmt_last_eindcheck_date'
-  | 'actualisation_approved_at'
-
-  // Some views in the db use manager.profile_id, the tables use actualisation_manager
+  // The db view exposes this one as manager.profile_id
   | 'actualisation_manager';
 
 export type CollectionOrBundleQualityCheckOverviewTableCols =
   | CollectionsOrBundlesOverviewTableColsBase
-
-  // Some views in the db use mgmt_language_check, the tables use quality_check_language_check
   | 'mgmt_language_check'
-  | 'quality_check_language_check'
-
-  // Some views in the db use mgmt_quality_check, the tables use quality_check_quality_check
   | 'mgmt_quality_check'
-  | 'quality_check_quality_check'
-
-  // Some views in the db use mgmt_eind_check_date, the tables use quality_check_approved_at
-  | 'mgmt_eind_check_date'
-  | 'quality_check_approved_at';
+  | 'mgmt_eind_check_date';
 
 export type CollectionOrBundleMarcomOverviewTableCols =
   | CollectionsOrBundlesOverviewTableColsBase
@@ -129,14 +113,18 @@ export enum EditorialType {
   MARCOM = 'marcom',
 }
 
+// The table state is filled by the filters of the FilterTable, so a property is typed after the
+// filterType of its column, not after the data type of the column itself. Sent to the proxy as is,
+// so the property names are the column ids and the value shapes are what CollectionFilters expects.
+type BooleanFilterValue = ('true' | 'false' | typeof NULL_FILTER)[];
+type DateRangeFilterValue = { gte?: string; lte?: string };
+
 interface CollectionOrBundleTableStateBase extends FilterableTableState {
-  title: string;
-  author: string;
-  author_user_group: string;
-  last_updated_by_profile: string;
-  created_at: string;
-  updated_at: string;
-  is_public: boolean;
+  owner_profile_id: string[];
+  author_user_group: string[];
+  created_at: DateRangeFilterValue;
+  updated_at: DateRangeFilterValue;
+  is_public: BooleanFilterValue;
   collection_labels: string[];
   subjects: string[];
   education_levels: string[];
@@ -146,36 +134,30 @@ interface CollectionOrBundleTableStateBase extends FilterableTableState {
 
 export interface CollectionsOrBundlesTableState
   extends CollectionOrBundleTableStateBase {
-  views: number;
-  bookmarks: number;
-  copies: number;
-  in_bundle: boolean;
-  in_assignment: boolean;
-  is_copy: boolean;
-  quick_lane_links: number;
+  is_managed: BooleanFilterValue;
+  is_copy: BooleanFilterValue;
 }
 
 export interface CollectionOrBundleActualisationTableState
   extends CollectionOrBundleTableStateBase {
-  actualisation_status: ManagementStatus;
-  actualisation_last_actualised_at: string; // equals to updated_at of the collection_management entry
-  actualisation_status_valid_until: string;
-  actualisation_approved_at: string; // equal to created_at of the collection_management_QC table where qc_label === EINDCHECK
+  mgmt_current_status: ManagementStatus[];
+  actualisation_manager: string[];
+  mgmt_updated_at: DateRangeFilterValue; // equals to updated_at of the collection_management entry
+  mgmt_status_expires_at: DateRangeFilterValue;
+  mgmt_last_eindcheck_date: DateRangeFilterValue; // equal to created_at of the collection_management_QC table where qc_label === EINDCHECK
 }
 
 export interface CollectionOrBundleQualityCheckTableState
   extends CollectionOrBundleTableStateBase {
-  quality_check_language_check: boolean | null;
-  quality_check_quality_check: boolean | null;
-  quality_check_approved_at: string;
+  mgmt_language_check: BooleanFilterValue;
+  mgmt_quality_check: BooleanFilterValue;
 }
 
 export interface CollectionOrBundleMarcomTableState
   extends CollectionOrBundleTableStateBase {
   marcom_last_communication_channel_type: string[];
-  marcom_last_communication_at: string;
   marcom_last_communication_channel_name: string[];
-  marcom_klascement: boolean;
+  marcom_klascement: BooleanFilterValue;
 }
 
 export type CollectionTableStates =
