@@ -653,7 +653,7 @@ export function renderCollectionCellReact(
     case 'mgmt_last_eindcheck_date':
       return formatDate((collection as any)?.mgmt_last_eindcheck_date) || '-';
 
-    case 'actualisation_manager':
+    case 'mgmt_manager_profile_id':
       return collection?.manager?.fullName || '-';
 
     case 'mgmt_language_check':
@@ -834,7 +834,7 @@ export function renderCollectionCellText(
     case 'mgmt_last_eindcheck_date':
       return formatDate((collection as any)?.mgmt_last_eindcheck_date) || '-';
 
-    case 'actualisation_manager':
+    case 'mgmt_manager_profile_id':
       return collection?.manager?.fullName || '';
 
     case 'mgmt_language_check':

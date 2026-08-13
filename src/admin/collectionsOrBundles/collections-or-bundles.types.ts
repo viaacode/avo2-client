@@ -34,7 +34,7 @@ export type CollectionSortProps =
   | 'mgmt_updated_at'
   | 'mgmt_status_expires_at'
   | 'mgmt_last_eindcheck_date'
-  | 'actualisation_manager'
+  | 'mgmt_manager_profile_id'
   | 'mgmt_language_check'
   | 'mgmt_quality_check'
   | 'mgmt_eind_check_date'
@@ -84,8 +84,7 @@ export type CollectionOrBundleActualisationOverviewTableCols =
   | 'mgmt_updated_at'
   | 'mgmt_status_expires_at'
   | 'mgmt_last_eindcheck_date'
-  // The db view exposes this one as manager.profile_id
-  | 'actualisation_manager';
+  | 'mgmt_manager_profile_id';
 
 export type CollectionOrBundleQualityCheckOverviewTableCols =
   | CollectionsOrBundlesOverviewTableColsBase
@@ -141,7 +140,7 @@ export interface CollectionsOrBundlesTableState
 export interface CollectionOrBundleActualisationTableState
   extends CollectionOrBundleTableStateBase {
   mgmt_current_status: ManagementStatus[];
-  actualisation_manager: string[];
+  mgmt_manager_profile_id: string[];
   mgmt_updated_at: DateRangeFilterValue; // equals to updated_at of the collection_management entry
   mgmt_status_expires_at: DateRangeFilterValue;
   mgmt_last_eindcheck_date: DateRangeFilterValue; // equal to created_at of the collection_management_QC table where qc_label === EINDCHECK
