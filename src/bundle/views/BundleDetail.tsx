@@ -28,7 +28,6 @@ import {
   AvoContentTypeEnglish,
   AvoCoreBlockItemType,
   AvoCoreContentType,
-  AvoCoreContentTypeId,
   AvoSearchResultItem,
   PermissionName,
 } from '@viaa/avo2-types';
@@ -493,14 +492,13 @@ export const BundleDetail: FC<BundleDetailProps> = ({
       if (!collectionOrAssignment) {
         return null;
       }
-      const category: AvoContentTypeEnglish =
-        collectionOrAssignment.type?.id === AvoCoreContentTypeId.COLLECTION
-          ? AvoContentTypeEnglish.COLLECTION
-          : AvoContentTypeEnglish.ASSIGNMENT;
-      const detailRoute =
-        collectionOrAssignment.type?.id === AvoCoreContentTypeId.COLLECTION
-          ? APP_PATH.COLLECTION_DETAIL.route
-          : APP_PATH.ASSIGNMENT_DETAIL.route;
+      const isCollection = fragment.type === AvoCoreBlockItemType.COLLECTION;
+      const category: AvoContentTypeEnglish = isCollection
+        ? AvoContentTypeEnglish.COLLECTION
+        : AvoContentTypeEnglish.ASSIGNMENT;
+      const detailRoute = isCollection
+        ? APP_PATH.COLLECTION_DETAIL.route
+        : APP_PATH.ASSIGNMENT_DETAIL.route;
       return (
         <Column size="3-4" key={`bundle-fragment-${fragment.id}`}>
           <Link
@@ -525,8 +523,7 @@ export const BundleDetail: FC<BundleDetailProps> = ({
                   src={collectionOrAssignment.thumbnail_path || undefined}
                   meta={`${collectionOrAssignment?.item_count || 0} items`}
                   label={
-                    collectionOrAssignment.type?.id ===
-                    AvoCoreContentTypeId.COLLECTION
+                    isCollection
                       ? tText('admin/shared/constants/index___collectie')
                       : tText('admin/shared/constants/index___opdracht')
                   }
