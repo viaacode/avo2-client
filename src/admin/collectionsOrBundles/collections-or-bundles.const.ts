@@ -469,7 +469,7 @@ const getActualisationApprovedAtColumn =
 
 const getActualisationResponsibleProfileColumn =
   (): FilterableColumn<CollectionTableColumns> => ({
-    id: 'actualisation_manager',
+    id: 'mgmt_manager_profile_id',
     label: tText(
       'admin/collections-or-bundles/collections-or-bundles___actualisatie-verantwoordelijke',
     ),
