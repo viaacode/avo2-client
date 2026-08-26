@@ -1327,7 +1327,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
     return renderEditAssignmentPage();
   };
 
-  if (matchPath(location.pathname, APP_PATH.ASSIGNMENT_EDIT.route)) {
+  if (matchPath(APP_PATH.ASSIGNMENT_EDIT.route, location.pathname)) {
     return (
       <Navigate
         to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {

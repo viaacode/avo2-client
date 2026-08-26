@@ -2031,7 +2031,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
     );
   };
 
-  if (mounted && matchPath(location.pathname, APP_PATH.BUNDLE_EDIT.route)) {
+  if (mounted && matchPath(APP_PATH.BUNDLE_EDIT.route, location.pathname)) {
     return (
       <Navigate
         to={buildLink(APP_PATH.BUNDLE_EDIT_TAB.route, {
@@ -2042,7 +2042,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
     );
   }
 
-  if (mounted && matchPath(location.pathname, APP_PATH.COLLECTION_EDIT.route)) {
+  if (mounted && matchPath(APP_PATH.COLLECTION_EDIT.route, location.pathname)) {
     return (
       <Navigate
         to={buildLink(APP_PATH.COLLECTION_EDIT_TAB.route, {

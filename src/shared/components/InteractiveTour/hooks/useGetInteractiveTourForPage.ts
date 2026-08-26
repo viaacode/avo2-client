@@ -30,7 +30,9 @@ async function getInteractiveTourForPage(
   const matchingRoutePairs: [string, RouteInfo, PathMatch][] = compact(
     interactiveRoutePairs.map((pair) => {
       const route = pair[1].route;
-      const match = matchPath(currentPath, route);
+      // react-router v7 expects (pattern, pathname), and matches the full path by default.
+      // end: false keeps the prefix matching we need, eg: /werkruimte should match /werkruimte/collecties
+      const match = matchPath({ path: route, end: false }, currentPath);
       if (match) {
         return [...pair, match];
       } else {
@@ -41,14 +43,14 @@ async function getInteractiveTourForPage(
 
   const matchingRoutePairsSorted = sortBy(matchingRoutePairs, [
     (pair) => {
-      if (pair[2].pathname === pair[2].pathnameBase) {
+      if (pair[2].pattern.path === pair[2].pathname) {
         // Exact match always should be considered first
         // eg: /opdrachten/maak is better than /opdrachten/:id
         return -1000;
       } else {
         // A more specific path should be used first
         // eg: /opdrachten/:id/bewerk/:tabId is better than /opdrachten/:id
-        return -pair[2].pathname.length;
+        return -pair[2].pattern.path.length;
       }
     },
   ]);
@@ -62,7 +64,7 @@ async function getInteractiveTourForPage(
     routeId = matchingRoutePair[0] as RouteId;
   } else {
     // check content pages
-    routeId = location.pathname as RouteId;
+    routeId = currentPath as RouteId;
   }
 
   // Get all routes that have an interactive tour
