@@ -68,12 +68,16 @@ export const CompleteProfileStep: FC<CompleteProfileStepProps> = ({
   } = useGetEmailPreferences();
   const { mutateAsync: updateEmailPreferences } = useUpdateEmailPreferences();
 
-  const isThemesRequired = !!groupedLoms.educationLevel.find(
-    (level) => level.id !== EducationLevelId.secundairOnderwijs,
-  );
-  const isSubjectsRequired = !!groupedLoms.educationLevel.find(
+  // A user with at least one secondary education level is considered a secondary teacher.
+  // Secondary teachers have to fill in subjects, all other teachers have to fill in themes.
+  // We derive this from the selected education levels, since the user group is only assigned
+  // after saving the profile.
+  const isTeacherSecundary = groupedLoms.educationLevel.some(
     (level) => level.id === EducationLevelId.secundairOnderwijs,
   );
+  const isSubjectsRequired = isTeacherSecundary;
+  const isThemesRequired =
+    !isTeacherSecundary && !!groupedLoms.educationLevel.length;
 
   // Only show the subscribe checkbox to teachers and only if they are currently unsubscribed
   const shouldShowSubscribeCheckbox =
