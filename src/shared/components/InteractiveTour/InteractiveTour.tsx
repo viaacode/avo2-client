@@ -5,7 +5,10 @@ import { useAtomValue } from 'jotai';
 import { type FC, useCallback, useEffect, useState } from 'react';
 import Joyride, { type CallBackProps } from 'react-joyride';
 
-import { commonUserAtom } from '../../../authentication/authentication.store';
+import {
+  commonUserAtom,
+  loginAtom,
+} from '../../../authentication/authentication.store';
 import { TEAL_BRIGHT } from '../../constants';
 import { CustomError } from '../../helpers/custom-error';
 import { tText } from '../../helpers/translate-text';
@@ -32,8 +35,15 @@ const INTERACTIVE_TOUR_IN_PROGRESS_CLASS = 'c-interactive-tour--in-progress';
 
 export const InteractiveTour: FC<InteractiveTourProps> = ({ showButton }) => {
   const commonUser = useAtomValue(commonUserAtom);
+  const loginState = useAtomValue(loginAtom);
   const showNudgingModal = useAtomValue(showNudgingModalAtom);
   const location = useLocation();
+
+  // Only fetch the tour once we know for sure if the user is logged in or not.
+  // If we would fetch it while the login state is still unknown, we would send no profileId,
+  // the proxy would respond without any seen statuses, and the tour would start automatically
+  // for a user that has already seen it.
+  const isLoginStateKnown = !loginState.loading && !!loginState.data;
 
   // Sometimes we render things with displayDesktopMobile so elements can be loaded but should not initialize since they are hidden for that media query (eg: mobile)
   const [tourDisplayDates, setTourDisplayDates] = useState<{
@@ -43,6 +53,7 @@ export const InteractiveTour: FC<InteractiveTourProps> = ({ showButton }) => {
     location.pathname,
     tourDisplayDates,
     commonUser?.profileId,
+    { enabled: isLoginStateKnown && !!tourDisplayDates },
   );
   const tour = interactiveTourInfo?.tour;
   const routeId = interactiveTourInfo?.routeId;
