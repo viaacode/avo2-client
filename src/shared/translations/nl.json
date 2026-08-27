@@ -1671,7 +1671,7 @@
   "embed-code/views/embed-code-detail___dit-fragment-werd-uitzonderlijk-vervangen-door-het-archief-voor-onderwijs-het-zou-kunnen-dat-de-tijdscodes-of-de-beschrijving-niet-meer-goed-passen-meld-dit-aan-de-lesgever-die-het-fragment-aanmaakte": "Dit fragment werd uitzonderlijk vervangen door Het Archief voor Onderwijs. Het zou kunnen dat de tijdscodes of de beschrijving niet goed meer passen. Meld dit aan de lesgever die de embedlink aanmaakte.",
   "embed-code/views/embed-code-detail___het-laden-van-het-ingesloten-fragment-is-mislukt": "Het laden van het embedded fragment is mislukt.",
   "embed-code/views/embed-code-detail___ingesloten-fragment-detail-pagina-titel-fallback": "Embedded fragment  - detailpagina",
-  "embed-code/views/embed-code-detail___onverwacht-inhoudstype": "Onverwacht inhoudstype",
+  "embed-code/views/embed-code-detail___onverwacht-inhoudstype": "Onverwacht inhoudstype: {{type}}",
   "embed/components/embed___aanbieder": "Aanbieder:",
   "embed/components/embed___deze-video-is-niet-meer-beschikbaar": "Dit fragment is niet meer beschikbaar op Het Archief voor Onderwijs.",
   "embed/components/embed___deze-video-werd-gedepubliceerd": "Dit fragment werd gedepubliceerd en is dus niet meer beschikbaar op Het Archief voor Onderwijs.",
