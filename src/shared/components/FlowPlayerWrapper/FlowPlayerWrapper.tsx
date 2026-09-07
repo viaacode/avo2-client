@@ -1,4 +1,5 @@
 import './FlowPlayerWrapper.scss';
+import { Color } from '@meemoo/admin-core-ui/admin';
 import {
   FlowPlayer,
   type FlowplayerSourceItem,
@@ -409,6 +410,16 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
               ui={props.ui}
               controls={props.controls}
               enableRestartCuePointsButton={true}
+              /*
+              controlsVariant="custom"
+              customControlsConfig={{
+                showTitleOverlay: true,
+                colors: {
+                  progressColor: Color.TealBright,
+                  accentColor: Color.Gray400,
+                },
+              }}
+			   */
             />
 
             {!placeholder && !clickedThumbnail && renderCutOverlay()}
