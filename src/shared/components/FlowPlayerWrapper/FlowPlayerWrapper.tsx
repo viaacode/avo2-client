@@ -414,9 +414,11 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
               controlsVariant="custom"
               customControlsConfig={{
                 showTitleOverlay: true,
+                locale: 'nl',
                 colors: {
                   progressColor: Color.TealBright,
                   accentColor: Color.Gray400,
+                  cuepointColor: Color.Gray300,
                 },
               }}
 			   */
