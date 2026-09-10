@@ -1,4 +1,5 @@
 import './FlowPlayerWrapper.scss';
+import { FLOWPLAYER_CUSTOM_CONTROL_COLORS_AVO } from '@meemoo/admin-core-ui/admin';
 import {
   FlowPlayer,
   type FlowplayerSourceItem,
@@ -409,6 +410,14 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
               ui={props.ui}
               controls={props.controls}
               enableRestartCuePointsButton={true}
+              /*
+              controlsVariant="custom"
+              customControlsConfig={{
+                showTitleOverlay: true,
+                locale: 'nl',
+                colors: FLOWPLAYER_CUSTOM_CONTROL_COLORS_AVO(),
+              }}
+			   */
             />
 
             {!placeholder && !clickedThumbnail && renderCutOverlay()}
