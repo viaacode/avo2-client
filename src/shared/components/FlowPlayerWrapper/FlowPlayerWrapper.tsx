@@ -1,5 +1,5 @@
 import './FlowPlayerWrapper.scss';
-import { Color } from '@meemoo/admin-core-ui/admin';
+import { FLOWPLAYER_CUSTOM_CONTROL_COLORS_AVO } from '@meemoo/admin-core-ui/admin';
 import {
   FlowPlayer,
   type FlowplayerSourceItem,
@@ -415,11 +415,7 @@ export const FlowPlayerWrapper: FC<FlowPlayerWrapperProps> = ({
               customControlsConfig={{
                 showTitleOverlay: true,
                 locale: 'nl',
-                colors: {
-                  progressColor: Color.TealBright,
-                  accentColor: Color.Gray400,
-                  cuepointColor: Color.Gray300,
-                },
+                colors: FLOWPLAYER_CUSTOM_CONTROL_COLORS_AVO(),
               }}
 			   */
             />
