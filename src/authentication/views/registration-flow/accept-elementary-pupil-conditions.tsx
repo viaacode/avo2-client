@@ -1,7 +1,7 @@
 import {
+  BlockAvoVideoWrapper,
   BlockHeading,
   BlockRichText,
-  BlockAvoVideoWrapper,
 } from '@meemoo/admin-core-ui/client';
 import {
   Button,
