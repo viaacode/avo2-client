@@ -1,7 +1,7 @@
 import {
+  BlockAvoVideoWrapper,
   BlockHeading,
   BlockRichText,
-  BlockVideoWrapper,
 } from '@meemoo/admin-core-ui/client';
 import {
   Button,
@@ -101,7 +101,7 @@ export const AcceptElementaryPupilConditions: FC = () => {
               </Spacer>
 
               <Spacer margin="medium">
-                <BlockVideoWrapper
+                <BlockAvoVideoWrapper
                   title={tText(
                     'authentication/views/registration-flow/accept-elementary-pupil-conditions___toegankelijkheids-titel-van-het-introductiefilmpje-voor-leerlingen-lager',
                   )}
