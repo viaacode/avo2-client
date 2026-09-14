@@ -93,9 +93,23 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
           PermissionName.PUBLISH_ASSIGNMENT_TO_KLASCEMENT,
         ) || false,
     });
+  const klascementId = publishInfo?.klascement_id ?? null;
+
+  const hasKlascementMarcomEntry = useMemo(
+    () =>
+      !!(marcomEntries || []).find(
+        (entry) => entry.channel_name === MarcomChannelName.KLASCEMENT,
+      ),
+    [marcomEntries],
+  );
+
+  // Only block publishing when both halves of a successful publish are still present:
+  // the klascement id and its accompanying marcom entry. If either one is missing
+  // (entry deleted afterwards, or entry added by hand without ever publishing),
+  // publishing to KlasCement should be possible again. https://meemoo.atlassian.net/browse/AVO-3794
   const isPublishedToKlascement = useMemo(
-    () => !isNil(publishInfo?.klascement_id),
-    [publishInfo],
+    () => !isNil(klascementId) && hasKlascementMarcomEntry,
+    [klascementId, hasKlascementMarcomEntry],
   );
 
   const handlePublish = async () => {
@@ -378,11 +392,34 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
     );
   };
 
+  const renderKlascementPublishInfo = () => {
+    if (isNil(klascementId)) {
+      return null;
+    }
+
+    const klascementLink = `${getEnv('KLASCEMENT_URL')}/oefeningen/${klascementId}`;
+
+    return (
+      <Spacer margin="bottom">
+        <FormGroup
+          label={tText(
+            'assignment/views/assignment-edit-marcom___reeds-gepubliceerd-naar-klascement',
+          )}
+        >
+          <a href={klascementLink} target="_blank" rel="noopener noreferrer">
+            {klascementLink}
+          </a>
+        </FormGroup>
+      </Spacer>
+    );
+  };
+
   const renderPublishToKlascementForm = () => {
     if (!assignment.is_public) {
       return (
         <>
           {renderPublishToKlascementHeader()}
+          {renderKlascementPublishInfo()}
           <Alert type="info">
             {tHtml(
               'assignment/views/assignment-edit-marcom___je-kan-enkel-publiceren-naar-klascement-als-deze-opdracht-publiek-staat',
@@ -407,6 +444,7 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
     return (
       <>
         {renderPublishToKlascementHeader()}
+        {renderKlascementPublishInfo()}
         <Grid>
           <Column size="3-6">
             <Button

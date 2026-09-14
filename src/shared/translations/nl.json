@@ -938,6 +938,7 @@
   "assignment/views/assignment-edit-marcom___publiceren-naar-klascement": "Publiceer naar KlasCement",
   "assignment/views/assignment-edit-marcom___publiceren-naar-klascement-gelukt": "Publiceren naar KlasCement gelukt.",
   "assignment/views/assignment-edit-marcom___publiceren-naar-klascement-mislukt": "Publiceren naar KlasCement mislukt",
+  "assignment/views/assignment-edit-marcom___reeds-gepubliceerd-naar-klascement": "Reeds gepubliceerd naar KlasCement",
   "assignment/views/assignment-edit-marcom___toevoegen": "Toevoegen",
   "assignment/views/assignment-edit-marcom___verwijder-de-marcom-entry": "Verwijder de communicatie-actie",
   "assignment/views/assignment-edit___aangepast": "Eigen tekst",
