@@ -19,7 +19,7 @@ import {
   TextInput,
 } from '@viaa/avo2-components';
 import { AvoAssignmentAssignment, PermissionName } from '@viaa/avo2-types';
-import { compact, isNil } from 'es-toolkit';
+import { compact } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
 import { type FC, type ReactNode, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -86,7 +86,7 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
     isPending: isPublishing,
   } = usePublishAssignmentToKlascement();
 
-  const { data: publishInfo, refetch: refetchPublishInfo } =
+  const { refetch: refetchPublishInfo } =
     useGetKlascementAssignmentPublishInfo(assignment.id, {
       enabled:
         commonUser?.permissions?.includes(
@@ -94,8 +94,11 @@ export const AssignmentEditMarcom: FC<AssignmentEditMarcomProps> = ({
         ) || false,
     });
   const isPublishedToKlascement = useMemo(
-    () => !isNil(publishInfo?.klascement_id),
-    [publishInfo],
+    () =>
+      !!(marcomEntries || []).find(
+        (entry) => entry.channel_name === MarcomChannelName.KLASCEMENT,
+      ),
+    [marcomEntries],
   );
 
   const handlePublish = async () => {
