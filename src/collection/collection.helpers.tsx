@@ -455,6 +455,7 @@ export const cleanCollectionBeforeSave = (
     'updated_by',
     'collection_labels',
     'lom_typicalagerange',
+    'lom_typical_age_range', // alias used when fetching the collection, not a real column
     'lom_context',
     'lom_classification',
     'relations',
