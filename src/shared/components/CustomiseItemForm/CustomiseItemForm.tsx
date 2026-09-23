@@ -140,7 +140,7 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = ({
                 // clicking a toolbar button.
                 onBlur={() =>
                   description?.onChange?.(
-                    tempDescription ?? description?.value ?? ''
+                    tempDescription ?? description?.value ?? '',
                   )
                 }
                 id={getId(CustomiseItemFormIds.description)}

@@ -88,7 +88,7 @@ export const TitleDescriptionForm: FC<TitleDescriptionFormProps> = (props) => {
             // when the editor blurs without a change (eg: clicking a toolbar button).
             onBlur={() =>
               props.description?.onChange?.(
-                description ?? props.description?.value ?? ''
+                description ?? props.description?.value ?? '',
               )
             }
             id={getId(TitleDescriptionFormIds.description)}

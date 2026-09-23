@@ -66,10 +66,10 @@ export const AssignmentBlockEditItem: FC<
     // keeps a stray empty description from permanently masking custom_description.
     ownDescription:
       block.ownDescription ||
-      (block.custom_description ||
+      block.custom_description ||
         block.original_description ||
         block.item_meta?.description ||
-        undefined),
+      undefined,
     noTitle:
       block.noTitle ??
       (block.custom_title ||

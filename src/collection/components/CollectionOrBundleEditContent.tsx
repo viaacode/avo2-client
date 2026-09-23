@@ -73,7 +73,7 @@ export const CollectionOrBundleEditContent: FC<
         );
         ToastService.danger(
           tHtml(
-            'collection/components/fragment/fragment-edit___het-controleren-van-je-account-rechten-is-mislukt',
+            'collection/components/collection-or-bundle-edit-content___het-controleren-van-je-account-rechten-is-mislukt',
           ),
         );
       });
