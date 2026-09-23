@@ -14,6 +14,7 @@ import {
   AvoFileUploadAssetType,
   AvoLomLom,
   AvoLomLomField,
+  PermissionName,
 } from '@viaa/avo2-types';
 import { compact } from 'es-toolkit';
 import { type FC, useState } from 'react';
@@ -23,6 +24,7 @@ import { FileUploadImagePosition } from '../../shared/components/FileUpload/File
 import { LomFieldsInput } from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import {
   RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION,
+  RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION_NO_LINK,
   RICH_TEXT_EDITOR_OPTIONS_DEFAULT_NO_TITLES,
 } from '../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { RichTextEditorWrapper } from '../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
@@ -30,6 +32,7 @@ import { ShortDescriptionField } from '../../shared/components/ShortDescriptionF
 import { ThumbnailStillsModal } from '../../shared/components/ThumbnailStillsModal/ThumbnailStillsModal';
 import { stripHtml } from '../../shared/helpers/formatters/strip-html';
 import { tText } from '../../shared/helpers/translate-text';
+import { useHasPermission } from '../../shared/hooks/useHasPermission';
 import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
 import { type CollectionOrBundle } from '../collection.types';
@@ -60,6 +63,9 @@ export const CollectionOrBundleEditPublicationDetails: FC<
   >(undefined);
 
   const isCollection = type === 'collection';
+  const allowedToAddLinks = useHasPermission(
+    PermissionName.ADD_HYPERLINK_BUNDLES,
+  );
 
   const updateCollectionLoms = (loms: AvoLomLomField[]) => {
     changeCollectionState({
@@ -148,7 +154,9 @@ export const CollectionOrBundleEditPublicationDetails: FC<
                         controls={
                           isCollection
                             ? RICH_TEXT_EDITOR_OPTIONS_DEFAULT_NO_TITLES
-                            : RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION
+                            : allowedToAddLinks
+                              ? RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION
+                              : RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION_NO_LINK
                         }
                         value={
                           descriptionLongEditorState ??
