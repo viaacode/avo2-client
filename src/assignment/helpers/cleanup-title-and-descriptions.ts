@@ -32,7 +32,12 @@ export function cleanupTitleAndDescriptions(
           break;
         case AssignmentBlockItemDescriptionType.custom:
           block.custom_title = block.ownTitle || null;
-          block.custom_description = block.ownDescription || null;
+          // Keep the previous description when ownDescription is empty: clearing the
+          // editor yields "<p></p>", so an empty string means the field was never
+          // filled in rather than deliberately emptied. Without this, a stray empty
+          // value overwrites the stored description with null on save.
+          block.custom_description =
+            block.ownDescription || block.custom_description || null;
           block.use_custom_fields = true;
           break;
         case AssignmentBlockItemDescriptionType.none:

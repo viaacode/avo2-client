@@ -61,8 +61,11 @@ export const AssignmentBlockEditItem: FC<
         block.original_title ||
         block.item_meta?.title ||
         undefined),
+    // An emptied rich text editor yields "<p></p>", never "", so an empty string
+    // here is never a value the user typed. Falling through on it (|| instead of ??)
+    // keeps a stray empty description from permanently masking custom_description.
     ownDescription:
-      block.ownDescription ??
+      block.ownDescription ||
       (block.custom_description ||
         block.original_description ||
         block.item_meta?.description ||

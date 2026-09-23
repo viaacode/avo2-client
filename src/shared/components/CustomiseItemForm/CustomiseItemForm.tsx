@@ -134,7 +134,15 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = ({
                 {...description}
                 value={tempDescription ?? description?.value ?? ''}
                 onChange={setTempDescription}
-                onBlur={() => description?.onChange?.(tempDescription || '')}
+                // `tempDescription` is undefined when nothing was edited since the
+                // last commit. Falling back to the incoming value avoids wiping the
+                // description when the editor blurs without a change, eg: when
+                // clicking a toolbar button.
+                onBlur={() =>
+                  description?.onChange?.(
+                    tempDescription ?? description?.value ?? ''
+                  )
+                }
                 id={getId(CustomiseItemFormIds.description)}
               />
 
