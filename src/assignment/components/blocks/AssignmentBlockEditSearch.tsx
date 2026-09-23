@@ -1,20 +1,28 @@
 import { convertToHtml } from '@viaa/avo2-components';
 import { type FC } from 'react';
 
-import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
+import {
+  RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
+  RICH_TEXT_EDITOR_OPTIONS_DEFAULT,
+} from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { TitleDescriptionForm } from '../../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
 import { type EditBlockProps } from '../../assignment.types';
 import { AssignmentBlockToggle } from '../AssignmentBlockToggle';
 
 import './AssignmentBlockEditSearch.scss';
-import { AvoCoreBlockItemType } from '@viaa/avo2-types';
+import { AvoCoreBlockItemType, PermissionName } from '@viaa/avo2-types';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
+import { useHasPermission } from '../../../shared/hooks/useHasPermission';
 
 export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({
   block,
   setBlock,
 }) => {
+  const allowedToAddLinks = useHasPermission(
+    PermissionName.ADD_HYPERLINK_ASSIGNMENTS,
+  );
+
   return (
     <>
       <TitleDescriptionForm
@@ -27,7 +35,9 @@ export const AssignmentBlockEditSearch: FC<EditBlockProps> = ({
             'assignment/views/assignment-edit___beschrijf-je-instructies-of-geef-een-omschrijving-mee',
           ),
           value: convertToHtml(block.custom_description),
-          controls: RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
+          controls: allowedToAddLinks
+            ? RICH_TEXT_EDITOR_OPTIONS_AUTHOR
+            : RICH_TEXT_EDITOR_OPTIONS_DEFAULT,
           enabledHeadings: ['h3', 'h4', 'normal'],
           onChange: (value) =>
             setBlock({

@@ -90,3 +90,18 @@ export const RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION: RichTextEditorControl[
     'undo',
     'redo',
   ];
+
+// Same as RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION, but for users
+// without the ADD_HYPERLINK_BUNDLES permission
+export const RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION_NO_LINK: RichTextEditorControl[] =
+  [
+    'bold',
+    'italic',
+    'strike-through',
+    'underline',
+    'separator',
+    'remove-styles',
+    'separator',
+    'undo',
+    'redo',
+  ];

@@ -13,13 +13,12 @@ import {
 } from '@viaa/avo2-types';
 import { isNil } from 'es-toolkit';
 import { useAtomValue } from 'jotai';
-import { type FC, type ReactNode, useEffect, useState } from 'react';
+import { type FC, type ReactNode, useState } from 'react';
 
 import { commonUserAtom } from '../../authentication/authentication.store';
-import { PermissionService } from '../../authentication/helpers/permission-service';
 import { tHtml } from '../../shared/helpers/translate-html';
+import { useHasPermission } from '../../shared/hooks/useHasPermission';
 import { tText } from '../../shared/helpers/translate-text';
-import { ToastService } from '../../shared/services/toast-service';
 import { type CollectionOrBundle } from '../collection.types';
 import FragmentEdit from '../components/fragment/FragmentEdit';
 import { showReplacementWarning } from '../helpers/fragment';
@@ -46,9 +45,6 @@ export const CollectionOrBundleEditContent: FC<
   const [openOptionsId, setOpenOptionsId] = useState<number | string | null>(
     null,
   );
-  const [allowedToAddLinks, setAllowedToAddLinks] = useState<boolean | null>(
-    null,
-  );
 
   // Computed
   const isCollection = type === 'collection';
@@ -56,28 +52,11 @@ export const CollectionOrBundleEditContent: FC<
   const fragmentCollections = fragments.filter((f) => f.type === 'COLLECTION');
   const fragmentAssignments = fragments.filter((f) => f.type === 'ASSIGNMENT');
 
-  useEffect(() => {
-    PermissionService.hasPermission(
-      PermissionName.ADD_HYPERLINK_COLLECTIONS,
-      null,
-      commonUser,
-    )
-      .then((hasPermission) => {
-        setAllowedToAddLinks(hasPermission);
-      })
-      .catch((err) => {
-        console.error(
-          'Failed to check permissions for adding hyperlinks in collection fragment editors',
-          err,
-          { commonUser, permission: PermissionName.ADD_HYPERLINK_COLLECTIONS },
-        );
-        ToastService.danger(
-          tHtml(
-            'collection/components/fragment/fragment-edit___het-controleren-van-je-account-rechten-is-mislukt',
-          ),
-        );
-      });
-  }, [commonUser]);
+  const allowedToAddLinks = useHasPermission(
+    isCollection
+      ? PermissionName.ADD_HYPERLINK_COLLECTIONS
+      : PermissionName.ADD_HYPERLINK_BUNDLES,
+  );
 
   const getFragmentKey = (fragment: AvoCollectionFragment) => {
     return `fragment_${fragment.id}-${fragment?.created_at}-${fragment?.position}`;

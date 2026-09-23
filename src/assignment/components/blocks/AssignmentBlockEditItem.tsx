@@ -4,17 +4,22 @@ import {
   AvoCollectionFragment,
   AvoCoreBlockItemBase,
   AvoItemItem,
+  PermissionName,
 } from '@viaa/avo2-types';
 import { type FC, type ReactNode } from 'react';
 import { type FilterState } from '../../../search/search.types';
 import { ItemMetadata } from '../../../shared/components/BlockItemMetadata/ItemMetadata';
 import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm/CustomiseItemForm';
 import { FlowPlayerWrapper } from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
-import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
+import {
+  RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
+  RICH_TEXT_EDITOR_OPTIONS_DEFAULT,
+} from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import { isRichTextEmpty } from '../../../shared/helpers/is-rich-text-empty';
 import { tText } from '../../../shared/helpers/translate-text';
 import { useCutModal } from '../../../shared/hooks/use-cut-modal';
+import { useHasPermission } from '../../../shared/hooks/useHasPermission';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import {
   type EditableAssignmentBlock,
@@ -52,6 +57,9 @@ export const AssignmentBlockEditItem: FC<
   buildSearchLink,
 }) => {
   const [cutButton, cutModal] = useCutModal();
+  const allowedToAddLinks = useHasPermission(
+    PermissionName.ADD_HYPERLINK_ASSIGNMENTS,
+  );
   const editableBlock = {
     ...block,
     editMode: block.editMode || getBlockEditMode(block),
@@ -205,7 +213,9 @@ export const AssignmentBlockEditItem: FC<
                 'assignment/views/assignment-edit___beschrijving-fragment',
               ),
               value: convertToHtml(description),
-              controls: RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
+              controls: allowedToAddLinks
+                ? RICH_TEXT_EDITOR_OPTIONS_AUTHOR
+                : RICH_TEXT_EDITOR_OPTIONS_DEFAULT,
               enabledHeadings: ['h3', 'h4', 'normal'],
               disabled:
                 editableBlock.editMode ===
