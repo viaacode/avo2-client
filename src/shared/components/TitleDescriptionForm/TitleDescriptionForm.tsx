@@ -83,7 +83,14 @@ export const TitleDescriptionForm: FC<TitleDescriptionFormProps> = (props) => {
             {...props.description}
             value={description ?? props.description.value ?? ''}
             onChange={setDescription}
-            onBlur={() => props.description?.onChange?.(description || '')}
+            // `description` is undefined when nothing was edited since the last
+            // commit. Falling back to the prop value avoids wiping the content
+            // when the editor blurs without a change (eg: clicking a toolbar button).
+            onBlur={() =>
+              props.description?.onChange?.(
+                description ?? props.description?.value ?? ''
+              )
+            }
             id={getId(TitleDescriptionFormIds.description)}
           />
         </FormGroup>
