@@ -3,6 +3,7 @@ import { type FC } from 'react';
 import './SeoMetadata.scss';
 import { Helmet } from 'react-helmet-async';
 import { GENERATE_SITE_TITLE } from '../../../constants.ts';
+import { toHttpsUrl } from '../../helpers/to-https-url.ts';
 
 interface SeoMetadataProps {
   title?: string | null;
@@ -30,7 +31,7 @@ export const SeoMetadata: FC<SeoMetadataProps> = ({
       {!!title && <title>{GENERATE_SITE_TITLE(title)}</title>}
       {!!description && <meta name="description" content={description} />}
       {!!title && <meta property="og:title" content={title} />}
-      {!!url && <meta property="og:url" content={url} />}
+      {!!url && <meta property="og:url" content={toHttpsUrl(url)} />}
       {!!image && <meta property="og:image" content={image} />}
       {!!updatedAt && <meta property="og:updated_time" content={updatedAt} />}
       {!!publishedAt && (
