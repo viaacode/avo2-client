@@ -689,6 +689,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           'assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt',
         ),
       );
+      setIsSaving(false);
     }
   };
 
