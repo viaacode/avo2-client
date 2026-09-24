@@ -1,3 +1,9 @@
-.c-text-with-timestamps .c-rich-text-editor__content p {
-	padding: 0.75rem 0;
+.c-text-with-timestamps .c-rich-text-editor__content {
+	p {
+		padding: 0.75rem 0;
+	}
+
+	li > p {
+		padding: 0;
+	}
 }
