@@ -50,6 +50,7 @@ import { GetInteractiveTourByIdDocument } from '../../../shared/generated/graphq
 import { buildLink } from '../../../shared/helpers/build-link';
 import { CustomError } from '../../../shared/helpers/custom-error';
 import { navigate } from '../../../shared/helpers/link';
+import { stripHtml } from '../../../shared/helpers/formatters/strip-html';
 import { tHtml } from '../../../shared/helpers/translate-html';
 import { tText } from '../../../shared/helpers/translate-text';
 import { dataService } from '../../../shared/services/data-service';
@@ -85,6 +86,8 @@ import {
   type InteractiveTourStep,
 } from '../interactive-tour.types';
 import { InteractiveTourEditStep } from './InteractiveTourEditStep';
+
+import './InteractiveTourEdit.scss';
 
 const BlockHeading = lazy(() =>
   import('@meemoo/admin-core-ui/admin').then((adminCoreModule) => ({
@@ -241,7 +244,7 @@ export const InteractiveTourEdit: FC = () => {
     }
     if (
       !interactiveTourState.currentInteractiveTour ||
-      !interactiveTourState.currentInteractiveTour.page
+      !interactiveTourState.currentInteractiveTour.page_id
     ) {
       errors.page_id = tText(
         'admin/interactive-tour/views/interactive-tour-edit___een-pagina-is-verplicht',
@@ -258,7 +261,7 @@ export const InteractiveTourEdit: FC = () => {
             ),
           };
         }
-        if (step.title.length > MAX_STEP_TEXT_LENGTH) {
+        if (stripHtml(step.content || '').length > MAX_STEP_TEXT_LENGTH) {
           errors.steps = errors.steps || [];
           errors.steps[index] = {
             ...(errors.steps[index] || {}),
@@ -532,6 +535,7 @@ export const InteractiveTourEdit: FC = () => {
         'admin/interactive-tour/views/interactive-tour-edit___interactive-tour-aanpassen',
       )}
       size="large"
+      className="m-interactive-tour-edit-view"
     >
       <AdminLayoutTopBarRight>
         <ButtonToolbar>
