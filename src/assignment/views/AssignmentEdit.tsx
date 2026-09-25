@@ -585,9 +585,11 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
             ),
           );
 
-          resetForm();
           setIsSaving(false);
           setHasUnsavedChanges(false);
+          // Saved successfully => leaving the page must never trigger the "unsaved changes" modal,
+          // even if a child component flags the form as dirty again while unmounting
+          setIsForcedExit(true);
 
           // Delay navigation, until isDirty state becomes false, otherwise the "unsaved changes" modal will popup
           setTimeout(() => {
@@ -689,6 +691,7 @@ export const AssignmentEdit: FC<AssignmentEditProps> = ({
           'assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt',
         ),
       );
+      setIsSaving(false);
     }
   };
 

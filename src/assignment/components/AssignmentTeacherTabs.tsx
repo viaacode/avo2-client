@@ -94,7 +94,10 @@ export const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps> = ({
               },
             ]
           : []),
-        ...(showAdminTab && isManaged
+        // Marcom entries can only be linked to an existing assignment, so hide the tab while creating
+        ...(showAdminTab &&
+        isManaged &&
+        location.pathname !== APP_PATH.ASSIGNMENT_CREATE.route
           ? [
               {
                 id: ASSIGNMENT_CREATE_UPDATE_TABS.MARCOM,
