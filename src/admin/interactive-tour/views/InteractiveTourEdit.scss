@@ -1,3 +1,5 @@
+@use "../../../styles/settings/variables" as variables;
+
 .m-interactive-tour-edit-view {
 	.o-form-group__controls {
 		position: relative;
@@ -20,6 +22,6 @@
 	}
 
 	.c-text-input__selector {
-		padding: 0.8rem 3.5rem 0.8rem 0.8rem;
+		padding: variables.$g-spacer-unit (variables.$g-spacer-unit * 5) variables.$g-spacer-unit variables.$g-spacer-unit;
 	}
 }
