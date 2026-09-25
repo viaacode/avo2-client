@@ -1,0 +1,27 @@
+@use "../../../styles/settings/variables" as variables;
+
+.m-interactive-tour-edit-view {
+	.o-form-group__controls {
+		position: relative;
+
+		.c-tooltip-component-trigger {
+			position: absolute;
+			right: 10px;
+			top: 8px;
+		}
+	}
+
+	.c-tooltip-component {
+		z-index: 100;
+		max-width: 36rem;
+
+		li {
+			list-style: disc;
+			margin-left: 1.6rem;
+		}
+	}
+
+	.c-text-input__selector {
+		padding: variables.$g-spacer-unit (variables.$g-spacer-unit * 5) variables.$g-spacer-unit variables.$g-spacer-unit;
+	}
+}
