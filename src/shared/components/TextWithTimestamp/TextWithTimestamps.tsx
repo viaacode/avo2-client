@@ -47,7 +47,7 @@ export const TextWithTimestamps: FC<TextWithTimestampsProps> = ({
     <div className="c-text-with-timestamps" ref={textWrapperRef}>
       <Html
         type="div"
-        className="c-content"
+        className="c-rich-text-editor__content"
         sanitizePreset={SanitizePreset.full}
         content={textToHtmlWithTimestamps(content)}
       />

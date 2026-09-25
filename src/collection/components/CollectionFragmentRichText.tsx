@@ -19,7 +19,7 @@ export const CollectionFragmentRichText: FC<CollectionFragmentRichTextProps> = (
     <div className="c-collection-fragment-rich-text" ref={rest.ref}>
       <Html
         type="div"
-        className="c-collection-fragment-rich-text__parser c-content"
+        className="c-collection-fragment-rich-text__parser c-rich-text-editor__content"
         sanitizePreset={'full' as any}
         content={convertToHtml(
           block?.use_custom_fields || block?.type === AvoCoreBlockItemType.TEXT

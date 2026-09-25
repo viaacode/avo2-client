@@ -133,54 +133,35 @@
 		text-decoration: underline;
 	}
 
-	dl {
-		border: 1px solid colors.$color-gray-100;
-		border-radius: 0.3rem;
-		overflow: hidden;
-		padding: 1.2rem;
-		margin: 1.5rem 0;
-
-		dt {
-			float: left;
-			width: 30%;
-			clear: left;
-			font-weight: variables.$g-headings-font-weight;
-		}
-
-		dd {
-			float: left;
-			width: 70%;
-		}
-	}
-
+	// Tiptap wraps the content of every list item in a <p>, whose paragraph margins
+	// would otherwise add a gap between the items. Keep lists as compact as plain <li> text.
 	ul,
 	ol {
-		padding: 0;
-		margin: 1.5rem 0 1.5rem 2.85rem; // https://meemoo.atlassian.net/browse/AVO-3528
-
-		ul,
-		ol {
-			margin: 0;
-			padding-left: 2.25rem;
-		}
-
-		ul {
-			li {
-				list-style: circle;
-			}
-		}
+		margin: 0 0 1em;
+		padding-left: 2.5em;
 	}
 
 	ul {
 		list-style: disc;
 	}
 
-	li {
-		padding-left: 0.5rem;
-	}
-
 	ol {
 		list-style: decimal;
+	}
+
+	li {
+		margin: 0;
+		padding: 0;
+
+		> p {
+			margin: 0;
+		}
+
+		// Nested lists sit directly under their parent item
+		ul,
+		ol {
+			margin: 0;
+		}
 	}
 
 	blockquote {

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { convertToHtml } from '@viaa/avo2-components';
+import { marked } from 'marked';
 
 /**
  * formats text to paragraphs and new lines with a highlight for timestamps
@@ -12,12 +12,14 @@ import { convertToHtml } from '@viaa/avo2-components';
 const TIMESTAMP_REGEX = /([0-9]{2}:[0-9]{2}(:[0-9]{2})?)/g;
 
 export function textToHtmlWithTimestamps(input: string): string {
-  const convertedHtml: string = convertToHtml(input);
-  return convertedHtml
-    .replace(/<\/p>\n\r?<p>/g, '</p><p>')
-    .replace(/\n\r?/g, '<br/>')
-    .replace(
-      TIMESTAMP_REGEX,
-      (match) => `<span class="c-timestamp">${match}</span>`,
-    );
+  // breaks: true turns single newlines inside a paragraph into <br>,
+  // without adding <br> between block elements like <ul> and <li>
+  const convertedHtml: string = marked.parse(input || '', {
+    sanitize: false,
+    breaks: true,
+  });
+  return convertedHtml.replace(
+    TIMESTAMP_REGEX,
+    (match) => `<span class="c-timestamp">${match}</span>`,
+  );
 }
