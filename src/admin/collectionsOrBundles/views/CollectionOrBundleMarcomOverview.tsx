@@ -388,9 +388,14 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
           showCheckboxes={true}
           bulkActions={[
             {
-              label: tText(
-                'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___exporteer-alles',
-              ),
+              label:
+                Object.keys(getFilters(tableState) || {}).length > 0
+                  ? tText(
+                      'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___alle-resultaten-exporteren',
+                    )
+                  : tText(
+                      'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___alles-exporteren',
+                    ),
               value: CollectionBulkAction.EXPORT_ALL,
             },
           ]}

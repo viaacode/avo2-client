@@ -357,9 +357,14 @@ export const CollectionOrBundleActualisationOverview: FC = () => {
           showCheckboxes={true}
           bulkActions={[
             {
-              label: tText(
-                'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___exporteer-alles',
-              ),
+              label:
+                Object.keys(getFilters(tableState) || {}).length > 0
+                  ? tText(
+                      'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___alle-resultaten-exporteren',
+                    )
+                  : tText(
+                      'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___alles-exporteren',
+                    ),
               value: CollectionBulkAction.EXPORT_ALL,
             },
           ]}

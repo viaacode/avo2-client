@@ -626,6 +626,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
           showCheckboxes={true}
           bulkActions={GET_COLLECTION_BULK_ACTIONS(
             selectedCollectionIds.length > 0,
+            Object.keys(getFilters(tableState) || {}).length > 0,
           )}
           onSelectBulkAction={handleBulkAction as any}
           selectedItemIds={selectedCollectionIds}

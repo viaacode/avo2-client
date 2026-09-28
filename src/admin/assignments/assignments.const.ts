@@ -39,6 +39,7 @@ export type AssignmentBulkActionOption = SelectOption<string> & {
 export const GET_ASSIGNMENT_BULK_ACTIONS = (
   commonUser: AvoUserCommonUser | null | undefined,
   areRowsSelected: boolean,
+  hasFilters: boolean,
 ): AssignmentBulkActionOption[] => {
   if (!commonUser) {
     return [];
@@ -73,7 +74,9 @@ export const GET_ASSIGNMENT_BULK_ACTIONS = (
         ]
       : []),
     {
-      label: tText('admin/assignments/assignments___alles-exporteren'),
+      label: hasFilters
+        ? tText('admin/assignments/assignments___alle-resultaten-exporteren')
+        : tText('admin/assignments/assignments___alles-exporteren'),
       value: AssignmentsBulkAction.EXPORT_ALL,
       disabled: false,
     },

@@ -479,6 +479,7 @@ export const AssignmentOverviewAdmin: FC = () => {
           bulkActions={GET_ASSIGNMENT_BULK_ACTIONS(
             commonUser,
             selectedAssignmentIds.length > 0,
+            Object.keys(getFilters(tableState) || {}).length > 0,
           )}
           onSelectBulkAction={handleBulkAction as any}
           rowKey="id"

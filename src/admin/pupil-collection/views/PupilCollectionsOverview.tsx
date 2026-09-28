@@ -395,6 +395,7 @@ export const PupilCollectionsOverview: FC = () => {
           bulkActions={GET_PUPIL_COLLECTION_BULK_ACTIONS(
             commonUser,
             selectedPupilCollectionIds.length > 0,
+            Object.keys(getFilters(tableState) || {}).length > 0,
           )}
           onSelectBulkAction={handleBulkAction as any}
           rowKey="id"

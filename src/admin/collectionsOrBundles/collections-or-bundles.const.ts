@@ -34,6 +34,7 @@ type CollectionBulkActionOption = SelectOption<string> & {
 
 export const GET_COLLECTION_BULK_ACTIONS = (
   hasSelectedRows: boolean,
+  hasFilters: boolean,
 ): CollectionBulkActionOption[] => {
   return [
     {
@@ -78,9 +79,13 @@ export const GET_COLLECTION_BULK_ACTIONS = (
       disabled: !hasSelectedRows,
     },
     {
-      label: tText(
-        'admin/collections-or-bundles/collections-or-bundles___alles-exporteren',
-      ),
+      label: hasFilters
+        ? tText(
+            'admin/collections-or-bundles/collections-or-bundles___alle-resultaten-exporteren',
+          )
+        : tText(
+            'admin/collections-or-bundles/collections-or-bundles___alles-exporteren',
+          ),
       value: CollectionBulkAction.EXPORT_ALL,
     },
   ];

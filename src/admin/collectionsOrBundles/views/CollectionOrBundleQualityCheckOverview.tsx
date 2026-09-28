@@ -349,9 +349,14 @@ export const CollectionOrBundleQualityCheckOverview: FC = () => {
           showCheckboxes={true}
           bulkActions={[
             {
-              label: tText(
-                'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___exporteer-alles',
-              ),
+              label:
+                Object.keys(getFilters(tableState) || {}).length > 0
+                  ? tText(
+                      'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___alle-resultaten-exporteren',
+                    )
+                  : tText(
+                      'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___alles-exporteren',
+                    ),
               value: CollectionBulkAction.EXPORT_ALL,
             },
           ]}
