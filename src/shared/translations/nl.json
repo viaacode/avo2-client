@@ -104,6 +104,7 @@
   "admin/assignments/views/assignments-overview-admin___je-hebt-num-of-selected-assignments-verwijderd": "Je hebt {{numOfSelectedAssignments}} verwijderd.",
   "admin/assignments/views/assignments-overview-admin___je-kan-doorgaan-met-je-actie-maar-deze-opdrachten-zullen-niet-behandeld-worden": "Je kan doorgaan met je actie, maar deze opdrachten zullen niet behandeld worden",
   "admin/assignments/views/assignments-overview-admin___nee": "Nee",
+  "admin/assignments/views/assignments-overview-admin___dit-is-geen-bouw-opdracht-en-heeft-dus-geen-leerlingen-collecties": "Dit is geen bouw opdracht en heeft dus geen leerlingen collecties",
   "admin/assignments/views/assignments-overview-admin___nvt": "nvt",
   "admin/assignments/views/assignments-overview-admin___opdrachten": "Opdrachten",
   "admin/assignments/views/assignments-overview-admin___opdrachten-csv": "opdrachten.csv",

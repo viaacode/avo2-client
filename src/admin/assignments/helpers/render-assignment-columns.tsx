@@ -7,6 +7,7 @@ import {
 } from '@viaa/avo2-components';
 import {
   AvoAssignmentAssignment,
+  AvoCoreBlockItemType,
   AvoShareEditStatusResponse,
   AvoUserCommonUser,
   AvoUserProfile,
@@ -35,6 +36,11 @@ import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../../shared/helpers/translate-text';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '../../../shared/components/Tooltip/Tooltip';
 import { ADMIN_PATH } from '../../admin.const';
 
 export function renderAssignmentOverviewCellReact(
@@ -379,6 +385,25 @@ export function renderAssignmentCellReact(
     case 'responses': {
       const responsesLength =
         (assignment as any)?.responses_aggregate?.aggregate?.count || 0;
+      const hasPupilCollections =
+        assignment?.lom_learning_resource_type?.includes(
+          AvoCoreBlockItemType.BOUW,
+        ) || false;
+      if (responsesLength >= 1 && !hasPupilCollections) {
+        // Only responses without pupil collections => no link to the pupil collections overview
+        return (
+          <Tooltip position="top">
+            <TooltipTrigger>
+              <span>{responsesLength}</span>
+            </TooltipTrigger>
+            <TooltipContent>
+              {tText(
+                'admin/assignments/views/assignments-overview-admin___dit-is-geen-bouw-opdracht-en-heeft-dus-geen-leerlingen-collecties',
+              )}
+            </TooltipContent>
+          </Tooltip>
+        );
+      }
       if (responsesLength >= 1) {
         return (
           <Link
