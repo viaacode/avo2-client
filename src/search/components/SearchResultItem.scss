@@ -1,4 +1,5 @@
 @use "../../styles/settings/colors" as colors;
+@use "../../styles/utilities/display" as display;
 
 .c-search-result-list .c-search-result__title {
 	> button {
@@ -9,4 +10,8 @@
 			text-decoration: underline;
 		}
 	}
+}
+
+.c-search-result__owner-avatar .c-avatar {
+	@include display.enlargeLogo;
 }
