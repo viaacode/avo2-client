@@ -9,10 +9,11 @@ export function getQueryFilter(
   query: string | undefined,
   getQueryFilterObj: (queryWildcard: string, query: string) => any[],
 ) {
-  if (query) {
+  const trimmedQuery = query?.trim();
+  if (trimmedQuery) {
     return [
       {
-        _or: getQueryFilterObj(`%${query}%`, query),
+        _or: getQueryFilterObj(`%${trimmedQuery}%`, trimmedQuery),
       },
     ];
   }

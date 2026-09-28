@@ -590,7 +590,7 @@ export const AssignmentOverviewAdmin: FC = () => {
                 'created_at') as AssignmentTableColumns,
               tableState.sort_order || AvoSearchOrderDirection.DESC,
               getColumnDataType(),
-              {},
+              getFilters(tableState),
             );
             return response[1];
           }}
@@ -602,7 +602,7 @@ export const AssignmentOverviewAdmin: FC = () => {
                 'created_at') as AssignmentTableColumns,
               tableState.sort_order || AvoSearchOrderDirection.DESC,
               getColumnDataType(),
-              {},
+              getFilters(tableState),
             );
             return response[0];
           }}

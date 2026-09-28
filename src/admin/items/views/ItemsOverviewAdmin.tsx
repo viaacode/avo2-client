@@ -1,4 +1,8 @@
-import { ExportAllToCsvModal, FilterTable } from '@meemoo/admin-core-ui/admin';
+import {
+  ExportAllToCsvModal,
+  FilterTable,
+  getFilters,
+} from '@meemoo/admin-core-ui/admin';
 import {
   AvoItemItem,
   AvoOrganizationOrganization,
@@ -202,7 +206,7 @@ export const ItemsOverviewAdmin: FC = () => {
               (tableState.sort_column ||
                 'created_at') as ItemsOverviewTableCols,
               tableState.sort_order || AvoSearchOrderDirection.DESC,
-              {},
+              getFilters(tableState),
             );
             return response.total;
           }}
@@ -213,7 +217,7 @@ export const ItemsOverviewAdmin: FC = () => {
               (tableState.sort_column ||
                 'created_at') as ItemsOverviewTableCols,
               tableState.sort_order || AvoSearchOrderDirection.DESC,
-              {},
+              getFilters(tableState),
             );
             return response.items;
           }}

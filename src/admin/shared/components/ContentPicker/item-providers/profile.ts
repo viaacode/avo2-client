@@ -6,13 +6,20 @@ import { getEnv } from '../../../../../shared/helpers/env';
 import { type PickerItem } from '../../../types/content-picker';
 import { parsePickerItem } from '../helpers/parse-picker';
 
+const MIN_SEARCH_LENGTH = 3;
+
 // Fetch profiles from GQL
 export const retrieveProfiles = async (
   name: string | null,
   limit = 5,
 ): Promise<PickerItem[]> => {
   try {
-    return await getUsers(limit, name);
+    const trimmedName = name?.trim() || null;
+    if (trimmedName && trimmedName.length < MIN_SEARCH_LENGTH) {
+      // Searching on 1 or 2 characters matches too many users to be useful and is slow
+      return [];
+    }
+    return await getUsers(limit, trimmedName);
   } catch (err) {
     throw new CustomError('Failed to get profiles for content picker', err, {
       name,
