@@ -1,5 +1,6 @@
 @use "sass:math";
 @use "../../settings/colors" as colors;
+@use "../../settings/mixins" as mixins;
 @use "../../settings/variables" as variables;
 
 /* ==========================================================================
@@ -67,11 +68,14 @@ $c-button-icon-spacing-small: 0.2rem !default;
 		background-color: colors.$color-gray-50;
 		color: colors.$color-gray-700;
 
-		&:hover,
 		&:active,
 		&:focus,
 		&.c-button--active,
 		&.c-button--active:focus {
+			background-color: #fff;
+		}
+
+		@include mixins.hover {
 			background-color: #fff;
 		}
 	}
