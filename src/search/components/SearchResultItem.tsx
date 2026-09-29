@@ -128,6 +128,7 @@ export const SearchResultItem: FC<SearchResultItemProps> = ({
       return (
         <Flex spaced="wide">
           <Avatar
+            className="c-search-result__owner-avatar"
             image={
               result.owner?.company_avatar_path ||
               result.owner?.avatar_path ||
