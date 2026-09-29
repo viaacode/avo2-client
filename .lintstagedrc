@@ -1,5 +1,3 @@
 {
-	"*.{ts,tsx}": [
-		"echo 'disabled eslint --cache'"
-	]
+	"*.{ts,tsx,js,json}": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
 }
