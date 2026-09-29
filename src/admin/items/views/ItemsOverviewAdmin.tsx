@@ -3,6 +3,7 @@ import {
   FilterTable,
   getFilters,
 } from '@meemoo/admin-core-ui/admin';
+import { tableStateHasFilters } from '../../shared/helpers/filters';
 import {
   AvoItemItem,
   AvoOrganizationOrganization,
@@ -177,7 +178,7 @@ export const ItemsOverviewAdmin: FC = () => {
           bulkActions={[
             {
               label:
-                Object.keys(getFilters(tableState) || {}).length > 0
+                tableStateHasFilters(tableState)
                   ? tText(
                       'admin/items/views/items-overview-admin___alle-resultaten-exporteren',
                     )

@@ -3,6 +3,7 @@ import {
   FilterTable,
   getFilters,
 } from '@meemoo/admin-core-ui/admin';
+import { tableStateHasFilters } from '../../shared/helpers/filters';
 import { type TagInfo } from '@viaa/avo2-components';
 import {
   AvoCollectionCollection,
@@ -626,7 +627,7 @@ export const CollectionsOrBundlesOverview: FC = () => {
           showCheckboxes={true}
           bulkActions={GET_COLLECTION_BULK_ACTIONS(
             selectedCollectionIds.length > 0,
-            Object.keys(getFilters(tableState) || {}).length > 0,
+            tableStateHasFilters(tableState),
           )}
           onSelectBulkAction={handleBulkAction as any}
           selectedItemIds={selectedCollectionIds}

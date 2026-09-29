@@ -4,6 +4,7 @@ import {
   FilterTable,
   getFilters,
 } from '@meemoo/admin-core-ui/admin';
+import { tableStateHasFilters } from '../../shared/helpers/filters';
 import {
   AvoAssignmentAssignment,
   AvoSearchOrderDirection,
@@ -479,7 +480,7 @@ export const AssignmentOverviewAdmin: FC = () => {
           bulkActions={GET_ASSIGNMENT_BULK_ACTIONS(
             commonUser,
             selectedAssignmentIds.length > 0,
-            Object.keys(getFilters(tableState) || {}).length > 0,
+            tableStateHasFilters(tableState),
           )}
           onSelectBulkAction={handleBulkAction as any}
           rowKey="id"

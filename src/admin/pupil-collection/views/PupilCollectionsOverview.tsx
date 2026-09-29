@@ -4,6 +4,7 @@ import {
   FilterTable,
   getFilters,
 } from '@meemoo/admin-core-ui/admin';
+import { tableStateHasFilters } from '../../shared/helpers/filters';
 import {
   AvoAssignmentResponse,
   AvoSearchOrderDirection,
@@ -395,7 +396,7 @@ export const PupilCollectionsOverview: FC = () => {
           bulkActions={GET_PUPIL_COLLECTION_BULK_ACTIONS(
             commonUser,
             selectedPupilCollectionIds.length > 0,
-            Object.keys(getFilters(tableState) || {}).length > 0,
+            tableStateHasFilters(tableState),
           )}
           onSelectBulkAction={handleBulkAction as any}
           rowKey="id"

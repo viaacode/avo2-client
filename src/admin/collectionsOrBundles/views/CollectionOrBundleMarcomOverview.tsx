@@ -3,6 +3,7 @@ import {
   FilterTable,
   getFilters,
 } from '@meemoo/admin-core-ui/admin';
+import { tableStateHasFilters } from '../../shared/helpers/filters';
 import {
   AvoCollectionCollection,
   AvoSearchOrderDirection,
@@ -389,7 +390,7 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
           bulkActions={[
             {
               label:
-                Object.keys(getFilters(tableState) || {}).length > 0
+                tableStateHasFilters(tableState)
                   ? tText(
                       'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___alle-resultaten-exporteren',
                     )
