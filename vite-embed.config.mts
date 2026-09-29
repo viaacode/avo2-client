@@ -24,11 +24,10 @@ export default defineConfig((): UserConfig => {
       sourcemap: true,
       cssCodeSplit: false,
       manifest: true, // Generate manifest, so ssr code can find the correct main-<hash>.css file
-      rollupOptions: {
+      rolldownOptions: {
         input: {
           embed: path.resolve(__dirname, 'embed/index.html'),
         },
-        plugins: [react()],
         output: {
           assetFileNames: function (file) {
             return ASSETS_WITHOUT_A_HASH.includes(file.name as string)
