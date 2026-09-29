@@ -314,14 +314,13 @@ export const AssignmentMarcomOverview: FC = () => {
           showCheckboxes={true}
           bulkActions={[
             {
-              label:
-                tableStateHasFilters(tableState)
-                  ? tText(
-                      'admin/assignments/views/assignment-marcom-overview___alle-resultaten-exporteren',
-                    )
-                  : tText(
-                      'admin/assignments/views/assignment-marcom-overview___alles-exporteren',
-                    ),
+              label: tableStateHasFilters(tableState)
+                ? tText(
+                    'admin/assignments/views/assignment-marcom-overview___alle-resultaten-exporteren',
+                  )
+                : tText(
+                    'admin/assignments/views/assignment-marcom-overview___alles-exporteren',
+                  ),
               value: AssignmentsBulkAction.EXPORT_ALL,
             },
           ]}

@@ -177,14 +177,13 @@ export const ItemsOverviewAdmin: FC = () => {
           showCheckboxes={false}
           bulkActions={[
             {
-              label:
-                tableStateHasFilters(tableState)
-                  ? tText(
-                      'admin/items/views/items-overview-admin___alle-resultaten-exporteren',
-                    )
-                  : tText(
-                      'admin/items/views/items-overview-admin___alles-exporteren',
-                    ),
+              label: tableStateHasFilters(tableState)
+                ? tText(
+                    'admin/items/views/items-overview-admin___alle-resultaten-exporteren',
+                  )
+                : tText(
+                    'admin/items/views/items-overview-admin___alles-exporteren',
+                  ),
               value: ItemBulkAction.EXPORT_ALL,
             },
           ]}

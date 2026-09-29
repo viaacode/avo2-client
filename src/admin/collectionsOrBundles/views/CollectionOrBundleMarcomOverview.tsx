@@ -389,14 +389,13 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
           showCheckboxes={true}
           bulkActions={[
             {
-              label:
-                tableStateHasFilters(tableState)
-                  ? tText(
-                      'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___alle-resultaten-exporteren',
-                    )
-                  : tText(
-                      'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___alles-exporteren',
-                    ),
+              label: tableStateHasFilters(tableState)
+                ? tText(
+                    'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___alle-resultaten-exporteren',
+                  )
+                : tText(
+                    'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___alles-exporteren',
+                  ),
               value: CollectionBulkAction.EXPORT_ALL,
             },
           ]}

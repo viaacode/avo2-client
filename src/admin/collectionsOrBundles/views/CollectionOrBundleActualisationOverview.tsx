@@ -358,14 +358,13 @@ export const CollectionOrBundleActualisationOverview: FC = () => {
           showCheckboxes={true}
           bulkActions={[
             {
-              label:
-                tableStateHasFilters(tableState)
-                  ? tText(
-                      'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___alle-resultaten-exporteren',
-                    )
-                  : tText(
-                      'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___alles-exporteren',
-                    ),
+              label: tableStateHasFilters(tableState)
+                ? tText(
+                    'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___alle-resultaten-exporteren',
+                  )
+                : tText(
+                    'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___alles-exporteren',
+                  ),
               value: CollectionBulkAction.EXPORT_ALL,
             },
           ]}
