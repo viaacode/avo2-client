@@ -1,4 +1,9 @@
-import { ExportAllToCsvModal, FilterTable } from '@meemoo/admin-core-ui/admin';
+import {
+  ExportAllToCsvModal,
+  FilterTable,
+  getFilters,
+} from '@meemoo/admin-core-ui/admin';
+import { tableStateHasFilters } from '../../shared/helpers/filters';
 import {
   AvoItemItem,
   AvoOrganizationOrganization,
@@ -172,9 +177,14 @@ export const ItemsOverviewAdmin: FC = () => {
           showCheckboxes={false}
           bulkActions={[
             {
-              label: tText(
-                'admin/items/views/items-overview___exporteer-alles',
-              ),
+              label:
+                tableStateHasFilters(tableState)
+                  ? tText(
+                      'admin/items/views/items-overview-admin___alle-resultaten-exporteren',
+                    )
+                  : tText(
+                      'admin/items/views/items-overview-admin___alles-exporteren',
+                    ),
               value: ItemBulkAction.EXPORT_ALL,
             },
           ]}
@@ -202,7 +212,7 @@ export const ItemsOverviewAdmin: FC = () => {
               (tableState.sort_column ||
                 'created_at') as ItemsOverviewTableCols,
               tableState.sort_order || AvoSearchOrderDirection.DESC,
-              {},
+              getFilters(tableState),
             );
             return response.total;
           }}
@@ -213,7 +223,7 @@ export const ItemsOverviewAdmin: FC = () => {
               (tableState.sort_column ||
                 'created_at') as ItemsOverviewTableCols,
               tableState.sort_order || AvoSearchOrderDirection.DESC,
-              {},
+              getFilters(tableState),
             );
             return response.items;
           }}

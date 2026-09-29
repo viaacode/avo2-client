@@ -3,6 +3,7 @@ import {
   FilterTable,
   getFilters,
 } from '@meemoo/admin-core-ui/admin';
+import { tableStateHasFilters } from '../../shared/helpers/filters';
 import {
   AvoCollectionCollection,
   AvoSearchOrderDirection,
@@ -388,9 +389,14 @@ export const CollectionOrBundleMarcomOverview: FC = () => {
           showCheckboxes={true}
           bulkActions={[
             {
-              label: tText(
-                'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___exporteer-alles',
-              ),
+              label:
+                tableStateHasFilters(tableState)
+                  ? tText(
+                      'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___alle-resultaten-exporteren',
+                    )
+                  : tText(
+                      'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___alles-exporteren',
+                    ),
               value: CollectionBulkAction.EXPORT_ALL,
             },
           ]}

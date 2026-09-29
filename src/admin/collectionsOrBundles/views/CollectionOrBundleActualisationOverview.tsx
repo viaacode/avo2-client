@@ -4,6 +4,7 @@ import {
   FilterTable,
   getFilters,
 } from '@meemoo/admin-core-ui/admin';
+import { tableStateHasFilters } from '../../shared/helpers/filters';
 import {
   AvoCollectionCollection,
   AvoSearchOrderDirection,
@@ -357,9 +358,14 @@ export const CollectionOrBundleActualisationOverview: FC = () => {
           showCheckboxes={true}
           bulkActions={[
             {
-              label: tText(
-                'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___exporteer-alles',
-              ),
+              label:
+                tableStateHasFilters(tableState)
+                  ? tText(
+                      'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___alle-resultaten-exporteren',
+                    )
+                  : tText(
+                      'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___alles-exporteren',
+                    ),
               value: CollectionBulkAction.EXPORT_ALL,
             },
           ]}

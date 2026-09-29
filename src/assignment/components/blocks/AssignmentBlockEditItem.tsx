@@ -75,8 +75,8 @@ export const AssignmentBlockEditItem: FC<
     ownDescription:
       block.ownDescription ||
       block.custom_description ||
-        block.original_description ||
-        block.item_meta?.description ||
+      block.original_description ||
+      block.item_meta?.description ||
       undefined,
     noTitle:
       block.noTitle ??

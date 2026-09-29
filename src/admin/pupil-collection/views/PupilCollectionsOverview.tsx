@@ -4,6 +4,7 @@ import {
   FilterTable,
   getFilters,
 } from '@meemoo/admin-core-ui/admin';
+import { tableStateHasFilters } from '../../shared/helpers/filters';
 import {
   AvoAssignmentResponse,
   AvoSearchOrderDirection,
@@ -95,8 +96,9 @@ export const PupilCollectionsOverview: FC = () => {
       const andFilters: any[] = [];
 
       // Text search
-      if (filters.query) {
-        const query = `%${filters.query}%`;
+      const trimmedQuery = filters.query?.trim();
+      if (trimmedQuery) {
+        const query = `%${trimmedQuery}%`;
 
         andFilters.push({
           _or: [
@@ -394,6 +396,7 @@ export const PupilCollectionsOverview: FC = () => {
           bulkActions={GET_PUPIL_COLLECTION_BULK_ACTIONS(
             commonUser,
             selectedPupilCollectionIds.length > 0,
+            tableStateHasFilters(tableState),
           )}
           onSelectBulkAction={handleBulkAction as any}
           rowKey="id"
@@ -440,7 +443,7 @@ export const PupilCollectionsOverview: FC = () => {
                   'created_at') as PupilCollectionOverviewTableColumns,
                 tableState.sort_order || AvoSearchOrderDirection.DESC,
                 getColumnDataType(),
-                {},
+                generateWhereObject(getFilters(tableState)),
               );
             return response.count;
           }}

@@ -18,6 +18,7 @@ export const ITEMS_PER_PAGE = 20;
 export const GET_PUPIL_COLLECTION_BULK_ACTIONS = (
   commonUser: AvoUserCommonUser | null | undefined,
   areRowsSelected: boolean,
+  hasFilters: boolean,
 ): AssignmentBulkActionOption[] => {
   if (!commonUser) {
     return [];
@@ -52,9 +53,11 @@ export const GET_PUPIL_COLLECTION_BULK_ACTIONS = (
         ]
       : []),
     {
-      label: tText(
-        'admin/pupil-collection/pupil-collection___alles-exporteren',
-      ),
+      label: hasFilters
+        ? tText(
+            'admin/pupil-collection/pupil-collection___alle-resultaten-exporteren',
+          )
+        : tText('admin/pupil-collection/pupil-collection___alles-exporteren'),
       value: AssignmentsBulkAction.EXPORT_ALL,
     },
   ];

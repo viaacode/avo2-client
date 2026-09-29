@@ -3,6 +3,7 @@ import {
   FilterTable,
   getFilters,
 } from '@meemoo/admin-core-ui/admin';
+import { tableStateHasFilters } from '../../shared/helpers/filters';
 import {
   AvoAssignmentAssignment,
   AvoSearchOrderDirection,
@@ -313,9 +314,14 @@ export const AssignmentMarcomOverview: FC = () => {
           showCheckboxes={true}
           bulkActions={[
             {
-              label: tText(
-                'admin/assignments/views/assignments-marcom-overview___exporteer-alles',
-              ),
+              label:
+                tableStateHasFilters(tableState)
+                  ? tText(
+                      'admin/assignments/views/assignment-marcom-overview___alle-resultaten-exporteren',
+                    )
+                  : tText(
+                      'admin/assignments/views/assignment-marcom-overview___alles-exporteren',
+                    ),
               value: AssignmentsBulkAction.EXPORT_ALL,
             },
           ]}

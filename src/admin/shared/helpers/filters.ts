@@ -1,18 +1,24 @@
 import { compact, isNil, without } from 'es-toolkit';
 import { set } from 'es-toolkit/compat';
+import { getFilters } from '@meemoo/admin-core-ui/admin';
 
 import { type EducationLevelType } from '../../../shared/helpers/lom';
 
 export const NULL_FILTER = 'null';
 
+export function tableStateHasFilters(tableState: any): boolean {
+  return Object.keys(getFilters(tableState) || {}).length > 0;
+}
+
 export function getQueryFilter(
   query: string | undefined,
   getQueryFilterObj: (queryWildcard: string, query: string) => any[],
 ) {
-  if (query) {
+  const trimmedQuery = query?.trim();
+  if (trimmedQuery) {
     return [
       {
-        _or: getQueryFilterObj(`%${query}%`, query),
+        _or: getQueryFilterObj(`%${trimmedQuery}%`, trimmedQuery),
       },
     ];
   }
