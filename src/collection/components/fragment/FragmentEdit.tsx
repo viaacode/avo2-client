@@ -25,6 +25,7 @@ import {
   type ReactText,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import { Link } from 'react-router-dom';
@@ -44,6 +45,7 @@ import { getMoreOptionsLabel } from '../../../shared/constants';
 import { buildLink } from '../../../shared/helpers/build-link';
 import { createDropdownMenuItem } from '../../../shared/helpers/dropdown';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
+import { normalizeHtml } from '../../../shared/helpers/normalize-html';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { QUERY_PARAM_SHOW_PUBLISH_MODAL } from '../../views/CollectionDetail.const';
@@ -88,7 +90,11 @@ interface FragmentEditProps {
   fragment: AvoCollectionFragment;
   allowedToAddLinks: boolean;
   renderWarning?: () => ReactNode | null;
-  onFocus?: () => void;
+  /**
+   * Called when the user changes the title or description locally, before the changes are submitted to the parent
+   * So the parent can show the save bar
+   */
+  onFragmentChanged?: () => void;
 }
 
 const FragmentEdit: FC<FragmentEditProps> = ({
@@ -102,7 +108,7 @@ const FragmentEdit: FC<FragmentEditProps> = ({
   fragment,
   allowedToAddLinks,
   renderWarning = () => null,
-  onFocus,
+  onFragmentChanged,
 }) => {
   const commonUser = useAtomValue(commonUserAtom);
 
@@ -147,6 +153,29 @@ const FragmentEdit: FC<FragmentEditProps> = ({
 
   const [customTitle, setCustomTitle] = useState(getTitle());
   const [customDescription, setCustomDescription] = useState(getDescription());
+
+  // Only submit the local state to the parent if the user actually changed something
+  // Otherwise focusing or clicking around would mark the collection as changed
+  const initialTitle = useRef(customTitle);
+  const initialDescription = useRef(normalizeHtml(customDescription));
+  const hasLocalChanges = useRef(false);
+  const isFirstRender = useRef(true);
+
+  const handleTitleChange = (newTitle: string) => {
+    setCustomTitle(newTitle);
+    if (newTitle !== initialTitle.current) {
+      hasLocalChanges.current = true;
+      onFragmentChanged?.();
+    }
+  };
+
+  const handleDescriptionChange = (newDescription: string) => {
+    setCustomDescription(newDescription);
+    if (normalizeHtml(newDescription) !== initialDescription.current) {
+      hasLocalChanges.current = true;
+      onFragmentChanged?.();
+    }
+  };
 
   const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
@@ -224,12 +253,20 @@ const FragmentEdit: FC<FragmentEditProps> = ({
   };
 
   useEffect(() => {
+    if (isFirstRender.current) {
+      // Do not submit the initial values to the parent on mount
+      isFirstRender.current = false;
+      return;
+    }
+    hasLocalChanges.current = true;
     setShouldSave(true);
   }, [useCustomFields]);
 
   useEffect(() => {
     if (shouldSave) {
-      submitStateToParent();
+      if (hasLocalChanges.current) {
+        submitStateToParent();
+      }
       setShouldSave(false);
     }
   }, [shouldSave, submitStateToParent]);
@@ -401,9 +438,8 @@ const FragmentEdit: FC<FragmentEditProps> = ({
             placeholder={tText(
               'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in',
             )}
-            onChange={setCustomTitle}
+            onChange={handleTitleChange}
             disabled={disableVideoFields}
-            onFocus={onFocus}
           />
         </FormGroup>
         {!!fragment.item_meta && isParentACollection && (
@@ -433,11 +469,8 @@ const FragmentEdit: FC<FragmentEditProps> = ({
                   'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in',
                 )}
                 value={customDescription || undefined}
-                onChange={(newDescription: string) => {
-                  setCustomDescription(newDescription);
-                }}
+                onChange={handleDescriptionChange}
                 disabled={disableVideoFields}
-                onFocus={onFocus}
               />
             )}
           </FormGroup>
