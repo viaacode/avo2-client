@@ -33,12 +33,12 @@ interface CollectionOrBundleEditContentProps {
   type: CollectionOrBundle;
   collection: AvoCollectionCollection;
   changeCollectionState: (action: CollectionAction) => void;
-  onFocus?: () => void;
+  onFragmentChanged?: () => void;
 }
 
 export const CollectionOrBundleEditContent: FC<
   CollectionOrBundleEditContentProps
-> = ({ type, collection, changeCollectionState, onFocus }) => {
+> = ({ type, collection, changeCollectionState, onFragmentChanged }) => {
   const commonUser = useAtomValue(commonUserAtom);
 
   // State
@@ -133,7 +133,7 @@ export const CollectionOrBundleEditContent: FC<
           }
           return null;
         }}
-        onFocus={onFocus}
+        onFragmentChanged={onFragmentChanged}
       />
     );
   };

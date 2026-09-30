@@ -80,6 +80,7 @@ import { CustomError } from '../../shared/helpers/custom-error';
 import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
 import { navigate } from '../../shared/helpers/link';
 import { isMobileWidth } from '../../shared/helpers/media-query';
+import { normalizeHtml } from '../../shared/helpers/normalize-html';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { tHtml } from '../../shared/helpers/translate-html';
 import { tText } from '../../shared/helpers/translate-text';
@@ -307,13 +308,27 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
     };
   };
 
+  /**
+   * The rich text editor reformats the html (eg: removes whitespace between tags)
+   * Normalize the descriptions, so these differences do not count as unsaved changes
+   */
+  const normalizeForComparison = (
+    collection: AvoCollectionCollection | null,
+  ) => {
+    const convertedCollection = convertRteToString(collection);
+    getFragmentsFromCollection(convertedCollection).forEach((fragment) => {
+      fragment.custom_description = normalizeHtml(fragment.custom_description);
+    });
+    return convertedCollection;
+  };
+
   const updateHasUnsavedChanges = (
     initialCollection: AvoCollectionCollection | null,
     currentCollection: AvoCollectionCollection | null,
   ): void => {
     const hasChanges =
-      JSON.stringify(convertRteToString(initialCollection)) !==
-      JSON.stringify(convertRteToString(currentCollection));
+      JSON.stringify(normalizeForComparison(initialCollection)) !==
+      JSON.stringify(normalizeForComparison(currentCollection));
 
     if (!unsavedChanges) {
       setUnsavedChanges(hasChanges);
@@ -501,6 +516,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
     };
   }
 
+  const [resetCount, setResetCount] = useState<number>(0);
   const [collectionState, changeCollectionState] = useReducer<
     Reducer<CollectionState, CollectionAction>
   >(currentCollectionReducer, {
@@ -906,6 +922,8 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
   const cancelSaveBar = () => {
     changeCollectionState({ type: 'RESET_COLLECTION' });
     setUnsavedChanges(false);
+    // Fragment edit components keep local state (title, description), remount them so they pick up the reset values
+    setResetCount((count) => count + 1);
   };
 
   // Listeners
@@ -1418,10 +1436,11 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         case CollectionCreateUpdateTab.CONTENT:
           return (
             <CollectionOrBundleEditContent
+              key={`content-${resetCount}`}
               type={type}
               collection={collectionState.currentCollection}
               changeCollectionState={changeCollectionState}
-              onFocus={() => setUnsavedChanges(true)}
+              onFragmentChanged={() => setUnsavedChanges(true)}
             />
           );
         case CollectionCreateUpdateTab.PUBLICATION_DETAILS:
