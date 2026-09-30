@@ -398,7 +398,7 @@ export const InteractiveTourEdit: FC = () => {
     }
 
     return (
-      <div key={`step_${step.target}_${step.id}`}>
+      <div key={`step_${step.id ?? index}`}>
         <InteractiveTourEditStep
           step={step}
           index={index}
