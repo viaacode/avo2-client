@@ -1,86 +1,52 @@
 ###################################################################
-## Compile image
-###################################################################
-FROM docker.io/library/node:24-alpine AS compile
-# set our node environment, defaults to production
-ARG NODE_ENV=ci
-ARG PRODUCTION=$PRODUCTION
-ARG CI=true
-ENV NODE_ENV $NODE_ENV
-ENV CI $CI
-ENV TZ=Europe/Brussels
-WORKDIR /app
-
-# update timezone for image
-RUN apk update
-RUN apk add --no-cache tzdata
-RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime
-RUN echo $TZ > /etc/timezone
-
-# prep folders to copy source code
-RUN mkdir ./dist
-RUN mkdir ./dist-embed
-RUN chown -R node:node /app
-RUN chmod -R g+s /app
-RUN chmod -R g+w /app
-
-# copy source code
-COPY --chown=node:node . .
-RUN chmod -R g+sw /app
-
-# install node dependencies
-USER node
-RUN npm ci --include=dev
-
-###################################################################
-## Builder image
+## Build image: install all dependencies and build the app
 ###################################################################
 FROM docker.io/library/node:24-alpine AS build
-USER node
-COPY --from=compile /app /app
-# set our node environment, defaults to production
 ARG NODE_ENV=production
-ENV NODE_ENV $NODE_ENV
+ARG CI=true
+ENV NODE_ENV=$NODE_ENV
+ENV CI=$CI
+# Node ships its own timezone data (ICU), so no need to install tzdata
+ENV TZ=Europe/Brussels
+# NODE_OPTIONS is inherited by all child processes (npm run, vite, ...)
 ENV NODE_OPTIONS="--max_old_space_size=2048"
 WORKDIR /app
-# Build the app
-# try alias to keep --max_old_space_size=2048 in subprocesses
-RUN alias npm='node --max_old_space_size=2048 /usr/bin/npm' >> ~/.bash_aliases && . ~/.bash_aliases && npm run build
+RUN chown node:node /app
+USER node
+
+# Install node dependencies first, so this layer is cached as long as the lockfile doesn't change
+COPY --chown=node:node package.json package-lock.json .npmrc ./
+RUN npm ci --include=dev --no-audit --no-fund
+
+# Copy source code and build the app
+COPY --chown=node:node . .
+RUN npm run build
 # Add cookiebot attribute to script in index.html. Fails if no replacements were made.
 RUN npm run add-cookiebot-attribute
 
+###################################################################
+## Release files: only keep what the server needs at runtime
+###################################################################
+FROM build AS release
 # Remove the dev dependencies that were only needed during the build stage
-RUN npm prune --omit=dev
+# and collect all runtime files in /app/release
+# Openshift runs the container with a random uid in the root group,
+# so the group needs the same permissions as the owner (g=u).
+# Doing this in an intermediate stage avoids duplicating all files in an extra layer of the final image.
+RUN npm prune --omit=dev --no-audit --no-fund \
+  && mkdir -p release/scripts dist/client dist/server/.vite \
+  && mv dist node_modules package.json package-lock.json release/ \
+  && cp scripts/env.js scripts/copy-robots-txt-file.js scripts/robots-enable-indexing.txt scripts/robots-disable-indexing.txt release/scripts/ \
+  && chmod -R g=u release
 
 ###################################################################
-## Servce client using a node server for server side rendering
+## Serve client using a node server for server side rendering
 ###################################################################
 FROM docker.io/library/node:24-alpine AS serve
-USER node
-ENV NODE_ENV production
+ENV NODE_ENV=production
 WORKDIR /app
-
-# copy folders
-COPY --from=build --chown=node:node /app/dist ./dist
-COPY --from=build --chown=node:node /app/node_modules ./node_modules
-
-# copy files
-COPY --from=build --chown=node:node /app/scripts/env.js ./scripts/env.js
-COPY --from=build --chown=node:node /app/scripts/copy-robots-txt-file.js ./scripts/copy-robots-txt-file.js
-COPY --from=build --chown=node:node /app/scripts/robots-enable-indexing.txt ./scripts/robots-enable-indexing.txt
-COPY --from=build --chown=node:node /app/scripts/robots-disable-indexing.txt ./scripts/robots-disable-indexing.txt
-COPY --from=build --chown=node:node /app/package*.json ./
-
-RUN ls -l /app/scripts
-
-USER root
-# Ensure vite can write cache to /app/dist/server/.vite
-# Ensure node can write to app/dist for adding the robots.txt and env-config.js file
-RUN mkdir -p /app/dist/client /app/dist/server/.vite \
-  && chgrp -R 0 /app \
-  && chmod -R g=u /app
-
+COPY --from=release --chown=node:0 /app/release /app
+RUN chgrp 0 /app && chmod g=u /app
 USER node
 # Write env variables to js file, copy robots.txt file and start server
 CMD ["sh", "-c", "node ./scripts/env.js && node ./scripts/copy-robots-txt-file.js && node ./dist/server/server.js"]
-
