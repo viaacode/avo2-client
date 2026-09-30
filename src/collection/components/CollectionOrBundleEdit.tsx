@@ -501,6 +501,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
     };
   }
 
+  const [resetCount, setResetCount] = useState<number>(0);
   const [collectionState, changeCollectionState] = useReducer<
     Reducer<CollectionState, CollectionAction>
   >(currentCollectionReducer, {
@@ -906,6 +907,8 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
   const cancelSaveBar = () => {
     changeCollectionState({ type: 'RESET_COLLECTION' });
     setUnsavedChanges(false);
+    // Fragment edit components keep local state (title, description), remount them so they pick up the reset values
+    setResetCount((count) => count + 1);
   };
 
   // Listeners
@@ -1418,6 +1421,7 @@ export const CollectionOrBundleEdit: FC<CollectionOrBundleEditProps> = ({
         case CollectionCreateUpdateTab.CONTENT:
           return (
             <CollectionOrBundleEditContent
+              key={`content-${resetCount}`}
               type={type}
               collection={collectionState.currentCollection}
               changeCollectionState={changeCollectionState}
